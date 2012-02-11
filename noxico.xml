@@ -1,0 +1,2562 @@
+<stuff>
+	<bodyplans>
+		<bodyplan species="human" a="a" the="the">
+			<culture>
+				<human />
+			</culture>
+			<normalgenders />
+			<malename>
+				<man />
+			</malename>
+			<femalename>
+				<woman />
+			</femalename>
+			<playable />
+			<tallness>
+				<roll>1d50+150</roll>
+			</tallness>
+			<hair>
+				<length>
+					<roll>1d4+5</roll>
+				</length>
+				<color>
+					<oneof>blond,brown,black,red,gray,white,auburn</oneof>
+				</color>
+			</hair>
+			<skin>
+				<oneof>light,light,light,pale,pale,dark,dark,olive</oneof>
+			</skin>
+			<eyes />
+			<ears>
+				<human />
+			</ears>
+			<legs />
+			<ass>
+				<virgin />
+				<size>
+					<roll>1d4+4</roll>
+				</size>
+				<fuckable />
+			</ass>
+			<waist>
+				<roll>1d4+1</roll>
+			</waist>
+			<hips>
+				<roll>1d2+4</roll>
+			</hips>
+			<items>
+				<catmorph />
+				<foxite />
+				<book>
+					<id>3</id>
+				</book>
+				<lena_ruby />
+				<penificator />
+				<chopaway />
+				<butter_knife />
+				<knife>
+					<cursed />
+				</knife>
+				<knife>
+					<unidentified />
+				</knife>
+				<test_ring />
+				<test_ring>
+					<cursed />
+				</test_ring>
+				<test_ring />
+				<cheap_pos>
+					<unidentified />
+				</cheap_pos>
+				<foxmorph />
+
+				<!--
+				<plain_boxers>
+					<equipped />
+				</plain_boxers>
+				<shirt>
+					<equipped />
+					<color>
+						<black />
+					</color>
+				</shirt>
+				<pants>
+					<equipped />
+					<color>
+						<black />
+					</color>
+				</pants>
+				-->
+			</items>
+			<costume>
+				<casual />
+			</costume>
+			<!-- The creature creator adjusts this part. -->
+			<fertility>
+				<roll>1d15+5</roll>
+			</fertility>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d5+1</roll>
+				</size>
+				<nipples>
+					1
+					<size>0.5</size>
+				</nipples>
+				<milksource />
+			</breastrow>
+			<vagina>
+				<virgin />
+				<fuckable />
+				<clit>0.25</clit>
+			</vagina>
+			<penis>
+				<thickness>2.5</thickness>
+				<length>
+					<roll>1d5+13</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="imp" a="an" the="the">
+			<maleonly />
+			<xenoname />
+			<language>
+				<goblin />
+			</language>
+			<tallness>
+				<roll>1d40+100</roll>
+			</tallness>
+			<hair>
+				<length>5</length>
+				<color>
+					<black />
+				</color>
+			</hair>
+			<skin>
+				<red />
+			</skin>
+			<eyes />
+			<ears>
+				<human />
+			</ears>
+			<legs />
+			<wings>
+				<bat />
+				<small />
+			</wings>
+			<ass>
+				<size>4</size>
+				<looseness>1</looseness>
+				<wetness>1</wetness>
+				<fuckable />
+			</ass>
+			<penis>
+				<thickness>2.5</thickness>
+				<length>
+					<roll>1d2+17</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>1</size>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="goblin" a="a" the="the">
+			<femaleonly />
+			<xenoname />
+			<language>
+				<goblin />
+			</language>
+			<tallness>
+				<roll>1d40+120</roll>
+			</tallness>
+			<hair>
+				<length>4</length>
+				<color>
+					<purple />
+				</color>
+			</hair>
+			<skin>
+				<darkgreen />
+			</skin>
+			<eyes />
+			<ears>
+				<elfin />
+			</ears>
+			<legs />
+			<waist>
+				<roll>1d2+1</roll>
+			</waist>
+			<hips>
+				<roll>1d3+4</roll>
+			</hips>
+			<fertility>50</fertility>
+			<ass>
+				<size>
+					<roll>1d3+6</roll>
+				</size>
+				<looseness>1</looseness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d3+3</roll>
+				</size>
+				<nipples>
+					1
+					<size>1.25</size>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>4</wetness>
+				<looseness>1</looseness>
+				<fuckable />
+			</vagina>
+		</bodyplan>
+
+		<bodyplan species="fetish cultist" a="a" the="the">
+			<femaleonly />
+			<tallness>
+				<roll>1d20+160</roll>
+			</tallness>
+			<hair>
+				<length>15</length>
+				<color>
+					<black />
+				</color>
+			</hair>
+			<skin>
+				<pale />
+			</skin>
+			<eyes />
+			<ears>
+				<human />
+			</ears>
+			<legs />
+			<hips>6</hips>
+			<fertility>10</fertility>
+			<ass>
+				<size>6</size>
+				<looseness>2</looseness>
+				<wetness>1</wetness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>5</size>
+				<nipples>1</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>4</wetness>
+				<looseness>1</looseness>
+				<fuckable />
+			</vagina>
+		</bodyplan>
+
+		<bodyplan species="bee girl" a="a" the="the">
+			<femaleonly />
+			<tallness>
+				<roll>1d20+140</roll>
+			</tallness>
+			<hair>
+				<length>6</length>
+				<color>
+					<black />
+				</color>
+			</hair>
+			<skin>
+				<yellow />
+			</skin>
+			<eyes>
+				<black />
+			</eyes>
+			<legs>
+				<insect />
+			</legs>
+			<antennae />
+			<wings>
+				<insect />
+			</wings>
+			<tail>
+				<stinger>
+					<venom>100</venom>
+					<recharge>5</recharge>
+				</stinger>
+			</tail>
+			<hips>6</hips>
+			<fertility>10</fertility>
+			<ass>
+				<insect />
+				<size>13</size>
+				<looseness>4</looseness>
+				<wetness>1</wetness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d5+1</roll>
+				</size>
+				<nipples>1</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>5</wetness>
+				<looseness>3</looseness>
+				<fuckable />
+			</vagina>
+		</bodyplan>
+
+		<bodyplan species="naga" a="a" the="the">
+			<!-- <femaleonly /> -->
+			<culture>
+				<demonic />
+			</culture>
+			<playable />
+			<tallness>
+				<roll>1d20+160</roll>
+			</tallness>
+			<hair>
+				<length>14</length>
+				<color>
+					<oneof>darkcyan,seagreen,cadetblue</oneof>
+				</color>
+			</hair>
+			<skin>
+				<aqua />
+			</skin>
+			<eyes>
+				<yellow />
+			</eyes>
+			<snaketail />
+			<waist>4</waist>
+			<hips>5</hips>
+			<fertility>20</fertility>
+			<ass>
+				<size>6</size>
+				<looseness>1</looseness>
+				<wetness>0</wetness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d4+3</roll>
+				</size>
+				<nipples>2</nipples>
+			</breastrow>
+			<!--
+			<breastrow>
+				<amount>2</amount>
+				<size>3.5</size>
+				<nipples>3</nipples>
+			</breastrow>
+			<breastrow>
+				<amount>2</amount>
+				<size>3.1</size>
+				<nipples>3</nipples>
+			</breastrow>
+			-->
+			<vagina>
+				<wetness>2</wetness>
+				<looseness>2</looseness>
+				<fuckable />
+			</vagina>
+			<penis>
+				<thickness>
+					<roll>1d2+1</roll>
+				</thickness>
+				<length>
+					<roll>1d6+20</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<costume>
+				<lacy_undies />
+				<bikini />
+			</costume>
+		</bodyplan>
+
+		<bodyplan species="foocubus" a="a" the="the">
+			<culture>
+				<demonic />
+			</culture>
+			<normalgenders />
+			<xenoname />
+			<language>
+				<demonic />
+			</language>
+			<femalename>
+				<succubus />
+			</femalename>
+			<malename>
+				<incubus/>
+			</malename>
+			<playable />
+			<namegen>
+				<nomiddlename />
+				<boatmurder />
+				<symbol>
+					<Darkness />
+					<Mythic />
+				</symbol>
+				<symbol>
+					<Wild />
+					<Untoward />
+					<Mystery />
+					<Leader />
+					<Subordinate />
+					<New />
+				</symbol>
+			</namegen>
+			<tallness>
+				<roll>1d20+170</roll>
+			</tallness>
+			<hair>
+				<length>
+					<roll>1d3+4</roll>
+				</length>
+				<color>
+					<oneof>red,black,blue,darkred,green</oneof>
+				</color>
+			</hair>
+			<skin>
+				<pale />
+			</skin>
+			<eyes />
+			<ears>
+				<elfin />
+			</ears>
+			<wings>
+				<bat />
+			</wings>
+			<legs>
+				<oneof>claws,stiletto,stiletto,human,human,human</oneof>
+			</legs>
+			<waist>
+				<roll>1d3+2</roll>
+			</waist>
+			<hips>6</hips>
+			<ass>
+				<size>7</size>
+				<looseness>2</looseness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d5+4</roll>
+				</size>
+				<nipples>
+					1
+					<size>
+						<roll>1d2+1</roll>
+					</size>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>4</wetness>
+				<looseness>1</looseness>
+				<fuckable />
+			</vagina>
+			<penis>
+				<oneof>purple,red</oneof>
+				<studded />
+				<thickness>
+					<roll>1d3+1</roll>
+				</thickness>
+				<length>
+					<roll>1d6+17</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>
+					<roll>1d2</roll>
+				</size>
+			</balls>
+			<items>
+				<kinkyclothes>
+					<equipped />
+				</kinkyclothes>
+				<comfyclothes />
+				<rope />
+			</items>
+		</bodyplan>
+
+		<bodyplan species="felinoid" a="a" the="the">
+			<culture>
+				<human />
+			</culture>
+			<normalgenders />
+			<femalename>
+				<catgirl />
+			</femalename>
+			<malename>
+				<catboy />
+			</malename>
+			<playable />
+			<tallness>
+				<roll>1d40+150</roll>
+			</tallness>
+			<hair>
+				<length>
+					<roll>1d4+5</roll>
+				</length>
+				<color>
+					<oneof>blond,brown,black,red,gray,white,auburn</oneof>
+				</color>
+			</hair>
+			<skin>
+				<oneof>light,light,light,pale,pale,dark,dark,olive</oneof>
+			</skin>
+			<eyes />
+			<ears>
+				<cat />
+			</ears>
+			<legs>
+				<oneof>human,genbeast</oneof>
+			</legs>
+			<tail>
+				<genbeast />
+			</tail>
+			<ass>
+				<virgin />
+				<size>5</size>
+				<fuckable />
+			</ass>
+			<hips>
+				<roll>1d6</roll>
+			</hips>
+			<waist>
+				<roll>1d4+1</roll>
+			</waist>
+			<fertility>
+				<roll>1d25+5</roll>
+			</fertility>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d4+1</roll>
+				</size>
+				<nipples>
+					1
+					<size>
+						<roll>1d2+1</roll>
+					</size>
+				</nipples>
+				<milksource />
+			</breastrow>
+			<vagina>
+				<virgin />
+				<fuckable />
+				<clit>0.25</clit>
+			</vagina>
+			<penis>
+				<thickness>3</thickness>
+				<length>
+					<roll>1d6+12</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>0.6</size>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="fox" a="a" the="the">
+			<normalgenders />
+			<femalename>
+				<foxgirl />
+			</femalename>
+			<malename>
+				<foxboy />
+			</malename>
+			<playable />
+			<tallness>
+				<roll>1d20+150</roll>
+			</tallness>
+			<hair>
+				<length>
+					<roll>1d6+3</roll>
+				</length>
+				<color>
+					<oneof>blond,brown,black,red</oneof>
+				</color>
+			</hair>
+			<skin>
+				<light />
+			</skin>
+			<eyes />
+			<ears>
+				<genbeast />
+			</ears>
+			<legs>
+				<dog />
+			</legs>
+			<tail>
+				<fox />
+			</tail>
+			<ass>
+				<virgin />
+				<size>4</size>
+				<fuckable />
+			</ass>
+			<hips>
+				<roll>1d2+1</roll>
+			</hips>
+			<fertility>
+				<roll>1d20+10</roll>
+			</fertility>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d3+3</roll>
+				</size>
+				<nipples>
+					<size>
+						<roll>1d2+2</roll>
+					</size>
+				</nipples>
+				<milksource />
+			</breastrow>
+			<vagina>
+				<virgin />
+				<fuckable />
+				<clit>0.25</clit>
+			</vagina>
+			<penis>
+				<thickness>2</thickness>
+				<length>
+					<roll>1d7+14</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>0.6</size>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="little pony" a="a">
+			<normalgenders />
+			<malename>
+				<colt />
+			</malename>
+			<femalename>
+				<filly />
+			</femalename>
+			<playable />
+			<namegen>
+				<nomiddlename />
+				<boatmurder />
+				<symbol>
+					<PersonalPonyName />
+				</symbol>
+				<symbol>
+					<Flowery />
+					<Peace />
+					<New />
+					<Mythic />
+					<Balance />
+					<Light />
+				</symbol>
+			</namegen>
+			<marshmallow />
+			<tallness>140</tallness>
+			<hair>
+				<length>16</length>
+				<color>
+					<oneof>red,orange,yellow,magenta,white,lime,blue,aqua,black</oneof>
+				</color>
+			</hair>
+			<fur>
+				<oneof>red,orange,yellow,magenta,white,lime,blue,aqua,black</oneof>
+			</fur>
+			<horseface />
+			<eyes>
+				<cyan />
+			</eyes>
+			<legs>
+				<!-- Defining <quadruped> makes it a centaur... -->
+				<quadruped />
+				<!-- ...which assumes <horse> if nothing is specified... -->
+				<horse />
+			</legs>
+			<!-- ...but <noarms> makes it a proper quadruped instead of a centaur. -->
+			<noarms />
+			<ears>
+				<horse />
+			</ears>
+			<tail>
+				<horse />
+			</tail>
+			<ass>
+				<size>6</size>
+				<fuckable />
+			</ass>
+			<vagina>
+				<virgin />
+				<fuckable />
+				<clit>1.5</clit>
+			</vagina>
+			<penis>
+				<horse />
+				<thickness>3</thickness>
+				<length>16</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>3</size>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="horrorterror" a="a" the="the" >
+			<invisiblegender />
+			<xenoname />
+			<language>
+				<demonic />
+			</language>
+			<tallness>
+				<roll>1d100+150</roll>
+			</tallness>
+			<hair>
+				<length>
+					<roll>1d100</roll>
+				</length>
+				<color>
+					<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
+				</color>
+			</hair>
+			<scales>
+				<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
+			</scales>
+			<eyes>
+				<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
+			</eyes>
+			<oneof>snaketail,slimeblob,,,</oneof>
+			<tail>
+				<oneof>spider,stinger,genbeast,horse,dog,cat,squirrel,fox,demon,cow</oneof>
+			</tail>
+			<waist>
+				<roll>1d6+12</roll>
+			</waist>
+			<hips>
+				<roll>1d6+12</roll>
+			</hips>
+			<fertility>9001</fertility>
+			<ass>
+				<size>
+					<roll>1d6+12</roll>
+				</size>
+				<looseness>10</looseness>
+				<wetness>10</wetness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>
+					<roll>1d20+4</roll>
+				</amount>
+				<size>
+					<roll>1d20+8</roll>
+				</size>
+				<nipples>
+					1
+					<roll>1d12+2</roll>
+					<oneof>fuckable,canfuck,</oneof>
+				</nipples>
+			</breastrow>
+			<breastrow>
+				<amount>
+					<roll>1d20+4</roll>
+				</amount>
+				<size>
+					<roll>1d20+8</roll>
+				</size>
+				<nipples>
+					1
+					<roll>1d12+2</roll>
+					<oneof>fuckable,canfuck,</oneof>
+				</nipples>
+			</breastrow>
+			<breastrow>
+				<amount>
+					<roll>1d20+4</roll>
+				</amount>
+				<size>
+					<roll>1d20+8</roll>
+				</size>
+				<nipples>
+					1
+					<roll>1d12+2</roll>
+					<oneof>fuckable,canfuck,</oneof>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>
+					<roll>1d12+5</roll>
+				</wetness>
+				<looseness>
+					<roll>1d12+2</roll>
+				</looseness>
+				<fuckable />
+			</vagina>
+			<vagina>
+				<wetness>
+					<roll>1d12+5</roll>
+				</wetness>
+				<looseness>
+					<roll>1d12+2</roll>
+				</looseness>
+				<fuckable />
+			</vagina>
+			<vagina>
+				<wetness>
+					<roll>1d12+5</roll>
+				</wetness>
+				<looseness>
+					<roll>1d12+2</roll>
+				</looseness>
+				<fuckable />
+			</vagina>
+			<vagina>
+				<wetness>
+					<roll>1d12+5</roll>
+				</wetness>
+				<looseness>
+					<roll>1d12+2</roll>
+				</looseness>
+				<fuckable />
+			</vagina>
+			<penis>
+				<thickness>
+					<roll>1d20+7</roll>
+				</thickness>
+				<length>
+					<roll>1d100+40</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<penis>
+				<thickness>
+					<roll>1d20+7</roll>
+				</thickness>
+				<length>
+					<roll>1d100+40</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<penis>
+				<thickness>
+					<roll>1d20+7</roll>
+				</thickness>
+				<length>
+					<roll>1d100+40</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<penis>
+				<thickness>
+					<roll>1d20+7</roll>
+				</thickness>
+				<length>
+					<roll>1d100+40</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<penis>
+				<thickness>
+					<roll>1d20+7</roll>
+				</thickness>
+				<length>
+					<roll>1d100+40</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>
+					<roll>1d5+2</roll>
+				</amount>
+				<size>
+					<roll>1d18+5</roll>
+				</size>
+			</balls>
+		</bodyplan>
+
+		<bodyplan species="slime">
+			<neverneuter />
+			<culture>
+				<japanese />
+			</culture>
+			<malename>
+				<slimeboi />
+			</malename>
+			<femalename>
+				<slimegirl />
+			</femalename>
+			<playable />
+			<tallness>
+				<roll>1d50+100</roll>
+			</tallness>
+			<slime>
+				<copyhair />
+			</slime>
+			<hair>
+				<length>
+					<roll>1d8+10</roll>
+				</length>
+				<color>
+					<oneof>red,orangered,orange,yellow,lime,green,aqua,teal,blue,cornflowerblue,magenta,purple,fuchsia</oneof>
+				</color>
+			</hair>
+			<slimeblob />
+			<eyes />
+			<ears>
+				<human />
+			</ears>
+			<ass>
+				<size>
+					<roll>1d4+4</roll>
+				</size>
+				<fuckable />
+			</ass>
+			<waist>
+				<roll>1d5+1</roll>
+			</waist>
+			<hips>
+				<roll>1d3+4</roll>
+			</hips>
+			<breastrow>
+				<amount>2</amount>
+				<size>
+					<roll>1d7+4</roll>
+				</size>
+				<nipples>
+					1
+					<size>0.75</size>
+				</nipples>
+				<milksource />
+			</breastrow>
+			<vagina>
+				<fuckable />
+				<clit>0.5</clit>
+			</vagina>
+			<penis>
+				<thickness>2.5</thickness>
+				<length>
+					<roll>1d7+15</roll>
+				</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+		</bodyplan>
+	</bodyplans>
+
+	<uniques>
+		<character name="Naga Pinch" proper="true" species="nagapony" a="a">
+			<tallness>
+				120
+			</tallness>
+			<hair>
+				<length>4</length>
+				<color>
+					<mediumvioletred />
+				</color>
+			</hair>
+			<fur>
+				<lightpink />
+			</fur>
+			<horseface />
+			<marshmallow />
+			<eyes>
+				<lime />
+			</eyes>
+			<snaketail />
+			<ears>
+				<horse />
+			</ears>
+			<waist>4</waist>
+			<hips>5</hips>
+			<fertility>20</fertility>
+			<ass>
+				<size>6</size>
+				<looseness>1</looseness>
+				<wetness>0</wetness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>0.4</size>
+				<nipples>1</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>2</wetness>
+				<looseness>2</looseness>
+				<fuckable />
+			</vagina>
+		</character>
+
+		<character name="Lena" proper="true" species="succubus" a="a">
+			<tallness>176</tallness>
+			<hair>
+				<length>24</length>
+				<color>
+					<brown />
+				</color>
+			</hair>
+			<skin>
+				<pale />
+			</skin>
+			<eyes>
+				<red />
+			</eyes>
+			<ears>
+				<elfin />
+			</ears>
+			<horns>2</horns>
+			<wings>
+				<bat />
+			</wings>
+			<tail>
+				<demon />
+			</tail>
+			<legs />
+			<hips>
+				8
+			</hips>
+			<ass>
+				<size>7</size>
+				<looseness>1</looseness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>5.7</size>
+				<nipples>
+					1
+					<size>1.5</size>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>2</wetness>
+				<looseness>3</looseness>
+				<fuckable />
+			</vagina>
+			<items>
+				<lena_ruby />
+			</items>
+			<costume>
+				<lena />
+			</costume>
+		</character>
+
+		<character name="Kawa" proper="true" species="demon" a="a">
+			<ascii>
+				<extchar>267</extchar>
+				<fore>
+					<yellow />
+				</fore>
+				<back>
+					<navy />
+				</back>
+			</ascii>
+			<tallness>200</tallness>
+			<genbeastface />
+			<hair>
+				<length>14</length>
+				<color>
+					<brown />
+				</color>
+			</hair>
+			<fur>
+				<yellow />
+			</fur>
+			<eyes>
+				<red />
+			</eyes>
+			<ears>
+				<elfin />
+			</ears>
+			<legs>
+				<canine />
+			</legs>
+			<tentacles>
+				<green />
+				<hidden />
+			</tentacles>
+			<ass>
+				<size>8</size>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>0</size>
+				<nipples>1</nipples>
+			</breastrow>
+			<penis>
+				<ridged />
+				<thickness>2</thickness>
+				<length>15</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>2</size>
+			</balls>
+			<items>
+				<rope />
+				<baseballbat />
+				<shotgun />
+				<pistol />
+			</items>
+		</character>
+
+		<character name="Ponky Poi" proper="true" a="a" species="little pony">
+			<tallness>140</tallness>
+			<hair>
+				<length>16</length>
+				<color>
+					<magenta />
+				</color>
+			</hair>
+			<fur>
+				<pink />
+			</fur>
+			<horseface />
+			<eyes>
+				<cyan />
+			</eyes>
+			<ears>
+				<horse />
+			</ears>
+			<horsebody />
+			<tail>
+				<horse />
+			</tail>
+			<ass>
+				<size>8</size>
+				<fuckable />
+			</ass>
+		</character>
+
+		<character name="Marble" proper="true" a="a" species="cow-girl">
+			<tallness>184</tallness>
+			<hair>
+				<length>13</length>
+				<color>
+					<brown />
+				</color>
+			</hair>
+			<skin>
+				<pale />
+			</skin>
+			<eyes>
+				<brown />
+			</eyes>
+			<ears>
+				<cow />
+			</ears>
+			<cowlegs />
+			<tail>
+				<cow />
+			</tail>
+			<hips>10</hips>
+			<fertility>20</fertility>
+			<ass>
+				<size>8</size>
+				<fuckable />
+			</ass>
+			<vagina>
+				<fuckable />
+				<wetness>1</wetness>
+				<looseness>1</looseness>
+				<clit>0.5</clit>
+			</vagina>
+			<breastrow>
+				<amount>2</amount>
+				<size>11</size>
+				<nipples>1</nipples>
+			</breastrow>
+			<items>
+				<hammer />
+			</items>
+		</character>
+
+		<character name="Urta" proper="true" species="fox" a="a">
+			<tallness>160</tallness>
+			<hair>
+				<length>8</length>
+				<color>
+					<darkgray />
+				</color>
+			</hair>
+			<dogface />
+			<fur>
+				<silver />
+			</fur>
+			<eyes />
+			<ears>
+				<genbeast />
+			</ears>
+			<legs>
+				<dog />
+			</legs>
+			<tail>
+				<fox />
+			</tail>
+			<waist>2</waist>
+			<ass>
+				<size>3</size>
+				<fuckable />
+			</ass>
+			<hips>2</hips>
+			<fertility>0</fertility>
+			<breastrow>
+				<amount>2</amount>
+				<size>5</size>
+				<nipples>
+					1
+					<size>2</size>
+					<color>
+						<black />
+					</color>
+				</nipples>
+				<milksource />
+			</breastrow>
+			<vagina>
+				<fuckable />
+				<wetness>2</wetness>
+				<looseness>2</looseness>
+				<clit>0.5</clit>
+			</vagina>
+			<penis>
+				<horse />
+				<thickness>7</thickness>
+				<length>50</length>
+				<cumsource />
+				<canfuck />
+			</penis>
+			<balls>
+				<amount>2</amount>
+				<size>1.4</size>
+			</balls>
+			<items>
+				<sheer_top>
+					<equipped />
+				</sheer_top>
+				<short_skirt>
+					<equipped />
+				</short_skirt>
+				<fishnets>
+					<equipped />
+				</fishnets>
+			</items>
+		</character>
+
+		<character name="Nova" proper="true" species="yoshifox" a="a">
+			<tallness>175</tallness>
+			<!-- converted from 5'9" -->
+			<skin>
+				<lime />
+			</skin>
+			<eyes>
+				<cornflowerblue />
+			</eyes>
+			<ears>
+				<fox />
+			</ears>
+			<wings />
+			<tail>
+				<fox />
+			</tail>
+			<legs />
+			<hips>
+				6 <!-- what -->
+			</hips>
+			<ass>
+				<size>7</size>
+				<looseness>1</looseness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>3.2</size>
+				<!-- edit later to match a C cup because lazy -->
+				<nipples>
+					1
+					<size>1.5</size>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>4</wetness>
+				<!-- what even are these units -->
+				<looseness>1</looseness>
+				<fuckable />
+			</vagina>
+			<items>
+				<kinky_panties>
+					<blue />
+					<equipped />
+				</kinky_panties>
+			</items>
+			<penis>
+				<!-- just guessing here -->
+				<length>15</length>
+				<!-- 6 inches -->
+				<thickness>3</thickness>
+				<!-- ??? -->
+				<species>Arctic fox</species>
+				<name>Sarge</name>
+				<sentient />
+			</penis>
+			<balls>
+				<amount>2</amount>
+			</balls>
+		</character>
+
+		<character name="Maria" proper="true" species="dragon" a="a">
+			<tallness>190</tallness>
+			<hair>
+				<length>7</length>
+				<color>
+					<black />
+				</color>
+			</hair>
+			<scales>
+				<green />
+			</scales>
+			<eyes />
+			<ears>
+				<frill />
+			</ears>
+			<wings>
+				<dragon	 />
+			</wings>
+			<legs>
+				<claws />
+			</legs>
+			<waist>5</waist>
+			<hips>6</hips>
+			<ass>
+				<size>7</size>
+				<looseness>1	</looseness>
+				<fuckable />
+			</ass>
+			<breastrow>
+				<amount>2</amount>
+				<size>5</size>
+				<nipples>
+					1
+					<size>3</size>
+				</nipples>
+			</breastrow>
+			<vagina>
+				<wetness>2</wetness>
+				<looseness>1</looseness>
+				<fuckable />
+			</vagina>
+			<items>
+				<sheer_top>
+					<equipped />
+				</sheer_top>
+			</items>
+		</character>
+
+	</uniques>
+
+	<items>
+
+		<item id="book" name="book" a="a" the="the">
+			<!-- That's all we'll say here. -->
+			<ascii>
+				<char>238</char>
+				<ext>307</ext>
+				<!-- Books have their color determined by ID. -->
+			</ascii>
+		</item>
+
+		<item id="rope" name="length of rope" a="a" the="the">
+			<nouse />
+			<ascii>
+				<char>21</char>
+				<ext>306</ext>
+				<fore>
+					<brown />
+				</fore>
+			</ascii>
+		</item>
+		<item id="baseballbat" name="baseball bat" a="a" the="the">
+			<canfuck />
+			<thickness>2.75</thickness>
+			<length>42</length>
+			<weight>
+				<medium />
+			</weight>
+			<ascii>
+				<char>32</char>
+				<fore>
+					<brown />
+				</fore>
+			</ascii>
+		</item>
+		<item id="foxite" name="Foxite" a="" the="the" proper="proper">
+			<transform>
+				<effect>
+					<ifnot>
+						<ears>
+							<genbeast />
+						</ears>
+					</ifnot>
+					<remove>
+						<ears />
+					</remove>
+					<add>
+						<ears>
+							<genbeast />
+						</ears>
+					</add>
+					<description text="text">
+						[Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.
+					</description>
+					<continued />
+				</effect>
+				<effect>
+					<ifnot>
+						<tail>
+							<fox />
+						</tail>
+					</ifnot>
+					<remove>
+						<tail />
+					</remove>
+					<add>
+						<tail>
+							<fox />
+						</tail>
+					</add>
+					<description text="eyup">
+						A fox tail sprouts from just above [your] butt.
+					</description>
+				</effect>
+				<effect>
+					<ifnot>
+						<fur />
+					</ifnot>
+					<remove>
+						<skin/>
+						<rubber/>
+						<slime/>
+						<scales/>
+					</remove>
+					<add>
+						<fur>
+							<brown />
+						</fur>
+					</add>
+					<set>
+						<species text="y">
+							foxmorph
+						</species>
+					</set>
+					<description text="nope">
+						[Your] whole body itches as a thin layer of brown fur grows all over.
+					</description>
+				</effect>
+				<effect>
+					<ifnot>
+						<genbeastface />
+					</ifnot>
+					<remove>
+						<normalface />
+						<horseface />
+						<dogface />
+						<cowface />
+					</remove>
+					<add>
+						<genbeastface />
+					</add>
+					<set>
+						<species text="y">
+							foxmorph
+							<male text="y">foxboy</male>
+							<female text="y">foxgirl</female>
+						</species>
+					</set>
+					<description text="text">
+						With a horrendous pain, the bone structure of [your] face changes...
+					</description>
+				</effect>
+				<effect>
+					<ifnot>
+						<legs>
+							<dog />
+						</legs>
+					</ifnot>
+					<remove>
+						<legs />
+					</remove>
+					<add>
+						<legs>
+							<dog />
+						</legs>
+					</add>
+					<description text="doesn't matter">
+						With a sickening crunch, [your] legs shift shape.
+					</description>
+				</effect>
+			</transform>
+			<description text="text">This is Foxite. It turns you into a fox with repeated usages.</description>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<aquamarine />
+				</fore>
+			</ascii>
+		</item>
+		<item id="penificator" name="penificator" a="a" the="the">
+			<multiuse />
+			<growpenis>
+				<type>
+					<byscore />
+				</type>
+				<initial>5</initial>
+				<increase>2</increase>
+				<fudge>3</fudge>
+				<multichance>50</multichance>
+			</growpenis>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<chartreuse />
+				</fore>
+			</ascii>
+			</item>
+		<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
+			<equipable>
+				<hand />
+			</equipable>
+			<weapon>
+				<damage>10</damage>
+			</weapon>
+			<description text="text">A nice, sturdy combat knife.</description>
+			<ascii>
+				<char>27</char>
+				<ext>302</ext>
+				<fore>
+					<silver />
+				</fore>
+			</ascii>
+		</item>
+		<item id="butter_knife" name="butter knife" a="a" the="the">
+			<equipable>
+				<hand />
+			</equipable>
+			<weapon>
+				<damage>10</damage>
+			</weapon>
+			<description text="text">A nice, sturdy butter knife.</description>
+			<ascii>
+				<char>27</char>
+				<ext>302</ext>
+				<fore>
+					<silver />
+				</fore>
+			</ascii>
+		</item>
+		<item id="test_ring" name="test ring" a="a" the="the">
+			<equipable>
+				<ring />
+			</equipable>
+			<ascii>
+				<char>9</char>
+				<ext>308</ext>
+				<fore>
+					<firebrick />
+				</fore>
+			</ascii>
+		</item>
+		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
+			<unique />
+			<equipable>
+				<hand />
+			</equipable>
+			<statchange>
+				<speed>40</speed>
+			</statchange>
+			<weapon>
+				<damage>100</damage>
+			</weapon>
+			<description text="text">Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother.</description>
+			<ascii>
+				<char>27</char>
+				<ext>302</ext>
+				<fore>
+					<white />
+				</fore>
+			</ascii>
+		</item>
+
+		<item id="catears" name="cat ear headband" a="a" the="the">
+			<plural />
+			<equipable>
+				<head />
+			</equipable>
+			<statchange>
+				<charisma>10</charisma>
+			</statchange>
+			<weight>
+				<feather />
+			</weight>
+			<price>20</price>
+			<ascii>
+				<char>234</char>
+				<ext>310</ext>
+				<fore>
+					<darkmagenta />
+				</fore>
+			</ascii>
+		</item>
+		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<male />
+				<underpants />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>10</price>
+			<ascii>
+				<char>110</char>
+				<ext>300</ext>
+			</ascii>
+		</item>
+		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<male />
+				<underpants />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>10</price>
+			<ascii>
+				<char>110</char>
+				<ext>301</ext>
+			</ascii>
+		</item>
+		<item id="plain_panties" name="panties" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<underpants />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>10</price>
+			<ascii>
+				<char>110</char>
+				<ext>300</ext>
+			</ascii>
+		</item>
+		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<underpants />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>20</price>
+			<ascii>
+				<char>110</char>
+				<ext>300</ext>
+			</ascii>
+		</item>
+		<item id="plain_bra" name="bra" a="a" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<undershirt />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>10</price>
+			<ascii>
+				<char>119</char>
+				<ext>299</ext>
+			</ascii>
+		</item>
+		<item id="lacy_bra" name="lacy bra" a="a" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<undershirt />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>20</price>
+			<ascii>
+				<char>119</char>
+				<ext>299</ext>
+			</ascii>
+		</item>
+		<item id="sheer_top" name="sheer top" a="a" the="the">
+			<equipable>
+				<female />
+				<shirt />
+				<translucent />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>100</price>
+			<ascii>
+				<char>119</char>
+				<ext>299</ext>
+			</ascii>
+		</item>
+
+		<!-- Clothes from jsNoxico -->
+		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
+			<plural />
+			<equipable>
+				<shirt />
+				<translucent />
+				<!-- Not specifying any descriptions until <equipped> can be mangled into a proper sentence instead of a set of "you are ..." lines. -->
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
+			<plural />
+			<equipable>
+				<undershirt />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
+			<plural />
+			<equipable>
+				<pants />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
+			<plural />
+			<equipable>
+				<underpants />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
+			<!-- Should be used if a bodysuit is torn apart -->
+			<plural />
+			<equipable>
+				<undershirt />
+				<underpants />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
+			<!-- Should be used if a dress is torn apart -->
+			<plural />
+			<equipable>
+				<shirt />
+				<pants />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+		</item>
+		<item id="shirt" name="plain [color ]shirt" a="a" the="the">
+			<equipable>
+				<shirt />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>10</price>
+		</item>
+		<item id="blouse" name="[color ]blouse" a="a" the="the">
+			<equipable>
+				<shirt />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<statchange>
+				<cunning>5</cunning>
+				<strength>-5</strength>
+				<carnality>-5</carnality>
+			</statchange>
+			<price>15</price>
+		</item>
+		<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
+			<equipable>
+				<female />
+				<jacket />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>100</price>
+		</item>
+		<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
+			<equipable>
+				<male />
+				<jacket />
+			</equipable>
+			<weight>
+				<medium />
+			</weight>
+			<price>100</price>
+		</item>
+		<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<undershirt />
+			</equipable>
+			<statchange>
+				<charisma>5</charisma>
+				<sensitivity>5</sensitivity>
+				<cunning>-5</cunning>
+			</statchange>
+			<weight>
+				<feather />
+			</weight>
+			<price>100</price>
+		</item>
+		<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<pants />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>20</price>
+		</item>
+		<item id="skirt" name="plain [color ]skirt" a="a" the="the">
+			<equipable>
+				<female />
+				<pants />
+				<reach />
+			</equipable>
+			<statchange>
+				<strength>5</strength>
+				<cunning>-5</cunning>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>20</price>
+		</item>
+		<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
+			<equipable>
+				<female />
+				<pants />
+				<reach />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>60</price>
+		</item>
+		<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
+			<equipable>
+				<female />
+				<underpants />
+			</equipable>
+			<statchange>
+				<charisma>5</charisma>
+				<sensitivity>5</sensitivity>
+				<cunning>-5</cunning>
+			</statchange>
+			<weight>
+				<feather />
+			</weight>
+			<price>50</price>
+		</item>
+		<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<pants />
+			</equipable>
+			<statchange>
+				<strength>5</strength>
+				<carnality>-5</carnality>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>50</price>
+		</item>
+		<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<pants />
+			</equipable>
+			<statchange>
+				<speed>5</speed>
+				<charisma>5</charisma>
+				<cunning>-5</cunning>
+				<strength>-5</strength>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>50</price>
+		</item>
+		<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
+			<equipable>
+				<pants />
+				<reach />
+			</equipable>
+			<statchange>
+				<sensitivity>10</sensitivity>
+				<charisma>10</charisma>
+				<cunning>-10</cunning>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>70</price>
+		</item>
+		<item id="sundress" name="[color ]sundress" a="a" the="the">
+			<equipable>
+				<shirt />
+				<pants />
+				<reach />
+			</equipable>
+			<statchange>
+				<sensitivity>10</sensitivity>
+				<carnality>10</carnality>
+				<speed>-10</speed>
+				<strength>-10</strength>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>60</price>
+		</item>
+		<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
+			<equipable>
+				<shirt />
+				<pants />
+				<reach />
+			</equipable>
+			<statchange>
+				<sensitivity>10</sensitivity>
+				<charisma>10</charisma>
+				<carnality>10</carnality>
+				<speed>-10</speed>
+				<strength>-10</strength>
+			</statchange>
+			<weight>
+				<light />
+			</weight>
+			<price>60</price>
+		</item>
+		<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
+			<equipable>
+				<shirt />
+				<pants />
+			</equipable>
+			<statchange>
+				<charisma>10</charisma>
+				<cunning>10</cunning>
+				<strength>-10</strength>
+			</statchange>
+			<weight>
+				<medium />
+			</weight>
+			<price>100</price>
+		</item>
+		<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
+			<equipable>
+				<undershirt />
+				<underpants />
+			</equipable>
+			<weight>
+				<medium />
+			</weight>
+			<statchange>
+				<charisma>20</charisma>
+				<sensitivity>15</sensitivity>
+				<cunning>10</cunning>
+			</statchange>
+			<price>100</price>
+		</item>
+		<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
+			<equipable>
+				<coat />
+			</equipable>
+			<weight>
+				<medium />
+			</weight>
+			<price>150</price>
+		</item>
+
+		<!-- Lena's costume -->
+		<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
+			<equipable>
+				<female />
+				<undershirt />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>30</price>
+		</item>
+		<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<female />
+				<underpants />
+			</equipable>
+			<weight>
+				<feather />
+			</weight>
+			<price>40</price>
+		</item>
+		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<pants />
+				<reach />
+				<translucent />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>40</price>
+		</item>
+		<item id="high_heels" name="high heels" a="a pair of" the="the">
+			<plural />
+			<equipable>
+				<shoes />
+			</equipable>
+			<weight>
+				<light />
+			</weight>
+			<price>30</price>
+		</item>
+		<item id="lena_ruby" name="Lena's ruby pendant" proper="proper">
+			<!-- quest / -->
+			<unique />
+			<description text="text">A blood-red ruby in the shape of a droplet.</description>
+			<script text="Noxicobotic">
+				<![CDATA[
+				-- Just display a nice custom error.
+				!<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
+				]]>
+			</script>
+		</item>
+
+		<!-- Morph lines -->
+		<item id="catmorph" name="cat morph potion" a="a" the="the">
+			<!-- <multiuse /> -->
+			<script text="Noxicobotic">
+				<![CDATA[
+				-- Text stolen from CoC's Whisker Fruit item, for now.
+
+				|<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
+				
+				-- always increase speed
+				gettagval "speed"
+				if it < 75
+					if it < 30
+						|<< [break]You feel...more balanced, sure of step. You're certain that you've become just a little bit faster. >>
+						inctagval "speed" 2
+					else
+						if it < 60
+							|<< [break]You stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now. >>
+							inctagval "speed" 1
+						else
+							|<< [break]You pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down. >>
+							inctagval "speed" 0.5
+						endif
+					endif
+					-- end
+				endif
+
+				-- sometimes increase charisma
+				
+				-- grow cat ears
+				checktag "ears/cat"
+				if not exists
+					-- should check the existing type first
+					|<< [break]Your ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. [break]<cWhite>You now have cat ears.<c> >>
+
+					removetag "ears"
+					addtag "ears"
+					addtag "ears" "cat"
+					end
+				endif
+
+				-- grow cat tail
+				checktag "tail/genbeast"
+				if not exists
+					-- should check the existing type first
+					|<< [break]You pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. [break]<cWhite>You now have a cat tail.<c> >>
+
+					removetag "tail"
+					addtag "tail"
+					addtag "tail" "genbeast"
+					
+					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+					end
+				endif
+
+				-- grow fangs
+
+				-- grow fur
+				checktag "fur"
+				if not exists
+					|<< [break]<cWhite>You grow fur all over. >>
+					renametag "skin" "fur"
+					end
+				endif
+				
+				-- grow digitigrade legs
+				
+				-- grow up to two extra breast rows
+				
+				]]>
+			</script>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<lightsalmon />
+				</fore>
+			</ascii>
+		</item>
+		<item id="dogmorph" name="dog morph potion" a="a" the="the">
+			<!-- <multiuse /> -->
+			<script text="Noxicobotic">
+				<![CDATA[
+				-- Text stolen from CoC's Canine Pepper item, for now.
+
+				|<< The pepper is strangely spicy but very tasty. >>
+				
+				-- always increase strength
+				gettagval "strength"
+				if it < 50
+					|<< [break]Your muscles feel more toned. >>
+					inctagval "strength" 2
+				endif
+
+				-- sometimes increase charisma
+				
+				-- grow dog ears
+				checktag "ears/dog"
+				if not exists
+					-- should check the existing type first
+					|<< [break]Your ears transform, becoming more canine in appearance.[break]<cWhite>You now have dog ears.<c> >>
+
+					removetag "ears"
+					addtag "ears"
+					addtag "ears" "dog"
+					end
+				endif
+
+				-- grow dog tail
+				checktag "tail/dog"
+				if not exists
+					-- should check the existing type first
+					|<< [break]You feel your backside shift and change, flesh molding and displacing into a long puffy tail![break]<cWhite>You now have a dog tail.<c> >>
+
+					removetag "tail"
+					addtag "tail"
+					addtag "tail" "dog"
+					
+					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+					end
+				endif
+
+				-- grow fangs
+
+				-- grow fur
+				checktag "fur"
+				if not exists
+					|<< [break]<cWhite>You grow fur all over. >>
+					renametag "skin" "fur"
+					end
+				endif
+				
+				-- grow digitigrade legs
+				
+				-- grow up to two extra breast rows
+				
+				]]>
+			</script>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<mistyrose />
+				</fore>
+			</ascii>
+		</item>
+		<item id="foxmorph" name="fox morph potion" a="a" the="the">
+			<!-- <multiuse /> -->
+			<script text="Noxicobotic">
+				<![CDATA[
+				|<< You apply the fox morph potion. >>
+				
+				-- always increase cunning
+				gettagval "cunning"
+				if it < 50
+					|<< [break]You feel more cunning. >>
+					inctagval "cunning" 2
+				endif
+
+				-- sometimes increase charisma
+				
+				-- grow dog ears
+				checktag "ears/genbeast"
+				if not exists
+					-- should check the existing type first
+					|<< [break][Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.[break]<cWhite>[You] now [have] fox ears.<c> >>
+
+					removetag "ears"
+					addtag "ears"
+					addtag "ears" "genbeast"
+					end
+				endif
+
+				-- grow fox tail
+				checktag "tail/fox"
+				if not exists
+					-- should check the existing type first
+					|<< [break]A fox tail sprouts from just above [your] butt.[break]<cWhite>[You] now [have] a fox tail.<c> >>
+
+					removetag "tail"
+					addtag "tail"
+					addtag "tail" "fox"
+					
+					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+					end
+				endif
+
+				-- grow fangs
+
+				-- grow fur
+				checktag "fur"
+				if not exists
+					|<< [break]<cWhite>[Your] whole body itches as a thin layer of brown fur grows all over. >>
+					-- renametag "skin" "fur"
+					removetag "skin"
+					removetag "rubber"
+					removetag "slime"
+					removetag "scales"
+					addtag "fur"
+					addtag "fur" "brown"
+					setspecies "foxmorph" "foxboy" "foxgirl"
+					adjustview
+					end
+				endif
+				
+				-- grow digitigrade legs
+				
+				]]>
+			</script>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<orangered />
+				</fore>
+			</ascii>
+		</item>
+		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
+			<!-- <multiuse /> -->
+			<script text="Noxicobotic">
+				<![CDATA[
+				|<< You apply the bunny morph potion. >>
+				
+				-- always increase libido
+				gettagval "libido"
+				if it < 80
+					|<< [break]You feel hornier. >>
+					inctagval "libido" 4
+				endif
+				
+				-- grow bunny ears
+				checktag "ears/bunny"
+				if not exists
+					-- should check the existing type first
+					|<< [break]Your ears transform, becoming more bunny in appearance.[break]<cWhite>You now have bunny ears.<c> >>
+
+					removetag "ears"
+					addtag "ears"
+					addtag "ears" "bunny"
+					end
+				endif
+
+				-- grow bunny tail
+				checktag "tail/bunny"
+				if not exists
+					-- should check the existing type first
+					|<< [break]You feel your backside shift and change, flesh molding and displacing into an adorable puffball![break]<cWhite>You now have a bunny tail.<c> >>
+
+					removetag "tail"
+					addtag "tail"
+					addtag "tail" "bunny"
+					
+					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+					end
+				endif
+
+				-- grow fur
+				checktag "fur"
+				if not exists
+					|<< [break]<cWhite>You grow fur all over. >>
+					renametag "skin" "fur"
+					end
+				endif
+
+				]]>
+			</script>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<skyblue />
+				</fore>
+			</ascii>
+		</item>
+	</items>
+
+	<costumes>
+		<costume id="school_uniform">
+			<male>
+				<random>
+					<option>
+						<plain_boxers />
+					</option>
+					<option>
+						<plain_briefs />
+					</option>
+				</random>
+				<boys_uniform_top />
+				<shirt />
+				<pants />
+			</male>
+			<female>
+				<random>
+					<option>
+						<plain_panties />
+						<plain_bra />
+					</option>
+					<option>
+						<lacy_panties />
+						<lacy_bra />
+					</option>
+				</random>
+				<blouse />
+				<girls_uniform_top />
+				<pleated_skirt />
+			</female>
+		</costume>
+
+		<costume id="casual">
+			<male>
+				<setvar>
+					<id>1</id>
+					<value>
+						<oneof>blue, black, red, cyan, white, gray</oneof>
+					</value>
+				</setvar>
+				<random>
+					<option>
+						<plain_boxers />
+					</option>
+					<option>
+						<plain_briefs />
+					</option>
+				</random>
+				<shirt>
+					<color>
+						<var>1</var>
+					</color>
+				</shirt>
+				<pants />
+			</male>
+			<female>
+				<setvar>
+					<id>1</id>
+					<value>
+						<oneof>blue, black, red, cyan, white, gray</oneof>
+					</value>
+				</setvar>
+				<random>
+					<option>
+						<plain_panties />
+						<plain_bra />
+					</option>
+					<option>
+						<lacy_panties />
+						<lacy_bra />
+					</option>
+				</random>
+				<random>
+					<option>
+						<random>
+							<option>
+								<shirt>
+									<color>
+										<var>1</var>
+									</color>
+								</shirt>
+							</option>
+							<option>
+								<blouse>
+									<color>
+										<var>1</var>
+									</color>
+								</blouse>
+							</option>
+						</random>
+						<random>
+							<option>
+								<skirt />
+							</option>
+							<option>
+								<pants />
+							</option>
+						</random>
+					</option>
+					<option>
+						<random>
+							<option>
+								<sundress>
+									<color>
+										<var>1</var>
+									</color>
+								</sundress>
+							</option>
+							<option>
+								<elegant_dress>
+									<color>
+										<var>1</var>
+									</color>
+								</elegant_dress>
+							</option>
+						</random>
+					</option>
+				</random>
+			</female>
+		</costume>
+
+		<costume id="lacy_undies">
+			<male />
+			<female>
+				<lacy_panties />
+				<lacy_bra />
+			</female>
+		</costume>
+
+		<costume id="bikini">
+			<male />
+			<female>
+				<bikini_top />
+				<bikini_bottom />
+			</female>
+		</costume>
+
+		<costume id="dress_test">
+			<female>
+				<random>
+					<option>
+						<plain_panties />
+						<plain_bra />
+					</option>
+					<option>
+						<lacy_panties />
+						<lacy_bra />
+					</option>
+				</random>
+				<random>
+					<option>
+						<elegant_dress />
+					</option>
+					<option>
+						<sundress />
+					</option>
+					<option>
+						<skimpy_dress />
+					</option>
+				</random>
+			</female>
+		</costume>
+
+		<costume id="lena">
+			<male />
+			<female>
+				<strapless_leather_bra>
+					<color>
+						<black />
+					</color>
+				</strapless_leather_bra>
+				<kinky_panties>
+					<color>
+						<black />
+					</color>
+				</kinky_panties>
+				<knee_socks>
+					<color>
+						<black />
+					</color>
+				</knee_socks>
+				<high_heels>
+					<color>
+						<black />
+					</color>
+				</high_heels>
+			</female>
+		</costume>
+	</costumes>
+</stuff>

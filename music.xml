@@ -1,0 +1,98 @@
+<music>
+	<!-- Okay. To use these, I plan to have PlayMusic() or whatever I called it take "set://" as a parameter, and return the actual file chosen.
+	
+	That way, if a board is supposed to have a constant song, it can have its Music property changed.
+	That is, if the board's Music property is "set://Town", PlayMusic will pick a track from that set and return the name, and the board's Music property is set to "Caramel - Karamel Special K.s3m", so that next time you visit that board, the same song will return.
+	
+	In general, if a set is requested and we're already playing a song from that set, nothing should happen:
+	
+	if request is not a set
+		queue request and start fade out
+		current set is ""
+		current track is request
+	else
+		if current set is request
+			do nothing
+		else
+			queue random pick from requested set and start fade out
+			current set is request
+			current track is what we picked
+
+	Then, when a song ends, we can check if it was from a set and pick another one from the same.
+	For example, we're in a grasslands area and "Mozarella Filofox" just finished playing. We already know it's the Grasslands set, so we pick another one from the same: "I Don't Know So I Don't Care".
+	If a set has only one entry, don't bother picking - just repeat the one.
+	
+	If a random pick from a set doesn't exist, remove it from the set and try again.
+	If the set is empty, just play nothing.
+ 	-->
+	<set name="Title">
+		<song href="Loonie - Cronology IV Remix.xm" />
+	</set>
+	<set name="Grassland">
+		<song href="Ko0x - Gia's Rush.it" />
+		<song href="Ko0x - I Don't Know So I Don't Care.it" />
+		<song href="joule - Mozarella Filofox.xm" />
+		<song href="Andy Abstract - Molecule in Harmonic Motion.s3m" />
+		<song href="Hyo-chan - Dumskalle.it" />
+	</set>
+	<set name="Desert">
+		<song href="Ko0x - Back to the Ocean.it" />
+		<song href="Computer Weekend.mod" />
+		<song href="Robric - Elegance.xm" />
+		<song href="Serpent - My Dream.xm" />
+		<song href="Inmate2993 - Here We Go Again.mod" />
+	</set>
+	<set name="Snow">
+		<song href="Ko0x - Snowman's Land.xm" />
+		<song href="Crizz - Milky Way.xm" />
+		<song href="grim - Vibes.mod" />
+		<song href="Jazz - X-1.mod" />
+		<song href="Beek - Margarita.it" />
+	</set>
+	<set name="Swamp">
+		<song href="Ko0x - Zenon.xm" />
+		<song href="Ko0x - I Don't Know So I Don't Care.it" />
+		<song href="Michu - Humpin' Yourself.xm" />
+		<song href="Serpent - My Dream.xm" />
+		<song href="Line - 8 Bit Party.it" />
+	</set>
+	<set name="Town">
+		<song href="Cute Girl Game.it" />
+		<song href="Ko0x - Gizgame level 1.it" />
+		<song href="Mark Knight - Cutesy 1 v2.mod" />
+		<song href="Serpent - My Dream.xm" />
+		<song href="Caramel - Karamel Special K.s3m" />
+		<song href="UncleBen - I Have No Idea.it" />
+	</set>
+	<set name="Dungeon">
+		<song href="I Like Your Atari.xm" />
+		<song href="Jumping Cow &amp; Pigs.xm" />
+		<song href="Inmate2993 - The Fest Starts.s3m" />
+		<song href="Mark McIntyre - Caverns Magic.s3m" />
+		<song href="virt - VPDSB Motherfuck.xm" />
+		<song href="Computer Weekend.mod" />
+		<song href="Strobe - Crystal Tears.xm" />
+		<song href="Abuse - 4099 20kb.s3m" />
+	</set>
+	<set name="Shenanigans">
+		<song href="joule - littlewe kladdcakes.xm" />
+		<song href="Karbofos - 1.xm" />
+		<song href="Lepra - High on Popcorns.xm" />
+		<song href="Raina - Ribbed Rubber.xm" />
+		<song href="Robric - Pink Lady.xm" />
+		<song href="Crizz - Milky Way.xm" />
+		<song href="Line - 8 Bit Party.it" />
+	</set>
+	<set name="Combat">
+		<song href="Jumping Cow &#36; Pigs.xm" />
+		<song href="Inmate2993 - Insanifest.s3m" />
+		<song href="Noby - Fixedsys.xm" />
+		<song href="I Like Your Atari.xm" />
+		<song href="Zaril - Math C Exam.it" />
+	</set>
+	<set name="Victory">
+		<song href="Joule - Rainbow Jewel.xm" />
+		<song href="Ko0x - Without You.xm" />
+		<song href="Dynamite - Over the Top.s3m" />
+	</set>
+</music>

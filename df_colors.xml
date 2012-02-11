@@ -1,0 +1,114 @@
+<colortable>
+  <color name="amber" rgb="255,191,0" cga="14" />
+  <color name="amethyst" rgb="153,102,204" cga="7" />
+  <color name="aqua" rgb="0,255,255" cga="11" />
+  <color name="aquamarine" rgb="127,255,212" cga="11" />
+  <color name="ash gray" rgb="178,190,181" cga="7" />
+  <color name="auburn" rgb="111,53,26" cga="6" />
+  <color name="azure" rgb="0,127,255" cga="9" />
+  <color name="beige" rgb="245,245,220" cga="15" />
+  <color name="black" rgb="0,0,0" cga="0" />
+  <color name="blue" rgb="0,0,255" cga="1" />
+  <color name="brass" rgb="181,166,66" cga="7" />
+  <color name="bronze" rgb="205,127,50" cga="6" />
+  <color name="brown" rgb="150,75,0" cga="6" />
+  <color name="buff" rgb="240,220,130" cga="14" />
+  <color name="burnt sienna" rgb="233,116,81" cga="12" />
+  <color name="burnt umber" rgb="138,51,36" cga="6" />
+  <color name="cardinal" rgb="196,30,58" cga="4" />
+  <color name="carmine" rgb="150,0,24" cga="4" />
+  <color name="cerulean" rgb="0,123,167" cga="3" />
+  <color name="charcoal" rgb="54,69,79" cga="8" />
+  <color name="chartreuse" rgb="127,255,0" cga="10" />
+  <color name="chestnut" rgb="205,92,92" cga="12" />
+  <color name="chocolate" rgb="210,105,30" cga="6" />
+  <color name="cinnamon" rgb="123,63,0" cga="6" />
+  <color name="clear" rgb="128,128,128" cga="7" />
+  <color name="cobalt" rgb="0,71,171" cga="1" />
+  <color name="copper" rgb="184,115,51" cga="6" />
+  <color name="cream" rgb="255,253,208" cga="15" />
+  <color name="crimson" rgb="220,20,60" cga="12" />
+  <color name="dark blue" rgb="0,0,139" cga="1" />
+  <color name="dark brown" rgb="101,67,33" cga="8" />
+  <color name="dark chestnut" rgb="152,105,96" cga="8" />
+  <color name="dark green" rgb="1,50,32" cga="0" />
+  <color name="dark indigo" rgb="49,0,98" cga="1" />
+  <color name="dark olive" rgb="85,104,50" cga="8" />
+  <color name="dark peach" rgb="255,218,185" cga="15" />
+  <color name="dark pink" rgb="231,84,128" cga="12" />
+  <color name="dark scarlet" rgb="86,3,25" cga="4" />
+  <color name="dark tan" rgb="145,129,81" cga="8" />
+  <color name="dark violet" rgb="66,49,137" cga="8" />
+  <color name="ecru" rgb="194,178,128" cga="7" />
+  <color name="emerald" rgb="80,200,120" cga="10" />
+  <color name="fern green" rgb="79,121,66" cga="8" />
+  <color name="flax" rgb="238,220,130" cga="14" />
+  <color name="fuchsia" rgb="244,0,161" cga="5" />
+  <color name="gold" rgb="212,175,55" cga="14" />
+  <color name="golden yellow" rgb="255,223,0" cga="14" />
+  <color name="goldenrod" rgb="218,165,32" cga="6" />  
+  <color name="gray" rgb="128,128,128" cga="7" />
+  <color name="green" rgb="0,255,0" cga="2" />
+  <color name="green-yellow" rgb="173,255,47" cga="14" />
+  <color name="heliotrope" rgb="223,115,255" cga="13" />
+  <color name="indigo" rgb="75,0,130" cga="1" />
+  <color name="ivory" rgb="255,255,240" cga="15" />
+  <color name="jade" rgb="0,168,107" cga="3" />
+  <color name="lavender" rgb="230,230,250" cga="15" />
+  <color name="lavender blush" rgb="255,240,245" cga="15" />
+  <color name="lemon" rgb="253,233,16" cga="14" />
+  <color name="light blue" rgb="173,216,230" cga="11" />
+  <color name="light brown" rgb="205,133,63" cga="6" />
+  <color name="lilac" rgb="200,162,200" cga="13" />
+  <color name="lime" rgb="204,255,0" cga="14" />
+  <color name="mahogany" rgb="192,64,0" cga="6" />
+  <color name="maroon" rgb="128,0,0" cga="4" />
+  <color name="mauve" rgb="153,51,102" cga="5" />
+  <color name="mauve taupe" rgb="145,95,109" cga="8" />
+  <color name="midnight blue" rgb="0,51,102" cga="1" />
+  <color name="mint green" rgb="152,255,152" cga="10" />
+  <color name="moss green" rgb="173,223,173" cga="7" />
+  <color name="ochre" rgb="204,119,34" cga="6" />
+  <color name="olive" rgb="128,128,0" cga="2" />
+  <color name="orange" rgb="255,165,0" cga="6" />
+  <color name="pale blue" rgb="175,238,238" cga="11" />
+  <color name="pale brown" rgb="152,118,84" cga="8" />
+  <color name="pale chestnut" rgb="221,173,175" cga="7" />
+  <color name="pale pink" rgb="250,218,221" cga="15" />
+  <color name="peach" rgb="255,229,180" cga="15" />
+  <color name="pearl" rgb="240,234,214" cga="15" />
+  <color name="periwinkle" rgb="204,204,255" cga="15" />
+  <color name="pine green" rgb="1,121,111" cga="3" />
+  <color name="pink" rgb="255,192,203" cga="15" />
+  <color name="plum" rgb="102,0,102" cga="5" />
+  <color name="puce" rgb="204,136,153" cga="7" />
+  <color name="pumpkin" rgb="255,117,24" cga="12" />
+  <color name="purple" rgb="102,0,153" cga="5" />
+  <color name="raw umber" rgb="115,74,18" cga="6" />
+  <color name="red" rgb="255,0,0" cga="4" />
+  <color name="russet" rgb="117,90,87" cga="8" />
+  <color name="rust" rgb="183,65,14" cga="6" />
+  <color name="saffron" rgb="244,196,48" cga="14" />
+  <color name="scarlet" rgb="255,36,0" cga="12" />
+  <color name="sea green" rgb="46,139,87" cga="3" />
+  <color name="sepia" rgb="112,66,20" cga="6" />
+  <color name="silver" rgb="192,192,192" cga="7" />
+  <color name="sky blue" rgb="135,206,235" cga="11" />
+  <color name="slate gray" rgb="112,128,144" cga="7" />
+  <color name="spring green" rgb="0,255,127" cga="10" />
+  <color name="tan" rgb="210,180,140" cga="7" />
+  <color name="dark taupe" rgb="72,60,50" cga="6" />
+  <color name="taupe gray" rgb="139,133,137" cga="7" />
+  <color name="taupe" rgb="103,76,71" cga="8" />
+  <color name="purple taupe" rgb="80,64,77" cga="8" />
+  <color name="pale taupe" rgb="188,152,126" cga="7" />
+  <color name="rose taupe" rgb="144,93,93" cga="8" />
+  <color name="sandy taupe" rgb="150,113,23" cga="6" />
+  <color name="teal" rgb="0,128,128" cga="3" />
+  <color name="turquoise" rgb="48,213,200" cga="11" />
+  <color name="vermilion" rgb="227,66,52" cga="12" />
+  <color name="violet" rgb="139,0,255" cga="5" />
+  <color name="white" rgb="255,255,255" cga="15" />
+  <color name="yellow" rgb="255,255,0" cga="14" />
+  <color name="yellow-green" rgb="154,205,50" cga="10" />
+</colortable>

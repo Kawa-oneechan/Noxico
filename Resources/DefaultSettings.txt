@@ -1,0 +1,48 @@
+; This is the default configuration for Noxico. Feel free to adjust this as you see fit.
+
+[video]
+;     tileset: Specifies which PNG file to use for the regular 256 characters.
+;              Should be a tileset with 32 glyphs per row, 8 rows. Actual window
+;              size is directly affected by this file. If the file doesn't exist,
+;              a built-in tileset is used.
+;     extiles: Basically the same deal as the tileset value, but for extra characters
+;              beyond the usual range. The size of the glyphs in this file MUST match
+;              that of the generic tileset or things will get very weird.
+;  useextiles: Use the ExTiles tileset for certain things. Disable this for a more
+;              "pure" visual experience.
+;  doublesize: Draw at twice the size.
+; interpolate: If drawing at twice the size, should the edges be blurred?
+tileset=ascii.png
+extiles=extended.png
+useextiles=true
+doublesize=false
+interpolate=false
+
+[audio]
+;     enabled: Should be pretty obvious. Volume controls are ignored if false.
+; musicvolume: From 0 to 100, how loud the music should be.
+; soundvolume: From 0 to 100, how loud sound effects should be.
+enabled=true
+musicvolume=100
+soundvolume=100
+
+[saving]
+; gzip: Compress the world data when saving. When loading, compression is
+;       dictated by the savegame file itself.
+; flip: Flip the high bits (0x00->0x80, 0x41->0xC1), same rules as with gzip
+;       apply. You can set both of these if you want.
+gzip=false
+flip=false
+
+[misc]
+; rememberpause: Remember the active page on the Pause screen. If set to false,
+;                opening the Pause screen will reset to the "Character stats"
+;                page every time.
+;      autorest: Specifies the timeout at which the game will automatically
+;                press the Rest key, to give the illusion of realtime gameplay.
+;                The lower, the faster.
+;     skiptitle: Skip the title screen if there's already a game to restore.
+;                Has no effect on a clean slate.
+rememberpause=true
+autorest=100
+skiptitle=false

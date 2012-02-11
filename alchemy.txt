@@ -1,0 +1,209 @@
+So I've been thinking about how the item crafting system from Homestuck could be used in an actual game. Here's what I got so far.
+
+
+HOMESTUCK FULL STYLE
+--------------------
+Not so feasible.
+
+System items:
+* Cards (holds items, can be punched)
+* Alchemiter (produces items from dowels)
+* Cruxtruder (produces cruxite dowels)
+* Cruxite Dowel (can be carved into a totem)
+* Punch Designix (punches cards)
+* Totem Lathe (carves punched card data from dowel)
+
+Cards:
+* Any item carried by the player is assigned to a blank card. When you're out of blank cards, you can't take the item.
+* Releasing an item for use frees up the card.
+* Assigned cards show their item's unique code on the back.
+* Punched cards cannot release their item and are ALMOST useless.
+* One pre-punched card is available from the start, holding a unique item.
+
+Alchemiter:
+* Given a carved cruxite dowel (totem), produces the matching item if the player can afford it.
+* Can be extended with various things to smooth out the process. A lot.
+
+Cruxtruder:
+* Releases uncarved cruxite dowels.
+* At first use, releases a Kernelsprite and starts the countdown to meteor strike.
+
+Cruxite Dowel:
+* Used as an intermediary. Encodes an item's code in the width along its length.
+
+Punch Designix:
+* Type the code on the back of a card, then insert the card. Your card is now punched.
+
+Totem Lathe:
+* Given a punched card and uncarved dowel, carves the dowel to match the card's code.
+
+The crafty bit:
+* Enter the code for item A into Punch Designix.
+* Insert blank card.
+* Enter the code for item B.
+* Insert the same card as before.
+* You now have a punched card for item C.
+
+
+STREAMLINED STYLE
+-----------------
+
+Cut down to only:
+* Cards
+* Alchemiter with full add-ons
+
+Blank cards are still sacrificed, but there's no dowels involved.
+Items could be carried without cards, but you'd still need them to perform item alchemy. The cards, in a way, become fuel for the system.
+
+
+BIT PATTERNS AND CAPTCHA CODES LOOKUP TABLE
+-------------------------------------------
+000000	0
+000001	1
+000010	2
+000011	3
+000100	4
+000101	5
+000110	6
+000111	7
+001000	8
+001001	9
+001010	A
+001011	B
+001100	C
+001101	D
+001110	E
+001111	F
+010000	G
+010001	H
+010010	I
+010011	J
+010100	K
+010101	L
+010110	M
+010111	N
+011000	O
+011001	P
+011010	Q
+011011	R
+011100	S
+011101	T
+011110	U
+011111	V
+100000	W
+100001	X
+100010	Y
+100011	Z
+100100	a
+100101	b
+100110	c
+100111	d
+101000	e
+101001	f
+101010	g
+101011	h
+101100	i
+101101	j
+101110	k
+101111	l
+110000	m
+110001	n
+110010	o
+110011	p
+110100	q
+110101	r
+110110	s
+110111	t
+111000	u
+111001	v
+111010	w
+111011	x
+111100	y
+111101	z
+111110	?
+111111	!
+
+tl;dr: 0-9 A-Z a-z ? !
+
+
+PRACTICAL EXAMPLE
+-----------------
+Let's play some Minecraft, motherfuckers.
+
+Coal:
+##..
+.#..
+....
+....
+....
+...#
+....
+....
+.#..
+..#.
+....
+....
+
+4-to-6 reparse:
+110001	n
+000000	0
+000000	0
+000001	1
+000000	0
+000100	4
+001000	8
+000000	0
+
+==> n0010480
+
+
+Stick:
+...#
+...#
+...#
+..#.
+..#.
+..#.
+.#..
+.#..
+.#..
+#...
+#...
+#...
+
+000100	4
+010001	H
+001000	8
+100010	Y
+010001	H
+000100	4
+100010	Y
+001000	8
+
+==> 4H8YH4Y8
+
+
+Coal && Stick == Torch:
+##.#
+.#.#
+...#
+..#.
+..#.
+..##
+.#..
+.#..
+.#..
+#.#.
+#...
+#...
+
+110101	r
+010001	H
+001000	8
+100011	Z
+010001	H
+000100	4
+101010	g
+001000	8
+
+==> rH8ZH4g8
