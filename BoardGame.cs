@@ -974,14 +974,6 @@ namespace Noxico
 			}
 		}
 
-		/*
-		public void ClearMessage()
-		{
-			Message = "";
-			Redraw();
-		}
-		*/
-
 		public void Redraw()
 		{
 			for (int row = 0; row < 25; row++)
@@ -1010,6 +1002,7 @@ namespace Noxico
 				entity.Draw();
 		}
 
+		[Obsolete("DungeonGenerator needs replacement (see issue #1)", true)]
 		public static Board FromDungeonGenerator(DungeonGenerator.DungeonGenerator generator)
 		{
 			var dungeon = generator.Generate();
