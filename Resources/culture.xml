@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cultures>
+	<culture id="human">
+		<!-- We could specify a whole lot of extra information per culture here. Perhaps leverage the token system for easy lookup. Question is, what info should it contain? Month names? Interests? -->
+		<!-- One obvious thing would be what kind of creatures would/could have this culture. For this one psecifically, that'd be human, so let's do that... -->
+		<cultureinfo>
+			<!-- Okay, this part is pure token. All the usual rules apply. -->
+			<bodyplans>
+				<!-- If a given bodyplan's species attribute contains ' ', we can't refer to it as-is. If need be, use '_' instead. -->
+				<human />
+				<felinoid />
+			</bodyplans>
+			<!-- Low base chance of betraying their spouse. Character tokens affect this. -->
+			<monogamous>0.75</monogamous>
+		</cultureinfo>
+		<namegen>
+			<!-- Very norse. -->
+			<set id="start">Al, Ae, As, Bi, Fen, Ha, Hag, Ho, Hu, Iv, Jot, Ma, Mio, Mu, Nid, Ors, Ra, Sta, Svar, Tys, Vae, Van, Vol, Y, Ygg</set>
+			<set id="middle">an, ar, ba, da, dra, gar, na, tal</set>
+			<set id="male_end">ad, ald, agr, ar, ard, eyr, far, frost, heim, hogg, in, mir, nar, nir, or, osk, rir, sil, sir, ttir, urd</set>
+			<set id="female_end">a, la, li, va</set>
+			<male>
+				<illegal>yor, yar, yad, yin</illegal>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="middle" />
+						<set id="male_end" />
+					</rule>
+					<rule>
+						<set id="start" />
+						<set id="male_end" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<illegal>raa, ya, aea, aea</illegal>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="middle" />
+						<set id="female_end" />
+					</rule>
+					<rule>
+						<set id="start" />
+						<set id="female_end" />
+					</rule>
+				</rules>
+			</female>
+			<surname>
+				<patronymic malesuffix="son" femalesuffix="dottir" />
+				<!-- Alternatively, we'd specify <rules> here. Check the Dorf culture. -->
+			</surname>
+			<!-- Use the default culture's town names. -->
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+	<!-- Just for fun, let's define a copy of the human culture for more... sexually lax creatures. -->
+	<culture id="lax_human">
+		<cultureinfo>
+			<bodyplans>
+				<!-- Yes, felinoids can have either culture. -->
+				<felinoid />
+				<!-- Imps are basically human. -->
+				<imp />
+				<!-- Note the '_' substitution. -->
+				<fetish_cultist />
+			</bodyplans>
+			<!-- Don't marry their spouse. -->
+			<marriage>0.0</marriage>
+			<!-- Very high chance of betraying their spouse. Doesn't need to be here, really, since they'll never have a spouse to betray. -->
+			<monogamous>0.0</monogamous>
+		</cultureinfo>
+		<namegen>
+			<male copy="human" />
+			<female copy="human" />
+			<surname copy="human" />
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+	<culture id="demonic">
+		<namegen>
+			<set id="vowels">a, e, i, o, u</set>
+			<set id="start">Aam, Ab, Ad, Ahr, Alas, Al-A'w, All, Al-M, Ap, As, Ast, Az, Bal, Bal S, Bag, Balb, Ban, Bansh, Baph, Barb, Bath, Bazt, Be'L, Beel, Beelz, Bel, Belph, Ber, Bh, Bifr, Biul, Bush, Caac, Cagn, Caim, Chalk, Char, Chem, Coal, Dag, Dant, Decer, Demog, Dev, Dj, Dragh, Elig, Emp, Errt, Etr, Ett, Eur, Euryn, Gorg, Graph, Grig, Haag, Halph, Haur, Hoeth, Ifr, Inc, Ibl, Ith, Kabh, Kas, Kokb', Kray, Lab, Lam, Lech, Leg, Lil, Lioth, Lix, Luc, Mal, Malph, Mamm, March, Mast, Math, Meph, Merm, Mol, Murm, Naam, Naph, Nek, Neph, Neq, Nix, Noud, Onom, Onos, Orc, Orob, Oul, Paim, Phen, Pont, Proc, Rah, Rak, Raksh, Ram, Rang, Raum, Raz, Rimm, Rub, Rus, Sabn, Salps, Sam, Sat, Sc, Scarm, Seer, Sem, Set, Shait, Shax, Shed, Shez, Sidr, Sitr, Sth, Succ, Surg, Tann, Tart, Tch, Teer, Thamm, Thub, Tlal, Tsab, Val, Vap, Vass, Vep, Verr, Vin, Vol, Vual, Xaph, Xiph, Xitr, Zaeb, Zim, Ziz, Zaln</set>
+			<set id="middle">b'ae, ba, be, chi, dra, du, ga, ghi, go, lia, ma, mba, mu, n'e, na, nti, nzu, phe, pho, r'e, rba, rgo, ssa, thi, tryu, ttu, tzi, v-e, vna, xra, ya</set>
+			<set id="male_end">b'ael, bel, bub, bur, bus, ces, chus, dai, ddon, des, dhaka, el, fer, flas, gion, gon, gor, klet, kor, ksha, kuth, laas, lech, les, lion, lith, loch, lsu, mael, math, mejes, meus, mon, moth, mmut, mosh, nai, nar, neus, nex, nias, nnin, nomos, phas, r'el, raal, rept, res, rgon, riax, rith, rius, rous, rus, ruth, sias, stor, swath, tath, than, the, thra, tryus, tura, vart, ztuk</set>
+			<set id="female_end">b'a, bel, bua, bure, buth, cess, chia, dai, ddea, dea, dhaka, el, fea, fla, gia, goa, gora, klath, kore, ksha, kua, laal, lexa, less, lia, lith, loth, lsa, mara, math, maja, mea, moa, moth, mmuth, mosh, na, nai, neuth, nex, nia, nnine, nomoa, pha, r'el, raala, repte, reshe, rgona, riaxe, rith, rish, rothe, rushe, ruth, sia, stora, swath, tath, thann, the, thra, trya, tura, varte, ztura</set>
+			<male>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="vowels" />
+						<set id="middle" chance="35" />
+						<set id="male_end" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="vowels" />
+						<set id="middle" chance="35" />
+						<set id="female_end" />
+					</rule>
+				</rules>
+			</female>
+			<surname>
+				<patronymic malesuffix="'zan" femalesuffix="'kin" />
+			</surname>
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+	<!-- Just straight up picking full names from behindthename.com and Wikipedia's list of most common surnames in Asia. I copied these by hand
+	in order of appearance, which is why the given names are in alphabetical order and the surnames ordered by usage ranking.
+	This includes references to Mount Fuji, which you might want to filter out, be it by editing the sets or declaring "fuji" illegal. -->
+	<culture id="japanese">
+		<namegen>
+			<set id="male">Akio, Akira, Aoi, Arata, Ayumu, Daichi, Daiki, Daisuke, Gorou, Hachirou, Haru, Haruki, Haruto, Hayate, Hayato, Hibiki, Hideaki, Hideki, Hideyoshi, Hikaru, Hinata, Hiraku, Hiroshi, Hiroto, Hotaka, Ichirou, Isamu, Itsuki, Jirou, Jurou, Kaede, Kaito, Kaoru, Katashi, Katsu, Katsuo, Katsurou, Kazuki, Kazuo, Ken, Kenichi, Kenji, Kenshin, Kenta, Kichirou, Kiyoshi, Kohaku, Kouki, Kouta, Kurou, Kyou, Makoto, Masaru, Michi, Minoru, Naoki, Noboru, Nobu, Noburu, Nobuyuki, Nori, Osamu, Ren, Riku, Rikuto, Rokurou, Ryou, Ryouga, Ryouichi, Ryouta, Ryuu, Ryuunosuke, Saburo, Shichirou, Shin, Shinobu, Shirou, Shou, Shouta, Shun, Sora, Souta, Susumu, Taichi, Taiki, Takahiro, Takashi, Takehiko, Takeshi, Takuma, Takumi, Tarou, Tsubasa, Yamato, Yasu, Yori, Yoshi, Yoshirou, Youta, Yuki, Yuu, Yuudai, Yuuki, Yuuma, Yuuta, Yuuto</set>
+			<set id="female">Ai, Aiko, Aimi, Aina, Airi, Akane, Akemi, Aki, Akiko, Akira, Ami, Aoi, Asuka, Atsuko, Aya, Ayaka, Ayako, Ayame, Ayane, Ayano, Chika, Chikako, Chinatsu, Chiyo, Chiyoko, Chou, Chouko, Emi, Etsuko, Hana, Hanako, Haruka, Haruko, Haruna, Hikari, Hikaru, Hina, Hinata, Hiroko, Hitomi, Honoka, Hoshi, Hoshiko, Hotaru, Izumi, Junko, Kaede, Kanon, Kaori, Kaoru, Kasumi, Kazue, Kazuko, Keiko, Kiku, Kimiko, Kiyoko, Kohaku, Kokoro, Kotone, Kumiko, Kyou, Mai, Makoto, Mami, Manami, Mao, Mariko, Masami, Masuyo, Mayu, Megumi, Mei, Michi, Michiko, Midori, Mika, Miki, Miku, Minako, Mio, Misaki, Mitsuko, Miu, Miyako, Miyu, Mizuko, Moe, Momoka, Momoko, Moriko, Nana, Nanami, Naoko, Naomi, Natsuki, Natsuko, Natsumi, Noa, Noriko, Ran, Rei, Ren, Riko, Rin, Rina, Rio, Sachiko, Saki, Sakura, Sakurako, Satomi, Sayuri, Setsuko, Shinju, Shinobu, Shiori, Shizuka, Shun, Sumiko, Suzu, Suzume, Takako, Takara, Tamiko, Tomiko, Tomoko, Tomomi, Tsubaki, Tsubame, Tsubasa, Tsukiko, Ume, Umeko, Wakana, Yasu, Yoko, Yoshi, Yoshiko, Youko, Yua, Yui, Yuina, Yuki, Yukiko, Yuko, Yumi, Yumiko, Yuri, Yuu, Yuuka, Yuuki, Yuuko, Yuuna, Yuzuki</set>
+			<set id="surname">Satou, Suzuki, Takahashi, Tanake, Watanabe, Itou, Yamamoto, Nakamura, Kobayashi, Saitou, Katou, Yoshida, Yamada, Sasaki, Yamaguchi, Matsumoto, Inoue, Kimura, Hayashi, Shimizu, Yamazaki, Mori, Abe, Ikeda, Hashimoto, Yamashita, Ishikawa, Nakashima, Maeda, Fujita, Ogawa, Okada, Gotou, Hasegawa, Murakami, Kondou, Ishii, Sakamoto, Endou, Aoki, Fujii, Nishimura, Fukuda, Outa, Miura, Fujiwara, Okamoto, Matsuda, Nakagawa, Nakano, Harada</set>
+			<male>
+				<rules>
+					<rule>
+						<set id="male" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<rules>
+					<rule>
+						<set id="female" />
+					</rule>
+				</rules>
+			</female>
+			<surname>
+				<rules>
+					<rule>
+						<set id="surname" />
+					</rule>
+				</rules>
+			</surname>
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+
+	<culture id="dorf">
+		<namegen>
+			<set id="start">A, An, Ba, Bi, Bo, Bom, Da, Dar, De, Do, Du, Due, Duer, Dwa, Fa, Fal, Fi, Fre, Fun, Ga, Gar, Gim, Glo, Go, Gom, Gro, Gwar, Ib, Jor, Ka, Ki, Kil, Lo, Mar, Na, Nal, O, Ras, Ren, Ro, Ta, Tar, Tel, Thi, Tho, Thon, Thra, Tor, Von, We, Wer, Yen, Yur</set>
+			<set id="male_end">bil, bin, bur, char, den, dir, dur, fri, fur, in, li, lin, mil, mur, ni, nur, ran, ri, ril, rimm, rin, thur, tri, ulf, un, ur, vi, vil, vim, vin, vri</set>
+			<set id="female_end">al, ali, ba, bida, bra, da, deth, di, fra, gret, hild, iess, kala, la, laani, li, lona, ma, mae, mala, na, nuda, ra, ta, tala, tu, tuna, vada, vara, ya</set>
+			<set id="sur_start">Black, Blood, Bronze, Fire, Firm, Grey, Hard, Ice, Iron, Moon, Oak, Onyx, Red, Steel, Stone, Strong, Thunder, White</set>
+			<set id="sur_end">axe, beard, blade, brand, cheek, fist, foot, hair, hammer, hand, head, heart, pick, shield, spear, spike, sword</set>
+			<male>
+				<illegal>rur, ueu</illegal>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="male_end" />
+					</rule>
+				</rules>
+			</male>
+			<male>
+				<illegal>dueal, frefra, grogret</illegal>
+				<rules>
+					<rule>
+						<set id="start" />
+						<set id="female_end" />
+					</rule>
+				</rules>
+			</male>
+			<surname>
+				<!-- Specifying rules here so we get names like "Duerlin Bloodfoot", whose descendants are also Bloodfoots. -->
+				<rules>
+					<rule>
+						<set id="sur_start" />
+						<set id="sur_end" />
+					</rule>
+				</rules>
+			</surname>
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+	<culture id="default">
+			<!-- Fallback culture. Good for towns. -->
+			<namegen>
+				<set id="pre">East, Fort, Great, High, Lower, Middle, Mount, New, North, Old, Royal, Saint, South, Upper, West</set>
+				<set id="start">Ael, Ash, Barrow, Bel, Black, Clear, Cold, Crystal, Deep, Edge, Falcon, Fair, Fall, Glass, Gold, Ice, Iron, Mill, Moon, Mor, Ray, Red, Rock, Rose, Shadow, Silver, Spell, Spring, Stone, Strong, Summer, Swyn, Wester, Winter</set>
+				<set id="end">ash, burn, barrow, bridge, castle, cliff, coast, crest, dale, dell, dor, fall, field, ford, fort, gate, haven, hill, hold, hollow, iron, lake, marsh, mill, mist, mount, moor, pond, shade, shore, summer, town, wick</set>
+				<set id="post">Annex, Barrens, Barrow, Corner, Cove, Crossing, Dell, Dales, Estates, Forest, Furnace, Grove, Haven, Heath, Hill, Junction, Landing, Meadow, Park, Plain, Point, Reserve, Retreat, Ridge, Springs, View, Village, Wells, Woods</set>
+				<surname>
+					<patronymic malesuffix="son" femalesuffix="daughter" />
+				</surname>
+				<town>
+					<rules>
+						<rule>
+							<set id="pre" chance="0" />
+							<space />
+							<set id="start" />
+							<set id="end" />
+						</rule>
+						<rule>
+							<set id="start" />
+							<set id="end" />
+							<space />
+							<set id="post" chance="15" />
+						</rule>
+					</rules>
+				</town>
+			</namegen>
+	</culture>
+
+	<!--
+	<ruleset name="Tolkien/Edding male">
+		<vocals>a, e, i, o, u, y</vocals>
+		<consonants>b, c, ch, ck, cz, d, dh, f, g, gh, h, j, k, kh, l, m, n, p, ph, q, r, rh, s, sh, t, th, ts, tz, v, w, x, z, zh</consonants>
+		<start>Aer, Al, Am, An, Ar, Arm, Arth, B, Bal, Bar, Be, Bel, Ber, Bok, Bor, Bran, Breg, Bren, Brod, Cam, Chal, Cham, Ch, Cuth, Dag, Daim, Dair, Del, Dr, Dur, Duv, Ear, Elen, Er, Erel, Erem, Fal, Ful, Gal, G, Get, Gil, Gor, Grin, Gun, H, Hal, Han, Har, Hath, Hett, Hur, Iss, Khel, K, Kor, Lel, Lor, M, Mal, Man, Mard, N, Ol, Radh, Rag, Relg, Rh, Run, Sam, Tarr, T, Tor, Tul, Tur, Ul, Ulf, Unr, Ur, Urth, Yar, Z, Zan, Zer</start>
+		<middle>de, do, dra, du, duna, ga, go, hara, kaltho, la, latha, le, ma, nari, ra, re, rego, ro, rodda, romi, rui, sa, to, ya, zila</middle>
+		<end>bar, bers, blek, chak, chik, dan, dar, das, dig, dil, din, dir, dor, dur, fang, fast, gar, gas, gen, gorn, grim, gund, had, hek, hell, hir, hor, kan, kath, khad, kor, lach, lar, ldil, ldir, leg, len, lin, mas, mnir, ndil, ndur, neg, nik, ntir, rab, rach, rain, rak, ran, rand, rath, rek, rig, rim, rin, rion, sin, sta, stir, sus, tar, thad, thel, tir, von, vor, yon, zor</end>
+		<rules>
+			<rule>
+				<start />
+				<vocals />
+				<middle chance="35" />
+				<middle chance="10" />
+				<end />
+			</rule>
+		</rules>
+	</ruleset>
+	-->
+</cultures>
