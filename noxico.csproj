@@ -88,15 +88,6 @@
   <ItemGroup>
     <Compile Include="Culture.cs" />
     <Compile Include="Dijkstra.cs" />
-    <Compile Include="DungeonGenerator\Cell.cs" />
-    <Compile Include="DungeonGenerator\DirectionPicker.cs" />
-    <Compile Include="DungeonGenerator\Dungeon.cs" />
-    <Compile Include="DungeonGenerator\DungeonGenerator.cs" />
-    <Compile Include="DungeonGenerator\Map.cs" />
-    <Compile Include="DungeonGenerator\MersenneTwister.cs" />
-    <Compile Include="DungeonGenerator\Random.cs" />
-    <Compile Include="DungeonGenerator\Room.cs" />
-    <Compile Include="DungeonGenerator\RoomGenerator.cs" />
     <Compile Include="Entities.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

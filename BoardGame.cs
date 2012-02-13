@@ -1002,6 +1002,7 @@ namespace Noxico
 				entity.Draw();
 		}
 
+		/*
 		[Obsolete("DungeonGenerator needs replacement (see issue #1)", true)]
 		public static Board FromDungeonGenerator(DungeonGenerator.DungeonGenerator generator)
 		{
@@ -1101,6 +1102,7 @@ namespace Noxico
 			newBoard.Music = "ko0x_-_btto.it";
 			return newBoard;
 		}
+		*/
 
 		private static int GetSample(int x, int y, int ux, int uy, int[,] source)
 		{
@@ -1325,6 +1327,8 @@ namespace Noxico
 			}
 			else
 				Introduction.Title();
+
+			TextScroller.ReadBook(5);
 		}
 
 		public void SaveGame()
