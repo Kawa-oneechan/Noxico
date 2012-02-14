@@ -1327,8 +1327,6 @@ namespace Noxico
 			}
 			else
 				Introduction.Title();
-
-			TextScroller.ReadBook(5);
 		}
 
 		public void SaveGame()
