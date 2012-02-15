@@ -407,13 +407,6 @@ namespace Noxico
 			NoxicoGame.Mode = UserMode.Subscreen;
 		}
 
-		public static void Help()
-		{
-			text = global::Noxico.Properties.Resources.HelpText.Split('\n');
-			NoxicoGame.Subscreen = Handler;
-			NoxicoGame.Mode = UserMode.Subscreen;
-		}
-
 		public static void ReadBook(int bookNum)
 		{
 			/*

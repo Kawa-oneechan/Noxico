@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE cultures [
+	<!ELEMENT cultures (culture+)>
+	<!ELEMENT culture (cultureinfo|namegen)*>
+	<!ELEMENT cultureinfo (bodyplans|monogamous|marriage)*>
+	<!ELEMENT bodyplans (plan+)>
+	<!ELEMENT plan EMPTY>
+	<!ELEMENT monogamous (#PCDATA)>
+	<!ELEMENT marriage (#PCDATA)>
+	<!ELEMENT namegen (set|male|female|surname|town)*>
+	<!ELEMENT set (#PCDATA)>
+	<!ELEMENT male (illegal|rules)*>
+	<!ELEMENT female (illegal|rules)*>
+	<!ELEMENT surname (patronymic|illegal|rules)*>
+	<!ELEMENT town (illegal?|rules)>
+	<!ELEMENT illegal (#PCDATA)>
+	<!ELEMENT rules (rule+)>
+	<!ELEMENT rule (set|space)*>
+	<!ELEMENT space EMPTY>
+	<!ELEMENT patronymic EMPTY>
+	<!ATTLIST culture id ID #REQUIRED>
+	<!ATTLIST plan name CDATA #REQUIRED>
+	<!ATTLIST set id NMTOKEN #REQUIRED chance CDATA #IMPLIED>
+	<!ATTLIST patronymic malesuffix CDATA #REQUIRED femalesuffix CDATA #REQUIRED>
+	<!ATTLIST male copy NMTOKEN #IMPLIED>
+	<!ATTLIST female copy NMTOKEN #IMPLIED>
+	<!ATTLIST surname copy NMTOKEN #IMPLIED>
+	<!ATTLIST town copy NMTOKEN #IMPLIED>
+]>
 <cultures>
 	<culture id="human">
 		<!-- We could specify a whole lot of extra information per culture here. Perhaps leverage the token system for easy lookup. Question is, what info should it contain? Month names? Interests? -->
 		<!-- One obvious thing would be what kind of creatures would/could have this culture. For this one psecifically, that'd be human, so let's do that... -->
+		<!-- Update: can't use the token system when you have a doctype in place. At least, that's what I gather. -->
 		<cultureinfo>
 			<!-- Okay, this part is pure token. All the usual rules apply. -->
 			<bodyplans>
 				<!-- If a given bodyplan's species attribute contains ' ', we can't refer to it as-is. If need be, use '_' instead. -->
-				<human />
-				<felinoid />
+				<plan name="human" />
+				<plan name="felinoid" />
 			</bodyplans>
 			<!-- Low base chance of betraying their spouse. Character tokens affect this. -->
 			<monogamous>0.75</monogamous>
@@ -61,11 +90,10 @@
 		<cultureinfo>
 			<bodyplans>
 				<!-- Yes, felinoids can have either culture. -->
-				<felinoid />
+				<plan name="felinoid" />
 				<!-- Imps are basically human. -->
-				<imp />
-				<!-- Note the '_' substitution. -->
-				<fetish_cultist />
+				<plan name="imp" />
+				<plan name="fetish cultist" />
 			</bodyplans>
 			<!-- Don't marry their spouse. -->
 			<marriage>0.0</marriage>
@@ -214,23 +242,4 @@
 				</town>
 			</namegen>
 	</culture>
-
-	<!--
-	<ruleset name="Tolkien/Edding male">
-		<vocals>a, e, i, o, u, y</vocals>
-		<consonants>b, c, ch, ck, cz, d, dh, f, g, gh, h, j, k, kh, l, m, n, p, ph, q, r, rh, s, sh, t, th, ts, tz, v, w, x, z, zh</consonants>
-		<start>Aer, Al, Am, An, Ar, Arm, Arth, B, Bal, Bar, Be, Bel, Ber, Bok, Bor, Bran, Breg, Bren, Brod, Cam, Chal, Cham, Ch, Cuth, Dag, Daim, Dair, Del, Dr, Dur, Duv, Ear, Elen, Er, Erel, Erem, Fal, Ful, Gal, G, Get, Gil, Gor, Grin, Gun, H, Hal, Han, Har, Hath, Hett, Hur, Iss, Khel, K, Kor, Lel, Lor, M, Mal, Man, Mard, N, Ol, Radh, Rag, Relg, Rh, Run, Sam, Tarr, T, Tor, Tul, Tur, Ul, Ulf, Unr, Ur, Urth, Yar, Z, Zan, Zer</start>
-		<middle>de, do, dra, du, duna, ga, go, hara, kaltho, la, latha, le, ma, nari, ra, re, rego, ro, rodda, romi, rui, sa, to, ya, zila</middle>
-		<end>bar, bers, blek, chak, chik, dan, dar, das, dig, dil, din, dir, dor, dur, fang, fast, gar, gas, gen, gorn, grim, gund, had, hek, hell, hir, hor, kan, kath, khad, kor, lach, lar, ldil, ldir, leg, len, lin, mas, mnir, ndil, ndur, neg, nik, ntir, rab, rach, rain, rak, ran, rand, rath, rek, rig, rim, rin, rion, sin, sta, stir, sus, tar, thad, thel, tir, von, vor, yon, zor</end>
-		<rules>
-			<rule>
-				<start />
-				<vocals />
-				<middle chance="35" />
-				<middle chance="10" />
-				<end />
-			</rule>
-		</rules>
-	</ruleset>
-	-->
 </cultures>

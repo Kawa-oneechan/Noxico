@@ -76,12 +76,19 @@ namespace Noxico.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-        ///&lt;cultures&gt;
-        ///	&lt;culture id=&quot;human&quot;&gt;
-        ///		&lt;!-- We could specify a whole lot of extra information per culture here. Perhaps leverage the token system for easy lookup. Question is, what info should it contain? Month names? Interests? --&gt;
-        ///		&lt;!-- One obvious thing would be what kind of creatures would/could have this culture. For this one psecifically, that&apos;d be human, so let&apos;s do that... --&gt;
-        ///		&lt;cultureinfo&gt;
-        ///			&lt;!-- Okay, this part is pure token. All the usual rules apply. [rest of string was truncated]&quot;;.
+        ///&lt;!DOCTYPE cultures [
+        ///	&lt;!ELEMENT cultures (culture+)&gt;
+        ///	&lt;!ELEMENT culture (cultureinfo|namegen)*&gt;
+        ///	&lt;!ELEMENT cultureinfo (bodyplans|monogamous|marriage)*&gt;
+        ///	&lt;!ELEMENT bodyplans (plan+)&gt;
+        ///	&lt;!ELEMENT plan EMPTY&gt;
+        ///	&lt;!ELEMENT monogamous (#PCDATA)&gt;
+        ///	&lt;!ELEMENT marriage (#PCDATA)&gt;
+        ///	&lt;!ELEMENT namegen (set|male|female|surname|town)*&gt;
+        ///	&lt;!ELEMENT set (#PCDATA)&gt;
+        ///	&lt;!ELEMENT male (illegal|rules)*&gt;
+        ///	&lt;!ELEMENT female (illegal|rules)*&gt;
+        ///	&lt;!ELEMENT surname (patronymic|illegal|ru [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Cultures {
             get {
@@ -113,46 +120,23 @@ namespace Noxico.Properties {
             }
         }
         
-        internal static byte[] GraveMarker {
-            get {
-                object obj = ResourceManager.GetObject("GraveMarker", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
         /// <summary>
-        ///   Looks up a localized string similar to How to play Noxico
-        ///&lt;c15,8&gt; Keys &lt;c&gt;
-        ///
-        ///Arrow keys are obvious - they move your character.
-        ///
-        ///&lt;c0,7&gt;&lt;gDD&gt;L&lt;gDE&gt;&lt;c&gt;  - Look at another character, also identify them. While the
-        ///       &lt;b&gt;+&lt;b&gt; targeting cursor is in view, you can press &lt;c0,7&gt;&lt;gDD&gt;Enter&lt;gDE&gt;&lt;c&gt; to
-        ///       examine the targeted character or &lt;c0,7&gt;&lt;gDD&gt;Escape&lt;gDE&gt;&lt;c&gt; to cancel.
-        ///
-        ///&lt;c0,7&gt;&lt;gDD&gt;F1&lt;gDE&gt;&lt;c&gt; - This screen. While in a text scroller like this one, you
-        ///       can press the &lt;c0,7&gt;&lt;gDD&gt;&lt;g18&gt;&lt;gDE&gt;&lt;c&gt; and &lt;c0,7&gt;&lt;gDD&gt;&lt;g19&gt;&lt;gDE&gt;&lt;c&gt; arrow keys  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string HelpText {
-            get {
-                return ResourceManager.GetString("HelpText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;colortable&gt;
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE colortable [
+        ///	&lt;!ELEMENT colortable (color*)&gt;
+        ///	&lt;!ELEMENT color EMPTY&gt;
+        ///	&lt;!ATTLIST color name ID #REQUIRED rgb CDATA #REQUIRED cga CDATA #IMPLIED&gt;
+        ///]&gt;
+        ///&lt;colortable&gt;
         ///	&lt;!-- Skintones --&gt;
         ///	&lt;color name=&quot;Light&quot; rgb=&quot;246,225,214&quot; cga=&quot;15&quot; /&gt;
         ///	&lt;color name=&quot;Dark&quot; rgb=&quot;133,69,67&quot; cga=&quot;6&quot; /&gt;
         ///	&lt;color name=&quot;Ebony&quot; rgb=&quot;23,11,11&quot; cga=&quot;0&quot; /&gt;
         ///
         ///	&lt;!-- Hair colors --&gt;
-        ///	&lt;color name=&quot;Blond&quot; rgb=&quot;111,53,26&quot; cga=&quot;6&quot; /&gt; &lt;!-- FIXME --&gt;
+        ///	&lt;color name=&quot;Blond&quot; rgb=&quot;198,167,94&quot; cga=&quot;6&quot; /&gt;
         ///	&lt;color name=&quot;Auburn&quot; rgb=&quot;111,53,26&quot; cga=&quot;6&quot; /&gt;
-        ///
-        ///	&lt;!-- System.Drawing.KnownColor, with CGA approximation for display --&gt;
-        ///  &lt;color name=&quot;AliceBlue&quot; rgb=&quot;240,248,255&quot; cga=&quot;9&quot; /&gt;
-        ///  &lt;color name=&quot;AntiqueWhite&quot; rgb=&quot;250,235,215&quot; cga=&quot;14&quot; /&gt;        /// [rest of string was truncated]&quot;;.
+        ///        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string KnownColors {
             get {

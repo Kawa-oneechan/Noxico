@@ -116,6 +116,7 @@
     </Content>
     <Content Include="books.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="fmodex64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -284,19 +285,14 @@
     <Content Include="sounds\Shoot.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\Colors.txt" />
     <None Include="Resources\ExtendedTiles.png" />
     <Content Include="Resources\KnownColors.xml">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Resources\CHARGEN.BIN" />
-    <None Include="Resources\GRAVE.BIN" />
-    <None Include="Resources\TITLE.BIN" />
     <Content Include="noxico.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Resources\HelpText.txt" />
     <None Include="Resources\Tileset.png" />
     <None Include="Resources\walls.bin" />
   </ItemGroup>

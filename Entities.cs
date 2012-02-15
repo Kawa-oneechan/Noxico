@@ -747,12 +747,6 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.F1])
-			{
-				TextScroller.Help();
-				return;
-			}
-
 			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod])
 			{
 				NoxicoGame.ClearKeys();
