@@ -347,7 +347,7 @@ namespace Noxico
 
 		public BoardChar(Character character) : this()
 		{
-			ID = character.Name;
+			ID = character.Name.ToID();
 			Character = character;
 			this.Blocking = true;
 			AdjustView();
