@@ -707,7 +707,7 @@ namespace Noxico
 						*/
 					}
 					else
-						ch.Name = c.GetAttribute("name");
+						ch.Name = new Name(c.GetAttribute("name"));
 				}
 				newBoard.Entities.Add(new BoardChar(ch)
 				{
@@ -1136,7 +1136,7 @@ namespace Noxico
 			foreach (var light in Entities.OfType<LightSource>())
 			{
 				//map[light.XPosition, light.YPosition] = light.Brightness;
-				SpreadValue(map, light.XPosition, light.YPosition, light.Brightness);
+				//SpreadValue(map, light.XPosition, light.YPosition, light.Brightness);
 			}
 			var bmp = new System.Drawing.Bitmap(80, 25);
 			for (int y = 0; y < 25; y++)
@@ -1246,28 +1246,12 @@ namespace Noxico
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
 
-			//var test = Character.GetUnique("Lena"); //Character.Generate("human", Gender.Female);
+			//var test = Character.Generate("foocubus", Gender.Female);
 			//test.CreateInfoDump();
 			//hostForm.Close();
 
 			//InitializeTestEnvironment();
 			
-			/*
-			var firstParticipant = new BoardChar(Character.Generate("human", Gender.Male)) { ParentBoard = CurrentBoard };
-			var secondParticipant = new BoardChar(Character.Generate("human", Gender.Female)) { ParentBoard = CurrentBoard };
-			firstParticipant.Character.GiveName();
-			secondParticipant.Character.GiveName();
-			var sexyTimes = new Sexytimes()
-			{
-				Participants = new BoardChar[] { firstParticipant, secondParticipant },
-				ParentBoard = CurrentBoard,
-				XPosition = 38,
-				YPosition = 10,
-			};
-			sexyTimes.State = new SexyTimes.InitialMakeouts(sexyTimes);
-			CurrentBoard.Entities.Add(sexyTimes);
-			*/
-
 			/*
 			var player = new Player(Character.GetUnique("Maria")) { ParentBoard = CurrentBoard, XPosition = 40, YPosition = 9 };
 			//var player = new Player(Character.Generate("naga", Gender.Herm)) { ParentBoard = CurrentBoard, XPosition = 40, YPosition = 9 };
@@ -1765,9 +1749,18 @@ repeat
 
 			pc.IsProperNamed = true;
 			if (!string.IsNullOrWhiteSpace(name))
-				pc.Name = name;
+			{
+				pc.Name = new Name(name);
+				if (gender == Gender.Female)
+					pc.Name.Female = true;
+				else if (gender == Gender.Herm || gender == Gender.Neuter)
+					pc.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+			}
 			else
-				pc.Name = Culture.GetName(pc.GetToken("culture").Tokens[0].Name, gender == Gender.Female ? Culture.NameType.Female : Culture.NameType.Male);
+			{
+				pc.Name.Culture = Culture.Cultures[pc.GetToken("culture").Tokens[0].Name];
+				pc.Name.Regenerate(); // = Culture.GetName(pc.GetToken("culture").Tokens[0].Name, gender == Gender.Female ? Culture.NameType.Female : Culture.NameType.Male);
+			}
 
 			if (pc.HasToken("hair"))
 			{

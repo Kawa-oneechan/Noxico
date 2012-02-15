@@ -10,20 +10,20 @@ namespace Noxico
 	public class Culture
 	{
 		private static XmlDocument xDoc;
-		private string id;
+		public string ID;
 
 		public enum NameType
 		{
-			Male, Female, Town, Location
+			Male, Female, Surname, Town, Location
 		}
 
 		public static Culture DefaultCulture;
 
-		private static Dictionary<string, Culture> cultures;
+		public static Dictionary<string, Culture> Cultures;
 
 		static Culture()
 		{
-			cultures = new Dictionary<string, Culture>();
+			Cultures = new Dictionary<string, Culture>();
 			xDoc = new XmlDocument();
 			if (File.Exists(IniFile.GetString("misc", "culturefile", "culture.xml")))
 				xDoc.Load(IniFile.GetString("misc", "culturefile", "culture.xml"));
@@ -31,15 +31,15 @@ namespace Noxico
 				xDoc.LoadXml(global::Noxico.Properties.Resources.Cultures);
 			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
 			{
-				cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
+				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
 			}
-			DefaultCulture = cultures["default"];
+			DefaultCulture = Cultures["default"];
 		}
 
 		private static Culture FromXml(XmlElement x)
 		{
 			var nc = new Culture();
-			nc.id = x.GetAttribute("id");
+			nc.ID = x.GetAttribute("id");
 			//nc.nameGen = x.SelectSingleNode("//culture[@id='" + nc.id + "']/namegen") as XmlElement;
 			return nc;
 		}
@@ -54,7 +54,7 @@ namespace Noxico
 
 		public string GetName(NameType type)
 		{
-			var namegen = "//culture[@id='" + id + "']/namegen";
+			var namegen = "//culture[@id='" + ID + "']/namegen";
 			var rand = Toolkit.Rand;
 			var sets = new Dictionary<string, string[]>();
 			var x = xDoc.SelectNodes(namegen + "/set");
@@ -64,6 +64,12 @@ namespace Noxico
 			var typeSet = xDoc.SelectSingleNode(namegen + "/" + typeName) as XmlElement;
 			if (typeSet.HasAttribute("copy"))
 				return GetName(typeSet.GetAttribute("copy"), type);
+
+			if (type == NameType.Surname)
+			{
+				var patro = typeSet.SelectSingleNode("patronymic") as XmlElement;
+				return "#patronym/" + patro.GetAttribute("malesuffix") + "/" + patro.GetAttribute("femalesuffix");
+			}
 
 			var illegal = TrySelect("illegal", typeSet);
 			var rules = typeSet.SelectNodes("rules/rule");
@@ -111,8 +117,8 @@ namespace Noxico
 
 		public static string GetName(string culture, NameType type)
 		{
-			if (cultures.ContainsKey(culture))
-				return cultures[culture].GetName(type);
+			if (Cultures.ContainsKey(culture))
+				return Cultures[culture].GetName(type);
 			return DefaultCulture.GetName(type);
 		}
 	}

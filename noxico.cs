@@ -704,11 +704,85 @@ namespace Noxico
 		}
 	}
 
+	public class Name
+	{
+		public bool Female { get; set; }
+		public string FirstName { get; set; }
+		public string Surname { get; set; }
+		public string Title { get; set; }
+		public Culture Culture { get; set; }
+		public Name()
+		{
+			FirstName = "";
+			Surname = "";
+			Title = "";
+			Culture = Culture.DefaultCulture;
+		}
+		public Name(string name) : this()
+		{
+			var split = name.Split(' ');
+			if (split.Length >= 1)
+				FirstName = split[0];
+			if (split.Length >= 2)
+				Surname = split[1];
+		}
+		public void Regenerate()
+		{
+			FirstName = this.Culture.GetName(Female ? Noxico.Culture.NameType.Female : Noxico.Culture.NameType.Male);
+			Surname = this.Culture.GetName(Noxico.Culture.NameType.Surname);
+			Title = "";
+		}
+		public void ResolvePatronym(Name father, Name mother)
+		{
+			if (!Surname.StartsWith("#patronym"))
+				return;
+			var parts = Surname.Split('/');
+			var male = parts[1];
+			var female = parts[2];
+			if (Female)
+				Surname = mother.FirstName + female;
+			else
+				Surname = father.FirstName + male;
+		}
+		public override string ToString()
+		{
+			return FirstName;
+		}
+		public string ToString(bool full)
+		{
+			if (!full || string.IsNullOrWhiteSpace(Surname))
+				return FirstName;
+			return FirstName + ' ' + Surname;
+		}
+		public string ToID()
+		{
+			return FirstName + (string.IsNullOrWhiteSpace(Surname) ? '_' + Surname : string.Empty);
+		}
+		public void SaveToFile(BinaryWriter stream)
+		{
+			stream.Write(FirstName);
+			stream.Write(Surname);
+			stream.Write(Title);
+			stream.Write(Culture.ID);
+		}
+		public static Name LoadFromFile(BinaryReader stream)
+		{
+			var newName = new Name();
+			newName.FirstName = stream.ReadString();
+			newName.Surname = stream.ReadString();
+			newName.Title = stream.ReadString();
+			var cultureName = stream.ReadString();
+			if (Culture.Cultures.ContainsKey(cultureName))
+				newName.Culture = Culture.Cultures[cultureName];
+			return newName;
+		}
+	}
+
 	public class Character : TokenCarrier
 	{
 		private static XmlDocument xDoc;
 
-		public string Name { get; set; }
+		public Name Name { get; set; }
 		public string Species { get; set; }
 		public string Title { get; set; }
 		public bool IsProperNamed { get; set; }
@@ -734,7 +808,7 @@ namespace Noxico
 				(g == "hermaphrodite " && HasToken("hermonly")))
 				g = "";
 			if (IsProperNamed)
-				return Name;
+				return Name.ToString();
 			return string.Format("{0} {1}{2}", A, g, Species);
 		}
 
@@ -876,7 +950,7 @@ namespace Noxico
 			var plan = xDoc.CreateElement("character");
 			plan.InnerXml = planSource.InnerXml;
 			newChar.IsProperNamed = planSource.HasAttribute("proper");
-			newChar.Name = planSource.GetAttribute("name");
+			newChar.Name = new Name(planSource.GetAttribute("name"));
 			newChar.Species = planSource.GetAttribute("species");
 			newChar.A = planSource.GetAttribute("a");
 			Roll(plan);
@@ -894,6 +968,18 @@ namespace Noxico
 				newChar.GetToken("culture").Tokens.Add(new Token() { Name = "human" });
 			}
 			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
+
+			var gender = Gender.Neuter;
+			if (newChar.HasToken("penis") && !newChar.HasToken("vagina"))
+				gender = Gender.Male;
+			else if (!newChar.HasToken("penis") && newChar.HasToken("vagina"))
+				gender = Gender.Female;
+			else if (newChar.HasToken("penis") && newChar.HasToken("vagina"))
+				gender = Gender.Herm;
+			if (gender == Gender.Female)
+				newChar.Name.Female = true;
+			else if (gender == Gender.Herm || gender == Gender.Neuter)
+				newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
 
 			newChar.ApplyCostume();
 			newChar.UpdateTitle();
@@ -916,7 +1002,7 @@ namespace Noxico
 			var plan = xDoc.CreateElement("bodyplan");
 			plan.InnerXml = planSource.InnerXml;
 			newChar.Species = planSource.GetAttribute("species");
-			newChar.Name = newChar.Species;
+			newChar.Name = new Name(newChar.Species);
 			newChar.A = planSource.GetAttribute("a");
 			Roll(plan);
 			OneOf(plan);
@@ -973,6 +1059,24 @@ namespace Noxico
 					break;
 				}
 			}
+
+			if (newChar.HasToken("culture") && newChar.GetToken("culture").Tokens.Count > 0)
+			{
+				var culture = newChar.GetToken("culture").Tokens[0].Name;
+				if (Culture.Cultures.ContainsKey(culture))
+					newChar.Name.Culture = Culture.Cultures[culture];
+			}
+			if (gender == Gender.Female)
+				newChar.Name.Female = true;
+			else if (gender == Gender.Herm || gender == Gender.Neuter)
+				newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+			newChar.Name.Regenerate();
+			var patFather = new Name() { Culture = newChar.Name.Culture, Female = false };
+			var patMother = new Name() { Culture = newChar.Name.Culture, Female = true };
+			patFather.Regenerate();
+			patMother.Regenerate();
+			newChar.Name.ResolvePatronym(patFather, patMother);
+			newChar.IsProperNamed = true;
 
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
@@ -1050,7 +1154,8 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			stream.Write(Name ?? "");
+			//stream.Write(Name ?? "");
+			Name.SaveToFile(stream);
 			stream.Write(Species ?? "");
 			stream.Write(Title ?? "");
 			stream.Write(IsProperNamed);
@@ -1062,7 +1167,7 @@ namespace Noxico
 		public static Character LoadFromFile(BinaryReader stream)
 		{
 			var newChar = new Character();
-			newChar.Name = stream.ReadString();
+			newChar.Name = Name.LoadFromFile(stream); //stream.ReadString();
 			newChar.Species = stream.ReadString();
 			newChar.Title = stream.ReadString();
 			newChar.IsProperNamed = stream.ReadBoolean();
