@@ -532,10 +532,13 @@ namespace Noxico
 
 			if (e.KeyCode == Keys.F12)
 			{
+				if (!Directory.Exists("screenshots"))
+					Directory.CreateDirectory("screenshots");
 				int i = 1;
-				while(File.Exists("screenshot" + i.ToString("000") + ".png"))
+				while(File.Exists(Path.Combine("screenshots", "screenshot" + i.ToString("000") + ".png")))
 					i++;
-				backBuffer.Save("screenshot" + i.ToString("000") + ".png", ImageFormat.Png);
+				backBuffer.Save(Path.Combine("screenshots", "screenshot" + i.ToString("000") + ".png"), ImageFormat.Png);
+				Console.WriteLine("Screenshot saved.");
 			}
 			if (e.KeyValue == 191)
 				NoxicoGame.KeyMap[(int)Keys.L] = false;

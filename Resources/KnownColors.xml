@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE colortable [
+	<!ELEMENT colortable (color*)>
+	<!ELEMENT color EMPTY>
+	<!ATTLIST color name ID #REQUIRED rgb CDATA #REQUIRED cga CDATA #IMPLIED>
+]>
 <colortable>
 	<!-- Skintones -->
 	<color name="Light" rgb="246,225,214" cga="15" />
@@ -5,7 +11,7 @@
 	<color name="Ebony" rgb="23,11,11" cga="0" />
 
 	<!-- Hair colors -->
-	<color name="Blond" rgb="111,53,26" cga="6" /> <!-- FIXME -->
+	<color name="Blond" rgb="198,167,94" cga="6" />
 	<color name="Auburn" rgb="111,53,26" cga="6" />
 
 	<!-- System.Drawing.KnownColor, with CGA approximation for display -->
