@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Culture.cs" />
     <Compile Include="Dijkstra.cs" />
+    <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Entities.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
