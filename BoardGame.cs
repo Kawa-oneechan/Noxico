@@ -183,7 +183,7 @@ namespace Noxico
 		public List<Entity> EntitiesToRemove { get; set; }
 		public List<Entity> EntitiesToAdd { get; set; }
 
-		private Tile[,] Tilemap = new Tile[80, 25];
+		public Tile[,] Tilemap = new Tile[80, 25];
 
 		//public string Message { get; set; }
 		//public Color MessageColor { get; set; }
@@ -914,13 +914,14 @@ namespace Noxico
 			}
 		}
 
-		public void Update(bool active = false)
+		public void Update(bool active = false, bool surrounding = false)
 		{
 			if (active)
 			{
 				foreach (var entity in this.Entities.Where(x => !x.Passive && !(x is Player)))
 					entity.Update();
-				UpdateSurroundings();
+				if (!surrounding)
+					UpdateSurroundings();
 				Burn(true);
 				return;
 			}
@@ -945,6 +946,7 @@ namespace Noxico
 
 		public void UpdateSurroundings()
 		{
+			
 			var nox = NoxicoGame.HostForm.Noxico;
 			if (this != nox.CurrentBoard)
 				return;
@@ -956,21 +958,21 @@ namespace Noxico
 				var owX = owI % reach;
 				var owY = owI / reach;
 				if (owY > 0) //north
-					nox.Boards[nox.Overworld[owX, owY - 1]].Update(true);
+					nox.Boards[nox.Overworld[owX, owY - 1]].Update(true, true);
 				if (owX > 0 && owY > 0) //northwest
-					nox.Boards[nox.Overworld[owX - 1, owY - 1]].Update(true);
+					nox.Boards[nox.Overworld[owX - 1, owY - 1]].Update(true, true);
 				if (owX > 0) //west
-					nox.Boards[nox.Overworld[owX - 1, owY]].Update(true);
+					nox.Boards[nox.Overworld[owX - 1, owY]].Update(true, true);
 				if (owX > 0 && owY < reach - 1) //southwest
-					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true);
+					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true, true);
 				if (owY < reach - 1) //south
-					nox.Boards[nox.Overworld[owX, owY + 1]].Update(true);
+					nox.Boards[nox.Overworld[owX, owY + 1]].Update(true, true);
 				if (owX < reach - 1 && owY < reach - 1) //southeast
-					nox.Boards[nox.Overworld[owX + 1, owY + 1]].Update(true);
+					nox.Boards[nox.Overworld[owX + 1, owY + 1]].Update(true, true);
 				if (owX < reach - 1) //east
-					nox.Boards[nox.Overworld[owX + 1, owY]].Update(true);
+					nox.Boards[nox.Overworld[owX + 1, owY]].Update(true, true);
 				if (owX > 0 && owY < reach - 1) //northwest
-					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true);
+					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true, true);
 			}
 		}
 
@@ -1632,12 +1634,22 @@ namespace Noxico
 			host.Write("Generating biome map...", Color.Silver, Color.Transparent, 50, 0);
 			var biomeMap = GenerateBiomeMap(reach);
 #if DEBUG
-			var colors = new[] { System.Drawing.Color.Green, System.Drawing.Color.Brown, System.Drawing.Color.White, System.Drawing.Color.DarkMagenta };
-			var mapBitmap = new System.Drawing.Bitmap(reach, reach);
+			var colors = new[] { System.Drawing.Color.Green, System.Drawing.Color.Brown, System.Drawing.Color.Silver, System.Drawing.Color.DarkMagenta };
+			var mapBitmap = new System.Drawing.Bitmap(reach * 3, reach * 3);
 			for (var y = 0; y < reach; y++)
 				for (var x = 0; x < reach; x++)
-					mapBitmap.SetPixel(y, x, colors[(int)biomeMap[x, y]]);
-			mapBitmap.Save("biomes.png", System.Drawing.Imaging.ImageFormat.Png);
+				{
+					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
+					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
+				}
+			//mapBitmap.Save("biomes.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
 
 			HostForm.Write("Generating overworld...", Color.Silver, Color.Transparent, 50, 0);
@@ -1650,93 +1662,47 @@ namespace Noxico
 			for (var x = 0; x < reach; x++)
 			{
 				for (var y = 0; y < reach; y++)
-			{
+				{
 					var owBoard = Board.CreateBasicOverworldBoard(biomeMap[x, y], x, y);
 					Boards.Add(owBoard);
 					Overworld[x, y] = Boards.Count - 1;
 				}
 			}
-			//Place world edges
-			//Place towns
-			//Place dungeon entrances
-			//Place dungeons
 
-			/*
-			for (int i = 0; i < 1; i++)
+			//TODO: place world edges
+
+			host.Write("Placing towns...       ", Color.Silver, Color.Transparent, 50, 0);
+			var townGen = new TownGenerator();
+			var townsToPlace = 6;
+			while (townsToPlace > 0)
 			{
-				if (i > 0 && i % 5 == 0)
-					NoxicoGame.HostForm.Write("Reticulating Splines... \xB3 " + (i / 1) + "%", 7, 8, 50, 0);
-
-				var generator = new DungeonGenerator.DungeonGenerator(12, 39, 20, 70, 100, new DungeonGenerator.RoomGenerator(10, 2, 10, 2, 10));
-				var newBoard = Board.FromDungeonGenerator(generator);
-				if (newBoard.ExitPossibilities != null && newBoard.ExitPossibilities.Count > 0)
+				for (var x = 0; x < reach; x++)
 				{
-					var n = newBoard.ExitPossibilities.Count > 4 ? newBoard.ExitPossibilities.Count / Toolkit.Rand.Next(1, 2) : Toolkit.Rand.Next(2, 4);
-					while (n > 0 && newBoard.ExitPossibilities.Count > 0)
+					for (var y = 0; y < reach; y++)
 					{
-						var e = newBoard.ExitPossibilities[Toolkit.Rand.Next(newBoard.ExitPossibilities.Count)];
-						newBoard.Warps.Add(new Warp() { XPosition = e.X, YPosition = e.Y });
-						newBoard.SetTile(e.Y, e.X, (char)0xF0, (char)0, 8);
-						newBoard.ExitPossibilities.Remove(e);
-						n--;
+						var thisMap = Boards[Overworld[x, y]];
+						var chances = new[] { 0.2, 0.02, 0, 0 };
+						if (townsToPlace > 0 && Toolkit.Rand.NextDouble() < chances[(int)biomeMap[x, y]])
+						{
+							townGen.Create(biomeMap[x, y]);
+							townGen.ToTilemap(ref thisMap.Tilemap);
+							townsToPlace--;
+#if DEBUG
+							mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 1, Color.CornflowerBlue);
+#endif
+						}
 					}
 				}
-				//newBoard.Entities.Add(new LightSource() { XPosition = 38, YPosition = 12, ParentBoard = newBoard });
-				//newBoard.CalculateLightmap();
-				this.Boards.Add(newBoard);
 			}
-			*/
+			//Now, what SHOULD happen is that the plaer starts in one of these towns we just placed. Preferably one in the grasslands.
 
-			//for (int i = 0; i < 100; i++)
-			{
-				var newChar = new BoardChar(Character.GetUnique("Lena")) //Character.Generate("naga", Gender.Female))
-				{
-					ParentBoard = this.Boards[0],
-					Movement = Motor.Wander,
-					XPosition = 2,
-					YPosition = 2,
-					Script = @"
-go west
-go west
-go east
-go east
-go north
-go north
-go south
-go south
-repeat
-".Split('\n'),
- ScriptRunning = false,
-				};
-				this.Boards[0].Entities.Add(newChar);
+			//TODO: place dungeon entrances
+			//TODO: excavate dungeons
 
-				var item = new DroppedItem("catears")
-				{
-					XPosition = 38,
-					YPosition = 13,
-				};
-				this.Boards[0].Entities.Add(item);
-				item = new DroppedItem("book")
-				{
-					XPosition = 42,
-					YPosition = 13,
-				};
-				item.Token.Tokens.Add(new Token() { Name = "id", Value = 1 });
-				item.AdjustView();
-				this.Boards[0].Entities.Add(item);
-				item = new DroppedItem("book")
-				{
-					XPosition = 42,
-					YPosition = 14,
-				};
-				item.Token.Tokens.Add(new Token() { Name = "id", Value = 2 });
-				item.AdjustView();
-				this.Boards[0].Entities.Add(item);
-			}
-			this.Boards[0].BindEntities();
+#if DEBUG
+			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
+#endif
 
-			this.Boards[0].Immolate(23, 78);
-				
             this.CurrentBoard = this.Boards[0];
 			NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			//Sound.PlayMusic(this.CurrentBoard.Music);
