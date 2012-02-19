@@ -459,91 +459,42 @@ namespace Noxico
 			//TODO: trace paths through the map?
 		}
 
-		public override string ToAscii()
-		{
-			var map = new char[80, 25];
-
-			//Base fill
-			for (var row = 0; row < 25; row++)
-				for (var col = 0; col < 80; col++)
-					map[col, row] = '.';
-
-			foreach (var room in Rooms)
-			{
-				//Room floors
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-						map[col, row] = ' ';
-
-				//Vertical walls  |
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-				{
-					map[room.Bounds.Left, row] = '|';
-					map[room.Bounds.Right - 1, row] = '|';
-				}
-				//Horizontal walls  --
-				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-				{
-					map[col, room.Bounds.Top] = '-';
-					map[col, room.Bounds.Bottom - 1] = '-';
-				}
-				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = '+';
-				map[room.Bounds.Right - 1, room.Bounds.Top] = '+';
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = '+';
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = '+';
-			}
-
-			foreach (var exit in Exits)
-			{
-				map[exit.Left, exit.Top] = ' ';
-			}
-
-			//Convert map to strings
-			var ascii = new StringBuilder();
-			var thisRow = new StringBuilder();
-			for (var row = 0; row < 25; row++)
-			{
-				for (var col = 0; col < 80; col++)
-					thisRow.Append(map[col, row]);
-
-				ascii.AppendLine(thisRow.ToString().TrimEnd());
-				thisRow.Clear();
-			}
-			return ascii.ToString().TrimEnd();
-		}
-
 		public override void ToTilemap(ref Tile[,] map)
 		{
+			var floorStart = Color.FromArgb(123, 92, 65);
+			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
+			var wall = Color.FromArgb(71, 50, 33);
+
 			foreach (var room in Rooms)
 			{
 				//Room floors
 				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
 					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-						map[col, row] = new Tile() { Character = ' ', Background = Color.Black };
+						map[col, row] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 
 				//Vertical walls  |
 				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
 				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0xBA, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0xBA, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
+					map[room.Bounds.Left, row] = new Tile() { Character = (char)0xDD, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0xDE, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Horizontal walls  --
 				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
 				{
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0xCD, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xCD, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
+					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+					map[col, room.Bounds.Top] = new Tile() { Character = (char)0xDF, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDC, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0xC9, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0xBB, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xC8, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xBC, Background = Color.Black, Foreground = Color.Brown, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 			}
 
 			foreach (var exit in Exits)
 			{
-				map[exit.Left, exit.Top] = new Tile() { Character = ' ', Background = Color.Black };
+				map[exit.Left, exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
 		}
 	}

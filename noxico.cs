@@ -408,6 +408,21 @@ namespace Noxico
 			}
 			return r;
 		}
+
+		public static Color Lerp(int sR, int sG, int sB, int dR, int dG, int dB, double amount)
+		{
+			double iR = (dR - sR) / 100.0, iG = (dG - sG) / 100.0, iB = (dB - sB) / 100.0;
+			var a = (int)(amount * 100);
+			int tR = sR + (int)(iR * a);
+			int tG = sG + (int)(iG * a);
+			int tB = sB + (int)(iB * a);
+			return Color.FromArgb(tR, tG, tB);
+		}
+
+		public static Color Lerp(Color source, Color dest, double amount)
+		{
+			return Lerp(source.R, source.G, source.B, dest.R, dest.G, dest.B, amount);
+		}
 	}
 
 	public static class Descriptions

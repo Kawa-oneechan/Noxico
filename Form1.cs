@@ -83,7 +83,7 @@ namespace Noxico
 			public Color Background;
         }
         private Cell[,] image = new Cell[80, 25];
-        private Cell[,] previousImage = new Cell[80, 25];
+        private Cell[,] previousImage = new Cell[80, 25];		
 		private Bitmap fontBitmap;
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
@@ -412,19 +412,21 @@ namespace Noxico
         {
             using (var gfx = Graphics.FromImage(backBuffer))
             {
-                for (int row = 0; row < 25; row++)
-                    for (int col = 0; col < 80; col++)
-                    {
-                        if (image[col, row].Character != previousImage[col, row].Character ||
-                            image[col, row].Foreground != previousImage[col, row].Foreground ||
-                            image[col, row].Background != previousImage[col, row].Background)
-                        {
-                            DrawCell(gfx, row, col, image[col, row]);
-                            previousImage[col, row].Character = image[col, row].Character;
-                            previousImage[col, row].Foreground = image[col, row].Foreground;
-                            previousImage[col, row].Background = image[col, row].Background;
-                        }
-                    }
+				for (int row = 0; row < 25; row++)
+				{
+					for (int col = 0; col < 80; col++)
+					{
+						if (image[col, row].Character != previousImage[col, row].Character ||
+							image[col, row].Foreground != previousImage[col, row].Foreground ||
+							image[col, row].Background != previousImage[col, row].Background)
+						{
+							DrawCell(gfx, row, col, image[col, row]);
+							previousImage[col, row].Character = image[col, row].Character;
+							previousImage[col, row].Foreground = image[col, row].Foreground;
+							previousImage[col, row].Background = image[col, row].Background;
+						}
+					}
+				}
             }
             this.Refresh();
         }
