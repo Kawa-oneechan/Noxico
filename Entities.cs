@@ -757,7 +757,7 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[(int)Keys.B])
 				NoxicoGame.Sound.PlaySound("Alert");
 
-			if (NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.Q])
+			if (NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Lookat message]");
@@ -769,7 +769,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.P])
+			if (NoxicoGame.KeyMap[(int)Keys.P] || NoxicoGame.KeyMap[(int)Keys.Oemcomma])
 			{
 				NoxicoGame.ClearKeys();
 				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);

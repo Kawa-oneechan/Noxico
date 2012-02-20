@@ -411,6 +411,10 @@ namespace Noxico
 
 		public static Color Lerp(int sR, int sG, int sB, int dR, int dG, int dB, double amount)
 		{
+			if (amount < 0)
+				amount = 0;
+			else if (amount > 1)
+				amount = 1;
 			double iR = (dR - sR) / 100.0, iG = (dG - sG) / 100.0, iB = (dB - sB) / 100.0;
 			var a = (int)(amount * 100);
 			int tR = sR + (int)(iR * a);
@@ -422,6 +426,11 @@ namespace Noxico
 		public static Color Lerp(Color source, Color dest, double amount)
 		{
 			return Lerp(source.R, source.G, source.B, dest.R, dest.G, dest.B, amount);
+		}
+
+		public static Color LerpDarken(this Color color, double amount)
+		{
+			return Lerp(color, Color.Black, amount);
 		}
 	}
 
@@ -806,13 +815,13 @@ namespace Noxico
 		public override string ToString()
 		{
 			var g = GetGender() + " ";
-			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
-				(g == "female " && (HasToken("femaleonly") || HasToken("femalename"))) ||
+			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
+				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == "hermaphrodite " && HasToken("hermonly")))
 				g = "";
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {2}{3}", Name, A, g, Title);
-			return string.Format("{0} {1}{2}", A, g, Title);
+				return string.Format("{0}, {1} {3}", Name, A, g, Title);
+			return string.Format("{0} {2}", A, g, Title);
 		}
 
 		public string GetName()
@@ -832,12 +841,12 @@ namespace Noxico
 			if (HasToken("invisiblegender"))
 				gendered = false;
 			var g = GetGender() + " ";
-			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
-				(g == "female " && (HasToken("femaleonly") || HasToken("femalename"))) ||
+			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
+				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == "hermaphrodite " && HasToken("hermonly")) ||
 				!gendered)
 				g = "";
-			return string.Format("{0} {1}{2}", A, g, Title);
+			return string.Format("{0} {2}", A, g, Title);
 		}
 
 		public string GetGender()
@@ -854,11 +863,11 @@ namespace Noxico
 		public void UpdateTitle()
 		{
 			var g = GetGender();
-			Title = Species;
-			if (g == "male" && HasToken("malename"))
-				Title = GetToken("malename").Tokens[0].Name;
-			else if (g == "female" && HasToken("femalename"))
-				Title = GetToken("femalename").Tokens[0].Name;
+			Title = Species.ToLowerInvariant();
+			if (g == "male" && GetToken("terms").HasToken("male"))
+				Title = GetToken("terms").GetToken("male").Text;
+			else if (g == "female" && GetToken("terms").HasToken("female"))
+				Title = GetToken("terms").GetToken("female").Text;
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
@@ -1013,12 +1022,14 @@ namespace Noxico
 			}
 
 			var newChar = new Character();
-			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@species=\"" + bodyPlan + "\"]") as XmlElement;
+			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
 			var plan = xDoc.CreateElement("bodyplan");
 			plan.InnerXml = planSource.InnerXml;
-			newChar.Species = planSource.GetAttribute("species");
-			newChar.Name = new Name(newChar.Species);
-			newChar.A = planSource.GetAttribute("a");
+			//newChar.Species = planSource.GetAttribute("species");
+			//newChar.Name = new Name(newChar.Species);
+			newChar.Name = new Name();
+			newChar.A = "a";
+			//newChar.A = planSource.GetAttribute("a");
 			Roll(plan);
 			OneOf(plan);
 			newChar.Tokens = Token.Tokenize(plan);
@@ -1092,6 +1103,15 @@ namespace Noxico
 			patMother.Regenerate();
 			newChar.Name.ResolvePatronym(patFather, patMother);
 			newChar.IsProperNamed = true;
+
+			var terms = newChar.GetToken("terms");
+			newChar.Species = gender.ToString() + " " +  terms.GetToken("generic").Text;
+			if (gender == Gender.Male && terms.HasToken("male"))
+				newChar.Species = terms.GetToken("male").Text;
+			else if (gender == Gender.Female && terms.HasToken("female"))
+				newChar.Species = terms.GetToken("female").Text;
+			else if (gender == Gender.Herm && terms.HasToken("herm"))
+				newChar.Species = terms.GetToken("herm").Text;
 
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
@@ -1715,7 +1735,7 @@ namespace Noxico
 					else if (legs.HasToken("genbeast"))
 						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in beastlike hind-paws.");
 					else if (legs.HasToken("cow") || legs.HasToken("horse"))
-						sb.AppendFormat("[His] legs are muscled and jointed oddly, covered in fur, and end in a pair of bestial hooves.");
+						sb.AppendFormat("[His] legs are muscled and jointed oddly, covered in fur, and end in a pair of {0} hooves.", this.HasToken("marshmallow") ? "soft" : "bestial");
 					else if (legs.HasToken("dog"))
 						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in dog-like hind-paws.");
 					else if (legs.HasToken("stilleto"))
@@ -2154,7 +2174,9 @@ namespace Noxico
 			var tempRemove = new Stack<Token>();
 			var items = character.GetToken("items");
 
-			if ((equip.HasToken("hands") || equip.HasToken("ring")) && (character.HasToken("legs") && character.GetToken("legs").HasToken("quadruped")))
+			//TODO: make full quadrupeds equip weapons in their mouth instead of the hands they don't have.
+			//This means they can carry only ONE weapon at a time, and maybe not be able to converse until unequipped.
+			if ((equip.HasToken("hands") || equip.HasToken("ring")) && (character.HasToken("noarms")))
 				throw new ItemException("[You] cannot put on the " + this.Name + " because [you] lack[s] hands.");
 
 			if (equip.HasToken("hand"))

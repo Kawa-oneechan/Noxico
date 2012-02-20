@@ -68,7 +68,8 @@ namespace Noxico
 			if (type == NameType.Surname)
 			{
 				var patro = typeSet.SelectSingleNode("patronymic") as XmlElement;
-				return "#patronym/" + patro.GetAttribute("malesuffix") + "/" + patro.GetAttribute("femalesuffix");
+				if (patro != null)
+					return "#patronym/" + patro.GetAttribute("malesuffix") + "/" + patro.GetAttribute("femalesuffix");
 			}
 
 			var illegal = TrySelect("illegal", typeSet);

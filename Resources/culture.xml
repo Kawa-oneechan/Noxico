@@ -175,7 +175,6 @@
 		</namegen>
 	</culture>
 
-
 	<culture id="dorf">
 		<namegen>
 			<set id="start">A, An, Ba, Bi, Bo, Bom, Da, Dar, De, Do, Du, Due, Duer, Dwa, Fa, Fal, Fi, Fre, Fun, Ga, Gar, Gim, Glo, Go, Gom, Gro, Gwar, Ib, Jor, Ka, Ki, Kil, Lo, Mar, Na, Nal, O, Ras, Ren, Ro, Ta, Tar, Tel, Thi, Tho, Thon, Thra, Tor, Von, We, Wer, Yen, Yur</set>
@@ -207,6 +206,50 @@
 					<rule>
 						<set id="sur_start" />
 						<set id="sur_end" />
+					</rule>
+				</rules>
+			</surname>
+			<town copy="default" />
+		</namegen>
+	</culture>
+
+	<culture id="pony">
+		<cultureinfo>
+			<bodyplans>
+				<plan name="littlepony" />
+			</bodyplans>
+			<monogamous>0.80</monogamous>
+			<marriage>0.60</marriage>
+		</cultureinfo>
+		<namegen>
+			<set id="a">Acorn, Azure, Amethyst, Cotton, Flora, Kitty, Candy, Cherry, Bluebery, Carrot, Starlight, Flower, Lily, Rose, Lotus, Marmalade, Bonnie, Peachy, Raisin, Roxie, Ruby, Storm, Sunny, Cloud, Cappuccino, Cotton, Daisy, Firefly, Dizzy, Lightning, Medley, Rainbow, Tornado, Crescent, Lemon, Seafoam, Twilight, Twinkle</set>
+			<set id="b">Twist, Star, Sparkle, Dash, Pie, Blossom, Cake, Coke, Stardust, Waters, Days, Daze, Kicker, Twister, Day, Hearts</set>
+			<female>
+				<rules>
+					<rule>
+						<set id="a" />
+						<space />
+						<set id="b" />
+					</rule>
+				</rules>
+				<illegal>Star Star, Twilight Sparkle, Rainbow Dash</illegal>
+			</female>
+			<!-- Could use a separate, more MANLY set for the stallions, but so far I don't give a buck. -->
+			<male>
+				<rules>
+					<rule>
+						<set id="a" />
+						<space />
+						<set id="b" />
+					</rule>
+				</rules>
+				<illegal>Star Star</illegal>
+			</male>
+			<!-- I wonder if this'll work. Not so much in generating a blank, but in determining the surname for offspring. Probably will. -->
+			<surname>
+				<rules>
+					<rule>
+						<space />
 					</rule>
 				</rules>
 			</surname>
