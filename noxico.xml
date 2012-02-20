@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <stuff>
 	<bodyplans>
-		<bodyplan species="human" a="a" the="the">
+		<bodyplan id="human">
 			<culture>
 				<human />
 			</culture>
 			<normalgenders />
-			<malename>
-				<man />
-			</malename>
-			<femalename>
-				<woman />
-			</femalename>
+			<terms>
+				<generic text="yes">human</generic>
+				<male text="yes">man</male>
+				<female text="yes">woman</female>
+			</terms>
 			<playable />
 			<tallness>
 				<roll>1d50+150</roll>
@@ -125,12 +124,14 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="imp" a="an" the="the">
+		<bodyplan id="imp">
+			<culture>
+				<demonic />
+			</culture>
 			<maleonly />
-			<xenoname />
-			<language>
-				<goblin />
-			</language>
+			<terms>
+				<generic text="yes">imp</generic>
+			</terms>
 			<tallness>
 				<roll>1d40+100</roll>
 			</tallness>
@@ -172,12 +173,14 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="goblin" a="a" the="the">
+		<bodyplan id="goblin">
+			<culture>
+				<demonic />
+			</culture>
 			<femaleonly />
-			<xenoname />
-			<language>
-				<goblin />
-			</language>
+			<terms>
+				<generic text="yes">goblin</generic>
+			</terms>
 			<tallness>
 				<roll>1d40+120</roll>
 			</tallness>
@@ -226,47 +229,16 @@
 			</vagina>
 		</bodyplan>
 
-		<bodyplan species="fetish cultist" a="a" the="the">
+		<bodyplan id="bee">
+			<culture>
+				<japanese />
+			</culture>
 			<femaleonly />
-			<tallness>
-				<roll>1d20+160</roll>
-			</tallness>
-			<hair>
-				<length>15</length>
-				<color>
-					<black />
-				</color>
-			</hair>
-			<skin>
-				<pale />
-			</skin>
-			<eyes />
-			<ears>
-				<human />
-			</ears>
-			<legs />
-			<hips>6</hips>
-			<fertility>10</fertility>
-			<ass>
-				<size>6</size>
-				<looseness>2</looseness>
-				<wetness>1</wetness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>5</size>
-				<nipples>1</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>4</wetness>
-				<looseness>1</looseness>
-				<fuckable />
-			</vagina>
-		</bodyplan>
-
-		<bodyplan species="bee girl" a="a" the="the">
-			<femaleonly />
+			<terms>
+				<generic text="yes">bee</generic>
+				<male text="yes">bee drone</male>
+				<female text="yes">bee girl</female>
+			</terms>
 			<tallness>
 				<roll>1d20+140</roll>
 			</tallness>
@@ -318,11 +290,14 @@
 			</vagina>
 		</bodyplan>
 
-		<bodyplan species="naga" a="a" the="the">
-			<!-- <femaleonly /> -->
+		<bodyplan id="naga">
 			<culture>
-				<demonic />
+				<japanese />
 			</culture>
+			<normalgenders />
+			<terms>
+				<generic text="yes">naga</generic>
+			</terms>
 			<playable />
 			<tallness>
 				<roll>1d20+160</roll>
@@ -389,21 +364,17 @@
 			</costume>
 		</bodyplan>
 
-		<bodyplan species="foocubus" a="a" the="the">
+		<bodyplan id="foocubus">
 			<culture>
 				<demonic />
 			</culture>
 			<normalgenders />
-			<xenoname />
-			<language>
-				<demonic />
-			</language>
-			<femalename>
-				<succubus />
-			</femalename>
-			<malename>
-				<incubus/>
-			</malename>
+			<terms>
+				<generic text="yes">cubi</generic>
+				<male text="yes">incubus</male>
+				<female text="yes">succubus</female>
+				<herm text="yes">omnibus</herm>
+			</terms>
 			<playable />
 			<namegen>
 				<nomiddlename />
@@ -498,18 +469,18 @@
 			</items>
 		</bodyplan>
 
-		<bodyplan species="felinoid" a="a" the="the">
+		<bodyplan id="felinoid">
 			<culture>
-				<human />
+				<japanese />
 			</culture>
 			<normalgenders />
-			<femalename>
-				<catgirl />
-			</femalename>
-			<malename>
-				<catboy />
-			</malename>
 			<playable />
+			<terms>
+				<generic text="yes">felinoid</generic>
+				<male text="yes">catboy</male>
+				<female text="yes">catgirl</female>
+				<herm text="yes">catherm</herm>
+			</terms>
 			<tallness>
 				<roll>1d40+150</roll>
 			</tallness>
@@ -580,15 +551,17 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="fox" a="a" the="the">
+		<bodyplan id="fox">
+			<culture>
+				<japanese />
+			</culture>
 			<normalgenders />
-			<femalename>
-				<foxgirl />
-			</femalename>
-			<malename>
-				<foxboy />
-			</malename>
 			<playable />
+			<terms>
+				<generic text="yes">fox</generic>
+				<male text="yes">foxboy</male>
+				<female text="yes">foxgirl</female>
+			</terms>
 			<tallness>
 				<roll>1d20+150</roll>
 			</tallness>
@@ -655,31 +628,18 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="little pony" a="a">
+		<bodyplan id="littlepony">
+			<culture>
+				<pony />
+			</culture>
 			<normalgenders />
-			<malename>
-				<colt />
-			</malename>
-			<femalename>
-				<filly />
-			</femalename>
 			<playable />
-			<namegen>
-				<nomiddlename />
-				<boatmurder />
-				<symbol>
-					<PersonalPonyName />
-				</symbol>
-				<symbol>
-					<Flowery />
-					<Peace />
-					<New />
-					<Mythic />
-					<Balance />
-					<Light />
-				</symbol>
-			</namegen>
-			<marshmallow />
+			<terms>
+				<generic text="yes">little pony</generic>
+				<male text="yes">colt</male>
+				<female text="yes">filly</female>
+			</terms>
+			<marshmallow /> <!-- <marshmallow> adjusts the way hooves are described. -->
 			<tallness>140</tallness>
 			<hair>
 				<length>16</length>
@@ -730,12 +690,8 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="horrorterror" a="a" the="the" >
+		<bodyplan id="horrorterror">
 			<invisiblegender />
-			<xenoname />
-			<language>
-				<demonic />
-			</language>
 			<tallness>
 				<roll>1d100+150</roll>
 			</tallness>
@@ -907,18 +863,17 @@
 			</balls>
 		</bodyplan>
 
-		<bodyplan species="slime">
-			<neverneuter />
+		<bodyplan id="slime">
 			<culture>
 				<japanese />
 			</culture>
-			<malename>
-				<slimeboi />
-			</malename>
-			<femalename>
-				<slimegirl />
-			</femalename>
+			<neverneuter />
 			<playable />
+			<terms>
+				<generic text="yes">slime</generic>
+				<male text="yes">slimeboi</male>
+				<female text="yes">slimegirl</female>
+			</terms>
 			<tallness>
 				<roll>1d50+100</roll>
 			</tallness>

@@ -1698,6 +1698,9 @@ namespace Noxico
 
 			//TODO: place dungeon entrances
 			//TODO: excavate dungeons
+			var dunGen = new CaveGenerator();
+			dunGen.Create(Biome.Grassland);
+			dunGen.ToTilemap(ref Boards[0].Tilemap);
 
 #if DEBUG
 			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);

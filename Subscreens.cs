@@ -570,6 +570,7 @@ namespace Noxico
 
 		private class PlayableRace
 		{
+			public string ID { get; set; }
 			public string Name { get; set; }
 			public List<string> HairColors { get; set; }
 			public List<string> GenderNames { get; set; }
@@ -590,7 +591,7 @@ namespace Noxico
 			foreach (var playable in playables)
 			{
 				var bodyPlan = playable.ParentNode as XmlElement;
-				var name = bodyPlan.GetAttribute("species");
+				var id = bodyPlan.GetAttribute("id");
 
 				var genlock = false;
 				if (bodyPlan.SelectSingleNode("maleonly") != null)
@@ -602,14 +603,18 @@ namespace Noxico
 				if (bodyPlan.SelectSingleNode("neuteronly") != null)
 					genlock = true;
 
+				var name = id;
+				var n = bodyPlan.SelectSingleNode("terms/generic");
+				if (n != null)
+					name = n.InnerText;
 				var male = name;
 				var female = name;
-				var n = bodyPlan.SelectSingleNode("malename");
+				n = bodyPlan.SelectSingleNode("terms/male");
 				if (n != null)
-					male = n.ChildNodes.OfType<XmlElement>().First().Name;
-				n = bodyPlan.SelectSingleNode("femalename");
+					male = n.InnerText;
+				n = bodyPlan.SelectSingleNode("terms/female");
 				if (n != null)
-					female = n.ChildNodes.OfType<XmlElement>().First().Name;
+					female = n.InnerText;
 				male = ti.ToTitleCase(male);
 				female = ti.ToTitleCase(female);
 				var genders = new List<string>() { male, female };
@@ -635,7 +640,7 @@ namespace Noxico
 					}
 				}
 
-				ret.Add(new PlayableRace() { Name = name, GenderNames = genders, HairColors = hairs, GenderLocked = genlock });
+				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, GenderLocked = genlock });
 			}
 			return ret;
 		}
@@ -658,7 +663,7 @@ namespace Noxico
 				host.Write("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4", Color.Black, Color.Transparent, 44, 4);
 
 				races.Clear();
-				playables.ForEach(x => races.Add(x.GenderNames[sex]));
+				playables.ForEach(x => races.Add(x.Name));
 				hairColors.Clear();
 				hairColors.AddRange(playables[race].HairColors);
 
@@ -682,15 +687,19 @@ namespace Noxico
 					else if (Subscreens.MouseY == 10)
 					{
 						sel = 1;
-						if (Subscreens.MouseX >= 45 && Subscreens.MouseX <= 52)
-							sex = 0;
-						else if (Subscreens.MouseX >= 59 && Subscreens.MouseX <= 69)
-							sex = 1;
+						trig[(int)Keys.Left] = true;
+#if !USE_EXTENDED_TILES
+						if (Subscreens.MouseX == 69)
+#else
+						if (Subscreens.MouseX == 68)
+#endif
+							trig[(int)Keys.Right] = true;
 						Subscreens.Redraw = true;
 					}
 					else if (Subscreens.MouseY == 13)
 					{
 						sel = 2;
+						if (Subscreens.MouseX == 67)
 						if (Subscreens.MouseX == 67)
 							trig[(int)Keys.Left] = true;
 #if !USE_EXTENDED_TILES
@@ -704,14 +713,10 @@ namespace Noxico
 					else if (Subscreens.MouseY == 16)
 					{
 						sel = 3;
-						if (Subscreens.MouseX == 67)
-							trig[(int)Keys.Left] = true;
-#if !USE_EXTENDED_TILES
-						if (Subscreens.MouseX == 69)
-#else
-						if (Subscreens.MouseX == 68)
-#endif
-							trig[(int)Keys.Right] = true;
+						if (Subscreens.MouseX >= 45 && Subscreens.MouseX <= 52)
+							sex = 0;
+						else if (Subscreens.MouseX >= 59 && Subscreens.MouseX <= 69)
+							sex = 1;
 						Subscreens.Redraw = true;
 					}
 					else if (Subscreens.MouseY == 18)
@@ -730,29 +735,19 @@ namespace Noxico
 			{
 				Subscreens.Redraw = false;
 
-				/*
-				var chunkFile = Path.Combine("tilechunks", "portrait_" + races[race].ToLowerInvariant() + ".png");
-				if (File.Exists(chunkFile))
-					host.MergeTileChunk((char)0xE0, new Bitmap(chunkFile));
-				else
-					host.MergeTileChunk((char)0xE0, new Bitmap(160, 14));
-				*/
-
 				host.Write(helpText[sel], Color.Silver, Color.Transparent, 0, 24);
 
 				host.Write("Name", sel == 0 ? Color.Red : Color.Gray, Color.Transparent, 44, 6);
-				host.Write("Sex", sel == 1 ? Color.Red : Color.Gray, Color.Transparent, 44, 9);
+				host.Write("Species", sel == 1 ? Color.Red : Color.Gray, Color.Transparent, 44, 9);
 				host.Write("Hair", sel == 2 ? Color.Red : Color.Gray, Color.Transparent, 44, 12);
-				host.Write("Species and Gender", sel == 3 ? Color.Red : Color.Gray, Color.Transparent, 44, 15);
+				host.Write("Sex", sel == 3 ? Color.Red : Color.Gray, Color.Transparent, 44, 15);
 
 #if !USE_EXTENDED_TILES
+				host.Write("\x1D", sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 68, 10);
 				host.Write("\x1D", sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 68, 13);
-				host.Write("\x1D", sel == 3 ? Color.Black : Color.Gray, Color.Transparent, 68, 16);
 #else
+				host.Write("\x11A\x11B", sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 67, 10);
 				host.Write("\x11A\x11B", sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 67, 13);
-				host.Write("\x11A\x11B", sel == 3 ? Color.Black : Color.Gray, Color.Transparent, 67, 16);
-				//host.Write(" ", Color.Gray, Color.White, 69, 13);
-				//host.Write(" ", Color.Gray, Color.White, 69, 16);
 #endif
 
 				var n = string.Concat(name);
@@ -760,29 +755,27 @@ namespace Noxico
 					host.Write("        (random)        ", Color.Gray, Color.Transparent, 45, 7);
 				else
 					host.Write(n.PadRight(24), sel == 0 ? Color.Black : Color.Gray, Color.Transparent, 45, 7);
-				//if (sel == 0)
-				//	host.SetCell(7, 45 + nameCursor, (char)0xB1, Color.Gray, Color.Transparent);
+
+				host.Write(races[race].PadRight(20), sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 45, 10);
 
 				if (!playables[race].GenderLocked)
 				{
 #if !USE_EXTENDED_TILES
-					host.Write("[ ] Male       [ ] Female", Color.Gray, Color.Transparent, 44, 11);
-					host.SetCell(11, 45, sex == 0 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
-					host.SetCell(11, 60, sex == 1 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
+					host.Write("[ ] Male       [ ] Female", Color.Gray, Color.Transparent, 44, 16);
+					host.SetCell(16, 45, sex == 0 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
+					host.SetCell(16, 60, sex == 1 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
 #else
-					host.Write("\x113\x114  Male       \x113\x114  Female", Color.Gray, Color.Transparent, 44, 10);
-					host.SetCell(10, 45, sex == 0 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
-					host.SetCell(10, 60, sex == 1 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
+					host.Write("\x113\x114  Male       \x113\x114  Female", Color.Gray, Color.Transparent, 44, 16);
+					host.SetCell(16, 45, sex == 0 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
+					host.SetCell(16, 60, sex == 1 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
 #endif
 				}
 				else
-					host.Write("      Cannot choose      ", Color.Silver, Color.Transparent, 44, 11);
+					host.Write("      Cannot choose      ", Color.Silver, Color.Transparent, 44, 16);
 
 
 				host.Write("\xDB\xDD", Toolkit.GetColor(hairColors[hair]), Color.Transparent, 45, 13);
 				host.Write(Toolkit.NameColor(hairColors[hair]).PadRight(20), sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 47, 13);
-
-				host.Write(races[race].PadRight(20), sel == 3 ? Color.Black : Color.Gray, Color.Transparent, 45, 16);
 
 				if (worldgen.ThreadState == System.Threading.ThreadState.Running)
 					host.Write("Working", Color.Gray, Color.Transparent, 52, 18);
@@ -832,8 +825,6 @@ namespace Noxico
 					{
 						NoxicoGame.LastPress = (char)255;
 						sel++;
-						if (playables[race].GenderLocked)
-							sel++;
 						Subscreens.Redraw = true;
 					}
 					else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
@@ -860,71 +851,7 @@ namespace Noxico
 					}
 				}
 			}
-			else if (sel == 1) //Sex
-			{
-				if (NoxicoGame.LastPress == '\r')
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel--;
-					Subscreens.Redraw = true;
-				}
-				else if (keys[(int)Keys.Left])
-				{
-					sex = 0;
-					Subscreens.Redraw = true;
-					races.Clear();
-					playables.ForEach(x => races.Add(x.GenderNames[sex]));
-				}
-				else if (keys[(int)Keys.Right])
-				{
-					sex = 1;
-					Subscreens.Redraw = true;
-					races.Clear();
-					playables.ForEach(x => races.Add(x.GenderNames[sex]));
-				}
-			}
-			else if (sel == 2) //Hair
-			{
-				if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel--;
-					if (playables[race].GenderLocked)
-						sel--;
-					Subscreens.Redraw = true;
-				}
-				else if (trig[(int)Keys.Left])
-				{
-					if (hair == 0)
-						hair = hairColors.Count;
-					hair--;
-					Subscreens.Redraw = true;
-				}
-				else if (trig[(int)Keys.Right])
-				{
-					hair = (hair + 1) % hairColors.Count;
-					Subscreens.Redraw = true;
-				}
-			}
-			else if (sel == 3) //Race
+			else if (sel == 1) //Race
 			{
 				if (NoxicoGame.LastPress == '\r')
 				{
@@ -935,7 +862,7 @@ namespace Noxico
 				else if (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0])
 				{
 					NoxicoGame.LastPress = (char)255;
-					sel = 0;
+					sel = 2;
 					Subscreens.Redraw = true;
 				}
 				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
@@ -967,6 +894,68 @@ namespace Noxico
 						hair = 0;
 				}
 			}
+			else if (sel == 2) //Hair
+			{
+				if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
+				{
+					NoxicoGame.LastPress = (char)255;
+					sel++;
+					if (playables[race].GenderLocked)
+						sel++;
+					Subscreens.Redraw = true;
+				}
+				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
+				{
+					NoxicoGame.LastPress = (char)255;
+					sel--;
+					if (playables[race].GenderLocked)
+						sel--;
+					Subscreens.Redraw = true;
+				}
+				else if (trig[(int)Keys.Left])
+				{
+					if (hair == 0)
+						hair = hairColors.Count;
+					hair--;
+					Subscreens.Redraw = true;
+				}
+				else if (trig[(int)Keys.Right])
+				{
+					hair = (hair + 1) % hairColors.Count;
+					Subscreens.Redraw = true;
+				}
+			}
+			else if (sel == 3) //Sex
+			{
+				if (NoxicoGame.LastPress == '\r')
+				{
+					NoxicoGame.LastPress = (char)255;
+					sel++;
+					Subscreens.Redraw = true;
+				}
+				else if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
+				{
+					NoxicoGame.LastPress = (char)255;
+					sel = 0;
+					Subscreens.Redraw = true;
+				}
+				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
+				{
+					NoxicoGame.LastPress = (char)255;
+					sel--;
+					Subscreens.Redraw = true;
+				}
+				else if (keys[(int)Keys.Left])
+				{
+					sex = 0;
+					Subscreens.Redraw = true;
+				}
+				else if (keys[(int)Keys.Right])
+				{
+					sex = 1;
+					Subscreens.Redraw = true;
+				}
+			}
 			else if (sel == 4) //DONE!
 			{
 				if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
@@ -978,7 +967,7 @@ namespace Noxico
 				{
 					//NoxicoGame.HostForm.Noxico.CreateTheWorld();
 					var playerName = string.Concat(name).Trim();
-					host.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[race].Name.ToLowerInvariant(), hairColors[hair].ToLowerInvariant());
+					host.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[race].ID, hairColors[hair].ToLowerInvariant());
 					NoxicoGame.Sound.PlayMusic(host.Noxico.CurrentBoard.Music);
 					//NoxicoGame.HostForm.Noxico.SaveGame();
 					host.Noxico.CurrentBoard.Redraw();

@@ -180,5 +180,53 @@ namespace Noxico
 			{
 			}
 		}
+
+		public static void JustDoIt(ref int[,] map, int mapRows = 25, int mapCols = 80, bool diagonals = true)
+		{
+			var vhn = 9000;
+
+			//Basically the same as Update but without the hotspots and shit, and adapted for less conksuck definitions of "row" and "column".
+			//TODO: make Dijkstra.cs's Update() less conksuck.
+			var change = false;
+			do
+			{
+				change = false;
+				for (var row = 0; row < mapRows; row++)
+				{
+					for (var col = 0; col < mapCols; col++)
+					{
+						//Find lowest-value neighbor
+						var lowest = vhn;
+						if (row > 0 && map[col, row - 1] < lowest)
+							lowest = map[col, row - 1];
+						if (row < mapRows - 1 && map[col, row + 1] < lowest)
+							lowest = map[col, row + 1];
+						if (col > 0 && map[col - 1, row] < lowest)
+							lowest = map[col - 1, row];
+						if (col < mapCols - 1 && map[col + 1, row] < lowest)
+							lowest = map[col + 1, row];
+
+						if (diagonals)
+						{
+							if (row > 0 && col > 0 && map[col - 1, row - 1] < lowest)
+								lowest = map[col - 1, row - 1];
+							if (row > 0 && col < mapCols - 1 && map[col + 1, row - 1] < lowest)
+								lowest = map[col + 1, row - 1];
+							if (row < mapRows - 1 && col > 0 && map[col - 1, row + 1] < lowest)
+								lowest = map[col - 1, row + 1];
+							if (row < mapRows - 1 && col < mapCols - 1 && map[col + 1, row + 1] < lowest)
+								lowest = map[col + 1, row + 1];
+						}
+
+						if (map[col, row] > lowest + 1)
+						{
+							map[col, row] = lowest + 1;
+							change = true;
+						}
+					}
+				}
+			} while (change);
+		}
+
 	}
 }
