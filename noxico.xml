@@ -376,22 +376,6 @@
 				<herm text="yes">omnibus</herm>
 			</terms>
 			<playable />
-			<namegen>
-				<nomiddlename />
-				<boatmurder />
-				<symbol>
-					<Darkness />
-					<Mythic />
-				</symbol>
-				<symbol>
-					<Wild />
-					<Untoward />
-					<Mystery />
-					<Leader />
-					<Subordinate />
-					<New />
-				</symbol>
-			</namegen>
 			<tallness>
 				<roll>1d20+170</roll>
 			</tallness>
@@ -489,12 +473,17 @@
 					<roll>1d4+5</roll>
 				</length>
 				<color>
-					<oneof>blond,brown,black,red,gray,white,auburn</oneof>
+					<oneof>blond,brown,black,red,orange,gray,white,auburn</oneof>
 				</color>
 			</hair>
+			<fur>
+				<oneof>brown,orange,white,gray</oneof>
+			</fur>
+			<!--
 			<skin>
 				<oneof>light,light,light,pale,pale,dark,dark,olive</oneof>
 			</skin>
+			-->
 			<eyes />
 			<ears>
 				<cat />
@@ -573,9 +562,14 @@
 					<oneof>blond,brown,black,red</oneof>
 				</color>
 			</hair>
+			<fur>
+				<sandybrown />
+			</fur>
+			<!--
 			<skin>
 				<light />
 			</skin>
+			-->
 			<eyes />
 			<ears>
 				<genbeast />

@@ -1313,6 +1313,8 @@ namespace Noxico
 			}
 			else
 				Introduction.Title();
+
+			Subscreen = UITest.Handler;
 		}
 
 		public void SaveGame()

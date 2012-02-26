@@ -191,7 +191,7 @@
 					</rule>
 				</rules>
 			</male>
-			<male>
+			<female>
 				<illegal>dueal, frefra, grogret</illegal>
 				<rules>
 					<rule>
@@ -199,7 +199,7 @@
 						<set id="female_end" />
 					</rule>
 				</rules>
-			</male>
+			</female>
 			<surname>
 				<!-- Specifying rules here so we get names like "Duerlin Bloodfoot", whose descendants are also Bloodfoots. -->
 				<rules>
