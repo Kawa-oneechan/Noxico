@@ -1085,4 +1085,227 @@ namespace Noxico
 
 		}
 	}
+
+	public class UITest
+	{
+		private class PlayableRace
+		{
+			public string ID { get; set; }
+			public string Name { get; set; }
+			public string Skin { get; set; }
+			public List<string> HairColors { get; set; }
+			public List<string> SkinColors { get; set; }
+			public List<string> EyeColors { get; set; }
+			public List<string> GenderNames { get; set; }
+			public bool GenderLocked { get; set; }
+			public override string ToString()
+			{
+				return Name;
+			}
+		}
+		private static List<PlayableRace> CollectPlayables()
+		{
+			var ti = CultureInfo.InvariantCulture.TextInfo;
+			var ret = new List<PlayableRace>();
+			var xDoc = new XmlDocument();
+			xDoc.Load("Noxico.xml");
+			var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
+			foreach (var playable in playables)
+			{
+				var bodyPlan = playable.ParentNode as XmlElement;
+				var id = bodyPlan.GetAttribute("id");
+
+				var genlock = false;
+				if (bodyPlan.SelectSingleNode("maleonly") != null)
+					genlock = true;
+				if (bodyPlan.SelectSingleNode("femaleonly") != null)
+					genlock = true;
+				if (bodyPlan.SelectSingleNode("hermonly") != null)
+					genlock = true;
+				if (bodyPlan.SelectSingleNode("neuteronly") != null)
+					genlock = true;
+
+				var name = id;
+				var n = bodyPlan.SelectSingleNode("terms/generic");
+				if (n != null)
+					name = n.InnerText;
+				var male = name;
+				var female = name;
+				n = bodyPlan.SelectSingleNode("terms/male");
+				if (n != null)
+					male = n.InnerText;
+				n = bodyPlan.SelectSingleNode("terms/female");
+				if (n != null)
+					female = n.InnerText;
+				male = ti.ToTitleCase(male);
+				female = ti.ToTitleCase(female);
+				var genders = new List<string>() { male, female };
+
+				var hairs = new List<string>() { "<None>" };
+				n = bodyPlan.SelectSingleNode("hair/color");
+				if (n != null)
+				{
+					foreach (var hn in n.ChildNodes.OfType<XmlElement>())
+					{
+						if (hn.Name == "oneof")
+						{
+							hairs.Clear();
+							var oneof = ((XmlElement)hn).InnerText.Trim().Split(',').ToList();
+							oneof.ForEach(x => hairs.Add(ti.ToTitleCase(x)));
+							break;
+						}
+						else
+						{
+							hairs[0] = ti.ToTitleCase(hn.Name);
+							break;
+						}
+					}
+				}
+
+				var skinTypes = new[] { "skin", "fur", "scales", "slime", "rubber" };
+				var skins = new List<string>();
+				var skinName = skinTypes[0];
+				foreach (var skin in skinTypes)
+				{
+					n = bodyPlan.SelectSingleNode(skin);
+					if (n != null)
+					{
+						foreach (var sn in n.ChildNodes.OfType<XmlElement>())
+						{
+							if (sn.Name == "oneof")
+							{
+								skins.Clear();
+								var oneof = ((XmlElement)sn).InnerText.Trim().Split(',').ToList();
+								oneof.ForEach(x => skins.Add(ti.ToTitleCase(x)));
+								skinName = skin;
+								break;
+							}
+							else
+							{
+								skins.Add(ti.ToTitleCase(sn.Name));
+								skinName = skin;
+								break;
+							}
+						}
+					}
+				}
+				if (skins.Count > 0)
+					skins = skins.Distinct().ToList();
+				skins.Sort();
+
+				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, SkinColors = skins, Skin = skinName, GenderLocked = genlock });
+			}
+			return ret;
+		}
+
+
+
+		private static List<PlayableRace> playables = CollectPlayables();
+		//private static List<string> hairColors = new List<string>();
+		//private static List<string> races = new List<string>();
+
+		private static Dictionary<string, UIElement> controls = new Dictionary<string, UIElement>()
+		{
+			{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
+			{ "header", new UILabel("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4") { Left = 44, Top = 4, Foreground = Color.Black } },
+			{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
+			{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
+			{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10 } },
+
+			{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
+			{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
+			{ "speciesLabel", new UILabel("Species") { Left = 44, Top = 10 } },
+			{ "species", new UISingleList() { Left = 45, Top = 11, Width = 24 } },
+			{ "sexLabel", new UILabel("Sex") { Left = 44, Top = 13 } },
+			{ "sexNo", new UILabel("Not available") { Left = 50, Top = 14 } },
+			{ "sex", new UIBinary() { Left = 45, Top = 14 } },
+
+			{ "hairLabel", new UILabel("Hair color") { Left = 44, Top = 7 } },
+			{ "hair", new UIColorList() { Left = 45, Top = 8, Width = 24 } },
+			{ "bodyLabel", new UILabel("Body color") { Left = 44, Top = 10 } },
+			{ "body", new UIColorList() { Left = 45, Top = 11, Width = 24 } },
+			{ "eyesLabel", new UILabel("Eye color") { Left = 44, Top = 13 } },
+			{ "eyes", new UIColorList() { Left = 45, Top = 14, Width = 24 } },
+
+			{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7 } },
+			{ "gift", new UIList("", null, new[] { "Strength", "Toughness", "Speed", "Smarts", "Libido", "Touch", "Big Cock", "Lots of Jizz" }) { Left = 45, Top = 8, Width = 24, Height = 8 } },
+		};
+		private static List<UIElement>[] pages = new List<UIElement>[]
+		{
+			new List<UIElement>()
+			{
+				controls["backdrop"], controls["header"],
+				controls["nameLabel"], controls["name"],
+				controls["speciesLabel"], controls["species"],
+				controls["sexLabel"], controls["sexNo"], controls["sex"],
+				controls["next"],
+			},
+			new List<UIElement>()
+			{
+				controls["backdrop"], controls["header"],
+				controls["hairLabel"], controls["hair"],
+				controls["bodyLabel"], controls["body"],
+				controls["eyesLabel"], controls["eyes"],
+				controls["back"], controls["next"],
+			},
+			new List<UIElement>()
+			{
+				controls["backdrop"], controls["header"],
+				controls["giftLabel"], controls["gift"],
+				controls["back"], controls["play"],
+			},
+		};
+		
+		private static int page = 0;
+
+		public static void Handler()
+		{
+			var loadPage = new Action<int>(p =>
+			{
+				UIManager.Elements.Clear();
+				UIManager.Elements.AddRange(pages[page]);
+				UIManager.Highlight = UIManager.Elements[0];
+			});
+
+			var loadColors = new Action<int>(i =>
+			{
+				var species = playables[i];
+				controls["bodyLabel"].Text = species.Skin.Titlecase();
+				((UISingleList)controls["hair"]).Items.Clear();
+				((UISingleList)controls["body"]).Items.Clear();
+				((UISingleList)controls["eyes"]).Items.Clear();
+				((UISingleList)controls["hair"]).Items.AddRange(species.HairColors);
+				((UISingleList)controls["body"]).Items.AddRange(species.SkinColors);
+				((UISingleList)controls["eyes"]).Items.Add("Black");
+				((UISingleList)controls["hair"]).Index = 0;
+				((UISingleList)controls["body"]).Index = 0;
+				((UISingleList)controls["eyes"]).Index = 0;
+			});
+
+			controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
+			controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
+			//controls["play"].Enter = (s, e) => { quitplz = true; };
+
+			if (Subscreens.FirstDraw)
+			{
+				((UISingleList)controls["species"]).Items.Clear();
+				playables.ForEach(x => ((UISingleList)controls["species"]).Items.Add(x.Name.Titlecase()));
+				((UISingleList)controls["species"]).Index = 0;
+				loadColors(0);
+				((UISingleList)controls["species"]).Change = (s, e) => { loadColors(((UISingleList)controls["species"]).Index); };
+
+				UIManager.Initialize();
+				loadPage(page); 
+				Subscreens.FirstDraw = false;
+				Subscreens.Redraw = true;
+			}
+			if (Subscreens.Redraw)
+			{
+				UIManager.Draw();
+				Subscreens.Redraw = false;
+			}
+
+			UIManager.CheckKeys();
+		}
+	}
 }
