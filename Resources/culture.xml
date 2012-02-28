@@ -175,6 +175,36 @@
 		</namegen>
 	</culture>
 
+	<!-- Based on roots collected from BehindTheName, Ancient Germanic -->
+	<culture id="germanic">
+		<namegen>
+			<set id="a">Adal, Al, Alde, Alf, Amal, Ans, Arn, Bald, Bern, Ekke, Era, Ermen, Fardi, Fili, Folk, Fridu, Gau, Ger, Gil, Gild, Gisil, Gode, Guma, Hade, Helm, Her, Hild, Hrod, Hug, Hulde, Hun, Lam, Leo, Leub, Ric, Sig, Theo, Ulf, Wald, Wil</set>
+			<set id="m">ais, aric, berich, bern, boin, elm, funs, gar, gard, hard, her, hnod, laic, leub, mar, meri, nanth, ric, ulf, wald, wig, win, wolf</set>
+			<set id="f">a, ais, bern, berta, da, elma, funs, gar, gard, gund, hard, heidis, her, hilda, hnod, ia, ina, laic, mar, mera, ulf, wina, wolf</set>
+			<male>
+				<illegal>Ulfulf, Ulfwolf</illegal>
+				<rules>
+					<rule>
+						<set id="a" />
+						<set id="m" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<illegal>Ulfulf, Ulfwolf</illegal>
+				<rules>
+					<rule>
+						<set id="a" />
+						<set id="f" />
+					</rule>
+				</rules>
+			</female>
+			<!-- If only dorf surnames included the words "storm" and "cloak", you could risk an "Ulfric Stormcloak" ;) -->
+			<surname copy="dorf" />
+			<town copy="default" />
+		</namegen>
+	</culture>
+	
 	<culture id="dorf">
 		<namegen>
 			<set id="start">A, An, Ba, Bi, Bo, Bom, Da, Dar, De, Do, Du, Due, Duer, Dwa, Fa, Fal, Fi, Fre, Fun, Ga, Gar, Gim, Glo, Go, Gom, Gro, Gwar, Ib, Jor, Ka, Ki, Kil, Lo, Mar, Na, Nal, O, Ras, Ren, Ro, Ta, Tar, Tel, Thi, Tho, Thon, Thra, Tor, Von, We, Wer, Yen, Yur</set>
