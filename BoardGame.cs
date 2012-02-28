@@ -1313,8 +1313,6 @@ namespace Noxico
 			}
 			else
 				Introduction.Title();
-
-			Subscreen = UITest.Handler;
 		}
 
 		public void SaveGame()
@@ -1579,6 +1577,8 @@ namespace Noxico
 		}
 		private Biome[,] GenerateBiomeMap(int reach)
 		{
+			if (reach < 8)
+				throw new ArgumentOutOfRangeException("reach", "Reach must be at least 8. WHAT ARE YOU THINKING, KAWA?");
 			while (true)
 			{
 				var time = Environment.TickCount;
@@ -1629,11 +1629,20 @@ namespace Noxico
 
 		public void CreateTheWorld()
         {
+			var setStatus = new Action<string>(s =>
+			{
+				var line = UIManager.Elements.Find(x => x.Tag == "worldGen");
+				if (line == null)
+					return;
+				line.Text = s.PadRight(70);
+				line.Draw();
+			});
+
 			var host = NoxicoGame.HostForm;
 			this.Boards.Clear();
 
 			var reach = 8;
-			host.Write("Generating biome map...", Color.Silver, Color.Transparent, 50, 0);
+			setStatus("Generating biome map...");
 			var biomeMap = GenerateBiomeMap(reach);
 #if DEBUG
 			var colors = new[] { System.Drawing.Color.Green, System.Drawing.Color.Brown, System.Drawing.Color.Silver, System.Drawing.Color.DarkMagenta };
@@ -1654,7 +1663,7 @@ namespace Noxico
 			//mapBitmap.Save("biomes.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
 
-			HostForm.Write("Generating overworld...", Color.Silver, Color.Transparent, 50, 0);
+			setStatus("Generating overworld...");
 			Overworld = new int[reach, reach];
 			OverworldBarrier = reach * reach;
 			for (var y = 0; y < reach; y++)
@@ -1673,15 +1682,17 @@ namespace Noxico
 
 			//TODO: place world edges
 
-			host.Write("Placing towns...       ", Color.Silver, Color.Transparent, 50, 0);
+			setStatus("Placing towns...");
 			var townGen = new TownGenerator();
-			var townsToPlace = 6;
+			var townsToPlace = (int)Math.Floor(reach * 0.75); //originally, this was 6, based on a reach of 8.
+			//TODO: make this more scattery. With a large reach, towns will clump together in the north now.
 			while (townsToPlace > 0)
 			{
 				for (var x = 0; x < reach; x++)
 				{
 					for (var y = 0; y < reach; y++)
 					{
+						//setStatus("Placing towns... " + townsToPlace);
 						var thisMap = Boards[Overworld[x, y]];
 						var chances = new[] { 0.2, 0.02, 0, 0 };
 						if (townsToPlace > 0 && Toolkit.Rand.NextDouble() < chances[(int)biomeMap[x, y]])
@@ -1696,7 +1707,7 @@ namespace Noxico
 					}
 				}
 			}
-			//Now, what SHOULD happen is that the plaer starts in one of these towns we just placed. Preferably one in the grasslands.
+			//Now, what SHOULD happen is that the player starts in one of these towns we just placed. Preferably one in the grasslands.
 
 			//TODO: place dungeon entrances
 			//TODO: excavate dungeons
@@ -1709,12 +1720,13 @@ namespace Noxico
 #endif
 
             this.CurrentBoard = this.Boards[0];
-			NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
+			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
+			setStatus("The World is Ready.");
 			//Sound.PlayMusic(this.CurrentBoard.Music);
 			//this.CurrentBoard.Redraw();
         }
 
-		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor)
+		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor)
 		{
 			var pc = Character.Generate(bodyplan, gender);
 
@@ -1730,25 +1742,29 @@ namespace Noxico
 			else
 			{
 				pc.Name.Culture = Culture.Cultures[pc.GetToken("culture").Tokens[0].Name];
-				pc.Name.Regenerate(); // = Culture.GetName(pc.GetToken("culture").Tokens[0].Name, gender == Gender.Female ? Culture.NameType.Female : Culture.NameType.Male);
+				pc.Name.Regenerate();
 			}
 
 			if (pc.HasToken("hair"))
 			{
 				var colorToken = pc.GetToken("hair").GetToken("color");
 				colorToken.Tokens = new List<Token>() { new Token() { Name  = hairColor } };
-
-				var skinTypes = new[] { "fur", "scales", "rubber", "slime" };
-				foreach (var skinType in skinTypes)
+			}
+			var skinTypes = new[] { "fur", "scales", "rubber", "slime" };
+			foreach (var skinType in skinTypes)
+			{
+				if (pc.HasToken(skinType))
 				{
-					if (pc.HasToken(skinType) && pc.GetToken(skinType).HasToken("copyhair"))
-					{
-						pc.GetToken(skinType).Tokens.Clear();
-						pc.GetToken(skinType).Tokens.Add(pc.GetToken("hair").GetToken("color").Tokens[0]);
-						pc.GetToken(skinType).Tokens.Add(new Token() { Name = "copyhair" }); //replace it so that dyes can overrule.
-						break;
-					}
+					pc.GetToken(skinType).Tokens.Clear();
+					pc.GetToken(skinType).Tokens.Add(new Token() { Name = bodyColor });
+					break;
 				}
+			}
+
+			if (pc.HasToken("eyes"))
+			{
+				pc.GetToken("eyes").Tokens.Clear();
+				pc.GetToken("eyes").Tokens.Add(new Token() { Name = eyeColor });
 			}
 
 			pc.IncreaseSkill("being_awesome");

@@ -388,9 +388,11 @@
 				</color>
 			</hair>
 			<skin>
-				<pale />
+				<oneof>pale,brown,purple</oneof>
 			</skin>
-			<eyes />
+			<eyes>
+				<oneof>red,yellow,aqua,white</oneof>
+			</eyes>
 			<ears>
 				<elfin />
 			</ears>

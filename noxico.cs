@@ -961,6 +961,7 @@ namespace Noxico
 			Tokens = new List<Token>();
 		}
 
+		//TODO: adapt to new tokenizer
 		public static Character GetUnique(string name)
 		{
 			if (xDoc == null)
@@ -1013,6 +1014,7 @@ namespace Noxico
 			return newChar;
 		}
 
+		//TODO: adapt to new tokenizer
 		public static Character Generate(string bodyPlan, Gender gender)
 		{
 			if (xDoc == null)
@@ -2601,6 +2603,106 @@ namespace Noxico
 				if (x.ChildNodes.OfType<XmlElement>().Count() > 0)
 					newToken.Tokens = Tokenize(x);
 				t.Add(newToken);
+			}
+			return t;
+		}
+
+		public static List<Token> Tokenize(string a)
+		{
+			var t = new List<Token>();
+			var lines = a.Split('\n');
+			var nodes = new List<Token>();
+			var prevTabs = 0;
+			foreach (var line in lines.Where(x => !string.IsNullOrWhiteSpace(x) && !x.TrimStart().StartsWith("--")))
+			{
+				var l = line.TrimEnd();
+				//count number of tabs in front
+				var tabs = 0;
+				for (; tabs < l.Length - 1; tabs++)
+					if (l[tabs] != '\t')
+						break;
+				l = l.TrimStart();
+				var newOne = new Token();
+				var tokenName = l;
+				if (tokenName.StartsWith("oneof "))
+				{
+					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
+					var choice = options[Toolkit.Rand.Next(options.Length)].Trim();
+					tokenName = choice;
+				}
+				else if (l.Contains(": "))
+				{
+					//Token has a value
+					if (l.Contains(": \""))
+					{
+						var text = l.Substring(l.IndexOf('\"') + 1);
+						newOne.Text = text.Remove(text.LastIndexOf('\"'));
+					}
+					else if (l.Contains(": oneof "))
+					{
+						var options = l.Substring(l.IndexOf("of ") + 3).Split(',');
+						var choice = options[Toolkit.Rand.Next(options.Length)].Trim();
+						newOne.Text = choice;
+					}
+					else if (l.Contains(": roll "))
+					{
+						var xDyPz = l.Substring(l.LastIndexOf(' ') + 1);
+						int y = 0, z = 0;
+						var m = Regex.Match(xDyPz, @"1d(\d+)\+(\d+)");
+						if (!m.Success)
+						{
+							m = Regex.Match(xDyPz, @"1d(\d+)");
+							if (!m.Success)
+								throw new Exception(string.Format("Roll() can't parse \"{0}\".", xDyPz));
+						}
+						y = int.Parse(m.Groups[1].Value);
+						if (m.Groups.Count == 3)
+							z = int.Parse(m.Groups[2].Value);
+						var roll = Toolkit.Rand.Next(y) + z;
+						newOne.Value = roll;
+					}
+					else
+					{
+						float v;
+						var value = l.Substring(l.IndexOf(' '));
+						if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
+							newOne.Value = v;
+					}
+					tokenName = tokenName.Remove(tokenName.IndexOf(':'));
+				}
+				newOne.Name = tokenName;
+
+				if (tabs == 0)
+				{
+					//New one here
+					t.Add(newOne);
+					nodes.Clear();
+					nodes.Add(newOne);
+				}
+				else if (tabs == prevTabs + 1)
+				{
+					var hook = nodes[prevTabs];
+					hook.Tokens.Add(newOne);
+					nodes.Add(newOne);
+				}
+				else if (tabs < prevTabs)
+				{
+					var hook = nodes[tabs - 1];
+					hook.Tokens.Add(newOne);
+					nodes.RemoveRange(tabs, nodes.Count - tabs);
+					nodes.Add(newOne);
+				}
+				else if (tabs == prevTabs)
+				{
+					var hook = nodes[tabs - 1];
+					hook.Tokens.Add(newOne);
+					nodes[tabs] = newOne;
+				}
+				else
+				{
+					throw new Exception("Skipping a branch.");
+				}
+				prevTabs = tabs;
 			}
 			return t;
 		}

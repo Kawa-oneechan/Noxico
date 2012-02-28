@@ -254,7 +254,9 @@
     </None>
     <None Include="Resources\Noxico.ico" />
     <None Include="Resources\DefaultSettings.txt" />
-    <None Include="Resources\culture.xml" />
+    <None Include="Resources\culture.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\chargen.png" />
     <None Include="Resources\title.png" />
     <Content Include="music.xml">
