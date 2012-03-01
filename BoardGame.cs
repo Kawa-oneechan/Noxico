@@ -1745,27 +1745,12 @@ namespace Noxico
 				pc.Name.Regenerate();
 			}
 
-			if (pc.HasToken("hair"))
-			{
-				var colorToken = pc.GetToken("hair").GetToken("color");
-				colorToken.Tokens = new List<Token>() { new Token() { Name  = hairColor } };
-			}
-			var skinTypes = new[] { "fur", "scales", "rubber", "slime" };
-			foreach (var skinType in skinTypes)
-			{
-				if (pc.HasToken(skinType))
-				{
-					pc.GetToken(skinType).Tokens.Clear();
-					pc.GetToken(skinType).Tokens.Add(new Token() { Name = bodyColor });
-					break;
-				}
-			}
-
+			if (pc.Path("skin/type").Tokens[0].Name != "slime")
+				pc.Path("skin/color").Text = bodyColor;
+			if (pc.Path("hair/color") != null)
+				pc.Path("hair/color").Text = hairColor;
 			if (pc.HasToken("eyes"))
-			{
-				pc.GetToken("eyes").Tokens.Clear();
-				pc.GetToken("eyes").Tokens.Add(new Token() { Name = eyeColor });
-			}
+				pc.GetToken("eyes").Text = eyeColor;
 
 			pc.IncreaseSkill("being_awesome");
 

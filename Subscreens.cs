@@ -1117,118 +1117,159 @@ namespace Noxico
 			}
 		}
 
+		private static string GrabToken(string input, string token)
+		{
+			var start = input.IndexOf(token);
+			if (start == 0)
+				return null;
+			start += token.Length + 1;
+			if (input[start] != '\t')
+				return null;
+			for (var i = start; i < input.Length; i++)
+			{
+				if (input[i] == '\n' && input[i + 1] != '\t')
+				{
+					var ret = input.Substring(start, i - start);
+					return ret + "\n<end>";
+				}
+			}
+			return null;
+		}
+
 		private static List<PlayableRace> CollectPlayables()
 		{
 			var ti = CultureInfo.InvariantCulture.TextInfo;
 			var ret = new List<PlayableRace>();
 			var xDoc = new XmlDocument();
+			Console.WriteLine("Collecting playables...");
 			xDoc.Load("Noxico.xml");
-			var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
-			foreach (var playable in playables)
+			//var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
+			//foreach (var playable in playables)
+			var bodyPlans = xDoc.SelectNodes("//bodyplan");
+			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
 			{
-				var bodyPlan = playable.ParentNode as XmlElement;
+				//var bodyPlan = playable.ParentNode as XmlElement;
+				//var id = bodyPlan.GetAttribute("id");
 				var id = bodyPlan.GetAttribute("id");
+				if (bodyPlan.ChildNodes[0].Value == null)
+				{
+					Console.WriteLine(" * Skipping {0} -- old format.", id);
+					continue;
+				}
+				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
+				if (!plan.Contains("playable"))
+					continue;
+				Console.WriteLine(" * Parsing {0}...", id);
 
-				var genlock = false;
-				if (bodyPlan.SelectSingleNode("maleonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("femaleonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("hermonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("neuteronly") != null)
-					genlock = true;
-
+				var genlock = plan.Contains("only\n"); //(bodyPlan.("maleonly") != null) || (bodyPlan.SelectSingleNode("femaleonly") != null) ||
+					//(bodyPlan.SelectSingleNode("hermonly") != null) || (bodyPlan.SelectSingleNode("neuteronly") != null);
+	
 				var name = id;
-				var n = bodyPlan.SelectSingleNode("terms/generic");
-				if (n != null)
-					name = n.InnerText;
+
+				//TODO: write a support function that grabs everything for a specific token?
+				//That is, given "terms \n \t generic ... \n tallness" it'd grab everything up to but not including tallness.
+				//Use that to find subtokens like specific terms or colors.
+				var terms = GrabToken(plan, "terms");
+				var genOffset = terms.IndexOf("\tgeneric: ");
+				var maleOffset = terms.IndexOf("\tmale: ");
+				var femaleOffset = terms.IndexOf("\tfemale: ");
+				if (genOffset != -1)
+				{
+					name = terms.Substring(genOffset + 11);
+					name = name.Remove(name.IndexOf('\"')).Titlecase();
+				}
 				var male = name;
 				var female = name;
-				n = bodyPlan.SelectSingleNode("terms/male");
-				if (n != null)
-					male = n.InnerText;
-				n = bodyPlan.SelectSingleNode("terms/female");
-				if (n != null)
-					female = n.InnerText;
-				male = ti.ToTitleCase(male);
-				female = ti.ToTitleCase(female);
+				if (maleOffset != -1)
+				{
+					male = terms.Substring(maleOffset + 8);
+					male = male.Remove(male.IndexOf('\"')).Titlecase();
+				}
+				if (femaleOffset != -1)
+				{
+					female = terms.Substring(femaleOffset + 10);
+					female = female.Remove(female.IndexOf('\"')).Titlecase();
+				}
 				var genders = new List<string>() { male, female };
 
 				var hairs = new List<string>() { "<None>" };
-				n = bodyPlan.SelectSingleNode("hair/color");
-				if (n != null)
+				var hair = GrabToken(plan, "hair");
+				if (hair != null)
 				{
-					foreach (var hn in n.ChildNodes.OfType<XmlElement>())
+					var c = hair.Substring(hair.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
 					{
-						if (hn.Name == "oneof")
-						{
-							hairs.Clear();
-							var oneof = ((XmlElement)hn).InnerText.Trim().Split(',').ToList();
-							oneof.ForEach(x => hairs.Add(ti.ToTitleCase(x)));
-							break;
-						}
-						else
-						{
-							hairs[0] = ti.ToTitleCase(hn.Name);
-							break;
-						}
+						hairs.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => hairs.Add(Toolkit.NameColor(x).Titlecase()));
+					}
+					else
+					{
+						hairs[0] = c.Remove(c.IndexOf('\n')).Titlecase();
 					}
 				}
 
 				var eyes = new List<string>() { "Brown" };
-				n = bodyPlan.SelectSingleNode("eyes");
-				if (n != null)
+				var eye = GrabToken(plan, "eyes");
+				if (eye != null)
 				{
-					foreach (var en in n.ChildNodes.OfType<XmlElement>())
+					var c = eye.Substring(eye.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
 					{
-						if (en.Name == "oneof")
+						eyes.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => eyes.Add(Toolkit.NameColor(x).Titlecase()));
+					}
+					else
+					{
+						eyes[0] = c.Remove(c.IndexOf('\n')).Titlecase();
+					}
+				}
+
+				//var skinTypes = new[] { "skin", "fur", "scales", "slime", "rubber" };
+				var skins = new List<string>();
+				var skinName = "skin";
+				//var skinName = skinTypes[0];
+				//foreach (var skin in skinTypes)
+				//{
+					var s = GrabToken(plan, "skin");
+					if (s != null)
+					{
+						if (s.Contains("type"))
 						{
-							eyes.Clear();
-							var oneof = ((XmlElement)en).InnerText.Trim().Split(',').ToList();
-							oneof.ForEach(x => eyes.Add(ti.ToTitleCase(x)));
-							break;
+							skinName = s.Substring(s.IndexOf("type") + 5);
+							skinName = skinName.Remove(skinName.IndexOf('\n')).Trim();
+						}
+						var c = s.Substring(s.IndexOf("color: ") + 7).Trim();
+						if (c.StartsWith("oneof"))
+						{
+							skins.Clear();
+							c = c.Substring(6);
+							c = c.Remove(c.IndexOf('\n'));
+							var oneof = c.Split(',').ToList();
+							oneof.ForEach(x => skins.Add(Toolkit.NameColor(x).Titlecase()));
+							//skinName = skin;
+							//break;
 						}
 						else
 						{
-							eyes[0] = ti.ToTitleCase(en.Name);
-							break;
+							skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
+							//skinName = skin;
+							//break;
 						}
 					}
-				} 
-				
-				var skinTypes = new[] { "skin", "fur", "scales", "slime", "rubber" };
-				var skins = new List<string>();
-				var skinName = skinTypes[0];
-				foreach (var skin in skinTypes)
-				{
-					n = bodyPlan.SelectSingleNode(skin);
-					if (n != null)
-					{
-						foreach (var sn in n.ChildNodes.OfType<XmlElement>())
-						{
-							if (sn.Name == "oneof")
-							{
-								skins.Clear();
-								var oneof = ((XmlElement)sn).InnerText.Trim().Split(',').ToList();
-								oneof.ForEach(x => skins.Add(ti.ToTitleCase(x)));
-								skinName = skin;
-								break;
-							}
-							else
-							{
-								skins.Add(ti.ToTitleCase(sn.Name));
-								skinName = skin;
-								break;
-							}
-						}
-					}
-				}
+				//}
+
 				if (skins.Count > 0)
 					skins = skins.Distinct().ToList();
 				skins.Sort();
 
 				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, GenderLocked = genlock });
+
 			}
 			return ret;
 		}
