@@ -49,7 +49,7 @@ namespace Noxico
 
 		public static string NameColor(string color)
 		{
-			var req = color.ToLower().Replace("_", "").Replace(" ", "");
+			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
 			var colorName = "";
 			if (colorTable == null)
 			{
@@ -58,7 +58,7 @@ namespace Noxico
 			}
 			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
 			{
-				if (colorEntry.GetAttribute("name").Equals(color, StringComparison.InvariantCultureIgnoreCase))
+				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.InvariantCultureIgnoreCase))
 				{
 					colorName = colorEntry.GetAttribute("name");
 					break;
@@ -456,7 +456,7 @@ namespace Noxico
 			var hairDesc = "";
 			var hairLength = hair.HasToken("length") ? hair.GetToken("length").Value : 0f;
 			var hairColorToken = hair.GetToken("color");
-			var hairColor = Toolkit.NameColor(hairColorToken.Tokens[0].Name);
+			var hairColor = Toolkit.NameColor(hairColorToken.Text).ToLowerInvariant();
 			if (hairLength == 0)
 				return Toolkit.PickOne("bald", "shaved");
 			else if (hairLength < 1)
@@ -1025,16 +1025,14 @@ namespace Noxico
 
 			var newChar = new Character();
 			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
-			var plan = xDoc.CreateElement("bodyplan");
-			plan.InnerXml = planSource.InnerXml;
-			//newChar.Species = planSource.GetAttribute("species");
-			//newChar.Name = new Name(newChar.Species);
+			//var plan = xDoc.CreateElement("bodyplan");
+			//plan.InnerXml = planSource.InnerXml;
+			//Roll(plan);
+			//OneOf(plan);
+			var plan = planSource.ChildNodes[0].Value;
+			newChar.Tokens = Token.Tokenize(plan);
 			newChar.Name = new Name();
 			newChar.A = "a";
-			//newChar.A = planSource.GetAttribute("a");
-			Roll(plan);
-			OneOf(plan);
-			newChar.Tokens = Token.Tokenize(plan);
 
 			if (newChar.HasToken("femaleonly"))
 				gender = Gender.Female;
@@ -1401,88 +1399,72 @@ namespace Noxico
 					{ "skin",
 						new Dictionary<string, string>()
 						{
-							{ "normalface", "[He] [has] a fairly normal face, with {0} skin." },
-							{ "genbeastface", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "horseface", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "dogface", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "cowface", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
-							{ "catface", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "repface", "[He] [has] a face resembling that of a lizard, and with [his] toothy maw, [he] [has] quite a fearsome visage. [He] [does] look a little odd as a lizard without scales." },
+							{ "normal", "[He] [has] a fairly normal face, with {0} skin." },
+							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
+							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+							{ "reptile", "[He] [has] a face resembling that of a lizard, and with [his] toothy maw, [he] [has] quite a fearsome visage. [He] [does] look a little odd as a lizard without scales." },
 						}
 					},
 					{
 						"fur",
 						new Dictionary<string, string>()
 						{
-							{ "normalface", "Under [his] {0} fur [he] [has] a human-shaped head." },
-							{ "genbeastface", "[He] [has] a face like an animal, but still recognizably humanoid. [His] fur is {0}." },
-							{ "horseface", "[His] face is almost entirely equine in appearance, even having {0} fur." },
-							{ "dogface", "[He] [has] a dog's face, complete with wet nose and panting tongue. [His] fur is {0}." },
-							{ "cowface", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. [His] {0} fur thickens noticably on [his] head, looking shaggy and monstrous." },
-							{ "catface", "[He] [has] a cat's face, complete with moist nose, whiskers, and slitted eyes. [His] fur is {0}." },
-							{ "repface", "[He] [has] a face resembling that of a lizard. Between the toothy maw, pointed snout, and the layer of {0} fur covering [his] face, [he] [has] quite the fearsome visage." },
+							{ "normal", "Under [his] {0} fur [he] [has] a human-shaped head." },
+							{ "genbeast", "[He] [has] a face like an animal, but still recognizably humanoid. [His] fur is {0}." },
+							{ "horse", "[His] face is almost entirely equine in appearance, even having {0} fur." },
+							{ "dog", "[He] [has] a dog's face, complete with wet nose and panting tongue. [His] fur is {0}." },
+							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. [His] {0} fur thickens noticably on [his] head, looking shaggy and monstrous." },
+							{ "cat", "[He] [has] a cat's face, complete with moist nose, whiskers, and slitted eyes. [His] fur is {0}." },
+							{ "reptile", "[He] [has] a face resembling that of a lizard. Between the toothy maw, pointed snout, and the layer of {0} fur covering [his] face, [he] [has] quite the fearsome visage." },
 						}
 					},
 					{
 						"rubber",
 						new Dictionary<string, string>
 						{
-							{ "normalface", "[His] face is fairly human in shape, but is covered in {0} rubber." },
-							{ "genbeastface", "[He] [has] a face like an animal, but overlaid with glittering {0} rubber instead of fur. The look is very strange, but not unpleasant." },
-							{ "horseface", "[He] [has] the face and head structure of a horse, overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "dogface", "[He] [has] the face and head structure of a dog, wet nose and all, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "cowface", "[His] face resembles a minotaur's, though strangely it is covered in shimmering {0} scales, right up to the flat cow-like noise that protrudes from [his] face." },
-							{ "catface", "[He] [has] the facial structure of a cat, moist nose, whisker, and slitted eyes included, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "repface", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} rubber completes the look, making [him] look quite fearsome." },
+							{ "normal", "[His] face is fairly human in shape, but is covered in {0} rubber." },
+							{ "genbeast", "[He] [has] a face like an animal, but overlaid with glittering {0} rubber instead of fur. The look is very strange, but not unpleasant." },
+							{ "horse", "[He] [has] the face and head structure of a horse, overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+							{ "dog", "[He] [has] the face and head structure of a dog, wet nose and all, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+							{ "cow", "[His] face resembles a minotaur's, though strangely it is covered in shimmering {0} scales, right up to the flat cow-like noise that protrudes from [his] face." },
+							{ "cat", "[He] [has] the facial structure of a cat, moist nose, whisker, and slitted eyes included, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} rubber completes the look, making [him] look quite fearsome." },
 						}
 					},
 					{
 						"scales",
 						new Dictionary<string, string>
 						{
-							{ "normalface", "[He] [has] a fairly normal face, with {0} scales." },
-							{ "genbeastface", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "horseface", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "dogface", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "cowface", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
-							{ "catface", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "repface", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} scales complete the look, making [him] look quite fearsome." },
+							{ "normal", "[He] [has] a fairly normal face, with {0} scales." },
+							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
+							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} scales complete the look, making [him] look quite fearsome." },
 						}
 					},
 					{
 						"slime",
 						new Dictionary<string, string>
 						{
-							{ "normalface", "[He] [has] a fairly normal face, made of translucent {0} slime." },
-							{ "genbeastface", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "horseface", "[His] is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "dogface", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "cowface", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "catface", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "repface", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Translucent {0} slime completes the look, making [him] look quite fearsome." },
+							{ "normal", "[He] [has] a fairly normal face, made of translucent {0} slime." },
+							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Translucent {0} slime completes the look, making [him] look quite fearsome." },
 						}
 					},
 				};
-			var skinName = "skin";
-			foreach (var skin in skinDescriptions.Keys)
-			{
-				if (this.HasToken(skin))
-				{
-					skinName = skin;
-					break;
-				}
-			}
-			var skinColor = Toolkit.NameColor(this.GetToken(skinName).Tokens[0].Name);
-			var hairColor = this.HasToken("hair") && this.GetToken("hair").HasToken("color") ? Toolkit.NameColor(this.GetToken("hair").GetToken("color").Tokens[0].Name) : "<null>";
-			var faceType = "normalface";
-			foreach (var face in skinDescriptions[skinName].Keys)
-			{
-				if (this.HasToken(face))
-				{
-					faceType = face;
-					break;
-				}
-			}
+			var skinName = this.Path("skin/type") != null ? this.Path("skin/type").Tokens[0].Name : "skin";
+			var faceType = this.HasToken("face") ? this.GetToken("face").Tokens[0].Name : "normal";
+			var hairColor = this.Path("hair/color") != null ? Toolkit.NameColor(this.Path("hair/color").Text).ToLowerInvariant() : "<null>";
+			var skinColor = skinName == "slime" ? hairColor : Toolkit.NameColor(this.Path("skin/color").Text).ToLowerInvariant();
 			sb.AppendFormat(skinDescriptions[skinName][faceType], skinColor, hairColor);
 			sb.AppendLine();
 			#endregion
@@ -1673,8 +1655,8 @@ namespace Noxico
 							{ "invalid", "A {0} tail hangs from [his] {2}, <b>but that's all I can tell ya.<b>" },
 							{ "stinger", "????" },
 							{ "spider", "????" },
-							{ "genbeast", "A long {0}-furred tail hangs from [his] {1}." },
-							{ "horse", "A long {0} horsetail hangs from [his] {2}, smooth and shiny." },
+							{ "genbeast", "A long {0}-furred tail hangs from [his] {2}." },
+							{ "horse", "A long {1} horsetail hangs from [his] {2}, smooth and shiny." }, //use hair color instead
 							{ "dog", "A fuzzy {0} dogtail sprouts just above [his] {2}, wagging to and fro whenever [he] [is] happy." },
 							{ "squirrel", "A bushy {0} squirrel tail juts out from above [his] {2}, almost as tall as [he] [is], and just as wide." },
 							{ "fox", "A fluffy, thick {0} foxtail extends from [his] {2}, tipped white on the end." },

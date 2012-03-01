@@ -363,22 +363,10 @@ namespace Noxico
 				AsciiChar = (char)1;
 			else if (gS > hS)
 				AsciiChar = (char)2;
-
-			Token skinColor = null;
-			if (Character.HasToken("skin"))
-				skinColor = Character.GetToken("skin").Tokens[0];
-			else if (Character.HasToken("fur"))
-				skinColor = Character.GetToken("fur").Tokens[0];
-			else if (Character.HasToken("scales"))
-				skinColor = Character.GetToken("scales").Tokens[0];
-			else if (Character.HasToken("rubber"))
-				skinColor = Character.GetToken("rubber").Tokens[0];
-			else if (Character.HasToken("slime"))
-				skinColor = Character.GetToken("slime").Tokens[0];
-			ForegroundColor = Toolkit.GetColor(skinColor); //Toolkit.GetCGAColor(skinColor);
-			BackgroundColor = Toolkit.Darken(ForegroundColor); //ForegroundColor > 7 ? ForegroundColor - 8 : 0;
-			//if (ForegroundColor == 0 || ForegroundColor == 7 || ForegroundColor == 15)
-			//	BackgroundColor = 8;
+			
+			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
+			ForegroundColor = Toolkit.GetColor(skinColor);
+			BackgroundColor = Toolkit.Darken(ForegroundColor);
 
 			if (Character.HasToken("ascii"))
 			{

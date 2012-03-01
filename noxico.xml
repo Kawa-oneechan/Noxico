@@ -2,928 +2,496 @@
 <stuff>
 	<bodyplans>
 		<bodyplan id="human">
-			<culture>
-				<human />
-			</culture>
-			<normalgenders />
-			<terms>
-				<generic text="yes">human</generic>
-				<male text="yes">man</male>
-				<female text="yes">woman</female>
-			</terms>
-			<playable />
-			<tallness>
-				<roll>1d50+150</roll>
-			</tallness>
-			<hair>
-				<length>
-					<roll>1d4+5</roll>
-				</length>
-				<color>
-					<oneof>blond,brown,black,red,gray,white,auburn</oneof>
-				</color>
-			</hair>
-			<skin>
-				<oneof>light,light,light,pale,pale,dark,dark,olive</oneof>
-			</skin>
-			<eyes />
-			<ears>
-				<human />
-			</ears>
-			<legs />
-			<ass>
-				<virgin />
-				<size>
-					<roll>1d4+4</roll>
-				</size>
-				<fuckable />
-			</ass>
-			<waist>
-				<roll>1d4+1</roll>
-			</waist>
-			<hips>
-				<roll>1d2+4</roll>
-			</hips>
-			<items>
-				<catmorph />
-				<foxite />
-				<book>
-					<id>3</id>
-				</book>
-				<lena_ruby />
-				<penificator />
-				<chopaway />
-				<butter_knife />
-				<knife>
-					<cursed />
-				</knife>
-				<knife>
-					<unidentified />
-				</knife>
-				<test_ring />
-				<test_ring>
-					<cursed />
-				</test_ring>
-				<test_ring />
-				<cheap_pos>
-					<unidentified />
-				</cheap_pos>
-				<foxmorph />
-
-				<!--
-				<plain_boxers>
-					<equipped />
-				</plain_boxers>
-				<shirt>
-					<equipped />
-					<color>
-						<black />
-					</color>
-				</shirt>
-				<pants>
-					<equipped />
-					<color>
-						<black />
-					</color>
-				</pants>
-				-->
-			</items>
-			<costume>
-				<casual />
-			</costume>
-			<!-- The creature creator adjusts this part. -->
-			<fertility>
-				<roll>1d15+5</roll>
-			</fertility>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d5+1</roll>
-				</size>
-				<nipples>
-					1
-					<size>0.5</size>
-				</nipples>
-				<milksource />
-			</breastrow>
-			<vagina>
-				<virgin />
-				<fuckable />
-				<clit>0.25</clit>
-			</vagina>
-			<penis>
-				<thickness>2.5</thickness>
-				<length>
-					<roll>1d5+13</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-			</balls>
+			<![CDATA[
+playable
+culture
+	human
+normalgenders
+terms
+	generic: "human"
+	male: "man"
+	female: "woman"
+tallness: roll 1d50+150
+hair
+	length: roll 1d4+5
+	color: oneof blond, brown, black,red, gray, white, auburn
+-- repeating a few options to increase their chances 
+skin
+	type
+		skin
+	color: oneof light, light, light, pale, pale, dark, dark, olive
+eyes
+	color: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
+ears
+	human
+legs
+ass
+	virgin
+	size: roll 1d4+4
+	fuckable
+waist: roll 1d4+1
+hips: roll 1d2+4
+costume
+	casual
+-- The creature creator adjusts this part.
+fertility: roll 1d15+5
+breastrow
+	amount 2
+	size: roll 1d5+1
+	nipples: 1
+		size: 0.5
+	milksource
+vagina
+	virgin
+	fuckable
+	clit: 0.25
+penis
+	thickness: 2.5
+	length: 1d5+13
+	cumsource
+	canfuck
+balls
+	amount: 2
+			]]>
 		</bodyplan>
 
 		<bodyplan id="imp">
-			<culture>
-				<demonic />
-			</culture>
-			<maleonly />
-			<terms>
-				<generic text="yes">imp</generic>
-			</terms>
-			<tallness>
-				<roll>1d40+100</roll>
-			</tallness>
-			<hair>
-				<length>5</length>
-				<color>
-					<black />
-				</color>
-			</hair>
-			<skin>
-				<red />
-			</skin>
-			<eyes />
-			<ears>
-				<human />
-			</ears>
-			<legs />
-			<wings>
-				<bat />
-				<small />
-			</wings>
-			<ass>
-				<size>4</size>
-				<looseness>1</looseness>
-				<wetness>1</wetness>
-				<fuckable />
-			</ass>
-			<penis>
-				<thickness>2.5</thickness>
-				<length>
-					<roll>1d2+17</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-				<size>1</size>
-			</balls>
+			<![CDATA[
+culture
+	demonic
+maleonly
+terms
+	generic: "imp"
+tallness: roll 1d40+100
+hair
+	length: 5
+	color
+		black
+skin
+	type
+		skin
+	color: oneof red, firebrick, darkred, brown
+eyes
+	color: yellow
+ears
+	human
+legs
+wings
+	bat
+	small
+ass
+	size: 4
+	looseness: 1
+	wetness: 1
+	fuckable
+penis
+	thickness: 2.5
+	length: roll 1d2+17
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 1
+			]]>
 		</bodyplan>
 
 		<bodyplan id="goblin">
-			<culture>
-				<demonic />
-			</culture>
-			<femaleonly />
-			<terms>
-				<generic text="yes">goblin</generic>
-			</terms>
-			<tallness>
-				<roll>1d40+120</roll>
-			</tallness>
-			<hair>
-				<length>4</length>
-				<color>
-					<purple />
-				</color>
-			</hair>
-			<skin>
-				<darkgreen />
-			</skin>
-			<eyes />
-			<ears>
-				<elfin />
-			</ears>
-			<legs />
-			<waist>
-				<roll>1d2+1</roll>
-			</waist>
-			<hips>
-				<roll>1d3+4</roll>
-			</hips>
-			<fertility>50</fertility>
-			<ass>
-				<size>
-					<roll>1d3+6</roll>
-				</size>
-				<looseness>1</looseness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d3+3</roll>
-				</size>
-				<nipples>
-					1
-					<size>1.25</size>
-				</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>4</wetness>
-				<looseness>1</looseness>
-				<fuckable />
-			</vagina>
+			<![CDATA[
+culture
+	demonic
+femaleonly
+terms
+	generic: "goblin"
+tallness: roll 1d40+120
+hair
+	length: 4
+	color: oneof purple, palevioletred, mediumorchid, hotpink, deeppink
+skin
+	type
+		skin
+	color: oneof olivedrab, darkslategray, darkolivegreen
+eyes
+	color: oneof plum, mediumvioletred, mediumorchid, orchid
+ears
+	elfin
+legs
+waist: roll 1d2+1
+hips: roll 1d3+4
+fertility: 50
+ass
+	size: roll 1d3+6
+	looseness: 1
+	fuckable
+breastrow
+	amount: 2
+	size: roll 1d3+3
+	nipples: 1
+		size: 1.25
+vagina
+	wetness: 4
+	looseness: 1
+	fuckable
+			]]>
 		</bodyplan>
 
 		<bodyplan id="bee">
-			<culture>
-				<japanese />
-			</culture>
-			<femaleonly />
-			<terms>
-				<generic text="yes">bee</generic>
-				<male text="yes">bee drone</male>
-				<female text="yes">bee girl</female>
-			</terms>
-			<tallness>
-				<roll>1d20+140</roll>
-			</tallness>
-			<hair>
-				<length>6</length>
-				<color>
-					<black />
-				</color>
-			</hair>
-			<skin>
-				<yellow />
-			</skin>
-			<eyes>
-				<black />
-			</eyes>
-			<legs>
-				<insect />
-			</legs>
-			<antennae />
-			<wings>
-				<insect />
-			</wings>
-			<tail>
-				<stinger>
-					<venom>100</venom>
-					<recharge>5</recharge>
-				</stinger>
-			</tail>
-			<hips>6</hips>
-			<fertility>10</fertility>
-			<ass>
-				<insect />
-				<size>13</size>
-				<looseness>4</looseness>
-				<wetness>1</wetness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d5+1</roll>
-				</size>
-				<nipples>1</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>5</wetness>
-				<looseness>3</looseness>
-				<fuckable />
-			</vagina>
+			<![CDATA[
+culture
+	japanese
+femaleonly
+terms
+	generic: "bee"
+	male: "bee drone"
+	female: "bee girl"
+tallness: 1d20+140
+hair
+	length: 6
+	color: black
+skin
+	type
+		skin
+	color: oneof yellow, gold, goldenrod
+eyes
+	color: black
+legs
+	insect
+antennae
+wings
+	insect
+tail
+	stinger
+		venom: 100
+		recharge: 5
+hips: 6
+fertility: 10
+ass
+	insect
+	size: 13
+	looseness: 4
+	wetness: 1
+	fuckable
+breastrow
+	amount: 2
+	size: roll 1d5+1
+	nipples: 1
+vagina
+	wetness: 5
+	looseness: 3
+	fuckable
+			]]>
 		</bodyplan>
 
 		<bodyplan id="naga">
-			<culture>
-				<japanese />
-			</culture>
-			<normalgenders />
-			<terms>
-				<generic text="yes">naga</generic>
-			</terms>
-			<playable />
-			<tallness>
-				<roll>1d20+160</roll>
-			</tallness>
-			<hair>
-				<length>14</length>
-				<color>
-					<oneof>darkcyan,seagreen,cadetblue</oneof>
-				</color>
-			</hair>
-			<skin>
-				<aqua />
-			</skin>
-			<eyes>
-				<yellow />
-			</eyes>
-			<snaketail />
-			<waist>4</waist>
-			<hips>5</hips>
-			<fertility>20</fertility>
-			<ass>
-				<size>6</size>
-				<looseness>1</looseness>
-				<wetness>0</wetness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d4+3</roll>
-				</size>
-				<nipples>2</nipples>
-			</breastrow>
-			<!--
-			<breastrow>
-				<amount>2</amount>
-				<size>3.5</size>
-				<nipples>3</nipples>
-			</breastrow>
-			<breastrow>
-				<amount>2</amount>
-				<size>3.1</size>
-				<nipples>3</nipples>
-			</breastrow>
-			-->
-			<vagina>
-				<wetness>2</wetness>
-				<looseness>2</looseness>
-				<fuckable />
-			</vagina>
-			<penis>
-				<thickness>
-					<roll>1d2+1</roll>
-				</thickness>
-				<length>
-					<roll>1d6+20</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<costume>
-				<lacy_undies />
-				<bikini />
-			</costume>
+			<![CDATA[
+playable
+culture
+	japanese
+normalgenders
+terms
+	generic: "naga"
+tallness: roll 1d20+160
+hair
+	length: 14
+	color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
+skin
+	type
+		skin
+	color: oneof aqua, darkseagreen, cadetblue, darkslategray
+eyes
+	color: yellow
+snaketail
+waist: 4
+hips: 5
+fertility: 20
+ass
+	size: 6
+	looseness: 1
+	wetness: 0
+	fuckable
+breastrow
+	amount: 2
+	size: roll 1d4+3
+	nipples: 2
+vagina
+	wetness: 2
+	looseness: 2
+	fuckable
+penis
+	thickness: 1d2+1
+	length: 1d6+20
+	cumsource
+	canfuck
+costume
+	lacy_undies
+	bikini
+			]]>
 		</bodyplan>
 
 		<bodyplan id="foocubus">
-			<culture>
-				<demonic />
-			</culture>
-			<normalgenders />
-			<terms>
-				<generic text="yes">cubi</generic>
-				<male text="yes">incubus</male>
-				<female text="yes">succubus</female>
-				<herm text="yes">omnibus</herm>
-			</terms>
-			<playable />
-			<tallness>
-				<roll>1d20+170</roll>
-			</tallness>
-			<hair>
-				<length>
-					<roll>1d3+4</roll>
-				</length>
-				<color>
-					<oneof>red,black,blue,darkred,green</oneof>
-				</color>
-			</hair>
-			<skin>
-				<oneof>pale,brown,purple</oneof>
-			</skin>
-			<eyes>
-				<oneof>red,yellow,aqua,white</oneof>
-			</eyes>
-			<ears>
-				<elfin />
-			</ears>
-			<wings>
-				<bat />
-			</wings>
-			<legs>
-				<oneof>claws,stiletto,stiletto,human,human,human</oneof>
-			</legs>
-			<waist>
-				<roll>1d3+2</roll>
-			</waist>
-			<hips>6</hips>
-			<ass>
-				<size>7</size>
-				<looseness>2</looseness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d5+4</roll>
-				</size>
-				<nipples>
-					1
-					<size>
-						<roll>1d2+1</roll>
-					</size>
-				</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>4</wetness>
-				<looseness>1</looseness>
-				<fuckable />
-			</vagina>
-			<penis>
-				<oneof>purple,red</oneof>
-				<studded />
-				<thickness>
-					<roll>1d3+1</roll>
-				</thickness>
-				<length>
-					<roll>1d6+17</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-				<size>
-					<roll>1d2</roll>
-				</size>
-			</balls>
-			<items>
-				<kinkyclothes>
-					<equipped />
-				</kinkyclothes>
-				<comfyclothes />
-				<rope />
-			</items>
+			<![CDATA[
+playable
+culture
+	demonic
+normalgenders
+terms
+	generic: "cubi"
+	male: "incubus"
+	female: "succubus"
+	herm: "omnibus"
+tallness: roll 1d20+170
+hair
+	length: roll 1d3+4
+	color: oneof red, black, blue, darkred, green
+skin
+	type
+		skin
+	color: oneof pale, brown, purple
+eyes
+	color: oneof red, yellow, aqua, white
+ears
+	elfin
+wings
+	bat
+legs
+	oneof claws, stiletto, stiletto, human, human, human
+waist: roll 1d3+2
+hips: 6
+ass
+	size: 7
+	looseness: 2
+	fuckable
+breastrow
+	amount: 2
+	size: roll 1d5+4
+	nipples: 1
+		size: roll 1d2+1
+vagina
+	wetness: 4
+	looseness: 1
+	fuckable
+penis
+	studded
+	thickness: roll 1d3+1
+	length: roll 1d6+17
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: roll 1d2
+items
+	rope
+			]]>
 		</bodyplan>
 
 		<bodyplan id="felinoid">
-			<culture>
-				<japanese />
-			</culture>
-			<normalgenders />
-			<playable />
-			<terms>
-				<generic text="yes">felinoid</generic>
-				<male text="yes">catboy</male>
-				<female text="yes">catgirl</female>
-				<herm text="yes">catherm</herm>
-			</terms>
-			<tallness>
-				<roll>1d40+150</roll>
-			</tallness>
-			<hair>
-				<length>
-					<roll>1d4+5</roll>
-				</length>
-				<color>
-					<oneof>blond,brown,black,red,orange,gray,white,auburn</oneof>
-				</color>
-			</hair>
-			<fur>
-				<oneof>brown,orange,white,gray</oneof>
-			</fur>
-			<!--
-			<skin>
-				<oneof>light,light,light,pale,pale,dark,dark,olive</oneof>
-			</skin>
-			-->
-			<eyes />
-			<ears>
-				<cat />
-			</ears>
-			<legs>
-				<oneof>human,genbeast</oneof>
-			</legs>
-			<tail>
-				<genbeast />
-			</tail>
-			<ass>
-				<virgin />
-				<size>5</size>
-				<fuckable />
-			</ass>
-			<hips>
-				<roll>1d6</roll>
-			</hips>
-			<waist>
-				<roll>1d4+1</roll>
-			</waist>
-			<fertility>
-				<roll>1d25+5</roll>
-			</fertility>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d4+1</roll>
-				</size>
-				<nipples>
-					1
-					<size>
-						<roll>1d2+1</roll>
-					</size>
-				</nipples>
-				<milksource />
-			</breastrow>
-			<vagina>
-				<virgin />
-				<fuckable />
-				<clit>0.25</clit>
-			</vagina>
-			<penis>
-				<thickness>3</thickness>
-				<length>
-					<roll>1d6+12</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-				<size>0.6</size>
-			</balls>
+			<![CDATA[
+playable
+culture
+	japanese
+normalgenders
+terms
+	generic: "felinoid"
+	male: "catboy"
+	female: "catgirl"
+	herm: "catherm"
+tallness: roll 1d40+150
+hair
+	length: roll 1d4+5
+	color: oneof blond, brown, black, red, orange, gray, white, auburn
+skin
+	type
+		fur
+	color: oneof brown, orange, white, gray
+eyes
+	color: oneof gold, yellow, lime
+face
+	cat
+ears
+	cat
+legs
+	oneof human, genbeast
+tail
+	genbeast
+ass
+	virgin
+	size: 5
+	fuckable
+hips: roll 1d6
+waist: roll 1d4+1
+fertility: 1d25+5
+breastrow
+	amount: 2
+	size: roll 1d4+1
+	nipples: 1
+		size: roll 1d2+1
+	milksource
+vagina
+	virgin
+	fuckable
+	clit: 0.25
+penis
+	thickness: 3
+	length: roll 1d6+12
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 0.6
+			]]>
 		</bodyplan>
 
 		<bodyplan id="fox">
-			<culture>
-				<japanese />
-			</culture>
-			<normalgenders />
-			<playable />
-			<terms>
-				<generic text="yes">fox</generic>
-				<male text="yes">foxboy</male>
-				<female text="yes">foxgirl</female>
-			</terms>
-			<tallness>
-				<roll>1d20+150</roll>
-			</tallness>
-			<hair>
-				<length>
-					<roll>1d6+3</roll>
-				</length>
-				<color>
-					<oneof>blond,brown,black,red</oneof>
-				</color>
-			</hair>
-			<fur>
-				<sandybrown />
-			</fur>
-			<!--
-			<skin>
-				<light />
-			</skin>
-			-->
-			<eyes />
-			<ears>
-				<genbeast />
-			</ears>
-			<legs>
-				<dog />
-			</legs>
-			<tail>
-				<fox />
-			</tail>
-			<ass>
-				<virgin />
-				<size>4</size>
-				<fuckable />
-			</ass>
-			<hips>
-				<roll>1d2+1</roll>
-			</hips>
-			<fertility>
-				<roll>1d20+10</roll>
-			</fertility>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d3+3</roll>
-				</size>
-				<nipples>
-					<size>
-						<roll>1d2+2</roll>
-					</size>
-				</nipples>
-				<milksource />
-			</breastrow>
-			<vagina>
-				<virgin />
-				<fuckable />
-				<clit>0.25</clit>
-			</vagina>
-			<penis>
-				<thickness>2</thickness>
-				<length>
-					<roll>1d7+14</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-				<size>0.6</size>
-			</balls>
+			<![CDATA[
+playable
+culture
+	japanese
+normalgenders
+terms
+	generic: "fox"
+	male: "foxboy"
+	female: "foxgirl"
+	herm: "foxherm"
+tallness: 1d20+150
+hair
+	length: roll 1d6+3
+	color: oneof blond, brown, black, red
+skin
+	type
+		fur
+	color: sandybrown
+eyes
+	color: green
+ears
+	genbeast
+face
+	genbeast
+legs
+	dog
+tail
+	fox
+ass
+	virgin
+	size: 4
+	fuckable
+hips: roll 1d2+1
+waist: 2
+fertility: roll 1d20+10
+breastrow
+	amount: 2
+	size: roll 1d3+3
+	nipples
+		size: roll 1d2+2
+	milksource
+vagina
+	virgin
+	fuckable
+	clit: 0.25
+penis
+	sheath
+	thickness: 2
+	length: roll 1d7+14
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 0.6
+			]]>
 		</bodyplan>
 
 		<bodyplan id="littlepony">
-			<culture>
-				<pony />
-			</culture>
-			<normalgenders />
-			<playable />
-			<terms>
-				<generic text="yes">little pony</generic>
-				<male text="yes">colt</male>
-				<female text="yes">filly</female>
-			</terms>
-			<marshmallow /> <!-- <marshmallow> adjusts the way hooves are described. -->
-			<tallness>140</tallness>
-			<hair>
-				<length>16</length>
-				<color>
-					<oneof>red,orange,yellow,magenta,white,lime,blue,aqua,black</oneof>
-				</color>
-			</hair>
-			<fur>
-				<oneof>red,orange,yellow,magenta,white,lime,blue,aqua,black</oneof>
-			</fur>
-			<horseface />
-			<eyes>
-				<cyan />
-			</eyes>
-			<legs>
-				<!-- Defining <quadruped> makes it a centaur... -->
-				<quadruped />
-				<!-- ...which assumes <horse> if nothing is specified... -->
-				<horse />
-			</legs>
-			<!-- ...but <noarms> makes it a proper quadruped instead of a centaur. -->
-			<noarms />
-			<ears>
-				<horse />
-			</ears>
-			<tail>
-				<horse />
-			</tail>
-			<ass>
-				<size>6</size>
-				<fuckable />
-			</ass>
-			<vagina>
-				<virgin />
-				<fuckable />
-				<clit>1.5</clit>
-			</vagina>
-			<penis>
-				<horse />
-				<thickness>3</thickness>
-				<length>16</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>2</amount>
-				<size>3</size>
-			</balls>
-		</bodyplan>
-
-		<bodyplan id="horrorterror">
-			<invisiblegender />
-			<tallness>
-				<roll>1d100+150</roll>
-			</tallness>
-			<hair>
-				<length>
-					<roll>1d100</roll>
-				</length>
-				<color>
-					<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
-				</color>
-			</hair>
-			<scales>
-				<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
-			</scales>
-			<eyes>
-				<oneof>darkcyan,cadetblue,fuchsia,lightgreen,navajowhite,black,black,black,red,red,saddlebrown,greenyellow</oneof>
-			</eyes>
-			<oneof>snaketail,slimeblob,,,</oneof>
-			<tail>
-				<oneof>spider,stinger,genbeast,horse,dog,cat,squirrel,fox,demon,cow</oneof>
-			</tail>
-			<waist>
-				<roll>1d6+12</roll>
-			</waist>
-			<hips>
-				<roll>1d6+12</roll>
-			</hips>
-			<fertility>9001</fertility>
-			<ass>
-				<size>
-					<roll>1d6+12</roll>
-				</size>
-				<looseness>10</looseness>
-				<wetness>10</wetness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>
-					<roll>1d20+4</roll>
-				</amount>
-				<size>
-					<roll>1d20+8</roll>
-				</size>
-				<nipples>
-					1
-					<roll>1d12+2</roll>
-					<oneof>fuckable,canfuck,</oneof>
-				</nipples>
-			</breastrow>
-			<breastrow>
-				<amount>
-					<roll>1d20+4</roll>
-				</amount>
-				<size>
-					<roll>1d20+8</roll>
-				</size>
-				<nipples>
-					1
-					<roll>1d12+2</roll>
-					<oneof>fuckable,canfuck,</oneof>
-				</nipples>
-			</breastrow>
-			<breastrow>
-				<amount>
-					<roll>1d20+4</roll>
-				</amount>
-				<size>
-					<roll>1d20+8</roll>
-				</size>
-				<nipples>
-					1
-					<roll>1d12+2</roll>
-					<oneof>fuckable,canfuck,</oneof>
-				</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>
-					<roll>1d12+5</roll>
-				</wetness>
-				<looseness>
-					<roll>1d12+2</roll>
-				</looseness>
-				<fuckable />
-			</vagina>
-			<vagina>
-				<wetness>
-					<roll>1d12+5</roll>
-				</wetness>
-				<looseness>
-					<roll>1d12+2</roll>
-				</looseness>
-				<fuckable />
-			</vagina>
-			<vagina>
-				<wetness>
-					<roll>1d12+5</roll>
-				</wetness>
-				<looseness>
-					<roll>1d12+2</roll>
-				</looseness>
-				<fuckable />
-			</vagina>
-			<vagina>
-				<wetness>
-					<roll>1d12+5</roll>
-				</wetness>
-				<looseness>
-					<roll>1d12+2</roll>
-				</looseness>
-				<fuckable />
-			</vagina>
-			<penis>
-				<thickness>
-					<roll>1d20+7</roll>
-				</thickness>
-				<length>
-					<roll>1d100+40</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<penis>
-				<thickness>
-					<roll>1d20+7</roll>
-				</thickness>
-				<length>
-					<roll>1d100+40</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<penis>
-				<thickness>
-					<roll>1d20+7</roll>
-				</thickness>
-				<length>
-					<roll>1d100+40</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<penis>
-				<thickness>
-					<roll>1d20+7</roll>
-				</thickness>
-				<length>
-					<roll>1d100+40</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<penis>
-				<thickness>
-					<roll>1d20+7</roll>
-				</thickness>
-				<length>
-					<roll>1d100+40</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
-			<balls>
-				<amount>
-					<roll>1d5+2</roll>
-				</amount>
-				<size>
-					<roll>1d18+5</roll>
-				</size>
-			</balls>
+			<![CDATA[
+playable
+culture
+	pony
+normalgenders
+terms
+	generic: "little pony"
+	male: "stallion"
+	female: "mare"
+-- marshmallow adjusts the way hooves are described.
+marshmallow
+tallness: 140
+hair
+	length: 16
+	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+skin
+	type
+		fur
+	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+face
+	horse
+eyes
+	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+legs
+	-- defining quadruped makes it a centaur...
+	quadruped
+	horse
+-- but noarms makes it a PROPER quadruped!
+noarms
+ears
+	horse
+tail
+	horse
+ass
+	size: 6
+	fuckable
+	virgin
+vagina
+	virgin
+	fuckable
+	clit: 1.5
+penis
+	horse
+	thickness: 3
+	length: 16
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 3
+			]]>
 		</bodyplan>
 
 		<bodyplan id="slime">
-			<culture>
-				<japanese />
-			</culture>
-			<neverneuter />
-			<playable />
-			<terms>
-				<generic text="yes">slime</generic>
-				<male text="yes">slimeboi</male>
-				<female text="yes">slimegirl</female>
-			</terms>
-			<tallness>
-				<roll>1d50+100</roll>
-			</tallness>
-			<slime>
-				<copyhair />
-			</slime>
-			<hair>
-				<length>
-					<roll>1d8+10</roll>
-				</length>
-				<color>
-					<oneof>red,orangered,orange,yellow,lime,green,aqua,teal,blue,cornflowerblue,magenta,purple,fuchsia</oneof>
-				</color>
-			</hair>
-			<slimeblob />
-			<eyes />
-			<ears>
-				<human />
-			</ears>
-			<ass>
-				<size>
-					<roll>1d4+4</roll>
-				</size>
-				<fuckable />
-			</ass>
-			<waist>
-				<roll>1d5+1</roll>
-			</waist>
-			<hips>
-				<roll>1d3+4</roll>
-			</hips>
-			<breastrow>
-				<amount>2</amount>
-				<size>
-					<roll>1d7+4</roll>
-				</size>
-				<nipples>
-					1
-					<size>0.75</size>
-				</nipples>
-				<milksource />
-			</breastrow>
-			<vagina>
-				<fuckable />
-				<clit>0.5</clit>
-			</vagina>
-			<penis>
-				<thickness>2.5</thickness>
-				<length>
-					<roll>1d7+15</roll>
-				</length>
-				<cumsource />
-				<canfuck />
-			</penis>
+			<![CDATA[
+playable
+culture
+	japanese
+neverneuter
+terms
+	generic: "slime"
+	male: "slimeboi"
+	female: "slimegirl"
+tallness: roll 1d50+100
+skin
+	type
+		slime
+hair
+	length: roll 1d8+10
+	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, fuchsia
+slimeblob
+eyes
+	color: white
+ass
+	size: roll 1d4+4
+	fuckable
+waist: roll 1d5+1
+hips: roll 1d3+4
+breastrow
+	amount: 2
+	size: roll 1d7+4
+	nipples: 1
+		size: 0.75
+	milksource
+vagina
+	fuckable
+	clit: 0.5
+penis
+	thickness: 2.5
+	length: 1d7+15
+	cumsource
+	canfuck
+			]]>
 		</bodyplan>
 	</bodyplans>
 
