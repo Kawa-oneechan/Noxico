@@ -421,6 +421,10 @@ namespace Noxico
 						throw new ParameterMismatchException("goto", 1);
 					subject.CallScript(parms[0]);
 					return false;
+				case "clearsubs":
+					NoxicoGame.Subscreen = null;
+					Subscreens.PreviousScreen.Clear();
+					return false;
 				#endregion
 				#region Tokens
 				case "checktag":
@@ -546,9 +550,29 @@ namespace Noxico
 				#region Plot flags
 				#endregion
 				#region Body horror
+				case "morph":
+					if (parms.Length < 1)
+						throw new ParameterMismatchException("morph", 1);
+					var targetPlan = parms[0];
+					var chance = parms.Length > 1 ? (int)ParseNumber(parms[1]) : 0;
+					var reportLevel = parms.Contains("silent") ? MorphReportLevel.NoReports : parms.Contains("any") ? MorphReportLevel.Anyone : MorphReportLevel.PlayerOnly;
+					var asMessages = !parms.Contains("window");
+					if (!(subject is BoardChar))
+						throw new Exception("Noxicobotic subject is not a BoardChar.");
+					((BoardChar)subject).Character.Morph(targetPlan, reportLevel, asMessages, chance);
+					((BoardChar)subject).AdjustView();
+					if (!asMessages)
+					{
+						MessageBox.Message(Character.MorphBuffer.ToString(), true);
+						Character.MorphBuffer.Clear();
+						return true;
+					}
+					return false;
 				case "setspecies":
 					if (parms.Length < 1)
 						throw new ParameterMismatchException("setspecies", 1);
+					if (!(subject is BoardChar))
+						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					var species = parms[0];
 					var male = "male " + species;
 					var female = "female " + species;

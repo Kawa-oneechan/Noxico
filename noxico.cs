@@ -15,10 +15,9 @@ namespace Noxico
 		Random, Male, Female, Herm, Neuter
 	}
 
-	public enum CGAColors
+	public enum MorphReportLevel
 	{
-		Black, DarkBlue, DarkGreen, DarkCyan, DarkRed, Purple, Brown, Silver,
-		Gray, Blue, Green, Cyan, Red, Magenta, Yellow, White, 
+		NoReports, PlayerOnly, Anyone
 	}
 	
 	public static class Toolkit
@@ -685,6 +684,20 @@ namespace Noxico
 			//TODO
 			return "cock";
 		}
+
+		public static string Tail(Token tail)
+		{
+			var tails = new Dictionary<string, string>()
+			{
+				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
+				{ "genbeast", Toolkit.Rand.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
+			};
+			var tailName = tail.Tokens[0].Name;
+			if (tails.ContainsKey(tailName))
+				return tails[tailName];
+			else
+				return tailName + " tail";
+		}
 	}
 
 	public class TokenCarrier
@@ -726,6 +739,31 @@ namespace Noxico
 			}
 			return null;
 		}
+
+#if DEBUG
+		public string DumpTokens(List<Token> list, int tabs)
+		{
+			var ret = new StringBuilder();
+			foreach (var item in list)
+			{
+				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
+				if (item.Value != 0 || !string.IsNullOrWhiteSpace(item.Text))
+				{
+					ret.Append(": ");
+					if (item.Value != 0)
+						ret.Append(item.Value);
+					else
+						ret.AppendFormat("\"{0}\"", item.Text);
+					ret.AppendLine();
+				}
+				else
+					ret.AppendLine();
+				if (item.Tokens.Count > 0)
+					ret.Append(DumpTokens(item.Tokens, tabs + 1));
+			}
+			return ret.ToString();
+		}
+#endif
 	}
 
 	public class Name
@@ -805,6 +843,7 @@ namespace Noxico
 	public class Character : TokenCarrier
 	{
 		private static XmlDocument xDoc;
+		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
 		public string Species { get; set; }
@@ -961,8 +1000,7 @@ namespace Noxico
 			Tokens = new List<Token>();
 		}
 
-		//TODO: adapt to new tokenizer
-		public static Character GetUnique(string name)
+		public static Character GetUnique(string id)
 		{
 			if (xDoc == null)
 			{
@@ -970,6 +1008,14 @@ namespace Noxico
 				xDoc.Load("Noxico.xml");
 			}
 
+			var newChar = new Character();
+			var planSource = xDoc.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
+			var plan = planSource.ChildNodes[0].Value;
+			newChar.Tokens = Token.Tokenize(plan);
+			newChar.Name = new Name(planSource.GetAttribute("name"));
+			newChar.A = "a";
+			newChar.IsProperNamed = planSource.HasAttribute("proper");
+			/*
 			var newChar = new Character();
 			var planSource = xDoc.SelectSingleNode("//uniques/character[@name=\"" + name + "\"]") as XmlElement;
 			var plan = xDoc.CreateElement("character");
@@ -981,6 +1027,7 @@ namespace Noxico
 			Roll(plan);
 			OneOf(plan);
 			newChar.Tokens = Token.Tokenize(plan);
+			*/
 
 			var prefabTokens = new[] { "items", "health", "perks", "skills", "charisma", "climax", "cunning", "carnality", "stimulation", "sensitivity", "speed", "strength", "money", "ships" };
 			var prefabTokenValues = new[] { 0, 10, 0, 0, 10, 0, 10, 0, 10, 10, 10, 15, 100, 0 };
@@ -1006,6 +1053,15 @@ namespace Noxico
 			else if (gender == Gender.Herm || gender == Gender.Neuter)
 				newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
 
+			var terms = newChar.GetToken("terms");
+			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
+			if (gender == Gender.Male && terms.HasToken("male"))
+				newChar.Species = terms.GetToken("male").Text;
+			else if (gender == Gender.Female && terms.HasToken("female"))
+				newChar.Species = terms.GetToken("female").Text;
+			else if (gender == Gender.Herm && terms.HasToken("herm"))
+				newChar.Species = terms.GetToken("herm").Text;
+
 			newChar.ApplyCostume();
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
@@ -1014,7 +1070,6 @@ namespace Noxico
 			return newChar;
 		}
 
-		//TODO: adapt to new tokenizer
 		public static Character Generate(string bodyPlan, Gender gender)
 		{
 			if (xDoc == null)
@@ -1025,10 +1080,6 @@ namespace Noxico
 
 			var newChar = new Character();
 			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
-			//var plan = xDoc.CreateElement("bodyplan");
-			//plan.InnerXml = planSource.InnerXml;
-			//Roll(plan);
-			//OneOf(plan);
 			var plan = planSource.ChildNodes[0].Value;
 			newChar.Tokens = Token.Tokenize(plan);
 			newChar.Name = new Name();
@@ -1074,6 +1125,7 @@ namespace Noxico
 				newChar.RemoveToken("balls");
 			}
 
+			/*
 			var skinTypes = new[] { "fur", "scales", "rubber", "slime" };
 			foreach (var skinType in skinTypes)
 			{
@@ -1085,6 +1137,7 @@ namespace Noxico
 					break;
 				}
 			}
+			*/
 
 			if (newChar.HasToken("culture") && newChar.GetToken("culture").Tokens.Count > 0)
 			{
@@ -1134,59 +1187,6 @@ namespace Noxico
 			return newChar;
 		}
 
-		private static void Roll(XmlElement x)
-		{
-			while (x.SelectSingleNode("//roll") != null)
-			{
-				var o = x.SelectSingleNode("//roll");
-				var xDyPz = o.InnerText.Trim();
-				if (xDyPz == "")
-				{
-					o.ParentNode.RemoveChild(o);
-					continue;
-				}
-				int y = 0, z = 0;
-				var m = Regex.Match(xDyPz, @"1d(\d+)\+(\d+)");
-				if (!m.Success)
-				{
-					m = Regex.Match(xDyPz, @"1d(\d+)");
-					if (!m.Success)
-						throw new Exception(string.Format("Roll() can't parse \"{0}\".", xDyPz));
-				}
-				y = int.Parse(m.Groups[1].Value);
-				if (m.Groups.Count == 3)
-					z = int.Parse(m.Groups[2].Value);
-				var roll = Toolkit.Rand.Next(y) + z;
-				var r = x.OwnerDocument.CreateTextNode(roll.ToString());
-				o.ParentNode.ReplaceChild(r, o);
-			}
-		}
-
-		public static void OneOf(XmlElement x)
-		{
-			while (x.SelectSingleNode("//oneof") != null)
-			{
-				var o = x.SelectSingleNode("//oneof");
-				var options = o.InnerText.Trim();
-				if (options == "")
-				{
-					o.ParentNode.RemoveChild(o);
-					continue;
-				}
-				var p = options.Split(',');
-				var c = p[Toolkit.Rand.Next(p.Length)].Trim();
-				if (string.IsNullOrWhiteSpace(c))
-				{
-					o.ParentNode.RemoveChild(o);
-				}
-				else
-				{
-					var r = x.OwnerDocument.CreateElement(c);
-					o.ParentNode.ReplaceChild(r, o);
-				}
-			}
-		}
-
 		public void SaveToFile(BinaryWriter stream)
 		{
 			//stream.Write(Name ?? "");
@@ -1228,10 +1228,17 @@ namespace Noxico
 					var xElement = xDoc.SelectSingleNode("//costume[@id=\"" + pick + "\"]") as XmlElement;
 					if (xElement != null)
 					{
-						var plan = xDoc.CreateElement("costume");
-						plan.InnerXml = xElement.InnerXml;
-						OneOf(plan);
+						var plan = xElement.ChildNodes[0].Value;
+						if (plan == null)
+						{
+							lives--;
+							continue;
+						}
 						costume.Tokens = Token.Tokenize(plan);
+						//var plan = xDoc.CreateElement("costume");
+						//plan.InnerXml = xElement.InnerXml;
+						//OneOf(plan);
+						//costume.Tokens = Token.Tokenize(plan);
 					}
 					lives--;
 				}
@@ -1333,7 +1340,7 @@ namespace Noxico
 				var setvar = token.GetToken("setvar");
 				var id = (int)setvar.GetToken("id").Value;
 				var value = setvar.GetToken("value");
-				vars[id] = value.Tokens[0].Name;
+				vars[id] = value.Text;
 				token.RemoveToken("setvar");
 			}
 			while (token.HasToken("var"))
@@ -1344,6 +1351,14 @@ namespace Noxico
 					token.RemoveToken("var");
 				else
 					getvar.Name = vars[id];
+			}
+			if (!string.IsNullOrWhiteSpace(token.Text) && token.Text.Trim().StartsWith("var "))
+			{
+				var id = int.Parse(token.Text.Trim().Substring(4));
+				if (string.IsNullOrWhiteSpace(vars[id]))
+					token.Text = "<invalid token>";
+				else
+					token.Text = vars[id];
 			}
 			foreach (var child in token.Tokens)
 				FoldVariables(child, vars);
@@ -1689,20 +1704,19 @@ namespace Noxico
 			if (this.HasToken("legs"))
 			{
 				var legs = this.GetToken("legs");
-				if (legs.HasToken("quadruped"))
+				if (this.HasToken("quadruped"))
 				{
 					//Assume horse, accept genbeast, cow or dog legs, mock and reject others.
-					if (legs.Tokens.Count == 1)
+					if (legs.Tokens.Count == 0)
 					{
-						sb.AppendFormat("(\xFENOTICE\xFE: no leg type specified. Assuming horse legs.) ");
+						sb.AppendFormat("(<b>NOTICE<b>: no leg type specified. Assuming horse legs.) ");
 						legs.Tokens.Add(new Token() { Name = "horse" });
 					}
 					if (legs.HasToken("stilleto") || legs.HasToken("claws") || legs.HasToken("insect"))
 					{
-						sb.AppendFormat("(\xFENOTICE\xFE: silly leg type specified. Changing to genbeast.) ");
+						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to genbeast.) ");
 						//Clear out everything, then re-add quadruped and genbeast.
 						legs.Tokens.Clear();
-						legs.Tokens.Add(new Token() { Name = "quadruped" });
 						legs.Tokens.Add(new Token() { Name = "genbeast" });
 					}
 					if (legs.HasToken("horse") || legs.HasToken("cow"))
@@ -1867,6 +1881,20 @@ namespace Noxico
 						sb.AppendFormat("{1}{0}", visible[i], i == visible.Count - 1 ? ", and " : ", ");
 					sb.AppendFormat(".");
 				}
+				sb.Append(' ');
+				if (HasToken("noarms"))
+				{
+					if (hands.Count == 2)
+						sb.AppendFormat("(<b>NOTICE<b>: dual wielding with mouth?) ");
+					sb.AppendFormat("[He] [has] {0} held between [his] teeth.", hands[0]);
+				}
+				else
+				{
+					if (hands.Count == 1)
+						sb.AppendFormat("[He] has {0} in [his] hands.", hands[0]);
+					else if (hands.Count == 1)
+						sb.AppendFormat("[He] has {0} in [his] hands.", hands[0]);
+				}
 				sb.AppendLine();
 			}
 			#endregion
@@ -1984,6 +2012,7 @@ namespace Noxico
 			sb.Replace("[is]", pa is Player ? "are" : "is");
 			sb.Replace("[has]", pa is Player ? "have" : "has");
 			sb.Replace("[does]", pa is Player ? "do" : "does");
+			sb.Replace("[is]", pa is Player ? "are" : "is");
 
 			sb.Replace("[skin]", skinName);
 			return sb.ToString();
@@ -2038,6 +2067,316 @@ namespace Noxico
 			File.WriteAllText("info.html", Toolkit.HTMLize(File.ReadAllText(Name + " info.txt")));
 			System.Diagnostics.Process.Start("info.html"); //Name + " info.txt");
 		}
+
+		public void CheckPants(MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false)
+		{
+			var doReport = new Action<string>(s =>
+			{
+				if (reportLevel == MorphReportLevel.NoReports)
+					return;
+				if (reportLevel == MorphReportLevel.PlayerOnly && this != NoxicoGame.HostForm.Noxico.Player.Character)
+					return;
+				if (reportAsMessages)
+					NoxicoGame.AddMessage(s);
+				else
+					Character.MorphBuffer.Append(s + ' ');
+			});
+	
+			if (!HasToken("slimeblob") && !HasToken("snaketail") && !HasToken("quadruped"))
+				return;
+			var items = GetToken("items");
+			foreach (var carriedItem in items.Tokens)
+			{
+				if (!carriedItem.HasToken("equipped"))
+					continue;
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				var equip = find.GetToken("equipable");
+				if (equip.HasToken("pants") || equip.HasToken("underpants"))
+				{
+					var originalname = find.ToString(carriedItem, false, false);
+					if (HasToken("quadruped"))
+					{
+						//Rip it apart!
+						var slot = "pants";
+						if (equip.HasToken("pants") && equip.HasToken("shirt"))
+							slot = "over";
+						else if (equip.HasToken("underpants"))
+						{
+							slot = "underpants";
+							if (equip.HasToken("undershirt"))
+								slot = "under";
+						}
+						carriedItem.Name = "tatteredshreds_" + slot;
+						carriedItem.Tokens.Clear();
+
+						if (this == NoxicoGame.HostForm.Noxico.Player.Character)
+							doReport("You have torn out of your " + originalname + "!");
+						else
+							doReport(this.Name.ToString() + " has torn out of " + HisHerIts(true) + " " + originalname + ".");
+					}
+					else
+					{
+						if (this == NoxicoGame.HostForm.Noxico.Player.Character)
+							doReport("You slip out of your " + originalname + ".");
+						//else
+							//mention it for others? It's hardly as... "radical" as tearing it up.
+					}
+				}
+			}
+		}
+
+		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
+		{
+			if (xDoc == null)
+			{
+				xDoc = new XmlDocument();
+				xDoc.Load("Noxico.xml");
+			}
+
+			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
+
+			var doReport = new Action<string>(s =>
+			{
+				if (reportLevel == MorphReportLevel.NoReports)
+					return;
+				if (reportLevel == MorphReportLevel.PlayerOnly && !isPlayer)
+					return;
+				if (reportAsMessages)
+					NoxicoGame.AddMessage(s);
+				else
+					Character.MorphBuffer.Append(s + ' ');
+			});
+
+			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + targetPlan + "\"]") as XmlElement;
+			if (planSource == null)
+				throw new Exception(string.Format("Unknown target bodyplan \"{0}\".", targetPlan));
+			var plan = planSource.ChildNodes[0].Value;
+			var target = new TokenCarrier() { Tokens = Token.Tokenize(plan) };
+			var source = this;
+
+			var toChange = new List<Token>();
+			var changeTo = new List<Token>();
+			var report = new List<string>();
+			var doNext = new List<bool>();
+
+			//Remove it later if there's none.
+			if (!source.HasToken("tail"))
+				source.Tokens.Add(new Token() { Name = "tail" });
+			if (!target.HasToken("tail"))
+				target.Tokens.Add(new Token() { Name = "tail" });
+			if (source.GetToken("tail").Tokens.Count == 0)
+				source.GetToken("tail").Tokens.Add(new Token() { Name = "<none>" });
+			if (target.GetToken("tail").Tokens.Count == 0)
+				target.GetToken("tail").Tokens.Add(new Token() { Name = "<none>" });
+
+			//Change tail type?
+			if (target.GetToken("tail").Tokens[0].Name != source.GetToken("tail").Tokens[0].Name)
+			{
+				toChange.Add(source.Path("tail"));
+				changeTo.Add(target.Path("tail"));
+				doNext.Add(false);
+
+				if (source.Path("tail/<none>") != null)
+					report.Add((isPlayer ? "You have" : this.Name + " has") + " sprouted a " + Descriptions.Tail(target.Path("tail")) + ".");
+				else
+					report.Add((isPlayer ? "Your" : this.Name + "'s") + " tail has become a " + Descriptions.Tail(target.Path("tail")) + ".");
+			}
+
+			//Change entire skin type?
+			if (target.Path("skin/type").Tokens[0].Name != source.Path("skin/type").Tokens[0].Name)
+			{
+				toChange.Add(source.Path("skin"));
+				changeTo.Add(target.Path("skin"));
+				doNext.Add(false);
+
+				switch (target.Path("skin/type").Tokens[0].Name)
+				{
+					case "skin":
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + " skin all over.");
+						break;
+					case "fur":
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + " fur all over.");
+						break;
+					case "rubber":
+						report.Add((isPlayer ? "Your" : this.Name + "'s") + " skin has turned into " + Toolkit.NameColor(target.Path("skin/color").Text) + " rubber.");
+						break;
+					case "scales":
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown thick " + Toolkit.NameColor(target.Path("skin/color").Text) + " scales.");
+						break;
+					case "slime":
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " turned to " + Toolkit.NameColor(target.Path("hair/color").Text) + " slime.");
+						break;
+					default:
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Tokens[0].Name + '.');
+						break;
+				}
+			}
+
+			var fooIneReports = new Dictionary<string, string>()
+			{
+				{ "normal", "human-like" },
+				{ "genbeast", "beastly" },
+				{ "horse", "equine" },
+				{ "dog", "canine" },
+				{ "cow", "bovine" },
+				{ "cat", "feline" },
+				{ "reptile", "reptilian" },
+			};
+
+			//Change facial structure?
+			if (target.GetToken("face").Tokens[0].Name != source.GetToken("face").Tokens[0].Name)
+			{
+				toChange.Add(source.Path("face"));
+				changeTo.Add(target.Path("face"));
+				doNext.Add(false);
+
+				var faceDescription = fooIneReports.ContainsKey(target.GetToken("face").Tokens[0].Name) ? fooIneReports[target.GetToken("face").Tokens[0].Name] : target.GetToken("face").Tokens[0].Name;
+				report.Add((isPlayer ? "Your" : this.Name + "'s") + " face has rearranged to a more " + faceDescription + " form");
+			}
+
+			//Nothing less drastic to change? Great.
+			if (toChange.Count == 0)
+			{
+				//TODO: handle wings, horns
+
+				foreach (var lowerBody in new[] { "slimeblob", "snaketail" })
+				{
+					if (target.HasToken(lowerBody) && !source.HasToken(lowerBody))
+					{
+						doReport((isPlayer ? "Your" : this.Name + "'s") + " lower body has become " + (lowerBody == "slimeblob" ? "a mass of goop." : "a long, scaly snake tail"));
+						RemoveToken("legs");
+						Tokens.Add(new Token() { Name = lowerBody });
+						CheckPants();
+						return;
+					}
+				}
+
+				if (target.HasToken("legs"))
+				{
+					if (!source.HasToken("legs"))
+						source.Tokens.Add(new Token() { Name = "legs" });
+					if (source.GetToken("legs").Tokens.Count == 0)
+						source.GetToken("legs").Tokens.Add(new Token() { Name = "human" });
+
+					if (source.GetToken("legs").Tokens[0].Name != target.GetToken("legs").Tokens[0].Name)
+					{
+						var legDescription = fooIneReports.ContainsKey(target.GetToken("legs").Tokens[0].Name) ? fooIneReports[target.GetToken("legs").Tokens[0].Name] : target.GetToken("legs").Tokens[0].Name;
+						doReport((isPlayer ? "You have" : this.Name + " has") + " grown " + legDescription + " legs.");
+						source.GetToken("legs").Tokens[0].Name = target.GetToken("legs").Tokens[0].Name;
+					}
+				}
+
+				if (target.HasToken("quadruped") && !source.HasToken("quadruped"))
+				{
+					Tokens.Add(new Token() { Name = "quadruped" });
+					CheckPants();
+					if (target.HasToken("marshmallow") && !source.HasToken("marshmallow"))
+						source.Tokens.Add(new Token() { Name = "marshmallow" });
+					if (target.HasToken("noarms") && !source.HasToken("noarms"))
+					{
+						doReport((isPlayer ? "You are" : this.Name + " is") + " now a full quadruped.");
+						source.Tokens.Add(new Token() { Name = "noarms" });
+						//CheckHands();
+					}
+					else
+					{
+						doReport((isPlayer ? "You are" : this.Name + " is") + " now a centaur.");
+					}
+					return;
+				}
+				else if (!target.HasToken("quadruped"))
+				{
+					RemoveToken("quadruped");
+					//Always return arms
+					if (source.HasToken("noarms"))
+						source.RemoveToken("noarms");
+					if (source.HasToken("marshmallow"))
+						source.RemoveToken("marshmallow");
+				}
+				{
+					doReport("There was no further effect.");
+					return;
+				}
+			}
+
+			//Nothing to do?
+			if (toChange.Count == 0)
+			{
+				doReport("There was no further effect.");
+				return;
+			}
+
+			var choice = Toolkit.Rand.Next(toChange.Count);
+			var changeThis = toChange[choice];
+			var toThis = changeTo[choice];
+			doReport(report[choice]);
+
+			#region Slime TO
+			//Handle changing skin type to and from slime
+			//TODO: make this handle any skin type transition?
+			if (toThis.Name == "skin" && toThis.Path("type/slime") != null)
+			{
+				//To slime
+				var origName = Path("skin/type").Tokens[0].Name;
+				var originalSkin = Path("originalskins");
+				if (originalSkin == null)
+				{
+					Tokens.Add(new Token() { Name = "originalskins" });
+					originalSkin = GetToken("originalskins");
+				}
+				var thisSkin = originalSkin.Path(origName);
+				if (thisSkin == null)
+				{
+					originalSkin.Tokens.Add(new Token() { Name = origName });
+					thisSkin = originalSkin.GetToken(origName);
+				}
+				thisSkin.Text = Path("skin/color").Text;
+
+				if (!originalSkin.HasToken("hair"))
+					originalSkin.Tokens.Add(new Token() { Name = "hair" });
+				originalSkin.GetToken("hair").Text = Path("hair/color").Text;
+
+				//Now that that's done, grab a new hair color while you're there.
+				var newHair = target.Path("hair/color").Text;
+				Path("hair/color").Text = newHair;
+			}
+			#endregion
+
+			changeThis.Name = toThis.Name;
+			changeThis.Tokens.Clear();
+			changeThis.AddSet(toThis.Tokens);
+
+			//CheckHands();
+			CheckPants();
+
+			#region Slime FROM
+			if (toThis.Name == "skin" && this.HasToken("originalskins") && toThis.Path("type/slime") == null)
+			{
+				//From slime -- restore the original color for the target skin type if available.
+				var thisSkin = Path("skin");
+				//See if we have this skin type memorized
+				var memorized = Path("originalskins/" + thisSkin.GetToken("type").Tokens[0].Name);
+				if (memorized != null)
+				{
+					if (!thisSkin.HasToken("color"))
+						thisSkin.Tokens.Add(new Token() { Name = "color" });
+					Path("skin/color").Text = memorized.Text;
+				}
+				//Grab the hair too?
+				if (Path("hair/color") != null)
+					Path("hair/color").Text = Path("originalskins/hair").Text;
+			}
+			#endregion
+
+			//remove any dummy tails
+			if (source.Path("tail/<none>") != null)
+				source.RemoveToken("tail");
+			
+			if (doNext[choice] || Toolkit.Rand.Next(100) < continueChance)
+			{
+				Morph(targetPlan);
+			}
+		}
 	}
 
 	public class InventoryItem : TokenCarrier
@@ -2048,6 +2387,7 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 		public string The { get; set; }
+		public string Script { get; private set; }
 
 		public Token tempToken { get; set; }
 
@@ -2064,13 +2404,13 @@ namespace Noxico
 			return ToString(null);
 		}
 
-		public string ToString(Token token, bool the = false)
+		public string ToString(Token token, bool the = false, bool a = true)
 		{
 			if (ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
 			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(UnknownName)) ? UnknownName : Name;
-			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Tokens[0].Name) : "";
+			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
 			var reps = new Dictionary<string, string>()
 			{
 				{ "[color]", color },
@@ -2089,7 +2429,7 @@ namespace Noxico
 					name = name.Replace(item.Key, item.Value);
 			}
 
-			if (IsProperNamed)
+			if (IsProperNamed || !a)
 				return name;
 			return string.Format("{0} {1}", the ? The : A, name);
 		}
@@ -2102,8 +2442,30 @@ namespace Noxico
 			ni.UnknownName = x.GetAttribute("unknown");
 			ni.A = x.GetAttribute("a");
 			ni.The = x.GetAttribute("the");
-			ni.IsProperNamed = x.HasAttribute("proper");
-			ni.Tokens = Token.Tokenize(x);
+			ni.IsProperNamed = x.GetAttribute("proper") == "true";
+
+			var t = x.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault();
+			if (t != null)
+				ni.Tokens = Token.Tokenize(t.Value);
+#if DEBUG
+			else
+			{
+				ni.Tokens = Token.Tokenize(x);
+				Console.WriteLine("Item {0} conversion:", ni.ID);
+				Console.WriteLine("\t\t\t<![CDATA[");
+				Console.Write(ni.DumpTokens(ni.Tokens, 0));
+				Console.WriteLine("\t\t\t]]>");
+				Console.WriteLine();
+			}
+#endif
+
+			ni.Script = null;
+			var ses = x.SelectNodes("script");
+			if (ses.Count == 0)
+				return ni;
+			var s = ses[0].ChildNodes.OfType<XmlCDataSection>().FirstOrDefault();
+			if (s != null)
+				ni.Script = s.Value;
 			return ni;
 		}
 
@@ -2360,10 +2722,10 @@ namespace Noxico
 				return;
 			}
 
-			if (this.HasToken("script"))
+			if (!string.IsNullOrWhiteSpace(this.Script))
 			{
 				Console.WriteLine("------\nSCRIPT\n------");
-				var script = this.GetToken("script").Text.Split('\n');
+				var script = this.Script.Split('\n'); //this.GetToken("script").Text.Split('\n');
 				boardchar.ScriptRunning = true;
 				boardchar.ScriptPointer = 0;
 				Noxicobotic.Run(boardchar, script);
@@ -2477,58 +2839,6 @@ namespace Noxico
 					runningDesc += result + "\n";
 				}
 				character.UpdateTitle();
-			}
-			#endregion
-
-			#region Body horror
-			if (this.HasToken("transform"))
-			{
-				foreach (var effect in this.GetToken("transform").Tokens.Where(x => x.Name == "effect"))
-				{
-					//TODO: support ifonly?
-					var check = effect.GetToken("ifnot");
-					var shouldRun = !check.IsMatch(character.Tokens);
-					if (shouldRun)
-					{
-						foreach (var rem in effect.GetToken("remove").Tokens)
-						{
-							var toFind = character.Tokens.Find(x => x.Name == rem.Name);
-							if (toFind != null)
-								character.Tokens.Remove(toFind);
-						}
-						if (effect.HasToken("add"))
-							character.AddSet(effect.GetToken("add").Tokens);
-						if (effect.HasToken("set"))
-						{
-							foreach (var attrib in effect.GetToken("set").Tokens)
-							{
-								if (attrib.Name == "species")
-								{
-									var sp = attrib.Text;
-									var mn = "male " + sp;
-									var fn = "fe" + mn;
-									if (attrib.Tokens.Count > 0)
-									{
-										if (attrib.HasToken("male"))
-											mn = attrib.GetToken("male").Text;
-										if (attrib.HasToken("female"))
-											fn = attrib.GetToken("female").Text;
-									}
-									if (character.HasToken("malename"))
-										character.GetToken("malename").Tokens[0].Name = mn;
-									if (character.HasToken("femalename"))
-										character.GetToken("femalename").Tokens[0].Name = fn;
-									character.Species = sp;
-									character.UpdateTitle();
-								}
-							}
-						}						
-						if (effect.HasToken("description"))
-							runningDesc += effect.GetToken("description").Text + "\n";
-						if (!effect.HasToken("continued"))
-							break;
-					}
-				}
 			}
 			#endregion
 
@@ -2649,8 +2959,14 @@ namespace Noxico
 						var value = l.Substring(l.IndexOf(' '));
 						if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
 							newOne.Value = v;
+						else
+							newOne.Text = value;
 					}
 					tokenName = tokenName.Remove(tokenName.IndexOf(':'));
+#if DEBUG
+					if (tokenName.Contains(' '))
+						throw new Exception(string.Format("Found a token \"{0}\", probably a typo.", tokenName));
+#endif
 				}
 				newOne.Name = tokenName;
 
@@ -2743,7 +3059,7 @@ namespace Noxico
 		{
 			foreach (var toAdd in otherSet)
 			{
-				this.Tokens.Add(new Token() { Name = toAdd.Name });
+				this.Tokens.Add(new Token() { Name = toAdd.Name, Text = toAdd.Text, Value = toAdd.Value });
 				if (toAdd.Tokens.Count > 0)
 					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
