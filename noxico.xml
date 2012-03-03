@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE stuff [
+	<!ELEMENT stuff (bodyplans,uniques,items,costumes)>
+	<!ELEMENT bodyplans (bodyplan+)>
+	<!ELEMENT bodyplan (#PCDATA)>
+	<!ATTLIST bodyplan id ID #REQUIRED>
+	<!ELEMENT uniques (character+)>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ELEMENT character (#PCDATA|script)*>
+	<!ATTLIST character
+		id ID #REQUIRED
+		name CDATA #IMPLIED
+		proper (true|false) "true"
+		a CDATA #IMPLIED
+	>
+	<!ELEMENT items (item+)>
+	<!ELEMENT item (#PCDATA|script)*>
+	<!ATTLIST item
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		unknown CDATA #IMPLIED
+		proper (true|false) "false"
+		a CDATA #IMPLIED
+		the CDATA #IMPLIED
+	>
+	<!ELEMENT costumes ANY>
+	<!ELEMENT costume (#PCDATA)>
+	<!ATTLIST costume id ID #REQUIRED>
+]>
 <stuff>
 	<bodyplans>
 		<bodyplan id="human">
@@ -22,6 +51,8 @@ skin
 	color: oneof light, light, light, pale, pale, dark, dark, olive
 eyes
 	color: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
+face
+	normal
 ears
 	human
 legs
@@ -36,7 +67,7 @@ costume
 -- The creature creator adjusts this part.
 fertility: roll 1d15+5
 breastrow
-	amount 2
+	amount: 2
 	size: roll 1d5+1
 	nipples: 1
 		size: 0.5
@@ -47,11 +78,18 @@ vagina
 	clit: 0.25
 penis
 	thickness: 2.5
-	length: 1d5+13
+	length: roll 1d5+13
 	cumsource
 	canfuck
 balls
 	amount: 2
+costume
+	casual
+items
+	ponifier
+	foxite
+	knife
+		equipped
 			]]>
 		</bodyplan>
 
@@ -423,9 +461,9 @@ face
 eyes
 	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
 legs
-	-- defining quadruped makes it a centaur...
-	quadruped
 	horse
+-- defining quadruped makes it a centaur...
+quadruped
 -- but noarms makes it a PROPER quadruped!
 noarms
 ears
@@ -496,6 +534,55 @@ penis
 	</bodyplans>
 
 	<uniques>
+		<character id="Lena" name="Lena" proper="true" a="a">
+			<![CDATA[
+culture
+	demonic
+terms
+	generic: "cubi"
+	male: "incubus"
+	female: "succubus"
+	herm: "omnibus"
+tallness: 176
+hair
+	length: 24
+	color: brown
+skin
+	type
+		skin
+	color: pale
+eyes
+	color: red
+ears
+	elfin
+wings
+	bat
+legs
+horns: 2
+waist: 3
+hips: 8
+ass
+	size: 7
+	looseness: 1
+	fuckable
+breastrow
+	amount: 2
+	size: 5.7
+	nipples: 1
+		size: 1.5
+vagina
+	wetness: 2
+	looseness: 3
+	fuckable
+items
+	lena_ruby
+costume
+	lena
+			]]>
+		</character>
+
+		<!-- Old data follows -->
+		<!--
 		<character name="Naga Pinch" proper="true" species="nagapony" a="a">
 			<tallness>
 				120
@@ -537,60 +624,6 @@ penis
 				<looseness>2</looseness>
 				<fuckable />
 			</vagina>
-		</character>
-
-		<character name="Lena" proper="true" species="succubus" a="a">
-			<tallness>176</tallness>
-			<hair>
-				<length>24</length>
-				<color>
-					<brown />
-				</color>
-			</hair>
-			<skin>
-				<pale />
-			</skin>
-			<eyes>
-				<red />
-			</eyes>
-			<ears>
-				<elfin />
-			</ears>
-			<horns>2</horns>
-			<wings>
-				<bat />
-			</wings>
-			<tail>
-				<demon />
-			</tail>
-			<legs />
-			<hips>
-				8
-			</hips>
-			<ass>
-				<size>7</size>
-				<looseness>1</looseness>
-				<fuckable />
-			</ass>
-			<breastrow>
-				<amount>2</amount>
-				<size>5.7</size>
-				<nipples>
-					1
-					<size>1.5</size>
-				</nipples>
-			</breastrow>
-			<vagina>
-				<wetness>2</wetness>
-				<looseness>3</looseness>
-				<fuckable />
-			</vagina>
-			<items>
-				<lena_ruby />
-			</items>
-			<costume>
-				<lena />
-			</costume>
 		</character>
 
 		<character name="Kawa" proper="true" species="demon" a="a">
@@ -799,7 +832,6 @@ penis
 
 		<character name="Nova" proper="true" species="yoshifox" a="a">
 			<tallness>175</tallness>
-			<!-- converted from 5'9" -->
 			<skin>
 				<lime />
 			</skin>
@@ -815,7 +847,7 @@ penis
 			</tail>
 			<legs />
 			<hips>
-				6 <!-- what -->
+				6
 			</hips>
 			<ass>
 				<size>7</size>
@@ -825,7 +857,6 @@ penis
 			<breastrow>
 				<amount>2</amount>
 				<size>3.2</size>
-				<!-- edit later to match a C cup because lazy -->
 				<nipples>
 					1
 					<size>1.5</size>
@@ -833,7 +864,6 @@ penis
 			</breastrow>
 			<vagina>
 				<wetness>4</wetness>
-				<!-- what even are these units -->
 				<looseness>1</looseness>
 				<fuckable />
 			</vagina>
@@ -844,11 +874,8 @@ penis
 				</kinky_panties>
 			</items>
 			<penis>
-				<!-- just guessing here -->
 				<length>15</length>
-				<!-- 6 inches -->
 				<thickness>3</thickness>
-				<!-- ??? -->
 				<species>Arctic fox</species>
 				<name>Sarge</name>
 				<sentient />
@@ -905,45 +932,78 @@ penis
 				</sheer_top>
 			</items>
 		</character>
-
+		-->
 	</uniques>
 
 	<items>
+		<item id="ponifier" name="Element of Perversion" a="" the="the" proper="true">
+			<![CDATA[
+multiuse
+description: "You do not want to know."
+ascii
+	char 173
+	fore
+		aquamarine
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+morph littlepony 0 window
+adjustview
+clearsubs
+				]]>
+			</script>
+		</item>
 
 		<item id="book" name="book" a="a" the="the">
 			<!-- That's all we'll say here. -->
-			<ascii>
-				<char>238</char>
-				<ext>307</ext>
-				<!-- Books have their color determined by ID. -->
-			</ascii>
+			<![CDATA[
+-- This is all we'll specify.
+ascii
+	char: 238
+	ext: 307
+-- Books specifically have their color determined by ID.
+			]]>
 		</item>
 
 		<item id="rope" name="length of rope" a="a" the="the">
-			<nouse />
-			<ascii>
-				<char>21</char>
-				<ext>306</ext>
-				<fore>
-					<brown />
-				</fore>
-			</ascii>
+			<![CDATA[
+nouse
+ascii
+	char: 21
+	ext: 206
+	fore: brown
+			]]>
 		</item>
 		<item id="baseballbat" name="baseball bat" a="a" the="the">
-			<canfuck />
-			<thickness>2.75</thickness>
-			<length>42</length>
-			<weight>
-				<medium />
-			</weight>
-			<ascii>
-				<char>32</char>
-				<fore>
-					<brown />
-				</fore>
-			</ascii>
+			<![CDATA[
+canfuck
+-- Metrics are needed if an item has canfuck.
+thickness: 2.75
+length: 42
+weight
+	medium
+ascii
+	char: 32
+	fore: brown
+			]]>
 		</item>
-		<item id="foxite" name="Foxite" a="" the="the" proper="proper">
+		<item id="foxite" name="Foxite" a="" the="the" proper="true">
+			<![CDATA[
+multiuse
+description: "This is Foxite. It turns you into a fox with repeated usages."
+ascii
+	char 173
+	fore
+		aquamarine
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+morph fox 0 window
+adjustview
+clearsubs
+				]]>
+			</script>
+			<!--
 			<transform>
 				<effect>
 					<ifnot>
@@ -1056,8 +1116,10 @@ penis
 					<aquamarine />
 				</fore>
 			</ascii>
+			-->
 		</item>
 		<item id="penificator" name="penificator" a="a" the="the">
+			<!--
 			<multiuse />
 			<growpenis>
 				<type>
@@ -1074,1009 +1136,911 @@ penis
 					<chartreuse />
 				</fore>
 			</ascii>
-			</item>
+			-->
+		</item>
 		<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
-			<equipable>
-				<hand />
-			</equipable>
-			<weapon>
-				<damage>10</damage>
-			</weapon>
-			<description text="text">A nice, sturdy combat knife.</description>
-			<ascii>
-				<char>27</char>
-				<ext>302</ext>
-				<fore>
-					<silver />
-				</fore>
-			</ascii>
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 10
+description: "A nice, sturdy combat knife."
+ascii
+	char: 27
+	ext: 302
+	fore: silver
+			]]>
 		</item>
 		<item id="butter_knife" name="butter knife" a="a" the="the">
-			<equipable>
-				<hand />
-			</equipable>
-			<weapon>
-				<damage>10</damage>
-			</weapon>
-			<description text="text">A nice, sturdy butter knife.</description>
-			<ascii>
-				<char>27</char>
-				<ext>302</ext>
-				<fore>
-					<silver />
-				</fore>
-			</ascii>
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 10
+description: "A nice, sturdy butter knife."
+ascii
+	char: 27
+	ext: 302
+	fore: silver
+			]]>
 		</item>
 		<item id="test_ring" name="test ring" a="a" the="the">
-			<equipable>
-				<ring />
-			</equipable>
-			<ascii>
-				<char>9</char>
-				<ext>308</ext>
-				<fore>
-					<firebrick />
-				</fore>
-			</ascii>
+			<![CDATA[
+equipable
+	ring
+ascii
+	char: 9
+	ext: 308
+	fore: forebrick
+			]]>
 		</item>
 		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
-			<unique />
-			<equipable>
-				<hand />
-			</equipable>
-			<statchange>
-				<speed>40</speed>
-			</statchange>
-			<weapon>
-				<damage>100</damage>
-			</weapon>
-			<description text="text">Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother.</description>
-			<ascii>
-				<char>27</char>
-				<ext>302</ext>
-				<fore>
-					<white />
-				</fore>
-			</ascii>
+			<![CDATA[
+unique
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 100
+statbonus
+	speed: 40
+description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
+ascii
+	char: 27
+	ext: 302
+	fore: white
+			]]>
 		</item>
 
 		<item id="catears" name="cat ear headband" a="a" the="the">
-			<plural />
-			<equipable>
-				<head />
-			</equipable>
-			<statchange>
-				<charisma>10</charisma>
-			</statchange>
-			<weight>
-				<feather />
-			</weight>
-			<price>20</price>
-			<ascii>
-				<char>234</char>
-				<ext>310</ext>
-				<fore>
-					<darkmagenta />
-				</fore>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	head
+weight
+	feather
+statbonus
+	charisma: 10
+price: 20
+ascii
+	char: 234
+	ext: 310
+	fore: darkmagenta
+			]]>
 		</item>
 		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<male />
-				<underpants />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>10</price>
-			<ascii>
-				<char>110</char>
-				<ext>300</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	male
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: 110
+	ext: 300
+			]]>
 		</item>
 		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<male />
-				<underpants />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>10</price>
-			<ascii>
-				<char>110</char>
-				<ext>301</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	male
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: 110
+	ext: 301
+			]]>
 		</item>
 		<item id="plain_panties" name="panties" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<underpants />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>10</price>
-			<ascii>
-				<char>110</char>
-				<ext>300</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: 110
+	ext: 300
+			]]>
 		</item>
 		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<underpants />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>20</price>
-			<ascii>
-				<char>110</char>
-				<ext>300</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 20
+ascii
+	char: 110
+	ext: 300
+			]]>
 		</item>
 		<item id="plain_bra" name="bra" a="a" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<undershirt />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>10</price>
-			<ascii>
-				<char>119</char>
-				<ext>299</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 10
+ascii
+	char: 119
+	ext: 299
+			]]>
 		</item>
 		<item id="lacy_bra" name="lacy bra" a="a" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<undershirt />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>20</price>
-			<ascii>
-				<char>119</char>
-				<ext>299</ext>
-			</ascii>
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 20
+ascii
+	char: 119
+	ext: 299
+			]]>
 		</item>
 		<item id="sheer_top" name="sheer top" a="a" the="the">
-			<equipable>
-				<female />
-				<shirt />
-				<translucent />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>100</price>
-			<ascii>
-				<char>119</char>
-				<ext>299</ext>
-			</ascii>
+			<![CDATA[
+equipable
+	female
+	shirt
+	translucent
+weight
+	feather
+price: 100
+ascii
+	char: 119
+	ext: 299
+			]]>
 		</item>
 
 		<!-- Clothes from jsNoxico -->
 		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
-			<plural />
-			<equipable>
-				<shirt />
-				<translucent />
-				<!-- Not specifying any descriptions until <equipped> can be mangled into a proper sentence instead of a set of "you are ..." lines. -->
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	shirt
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
-			<plural />
-			<equipable>
-				<undershirt />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	undershirt
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
-			<plural />
-			<equipable>
-				<pants />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	pants
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
-			<plural />
-			<equipable>
-				<underpants />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	underpants
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
 			<!-- Should be used if a bodysuit is torn apart -->
-			<plural />
-			<equipable>
-				<undershirt />
-				<underpants />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	undershirt
+	underpants
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
 			<!-- Should be used if a dress is torn apart -->
-			<plural />
-			<equipable>
-				<shirt />
-				<pants />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
+			<![CDATA[
+plural
+equipable
+	shirt
+	pants
+	translucent
+weight
+	light
+			]]>
 		</item>
 		<item id="shirt" name="plain [color ]shirt" a="a" the="the">
-			<equipable>
-				<shirt />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>10</price>
+			<![CDATA[
+equipable
+	shirt
+weight
+	light
+price: 10
+			]]>
 		</item>
 		<item id="blouse" name="[color ]blouse" a="a" the="the">
-			<equipable>
-				<shirt />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<statchange>
-				<cunning>5</cunning>
-				<strength>-5</strength>
-				<carnality>-5</carnality>
-			</statchange>
-			<price>15</price>
+			<![CDATA[
+equipable
+	shirt
+weight
+	light
+statbonus
+	cunning: 5
+	strength: -5
+	carnality: -5
+price: 15
+			]]>
 		</item>
 		<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
-			<equipable>
-				<female />
-				<jacket />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>100</price>
+			<![CDATA[
+equipable
+	female
+	jacket
+weight
+	light
+price: 100
+			]]>
 		</item>
 		<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
-			<equipable>
-				<male />
-				<jacket />
-			</equipable>
-			<weight>
-				<medium />
-			</weight>
-			<price>100</price>
+			<![CDATA[
+equipable
+	male
+	jacket
+weight
+	medium
+price: 100
+			]]>
 		</item>
 		<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<undershirt />
-			</equipable>
-			<statchange>
-				<charisma>5</charisma>
-				<sensitivity>5</sensitivity>
-				<cunning>-5</cunning>
-			</statchange>
-			<weight>
-				<feather />
-			</weight>
-			<price>100</price>
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+statbonus
+	charisma: 5
+	sensitivity: 5
+	cunning: -5
+weight
+	feather
+price: 100
+			]]>
 		</item>
 		<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<pants />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>20</price>
+			<![CDATA[
+plural
+equipable
+	pants
+weight
+	light
+price: 20
+			]]>
 		</item>
 		<item id="skirt" name="plain [color ]skirt" a="a" the="the">
-			<equipable>
-				<female />
-				<pants />
-				<reach />
-			</equipable>
-			<statchange>
-				<strength>5</strength>
-				<cunning>-5</cunning>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>20</price>
+			<![CDATA[
+equipable
+	female
+	pants
+	reach
+statbonus
+	strength: 5
+	cunning: -5
+weight
+	light
+price: 20
+			]]>
 		</item>
 		<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
-			<equipable>
-				<female />
-				<pants />
-				<reach />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>60</price>
+			<![CDATA[
+equipable
+	female
+	pants
+	reach
+weight
+	light
+price: 60
+			]]>
 		</item>
 		<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
-			<equipable>
-				<female />
-				<underpants />
-			</equipable>
-			<statchange>
-				<charisma>5</charisma>
-				<sensitivity>5</sensitivity>
-				<cunning>-5</cunning>
-			</statchange>
-			<weight>
-				<feather />
-			</weight>
-			<price>50</price>
+			<![CDATA[
+equipable
+	female
+	underpants
+statbonus
+	charisma: 5
+	sensitivity: 5
+	cunning: -5
+weight
+	feather
+price: 50
+			]]>
 		</item>
 		<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<pants />
-			</equipable>
-			<statchange>
-				<strength>5</strength>
-				<carnality>-5</carnality>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>50</price>
+			<![CDATA[
+plural
+equipable
+	pants
+statbonus
+	strength: 5
+	carnality: -5
+weight
+	light
+price: 50
+			]]>
 		</item>
 		<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<pants />
-			</equipable>
-			<statchange>
-				<speed>5</speed>
-				<charisma>5</charisma>
-				<cunning>-5</cunning>
-				<strength>-5</strength>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>50</price>
+			<![CDATA[
+plural
+equipable
+	pants
+statbonus
+	speed: 5
+	charisma: 5
+	cunning: -5
+	strength: -5
+weight
+	light
+price: 50
+			]]>
 		</item>
 		<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
-			<equipable>
-				<pants />
-				<reach />
-			</equipable>
-			<statchange>
-				<sensitivity>10</sensitivity>
-				<charisma>10</charisma>
-				<cunning>-10</cunning>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>70</price>
+			<![CDATA[
+equipable
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	charisma: 10
+	cunning: -10
+weight
+	light
+price: 70
+			]]>
 		</item>
 		<item id="sundress" name="[color ]sundress" a="a" the="the">
-			<equipable>
-				<shirt />
-				<pants />
-				<reach />
-			</equipable>
-			<statchange>
-				<sensitivity>10</sensitivity>
-				<carnality>10</carnality>
-				<speed>-10</speed>
-				<strength>-10</strength>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>60</price>
+			<![CDATA[
+equipable
+	shirt
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	carnality: 10
+	speed: -10
+	strength: -10
+weight
+	light
+price: 60
+			]]>
 		</item>
 		<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
-			<equipable>
-				<shirt />
-				<pants />
-				<reach />
-			</equipable>
-			<statchange>
-				<sensitivity>10</sensitivity>
-				<charisma>10</charisma>
-				<carnality>10</carnality>
-				<speed>-10</speed>
-				<strength>-10</strength>
-			</statchange>
-			<weight>
-				<light />
-			</weight>
-			<price>60</price>
+			<![CDATA[
+equipable
+	shirt
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	charisma: 10
+	carnality: 10
+	speed: -10
+	strength: -10
+weight
+	light
+price: 60
+			]]>
 		</item>
 		<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
-			<equipable>
-				<shirt />
-				<pants />
-			</equipable>
-			<statchange>
-				<charisma>10</charisma>
-				<cunning>10</cunning>
-				<strength>-10</strength>
-			</statchange>
-			<weight>
-				<medium />
-			</weight>
-			<price>100</price>
+			<![CDATA[
+equipable
+	shirt
+	pants
+statbonus
+	charisma: 10
+	cunning: 10
+	strength: -10
+weight
+	medium
+price: 100
+			]]>
 		</item>
 		<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
-			<equipable>
-				<undershirt />
-				<underpants />
-			</equipable>
-			<weight>
-				<medium />
-			</weight>
-			<statchange>
-				<charisma>20</charisma>
-				<sensitivity>15</sensitivity>
-				<cunning>10</cunning>
-			</statchange>
-			<price>100</price>
+			<![CDATA[
+equipable
+	undershirt
+	underpants
+weight
+	medium
+statbonus
+	charisma: 20
+	sensitivity: 15
+	cunning: 10
+price: 100
+			]]>
 		</item>
 		<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
-			<equipable>
-				<coat />
-			</equipable>
-			<weight>
-				<medium />
-			</weight>
-			<price>150</price>
+			<![CDATA[
+equipable
+	coat
+weight
+	medium
+price: 150
+			]]>
 		</item>
 
 		<!-- Lena's costume -->
 		<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
-			<equipable>
-				<female />
-				<undershirt />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>30</price>
+			<![CDATA[
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 30
+			]]>
 		</item>
 		<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<female />
-				<underpants />
-			</equipable>
-			<weight>
-				<feather />
-			</weight>
-			<price>40</price>
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 40
+			]]>
 		</item>
 		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<pants />
-				<reach />
-				<translucent />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>40</price>
+			<![CDATA[
+plural
+equipable
+	pants
+	reach
+	translucent
+weight
+	light
+price: 40
+			]]>
 		</item>
 		<item id="high_heels" name="high heels" a="a pair of" the="the">
-			<plural />
-			<equipable>
-				<shoes />
-			</equipable>
-			<weight>
-				<light />
-			</weight>
-			<price>30</price>
+			<![CDATA[
+plural
+equipable
+	shoes
+weight
+	light
+price: 30
+			]]>
 		</item>
-		<item id="lena_ruby" name="Lena's ruby pendant" proper="proper">
-			<!-- quest / -->
-			<unique />
-			<description text="text">A blood-red ruby in the shape of a droplet.</description>
-			<script text="Noxicobotic">
+		<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
+			<![CDATA[
+unique
+description: "A blood-red ruby in the shape of a droplet."
+			]]>
+			<script language="text/noxicobotic">
 				<![CDATA[
-				-- Just display a nice custom error.
-				!<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
+-- Just display a nice custom error.
+!<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
 				]]>
 			</script>
 		</item>
 
 		<!-- Morph lines -->
 		<item id="catmorph" name="cat morph potion" a="a" the="the">
-			<!-- <multiuse /> -->
-			<script text="Noxicobotic">
+			<![CDATA[
+ascii
+	char: 173
+	fore
+		lightsalmon
+			]]>
+			<script language="text/noxicobotic">
 				<![CDATA[
-				-- Text stolen from CoC's Whisker Fruit item, for now.
+-- Text stolen from CoC's Whisker Fruit item, for now.
 
-				|<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
+|<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
 				
-				-- always increase speed
-				gettagval "speed"
-				if it < 75
-					if it < 30
-						|<< [break]You feel...more balanced, sure of step. You're certain that you've become just a little bit faster. >>
-						inctagval "speed" 2
-					else
-						if it < 60
-							|<< [break]You stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now. >>
-							inctagval "speed" 1
-						else
-							|<< [break]You pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down. >>
-							inctagval "speed" 0.5
-						endif
-					endif
-					-- end
-				endif
+-- always increase speed
+gettagval "speed"
+if it < 75
+	if it < 30
+		|<< [break]You feel...more balanced, sure of step. You're certain that you've become just a little bit faster. >>
+		inctagval "speed" 2
+	else
+		if it < 60
+			|<< [break]You stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now. >>
+			inctagval "speed" 1
+		else
+			|<< [break]You pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down. >>
+			inctagval "speed" 0.5
+		endif
+	endif
+	-- end
+endif
 
-				-- sometimes increase charisma
+-- sometimes increase charisma
 				
-				-- grow cat ears
-				checktag "ears/cat"
-				if not exists
-					-- should check the existing type first
-					|<< [break]Your ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. [break]<cWhite>You now have cat ears.<c> >>
+-- grow cat ears
+checktag "ears/cat"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. [break]<cWhite>You now have cat ears.<c> >>
 
-					removetag "ears"
-					addtag "ears"
-					addtag "ears" "cat"
-					end
-				endif
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "cat"
+	end
+endif
 
-				-- grow cat tail
-				checktag "tail/genbeast"
-				if not exists
-					-- should check the existing type first
-					|<< [break]You pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. [break]<cWhite>You now have a cat tail.<c> >>
+-- grow cat tail
+checktag "tail/genbeast"
+if not exists
+	-- should check the existing type first
+	|<< [break]You pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. [break]<cWhite>You now have a cat tail.<c> >>
 
-					removetag "tail"
-					addtag "tail"
-					addtag "tail" "genbeast"
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "genbeast"
 					
-					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-					end
-				endif
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
 
-				-- grow fangs
+-- grow fangs
 
-				-- grow fur
-				checktag "fur"
-				if not exists
-					|<< [break]<cWhite>You grow fur all over. >>
-					renametag "skin" "fur"
-					end
-				endif
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
 				
-				-- grow digitigrade legs
+-- grow digitigrade legs
 				
-				-- grow up to two extra breast rows
+-- grow up to two extra breast rows
 				
 				]]>
 			</script>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<lightsalmon />
-				</fore>
-			</ascii>
 		</item>
 		<item id="dogmorph" name="dog morph potion" a="a" the="the">
-			<!-- <multiuse /> -->
-			<script text="Noxicobotic">
+			<![CDATA[
+ascii
+	char: 173
+	fore
+		mistyrose
+			]]>
+			<script language="text/noxicobotic">
 				<![CDATA[
-				-- Text stolen from CoC's Canine Pepper item, for now.
+-- Text stolen from CoC's Canine Pepper item, for now.
 
-				|<< The pepper is strangely spicy but very tasty. >>
+|<< The pepper is strangely spicy but very tasty. >>
 				
-				-- always increase strength
-				gettagval "strength"
-				if it < 50
-					|<< [break]Your muscles feel more toned. >>
-					inctagval "strength" 2
-				endif
+-- always increase strength
+gettagval "strength"
+if it < 50
+	|<< [break]Your muscles feel more toned. >>
+	inctagval "strength" 2
+endif
 
-				-- sometimes increase charisma
+-- sometimes increase charisma
 				
-				-- grow dog ears
-				checktag "ears/dog"
-				if not exists
-					-- should check the existing type first
-					|<< [break]Your ears transform, becoming more canine in appearance.[break]<cWhite>You now have dog ears.<c> >>
+-- grow dog ears
+checktag "ears/dog"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears transform, becoming more canine in appearance.[break]<cWhite>You now have dog ears.<c> >>
 
-					removetag "ears"
-					addtag "ears"
-					addtag "ears" "dog"
-					end
-				endif
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "dog"
+	end
+endif
 
-				-- grow dog tail
-				checktag "tail/dog"
-				if not exists
-					-- should check the existing type first
-					|<< [break]You feel your backside shift and change, flesh molding and displacing into a long puffy tail![break]<cWhite>You now have a dog tail.<c> >>
+-- grow dog tail
+checktag "tail/dog"
+if not exists
+	-- should check the existing type first
+	|<< [break]You feel your backside shift and change, flesh molding and displacing into a long puffy tail![break]<cWhite>You now have a dog tail.<c> >>
 
-					removetag "tail"
-					addtag "tail"
-					addtag "tail" "dog"
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "dog"
 					
-					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-					end
-				endif
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
 
-				-- grow fangs
+-- grow fangs
 
-				-- grow fur
-				checktag "fur"
-				if not exists
-					|<< [break]<cWhite>You grow fur all over. >>
-					renametag "skin" "fur"
-					end
-				endif
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
 				
-				-- grow digitigrade legs
+-- grow digitigrade legs
 				
-				-- grow up to two extra breast rows
+-- grow up to two extra breast rows
 				
 				]]>
 			</script>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<mistyrose />
-				</fore>
-			</ascii>
 		</item>
 		<item id="foxmorph" name="fox morph potion" a="a" the="the">
-			<!-- <multiuse /> -->
-			<script text="Noxicobotic">
+			<![CDATA[
+ascii
+	char: 173
+	fore
+		orangered
+			]]>
+			<script language="text/noxicobotic">
 				<![CDATA[
-				|<< You apply the fox morph potion. >>
+|<< You apply the fox morph potion. >>
 				
-				-- always increase cunning
-				gettagval "cunning"
-				if it < 50
-					|<< [break]You feel more cunning. >>
-					inctagval "cunning" 2
-				endif
+-- always increase cunning
+gettagval "cunning"
+if it < 50
+	|<< [break]You feel more cunning. >>
+	inctagval "cunning" 2
+endif
 
-				-- sometimes increase charisma
+-- sometimes increase charisma
 				
-				-- grow dog ears
-				checktag "ears/genbeast"
-				if not exists
-					-- should check the existing type first
-					|<< [break][Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.[break]<cWhite>[You] now [have] fox ears.<c> >>
+-- grow dog ears
+checktag "ears/genbeast"
+if not exists
+	-- should check the existing type first
+	|<< [break][Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.[break]<cWhite>[You] now [have] fox ears.<c> >>
 
-					removetag "ears"
-					addtag "ears"
-					addtag "ears" "genbeast"
-					end
-				endif
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "genbeast"
+	end
+endif
 
-				-- grow fox tail
-				checktag "tail/fox"
-				if not exists
-					-- should check the existing type first
-					|<< [break]A fox tail sprouts from just above [your] butt.[break]<cWhite>[You] now [have] a fox tail.<c> >>
+-- grow fox tail
+checktag "tail/fox"
+if not exists
+	-- should check the existing type first
+	|<< [break]A fox tail sprouts from just above [your] butt.[break]<cWhite>[You] now [have] a fox tail.<c> >>
 
-					removetag "tail"
-					addtag "tail"
-					addtag "tail" "fox"
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "fox"
 					
-					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-					end
-				endif
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
 
-				-- grow fangs
+-- grow fangs
 
-				-- grow fur
-				checktag "fur"
-				if not exists
-					|<< [break]<cWhite>[Your] whole body itches as a thin layer of brown fur grows all over. >>
-					-- renametag "skin" "fur"
-					removetag "skin"
-					removetag "rubber"
-					removetag "slime"
-					removetag "scales"
-					addtag "fur"
-					addtag "fur" "brown"
-					setspecies "foxmorph" "foxboy" "foxgirl"
-					adjustview
-					end
-				endif
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>[Your] whole body itches as a thin layer of brown fur grows all over. >>
+	-- renametag "skin" "fur"
+	removetag "skin"
+	removetag "rubber"
+	removetag "slime"
+	removetag "scales"
+	addtag "fur"
+	addtag "fur" "brown"
+	setspecies "foxmorph" "foxboy" "foxgirl"
+	adjustview
+	end
+endif
 				
-				-- grow digitigrade legs
+-- grow digitigrade legs
 				
 				]]>
 			</script>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<orangered />
-				</fore>
-			</ascii>
 		</item>
 		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
-			<!-- <multiuse /> -->
-			<script text="Noxicobotic">
+			<![CDATA[
+ascii
+	char: 173
+	fore
+		skyblue
+			]]>
+			<script language="text/noxicobotic">
 				<![CDATA[
-				|<< You apply the bunny morph potion. >>
+|<< You apply the bunny morph potion. >>
 				
-				-- always increase libido
-				gettagval "libido"
-				if it < 80
-					|<< [break]You feel hornier. >>
-					inctagval "libido" 4
-				endif
+-- always increase libido
+gettagval "libido"
+if it < 80
+	|<< [break]You feel hornier. >>
+	inctagval "libido" 4
+endif
 				
-				-- grow bunny ears
-				checktag "ears/bunny"
-				if not exists
-					-- should check the existing type first
-					|<< [break]Your ears transform, becoming more bunny in appearance.[break]<cWhite>You now have bunny ears.<c> >>
+-- grow bunny ears
+checktag "ears/bunny"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears transform, becoming more bunny in appearance.[break]<cWhite>You now have bunny ears.<c> >>
 
-					removetag "ears"
-					addtag "ears"
-					addtag "ears" "bunny"
-					end
-				endif
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "bunny"
+	end
+endif
 
-				-- grow bunny tail
-				checktag "tail/bunny"
-				if not exists
-					-- should check the existing type first
-					|<< [break]You feel your backside shift and change, flesh molding and displacing into an adorable puffball![break]<cWhite>You now have a bunny tail.<c> >>
+-- grow bunny tail
+checktag "tail/bunny"
+if not exists
+	-- should check the existing type first
+	|<< [break]You feel your backside shift and change, flesh molding and displacing into an adorable puffball![break]<cWhite>You now have a bunny tail.<c> >>
 
-					removetag "tail"
-					addtag "tail"
-					addtag "tail" "bunny"
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "bunny"
 					
-					|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-					end
-				endif
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
 
-				-- grow fur
-				checktag "fur"
-				if not exists
-					|<< [break]<cWhite>You grow fur all over. >>
-					renametag "skin" "fur"
-					end
-				endif
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
 
 				]]>
 			</script>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<skyblue />
-				</fore>
-			</ascii>
 		</item>
 	</items>
 
 	<costumes>
 		<costume id="school_uniform">
-			<male>
-				<random>
-					<option>
-						<plain_boxers />
-					</option>
-					<option>
-						<plain_briefs />
-					</option>
-				</random>
-				<boys_uniform_top />
-				<shirt />
-				<pants />
-			</male>
-			<female>
-				<random>
-					<option>
-						<plain_panties />
-						<plain_bra />
-					</option>
-					<option>
-						<lacy_panties />
-						<lacy_bra />
-					</option>
-				</random>
-				<blouse />
-				<girls_uniform_top />
-				<pleated_skirt />
-			</female>
+			<![CDATA[
+male
+	random
+		option
+			plain_boxers
+		option
+			plain_briefs
+	boys_uniform_top
+	shirt
+	pants
+female
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	blouse
+	girls_uniform_top
+	pleated_skirt
+			]]>
 		</costume>
 
 		<costume id="casual">
-			<male>
-				<setvar>
-					<id>1</id>
-					<value>
-						<oneof>blue, black, red, cyan, white, gray</oneof>
-					</value>
-				</setvar>
-				<random>
-					<option>
-						<plain_boxers />
-					</option>
-					<option>
-						<plain_briefs />
-					</option>
-				</random>
-				<shirt>
-					<color>
-						<var>1</var>
-					</color>
-				</shirt>
-				<pants />
-			</male>
-			<female>
-				<setvar>
-					<id>1</id>
-					<value>
-						<oneof>blue, black, red, cyan, white, gray</oneof>
-					</value>
-				</setvar>
-				<random>
-					<option>
-						<plain_panties />
-						<plain_bra />
-					</option>
-					<option>
-						<lacy_panties />
-						<lacy_bra />
-					</option>
-				</random>
-				<random>
-					<option>
-						<random>
-							<option>
-								<shirt>
-									<color>
-										<var>1</var>
-									</color>
-								</shirt>
-							</option>
-							<option>
-								<blouse>
-									<color>
-										<var>1</var>
-									</color>
-								</blouse>
-							</option>
-						</random>
-						<random>
-							<option>
-								<skirt />
-							</option>
-							<option>
-								<pants />
-							</option>
-						</random>
-					</option>
-					<option>
-						<random>
-							<option>
-								<sundress>
-									<color>
-										<var>1</var>
-									</color>
-								</sundress>
-							</option>
-							<option>
-								<elegant_dress>
-									<color>
-										<var>1</var>
-									</color>
-								</elegant_dress>
-							</option>
-						</random>
-					</option>
-				</random>
-			</female>
+			<![CDATA[
+male	
+	setvar
+		id: 1
+		value: oneof blue, black, red, cyan, white, gray
+	random
+		option
+			plain_boxers
+		option
+			plain_briefs
+	shirt
+		color: var 1
+	pants
+female
+	setvar
+		id: 1
+		value: oneof blue, black, red, cyan, white, gray
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	random
+		option
+			random
+				option
+					shirt
+						color: var 1
+				option
+					blouse
+						color: var 1
+			random
+				option
+					skirt
+				option
+					pants
+		option
+			random
+				option
+					sundress
+						color: var 1
+				option
+					elegant_dress
+						color: var 1
+			]]>
 		</costume>
 
 		<costume id="lacy_undies">
-			<male />
-			<female>
-				<lacy_panties />
-				<lacy_bra />
-			</female>
+			<![CDATA[
+female
+	lacy_panties
+	lacy_bra
+			]]>
 		</costume>
 
 		<costume id="bikini">
-			<male />
-			<female>
-				<bikini_top />
-				<bikini_bottom />
-			</female>
+			<![CDATA[
+female
+	bikini_top
+	bikini_bottom
+			]]>
 		</costume>
 
 		<costume id="dress_test">
-			<female>
-				<random>
-					<option>
-						<plain_panties />
-						<plain_bra />
-					</option>
-					<option>
-						<lacy_panties />
-						<lacy_bra />
-					</option>
-				</random>
-				<random>
-					<option>
-						<elegant_dress />
-					</option>
-					<option>
-						<sundress />
-					</option>
-					<option>
-						<skimpy_dress />
-					</option>
-				</random>
-			</female>
+			<![CDATA[
+female
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	random
+		option
+			elegant_dress
+		option
+			sundress
+		option
+			skimpy_dress
+			]]>
 		</costume>
 
 		<costume id="lena">
-			<male />
-			<female>
-				<strapless_leather_bra>
-					<color>
-						<black />
-					</color>
-				</strapless_leather_bra>
-				<kinky_panties>
-					<color>
-						<black />
-					</color>
-				</kinky_panties>
-				<knee_socks>
-					<color>
-						<black />
-					</color>
-				</knee_socks>
-				<high_heels>
-					<color>
-						<black />
-					</color>
-				</high_heels>
-			</female>
+			<![CDATA[
+female
+	strapless_leather_bra
+		color: black
+	kinky_panties
+		color: black
+	knee_socks
+		color: black
+	high_heels
+		color: black
+			]]>
 		</costume>
 	</costumes>
 </stuff>

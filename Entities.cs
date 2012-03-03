@@ -976,8 +976,8 @@ namespace Noxico
 					this.ForegroundColor = Toolkit.GetColor(ascii.GetToken("fore").Tokens[0]);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
 				{
-					var cga = Enum.GetNames(typeof(CGAColors));
-					this.ForegroundColor = Toolkit.GetColor(cga[(int)Token.GetToken("id").Value % cga.Length]);
+					var cga = new [] { Color.Black, Color.DarkBlue, Color.DarkGreen, Color.DarkCyan, Color.DarkRed, Color.Purple, Color.Brown, Color.Silver, Color.Gray, Color.Blue, Color.Green, Color.Cyan, Color.Red, Color.Magenta, Color.Yellow, Color.White };
+					this.ForegroundColor = cga[(int)Token.GetToken("id").Value % cga.Length]; //Toolkit.GetColor(cga[(int)Token.GetToken("id").Value % cga.Length]);
 				}
 				if (ascii.HasToken("back"))
 					this.BackgroundColor = Toolkit.GetColor(ascii.GetToken("back").Tokens[0]);

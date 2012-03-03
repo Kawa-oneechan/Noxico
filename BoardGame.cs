@@ -1714,6 +1714,7 @@ namespace Noxico
 			var dunGen = new CaveGenerator();
 			dunGen.Create(Biome.Grassland);
 			dunGen.ToTilemap(ref Boards[0].Tilemap);
+			Boards[0].Entities.Add(new BoardChar(Character.GetUnique("Lena")) { XPosition = 39, YPosition = 11, ParentBoard = Boards[0] });
 
 #if DEBUG
 			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
@@ -1774,7 +1775,7 @@ namespace Noxico
 				ParentBoard = this.CurrentBoard,
 			});
 			*/
-			SaveGame();
+			//SaveGame();
 		}
 
 		public static int GetOverworldIndex(Board board)
