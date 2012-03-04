@@ -1953,7 +1953,19 @@ namespace Noxico
 			if (!hasGens)
 				sb.AppendFormat("[He] [has] a curious, total lack of sexual endowments.");
 			else if (!crotchVisible)
-				sb.AppendFormat("Whatever [he] [has] down there, it can't be seen."); //TODO: visible crotch bulge
+			{
+				//Can't hide a big one, no matter what.
+				if (PenisArea() > 50)
+					sb.AppendFormat("A large dick is plainly visible beneath [his] clothes.");
+				else if (PenisArea() > 20)
+				{
+					if (stimulation > 50)
+						sb.AppendFormat("A large bulge is plainly visible beneath [his] clothes.");
+					else if (stimulation > 20)
+						sb.AppendFormat("There is a noticable bump beneath [his] clothes.");
+				}
+				//else, nothing is visible.
+			}
 			else
 			{
 				if (this.HasToken("legs") && this.GetToken("legs").HasToken("quadruped"))
@@ -1974,6 +1986,8 @@ namespace Noxico
 						sb.AppendFormat("a {0} {2}, {1} thick", Descriptions.Length(cock.GetToken("length").Value), Descriptions.Length(cock.GetToken("thickness").Value), Descriptions.Cock(cock));
 						if (stimulation > 50)
 							sb.AppendFormat(", sticking out and throbbing");
+						else if (stimulation > 20)
+							sb.AppendFormat(", eagerly standing at attention");
 					}
 					else
 						sb.AppendFormat("a bunch of dicks I'm not gonna try to describe just yet");
@@ -2066,6 +2080,50 @@ namespace Noxico
 
 			File.WriteAllText("info.html", Toolkit.HTMLize(File.ReadAllText(Name + " info.txt")));
 			System.Diagnostics.Process.Start("info.html"); //Name + " info.txt");
+		}
+
+		public bool HasPenis()
+		{
+			return HasToken("penis");
+		}
+
+		public bool HasVagina()
+		{
+			return HasToken("vagina");
+		}
+
+		public float PenisArea()
+		{
+			if (!HasToken("penis"))
+				return 0f;
+			var area = 0f;
+			foreach (var p in Tokens.Where(t => t.Name == "penis"))
+				area += PenisArea(p);
+			return area;
+		}
+
+		public float PenisArea(Token p)
+		{
+			var area = p.GetToken("thickness").Value * p.GetToken("length").Value;
+			if (GetToken("stimulation").Value < 20)
+				area /= 2;
+			return area;
+		}
+
+		public float VaginalCapacity()
+		{
+			if (!HasVagina())
+				return 0f;
+			return VaginalCapacity(GetToken("vagina"));
+		}
+
+		public float VaginalCapacity(Token v)
+		{
+			var lut = new[] { 8f, 16f, 24f, 36f, 56f, 100f };
+			var l = (int)Math.Ceiling(v.GetToken("looseness").Value);
+			if (l > lut.Length)
+				l = lut.Length - 1;
+			return lut[l];
 		}
 
 		public void CheckPants(MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false)

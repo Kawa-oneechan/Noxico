@@ -1119,6 +1119,17 @@ clearsubs
 			-->
 		</item>
 		<item id="penificator" name="penificator" a="a" the="the">
+			<![CDATA[
+ascii
+	char 173
+	fore
+		chartreuse
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+!<< It's no use. >>
+				]]>
+			</script>
 			<!--
 			<multiuse />
 			<growpenis>

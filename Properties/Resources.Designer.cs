@@ -67,6 +67,15 @@ namespace Noxico.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string BonusTraits {
+            get {
+                return ResourceManager.GetString("BonusTraits", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap CharacterGenerator {
             get {
                 object obj = ResourceManager.GetObject("CharacterGenerator", resourceCulture);
