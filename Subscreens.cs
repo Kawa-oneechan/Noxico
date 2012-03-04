@@ -1273,115 +1273,128 @@ namespace Noxico
 			}
 			return ret;
 		}
-		private static List<PlayableRace> playables = CollectPlayables();
+		private static List<PlayableRace> playables;
 
-		private static Dictionary<string, UIElement> controls = new Dictionary<string, UIElement>()
-		{
-			{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
-			{ "header", new UILabel("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4") { Left = 44, Top = 4, Foreground = Color.Black } },
-			{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
-			{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
-			{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
-			{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = true } },
-
-			{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
-			{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
-			{ "nameRandom", new UILabel("[random]") { Left = 60, Top = 7, Hidden = true } },
-			{ "speciesLabel", new UILabel("Species") { Left = 44, Top = 10 } },
-			{ "species", new UISingleList() { Left = 45, Top = 11, Width = 24 } },
-			{ "sexLabel", new UILabel("Sex") { Left = 44, Top = 13 } },
-			{ "sexNo", new UILabel("Not available") { Left = 50, Top = 14 } },
-			{ "sex", new UIBinary("Male", "Female") { Left = 45, Top = 14, Width = 24 } },
-
-			{ "hairLabel", new UILabel("Hair color") { Left = 44, Top = 7 } },
-			{ "hair", new UIColorList() { Left = 45, Top = 8, Width = 24 } },
-			{ "bodyLabel", new UILabel("Body color") { Left = 44, Top = 10 } },
-			{ "bodyNo", new UILabel("Not available") { Left = 45, Top = 11 } },
-			{ "body", new UIColorList() { Left = 45, Top = 11, Width = 24 } },
-			{ "eyesLabel", new UILabel("Eye color") { Left = 44, Top = 13 } },
-			{ "eyes", new UIColorList() { Left = 45, Top = 14, Width = 24 } },
-
-			{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7 } },
-			{ "gift", new UIList("", null, new[] { "Strength", "Toughness", "Speed", "Smarts", "Libido", "Touch", "Big Cock", "Lots of Jizz" }) { Left = 45, Top = 8, Width = 24, Height = 8 } },
-
-			{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-			{ "helpLine", new UILabel("") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
-		};
-		private static List<UIElement>[] pages = new List<UIElement>[]
-		{
-			new List<UIElement>()
-			{
-				controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
-				controls["nameLabel"], controls["name"], controls["nameRandom"],
-				controls["speciesLabel"], controls["species"],
-				controls["sexLabel"], controls["sexNo"], controls["sex"],
-				controls["next"],
-			},
-			new List<UIElement>()
-			{
-				controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
-				controls["hairLabel"], controls["hair"],
-				controls["bodyLabel"], controls["bodyNo"], controls["body"],
-				controls["eyesLabel"], controls["eyes"],
-				controls["back"], controls["next"],
-			},
-			new List<UIElement>()
-			{
-				controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
-				controls["giftLabel"], controls["gift"],
-				controls["back"], controls["playNo"], controls["play"],
-			},
-		};
+		private static Dictionary<string, UIElement> controls;
+		private static List<UIElement>[] pages;
 
 		private static int page = 0;
+		private static Action<int> loadPage, loadColors;
 
 		public static void CharacterCreator()
 		{
-			var loadPage = new Action<int>(p =>
-			{
-				UIManager.Elements.Clear();
-				UIManager.Elements.AddRange(pages[page]);
-				UIManager.Highlight = UIManager.Elements[0];
-			});
-
-			var loadColors = new Action<int>(i =>
-			{
-				var species = playables[i];
-				controls["bodyLabel"].Text = species.Skin.Titlecase();
-				((UISingleList)controls["hair"]).Items.Clear();
-				((UISingleList)controls["body"]).Items.Clear();
-				((UISingleList)controls["eyes"]).Items.Clear();
-				((UISingleList)controls["hair"]).Items.AddRange(species.HairColors);
-				((UISingleList)controls["body"]).Items.AddRange(species.SkinColors);
-				((UISingleList)controls["eyes"]).Items.AddRange(species.EyeColors);
-				((UISingleList)controls["hair"]).Index = 0;
-				((UISingleList)controls["body"]).Index = 0;
-				((UISingleList)controls["eyes"]).Index = 0;
-			});
-
-			controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
-			controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
-			controls["play"].Enter = (s, e) =>
-			{
-				var playerName = controls["name"].Text;
-				var sex = ((UIBinary)controls["sex"]).Value;
-				var species = ((UISingleList)controls["species"]).Index;
-				var hair = ((UISingleList)controls["hair"]).Text;
-				var body = ((UISingleList)controls["body"]).Text;
-				var eyes = ((UISingleList)controls["eyes"]).Text;
-				NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes);
-				NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
-				//NoxicoGame.HostForm.Noxico.SaveGame();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-				Subscreens.FirstDraw = true;
-				NoxicoGame.Immediate = true;
-				NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
-				TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-			};
-
 			if (Subscreens.FirstDraw)
 			{
+				var traitsDoc = new XmlDocument();
+				traitsDoc.LoadXml(global::Noxico.Properties.Resources.BonusTraits);
+				var traits = new List<string>();
+				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
+					traits.Add(trait.GetAttribute("name"));
+
+				controls = new Dictionary<string, UIElement>()
+				{
+					{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
+					{ "header", new UILabel("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4") { Left = 44, Top = 4, Foreground = Color.Black } },
+					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
+					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
+					{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
+					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = true } },
+
+					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
+					{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
+					{ "nameRandom", new UILabel("[random]") { Left = 60, Top = 7, Hidden = true } },
+					{ "speciesLabel", new UILabel("Species") { Left = 44, Top = 10 } },
+					{ "species", new UISingleList() { Left = 45, Top = 11, Width = 24 } },
+					{ "sexLabel", new UILabel("Sex") { Left = 44, Top = 13 } },
+					{ "sexNo", new UILabel("Not available") { Left = 50, Top = 14 } },
+					{ "sex", new UIBinary("Male", "Female") { Left = 45, Top = 14, Width = 24 } },
+
+					{ "hairLabel", new UILabel("Hair color") { Left = 44, Top = 7 } },
+					{ "hair", new UIColorList() { Left = 45, Top = 8, Width = 24 } },
+					{ "bodyLabel", new UILabel("Body color") { Left = 44, Top = 10 } },
+					{ "bodyNo", new UILabel("Not available") { Left = 45, Top = 11 } },
+					{ "body", new UIColorList() { Left = 45, Top = 11, Width = 24 } },
+					{ "eyesLabel", new UILabel("Eye color") { Left = 44, Top = 13 } },
+					{ "eyes", new UIColorList() { Left = 45, Top = 14, Width = 24 } },
+
+					{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7 } },
+					{ "gift", new UIList("", null, traits) { Left = 45, Top = 8, Width = 24, Height = 8 } },
+
+					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel("") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
+				};
+
+				pages = new List<UIElement>[]
+				{
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["nameLabel"], controls["name"], controls["nameRandom"],
+						controls["speciesLabel"], controls["species"],
+						controls["sexLabel"], controls["sexNo"], controls["sex"],
+						controls["next"],
+					},
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["hairLabel"], controls["hair"],
+						controls["bodyLabel"], controls["bodyNo"], controls["body"],
+						controls["eyesLabel"], controls["eyes"],
+						controls["back"], controls["next"],
+					},
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["giftLabel"], controls["gift"],
+						controls["back"], controls["playNo"], controls["play"],
+					},
+				};
+
+				playables = CollectPlayables();
+
+				loadPage = new Action<int>(p =>
+				{
+					UIManager.Elements.Clear();
+					UIManager.Elements.AddRange(pages[page]);
+					UIManager.Highlight = UIManager.Elements[0];
+				});
+
+				loadColors = new Action<int>(i =>
+				{
+					var species = playables[i];
+					controls["bodyLabel"].Text = species.Skin.Titlecase();
+					((UISingleList)controls["hair"]).Items.Clear();
+					((UISingleList)controls["body"]).Items.Clear();
+					((UISingleList)controls["eyes"]).Items.Clear();
+					((UISingleList)controls["hair"]).Items.AddRange(species.HairColors);
+					((UISingleList)controls["body"]).Items.AddRange(species.SkinColors);
+					((UISingleList)controls["eyes"]).Items.AddRange(species.EyeColors);
+					((UISingleList)controls["hair"]).Index = 0;
+					((UISingleList)controls["body"]).Index = 0;
+					((UISingleList)controls["eyes"]).Index = 0;
+				});
+
+				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
+				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
+				controls["play"].Enter = (s, e) =>
+				{
+					var playerName = controls["name"].Text;
+					var sex = ((UIBinary)controls["sex"]).Value;
+					var species = ((UISingleList)controls["species"]).Index;
+					var hair = ((UISingleList)controls["hair"]).Text;
+					var body = ((UISingleList)controls["body"]).Text;
+					var eyes = ((UISingleList)controls["eyes"]).Text;
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes);
+					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
+					//NoxicoGame.HostForm.Noxico.SaveGame();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+					Subscreens.FirstDraw = true;
+					NoxicoGame.Immediate = true;
+					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
+					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+				};
+
 				((UISingleList)controls["species"]).Items.Clear();
 				playables.ForEach(x => ((UISingleList)controls["species"]).Items.Add(x.Name.Titlecase()));
 				((UISingleList)controls["species"]).Index = 0;
@@ -1401,15 +1414,15 @@ namespace Noxico
 				};
 
 				UIManager.Initialize();
-				loadPage(page); 
+				loadPage(page);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 
 				//Start creating the world as we work...
 				worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateTheWorld);
 				worldgen.Start();
-
 			}
+
 			if (Subscreens.Redraw)
 			{
 				UIManager.Draw();

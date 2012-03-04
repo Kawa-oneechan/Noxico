@@ -52,6 +52,8 @@ namespace Noxico
 				return;
 			musicVolume = (float)IniFile.GetInt("audio", "musicvolume", 100) / 100;
 			soundVolume = (float)IniFile.GetInt("audio", "soundvolume", 100) / 100;
+			if (musicVolume + soundVolume == 0)
+				return;
 
 			Console.Write("SoundSystem: creating FMOD system...");
 			var ret = FMOD.Factory.System_Create(ref system);
@@ -97,7 +99,7 @@ namespace Noxico
 
 		public void PlayMusic(string name, bool fade = true)
 		{
-			if (system == null)
+			if (system == null || musicVolume == 0)
 				return;
 
 			var set = targetSet;
@@ -173,7 +175,7 @@ namespace Noxico
 
 		public void PlaySound(string name)
 		{
-			if (system == null)
+			if (system == null || soundVolume == 0)
 				return;
 			if (sounds.ContainsKey(name))
 			{

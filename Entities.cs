@@ -807,6 +807,7 @@ namespace Noxico
 		public void AutoTravelTo(int x, int y)
 		{
 			AutoTravelMap.Hotspots[0] = new Point(x, y);
+			AutoTravelMap.UpdateWalls();
 			AutoTravelMap.Update();
 			AutoTravelling = true;
 		}

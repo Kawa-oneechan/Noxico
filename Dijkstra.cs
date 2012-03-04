@@ -133,6 +133,7 @@ namespace Noxico
 						if (col < mapCols - 1 && map[row, col + 1] < lowest)
 							lowest = map[row, col + 1];
 
+						/*
 						if (row > 0 && col > 0 && map[row - 1, col - 1] < lowest)
 							lowest = map[row - 1, col - 1];
 						if (row > 0 && col < mapCols - 1 && map[row - 1, col + 1] < lowest)
@@ -141,6 +142,7 @@ namespace Noxico
 							lowest = map[row + 1, col - 1];
 						if (row < mapRows - 1 && col < mapCols - 1 && map[row + 1, col + 1] < lowest)
 							lowest = map[row + 1, col + 1];
+						*/
 
 						if (map[row, col] > lowest + 1)
 						{

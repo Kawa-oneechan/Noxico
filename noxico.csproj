@@ -264,6 +264,7 @@
     </Content>
     <Content Include="noxicobotic.txt" />
     <Content Include="randomringsandpotions.txt" />
+    <None Include="Resources\BonusTraits.xml" />
     <Content Include="sounds\Alert.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
