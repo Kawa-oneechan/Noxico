@@ -68,7 +68,28 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; ?&gt;
+        ///&lt;bonustraits&gt;
+        ///	&lt;trait name=&quot;Charismatic&quot;&gt;
+        ///		&lt;stat id=&quot;cha&quot; value=&quot;15%&quot; /&gt;
+        ///		&lt;skill name=&quot;Bartering&quot; /&gt;
+        ///	&lt;/trait&gt;
+        ///	&lt;trait name=&quot;Cunning Bastard&quot;&gt;
+        ///		&lt;stat id=&quot;cun&quot; /&gt;
+        ///		&lt;skill name=&quot;Trap Disarming&quot; /&gt;
+        ///	&lt;/trait&gt;
+        ///	&lt;trait name=&quot;Fast Food&quot;&gt;
+        ///		&lt;stat id=&quot;spd&quot; /&gt;
+        ///		&lt;skill name=&quot;Swimming&quot; /&gt;
+        ///	&lt;/trait&gt;
+        ///	&lt;trait name=&quot;Olympian&quot;&gt;
+        ///		&lt;stat id=&quot;str&quot; /&gt;
+        ///		&lt;skill name=&quot;Acrobatics&quot; /&gt;
+        ///	&lt;/trait&gt;
+        ///	&lt;trait name=&quot;Smooth Operator&quot;&gt;
+        ///		&lt;stat id=&quot;cha&quot; /&gt;
+        ///		&lt;skill name=&quot;Sweet Talking&quot; /&gt;
+        ///		&lt;sk [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BonusTraits {
             get {
@@ -108,24 +129,21 @@ namespace Noxico.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ; This is the default configuration for Noxico. Feel free to adjust this as you see fit.
         ///
-        ///[video]
-        ///;     tileset: Specifies which PNG file to use for the regular 256 characters.
-        ///;              Should be a tileset with 32 glyphs per row, 8 rows. Actual window
-        ///;              size is directly affected by this file. If the file doesn&apos;t exist,
-        ///;              a built-in tileset is used.
-        ///;     extiles: Basically the same deal as the tileset value, but for extra characters
-        ///;              beyond the usual ran [rest of string was truncated]&quot;;.
+        ///[font]
+        ///;   family: The font family name, like &quot;Consolas&quot;, &quot;DejaVu Sans Mono&quot;, or &quot;Fixedsys&quot;.
+        ///;           If the font can&apos;t be loaded, the system&apos;s default monospace font is used.
+        ///;     size: The size in points.
+        ///;     bold: Obvious.
+        ///; x-adjust: Some fonts may need to be nudged. This and y-adjust will allow that.
+        ///;           Don&apos;t use too large values or things&apos;ll go wonky.
+        ///family=Consolas
+        ///size=11
+        ///bold=false
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DefaultSettings {
             get {
                 return ResourceManager.GetString("DefaultSettings", resourceCulture);
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ExtendedTiles {
-            get {
-                object obj = ResourceManager.GetObject("ExtendedTiles", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -150,13 +168,6 @@ namespace Noxico.Properties {
         internal static string KnownColors {
             get {
                 return ResourceManager.GetString("KnownColors", resourceCulture);
-            }
-        }
-        
-        internal static System.Drawing.Bitmap Tileset {
-            get {
-                object obj = ResourceManager.GetObject("Tileset", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

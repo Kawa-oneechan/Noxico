@@ -34,7 +34,6 @@ namespace Noxico
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
         public char AsciiChar { get; set; }
-		public char ExtChar { get; set; }
         public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }
@@ -56,13 +55,6 @@ namespace Noxico
 
 		public virtual void Draw()
 		{
-#if USE_EXTENDED_TILES
-			if (ExtChar > 0)
-			{
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.ExtChar, this.ForegroundColor, this.BackgroundColor);
-				return;
-			}
-#endif
 			NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor, this.BackgroundColor);
 		}
 
@@ -125,8 +117,6 @@ namespace Noxico
 			Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
 			stream.Write(ID ?? "<Null>");
 			stream.Write(AsciiChar);
-			stream.Write(ExtChar);
-			//stream.Write((byte)((BackgroundColor * 16) + (ForegroundColor % 16)));
 			BackgroundColor.SaveToFile(stream);
 			ForegroundColor.SaveToFile(stream);
 			stream.Write((byte)XPosition);
@@ -146,10 +136,6 @@ namespace Noxico
 			var newEntity = new Entity();
 			newEntity.ID = stream.ReadString();
 			newEntity.AsciiChar = stream.ReadChar();
-			newEntity.ExtChar = stream.ReadChar();
-			//var col = stream.ReadByte();
-			//newEntity.ForegroundColor = col % 16;
-			//newEntity.BackgroundColor = col / 16;
 			newEntity.BackgroundColor = Toolkit.LoadColorFromFile(stream);
 			newEntity.ForegroundColor = Toolkit.LoadColorFromFile(stream);
 			newEntity.XPosition = stream.ReadByte();
@@ -214,7 +200,7 @@ namespace Noxico
 
 		public Cursor()
 		{
-			this.AsciiChar = '+';
+			this.AsciiChar = '\u25CA';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
 		}
@@ -353,16 +339,16 @@ namespace Noxico
 			AdjustView();
 		}
 
-		public void AdjustView()
+		public virtual void AdjustView()
 		{
+			var hS = Character.GetHumanScore();
 			var gS = Character.GetGoblinScore();
 			var dS = Character.GetDemonScore();
-			var hS = Character.GetHumanScore();
-			AsciiChar = (char)2;
+			AsciiChar = 'U';
 			if (dS > hS && dS > gS)
-				AsciiChar = (char)1;
+				AsciiChar = 'D';
 			else if (gS > hS)
-				AsciiChar = (char)2;
+				AsciiChar = 'g';
 			
 			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
@@ -374,10 +360,6 @@ namespace Noxico
 				if (a.HasToken("char"))
 				{
 					AsciiChar = (char)a.GetToken("char").Value;
-#if !USE_EXTENDED_TILES
-					if (AsciiChar > (char)255)
-						AsciiChar = (char)2;
-#endif
 				}
 				if (a.HasToken("fore"))
 					ForegroundColor = Toolkit.GetColor(a.GetToken("fore").Text); //(int)a.GetToken("fore").Value;
@@ -562,7 +544,7 @@ namespace Noxico
 			var e = Entity.LoadFromFile(stream);
 			var newChar = new BoardChar()
 			{
-				ID = e.ID, AsciiChar = e.AsciiChar, ExtChar = e.ExtChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
+				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 				Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptDelay = e.ScriptDelay,
 			}; 
@@ -600,6 +582,12 @@ namespace Noxico
 		{
 			this.AutoTravelMap = new Dijkstra();
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+		}
+
+		public override void AdjustView()
+		{
+			base.AdjustView();
+			AsciiChar = '@';
 		}
 
 		public void CheckWarps()
@@ -846,7 +834,7 @@ namespace Noxico
 			var e = Entity.LoadFromFile(stream);
 			var newChar = new Player()
 			{
-				ID = e.ID, AsciiChar = e.AsciiChar, ExtChar = e.ExtChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
+				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 				//Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptWaitTime = e.ScriptWaitTime, //Don't transfer any script data that might be there. Why would it!?
 			};
@@ -924,7 +912,7 @@ namespace Noxico
 			var e = Entity.LoadFromFile(stream);
 			var newDress = new Dressing()
 			{
-				ID = e.ID, AsciiChar = e.AsciiChar, ExtChar = e.ExtChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
+				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking
 			};
 			newDress.Name = stream.ReadString();
@@ -971,8 +959,6 @@ namespace Noxico
 				var ascii = Item.GetToken("ascii");
 				if (ascii.HasToken("char"))
 					this.AsciiChar = (char)ascii.GetToken("char").Value;
-				if (ascii.HasToken("ext"))
-					this.ExtChar = (char)ascii.GetToken("ext").Value;
 				if (ascii.HasToken("fore"))
 					this.ForegroundColor = Toolkit.GetColor(ascii.GetToken("fore").Tokens[0]);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
@@ -1010,7 +996,6 @@ namespace Noxico
 			{
 				ID = e.ID,
 				AsciiChar = e.AsciiChar,
-				ExtChar = e.ExtChar,
 				ForegroundColor = e.ForegroundColor,
 				BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition,

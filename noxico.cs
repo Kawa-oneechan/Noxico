@@ -215,57 +215,30 @@ namespace Noxico
 		public static void DrawWindow(int left, int top, int width, int height, string title, Color fgColor, Color bgColor, Color titleColor, bool single = false)
 		{
 			var host = NoxicoGame.HostForm;
-#if USE_EXTENDED_TILES
-			host.SetCell(top, left, (char)(single ? 0xDA : 0x120), fgColor, bgColor);
-			host.SetCell(top, left + width, (char)(single ? 0xBF : 0x121), fgColor, bgColor);
-			host.SetCell(top + height, left, (char)(single ? 0xC0 : 0x122), fgColor, bgColor);
-			host.SetCell(top + height, left + width, (char)(single ? 0xD9 : 0x123), fgColor, bgColor);
+			host.SetCell(top, left, (char)(single ? 0x250C : 0x2554), fgColor, bgColor);
+			host.SetCell(top, left + width, (char)(single ? 0x2510 : 0x2557), fgColor, bgColor);
+			host.SetCell(top + height, left, (char)(single ? 0x2514 : 0x255A), fgColor, bgColor);
+			host.SetCell(top + height, left + width, (char)(single ? 0x2518 : 0x255D), fgColor, bgColor);
 			for (int i = left + 1; i < left + width; i++)
 			{
-				host.SetCell(top, i, (char)(single ? 0xC4 : 0x124), fgColor, bgColor);
-				host.SetCell(top + height, i, (char)(single ? 0xC4 : 0x124), fgColor, bgColor);
+				host.SetCell(top, i, (char)(single ? 0x2500 : 0x2550), fgColor, bgColor);
+				host.SetCell(top + height, i, (char)(single ? 0x2500 : 0x2550), fgColor, bgColor);
 				for (int j = top + 1; j < top + height; j++)
 					host.SetCell(j, i, ' ', fgColor, bgColor);
 			}
 			for (int i = top + 1; i < top + height; i++)
 			{
-				host.SetCell(i, left, (char)(single ? 0xB3 : 0x125), fgColor, bgColor);
-				host.SetCell(i, left + width, (char)(single ? 0xB3 : 0x125), fgColor, bgColor);
+				host.SetCell(i, left, (char)(single ? 0x2502 : 0x2551), fgColor, bgColor);
+				host.SetCell(i, left + width, (char)(single ? 0x2502 : 0x2551), fgColor, bgColor);
 			}
 			if (!string.IsNullOrWhiteSpace(title))
 			{
 				var captionWidth = title.Length;
 				var captionPos = left + (int)Math.Ceiling(width / 2.0) - (int)Math.Ceiling(captionWidth / 2.0) - 1;
-				host.Write("<g" + (single ? "B4" : "B5,126") + "><c" + titleColor.Name + "> " + title + " <c" + fgColor.Name + "><g" + (single ? "C3" : "C6,127") + ">", fgColor, bgColor, captionPos - 1, top);
+				host.Write("<g" + (single ? "2524" : "2561") + "><c" + titleColor.Name + "> " + title + " <c" + fgColor.Name + "><g" + (single ? "251C" : "255E") + ">", fgColor, bgColor, captionPos - 1, top);
 				//host.SetCell(top, captionPos - 2, (char)(single ? 0xB4 : 0xB5), fgColor, bgColor);
 				//host.SetCell(top, captionPos + captionWidth, (char)(single ? 0xC3 : 0xC6), fgColor, bgColor);
 			}
-#else
-			host.SetCell(top, left, (char)(single ? 0xDA : 0xC9), fgColor, bgColor);
-			host.SetCell(top, left + width, (char)(single ? 0xBF : 0xBB), fgColor, bgColor);
-			host.SetCell(top + height, left, (char)(single ? 0xC0 : 0xC8), fgColor, bgColor);
-			host.SetCell(top + height, left + width, (char)(single ? 0xD9 : 0xBC), fgColor, bgColor);
-			for (int i = left + 1; i < left + width; i++)
-			{
-				host.SetCell(top, i, (char)(single ? 0xC4 : 0xCD), fgColor, bgColor);
-				host.SetCell(top + height, i, (char)(single ? 0xC4 : 0xCD), fgColor, bgColor);
-				for (int j = top + 1; j < top + height; j++)
-					host.SetCell(j, i, ' ', fgColor, bgColor);
-			}
-			for (int i = top + 1; i < top + height; i++)
-			{
-				host.SetCell(i, left, (char)(single ? 0xB3 : 0xBA), fgColor, bgColor);
-				host.SetCell(i, left + width, (char)(single ? 0xB3 : 0xBA), fgColor, bgColor);
-			}
-			if (!string.IsNullOrWhiteSpace(title))
-			{
-				var captionWidth = title.Length;
-				var captionPos = left + (int)Math.Ceiling(width / 2.0) - (int)Math.Ceiling(captionWidth / 2.0) - 1;
-				host.Write("<g" + (single ? "B4" : "B5") + "><c" + titleColor.Name + "> " + title + " <c" + fgColor.Name + "><g" + (single ? "C3" : "C6") + ">", fgColor, bgColor, captionPos - 1, top);
-				//host.SetCell(top, captionPos - 2, (char)(single ? 0xB4 : 0xB5), fgColor, bgColor);
-				//host.SetCell(top, captionPos + captionWidth, (char)(single ? 0xC3 : 0xC6), fgColor, bgColor);
-			}
-#endif
 		}
 
 		public static IEnumerable<Point> Line(int x0, int y0, int x1, int y1)
@@ -946,47 +919,80 @@ namespace Noxico
 			return "it";
 		}
 
-		public float GetHumanScore()
+		public bool HasNormalSkin()
 		{
-			var i = 0f;
-			if (HasToken("penis") && !GetToken("penis").HasToken("ridged") && !GetToken("penis").HasToken("bumpy"))
-				i += 0.20f;
+			var regularColors = new[] { "light", "pale", "dark", "olive" };
+			if (Path("skin/type/skin") == null)
+				return false;
+			var color = Path("skin/color");
+			if (color == null)
+				return false;
+			if (regularColors.Contains(color.Text))
+				return true;
+			return false;
+		}
+
+		public bool HasGreenSkin()
+		{
+			var color = Path("skin/color");
+			if (color == null)
+				return false;
+			var raw = Toolkit.GetColor(color.Text);
+			var hue = raw.GetHue();
+			if (hue >= 98 && hue <= 148)
+				return true;
+			return false;
+		}
+
+		public double GetHumanScore()
+		{
+			var i = 0.0;
+			if (HasNormalSkin())
+				i += 0.15;
+			if (Path("penis/studded") == null && Path("penis/horse") == null && Path("penis/knot") == null)
+				i += 0.10;
 			if (!HasToken("tail"))
-				i += 0.18f;
-			if (HasToken("ears") && GetToken("ears").HasToken("human"))
-				i += 0.21f;
-			if (HasToken("legs"))
-				i += 0.12f;
-			if (HasToken("feet"))
-				i += 0.11f;
+				i += 0.15;
+			if (Path("ears/human") != null)
+				i += 0.10;
+			if (HasToken("legs") && GetToken("legs").Tokens.Count == 0 || Path("legs/human") != null)
+				i += 0.20;
+			if (Path("face/normal") != null)
+				i += 0.20;
 			if (!HasToken("antennae") && !HasToken("horns"))
-				i += 0.18f;
+				i += 0.10;
 			return i;
 		}
 
-		public float GetDemonScore()
+		public double GetDemonScore()
 		{
-			var i = 0f;
+			var i = 0.0;
 			if (HasToken("penis") && (GetToken("penis").HasToken("ridged") || GetToken("penis").HasToken("bumpy")))
-				i += 0.17f;
+				i += 0.17;
 			if (HasToken("horns"))
-				i += 0.22f;
-			if (HasToken("skin") && (GetToken("skin").HasToken("blue") || GetToken("skin").HasToken("purple") || GetToken("skin").HasToken("red")))
-				i += 0.19f;
-			if (HasToken("hooves"))
-				i += 0.21f;
-			if (HasToken("tail") && GetToken("tail").HasToken("spaded"))
-				i += 0.23f;
+				i += 0.22;
+			if (!HasNormalSkin())
+				i += 0.15;
+			if (Path("legs/stiletto") != null || Path("legs/claws") != null)
+				i += 0.20;
+			if (HasToken("tail"))
+			{
+				i += 0.10;
+				if (Path("tail/penis") != null)
+					i += 0.30;
+				if (Path("tail/spade") != null)
+					i += 0.15;
+			}
 			return i;
 		}
 
-		public float GetGoblinScore()
+		public double GetGoblinScore()
 		{
-			var i = 0f;
-			if (HasToken("skin") && (GetToken("skin").HasToken("green") || GetToken("skin").HasToken("darkgreen")))
-				i += 0.40f;
-			if (HasToken("ears") && GetToken("ears").HasToken("elfin"))
-				i += 0.60f;
+			var i = 0.0;
+			if (Path("skin/type/skin") != null && HasGreenSkin())
+				i += 0.50;
+			if (Path("ears/elfin") != null)
+				i += 0.50;
 			return i;
 		}
 
@@ -1882,7 +1888,7 @@ namespace Noxico
 					sb.AppendFormat(".");
 				}
 				sb.Append(' ');
-				if (HasToken("noarms"))
+				if (HasToken("noarms") && hands.Count > 0)
 				{
 					if (hands.Count == 2)
 						sb.AppendFormat("(<b>NOTICE<b>: dual wielding with mouth?) ");
@@ -3011,10 +3017,20 @@ namespace Noxico
 						var roll = Toolkit.Rand.Next(y) + z;
 						newOne.Value = roll;
 					}
+					else if (l.Contains(": U+"))
+					{
+						var codePoint = l.Substring(l.LastIndexOf('+') + 1);
+						newOne.Value = int.Parse(codePoint, NumberStyles.HexNumber);
+					}
+					else if (l.Contains(": 0x"))
+					{
+						var codePoint = l.Substring(l.LastIndexOf('x') + 1);
+						newOne.Value = int.Parse(codePoint, NumberStyles.HexNumber);
+					}
 					else
 					{
 						float v;
-						var value = l.Substring(l.IndexOf(' '));
+						var value = l.Substring(l.IndexOf(' ') + 1);
 						if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
 							newOne.Value = v;
 						else

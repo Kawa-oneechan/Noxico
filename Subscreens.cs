@@ -189,9 +189,9 @@ namespace Noxico
 				for (int i = 0; i < text.Length; i++)
 					host.Write(text[i], Color.Silver, Color.Black, 7, 6 + i);
 				if (isQuestion)
-					host.Write("<gB5,126> Y/N <gC6,127>", Color.Gray, Color.Black, 66, 7 + rows);
+					host.Write("<g2561> Y/N <g255E>", Color.Gray, Color.Black, 66, 7 + rows);
 				else
-					host.Write("<gB5,126><g19><gC6,127>", Color.Gray, Color.Black, 70, 7 + rows);
+					host.Write("<g2561><g19><g255E>", Color.Gray, Color.Black, 70, 7 + rows);
 			}
 			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (isQuestion && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
 			{
@@ -269,14 +269,9 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 
 				Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
-#if USE_EXTENDED_TILES
-				host.SetCell(21, 19, (char)0x126, Color.Navy, Color.Black);
-				host.SetCell(21, 60, (char)0x127, Color.Navy, Color.Black);
-#else
-				host.SetCell(21, 19, (char)0xB5, Color.Navy, Color.Black);
-				host.SetCell(21, 60, (char)0xC6, Color.Navy, Color.Black);
-#endif
-				host.Write(" Press <b><g18><b> and <b><g19><b> to scroll, <b>Esc<b> to return ", Color.Cyan, Color.Black, 20, 21);
+				host.SetCell(21, 19, (char)0x2561, Color.Navy, Color.Black);
+				host.SetCell(21, 60, (char)0x255E, Color.Navy, Color.Black);
+				host.Write(" Press <b>\u2191<b> and <b>\u2193<b> to scroll, <b>Esc<b> to return ", Color.Cyan, Color.Black, 20, 21);
 				for (int i = scroll; i < text.Length && i - scroll < 17; i++)
 				{
 					if (i < 1)
@@ -290,18 +285,10 @@ namespace Noxico
 				if (text.Length > 17)
 				{
 					for (int i = 4; i < 21; i++)
-#if !USE_EXTENDED_TILES
-						host.SetCell(i, 74, (char)0xBA, Color.Navy, Color.Black, true);
-#else
-						host.SetCell(i, 74, (char)0x125, Color.Navy, Color.Black, true);
-#endif
+						host.SetCell(i, 74, (char)0x2551, Color.Navy, Color.Black, true);
 					float pct = (float)(scroll - 1) / (float)((text.Length - 16 < 0) ? 1 : text.Length - 16);
 					int tp = (int)(pct * 17) + 4;
-#if !USE_EXTENDED_TILES
-					host.SetCell(tp, 74, (char)0xF0, Color.Black, Color.Silver, true);
-#else
-					host.SetCell(tp, 74, (char)0x117, Color.Black, Color.Silver, true);
-#endif
+					host.SetCell(tp, 74, (char)0x2195, Color.Black, Color.Silver, true);
 				}
 				Subscreens.Redraw = false;
 			}
@@ -456,451 +443,6 @@ namespace Noxico
 		}
 	}
 
-	/*
-	public class Introduction
-	{
-		private static System.Threading.Thread worldgen;
-
-		public static void KillWorldgen()
-		{
-			if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
-				worldgen.Abort();
-		}
-
-		private static List<PlayableRace> playables = CollectPlayables();
-		private static List<string> hairColors = new List<string>();
-		private static List<string> races = new List<string>();
-		private static int sel = 0;
-		private static int cursorBlink = 0;
-		private static char[] name = Environment.UserName.PadRight(22).ToCharArray();
-		private static int nameCursor = Environment.UserName.Length;
-		private static int sex = 0;
-		private static int hair = 0;
-		private static int race = 0;
-		private static char[] typables = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 012345679,.".ToCharArray();
-		private static string[] helpText = new[]
-		{
-			" Enter a name \xB3 Enter, Tab: to next field \xB3 Shift-Tab: to last field".PadRight(80),
-			" \x1D: decide \xB3 Enter, Tab: to next field \xB3 Shift-Tab: to previous field".PadRight(80),
-			" \x1D: decide \xB3 Enter, Tab: to next field \xB3 Shift-Tab: to previous field".PadRight(80),
-			" \x1D: decide \xB3 Enter: PLAY \xB3 Tab: to first field \xB3 Shift-Tab: to previous field".PadRight(80),
-			"",
-		};
-		
-		private class PlayableRace
-		{
-			public string ID { get; set; }
-			public string Name { get; set; }
-			public List<string> HairColors { get; set; }
-			public List<string> GenderNames { get; set; }
-			public bool GenderLocked { get; set; }
-			public override string ToString()
-			{
-				return Name;
-			}
-		}
-
-		private static List<PlayableRace> CollectPlayables()
-		{
-			var ti = CultureInfo.InvariantCulture.TextInfo;
-			var ret = new List<PlayableRace>();
-			var xDoc = new XmlDocument();
-			xDoc.Load("Noxico.xml");
-			var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
-			foreach (var playable in playables)
-			{
-				var bodyPlan = playable.ParentNode as XmlElement;
-				var id = bodyPlan.GetAttribute("id");
-
-				var genlock = false;
-				if (bodyPlan.SelectSingleNode("maleonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("femaleonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("hermonly") != null)
-					genlock = true;
-				if (bodyPlan.SelectSingleNode("neuteronly") != null)
-					genlock = true;
-
-				var name = id;
-				var n = bodyPlan.SelectSingleNode("terms/generic");
-				if (n != null)
-					name = n.InnerText;
-				var male = name;
-				var female = name;
-				n = bodyPlan.SelectSingleNode("terms/male");
-				if (n != null)
-					male = n.InnerText;
-				n = bodyPlan.SelectSingleNode("terms/female");
-				if (n != null)
-					female = n.InnerText;
-				male = ti.ToTitleCase(male);
-				female = ti.ToTitleCase(female);
-				var genders = new List<string>() { male, female };
-
-				var hairs = new List<string>() { "<None>" };
-				n = bodyPlan.SelectSingleNode("hair/color");
-				if (n != null)
-				{
-					foreach (var hn in n.ChildNodes.OfType<XmlElement>())
-					{
-						if (hn.Name == "oneof")
-						{
-							hairs.Clear();
-							var oneof = ((XmlElement)hn).InnerText.Trim().Split(',').ToList();
-							oneof.ForEach(x => hairs.Add(ti.ToTitleCase(x)));
-							break;
-						}
-						else
-						{
-							hairs[0] = ti.ToTitleCase(hn.Name);
-							break;
-						}
-					}
-				}
-
-				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, GenderLocked = genlock });
-			}
-			return ret;
-		}
-
-		public static void CharacterCreator()
-		{
-			var host = NoxicoGame.HostForm;
-			var keys = NoxicoGame.KeyMap;
-			var trig = NoxicoGame.KeyTrg;
-			if (Subscreens.FirstDraw)
-			{
-				NoxicoGame.LastPress = (char)255;
-				Subscreens.FirstDraw = false;
-				host.Clear();
-				//host.LoadBin(global::Noxico.Properties.Resources.CharacterGenerator);
-				host.LoadBitmap(global::Noxico.Properties.Resources.CharacterGenerator);
-				Subscreens.Redraw = true;
-
-				host.Write("Starting a New Game", Color.Silver, Color.Transparent, 1, 0);
-				host.Write("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4", Color.Black, Color.Transparent, 44, 4);
-
-				races.Clear();
-				playables.ForEach(x => races.Add(x.Name));
-				hairColors.Clear();
-				hairColors.AddRange(playables[race].HairColors);
-
-				//Start creating the world as we work...
-				worldgen = new System.Threading.Thread(host.Noxico.CreateTheWorld);
-				worldgen.Start();
-				//host.Noxico.CreateTheWorld();
-			}
-
-			if (Subscreens.Mouse)
-			{
-				Subscreens.UsingMouse = true;
-				Subscreens.Mouse = false;
-				if (Subscreens.MouseX >= 45 && Subscreens.MouseX <= 69)
-				{
-					if (Subscreens.MouseY == 8)
-					{
-						sel = 0;
-						Subscreens.Redraw = true;
-					}
-					else if (Subscreens.MouseY == 10)
-					{
-						sel = 1;
-						trig[(int)Keys.Left] = true;
-#if !USE_EXTENDED_TILES
-						if (Subscreens.MouseX == 69)
-#else
-						if (Subscreens.MouseX == 68)
-#endif
-							trig[(int)Keys.Right] = true;
-						Subscreens.Redraw = true;
-					}
-					else if (Subscreens.MouseY == 13)
-					{
-						sel = 2;
-						if (Subscreens.MouseX == 67)
-						if (Subscreens.MouseX == 67)
-							trig[(int)Keys.Left] = true;
-#if !USE_EXTENDED_TILES
-						if (Subscreens.MouseX == 69)
-#else
-						if (Subscreens.MouseX == 68)
-#endif
-							trig[(int)Keys.Right] = true;
-						Subscreens.Redraw = true;
-					}
-					else if (Subscreens.MouseY == 16)
-					{
-						sel = 3;
-						if (Subscreens.MouseX >= 45 && Subscreens.MouseX <= 52)
-							sex = 0;
-						else if (Subscreens.MouseX >= 59 && Subscreens.MouseX <= 69)
-							sex = 1;
-						Subscreens.Redraw = true;
-					}
-					else if (Subscreens.MouseY == 18)
-					{
-						if (Subscreens.MouseX >= 53 && Subscreens.MouseX <= 57)
-							sel = 4;
-					}
-				}
-			}
-
-			//host.Write(worldgen == null ? "<null>" : worldgen.ThreadState.ToString() + "       ", 7, 0, 0, 0);
-			if (worldgen == null || worldgen.ThreadState == System.Threading.ThreadState.Stopped)
-				Subscreens.Redraw = true;
-
-			if (Subscreens.Redraw)
-			{
-				Subscreens.Redraw = false;
-
-				host.Write(helpText[sel], Color.Silver, Color.Transparent, 0, 24);
-
-				host.Write("Name", sel == 0 ? Color.Red : Color.Gray, Color.Transparent, 44, 6);
-				host.Write("Species", sel == 1 ? Color.Red : Color.Gray, Color.Transparent, 44, 9);
-				host.Write("Hair", sel == 2 ? Color.Red : Color.Gray, Color.Transparent, 44, 12);
-				host.Write("Sex", sel == 3 ? Color.Red : Color.Gray, Color.Transparent, 44, 15);
-
-#if !USE_EXTENDED_TILES
-				host.Write("\x1D", sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 68, 10);
-				host.Write("\x1D", sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 68, 13);
-#else
-				host.Write("\x11A\x11B", sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 67, 10);
-				host.Write("\x11A\x11B", sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 67, 13);
-#endif
-
-				var n = string.Concat(name);
-				if (string.IsNullOrWhiteSpace(n))
-					host.Write("        (random)        ", Color.Gray, Color.Transparent, 45, 7);
-				else
-					host.Write(n.PadRight(24), sel == 0 ? Color.Black : Color.Gray, Color.Transparent, 45, 7);
-
-				host.Write(races[race].PadRight(20), sel == 1 ? Color.Black : Color.Gray, Color.Transparent, 45, 10);
-
-				if (!playables[race].GenderLocked)
-				{
-#if !USE_EXTENDED_TILES
-					host.Write("[ ] Male       [ ] Female", Color.Gray, Color.Transparent, 44, 16);
-					host.SetCell(16, 45, sex == 0 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
-					host.SetCell(16, 60, sex == 1 ? (char)0xFB : ' ', sel == 1 ? Color.Red : Color.Gray, Color.Transparent);
-#else
-					host.Write("\x113\x114  Male       \x113\x114  Female", Color.Gray, Color.Transparent, 44, 16);
-					host.SetCell(16, 45, sex == 0 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
-					host.SetCell(16, 60, sex == 1 ? (char)0x115 : (char)0x114, Color.Gray, Color.Transparent);
-#endif
-				}
-				else
-					host.Write("      Cannot choose      ", Color.Silver, Color.Transparent, 44, 16);
-
-
-				host.Write("\xDB\xDD", Toolkit.GetColor(hairColors[hair]), Color.Transparent, 45, 13);
-				host.Write(Toolkit.NameColor(hairColors[hair]).PadRight(20), sel == 2 ? Color.Black : Color.Gray, Color.Transparent, 47, 13);
-
-				if (worldgen.ThreadState == System.Threading.ThreadState.Running)
-					host.Write("Working", Color.Gray, Color.Transparent, 52, 18);
-				else if (Subscreens.UsingMouse)
-				{
-					host.Write("            ", Color.White, Color.Transparent, 50, 18);
-#if !USE_EXTENDED_TILES
-					host.Write("\xDD GO! \xDE", Color.White, Color.Gray, 53, 19); 
-#else
-					host.Write("  GO!  ", Color.White, Color.Gray, 53, 18);
-#endif
-				}
-				else
-					host.Write("   Ready.   ", Color.Black, Color.Transparent, 50, 18);
-			}
-
-			if (sel == 0) //Name
-			{
-				cursorBlink++;
-				if (cursorBlink < 5)
-					host.SetCell(7, 45 + nameCursor, (char)0xDB, Color.Gray, Color.Transparent);
-				else if (cursorBlink < 10)
-					host.SetCell(7, 45 + nameCursor, name[nameCursor], Color.Black, Color.Transparent);
-				else if (cursorBlink < 20)
-					cursorBlink = 0;
-
-
-				if (NoxicoGame.LastPress != 255)
-				{
-					if (typables.Contains(NoxicoGame.LastPress))
-					{
-						name[nameCursor] = NoxicoGame.LastPress;
-						if (nameCursor < 21)
-							nameCursor++;
-						Subscreens.Redraw = true;
-					}
-					else if (NoxicoGame.LastPress == '\b')
-					{
-						if (nameCursor > 0)
-							nameCursor--;
-						for (int i = nameCursor; i < 21; i++)
-							name[i] = name[i + 1];
-						name[21] = ' ';
-						Subscreens.Redraw = true;
-					}
-					else if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
-					{
-						NoxicoGame.LastPress = (char)255;
-						sel++;
-						Subscreens.Redraw = true;
-					}
-					else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-					{
-						NoxicoGame.LastPress = (char)255;
-						sel = 3;
-						Subscreens.Redraw = true;
-					}
-					NoxicoGame.LastPress = (char)255;
-				}
-				else
-				{
-					if (trig[(int)Keys.Left])
-					{
-						if (nameCursor > 0)
-							nameCursor--;
-						Subscreens.Redraw = true;
-					}
-					else if (trig[(int)Keys.Right])
-					{
-						if (nameCursor < 22)
-							nameCursor++;
-						Subscreens.Redraw = true;
-					}
-				}
-			}
-			else if (sel == 1) //Race
-			{
-				if (NoxicoGame.LastPress == '\r')
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel = 2;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel--;
-					Subscreens.Redraw = true;
-				}
-				else if (trig[(int)Keys.Left])
-				{
-					if (race == 0)
-						race = races.Count;
-					race--;
-					Subscreens.Redraw = true;
-
-					hairColors.Clear();
-					hairColors.AddRange(playables[race].HairColors);
-					if (hair >= hairColors.Count)
-						hair = 0;
-				}
-				else if (trig[(int)Keys.Right])
-				{
-					race = (race + 1) % races.Count;
-					Subscreens.Redraw = true;
-
-					hairColors.Clear();
-					hairColors.AddRange(playables[race].HairColors);
-					if (hair >= hairColors.Count)
-						hair = 0;
-				}
-			}
-			else if (sel == 2) //Hair
-			{
-				if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					if (playables[race].GenderLocked)
-						sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel--;
-					if (playables[race].GenderLocked)
-						sel--;
-					Subscreens.Redraw = true;
-				}
-				else if (trig[(int)Keys.Left])
-				{
-					if (hair == 0)
-						hair = hairColors.Count;
-					hair--;
-					Subscreens.Redraw = true;
-				}
-				else if (trig[(int)Keys.Right])
-				{
-					hair = (hair + 1) % hairColors.Count;
-					Subscreens.Redraw = true;
-				}
-			}
-			else if (sel == 3) //Sex
-			{
-				if (NoxicoGame.LastPress == '\r')
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel++;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\r' || (NoxicoGame.LastPress == '\t' && !NoxicoGame.Modifiers[0]))
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel = 0;
-					Subscreens.Redraw = true;
-				}
-				else if (NoxicoGame.LastPress == '\t' && NoxicoGame.Modifiers[0])
-				{
-					NoxicoGame.LastPress = (char)255;
-					sel--;
-					Subscreens.Redraw = true;
-				}
-				else if (keys[(int)Keys.Left])
-				{
-					sex = 0;
-					Subscreens.Redraw = true;
-				}
-				else if (keys[(int)Keys.Right])
-				{
-					sex = 1;
-					Subscreens.Redraw = true;
-				}
-			}
-			else if (sel == 4) //DONE!
-			{
-				if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
-				{
-					sel = 0;
-					Subscreens.Redraw = true;
-				}
-				else
-				{
-					//NoxicoGame.HostForm.Noxico.CreateTheWorld();
-					var playerName = string.Concat(name).Trim();
-					//host.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[race].ID, hairColors[hair].ToLowerInvariant());
-					NoxicoGame.Sound.PlayMusic(host.Noxico.CurrentBoard.Music);
-					//NoxicoGame.HostForm.Noxico.SaveGame();
-					host.Noxico.CurrentBoard.Redraw();
-					host.Noxico.CurrentBoard.Draw();
-					Subscreens.FirstDraw = true;
-					NoxicoGame.Immediate = true;
-					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
-					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-				}
-			}
-		}
-	}
-*/
-
 	public class Inventory
 	{
 		//TODO: Rewrite to use UIManager
@@ -1027,11 +569,9 @@ namespace Noxico
 				host.Clear();
 				//host.LoadBin(global::Noxico.Properties.Resources.TitleScreen);
 				host.LoadBitmap(global::Noxico.Properties.Resources.TitleScreen);
-				host.Write("\xFA\xC4\xC4\xC4\xB4 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\xC3\xC4\xC4\xC4\xFA", Color.Gray, Color.Transparent, 8, 12);
-				host.Write("<cSilver><g1>   <cYellow,Red><g2,102><c>    <cAqua,Navy><g2><c>    <cYellow,Navy><g2,10B><c>   <cWhite,Gray><g2><c>", Color.Silver, Color.Transparent, 14, 10);
-#if USE_EXTENDED_TILES
-				host.SetCell(3, 48, (char)0x10E, Color.Silver, Color.Transparent);
-#endif
+				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 8, 11);
+				//host.Write("<cSilver>\u263A   <cYellow,Red>\u263B<c>    <cAqua,Navy>\u263B<c>    <cYellow,Navy>\u263B<c>   <cWhite,Gray>\u263B<c>", Color.Silver, Color.Transparent, 14, 10);
+				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
 			}
 			if (keys[(int)Keys.Enter] || Subscreens.Mouse)
 			{
@@ -1203,7 +743,7 @@ namespace Noxico
 						c = c.Substring(6);
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => hairs.Add(Toolkit.NameColor(x).Titlecase()));
+						oneof.ForEach(x => hairs.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
@@ -1222,7 +762,7 @@ namespace Noxico
 						c = c.Substring(6);
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => eyes.Add(Toolkit.NameColor(x).Titlecase()));
+						oneof.ForEach(x => eyes.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
@@ -1251,7 +791,7 @@ namespace Noxico
 							c = c.Substring(6);
 							c = c.Remove(c.IndexOf('\n'));
 							var oneof = c.Split(',').ToList();
-							oneof.ForEach(x => skins.Add(Toolkit.NameColor(x).Titlecase()));
+							oneof.ForEach(x => skins.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
 							//skinName = skin;
 							//break;
 						}
@@ -1294,7 +834,7 @@ namespace Noxico
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
-					{ "header", new UILabel("\xC4\xC4\xB4 Character Creation \xC3\xC4\xC4") { Left = 44, Top = 4, Foreground = Color.Black } },
+					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
 					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
 					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
 					{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },

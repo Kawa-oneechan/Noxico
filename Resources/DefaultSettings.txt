@@ -1,22 +1,17 @@
 ; This is the default configuration for Noxico. Feel free to adjust this as you see fit.
 
-[video]
-;     tileset: Specifies which PNG file to use for the regular 256 characters.
-;              Should be a tileset with 32 glyphs per row, 8 rows. Actual window
-;              size is directly affected by this file. If the file doesn't exist,
-;              a built-in tileset is used.
-;     extiles: Basically the same deal as the tileset value, but for extra characters
-;              beyond the usual range. The size of the glyphs in this file MUST match
-;              that of the generic tileset or things will get very weird.
-;  useextiles: Use the ExTiles tileset for certain things. Disable this for a more
-;              "pure" visual experience.
-;  doublesize: Draw at twice the size.
-; interpolate: If drawing at twice the size, should the edges be blurred?
-tileset=ascii.png
-extiles=extended.png
-useextiles=true
-doublesize=false
-interpolate=false
+[font]
+;   family: The font family name, like "Consolas", "DejaVu Sans Mono", or "Fixedsys".
+;           If the font can't be loaded, the system's default monospace font is used.
+;     size: The size in points.
+;     bold: Obvious.
+; x-adjust: Some fonts may need to be nudged. This and y-adjust will allow that.
+;           Don't use too large values or things'll go wonky.
+family=Consolas
+size=11
+bold=false
+x-adjust=-2
+y-adjust=-1
 
 [audio]
 ;     enabled: Should be pretty obvious. Volume controls are ignored if false.
