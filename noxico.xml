@@ -109,6 +109,8 @@ skin
 	type
 		skin
 	color: oneof red, firebrick, darkred, brown
+face
+	normal
 eyes
 	color: yellow
 ears
@@ -148,6 +150,8 @@ skin
 	type
 		skin
 	color: oneof olivedrab, darkslategray, darkolivegreen
+face
+	normal
 eyes
 	color: oneof plum, mediumvioletred, mediumorchid, orchid
 ears
@@ -189,6 +193,8 @@ skin
 	type
 		skin
 	color: oneof yellow, gold, goldenrod
+face
+	normal
 eyes
 	color: black
 legs
@@ -235,6 +241,8 @@ skin
 	type
 		skin
 	color: oneof aqua, darkseagreen, cadetblue, darkslategray
+face
+	normal
 eyes
 	color: yellow
 snaketail
@@ -284,6 +292,8 @@ skin
 	type
 		skin
 	color: oneof pale, brown, purple
+face
+	normal
 eyes
 	color: oneof red, yellow, aqua, white
 ears
@@ -508,6 +518,8 @@ hair
 	length: roll 1d8+10
 	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, fuchsia
 slimeblob
+face
+	normal
 eyes
 	color: white
 ass
@@ -551,6 +563,8 @@ skin
 	type
 		skin
 	color: pale
+face
+	normal
 eyes
 	color: red
 ears
@@ -941,7 +955,7 @@ costume
 multiuse
 description: "You do not want to know."
 ascii
-	char 173
+	char: U+00A1
 	fore
 		aquamarine
 			]]>
@@ -959,8 +973,7 @@ clearsubs
 			<![CDATA[
 -- This is all we'll specify.
 ascii
-	char: 238
-	ext: 307
+	char: U+03B5
 -- Books specifically have their color determined by ID.
 			]]>
 		</item>
@@ -969,8 +982,7 @@ ascii
 			<![CDATA[
 nouse
 ascii
-	char: 21
-	ext: 206
+	char: U+00A7
 	fore: brown
 			]]>
 		</item>
@@ -983,7 +995,7 @@ length: 42
 weight
 	medium
 ascii
-	char: 32
+	char: U+0021
 	fore: brown
 			]]>
 		</item>
@@ -992,7 +1004,7 @@ ascii
 multiuse
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
-	char 173
+	char: U+00A1
 	fore
 		aquamarine
 			]]>
@@ -1003,125 +1015,11 @@ adjustview
 clearsubs
 				]]>
 			</script>
-			<!--
-			<transform>
-				<effect>
-					<ifnot>
-						<ears>
-							<genbeast />
-						</ears>
-					</ifnot>
-					<remove>
-						<ears />
-					</remove>
-					<add>
-						<ears>
-							<genbeast />
-						</ears>
-					</add>
-					<description text="text">
-						[Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.
-					</description>
-					<continued />
-				</effect>
-				<effect>
-					<ifnot>
-						<tail>
-							<fox />
-						</tail>
-					</ifnot>
-					<remove>
-						<tail />
-					</remove>
-					<add>
-						<tail>
-							<fox />
-						</tail>
-					</add>
-					<description text="eyup">
-						A fox tail sprouts from just above [your] butt.
-					</description>
-				</effect>
-				<effect>
-					<ifnot>
-						<fur />
-					</ifnot>
-					<remove>
-						<skin/>
-						<rubber/>
-						<slime/>
-						<scales/>
-					</remove>
-					<add>
-						<fur>
-							<brown />
-						</fur>
-					</add>
-					<set>
-						<species text="y">
-							foxmorph
-						</species>
-					</set>
-					<description text="nope">
-						[Your] whole body itches as a thin layer of brown fur grows all over.
-					</description>
-				</effect>
-				<effect>
-					<ifnot>
-						<genbeastface />
-					</ifnot>
-					<remove>
-						<normalface />
-						<horseface />
-						<dogface />
-						<cowface />
-					</remove>
-					<add>
-						<genbeastface />
-					</add>
-					<set>
-						<species text="y">
-							foxmorph
-							<male text="y">foxboy</male>
-							<female text="y">foxgirl</female>
-						</species>
-					</set>
-					<description text="text">
-						With a horrendous pain, the bone structure of [your] face changes...
-					</description>
-				</effect>
-				<effect>
-					<ifnot>
-						<legs>
-							<dog />
-						</legs>
-					</ifnot>
-					<remove>
-						<legs />
-					</remove>
-					<add>
-						<legs>
-							<dog />
-						</legs>
-					</add>
-					<description text="doesn't matter">
-						With a sickening crunch, [your] legs shift shape.
-					</description>
-				</effect>
-			</transform>
-			<description text="text">This is Foxite. It turns you into a fox with repeated usages.</description>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<aquamarine />
-				</fore>
-			</ascii>
-			-->
 		</item>
 		<item id="penificator" name="penificator" a="a" the="the">
 			<![CDATA[
 ascii
-	char 173
+	char: U+00A1
 	fore
 		chartreuse
 			]]>
@@ -1157,8 +1055,7 @@ weapon
 	damage: 10
 description: "A nice, sturdy combat knife."
 ascii
-	char: 27
-	ext: 302
+	char: U+2190
 	fore: silver
 			]]>
 		</item>
@@ -1170,8 +1067,7 @@ weapon
 	damage: 10
 description: "A nice, sturdy butter knife."
 ascii
-	char: 27
-	ext: 302
+	char: U+2190
 	fore: silver
 			]]>
 		</item>
@@ -1180,8 +1076,7 @@ ascii
 equipable
 	ring
 ascii
-	char: 9
-	ext: 308
+	char: U+25CB
 	fore: forebrick
 			]]>
 		</item>
@@ -1198,8 +1093,7 @@ statbonus
 	speed: 40
 description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
 ascii
-	char: 27
-	ext: 302
+	char: U+2193
 	fore: white
 			]]>
 		</item>
@@ -1215,8 +1109,7 @@ statbonus
 	charisma: 10
 price: 20
 ascii
-	char: 234
-	ext: 310
+	char: U+03A9
 	fore: darkmagenta
 			]]>
 		</item>
@@ -1230,8 +1123,7 @@ weight
 	feather
 price: 10
 ascii
-	char: 110
-	ext: 300
+	char: U+006E
 			]]>
 		</item>
 		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
@@ -1244,8 +1136,7 @@ weight
 	feather
 price: 10
 ascii
-	char: 110
-	ext: 301
+	char: U+006E
 			]]>
 		</item>
 		<item id="plain_panties" name="panties" a="a pair of" the="the">
@@ -1258,8 +1149,7 @@ weight
 	feather
 price: 10
 ascii
-	char: 110
-	ext: 300
+	char: U+006E
 			]]>
 		</item>
 		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
@@ -1272,8 +1162,7 @@ weight
 	feather
 price: 20
 ascii
-	char: 110
-	ext: 300
+	char: U+006E
 			]]>
 		</item>
 		<item id="plain_bra" name="bra" a="a" the="the">
@@ -1286,8 +1175,7 @@ weight
 	feather
 price: 10
 ascii
-	char: 119
-	ext: 299
+	char: U+0077
 			]]>
 		</item>
 		<item id="lacy_bra" name="lacy bra" a="a" the="the">
@@ -1300,8 +1188,7 @@ weight
 	feather
 price: 20
 ascii
-	char: 119
-	ext: 299
+	char: U+0077
 			]]>
 		</item>
 		<item id="sheer_top" name="sheer top" a="a" the="the">
@@ -1314,8 +1201,7 @@ weight
 	feather
 price: 100
 ascii
-	char: 119
-	ext: 299
+	char: U+0077
 			]]>
 		</item>
 
@@ -1328,6 +1214,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+03C0
 			]]>
 		</item>
 		<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
@@ -1338,6 +1226,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+03C0
 			]]>
 		</item>
 		<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
@@ -1348,6 +1238,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+00B5
 			]]>
 		</item>
 		<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
@@ -1358,6 +1250,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+03C4
 			]]>
 		</item>
 		<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
@@ -1370,6 +1264,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+03C0
 			]]>
 		</item>
 		<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
@@ -1382,6 +1278,8 @@ equipable
 	translucent
 weight
 	light
+ascii
+	char: U+03C0
 			]]>
 		</item>
 		<item id="shirt" name="plain [color ]shirt" a="a" the="the">
@@ -1391,6 +1289,8 @@ equipable
 weight
 	light
 price: 10
+ascii
+	char: U+041F
 			]]>
 		</item>
 		<item id="blouse" name="[color ]blouse" a="a" the="the">
@@ -1404,6 +1304,8 @@ statbonus
 	strength: -5
 	carnality: -5
 price: 15
+ascii
+	char: U+041F
 			]]>
 		</item>
 		<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
@@ -1414,6 +1316,8 @@ equipable
 weight
 	light
 price: 100
+ascii
+	char: U+041F
 			]]>
 		</item>
 		<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
@@ -1424,6 +1328,8 @@ equipable
 weight
 	medium
 price: 100
+ascii
+	char: U+041F
 			]]>
 		</item>
 		<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
@@ -1439,6 +1345,8 @@ statbonus
 weight
 	feather
 price: 100
+ascii
+	char: U+221E
 			]]>
 		</item>
 		<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
@@ -1449,6 +1357,8 @@ equipable
 weight
 	light
 price: 20
+ascii
+	char: U+220F
 			]]>
 		</item>
 		<item id="skirt" name="plain [color ]skirt" a="a" the="the">
@@ -1463,6 +1373,8 @@ statbonus
 weight
 	light
 price: 20
+ascii
+	char: U+004D
 			]]>
 		</item>
 		<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
@@ -1474,6 +1386,8 @@ equipable
 weight
 	light
 price: 60
+ascii
+	char: U+004D
 			]]>
 		</item>
 		<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
@@ -1488,6 +1402,8 @@ statbonus
 weight
 	feather
 price: 50
+ascii
+	char: U+00AC
 			]]>
 		</item>
 		<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
@@ -1501,6 +1417,8 @@ statbonus
 weight
 	light
 price: 50
+ascii
+	char: U+006E
 			]]>
 		</item>
 		<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
@@ -1516,6 +1434,8 @@ statbonus
 weight
 	light
 price: 50
+ascii
+	char: U+006E
 			]]>
 		</item>
 		<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
@@ -1530,6 +1450,8 @@ statbonus
 weight
 	light
 price: 70
+ascii
+	char: U+006E
 			]]>
 		</item>
 		<item id="sundress" name="[color ]sundress" a="a" the="the">
@@ -1546,6 +1468,8 @@ statbonus
 weight
 	light
 price: 60
+ascii
+	char: U+2202
 			]]>
 		</item>
 		<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
@@ -1563,6 +1487,8 @@ statbonus
 weight
 	light
 price: 60
+ascii
+	char: U+2211
 			]]>
 		</item>
 		<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
@@ -1577,6 +1503,8 @@ statbonus
 weight
 	medium
 price: 100
+ascii
+	char: U+2211
 			]]>
 		</item>
 		<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
@@ -1591,6 +1519,8 @@ statbonus
 	sensitivity: 15
 	cunning: 10
 price: 100
+ascii
+	char: U+2202
 			]]>
 		</item>
 		<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
@@ -1600,6 +1530,8 @@ equipable
 weight
 	medium
 price: 150
+ascii
+	char: U+222B
 			]]>
 		</item>
 
@@ -1612,6 +1544,8 @@ equipable
 weight
 	feather
 price: 30
+ascii
+	char: U+221E
 			]]>
 		</item>
 		<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
@@ -1623,6 +1557,8 @@ equipable
 weight
 	feather
 price: 40
+ascii
+	char: U+00AC
 			]]>
 		</item>
 		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
@@ -1635,6 +1571,8 @@ equipable
 weight
 	light
 price: 40
+ascii
+	char: U+220F
 			]]>
 		</item>
 		<item id="high_heels" name="high heels" a="a pair of" the="the">
@@ -1645,12 +1583,17 @@ equipable
 weight
 	light
 price: 30
+ascii
+	char: U+221A
 			]]>
 		</item>
 		<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
 			<![CDATA[
 unique
 description: "A blood-red ruby in the shape of a droplet."
+ascii
+	char: U+25CA
+	fore: crimson
 			]]>
 			<script language="text/noxicobotic">
 				<![CDATA[
@@ -1664,7 +1607,7 @@ description: "A blood-red ruby in the shape of a droplet."
 		<item id="catmorph" name="cat morph potion" a="a" the="the">
 			<![CDATA[
 ascii
-	char: 173
+	char U+00A1
 	fore
 		lightsalmon
 			]]>
@@ -1740,7 +1683,7 @@ endif
 		<item id="dogmorph" name="dog morph potion" a="a" the="the">
 			<![CDATA[
 ascii
-	char: 173
+	char U+00A1
 	fore
 		mistyrose
 			]]>
@@ -1805,7 +1748,7 @@ endif
 		<item id="foxmorph" name="fox morph potion" a="a" the="the">
 			<![CDATA[
 ascii
-	char: 173
+	char U+00A1
 	fore
 		orangered
 			]]>
@@ -1874,7 +1817,7 @@ endif
 		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
 			<![CDATA[
 ascii
-	char: 173
+	char U+00A1
 	fore
 		skyblue
 			]]>

@@ -278,21 +278,21 @@ namespace Noxico
 				//Vertical walls  |
 				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
 				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0xDD, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0xDE, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Horizontal walls  --
 				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
 				{
 					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0xDF, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDC, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 
 			}
 			
@@ -429,21 +429,21 @@ namespace Noxico
 				//Vertical walls  |
 				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
 				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0xDD, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0xDE, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Horizontal walls  --
 				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
 				{
 					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0xDF, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDC, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				}
 				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0xDB, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 			}
 
 			foreach (var exit in Exits)

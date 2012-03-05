@@ -83,19 +83,16 @@ namespace Noxico
 			public Color Background;
         }
         private Cell[,] image = new Cell[80, 25];
-        private Cell[,] previousImage = new Cell[80, 25];		
-		private Bitmap fontBitmap;
+        private Cell[,] previousImage = new Cell[80, 25];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
         public NoxicoGame Noxico;
-		private Color[] palette = new Color[16];
         private ImageAttributes[] imageAttribs = new ImageAttributes[16 * 16];
 
         public bool Running = true;
-		public bool Double = false;
-		public bool Interpolate = false;
 		public int CellWidth = 8;
 		public int CellHeight = 14;
+		public int GlyphAdjustX = -2, GlyphAdjustY = -1;
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -136,24 +133,31 @@ namespace Noxico
 				File.WriteAllText("noxico.ini", global::Noxico.Properties.Resources.DefaultSettings);
 			IniFile.Load("noxico.ini");
 
-			Double = IniFile.GetBool("video", "doublesize", false);
-			Interpolate = IniFile.GetBool("video", "interpolate", false);
+			var family = IniFile.GetString("font", "family", "Consolas");
+			var emSize = IniFile.GetInt("font", "size", 11);
+			var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
+			GlyphAdjustX = IniFile.GetInt("font", "x-adjust", -2);
+			GlyphAdjustY = IniFile.GetInt("font", "y-adjust", -1);
+			Font = new Font(family, emSize, style);
+			if (Font.FontFamily.Name != family)
+				Font = new Font(FontFamily.GenericMonospace, emSize, style);
+			using (var gfx = Graphics.FromHwnd(this.Handle))
+			{
+				var em = gfx.MeasureString("M", this.Font);
+				CellWidth = (int)Math.Ceiling(em.Width * 0.75);
+				CellHeight = (int)Math.Ceiling(em.Height * 0.85);
+			}
 
-			//this.BackgroundImage = backbuffer;
-			//this.BackgroundImageLayout = ImageLayout.Zoom;
-			ReloadTileset();
 			backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
 			scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-			var i = Double ? 2 : 1;
-			ClientSize = new Size(80 * CellWidth * i, 25 * CellHeight * i);
+			ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
 
             Noxico = new NoxicoGame(this);
             
 			MouseUp += (x, y) =>
 			{
-				var d = Double ? 2 : 1;
-				var tx = y.X / (CellWidth * d);
-				var ty = y.Y / (CellHeight * d);
+				var tx = y.X / (CellWidth);
+				var ty = y.Y / (CellHeight);
 				if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
 					Noxico.Player.AutoTravelTo(tx, ty);
 				else if (NoxicoGame.Mode == UserMode.LookAt || NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
@@ -231,58 +235,7 @@ namespace Noxico
 				base.OnPaint(e);
 				return;
 			}
-			e.Graphics.InterpolationMode = Interpolate ? System.Drawing.Drawing2D.InterpolationMode.Low : System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
-		}
-
-		public void ReloadTileset()
-		{
-#if !USE_EXTENDED_TILES
-			if (File.Exists("ascii.png"))
-				fontBitmap = (Bitmap)Bitmap.FromFile("ascii.png");
-			else
-				fontBitmap = global::Noxico.Properties.Resources.Tileset;
-			CellWidth = fontBitmap.Width / 32;
-			CellHeight = fontBitmap.Height / 8;
-#else
-			Bitmap asciiPart, extendedPart;
-			if (File.Exists(IniFile.GetString("video", "tileset", "ascii.png")))
-				asciiPart = (Bitmap)Bitmap.FromFile(IniFile.GetString("video", "tileset", "ascii.png"));
-			else
-				asciiPart = global::Noxico.Properties.Resources.Tileset;
-			if (File.Exists(IniFile.GetString("video", "extiles", "extended.png")))
-				extendedPart = (Bitmap)Bitmap.FromFile(IniFile.GetString("video", "extiles", "extended.png"));
-			else
-				extendedPart = global::Noxico.Properties.Resources.ExtendedTiles;
-			fontBitmap = new Bitmap(asciiPart.Width, asciiPart.Height + extendedPart.Height);
-			using (var gfx = Graphics.FromImage(fontBitmap))
-			{
-				gfx.DrawImage(asciiPart, 0, 0, asciiPart.Width, asciiPart.Height);
-				gfx.DrawImage(extendedPart, 0, asciiPart.Height, extendedPart.Width, extendedPart.Height);
-			}
-			CellWidth = asciiPart.Width / 32;
-			CellHeight = asciiPart.Height / 8;
-			fontBitmap.Save("combined.png", ImageFormat.Png);
-#endif
-		}
-
-		public void MergeTileChunk(char startingTile, Bitmap chunk)
-		{
-			fontBitmap.Save("checka.png", ImageFormat.Png);
-			var destTile = startingTile;
-			//var srcRect = new System.Drawing.Rectangle(0, 0, 8, 14);
-			var destX = (destTile % 32) * 8;
-			var destY = (destTile / 32) * 14;
-			//var destRect = new System.Drawing.Rectangle(destX, destY, chunk.Width, chunk.Height);
-			using (var gfx = Graphics.FromImage(fontBitmap))
-			{
-				gfx.DrawImage(chunk, destX, destY, chunk.Width, chunk.Height);
-			}
-			fontBitmap.Save("checkb.png", ImageFormat.Png);
-			for (int row = 0; row < 25; row++)
-				for (int col = 0; col < 80; col++)
-					previousImage[col, row].Character--;
-			Draw();
 		}
 
         public void SetCell(int row, int col, char character, Color forecolor, Color backcolor, bool force = false)
@@ -359,14 +312,9 @@ namespace Noxico
 						}
 						else if (tag[0] == 'g')
 						{
-							var match = Regex.Match(tag, @"g(?:(?:(?<chr>\w{1,2})(?:(?:,(?<ext>\w{1,3}))?))?)");
+							var match = Regex.Match(tag, @"g(?:(?:(?<chr>\w{1,4}))?)");
 							var chr = int.Parse(match.Groups["chr"].Value, System.Globalization.NumberStyles.HexNumber);
-							var ext = match.Groups["ext"].Value != "" ? int.Parse(match.Groups["ext"].Value, System.Globalization.NumberStyles.HexNumber) : 0;
-#if !USE_EXTENDED_TILES
 							c = (char)chr;
-#else
-							c = ext != 0 ? (char)ext : (char)chr;
-#endif
 						}
 					}
 				}
@@ -384,26 +332,164 @@ namespace Noxico
 
         private void DrawCell(Graphics gfx, int row, int col, Cell cell)
         {
-            var charIndex = (int)cell.Character;
-
 			var sTX = col * CellWidth;
             var sTY = row * CellHeight;
-			var sSX = (charIndex % 32) * CellWidth;
-			var sSY = (charIndex / 32) * CellHeight;
 			var b = cell.Background;
 			var f = cell.Foreground;
-			for (var y = 0; y < CellHeight; y++)
+            var c = cell.Character;
+			gfx.TextContrast = 0;
+			gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			using (var backBrush = new SolidBrush(b))
 			{
-				for (var x = 0; x < CellWidth; x++)
+				gfx.FillRectangle(backBrush, sTX, sTY, CellWidth, CellHeight);
+				using (var foreBrush = new SolidBrush(f))
 				{
-					var color = fontBitmap.GetPixel(sSX + x, sSY + y);
-#if MAGENTA_IS_THE_NEW_BLACK
-					if (color.R == 255 && color.G == 0 && color.B == 255)
-						color = Color.Black;
-					else
+#if FAKE_LINE_DRAWING
+					#region Line Drawing and such
+					if (c >= 0x2500 && c <= 0x2593)
+					{
+						CellHeight--;
+
+						using (var pen = new Pen(foreBrush))
+						{
+							switch (c)
+							{
+								case '\u2500': //Box Drawings Light Horizontal
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2), sTX + CellWidth, sTY + (CellHeight / 2));
+									break;
+								case '\u2501': //Box Drawings Light Vertical
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + CellHeight);
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight);
+									break;
+								case '\u2502': //Box Drawings Light Down and Right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2), sTX + (CellWidth / 2), sTY + CellHeight); //down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2), sTX + (CellWidth / 2) + 1, sTY + CellHeight); //down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2), sTX + CellWidth, sTY + (CellHeight / 2)); //right
+									break;
+								case '\u2503': //Box Drawings Light Down and Left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2), sTX + (CellWidth / 2) + 1, sTY + CellHeight); //down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2), sTX + (CellWidth / 2), sTY + CellHeight); //down
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2), sTX + (CellWidth / 2), sTY + (CellHeight / 2)); //left
+									break;
+								case '\u2514': //Box Drawings Light Up And Right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + (CellHeight / 2)); //up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2)); //up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2), sTX + CellWidth, sTY + (CellHeight / 2)); //right
+									break;
+								case '\u2518': //Box Drawings Light Up And Left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2)); //up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + (CellHeight / 2)); //up
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2), sTX + (CellWidth / 2), sTY + (CellHeight / 2)); //left
+									break;
+								case '\u251C': //Box Drawings Light Vertical And Right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + CellHeight); //vertical
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //vertical
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2), sTX + CellWidth, sTY + (CellHeight / 2)); //right
+									break;
+								case '\u2524': //Box Drawings Light Vertical And Left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + CellHeight); //vertical
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //vertical
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2), sTX + (CellWidth / 2), sTY + (CellHeight / 2)); //left
+									break;
+
+								case '\u2550': //Box Drawings Double Horizontal
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) - 1, sTX + CellWidth, sTY + (CellHeight / 2) - 1); //upper
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) + 1, sTX + CellWidth, sTY + (CellHeight / 2) + 1); //lower
+									break;
+								case '\u2551': //Box Drawings Double Vertical
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 3, sTY, sTX + (CellWidth / 2) - 3, sTY + CellHeight); //left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 2, sTY, sTX + (CellWidth / 2) - 2, sTY + CellHeight); //left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 2, sTY, sTX + (CellWidth / 2) + 2, sTY + CellHeight); //right
+									break;
+								case '\u2554': //Box Drawings Double Down And Right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 3, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) - 3, sTY + CellHeight); //outer down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) - 2, sTY + CellHeight); //outer down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //inner down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 2, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) + 2, sTY + CellHeight); //inner down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 1, sTY + (CellHeight / 2) - 1, sTX + CellWidth, sTY + (CellHeight / 2) - 1); //outer right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) + 1, sTX + CellWidth, sTY + (CellHeight / 2) + 1); //inner right
+									break;
+								case '\u2557': //Box Drawings Double Down And Left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 3, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) - 3, sTY + CellHeight); //outer down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) - 2, sTY + CellHeight); //outer down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //inner down
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 2, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) + 2, sTY + CellHeight); //inner down
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) - 1); //outer left
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) + 1); //inner left
+									break;
+								case '\u255A': //Box Drawings Double Up And Right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 3, sTY, sTX + (CellWidth / 2) - 3, sTY + (CellHeight / 2) + 1); //outer up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 2, sTY, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) + 1); //outer up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) - 1); //inner up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 2, sTY, sTX + (CellWidth / 2) + 2, sTY + (CellHeight / 2) - 1); //inner up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) - 1, sTX + CellWidth, sTY + (CellHeight / 2) - 1); //outer right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 1, sTY + (CellHeight / 2) + 1, sTX + CellWidth, sTY + (CellHeight / 2) + 1); //inner right
+									break;
+								case '\u255D': //Box Drawings Double Up And Left
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 2, sTY, sTX + (CellWidth / 2) + 2, sTY + (CellHeight / 2) + 1); //outer up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) + 1); //outer up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 2, sTY, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) - 1); //inner up
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) - 3, sTY, sTX + (CellWidth / 2) - 3, sTY + (CellHeight / 2) - 1); //inner up
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2) - 2, sTY + (CellHeight / 2) - 1); //outer left
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2) + 1, sTY + (CellHeight / 2) + 1); //inner left
+									break;
+								case '\u255E': //Box Drawings Vertical Single And Right Double
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + CellHeight); //vertical single
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //vertical single
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2) - 1, sTX + CellWidth, sTY + (CellHeight / 2) - 1); //outer right
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY + (CellHeight / 2) + 1, sTX + CellWidth, sTY + (CellHeight / 2) + 1); //inner right
+									break;
+								case '\u2561': //Box Drawings Vertical Single And Left Double
+									gfx.DrawLine(pen, sTX + (CellWidth / 2) + 1, sTY, sTX + (CellWidth / 2) + 1, sTY + CellHeight); //vertical single
+									gfx.DrawLine(pen, sTX + (CellWidth / 2), sTY, sTX + (CellWidth / 2), sTY + CellHeight); //vertical single
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) - 1, sTX + (CellWidth / 2), sTY + (CellHeight / 2) - 1); //outer left
+									gfx.DrawLine(pen, sTX, sTY + (CellHeight / 2) + 1, sTX + (CellWidth / 2), sTY + (CellHeight / 2) + 1); //inner left
+									break;
+
+								case '\u2580': //Upper Half Block
+									gfx.FillRectangle(foreBrush, sTX, sTY, CellWidth, CellHeight / 2);
+									break;
+								case '\u2584': //Lower Half Block
+									gfx.FillRectangle(foreBrush, sTX, sTY + (CellHeight / 2) + 2, CellWidth, CellHeight / 2);
+									break;
+								case '\u2588': //Full Block
+									gfx.FillRectangle(foreBrush, sTX, sTY, CellWidth, CellHeight + 1);
+									break;
+								case '\u258C': //Left Half Block
+									gfx.FillRectangle(foreBrush, sTX, sTY, CellWidth / 2, CellHeight + 1);
+									break;
+								case '\u2590': //Right Half Block
+									gfx.FillRectangle(foreBrush, sTX + (CellWidth / 2) + 1, sTY, CellWidth / 2, CellHeight + 1);
+									break;
+
+								case '\u2591': //Light Shade
+									gfx.FillRectangle(new SolidBrush(Color.FromArgb(64, f)), sTX, sTY, CellWidth, CellHeight);
+									break;
+								case '\u2593': //Medium Shade
+									gfx.FillRectangle(new SolidBrush(Color.FromArgb(128, f)), sTX, sTY, CellWidth, CellHeight);
+									break;
+								case '\u2594': //Dark Shade
+									gfx.FillRectangle(new SolidBrush(Color.FromArgb(192, f)), sTX, sTY, CellWidth, CellHeight);
+									break;
+							}
+							CellHeight++;
+						}
+						return;
+					}
+					#endregion
+					//Adjust certain characters that are off-center... it's this or custom-draw them.
+					//if (c >= 0x2190 && c <= 0x263B)
+					//	sTX -= 1;
 #endif
-					color = color.R == 0 ? b : f; //palette[(color.R == 0) ? b : f];
-					backBuffer.SetPixel(sTX + x, sTY + y, color);
+
+					//gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+					//gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+					//gfx.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+					//gfx.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+					gfx.DrawString(c.ToString(), this.Font, foreBrush, sTX + GlyphAdjustX, sTY + GlyphAdjustY);
+					//BufferCharacter(c);
+					//gfx.DrawImage(glyphBuffer[c], sTX, sTY);
 				}
 			}
         }
@@ -514,14 +600,6 @@ namespace Noxico
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-			if (e.KeyCode == Keys.F2 && e.Modifiers == Keys.Control)
-			{
-				Double = !Double;
-				var i = Double ? 2 : 1;
-				ClientSize = new Size(80 * CellWidth * i, 25 * CellHeight * i);
-				return;
-			}
-
             NoxicoGame.KeyMap[(int)e.KeyCode] = false;
 			NoxicoGame.KeyTrg[(int)e.KeyCode] = true;
 			if (numpad.ContainsKey(e.KeyCode))
@@ -558,51 +636,6 @@ namespace Noxico
 			NoxicoGame.LastPress = e.KeyChar;
 		}
 
-		public void LoadBin(byte[] resource)
-		{
-			var tsl = resource;
-			var i = 0;
-			for (int row = 0; row < 25; row++)
-			{
-				for (int col = 0; col < 80; col++)
-				{
-					var ch = tsl[i];
-					var co = tsl[i + 1];
-					var fg = palette[co & 0x0F]; //co & 0x0F;
-					var bg = palette[(co & 0xF0) >> 4]; //(co & 0xF0) >> 4;
-					i += 2;
-					SetCell(row, col, (char)ch, fg, bg);
-				}
-			}
-#if USE_EXTENDED_TILES
-/*
-			if(tsl.Length > 25 * 80 * 2 && tsl[0xFA0] == 'E')
-			{
-				i = 0xFA2;
-				while (true)
-				{
-					i++;
-					var col = tsl[i++] - 1;
-					i++;
-					var row = tsl[i++] - 1;
-					var ch = tsl[i++];
-					var co = tsl[i++];
-					if (ch == 32 && co == 7)
-						break;
-					var fg = co & 0x0F;
-					var bg = (co & 0xF0) >> 4;
-					SetCell(row, col, (char)(0x100 + ch), (int)fg, (int)bg); 
-				}
-			}
-*/
-#endif
-		}
-
-		public void LoadBin(string file)
-		{
-			LoadBin(File.ReadAllBytes(file));
-		}
-
 		public void LoadBitmap(Bitmap bitmap)
 		{
 			for (var row = 0; row < 25; row ++)
@@ -611,7 +644,7 @@ namespace Noxico
 				{
 					var top = bitmap.GetPixel(col, row * 2);
 					var bot = bitmap.GetPixel(col, (row * 2)+ 1);
-					SetCell(row, col, top == bot ? (char)0x20 : (char)0xDF, top, bot);
+					SetCell(row, col, top == bot ? (char)0x20 : (char)0x2580, top, bot);
 				}
 			}
 		}
