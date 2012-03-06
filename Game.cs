@@ -514,8 +514,19 @@ namespace Noxico
 						var chances = new[] { 0.2, 0.02, 0, 0 };
 						if (townsToPlace > 0 && Toolkit.Rand.NextDouble() < chances[(int)biomeMap[x, y]])
 						{
+							townGen.Board = thisMap;
 							townGen.Create(biomeMap[x, y]);
 							townGen.ToTilemap(ref thisMap.Tilemap);
+							townGen.ToSectorMap(thisMap.Sectors);
+							while (true)
+							{
+								var newName = Culture.GetName("human", Culture.NameType.Town);
+								if (Boards.Find(b => b.Name == newName) == null)
+								{
+									thisMap.Name = newName;
+									break;
+								}
+							}
 							townsToPlace--;
 #if DEBUG
 							mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 1, Color.CornflowerBlue);
@@ -528,11 +539,6 @@ namespace Noxico
 
 			//TODO: place dungeon entrances
 			//TODO: excavate dungeons
-			/*
-			var dungen = new StoneDungeonGenerator();
-			dungen.Create(Biome.Grassland);
-			dungen.ToTilemap(ref Boards[0].Tilemap);
-			*/
 #if DEBUG
 			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif

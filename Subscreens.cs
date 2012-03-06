@@ -366,7 +366,7 @@ namespace Noxico
 			if (pa is BoardChar)
 			{
 				var chr = ((BoardChar)pa).Character;
-				sb.Append(chr.GetName());
+				sb.Append(chr.Name.ToString(true));
 
 				sb.AppendLine();
 				sb.Append(chr.LookAt(pa));

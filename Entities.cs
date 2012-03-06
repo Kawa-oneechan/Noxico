@@ -323,6 +323,18 @@ namespace Noxico
 				}
 			}
 
+#if DEBUG
+			if (NoxicoGame.KeyMap[(int)Keys.D])
+			{
+				NoxicoGame.ClearKeys();
+				if (PointingAt != null && PointingAt is BoardChar)
+				{
+					((BoardChar)PointingAt).Character.CreateInfoDump();
+					NoxicoGame.AddMessage("Info for " + ((BoardChar)PointingAt).Character.GetName() + " dumped.", Color.Red);
+				}
+			}
+#endif
+
 			if (NoxicoGame.KeyMap[(int)Keys.Left])
 				this.Move(Direction.West);
 			else if (NoxicoGame.KeyMap[(int)Keys.Right])
@@ -457,7 +469,7 @@ namespace Noxico
 				}
 			}
 
-			var hostile = true; //TODO: determine otherwise, probably from tokens
+			var hostile = Character.HasToken("hostile"); //TODO: determine otherwise, probably from tokens
 			if (hostile && Movement != Motor.Hunt)
 			{
 				var player = NoxicoGame.HostForm.Noxico.Player;
