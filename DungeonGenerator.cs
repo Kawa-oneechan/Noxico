@@ -278,21 +278,21 @@ namespace Noxico
 				//Vertical walls  |
 				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
 				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
+					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
 				}
 				//Horizontal walls  --
 				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
 				{
 					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
+					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
 				}
 				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
+				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
+				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
+				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
 
 			}
 			
@@ -307,9 +307,18 @@ namespace Noxico
 
 			//Use it!
 			for (var row = 0; row < 25; row++)
+			{
 				for (var col = 0; col < 80; col++)
-					if (map[col, row].Solid && dijkstra[col, row] > 1)
-						map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
+				{
+					if (map[col, row].Solid && !map[col, row].CanBurn)
+					{
+						if (dijkstra[col, row] > 1)
+							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
+						else
+							map[col, row].SpecialDescription = 1;
+					}
+				}
+			}
 		}
 	}
 
@@ -583,9 +592,18 @@ namespace Noxico
 					dijkstra[col, row] = this.map[col, row] == 0 ? 0 : 9000;
 			Dijkstra.JustDoIt(ref dijkstra, diagonals: false);
 			for (var row = 0; row < 25; row++)
+			{
 				for (var col = 0; col < 80; col++)
-					if (this.map[col, row] == 1 && dijkstra[col, row] > 1)
-						map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
+				{
+					if (this.map[col, row] == 1)
+					{
+						if (dijkstra[col, row] > 1)
+							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
+						else
+							map[col, row].SpecialDescription = 1;
+					}
+				}
+			}
 		}
 
 	}

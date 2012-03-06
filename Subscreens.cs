@@ -591,7 +591,8 @@ namespace Noxico
 							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 							Subscreens.FirstDraw = true;
 							NoxicoGame.Immediate = true;
-							NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
+							NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+							NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 							//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 							NoxicoGame.Mode = UserMode.Walkabout;
 						},
@@ -657,25 +658,6 @@ namespace Noxico
 			}
 		}
 
-		private static string GrabToken(string input, string token)
-		{
-			var start = input.IndexOf(token);
-			if (start == 0)
-				return null;
-			start += token.Length + 1;
-			if (input[start] != '\t')
-				return null;
-			for (var i = start; i < input.Length; i++)
-			{
-				if (input[i] == '\n' && input[i + 1] != '\t')
-				{
-					var ret = input.Substring(start, i - start);
-					return ret + "\n<end>";
-				}
-			}
-			return null;
-		}
-
 		private static List<PlayableRace> CollectPlayables()
 		{
 			var ti = CultureInfo.InvariantCulture.TextInfo;
@@ -709,7 +691,7 @@ namespace Noxico
 				//TODO: write a support function that grabs everything for a specific token?
 				//That is, given "terms \n \t generic ... \n tallness" it'd grab everything up to but not including tallness.
 				//Use that to find subtokens like specific terms or colors.
-				var terms = GrabToken(plan, "terms");
+				var terms = Toolkit.GrabToken(plan, "terms");
 				var genOffset = terms.IndexOf("\tgeneric: ");
 				var maleOffset = terms.IndexOf("\tmale: ");
 				var femaleOffset = terms.IndexOf("\tfemale: ");
@@ -733,7 +715,7 @@ namespace Noxico
 				var genders = new List<string>() { male, female };
 
 				var hairs = new List<string>() { "<None>" };
-				var hair = GrabToken(plan, "hair");
+				var hair = Toolkit.GrabToken(plan, "hair");
 				if (hair != null)
 				{
 					var c = hair.Substring(hair.IndexOf("color: ") + 7).Trim();
@@ -752,7 +734,7 @@ namespace Noxico
 				}
 
 				var eyes = new List<string>() { "Brown" };
-				var eye = GrabToken(plan, "eyes");
+				var eye = Toolkit.GrabToken(plan, "eyes");
 				if (eye != null)
 				{
 					var c = eye.Substring(eye.IndexOf("color: ") + 7).Trim();
@@ -770,39 +752,34 @@ namespace Noxico
 					}
 				}
 
-				//var skinTypes = new[] { "skin", "fur", "scales", "slime", "rubber" };
 				var skins = new List<string>();
 				var skinName = "skin";
-				//var skinName = skinTypes[0];
-				//foreach (var skin in skinTypes)
-				//{
-					var s = GrabToken(plan, "skin");
-					if (s != null)
+				var s = Toolkit.GrabToken(plan, "skin");
+				if (s != null)
+				{
+					if (s.Contains("type"))
 					{
-						if (s.Contains("type"))
-						{
-							skinName = s.Substring(s.IndexOf("type") + 5);
-							skinName = skinName.Remove(skinName.IndexOf('\n')).Trim();
-						}
-						var c = s.Substring(s.IndexOf("color: ") + 7).Trim();
-						if (c.StartsWith("oneof"))
-						{
-							skins.Clear();
-							c = c.Substring(6);
-							c = c.Remove(c.IndexOf('\n'));
-							var oneof = c.Split(',').ToList();
-							oneof.ForEach(x => skins.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
-							//skinName = skin;
-							//break;
-						}
-						else
-						{
-							skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
-							//skinName = skin;
-							//break;
-						}
+						skinName = s.Substring(s.IndexOf("type") + 5);
+						skinName = skinName.Remove(skinName.IndexOf('\n')).Trim();
 					}
-				//}
+					var c = s.Substring(s.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
+					{
+						skins.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => skins.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+						//skinName = skin;
+						//break;
+					}
+					else
+					{
+						skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
+						//skinName = skin;
+						//break;
+					}
+				}
 
 				if (skins.Count > 0)
 					skins = skins.Distinct().ToList();
@@ -931,7 +908,8 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
-					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
+					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 				};
 
