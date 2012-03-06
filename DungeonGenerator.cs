@@ -25,6 +25,16 @@ namespace Noxico
 			Right = r;
 			Bottom = b;
 		}
+		public Rectangle ToRectangle()
+		{
+			return new Rectangle()
+			{
+				Left = this.Left,
+				Right = this.Right - 1,
+				Top = this.Top,
+				Bottom = this.Bottom - 1,
+			};
+		}
 	}
 
 	//A single node in a BSP tree.
@@ -102,6 +112,7 @@ namespace Noxico
 	{
 		public BSPNode Parent { get; set; }
 		public Boundary Bounds { get; set; }
+		public string ID { get; set; }
 
 		public Room(Random rand, BSPNode parent, int minSize = 3, int margin = 0)
 		{
@@ -192,6 +203,11 @@ namespace Noxico
 		public virtual void ToTilemap(ref Tile[,] map)
 		{
 			throw new NotImplementedException("BaseDungeon.ToTilemap() must be overridden in a subclass.");
+		}
+
+		public virtual void ToSectorMap(Dictionary<string, Rectangle> sectors)
+		{
+			throw new NotImplementedException("BaseDungeon.ToSectorMap() must be overridden in a subclass.");
 		}
 	}
 
@@ -352,6 +368,8 @@ namespace Noxico
 	*/
 	class TownGenerator : BaseDungeonGenerator
 	{
+		public Board Board { get; set; }
+
 		public List<RoomExit> Exits { get; private set; }
 
 		public void Create(Biome biome)
@@ -455,10 +473,151 @@ namespace Noxico
 				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 			}
 
+			Populate(ref map);
+
 			foreach (var exit in Exits)
 			{
 				map[exit.Left, exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
+		}
+
+		private void GetLocation(out int x, out int y, ref Tile[,] map, Room room)
+		{
+			var locationOkay = false;
+			x = 0;
+			y = 0;
+			while (!locationOkay)
+			{
+				x = Toolkit.Rand.Next(room.Bounds.Left, room.Bounds.Right - 1);
+				y = Toolkit.Rand.Next(room.Bounds.Top, room.Bounds.Bottom - 1);
+				if (!map[x, y].Solid)
+					locationOkay = true;
+			}
+		}
+
+		public void Populate(ref Tile[,] map)
+		{
+			while (Rooms.Count(x => x.ID == null) > 0)
+			{
+				Character a = null, b = null;
+
+				var plans = new[] { "human", "felinoid", "fox", "human", "human", "felinoid", "fox", "naga", "human", "felinoid" };
+				var plan = plans[Toolkit.Rand.Next(plans.Length)];
+				var planB = plan;
+				if (Toolkit.Rand.NextDouble() > 0.7)
+					planB = plans[Toolkit.Rand.Next(plans.Length)];
+
+				var roll = Toolkit.Rand.Next(100);
+				if (roll < 15)
+					a = Character.Generate(plan, plan == "naga" ? Gender.Male : Gender.Random);
+				else
+				{
+					a = Character.Generate(plan, Gender.Male);
+					b = Character.Generate(planB, Gender.Female);
+				}
+
+				string familyName = "";
+				var timeNow = Environment.TickCount;
+				var goodToGo = true;
+				var dontShareSurname = false;
+				while (goodToGo)
+				{
+					familyName = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Surname);
+					if (familyName.StartsWith("#patronym"))
+					{
+						dontShareSurname = true;
+						var asspullA = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
+						var asspullB = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
+						a.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
+						if (b != null)
+						{
+							b.Name.Female = b.HasVagina();
+							asspullA = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
+							asspullB = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
+							b.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
+						}
+						familyName = a.Name.Surname;
+					}
+					if (Rooms.Find(x => x.ID == familyName + "_Home") == null)
+						break;
+					if (Environment.TickCount > timeNow + 1000)
+					{
+						//BAIL!
+						goodToGo = false;
+						continue;
+					}
+				}
+
+				a.Name = new Name(Culture.GetName(a.GetToken("culture").Tokens[0].Name, a.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
+				if (b != null)
+				{
+					var shipTypes = new[] { "spouse", "friend" };
+					var shipType = shipTypes[Toolkit.Rand.Next(shipTypes.Length)];
+
+					b.Name = new Name(Culture.GetName(b.GetToken("culture").Tokens[0].Name, b.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
+					b.Name.Female = b.HasVagina();
+					if (shipType != "spouse" || dontShareSurname)
+					{
+						b.Name.Surname = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Surname);
+						if (b.Name.Surname.StartsWith("#patronym"))
+						{
+							var asspullA = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
+							var asspullB = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
+							b.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
+						}
+					}
+		
+					var shipAB = new Token() { Name = b.Name.ToString(true) };
+					shipAB.Tokens.Add(new Token() { Name = shipType });
+					a.Path("ships").Tokens.Add(shipAB);
+					shipAB = new Token() { Name = a.Name.ToString(true) };
+					shipAB.Tokens.Add(new Token() { Name = shipType });
+					b.Path("ships").Tokens.Add(shipAB);
+				}
+
+				//Assign a free house to be this family's home
+				var freeRooms = Rooms.Where(x => x.ID == null).ToArray();
+				var freeRoom = freeRooms[Toolkit.Rand.Next(freeRooms.Length)];
+				var roomID = familyName + "_Home";
+				freeRoom.ID = roomID;
+
+
+				//TODO: use beds and/or chairs to assign starting positions?
+				BoardChar ba, bb;
+				if (a != null)
+				{
+					ba = new BoardChar(a);
+					int x, y;
+					GetLocation(out x, out y, ref map, freeRoom);
+					ba.XPosition = x;
+					ba.YPosition = y;
+					ba.Movement = Motor.WanderSector;
+					ba.ParentBoard = Board;
+					Board.Entities.Add(ba);
+					ba.Sector = roomID;
+				}
+				if (b != null)
+				{
+					bb = new BoardChar(b);
+					int x, y;
+					GetLocation(out x, out y, ref map, freeRoom);
+					bb.XPosition = x;
+					bb.YPosition = y;
+					bb.Movement = Motor.WanderSector;
+					bb.ParentBoard = Board;
+					Board.Entities.Add(bb);
+					bb.Sector = roomID;
+				}
+			}
+		}
+
+		public override void ToSectorMap(Dictionary<string, Rectangle> sectors)
+		{
+			if (string.IsNullOrWhiteSpace(Rooms[0].ID))
+				throw new InvalidOperationException("Run ToTilemap first.");
+			sectors.Clear();
+			foreach (var room in Rooms)
+				sectors.Add(room.ID, room.Bounds.ToRectangle());
 		}
 	}
 
