@@ -61,6 +61,13 @@ namespace Noxico
 		Swamp
 	}
 
+	public struct TileDescription
+	{
+		public string Name;
+		public Color Color;
+		public string Description;
+	}
+
 	public class Tile
 	{
 		public char Character { get; set; }
@@ -71,6 +78,19 @@ namespace Noxico
 		public int BurnTimer { get; set; }
 		public bool HasExTile { get; set; }
 		public bool CanFlyOver { get; set; }
+		public int SpecialDescription { get; set; }
+
+		public TileDescription? GetSpecialDescription()
+		{
+			if (SpecialDescription == 0)
+				return null;
+			if (SpecialDescription > NoxicoGame.TileDescriptions.Length)
+				return null;
+			var tsd = NoxicoGame.TileDescriptions[SpecialDescription];
+			var name = tsd.Substring(0, tsd.IndexOf(':'));
+			var desc = tsd.Substring(tsd.IndexOf(':') + 1).Trim();
+			return new TileDescription() { Name = name, Description = desc, Color = Foreground.GetBrightness() < 0.5 ? Background : Foreground  };
+		}
 
 		public void SaveToFile(BinaryWriter stream)
 		{
@@ -86,12 +106,14 @@ namespace Noxico
 			bits[8] = BurnTimer > 0;
 			bits[16] = false; //reserved
 			bits[32] = false; //reserved
-			bits[64] = false; //was HasExTile
+			bits[64] = SpecialDescription > 0; //was HasExTile
 			bits[128] = false; //reserved for "has more settings"
 			//stream.Write((byte)((HasExTile ? 8 : 0) | (BurnTimer > 0 ? 8 : 0) | (CanFlyOver ? 4 : 0) | (Solid ? 2 : 0) | (CanBurn ? 1 : 0)));
 			stream.Write((byte)bits.Data);
 			if(BurnTimer > 0)
 				stream.Write((byte)BurnTimer);
+			if (SpecialDescription > 0)
+				stream.Write((Int16)SpecialDescription);
 		}
 
 		public void LoadFromFile(BinaryReader stream)
@@ -110,10 +132,12 @@ namespace Noxico
 			var HasBurn = bits[8];
 			//HasReversedA = bits[16];
 			//HasReversedB = bits[32];
-			//HasExTile = bits[64];
+			var HasSpecialDescription = bits[64];
 			//HasMoreSettings = bits[128];
 			if (HasBurn)
 				BurnTimer = stream.ReadByte();
+			if (HasSpecialDescription)
+				SpecialDescription = stream.ReadInt16();
 		}
 	}
 
@@ -803,6 +827,13 @@ namespace Noxico
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return false;
 			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
+		}
+
+		public TileDescription? GetSpecialDescription(int row, int col)
+		{
+			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+				return null;
+			return Tilemap[col, row].GetSpecialDescription();
 		}
 
 		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool solid = false, bool burn = false, bool fly = false)

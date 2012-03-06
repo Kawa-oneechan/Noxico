@@ -41,6 +41,8 @@ namespace Noxico
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
+		public static Dictionary<string, char> Views { get; set; }
+		public static string[] TileDescriptions { get; private set; }
 
 		private DateTime lastUpdate;
 
@@ -64,34 +66,29 @@ namespace Noxico
 			var xDoc = new XmlDocument();
 			xDoc.Load("noxico.xml");
 			KnownItems = new List<InventoryItem>();
+			Views = new Dictionary<string, char>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
-
-			//var test = Character.Generate("foocubus", Gender.Female);
-			//test.CreateInfoDump();
-			//hostForm.Close();
-
-			//InitializeTestEnvironment();
-
-			/*
-			var player = new Player(Character.GetUnique("Maria")) { ParentBoard = CurrentBoard, XPosition = 40, YPosition = 9 };
-			//var player = new Player(Character.Generate("naga", Gender.Herm)) { ParentBoard = CurrentBoard, XPosition = 40, YPosition = 9 };
-			//player.Character.GiveName(new [] { "legend", "spew", "seed" }, player.Character.HasToken("xenoname"));
-			CurrentBoard.Entities.Add(player);
-			if (CurrentBoard.Warps.Count > 0)
+			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
-				var startPos = CurrentBoard.Warps.ToList()[Toolkit.Rand.Next(CurrentBoard.Warps.Count)];
-				player.XPosition = startPos.XPosition;
-				player.YPosition = startPos.YPosition;
+				var id = bodyPlan.GetAttribute("id");
+				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
+				var ascii = Toolkit.GrabToken(plan, "ascii");
+				if (ascii != null)
+				{
+					var ch = ascii.IndexOf("\tchar: ");
+					if (ch != -1)
+					{
+						var part = ascii.Substring(ascii.IndexOf("U+") + 2);
+						part = part.Remove(part.IndexOf('\n'));
+						var c = int.Parse(part, System.Globalization.NumberStyles.HexNumber);
+						Views.Add(id, (char)c);
+					}
+				}
 			}
-			*/
-			/*
-			for (int i = 0; i < 100; i++)
-			{
-				var horrorTerror = new BoardChar(Character.Generate("horrorterror", Gender.Random)) { ParentBoard = CurrentBoard, XPosition = Toolkit.Rand.Next(79), YPosition = Toolkit.Rand.Next(24) };
-				CurrentBoard.Entities.Add(horrorTerror);
-			}
-			*/
+			
+			//Tile descriptions
+			TileDescriptions = global::Noxico.Properties.Resources.TileSpecialDescriptions.Split('\n');
 
 			Console.WriteLine("Loading books...");
 			string bookData = null;
@@ -127,7 +124,8 @@ namespace Noxico
 				HostForm.Noxico.CurrentBoard.Draw();
 				Subscreens.FirstDraw = true;
 				Immediate = true;
-				AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
+				AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+				AddMessage("Remember, press F1 for help and options.");
 				Mode = UserMode.Walkabout;
 			}
 			else
@@ -530,6 +528,11 @@ namespace Noxico
 
 			//TODO: place dungeon entrances
 			//TODO: excavate dungeons
+			/*
+			var dungen = new StoneDungeonGenerator();
+			dungen.Create(Biome.Grassland);
+			dungen.ToTilemap(ref Boards[0].Tilemap);
+			*/
 #if DEBUG
 			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif

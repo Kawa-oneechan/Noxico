@@ -32,6 +32,25 @@ namespace Noxico
 			Rand = new Random();
 		}
 
+		public static string GrabToken(string input, string token)
+		{
+			var start = input.IndexOf(token);
+			if (start == 0)
+				return null;
+			start += token.Length + 1;
+			if (input[start] != '\t')
+				return null;
+			for (var i = start; i < input.Length; i++)
+			{
+				if (input[i] == '\n' && input[i + 1] != '\t')
+				{
+					var ret = input.Substring(start, i - start);
+					return ret + "\n<end>";
+				}
+			}
+			return null;
+		}
+
 		public static string PickOne(params string[] options)
 		{
 			return options[Toolkit.Rand.Next(options.Length)];

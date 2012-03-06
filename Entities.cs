@@ -196,6 +196,8 @@ namespace Noxico
 
 	public class Cursor : Entity
 	{
+		private static int BlinkRate = 500;
+
 		public Entity PointingAt { get; private set; }
 
 		public Cursor()
@@ -203,6 +205,12 @@ namespace Noxico
 			this.AsciiChar = '\u25CA';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
+		}
+
+		public override void Draw()
+		{
+			if (Environment.TickCount % BlinkRate * 2 < BlinkRate)
+				base.Draw();
 		}
 
 		public override void Move(Direction targetDirection)
@@ -263,6 +271,14 @@ namespace Noxico
 					}
 				}
 			}
+			var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
+			if (tSD.HasValue)
+			{
+				PointingAt = null;
+				NoxicoGame.Messages.Last().Message = tSD.Value.Name;
+				NoxicoGame.Messages.Last().Color = tSD.Value.Color;
+				return;
+			}
 		}
 
 		public override void Update()
@@ -294,6 +310,16 @@ namespace Noxico
 					}
 					else
 						TextScroller.LookAt(PointingAt);
+				}
+				else
+				{
+					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
+					if (tSD.HasValue)
+					{
+						PointingAt = null;
+						MessageBox.Message(tSD.Value.Description, true); 
+						return;
+					}
 				}
 			}
 
@@ -344,11 +370,11 @@ namespace Noxico
 			var hS = Character.GetHumanScore();
 			var gS = Character.GetGoblinScore();
 			var dS = Character.GetDemonScore();
-			AsciiChar = 'U';
+			AsciiChar = NoxicoGame.Views["human"];
 			if (dS > hS && dS > gS)
-				AsciiChar = 'D';
+				AsciiChar = NoxicoGame.Views["foocubus"];
 			else if (gS > hS)
-				AsciiChar = 'g';
+				AsciiChar = NoxicoGame.Views["goblin"];
 			
 			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);

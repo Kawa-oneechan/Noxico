@@ -171,6 +171,15 @@ namespace Noxico.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string TileSpecialDescriptions {
+            get {
+                return ResourceManager.GetString("TileSpecialDescriptions", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap TitleScreen {
             get {
                 object obj = ResourceManager.GetObject("TitleScreen", resourceCulture);
