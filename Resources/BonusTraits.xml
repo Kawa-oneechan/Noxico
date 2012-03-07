@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<bonustraits>
+	<trait name="Charismatic">
+		<stat id="cha" value="15%" />
+		<skill name="Bartering" />
+	</trait>
+	<trait name="Cunning Bastard">
+		<stat id="cun" />
+		<skill name="Trap Disarming" />
+	</trait>
+	<trait name="Fast Food">
+		<stat id="spd" />
+		<skill name="Swimming" />
+	</trait>
+	<trait name="Olympian">
+		<stat id="str" />
+		<skill name="Acrobatics" />
+	</trait>
+	<trait name="Smooth Operator">
+		<stat id="cha" />
+		<skill name="Sweet Talking" />
+		<skill name="Bartering" level="0.5" />
+		<skill name="Kissing" />
+	</trait>
+	<trait name="Pervert">
+		<stat id="car" />
+		<stat id="sti" />
+		<skill name="Sweet Talking" level="0.5" />
+		<skill name="Blowjobs" />
+		<skill name="Penile Masturbation" gender="male" />
+		<skill name="Vaginal Masturbation" gender="female" />
+		<skill name="Anal Play" />
+	</trait>
+	<trait name="Large">
+		<rating id="breasts" value="5" gender="female" />
+		<rating id="hips" value="16" gender="female" />
+		<rating id="butt" value="8" gender="female" />
+		<rating id="penislength" value="10%" gender="male" />
+		<rating id="balls" value="+1" gender="male" />
+		<rating id="waist" value="7" />
+	</trait>
+	<trait name="Messy">
+		<bonus id="cumproduction" value="20%" />
+		<givetoken id="trailer" />
+		<givetoken id="milker" />
+	</trait>
+</bonustraits>
