@@ -374,7 +374,7 @@ namespace Noxico
 
 		public void Create(Biome biome)
 		{
-			base.Create(3, 5, 7, 1);
+			base.Create(3, 4, 7, 1);
 
 			var rand = Toolkit.Rand;
 
@@ -495,6 +495,16 @@ namespace Noxico
 			}
 		}
 
+		private bool IsTaken(Board board, int x, int y)
+		{
+			if (board.IsSolid(x, y))
+				return true;
+			foreach (var entity in board.Entities)
+				if (entity.XPosition == x && entity.YPosition == y && entity.Blocking)
+					return true;
+			return false;
+		}
+
 		public void Populate(ref Tile[,] map)
 		{
 			while (Rooms.Count(x => x.ID == null) > 0)
@@ -581,16 +591,57 @@ namespace Noxico
 				var roomID = familyName + "_Home";
 				freeRoom.ID = roomID;
 
+				var owners = new List<Character>() { a };
+				if (b != null)
+					owners.Add(b);
+
+				//TODO: make more sense than this.
+				//My suggestion would be to pick a wall of at least two tiles long and place the beds along it.
+				//Something similar for the rest of the clutter.
+				//But for now, this'll do. -- Kawa
+				foreach(var bedOwner in owners)
+				{
+					int x = -1, y = -1;
+					int lives = 1000;
+					while (lives > 0 && IsTaken(Board, x, y))
+					{
+						GetLocation(out x, out y, ref map, freeRoom);
+						lives--;
+					}
+					if (lives == 0)
+						continue;
+					var newBed = new Dressing()
+					{
+						AsciiChar = '\u0398',
+						XPosition = x,
+						YPosition = y,
+						Name =  "Bed",
+						ForegroundColor = Color.Black,
+						BackgroundColor = map[x , y].Background,
+						ID = bedOwner.Name.ToID() + "_Bed",
+						ParentBoard = Board,
+					};
+					Board.Entities.Add(newBed);
+				}
 
 				//TODO: use beds and/or chairs to assign starting positions?
 				BoardChar ba, bb;
 				if (a != null)
 				{
 					ba = new BoardChar(a);
-					int x, y;
-					GetLocation(out x, out y, ref map, freeRoom);
-					ba.XPosition = x;
-					ba.YPosition = y;
+					var startPos = Board.Entities.OfType<Dressing>().FirstOrDefault(d => d.ID == a.Name.ToID() + "_Bed");
+					if (startPos != null)
+					{
+						ba.XPosition = startPos.XPosition;
+						ba.YPosition = startPos.YPosition;
+					}
+					else
+					{
+						int x, y;
+						GetLocation(out x, out y, ref map, freeRoom);
+						ba.XPosition = x;
+						ba.YPosition = y;
+					}
 					ba.Movement = Motor.WanderSector;
 					ba.ParentBoard = Board;
 					Board.Entities.Add(ba);
@@ -599,10 +650,23 @@ namespace Noxico
 				if (b != null)
 				{
 					bb = new BoardChar(b);
-					int x, y;
-					GetLocation(out x, out y, ref map, freeRoom);
-					bb.XPosition = x;
-					bb.YPosition = y;
+					//int x, y;
+					//GetLocation(out x, out y, ref map, freeRoom);
+					//bb.XPosition = x;
+					//bb.YPosition = y;
+					var startPos = Board.Entities.OfType<Dressing>().FirstOrDefault(d => d.ID == b.Name.ToID() + "_Bed");
+					if (startPos != null)
+					{
+						bb.XPosition = startPos.XPosition;
+						bb.YPosition = startPos.YPosition;
+					}
+					else
+					{
+						int x, y;
+						GetLocation(out x, out y, ref map, freeRoom);
+						bb.XPosition = x;
+						bb.YPosition = y;
+					} 
 					bb.Movement = Motor.WanderSector;
 					bb.ParentBoard = Board;
 					Board.Entities.Add(bb);
