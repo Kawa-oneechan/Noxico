@@ -1,30 +1,30 @@
 <?xml version="1.0" ?>
 <bonustraits>
 	<trait name="Charismatic">
-		<stat id="cha" value="15%" />
+		<stat id="charisma" value="15%" />
 		<skill name="Bartering" />
 	</trait>
 	<trait name="Cunning Bastard">
-		<stat id="cun" />
+		<stat id="cunning" />
 		<skill name="Trap Disarming" />
 	</trait>
 	<trait name="Fast Food">
-		<stat id="spd" />
+		<stat id="speed" />
 		<skill name="Swimming" />
 	</trait>
 	<trait name="Olympian">
-		<stat id="str" />
+		<stat id="strength" />
 		<skill name="Acrobatics" />
 	</trait>
 	<trait name="Smooth Operator">
-		<stat id="cha" />
+		<stat id="charisma" />
 		<skill name="Sweet Talking" />
 		<skill name="Bartering" level="0.5" />
 		<skill name="Kissing" />
 	</trait>
 	<trait name="Pervert">
-		<stat id="car" />
-		<stat id="sti" />
+		<stat id="carnality" />
+		<stat id="stimulation" />
 		<skill name="Sweet Talking" level="0.5" />
 		<skill name="Blowjobs" />
 		<skill name="Penile Masturbation" gender="male" />

@@ -901,7 +901,8 @@ namespace Noxico
 					var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;
 					var eyes = ((UISingleList)controls["eyes"]).Text;
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes);
+					var bonus = ((UIList)controls["gift"]).Text;
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
 					//NoxicoGame.HostForm.Noxico.SaveGame();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
