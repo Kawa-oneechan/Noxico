@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -550,7 +551,7 @@ namespace Noxico
 			//this.CurrentBoard.Redraw();
 		}
 
-		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor)
+		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string BonusTrait)
 		{
 			var pc = Character.Generate(bodyplan, gender);
 
@@ -576,11 +577,55 @@ namespace Noxico
 			if (pc.HasToken("eyes"))
 				pc.GetToken("eyes").Text = eyeColor;
 
-			pc.IncreaseSkill("being_awesome");
-
 			var playerShip = new Token() { Name = Environment.UserName };
 			playerShip.Tokens.Add(new Token() { Name = "player" });
 			pc.GetToken("ships").Tokens.Add(playerShip);
+			
+			var traitsDoc = new XmlDocument();
+			traitsDoc.LoadXml(global::Noxico.Properties.Resources.BonusTraits);
+			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + BonusTrait + "\"]");
+			if (trait != null)
+			{
+				foreach (var bonus in trait.ChildNodes.OfType<XmlElement>())
+				{
+					switch (bonus.Name)
+					{
+						case "stat":
+							var increase = 20;
+							var percent = true;
+							if (bonus.HasAttribute("value"))
+							{
+								var x = bonus.GetAttribute("value");
+								if (x.EndsWith("%"))
+								{
+									percent = true;
+									x = x.Remove(x.Length - 1);
+								}
+								else
+									percent = false;
+								increase = int.Parse(x);
+							}
+							var stat = pc.GetToken(bonus.GetAttribute("id"));
+							var oldVal = stat.Value;
+							var newVal = oldVal + increase;
+							if (percent)
+								newVal = oldVal + ((increase / 100.0f) * oldVal);
+							stat.Value = newVal;
+							break;
+						case "skill":
+							var skill = bonus.GetAttribute("name").Replace(' ', '_').ToLowerInvariant();
+							var by = bonus.HasAttribute("level") ? double.Parse(bonus.GetAttribute("level"), NumberStyles.Float, CultureInfo.InvariantCulture) : 1.0;
+							pc.IncreaseSkill(skill);
+							break;
+						case "rating":
+							//TODO: implement the rating bonus trait effect.
+							break;
+						case "givetoken":
+							//TODO: implement the givetoken bonus trait effect.
+							break;
+					}
+				}
+			}
 
 			this.Player = new Player(pc)
 			{
