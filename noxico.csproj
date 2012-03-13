@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="CryptStream.cs" />
     <Compile Include="Culture.cs" />
+    <Compile Include="Dialogue.cs" />
     <Compile Include="Dijkstra.cs" />
     <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Entities.cs" />

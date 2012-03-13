@@ -589,6 +589,30 @@ namespace Noxico
 					((BoardChar)subject).Character.UpdateTitle();
 					return false;
 				#endregion
+				#region Shipping and Handling
+				case "setrelation":
+					if (parms.Length < 2)
+						throw new ParameterMismatchException("setrelation", 2);
+					var shipTargetID = parms[0];
+					var shipTarget = ((BoardChar)subject).Character;
+					if (shipTargetID == "me")
+						shipTarget = ((BoardChar)subject).Character;
+					else if (shipTargetID == "player")
+						shipTarget = NoxicoGame.HostForm.Noxico.Player.Character;
+					else
+						shipTarget = ((BoardChar)subject.ParentBoard.Entities.Find(x => x.ID.Equals(shipTargetID, StringComparison.InvariantCultureIgnoreCase))).Character;
+					var me = ((BoardChar)subject).Character;
+					var shipToken = me.Path("ships/" + shipTarget.Name.ToString(true));
+					if (shipToken == null)
+					{
+						shipToken = new Token() { Name = shipTarget.Name.ToString(true) };
+						me.Path("ships").Tokens.Add(shipToken);
+						shipToken.Tokens.Add(new Token() { Name = parms[1] });
+					}
+					else
+						shipToken.Tokens[0].Name = parms[1];
+					return false;
+				#endregion
 			}
 			return false;
 		}
