@@ -182,6 +182,7 @@ c    - Chat
 	{
 		private static string[] text = { };
 		private static bool isQuestion;
+		private static string title;
 		private static Action onYes, onNo;
 
 
@@ -193,13 +194,13 @@ c    - Chat
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
-				Toolkit.DrawWindow(5, 5, 69, rows + 2, isQuestion ? "Question" : string.Empty, Color.Gray, Color.Black, Color.White);
+				Toolkit.DrawWindow(5, 5, 69, rows + 2, isQuestion ? "Question" : title, Color.Gray, Color.Black, Color.White);
 				for (int i = 0; i < text.Length; i++)
 					host.Write(text[i], Color.Silver, Color.Black, 7, 6 + i);
 				if (isQuestion)
-					host.Write("<g2561> Y/N <g255E>", Color.Gray, Color.Black, 66, 7 + rows);
+					host.Write("<g2561><cWhite> Y/N <cGray><g255E>", Color.Gray, Color.Black, 66, 7 + rows);
 				else
-					host.Write("<g2561><g19><g255E>", Color.Gray, Color.Black, 70, 7 + rows);
+					host.Write("<g2561><cWhite><g2026><cGray><g255E>", Color.Gray, Color.Black, 70, 7 + rows);
 			}
 			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (isQuestion && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
 			{
@@ -236,12 +237,13 @@ c    - Chat
 			}
 		}
 
-		public static void Ask(string question, Action yes, Action no, bool dontPush = false)
+		public static void Ask(string question, Action yes, Action no, bool dontPush = false, string title = "")
 		{
 			if (!dontPush && NoxicoGame.Subscreen != null)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			isQuestion = true;
+			MessageBox.title = title;
 			text = Toolkit.Wordwrap(question.Trim(), 68).Split('\n');
 			onYes = yes;
 			onNo = no;
@@ -249,11 +251,12 @@ c    - Chat
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Message(string message, bool dontPush = false)
+		public static void Message(string message, bool dontPush = false, string title = "")
 		{
 			if (!dontPush)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
+			MessageBox.title = title;
 			isQuestion = false;
 			text = Toolkit.Wordwrap(message.Trim(), 68).Split('\n');
 			NoxicoGame.Mode = UserMode.Subscreen;

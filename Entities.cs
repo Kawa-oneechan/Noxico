@@ -336,7 +336,7 @@ namespace Noxico
 						if (Intent == Intents.Look)
 							TextScroller.LookAt(PointingAt);
 						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
-							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", null, null, true);
+							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
 							MessageBox.Message("Can't fuck yet, sorry.", true);
 					}
