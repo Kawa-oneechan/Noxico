@@ -196,7 +196,11 @@ namespace Noxico
 
 	public class Cursor : Entity
 	{
+		public enum Intents { Look, Take, Chat, Fuck };
+
 		private static int BlinkRate = 500;
+		public int Range { get; set; }
+		public Intents Intent { get; set; }
 
 		public Entity PointingAt { get; private set; }
 
@@ -205,6 +209,8 @@ namespace Noxico
 			this.AsciiChar = '\u25CA';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
+			this.Range = 0;
+			this.Intent = Intents.Look;
 		}
 
 		public override void Draw()
@@ -233,19 +239,25 @@ namespace Noxico
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
 			if (newX < 0 || newY < 0 || newX > 79 || newY > 24)
 				return false;
+			if (Range > 0)
+			{
+				var player = NoxicoGame.HostForm.Noxico.Player;
+				if (Toolkit.Distance(newX, newY, player.XPosition, player.YPosition) >= Range)
+					return false;
+			}
 			return null;
 		}
 
 		public void Point()
 		{
 			PointingAt = null;
-			NoxicoGame.Messages.Last().Message = "Point at an object or character.";
+			NoxicoGame.Messages.Last().Message = "Point at " + ((Intent == Intents.Look) ? "an object or character." : (Intent == Intents.Take) ? "an object." : "a character.");
 			NoxicoGame.Messages.Last().Color = Color.Gray;
 			foreach (var entity in this.ParentBoard.Entities)
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
 				{
-					if (entity is BoardChar)
+					if (entity is BoardChar && Intent != Intents.Take)
 					{
 						PointingAt = entity;
 						if (((BoardChar)PointingAt).Character.IsProperNamed)
@@ -255,14 +267,14 @@ namespace Noxico
 						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if (entity is Dressing)
+					else if (entity is Clutter && Intent == Intents.Look)
 					{
 						PointingAt = entity;
-						NoxicoGame.Messages.Last().Message = ((Dressing)PointingAt).Name;
+						NoxicoGame.Messages.Last().Message = ((Clutter)PointingAt).Name;
 						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if (entity is DroppedItem)
+					else if (entity is DroppedItem && (Intent == Intents.Look || Intent == Intents.Take))
 					{
 						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = ((DroppedItem)PointingAt).Name;
@@ -299,19 +311,37 @@ namespace Noxico
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
+				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (PointingAt != null)
 				{
-					if (PointingAt is DroppedItem)
+					if (PointingAt is DroppedItem && (Intent == Intents.Look || Intent == Intents.Take))
 					{
 						var item = ((DroppedItem)PointingAt).Item;
 						var token = ((DroppedItem)PointingAt).Token;
-						var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
-						MessageBox.Message(text, true);
+						if (Intent == Intents.Look)
+						{
+							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
+							MessageBox.Message(text, true);
+						}
+						else
+						{
+							((DroppedItem)PointingAt).PickUp(player.Character);
+							NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", ((DroppedItem)PointingAt).ForegroundColor);
+							ParentBoard.Redraw();
+							NoxicoGame.Mode = UserMode.Walkabout;
+						}
 					}
 					else
-						TextScroller.LookAt(PointingAt);
+					{
+						if (Intent == Intents.Look)
+							TextScroller.LookAt(PointingAt);
+						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
+							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", null, null, true);
+						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
+							MessageBox.Message("Can't fuck yet, sorry.", true);
+					}
 				}
-				else
+				else if (Intent == Intents.Look)
 				{
 					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
 					if (tSD.HasValue)
@@ -542,7 +572,7 @@ namespace Noxico
 
 		private void LeaveCorpse(string obituary)
 		{
-			var corpse = new Dressing()
+			var corpse = new Clutter()
 			{
 				ParentBoard = ParentBoard,
 				AsciiChar = (char)1,
@@ -768,8 +798,19 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.B])
-				NoxicoGame.Sound.PlaySound("Alert");
+			if (NoxicoGame.KeyMap[(int)Keys.C])
+			{
+				NoxicoGame.ClearKeys();
+				NoxicoGame.AddMessage("[Chat message]");
+				NoxicoGame.Mode = UserMode.LookAt;
+				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
+				NoxicoGame.Cursor.XPosition = this.XPosition;
+				NoxicoGame.Cursor.YPosition = this.YPosition;
+				NoxicoGame.Cursor.Range = 3;
+				NoxicoGame.Cursor.Intent = Cursor.Intents.Chat;
+				NoxicoGame.Cursor.Point();
+				return;
+			}
 
 			if (NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
 			{
@@ -779,6 +820,8 @@ namespace Noxico
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
+				NoxicoGame.Cursor.Range = 0;
+				NoxicoGame.Cursor.Intent = Cursor.Intents.Look;
 				NoxicoGame.Cursor.Point();
 				return;
 			}
@@ -788,10 +831,24 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);
 				if (itemsHere.Count == 0)
+				{
+					NoxicoGame.AddMessage("[Pickup message]");
+					NoxicoGame.Mode = UserMode.LookAt;
+					NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
+					NoxicoGame.Cursor.XPosition = this.XPosition;
+					NoxicoGame.Cursor.YPosition = this.YPosition;
+					NoxicoGame.Cursor.Range = 2;
+					NoxicoGame.Cursor.Intent = Cursor.Intents.Take;
+					NoxicoGame.Cursor.Point();
 					return;
-				var item = (DroppedItem)itemsHere[0];
-				item.PickUp(this.Character);
-				NoxicoGame.AddMessage("You pick up " + item.Item.ToString(item.Token, true) + ".", item.ForegroundColor);
+				}
+				else
+				{
+					var item = (DroppedItem)itemsHere[0];
+					item.PickUp(this.Character);
+					NoxicoGame.AddMessage("You pick up " + item.Item.ToString(item.Token, true) + ".", item.ForegroundColor);
+					return;
+				}
 			}
 
 			if (NoxicoGame.KeyMap[(int)Keys.I])
@@ -898,20 +955,20 @@ namespace Noxico
 		}
 	}
 
-	public class Dressing : Entity
+	public class Clutter : Entity
 	{
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int Life { get; set; }
 
-		public Dressing()
+		public Clutter()
 		{
 			this.AsciiChar = '?';
 			this.ForegroundColor = Color.Silver;
 			this.BackgroundColor = Color.Black;
 		}
 
-		public Dressing(char asciiChar, Color foreColor, Color backColor, bool blocking = false, string name = "thing", string description = "This is a thing.")
+		public Clutter(char asciiChar, Color foreColor, Color backColor, bool blocking = false, string name = "thing", string description = "This is a thing.")
 		{
 			this.AsciiChar = asciiChar;
 			this.ForegroundColor = foreColor;
@@ -935,7 +992,7 @@ namespace Noxico
 		public override void Move(Direction targetDirection)
 		{
 			//base.Move(targetDirection);
-			Console.WriteLine("Trying to move dressing.");
+			Console.WriteLine("Trying to move clutter.");
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
@@ -945,10 +1002,10 @@ namespace Noxico
 			stream.Write(Description);
 		}
 
-		public static new Dressing LoadFromFile(BinaryReader stream)
+		public static new Clutter LoadFromFile(BinaryReader stream)
 		{
 			var e = Entity.LoadFromFile(stream);
-			var newDress = new Dressing()
+			var newDress = new Clutter()
 			{
 				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking

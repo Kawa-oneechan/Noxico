@@ -31,7 +31,15 @@ namespace Noxico
 		{
 			{ "Character stats", "dynamic page" },
 			{ "Skill levels", "dynamic page" },
-			{ "Important keys", "l, / - Look\ni - Inventory\n, - Pick up\nc - Chat\n< - Go down stairs, enter door\n> Go up stairs, enter door\n<g1B><g18><g19><g1A> - Move\n. - Rest" },
+			{ "Important keys",
+@"l, / - Look
+i    - Inventory
+p, , - Pick up
+c    - Chat
+<    - Go down stairs, enter door
+>    - Go up stairs, enter door
+<g1B><g18><g19><g1A> - Move
+.    - Rest" },
 			{ "Other keys", "..." },
 			{ "Credits", "..." },
 			{ "Memory stats", "..." },
@@ -371,9 +379,9 @@ namespace Noxico
 				sb.AppendLine();
 				sb.Append(chr.LookAt(pa));
 			}
-			else if (pa is Dressing)
+			else if (pa is Clutter)
 			{
-				var drs = (Dressing)pa;
+				var drs = (Clutter)pa;
 				sb.AppendFormat("{0}", drs.Name);
 				sb.AppendLine();
 				sb.AppendLine();
@@ -391,6 +399,7 @@ namespace Noxico
 			}
 			*/
 			text = Toolkit.Wordwrap(sb.ToString(), 68).Split('\n');
+			Subscreens.FirstDraw = true;
 			NoxicoGame.Subscreen = Handler;
 			NoxicoGame.Mode = UserMode.Subscreen;
 		}
@@ -534,6 +543,32 @@ namespace Noxico
 				var token = inventory.ElementAt(selection).Key;
 				var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
 				MessageBox.Message(text);
+			}
+
+			if (keys[(int)Keys.D])
+			{
+				keys[(int)Keys.D] = false;
+				var item = inventory.ElementAt(selection).Value;
+				var token = inventory.ElementAt(selection).Key;
+
+				if (token.HasToken("equipped"))
+					try
+					{
+						item.Unequip(player.Character, token);
+					}
+					catch (ItemException x)
+					{
+						MessageBox.Message(x.Message);
+					}
+				if (!item.HasToken("equipped"))
+				{
+					item.Drop(player, token);
+					Subscreens.PreviousScreen.Clear();
+					NoxicoGame.Mode = UserMode.Walkabout;
+					host.Noxico.CurrentBoard.Redraw();
+					Subscreens.FirstDraw = true;
+					NoxicoGame.AddMessage("Dropped " + item.ToString(token, true, true) + ".");
+				}
 			}
 
 			if (keys[(int)Keys.Enter])
