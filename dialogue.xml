@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Bethesda-style dialogue engine for Noxico - MOSTLY SAMPLE DATA -->
+<!DOCTYPE dialogue [
+	<!ELEMENT dialogue (topic*)>
+	<!ELEMENT topic (filter*,info*)>
+	<!ELEMENT info (filter*,p*,script*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT p (#PCDATA)>
+	<!ATTLIST topic id ID #REQUIRED text CDATA #IMPLIED>
+	<!ATTLIST info id ID #REQUIRED>
+	<!ATTLIST filter type CDATA #REQUIRED name CDATA #IMPLIED value CDATA #IMPLIED target CDATA #IMPLIED>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+]>
+<dialogue>
+	<!--
+		When engaging a character in dialogue, collect all the infos for the "hello" opening topic (where an opening topic is any topic element without a text attribute).
+		For each info, in order of appearance, check any filters it may have. If all of them match, parse out the p elements in order of appearance.
+		Now, find all the non-opening topics (those that do have a text attribute), and check their filters. If they all match, add that topic to a list of responses.
+		If the list of responses is empty, there is only one paragraph worth of text to display, and it's less than 80 characters long (?), use the Message system.
+		Otherwise, show the lines in a window, named after the target, with all the possible responses in a list below.
+		Picking a response repeats the process with the response's topic.
+	-->
+	<topic id="hello">
+		<!-- Lovers -->
+		<info id="hello_lover_male">
+			<filter type="relation" value="lover" />
+			<filter type="gender" value="male" target="player" />
+			<p>
+				What is it, honey?
+			</p>
+		</info>
+		<info id="hello_lover_female">
+			<filter type="relation" value="lover" />
+			<filter type="gender" value="female" target="player" />
+			<p>
+				What is it, my dear?
+			</p>
+		</info>
+
+		<!-- Humans -->
+		
+		<!-- Whole block of bullshit to test in-dialogue scripts and relationship upgrades. Using $speaker to substitute for the current target. -->
+		<info id="hello_humans_female2male_flirting">
+			<filter type="relation" value="flirting" />
+			<filter type="gender" value="female" />
+			<filter type="gender" value="male" target="player" />
+			<filter type="score" value="humanity" target="player" />
+			<filter type="score" value="humanity" target="speaker" />
+			<p>
+				I think I might love you.
+			</p>
+			<script language="text/noxicobotic">
+				<![CDATA[
+				$speaker.setrelation player lover
+				player.setrelation $speaker lover
+				]]>
+			</script>
+		</info>
+
+		<info id="hello_humans_female2male_acquainted">
+			<filter type="relation" value="acquaintance" />
+			<filter type="gender" value="female" />
+			<filter type="gender" value="male" target="player" />
+			<filter type="score" value="humanity" target="player" />
+			<filter type="score" value="humanity" target="speaker" />
+			<p>
+				What ho, Captain Loverboy?
+			</p>
+			<script language="text/noxicobotic">
+				<![CDATA[
+				$speaker.setrelation player flirting
+				player.setrelation $speaker flirting
+				]]>
+			</script>
+		</info>
+
+		<info id="hello_humans_female2male">
+			<filter type="gender" value="female" />
+			<filter type="gender" value="male" target="player" />
+			<filter type="score" value="humanity" target="player" />
+			<filter type="score" value="humanity" target="speaker" />
+			<p>
+				What ho, Captain Beefcake?
+			</p>
+			<script language="text/noxicobotic">
+				<![CDATA[
+				$speaker.setrelation player acquaintance
+				player.setrelation $speaker acquaintance
+				]]>
+			</script>
+		</info>
+
+		<info id="hello_humans_male2female">
+			<filter type="gender" value="male" />
+			<filter type="gender" value="female" target="player" />
+			<filter type="score" value="humanity" target="player" />
+			<filter type="score" value="humanity" target="speaker" />
+			<p>
+				What ho, Captain Cheesecake?
+			</p>
+		</info>
+		<!-- Bullshit ends here. -->
+		
+		<info id="hello_humans">
+			<filter type="score" value="humanity" target="player" />
+			<filter type="score" value="humanity" target="speaker" />
+			<p>
+				What ho, adventurer?
+			</p>
+		</info>
+		
+		<!-- Fallback -->
+		<info id="hello_fallback">
+			<p>
+				What is it?
+			</p>
+		</info>
+	</topic>
+
+	<topic id="player_solicitshenanigans" text="Invite to have sex">
+		<filter type="stat" name="stimulation" value="30" target="player" />
+		<info id="solicit_fail">
+			<!-- Add filters here -->
+			<p>
+				Heck no!
+			</p>
+		</info>
+	</topic>
+</dialogue>
