@@ -423,6 +423,13 @@ namespace Noxico
 		{
 			return Lerp(color, Color.Black, amount);
 		}
+
+		public static int Distance(int fromX, int fromY, int toX, int toY)
+		{
+			var dX = Math.Abs(fromX - toX);
+			var dY = Math.Abs(fromY - toY);
+			return (dX < dY) ? dY : dX;
+		}
 	}
 
 	public static class Descriptions
@@ -2702,6 +2709,29 @@ namespace Noxico
 				}
 			}
 			return true;
+		}
+
+		public void Drop(BoardChar boardChar, Token item)
+		{
+			//Find a spot to drop the item
+			int lives = 1000, x = 0, y = 0;
+			while (lives > 0)
+			{
+				x = boardChar.XPosition + Toolkit.Rand.Next(-1, 2);
+				y = boardChar.YPosition + Toolkit.Rand.Next(-1, 2);
+				if (!boardChar.ParentBoard.IsSolid(y, x) && !boardChar.ParentBoard.IsBurning(y, x))
+					break;
+				lives--;
+			}
+			var droppedItem = new DroppedItem(this)
+			{
+				XPosition = x,
+				YPosition = y,
+				ParentBoard = boardChar.ParentBoard,
+			};
+			droppedItem.AdjustView();
+			droppedItem.ParentBoard.EntitiesToAdd.Add(droppedItem);
+			boardChar.Character.GetToken("items").Tokens.Remove(item);
 		}
 
 		public void Use(Character character, Token item, bool noConfirm = false)

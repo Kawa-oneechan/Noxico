@@ -232,7 +232,7 @@ namespace Noxico
 			//stream.Write(Entities.OfType<FloorBot>().Count());
 			stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
 			stream.Write(Entities.OfType<DroppedItem>().Count());
-			stream.Write(Entities.OfType<Dressing>().Count());
+			stream.Write(Entities.OfType<Clutter>().Count());
 			stream.Write(Warps.Count);
 
 			for (int row = 0; row < 25; row++)
@@ -258,7 +258,7 @@ namespace Noxico
 					e.SaveToFile(stream);
 			foreach (var e in Entities.OfType<DroppedItem>())
 				e.SaveToFile(stream);
-			foreach (var e in Entities.OfType<Dressing>())
+			foreach (var e in Entities.OfType<Clutter>())
 				e.SaveToFile(stream);
 			Warps.ForEach(x => x.SaveToFile(stream));
 		}
@@ -274,7 +274,7 @@ namespace Noxico
 			//var botCt = stream.ReadInt32();
 			var chrCt = stream.ReadInt32();
 			var drpCt = stream.ReadInt32();
-			var drsCt = stream.ReadInt32();
+			var cltCt = stream.ReadInt32();
 			var wrpCt = stream.ReadInt32();
 
 			for (int row = 0; row < 25; row++)
@@ -296,8 +296,8 @@ namespace Noxico
 				newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
 			for (int i = 0; i < drpCt; i++)
 				newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
-			for (int i = 0; i < drsCt; i++)
-				newBoard.Entities.Add(Dressing.LoadFromFile(stream));
+			for (int i = 0; i < cltCt; i++)
+				newBoard.Entities.Add(Clutter.LoadFromFile(stream));
 
 			for (int i = 0; i < wrpCt; i++)
 				newBoard.Warps.Add(Warp.LoadFromFile(stream));
@@ -647,9 +647,9 @@ namespace Noxico
 			*/
 			#endregion
 
-			#region Dressing
-			var dressings = source.SelectNodes("dressing");
-			foreach (var d in dressings.OfType<XmlElement>())
+			#region Clutter
+			var clutter = source.SelectNodes("clutter");
+			foreach (var d in clutter.OfType<XmlElement>())
 			{
 				var x = int.Parse(d.GetAttribute("left"));
 				var y = int.Parse(d.GetAttribute("top"));
@@ -674,7 +674,7 @@ namespace Noxico
 				var block = d.GetAttribute("blocking") == "true";
 				var name = d.GetAttribute("name");
 				var description = d.InnerText.Trim();
-				newBoard.Entities.Add(new Dressing(ch, fg, bg, block, name, description) { XPosition = x, YPosition = y });
+				newBoard.Entities.Add(new Clutter(ch, fg, bg, block, name, description) { XPosition = x, YPosition = y });
 			}
 			#endregion
 
@@ -870,7 +870,7 @@ namespace Noxico
 
 		public void TrailSlime(int row, int col, Color color)
 		{
-			var slime = new Dressing()
+			var slime = new Clutter()
 			{
 				ParentBoard = this,
 				ForegroundColor = color.Darken(2 + Toolkit.Rand.NextDouble()).Darken(),
@@ -1013,7 +1013,7 @@ namespace Noxico
 			}
 			this.DirtySpots.Clear();
 
-			foreach (var entity in this.Entities.OfType<Dressing>())
+			foreach (var entity in this.Entities.OfType<Clutter>())
 				entity.Draw();
 			foreach (var entity in this.Entities.OfType<DroppedItem>())
 				entity.Draw();

@@ -162,7 +162,7 @@ namespace Noxico
 					Noxico.Player.AutoTravelTo(tx, ty);
 				else if (NoxicoGame.Mode == UserMode.LookAt || NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
 				{
-					var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Dressing) && z.XPosition == tx && z.YPosition == ty);
+					var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
 					if (target != null)
 					{
 						Subscreens.UsingMouse = true;

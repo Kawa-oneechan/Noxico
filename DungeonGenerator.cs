@@ -610,7 +610,7 @@ namespace Noxico
 					}
 					if (lives == 0)
 						continue;
-					var newBed = new Dressing()
+					var newBed = new Clutter()
 					{
 						AsciiChar = '\u0398',
 						XPosition = x,
@@ -629,7 +629,7 @@ namespace Noxico
 				if (a != null)
 				{
 					ba = new BoardChar(a);
-					var startPos = Board.Entities.OfType<Dressing>().FirstOrDefault(d => d.ID == a.Name.ToID() + "_Bed");
+					var startPos = Board.Entities.OfType<Clutter>().FirstOrDefault(d => d.ID == a.Name.ToID() + "_Bed");
 					if (startPos != null)
 					{
 						ba.XPosition = startPos.XPosition;
@@ -654,7 +654,7 @@ namespace Noxico
 					//GetLocation(out x, out y, ref map, freeRoom);
 					//bb.XPosition = x;
 					//bb.YPosition = y;
-					var startPos = Board.Entities.OfType<Dressing>().FirstOrDefault(d => d.ID == b.Name.ToID() + "_Bed");
+					var startPos = Board.Entities.OfType<Clutter>().FirstOrDefault(d => d.ID == b.Name.ToID() + "_Bed");
 					if (startPos != null)
 					{
 						bb.XPosition = startPos.XPosition;

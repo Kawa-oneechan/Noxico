@@ -19,24 +19,24 @@
 
 		<character bodyplan="foocubus" gender="male" left="60" top="7" movement="wander" name="random" />
 
-		<dressing left="60" top="7" character="233" forecolor="5" name="Couch">
+		<clutter left="60" top="7" character="233" forecolor="5" name="Couch">
 			This is a comfortable-looking couch, suitable for intensive lounging and making out. It is covered in purple silk sheets and has two dark blue pillows on either end.
-		</dressing>
-		<dressing left="59" top="11" character="233" forecolor="1" name="Couch">
+		</clutter>
+		<clutter left="59" top="11" character="233" forecolor="1" name="Couch">
 			This is a comfortable-looking couch, suitable for intensive lounging and making out. It is covered in dark blue silk sheets and has two dark blue pillows on either end.
-		</dressing>
-		<dressing left="54" top="7" character="233" forecolor="4" name="Couch">
+		</clutter>
+		<clutter left="54" top="7" character="233" forecolor="4" name="Couch">
 			This is a comfortable-looking couch, suitable for intensive lounging and making out. It is covered in dark red silk sheets and has two purple pillows on either end.
-		</dressing>
-		<dressing left="48" top="9" character="233" forecolor="5" name="Couch">
+		</clutter>
+		<clutter left="48" top="9" character="233" forecolor="5" name="Couch">
 			This is a comfortable-looking couch, suitable for intensive lounging and making out. It is covered in purple silk sheets and has two purple pillows on either end.
-		</dressing>
-		<dressing left="58" top="14" character="233" forecolor="4" name="Couch">
+		</clutter>
+		<clutter left="58" top="14" character="233" forecolor="4" name="Couch">
 			This is a comfortable-looking couch, suitable for intensive lounging and making out. It is covered in dark red silk sheets and has some dark blue and purple pillows on either end.
-		</dressing>
-		<dressing left="61" top="8" character="210" forecolor="6" name="Chair">
+		</clutter>
+		<clutter left="61" top="8" character="210" forecolor="6" name="Chair">
 			This is a functional, sturdy but comfy chair someone has poofed into existence.
-		</dressing>
+		</clutter>
 
 		<!-- Side rooms -->
 
@@ -53,24 +53,24 @@
 			<exit direction="east" />
 		</building>
 
-		<dressing left="8" top="6" character="233" forecolor="5" name="Bed">
+		<clutter left="8" top="6" character="233" forecolor="5" name="Bed">
 			This is a fairly large bed, covered in even more dark silk and pillows.
-		</dressing>
+		</clutter>
 		<patch left="10" top="6" character="179" forecolor="1"/>
 
-		<dressing left="8" top="10" character="233" forecolor="4" name="Bed">
+		<clutter left="8" top="10" character="233" forecolor="4" name="Bed">
 			This is a fairly large bed, covered in even more dark silk and pillows.
-		</dressing>
+		</clutter>
 		<patch left="10" top="10" character="179" forecolor="4" />
 
-		<dressing left="8" top="14" character="233" forecolor="1" name="Bed">
+		<clutter left="8" top="14" character="233" forecolor="1" name="Bed">
 			This is a fairly large bed, covered in even more dark silk and pillows.
-		</dressing>
+		</clutter>
 		<patch left="10" top="14" character="179" forecolor="5" />
 
-		<dressing left="8" top="18" character="233" forecolor="5" name="Bed">
+		<clutter left="8" top="18" character="233" forecolor="5" name="Bed">
 			This is a fairly large bed, covered in even more dark silk and pillows.
-		</dressing>
+		</clutter>
 		<patch left="10" top="18" character="179" forecolor="1" />
 
 		<!-- Lights on the ceiling (reflecting on the floor) -->
@@ -337,6 +337,6 @@
 		<character name="Ponky Poi" left="45" top="10" />
 		<character name="Marble" left="50" top="11" movement="Path" />
 
-		<!-- <dressing left="60" top="17" character="247" forecolor="7" name="splatter">This is a splattering of cum.</dressing> -->
+		<!-- <clutter left="60" top="17" character="247" forecolor="7" name="splatter">This is a splattering of cum.</clutter> -->
 	</board>
 </boards>

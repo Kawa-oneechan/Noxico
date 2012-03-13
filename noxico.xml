@@ -415,7 +415,7 @@ terms
 	herm: "foxherm"
 ascii
 	char: U+0056
-tallness: 1d20+150
+tallness: roll 1d20+150
 hair
 	length: roll 1d6+3
 	color: oneof blond, brown, black, red
@@ -1005,7 +1005,8 @@ ascii
 nouse
 ascii
 	char: U+00A7
-	fore: brown
+	fore
+		brown
 			]]>
 		</item>
 		<item id="baseballbat" name="baseball bat" a="a" the="the">
@@ -1018,7 +1019,8 @@ weight
 	medium
 ascii
 	char: U+0021
-	fore: brown
+	fore
+		brown
 			]]>
 		</item>
 		<item id="foxite" name="Foxite" a="" the="the" proper="true">
@@ -1078,7 +1080,8 @@ weapon
 description: "A nice, sturdy combat knife."
 ascii
 	char: U+2190
-	fore: silver
+	fore
+		silver
 			]]>
 		</item>
 		<item id="butter_knife" name="butter knife" a="a" the="the">
@@ -1090,7 +1093,8 @@ weapon
 description: "A nice, sturdy butter knife."
 ascii
 	char: U+2190
-	fore: silver
+	fore
+		silver
 			]]>
 		</item>
 		<item id="test_ring" name="test ring" a="a" the="the">
@@ -1099,7 +1103,8 @@ equipable
 	ring
 ascii
 	char: U+25CB
-	fore: forebrick
+	fore
+		fìrebrick
 			]]>
 		</item>
 		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
@@ -1116,7 +1121,8 @@ statbonus
 description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
 ascii
 	char: U+2193
-	fore: white
+	fore
+		white
 			]]>
 		</item>
 
@@ -1132,7 +1138,8 @@ statbonus
 price: 20
 ascii
 	char: U+03A9
-	fore: darkmagenta
+	fore
+		darkmagenta
 			]]>
 		</item>
 		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
@@ -1615,7 +1622,8 @@ unique
 description: "A blood-red ruby in the shape of a droplet."
 ascii
 	char: U+25CA
-	fore: crimson
+	fore
+		crimson
 			]]>
 			<script language="text/noxicobotic">
 				<![CDATA[
