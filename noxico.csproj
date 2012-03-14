@@ -279,6 +279,7 @@
     </Content>
     <Content Include="dialogue.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sounds\Door Lock.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

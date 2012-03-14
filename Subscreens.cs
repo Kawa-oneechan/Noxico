@@ -48,6 +48,8 @@ c    - Chat
 #endif
 			{ "Save and exit", "Press Enter to save." },
 		};
+		private static UIList list;
+		private static UILabel text;
 
 		public static void Handler()
 		{
@@ -58,20 +60,47 @@ c    - Chat
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
-				Toolkit.DrawWindow(5, 4, 21, 1 + pages.Count, "PAUSED", Color.Maroon, Color.Black, Color.Red);
+				UIManager.Initialize();
+				UIManager.Elements.Add(new UIWindow("PAUSED") { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2, Background = Color.Black, Foreground = Color.Maroon });
+				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 4, Width = 42, Height = 16, Background = Color.Black, Foreground = Color.Blue });
+				list = new UIList() { Background = Color.Black, Foreground = Color.Silver, Width = 20, Height = pages.Count, Left = 6, Top = 5 };
+				list.Items.AddRange(pages.Keys);
+				list.Change += (s, e) =>
+					{
+						page = list.Index;
+						text.Text = pages.Values.ElementAt(page);
+						UIManager.Draw();
+					};
+				list.Enter += (s, e) =>
+					{
+						if (list.Index == list.Items.Count - 1) //can't use absolute index because Debug might be missing.
+						{
+							host.Noxico.SaveGame();
+							host.Close();
+						}
+					};
+				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 5 };
+				UIManager.Elements.Add(list);
+				UIManager.Elements.Add(text);
+				list.Index = IniFile.GetBool("misc", "rememberpause", true) ? page : 0;
+				UIManager.Highlight = list;
+
+				//Toolkit.DrawWindow(5, 4, 21, 1 + pages.Count, "PAUSED", Color.Maroon, Color.Black, Color.Red);
 				Subscreens.Redraw = true;
 				keys[(int)Keys.Escape] = false;
 			}
 			if (Subscreens.Redraw)
 			{
 				Subscreens.Redraw = false;
-				Toolkit.DrawWindow(28, 4, 41, 16, null, Color.Blue, Color.Black, Color.Blue);
-				var titles = pages.Keys.ToArray();
-				for (var i = 0; i < pages.Count; i++)
-					host.Write((' ' + titles[i]).PadRight(20), i == page ? Color.Black : Color.Silver, i == page ? Color.Silver : Color.Black, 6, 5 + i);
-				var text = pages.Values.ElementAt(page).Split('\n');
-				for (var i = 0; i < text.Length; i++)
-					host.Write(text[i], Color.Silver, Color.Black, 30, 5 + i);
+				UIManager.Draw();
+
+				//Toolkit.DrawWindow(28, 4, 41, 16, null, Color.Blue, Color.Black, Color.Blue);
+				//var titles = pages.Keys.ToArray();
+				//for (var i = 0; i < pages.Count; i++)
+				//	host.Write((' ' + titles[i]).PadRight(20), i == page ? Color.Black : Color.Silver, i == page ? Color.Silver : Color.Black, 6, 5 + i);
+				//var text = pages.Values.ElementAt(page).Split('\n');
+				//for (var i = 0; i < text.Length; i++)
+				//	host.Write(text[i], Color.Silver, Color.Black, 30, 5 + i);
 			}
 
 			if (keys[(int)Keys.Escape])
@@ -82,30 +111,11 @@ c    - Chat
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
-
-			if (trig[(int)Keys.Up])
+			else
 			{
-				if (page == 0)
-					page = pages.Count;
-				page--;
-				Subscreens.Redraw = true;
-			}
-			else if (trig[(int)Keys.Down])
-			{
-				page++;
-				if (page == pages.Count)
-					page = 0;
-				Subscreens.Redraw = true;
+				UIManager.CheckKeys();
 			}
 
-			if (keys[(int)Keys.Enter])
-			{
-				if (page == pages.Count - 1) //can't use absolute index because Debug might be missing.
-				{
-					host.Noxico.SaveGame();
-					host.Close();
-				}
-			}
 		}
 
 		private static int CountTokens(Token t)
