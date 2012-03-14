@@ -211,8 +211,8 @@ namespace Noxico
 			var t = Top;
 			for (var i = 0; i < Items.Count && i < Height; i++, t++)
 				NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadRight(Width - 2) + ' ',
-					index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Color.Black,
-					index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Color.White,
+					index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
+					index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
 					 l, t);
 		}
 
