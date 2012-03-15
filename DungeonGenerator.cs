@@ -369,6 +369,7 @@ namespace Noxico
 	class TownGenerator : BaseDungeonGenerator
 	{
 		public Board Board { get; set; }
+		public Culture Culture { get; set; }
 
 		public List<RoomExit> Exits { get; private set; }
 
@@ -511,7 +512,7 @@ namespace Noxico
 			{
 				Character a = null, b = null;
 
-				var plans = new[] { "human", "felinoid", "fox", "human", "human", "felinoid", "fox", "naga", "human", "felinoid" };
+				var plans = Culture.Bodyplans; //new[] { "human", "felinoid", "fox", "human", "human", "felinoid", "fox", "naga", "human", "felinoid" };
 				var plan = plans[Toolkit.Rand.Next(plans.Length)];
 				var planB = plan;
 				if (Toolkit.Rand.NextDouble() > 0.7)
@@ -561,8 +562,9 @@ namespace Noxico
 				a.Name = new Name(Culture.GetName(a.GetToken("culture").Tokens[0].Name, a.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
 				if (b != null)
 				{
-					var shipTypes = new[] { "spouse", "friend" };
-					var shipType = shipTypes[Toolkit.Rand.Next(shipTypes.Length)];
+					var shipType = "friend";
+					if (Toolkit.Rand.NextDouble() < Culture.Marriage)
+						shipType = "spouse";
 
 					b.Name = new Name(Culture.GetName(b.GetToken("culture").Tokens[0].Name, b.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
 					b.Name.Female = b.HasVagina();

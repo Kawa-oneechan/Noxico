@@ -38,6 +38,14 @@
 				<!-- If a given bodyplan's species attribute contains ' ', we can't refer to it as-is. If need be, use '_' instead. -->
 				<plan name="human" />
 				<plan name="felinoid" />
+				<plan name="fox" />
+				<plan name="human" />
+				<plan name="human" />
+				<plan name="felinoid" />
+				<plan name="fox" />
+				<plan name="naga" />
+				<plan name="human" />
+				<plan name="felinoid" />
 			</bodyplans>
 			<!-- Low base chance of betraying their spouse. Character tokens affect this. -->
 			<monogamous>0.75</monogamous>

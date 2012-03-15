@@ -443,7 +443,7 @@ fertility: roll 1d20+10
 breastrow
 	amount: 2
 	size: roll 1d3+3
-	nipples
+	nipples: 1
 		size: roll 1d2+2
 	milksource
 vagina
