@@ -467,9 +467,21 @@ c    - Chat
 
 	public class Inventory
 	{
-		//TODO: Rewrite to use UIManager
-		private static int selection = 0;
-		private static Dictionary<Token, InventoryItem> inventory = new Dictionary<Token, InventoryItem>();
+		//TODO: <del>Rewrite to use UIManager</del> Adapt the Drop key to, it's the only one left.
+		//TODO: Verify that dropping or consuming works.
+		private static int selection = 0; //TODO: Use this.
+		//Split up the Dictionary for easier access to both halves. It was a silly setup anyway.
+		private static List<Token> inventoryTokens = new List<Token>();
+		private static List<InventoryItem> inventoryItems = new List<InventoryItem>();
+		private static UIList itemList;
+		private static UILabel howTo, itemDesc;
+
+		private static void TryUse(Character character, Token token, InventoryItem chosen)
+		{
+			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			chosen.Use(character, token);
+		}
 
 		public static void Handler()
 		{
@@ -482,33 +494,32 @@ c    - Chat
 				MessageBox.Message("You are carrying nothing.", true);
 				return;
 			}
+
 			if (Subscreens.FirstDraw)
 			{
+				UIManager.Initialize();
 				Subscreens.FirstDraw = false;
-				for (var i = 0; i < 255; i++)
-					keys[i] = trig[i] = false;
-				inventory.Clear();
-				foreach (var carriedItem in player.Character.GetToken("items").Tokens)
-				{
-					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-					if (find == null)
-						continue;
-					inventory.Add(carriedItem, find);
-				}
-				Toolkit.DrawWindow(1, 1, 40, 1 + inventory.Count, "Inventory", Color.Purple, Color.Black, Color.Magenta);
-				host.Write("<gB5,126> <g18> <g19> <gC6,127>", Color.Magenta, Color.Black, 33, 2 + inventory.Count);
-				if (selection >= inventory.Count)
-					selection = 0;
+				NoxicoGame.ClearKeys();
 				Subscreens.Redraw = true;
 			}
 			if (Subscreens.Redraw)
 			{
 				Subscreens.Redraw = false;
-				for (var i = 0; i < 20 && i < inventory.Count; i++)
+
+				inventoryTokens.Clear();
+				inventoryItems.Clear();
+				var itemTexts = new List<string>();
+				foreach (var carriedItem in player.Character.GetToken("items").Tokens)
 				{
-					var item = inventory.ElementAt(i).Value; //inventory[i];
+					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+					if (find == null)
+						continue;
+					inventoryTokens.Add(carriedItem);
+					inventoryItems.Add(find);
+
+					var item = find;
 					var sigil = "";
-					var carried = inventory.ElementAt(i).Key; //player.Character.GetToken("items").GetToken(item.ID);
+					var carried = carriedItem;
 					if (item.HasToken("equipable"))
 						sigil += "<c" + (carried.HasToken("equipped") ? "Navy" : "Gray") + ">W";
 					if (carried.HasToken("unidentified"))
@@ -520,44 +531,80 @@ c    - Chat
 					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
 						sigil += "<c13>C";
 #endif
-					host.Write(item.ToString(carried).PadRight(32) + "<c0,0> " + sigil, (i == selection) ? Color.White : Color.Silver, (i == selection) ? Color.Gray : Color.Black, 3, 2 + i);
+					itemTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
 				}
+				var height = inventoryItems.Count;
+				if (height > 20)
+					height = 20;
+
+				UIManager.Elements.Add(new UIWindow("Inventory") { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
+				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 39, Top = 1, Width = 40, Height = 6, Background = Color.Black, Foreground = Color.Navy });
+				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver };
+				itemDesc = new UILabel("") { Left = 41, Top = 2, Width = 38, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				itemList = new UIList("", null /* useItem */, itemTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray };
+				itemList.Change = (s, e) =>
+				{
+					//Change description window here.
+					host.Text = inventoryItems[itemList.Index].ToString(inventoryTokens[itemList.Index]);
+
+					var t = inventoryTokens[itemList.Index];
+					var i = inventoryItems[itemList.Index];
+					var r = string.Empty;
+					var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+
+					d = Toolkit.Wordwrap(d, itemDesc.Width);
+
+					if (i.ID == "book")
+						r = "Press Enter to read.";
+					else if (i.HasToken("equipable"))
+					{
+						if (t.HasToken("equipped"))
+						{
+							if (t.Path("cursed/known") != null)
+								r = "Cannot unequip.";
+							else
+								r = "Press Enter to unequip.";
+						}
+						else
+							r = "Press Enter to equip.";
+					}
+					else if (i.HasToken("quest"))
+						r = "This is a quest key item.";
+					else
+						r = "Press Enter to try and use.";
+
+					howTo.Text = (' ' + r).PadRight(80);
+					itemDesc.Text = d;
+					//howTo.Draw();
+					//itemDesc.Draw();
+					UIManager.Draw();
+				};
+				itemList.Enter = (s, e) =>
+				{
+					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
+				};
+				UIManager.Elements.Add(howTo);
+				UIManager.Elements.Add(itemList);
+				UIManager.Elements.Add(itemDesc);
+				UIManager.Highlight = itemList;
+				itemList.Index = 0;
+
+				UIManager.Draw();
 			}
 
 			if (keys[(int)Keys.Escape] || keys[(int)Keys.I])
 			{
-				Subscreens.PreviousScreen.Clear();
+				NoxicoGame.ClearKeys();
+				NoxicoGame.Immediate = true;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
-				host.Noxico.CurrentBoard.Redraw();
 				Subscreens.FirstDraw = true;
-				for (var i = 0; i < 255; i++)
-					keys[i] = trig[i] = false;
 			}
+			else
+				UIManager.CheckKeys();
 
-			if (trig[(int)Keys.Up])
-			{
-				if (selection == 0)
-					selection = inventory.Count;
-				selection--;
-				Subscreens.Redraw = true;
-			}
-			else if (trig[(int)Keys.Down])
-			{
-				selection++;
-				if (selection == inventory.Count)
-					selection = 0;
-				Subscreens.Redraw = true;
-			}
-
-			if (keys[(int)Keys.L])
-			{
-				keys[(int)Keys.L] = false;
-				var item = inventory.ElementAt(selection).Value;
-				var token = inventory.ElementAt(selection).Key;
-				var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
-				MessageBox.Message(text);
-			}
-
+			/*
 			if (keys[(int)Keys.D])
 			{
 				keys[(int)Keys.D] = false;
@@ -583,17 +630,7 @@ c    - Chat
 					NoxicoGame.AddMessage("Dropped " + item.ToString(token, true, true) + ".");
 				}
 			}
-
-			if (keys[(int)Keys.Enter])
-			{
-				keys[(int)Keys.Enter] = false;
-				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
-				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
-				var chosen = inventory.ElementAt(selection).Value;
-				var token = inventory.ElementAt(selection).Key;
-				chosen.Use(player.Character, token);
-			}
-
+			*/
 		}
 	}
 

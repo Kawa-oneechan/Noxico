@@ -203,6 +203,9 @@ namespace Noxico
 			Items = new List<string>();
 			Items.AddRange(items);
 			Index = index;
+			Width = 32;
+			Foreground = Color.Black;
+			Background = Color.White;
 		}
 
 		public override void Draw()

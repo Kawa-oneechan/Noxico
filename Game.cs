@@ -517,8 +517,10 @@ namespace Noxico
 						{
 							townGen.Board = thisMap;
 							townGen.Create(biomeMap[x, y]);
+							townGen.Culture = Culture.Cultures["human"];
 							townGen.ToTilemap(ref thisMap.Tilemap);
 							townGen.ToSectorMap(thisMap.Sectors);
+							thisMap.Music = "set://Town"; 
 							while (true)
 							{
 								var newName = Culture.GetName("human", Culture.NameType.Town);

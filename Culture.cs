@@ -11,6 +11,8 @@ namespace Noxico
 	{
 		private static XmlDocument xDoc;
 		public string ID;
+		public string[] Bodyplans;
+		public double Marriage = 0.25, Monogamous = 1;
 
 		public enum NameType
 		{
@@ -23,6 +25,7 @@ namespace Noxico
 
 		static Culture()
 		{
+			Console.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			xDoc = new XmlDocument();
 			if (File.Exists(IniFile.GetString("misc", "culturefile", "culture.xml")))
@@ -40,7 +43,22 @@ namespace Noxico
 		{
 			var nc = new Culture();
 			nc.ID = x.GetAttribute("id");
-			//nc.nameGen = x.SelectSingleNode("//culture[@id='" + nc.id + "']/namegen") as XmlElement;
+			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
+			if (info == null)
+			{
+				Console.WriteLine("Culture \"{0}\" has no cultureinfo element.", nc.ID);
+				return nc;
+			}
+			var plans = new List<string>();
+			foreach (var plan in info.SelectSingleNode("bodyplans").ChildNodes.OfType<XmlElement>())
+				plans.Add(plan.GetAttribute("name"));
+			nc.Bodyplans = plans.ToArray();
+			var marriage = info.SelectSingleNode("marriage") as XmlElement;
+			var monogamous = info.SelectSingleNode("monogamous") as XmlElement;
+			if (marriage != null)
+				nc.Marriage = double.Parse(marriage.InnerText, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+			if (monogamous != null)
+				nc.Monogamous = double.Parse(monogamous.InnerText, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
 			return nc;
 		}
 
