@@ -468,7 +468,7 @@ c    - Chat
 	public class Inventory
 	{
 		//TODO: <del>Rewrite to use UIManager</del> Adapt the Drop key to, it's the only one left.
-		//TODO: Verify that dropping or consuming works.
+		//TODO: Verify that dropping <del>or consuming</del> works.
 		private static int selection = 0; //TODO: Use this.
 		//Split up the Dictionary for easier access to both halves. It was a silly setup anyway.
 		private static List<Token> inventoryTokens = new List<Token>();
@@ -481,6 +481,7 @@ c    - Chat
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			chosen.Use(character, token);
+			Subscreens.Redraw = true;
 		}
 
 		public static void Handler()

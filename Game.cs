@@ -117,6 +117,8 @@ namespace Noxico
 			foreach (var b in books.OfType<XmlElement>())
 				BookTitles.Add(b.GetAttribute("title"));
 
+			ScriptVariables.Add("consumed", 0);
+
 			CurrentBoard = new Board();
 			if (IniFile.GetBool("misc", "skiptitle", false) && File.Exists("world.bin"))
 			{
