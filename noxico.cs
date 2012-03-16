@@ -2841,132 +2841,14 @@ namespace Noxico
 				var script = this.Script.Split('\n'); //this.GetToken("script").Text.Split('\n');
 				boardchar.ScriptRunning = true;
 				boardchar.ScriptPointer = 0;
+				NoxicoGame.ScriptVariables["consumed"] = 0;
 				Noxicobotic.Run(boardchar, script);
 				boardchar.ScriptRunning = false;
+
+				if (NoxicoGame.ScriptVariables["consumed"] != 0)
+					character.GetToken("items").Tokens.Remove(item);
 				return;
 			}
-
-			#region Penis play
-			if (this.HasToken("growpenis"))
-			{
-				var cock = this.GetToken("growpenis");
-				var type = "";
-				var initial = 4f;
-				var increase = 1f;
-				var multichance = 0;
-				if (cock.HasToken("type") && cock.GetToken("type").Tokens.Count > 0)
-				{
-					if (cock.GetToken("type").HasToken("byscore"))
-					{
-						var gS = character.GetGoblinScore();
-						var dS = character.GetDemonScore();
-						var hS = character.GetHumanScore();
-						if (dS > hS && dS > gS)
-							type = "studded";
-						else if (gS > hS)
-							type = "";
-					}
-					else
-						type = cock.GetToken("type").Tokens[0].Name;
-				}
-				if (cock.HasToken("initial"))
-					initial = cock.GetToken("initial").Value;
-				if (cock.HasToken("increase"))
-					increase = cock.GetToken("increase").Value;
-				if (cock.HasToken("fudge"))
-				{
-					initial += ((float)Toolkit.Rand.NextDouble() * cock.GetToken("fudge").Value);
-					increase += ((float)Toolkit.Rand.NextDouble() * cock.GetToken("fudge").Value);
-				}
-				if (cock.HasToken("multichance"))
-					multichance = (int)cock.GetToken("multichance").Value;
-
-				Token newCock = null;
-				if (!character.HasToken("penis") || (multichance > 0 && Toolkit.Rand.Next(100) > multichance))
-				{
-					newCock = new Token() { Name = "penis" };
-					newCock.Tokens.Add(new Token() { Name = "thickness", Value = 1 });
-					newCock.Tokens.Add(new Token() { Name = "length", Value = initial });
-					newCock.Tokens.Add(new Token() { Name = "cumsource" });
-					newCock.Tokens.Add(new Token() { Name = "canfuck" });
-					character.Tokens.Add(newCock);
-					runningDesc += "[You] [have] grown " + (character.Tokens.Count(x => x.Name == "penis") > 1 ? "an additional " : "a ") + Descriptions.Length(increase) + " penis!\n";
-				}
-				else if (character.HasToken("penis"))
-				{
-					var cocks = character.Tokens.FindAll(x => x.Name == "penis").ToArray();
-					if (cocks.Length == 1)
-						newCock = cocks[0];
-					else
-						newCock = cocks[Toolkit.Rand.Next(cocks.Length)];
-					newCock.GetToken("length").Value += increase;
-					runningDesc += (cocks.Length > 1 ? "One of [your] cocks" : "[Your] cock") + " has grown by " + Descriptions.Length(increase) + ".";
-				}
-				character.UpdateTitle();
-			}
-			if (this.HasToken("shrinkpenis"))
-			{
-				if (character.HasToken("penis"))
-				{
-					var cock = this.GetToken("shrinkpenis");
-					var decrease = 4f;
-					var result = "";
-					var removals = 0;
-					if (cock.HasToken("decrease"))
-						decrease = cock.GetToken("decrease").Value;
-					if (cock.HasToken("fudge"))
-						decrease += ((float)Toolkit.Rand.NextDouble() * cock.GetToken("fudge").Value);
-					var cocks = character.Tokens.FindAll(x => x.Name == "penis").ToArray();
-					if (cock.HasToken("all"))
-					{
-						foreach (var target in cocks)
-						{
-							target.GetToken("length").Value -= decrease;
-							if (target.GetToken("length").Value <= 0)
-							{
-								character.Tokens.Remove(target);
-								removals++;
-							}
-						}
-						if (removals == cocks.Length)
-							result = (cocks.Length > 1 ? "All of [your] cocks have" : "[Your] cock has") + " completely receded into nothingness!";
-						else if (removals == 0)
-							result = (cocks.Length > 1 ? "All of [your] cocks have" : "[Your] cock has") + " shrunk by " + Descriptions.Length(decrease) + ".";
-						else if (cocks.Length > 1 && removals > 0)
-							result = "Some of [your] cocks have shrunk by " + Descriptions.Length(decrease) + ", and " + removals + (removals > 1 ? " have" : " has") + " disappeared entirely.";
-					}
-					else
-					{
-						var targetCock = cocks[0];
-						if (cocks.Length > 1)
-							targetCock = cocks[Toolkit.Rand.Next(cocks.Length)];
-						targetCock.GetToken("length").Value -= decrease;
-						if (targetCock.GetToken("length").Value <= 0)
-						{
-							character.Tokens.Remove(targetCock);
-							result = (cocks.Length > 1 ? "One of [your] cocks" : "[Your] cock") + " has completely disappeared into nothingness!";
-						}
-						else
-							result = (cocks.Length > 1 ? "One of [your] cocks" : "[Your] cock") + " has shrunk by " + Descriptions.Length(decrease) + ".";
-					}
-					runningDesc += result + "\n";
-				}
-				character.UpdateTitle();
-			}
-			#endregion
-
-			if (boardchar != null)
-				boardchar.AdjustView();
-			if (!string.IsNullOrEmpty(runningDesc))
-			{
-				if (!this.HasToken("multiuse") && !this.HasToken("wearable"))
-				{
-					var toRemove = character.GetToken("items").GetToken(this.ID);
-					character.GetToken("items").Tokens.Remove(toRemove);
-				}
-			}
-			else
-				runningDesc = "It had no effect...";
 
 			MessageBox.Message(runningDesc.Viewpoint(boardchar));
 		}

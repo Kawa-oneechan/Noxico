@@ -89,6 +89,7 @@ costume
 	casual
 items
 	ponifier
+	penificator
 	foxite
 	knife
 		equipped
@@ -974,7 +975,6 @@ costume
 	<items>
 		<item id="ponifier" name="Element of Perversion" a="" the="the" proper="true">
 			<![CDATA[
-multiuse
 description: "You do not want to know."
 ascii
 	char: U+00A1
@@ -983,9 +983,9 @@ ascii
 			]]>
 			<script language="text/noxicobotic">
 				<![CDATA[
+-- To replace the multiuse token, this lets us make exceptions in consumption.
+consumed = 1
 morph littlepony 0 window
-adjustview
-clearsubs
 				]]>
 			</script>
 		</item>
@@ -1025,7 +1025,6 @@ ascii
 		</item>
 		<item id="foxite" name="Foxite" a="" the="the" proper="true">
 			<![CDATA[
-multiuse
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
 	char: U+00A1
@@ -1034,9 +1033,8 @@ ascii
 			]]>
 			<script language="text/noxicobotic">
 				<![CDATA[
+consumed = 1
 morph fox 0 window
-adjustview
-clearsubs
 				]]>
 			</script>
 		</item>
@@ -1050,6 +1048,7 @@ ascii
 			<script language="text/noxicobotic">
 				<![CDATA[
 !<< It's no use. >>
+consumed = 1
 				]]>
 			</script>
 			<!--
