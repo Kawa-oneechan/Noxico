@@ -478,10 +478,40 @@ c    - Chat
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
 		{
-			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			chosen.Use(character, token);
 			Subscreens.Redraw = true;
+		}
+
+		private static void TryDrop(BoardChar boardchar, Token token, InventoryItem chosen)
+		{
+			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			if (token.HasToken("equipped"))
+				try
+				{
+					chosen.Unequip(boardchar.Character, token);
+				}
+				catch (ItemException x)
+				{
+					MessageBox.Message(x.Message);
+				}
+			if (!token.HasToken("equipped"))
+			{
+				chosen.Drop(boardchar, token);
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				MessageBox.Message("Dropped " + chosen.ToString(token, true, true) + ".");
+				/*
+				Subscreens.PreviousScreen.Clear();
+				NoxicoGame.Mode = UserMode.Walkabout;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				Subscreens.FirstDraw = true;
+				NoxicoGame.AddMessage("Dropped " + chosen.ToString(token, true, true) + ".");
+				*/
+			}
 		}
 
 		public static void Handler()
@@ -493,6 +523,8 @@ c    - Chat
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{
 				MessageBox.Message("You are carrying nothing.", true);
+				Subscreens.PreviousScreen.Clear();
+				Subscreens.FirstDraw = true;
 				return;
 			}
 
@@ -537,16 +569,17 @@ c    - Chat
 				var height = inventoryItems.Count;
 				if (height > 20)
 					height = 20;
+				if (selection >= inventoryItems.Count)
+					selection = inventoryItems.Count - 1;
 
 				UIManager.Elements.Add(new UIWindow("Inventory") { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
-				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 39, Top = 1, Width = 40, Height = 6, Background = Color.Black, Foreground = Color.Navy });
+				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 39, Top = 1, Width = 40, Height = 8, Background = Color.Black, Foreground = Color.Navy });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver };
 				itemDesc = new UILabel("") { Left = 41, Top = 2, Width = 38, Height = 4, Foreground = Color.Silver, Background = Color.Black };
-				itemList = new UIList("", null /* useItem */, itemTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = selection };
 				itemList.Change = (s, e) =>
 				{
-					//Change description window here.
-					host.Text = inventoryItems[itemList.Index].ToString(inventoryTokens[itemList.Index]);
+					selection = itemList.Index;
 
 					var t = inventoryTokens[itemList.Index];
 					var i = inventoryItems[itemList.Index];
@@ -587,8 +620,9 @@ c    - Chat
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
 				UIManager.Elements.Add(itemDesc);
+				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 72, Top = 7, Width = 6, Height = 1 });
 				UIManager.Highlight = itemList;
-				itemList.Index = 0;
+				itemList.Index = selection;
 
 				UIManager.Draw();
 			}
@@ -602,36 +636,12 @@ c    - Chat
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
+			else if (keys[(int)Keys.D])
+			{
+				TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
+			}
 			else
 				UIManager.CheckKeys();
-
-			/*
-			if (keys[(int)Keys.D])
-			{
-				keys[(int)Keys.D] = false;
-				var item = inventory.ElementAt(selection).Value;
-				var token = inventory.ElementAt(selection).Key;
-
-				if (token.HasToken("equipped"))
-					try
-					{
-						item.Unequip(player.Character, token);
-					}
-					catch (ItemException x)
-					{
-						MessageBox.Message(x.Message);
-					}
-				if (!item.HasToken("equipped"))
-				{
-					item.Drop(player, token);
-					Subscreens.PreviousScreen.Clear();
-					NoxicoGame.Mode = UserMode.Walkabout;
-					host.Noxico.CurrentBoard.Redraw();
-					Subscreens.FirstDraw = true;
-					NoxicoGame.AddMessage("Dropped " + item.ToString(token, true, true) + ".");
-				}
-			}
-			*/
 		}
 	}
 

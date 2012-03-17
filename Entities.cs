@@ -856,6 +856,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Mode = UserMode.Subscreen;
 				NoxicoGame.Subscreen = Inventory.Handler;
+				Subscreens.FirstDraw = true;
 				return;
 			}
 

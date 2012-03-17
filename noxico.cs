@@ -1923,9 +1923,9 @@ namespace Noxico
 				else
 				{
 					if (hands.Count == 1)
-						sb.AppendFormat("[He] has {0} in [his] hands.", hands[0]);
+						sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
 					else if (hands.Count == 1)
-						sb.AppendFormat("[He] has {0} in [his] hands.", hands[0]);
+						sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
 				}
 				sb.AppendLine();
 			}
