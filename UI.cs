@@ -167,6 +167,7 @@ namespace Noxico
 	{
 		public List<string> Items;
 		protected int index, scroll;
+		//TODO: When setting Index, make sure the new selection is actually visible.
 		public int Index
 		{
 			get
