@@ -377,40 +377,19 @@ c    - Chat
 			}
 		}
 
-		public static void LookAt(Entity target)
+		public static void LookAt(BoardChar target)
 		{
 			//var host = NoxicoGame.HostForm;
 			var pa = target;
 			//var keys = NoxicoGame.KeyMap;
 			var sb = new StringBuilder();
 
-			if (pa is BoardChar)
-			{
-				var chr = ((BoardChar)pa).Character;
-				sb.Append(chr.Name.ToString(true));
+			var chr = ((BoardChar)pa).Character;
+			sb.Append(chr.Name.ToString(true));
 
-				sb.AppendLine();
-				sb.Append(chr.LookAt(pa));
-			}
-			else if (pa is Clutter)
-			{
-				var drs = (Clutter)pa;
-				sb.AppendFormat("{0}", drs.Name);
-				sb.AppendLine();
-				sb.AppendLine();
-				sb.AppendFormat("{0}", drs.Description);
-				sb.AppendLine();
-			}
-			/*
-			else if (pa is Sexytimes)
-			{
-				var sex = (Sexytimes)pa;
-				sb.AppendLine(sex.GetParticipants(true));
-				sb.AppendLine();
-				foreach (var line in sex.Log)
-					sb.AppendLine(line);
-			}
-			*/
+			sb.AppendLine();
+			sb.Append(chr.LookAt(pa));
+
 			text = Toolkit.Wordwrap(sb.ToString(), 68).Split('\n');
 			Subscreens.FirstDraw = true;
 			NoxicoGame.Subscreen = Handler;

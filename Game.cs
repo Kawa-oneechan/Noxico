@@ -250,6 +250,20 @@ namespace Noxico
 
 			file.Close();
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
+
+			//Add debug characters
+			for (var i = 0; i < 20; i++)
+			{
+				var test = new BoardChar(Character.Generate("imp", Gender.Random))
+				{
+					ParentBoard = CurrentBoard,
+					XPosition = Toolkit.Rand.Next(2, 78),
+					YPosition = Toolkit.Rand.Next(2, 23),
+				};
+				test.Character.Tokens.Add(new Token() { Name = "hostile" });
+				test.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
+				CurrentBoard.Entities.Add(test);
+			}
 		}
 
 		public static void DrawMessages()
