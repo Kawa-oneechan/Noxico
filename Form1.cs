@@ -166,7 +166,15 @@ namespace Noxico
 					if (target != null)
 					{
 						Subscreens.UsingMouse = true;
-						TextScroller.LookAt(target);
+						if (target is BoardChar)
+							TextScroller.LookAt((BoardChar)target);
+						else if (target is Clutter)
+						{
+							var text = ((Clutter)target).Description;
+							text = text.Trim();
+							//var lines = text.Split('\n').Length;
+							MessageBox.Message(text, true);
+						}
 					}
 				}
 				else if (NoxicoGame.Mode == UserMode.Subscreen)

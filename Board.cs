@@ -940,7 +940,12 @@ namespace Noxico
 			if (active)
 			{
 				foreach (var entity in this.Entities.Where(x => !x.Passive && !(x is Player)))
+				{
 					entity.Update();
+
+					if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("health").Value <= 0)
+						return;
+				}
 				if (!surrounding)
 					UpdateSurroundings();
 				Burn(true);

@@ -817,7 +817,8 @@ namespace Noxico
 		}
 		public string ToID()
 		{
-			return FirstName + (string.IsNullOrWhiteSpace(Surname) ? '_' + Surname : string.Empty);
+			//had the silly thing in reverse ^_^;
+			return FirstName + (string.IsNullOrWhiteSpace(Surname) ? string.Empty : '_' + Surname);
 		}
 		public void SaveToFile(BinaryWriter stream)
 		{

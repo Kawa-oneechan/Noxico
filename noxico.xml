@@ -108,8 +108,7 @@ ascii
 tallness: roll 1d40+100
 hair
 	length: 5
-	color
-		black
+	color: black
 skin
 	type
 		skin

@@ -321,6 +321,8 @@ namespace Noxico
 						if (Intent == Intents.Look)
 						{
 							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
+							text = text.Trim();
+							var lines = text.Split('\n').Length;
 							MessageBox.Message(text, true);
 						}
 						else
@@ -331,10 +333,17 @@ namespace Noxico
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 					}
-					else
+					else if (PointingAt is Clutter && Intent == Intents.Look)
+					{
+						var text = ((Clutter)PointingAt).Description;
+						text = text.Trim();
+						//var lines = text.Split('\n').Length;
+						MessageBox.Message(text, true);
+					}
+					else if (PointingAt is BoardChar)
 					{
 						if (Intent == Intents.Look)
-							TextScroller.LookAt(PointingAt);
+							TextScroller.LookAt((BoardChar)PointingAt);
 						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
 							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
@@ -464,10 +473,13 @@ namespace Noxico
 
 		public override void Update()
 		{
+			if (Character.GetToken("health").Value <= 0)
+				return;
+
 			base.Update();
 
 			if (ParentBoard.IsBurning(YPosition, XPosition))
-				if (Hurt(10, "burned to death"))
+				if (Hurt(10, "burning to death", null))
 					return;
 			
 			if (MoveTimer > MoveSpeed)
@@ -535,8 +547,20 @@ namespace Noxico
 				return;
 			}
 
+			var range = 1; //TODO: set to applicable range for ranged weapons. Melee gets 1 for now.
+			if (DistanceFrom(target) <= range && CanSee(target))
+			{
+				//Within attacking range.
+				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
+				{
+					//Melee attacks can only be orthogonal.
+					MeleeAttack(target);
+					return;
+				}
+			}
 			if (DistanceFrom(target) <= 20 && CanSee(target))
 			{
+				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
 				var map = target.DijkstraMap;
 				var dir = Direction.North;
 				map.Ignore = DijkstraIgnores.Type;
@@ -556,13 +580,30 @@ namespace Noxico
 			}
 		}
 
-		public bool Hurt(float damage, string obituary)
+		public void MeleeAttack(BoardChar target)
+		{
+			var baseDamage = this.Character.GetToken("strength").Value;
+			//TODO: check equipped weapon and edit damage accordingly.
+			//TODO: do all sorts of checks.
+			var damage = (float)Math.Floor(baseDamage);
+			if (damage > 0)
+			{
+				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + " struck " + (target is Player ? "you" : target.Character.Name.ToString()) + " for " + damage + " points.");
+				Character.IncreaseSkill("melee"); //TODO: determine more appropriate skills
+			}
+			if(target.Hurt(damage, "being struck down by " + this.Character.Name.ToString(true), this))
+			{
+				//Gain a bonus from killing the target?
+			}
+		}
+
+		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor)
 		{
 			var health = Character.GetToken("health").Value;
 			if (health - damage <= 0)
 			{
 				//Dead, but how?
-
+				Character.GetToken("health").Value = 0;
 				LeaveCorpse(obituary);
 				return true;
 			}
@@ -575,12 +616,12 @@ namespace Noxico
 			var corpse = new Clutter()
 			{
 				ParentBoard = ParentBoard,
-				AsciiChar = (char)1,
+				AsciiChar = AsciiChar,
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
 				Name = Character.Name + "'s remains",
-				Description = "These are the remains of " + Character.Name + ", who died from having " + obituary + ".",
+				Description = "These are the remains of " + Character.Name + ", who died from " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
@@ -757,7 +798,15 @@ namespace Noxico
 			{
 				if (entity.Blocking)
 				{
+					NoxicoGame.ClearKeys();
 					entity.CallScript("playerbump");
+					if (entity is BoardChar && ((BoardChar)entity).Character.HasToken("hostile"))
+					{
+						//Strike at your foes!
+						AutoTravelling = false;
+						MeleeAttack((BoardChar)entity);
+						EndTurn();
+					}
 					return;
 				}
 				else
@@ -902,7 +951,7 @@ namespace Noxico
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
 			{
-				if (Hurt(10, "burned to death"))
+				if (Hurt(10, "burned to death", null))
 				{
 					NoxicoGame.AddMessage("GAME OVER", Color.Red);
 					MessageBox.Ask(
@@ -923,6 +972,41 @@ namespace Noxico
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 
 			NoxicoGame.UpdateMessages();
+		}
+
+		public override bool Hurt(float damage, string obituary, BoardChar aggressor)
+		{
+			if (AutoTravelling)
+			{
+				NoxicoGame.AddMessage("Autotravel interrupted.");
+				AutoTravelling = false;
+			}
+			var dead = base.Hurt(damage, obituary, aggressor);
+			if (dead)
+			{
+				var relation = Character.Path("ships/" + aggressor.Character.Name.ToString(true));
+				if (relation == null)
+				{
+					relation = new Token() { Name = aggressor.Character.Name.ToString(true) };
+					Character.Path("ships").Tokens.Add(relation);
+				}
+				relation.Tokens.Add(new Token() { Name = "killer" });
+
+				NoxicoGame.AddMessage("GAME OVER", Color.Red);
+				MessageBox.Ask(
+					"You have been slain.\n\nWould you like an infodump on the way out?",
+					() =>
+					{
+						Character.CreateInfoDump();
+						NoxicoGame.HostForm.Close();
+					},
+					() =>
+					{
+						NoxicoGame.HostForm.Close();
+					}
+					);
+			}
+			return dead;
 		}
 
 		public static new Player LoadFromFile(BinaryReader stream)
