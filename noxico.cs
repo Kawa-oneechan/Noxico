@@ -1789,147 +1789,147 @@ namespace Noxico
 			var breastsVisible = false;
 			var crotchVisible = false;
 			#region Equipment
-			if (this.HasToken("items"))
+			var carried = new List<InventoryItem>();
+			var hands = new List<InventoryItem>();
+			var fingers = new List<InventoryItem>();
+			InventoryItem underpants = null;
+			InventoryItem undershirt = null;
+			InventoryItem pants = null;
+			InventoryItem shirt = null;
+			InventoryItem jacket = null;
+			InventoryItem cloak = null;
+			InventoryItem head = null;
+			#region Collection
+			foreach (var carriedItem in this.GetToken("items").Tokens)
 			{
-				var carried = new List<InventoryItem>();
-				var hands = new List<InventoryItem>();
-				var fingers = new List<InventoryItem>();
-				InventoryItem underpants = null;
-				InventoryItem undershirt = null;
-				InventoryItem pants = null;
-				InventoryItem shirt = null;
-				InventoryItem jacket = null;
-				InventoryItem cloak = null;
-				InventoryItem head = null;
-#region Collection
-				foreach (var carriedItem in this.GetToken("items").Tokens)
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
+				if (find.HasToken("equipable") && carriedItem.HasToken("equipped"))
 				{
-					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-					if (find == null)
-						continue;
-					if (find.HasToken("equipable") && carriedItem.HasToken("equipped"))
+					var eq = find.GetToken("equipable");
+					if (eq.HasToken("underpants"))
 					{
-						var eq = find.GetToken("equipable");
-						if (eq.HasToken("underpants"))
-						{
-							underpants = find;
-							underpants.tempToken = carriedItem;
-						}
-						if (eq.HasToken("undershirt"))
-						{
-							undershirt = find;
-							undershirt.tempToken = carriedItem;
-						}
-						if (eq.HasToken("pants"))
-						{
-							pants = find;
-							pants.tempToken = carriedItem;
-						}
-						if (eq.HasToken("shirt"))
-						{
-							shirt = find;
-							shirt.tempToken = carriedItem;
-						}
-						if (eq.HasToken("jacket"))
-						{jacket = find;
-							jacket.tempToken = carriedItem;
-						}
-						if (eq.HasToken("cloak"))
-						{	cloak = find;
-							cloak.tempToken = carriedItem;
-						}
-						if (eq.HasToken("head"))
-						{	head = find;
-							head.tempToken = carriedItem;
-						}
-						if (eq.HasToken("ring"))
-						{	
-							find.tempToken = carriedItem;
-							fingers.Add(find);
-						}
-						if (eq.HasToken("hand"))
-						{	
-							find.tempToken = carriedItem;
-							hands.Add(find);
-						}
-						/*
-						sb.AppendLine();
-						if (find.GetToken("equipable").HasToken("description") && find.GetToken("equipable").GetToken("description").HasToken("equipped"))
-							sb.AppendFormat(find.GetToken("equipable").GetToken("description").GetToken("equipped").Text);
-						else
-							sb.AppendFormat("[He] [is] {0} {1}.", "wearing", find.ToString(carriedItem));
-						*/
+						underpants = find;
+						underpants.tempToken = carriedItem;
 					}
+					if (eq.HasToken("undershirt"))
+					{
+						undershirt = find;
+						undershirt.tempToken = carriedItem;
+					}
+					if (eq.HasToken("pants"))
+					{
+						pants = find;
+						pants.tempToken = carriedItem;
+					}
+					if (eq.HasToken("shirt"))
+					{
+						shirt = find;
+						shirt.tempToken = carriedItem;
+					}
+					if (eq.HasToken("jacket"))
+					{
+						jacket = find;
+						jacket.tempToken = carriedItem;
+					}
+					if (eq.HasToken("cloak"))
+					{
+						cloak = find;
+						cloak.tempToken = carriedItem;
+					}
+					if (eq.HasToken("head"))
+					{
+						head = find;
+						head.tempToken = carriedItem;
+					}
+					if (eq.HasToken("ring"))
+					{
+						find.tempToken = carriedItem;
+						fingers.Add(find);
+					}
+					if (eq.HasToken("hand"))
+					{
+						find.tempToken = carriedItem;
+						hands.Add(find);
+					}
+					/*
+					sb.AppendLine();
+					if (find.GetToken("equipable").HasToken("description") && find.GetToken("equipable").GetToken("description").HasToken("equipped"))
+						sb.AppendFormat(find.GetToken("equipable").GetToken("description").GetToken("equipped").Text);
 					else
-						carried.Add(find);
-				}
-#endregion
-				var visible = new List<string>();
-				if (head != null)
-					visible.Add(head.ToString(head.tempToken));
-				if (cloak != null)
-					visible.Add(cloak.ToString(cloak.tempToken));
-				if (jacket != null)
-					visible.Add(jacket.ToString(jacket.tempToken));
-				if (shirt != null)
-					visible.Add(shirt.ToString(shirt.tempToken));
-				if (pants != null && pants != shirt)
-					visible.Add(pants.ToString(pants.tempToken));
-				if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
-				{
-					breastsVisible = undershirt.CanSeeThrough();
-					visible.Add(undershirt.ToString(undershirt.tempToken));
+						sb.AppendFormat("[He] [is] {0} {1}.", "wearing", find.ToString(carriedItem));
+					*/
 				}
 				else
-					breastsVisible = (shirt == null || shirt.CanSeeThrough());
-				if (underpants != null && (pants == null || pants.CanSeeThrough()))
-				{
-					crotchVisible = underpants.CanSeeThrough();
-					visible.Add(underpants.ToString(underpants.tempToken));
-				}
-				else
-					crotchVisible = (pants == null || pants.CanSeeThrough());
-				if (visible.Count == 0)
-				{
-					crotchVisible = true;
-					breastsVisible = true;
-					sb.AppendLine();
-					sb.AppendFormat("[He] [is] wearing nothing at all.");
-				}
-				else if (visible.Count == 1)
-				{
-					sb.AppendLine();
-					sb.AppendFormat("[He] [is] wearing {0}.", visible[0]);
-				}
-				else if (visible.Count == 2)
-				{
-					sb.AppendLine();
-					sb.AppendFormat("[He] [is] wearing {0} and {1}.", visible[0], visible[1]);
-				}
-				else
-				{
-					sb.AppendLine();
-					sb.AppendFormat("[He] [is] wearing {0}", visible[0]);
-					for (var i = 1; i < visible.Count; i++)
-						sb.AppendFormat("{1}{0}", visible[i], i == visible.Count - 1 ? ", and " : ", ");
-					sb.AppendFormat(".");
-				}
-				sb.Append(' ');
-				if (HasToken("noarms") && hands.Count > 0)
-				{
-					if (hands.Count == 2)
-						sb.AppendFormat("(<b>NOTICE<b>: dual wielding with mouth?) ");
-					sb.AppendFormat("[He] [has] {0} held between [his] teeth.", hands[0]);
-				}
-				else
-				{
-					if (hands.Count == 1)
-						sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
-					else if (hands.Count == 1)
-						sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
-				}
-				sb.AppendLine();
+					carried.Add(find);
 			}
+			#endregion
+			var visible = new List<string>();
+			if (head != null)
+				visible.Add(head.ToString(head.tempToken));
+			if (cloak != null)
+				visible.Add(cloak.ToString(cloak.tempToken));
+			if (jacket != null)
+				visible.Add(jacket.ToString(jacket.tempToken));
+			if (shirt != null)
+				visible.Add(shirt.ToString(shirt.tempToken));
+			if (pants != null && pants != shirt)
+				visible.Add(pants.ToString(pants.tempToken));
+			if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
+			{
+				breastsVisible = undershirt.CanSeeThrough();
+				visible.Add(undershirt.ToString(undershirt.tempToken));
+			}
+			else
+				breastsVisible = (shirt == null || shirt.CanSeeThrough());
+			if (underpants != null && (pants == null || pants.CanSeeThrough()))
+			{
+				crotchVisible = underpants.CanSeeThrough();
+				visible.Add(underpants.ToString(underpants.tempToken));
+			}
+			else
+				crotchVisible = (pants == null || pants.CanSeeThrough());
+			if (visible.Count == 0)
+			{
+				crotchVisible = true;
+				breastsVisible = true;
+				sb.AppendLine();
+				sb.AppendFormat("[He] [is] wearing nothing at all.");
+			}
+			else if (visible.Count == 1)
+			{
+				sb.AppendLine();
+				sb.AppendFormat("[He] [is] wearing {0}.", visible[0]);
+			}
+			else if (visible.Count == 2)
+			{
+				sb.AppendLine();
+				sb.AppendFormat("[He] [is] wearing {0} and {1}.", visible[0], visible[1]);
+			}
+			else
+			{
+				sb.AppendLine();
+				sb.AppendFormat("[He] [is] wearing {0}", visible[0]);
+				for (var i = 1; i < visible.Count; i++)
+					sb.AppendFormat("{1}{0}", visible[i], i == visible.Count - 1 ? ", and " : ", ");
+				sb.AppendFormat(".");
+			}
+			sb.Append(' ');
+			if (HasToken("noarms") && hands.Count > 0)
+			{
+				if (hands.Count == 2)
+					sb.AppendFormat("(<b>NOTICE<b>: dual wielding with mouth?) ");
+				sb.AppendFormat("[He] [has] {0} held between [his] teeth.", hands[0]);
+			}
+			else
+			{
+				if (hands.Count == 1)
+					sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
+				else if (hands.Count == 1)
+					sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
+			}
+			sb.AppendLine();
 			#endregion
 
 

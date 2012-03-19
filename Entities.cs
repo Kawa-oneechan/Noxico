@@ -582,16 +582,69 @@ namespace Noxico
 
 		public void MeleeAttack(BoardChar target)
 		{
-			var baseDamage = this.Character.GetToken("strength").Value;
-			//TODO: check equipped weapon and edit damage accordingly.
-			//TODO: do all sorts of checks.
-			var damage = (float)Math.Floor(baseDamage);
+			//First we need to figure out if we're armed.
+			Token weaponData = null;
+			foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+			{
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
+				if (find.HasToken("equipable") && carriedItem.HasToken("equipped") && find.HasToken("weapon"))
+				{
+					weaponData = find.GetToken("weapon");
+					break;
+				}
+			}
+
+			var damage = 0.0f;
+			var baseDamage = 0.0f;
+			var dodged = false;
+			var skill = "unarmed_combat";
+			var verb = "struck";
+			var obituary = "being struck down";
+			if (weaponData == null)
+			{
+				//Unarmed combat by default.
+				baseDamage = (float)Math.Floor(this.Character.GetToken("strength").Value);
+			}
+			else
+			{
+				//Armed combat, yeah!
+				skill = weaponData.GetToken("skill").Text;
+				baseDamage = weaponData.GetToken("damage").Value;
+			}
+
+			var level = (this.Character.Path("skills/" + skill) == null) ? 0 : (int)this.Character.Path("skills/" + skill).Value;
+
+			if (level == 5)
+				damage = baseDamage;
+			else if (level < 5)
+			{
+				var gradient = (baseDamage - 1) / 5;
+				var minimalDamage = (gradient * level + 1) + 1;
+				damage = (float)Toolkit.Rand.Next((int)minimalDamage, (int)baseDamage);
+			}
+			else
+			{
+				//Just use baseDamage until later.
+				damage = baseDamage;
+			}
+
+			//Account for armor and such
+			//Add some randomization
+			//Determine dodges
+			if (dodged)
+			{
+				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + " dodged " + (target is Player ? this.Character.Name.ToString() + "'s" : "your") + " attack.");
+				return;
+			}
+
 			if (damage > 0)
 			{
-				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + " struck " + (target is Player ? "you" : target.Character.Name.ToString()) + " for " + damage + " points.");
-				Character.IncreaseSkill("melee"); //TODO: determine more appropriate skills
+				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : target.Character.Name.ToString()) + " for " + damage + " points.");
+				Character.IncreaseSkill(skill);
 			}
-			if(target.Hurt(damage, "being struck down by " + this.Character.Name.ToString(true), this))
+			if (target.Hurt(damage, obituary + " by " + this.Character.Name.ToString(true), this))
 			{
 				//Gain a bonus from killing the target?
 			}

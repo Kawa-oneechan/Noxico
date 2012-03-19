@@ -150,7 +150,8 @@ c    - Chat
 
 			sb.Clear();
 			foreach (var skill in player.GetToken("skills").Tokens)
-				sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(20) + ((int)skill.Value + 1).ToString());
+				if ((int)skill.Value > 0)
+					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(20) + ((int)skill.Value).ToString());
 			pages["Skill levels"] = sb.ToString();
 
 			var entities = 0;
@@ -642,7 +643,6 @@ c    - Chat
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				//host.LoadBin(global::Noxico.Properties.Resources.TitleScreen);
 				host.LoadBitmap(global::Noxico.Properties.Resources.TitleScreen);
 				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 8, 11);
 				//host.Write("<cSilver>\u263A   <cYellow,Red>\u263B<c>    <cAqua,Navy>\u263B<c>    <cYellow,Navy>\u263B<c>   <cWhite,Gray>\u263B<c>", Color.Silver, Color.Transparent, 14, 10);

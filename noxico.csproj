@@ -264,6 +264,7 @@
     <None Include="Resources\title.png" />
     <Content Include="music.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="noxicobotic.txt" />
     <Content Include="randomringsandpotions.txt" />
