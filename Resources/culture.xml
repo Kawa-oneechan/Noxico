@@ -345,8 +345,6 @@
 					<rule>
 						<set id="start_male" />
 						<set id="male_end" />
-						<space />
-						<set id="mid" />
 					</rule>
 				</rules>
 			</male>
@@ -356,8 +354,6 @@
 					<rule>
 						<set id="start_female" />
 						<set id="female_end" />
-						<space />
-						<set id="mid" />
 					</rule>
 				</rules>
 			</female>
@@ -365,6 +361,8 @@
 				<!-- Specifying rules here so we get names like "Duerlin Bloodfoot", whose descendants are also Bloodfoots. -->
 				<rules>
 					<rule>
+						<set id="mid" />
+						<space />
 						<set id="sur_start" />
 						<set id="sur_end" />
 					</rule>
