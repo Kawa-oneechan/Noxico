@@ -27,8 +27,6 @@
 	<!ATTLIST surname copy NMTOKEN #IMPLIED>
 	<!ATTLIST town copy NMTOKEN #IMPLIED>
 ]>
-<!-- This is a test message! -->
-<!-- Yes, yes it is. Aren't you proud now? -->
 <cultures>
 	<culture id="human">
 		<!-- We could specify a whole lot of extra information per culture here. Perhaps leverage the token system for easy lookup. Question is, what info should it contain? Month names? Interests? -->
@@ -324,5 +322,55 @@
 					</rules>
 				</town>
 			</namegen>
+	</culture>
+	
+	<culture id="ursidous">
+		<cultureinfo>
+			<bodyplans>
+				<plan name="ursidae" />
+			</bodyplans>
+			<monogamous>0.75</monogamous>
+		</cultureinfo>
+		<namegen>
+			<set id="start_male">Earth, Air, Water, Fire, Bronze, Silver, Gold, Fleet, Ruby, Emerald, Crystal, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Stone, Rage, Hate, Vagina, Blood,</set>
+			<set id="start_female">Earth, Air, Water, Fire, Bronze, Silver, Gold, Fleet, Ruby, Emerald, Crystal, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Stone, Rage, Love, Penis, Blood, Lust</set>
+			<set id="male_end">fist, foot, heart, smasher, hand, eye, ripper, lust</set>
+			<set id="female_end">fist, foot, heart, smasher, hand, eye, ripper, breast</set>
+			<set id="mid">of</set>
+			<set id="sur_start">Human, Demon, Fel, Vulp, Goblin, Cubi, Naga, Bee, Pony, Storm, World, Earth, Blood</set>
+			<set id="sur_end">smasher, ripper, gutter, letter, coat</set>
+			<male>
+				<illegal>rur, ueu</illegal>
+				<rules>
+					<rule>
+						<set id="start_male" />
+						<set id="male_end" />
+						<space />
+						<set id="mid" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<illegal>dueal, frefra, grogret</illegal>
+				<rules>
+					<rule>
+						<set id="start_female" />
+						<set id="female_end" />
+						<space />
+						<set id="mid" />
+					</rule>
+				</rules>
+			</female>
+			<surname>
+				<!-- Specifying rules here so we get names like "Duerlin Bloodfoot", whose descendants are also Bloodfoots. -->
+				<rules>
+					<rule>
+						<set id="sur_start" />
+						<set id="sur_end" />
+					</rule>
+				</rules>
+			</surname>
+			<town copy="default" />
+		</namegen>
 	</culture>
 </cultures>
