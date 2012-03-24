@@ -40,6 +40,7 @@ terms
 	generic: "human"
 	male: "man"
 	female: "woman"
+bestiary: "A typical human of northern stock."
 ascii
 	char: U+0068
 tallness: roll 1d50+150
@@ -88,9 +89,6 @@ balls
 costume
 	casual
 items
-	ponifier
-	penificator
-	foxite
 	knife
 		equipped
 			]]>
@@ -105,6 +103,7 @@ terms
 	generic: "imp"
 ascii
 	char: U+0069
+bestiary: "A disgusting little devil that rapes and destroys whatever tickles its fancy."
 tallness: roll 1d40+100
 hair
 	length: 5
@@ -148,6 +147,7 @@ terms
 	generic: "goblin"
 ascii
 	char: U+0067
+bestiary: "Originally great engineers, now fallen into an orgiasmic frenzy."
 tallness: roll 1d40+120
 hair
 	length: 4
@@ -179,6 +179,7 @@ vagina
 	wetness: 4
 	looseness: 1
 	fuckable
+carnality: 60
 			]]>
 		</bodyplan>
 
@@ -193,6 +194,7 @@ terms
 	female: "bee girl"
 ascii
 	char: U+0062
+bestiary: "A man-sized bee, basically."
 tallness: 1d20+140
 hair
 	length: 6
@@ -244,6 +246,7 @@ terms
 ascii
 	char: U+004E
 tallness: roll 1d20+160
+bestiary: "Half beautiful humanoid, half snake, all desert-y allure."
 hair
 	length: 14
 	color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
@@ -296,6 +299,7 @@ terms
 	herm: "omnibus"
 ascii
 	char: U+0026
+bestiary: "The children of the night -- the fun ones."
 tallness: roll 1d20+170
 hair
 	length: roll 1d3+4
@@ -356,6 +360,7 @@ terms
 	herm: "catherm"
 ascii
 	char: U+0046
+bestiary: "Typical trading cat people."
 tallness: roll 1d40+150
 hair
 	length: roll 1d4+5
@@ -409,12 +414,13 @@ culture
 	japanese
 normalgenders
 terms
-	generic: "fox"
+	generic: "vulpinoid"
 	male: "foxboy"
 	female: "foxgirl"
 	herm: "foxherm"
 ascii
 	char: U+0056
+bestiary: "Cunning tricksters and well-versed bards."
 tallness: roll 1d20+150
 hair
 	length: roll 1d6+3
@@ -459,6 +465,7 @@ penis
 balls
 	amount: 2
 	size: 0.6
+cunning: 20
 			]]>
 		</bodyplan>
 
@@ -474,6 +481,7 @@ terms
 	female: "mare"
 ascii
 	char: U+0075
+bestiary: "I used to wonder what erotic adventure games could be."
 -- marshmallow adjusts the way hooves are described.
 marshmallow
 tallness: 140
@@ -530,6 +538,7 @@ terms
 	female: "slimegirl"
 ascii
 	char: U+004A
+bestiary: "I am gross and perverted. I'm obsessed and deranged."
 tallness: roll 1d50+100
 skin
 	type
@@ -564,7 +573,7 @@ penis
 			]]>
 		</bodyplan>
 
-	        <bodyplan id="ursidae">
+		<bodyplan id="ursidae">
 			<![CDATA[
 playable
 culture
@@ -599,11 +608,32 @@ ass
 	virgin
 	size: 7
 	fuckable
-hips: roll 7d2
-waist: roll 6d2
-fertility: 1d25+5
+	hips: roll 7d2
+	waist: roll 6d2
+	fertility: 1d25+5
+-- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
+-- Requires only one roll and a divisor token. In fact, I could list it right now.
 breastrow
-	amount: 8
+	amount: 2
+	size: roll 2d4+2
+	divisor: 0.85
+	nipples: 1
+		size: roll 1d4+1
+	milksource
+breastrow
+	amount: 2
+	size: roll 2d4+2
+	nipples: 1
+		size: roll 1d4+1
+	milksource
+breastrow
+	amount: 2
+	size: roll 2d4+2
+	nipples: 1
+		size: roll 1d4+1
+	milksource
+breastrow
+	amount: 2
 	size: roll 2d4+2
 	nipples: 1
 		size: roll 1d4+1
@@ -617,10 +647,105 @@ penis
 	length: roll 2d5+12
 	cumsource
 	canfuck
-balls
-	amount: 2
-	size: 0.8
+	balls
+		amount: 2
+		size: 0.8
 			]]>
+		</bodyplan>
+		
+		<!-- Beasties -->
+		<bodyplan id="bear">
+			<![CDATA[
+beast
+bestiary: "A ferocious wild animal that would tear apart anyone who dares enter its territory."
+terms
+	generic: "bear"
+	male: "bear"
+	female: "beer"
+skin
+	type
+		fur
+	color: brown
+speed: 30
+strength: 40
+ascii
+	char: U+0055
+			]]>
+		</bodyplan>
+		<bodyplan id="wild_dog">
+			<![CDATA[
+beast
+bestiary: "Usually domesticated, but not this one."
+terms
+	generic: "dog"
+	male: "dog"
+	female: "bitch"
+skin
+	type
+		fur
+	color: brown
+speed: 40
+strength: 25
+ascii
+	char: U+0064
+			]]>
+		</bodyplan>
+		<bodyplan id="tame_dog">
+			<!-- Copy of wild_dog for the description's sake. -->
+			<![CDATA[
+beast
+bestiary: "Someone's pet dog. Cute."
+terms
+	generic: "dog"
+	male: "dog"
+	female: "bitch"
+skin
+	type
+		fur
+	color: brown
+speed: 40
+strength: 25
+ascii
+	char: U+0064
+			]]>
+		</bodyplan>
+		<bodyplan id="rat">
+			<![CDATA[
+beast
+bestiary: "Pesky little vermin."
+terms
+	generic: "rat"
+	male: "rat"
+	female: "rat"
+skin
+	type
+		fur
+	color: brown
+speed: 30
+strength: 5
+ascii
+	char: U+0072
+	]]>
+		</bodyplan>
+		<bodyplan id="snake">
+			<![CDATA[
+beast
+bestiary: "Pesky little vermin."
+terms
+	generic: "snake"
+	male: "snake"
+	female: "snake"
+skin
+	type
+		scales
+	color: oneof saddlebrown, olive, darkslategray
+snaketail
+noarms
+speed: 30
+strength: 5
+ascii
+	char: U+00A7
+	]]>
 		</bodyplan>
 	</bodyplans>
 
@@ -1033,6 +1158,7 @@ costume
 	<items>
 		<item id="ponifier" name="Element of Perversion" a="" the="the" proper="true">
 			<![CDATA[
+test
 description: "You do not want to know."
 ascii
 	char: U+00A1
@@ -1083,6 +1209,7 @@ ascii
 		</item>
 		<item id="foxite" name="Foxite" a="" the="the" proper="true">
 			<![CDATA[
+test
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
 	char: U+00A1
@@ -1098,6 +1225,7 @@ morph fox 0 window
 		</item>
 		<item id="penificator" name="penificator" a="a" the="the">
 			<![CDATA[
+test
 ascii
 	char: U+00A1
 	fore
@@ -1144,6 +1272,7 @@ ascii
 		</item>
 		<item id="butter_knife" name="butter knife" a="a" the="the">
 			<![CDATA[
+test
 equipable
 	hand
 weapon
@@ -1694,10 +1823,12 @@ ascii
 		</item>
 
 		<!-- Morph lines -->
+		<!-- Rewrite these to use the morph command. -->
 		<item id="catmorph" name="cat morph potion" a="a" the="the">
 			<![CDATA[
+wip
 ascii
-	char U+00A1
+	char: U+00A1
 	fore
 		lightsalmon
 			]]>
@@ -1772,8 +1903,9 @@ endif
 		</item>
 		<item id="dogmorph" name="dog morph potion" a="a" the="the">
 			<![CDATA[
+wip
 ascii
-	char U+00A1
+	char: U+00A1
 	fore
 		mistyrose
 			]]>
@@ -1837,8 +1969,9 @@ endif
 		</item>
 		<item id="foxmorph" name="fox morph potion" a="a" the="the">
 			<![CDATA[
+wip
 ascii
-	char U+00A1
+	char: U+00A1
 	fore
 		orangered
 			]]>
@@ -1906,8 +2039,9 @@ endif
 		</item>
 		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
 			<![CDATA[
+wip
 ascii
-	char U+00A1
+	char: U+00A1
 	fore
 		skyblue
 			]]>
