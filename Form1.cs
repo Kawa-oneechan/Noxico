@@ -36,13 +36,15 @@ namespace Noxico
 #if DEBUG
 					Console.WriteLine("No phase 2 on DEBUG builds."); 
 #else
+					var ver = "1.0";
 					Console.WriteLine("Packing up...");
 					//"c:\Program Files\WinRAR\Rar.exe" u Noxico.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe
 					//"c:\Program Files\WinRAR\Rar.exe" u Noxico_music.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds
 					var rarsToMake = new Dictionary<string, string>()
 					{
-						{ "silent", "u Noxico.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe"},
-						{ "full music", "u Noxico_music.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds" },
+						{ "silent", "u noxico-" + ver + ".rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe"},
+						//{ "full music", "u Noxico_full.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds" },
+						{ "music only", "u noxico-music.rar music sounds" },
 					};
 					foreach (var rarToMake in rarsToMake)
 					{

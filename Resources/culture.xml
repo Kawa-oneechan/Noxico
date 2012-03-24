@@ -28,6 +28,7 @@
 	<!ATTLIST town copy NMTOKEN #IMPLIED>
 ]>
 <!-- This is a test message! -->
+<!-- Yes, yes it is. Aren't you proud now? -->
 <cultures>
 	<culture id="human">
 		<!-- We could specify a whole lot of extra information per culture here. Perhaps leverage the token system for easy lookup. Question is, what info should it contain? Month names? Interests? -->
