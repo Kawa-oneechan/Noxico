@@ -167,7 +167,6 @@ namespace Noxico
 	{
 		public List<string> Items;
 		protected int index, scroll;
-		//TODO: When setting Index, make sure the new selection is actually visible.
 		public int Index
 		{
 			get
@@ -178,6 +177,7 @@ namespace Noxico
 			{
 				index = value < Items.Count ? value : 0;
 				Text = Items[index];
+				EnsureVisible();
 				if (Change != null)
 					Change(this, null);
 			}
@@ -248,6 +248,18 @@ namespace Noxico
 		{
 			Index = top + scroll;
 			Draw();
+		}
+
+		public void EnsureVisible()
+		{
+			if (Height == 0)
+				return;
+			var top = scroll;
+			var bottom = scroll + Height;
+			if (index > bottom)
+				scroll = index - Height + 1;
+			else if (index < top)
+				scroll = index;
 		}
 	}
 
