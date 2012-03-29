@@ -116,10 +116,10 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="boards.xml">
+    <Content Include="Resources\boards.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="books.xml">
+    <Content Include="Resources\books.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -262,7 +262,7 @@
     </None>
     <None Include="Resources\chargen.png" />
     <None Include="Resources\title.png" />
-    <Content Include="music.xml">
+    <Content Include="Resources\music.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -278,7 +278,7 @@
     <Content Include="sounds\Coin.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dialogue.xml">
+    <Content Include="Resources\dialogue.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -304,7 +304,7 @@
     <Content Include="Resources\KnownColors.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="noxico.xml">
+    <Content Include="Resources\noxico.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
@@ -312,8 +312,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Noxico.exe -postbuild 1
-Noxico.exe -postbuild 2</PostBuildEvent>
+    <PostBuildEvent>Noxico.exe -postbuild</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

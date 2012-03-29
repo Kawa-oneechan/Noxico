@@ -430,6 +430,23 @@ namespace Noxico
 			var dY = Math.Abs(fromY - toY);
 			return (dX < dY) ? dY : dX;
 		}
+
+		public static string ResOrFile(string resource, string filename)
+		{
+			if (File.Exists(filename))
+				return File.ReadAllText(filename);
+			else
+				return resource;
+		}
+
+		public static Bitmap ResOrFile(Bitmap resource, string filename)
+		{
+			if (File.Exists(filename))
+				return (Bitmap)Bitmap.FromFile(filename);
+			else
+				return resource;
+		}
+
 	}
 
 	public static class Descriptions
@@ -1038,7 +1055,7 @@ namespace Noxico
 			if (xDoc == null)
 			{
 				xDoc = new XmlDocument();
-				xDoc.Load("Noxico.xml");
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
 
 			var newChar = new Character();
@@ -1108,7 +1125,7 @@ namespace Noxico
 			if (xDoc == null)
 			{
 				xDoc = new XmlDocument();
-				xDoc.Load("Noxico.xml");
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
 
 			var newChar = new Character();
@@ -2221,7 +2238,7 @@ namespace Noxico
 			if (xDoc == null)
 			{
 				xDoc = new XmlDocument();
-				xDoc.Load("Noxico.xml");
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
