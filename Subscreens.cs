@@ -739,7 +739,7 @@ c    - Chat
 			var ret = new List<PlayableRace>();
 			var xDoc = new XmlDocument();
 			Console.WriteLine("Collecting playables...");
-			xDoc.Load("Noxico.xml");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			//var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
 			//foreach (var playable in playables)
 			var bodyPlans = xDoc.SelectNodes("//bodyplan");

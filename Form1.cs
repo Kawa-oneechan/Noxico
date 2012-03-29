@@ -17,50 +17,35 @@ namespace Noxico
 		[STAThread]
 		static void Main(string[] args)
 		{
-			if (args.Length == 2 && args[0] == "-postbuild")
+			if (args.Length == 1 && args[0] == "-postbuild")
 			{
-				if (args[1] == "1")
-				{
-					Console.WriteLine("Rebuilding library...");
-					using (var bookDat = new CryptStream(new System.IO.Compression.GZipStream(File.Open("books.dat", FileMode.Create), System.IO.Compression.CompressionMode.Compress)))
-					{
-						var bookBytes = File.ReadAllBytes("books.xml");
-						bookDat.Write(bookBytes, 0, bookBytes.Length);
-						bookDat.Flush();
-						bookDat.Close();
-						//bookDat.Dispose();
-					}
-				}
-				else if (args[1] == "2")
-				{
 #if DEBUG
-					Console.WriteLine("No phase 2 on DEBUG builds."); 
+				Console.WriteLine("No postbuild on DEBUG builds.");
 #else
-					var ver = "1.0";
-					Console.WriteLine("Packing up...");
-					//"c:\Program Files\WinRAR\Rar.exe" u Noxico.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe
-					//"c:\Program Files\WinRAR\Rar.exe" u Noxico_music.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds
-					var rarsToMake = new Dictionary<string, string>()
-					{
-						{ "silent", "u noxico-" + ver + ".rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe"},
-						//{ "full music", "u Noxico_full.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds" },
-						{ "music only", "u noxico-music.rar music sounds" },
-					};
-					foreach (var rarToMake in rarsToMake)
-					{
-						Console.WriteLine("Creating {0} version...", rarToMake.Key);
-						var rar = new System.Diagnostics.ProcessStartInfo(@"c:\Program Files\WinRAR\Rar.exe", rarToMake.Value);
-						rar.UseShellExecute = false;
-						rar.RedirectStandardError = true;
-						rar.RedirectStandardOutput = true;
-						rar.CreateNoWindow = true;
-						var proc = new System.Diagnostics.Process();
-						proc.StartInfo = rar;
-						proc.Start();
-						//Console.WriteLine(proc.StandardOutput.ReadToEnd());
-					}
-#endif
+				var ver = "1.0";
+				Console.WriteLine("Packing up...");
+				//"c:\Program Files\WinRAR\Rar.exe" u Noxico.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe
+				//"c:\Program Files\WinRAR\Rar.exe" u Noxico_music.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds
+				var rarsToMake = new Dictionary<string, string>()
+				{
+					{ "silent", "u noxico-" + ver + ".rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe"},
+					//{ "full music", "u Noxico_full.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds" },
+					{ "music only", "u noxico-music.rar music sounds" },
+				};
+				foreach (var rarToMake in rarsToMake)
+				{
+					Console.WriteLine("Creating {0} version...", rarToMake.Key);
+					var rar = new System.Diagnostics.ProcessStartInfo(@"c:\Program Files\WinRAR\Rar.exe", rarToMake.Value);
+					rar.UseShellExecute = false;
+					rar.RedirectStandardError = true;
+					rar.RedirectStandardOutput = true;
+					rar.CreateNoWindow = true;
+					var proc = new System.Diagnostics.Process();
+					proc.StartInfo = rar;
+					proc.Start();
+					//Console.WriteLine(proc.StandardOutput.ReadToEnd());
 				}
+#endif
 				return;
 			}
 

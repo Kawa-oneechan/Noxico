@@ -313,7 +313,7 @@ namespace Noxico
 		public static Board Load(string id)
 		{
 			var xDoc = new XmlDocument();
-			xDoc.Load("boards.xml");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Boards, "boards.xml"));
 			var source = xDoc.SelectSingleNode("//board[@id=\"" + id + "\"]") as XmlElement;
 			if (source == null)
 				throw new Exception("No such board.");

@@ -68,28 +68,50 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;boards&gt;
+        ///	&lt;board id=&quot;Silky Room&quot; base=&quot;inside&quot; music=&quot;Fusion.xm&quot;&gt;
+        ///		
+        ///		&lt;building left=&quot;10&quot; top=&quot;4&quot; right=&quot;70&quot; bottom=&quot;20&quot; id=&quot;Main Chamber&quot;&gt;
+        ///			&lt;exit direction=&quot;south&quot; /&gt;
+        ///		&lt;/building&gt;
+        ///
+        ///		&lt;warp id=&quot;exit&quot; left=&quot;40&quot; top=&quot;20&quot; target=&quot;Field&quot; warp=&quot;corner&quot;&gt;
+        ///			&lt;tile character=&quot;240&quot; /&gt;
+        ///		&lt;/warp&gt;
+        ///
+        ///		&lt;!--
+        ///		&lt;patch left=&quot;11&quot; right=&quot;69&quot; top=&quot;4&quot; bottom=&quot;4&quot; character=&quot;176&quot; forecolor=&quot;1&quot; solid=&quot;true&quot; /&gt;
+        ///		&lt;patch left=&quot;70&quot; right=&quot;70&quot; top=&quot;5&quot; bottom=&quot;19&quot; character=&quot;176 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Boards {
+            get {
+                return ResourceManager.GetString("Boards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; ?&gt;
         ///&lt;bonustraits&gt;
         ///	&lt;trait name=&quot;Charismatic&quot;&gt;
-        ///		&lt;stat id=&quot;cha&quot; value=&quot;15%&quot; /&gt;
+        ///		&lt;stat id=&quot;charisma&quot; value=&quot;15%&quot; /&gt;
         ///		&lt;skill name=&quot;Bartering&quot; /&gt;
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Cunning Bastard&quot;&gt;
-        ///		&lt;stat id=&quot;cun&quot; /&gt;
+        ///		&lt;stat id=&quot;cunning&quot; /&gt;
         ///		&lt;skill name=&quot;Trap Disarming&quot; /&gt;
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Fast Food&quot;&gt;
-        ///		&lt;stat id=&quot;spd&quot; /&gt;
+        ///		&lt;stat id=&quot;speed&quot; /&gt;
         ///		&lt;skill name=&quot;Swimming&quot; /&gt;
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Olympian&quot;&gt;
-        ///		&lt;stat id=&quot;str&quot; /&gt;
+        ///		&lt;stat id=&quot;strength&quot; /&gt;
         ///		&lt;skill name=&quot;Acrobatics&quot; /&gt;
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Smooth Operator&quot;&gt;
-        ///		&lt;stat id=&quot;cha&quot; /&gt;
-        ///		&lt;skill name=&quot;Sweet Talking&quot; /&gt;
-        ///		&lt;sk [rest of string was truncated]&quot;;.
+        ///		&lt;stat id=&quot;charisma&quot; /&gt;
+        ///		&lt;skill name=&quot;Swe [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BonusTraits {
             get {
@@ -149,6 +171,26 @@ namespace Noxico.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!-- Bethesda-style dialogue engine for Noxico - MOSTLY SAMPLE DATA --&gt;
+        ///&lt;!DOCTYPE dialogue [
+        ///	&lt;!ELEMENT dialogue (topic*)&gt;
+        ///	&lt;!ELEMENT topic (filter*,info*)&gt;
+        ///	&lt;!ELEMENT info (filter*,p*,script*)&gt;
+        ///	&lt;!ELEMENT filter EMPTY&gt;
+        ///	&lt;!ELEMENT p (#PCDATA)&gt;
+        ///	&lt;!ATTLIST topic id ID #REQUIRED text CDATA #IMPLIED&gt;
+        ///	&lt;!ATTLIST info id ID #REQUIRED&gt;
+        ///	&lt;!ATTLIST filter type CDATA #REQUIRED name CDATA #IMPLIED value CDATA #IMPLIED target CDATA #IMPLIED&gt;
+        ///	&lt;!ELEMENT script (#PCDATA) [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Dialogue {
+            get {
+                return ResourceManager.GetString("Dialogue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;!DOCTYPE colortable [
         ///	&lt;!ELEMENT colortable (color*)&gt;
         ///	&lt;!ELEMENT color EMPTY&gt;
@@ -172,7 +214,86 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;books.xsl&quot; ?&gt;
+        ///&lt;!DOCTYPE library [
+        ///	&lt;!ELEMENT library (book*)&gt;
+        ///	&lt;!ELEMENT book (#PCDATA|p)*&gt;
+        ///	&lt;!ELEMENT p (#PCDATA|br|b)*&gt;
+        ///	&lt;!ELEMENT br EMPTY&gt;
+        ///	&lt;!ELEMENT b (#PCDATA)&gt;
+        ///	&lt;!ATTLIST book
+        ///		id CDATA #REQUIRED
+        ///		title CDATA #REQUIRED
+        ///	&gt;
+        ///]&gt;
+        ///&lt;library&gt;
+        ///	&lt;book id=&quot;1&quot; title=&quot;The Lusty Argonian Maid I&quot;&gt;
+        ///		&lt;p&gt;
+        ///			The Lusty Argonian Maid, Part I&lt;br /&gt;
+        ///			Crassius Curio
+        ///		&lt;/p&gt;
+        ///		&lt;p&gt;
+        ///			Act IV, Scene III, continued
+        ///		&lt;/p&gt;
+        ///	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Library {
+            get {
+                return ResourceManager.GetString("Library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE stuff [
+        ///	&lt;!ELEMENT stuff (bodyplans,uniques,items,costumes)&gt;
+        ///	&lt;!ELEMENT bodyplans (bodyplan+)&gt;
+        ///	&lt;!ELEMENT bodyplan (#PCDATA)&gt;
+        ///	&lt;!ATTLIST bodyplan id ID #REQUIRED&gt;
+        ///	&lt;!ELEMENT uniques (character+)&gt;
+        ///	&lt;!ELEMENT script (#PCDATA)&gt;
+        ///	&lt;!ATTLIST script language CDATA #FIXED &quot;text/noxicobotic&quot;&gt;
+        ///	&lt;!ELEMENT character (#PCDATA|script)*&gt;
+        ///	&lt;!ATTLIST character
+        ///		id ID #REQUIRED
+        ///		name CDATA #IMPLIED
+        ///		proper (true|false) &quot;true&quot;
+        ///		a CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ELEMEN [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Main {
+            get {
+                return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE music [
+        ///	&lt;!ELEMENT music (set+)&gt;
+        ///	&lt;!ELEMENT set (song+)&gt;
+        ///	&lt;!ELEMENT song EMPTY&gt;
+        ///	&lt;!ATTLIST set name ID #REQUIRED&gt;
+        ///	&lt;!ATTLIST song href CDATA #REQUIRED&gt;
+        ///]&gt;
+        ///&lt;music&gt;
+        ///	&lt;!-- Okay. To use these, I plan to have PlayMusic() or whatever I called it take &quot;set://&quot; as a parameter, and return the actual file chosen.
+        ///	
+        ///	That way, if a board is supposed to have a constant song, it can have its Music property changed.
+        ///	That is, if the board&apos;s Music property is &quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Music {
+            get {
+                return ResourceManager.GetString("Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;null&gt;:First entry, should never appear.
+        ///cave wall:Rough hewn stone separates you from whatever is behind it.
+        ///cave wall:Rough wooden paneling covers the cave walls, providing a hiding place for all sorts of bugs on one side, and something to hang things from on the other..
         /// </summary>
         internal static string TileSpecialDescriptions {
             get {

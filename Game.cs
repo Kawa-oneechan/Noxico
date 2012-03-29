@@ -65,7 +65,7 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 			var xDoc = new XmlDocument();
-			xDoc.Load("noxico.xml");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			KnownItems = new List<InventoryItem>();
 			Views = new Dictionary<string, char>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
@@ -92,27 +92,9 @@ namespace Noxico
 			TileDescriptions = global::Noxico.Properties.Resources.TileSpecialDescriptions.Split('\n');
 
 			Console.WriteLine("Loading books...");
-			string bookData = null;
-			if (File.Exists("books.xml"))
-			{
-				if (!File.Exists("books.dat") || File.GetLastWriteTime("books.xml") > File.GetLastWriteTime("books.dat"))
-				{
-					Console.WriteLine("Found a raw XML library newer than the encoded one. Packing it in...");
-					var bookDat = new CryptStream(new GZipStream(File.Open("books.dat", FileMode.Create), CompressionMode.Compress));
-					var bookBytes = File.ReadAllBytes("books.xml");
-					bookDat.Write(bookBytes, 0, bookBytes.Length);
-					bookData = Encoding.UTF8.GetString(bookBytes);
-				}
-			}
 			BookTitles = new List<string>();
 			BookTitles.Add("[null]");
-			//var books = Directory.EnumerateFiles("books", "BOK*.txt");
-			//foreach (var book in books)
-			//	BookTitles.Add(File.ReadLines(book).First());
-			if (bookData != null)
-				xDoc.LoadXml(bookData);
-			else if (File.Exists("books.dat"))
-				xDoc.Load(new CryptStream(new GZipStream(File.OpenRead("books.dat"), CompressionMode.Decompress)));
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
 				BookTitles.Add(b.GetAttribute("title"));
