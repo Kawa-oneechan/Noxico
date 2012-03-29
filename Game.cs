@@ -582,7 +582,7 @@ namespace Noxico
 			pc.GetToken("ships").Tokens.Add(playerShip);
 			
 			var traitsDoc = new XmlDocument();
-			traitsDoc.LoadXml(global::Noxico.Properties.Resources.BonusTraits);
+			traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + BonusTrait + "\"]");
 			if (trait != null)
 			{
