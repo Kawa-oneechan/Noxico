@@ -878,7 +878,7 @@ c    - Chat
 			if (Subscreens.FirstDraw)
 			{
 				var traitsDoc = new XmlDocument();
-				traitsDoc.LoadXml(global::Noxico.Properties.Resources.BonusTraits);
+				traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 				var traits = new List<string>();
 				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
 					traits.Add(trait.GetAttribute("name"));

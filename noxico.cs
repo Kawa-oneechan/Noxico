@@ -72,7 +72,7 @@ namespace Noxico
 			if (colorTable == null)
 			{
 				colorTable = new XmlDocument();
-				colorTable.LoadXml(global::Noxico.Properties.Resources.KnownColors);
+				colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
 			}
 			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
 			{
@@ -101,7 +101,7 @@ namespace Noxico
 			if (colorTable == null)
 			{
 				colorTable = new XmlDocument();
-				colorTable.LoadXml(global::Noxico.Properties.Resources.KnownColors);
+				colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
 			}
 			var req = color.ToLower().Replace("_", "").Replace(" ", "");
 			//var entry = colorTable.DocumentElement.SelectSingleNode("//color[@name=\"" + req + "\"]") as XmlElement;
