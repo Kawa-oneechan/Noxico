@@ -190,6 +190,7 @@ namespace Noxico
 	{
 		public static int GeneratorCount = 0;
 
+		public int Lifetime { get; set; }
 		public string Name { get; set; }
 		public string ID { get; private set; }
 		public string Music { get; set; }
@@ -221,48 +222,114 @@ namespace Noxico
 					this.Tilemap[col, row] = new Tile();
 		}
 
-		public void SaveToFile(BinaryWriter stream)
+		public void Flush()
 		{
-			Console.WriteLine(" * Saving board {0}...", Name);
-			stream.Write(Name);
-			stream.Write(ID);
-			stream.Write(Music);
-
-			stream.Write(Sectors.Count);
-			//stream.Write(Entities.OfType<FloorBot>().Count());
-			stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
-			stream.Write(Entities.OfType<DroppedItem>().Count());
-			stream.Write(Entities.OfType<Clutter>().Count());
-			stream.Write(Warps.Count);
-
-			for (int row = 0; row < 25; row++)
-				for (int col = 0; col < 80; col++)
-					Tilemap[col, row].SaveToFile(stream);
-
-			foreach (var sector in Sectors)
-			{
-				//TODO: give sectors their own serialization function. For readability.
-				stream.Write(sector.Key);
-				stream.Write(sector.Value.Left);
-				stream.Write(sector.Value.Top);
-				stream.Write(sector.Value.Right);
-				stream.Write(sector.Value.Bottom);
-			}
-
-			//foreach (var e in Entities.OfType<FloorBot>())
-			//	e.SaveToFile(stream);
-			foreach (var e in Entities.OfType<BoardChar>())
-				if (e is Player)
-					continue;
-				else
-					e.SaveToFile(stream);
-			foreach (var e in Entities.OfType<DroppedItem>())
-				e.SaveToFile(stream);
-			foreach (var e in Entities.OfType<Clutter>())
-				e.SaveToFile(stream);
-			Warps.ForEach(x => x.SaveToFile(stream));
+			Console.WriteLine("Flushing board {0}.", ID);
+			var me = NoxicoGame.HostForm.Noxico.Boards.FindIndex(x => x == this);
+			SaveToFile(me);
+			NoxicoGame.HostForm.Noxico.Boards[me] = null;
 		}
 
+		public void SaveToFile(int index)
+		{
+			var worldDir = NoxicoGame.WorldName;
+			Console.WriteLine(" * Saving board {0}...", Name);
+			using (var stream = new BinaryWriter(File.Open(Path.Combine(worldDir, "Board" + index + ".brd"), FileMode.Create)))
+			{
+				stream.Write(Name);
+				stream.Write(ID);
+				stream.Write(Music);
+
+				stream.Write(Sectors.Count);
+				//stream.Write(Entities.OfType<FloorBot>().Count());
+				stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
+				stream.Write(Entities.OfType<DroppedItem>().Count());
+				stream.Write(Entities.OfType<Clutter>().Count());
+				stream.Write(Warps.Count);
+
+				for (int row = 0; row < 25; row++)
+					for (int col = 0; col < 80; col++)
+						Tilemap[col, row].SaveToFile(stream);
+
+				foreach (var sector in Sectors)
+				{
+					//TODO: give sectors their own serialization function. For readability.
+					stream.Write(sector.Key);
+					stream.Write(sector.Value.Left);
+					stream.Write(sector.Value.Top);
+					stream.Write(sector.Value.Right);
+					stream.Write(sector.Value.Bottom);
+				}
+
+				//foreach (var e in Entities.OfType<FloorBot>())
+				//	e.SaveToFile(stream);
+				foreach (var e in Entities.OfType<BoardChar>())
+					if (e is Player)
+						continue;
+					else
+						e.SaveToFile(stream);
+				foreach (var e in Entities.OfType<DroppedItem>())
+					e.SaveToFile(stream);
+				foreach (var e in Entities.OfType<Clutter>())
+					e.SaveToFile(stream);
+				Warps.ForEach(x => x.SaveToFile(stream));
+			}
+		}
+
+		public static Board LoadFromFile(int index)
+		{
+			var worldDir = NoxicoGame.WorldName;
+			var file = Path.Combine(worldDir, "Board" + index + ".brd");
+			if (!File.Exists(file))
+				throw new FileNotFoundException("Board #" + index + " not found!");
+			var newBoard = new Board();
+			using (var stream = new BinaryReader(File.Open(file, FileMode.Open)))
+			{
+				newBoard.Name = stream.ReadString();
+				newBoard.ID = stream.ReadString();
+				newBoard.Music = stream.ReadString();
+
+				var secCt = stream.ReadInt32();
+				//var botCt = stream.ReadInt32();
+				var chrCt = stream.ReadInt32();
+				var drpCt = stream.ReadInt32();
+				var cltCt = stream.ReadInt32();
+				var wrpCt = stream.ReadInt32();
+
+				for (int row = 0; row < 25; row++)
+					for (int col = 0; col < 80; col++)
+						newBoard.Tilemap[col, row].LoadFromFile(stream);
+
+				for (int i = 0; i < secCt; i++)
+				{
+					var secName = stream.ReadString();
+					var l = stream.ReadInt32();
+					var t = stream.ReadInt32();
+					var r = stream.ReadInt32();
+					var b = stream.ReadInt32();
+					newBoard.Sectors.Add(secName, new Rectangle() { Left = l, Top = t, Right = r, Bottom = b });
+				}
+
+				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
+				for (int i = 0; i < chrCt; i++)
+					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
+				for (int i = 0; i < drpCt; i++)
+					newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
+				for (int i = 0; i < cltCt; i++)
+					newBoard.Entities.Add(Clutter.LoadFromFile(stream));
+
+				for (int i = 0; i < wrpCt; i++)
+					newBoard.Warps.Add(Warp.LoadFromFile(stream));
+
+				newBoard.BindEntities();
+
+				Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
+
+			}
+			return newBoard;
+		}
+
+		/*
 		public static Board LoadFromFile(BinaryReader stream)
 		{
 			var newBoard = new Board();
@@ -308,6 +375,7 @@ namespace Noxico
 
 			return newBoard;
 		}
+		*/
 
 		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
 		public static Board Load(string id)
@@ -937,6 +1005,8 @@ namespace Noxico
 
 		public void Update(bool active = false, bool surrounding = false)
 		{
+			Lifetime = 0;
+
 			if (active)
 			{
 				foreach (var entity in this.Entities.Where(x => !x.Passive && !(x is Player)))
@@ -984,21 +1054,21 @@ namespace Noxico
 				var owX = owI % reach;
 				var owY = owI / reach;
 				if (owY > 0) //north
-					nox.Boards[nox.Overworld[owX, owY - 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX, owY - 1]).Update(true, true);
 				if (owX > 0 && owY > 0) //northwest
-					nox.Boards[nox.Overworld[owX - 1, owY - 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX - 1, owY - 1]).Update(true, true);
 				if (owX > 0) //west
-					nox.Boards[nox.Overworld[owX - 1, owY]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX - 1, owY]).Update(true, true);
 				if (owX > 0 && owY < reach - 1) //southwest
-					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
 				if (owY < reach - 1) //south
-					nox.Boards[nox.Overworld[owX, owY + 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX, owY + 1]).Update(true, true);
 				if (owX < reach - 1 && owY < reach - 1) //southeast
-					nox.Boards[nox.Overworld[owX + 1, owY + 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX + 1, owY + 1]).Update(true, true);
 				if (owX < reach - 1) //east
-					nox.Boards[nox.Overworld[owX + 1, owY]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX + 1, owY]).Update(true, true);
 				if (owX > 0 && owY < reach - 1) //northwest
-					nox.Boards[nox.Overworld[owX - 1, owY + 1]].Update(true, true);
+					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
 			}
 		}
 
