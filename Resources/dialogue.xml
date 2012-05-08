@@ -45,8 +45,8 @@
 			<filter type="relation" value="flirting" />
 			<filter type="gender" value="female" />
 			<filter type="gender" value="male" target="player" />
-			<filter type="score" value="humanity" target="player" />
-			<filter type="score" value="humanity" target="speaker" />
+			<filter type="bodylev" value="human" target="player" />
+			<filter type="bodylev" value="human" target="speaker" />
 			<p>
 				I think I might love you.
 			</p>
@@ -62,8 +62,8 @@
 			<filter type="relation" value="acquaintance" />
 			<filter type="gender" value="female" />
 			<filter type="gender" value="male" target="player" />
-			<filter type="score" value="humanity" target="player" />
-			<filter type="score" value="humanity" target="speaker" />
+			<filter type="bodylev" value="human" target="player" />
+			<filter type="bodylev" value="human" target="speaker" />
 			<p>
 				What ho, Captain Loverboy?
 			</p>
@@ -78,8 +78,8 @@
 		<info id="hello_humans_female2male">
 			<filter type="gender" value="female" />
 			<filter type="gender" value="male" target="player" />
-			<filter type="score" value="humanity" target="player" />
-			<filter type="score" value="humanity" target="speaker" />
+			<filter type="bodylev" value="human" target="player" />
+			<filter type="bodylev" value="human" target="speaker" />
 			<p>
 				What ho, Captain Beefcake?
 			</p>
@@ -94,8 +94,8 @@
 		<info id="hello_humans_male2female">
 			<filter type="gender" value="male" />
 			<filter type="gender" value="female" target="player" />
-			<filter type="score" value="humanity" target="player" />
-			<filter type="score" value="humanity" target="speaker" />
+			<filter type="bodylev" value="human" target="player" />
+			<filter type="bodylev" value="human" target="speaker" />
 			<p>
 				What ho, Captain Cheesecake?
 			</p>
@@ -103,8 +103,8 @@
 		<!-- Bullshit ends here. -->
 		
 		<info id="hello_humans">
-			<filter type="score" value="humanity" target="player" />
-			<filter type="score" value="humanity" target="speaker" />
+			<filter type="bodylev" value="human" target="player" />
+			<filter type="bodylev" value="human" target="speaker" />
 			<p>
 				What ho, adventurer?
 			</p>

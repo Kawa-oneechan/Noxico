@@ -791,7 +791,7 @@ namespace Noxico
 		{
 			var n = NoxicoGame.HostForm.Noxico;
 			this.ParentBoard.EntitiesToRemove.Add(this);
-			this.ParentBoard = n.Boards[index];
+			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
 			ParentBoard.Redraw();
@@ -1136,8 +1136,8 @@ namespace Noxico
 		public override void SaveToFile(BinaryWriter stream)
 		{
 			base.SaveToFile(stream);
-			stream.Write(Name);
-			stream.Write(Description);
+			stream.Write(Name ?? "");
+			stream.Write(Description ?? "");
 		}
 
 		public static new Clutter LoadFromFile(BinaryReader stream)

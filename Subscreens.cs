@@ -156,8 +156,10 @@ c    - Chat
 
 			var entities = 0;
 			var tokens = 0;
-			nox.Boards.ForEach(x =>
+			foreach(var x in nox.Boards.Where(x => x != null))
 			{
+				if (x == null)
+					continue;
 				entities += x.Entities.Count;
 				foreach(var c in x.Entities.OfType<BoardChar>())
 				{
@@ -165,7 +167,7 @@ c    - Chat
 					foreach(var t in c.Character.Tokens)
 						tokens += CountTokens(t);
 				}
-			});
+			};
 			NoxicoGame.KnownItems.ForEach(x =>
 			{
 				tokens += x.Tokens.Count;
@@ -654,7 +656,7 @@ c    - Chat
 					Subscreens.UsingMouse = true;
 				Subscreens.Mouse = false;
 				Subscreens.FirstDraw = true;
-				if (File.Exists("world.bin"))
+				if (File.Exists(Path.Combine(NoxicoGame.WorldName, "world.bin"))) //(File.Exists("world.bin"))
 				{
 					keys[(int)Keys.Enter] = false;
 					Subscreens.Mouse = false;

@@ -19,6 +19,7 @@ namespace Noxico
 		public int Speed { get; set; }
 		public static bool Immediate { get; set; }
 
+		public static string WorldName { get; set; }
 		public static MainForm HostForm { get; private set; }
 		public static bool[] KeyMap { get; set; }
 		public static bool[] KeyTrg { get; set; }
@@ -49,6 +50,10 @@ namespace Noxico
 
 		public NoxicoGame(MainForm hostForm)
 		{
+			WorldName = "foo";
+			if (!Directory.Exists(WorldName))
+				Directory.CreateDirectory(WorldName);
+
 			lastUpdate = DateTime.Now;
 			Speed = 60;
 			this.Boards = new List<Board>();
@@ -102,7 +107,7 @@ namespace Noxico
 			ScriptVariables.Add("consumed", 0);
 
 			CurrentBoard = new Board();
-			if (IniFile.GetBool("misc", "skiptitle", false) && File.Exists("world.bin"))
+			if (IniFile.GetBool("misc", "skiptitle", false) && Directory.Exists(WorldName)) //File.Exists("world.bin"))
 			{
 				HostForm.Noxico = this;
 				LoadGame();
@@ -120,32 +125,10 @@ namespace Noxico
 		public void SaveGame()
 		{
 			NoxicoGame.HostForm.Text = "Saving...";
-			byte bits = 0;
-			if (IniFile.GetBool("saving", "gzip", false))
-				bits |= 1;
-			if (IniFile.GetBool("saving", "flip", false))
-				bits |= 2;
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
-			var file = File.Open("world.bin", FileMode.Create);
+			var file = File.Open(Path.Combine(WorldName, "world.bin"), FileMode.Create);
 			var bin = new BinaryWriter(file);
 			bin.Write(header);
-			bin.Write(bits);
-			if ((bits & 1) == 1)
-			{
-				var gzip = new GZipStream(file, CompressionMode.Compress);
-				if ((bits & 2) == 2)
-				{
-					var cryp = new CryptStream(gzip);
-					bin = new BinaryWriter(cryp);
-				}
-				else
-					bin = new BinaryWriter(gzip);
-			}
-			else if ((bits & 2) == 2)
-			{
-				var cryp = new CryptStream(file);
-				bin = new BinaryWriter(cryp);
-			}
 
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
@@ -166,8 +149,16 @@ namespace Noxico
 
 			bin.Write(currentIndex);
 			bin.Write(Boards.Count);
-			foreach (var b in Boards)
-				b.SaveToFile(bin);
+			//foreach (var b in Boards)
+			//	b.SaveToFile(bin);
+			for (var i = 0; i < Boards.Count; i++)
+			{
+				if (Boards[i] != null)
+				{
+					Boards[i].SaveToFile(i);
+					Boards[i] = null;
+				}
+			}
 
 			bin.Flush();
 
@@ -181,30 +172,13 @@ namespace Noxico
 		public void LoadGame()
 		{
 			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-			var file = File.Open("world.bin", FileMode.Open);
+			var file = File.Open(Path.Combine(WorldName, "world.bin"), FileMode.Open);
 			var bin = new BinaryReader(file);
 			var header = bin.ReadBytes(6);
 			if (Encoding.UTF8.GetString(header) != "NOXiCO")
 			{
 				MessageBox.Message("Invalid world header.");
 				return;
-			}
-			var bits = bin.ReadByte();
-			if ((bits & 1) == 1)
-			{
-				var gzip = new GZipStream(file, CompressionMode.Decompress);
-				if ((bits & 2) == 2)
-				{
-					var cryp = new CryptStream(gzip);
-					bin = new BinaryReader(cryp);
-				}
-				else
-					bin = new BinaryReader(gzip);
-			}
-			else if ((bits & 2) == 2)
-			{
-				var cryp = new CryptStream(file);
-				bin = new BinaryReader(cryp);
 			}
 
 			var reach = bin.ReadInt32();
@@ -220,9 +194,12 @@ namespace Noxico
 
 			var currentIndex = bin.ReadInt32();
 			var boardCount = bin.ReadInt32();
-			Boards = new List<Board>();
+			Boards = new List<Board>(boardCount);
 			for (int i = 0; i < boardCount; i++)
-				Boards.Add(Board.LoadFromFile(bin));
+				Boards.Add(null);
+			//for (int i = 0; i < boardCount; i++)
+			//	Boards.Add(Board.LoadFromFile(bin));
+			GetBoard(currentIndex);
 
 			CurrentBoard = Boards[currentIndex];
 			CurrentBoard.Entities.Add(Player);
@@ -234,6 +211,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
 
 			//Add debug characters
+			/*
 			for (var i = 0; i < 20; i++)
 			{
 				var test = new BoardChar(Character.Generate("imp", Gender.Random))
@@ -246,6 +224,17 @@ namespace Noxico
 				test.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
 				CurrentBoard.Entities.Add(test);
 			}
+			*/
+		}
+
+		public Board GetBoard(int index)
+		{
+			if (Boards[index] == null)
+			{
+				Console.WriteLine("Requested board #{0}. Loading...", index);
+				Boards[index] = Board.LoadFromFile(index);
+			}
+			return Boards[index];
 		}
 
 		public static void DrawMessages()
@@ -303,6 +292,16 @@ namespace Noxico
 							KeyMap[(int)Keys.OemPeriod] = true;
 						}
 						CurrentBoard.Update();
+
+						for (var i = 0; i < Boards.Count; i++)
+						{
+							var board = Boards[i];
+							if (board == null)
+								continue;
+							board.Lifetime++;
+							if (board.Lifetime == 1000)
+								board.Flush();
+						}
 					}
 				}
 				CurrentBoard.Draw();
@@ -544,6 +543,14 @@ namespace Noxico
 			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
 #endif
 
+			setStatus("Saving chunks... (lol)");
+			for (var i = 0; i < this.Boards.Count; i++)
+			{
+				this.Boards[i].SaveToFile(i);
+				if (i > 0)
+					this.Boards[i] = null;
+			}
+
 			this.CurrentBoard = this.Boards[0];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			setStatus("The World is Ready.");
@@ -648,9 +655,9 @@ namespace Noxico
 
 		public static int GetOverworldIndex(Board board)
 		{
-			var b = HostForm.Noxico.Boards;
-			for (var i = 0; i < b.Count && i < HostForm.Noxico.OverworldBarrier; i++)
-				if (b[i].ID == board.ID)
+			var n = HostForm.Noxico;
+			for (var i = 0; i < n.Boards.Count && i < HostForm.Noxico.OverworldBarrier; i++)
+				if (n.GetBoard(i).ID == board.ID)
 					return i;
 			return -1;
 		}
