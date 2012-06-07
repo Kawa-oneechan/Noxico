@@ -58,7 +58,8 @@ namespace Noxico
 		Grassland,
 		Desert,
 		Snow,
-		Swamp
+		Swamp,
+		Ocean,
 	}
 
 	public struct TileDescription
@@ -75,6 +76,7 @@ namespace Noxico
 		public Color Background { get; set; }
 		public bool Solid { get; set; }
 		public bool CanBurn { get; set; }
+		public bool IsWater { get; set; }
 		public int BurnTimer { get; set; }
 		public bool HasExTile { get; set; }
 		public bool CanFlyOver { get; set; }
@@ -103,8 +105,8 @@ namespace Noxico
 			bits[1] = CanBurn;
 			bits[2] = Solid;
 			bits[4] = CanFlyOver;
-			bits[8] = BurnTimer > 0;
-			bits[16] = false; //reserved
+			bits[8] = IsWater;
+			bits[16] = BurnTimer > 0;
 			bits[32] = false; //reserved
 			bits[64] = SpecialDescription > 0; //was HasExTile
 			bits[128] = false; //reserved for "has more settings"
@@ -129,9 +131,9 @@ namespace Noxico
 			CanBurn = bits[1];
 			Solid = bits[2];
 			CanFlyOver = bits[4];
-			var HasBurn = bits[8];
-			//HasReversedA = bits[16];
-			//HasReversedB = bits[32];
+			IsWater = bits[8];
+			var HasBurn = bits[16];
+			//HasReversed = bits[32];
 			var HasSpecialDescription = bits[64];
 			//HasMoreSettings = bits[128];
 			if (HasBurn)
@@ -208,6 +210,11 @@ namespace Noxico
 
 		public Dictionary<string, Rectangle> Sectors { get; set; }
 		public List<Location> ExitPossibilities { get; set; }
+
+		public override string ToString()
+		{
+			return string.Format("{0} - \"{1}\"", ID, Name);
+		}
 
 		public Board()
 		{
@@ -883,10 +890,12 @@ namespace Noxico
 			return thisCombo[2];
 		}
 
-		public bool IsSolid(int row, int col)
+		public bool IsSolid(int row, int col, bool flying = false)
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return true;
+			if (Tilemap[col, row].IsWater || Tilemap[col, row].CanFlyOver)
+				return !flying;
 			return Tilemap[col, row].Solid;
 		}
 
@@ -1046,28 +1055,29 @@ namespace Noxico
 			var nox = NoxicoGame.HostForm.Noxico;
 			if (this != nox.CurrentBoard)
 				return;
-			var owI = NoxicoGame.GetOverworldIndex(this);
-			var reach = nox.Overworld.GetLength(0);
-			if (owI < reach * reach)
+			var p = nox.Player;
+			if (p.OnOverworld)
 			{
 				//We are on the overworld. Update the surrounding boards.
-				var owX = owI % reach;
-				var owY = owI / reach;
+				var owH = nox.Overworld.GetUpperBound(0);
+				var owW = nox.Overworld.GetUpperBound(1); 
+				var owX = p.OverworldX;
+				var owY = p.OverworldY;
 				if (owY > 0) //north
 					nox.GetBoard(nox.Overworld[owX, owY - 1]).Update(true, true);
 				if (owX > 0 && owY > 0) //northwest
 					nox.GetBoard(nox.Overworld[owX - 1, owY - 1]).Update(true, true);
 				if (owX > 0) //west
 					nox.GetBoard(nox.Overworld[owX - 1, owY]).Update(true, true);
-				if (owX > 0 && owY < reach - 1) //southwest
+				if (owX > 0 && owY < owH - 1) //southwest
 					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
-				if (owY < reach - 1) //south
+				if (owY < owH - 1) //south
 					nox.GetBoard(nox.Overworld[owX, owY + 1]).Update(true, true);
-				if (owX < reach - 1 && owY < reach - 1) //southeast
+				if (owX < owW - 1 && owY < owH - 1) //southeast
 					nox.GetBoard(nox.Overworld[owX + 1, owY + 1]).Update(true, true);
-				if (owX < reach - 1) //east
+				if (owX < owW - 1) //east
 					nox.GetBoard(nox.Overworld[owX + 1, owY]).Update(true, true);
-				if (owX > 0 && owY < reach - 1) //northwest
+				if (owX > 0 && owY < owH - 1) //northwest
 					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
 			}
 		}
@@ -1259,9 +1269,9 @@ namespace Noxico
 			SpreadValue(map, x, y + 1, b - 2, level + 1);
 		}
 
-		public static Board CreateBasicOverworldBoard(Biome biome, int x, int y)
+		public static Board CreateBasicOverworldBoard(Biome biome, string id, string name, string music)
 		{
-			var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple };
+			var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
 			var newBoard = new Board();
 			var grasses = new[] { ',', '\'', '`', '.', };
 			for (int row = 0; row < 25; row++)
@@ -1277,10 +1287,103 @@ namespace Noxico
 					};
 				}
 			}
+			newBoard.ID = id;
+			newBoard.Name = name;
+			newBoard.Music = music;
+			return newBoard;
+		}
+
+		public static Board CreateFromBitmap(byte[,] bitmap, int biome, int x, int y)
+		{
+			var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
+			var newBoard = new Board();
+			var grasses = new[] { ',', '\'', '`', '.', };
+			for (int row = 0; row < 25; row++)
+			{
+				for (int col = 0; col < 80; col++)
+				{
+					var b = bitmap[(y * 25) + row, (x * 80) + col];
+					newBoard.Tilemap[col, row] = new Tile()
+					{
+						Character = grasses[Toolkit.Rand.Next(grasses.Length)],
+						Foreground = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						Background = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						CanBurn = (b == 0),
+						IsWater = (b == 4),
+					};
+				}
+			}
 			newBoard.ID = string.Format("OW_{0}x{1}", x, y);
 			newBoard.Name = newBoard.ID;
-			newBoard.Music = "set://" + biome.ToString();
+			newBoard.Music = "set://" + ((Biome)biome).ToString();
 			return newBoard;
+		}
+
+		public void DumpToHTML(string suffix = "")
+		{
+			if (!string.IsNullOrWhiteSpace(suffix) && !suffix.StartsWith("_"))
+				suffix = "_" + suffix;
+			var file = new StreamWriter("Board-" + ID + suffix + ".html");
+			file.WriteLine("<!DOCTYPE html>");
+			file.WriteLine("<html>");
+			file.WriteLine("<head>");
+			file.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; CHARSET=utf-8\" />");
+			file.WriteLine("<h1>Noxico board data dump</h1>");
+			file.WriteLine("<p>");
+			file.WriteLine("\tName: {0}<br />", Name);
+			file.WriteLine("\tID: {0}<br />", ID);
+			file.WriteLine("\tMusic: {0}<br />", Music);
+			file.WriteLine("</	p>");
+			file.WriteLine("<h2>Screendump</h2>");
+			file.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
+			for (int row = 0; row < 25; row++)
+			{
+				file.WriteLine("\t<tr>");
+				for (int col = 0; col < 80; col++)
+				{
+					var tile = Tilemap[col, row];
+					var back = string.Format("rgb({0},{1},{2})", tile.Background.R, tile.Background.G, tile.Background.B);
+					var fore = string.Format("rgb({0},{1},{2})", tile.Foreground.R, tile.Foreground.G, tile.Foreground.B);
+					var chr = string.Format("&#x{0:X};", (int)tile.Character);
+					var tag = "";
+					var link = "";
+
+					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
+					if (ent != null)
+					{
+						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
+						fore = string.Format("rgb({0},{1},{2})", ent.ForegroundColor.R, ent.ForegroundColor.G, ent.ForegroundColor.B);
+						chr = string.Format("&#x{0:X};", (int)ent.AsciiChar);
+						tag = ent.ID;
+						if (ent is BoardChar)
+						{
+							tag = ((BoardChar)ent).Character.Name.ToString(true);
+							link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+					}
+					if (!string.IsNullOrWhiteSpace(tag))
+						tag = " title=\"" + tag + "\"";
+
+					file.WriteLine("\t\t<td style=\"background: {0}; color: {1};\"{3}>{4}{2}{5}</td>", back, fore, chr, tag, link, string.IsNullOrWhiteSpace(link) ? "" : "</a>");
+					//DirtySpots.Add(new Location(col, row));
+				}
+				file.WriteLine("</tr>");
+			}
+			file.WriteLine("</table>");
+			file.WriteLine("<h2>Entities</h2>");
+			if (Entities.OfType<BoardChar>().Count() > 0)
+			{
+				file.WriteLine("<h3>BoardChar</h3>");
+				foreach (var bc in Entities.OfType<BoardChar>())
+				{
+					file.WriteLine("<h4 id=\"{1}\">{0}</h4>", bc.Character.Name.ToString(true), bc.ID);
+					file.WriteLine("<pre>");
+					file.WriteLine(bc.Character.DumpTokens(bc.Character.Tokens, 0));
+					file.WriteLine("</pre>");
+				}
+			}
+			file.Flush();
+			file.Close();
 		}
 	}
 

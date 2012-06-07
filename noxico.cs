@@ -714,6 +714,20 @@ namespace Noxico
 			else
 				return tailName + " tail";
 		}
+
+		public static string Tentacle(Token tentacle, float stimulation)
+		{
+			var ret = "tapered tip";
+			if (tentacle.HasToken("penis"))
+				ret = "thick penis head";
+			if (stimulation > 70)
+				ret += ", half its length coated in a slick layer of lubricant";
+			else if (stimulation > 50)
+				ret += " shining with lubrication";
+			else if (stimulation > 25)
+				ret += ", a thick dollop of lubrication at tbe tip";
+			return ret;
+		}
 	}
 
 	public class TokenCarrier
@@ -988,6 +1002,7 @@ namespace Noxico
 			return false;
 		}
 
+		[Obsolete("Use Levenshtein system instead.", true)]
 		public double GetHumanScore()
 		{
 			var i = 0.0;
@@ -1008,6 +1023,7 @@ namespace Noxico
 			return i;
 		}
 
+		[Obsolete("Use Levenshtein system instead.", true)]
 		public double GetDemonScore()
 		{
 			var i = 0.0;
@@ -1030,6 +1046,7 @@ namespace Noxico
 			return i;
 		}
 
+		[Obsolete("Use Levenshtein system instead.", true)]
 		public double GetGoblinScore()
 		{
 			var i = 0.0;
@@ -1728,11 +1745,15 @@ namespace Noxico
 							{ "demon", "A narrow tail ending in a spaded tip curls down from [his] {2}, wrapping around [his] leg sensually at every opportunity." },
 							{ "cow", "A long cowtail with a puffy tip swishes back and forth as if swatting at flies." },
 							{ "bunny", "A adorable puffball sprouts just above [his] {2}." },
+							{ "tentacle", "A thick tentacle extends from [his] {2}, ending in a {3}." },
 						};
 					var tailT = tail.Tokens.Count > 0 ? tail.Tokens[0].Name : "genbeast";
 					if (!tail.HasToken(tailT))
 						tailT = "invalid";
-					sb.AppendFormat(tails[tailT], skinColor, hairColor, buttDesc);
+					var tentacleEnd = string.Empty;
+					if (tailT == "tentacle")
+						tentacleEnd = Descriptions.Tentacle(tail.Tokens[0], stimulation);
+					sb.AppendFormat(tails[tailT], skinColor, hairColor, buttDesc, tentacleEnd);
 				}
 				sb.AppendLine();
 			}
@@ -2028,7 +2049,8 @@ namespace Noxico
 					sb.AppendFormat("Between [his] legs, [he] [has] ");
 				if (this.HasToken("penis"))
 				{
-					//TODO: multicock
+					//TODO: multicock and different kinds.
+					//Don't forget to allow tentacle cocks.
 					var cockCount = this.Tokens.Count(x => x.Name == "penis");
 					if (cockCount == 1)
 					{
@@ -2044,6 +2066,8 @@ namespace Noxico
 				}
 				if (this.HasToken("vagina"))
 				{
+					//TODO: vaginal descriptions.
+					//Allow cock-clits?
 					if (this.HasToken("penis"))
 						sb.AppendFormat(", and ");
 					var pussy = this.GetToken("vagina");
