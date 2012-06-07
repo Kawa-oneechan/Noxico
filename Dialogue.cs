@@ -16,7 +16,7 @@ namespace Noxico
 			if (xDoc == null)
 			{
 				xDoc = new XmlDocument();
-				xDoc.Load(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Dialogue, "dialogue.xml"));
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Dialogue, "dialogue.xml"));
 			}
 			/*
 			 * When engaging a character in dialogue, collect all the infos for the "hello" opening topic (where an opening topic is any topic element without a text attribute).

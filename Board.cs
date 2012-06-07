@@ -1319,6 +1319,7 @@ namespace Noxico
 			return newBoard;
 		}
 
+#if DEBUG
 		public void DumpToHTML(string suffix = "")
 		{
 			if (!string.IsNullOrWhiteSpace(suffix) && !suffix.StartsWith("_"))
@@ -1385,6 +1386,7 @@ namespace Noxico
 			file.Flush();
 			file.Close();
 		}
+#endif
 	}
 
 

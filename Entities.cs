@@ -967,6 +967,7 @@ namespace Noxico
 				return;
 			}
 
+#if DEBUG
 			if (NoxicoGame.KeyMap[(int)Keys.F3])
 			{
 				NoxicoGame.ClearKeys();
@@ -974,6 +975,7 @@ namespace Noxico
 				NoxicoGame.AddMessage("Board dumped.");
 				return;
 			}
+#endif
 
 			if (!AutoTravelling)
 			{
