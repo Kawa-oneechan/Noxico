@@ -11,7 +11,6 @@ namespace Noxico
 		Horizontal, Vertical
 	}
 
-	//The poor man's Rectangle.
 	class Boundary
 	{
 		public int Left { get; set; }
@@ -166,7 +165,7 @@ namespace Noxico
 		public BSPNode Root { get; set; }
 		public List<Room> Rooms { get; set; }
 
-		public virtual void Create(int maxLevels = 3, int minDistance = 7, int minRoomSize = 4, int roomMargin = 0)
+		public void Create(int maxLevels = 3, int minDistance = 7, int minRoomSize = 4, int roomMargin = 0)
 		{
 			Nodes = new List<BSPNode>();
 			Rooms = new List<Room>();

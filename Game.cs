@@ -34,6 +34,7 @@ namespace Noxico
 		public static List<InventoryItem> KnownItems { get; private set; }
 		public List<Board> Boards { get; set; }
 		public Board CurrentBoard { get; set; }
+		public static Board Ocean { get; set; }
 		public int[,] Overworld { get; set; }
 		public int OverworldBarrier { get; private set; }
 		public Player Player { get; set; }
@@ -46,6 +47,7 @@ namespace Noxico
 		public static Dictionary<string, char> Views { get; set; }
 		public static string[] TileDescriptions { get; private set; }
 
+		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 
 		public NoxicoGame(MainForm hostForm)
@@ -105,11 +107,27 @@ namespace Noxico
 				BookTitles.Add(b.GetAttribute("title"));
 
 			ScriptVariables.Add("consumed", 0);
+			HostForm.Noxico = this;
+
+			Ocean = Board.CreateBasicOverworldBoard(Biome.Ocean, "Ocean", "The Ocean", "set://ocean");
+
+#if DEBUG
+			//Towngen test
+			var towngenTest = Board.CreateBasicOverworldBoard(Biome.Grassland, "TowngenTest", "Towngen Test", "set://debug");
+			CurrentBoard = towngenTest;
+			towngenTest.DumpToHTML("ground");
+			var townGen = new TownGenerator();
+			townGen.Board = towngenTest;
+			townGen.Create(Biome.Grassland);
+			townGen.Culture = Culture.Cultures["human"];
+			townGen.ToTilemap(ref towngenTest.Tilemap);
+			townGen.ToSectorMap(towngenTest.Sectors);
+			towngenTest.DumpToHTML("final");
+#endif
 
 			CurrentBoard = new Board();
 			if (IniFile.GetBool("misc", "skiptitle", false) && Directory.Exists(WorldName)) //File.Exists("world.bin"))
 			{
-				HostForm.Noxico = this;
 				LoadGame();
 				HostForm.Noxico.CurrentBoard.Draw();
 				Subscreens.FirstDraw = true;
@@ -134,6 +152,10 @@ namespace Noxico
 			Console.WriteLine("Saving World...");
 
 			bin.Write(Overworld.GetLength(0));
+			bin.Write(Overworld.GetLength(1));
+			for (var y = 0; y < Overworld.GetLength(1); y++)
+				for (var x = 0; x < Overworld.GetLength(0); x++)
+					bin.Write(Overworld[x, y]);
 
 			var currentIndex = 0;
 			for (int i = 0; i < Boards.Count; i++)
@@ -181,13 +203,17 @@ namespace Noxico
 				return;
 			}
 
-			var reach = bin.ReadInt32();
-			Overworld = new int[reach, reach];
-			OverworldBarrier = reach * reach;
-			var z = 0;
-			for (var y = 0; y < reach; y++)
-				for (var x = 0; x < reach; x++)
-					Overworld[x, y] = z++;
+			var owX = bin.ReadInt32();
+			var owY = bin.ReadInt32();
+			Overworld = new int[owX, owY];
+			OverworldBarrier = owX * owY;
+			for (var y = 0; y < owY; y++)
+			{
+				for (var x = 0; x < owX; x++)
+				{
+					Overworld[x, y] = bin.ReadInt32();
+				}
+			}
 
 			Player = Player.LoadFromFile(bin);
 			Player.AdjustView();
@@ -225,10 +251,24 @@ namespace Noxico
 				CurrentBoard.Entities.Add(test);
 			}
 			*/
+			/*
+			var tail = Player.Character.GetToken("tail");
+			if (tail == null)
+			{
+				tail = new Token() { Name = "tail" };
+				Player.Character.Tokens.Add(tail);
+			}
+			tail.Tokens.Add(new Token() { Name = "tentacle" });
+			tail.GetToken("tentacle").Tokens.Add(new Token() { Name = "penis" });
+			Player.Character.GetToken("stimulation").Value = 90;
+			*/
 		}
 
 		public Board GetBoard(int index)
 		{
+			if (index == -1 || index >= Boards.Count)
+				return NoxicoGame.Ocean;
+
 			if (Boards[index] == null)
 			{
 				Console.WriteLine("Requested board #{0}. Loading...", index);
@@ -350,98 +390,6 @@ namespace Noxico
 			}
 		}
 
-		private void SpreadBiome(Biome[,] map, int x, int y, int reach, Random rand, int[] amounts, int[] counts)
-		{
-			var b = map[x, y];
-			if (b == Biome.Grassland)
-				return;
-			if (counts[(int)b] == amounts[(int)b])
-				return;
-			if (y > 0 && rand.NextDouble() >= 0.5 && map[x, y - 1] == Biome.Grassland)
-			{
-				map[x, y - 1] = b;
-				counts[(int)b]++;
-				if (counts[(int)b] == amounts[(int)b])
-					return;
-			}
-			if (y < reach - 1 && rand.NextDouble() >= 0.5 && map[x, y + 1] == Biome.Grassland)
-			{
-				map[x, y + 1] = b;
-				counts[(int)b]++;
-				if (counts[(int)b] == amounts[(int)b])
-					return;
-			}
-			if (b == Biome.Desert && x + 1 >= reach / 2)
-				return;
-			if (b == Biome.Snow && x - 1 <= reach - (reach / 2))
-				return;
-			if (x > 0 && rand.NextDouble() >= 0.5 && map[x - 1, y] == Biome.Grassland)
-			{
-				map[x - 1, y] = b;
-				counts[(int)b]++;
-				if (counts[(int)b] == amounts[(int)b])
-					return;
-			}
-			if (x < reach - 1 && rand.NextDouble() >= 0.5 && map[x + 1, y] == Biome.Grassland)
-			{
-				map[x + 1, y] = b;
-				counts[(int)b]++;
-				if (counts[(int)b] == amounts[(int)b])
-					return;
-			}
-		}
-		private Biome[,] GenerateBiomeMap(int reach)
-		{
-			if (reach < 8)
-				throw new ArgumentOutOfRangeException("reach", "Reach must be at least 8. WHAT ARE YOU THINKING, KAWA?");
-			while (true)
-			{
-				var time = Environment.TickCount;
-				var ret = new Biome[reach, reach];
-				var rand = Toolkit.Rand;
-				var size = reach * reach;
-				var amounts = new[] { size / 2, size / 4, size / 8, size / 8 };
-				//Place seed nodes
-				for (var seeds = 0; seeds < 4; seeds++)
-				{
-					for (var biome = 1; biome < 4; biome++)
-					{
-						var x = rand.Next(4, reach - 4);
-						var y = rand.Next(2, reach - 2);
-						if (biome == 1)
-							x = rand.Next(0, reach / 3);
-						else if (biome == 2)
-							x = rand.Next(reach - (reach / 2), reach);
-						ret[x, y] = (Biome)biome;
-					}
-				}
-
-				var tooLate = false;
-				var countsOkay = false;
-				var counts = new[] { 0, 1, 1, 1 };
-				while (!countsOkay)
-				{
-					if (Environment.TickCount > time + 1000)
-					{
-#if DEBUG
-						System.Windows.Forms.MessageBox.Show("biome timeout");
-#endif
-						tooLate = true;
-						break;
-					}
-					for (var row = 0; row < reach; row++)
-						for (var col = 0; col < reach; col++)
-							SpreadBiome(ret, row, col, reach, rand, amounts, counts);
-					if (counts[1] == amounts[1] && counts[2] == amounts[2] && counts[3] == amounts[3])
-						countsOkay = true;
-				}
-				if (tooLate)
-					continue;
-				return ret;
-			}
-			throw new Exception("Couldn't get a biome map going.");
-		}
-
 		public void CreateTheWorld()
 		{
 			var setStatus = new Action<string>(s =>
@@ -456,48 +404,66 @@ namespace Noxico
 			var host = NoxicoGame.HostForm;
 			this.Boards.Clear();
 
-			var reach = 8;
-			setStatus("Generating biome map...");
-			var biomeMap = GenerateBiomeMap(reach);
-#if DEBUG
-			var colors = new[] { System.Drawing.Color.Green, System.Drawing.Color.Brown, System.Drawing.Color.Silver, System.Drawing.Color.DarkMagenta };
-			var mapBitmap = new System.Drawing.Bitmap(reach * 3, reach * 3);
-			for (var y = 0; y < reach; y++)
-				for (var x = 0; x < reach; x++)
-				{
-					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 0, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 1, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 0, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
-					mapBitmap.SetPixel((y * 3) + 2, (x * 3) + 2, colors[(int)biomeMap[x, y]]);
-				}
-			//mapBitmap.Save("biomes.png", System.Drawing.Imaging.ImageFormat.Png);
-#endif
+			setStatus("Generating world map...");
+			var worldGen = new WorldGen();
+			worldGen.Generate("pandora");
 
-			setStatus("Generating overworld...");
-			Overworld = new int[reach, reach];
-			OverworldBarrier = reach * reach;
-			for (var y = 0; y < reach; y++)
-				for (var x = 0; x < reach; x++)
+			setStatus("Generating boards...");
+			Overworld = new int[worldGen.MapSizeX, worldGen.MapSizeY];
+			for (var y = 0; y < worldGen.MapSizeY - 1; y++)
+				for (var x = 0; x < worldGen.MapSizeX - 1; x++)
 					Overworld[x, y] = -1;
-
-			for (var x = 0; x < reach; x++)
+			OverworldBarrier = worldGen.MapSizeX * worldGen.MapSizeY;
+			for (var y = 0; y < worldGen.MapSizeY - 1; y++)
 			{
-				for (var y = 0; y < reach; y++)
+				for (var x = 0; x < worldGen.MapSizeX - 1; x++)
 				{
-					var owBoard = Board.CreateBasicOverworldBoard(biomeMap[x, y], x, y);
-					Boards.Add(owBoard);
+					if (worldGen.BiomeMap[y, x] == 4)
+					{
+						Boards.Add(null);
+						continue;
+					}
+					var newBoard = Board.CreateFromBitmap(worldGen.BiomeBitmap, worldGen.BiomeMap[y,x], x, y);
+					this.Boards.Add(newBoard);
 					Overworld[x, y] = Boards.Count - 1;
 				}
 			}
 
-			//TODO: place world edges
-
 			setStatus("Placing towns...");
+			var townGen = new TownGenerator();
+			for (int y = 0; y < worldGen.MapSizeY - 1; y++)
+			{
+				for (int x = 0; x < worldGen.MapSizeX - 1; x++)
+				{
+					if (worldGen.TownMap[y, x] > 0)
+					{
+						if (StartingOWX == -1)
+						{
+							StartingOWX = x;
+							StartingOWY = y;
+						}
+
+						var thisMap = Boards[Overworld[x, y]];
+						townGen.Board = thisMap;
+						townGen.Create((Biome)worldGen.BiomeMap[y, x]);
+						townGen.Culture = Culture.Cultures["human"];
+						townGen.ToTilemap(ref thisMap.Tilemap);
+						townGen.ToSectorMap(thisMap.Sectors);
+						thisMap.Music = "set://Town";
+						while (true)
+						{
+							var newName = Culture.GetName("human", Culture.NameType.Town);
+							if (Boards.Find(b => b != null && b.Name == newName) == null)
+							{
+								thisMap.Name = newName;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			/*
 			var townGen = new TownGenerator();
 			var townsToPlace = (int)Math.Floor(reach * 0.75); //originally, this was 6, based on a reach of 8.
 			//TODO: make this more scattery. With a large reach, towns will clump together in the north now.
@@ -536,22 +502,22 @@ namespace Noxico
 				}
 			}
 			//Now, what SHOULD happen is that the player starts in one of these towns we just placed. Preferably one in the grasslands.
+			*/ 
 
 			//TODO: place dungeon entrances
 			//TODO: excavate dungeons
-#if DEBUG
-			mapBitmap.Save("map.png", System.Drawing.Imaging.ImageFormat.Png);
-#endif
 
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
 			{
+				if (this.Boards[i] == null)
+					continue;
 				this.Boards[i].SaveToFile(i);
 				if (i > 0)
 					this.Boards[i] = null;
 			}
 
-			this.CurrentBoard = this.Boards[0];
+			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			setStatus("The World is Ready.");
 			//Sound.PlayMusic(this.CurrentBoard.Music);
@@ -634,11 +600,16 @@ namespace Noxico
 				}
 			}
 
+			var stride = Overworld.GetUpperBound(0) + 1;
+			this.CurrentBoard = GetBoard(Overworld[StartingOWX, StartingOWY]);
 			this.Player = new Player(pc)
 			{
 				XPosition = 40,
 				YPosition = 12,
 				ParentBoard = this.CurrentBoard,
+				OverworldX = StartingOWX,
+				OverworldY = StartingOWY,
+				OnOverworld = true,
 			};
 			this.CurrentBoard.Entities.Add(Player);
 

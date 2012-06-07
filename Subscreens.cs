@@ -176,6 +176,7 @@ c    - Chat
 			});
 			sb.Clear();
 			sb.AppendLine("Number of boards            " + nox.Boards.Count.ToString("G"));
+			sb.AppendLine("   Active boards            " + nox.Boards.Where(b => b != null).Count().ToString("G"));
 			sb.AppendLine("Number of known items       " + NoxicoGame.KnownItems.Count.ToString("G"));
 			sb.AppendLine("Number of entities          " + entities.ToString("G"));
 			sb.AppendLine("Total set of tokens         " + tokens.ToString("G"));

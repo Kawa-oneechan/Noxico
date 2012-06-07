@@ -418,6 +418,8 @@ namespace Noxico
 
 		public virtual void AdjustView()
 		{
+			//TODO: Rewrite this to use Levenshtein system.
+			/*
 			var hS = Character.GetHumanScore();
 			var gS = Character.GetGoblinScore();
 			var dS = Character.GetDemonScore();
@@ -426,7 +428,8 @@ namespace Noxico
 				AsciiChar = NoxicoGame.Views["foocubus"];
 			else if (gS > hS)
 				AsciiChar = NoxicoGame.Views["goblin"];
-			
+			*/
+
 			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
@@ -733,6 +736,8 @@ namespace Noxico
     {
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
+		public int OverworldX, OverworldY;
+		public bool OnOverworld;
 
         public Player()
         {
@@ -810,35 +815,35 @@ namespace Noxico
 
 			#region Inter-board travel
 			//TODO: Hoist this up to BoardChar?
-			var n = NoxicoGame.HostForm.Noxico;
-			var owI = NoxicoGame.GetOverworldIndex(ParentBoard);
-			var reach = n.Overworld.GetLength(0);
-			if (owI < reach * reach)
+			if (OnOverworld)
 			{
-				var owX = owI % reach;
-				var owY = owI / reach;
-				if (lx == 79 && targetDirection == Direction.East && owX < reach - 1)
+				var n = NoxicoGame.HostForm.Noxico;
+				if (lx == 79 && targetDirection == Direction.East && OverworldX < n.Overworld.GetUpperBound(0))
 				{
 					this.XPosition = 0;
-					OpenBoard(owI + 1);
+					this.OverworldX++;
+					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
 					return;
 				}
-				else if (lx == 0 && targetDirection == Direction.West && owX > 0)
+				else if (lx == 0 && targetDirection == Direction.West && OverworldX > 0)
 				{
 					this.XPosition = 79;
-					OpenBoard(owI - 1);
+					this.OverworldX--;
+					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
 					return;
 				}
-				else if (ly == 24 && targetDirection == Direction.South && owY < reach - 1)
+				else if (ly == 24 && targetDirection == Direction.South && OverworldY < n.Overworld.GetUpperBound(1))
 				{
 					this.YPosition = 0;
-					OpenBoard(owI + reach);
+					this.OverworldY++;
+					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
 					return;
 				}
-				else if (ly == 0 && targetDirection == Direction.North && owY > 0)
+				else if (ly == 0 && targetDirection == Direction.North && OverworldY > 0)
 				{
 					this.YPosition = 24;
-					OpenBoard(owI - reach);
+					this.OverworldY--;
+					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
 					return;
 				}
 			}
@@ -878,7 +883,7 @@ namespace Noxico
 				CheckWarps();
 			}
 
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2})", ParentBoard.Name, XPosition, YPosition);
+			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4})", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY);
 		}
 
 		public override void Update()
@@ -959,6 +964,14 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Subscreen;
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.FirstDraw = true;
+				return;
+			}
+
+			if (NoxicoGame.KeyMap[(int)Keys.F3])
+			{
+				NoxicoGame.ClearKeys();
+				ParentBoard.DumpToHTML();
+				NoxicoGame.AddMessage("Board dumped.");
 				return;
 			}
 
@@ -1062,35 +1075,30 @@ namespace Noxico
 			return dead;
 		}
 
+		public override void SaveToFile(BinaryWriter stream)
+		{
+			base.SaveToFile(stream);
+			stream.Write(OnOverworld);
+			stream.Write((byte)OverworldX);
+			stream.Write((byte)OverworldY);
+		}
+
 		public static new Player LoadFromFile(BinaryReader stream)
 		{
-			var e = Entity.LoadFromFile(stream);
+			var e = BoardChar.LoadFromFile(stream);
 			var newChar = new Player()
 			{
 				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
+				Character = e.Character,
 				//Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptWaitTime = e.ScriptWaitTime, //Don't transfer any script data that might be there. Why would it!?
 			};
-			//Skip the unused bits. Players aren't bound to sectors and such!
-			stream.ReadByte();
-			stream.ReadString();
-			stream.ReadString();
-			stream.ReadByte();
-			//----
-			/*
-			newChar.OnPathfinder = stream.ReadBoolean();
-			if (newChar.OnPathfinder)
-			{
-				newChar.Path = new List<Direction>();
-				var steps = stream.ReadInt16();
-				for (var i = 0; i < steps; i++)
-					newChar.Path.Add((Direction)stream.ReadByte());
-			}
-			*/
-			newChar.Character = Character.LoadFromFile(stream);
-
+			newChar.OnOverworld = stream.ReadBoolean();
+			newChar.OverworldX = stream.ReadByte();
+			newChar.OverworldY = stream.ReadByte();
 			return newChar;
 		}
+
 	}
 
 	public class Clutter : Entity
