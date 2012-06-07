@@ -52,9 +52,23 @@ namespace Noxico
 
 		public NoxicoGame(MainForm hostForm)
 		{
-			WorldName = "foo";
+			WorldName = "world";
 			if (!Directory.Exists(WorldName))
 				Directory.CreateDirectory(WorldName);
+			File.WriteAllText(Path.Combine(WorldName, "WARNING.txt"),
+@"	WARNING
+	-------
+
+The new world format is a WORK IN PROGRESS.
+
+The plan is to support multiple ""realms"", like in Minecraft, with connecting portals.
+Right now, there's a single ""world"" directory with a BIN file holding the overworld and player info, and several BRD files.
+The new format will split the player info into its own file and add realm-specific subdirectories.
+
+In short, don't get too attached to your savegame cos soon enough it won't work anymore.
+
+
+	Love, Kawa");
 
 			lastUpdate = DateTime.Now;
 			Speed = 60;
