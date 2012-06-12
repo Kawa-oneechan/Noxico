@@ -239,9 +239,9 @@ namespace Noxico
 
 		public void SaveToFile(int index)
 		{
-			var worldDir = NoxicoGame.WorldName;
+			var realm = Path.Combine(NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
 			Console.WriteLine(" * Saving board {0}...", Name);
-			using (var stream = new BinaryWriter(File.Open(Path.Combine(worldDir, "Board" + index + ".brd"), FileMode.Create)))
+			using (var stream = new BinaryWriter(File.Open(Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
 				stream.Write(Name);
 				stream.Write(ID);
@@ -285,8 +285,8 @@ namespace Noxico
 
 		public static Board LoadFromFile(int index)
 		{
-			var worldDir = NoxicoGame.WorldName;
-			var file = Path.Combine(worldDir, "Board" + index + ".brd");
+			var realm = Path.Combine(NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var file = Path.Combine(realm, "Board" + index + ".brd");
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Board #" + index + " not found!");
 			var newBoard = new Board();
@@ -335,55 +335,7 @@ namespace Noxico
 			}
 			return newBoard;
 		}
-
-		/*
-		public static Board LoadFromFile(BinaryReader stream)
-		{
-			var newBoard = new Board();
-			newBoard.Name = stream.ReadString();
-			newBoard.ID = stream.ReadString();
-			newBoard.Music = stream.ReadString();
-
-			var secCt = stream.ReadInt32();
-			//var botCt = stream.ReadInt32();
-			var chrCt = stream.ReadInt32();
-			var drpCt = stream.ReadInt32();
-			var cltCt = stream.ReadInt32();
-			var wrpCt = stream.ReadInt32();
-
-			for (int row = 0; row < 25; row++)
-				for (int col = 0; col < 80; col++)
-					newBoard.Tilemap[col, row].LoadFromFile(stream);
-
-			for (int i = 0; i < secCt; i++)
-			{
-				var secName = stream.ReadString();
-				var l = stream.ReadInt32();
-				var t = stream.ReadInt32();
-				var r = stream.ReadInt32();
-				var b = stream.ReadInt32();
-				newBoard.Sectors.Add(secName, new Rectangle() { Left = l, Top = t, Right = r, Bottom = b });
-			}
-
-			//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
-			for (int i = 0; i < chrCt; i++)
-				newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
-			for (int i = 0; i < drpCt; i++)
-				newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
-			for (int i = 0; i < cltCt; i++)
-				newBoard.Entities.Add(Clutter.LoadFromFile(stream));
-
-			for (int i = 0; i < wrpCt; i++)
-				newBoard.Warps.Add(Warp.LoadFromFile(stream));
-
-			newBoard.BindEntities();
-
-			Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
-
-			return newBoard;
-		}
-		*/
-
+		
 		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
 		public static Board Load(string id)
 		{
@@ -1059,8 +1011,8 @@ namespace Noxico
 			if (p.OnOverworld)
 			{
 				//We are on the overworld. Update the surrounding boards.
-				var owH = nox.Overworld.GetUpperBound(0);
-				var owW = nox.Overworld.GetUpperBound(1); 
+				var owW = nox.Overworld.GetUpperBound(0);
+				var owH = nox.Overworld.GetUpperBound(1);
 				var owX = p.OverworldX;
 				var owY = p.OverworldY;
 				if (owY > 0) //north
@@ -1295,7 +1247,7 @@ namespace Noxico
 
 		public static Board CreateFromBitmap(byte[,] bitmap, int biome, int x, int y)
 		{
-			var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
+			//var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
 			var newBoard = new Board();
 			var grasses = new[] { ',', '\'', '`', '.', };
 			for (int row = 0; row < 25; row++)
@@ -1303,19 +1255,25 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					var b = bitmap[(y * 25) + row, (x * 80) + col];
+					var biomeData = WorldGen.Biomes[b];
 					newBoard.Tilemap[col, row] = new Tile()
 					{
 						Character = grasses[Toolkit.Rand.Next(grasses.Length)],
-						Foreground = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						Background = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						CanBurn = (b == 0),
-						IsWater = (b == 4),
+						//Foreground = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						//Background = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						//CanBurn = (b == 0),
+						//IsWater = (b == 4),
+						Foreground = biomeData.Color.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						Background = biomeData.Color.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+						CanBurn = biomeData.CanBurn,
+						IsWater = biomeData.IsWater,
 					};
 				}
 			}
 			newBoard.ID = string.Format("OW_{0}x{1}", x, y);
 			newBoard.Name = newBoard.ID;
-			newBoard.Music = "set://" + ((Biome)biome).ToString();
+			//newBoard.Music = "set://" + ((Biome)biome).ToString();
+			newBoard.Music = WorldGen.Biomes[biome].Music;
 			return newBoard;
 		}
 

@@ -738,6 +738,7 @@ namespace Noxico
 		private Dijkstra AutoTravelMap;
 		public int OverworldX, OverworldY;
 		public bool OnOverworld;
+		public string CurrentRealm;
 
         public Player()
         {
@@ -1080,6 +1081,7 @@ namespace Noxico
 		public override void SaveToFile(BinaryWriter stream)
 		{
 			base.SaveToFile(stream);
+			stream.Write(CurrentRealm);
 			stream.Write(OnOverworld);
 			stream.Write((byte)OverworldX);
 			stream.Write((byte)OverworldY);
@@ -1095,6 +1097,7 @@ namespace Noxico
 				Character = e.Character,
 				//Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptWaitTime = e.ScriptWaitTime, //Don't transfer any script data that might be there. Why would it!?
 			};
+			newChar.CurrentRealm = stream.ReadString();
 			newChar.OnOverworld = stream.ReadBoolean();
 			newChar.OverworldX = stream.ReadByte();
 			newChar.OverworldY = stream.ReadByte();

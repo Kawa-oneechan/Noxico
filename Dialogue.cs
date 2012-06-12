@@ -130,6 +130,12 @@ namespace Noxico
 						else if (fValue == "female" && fPrimary.GetGender() != "female")
 							return false;
 						break;
+					case "bodylev":
+						var primaryLev = Toolkit.GetLevenshteinString(fPrimary);
+						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fValue]);
+						if (distance > 0) //?
+							return false;
+						break;
 				}
 			}
 			return true;

@@ -32,6 +32,126 @@ namespace Noxico
 			Rand = new Random();
 		}
 
+		public static int Levenshtein(string s, string t)
+		{
+			var n = s.Length;
+			var m = t.Length;
+			var d = new int[n + 1, m + 1];
+			var cost = 0;
+
+			if (n == 0)
+				return m;
+			if (m == 0)
+				return n;
+
+			for (int i = 0; i <= n; d[i, 0] = i++) ;
+			for (int j = 0; j <= m; d[0, j] = j++) ;
+
+			for (int i = 1; i <= n; i++)
+			{
+				for (int j = 1; j <= m; j++)
+				{
+					cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+					d[i, j] = System.Math.Min(System.Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+					d[i - 1, j - 1] + cost);
+				}
+			}
+
+			return d[n, m];
+		}
+
+		public static string GetLevenshteinString(TokenCarrier token)
+		{
+			var ret = new StringBuilder();
+			if (token.Path("hair") != null)
+				ret.Append('h');
+			else
+				ret.Append(' ');
+
+			if (token.Path("skin") == null)
+				ret.Append('s');
+			else if (token.Path("skin/type/skin") != null)
+				ret.Append('s');
+			else if (token.Path("skin/type/fur") != null)
+				ret.Append('f');
+			else if (token.Path("skin/type/scales") != null)
+				ret.Append('c');
+			else if (token.Path("skin/type/slime") != null)
+				ret.Append('j');
+			else if (token.Path("skin/type/rubber") != null)
+				ret.Append('r');
+
+			if (token.Path("face") == null)
+				ret.Append(' ');
+			else if (token.Path("face/normal") != null)
+				ret.Append(' ');
+			else if (token.Path("face/genbeast") != null)
+				ret.Append('b');
+			else if (token.Path("face/horse") != null)
+				ret.Append('h');
+			else if (token.Path("face/dog") != null)
+				ret.Append('d');
+			else if (token.Path("face/cow") != null)
+				ret.Append('m');
+			else if (token.Path("face/cat") != null)
+				ret.Append('c');
+			else if (token.Path("face/reptile") != null)
+				ret.Append('r');
+
+			if (token.Path("ears") == null)
+				ret.Append(' ');
+			else if (token.Path("ears/human") != null)
+				ret.Append(' ');
+			else if (token.Path("ears/elfin") != null)
+				ret.Append('e');
+			else if (token.Path("ears/genbeast") != null)
+				ret.Append('b');
+			else if (token.Path("ears/horse") != null)
+				ret.Append('h');
+			else if (token.Path("ears/dog") != null)
+				ret.Append('d');
+			else if (token.Path("ears/cat") != null)
+				ret.Append('c');
+			else if (token.Path("ears/cow") != null)
+				ret.Append('m');
+			else if (token.Path("ears/frill") != null)
+				ret.Append('f');
+			else if (token.Path("ears/bear") != null)
+				ret.Append('u');
+
+			if (token.Path("antennae") == null)
+				ret.Append(' ');
+			else
+				ret.Append('!');
+
+			if (token.Path("snaketail") != null)
+				ret.Append("S");
+			else if (token.Path("tail") == null)
+				ret.Append(" ");
+			else if (token.Path("tail/genbeast") != null)
+				ret.Append("t");
+			else if (token.Path("tail/horse") != null)
+				ret.Append("h");
+			else if (token.Path("tail/dog") != null)
+				ret.Append("t");
+			else if (token.Path("tail/fox") != null)
+				ret.Append("T");
+			else if (token.Path("tail/squirrel") != null)
+				ret.Append("T");
+			else if (token.Path("tail/cow") != null)
+				ret.Append("c");
+			else if (token.Path("tail/tentacle") != null)
+				ret.Append("!");
+			else if (token.Path("tail/stinger") != null)
+				ret.Append("v");
+			else if (token.Path("tail/spider") != null)
+				ret.Append("S");
+			else if (token.Path("tail") != null)
+				ret.Append("t");
+
+			return ret.ToString();
+		}
+
 		public static string GrabToken(string input, string token)
 		{
 			var start = input.IndexOf(token);

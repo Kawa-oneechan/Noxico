@@ -124,9 +124,6 @@
   <data name="app" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Noxico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="WallLookup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\walls.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DefaultSettings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DefaultSettings.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -159,5 +156,8 @@
   </data>
   <data name="Music" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\music.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Biomes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Biomes.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

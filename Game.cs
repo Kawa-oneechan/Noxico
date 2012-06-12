@@ -46,6 +46,7 @@ namespace Noxico
 		public static SubscreenFunc Subscreen { get; set; }
 		public static Dictionary<string, char> Views { get; set; }
 		public static string[] TileDescriptions { get; private set; }
+		public static Dictionary<string, string> BodyplanLevs { get; set; }
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
@@ -55,20 +56,6 @@ namespace Noxico
 			WorldName = "world";
 			if (!Directory.Exists(WorldName))
 				Directory.CreateDirectory(WorldName);
-			File.WriteAllText(Path.Combine(WorldName, "WARNING.txt"),
-@"	WARNING
-	-------
-
-The new world format is a WORK IN PROGRESS.
-
-The plan is to support multiple ""realms"", like in Minecraft, with connecting portals.
-Right now, there's a single ""world"" directory with a BIN file holding the overworld and player info, and several BRD files.
-The new format will split the player info into its own file and add realm-specific subdirectories.
-
-In short, don't get too attached to your savegame cos soon enough it won't work anymore.
-
-
-	Love, Kawa");
 
 			lastUpdate = DateTime.Now;
 			Speed = 60;
@@ -91,6 +78,8 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 			Views = new Dictionary<string, char>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
+			var ohboy = new TokenCarrier();
+			BodyplanLevs = new Dictionary<string, string>();
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
 				var id = bodyPlan.GetAttribute("id");
@@ -107,6 +96,9 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 						Views.Add(id, (char)c);
 					}
 				}
+				ohboy.Tokens = Token.Tokenize(plan);
+				var lev = Toolkit.GetLevenshteinString(ohboy);
+				BodyplanLevs.Add(id, lev);
 			}
 			
 			//Tile descriptions
@@ -140,6 +132,10 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 #endif
 
 			CurrentBoard = new Board();
+			this.Player = new Player()
+			{
+				CurrentRealm = "Nox",
+			};
 			if (IniFile.GetBool("misc", "skiptitle", false) && Directory.Exists(WorldName)) //File.Exists("world.bin"))
 			{
 				LoadGame();
@@ -158,12 +154,24 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 		{
 			NoxicoGame.HostForm.Text = "Saving...";
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
-			var file = File.Open(Path.Combine(WorldName, "world.bin"), FileMode.Create);
+			Console.WriteLine("Saving player...");
+			var file = File.Open(Path.Combine(WorldName, "player.bin"), FileMode.Create);
 			var bin = new BinaryWriter(file);
-			bin.Write(header);
+			Player.SaveToFile(bin);
+			bin.Flush();
+			file.Flush();
+			file.Close();
 
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
+
+			var realm = Path.Combine(WorldName, Player.CurrentRealm);
+			if (!Directory.Exists(realm))
+				Directory.CreateDirectory(realm);
+
+			file = File.Open(Path.Combine(WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
+			bin = new BinaryWriter(file);
+			bin.Write(header);
 
 			bin.Write(Overworld.GetLength(0));
 			bin.Write(Overworld.GetLength(1));
@@ -180,8 +188,6 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 					break;
 				}
 			}
-
-			Player.SaveToFile(bin);
 
 			bin.Write(currentIndex);
 			bin.Write(Boards.Count);
@@ -208,8 +214,16 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 		public void LoadGame()
 		{
 			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-			var file = File.Open(Path.Combine(WorldName, "world.bin"), FileMode.Open);
+			var file = File.Open(Path.Combine(WorldName, "player.bin"), FileMode.Open);
 			var bin = new BinaryReader(file);
+			Player = Player.LoadFromFile(bin);
+			Player.AdjustView();
+			file.Close();
+
+			var realm = Path.Combine(WorldName, Player.CurrentRealm);
+
+			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
+			bin = new BinaryReader(file);
 			var header = bin.ReadBytes(6);
 			if (Encoding.UTF8.GetString(header) != "NOXiCO")
 			{
@@ -228,9 +242,6 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 					Overworld[x, y] = bin.ReadInt32();
 				}
 			}
-
-			Player = Player.LoadFromFile(bin);
-			Player.AdjustView();
 
 			var currentIndex = bin.ReadInt32();
 			var boardCount = bin.ReadInt32();
@@ -404,8 +415,10 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 			}
 		}
 
-		public void CreateTheWorld()
+		public void CreateRealm(string realm = "Nox")
 		{
+			Console.WriteLine("Creating realm \"{0}\"...", realm);
+
 			var setStatus = new Action<string>(s =>
 			{
 				var line = UIManager.Elements.Find(x => x.Tag == "worldGen");
@@ -624,6 +637,7 @@ In short, don't get too attached to your savegame cos soon enough it won't work 
 				OverworldX = StartingOWX,
 				OverworldY = StartingOWY,
 				OnOverworld = true,
+				CurrentRealm = "Nox",
 			};
 			this.CurrentBoard.Entities.Add(Player);
 

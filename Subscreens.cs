@@ -657,7 +657,7 @@ c    - Chat
 					Subscreens.UsingMouse = true;
 				Subscreens.Mouse = false;
 				Subscreens.FirstDraw = true;
-				if (File.Exists(Path.Combine(NoxicoGame.WorldName, "world.bin"))) //(File.Exists("world.bin"))
+				if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
 				{
 					keys[(int)Keys.Enter] = false;
 					Subscreens.Mouse = false;
@@ -876,6 +876,11 @@ c    - Chat
 		private static int page = 0;
 		private static Action<int> loadPage, loadColors;
 
+		private static void CreateNox()
+		{
+			NoxicoGame.HostForm.Noxico.CreateRealm();
+		}
+
 		public static void CharacterCreator()
 		{
 			if (Subscreens.FirstDraw)
@@ -1016,7 +1021,7 @@ c    - Chat
 				Subscreens.Redraw = true;
 
 				//Start creating the world as we work...
-				worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateTheWorld);
+				worldgen = new System.Threading.Thread(CreateNox);
 				worldgen.Start();
 			}
 
