@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Noxico
 {
@@ -89,6 +90,9 @@ namespace Noxico
 		public int[] OceanBitmap;
 		public byte[,] BiomeBitmap;
 
+		public static List<BiomeData> Biomes;
+		public static int WaterLevel;
+
 		private static byte[,] CreateHeightMap(int reach)
 		{
 			var map = new byte[reach, reach];
@@ -165,16 +169,32 @@ namespace Noxico
 					var h = height[row * 2, col];
 					var p = precip[row * 2, col];
 					var t = temp[row * 2, col];
+					/*
 					if (h < 64)
 						map[row, col] = 4; //Water
 					//else if (h > 253)
 					//	map[row, col] = 3; //Mountain snow
 					else if (p < 128 && t > 160)
 						map[row, col] = 1; //Desert
-					else if (p > 160)
-						map[row, col] = 2; //Swamp
 					else if (t < 64)
-						map[row, col] = 3; //Snow
+						map[row, col] = 2; //Snow
+					else if (p > 160)
+						map[row, col] = 3; //Swamp
+					*/
+					if (h < WaterLevel)
+					{
+						map[row, col] = 0;
+						continue;
+					}
+					for (var i = 0; i < Biomes.Count; i++)
+					{
+						var b = Biomes[i];
+						if (t >= b.Rect.Left && t <= b.Rect.Right && p >= b.Rect.Top && p <= b.Rect.Bottom)
+						{
+							map[row, col] = (byte)i;
+							continue;
+						}
+					}
 				}
 			}
 			return map;
@@ -218,6 +238,14 @@ namespace Noxico
 			var watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 
+			Biomes = new List<BiomeData>();
+			var x = new XmlDocument();
+			x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
+			var realm = x.SelectSingleNode("//realm[@id=\"" + NoxicoGame.HostForm.Noxico.Player.CurrentRealm + "\"]") as XmlElement;
+			WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
+			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
+				Biomes.Add(BiomeData.FromXML(b));
+
 			Console.WriteLine("Creating heightmap...");
 			var height = CreateHeightMap(reach);
 			Console.WriteLine("Creating precipitation map...");
@@ -249,7 +277,7 @@ namespace Noxico
 			{
 				for (var bCol = 0; bCol < 12; bCol++)
 				{
-					var counts = new int[5];
+					var counts = new int[255];
 					var oceanTreshold = 2000 - 4;
 					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
 					for (var pRow = 0; pRow < 25; pRow++)
@@ -261,9 +289,9 @@ namespace Noxico
 						}
 					}
 					//Special rule for Oceans
-					if (counts[4] >= oceanTreshold)
+					if (counts[0] >= oceanTreshold)
 					{
-						BiomeMap[bRow, bCol] = 4;
+						BiomeMap[bRow, bCol] = 0;
 						//OceanBitmap[(bRow * 21) + bCol] = 1;
 						oceans++;
 						continue;
@@ -299,7 +327,7 @@ namespace Noxico
 					var waterMax = 256;
 					for (var pRow = 0; pRow < 25; pRow++)
 						for (var pCol = 0; pCol < 80; pCol++)
-							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == 4)
+							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == 0)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -326,7 +354,7 @@ namespace Noxico
 								var waterMax = 128;
 								for (var pRow = 0; pRow < 25; pRow++)
 									for (var pCol = 0; pCol < 80; pCol++)
-										if (biome[(row * 25) + pRow, (col * 80) + pCol] == 4)
+										if (biome[(row * 25) + pRow, (col * 80) + pCol] == 0)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -341,6 +369,30 @@ namespace Noxico
 					}
 				}
 			}
+		}
+	}
+
+	public class BiomeData
+	{
+		public string Name { get; private set; }
+		public System.Drawing.Color Color { get; private set; }
+		public System.Drawing.Rectangle Rect { get; private set; }
+		public string Music { get; set; }
+		public bool IsWater { get; set; }
+		public bool CanBurn { get; set; }
+
+		public static BiomeData FromXML(XmlElement x)
+		{
+			var n = new BiomeData();
+			n.Name = x.GetAttribute("name");
+			var cvars = x.GetAttribute("rect").Split(' ').Select(i => int.Parse(i)).ToArray();
+			n.Rect = new System.Drawing.Rectangle(cvars[0], cvars[1], cvars[2] - cvars[0], cvars[3] - cvars[1]);
+			cvars = x.GetAttribute("color").Split(' ').Select(i => int.Parse(i)).ToArray();
+			n.Color = System.Drawing.Color.FromArgb(cvars[0], cvars[1], cvars[2]);
+			n.Music = x.GetAttribute("music");
+			n.IsWater = x.HasAttribute("isWater");
+			n.CanBurn = x.HasAttribute("canBurn");
+			return n;
 		}
 	}
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE biomes [
+	<!ELEMENT biomes (realm+)>
+	<!ELEMENT realm (biome+)>
+	<!ELEMENT biome ANY>
+	<!ATTLIST realm
+		id ID #REQUIRED
+		waterLevel CDATA #REQUIRED
+	>
+	<!ATTLIST biome
+		name CDATA #REQUIRED
+		rect CDATA #REQUIRED
+		color CDATA #REQUIRED
+		music CDATA #IMPLIED
+		isWater CDATA #IMPLIED
+		canBurn CDATA #IMPLIED
+	>
+]>
+<!-- Okay, here's the low-down on what I'm planning. By default, all of these will have {  , ' ` .  } as their "grass".
+But I'm gonna allow a <groundGlyphs> element to overrule that. Why an element? Because that lets us use ".
+Other things that could be added are what kind of (fixed) clutter can be found here, and what kind of creatures. -->
+<biomes>
+	<realm id="Nox" waterLevel="64">
+		<biome name="Water" rect="0 0 0 0" color="0 0 127" isWater="true" />
+		<biome name="Tundra" rect="0 0 48 192" color="230 243 242" music="set://Snow" />
+		<biome name="Grass Desert" rect="48 0 160 64" color="146 182 131" music="set://Desert" canBurn="true" />
+		<biome name="Desert" rect="160 0 256 64" color="210 203 152" music="set://Desert" />
+		<biome name="Taiga" rect="48 64 96 192" color="183 208 196" music="set://Snow" />
+		<biome name="Woods" rect="96 64 176 128" color="52 106 40" music="set://Grassland" canBurn="true" />
+		<biome name="Savanna" rect="176 64 256 128" color="93 94 41" music="set://Grassland" canBurn="true" />
+		<biome name="Forest" rect="96 128 176 192" color="61 119 42" music="set://Grassland" canBurn="true" />
+		<biome name="Seasonal Forest" rect="176 128 256 192" color="83 133 46" music="set://Swamp" canBurn="true" />
+		<biome name="Swamp" rect="0 192 174 256" color="52 59 44" music="set://Swamp" />
+		<biome name="Rain Forest" rect="174 192 256 256" color="45 119 34" music="set://Swamp" canBurn="true" />
+	</realm>
+</biomes>

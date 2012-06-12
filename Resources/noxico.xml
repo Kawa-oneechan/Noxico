@@ -597,7 +597,7 @@ skin
 eyes
 	color: black
 face
-	human
+	normal
 ears
 	bear
 -- short, round, and resting atop the head
@@ -608,33 +608,33 @@ ass
 	virgin
 	size: 7
 	fuckable
-	hips: roll 7d2
-	waist: roll 6d2
-	fertility: 1d25+5
+hips: roll 1d14+2
+waist: roll 1d12+2
+fertility: 1d25+5
 -- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
 -- Requires only one roll and a divisor token. In fact, I could list it right now.
 breastrow
 	amount: 2
-	size: roll 2d4+2
+	size: roll 1d8+2
 	divisor: 0.85
 	nipples: 1
 		size: roll 1d4+1
 	milksource
 breastrow
 	amount: 2
-	size: roll 2d4+2
+	size: roll 1d8+2
 	nipples: 1
 		size: roll 1d4+1
 	milksource
 breastrow
 	amount: 2
-	size: roll 2d4+2
+	size: roll 1d8+2
 	nipples: 1
 		size: roll 1d4+1
 	milksource
 breastrow
 	amount: 2
-	size: roll 2d4+2
+	size: roll 1d8+2
 	nipples: 1
 		size: roll 1d4+1
 	milksource
@@ -644,7 +644,7 @@ vagina
 	clit: 0.5
 penis
 	thickness: 4
-	length: roll 2d5+12
+	length: roll 1d10+12
 	cumsource
 	canfuck
 	balls

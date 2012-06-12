@@ -48,7 +48,8 @@ namespace Noxico
 		{
 			system = null;
 			Console.WriteLine("SoundSystem: _ctor");
-			if (!IniFile.GetBool("audio", "enabled", true))
+			var is64Bit = System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)) == 8;
+			if (!IniFile.GetBool("audio", "enabled", true) || !is64Bit)
 				return;
 			musicVolume = (float)IniFile.GetInt("audio", "musicvolume", 100) / 100;
 			soundVolume = (float)IniFile.GetInt("audio", "soundvolume", 100) / 100;

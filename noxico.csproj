@@ -100,28 +100,30 @@
     <Compile Include="Noxico.cs" />
     <Compile Include="Noxicobotic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="WorldGen.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\biomes.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Resources\boards.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\books.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="fmodex64.dll">
@@ -264,7 +266,6 @@
     <None Include="Resources\chargen.png" />
     <None Include="Resources\title.png" />
     <Content Include="Resources\music.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <None Include="Resources\bonustraits.xml">
@@ -278,7 +279,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\dialogue.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sounds\Door Lock.wav">
@@ -304,7 +304,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\noxico.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <None Include="Resources\walls.bin" />
