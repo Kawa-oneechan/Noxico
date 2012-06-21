@@ -93,6 +93,20 @@ namespace Noxico
 		public static List<BiomeData> Biomes;
 		public static int WaterLevel;
 
+		public static void LoadBiomes(string realmId = "")
+		{
+			if (string.IsNullOrWhiteSpace(realmId))
+				realmId = NoxicoGame.HostForm.Noxico.Player.CurrentRealm;
+
+			Biomes = new List<BiomeData>();
+			var x = new XmlDocument();
+			x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
+			var realm = x.SelectSingleNode("//realm[@id=\"" + realmId + "\"]") as XmlElement;
+			WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
+			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
+				Biomes.Add(BiomeData.FromXML(b));
+		}
+
 		private static byte[,] CreateHeightMap(int reach)
 		{
 			var map = new byte[reach, reach];
@@ -238,20 +252,14 @@ namespace Noxico
 			var watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 
-			Biomes = new List<BiomeData>();
-			var x = new XmlDocument();
-			x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
-			var realm = x.SelectSingleNode("//realm[@id=\"" + NoxicoGame.HostForm.Noxico.Player.CurrentRealm + "\"]") as XmlElement;
-			WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
-			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-				Biomes.Add(BiomeData.FromXML(b));
+			LoadBiomes();
 
 			Console.WriteLine("Creating heightmap...");
 			var height = CreateHeightMap(reach);
 			Console.WriteLine("Creating precipitation map...");
-			var precip = CreateClouds(reach, 0.015f, 0.3, false);
+			var precip = CreateClouds(reach, 0.010f, 0.3, false);
 			Console.WriteLine("Creating temperature map...");
-			var temp = CreateClouds(reach, 0.015f, 0.5, true);
+			var temp = CreateClouds(reach, 0.005f, 0.5, true);
 			Console.WriteLine("Creating biome map...");
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
@@ -377,9 +385,12 @@ namespace Noxico
 		public string Name { get; private set; }
 		public System.Drawing.Color Color { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
-		public string Music { get; set; }
-		public bool IsWater { get; set; }
-		public bool CanBurn { get; set; }
+		public string Music { get; private set; }
+		public bool IsWater { get; private set; }
+		public bool CanBurn { get; private set; }
+		public char[] GroundGlyphs { get; private set; }
+		public double DarkenPlus { get; private set; }
+		public double DarkenDiv { get; private set; }
 
 		public static BiomeData FromXML(XmlElement x)
 		{
@@ -392,6 +403,24 @@ namespace Noxico
 			n.Music = x.GetAttribute("music");
 			n.IsWater = x.HasAttribute("isWater");
 			n.CanBurn = x.HasAttribute("canBurn");
+
+			var groundGlyphs = x.SelectSingleNode("groundGlyphs");
+			if (groundGlyphs == null)
+				n.GroundGlyphs = new[] { ',', '\'', '`', '.', };
+			else
+				n.GroundGlyphs = ((XmlElement)groundGlyphs).InnerText.ToCharArray();
+			var darken = x.SelectSingleNode("darken");
+			if (darken == null)
+			{
+				n.DarkenPlus = 2;
+				n.DarkenDiv = 2;
+			}
+			else
+			{
+				n.DarkenPlus = double.Parse(((XmlElement)darken).GetAttribute("plus"), System.Globalization.CultureInfo.InvariantCulture);
+				n.DarkenDiv = double.Parse(((XmlElement)darken).GetAttribute("div"), System.Globalization.CultureInfo.InvariantCulture);
+			}
+
 			return n;
 		}
 	}

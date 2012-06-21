@@ -340,6 +340,18 @@ namespace Noxico
 						//var lines = text.Split('\n').Length;
 						MessageBox.Message(text, true);
 					}
+					else if (PointingAt is Player)
+					{
+						if (Intent == Intents.Look)
+							TextScroller.LookAt((BoardChar)PointingAt);
+						else if (Intent == Intents.Chat)
+							if (player.Character.Path("cunning").Value >= 10)
+								MessageBox.Message("Talking to yourself is the first sign of insanity.", true);
+							else
+								MessageBox.Message("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
+						else if (Intent == Intents.Fuck)
+							MessageBox.Message("Can't masturbate yet, sorry.", true);
+					}
 					else if (PointingAt is BoardChar)
 					{
 						if (Intent == Intents.Look)
@@ -349,6 +361,7 @@ namespace Noxico
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
 							MessageBox.Message("Can't fuck yet, sorry.", true);
 					}
+					return;
 				}
 				else if (Intent == Intents.Look)
 				{

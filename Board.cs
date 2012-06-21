@@ -1247,26 +1247,26 @@ namespace Noxico
 
 		public static Board CreateFromBitmap(byte[,] bitmap, int biome, int x, int y)
 		{
-			//var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
 			var newBoard = new Board();
-			var grasses = new[] { ',', '\'', '`', '.', };
 			for (int row = 0; row < 25; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					var b = bitmap[(y * 25) + row, (x * 80) + col];
-					var biomeData = WorldGen.Biomes[b];
+					var d = WorldGen.Biomes[b];
+					var fg = d.Color.Darken();
+					var bg = d.Color;
+					if (d.DarkenPlus != 0 && d.DarkenDiv != 0)
+					{
+						fg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
+						bg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
+					}
 					newBoard.Tilemap[col, row] = new Tile()
 					{
-						Character = grasses[Toolkit.Rand.Next(grasses.Length)],
-						//Foreground = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						//Background = groundColors[b].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						//CanBurn = (b == 0),
-						//IsWater = (b == 4),
-						Foreground = biomeData.Color.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						Background = biomeData.Color.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						CanBurn = biomeData.CanBurn,
-						IsWater = biomeData.IsWater,
+						Character = d.GroundGlyphs[Toolkit.Rand.Next(d.GroundGlyphs.Length)],
+						Foreground = fg, Background = bg,
+						CanBurn = d.CanBurn,
+						IsWater = d.IsWater,
 					};
 				}
 			}
