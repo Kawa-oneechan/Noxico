@@ -34,73 +34,73 @@
 	If the set is empty, just play nothing.
  	-->
 	<set name="Title">
-		<song href="Loonie - Cronology IV Remix.xm" />
+		<song href="loonie_-_cronologie_4_remix.xm" />
 	</set>
 	<set name="Grassland">
-		<song href="Ko0x - Gia's Rush.it" />
-		<song href="Ko0x - I Don't Know So I Don't Care.it" />
-		<song href="joule - Mozarella Filofox.xm" />
-		<song href="Andy Abstract - Molecule in Harmonic Motion.s3m" />
-		<song href="Hyo-chan - Dumskalle.it" />
+		<song href="ko0x_-_gias_rush.it" />
+		<song href="ko0x_-_idksidc.it" />
+		<song href="joule-mozarella_filofox.xm" />
+		<song href="aa-molec.s3m" />
+		<song href="hyo-dum.it" />
 	</set>
 	<set name="Desert">
-		<song href="Ko0x - Back to the Ocean.it" />
-		<song href="Computer Weekend.mod" />
-		<song href="Robric - Elegance.xm" />
-		<song href="Serpent - My Dream.xm" />
-		<song href="Inmate2993 - Here We Go Again.mod" />
+		<song href="ko0x_-_btto.it" />
+		<song href="computer_weekend.mod" />
+		<song href="robric600.xm" />
+		<song href="serpent_-_my_dream.xm" />
+		<song href="C3INTRO.MOD" />
 	</set>
 	<set name="Snow">
-		<song href="Ko0x - Snowman's Land.xm" />
-		<song href="Crizz - Milky Way.xm" />
-		<song href="grim - Vibes.mod" />
-		<song href="Jazz - X-1.mod" />
-		<song href="Beek - Margarita.it" />
+		<song href="ko0x_-_snowmans_land.xm" />
+		<song href="crizz_-_milkyway.xm" />
+		<song href="_hh_vibes.mod" />
+		<song href="_x_1.mod" />
+		<song href="beek-ita.it" />
 	</set>
 	<set name="Swamp">
-		<song href="Ko0x - Zenon.xm" />
-		<song href="Ko0x - I Don't Know So I Don't Care.it" />
-		<song href="Michu - Humpin' Yourself.xm" />
-		<song href="Serpent - My Dream.xm" />
-		<song href="Line - 8 Bit Party.it" />
+		<song href="ko0x_-_zenon.xm" />
+		<song href="ko0x_-_idksidc.it" />
+		<song href="humpin.xm" />
+		<song href="serpent_-_my_dream.xm" />
+		<song href="8bit_party.it" />
 	</set>
 	<set name="Town">
-		<song href="Cute Girl Game.it" />
-		<song href="Ko0x - Gizgame level 1.it" />
-		<song href="Mark Knight - Cutesy 1 v2.mod" />
-		<song href="Serpent - My Dream.xm" />
-		<song href="Caramel - Karamel Special K.s3m" />
-		<song href="UncleBen - I Have No Idea.it" />
+		<song href="cutegg.it" />
+		<song href="ko0x_-_gizgame_level1.it" />
+		<song href="cutesy1v2.mod" />
+		<song href="serpent_-_my_dream.xm" />
+		<song href="caramel_-_karamel_special_k.s3m" />
+		<song href="ub-ihni.it" />
 	</set>
 	<set name="Dungeon">
-		<song href="I Like Your Atari.xm" />
-		<song href="Jumping Cow &amp; Pigs.xm" />
-		<song href="Inmate2993 - The Fest Starts.s3m" />
-		<song href="Mark McIntyre - Caverns Magic.s3m" />
-		<song href="virt - VPDSB Motherfuck.xm" />
-		<song href="Computer Weekend.mod" />
-		<song href="Strobe - Crystal Tears.xm" />
-		<song href="Abuse - 4099 20kb.s3m" />
+		<song href="i_like_your_atari.xm" />
+		<song href="jumping-499.xm" />
+		<song href="insan-01.s3m" />
+		<song href="MRKMAGIC.s3m" />
+		<song href="a0-insnej.xm" />
+		<song href="computer_weekend.mod" />
+		<song href="strobe_-_crystal_tears.xm" />
+		<song href="409920kb.s3m" />
 	</set>
 	<set name="Shenanigans">
-		<song href="joule - littlewe kladdcakes.xm" />
-		<song href="Karbofos - 1.xm" />
-		<song href="Lepra - High on Popcorns.xm" />
-		<song href="Raina - Ribbed Rubber.xm" />
-		<song href="Robric - Pink Lady.xm" />
-		<song href="Crizz - Milky Way.xm" />
-		<song href="Line - 8 Bit Party.it" />
+		<song href="joule-littlewe_kladdcakes.xm" />
+		<song href="karbofos_-_1.xm" />
+		<song href="lepra_-_high_on_popcorns.xm" />
+		<song href="rubber.xm" />
+		<song href="robric993.xm" />
+		<song href="crizz_-_milkyway.xm" />
+		<song href="8bit_party.it" />
 	</set>
 	<set name="Combat">
-		<song href="Jumping Cow &#36; Pigs.xm" />
-		<song href="Inmate2993 - Insanifest.s3m" />
-		<song href="Noby - Fixedsys.xm" />
-		<song href="I Like Your Atari.xm" />
-		<song href="Zaril - Math C Exam.it" />
+		<song href="jumping-499.xm" />
+		<song href="INSAN-03.s3m" />
+		<song href="fixedsys.xm" />
+		<song href="i_like_your_atari.xm" />
+		<song href="mathcexam.it" />
 	</set>
 	<set name="Victory">
-		<song href="Joule - Rainbow Jewel.xm" />
-		<song href="Ko0x - Without You.xm" />
-		<song href="Dynamite - Over the Top.s3m" />
+		<song href="joule_-_rainbow.xm" />
+		<song href="ko0x_-_without_you.xm" />
+		<song href="dynamite_-_over_the_top.s3m" />
 	</set>
 </music>
