@@ -194,29 +194,59 @@ c    - Chat
 
 	public class MessageBox
 	{
+		private enum BoxType { Message, Question, List };
 		private static string[] text = { };
-		private static bool isQuestion;
+		private static BoxType type;
 		private static string title;
 		private static Action onYes, onNo;
-
+		private static Dictionary<object, string> options;
+		private static int option;
+		public static object Answer { get; private set; }
 
 		public static void Handler()
 		{
 			var host = NoxicoGame.HostForm;
 			var keys = NoxicoGame.KeyMap;
 			var rows = text.Length - 2;
+			if (type == BoxType.List)
+				rows += options.Count + 1;
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
-				Toolkit.DrawWindow(5, 5, 69, rows + 2, isQuestion ? "Question" : title, Color.Gray, Color.Black, Color.White);
+				Toolkit.DrawWindow(5, 5, 69, rows + 2, type == BoxType.Question ? "Question" : title, Color.Gray, Color.Black, Color.White);
 				for (int i = 0; i < text.Length; i++)
 					host.Write(text[i], Color.Silver, Color.Black, 7, 6 + i);
-				if (isQuestion)
+				if (type == BoxType.Question)
 					host.Write("<g2561><cWhite> Y/N <cGray><g255E>", Color.Gray, Color.Black, 66, 7 + rows);
+				else if (type == BoxType.List)
+				{
+					for (int i = 0; i < options.Count; i++)
+						host.Write(options.ElementAt(i).Value.PadRight(66), i == option ? Color.White : Color.Gray, i == option ? Color.Navy : Color.Black, 7, 8 + text.Length - 2 + i);
+					host.Write("<g2561><cWhite> <g2191>/<g2193> <cGray><g255E>", Color.Gray, Color.Black, 66, 7 + rows);
+				}
 				else
 					host.Write("<g2561><cWhite><g2026><cGray><g255E>", Color.Gray, Color.Black, 70, 7 + rows);
 			}
-			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (isQuestion && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
+			if (type == BoxType.List)
+			{
+				if (keys[(int)Keys.Up])
+				{
+					NoxicoGame.ClearKeys();
+					if (option == 0)
+						option = options.Count;
+					option--;
+					Subscreens.FirstDraw = true;
+				}
+				else if (keys[(int)Keys.Down])
+				{
+					NoxicoGame.ClearKeys();
+					option++;
+					if (option == options.Count)
+						option = 0;
+					Subscreens.FirstDraw = true;
+				}
+			}
+			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (type == BoxType.Question && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
 			{
 				if (Subscreens.PreviousScreen.Count == 0)
 				{
@@ -230,7 +260,7 @@ c    - Chat
 					host.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
 				}
-				if (isQuestion)
+				if (type == BoxType.Question)
 				{
 					if ((keys[(int)Keys.Enter] || keys[(int)Keys.Y]) && onYes != null)
 					{
@@ -243,12 +273,33 @@ c    - Chat
 						onNo();
 					}
 				}
+				else if (type == BoxType.List)
+				{
+					Answer = options.ElementAt(option).Key;
+					onYes();
+					NoxicoGame.ClearKeys();
+				}
 				else
 				{
-					isQuestion = false;
+					type = BoxType.Message;
 					NoxicoGame.ClearKeys();
 				}
 			}
+		}
+
+		public static void List(string question, Dictionary<object, string> options, Action okay, bool dontPush = false, string title = "")
+		{
+			if (!dontPush && NoxicoGame.Subscreen != null)
+				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			NoxicoGame.Subscreen = MessageBox.Handler;
+			type = BoxType.List;
+			MessageBox.title = title;
+			text = Toolkit.Wordwrap(question.Trim(), 68).Split('\n');
+			option = 0;
+			onYes = okay;
+			MessageBox.options = options;
+			NoxicoGame.Mode = UserMode.Subscreen;
+			Subscreens.FirstDraw = true;
 		}
 
 		public static void Ask(string question, Action yes, Action no, bool dontPush = false, string title = "")
@@ -256,7 +307,7 @@ c    - Chat
 			if (!dontPush && NoxicoGame.Subscreen != null)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
-			isQuestion = true;
+			type = BoxType.Question;
 			MessageBox.title = title;
 			text = Toolkit.Wordwrap(question.Trim(), 68).Split('\n');
 			onYes = yes;
@@ -271,7 +322,7 @@ c    - Chat
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
-			isQuestion = false;
+			type = BoxType.Message;
 			text = Toolkit.Wordwrap(message.Trim(), 68).Split('\n');
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
@@ -663,14 +714,53 @@ c    - Chat
 					Subscreens.UsingMouse = true;
 				Subscreens.Mouse = false;
 				Subscreens.FirstDraw = true;
-				if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
+				var saves = Directory.GetDirectories("saves");
+				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
+				if (saves.Length > 0)
 				{
+					var saveName = Path.GetFileName(saves[0]);
 					keys[(int)Keys.Enter] = false;
 					Subscreens.Mouse = false;
-					host.Clear();
-					MessageBox.Ask("There is a saved game you could restore. Would you like to do so?",
+					//host.Clear();
+					var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
+					{
+						string p;
+						using (var f = new BinaryReader(File.OpenRead(Path.Combine(s, "player.bin"))))
+						{
+							p = f.ReadString();
+						}
+						return p + ", \"" + Path.GetFileName(s) + "\"";
+					}));
+					options.Add("~", "~ Start new game in \"" + NoxicoGame.WorldName + "\" ~");
+					MessageBox.List("There " + (saves.Length == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
 						() =>
 						{
+							if ((string)MessageBox.Answer == "~")
+							{
+								Directory.CreateDirectory(Path.Combine("saves", NoxicoGame.WorldName));
+								NoxicoGame.Mode = UserMode.Subscreen;
+								NoxicoGame.Subscreen = Introduction.CharacterCreator;
+								NoxicoGame.Immediate = true;
+							}
+							else
+							{
+								NoxicoGame.WorldName = (string)MessageBox.Answer;
+								host.Noxico.LoadGame();
+								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+								Subscreens.FirstDraw = true;
+								NoxicoGame.Immediate = true;
+								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+								NoxicoGame.Mode = UserMode.Walkabout;
+							}
+						}
+					);
+					/*
+					MessageBox.Ask("There is a saved game you could restore -- \"" + saveName + "\". Would you like to do so?",
+						() =>
+						{
+							NoxicoGame.WorldName = saveName;
 							host.Noxico.LoadGame();
 							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 							Subscreens.FirstDraw = true;
@@ -707,6 +797,7 @@ c    - Chat
 #endif
 						}
 					);
+					*/
 				}
 				else
 				{
@@ -993,7 +1084,7 @@ c    - Chat
 					var bonus = ((UIList)controls["gift"]).Text;
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
-					//NoxicoGame.HostForm.Noxico.SaveGame();
+					NoxicoGame.HostForm.Noxico.SaveGame();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
