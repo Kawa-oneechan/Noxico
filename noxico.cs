@@ -176,7 +176,7 @@ namespace Noxico
 			return options[Toolkit.Rand.Next(options.Length)];
 		}
 
-		public static string Count(float num)
+		public static string Count(this float num)
 		{
 			var words = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve" };
 			var i = (int)Math.Floor(num);
@@ -567,6 +567,54 @@ namespace Noxico
 				return resource;
 		}
 
+		public static bool IsFriday13()
+		{
+			return (DateTime.Now.DayOfWeek == DayOfWeek.Friday && DateTime.Now.Day == 13);
+		}
+
+		/// <summary>
+		/// Returns the phase of the moon. Taken straight from Nethack's hacklib.c.
+		/// </summary>
+		/// <returns>An integer from 0-7, where 0 is new moon and 4 is full moon.</returns>
+		public static int MoonPhase()
+		{
+			/*
+			 * moon period = 29.53058 days ~= 30, year = 365.2422 days
+			 * days moon phase advances on first day of year compared to preceding year
+			 *	= 365.2422 - 12*29.53058 ~= 11
+			 * years in Metonic cycle (time until same phases fall on the same days of
+			 *	the month) = 18.6 ~= 19
+			 * moon phase on first day of year (epact) ~= (11*(year%19) + 29) % 30
+			 *	(29 as initial condition)
+			 * current phase in days = first day phase + days elapsed in year
+			 * 6 moons ~= 177 days
+			 * 177 ~= 8 reported phases * 22
+			 * + 11/22 for rounding
+			 */
+			var diy = DateTime.Now.DayOfYear;
+			var goldn = (DateTime.Now.Year % 19) + 1;
+			var epact = (11 * goldn + 18) % 30;
+			if ((epact == 25 && goldn > 11) || epact == 24)
+				epact++;
+			return ((((((diy + epact) * 6) + 11) % 177) / 22) & 7);
+		}
+
+		public static string Ordinal(this float number)
+		{
+			var i = (int)Math.Floor(number);
+			var dd = i % 10;
+		    return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
+		}
+
+		public static string Possessive(this string subject)
+		{
+			if (!subject.Equals("it", StringComparison.InvariantCultureIgnoreCase))
+				return subject + "s";
+			else if (subject.EndsWith("s"))
+				return subject + "'";
+			else
+				return subject + "'s";
+		}
 	}
 
 	public static class Descriptions
