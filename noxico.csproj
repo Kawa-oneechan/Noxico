@@ -129,133 +129,139 @@
     <Content Include="fmodex64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="music\Abuse - 4099 20kb.s3m">
+    <None Include="music\409920kb.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Andy Abstract - Molecule in Harmonic Motion.s3m">
+    <None Include="music\8bit_party.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Beek - Margarita.it">
+    <None Include="music\a0-insnej.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Caramel - Karamel Special K.s3m">
+    <None Include="music\aa-molec.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Computer Weekend.mod">
+    <None Include="music\beek-ita.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Crizz - Milky Way.xm">
+    <None Include="music\C3INTRO.MOD">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\crizz - R2-D2.xm">
+    <None Include="music\caramel_-_karamel_special_k.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Cute Girl Game.it">
+    <None Include="music\computer_weekend.mod">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Dynamite - Over the Top.s3m">
+    <None Include="music\crizz_-_milkyway.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\grim - Vibes.mod">
+    <None Include="music\crizz_-_r2-d248k_4chnl_edit.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Hyo-chan - Dumskalle.it">
+    <None Include="music\cutegg.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\I Like Your Atari.xm">
+    <None Include="music\cutesy1v2.mod">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Inmate2993 - Here We Go Again.mod">
+    <None Include="music\dynamite_-_over_the_top.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Inmate2993 - Insanifest.s3m">
+    <None Include="music\fixedsys.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Inmate2993 - The Fest Starts.s3m">
+    <None Include="music\humpin.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Jazz - X-1.mod">
+    <None Include="music\hyo-dum.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\joule - littlewe kladdcakes.xm">
+    <None Include="music\insan-01.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\joule - Mozarella Filofox.xm">
+    <None Include="music\INSAN-03.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Joule - Rainbow Jewel.xm">
+    <None Include="music\i_like_your_atari.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Jumping Cow &amp; Pigs.xm">
+    <None Include="music\joule-littlewe_kladdcakes.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Karbofos - 1.xm">
+    <None Include="music\joule-mozarella_filofox.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Back to the Ocean.it">
+    <None Include="music\joule_-_rainbow.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Gia%27s Rush.it">
+    <None Include="music\jumping-499.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Gizgame level 1.it">
+    <None Include="music\karbofos_-_1.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - I Don%27t Know So I Don%27t Care.it">
+    <None Include="music\ko0x_-_btto.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Snowman%27s Land.xm">
+    <None Include="music\ko0x_-_gias_rush.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Without You.xm">
+    <None Include="music\ko0x_-_gizgame_level1.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Ko0x - Zenon.xm">
+    <None Include="music\ko0x_-_idksidc.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Lepra - High on Popcorns.xm">
+    <None Include="music\ko0x_-_snowmans_land.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Line - 8 Bit Party.it">
+    <None Include="music\ko0x_-_without_you.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Loonie - Cronology IV Remix.xm">
+    <None Include="music\ko0x_-_zenon.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Mark Knight - Cutesy 1 v2.mod">
+    <None Include="music\lepra_-_high_on_popcorns.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Mark McIntyre - Caverns Magic.s3m">
+    <None Include="music\loonie_-_cronologie_4_remix.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Michu - Humpin%27 Yourself.xm">
+    <None Include="music\mathcexam.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Noby - Fixedsys.xm">
+    <None Include="music\MRKMAGIC.s3m">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Raina - Ribbed Rubber.xm">
+    <None Include="music\my_little_ponies.mod">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Robric - Elegance.xm">
+    <None Include="music\robric600.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Robric - Pink Lady.xm">
+    <None Include="music\robric993.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Serpent - My Dream.xm">
+    <None Include="music\rubber.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Strobe - Crystal Tears.xm">
+    <None Include="music\sc2-smp.it">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\UncleBen - I Have No Idea.it">
+    <None Include="music\serpent_-_my_dream.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\virt - VPDSB Motherfuck.xm">
+    <None Include="music\strobe_-_crystal_tears.xm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="music\Zaril - Math C Exam.it">
+    <None Include="music\ub-ihni.it">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="music\_hh_vibes.mod">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="music\_x_1.mod">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Noxico.ico" />
