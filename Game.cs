@@ -53,9 +53,9 @@ namespace Noxico
 
 		public NoxicoGame(MainForm hostForm)
 		{
-			WorldName = "world";
-			if (!Directory.Exists(WorldName))
-				Directory.CreateDirectory(WorldName);
+			WorldName = RollWorldName();
+			if (!Directory.Exists("saves"))
+				Directory.CreateDirectory("saves");
 
 			lastUpdate = DateTime.Now;
 			Speed = 60;
@@ -100,7 +100,7 @@ namespace Noxico
 				var lev = Toolkit.GetLevenshteinString(ohboy);
 				BodyplanLevs.Add(id, lev);
 			}
-			
+
 			//Tile descriptions
 			TileDescriptions = global::Noxico.Properties.Resources.TileSpecialDescriptions.Split('\n');
 
@@ -147,7 +147,9 @@ namespace Noxico
 				Mode = UserMode.Walkabout;
 			}
 			else
+			{
 				Introduction.Title();
+			}
 		}
 
 		public void SaveGame()
@@ -155,7 +157,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Text = "Saving...";
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
 			Console.WriteLine("Saving player...");
-			var file = File.Open(Path.Combine(WorldName, "player.bin"), FileMode.Create);
+			var file = File.Open(Path.Combine("saves", WorldName, "player.bin"), FileMode.Create);
 			var bin = new BinaryWriter(file);
 			Player.SaveToFile(bin);
 			bin.Flush();
@@ -165,11 +167,11 @@ namespace Noxico
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
 
-			var realm = Path.Combine(WorldName, Player.CurrentRealm);
+			var realm = Path.Combine("saves", WorldName, Player.CurrentRealm);
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 
-			file = File.Open(Path.Combine(WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
+			file = File.Open(Path.Combine("saves", WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
 			bin = new BinaryWriter(file);
 			bin.Write(header);
 
@@ -214,13 +216,13 @@ namespace Noxico
 		public void LoadGame()
 		{
 			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-			var file = File.Open(Path.Combine(WorldName, "player.bin"), FileMode.Open);
+			var file = File.Open(Path.Combine("saves", WorldName, "player.bin"), FileMode.Open);
 			var bin = new BinaryReader(file);
 			Player = Player.LoadFromFile(bin);
 			Player.AdjustView();
 			file.Close();
 
-			var realm = Path.Combine(WorldName, Player.CurrentRealm);
+			var realm = Path.Combine("saves", WorldName, Player.CurrentRealm);
 
 			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
 			bin = new BinaryReader(file);
@@ -659,6 +661,14 @@ namespace Noxico
 				if (n.GetBoard(i).ID == board.ID)
 					return i;
 			return -1;
+		}
+
+		public string RollWorldName()
+		{
+			var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
+			var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
+			var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
+			return ret;
 		}
 	}
 }
