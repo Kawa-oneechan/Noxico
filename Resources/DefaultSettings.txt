@@ -21,14 +21,6 @@ enabled=true
 musicvolume=100
 soundvolume=100
 
-[saving]
-; gzip: Compress the world data when saving. When loading, compression is
-;       dictated by the savegame file itself.
-; flip: Flip the high bits (0x00->0x80, 0x41->0xC1), same rules as with gzip
-;       apply. You can set both of these if you want.
-gzip=false
-flip=false
-
 [misc]
 ; rememberpause: Remember the active page on the Pause screen. If set to false,
 ;                opening the Pause screen will reset to the "Character stats"
@@ -41,3 +33,18 @@ flip=false
 rememberpause=true
 autorest=100
 skiptitle=false
+
+[filters]
+; color: Specifies the special filter to apply to a cell's color information.
+;        Valid options are:
+;          none: Don't do anything - show the colors as they are defined.
+;          cga:  Convert the colors to the standard 16 color palette.
+;          mono: Convert the colors to grayscale.
+;        The CGA filter is unimplemented and acts like "none".
+; char:  Specifies the special filter to apply to a cell's character information.
+;        Valid options are:
+;          none: Show all codepoints as specified.
+;          437:  Convert all codepoints above 127 to their OEM US counterpart.
+;		   7bit: Remove all codepoints above 127, use +-| for box drawing.
+color=none
+char=none

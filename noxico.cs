@@ -961,6 +961,11 @@ namespace Noxico
 			}
 			return ret.ToString();
 		}
+#else
+		public string DumpTokens(List<Token> list, int tabs)
+		{
+			return string.Empty;
+		}
 #endif
 	}
 

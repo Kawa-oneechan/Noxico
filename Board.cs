@@ -242,7 +242,7 @@ namespace Noxico
 			var realm = Path.Combine("saves", NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
-			Console.WriteLine(" * Saving board {0}...", Name);
+			//Console.WriteLine(" * Saving board {0}...", Name);
 			using (var stream = new BinaryWriter(File.Open(Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
 				stream.Write(Name);
@@ -332,7 +332,7 @@ namespace Noxico
 
 				newBoard.BindEntities();
 
-				Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
+				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
 
 			}
 			return newBoard;
@@ -1279,7 +1279,7 @@ namespace Noxico
 			return newBoard;
 		}
 
-#if DEBUG
+		[System.Diagnostics.Conditional("DEBUG")]
 		public void DumpToHTML(string suffix = "")
 		{
 			if (!string.IsNullOrWhiteSpace(suffix) && !suffix.StartsWith("_"))
@@ -1346,7 +1346,6 @@ namespace Noxico
 			file.Flush();
 			file.Close();
 		}
-#endif
 	}
 
 

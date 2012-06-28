@@ -312,7 +312,6 @@
     <Content Include="Resources\noxico.xml">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Resources\walls.bin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
