@@ -114,7 +114,7 @@ namespace Noxico
 
 		public virtual void SaveToFile(BinaryWriter stream)
 		{
-			Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
+			//Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
 			stream.Write(ID ?? "<Null>");
 			stream.Write(AsciiChar);
 			BackgroundColor.SaveToFile(stream);
@@ -149,7 +149,7 @@ namespace Noxico
 			newEntity.Script = new string[numLines];
 			for (int i = 0; i < numLines; i++)
 				newEntity.Script[i] = stream.ReadString();
-			Console.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
+			//Console.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
 			return newEntity;
 		}
 

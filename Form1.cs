@@ -63,6 +63,9 @@ namespace Noxico
 
     public class MainForm : Form
     {
+		private Func<Color, Color> colorConverter;
+		private Func<Char, Char> charConverter;
+
         private struct Cell
         {
             public char Character;
@@ -116,6 +119,9 @@ namespace Noxico
 			Show();
 			Refresh();
 
+			colorConverter = (c => c);
+			charConverter = (c => c);
+
 			if (!File.Exists("noxico.ini"))
 				File.WriteAllText("noxico.ini", global::Noxico.Properties.Resources.DefaultSettings);
 			IniFile.Load("noxico.ini");
@@ -133,6 +139,19 @@ namespace Noxico
 				var em = gfx.MeasureString("M", this.Font);
 				CellWidth = (int)Math.Ceiling(em.Width * 0.75);
 				CellHeight = (int)Math.Ceiling(em.Height * 0.85);
+			}
+
+			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
+			{
+				case "cga": colorConverter = ToCGA; break;
+				case "mono": colorConverter = ToMono; break;
+				default: colorConverter = (c => c); break;
+			}
+			switch (IniFile.GetString("filters", "char", "none").ToLowerInvariant())
+			{
+				case "437": charConverter = To437; break;
+				case "7bit": charConverter = To7Bit; break;
+				default: charConverter = (c => c); break;
 			}
 
 			backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
@@ -329,9 +348,9 @@ namespace Noxico
         {
 			var sTX = col * CellWidth;
             var sTY = row * CellHeight;
-			var b = cell.Background;
-			var f = cell.Foreground;
-            var c = cell.Character;
+			var b = colorConverter(cell.Background);
+			var f = colorConverter(cell.Foreground);
+            var c = charConverter(cell.Character);
 			gfx.TextContrast = 0;
 			gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 			using (var backBrush = new SolidBrush(b))
@@ -649,5 +668,72 @@ namespace Noxico
 			LoadBitmap((Bitmap)Bitmap.FromFile(file));
 		}
 
+		
+		//Filters
+
+		private Color ToCGA(Color color)
+		{
+			/* TODO: convert a given truecolor to the closest CGA equivalent, according to the standard palette.
+			 * 
+			 * Black	#000
+			 * Blue		#00A
+			 * Green	#0A0
+			 * Cyan		#0AA
+			 * Red		#A00
+			 * Magenta	#A0A
+			 * Brown	#A50
+			 * "White"	#AAA
+			 * 
+			 * Gray		#555
+			 * LtBlue	#55F
+			 * LtGreen	#5F5
+			 * LtCyan	#5FF
+			 * LtRed	#F55
+			 * LtMagnt	#F5F
+			 * Yellow	#FF5
+			 * White	#FFF
+			 *
+			 * Formula:
+			 * r = 2 / 3 * (i & 4) / 4 + 1 / 3 * (i & 8) / 8;
+			 * g = 2 / 3 * (i & 2) / 2 + 1 / 3 * (i & 8) / 8;
+			 * b = 2 / 3 * (i & 1) / 1 + 1 / 3 * (i & 8) / 8;
+			 * 
+			 * But if i == 6, g /= 2, to prevent Brown from becoming Mustard.
+			 */
+			return color;
+		}
+
+		private Color ToMono(Color color)
+		{
+			var mono = (11 * color.R + 16 * color.G + 5 * color.B) / 32; 
+			return Color.FromArgb(mono, mono, mono);
+		}
+
+		private char To437(char codePoint)
+		{
+			if (codePoint < 128)
+				return codePoint;
+			var uni = Encoding.UTF8;
+			var dos = Encoding.GetEncoding(437);
+			var oldBytes = uni.GetBytes(codePoint.ToString());
+			var newBytes = Encoding.Convert(uni, dos, oldBytes);
+			var newCode = dos.GetChars(newBytes)[0];
+			return newCode;
+		}
+
+		private char To7Bit(char codePoint)
+		{
+			if (codePoint < 127)
+				return codePoint;
+			if (new[] { 0x2502, 0x2551 }.Contains(codePoint))
+				return '|';
+			if (new[] { 0x2509, 0x2550 }.Contains(codePoint))
+				return '-';
+			if (codePoint > 0x2500 && codePoint <= 0x256C)
+				return '+';
+			if (codePoint >= 0x2580 && codePoint <= 0x2593)
+				return ' ';
+			return '?';
+		}
     }
 }
