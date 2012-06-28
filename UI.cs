@@ -116,6 +116,11 @@ namespace Noxico
 			for (var i = Top + 1; i < Top + Height; i++)
 				NoxicoGame.HostForm.Write(line, Foreground, Background, Left, i);
 			NoxicoGame.HostForm.Write(bottom, Foreground, Background, Left, Top + Height - 1);
+
+			for (var i = Top + 1; i < Top + Height; i++)
+				NoxicoGame.HostForm.DarkenCell(i, Left + Width);
+			for (var i = Left + 1; i <= Left + Width; i++)
+				NoxicoGame.HostForm.DarkenCell(Top + Height, i);
 		}
 	}
 
