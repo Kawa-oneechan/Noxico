@@ -265,6 +265,14 @@ namespace Noxico
 				previousImage[col, row].Character = (char)(character + 4);
         }
 
+		public void DarkenCell(int row, int col)
+		{
+			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+				return;
+			image[col, row].Background = image[col, row].Background.Darken();
+			image[col, row].Foreground = image[col, row].Foreground.Darken();
+		}
+
 		public void Clear(char character, Color forecolor, Color backcolor)
 		{
 			for (int row = 0; row < 25; row++)
