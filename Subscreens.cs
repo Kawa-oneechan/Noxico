@@ -714,9 +714,15 @@ c    - Chat
 					Subscreens.UsingMouse = true;
 				Subscreens.Mouse = false;
 				Subscreens.FirstDraw = true;
-				var saves = Directory.GetDirectories("saves");
+				var rawSaves = Directory.GetDirectories("saves");
+				var saves = new List<string>();
+				foreach (var s in rawSaves)
+				{
+					if (File.Exists(Path.Combine(s, "player.bin")))
+						saves.Add(s);
+				}
 				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
-				if (saves.Length > 0)
+				if (saves.Count > 0)
 				{
 					var saveName = Path.GetFileName(saves[0]);
 					keys[(int)Keys.Enter] = false;
@@ -732,7 +738,7 @@ c    - Chat
 						return p + ", \"" + Path.GetFileName(s) + "\"";
 					}));
 					options.Add("~", "~ Start new game in \"" + NoxicoGame.WorldName + "\" ~");
-					MessageBox.List("There " + (saves.Length == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
+					MessageBox.List("There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
 						() =>
 						{
 							if ((string)MessageBox.Answer == "~")

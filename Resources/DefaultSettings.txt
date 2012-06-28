@@ -38,13 +38,16 @@ skiptitle=false
 ; color: Specifies the special filter to apply to a cell's color information.
 ;        Valid options are:
 ;          none: Don't do anything - show the colors as they are defined.
-;          cga:  Convert the colors to the standard 16 color palette.
-;          mono: Convert the colors to grayscale.
-;        The CGA filter is unimplemented and acts like "none".
-; char:  Specifies the special filter to apply to a cell's character information.
+;           cga: Convert the colors to the standard 16 color CGA palette. Sucks.
+;          mono: Convert the colors to a 256-level grayscale.
+;           psp: Convert the colors to match a Paintshop Pro .PspPalette file.
+;  char: Specifies the special filter to apply to a cell's character information.
 ;        Valid options are:
 ;          none: Show all codepoints as specified.
 ;          437:  Convert all codepoints above 127 to their OEM US counterpart.
 ;		   7bit: Remove all codepoints above 127, use +-| for box drawing.
+;   pal: Specifies which .PspPalette file to use. If not found, switches back to
+;        color=none. Both sixteen and 256-color palettes are supported.
 color=none
 char=none
+pal=Noxico.PspPalette
