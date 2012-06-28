@@ -379,10 +379,10 @@ namespace Noxico
 				//host.SetCell(top, captionPos + captionWidth, (char)(single ? 0xC3 : 0xC6), fgColor, bgColor);
 			}
 
-			for (var i = top + 1; i <= top + height; i++)
-				NoxicoGame.HostForm.DarkenCell(i, left + width + 1);
-			for (var i = left + 1; i <= left + width + 1; i++)
-				NoxicoGame.HostForm.DarkenCell(top + height + 1, i);
+			//for (var i = top + 1; i <= top + height; i++)
+			//	NoxicoGame.HostForm.DarkenCell(i, left + width + 1);
+			//for (var i = left + 1; i <= left + width + 1; i++)
+			//	NoxicoGame.HostForm.DarkenCell(top + height + 1, i);
 		}
 
 		public static IEnumerable<Point> Line(int x0, int y0, int x1, int y1)

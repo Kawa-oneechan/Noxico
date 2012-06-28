@@ -144,6 +144,7 @@ namespace Noxico
 			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
 			{
 				case "cga": colorConverter = ToCGA; break;
+				case "psp": colorConverter = ToPspPal; break;
 				case "mono": colorConverter = ToMono; break;
 				default: colorConverter = (c => c); break;
 			}
@@ -681,34 +682,106 @@ namespace Noxico
 
 		private Color ToCGA(Color color)
 		{
-			/* TODO: convert a given truecolor to the closest CGA equivalent, according to the standard palette.
-			 * 
-			 * Black	#000
-			 * Blue		#00A
-			 * Green	#0A0
-			 * Cyan		#0AA
-			 * Red		#A00
-			 * Magenta	#A0A
-			 * Brown	#A50
-			 * "White"	#AAA
-			 * 
-			 * Gray		#555
-			 * LtBlue	#55F
-			 * LtGreen	#5F5
-			 * LtCyan	#5FF
-			 * LtRed	#F55
-			 * LtMagnt	#F5F
-			 * Yellow	#FF5
-			 * White	#FFF
-			 *
-			 * Formula:
-			 * r = 2 / 3 * (i & 4) / 4 + 1 / 3 * (i & 8) / 8;
-			 * g = 2 / 3 * (i & 2) / 2 + 1 / 3 * (i & 8) / 8;
-			 * b = 2 / 3 * (i & 1) / 1 + 1 / 3 * (i & 8) / 8;
-			 * 
-			 * But if i == 6, g /= 2, to prevent Brown from becoming Mustard.
-			 */
-			return color;
+			var cga = new[,]
+			{
+				{ 0x00, 0x00, 0x00 },
+				{ 0x00, 0x00, 0xAA },
+				{ 0x00, 0xAA, 0x00 },
+				{ 0x00, 0xAA, 0xAA },
+				{ 0xAA, 0x00, 0x00 },
+				{ 0xAA, 0x00, 0xAA },
+				{ 0xAA, 0x55, 0x00 },
+				{ 0xAA, 0xAA, 0xAA },
+
+				{ 0x55, 0x55, 0x55 },
+				{ 0x55, 0x55, 0xFF },
+				{ 0x55, 0xFF, 0x55 },
+				{ 0x55, 0xFF, 0xFF },
+				{ 0xFF, 0x55, 0x55 },
+				{ 0xFF, 0x55, 0xFF },
+				{ 0xFF, 0xFF, 0x55 },
+				{ 0xFF, 0xFF, 0xFF },
+			};
+
+			var r = color.R;
+			var g = color.G;
+			var b = color.B;
+
+			var lowestDist = 9999d;
+			var bestMatch = -1;
+			for (var i = 0; i < 16; i++)
+			{
+				var dR = Math.Pow(r - cga[i, 0], 2);
+				var dG = Math.Pow(g - cga[i, 1], 2);
+				var dB = Math.Pow(b - cga[i, 2], 2);
+				var dist = Math.Sqrt(dR + dG + dB);
+				if (dist < lowestDist)
+				{
+					lowestDist = dist;
+					bestMatch = i;
+				}
+			}
+			return Color.FromArgb(cga[bestMatch, 0], cga[bestMatch, 1], cga[bestMatch, 2]);
+		}
+
+		private byte[,] pspPal;
+		private Color ToPspPal(Color color)
+		{
+			if (pspPal == null)
+			{
+				var palName = IniFile.GetString("filters", "palfile", "noxico.PspPalette");
+				if (!File.Exists(palName))
+				{
+					colorConverter = (c => c);
+					return color;
+				}
+				using (var palFile = new StreamReader(palName))
+				{
+					var i = palFile.ReadLine();
+					if (i != "JASC-PAL")
+					{
+						colorConverter = (c => c);
+						return color;
+					}
+					i = palFile.ReadLine();
+					if (i != "0100")
+					{
+						colorConverter = (c => c);
+						return color;
+					}
+					i = palFile.ReadLine();
+					var numColors = int.Parse(i);
+					pspPal = new byte[numColors, 3];
+					for (var c = 0; c < numColors; c++)
+					{
+						i = palFile.ReadLine();
+						var vals = i.Split(' ').Select(x => byte.Parse(x)).ToArray();
+						pspPal[c, 0] = vals[0];
+						pspPal[c, 1] = vals[1];
+						pspPal[c, 2] = vals[2];
+					}
+				}
+			}
+
+			var r = color.R;
+			var g = color.G;
+			var b = color.B;
+
+			var lowestDist = 9999d;
+			var bestMatch = -1;
+			for (var i = 0; i < pspPal.GetLength(0); i++)
+			{
+				var dR = Math.Pow(r - pspPal[i, 0], 2);
+				var dG = Math.Pow(g - pspPal[i, 1], 2);
+				var dB = Math.Pow(b - pspPal[i, 2], 2);
+				var dist = Math.Sqrt(dR + dG + dB);
+				if (dist < lowestDist)
+				{
+					lowestDist = dist;
+					bestMatch = i;
+				}
+			}
+			return Color.FromArgb(pspPal[bestMatch, 0], pspPal[bestMatch, 1], pspPal[bestMatch, 2]);
 		}
 
 		private Color ToMono(Color color)
