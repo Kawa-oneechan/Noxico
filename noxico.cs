@@ -2687,6 +2687,34 @@ namespace Noxico
 				Morph(targetPlan);
 			}
 		}
+
+		public bool CanShoot()
+		{
+			foreach (var carriedItem in this.GetToken("items").Tokens)
+			{
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
+				if (find.HasToken("equipable") && find.HasToken("weapon") && carriedItem.HasToken("equipped"))
+				{
+					var eq = find.GetToken("equipable");
+					var weap = find.GetToken("weapon");
+					if (eq.HasToken("hand"))
+					{
+						//It's a wielded weapon at least. Now see if it's throwable or a firearm.
+						var skill = weap.GetToken("skill");
+						if (skill == null)
+						{
+							//No skill to determine weapon type by? Assume it's not something you'd throw.
+							return false;
+						}
+						var yes = new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" };
+						return (yes.Contains(skill.Text));
+					}
+				}
+			}
+			return false;
+		}
 	}
 
 	public class InventoryItem : TokenCarrier

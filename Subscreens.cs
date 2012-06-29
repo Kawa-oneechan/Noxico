@@ -32,16 +32,39 @@ namespace Noxico
 			{ "Character stats", "dynamic page" },
 			{ "Skill levels", "dynamic page" },
 			{ "Important keys",
-@"l, / - Look
-i    - Inventory
-p, , - Pick up
-c    - Chat
-<    - Go down stairs, enter door
->    - Go up stairs, enter door
+@"l / - Look
+i   - Inventory
+p , - Pick up
+c   - Chat with someone
+a   - Aim a shot or throw at someone
+f   - Attempt to have sex with someone
+<   - Go down stairs, enter door
+>   - Go up stairs, enter door
 <g1B><g18><g19><g1A> - Move
 .    - Rest" },
-			{ "Other keys", "..." },
-			{ "Credits", "..." },
+			{ "Other keys",
+@"F1  - Open this menu
+" +
+#if DEBUG
+@"F3  - Dump board to HTML (debug only)
+" +
+#endif
+@"F12 - Take screenshot" },
+			{ "Credits",
+@"Programming and idea              Kawa
+
+Inspiration from:          Greg Janson
+                            Tarn Adams
+                      The NetHack team
+
+ Check our website for music credits:
+   http://helmet.kafuka.org/noxico
+
+Thanks to:               Hammy, Nicole
+              Seru-kun, CyclopsCaveman
+                            Mega-Mario
+   all GameDev.StackExchange.com users
+ and mom for not making a fuss over it" },
 			{ "Memory stats", "..." },
 #if DEBUG
 			{ "Debug cheats", "..." },
