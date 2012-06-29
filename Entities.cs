@@ -196,7 +196,7 @@ namespace Noxico
 
 	public class Cursor : Entity
 	{
-		public enum Intents { Look, Take, Chat, Fuck };
+		public enum Intents { Look, Take, Chat, Fuck, Shoot };
 
 		private static int BlinkRate = 500;
 		public int Range { get; set; }
@@ -251,7 +251,7 @@ namespace Noxico
 		public void Point()
 		{
 			PointingAt = null;
-			NoxicoGame.Messages.Last().Message = "Point at " + ((Intent == Intents.Look) ? "an object or character." : (Intent == Intents.Take) ? "an object." : "a character.");
+			NoxicoGame.Messages.Last().Message = (Intent == Intents.Shoot ? "Aim" : "Point") + " at " + ((Intent == Intents.Look) ? "an object or character." : (Intent == Intents.Take) ? "an object." : "a character.");
 			NoxicoGame.Messages.Last().Color = Color.Gray;
 			foreach (var entity in this.ParentBoard.Entities)
 			{
@@ -357,9 +357,21 @@ namespace Noxico
 						if (Intent == Intents.Look)
 							TextScroller.LookAt((BoardChar)PointingAt);
 						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
+						{
 							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
+						}
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
+						{
+							//TODO: Fuck shit up.
 							MessageBox.Message("Can't fuck yet, sorry.", true);
+						}
+						else if (Intent == Intents.Shoot)
+						{
+							if (player.CanSee(PointingAt))
+								player.AimShot(PointingAt);
+							else
+								NoxicoGame.AddMessage("You can't see your target.");
+						}
 					}
 					return;
 				}
@@ -932,6 +944,37 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
+			if (NoxicoGame.KeyMap[(int)Keys.F])
+			{
+				NoxicoGame.ClearKeys();
+				NoxicoGame.AddMessage("[Fuck message]");
+				NoxicoGame.Mode = UserMode.LookAt;
+				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
+				NoxicoGame.Cursor.XPosition = this.XPosition;
+				NoxicoGame.Cursor.YPosition = this.YPosition;
+				NoxicoGame.Cursor.Range = 2;
+				NoxicoGame.Cursor.Intent = Cursor.Intents.Fuck;
+				NoxicoGame.Cursor.Point();
+				return;
+			}
+			if (NoxicoGame.KeyMap[(int)Keys.A])
+			{
+				NoxicoGame.ClearKeys();
+				if (!Character.CanShoot())
+				{
+					NoxicoGame.AddMessage("You are not wielding a throwing weapon or firearm.");
+					return;
+				}
+				NoxicoGame.AddMessage("[Shoot message]");
+				NoxicoGame.Mode = UserMode.LookAt;
+				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
+				NoxicoGame.Cursor.XPosition = this.XPosition;
+				NoxicoGame.Cursor.YPosition = this.YPosition;
+				NoxicoGame.Cursor.Range = 16;
+				NoxicoGame.Cursor.Intent = Cursor.Intents.Shoot;
+				NoxicoGame.Cursor.Point();
+				return;
+			}
 
 			if (NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
 			{
@@ -1117,6 +1160,13 @@ namespace Noxico
 			return newChar;
 		}
 
+
+		public void AimShot(Entity PointingAt)
+		{
+			//TODO: throw whatever is being held by the player at the target, according to their Throwing skill and the total distance.
+			//If it's a gun they're holding, fire it instead, according to their Shooting skill.
+			MessageBox.Message("Can't shoot yet, sorry.", true);
+		}
 	}
 
 	public class Clutter : Entity
