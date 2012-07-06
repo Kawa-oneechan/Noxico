@@ -239,7 +239,7 @@ namespace Noxico
 
 		public void SaveToFile(int index)
 		{
-			var realm = Path.Combine("saves", NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var realm = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 			//Console.WriteLine(" * Saving board {0}...", Name);
@@ -287,7 +287,7 @@ namespace Noxico
 
 		public static Board LoadFromFile(int index)
 		{
-			var realm = Path.Combine("saves", NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var realm = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
 			var file = Path.Combine(realm, "Board" + index + ".brd");
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Board #" + index + " not found!");
