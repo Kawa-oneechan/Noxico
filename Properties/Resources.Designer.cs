@@ -68,7 +68,28 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE biomes [
+        ///	&lt;!ELEMENT biomes (realm+)&gt;
+        ///	&lt;!ELEMENT realm (biome+)&gt;
+        ///	&lt;!ELEMENT biome ANY&gt;
+        ///
+        ///	&lt;!ELEMENT groundGlyphs (#PCDATA)&gt;
+        ///	
+        ///	&lt;!ATTLIST realm
+        ///		id ID #REQUIRED
+        ///		waterLevel CDATA #REQUIRED
+        ///	&gt;
+        ///	&lt;!ATTLIST biome
+        ///		name CDATA #REQUIRED
+        ///		rect CDATA #REQUIRED
+        ///		color CDATA #REQUIRED
+        ///		music CDATA #IMPLIED
+        ///		isWater CDATA #IMPLIED
+        ///		canBurn CDATA #IMPLIED
+        ///	&gt;
+        ///]&gt;
+        ///&lt;!-- Okay, here&apos;s the low-down on what I&apos;m planning. By default, all of these will h [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Biomes {
             get {
@@ -195,6 +216,17 @@ namespace Noxico.Properties {
         internal static string Dialogue {
             get {
                 return ResourceManager.GetString("Dialogue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Acid Advertisement Age Alloy Alternation Ambiance Amusement Angels Annoyance Apathy Art Ascent Ash Atoll Autumn
+        ///Backstabbing Bamboo Bastille Beauty Blankness Blaze Boil Bone Books Braille Brains Brick Bridges Bronze Brooks Bubbles Bulge Burlap Butterflies
+        ///Cacophony Cacti Cages Canopy Canyons Carbon Carpet Cathedrals Caves Chains Change Charge Chemicals Chocolate Circuitry Clay Cliffs Clockwork Clouds Cobalt Cobblestone Concrete Construction Contact Contrast Copper Coral Cotton Crossroads Crystal Cubes Cur [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Homestuck {
+            get {
+                return ResourceManager.GetString("Homestuck", resourceCulture);
             }
         }
         

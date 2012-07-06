@@ -663,12 +663,19 @@ namespace Noxico
 			return -1;
 		}
 
+		//TODO: have the game ask for a name through UITextBox. Use this for when 
 		public string RollWorldName()
 		{
-			var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
-			var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
-			var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
-			return ret;
+			//var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
+			//var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
+			//var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
+			//return ret;
+			var x = Toolkit.ResOrFile(global::Noxico.Properties.Resources.Homestuck, "Homestuck.txt").Split(new[] { '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var a = Toolkit.PickOne(x);
+			var b = Toolkit.PickOne(x);
+			while(b == a)
+				b = Toolkit.PickOne(x);
+			return "Land of " + a + " and " + b;
 		}
 	}
 }
