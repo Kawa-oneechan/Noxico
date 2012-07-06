@@ -45,6 +45,7 @@ namespace Noxico
 		public BSPNode Sibling { get; set; }
 		public SplitDirection SplitDirection { get; set; }
 		public Boundary Bounds { get; set; }
+		public Room Room { get; set; }
 
 		public void Split(Random rand, int level, List<BSPNode> terminals, int maxLevel = 3, int minDist = 5)
 		{
@@ -112,6 +113,7 @@ namespace Noxico
 		public BSPNode Parent { get; set; }
 		public Boundary Bounds { get; set; }
 		public string ID { get; set; }
+		public RoomExit Exit { get; set; }
 
 		public Room(Random rand, BSPNode parent, int minSize = 3, int margin = 0)
 		{
@@ -150,10 +152,12 @@ namespace Noxico
 	{
 		public int Left { get; set; }
 		public int Top { get; set; }
-		public RoomExit(int l, int t)
+		public Direction Side { get; set; }
+		public RoomExit(int l, int t, Direction side)
 		{
 			Left = l;
 			Top = t;
+			Side = side;
 		}
 	}
 
@@ -178,6 +182,7 @@ namespace Noxico
 			foreach (var node in Nodes)
 			{
 				var room = new Room(rand, node, minRoomSize, roomMargin);
+				node.Room = room;
 				Rooms.Add(room);
 			}
 		}
@@ -370,7 +375,7 @@ namespace Noxico
 		public Board Board { get; set; }
 		public Culture Culture { get; set; }
 
-		public List<RoomExit> Exits { get; private set; }
+		//public List<RoomExit> Exits { get; private set; }
 
 		public void Create(Biome biome)
 		{
@@ -381,7 +386,7 @@ namespace Noxico
 			//TODO: add special buildings
 			//To do that, check for a terminal BSPNode of appropriate dimensions and remove the associated room.
 
-			Exits = new List<RoomExit>();
+			//Exits = new List<RoomExit>();
 			foreach (var room in Rooms)
 			{
 				var width = room.Bounds.Right - room.Bounds.Left;
@@ -423,21 +428,46 @@ namespace Noxico
 
 				var left = 0;
 				var top = 0;
+				var side = Direction.North;
 				if (onVertical)
 				{
 					top = rand.Next(room.Bounds.Top + 1, room.Bounds.Bottom - 1);
 					left = (room.Bounds.Right < 40) ? room.Bounds.Right - 1 : room.Bounds.Left;
+					side = (left == room.Bounds.Left) ? Direction.West : Direction.East;
 				}
 				else
 				{
 					top = (room.Bounds.Bottom < 12) ? room.Bounds.Bottom - 1 : room.Bounds.Top;
 					left = rand.Next(room.Bounds.Left + 1, room.Bounds.Right - 1);
+					side = (top == room.Bounds.Top) ? Direction.North : Direction.South;
 				}
-
-				Exits.Add(new RoomExit(left, top));
+				room.Exit = new RoomExit(left, top, side);
+				//Exits.Add(new RoomExit(left, top));
 			}
 
 			//TODO: trace paths through the map?
+
+		}
+
+		public void MakeRoad(ref Tile[,] map, BSPNode node, List<BSPNode> connectedNodes)
+		{
+			//if (connectedNodes.Contains(node))
+			//	return;
+			if (node.Sibling != null)
+			{
+				var l1 = node.Bounds.Right - ((node.Bounds.Right - node.Bounds.Left) / 2);
+				var t1 = node.Bounds.Bottom - ((node.Bounds.Bottom - node.Bounds.Top) / 2);
+				var l2 = node.Sibling.Bounds.Right - ((node.Sibling.Bounds.Right - node.Sibling.Bounds.Left) / 2);
+				var t2 = node.Sibling.Bounds.Bottom - ((node.Sibling.Bounds.Bottom - node.Sibling.Bounds.Top) / 2);
+				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
+				{
+					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
+				}
+				connectedNodes.Add(node);
+				connectedNodes.Add(node.Sibling);
+				if (node.Parent != null)
+					MakeRoad(ref map, node.Parent, connectedNodes);
+			}
 		}
 
 		public override void ToTilemap(ref Tile[,] map)
@@ -446,6 +476,55 @@ namespace Noxico
 			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
 			var wall = Color.FromArgb(71, 50, 33);
 
+			/*
+			 * SO BAD paths ;_;
+			foreach (var room in Rooms)
+			{
+				var l1 = room.Exit.Left;
+				var t1 = room.Exit.Top;
+				var l2 = l1;
+				var t2 = t1;
+				var minLen = (room.Exit.Side == Direction.North || room.Exit.Side == Direction.South) ? 10 : 2;
+				Toolkit.PredictLocation(l1, t1, room.Exit.Side, ref l1, ref t1);
+				for (var i = 0; i < Toolkit.Rand.Next(minLen, minLen + 3); i++)
+					Toolkit.PredictLocation(l2, t2, room.Exit.Side, ref l2, ref t2);
+				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
+				{
+					if (point.X < 0 || point.Y < 0 || point.X > 79 || point.Y > 24)
+						break;
+					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
+				}
+
+				for (var turns = 0; turns < 10; turns++)
+				{
+					if (Toolkit.Rand.NextDouble() < 0.2)
+						break;
+					//Turn around!
+					l1 = l2;
+					t1 = t2;
+					var newDir = Direction.North;
+					if (room.Exit.Side == Direction.North || room.Exit.Side == Direction.South)
+					{
+						newDir = Toolkit.Rand.NextDouble() > 0.5 ? Direction.East : Direction.West;
+						minLen = 10;
+					}
+					else
+					{
+						newDir = Toolkit.Rand.NextDouble() > 0.5 ? Direction.North : Direction.South;
+						minLen = 2;
+					}
+					for (var i = 0; i < Toolkit.Rand.Next(minLen, minLen + 3); i++)
+						Toolkit.PredictLocation(l2, t2, newDir, ref l2, ref t2);
+					foreach (var point in Toolkit.Line(l1, t1, l2, t2))
+					{
+						if (point.X < 0 || point.Y < 0 || point.X > 79 || point.Y > 24)
+							break;
+						map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
+					}
+				}
+			}
+			*/
+			
 			foreach (var room in Rooms)
 			{
 				//Room floors
@@ -471,14 +550,20 @@ namespace Noxico
 				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
 				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+
+				//Exit, if any
+				if (room.Exit != null)
+					map[room.Exit.Left, room.Exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
 
 			Populate(ref map);
 
+			/*
 			foreach (var exit in Exits)
 			{
 				map[exit.Left, exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
+			*/
 		}
 
 		private void GetLocation(out int x, out int y, ref Tile[,] map, Room room)

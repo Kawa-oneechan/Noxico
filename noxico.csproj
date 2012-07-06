@@ -271,6 +271,7 @@
     </None>
     <None Include="Resources\chargen.png" />
     <None Include="Resources\title.png" />
+    <None Include="Resources\Homestuck.txt" />
     <Content Include="Resources\music.xml">
       <SubType>Designer</SubType>
     </Content>

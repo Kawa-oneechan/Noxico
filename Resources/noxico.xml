@@ -750,6 +750,52 @@ ascii
 	</bodyplans>
 
 	<uniques>
+		<character id="Chelsie" name="Chelsie" proper="true">
+			<![CDATA[
+culture
+	japanese
+terms
+	generic: "cheetah"
+	male: "cheetah man"
+	female: "cheetah girl"
+	herm: "cheetah herm"
+ascii
+	char: U+010C
+tallness: 182
+hair
+	length: 7
+	color: brown
+skin
+	type
+		fur
+	color: orange
+eyes
+	color: gold
+face
+	cat
+ears
+	cat
+legs
+	human
+tail
+	genbeast
+ass
+	size: 5
+	fuckable
+hips: roll 1d6
+waist: roll 1d4+1
+fertility: 1d25+5
+breastrow
+	amount: 2
+	size: 4.2
+	nipples: 1
+		size: 1.2
+	milksource
+vagina
+	fuckable
+	clit: 0.3
+			]]>
+		</character>
 		<character id="Lena" name="Lena" proper="true" a="a">
 			<![CDATA[
 culture
