@@ -737,7 +737,7 @@ Thanks to:               Hammy, Nicole
 					Subscreens.UsingMouse = true;
 				Subscreens.Mouse = false;
 				Subscreens.FirstDraw = true;
-				var rawSaves = Directory.GetDirectories("saves");
+				var rawSaves = Directory.GetDirectories(NoxicoGame.SavePath);
 				var saves = new List<string>();
 				foreach (var s in rawSaves)
 				{
@@ -766,7 +766,7 @@ Thanks to:               Hammy, Nicole
 						{
 							if ((string)MessageBox.Answer == "~")
 							{
-								Directory.CreateDirectory(Path.Combine("saves", NoxicoGame.WorldName));
+								Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 								NoxicoGame.Mode = UserMode.Subscreen;
 								NoxicoGame.Subscreen = Introduction.CharacterCreator;
 								NoxicoGame.Immediate = true;

@@ -108,6 +108,7 @@
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens.cs" />
     <Compile Include="UI.cs" />
+    <Compile Include="Vista.cs" />
     <Compile Include="WorldGen.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

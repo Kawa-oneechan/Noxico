@@ -47,15 +47,22 @@ namespace Noxico
 		public static Dictionary<string, char> Views { get; set; }
 		public static string[] TileDescriptions { get; private set; }
 		public static Dictionary<string, string> BodyplanLevs { get; set; }
+		public static string SavePath { get; private set; }
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 
 		public NoxicoGame(MainForm hostForm)
 		{
+			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
+			if (SavePath != null)
+				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
+			else
+				SavePath = "saves"; //Use <startup>\saves instead
+
 			WorldName = RollWorldName();
-			if (!Directory.Exists("saves"))
-				Directory.CreateDirectory("saves");
+			if (!Directory.Exists(SavePath))
+				Directory.CreateDirectory(SavePath);
 
 			lastUpdate = DateTime.Now;
 			Speed = 60;
@@ -157,7 +164,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Text = "Saving...";
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
 			Console.WriteLine("Saving player...");
-			var file = File.Open(Path.Combine("saves", WorldName, "player.bin"), FileMode.Create);
+			var file = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
 			var bin = new BinaryWriter(file);
 			Player.SaveToFile(bin);
 			bin.Flush();
@@ -167,11 +174,11 @@ namespace Noxico
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
 
-			var realm = Path.Combine("saves", WorldName, Player.CurrentRealm);
+			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 
-			file = File.Open(Path.Combine("saves", WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
+			file = File.Open(Path.Combine(SavePath, WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
 			bin = new BinaryWriter(file);
 			bin.Write(header);
 
@@ -216,13 +223,13 @@ namespace Noxico
 		public void LoadGame()
 		{
 			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-			var file = File.Open(Path.Combine("saves", WorldName, "player.bin"), FileMode.Open);
+			var file = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Open);
 			var bin = new BinaryReader(file);
 			Player = Player.LoadFromFile(bin);
 			Player.AdjustView();
 			file.Close();
 
-			var realm = Path.Combine("saves", WorldName, Player.CurrentRealm);
+			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
 
 			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
 			bin = new BinaryReader(file);
