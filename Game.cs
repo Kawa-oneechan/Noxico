@@ -55,10 +55,15 @@ namespace Noxico
 		public NoxicoGame(MainForm hostForm)
 		{
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
-			if (SavePath != null)
+			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
 			else
-				SavePath = "saves"; //Use <startup>\saves instead
+			{
+				SavePath = IniFile.GetString("misc", "savepath", @"$/Noxico"); //"saves"; //Use <startup>\saves instead
+				if (SavePath.StartsWith("$"))
+					SavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + SavePath.Substring(1);
+				SavePath = Path.GetFullPath(SavePath);
+			}
 
 			WorldName = RollWorldName();
 			if (!Directory.Exists(SavePath))
@@ -188,17 +193,8 @@ namespace Noxico
 				for (var x = 0; x < Overworld.GetLength(0); x++)
 					bin.Write(Overworld[x, y]);
 
-			var currentIndex = 0;
-			for (int i = 0; i < Boards.Count; i++)
-			{
-				if (CurrentBoard == Boards[i])
-				{
-					currentIndex = i;
-					break;
-				}
-			}
 
-			bin.Write(currentIndex);
+			bin.Write(CurrentBoard.BoardNum);
 			bin.Write(Boards.Count);
 			//foreach (var b in Boards)
 			//	b.SaveToFile(bin);
@@ -307,6 +303,7 @@ namespace Noxico
 			{
 				Console.WriteLine("Requested board #{0}. Loading...", index);
 				Boards[index] = Board.LoadFromFile(index);
+				Boards[index].BoardNum = index;
 			}
 			return Boards[index];
 		}

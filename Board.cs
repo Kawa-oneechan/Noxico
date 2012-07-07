@@ -192,6 +192,8 @@ namespace Noxico
 	{
 		public static int GeneratorCount = 0;
 
+		public int BoardNum { get; set; }
+
 		public int Lifetime { get; set; }
 		public string Name { get; set; }
 		public string ID { get; private set; }

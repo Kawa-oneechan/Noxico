@@ -122,9 +122,10 @@ namespace Noxico
 			colorConverter = (c => c);
 			charConverter = (c => c);
 
-			if (!File.Exists("noxico.ini"))
-				File.WriteAllText("noxico.ini", global::Noxico.Properties.Resources.DefaultSettings);
-			IniFile.Load("noxico.ini");
+			var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+			if (!File.Exists(iniPath))
+				File.WriteAllText(iniPath, global::Noxico.Properties.Resources.DefaultSettings);
+			IniFile.Load(iniPath);
 
 			var family = IniFile.GetString("font", "family", "Consolas");
 			var emSize = IniFile.GetInt("font", "size", 11);

@@ -30,9 +30,16 @@ soundvolume=100
 ;                The lower, the faster.
 ;     skiptitle: Skip the title screen if there's already a game to restore.
 ;                Has no effect on a clean slate.
+;    vistasaves: Save to %USERPROFILE%\Saved Games on Windows Vista and 7.
+;                Has no effect on any other operating system.
+;      savepath: Specifies where to save world data. Can be an absolute or
+;                relative path. If preceded with "$", that part of the path
+;                is taken to be %APPDATA% on Windows, or ~/.config on Linux.
 rememberpause=true
 autorest=100
 skiptitle=false
+vistasaves=true
+savepath=$/Noxico
 
 [filters]
 ; color: Specifies the special filter to apply to a cell's color information.
