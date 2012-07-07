@@ -275,15 +275,15 @@ namespace Noxico
 					bmp[row, col] = biome[row, col];
 			BiomeBitmap = bmp;
 
-			MapSizeX = 11;
-			MapSizeY = 20;
-			OverworldSize = 12 * 12;
-			BiomeMap = new int[22, 13]; //maps to usual biome list
+			MapSizeX = reach / 80; //1000 -> 12
+			MapSizeY = (reach / 2) / 25; //1000 -> 20
+			OverworldSize = MapSizeX * MapSizeY;
+			BiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			OceanBitmap = new int[OverworldSize];
 			var oceans = 0;
-			for (var bRow = 0; bRow < 20; bRow++)
+			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
-				for (var bCol = 0; bCol < 12; bCol++)
+				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					var counts = new int[255];
 					var oceanTreshold = 2000 - 4;
@@ -320,10 +320,10 @@ namespace Noxico
 			var towns = 0;
 			var townBoards = 0;
 			var wateringHoles = 0;
-			TownMap = new int[22, 13]; //0 - none, -1 - watering hole (town can go nearby), >0 - town
-			for (var bRow = 0; bRow < 20; bRow++)
+			TownMap = new int[MapSizeY, MapSizeX]; //0 - none, -1 - watering hole (town can go nearby), >0 - town
+			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
-				for (var bCol = 0; bCol < 12; bCol++)
+				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					//Find a board with a reasonable amount of water
 					
@@ -345,9 +345,9 @@ namespace Noxico
 					}
 				}
 			}
-			for (var bRow = 0; bRow < 20; bRow++)
+			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
-				for (var bCol = 0; bCol < 12; bCol++)
+				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					if (TownMap[bRow, bCol] == -1)
 					{
