@@ -132,6 +132,7 @@ namespace Noxico
 #if DEBUG
 			//Towngen test
 			var towngenTest = Board.CreateBasicOverworldBoard(Biome.Grassland, "TowngenTest", "Towngen Test", "set://debug");
+			towngenTest.Type = BoardType.Town;
 			CurrentBoard = towngenTest;
 			towngenTest.DumpToHTML("ground");
 			var townGen = new TownGenerator();
@@ -674,7 +675,7 @@ namespace Noxico
 			//var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
 			//var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
 			//return ret;
-			var x = Toolkit.ResOrFile(global::Noxico.Properties.Resources.Homestuck, "Homestuck.txt").Split(new[] { '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var x = Toolkit.ResOrFile(global::Noxico.Properties.Resources.Homestuck, "Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			var a = Toolkit.PickOne(x);
 			var b = Toolkit.PickOne(x);
 			while(b == a)

@@ -135,6 +135,9 @@ penis
 balls
 	amount: 2
 	size: 1
+items
+	knife
+		equipped
 			]]>
 		</bodyplan>
 
@@ -297,6 +300,7 @@ terms
 	male: "incubus"
 	female: "succubus"
 	herm: "omnibus"
+fireproof
 ascii
 	char: U+0026
 bestiary: "The children of the night -- the fun ones."
@@ -680,6 +684,7 @@ terms
 	generic: "dog"
 	male: "dog"
 	female: "bitch"
+normalgenders
 skin
 	type
 		fur
@@ -695,6 +700,7 @@ ascii
 			<![CDATA[
 beast
 bestiary: "Someone's pet dog. Cute."
+normalgenders
 terms
 	generic: "dog"
 	male: "dog"
@@ -717,6 +723,7 @@ terms
 	generic: "rat"
 	male: "rat"
 	female: "rat"
+normalgenders
 skin
 	type
 		fur
@@ -735,6 +742,7 @@ terms
 	generic: "snake"
 	male: "snake"
 	female: "snake"
+normalgenders
 skin
 	type
 		scales
@@ -1306,6 +1314,7 @@ consumed = 1
 			<![CDATA[
 equipable
 	hand
+fireproof
 weapon
 	damage: 30
 	skill: short_sword
@@ -1321,6 +1330,7 @@ ascii
 test
 equipable
 	hand
+fireproof
 weapon
 	damage: 10
 	skill: short_sword
@@ -1335,6 +1345,7 @@ ascii
 			<![CDATA[
 equipable
 	ring
+fireproof
 ascii
 	char: U+25CB
 	fore
@@ -1344,6 +1355,7 @@ ascii
 		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
 			<![CDATA[
 unique
+fireproof
 equipable
 	hand
 weight

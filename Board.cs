@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -188,7 +189,12 @@ namespace Noxico
 		public bool New { get; set; }
 	}
 
-	public class Board
+	public enum BoardType
+	{
+		Wild, Town, Dungeon, Special
+	}
+
+	public class Board : TokenCarrier
 	{
 		public static int GeneratorCount = 0;
 
@@ -198,6 +204,7 @@ namespace Noxico
 		public string Name { get; set; }
 		public string ID { get; private set; }
 		public string Music { get; set; }
+		public BoardType Type { get; set; }
 		public List<Entity> Entities { get; set; }
 		public List<Warp> Warps { get; set; }
 		public List<Location> DirtySpots { get; set; }
@@ -220,6 +227,7 @@ namespace Noxico
 
 		public Board()
 		{
+			this.Tokens = new List<Token>();
 			this.Entities = new List<Entity>();
 			this.EntitiesToRemove = new List<Entity>();
 			this.EntitiesToAdd = new List<Entity>();
@@ -241,15 +249,17 @@ namespace Noxico
 
 		public void SaveToFile(int index)
 		{
-			var realm = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 			//Console.WriteLine(" * Saving board {0}...", Name);
-			using (var stream = new BinaryWriter(File.Open(Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
+			using (var stream = new BinaryWriter(File.Open(System.IO.Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
-				stream.Write(Name);
-				stream.Write(ID);
-				stream.Write(Music);
+				//stream.Write(Name);
+				//stream.Write(ID);
+				//stream.Write(Music);
+				stream.Write(Tokens.Count);
+				Tokens.ForEach(x => x.SaveToFile(stream));				
 
 				stream.Write(Sectors.Count);
 				//stream.Write(Entities.OfType<FloorBot>().Count());
@@ -289,16 +299,23 @@ namespace Noxico
 
 		public static Board LoadFromFile(int index)
 		{
-			var realm = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
-			var file = Path.Combine(realm, "Board" + index + ".brd");
+			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var file = System.IO.Path.Combine(realm, "Board" + index + ".brd");
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Board #" + index + " not found!");
 			var newBoard = new Board();
 			using (var stream = new BinaryReader(File.Open(file, FileMode.Open)))
 			{
-				newBoard.Name = stream.ReadString();
-				newBoard.ID = stream.ReadString();
-				newBoard.Music = stream.ReadString();
+				//newBoard.Name = stream.ReadString();
+				//newBoard.ID = stream.ReadString();
+				//newBoard.Music = stream.ReadString();
+				var numTokens = stream.ReadInt32();
+				for (var i = 0; i < numTokens; i++)
+					newBoard.Tokens.Add(Token.LoadFromFile(stream));
+				newBoard.Name = newBoard.GetToken("name").Text;
+				newBoard.ID = newBoard.GetToken("id").Text;
+				newBoard.Music = newBoard.GetToken("music").Text;
+				newBoard.Type = (BoardType)newBoard.GetToken("type").Value;
 
 				var secCt = stream.ReadInt32();
 				//var botCt = stream.ReadInt32();
@@ -332,10 +349,11 @@ namespace Noxico
 				for (int i = 0; i < wrpCt; i++)
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
 
+				newBoard.RespawnEncounters();
+
 				newBoard.BindEntities();
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
-
 			}
 			return newBoard;
 		}
@@ -1243,6 +1261,7 @@ namespace Noxico
 					};
 				}
 			}
+			newBoard.Tokens = Token.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biome + "\nencounters: 0\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
@@ -1274,10 +1293,19 @@ namespace Noxico
 					};
 				}
 			}
+
+			var biomeData = WorldGen.Biomes[biome];
+	
 			newBoard.ID = string.Format("OW_{0}x{1}", x, y);
 			newBoard.Name = newBoard.ID;
 			//newBoard.Music = "set://" + ((Biome)biome).ToString();
-			newBoard.Music = WorldGen.Biomes[biome].Music;
+			newBoard.Music = biomeData.Music;
+			newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+
+			var encounters = newBoard.GetToken("encounters");
+			foreach (var e in biomeData.Encounters)
+				encounters.Tokens.Add(new Token() { Name = e });
+
 			return newBoard;
 		}
 
@@ -1296,6 +1324,7 @@ namespace Noxico
 			file.WriteLine("\tName: {0}<br />", Name);
 			file.WriteLine("\tID: {0}<br />", ID);
 			file.WriteLine("\tMusic: {0}<br />", Music);
+			file.WriteLine("\tType: {0}<br />", Type);
 			file.WriteLine("</	p>");
 			file.WriteLine("<h2>Screendump</h2>");
 			file.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
@@ -1333,13 +1362,22 @@ namespace Noxico
 				file.WriteLine("</tr>");
 			}
 			file.WriteLine("</table>");
+
+			if (Type == BoardType.Dungeon || Type == BoardType.Wild)
+			{
+				file.WriteLine("<h2>Encounter set</h2>");
+				file.WriteLine("<ul>");
+				GetToken("encounters").Tokens.ForEach(x => Console.WriteLine("<li>{0}</li>", x));
+				file.WriteLine("</ul>");
+			}
+
 			file.WriteLine("<h2>Entities</h2>");
 			if (Entities.OfType<BoardChar>().Count() > 0)
 			{
 				file.WriteLine("<h3>BoardChar</h3>");
 				foreach (var bc in Entities.OfType<BoardChar>())
 				{
-					file.WriteLine("<h4 id=\"{1}\">{0}</h4>", bc.Character.Name.ToString(true), bc.ID);
+					file.WriteLine("<h4 id=\"{1}\">{0}</h4>", bc.Character.IsProperNamed ? bc.Character.Name.ToString(true) : bc.Character.Title, bc.ID);
 					file.WriteLine("<pre>");
 					file.WriteLine(bc.Character.DumpTokens(bc.Character.Tokens, 0));
 					file.WriteLine("</pre>");
@@ -1347,6 +1385,39 @@ namespace Noxico
 			}
 			file.Flush();
 			file.Close();
+		}
+
+		public void RespawnEncounters()
+		{
+			if (GetToken("encounters").Value == 0 || Type != BoardType.Dungeon && Type != BoardType.Wild)
+				return;
+			var encData = GetToken("encounters");
+			var count = Entities.OfType<BoardChar>().Count();
+			var toAdd = encData.Value - count;
+			if (toAdd <= 0)
+				return;
+			for (var i = 0; i < toAdd; i++)
+			{
+				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).ToArray()), Gender.Random))
+				{
+					ParentBoard = this,
+				};
+				newb.XPosition = Toolkit.Rand.Next(2, 78);
+				newb.YPosition = Toolkit.Rand.Next(2, 23);
+				while (IsSolid(newb.YPosition, newb.XPosition))
+				{
+					newb.XPosition = Toolkit.Rand.Next(2, 78);
+					newb.YPosition = Toolkit.Rand.Next(2, 23);
+				}
+				newb.Character.Tokens.Add(new Token() { Name = "hostile" });
+				newb.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
+				this.Entities.Add(newb);
+			}
+
+			//Clean up some of the corpses at random.
+			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
+				if (Toolkit.Rand.NextDouble() > 0.7)
+					this.EntitiesToRemove.Add(corpse);
 		}
 	}
 

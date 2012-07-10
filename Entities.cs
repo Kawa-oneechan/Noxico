@@ -358,12 +358,24 @@ namespace Noxico
 							TextScroller.LookAt((BoardChar)PointingAt);
 						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
 						{
-							MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
+							if (((BoardChar)PointingAt).Character.HasToken("beast"))
+								MessageBox.Message("The " + ((BoardChar)PointingAt).Character.Title + " cannot speak.", true);
+							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
+								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
+							else
+								MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
 						}
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
 						{
-							//TODO: Fuck shit up.
-							MessageBox.Message("Can't fuck yet, sorry.", true);
+							if (((BoardChar)PointingAt).Character.HasToken("beast"))
+								MessageBox.Message("The " + ((BoardChar)PointingAt).Character.Title + " is not a sentient being.", true);
+							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
+								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
+							else
+							{
+								//TODO: Fuck shit up.
+								MessageBox.Message("Can't fuck yet, sorry.", true);
+							}
 						}
 						else if (Intent == Intents.Shoot)
 						{
@@ -506,10 +518,13 @@ namespace Noxico
 
 			base.Update();
 
-			if (ParentBoard.IsBurning(YPosition, XPosition))
+			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
 					return;
-			
+
+			if (Character.HasToken("incapacitated"))
+				return;
+
 			if (MoveTimer > MoveSpeed)
 				MoveTimer = 0;
 			else if (MoveSpeed > 0)
@@ -630,6 +645,9 @@ namespace Noxico
 			var skill = "unarmed_combat";
 			var verb = "struck";
 			var obituary = "being struck down";
+			var attackerName = this.Character.IsProperNamed ? this.Character.Name.ToString() : "the " + this.Character.Title;
+			var targetName = target.Character.IsProperNamed ? target.Character.Name.ToString() : "the " + target.Character.Title;
+			var targetFullName = target.Character.IsProperNamed ? target.Character.Name.ToString(true) : "the " + target.Character.Title;
 			if (weaponData == null)
 			{
 				//Unarmed combat by default.
@@ -663,16 +681,16 @@ namespace Noxico
 			//Determine dodges
 			if (dodged)
 			{
-				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + " dodged " + (target is Player ? this.Character.Name.ToString() + "'s" : "your") + " attack.");
+				NoxicoGame.AddMessage((target is Player ? targetName : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
 				return;
 			}
 
 			if (damage > 0)
 			{
-				NoxicoGame.AddMessage((target is Player ? this.Character.Name.ToString() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : target.Character.Name.ToString()) + " for " + damage + " points.");
+				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " points.");
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + this.Character.Name.ToString(true), this))
+			if (target.Hurt(damage, obituary + " by " + targetFullName, this))
 			{
 				//Gain a bonus from killing the target?
 			}
@@ -701,11 +719,29 @@ namespace Noxico
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
-				Name = Character.Name + "'s remains",
-				Description = "These are the remains of " + Character.Name + ", who died from " + obituary + ".",
+				Name = Character.Name.ToString(true) + "'s remains",
+				Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who died from " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
+			if (!Character.IsProperNamed)
+			{
+				corpse.Name = Character.GetTitle() + "'s remains";
+				corpse.Description = "These are the remains of " + Character.GetTitle() + ", who died from " + obituary + ".";
+			}
+			
+			//Scatter belongings, if any
+			var items = Character.GetToken("items");
+			if (items != null && items.Tokens.Count > 0)
+			{
+				while (items.Tokens.Count > 0)
+				{
+					var itemToken = items.Tokens[0];
+					var knownItem = NoxicoGame.KnownItems.First(i => i.ID == itemToken.Name);
+					knownItem.Drop(this, itemToken);
+				}
+			}
+
 			ParentBoard.EntitiesToRemove.Add(this);
 			ParentBoard.EntitiesToAdd.Add(corpse);
 		}
@@ -918,13 +954,16 @@ namespace Noxico
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
+			if (Character.HasToken("incapacitated"))
+				return;
+
 			if (NoxicoGame.KeyMap[(int)Keys.F1])
 			{
 				Pause.Open();
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod])
+			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && !NoxicoGame.Modifiers[0])
 			{
 				NoxicoGame.ClearKeys();
 				EndTurn();
@@ -1021,6 +1060,29 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Subscreen;
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.FirstDraw = true;
+				return;
+			}
+
+			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
+			{
+				NoxicoGame.ClearKeys();
+				//Find bed
+				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398');
+				if (bed != null)
+				{
+					if (Character.GetToken("health").Value < Character.GetMaximumHealth())
+					{
+						MessageBox.Ask("Rest a while?", () =>
+						{
+							Character.Tokens.Add(new Token() { Name = "incapacitated" });
+							NoxicoGame.Mode = UserMode.Subscreen;
+							NoxicoGame.Subscreen = Subscreens.SleepAWhile;
+							Subscreens.FirstDraw = true;
+						}, null, true, "Bed");
+					}
+					else
+						NoxicoGame.AddMessage("There is no need to sleep now.");
+				}
 				return;
 			}
 
@@ -1160,7 +1222,6 @@ namespace Noxico
 			return newChar;
 		}
 
-
 		public void AimShot(Entity PointingAt)
 		{
 			//TODO: throw whatever is being held by the player at the target, according to their Throwing skill and the total distance.
@@ -1174,6 +1235,7 @@ namespace Noxico
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int Life { get; set; }
+		public bool CanBurn { get; set; }
 
 		public Clutter()
 		{
@@ -1196,11 +1258,9 @@ namespace Noxico
 		{
 			base.Update();
 			if (Life > 0)
-			{
 				Life--;
-				if (Life == 0)
-					ParentBoard.EntitiesToRemove.Add(this);
-			}
+			if (Life == -1 || (CanBurn && ParentBoard.IsBurning(YPosition, XPosition)))
+				ParentBoard.EntitiesToRemove.Add(this);
 		}
 
 		public override void Move(Direction targetDirection)
@@ -1214,6 +1274,7 @@ namespace Noxico
 			base.SaveToFile(stream);
 			stream.Write(Name ?? "");
 			stream.Write(Description ?? "");
+			stream.Write(CanBurn);
 		}
 
 		public static new Clutter LoadFromFile(BinaryReader stream)
@@ -1226,6 +1287,7 @@ namespace Noxico
 			};
 			newDress.Name = stream.ReadString();
 			newDress.Description = stream.ReadString();
+			newDress.CanBurn = stream.ReadBoolean();
 			return newDress;
 		}
 
@@ -1284,6 +1346,8 @@ namespace Noxico
 
 		public override void Update()
 		{
+			if (!Item.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
+				ParentBoard.EntitiesToRemove.Add(this);
 		}
 
 		public override void Move(Direction targetDirection)
