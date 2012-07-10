@@ -1384,26 +1384,29 @@ namespace Noxico
 			}
 			*/
 
-			if (newChar.HasToken("culture") && newChar.GetToken("culture").Tokens.Count > 0)
+			if (!newChar.HasToken("beast"))
 			{
-				var culture = newChar.GetToken("culture").Tokens[0].Name;
-				if (Culture.Cultures.ContainsKey(culture))
-					newChar.Name.Culture = Culture.Cultures[culture];
+				if (newChar.HasToken("culture") && newChar.GetToken("culture").Tokens.Count > 0)
+				{
+					var culture = newChar.GetToken("culture").Tokens[0].Name;
+					if (Culture.Cultures.ContainsKey(culture))
+						newChar.Name.Culture = Culture.Cultures[culture];
+				}
+				if (gender == Gender.Female)
+					newChar.Name.Female = true;
+				else if (gender == Gender.Herm || gender == Gender.Neuter)
+					newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+				newChar.Name.Regenerate();
+				var patFather = new Name() { Culture = newChar.Name.Culture, Female = false };
+				var patMother = new Name() { Culture = newChar.Name.Culture, Female = true };
+				patFather.Regenerate();
+				patMother.Regenerate();
+				newChar.Name.ResolvePatronym(patFather, patMother);
+				newChar.IsProperNamed = true;
 			}
-			if (gender == Gender.Female)
-				newChar.Name.Female = true;
-			else if (gender == Gender.Herm || gender == Gender.Neuter)
-				newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
-			newChar.Name.Regenerate();
-			var patFather = new Name() { Culture = newChar.Name.Culture, Female = false };
-			var patMother = new Name() { Culture = newChar.Name.Culture, Female = true };
-			patFather.Regenerate();
-			patMother.Regenerate();
-			newChar.Name.ResolvePatronym(patFather, patMother);
-			newChar.IsProperNamed = true;
 
 			var terms = newChar.GetToken("terms");
-			newChar.Species = gender.ToString() + " " +  terms.GetToken("generic").Text;
+			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
 			if (gender == Gender.Male && terms.HasToken("male"))
 				newChar.Species = terms.GetToken("male").Text;
 			else if (gender == Gender.Female && terms.HasToken("female"))
@@ -1647,6 +1650,11 @@ namespace Noxico
 
 		public string LookAt(Entity pa)
 		{
+			if (this.HasToken("beast"))
+			{
+				return this.GetToken("bestiary").Text;
+			}
+
 			var sb = new StringBuilder();
 
 			sb.AppendFormat("[He] [is] {0} tall. ", Descriptions.Length(this.GetToken("tallness").Value));

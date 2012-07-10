@@ -391,6 +391,8 @@ namespace Noxico
 		public char[] GroundGlyphs { get; private set; }
 		public double DarkenPlus { get; private set; }
 		public double DarkenDiv { get; private set; }
+		public int MaxEncounters { get; private set; }
+		public string[] Encounters { get; private set; }
 
 		public static BiomeData FromXML(XmlElement x)
 		{
@@ -419,6 +421,17 @@ namespace Noxico
 			{
 				n.DarkenPlus = double.Parse(((XmlElement)darken).GetAttribute("plus"), System.Globalization.CultureInfo.InvariantCulture);
 				n.DarkenDiv = double.Parse(((XmlElement)darken).GetAttribute("div"), System.Globalization.CultureInfo.InvariantCulture);
+			}
+
+			var encounters = x.SelectSingleNode("encounters");
+			if (encounters == null)
+				n.Encounters = new string[0];
+			else
+			{
+				n.MaxEncounters = 10;
+				if (((XmlElement)encounters).HasAttribute("max"))
+					n.MaxEncounters = int.Parse(((XmlElement)encounters).GetAttribute("max"));
+				n.Encounters = encounters.InnerText.Split(',').Select(e => e.Trim()).ToArray();
 			}
 
 			return n;

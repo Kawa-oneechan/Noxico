@@ -5,7 +5,8 @@
 	<!ELEMENT biome ANY>
 
 	<!ELEMENT groundGlyphs (#PCDATA)>
-	
+	<!ELEMENT encounters (#PCDATA)>
+
 	<!ATTLIST realm
 		id ID #REQUIRED
 		waterLevel CDATA #REQUIRED
@@ -18,6 +19,9 @@
 		isWater CDATA #IMPLIED
 		canBurn CDATA #IMPLIED
 	>
+	<!ATTLIST encounters
+		max CDATA #IMPLIED
+	>
 ]>
 <!-- Okay, here's the low-down on what I'm planning. By default, all of these will have {  , ' ` .  } as their "grass".
 But I'm gonna allow a <groundGlyphs> element to overrule that. Why an element? Because that lets us use ".
@@ -27,9 +31,12 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 		<biome name="Water" rect="0 0 0 0" color="0 0 127" isWater="true" />
 		<biome name="Tundra" rect="0 0 48 192" color="230 243 242" music="set://Snow">
 			<groundGlyphs>&#x2591;&#x201E; ~/</groundGlyphs>
+			<encounters max="10">imp, imp, wild_dog, imp</encounters>
 		</biome>
 		<biome name="Grass Desert" rect="48 0 160 64" color="146 182 131" music="set://Desert" canBurn="true" />
-		<biome name="Desert" rect="160 0 256 64" color="210 203 152" music="set://Desert" />
+		<biome name="Desert" rect="160 0 256 64" color="210 203 152" music="set://Desert">
+			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
+		</biome>
 		<biome name="Taiga" rect="48 64 96 192" color="183 208 196" music="set://Snow" />
 		<biome name="Woods" rect="96 64 176 128" color="52 106 40" music="set://Grassland" canBurn="true" />
 		<biome name="Savanna" rect="176 64 256 128" color="93 94 41" music="set://Grassland" canBurn="true" />

@@ -21,6 +21,31 @@ namespace Noxico
 		public static bool Mouse = false;
 		public static int MouseX = -1;
 		public static int MouseY = -1;
+
+		public static void SleepAWhile()
+		{
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+
+			var max = player.GetMaximumHealth();
+			var now = player.GetToken("health").Value;
+			if (player.GetToken("health").Value < max)
+			{
+				player.GetToken("health").Value += 0.2f;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Update(true);
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				for (var i = 0; i < 25; i++)
+					for (var j = 0; j < 80; j++)
+						NoxicoGame.HostForm.DarkenCell(i, j);
+				return;
+			}
+			else
+			{
+				player.GetToken("health").Value = max;
+				NoxicoGame.Mode = UserMode.Walkabout;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				player.Tokens.Remove(player.GetToken("incapacitated"));
+			}
+		}
 	}
 
 	public class Pause
@@ -32,16 +57,16 @@ namespace Noxico
 			{ "Character stats", "dynamic page" },
 			{ "Skill levels", "dynamic page" },
 			{ "Important keys",
-@"l / - Look
+@"<g2194> <g2195> - Move
+l / - Look
 i   - Inventory
 p , - Pick up
 c   - Chat with someone
 a   - Aim a shot or throw at someone
 f   - Attempt to have sex with someone
-<   - Go down stairs, enter door
->   - Go up stairs, enter door
-<g1B><g18><g19><g1A> - Move
-.    - Rest" },
+<g3C>   - Ascend stairs, enter door
+>   - Descend, enter door, use bed
+.   - Rest" },
 			{ "Other keys",
 @"F1  - Open this menu
 " +
@@ -53,16 +78,16 @@ f   - Attempt to have sex with someone
 			{ "Credits",
 @"Programming and idea              Kawa
 
-Inspiration from:          Greg Janson
-                            Tarn Adams
+Inspiration from:           Tarn Adams
+                           Greg Janson
                       The NetHack team
 
  Check our website for music credits:
    http://helmet.kafuka.org/noxico
 
-Thanks to:               Hammy, Nicole
-              Seru-kun, CyclopsCaveman
-                            Mega-Mario
+Thanks to:     Hammy, Nicole, Seru-kun
+            CyclopsCaveman, Mega-Mario
+     all #rgrd and RogueBasin coolkids
    all GameDev.StackExchange.com users
  and mom for not making a fuss over it" },
 			{ "Memory stats", "..." },
