@@ -1,12 +1,12 @@
-Content-Type: multipart/related; start=<op.mhtml.1329677176796.f09e9678522b4503@192.168.1.100>; boundary=----------CiCp4joMgkJYPO3jLG6VFQ
+Content-Type: multipart/related; start=<op.mhtml.1341233196249.aeaec678522b9816@192.168.178.13>; boundary=----------OLowQREbKSjbBNL3bRnHuC
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php/Designing_Flexible,_Reusable_Algorithms
 Subject: =?utf-8?Q?Designing=20Flexible,=20Reusable=20Algorithms=20-=20RogueBasin?=
 MIME-Version: 1.0
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename="Designing_Flexible,_Reusable_Algorithms.htm"
 Content-Type: text/html; charset=UTF-8; name="Designing_Flexible,_Reusable_Algorithms.htm"
-Content-ID: <op.mhtml.1329677176796.f09e9678522b4503@192.168.1.100>
+Content-ID: <op.mhtml.1341233196249.aeaec678522b9816@192.168.178.13>
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php/Designing_Flexible,_Reusable_Algorithms
 Content-Transfer-Encoding: 8bit
 
@@ -215,7 +215,7 @@ Template argument size: 0/2097152 bytes
 Expensive parser function count: 0/100
 -->
 
-<!-- Saved in parser cache with key 133099-basin:pcache:idhash:4251-0!1!0!!en!2!edit=0 and timestamp 20120218203742 -->
+<!-- Saved in parser cache with key 133099-basin:pcache:idhash:4251-0!1!0!!en!2!edit=0 and timestamp 20120701204724 -->
 <div class="printfooter">
 Retrieved from "<a href="http://roguebasin.roguelikedevelopment.org/index.php/Designing_Flexible,_Reusable_Algorithms">http://roguebasin.roguelikedevelopment.org/index.php/Designing_Flexible,_Reusable_Algorithms</a>"</div>
 		<div id='catlinks' class='catlinks catlinks-allhidden'></div>		<!-- end content -->
@@ -301,7 +301,7 @@ Retrieved from "<a href="http://roguebasin.roguelikedevelopment.org/index.php/De
 	<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" height="31" width="88" alt="Powered by MediaWiki" /></a></div>
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 14 December 2011, at 11:46.</li>
-		<li id="viewcount">This page has been accessed 421 times.</li>
+		<li id="viewcount">This page has been accessed 1,044 times.</li>
 		<li id="privacy"><a href="/index.php/RogueBasin:Privacy_policy" title="RogueBasin:Privacy policy">Privacy policy</a></li>
 		<li id="about"><a href="/index.php/RogueBasin:About" title="RogueBasin:About">About RogueBasin</a></li>
 		<li id="disclaimer"><a href="/index.php/RogueBasin:General_disclaimer" title="RogueBasin:General disclaimer">Disclaimers</a></li>
@@ -310,11 +310,11 @@ Retrieved from "<a href="http://roguebasin.roguelikedevelopment.org/index.php/De
 </div>
 
 <script>if (window.runOnloadHook) runOnloadHook();</script>
-<!-- Served in 0.364 secs. --></body></html>
+<!-- Served in 0.460 secs. --></body></html>
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=shared.css
-Content-Type: text/css; charset=UTF-8; name=shared.css
+Content-Type: text/css; name=shared.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/common/shared.css?270
 Content-Transfer-Encoding: 8bit
 
@@ -1150,9 +1150,9 @@ a.sortheader {
 	margin: 0 0.3em;
 }
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=commonPrint.css
-Content-Type: text/css; charset=UTF-8; name=commonPrint.css
+Content-Type: text/css; name=commonPrint.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/common/commonPrint.css?270
 Content-Transfer-Encoding: 8bit
 
@@ -1406,7 +1406,7 @@ td.diff-context {
     text-decoration: underline;
 }
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/jpeg
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/headbg.jpg
@@ -1578,7 +1578,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAD//Z
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/gif
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/bullet.gif
@@ -1587,7 +1587,7 @@ Content-Transfer-Encoding: Base64
 R0lGODlhBQANAIAAAGOMnP///yH5BAEAAAEALAAAAAAFAA0AAAIJjI+pu+APo4Sp
 ADs=
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/png
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/external.png
@@ -1598,7 +1598,7 @@ zP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcl
 y0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4
 AVnsAZubxDVmAAAAAElFTkSuQmCC
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/gif
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/lock_icon.gif
@@ -1625,7 +1625,7 @@ xQgNABIqHLECgEUOESJKzFBRIQWNCTOYAJlBAUiEC0kmOCkQRICXMGFiCLkiRQkR
 HzZYmPCAZYYBBQ4saPDgQQUPPmvezGlBQs+QAggYQMDAgdEOSW3i1DkBAssQFsOK
 vTAwIAA7
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/gif
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/user.gif
@@ -1639,9 +1639,9 @@ m8rio83jqNHmrtXotOPEl/HDg/LKjvfaq/ngut3Z1Nvrwd/tx/vqz///////////
 AVO4cKRgHwNg+sjQZrFEYFpSyUihyGD6M4lAEgRbCKnPTaYRjjRYH00vLAUkFhoV
 fkQmNy4rJxYcGBQTiEImNi0TKB0bHgSTRX2hon1zpaanP0EAOw==
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=main.css
-Content-Type: text/css; charset=UTF-8; name=main.css
+Content-Type: text/css; name=main.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/monobook/main.css?270
 Content-Transfer-Encoding: 8bit
 
@@ -2954,28 +2954,28 @@ div.mw-lag-warn-high {
 	text-transform: none;
 }
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=index.css
 Content-Type: text/css; charset=UTF-8; name=index.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php?title=MediaWiki:Common.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000
 Content-Transfer-Encoding: 8bit
 
 /* CSS placed here will be applied to all skins */
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=index.css
 Content-Type: text/css; charset=UTF-8; name=index.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php?title=MediaWiki:Print.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000
 Content-Transfer-Encoding: 8bit
 
 /* CSS placed here will affect the print output */
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=index.css
 Content-Type: text/css; charset=UTF-8; name=index.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php?title=MediaWiki:Monobook.css&usemsgcache=yes&ctype=text%2Fcss&smaxage=18000&action=raw&maxage=18000
 Content-Transfer-Encoding: 8bit
 
 /* CSS placed here will affect users of the Monobook skin */
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=index.css
 Content-Type: text/css; charset=UTF-8; name=index.css
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php?title=-&action=raw&maxage=18000&gen=css
@@ -2984,9 +2984,9 @@ Content-Transfer-Encoding: 8bit
 /* generated user stylesheet */
 a.new, #quickbar a.new { color: #CC2200; }
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=wikibits.js
-Content-Type: application/x-javascript; charset=UTF-8; name=wikibits.js
+Content-Type: application/x-javascript; name=wikibits.js
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/common/wikibits.js?270
 Content-Transfer-Encoding: Base64
 
@@ -3635,9 +3635,9 @@ aWYgKCBpZTZfYnVncyApIHsKCWltcG9ydFNjcmlwdFVSSSggc3R5bGVwYXRoICsg
 Jy9jb21tb24vSUVGaXhlcy5qcycgKTsKfQoKLy8gRm9yIGZ1dHVyZSB1c2UuCm13
 ID0ge307CgoK
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=ajax.js
-Content-Type: application/x-javascript; charset=UTF-8; name=ajax.js
+Content-Type: application/x-javascript; name=ajax.js
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/common/ajax.js?270
 Content-Transfer-Encoding: Base64
 
@@ -3742,7 +3742,7 @@ dmFyIHJlcXVlc3QgPSBzYWpheF9pbml0X29iamVjdCgpOwoJdmFyIHN1cHBvcnRz
 QWpheCA9IHJlcXVlc3QgPyB0cnVlIDogZmFsc2U7CglkZWxldGUgcmVxdWVzdDsK
 CXJldHVybiBzdXBwb3J0c0FqYXg7Cn0KCg==
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=index.js
 Content-Type: text/javascript; charset=UTF-8; name=index.js
 Content-Location: http://roguebasin.roguelikedevelopment.org/index.php?title=-&action=raw&gen=js&useskin=monobook&270
@@ -3757,7 +3757,7 @@ var stylepath = '/skins';
 
 /* MediaWiki:Monobook.js */
 /* Any JavaScript here will be loaded for users using the MonoBook skin */
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline
 Content-Type: image/png
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/roguebasin/RogueBasin_logo.png
@@ -3982,7 +3982,7 @@ JYFqde/3iB01WkYsGNcgJvdOlqrWtbv1Xf9mrSGW4lmhdfyFJOy5YtaHtLnGs49y
 Ql45RfG+qdhHfpqAdQes2TcV+8hPw+WZjNg3FfvIT4VY4dSU3jqAfw0AWry449us
 qLAAAAAASUVORK5CYII=
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=guardianOfRogueBasin.png
 Content-Type: image/png; name=guardianOfRogueBasin.png
 Content-Location: http://www.roguebasin.com/skins/roguebasin/guardianOfRogueBasin.png
@@ -4247,7 +4247,7 @@ nX8wgqJsFos2OB3UPlijVld3jA0dMMxgMsiht9EdZMMlGIYZTCYyOB2Usvo31R9d
 jE1jgaDBtq/9pQwMD0ZH/+ZNdwR1Gvwo1PJOGKvGMpzzcwajY+CuqgPLjIU0AAD/
 C74yZPhyCpAGAAAAAElFTkSuQmCC
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=poweredby_mediawiki_88x31.png
 Content-Type: image/png; name=poweredby_mediawiki_88x31.png
 Content-Location: http://roguebasin.roguelikedevelopment.org/skins/common/images/poweredby_mediawiki_88x31.png
@@ -4295,7 +4295,7 @@ cpfVhBiG5mtUKirJTwprakqTaEa4E8KkUgbu3J2mZvbxdO5ShpmBcRkk2dFBNnSs
 f7d7VQPzZM2GcWhLPcPc3pNaz5BPAZ6TMPzynPSfhOeovwCx6Xbt5tzVdAAAAABJ
 RU5ErkJggg==
 
-------------CiCp4joMgkJYPO3jLG6VFQ
+------------OLowQREbKSjbBNL3bRnHuC
 Content-Disposition: inline; filename=favicon.htm
 Content-Type: text/html; name=favicon.htm
 Content-Location: http://roguebasin.roguelikedevelopment.org/favicon.ico
@@ -4310,4 +4310,4 @@ The resource requested could not be found on this server!<hr />
 Powered By <a href='http://www.litespeedtech.com'>LiteSpeed Web Server</a><br />
 <font face="Verdana, Arial, Helvetica" size=-1>LiteSpeed Technologies is not responsible for administration and contents of this web site!</font></body></html>
 
-------------CiCp4joMgkJYPO3jLG6VFQ--
+------------OLowQREbKSjbBNL3bRnHuC--

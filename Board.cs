@@ -152,8 +152,8 @@ namespace Noxico
 		public string ID { get; set; }
 		public int XPosition { get; set; }
 		public int YPosition { get; set; }
-		public string TargetBoard { get; set; }
-		public string TargetWarp { get; set; }
+		public int TargetBoard { get; set; }
+		public string TargetWarpID { get; set; }
 
 		public Warp()
 		{
@@ -166,8 +166,8 @@ namespace Noxico
 			stream.Write(ID);
 			stream.Write((byte)XPosition);
 			stream.Write((byte)YPosition);
-			stream.Write(TargetBoard ?? "");
-			stream.Write(TargetWarp ?? "");
+			stream.Write(TargetBoard);
+			stream.Write(TargetWarpID ?? "");
 		}
 
 		public static Warp LoadFromFile(BinaryReader stream)
@@ -176,8 +176,8 @@ namespace Noxico
 			newWarp.ID = stream.ReadString();
 			newWarp.XPosition = stream.ReadByte();
 			newWarp.YPosition = stream.ReadByte();
-			newWarp.TargetBoard = stream.ReadString();
-			newWarp.TargetWarp = stream.ReadString();
+			newWarp.TargetBoard = stream.ReadInt32();
+			newWarp.TargetWarpID = stream.ReadString();
 			return newWarp;
 		}
 	}
@@ -202,7 +202,7 @@ namespace Noxico
 
 		public int Lifetime { get; set; }
 		public string Name { get; set; }
-		public string ID { get; private set; }
+		public string ID { get; set; }
 		public string Music { get; set; }
 		public BoardType Type { get; set; }
 		public List<Entity> Entities { get; set; }
@@ -795,7 +795,7 @@ namespace Noxico
 				var wi = w.GetAttribute("id");
 				var tb = w.GetAttribute("target");
 				var tw = w.GetAttribute("warp");
-				newBoard.Warps.Add(new Warp() { XPosition = x, YPosition = y, ID = wi, TargetBoard = tb, TargetWarp = tw });
+				//newBoard.Warps.Add(new Warp() { XPosition = x, YPosition = y, ID = wi, TargetBoard = tb, TargetWarpID = tw });
 				if (w.HasChildNodes)
 				{
 					var t = w.SelectSingleNode("tile") as XmlElement;
@@ -1367,7 +1367,7 @@ namespace Noxico
 			{
 				file.WriteLine("<h2>Encounter set</h2>");
 				file.WriteLine("<ul>");
-				GetToken("encounters").Tokens.ForEach(x => Console.WriteLine("<li>{0}</li>", x));
+				GetToken("encounters").Tokens.ForEach(x => file.WriteLine("<li>{0}</li>", x.Name));
 				file.WriteLine("</ul>");
 			}
 

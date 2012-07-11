@@ -22,6 +22,11 @@ namespace Noxico
 		public static int MouseX = -1;
 		public static int MouseY = -1;
 
+		//TODO: Refactor the below
+		public static int DungeonGeneratorEntranceBoardNum;
+		public static string DungeonGeneratorEntranceWarpID;
+		public static int DungeonGeneratorBiome;
+
 		public static void SleepAWhile()
 		{
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
@@ -46,6 +51,96 @@ namespace Noxico
 				player.Tokens.Remove(player.GetToken("incapacitated"));
 			}
 		}
+
+		public static void CreateDungeon()
+		{
+			if (FirstDraw)
+			{
+				NoxicoGame.HostForm.LoadBitmap(Toolkit.ResOrFile(global::Noxico.Properties.Resources.MakeCave, "makecave.png"));
+				NoxicoGame.HostForm.Write("Generating dungeon. Please wait.", Color.Silver, Color.Transparent, 2, 1);
+				FirstDraw = false;
+				return;
+			}
+
+			var nox = NoxicoGame.HostForm.Noxico;
+
+			var dunGen = new StoneDungeonGenerator();
+			var caveGen = new CaveGenerator();
+			
+			//First, create the entrance cavern.
+			WorldGen.LoadBiomes();
+			var biomeData = WorldGen.Biomes[3]; //TODO: replace 3 with DungeonGeneratorBiome
+			caveGen.Create(Biome.Grassland); //TODO: make this take integer biomes from WorldGen.
+			var newBoard = new Board();
+			caveGen.ToTilemap(ref newBoard.Tilemap);
+			newBoard.Name = "Dungeon Entrance";
+			newBoard.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_E";
+			newBoard.Music = "set://Dungeon";
+			newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+			var encounters = newBoard.GetToken("encounters");
+			foreach (var e in biomeData.Encounters)
+				encounters.Tokens.Add(new Token() { Name = e });
+			newBoard.RespawnEncounters();
+
+			//Find a good spot for the cave exit.
+			var okay = false;
+			var eX = 0;
+			var eY = 0;
+			while (!okay)
+			{
+				eX = Toolkit.Rand.Next(1, 79);
+				eY = Toolkit.Rand.Next(1, 24);
+
+				var sides = 0;
+				if (newBoard.IsSolid(eY - 1, eX))
+					sides++;
+				if (newBoard.IsSolid(eY + 1, eX))
+					sides++;
+				if (newBoard.IsSolid(eY, eX - 1))
+					sides++;
+				if (newBoard.IsSolid(eY, eX + 1))
+					sides++;
+				if (sides < 3 && sides > 1)
+					okay = true;
+			}
+
+			var exit = new Warp()
+			{
+				XPosition = eX,
+				YPosition = eY,
+				ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit",
+			};
+			newBoard.Warps.Add(exit);
+			newBoard.SetTile(eY, eX, '<', Color.Silver, Color.Black);
+
+			//Slot in the new board
+			nox.Boards.Add(newBoard);
+
+			//Now hook the two up.
+			var entrance = nox.CurrentBoard.Warps.Find(w => w.ID == DungeonGeneratorEntranceWarpID);
+			entrance.TargetBoard = nox.Boards.Count - 1; //should be this one.
+			entrance.TargetWarpID = exit.ID;
+			exit.TargetBoard = nox.CurrentBoard.BoardNum;
+			exit.TargetWarpID = entrance.ID;
+
+			var entranceBoard = newBoard;
+			
+			//TODO: excavate more caves.
+			//var depth = 0;
+
+
+
+			nox.CurrentBoard.EntitiesToRemove.Add(nox.Player);
+			nox.CurrentBoard = entranceBoard;
+			nox.Player.ParentBoard = entranceBoard;
+			entranceBoard.Entities.Add(nox.Player);
+			nox.Player.XPosition = exit.XPosition;
+			nox.Player.YPosition = exit.YPosition;
+			entranceBoard.Redraw();
+			NoxicoGame.Sound.PlayMusic(entranceBoard.Music);
+			NoxicoGame.Immediate = true;
+			NoxicoGame.Mode = UserMode.Walkabout;
+		}
 	}
 
 	public class Pause
@@ -64,8 +159,7 @@ p , - Pick up
 c   - Chat with someone
 a   - Aim a shot or throw at someone
 f   - Attempt to have sex with someone
-<g3C>   - Ascend stairs, enter door
->   - Descend, enter door, use bed
+<g21B2>   - Use stairs, enter door, use bed
 .   - Rest" },
 			{ "Other keys",
 @"F1  - Open this menu

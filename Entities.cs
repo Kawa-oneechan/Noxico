@@ -333,7 +333,7 @@ namespace Noxico
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 					}
-					else if (PointingAt is Clutter && Intent == Intents.Look)
+					else if (PointingAt is Clutter && Intent == Intents.Look && ((Clutter)PointingAt).Description != "")
 					{
 						var text = ((Clutter)PointingAt).Description;
 						text = text.Trim();
@@ -555,9 +555,9 @@ namespace Noxico
 			}
 
 			var hostile = Character.HasToken("hostile"); //TODO: determine otherwise, probably from tokens
-			if (hostile && Movement != Motor.Hunt)
+			var player = NoxicoGame.HostForm.Noxico.Player;
+			if (ParentBoard == player.ParentBoard && hostile && Movement != Motor.Hunt)
 			{
-				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (DistanceFrom(player) > 10) //TODO: determine better range
 					return;
 				if (!CanSee(player))
@@ -819,13 +819,31 @@ namespace Noxico
 			AsciiChar = '@';
 		}
 
+		public bool OnWarp()
+		{
+			var warp = ParentBoard.Warps.Find(w => w.XPosition == XPosition && w.YPosition == YPosition);
+			return warp != null;
+		}
+
 		public void CheckWarps()
 		{
-			var warp = ParentBoard.Warps.Find(w => !String.IsNullOrEmpty(w.TargetBoard) && w.XPosition == XPosition && w.YPosition == YPosition);
+			var warp = ParentBoard.Warps.Find(w => /* !String.IsNullOrEmpty(w.TargetBoard) && */ w.XPosition == XPosition && w.YPosition == YPosition);
 			if (warp != null)
 			{
+				if (warp.TargetBoard == -1) //ungenerated dungeon
+				{
+					NoxicoGame.Mode = UserMode.Subscreen;
+					NoxicoGame.Subscreen = Subscreens.CreateDungeon;
+					Subscreens.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
+					Subscreens.DungeonGeneratorEntranceWarpID = warp.ID;
+					Subscreens.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
+					Subscreens.FirstDraw = true;
+					return;
+				}
+
 				var game = NoxicoGame.HostForm.Noxico;
-				var targetBoard = game.Boards.Find(b => b.ID == warp.TargetBoard);
+				var targetBoard = game.GetBoard(warp.TargetBoard); //game.Boards[warp.TargetBoard]; //.Find(b => b.ID == warp.TargetBoard);
+
 				/*
 				if (targetBoard == null)
 				{
@@ -833,11 +851,14 @@ namespace Noxico
 					game.Boards.Add(targetBoard);
 				}
 				*/
+
+				var sourceBoard = ParentBoard;
+
 				ParentBoard.EntitiesToRemove.Add(this);
 				game.CurrentBoard = targetBoard;
 				ParentBoard = targetBoard;
 				ParentBoard.Entities.Add(this);
-				var twarp = targetBoard.Warps.Find(w => w.ID == warp.TargetWarp);
+				var twarp = targetBoard.Warps.Find(w => w.ID == warp.TargetWarpID);
 				if (twarp == null)
 				{
 					XPosition = 0;
@@ -851,6 +872,12 @@ namespace Noxico
 				ParentBoard.Redraw();
 				NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
 				NoxicoGame.Immediate = true;
+
+				
+				//Going from a dungeon to a wild board?
+				if (targetBoard.GetToken("type").Value == 0 && sourceBoard.GetToken("type").Value == 2)
+					game.FlushDungeons();
+
 			}
 		}
 
@@ -942,7 +969,6 @@ namespace Noxico
 				this.DijkstraMap.Hotspots[0] = new Point(XPosition, YPosition);
 				this.DijkstraMap.Update();
 				//this.DijkstraMap.SaveToPNG();
-				CheckWarps();
 			}
 
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4})", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY);
@@ -1063,9 +1089,15 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
+			//if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
+			if (NoxicoGame.KeyMap[(int)Keys.Enter])
 			{
 				NoxicoGame.ClearKeys();
+
+				//TODO: add a top (instead of bottom) message to indicate you're on a hotspot.
+				if (OnWarp())
+					CheckWarps();
+
 				//Find bed
 				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398');
 				if (bed != null)
