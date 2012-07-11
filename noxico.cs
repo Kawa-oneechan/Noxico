@@ -1431,7 +1431,7 @@ namespace Noxico
 
 			newChar.ApplyCostume();
 
-			Console.WriteLine("Generated {0}.", newChar);
+			//Console.WriteLine("Generated {0}.", newChar);
 			return newChar;
 		}
 

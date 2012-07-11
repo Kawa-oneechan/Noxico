@@ -75,7 +75,8 @@ namespace Noxico.Properties {
         ///	&lt;!ELEMENT biome ANY&gt;
         ///
         ///	&lt;!ELEMENT groundGlyphs (#PCDATA)&gt;
-        ///	
+        ///	&lt;!ELEMENT encounters (#PCDATA)&gt;
+        ///
         ///	&lt;!ATTLIST realm
         ///		id ID #REQUIRED
         ///		waterLevel CDATA #REQUIRED
@@ -88,8 +89,11 @@ namespace Noxico.Properties {
         ///		isWater CDATA #IMPLIED
         ///		canBurn CDATA #IMPLIED
         ///	&gt;
+        ///	&lt;!ATTLIST encounters
+        ///		max CDATA #IMPLIED
+        ///	&gt;
         ///]&gt;
-        ///&lt;!-- Okay, here&apos;s the low-down on what I&apos;m planning. By default, all of these will h [rest of string was truncated]&quot;;.
+        ///&lt;! [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Biomes {
             get {
@@ -307,6 +311,13 @@ namespace Noxico.Properties {
         internal static string Main {
             get {
                 return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MakeCave {
+            get {
+                object obj = ResourceManager.GetObject("MakeCave", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

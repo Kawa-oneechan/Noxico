@@ -214,7 +214,7 @@ namespace Noxico
 			return map;
 		}
 
-		public void Generate(string randSeed = "")
+		public void Generate( Action<string> setStatus, string randSeed = "")
 		{
 			var seed = 0xF00D;
 			var reach = 1000;
@@ -254,19 +254,19 @@ namespace Noxico
 
 			LoadBiomes();
 
-			Console.WriteLine("Creating heightmap...");
+			setStatus("Creating heightmap...");
 			var height = CreateHeightMap(reach);
-			Console.WriteLine("Creating precipitation map...");
+			setStatus("Creating precipitation map...");
 			var precip = CreateClouds(reach, 0.010f, 0.3, false);
-			Console.WriteLine("Creating temperature map...");
+			setStatus("Creating temperature map...");
 			var temp = CreateClouds(reach, 0.005f, 0.5, true);
-			Console.WriteLine("Creating biome map...");
+			setStatus("Creating biome map...");
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
 			watch.Stop();
 			Console.WriteLine("Generated a world of {0}²px in {1}.", reach, watch.Elapsed.ToString());
 
-			Console.WriteLine("Drawing board bitmap...");
+			setStatus("Drawing board bitmap...");
 			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
 			var bmpHeight = reach / 2;
 			var bmp = new byte[bmpHeight + 1, bmpWidth + 1];
@@ -281,6 +281,7 @@ namespace Noxico
 			BiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			OceanBitmap = new int[OverworldSize];
 			var oceans = 0;
+			setStatus("Determining biomes...");
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
@@ -316,7 +317,7 @@ namespace Noxico
 				}
 			}
 
-			Console.WriteLine("Finding watering holes...");
+			setStatus("Finding watering holes...");
 			var towns = 0;
 			var townBoards = 0;
 			var wateringHoles = 0;
@@ -345,6 +346,7 @@ namespace Noxico
 					}
 				}
 			}
+			setStatus("Marking town locations...");
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
 				for (var bCol = 0; bCol < MapSizeX; bCol++)

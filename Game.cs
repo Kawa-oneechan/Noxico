@@ -317,7 +317,10 @@ namespace Noxico
 			for (var i = 0; i < 4 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
-				HostForm.Write(' ' + Messages[m].Message + ' ', Messages[m].Color, Color.Black, 0, row);
+				var c = Messages[m].Color;
+				if (c.GetBrightness() < 0.2)
+					c = Toolkit.Lerp(c, Color.White, 0.5);
+				HostForm.Write(' ' + Messages[m].Message + ' ', c, Color.Black, 0, row);
 				row--;
 			}
 		}
@@ -346,6 +349,21 @@ namespace Noxico
 			Messages.Add(new StatusMessage() { Message = message, Color = Color.Silver, New = true });
 		}
 
+		public void FlushDungeons()
+		{
+			Console.WriteLine("Flushing dungeons...");
+			for (var i = 0; i < Boards.Count; i++)
+			{
+				var board = Boards[i];
+				if (board == null)
+					continue;
+				if (board == CurrentBoard)
+					continue; //Shouldn't have to happen.
+				if (board.HasToken("dungeon"))
+					board.Flush();
+			}
+		}
+
 		public void Update()
 		{
 			if (Mode != UserMode.Subscreen)
@@ -370,6 +388,8 @@ namespace Noxico
 							var board = Boards[i];
 							if (board == null)
 								continue;
+							if (board.HasToken("dungeon"))
+								continue; //Don't autoflush dungeons. Use FlushDungeons() for that.
 							board.Lifetime++;
 							if (board.Lifetime == 1000)
 								board.Flush();
@@ -433,6 +453,7 @@ namespace Noxico
 					return;
 				line.Text = s.PadRight(70);
 				line.Draw();
+				Console.WriteLine(s);
 			});
 
 			var host = NoxicoGame.HostForm;
@@ -440,7 +461,7 @@ namespace Noxico
 
 			setStatus("Generating world map...");
 			var worldGen = new WorldGen();
-			worldGen.Generate("pandora");
+			worldGen.Generate(setStatus, "pandora");
 
 			setStatus("Generating boards...");
 			Overworld = new int[worldGen.MapSizeX, worldGen.MapSizeY];
@@ -497,49 +518,62 @@ namespace Noxico
 				}
 			}
 
-			/*
-			var townGen = new TownGenerator();
-			var townsToPlace = (int)Math.Floor(reach * 0.75); //originally, this was 6, based on a reach of 8.
-			//TODO: make this more scattery. With a large reach, towns will clump together in the north now.
-			while (townsToPlace > 0)
+			var dungeonEntrances = 0;
+			while (dungeonEntrances < 25)
 			{
-				for (var x = 0; x < reach; x++)
+				setStatus("Placing dungeon entrances... (" + dungeonEntrances + ")");
+				for (int y = 0; y < worldGen.MapSizeY - 1; y++)
 				{
-					for (var y = 0; y < reach; y++)
+					for (int x = 0; x < worldGen.MapSizeX - 1; x++)
 					{
-						//setStatus("Placing towns... " + townsToPlace);
+						//Don't place one in oceans
+						if (worldGen.BiomeMap[y, x] == 0)
+							continue;
+						//Don't place one in towns either
+						if (worldGen.TownMap[y, x] > 0)
+							continue;
+
+						//Don't always place one, to prevent north-west clumping
+						if (Toolkit.Rand.NextDouble() > 0.4)
+							continue;
+
+						//And don't place one where there already is one.
+						if (worldGen.TownMap[y, x] == -2)
+							continue;
+
 						var thisMap = Boards[Overworld[x, y]];
-						var chances = new[] { 0.2, 0.02, 0, 0 };
-						if (townsToPlace > 0 && Toolkit.Rand.NextDouble() < chances[(int)biomeMap[x, y]])
+						var eX = Toolkit.Rand.Next(2, 78);
+						var eY = Toolkit.Rand.Next(1, 23);
+
+						if (thisMap.IsSolid(eY, eX))
+							continue;
+						var sides = 0;
+						if (thisMap.IsSolid(eY - 1, eX))
+							sides++;
+						if (thisMap.IsSolid(eY + 1, eX))
+							sides++;
+						if (thisMap.IsSolid(eY, eX - 1))
+							sides++;
+						if (thisMap.IsSolid(eY, eX + 1))
+							sides++;
+						if (sides > 3)
+							continue;
+						worldGen.TownMap[y, x] = -2;
+
+						var newWarp = new Warp()
 						{
-							townGen.Board = thisMap;
-							townGen.Create(biomeMap[x, y]);
-							townGen.Culture = Culture.Cultures["human"];
-							townGen.ToTilemap(ref thisMap.Tilemap);
-							townGen.ToSectorMap(thisMap.Sectors);
-							thisMap.Music = "set://Town"; 
-							while (true)
-							{
-								var newName = Culture.GetName("human", Culture.NameType.Town);
-								if (Boards.Find(b => b.Name == newName) == null)
-								{
-									thisMap.Name = newName;
-									break;
-								}
-							}
-							townsToPlace--;
-#if DEBUG
-							mapBitmap.SetPixel((y * 3) + 1, (x * 3) + 1, Color.CornflowerBlue);
-#endif
-						}
+							TargetBoard = -1, //mark as ungenerated dungeon
+							ID = thisMap.ID + "_Dungeon",
+							XPosition = eX,
+							YPosition = eY,
+						};
+						thisMap.Warps.Add(newWarp);
+						thisMap.SetTile(eY, eX, '>', Color.Silver, Color.Black);
+
+						dungeonEntrances++;
 					}
 				}
 			}
-			//Now, what SHOULD happen is that the player starts in one of these towns we just placed. Preferably one in the grasslands.
-			*/ 
-
-			//TODO: place dungeon entrances
-			//TODO: excavate dungeons
 
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
