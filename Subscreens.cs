@@ -69,8 +69,8 @@ namespace Noxico
 			
 			//First, create the entrance cavern.
 			WorldGen.LoadBiomes();
-			var biomeData = WorldGen.Biomes[3]; //TODO: replace 3 with DungeonGeneratorBiome
-			caveGen.Create(Biome.Grassland); //TODO: make this take integer biomes from WorldGen.
+			var biomeData = WorldGen.Biomes[3]; //TODO: replace 3 with DungeonGeneratorBiome -- this is for testing.
+			caveGen.Create(biomeData);
 			var newBoard = new Board();
 			caveGen.ToTilemap(ref newBoard.Tilemap);
 			newBoard.Name = "Dungeon Entrance";
@@ -114,11 +114,12 @@ namespace Noxico
 			newBoard.SetTile(eY, eX, '<', Color.Silver, Color.Black);
 
 			//Slot in the new board
+			newBoard.BoardNum = nox.Boards.Count;
 			nox.Boards.Add(newBoard);
 
 			//Now hook the two up.
 			var entrance = nox.CurrentBoard.Warps.Find(w => w.ID == DungeonGeneratorEntranceWarpID);
-			entrance.TargetBoard = nox.Boards.Count - 1; //should be this one.
+			entrance.TargetBoard = newBoard.BoardNum; //should be this one.
 			entrance.TargetWarpID = exit.ID;
 			exit.TargetBoard = nox.CurrentBoard.BoardNum;
 			exit.TargetWarpID = entrance.ID;

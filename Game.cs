@@ -127,17 +127,18 @@ namespace Noxico
 			ScriptVariables.Add("consumed", 0);
 			HostForm.Noxico = this;
 
-			Ocean = Board.CreateBasicOverworldBoard(Biome.Ocean, "Ocean", "The Ocean", "set://ocean");
+			WorldGen.LoadBiomes();
+			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
 #if DEBUG
 			//Towngen test
-			var towngenTest = Board.CreateBasicOverworldBoard(Biome.Grassland, "TowngenTest", "Towngen Test", "set://debug");
+			var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
 			towngenTest.Type = BoardType.Town;
 			CurrentBoard = towngenTest;
 			towngenTest.DumpToHTML("ground");
 			var townGen = new TownGenerator();
 			townGen.Board = towngenTest;
-			townGen.Create(Biome.Grassland);
+			townGen.Create(WorldGen.Biomes[2]);
 			townGen.Culture = Culture.Cultures["human"];
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
@@ -359,7 +360,7 @@ namespace Noxico
 					continue;
 				if (board == CurrentBoard)
 					continue; //Shouldn't have to happen.
-				if (board.HasToken("dungeon"))
+				if (board.GetToken("type").Value == (float)BoardType.Dungeon)
 					board.Flush();
 			}
 		}
@@ -500,7 +501,7 @@ namespace Noxico
 
 						var thisMap = Boards[Overworld[x, y]];
 						townGen.Board = thisMap;
-						townGen.Create((Biome)worldGen.BiomeMap[y, x]);
+						townGen.Create(worldGen.BiomeMap[y, x]);
 						townGen.Culture = Culture.Cultures["human"];
 						townGen.ToTilemap(ref thisMap.Tilemap);
 						townGen.ToSectorMap(thisMap.Sectors);

@@ -96,7 +96,12 @@ namespace Noxico
 		public static void LoadBiomes(string realmId = "")
 		{
 			if (string.IsNullOrWhiteSpace(realmId))
-				realmId = NoxicoGame.HostForm.Noxico.Player.CurrentRealm;
+			{
+				if (NoxicoGame.HostForm.Noxico.Player == null)
+					realmId = "Nox";
+				else
+					realmId = NoxicoGame.HostForm.Noxico.Player.CurrentRealm;
+			}
 
 			Biomes = new List<BiomeData>();
 			var x = new XmlDocument();

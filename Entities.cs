@@ -646,6 +646,7 @@ namespace Noxico
 			var verb = "struck";
 			var obituary = "being struck down";
 			var attackerName = this.Character.IsProperNamed ? this.Character.Name.ToString() : "the " + this.Character.Title;
+			var attackerFullName = this.Character.IsProperNamed ? this.Character.Name.ToString(true) : "the " + this.Character.Title;
 			var targetName = target.Character.IsProperNamed ? target.Character.Name.ToString() : "the " + target.Character.Title;
 			var targetFullName = target.Character.IsProperNamed ? target.Character.Name.ToString(true) : "the " + target.Character.Title;
 			if (weaponData == null)
@@ -690,7 +691,7 @@ namespace Noxico
 				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " points.");
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + targetFullName, this))
+			if (target.Hurt(damage, obituary + " by " + attackerFullName, this))
 			{
 				//Gain a bonus from killing the target?
 			}
@@ -1289,10 +1290,20 @@ namespace Noxico
 		public override void Update()
 		{
 			base.Update();
-			if (Life > 0)
-				Life--;
-			if (Life == -1 || (CanBurn && ParentBoard.IsBurning(YPosition, XPosition)))
+			if (CanBurn && ParentBoard.IsBurning(YPosition, XPosition))
+			{
 				ParentBoard.EntitiesToRemove.Add(this);
+				return;
+			}
+			if (Life > 0)
+			{
+				Life--;
+				if (Life == 0)
+				{
+					ParentBoard.EntitiesToRemove.Add(this);
+					return;
+				}
+			}
 		}
 
 		public override void Move(Direction targetDirection)
@@ -1307,6 +1318,7 @@ namespace Noxico
 			stream.Write(Name ?? "");
 			stream.Write(Description ?? "");
 			stream.Write(CanBurn);
+			stream.Write(Life);
 		}
 
 		public static new Clutter LoadFromFile(BinaryReader stream)
@@ -1320,6 +1332,7 @@ namespace Noxico
 			newDress.Name = stream.ReadString();
 			newDress.Description = stream.ReadString();
 			newDress.CanBurn = stream.ReadBoolean();
+			newDress.Life = stream.ReadInt32();
 			return newDress;
 		}
 

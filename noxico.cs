@@ -1465,7 +1465,6 @@ namespace Noxico
 		{
 			if (HasToken("costume"))
 			{
-
 				var costumesToken = GetToken("costume");
 				var costumeChoices = costumesToken.Tokens;
 				var costume = new Token();

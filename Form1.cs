@@ -141,6 +141,10 @@ namespace Noxico
 				CellWidth = (int)Math.Ceiling(em.Width * 0.75);
 				CellHeight = (int)Math.Ceiling(em.Height * 0.85);
 			}
+			if (IniFile.GetInt("font", "cellwidth", 0) != 0)
+				CellWidth = IniFile.GetInt("font", "cellwidth", 0);
+			if (IniFile.GetInt("font", "cellheight", 0) != 0)
+				CellHeight = IniFile.GetInt("font", "cellheight", 0);
 
 			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
 			{
