@@ -9,8 +9,14 @@ using System.Xml;
 
 namespace Noxico
 {
+	/// <summary>
+	/// Determines which subscreen to run when UserMode is set to Subscreen.
+	/// </summary>
 	public delegate void SubscreenFunc();
 
+	/// <summary>
+	/// The poor man's System.Drawing.Rectangle.
+	/// </summary>
 	public struct Rectangle
 	{
 		public int Left, Top, Right, Bottom;
@@ -20,6 +26,9 @@ namespace Noxico
 		}
 	}
 
+	/// <summary>
+	/// The poor man's System.Drawing.Point, but with extras.
+	/// </summary>
 	public struct Point
 	{
 		public int X, Y;
@@ -49,20 +58,17 @@ namespace Noxico
 		}
 	}
 
+	/// <summary>
+	/// The current operation state of the game.
+	/// </summary>
 	public enum UserMode
 	{
 		Walkabout, LookAt, Subscreen
 	}
 
-	public enum Biome
-	{
-		Grassland,
-		Desert,
-		Snow,
-		Swamp,
-		Ocean,
-	}
-
+	/// <summary>
+	/// A special description for board tiles.
+	/// </summary>
 	public struct TileDescription
 	{
 		public string Name;
@@ -70,6 +76,9 @@ namespace Noxico
 		public string Description;
 	}
 
+	/// <summary>
+	/// A single tile on a board.
+	/// </summary>
 	public class Tile
 	{
 		public char Character { get; set; }
@@ -83,6 +92,10 @@ namespace Noxico
 		public bool CanFlyOver { get; set; }
 		public int SpecialDescription { get; set; }
 
+		/// <summary>
+		/// Returns a TileDescription if this tile has one.
+		/// </summary>
+		/// <returns></returns>
 		public TileDescription? GetSpecialDescription()
 		{
 			if (SpecialDescription == 0)
@@ -144,11 +157,13 @@ namespace Noxico
 		}
 	}
 
+	/// <summary>
+	/// An exit of some sort. Activate them by standing on them and pressing Enter.
+	/// </summary>
 	public class Warp
 	{
 		public static int GeneratorCount = 0;
 
-		//TODO: stairs that only activate when you press < or > while on them
 		public string ID { get; set; }
 		public int XPosition { get; set; }
 		public int YPosition { get; set; }
@@ -213,10 +228,6 @@ namespace Noxico
 
 		public Tile[,] Tilemap = new Tile[80, 25];
 
-		//public string Message { get; set; }
-		//public Color MessageColor { get; set; }
-		//public int MessageTimer { get; set; }
-
 		public Dictionary<string, Rectangle> Sectors { get; set; }
 		public List<Location> ExitPossibilities { get; set; }
 
@@ -243,6 +254,7 @@ namespace Noxico
 		{
 			Console.WriteLine("Flushing board {0}.", ID);
 			var me = NoxicoGame.HostForm.Noxico.Boards.FindIndex(x => x == this);
+			CleanUpSlimeTrails();
 			SaveToFile(me);
 			NoxicoGame.HostForm.Noxico.Boards[me] = null;
 		}
@@ -265,7 +277,7 @@ namespace Noxico
 				//stream.Write(Entities.OfType<FloorBot>().Count());
 				stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
 				stream.Write(Entities.OfType<DroppedItem>().Count());
-				stream.Write(Entities.OfType<Clutter>().Count());
+				stream.Write(Entities.OfType<Clutter>().Count() - Entities.OfType<Clutter>().Where(c => c.Life > 0).Count());
 				stream.Write(Warps.Count);
 
 				for (int row = 0; row < 25; row++)
@@ -292,7 +304,10 @@ namespace Noxico
 				foreach (var e in Entities.OfType<DroppedItem>())
 					e.SaveToFile(stream);
 				foreach (var e in Entities.OfType<Clutter>())
-					e.SaveToFile(stream);
+					if (e.Life > 0)
+						continue;
+					else
+						e.SaveToFile(stream);
 				Warps.ForEach(x => x.SaveToFile(stream));
 			}
 		}
@@ -350,6 +365,7 @@ namespace Noxico
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
 
 				newBoard.RespawnEncounters();
+				newBoard.CleanUpSlimeTrails();
 
 				newBoard.BindEntities();
 
@@ -357,7 +373,7 @@ namespace Noxico
 			}
 			return newBoard;
 		}
-		
+
 		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
 		public static Board Load(string id)
 		{
@@ -999,7 +1015,7 @@ namespace Noxico
 					if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("health").Value <= 0)
 						return;
 				}
-				if (!surrounding)
+				if (!surrounding && Type != BoardType.Dungeon)
 					UpdateSurroundings();
 				Burn(true);
 				return;
@@ -1243,25 +1259,25 @@ namespace Noxico
 			SpreadValue(map, x, y + 1, b - 2, level + 1);
 		}
 
-		public static Board CreateBasicOverworldBoard(Biome biome, string id, string name, string music)
+		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music)
 		{
-			var groundColors = new[] { Color.Green, Color.Yellow, Color.White, Color.MediumPurple, Color.Navy };
+			var biome = WorldGen.Biomes[biomeID];
 			var newBoard = new Board();
-			var grasses = new[] { ',', '\'', '`', '.', };
 			for (int row = 0; row < 25; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					newBoard.Tilemap[col, row] = new Tile()
 					{
-						Character = grasses[Toolkit.Rand.Next(grasses.Length)],
-						Foreground = groundColors[(int)biome].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						Background = groundColors[(int)biome].Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-						CanBurn = (biome == 0),
+						Character = biome.GroundGlyphs[Toolkit.Rand.Next(biome.GroundGlyphs.Length)],
+						Foreground = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
+						Background = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
+						CanBurn = biome.CanBurn,
+						IsWater = biome.IsWater,
 					};
 				}
 			}
-			newBoard.Tokens = Token.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biome + "\nencounters: 0\n");
+			newBoard.Tokens = Token.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
@@ -1419,6 +1435,13 @@ namespace Noxico
 				if (Toolkit.Rand.NextDouble() > 0.7)
 					this.EntitiesToRemove.Add(corpse);
 		}
+
+		private void CleanUpSlimeTrails()
+		{
+			foreach (var c in this.Entities.OfType<Clutter>().Where(c => c.Life > 0))
+				this.EntitiesToRemove.Add(c);
+		}
+		
 	}
 
 

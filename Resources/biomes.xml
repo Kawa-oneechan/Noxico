@@ -6,6 +6,7 @@
 
 	<!ELEMENT groundGlyphs (#PCDATA)>
 	<!ELEMENT encounters (#PCDATA)>
+	<!ELEMENT darken EMPTY>
 
 	<!ATTLIST realm
 		id ID #REQUIRED
@@ -21,6 +22,10 @@
 	>
 	<!ATTLIST encounters
 		max CDATA #IMPLIED
+	>
+	<!ATTLIST darken
+		plus CDATA #REQUIRED
+		div CDATA #REQUIRED
 	>
 ]>
 <!-- Okay, here's the low-down on what I'm planning. By default, all of these will have {  , ' ` .  } as their "grass".

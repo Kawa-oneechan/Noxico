@@ -245,10 +245,10 @@ namespace Noxico
 	*/
 	class StoneDungeonGenerator : BaseDungeonGenerator
 	{
-		private Biome biome;
+		private BiomeData biome;
 		//corridor list here
 
-		public void Create(Biome biome)
+		public void Create(BiomeData biome)
 		{
 			base.Create(3, 5, 4);
 			//TODO: Add dungeon corridors
@@ -377,7 +377,7 @@ namespace Noxico
 
 		//public List<RoomExit> Exits { get; private set; }
 
-		public void Create(Biome biome)
+		public void Create(BiomeData biome)
 		{
 			base.Create(3, 4, 7, 1);
 
@@ -385,10 +385,62 @@ namespace Noxico
 
 			//TODO: add special buildings
 			//To do that, check for a terminal BSPNode of appropriate dimensions and remove the associated room.
+		}
 
-			//Exits = new List<RoomExit>();
+		public void MakeRoad(ref Tile[,] map, BSPNode node, List<BSPNode> connectedNodes)
+		{
+			//if (connectedNodes.Contains(node))
+			//	return;
+			if (node.Sibling != null)
+			{
+				var l1 = node.Bounds.Right - ((node.Bounds.Right - node.Bounds.Left) / 2);
+				var t1 = node.Bounds.Bottom - ((node.Bounds.Bottom - node.Bounds.Top) / 2);
+				var l2 = node.Sibling.Bounds.Right - ((node.Sibling.Bounds.Right - node.Sibling.Bounds.Left) / 2);
+				var t2 = node.Sibling.Bounds.Bottom - ((node.Sibling.Bounds.Bottom - node.Sibling.Bounds.Top) / 2);
+				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
+				{
+					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
+				}
+				connectedNodes.Add(node);
+				connectedNodes.Add(node.Sibling);
+				if (node.Parent != null)
+					MakeRoad(ref map, node.Parent, connectedNodes);
+			}
+		}
+
+		public override void ToTilemap(ref Tile[,] map)
+		{
+			var floorStart = Color.FromArgb(123, 92, 65);
+			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
+			var wall = Color.FromArgb(71, 50, 33);
+			
 			foreach (var room in Rooms)
 			{
+				//Room floors
+				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
+					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
+						map[col, row] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
+
+				//Vertical walls  |
+				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
+				{
+					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				}
+				//Horizontal walls  --
+				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
+				{
+					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				}
+				//Corners -- top left, top right, bottom left, bottom right
+				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
+
+				//Exit
 				var width = room.Bounds.Right - room.Bounds.Left;
 				var height = room.Bounds.Bottom - room.Bounds.Top;
 
@@ -424,136 +476,24 @@ namespace Noxico
 				else if (width < height)
 					onVertical = true;
 				else
-					onVertical = rand.NextDouble() < 0.5;
+					onVertical = Toolkit.Rand.NextDouble() < 0.5;
 
 				var left = 0;
 				var top = 0;
 				var side = Direction.North;
 				if (onVertical)
 				{
-					top = rand.Next(room.Bounds.Top + 1, room.Bounds.Bottom - 1);
+					top = Toolkit.Rand.Next(room.Bounds.Top + 1, room.Bounds.Bottom - 1);
 					left = (room.Bounds.Right < 40) ? room.Bounds.Right - 1 : room.Bounds.Left;
 					side = (left == room.Bounds.Left) ? Direction.West : Direction.East;
 				}
 				else
 				{
 					top = (room.Bounds.Bottom < 12) ? room.Bounds.Bottom - 1 : room.Bounds.Top;
-					left = rand.Next(room.Bounds.Left + 1, room.Bounds.Right - 1);
+					left = Toolkit.Rand.Next(room.Bounds.Left + 1, room.Bounds.Right - 1);
 					side = (top == room.Bounds.Top) ? Direction.North : Direction.South;
 				}
-				room.Exit = new RoomExit(left, top, side);
-				//Exits.Add(new RoomExit(left, top));
-			}
-
-			//TODO: trace paths through the map?
-
-		}
-
-		public void MakeRoad(ref Tile[,] map, BSPNode node, List<BSPNode> connectedNodes)
-		{
-			//if (connectedNodes.Contains(node))
-			//	return;
-			if (node.Sibling != null)
-			{
-				var l1 = node.Bounds.Right - ((node.Bounds.Right - node.Bounds.Left) / 2);
-				var t1 = node.Bounds.Bottom - ((node.Bounds.Bottom - node.Bounds.Top) / 2);
-				var l2 = node.Sibling.Bounds.Right - ((node.Sibling.Bounds.Right - node.Sibling.Bounds.Left) / 2);
-				var t2 = node.Sibling.Bounds.Bottom - ((node.Sibling.Bounds.Bottom - node.Sibling.Bounds.Top) / 2);
-				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
-				{
-					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
-				}
-				connectedNodes.Add(node);
-				connectedNodes.Add(node.Sibling);
-				if (node.Parent != null)
-					MakeRoad(ref map, node.Parent, connectedNodes);
-			}
-		}
-
-		public override void ToTilemap(ref Tile[,] map)
-		{
-			var floorStart = Color.FromArgb(123, 92, 65);
-			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
-			var wall = Color.FromArgb(71, 50, 33);
-
-			/*
-			 * SO BAD paths ;_;
-			foreach (var room in Rooms)
-			{
-				var l1 = room.Exit.Left;
-				var t1 = room.Exit.Top;
-				var l2 = l1;
-				var t2 = t1;
-				var minLen = (room.Exit.Side == Direction.North || room.Exit.Side == Direction.South) ? 10 : 2;
-				Toolkit.PredictLocation(l1, t1, room.Exit.Side, ref l1, ref t1);
-				for (var i = 0; i < Toolkit.Rand.Next(minLen, minLen + 3); i++)
-					Toolkit.PredictLocation(l2, t2, room.Exit.Side, ref l2, ref t2);
-				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
-				{
-					if (point.X < 0 || point.Y < 0 || point.X > 79 || point.Y > 24)
-						break;
-					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
-				}
-
-				for (var turns = 0; turns < 10; turns++)
-				{
-					if (Toolkit.Rand.NextDouble() < 0.2)
-						break;
-					//Turn around!
-					l1 = l2;
-					t1 = t2;
-					var newDir = Direction.North;
-					if (room.Exit.Side == Direction.North || room.Exit.Side == Direction.South)
-					{
-						newDir = Toolkit.Rand.NextDouble() > 0.5 ? Direction.East : Direction.West;
-						minLen = 10;
-					}
-					else
-					{
-						newDir = Toolkit.Rand.NextDouble() > 0.5 ? Direction.North : Direction.South;
-						minLen = 2;
-					}
-					for (var i = 0; i < Toolkit.Rand.Next(minLen, minLen + 3); i++)
-						Toolkit.PredictLocation(l2, t2, newDir, ref l2, ref t2);
-					foreach (var point in Toolkit.Line(l1, t1, l2, t2))
-					{
-						if (point.X < 0 || point.Y < 0 || point.X > 79 || point.Y > 24)
-							break;
-						map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
-					}
-				}
-			}
-			*/
-			
-			foreach (var room in Rooms)
-			{
-				//Room floors
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-						map[col, row] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
-
-				//Vertical walls  |
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				}
-				//Horizontal walls  --
-				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-				{
-					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				}
-				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-
-				//Exit, if any
-				if (room.Exit != null)
-					map[room.Exit.Left, room.Exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
+				map[left, top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
 
 			Populate(ref map);
@@ -802,9 +742,9 @@ namespace Noxico
 	class CaveGenerator : BaseDungeonGenerator
 	{
 		private int[,] map;
-		private Biome biome;
+		private BiomeData biome;
 
-		public void Create(Biome biome)
+		public void Create(BiomeData biome)
 		{
 			this.biome = biome;
 
