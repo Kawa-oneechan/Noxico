@@ -260,11 +260,12 @@ namespace Noxico
 					if (entity is BoardChar && Intent != Intents.Take)
 					{
 						PointingAt = entity;
-						if (((BoardChar)PointingAt).Character.IsProperNamed)
-							NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetName() + ", " + ((BoardChar)PointingAt).Character.GetTitle();
-						else
-							NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetTitle();
-						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
+						NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.ToString(); 
+						//if (((BoardChar)PointingAt).Character.IsProperNamed)
+						//	NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetName() + ", " + ((BoardChar)PointingAt).Character.GetTitle();
+						//else
+						//	NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetTitle();
+						//NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
 					else if (entity is Clutter && Intent == Intents.Look)
