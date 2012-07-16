@@ -1481,6 +1481,221 @@ ascii
 			]]>
 		</item>
 
+		<!-- NetHack weapons -->
+		<item id="spear" name="spear" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 40
+	skill: polearm
+weight: heavy
+description: "A long pole with a sharpened point of steel on one end."
+asci
+	char: U+002F
+	fore
+		darkgoldenrod
+			]]>
+		</item>
+		<item id="javelin" name="javelin" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 40
+	skill: throwing
+weight: heavy
+description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
+asci
+	char: U+002F
+	fore
+		darkgoldenrod
+			]]>
+		</item>
+		<item id="dagger" name="dagger" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 30
+	skill: short_sword
+description: "A classic-style rogue's dagger."
+ascii
+	char: U+2190
+	fore
+		silver
+			]]>
+		</item>
+		<item id="fireaxe" name="fire-axe" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 50
+	skill: axe
+weight: medium
+description: "An ordinary looking fire-axe."
+asci
+	char: U+00A2
+	fore
+		silver
+			]]>
+		</item>
+		<item id="battleaxe" name="battle axe" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 70
+	skill: axe
+weight: heavy
+description: "An imposing battle axe. You could take someone's head off with this baby."
+asci
+	char: U+00A2
+	fore
+		silver
+			]]>
+		</item>
+		<item id="shortsword" name="short sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 40
+	skill: short_sword
+description: "A plain but servicable short sword."
+ascii
+	char: U+2193
+	fore
+		white
+			]]>
+		</item>
+		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 50
+	skill: short_sword
+identify: weapon_knowledge
+description: "An exotic looking sword with a curved blade."
+ascii
+	char: U+2202
+	fore
+		silver
+			]]>
+		</item>
+		<item id="broadsword" name="broadsword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 50
+	skill: long_sword
+description: "A large sword with an emphasis on the blade's width."
+ascii
+	char: U+2191
+	fore
+		silver
+			]]>
+		</item>
+		<item id="longsword" name="longsword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 60
+	skill: long_sword
+description: "A large sword with an emphasis on length."
+ascii
+	char: U+2191
+	fore
+		silver
+			]]>
+		</item>
+		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+	twohanded
+weight
+	heavy
+weapon
+	damage: 70
+	skill: huge_sword
+identify: weapon_knowledge
+description: "A sword so large you need two hands to wield it."
+ascii
+	char: U+221A
+	fore
+		silver
+			]]>
+		</item>
+		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 70
+	skill: long_sword
+identify: weapon_knowledge
+description: "The common samurai sword."
+ascii
+	char: U+2193
+	fore
+		silver
+			]]>
+		</item>
+		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 70
+	skill: long_sword
+identify: weapon_knowledge
+description: "The common samurai sword, but longer."
+ascii
+	char: U+2193
+	fore
+		silver
+			]]>
+		</item>
+		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
+		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
+		<!-- bullwhip, pistol -->
+		<!-- fancy santa, caledflwch, wrinklefucker, warhammer of zillyhoo, ahab's crosshairs, regisickle, quills of echidna, SORD..... -->
+
+
 		<!-- Clothes from jsNoxico -->
 		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
 			<![CDATA[
