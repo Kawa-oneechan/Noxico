@@ -32,6 +32,9 @@ namespace Noxico
 			Rand = new Random();
 		}
 
+		/// <summary>
+		/// Returns the amount of change between two strings.
+		/// </summary>
 		public static int Levenshtein(string s, string t)
 		{
 			var n = s.Length;
@@ -60,6 +63,9 @@ namespace Noxico
 			return d[n, m];
 		}
 
+		/// <summary>
+		/// Creates an encoded textual description of a character's body to use in Levenshtein comparisons.
+		/// </summary>
 		public static string GetLevenshteinString(TokenCarrier token)
 		{
 			var ret = new StringBuilder();
@@ -152,6 +158,9 @@ namespace Noxico
 			return ret.ToString();
 		}
 
+		/// <summary>
+		/// Grabs the content for a token from a raw textual token tree, for analysis outside of character creation.
+		/// </summary>
 		public static string GrabToken(string input, string token)
 		{
 			var start = input.IndexOf(token);
@@ -171,11 +180,17 @@ namespace Noxico
 			return null;
 		}
 
+		/// <summary>
+		/// Picks a single item from a string array, at random.
+		/// </summary>
 		public static string PickOne(params string[] options)
 		{
 			return options[Toolkit.Rand.Next(options.Length)];
 		}
 
+		/// <summary>
+		/// Returns the given number as a word in English, from "one" up to "twelve". 13 and higher are returned as-is.
+		/// </summary>
 		public static string Count(this float num)
 		{
 			var words = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve" };
@@ -185,6 +200,9 @@ namespace Noxico
 			return i.ToString();
 		}
 
+		/// <summary>
+		/// Returns the proper name for a color -- "darkslategray", "dark_slate_gray", or "DarkSlateGray" becomes "dark slate gray".
+		/// </summary>
 		public static string NameColor(string color)
 		{
 			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
@@ -214,6 +232,9 @@ namespace Noxico
 			return ret.ToString().Trim().ToLowerInvariant();
 		}
 
+		/// <summary>
+		/// Returns a Color by name -- "DarkSlateGray" returns a Color with RGB values { 47, 79, 79 }.
+		/// </summary>
 		public static Color GetColor(string color)
 		{
 			if (string.IsNullOrEmpty(color))
@@ -242,6 +263,9 @@ namespace Noxico
 			var rgb = entry.GetAttribute("rgb").Split(',');
 			return Color.FromArgb(int.Parse(rgb[0]), int.Parse(rgb[1]), int.Parse(rgb[2]));
 		}
+		/// <summary>
+		/// Returns a Color by name -- "DarkSlateGray" returns a Color with RGB values { 47, 79, 79 }.
+		/// </summary>
 		public static Color GetColor(Token color)
 		{
 			if (color == null)
@@ -249,6 +273,9 @@ namespace Noxico
 			return GetColor(color.Name);
 		}
 
+		/// <summary>
+		/// Darkens a color in some stupid way.
+		/// </summary>
 		public static Color Darken(this Color color, double divisor = 2)
 		{
 			if (divisor == 0)
@@ -268,6 +295,9 @@ namespace Noxico
 			return Color.FromArgb((int)r, (int)g, (int)b);
 		}
 
+		/// <summary>
+		/// Applies [grammar replacement] from a given character's point of view.
+		/// </summary>
 		public static string Viewpoint(this string text, BoardChar point)
 		{
 			if (point != null && point is Player)
@@ -291,16 +321,6 @@ namespace Noxico
 				text = text.Replace("[s]", "s");
 				text = text.Replace("[ies]", "ies");
 			}
-			/*
-				sb.Replace("[This is]", pa is Player ? "You are" : "This is");
-				sb.Replace("[His]", pa is Player ? "Your" : chr.HisHerIts());
-				sb.Replace("[He]", pa is Player ? "You" : chr.HeSheIt());
-				sb.Replace("[his]", pa is Player ? "your" : chr.HisHerIts(true));
-				sb.Replace("[he]", pa is Player ? "you" : chr.HeSheIt(true));
-				sb.Replace("[him]", pa is Player ? "you" : chr.HimHerIt());
-				sb.Replace("[is]", pa is Player ? "are" : "is");
-				sb.Replace("[has]", pa is Player ? "have" : "has");
-			*/
 			return text;
 		}
 
@@ -385,6 +405,9 @@ namespace Noxico
 			//	NoxicoGame.HostForm.DarkenCell(top + height + 1, i);
 		}
 
+		/// <summary>
+		/// Use in a ForEach loop.
+		/// </summary>
 		public static IEnumerable<Point> Line(int x0, int y0, int x1, int y1)
 		{
 			bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
@@ -461,6 +484,9 @@ namespace Noxico
 			stream.Write((byte)color.B);
 		}
 
+		/// <summary>
+		/// Converts a NoxML string to HTML. Badly.
+		/// </summary>
 		public static string HTMLize(string text)
 		{
 			var html = new StringBuilder();
@@ -497,6 +523,11 @@ namespace Noxico
 			return html.ToString();
 		}
 
+		/// <summary>
+		/// Converts a fragment of XML to NoxML, specifically the B, BR, and P elements.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <returns></returns>
 		public static string Noxicize(this XmlElement element)
 		{
 			var r = "";
@@ -525,6 +556,9 @@ namespace Noxico
 			return r;
 		}
 
+		/// <summary>
+		/// Stolen from XNA. Linearly interpolates between two colors.
+		/// </summary>
 		public static Color Lerp(int sR, int sG, int sB, int dR, int dG, int dB, double amount)
 		{
 			if (amount < 0)
@@ -538,12 +572,14 @@ namespace Noxico
 			int tB = sB + (int)(iB * a);
 			return Color.FromArgb(tR, tG, tB);
 		}
-
 		public static Color Lerp(Color source, Color dest, double amount)
 		{
 			return Lerp(source.R, source.G, source.B, dest.R, dest.G, dest.B, amount);
 		}
 
+		/// <summary>
+		/// Darkens a color in a more sane manner.
+		/// </summary>
 		public static Color LerpDarken(this Color color, double amount)
 		{
 			return Lerp(color, Color.Black, amount);
@@ -556,6 +592,9 @@ namespace Noxico
 			return (dX < dY) ? dY : dX;
 		}
 
+		/// <summary>
+		/// Returns a string from the project's resources, but from a specific file if it exists otherwise.
+		/// </summary>
 		public static string ResOrFile(string resource, string filename)
 		{
 			if (File.Exists(filename))
@@ -564,6 +603,9 @@ namespace Noxico
 				return resource;
 		}
 
+		/// <summary>
+		/// Returns a Bitmap from the project's resources, but from a specific file if it exists otherwise.
+		/// </summary>
 		public static Bitmap ResOrFile(Bitmap resource, string filename)
 		{
 			if (File.Exists(filename))
@@ -572,6 +614,9 @@ namespace Noxico
 				return resource;
 		}
 
+		/// <summary>
+		/// From Nethack. True if it's Friday the 13th.
+		/// </summary>
 		public static bool IsFriday13()
 		{
 			return (DateTime.Now.DayOfWeek == DayOfWeek.Friday && DateTime.Now.Day == 13);
@@ -604,13 +649,23 @@ namespace Noxico
 			return ((((((diy + epact) * 6) + 11) % 177) / 22) & 7);
 		}
 
+		/// <summary>
+		/// From Nethack. Returns the ordinal suffix for the given number -- insert 4, get "th" as in "4th".
+		/// </summary>
+		public static string Ordinal(this int number)
+		{
+			var i = number;
+			var dd = i % 10;
+			return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
+		}
 		public static string Ordinal(this float number)
 		{
-			var i = (int)Math.Floor(number);
-			var dd = i % 10;
-		    return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
+			return ((int)Math.Floor(number)).Ordinal();
 		}
 
+		/// <summary>
+		///	From Nethack. Returns the possessive suffix -- "Kawa" > "Kawa's", "Chris" > "Chris'", etc...
+		/// </summary>
 		public static string Possessive(this string subject)
 		{
 			if (!subject.Equals("it", StringComparison.InvariantCultureIgnoreCase))
@@ -1060,21 +1115,27 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 
+		/// <summary>
+		/// Returns the full name of the character with title, or just the title.
+		/// </summary>
 		public override string ToString()
 		{
-			var g = GetGender() + " ";
+			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == "hermaphrodite " && HasToken("hermonly")))
 				g = "";
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name, A, g, Title);
+				return string.Format("{0}, {1} {3}", Name.ToString(true), A, g, Title);
 			return string.Format("{0} {2}", A, g, Title);
 		}
 
+		/// <summary>
+		/// Returns the short name of the character, or the title.
+		/// </summary>
 		public string GetName()
 		{
-			var g = GetGender() + " ";
+			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
 				(g == "female " && (HasToken("femaleonly") || HasToken("femalename"))) ||
 				(g == "hermaphrodite " && HasToken("hermonly")))
@@ -1084,19 +1145,17 @@ namespace Noxico
 			return string.Format("{0} {1}{2}", A, g, Species);
 		}
 
-		public string GetTitle(bool gendered = true)
+		/// <summary>
+		/// Returns the character's title.
+		/// </summary>
+		public string GetTitle()
 		{
-			if (HasToken("invisiblegender"))
-				gendered = false;
-			var g = GetGender() + " ";
-			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
-				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
-				(g == "hermaphrodite " && HasToken("hermonly")) ||
-				!gendered)
-				g = "";
-			return string.Format("{0} {2}", A, g, Title);
+			return string.Format("{0} {2}", A, Title);
 		}
 
+		/// <summary>
+		/// Returns the character's gender -- male, female, herm, or gender-neutral.
+		/// </summary>
 		public string GetGender()
 		{
 			if (HasToken("penis") && HasToken("vagina"))
@@ -1111,11 +1170,20 @@ namespace Noxico
 		public void UpdateTitle()
 		{
 			var g = GetGender();
-			Title = Species.ToLowerInvariant();
-			if (g == "male" && GetToken("terms").HasToken("male"))
-				Title = GetToken("terms").GetToken("male").Text;
-			else if (g == "female" && GetToken("terms").HasToken("female"))
-				Title = GetToken("terms").GetToken("female").Text;
+			Title = GetToken("terms").GetToken("generic").Text;
+			if (HasToken("invisiblegender"))
+			{
+				if (g == "male" && GetToken("terms").HasToken("male"))
+					Title = GetToken("terms").GetToken("male").Text;
+				else if (g == "female" && GetToken("terms").HasToken("female"))
+					Title = GetToken("terms").GetToken("female").Text;
+				else if (g == "hermaphrodite" && GetToken("terms").HasToken("herm"))
+					Title = GetToken("terms").GetToken("herm").Text;
+			}
+			else if (HasToken("explicitgender"))
+			{
+				Title = g + " " + Title;
+			}
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
@@ -1178,61 +1246,6 @@ namespace Noxico
 			if (hue >= 98 && hue <= 148)
 				return true;
 			return false;
-		}
-
-		[Obsolete("Use Levenshtein system instead.", true)]
-		public double GetHumanScore()
-		{
-			var i = 0.0;
-			if (HasNormalSkin())
-				i += 0.15;
-			if (Path("penis/studded") == null && Path("penis/horse") == null && Path("penis/knot") == null)
-				i += 0.10;
-			if (!HasToken("tail"))
-				i += 0.15;
-			if (Path("ears/human") != null)
-				i += 0.10;
-			if (HasToken("legs") && GetToken("legs").Tokens.Count == 0 || Path("legs/human") != null)
-				i += 0.20;
-			if (Path("face/normal") != null)
-				i += 0.20;
-			if (!HasToken("antennae") && !HasToken("horns"))
-				i += 0.10;
-			return i;
-		}
-
-		[Obsolete("Use Levenshtein system instead.", true)]
-		public double GetDemonScore()
-		{
-			var i = 0.0;
-			if (HasToken("penis") && (GetToken("penis").HasToken("ridged") || GetToken("penis").HasToken("bumpy")))
-				i += 0.17;
-			if (HasToken("horns"))
-				i += 0.22;
-			if (!HasNormalSkin())
-				i += 0.15;
-			if (Path("legs/stiletto") != null || Path("legs/claws") != null)
-				i += 0.20;
-			if (HasToken("tail"))
-			{
-				i += 0.10;
-				if (Path("tail/penis") != null)
-					i += 0.30;
-				if (Path("tail/spade") != null)
-					i += 0.15;
-			}
-			return i;
-		}
-
-		[Obsolete("Use Levenshtein system instead.", true)]
-		public double GetGoblinScore()
-		{
-			var i = 0.0;
-			if (Path("skin/type/skin") != null && HasGreenSkin())
-				i += 0.50;
-			if (Path("ears/elfin") != null)
-				i += 0.50;
-			return i;
 		}
 
 		public float GetMaximumHealth()

@@ -36,6 +36,7 @@ playable
 culture
 	human
 normalgenders
+explicitgender
 terms
 	generic: "human"
 	male: "man"
@@ -99,6 +100,7 @@ items
 culture
 	demonic
 maleonly
+invisiblegender
 terms
 	generic: "imp"
 ascii
@@ -146,6 +148,7 @@ items
 culture
 	demonic
 femaleonly
+invisiblegender
 terms
 	generic: "goblin"
 ascii
@@ -191,6 +194,7 @@ carnality: 60
 culture
 	japanese
 femaleonly
+invisiblegender
 terms
 	generic: "bee"
 	male: "bee drone"
@@ -294,7 +298,8 @@ costume
 playable
 culture
 	demonic
-normalgenders
+neverneuter
+invisiblegender
 terms
 	generic: "cubi"
 	male: "incubus"
@@ -357,6 +362,7 @@ playable
 culture
 	japanese
 normalgenders
+invisiblegender
 terms
 	generic: "felinoid"
 	male: "catboy"
@@ -417,6 +423,7 @@ playable
 culture
 	japanese
 normalgenders
+invisiblegender
 terms
 	generic: "vulpinoid"
 	male: "foxboy"
@@ -479,6 +486,7 @@ playable
 culture
 	pony
 normalgenders
+invisiblegender
 terms
 	generic: "little pony"
 	male: "stallion"
@@ -536,6 +544,7 @@ playable
 culture
 	japanese
 neverneuter
+invisiblegender
 terms
 	generic: "slime"
 	male: "slimeboi"
@@ -583,6 +592,7 @@ playable
 culture
 	ursidous
 normalgenders
+invisiblegender
 terms
 	generic: "ursidae"
 	male: "ursidae"
@@ -762,6 +772,7 @@ ascii
 			<![CDATA[
 culture
 	japanese
+invisiblegender
 terms
 	generic: "cheetah"
 	male: "cheetah man"
@@ -808,6 +819,7 @@ vagina
 			<![CDATA[
 culture
 	demonic
+invisiblegender
 terms
 	generic: "cubi"
 	male: "incubus"
