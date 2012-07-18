@@ -78,11 +78,13 @@ namespace Noxico
 		private Bitmap scrollBuffer;
         public NoxicoGame Noxico;
         private ImageAttributes[] imageAttribs = new ImageAttributes[16 * 16];
+		private bool starting = true;
 
         public bool Running = true;
 		public int CellWidth = 8;
 		public int CellHeight = 14;
 		public int GlyphAdjustX = -2, GlyphAdjustY = -1;
+		public bool ClearType = false;
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -116,22 +118,52 @@ namespace Noxico
 				Visible = true,
 				Location = new System.Drawing.Point(16,16)
 			});
-			Show();
-			Refresh();
 
 			colorConverter = (c => c);
 			charConverter = (c => c);
 
+			var portable = false;
 			var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+			if (File.Exists("portable"))
+			{
+				portable = true;
+				var oldIniPath = iniPath;
+				iniPath = "noxico.ini";
+				var fi = new FileInfo(Application.ExecutablePath);
+				var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+				if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
+				{
+					var response = System.Windows.Forms.MessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+					if (response == System.Windows.Forms.DialogResult.Cancel)
+					{
+						Close();
+						return;
+					}
+					else if (response == System.Windows.Forms.DialogResult.Yes)
+					{
+						iniPath = oldIniPath;
+						portable = false;
+					}
+				}
+			}
+
 			if (!File.Exists(iniPath))
 				File.WriteAllText(iniPath, global::Noxico.Properties.Resources.DefaultSettings);
 			IniFile.Load(iniPath);
+
+			if (portable)
+			{
+				IniFile.SetValue("misc", "vistasaves", false);
+				IniFile.SetValue("misc", "savepath", "./saves");
+				IniFile.SetValue("misc", "shotpath", "./screenshots");
+			}
 
 			var family = IniFile.GetString("font", "family", "Consolas");
 			var emSize = IniFile.GetInt("font", "size", 11);
 			var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
 			GlyphAdjustX = IniFile.GetInt("font", "x-adjust", -2);
 			GlyphAdjustY = IniFile.GetInt("font", "y-adjust", -1);
+			ClearType = IniFile.GetBool("font", "cleartype", true);
 			Font = new Font(family, emSize, style);
 			if (Font.FontFamily.Name != family)
 				Font = new Font(FontFamily.GenericMonospace, emSize, style);
@@ -160,11 +192,13 @@ namespace Noxico
 				default: charConverter = (c => c); break;
 			}
 
+			ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+			Show();
+			Refresh();
+
 			backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
 			scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-			ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
-
-            Noxico = new NoxicoGame(this);
+			Noxico = new NoxicoGame(this);
             
 			MouseUp += (x, y) =>
 			{
@@ -243,11 +277,20 @@ namespace Noxico
 			}
 
 			this.Controls.Clear();
-            while (Running)
-            {
-                Noxico.Update();
-                Application.DoEvents();
-            }
+			starting = false;
+			try
+			{
+				while (Running)
+				{
+					Noxico.Update();
+					Application.DoEvents();
+				}
+			}
+			catch (Exception x)
+			{
+				System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
+				Running = false;
+			}
         }
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -368,7 +411,7 @@ namespace Noxico
 			var f = colorConverter(cell.Foreground);
             var c = charConverter(cell.Character);
 			gfx.TextContrast = 0;
-			gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			gfx.TextRenderingHint = ClearType ? System.Drawing.Text.TextRenderingHint.ClearTypeGridFit : System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			using (var backBrush = new SolidBrush(b))
 			{
 				gfx.FillRectangle(backBrush, sTX, sTY, CellWidth, CellHeight);
@@ -616,6 +659,8 @@ namespace Noxico
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+			if (starting)
+				return;
 			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[(int)e.KeyCode]).Milliseconds < 100)
 				return;
 			NoxicoGame.KeyRepeat[(int)e.KeyCode] = DateTime.Now;
@@ -642,12 +687,16 @@ namespace Noxico
 
 			if (e.KeyCode == Keys.F12)
 			{
-				if (!Directory.Exists("screenshots"))
-					Directory.CreateDirectory("screenshots");
+				var shotDir = IniFile.GetString("misc", "shotpath", "screenshots");
+				if (shotDir.StartsWith("$"))
+					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + shotDir.Substring(1);
+
+				if (!Directory.Exists(shotDir))
+					Directory.CreateDirectory(shotDir);
 				int i = 1;
-				while(File.Exists(Path.Combine("screenshots", "screenshot" + i.ToString("000") + ".png")))
+				while (File.Exists(Path.Combine(shotDir, "screenshot" + i.ToString("000") + ".png")))
 					i++;
-				backBuffer.Save(Path.Combine("screenshots", "screenshot" + i.ToString("000") + ".png"), ImageFormat.Png);
+				backBuffer.Save(Path.Combine(shotDir, "screenshot" + i.ToString("000") + ".png"), ImageFormat.Png);
 				Console.WriteLine("Screenshot saved.");
 			}
 			if (e.KeyValue == 191)

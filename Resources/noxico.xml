@@ -1503,7 +1503,7 @@ weapon
 	skill: polearm
 weight: heavy
 description: "A long pole with a sharpened point of steel on one end."
-asci
+ascii
 	char: U+002F
 	fore
 		darkgoldenrod
@@ -1518,7 +1518,7 @@ weapon
 	skill: throwing
 weight: heavy
 description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
-asci
+ascii
 	char: U+002F
 	fore
 		darkgoldenrod
@@ -1549,7 +1549,7 @@ weapon
 	skill: axe
 weight: medium
 description: "An ordinary looking fire-axe."
-asci
+ascii
 	char: U+00A2
 	fore
 		silver
@@ -1565,7 +1565,7 @@ weapon
 	skill: axe
 weight: heavy
 description: "An imposing battle axe. You could take someone's head off with this baby."
-asci
+ascii
 	char: U+00A2
 	fore
 		silver
@@ -1707,6 +1707,52 @@ ascii
 		<!-- bullwhip, pistol -->
 		<!-- fancy santa, caledflwch, wrinklefucker, warhammer of zillyhoo, ahab's crosshairs, regisickle, quills of echidna, SORD..... -->
 
+		<item id="spandex_suit" name="[color ]spandex bodysuit" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+weight
+	medium
+statbonus
+	charisma: 18
+description: "A suit that shows off your hot shape when worn."
+price: 100
+ascii
+	char: U+2202
+			]]>
+		</item>
+		<item id="spandex_pants" name="[color ]spandex pants" a="a" the="the">
+			<![CDATA[
+equipable
+	pants
+weight
+	medium
+statbonus
+	charisma: 12
+description: "Feels like David Bowie."
+price: 100
+ascii
+	char: U+220F
+			]]>
+		</item>
+		<item id="sentai_suit" name="[color ]super sentai costume" unknown="[color] power ranger costume" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+weight
+	medium
+identify: pop_culture
+statbonus
+	charisma: 16
+	strength: 16
+description: "Shapes your cool body in a superhero style."
+price: 100
+ascii
+	char: U+2202
+			]]>
+		</item>
 
 		<!-- Clothes from jsNoxico -->
 		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
