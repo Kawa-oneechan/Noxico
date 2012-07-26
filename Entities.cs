@@ -1100,6 +1100,14 @@ namespace Noxico
 				if (OnWarp())
 					CheckWarps();
 
+				var container = ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition);
+				if (container != null)
+				{
+					NoxicoGame.ClearKeys();
+					ContainerMan.Setup(container);
+					return;
+				}
+
 				//Find bed
 				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398');
 				if (bed != null)
@@ -1433,6 +1441,71 @@ namespace Noxico
 		}
 	}
 
+	public class Container : Entity
+	{
+		public Token Token { get; set; }
+
+		public string Name
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(Token.Text))
+					return Token.Text;
+				else
+					return "container";
+			}
+		}
+
+		public Container(string name, List<Token> contents)
+		{
+			Token = new Token();
+			Token.Text = name;
+			var c = new Token() { Name = "contents" };
+			if (contents != null)
+				c.AddSet(contents);
+			Token.Tokens.Add(c);
+			Blocking = false;
+		}
+
+		public override void SaveToFile(BinaryWriter stream)
+		{
+			base.SaveToFile(stream);
+			Token.SaveToFile(stream);
+		}
+
+		public static new Container LoadFromFile(BinaryReader stream)
+		{
+			var e = Entity.LoadFromFile(stream);
+			var newContainer = new Container("", null)
+			{
+				ID = e.ID,
+				AsciiChar = e.AsciiChar,
+				ForegroundColor = e.ForegroundColor,
+				BackgroundColor = e.BackgroundColor,
+				XPosition = e.XPosition,
+				YPosition = e.YPosition,
+			};
+			newContainer.Token = Token.LoadFromFile(stream);
+			return newContainer;
+		}
+
+		public void AdjustView()
+		{
+			if (Token.HasToken("ascii"))
+			{
+				var ascii = Token.GetToken("ascii");
+				if (ascii.HasToken("char"))
+					this.AsciiChar = (char)ascii.GetToken("char").Value;
+				if (ascii.HasToken("fore"))
+					this.ForegroundColor = Toolkit.GetColor(ascii.GetToken("fore").Tokens[0]);
+				if (ascii.HasToken("back"))
+					this.BackgroundColor = Toolkit.GetColor(ascii.GetToken("back").Tokens[0]);
+				else
+					this.BackgroundColor = this.ForegroundColor.Darken();
+			}
+		}
+	}
+
 	[Obsolete("This is for testing only.")]
 	public class LOSTester : BoardChar
 	{
@@ -1456,6 +1529,7 @@ namespace Noxico
 		}
 	}
 
+	[Obsolete("This never got anywhere.")]
 	public class LightSource : Entity
 	{
 		public int Brightness { get; set; }
