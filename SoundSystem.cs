@@ -166,6 +166,10 @@ namespace Noxico
 					currentSet = set;
 					musicChannel.setVolume(musicVolume);
 					//NoxicoGame.HostForm.Text = file;
+
+					var songName = new StringBuilder();
+					music.getName(songName, 256);
+					Console.WriteLine(songName);
 				}
 				else
 					Console.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);

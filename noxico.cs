@@ -1150,7 +1150,7 @@ namespace Noxico
 		/// </summary>
 		public string GetTitle()
 		{
-			return string.Format("{0} {2}", A, Title);
+			return string.Format("{0} {1}", A, Title);
 		}
 
 		/// <summary>
@@ -1681,7 +1681,7 @@ namespace Noxico
 						{
 							{ "normal", "[He] [has] a fairly normal face, with {0} skin." },
 							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
 							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
 							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
 							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
@@ -1720,7 +1720,7 @@ namespace Noxico
 						{
 							{ "normal", "[He] [has] a fairly normal face, with {0} scales." },
 							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
 							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
 							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
 							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
@@ -1733,11 +1733,24 @@ namespace Noxico
 						{
 							{ "normal", "[He] [has] a fairly normal face, made of translucent {0} slime." },
 							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "horse", "[His] is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
 							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
 							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
 							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [his] face is made of translucent {0} slime." },
 							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Translucent {0} slime completes the look, making [him] look quite fearsome." },
+						}
+					},
+					{
+						"metal",
+						new Dictionary<string, string>
+						{
+							{ "normal", "[His] face is fairly human in basic shape, but made of a rigid-looking metallic substance, {0} in color." },
+							{ "genbeast", "[His] face looks metallic and bestial, made of small slivers of {0} metal." },
+							{ "horse", "[His] face is equine in appearance, with a smooth, metallic {0} surface." },
+							{ "dog", "[He] [has] a dog-like face, made of smooth metal plates, {0} in color." },
+							{ "cow", "[He] [has] a bovine face, made of a rigid-looking {0} metal." },
+							{ "cat", "[His] face is cat-like, with the outer surface made of smooth little metal plates, {0} in color." },
+							{ "reptile", "[His] face is lizard-like, made of smoothly laid out slivers of {0} metal." },
 						}
 					},
 				};
@@ -1758,6 +1771,8 @@ namespace Noxico
 					hairDesc = "goopy, " + hairDesc;
 				else if (skinName == "rubber")
 					hairDesc = "thick, " + hairDesc;
+				else if (skinName == "metal")
+					hairDesc = "plastic-like, " + hairDesc;
 
 				if (!this.HasToken("ears") || this.GetToken("ears").HasToken("human"))
 					sb.AppendFormat("[His] {0} looks good, accentuating [his] features well.", hairDesc);
@@ -1788,7 +1803,7 @@ namespace Noxico
 					sb.AppendFormat("[He] [has] no hair, only a thin layer of fur atop of [his] head.");
 
 				if (this.GetToken("ears").HasToken("elfin"))
-					sb.AppendFormat("  A pair of large pointy ears stick out from [his] skull.");
+					sb.AppendFormat(" A pair of large pointy ears stick out from [his] skull.");
 				else if (this.GetToken("ears").HasToken("genbeast"))
 					sb.AppendFormat(" A pair of large-ish animal ears have sprouted from the top of [his] head.");
 				else if (this.GetToken("ears").HasToken("horse"))
@@ -1802,7 +1817,7 @@ namespace Noxico
 				else if (this.GetToken("ears").HasToken("frill"))
 					sb.AppendFormat(" A set of draconic frills extend from the sides of [his] skull.");
 				else if (this.GetToken("ears").HasToken("bunny"))
-					sb.AppendFormat(" A pair of long bunny ears [his] skull, flopping down adorably.");
+					sb.AppendFormat(" A pair of long bunny ears stand up from [his] skull, flopping down adorably.");
 
 				if (this.HasToken("antennae"))
 					sb.AppendFormat(" Floppy antennae also appear on [his] skull, bouncing and swaying in the breeze.");
@@ -1885,6 +1900,8 @@ namespace Noxico
 			}
 			#endregion
 
+			//TODO: support certain skintype limitations
+			//Possibility: allow skin and fur to count as one.
 			#region Tails
 			if (this.HasToken("tail"))
 			{
@@ -1897,7 +1914,7 @@ namespace Noxico
 					var spider = tail.GetToken("spider");
 					if (!spider.HasToken("venom"))
 						spider.Tokens.Add(new Token() { Name = "venom", Value = 10 });
-					sb.AppendFormat("A large spherical spider-abdomen grows out from [his] backside, covered in shiny red and black chitin. Though it weighs heavy and bobs with every motion, it doesn't seem to slow [him] down.");
+					sb.AppendFormat("A large spherical spider-abdomen grows out from [his] backside{0}. Though it weighs heavy and bobs with every motion, it doesn't seem to slow [him] down.", "" /* TODO: ", covered in shiny red and black chitin" should be skintyped */);
 					if (pa is Player)
 					{
 						if (spider.GetToken("venom").Value > 50 && spider.GetToken("venom").Value < 80)
@@ -1920,7 +1937,7 @@ namespace Noxico
 					var stinger = tail.GetToken("stinger");
 					if (!stinger.HasToken("venom"))
 						stinger.Tokens.Add(new Token() { Name = "venom", Value = 10 });
-					sb.AppendFormat("A large insectile bee-abdomen dangles from just above [his] backside, bobbing with its own weight. It is covered in hard chitin with black and yellow stripes, tipped with a dagger-like stinger.");
+					sb.AppendFormat("A large insectile bee-abdomen dangles from just above [his] backside, bobbing with its own weight. It is {0}tipped with a dagger-like stinger.", "" /* TODO: as above, "covered in hard chitin with black and yellow stripes, " */);
 					if (stinger.GetToken("venom").Value > 50 && stinger.GetToken("venom").Value < 80)
 						sb.AppendFormat(" A single drop of poison hangs from [his] exposed stinger.");
 					else if (stinger.GetToken("venom").Value >= 80 && stinger.GetToken("venom").Value < 100)
@@ -1932,6 +1949,7 @@ namespace Noxico
 				{
 					var tails = new Dictionary<string, string>()
 						{
+							//TODO: skintype these, like faces are.
 							{ "invalid", "A {0} tail hangs from [his] {2}, <b>but that's all I can tell ya.<b>" },
 							{ "stinger", "????" },
 							{ "spider", "????" },
@@ -1973,6 +1991,16 @@ namespace Noxico
 			if (this.HasToken("legs"))
 			{
 				var legs = this.GetToken("legs");
+				if (skinName == "slime")
+				{
+					//Can't have sharp feet as a slime. Is this a thing? Slimes don't have legs!
+					if (legs.HasToken("stilleto") || legs.HasToken("claws") || legs.HasToken("insect"))
+					{
+						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to genbeast.) ");
+						legs.Tokens.Clear();
+						legs.Tokens.Add(new Token() { Name = "human" });
+					}
+				} 
 				if (this.HasToken("quadruped"))
 				{
 					//Assume horse, accept genbeast, cow or dog legs, mock and reject others.
@@ -2002,7 +2030,7 @@ namespace Noxico
 					else if (legs.HasToken("genbeast"))
 						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in beastlike hind-paws.");
 					else if (legs.HasToken("cow") || legs.HasToken("horse"))
-						sb.AppendFormat("[His] legs are muscled and jointed oddly, covered in fur, and end in a pair of {0} hooves.", this.HasToken("marshmallow") ? "soft" : "bestial");
+						sb.AppendFormat("[His] legs are muscled and jointed oddly and end in a pair of {0} hooves.", this.HasToken("marshmallow") ? "soft" : "bestial"); //, covered in fur,
 					else if (legs.HasToken("dog"))
 						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in dog-like hind-paws.");
 					else if (legs.HasToken("stilleto"))

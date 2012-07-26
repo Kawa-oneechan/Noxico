@@ -278,7 +278,7 @@ namespace Noxico
 
 			this.Controls.Clear();
 			starting = false;
-			try
+			//try
 			{
 				while (Running)
 				{
@@ -286,10 +286,10 @@ namespace Noxico
 					Application.DoEvents();
 				}
 			}
-			catch (Exception x)
+			//catch (Exception x)
 			{
-				System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
-				Running = false;
+			//	System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
+			//	Running = false;
 			}
         }
 
