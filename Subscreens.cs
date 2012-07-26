@@ -1368,7 +1368,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						indexLeft = containerItems.Count - 1;
 
 					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue });
-					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = 0 };
+					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
 					UIManager.Elements.Add(containerList);
 				}
 
@@ -1417,7 +1417,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						height = height2;
 
 					UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 2 + height2, Background = Color.Black, Foreground = Color.Magenta });
-					playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = height2, Background = Color.Black, Foreground = Color.Gray, Index = 0 };
+					playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = height2, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
 					UIManager.Elements.Add(playerList);
 				}
 
@@ -1479,6 +1479,16 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
+			}
+			else if (keys[(int)Keys.Left])
+			{
+				UIManager.Highlight = containerList ?? playerList;
+				UIManager.Draw();
+			}
+			else if (keys[(int)Keys.Right])
+			{
+				UIManager.Highlight = playerList ?? containerList;
+				UIManager.Draw();
 			}
 			else
 				UIManager.CheckKeys();
