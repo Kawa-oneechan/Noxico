@@ -532,6 +532,25 @@ namespace Noxico
 
 		public void Populate(ref Tile[,] map)
 		{
+			//Place a random chest.
+			var contents = new List<Token>();
+			var dagger = new Token() { Name = "dagger" };
+			dagger.Tokens.Add(new Token() { Name = "vorpal" });
+			var suit = new Token() { Name = "sentai_suit" };
+			suit.Tokens.Add(new Token() { Name = "color", Text = "red" });
+			contents.Add(dagger);
+			contents.Add(suit);
+			var chest = new Container("Test Chest", contents)
+			{
+				XPosition = 2,
+				YPosition = 2,
+				ParentBoard = Board,
+				AsciiChar = '#',
+				BackgroundColor = Color.Black,
+				ForegroundColor = Color.Gray,
+			};
+			Board.Entities.Add(chest);
+
 			while (Rooms.Count(x => x.ID == null) > 0)
 			{
 				Character a = null, b = null;

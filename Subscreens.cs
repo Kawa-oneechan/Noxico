@@ -1288,4 +1288,231 @@ Thanks to:     Hammy, Nicole, Seru-kun
 
 		}
 	}
+
+	public class ContainerMan
+	{
+		private static List<Token> containerTokens = new List<Token>();
+		private static List<InventoryItem> containerItems = new List<InventoryItem>();
+
+		private static List<Token> playerTokens = new List<Token>();
+		private static List<InventoryItem> playerItems = new List<InventoryItem>();
+
+		private static Container container;
+
+		private static UIList containerList, playerList;
+		private static UILabel description;
+		private static bool onLeft = true;
+		private static int indexLeft, indexRight;
+
+		public static void Setup(Container container)
+		{
+			NoxicoGame.Mode = UserMode.Subscreen;
+			NoxicoGame.Subscreen = ContainerMan.Handler;
+			Subscreens.FirstDraw = true;
+
+			ContainerMan.container = container;
+		}
+
+		public static void Handler()
+		{
+			var host = NoxicoGame.HostForm;
+			var keys = NoxicoGame.KeyMap;
+			var trig = NoxicoGame.KeyTrg;
+			var player = NoxicoGame.HostForm.Noxico.Player;
+
+			if (Subscreens.FirstDraw)
+			{
+				UIManager.Initialize();
+				UIManager.Elements.Clear();
+
+				var height = 1;
+				containerTokens.Clear();
+				containerItems.Clear();
+				containerList = null;
+				var containerTexts = new List<string>();
+				if (container.Token.GetToken("contents").Tokens.Count == 0)
+				{
+					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.CornflowerBlue });
+					UIManager.Elements.Add(new UILabel("It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				}
+				else
+				{
+					foreach (var carriedItem in container.Token.GetToken("contents").Tokens)
+					{
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						containerTokens.Add(carriedItem);
+						containerItems.Add(find);
+
+						var item = find;
+						var sigil = "";
+						var carried = carriedItem;
+						if (item.HasToken("equipable"))
+							sigil += "<cGray>W";
+						if (carried.HasToken("unidentified"))
+							sigil += "<cSilver>?";
+#if DEBUG
+						if (carried.HasToken("cursed"))
+							sigil += "<c" + (carried.GetToken("cursed").HasToken("known") ? "Magenta" : "Purple") + ">C";
+#else
+					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
+						sigil += "<c13>C";
+#endif
+						containerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
+					}
+					height = containerItems.Count;
+					if (height > 20)
+						height = 20;
+					if (indexLeft >= containerItems.Count)
+						indexLeft = containerItems.Count - 1;
+
+					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue });
+					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = 0 };
+					UIManager.Elements.Add(containerList);
+				}
+
+				playerTokens.Clear();
+				playerItems.Clear();
+				playerList = null;
+				var playerTexts = new List<string>();
+				if (player.Character.GetToken("items").Tokens.Count == 0)
+				{
+					UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.Magenta });
+					UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				}
+				else
+				{
+					foreach (var carriedItem in player.Character.GetToken("items").Tokens)
+					{
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						playerTokens.Add(carriedItem);
+						playerItems.Add(find);
+
+						var item = find;
+						var sigil = "";
+						var carried = carriedItem;
+						if (item.HasToken("equipable"))
+							sigil += "<c" + (carried.HasToken("equipped") ? "Navy" : "Gray") + ">W";
+						if (carried.HasToken("unidentified"))
+							sigil += "<cSilver>?";
+#if DEBUG
+						if (carried.HasToken("cursed"))
+							sigil += "<c" + (carried.GetToken("cursed").HasToken("known") ? "Magenta" : "Purple") + ">C";
+#else
+					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
+						sigil += "<c13>C";
+#endif
+						playerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
+					}
+					var height2 = playerItems.Count;
+					if (height2 > 20)
+						height2 = 20;
+					if (indexRight >= playerItems.Count)
+						indexRight = playerItems.Count - 1;
+
+					if (height2 > height)
+						height = height2;
+
+					UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 2 + height2, Background = Color.Black, Foreground = Color.Magenta });
+					playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = height2, Background = Color.Black, Foreground = Color.Gray, Index = 0 };
+					UIManager.Elements.Add(playerList);
+				}
+
+				UIManager.Elements.Add(new UILabel(" Press Enter to store or retrieve the highlighted item.".PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 2, Top = 4 + height, Width = 40, Height = 8, Background = Color.Black, Foreground = Color.Navy });
+				description = new UILabel("") { Left = 4, Top = 5 + height, Width = 38, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				UIManager.Elements.Add(description);
+
+				if (containerList != null)
+				{
+					containerList.Change = (s, e) =>
+					{
+						indexLeft = containerList.Index;
+						var t = containerTokens[containerList.Index];
+						var i = containerItems[containerList.Index];
+						var r = string.Empty;
+						var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+						description.Text = Toolkit.Wordwrap(d, description.Width);
+						UIManager.Draw();
+					};
+					containerList.Enter = (s, e) =>
+					{
+						onLeft = true;
+						TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
+					};
+				}
+				if (playerList != null)
+				{
+					playerList.Change = (s, e) =>
+					{
+						indexRight = playerList.Index;
+						var t = playerTokens[playerList.Index];
+						var i = playerItems[playerList.Index];
+						var r = string.Empty;
+						var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+						description.Text = Toolkit.Wordwrap(d, description.Width);
+						UIManager.Draw();
+					};
+					playerList.Enter = (s, e) =>
+					{
+						onLeft = false;
+						TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]);
+					};
+				}
+
+				UIManager.Highlight = onLeft ? (containerList ?? null) : (playerList ?? null);
+				if (UIManager.Highlight.Change != null)
+					UIManager.Highlight.Change(null, null);
+				else
+					UIManager.Draw();
+				Subscreens.FirstDraw = false;
+			}
+
+			if (keys[(int)Keys.Escape])
+			{
+				NoxicoGame.ClearKeys();
+				NoxicoGame.Immediate = true;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Mode = UserMode.Walkabout;
+				Subscreens.FirstDraw = true;
+			}
+			else
+				UIManager.CheckKeys();
+		}
+
+		private static void TryRetrieve(BoardChar boardchar, Token token, InventoryItem chosen)
+		{
+			var inv = boardchar.Character.GetToken("items");
+			var con = container.Token.GetToken("contents");
+			inv.Tokens.Add(token);
+			con.Tokens.Remove(token);
+			boardchar.ParentBoard.Redraw();
+			boardchar.ParentBoard.Draw();
+			Subscreens.FirstDraw = true;
+		}
+
+		private static void TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
+		{
+			var inv = boardchar.Character.GetToken("items");
+			var con = container.Token.GetToken("contents");
+			//TODO: give feedback on error.
+			if (token.HasToken("cursed"))
+			{
+				return;
+			}
+			if (token.HasToken("equipped"))
+			{
+				return;
+			}
+			con.Tokens.Add(token);
+			inv.Tokens.Remove(token);
+			boardchar.ParentBoard.Redraw();
+			boardchar.ParentBoard.Draw();
+			Subscreens.FirstDraw = true;
+		}
+	}
 }

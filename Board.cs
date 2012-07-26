@@ -278,6 +278,7 @@ namespace Noxico
 				stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
 				stream.Write(Entities.OfType<DroppedItem>().Count());
 				stream.Write(Entities.OfType<Clutter>().Count() - Entities.OfType<Clutter>().Where(c => c.Life > 0).Count());
+				stream.Write(Entities.OfType<Container>().Count());
 				stream.Write(Warps.Count);
 
 				for (int row = 0; row < 25; row++)
@@ -308,6 +309,9 @@ namespace Noxico
 						continue;
 					else
 						e.SaveToFile(stream);
+				foreach (var e in Entities.OfType<Container>())
+					e.SaveToFile(stream);
+
 				Warps.ForEach(x => x.SaveToFile(stream));
 			}
 		}
@@ -337,6 +341,7 @@ namespace Noxico
 				var chrCt = stream.ReadInt32();
 				var drpCt = stream.ReadInt32();
 				var cltCt = stream.ReadInt32();
+				var conCt = stream.ReadInt32();
 				var wrpCt = stream.ReadInt32();
 
 				for (int row = 0; row < 25; row++)
@@ -360,6 +365,8 @@ namespace Noxico
 					newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
 				for (int i = 0; i < cltCt; i++)
 					newBoard.Entities.Add(Clutter.LoadFromFile(stream));
+				for (int i = 0; i < conCt; i++)
+					newBoard.Entities.Add(Container.LoadFromFile(stream));
 
 				for (int i = 0; i < wrpCt; i++)
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
@@ -1090,6 +1097,8 @@ namespace Noxico
 
 			foreach (var entity in this.Entities.OfType<Clutter>())
 				entity.Draw();
+			foreach (var entity in this.Entities.OfType<Container>())
+				entity.Draw();
 			foreach (var entity in this.Entities.OfType<DroppedItem>())
 				entity.Draw();
 			foreach (var entity in this.Entities.OfType<BoardChar>())
@@ -1399,6 +1408,17 @@ namespace Noxico
 					file.WriteLine("</pre>");
 				}
 			}
+			if (Entities.OfType<Container>().Count() > 0)
+			{
+				file.WriteLine("<h3>Container</h3>");
+				foreach (var c in Entities.OfType<Container>())
+				{
+					file.WriteLine("<h4>{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition);
+					file.WriteLine("<pre>");
+					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
+					file.WriteLine("</pre>");
+				}
+			} 
 			file.Flush();
 			file.Close();
 		}
