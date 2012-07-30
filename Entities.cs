@@ -16,7 +16,7 @@ namespace Noxico
 
 	public enum Motor
 	{
-		Stand, Wander, WanderSector, Hunt, Sexytimes, //...
+		Stand, Wander, WanderSector, Hunt, //...
 	}
 
     public class Location
@@ -371,11 +371,16 @@ namespace Noxico
 							if (((BoardChar)PointingAt).Character.HasToken("beast"))
 								MessageBox.Message("The " + ((BoardChar)PointingAt).Character.Title + " is not a sentient being.", true);
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
-								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
+							{
+								if (((BoardChar)PointingAt).Character.HasToken("helpless"))
+								{
+									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
+								}
+								else
+									MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
+							}
 							else
 							{
-								//TODO: Fuck shit up.
-								//MessageBox.Message("Can't fuck yet, sorry.", true);
 								SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character);
 							}
 						}
@@ -518,14 +523,24 @@ namespace Noxico
 			if (Character.GetToken("health").Value <= 0)
 				return;
 
+			if (Character.HasToken("helpless"))
+			{
+				if (Toolkit.Rand.NextDouble() < 0.05)
+				{
+					Character.GetToken("health").Value += 2;
+					NoxicoGame.AddMessage((this is Player ? "You get" : Character.Name.ToString() + " gets") + " back up.");
+					Character.RemoveToken("helpless");
+					//TODO: Remove hostility? Replace with fear?
+				}
+				else
+					return;
+			}
+
 			base.Update();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
 					return;
-
-			if (Character.HasToken("incapacitated"))
-				return;
 
 			if (MoveTimer > MoveSpeed)
 				MoveTimer = 0;
@@ -550,9 +565,6 @@ namespace Noxico
 					case Motor.Hunt:
 						Hunt();
 						break;
-					case Motor.Sexytimes:
-						//TODO: Make sweet love -- definately split off into another method.
-						break;
 				}
 			}
 
@@ -573,6 +585,9 @@ namespace Noxico
 
 		private void Hunt()
 		{
+			if (Character.HasToken("helpless"))
+				return;
+
 			//TODO: Hunt down the target, probably the player.
 			BoardChar target = null;
 			//If no target is given, assume the player.
@@ -596,6 +611,11 @@ namespace Noxico
 			if (DistanceFrom(target) <= range && CanSee(target))
 			{
 				//Within attacking range.
+				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30)
+				{
+					//WRONG KIND OF ATTACK! ABANDON SHIP!!
+					SexScenes.Engage(this.Character, target.Character, "(rape start)");
+				}
 				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
 				{
 					//Melee attacks can only be orthogonal.
@@ -682,6 +702,13 @@ namespace Noxico
 			//Account for armor and such
 			//Add some randomization
 			//Determine dodges
+
+			if (target.Character.HasToken("helpless"))
+			{
+				damage = target.Character.GetToken("health").Value + 1;
+				dodged = false;
+			}
+
 			if (dodged)
 			{
 				NoxicoGame.AddMessage((target is Player ? targetName : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
@@ -693,17 +720,26 @@ namespace Noxico
 				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " points.");
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + attackerFullName, this))
+			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))
 			{
 				//Gain a bonus from killing the target?
 			}
 		}
 
-		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor)
+		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
 		{
 			var health = Character.GetToken("health").Value;
 			if (health - damage <= 0)
 			{
+				if (finishable && !Character.HasToken("beast"))
+				{
+					if (!Character.HasToken("helpless"))
+					{
+						NoxicoGame.AddMessage((this is Player ? "You are" : Character.Name.ToString() + " is") + " helpless!");
+						Character.Tokens.Add(new Token() { Name = "helpless" } );
+						return false;
+					}
+				}
 				//Dead, but how?
 				Character.GetToken("health").Value = 0;
 				LeaveCorpse(obituary);
@@ -983,8 +1019,17 @@ namespace Noxico
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
-			if (Character.HasToken("incapacitated"))
-				return;
+			var helpless = Character.HasToken("helpless");
+			if (helpless)
+			{
+				if (Toolkit.Rand.NextDouble() < 0.2)
+				{
+					Character.GetToken("health").Value += 2;
+					NoxicoGame.AddMessage("You get back up.");
+					Character.RemoveToken("helpless");
+					helpless = false;
+				}
+			}
 
 			if (NoxicoGame.KeyMap[(int)Keys.F1])
 			{
@@ -1012,7 +1057,7 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.KeyMap[(int)Keys.F])
+			if (NoxicoGame.KeyMap[(int)Keys.F] && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Fuck message]");
@@ -1025,7 +1070,7 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.KeyMap[(int)Keys.A])
+			if (NoxicoGame.KeyMap[(int)Keys.A] && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				if (!Character.CanShoot())
@@ -1060,6 +1105,8 @@ namespace Noxico
 
 			if (NoxicoGame.KeyMap[(int)Keys.P] || NoxicoGame.KeyMap[(int)Keys.Oemcomma])
 			{
+				if (helpless)
+					return;
 				NoxicoGame.ClearKeys();
 				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);
 				if (itemsHere.Count == 0)
@@ -1093,7 +1140,7 @@ namespace Noxico
 			}
 
 			//if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
-			if (NoxicoGame.KeyMap[(int)Keys.Enter])
+			if (NoxicoGame.KeyMap[(int)Keys.Enter] && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 
@@ -1117,7 +1164,7 @@ namespace Noxico
 					{
 						MessageBox.Ask("Rest a while?", () =>
 						{
-							Character.Tokens.Add(new Token() { Name = "incapacitated" });
+							Character.Tokens.Add(new Token() { Name = "helpless" });
 							NoxicoGame.Mode = UserMode.Subscreen;
 							NoxicoGame.Subscreen = Subscreens.SleepAWhile;
 							Subscreens.FirstDraw = true;
@@ -1138,6 +1185,8 @@ namespace Noxico
 				return;
 			}
 #endif
+			if (helpless)
+				return;
 
 			if (!AutoTravelling)
 			{
@@ -1204,14 +1253,14 @@ namespace Noxico
 			NoxicoGame.UpdateMessages();
 		}
 
-		public override bool Hurt(float damage, string obituary, BoardChar aggressor)
+		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
 		{
 			if (AutoTravelling)
 			{
 				NoxicoGame.AddMessage("Autotravel interrupted.");
 				AutoTravelling = false;
 			}
-			var dead = base.Hurt(damage, obituary, aggressor);
+			var dead = base.Hurt(damage, obituary, aggressor, finishable);
 			if (dead)
 			{
 				var relation = Character.Path("ships/" + aggressor.Character.Name.ToString(true));
