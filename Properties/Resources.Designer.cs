@@ -76,6 +76,7 @@ namespace Noxico.Properties {
         ///
         ///	&lt;!ELEMENT groundGlyphs (#PCDATA)&gt;
         ///	&lt;!ELEMENT encounters (#PCDATA)&gt;
+        ///	&lt;!ELEMENT darken EMPTY&gt;
         ///
         ///	&lt;!ATTLIST realm
         ///		id ID #REQUIRED
@@ -90,10 +91,7 @@ namespace Noxico.Properties {
         ///		canBurn CDATA #IMPLIED
         ///	&gt;
         ///	&lt;!ATTLIST encounters
-        ///		max CDATA #IMPLIED
-        ///	&gt;
-        ///]&gt;
-        ///&lt;! [rest of string was truncated]&quot;;.
+        ///		max  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Biomes {
             get {
@@ -186,16 +184,13 @@ namespace Noxico.Properties {
         ///   Looks up a localized string similar to ; This is the default configuration for Noxico. Feel free to adjust this as you see fit.
         ///
         ///[font]
-        ///;   family: The font family name, like &quot;Consolas&quot;, &quot;DejaVu Sans Mono&quot;, or &quot;Fixedsys&quot;.
-        ///;           If the font can&apos;t be loaded, the system&apos;s default monospace font is used.
-        ///;     size: The size in points.
-        ///;     bold: Obvious.
-        ///; x-adjust: Some fonts may need to be nudged. This and y-adjust will allow that.
-        ///;           Don&apos;t use too large values or things&apos;ll go wonky.
-        ///family=Consolas
-        ///size=11
-        ///bold=false
-        /// [rest of string was truncated]&quot;;.
+        ///;    family: The font family name, like &quot;Consolas&quot;, &quot;DejaVu Sans Mono&quot;, or &quot;Fixedsys&quot;.
+        ///;            If the font can&apos;t be loaded, the system&apos;s default monospace font is used.
+        ///;      size: The size in points.
+        ///;      bold: Obvious.
+        ///;  x-adjust: Some fonts may need to be nudged. This and y-adjust will allow that.
+        ///;            Don&apos;t use too large values or things&apos;ll go wonky.
+        ///; cellwidth: This and cellheight [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DefaultSettings {
             get {
@@ -339,6 +334,33 @@ namespace Noxico.Properties {
         internal static string Music {
             get {
                 return ResourceManager.GetString("Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;scenes&gt;
+        ///  &lt;scene id=&quot;DevStart&quot; name=&quot;(starting node)&quot;&gt;
+        ///    &lt;filter target=&quot;top&quot; type=&quot;gender&quot; value=&quot;male&quot; /&gt;
+        ///    &lt;p&gt;
+        ///    	Development starting node, male top.
+        ///		&lt;/p&gt;
+        ///		&lt;p&gt;
+        ///			Second paragraph.
+        ///		&lt;/p&gt;
+        ///    &lt;short&gt;[t:name] triggers devstart.&lt;/short&gt;
+        ///    &lt;action name=&quot;dev action 1&quot; /&gt;
+        ///  	&lt;action name=&quot;dev leave&quot; /&gt;
+        ///  &lt;/scene&gt;
+        ///  &lt;scene id=&quot;DevAction1&quot; name=&quot;dev action 1&quot; list=&quot;Do a jig&quot;&gt;
+        ///  	&lt;p&gt;
+        ///  		Testing scripts...
+        ///  	&lt;/p&gt;
+        ///  	&lt;script language=&quot;text/nox [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Scenes {
+            get {
+                return ResourceManager.GetString("Scenes", resourceCulture);
             }
         }
         

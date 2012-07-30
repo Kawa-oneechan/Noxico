@@ -14,7 +14,7 @@ namespace Noxico
 			Box, Question, Scroller
 		}
 
-		public static void Run(Entity subject, string[] Script)
+		public static string Run(Entity subject, string[] Script, bool buffered = false)
 		{
 			var msgBuffer = new StringBuilder();
 			var msgType = MessageTypes.Box;
@@ -175,7 +175,7 @@ namespace Noxico
 							//Console.WriteLine("EXCEPTION");
 							//Console.WriteLine("---------");
 							//Console.WriteLine(x.Message);
-							return;
+							return string.Empty;
 						}
 						//Console.WriteLine(" => {0}", result);
 						if (!NoxicoGame.ScriptVariables.ContainsKey(variable))
@@ -313,17 +313,20 @@ namespace Noxico
 									true);
 								break;
 							case MessageTypes.Scroller:
-								TextScroller.Noxicobotic(subject, msgBuffer.ToString());
+								if (!buffered)
+									TextScroller.Noxicobotic(subject, msgBuffer.ToString());
 								break;
 						}
-						msgBuffer.Clear();
-						return;
+						if (!buffered)
+							msgBuffer.Clear();
+						return msgBuffer.ToString();
 					}
 					#endregion
 				}
 				if (breakTime)
 					break;
 			}
+			return string.Empty;
 		}
 
 		public static bool Execute(Entity subject, string command, params string[] parms)
@@ -611,6 +614,29 @@ namespace Noxico
 					}
 					else
 						shipToken.Tokens[0].Name = parms[1];
+					return false;
+				#endregion
+				#region Genitalia
+				case "getcockcount":
+					if (!(subject is BoardChar))
+						throw new Exception("Noxicobotic subject is not a BoardChar.");
+					NoxicoGame.ScriptVariables["it"] = ((BoardChar)subject).Character.Tokens.Count(x => x.Name == "penis");
+					return false;
+				case "getcumamount":
+					if (!(subject is BoardChar))
+						throw new Exception("Noxicobotic subject is not a BoardChar.");
+					NoxicoGame.ScriptVariables["it"] = ((BoardChar)subject).Character.CumAmount();
+					return false;
+				case "getcockarea":
+					var cockNum = 0;
+					if (parms.Length > 0)
+						int.TryParse(parms[0], out cockNum);
+					if (!(subject is BoardChar))
+						throw new Exception("Noxicobotic subject is not a BoardChar.");
+					var cocks = ((BoardChar)subject).Character.Tokens.FindAll(x => x.Name == "penis").ToArray();
+					if (cockNum >= cocks.Length)
+						throw new Exception("Cock index out of bounds.");
+					NoxicoGame.ScriptVariables["it"] = cocks[cockNum].GetToken("thickness").Value * cocks[cockNum].GetToken("length").Value;
 					return false;
 				#endregion
 			}

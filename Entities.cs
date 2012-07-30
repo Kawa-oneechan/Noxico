@@ -351,7 +351,7 @@ namespace Noxico
 							else
 								MessageBox.Message("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
 						else if (Intent == Intents.Fuck)
-							MessageBox.Message("Can't masturbate yet, sorry.", true);
+							SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
 					}
 					else if (PointingAt is BoardChar)
 					{
@@ -375,7 +375,8 @@ namespace Noxico
 							else
 							{
 								//TODO: Fuck shit up.
-								MessageBox.Message("Can't fuck yet, sorry.", true);
+								//MessageBox.Message("Can't fuck yet, sorry.", true);
+								SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character);
 							}
 						}
 						else if (Intent == Intents.Shoot)

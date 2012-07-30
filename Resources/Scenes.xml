@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scenes>
+	<scene id="TamaniStartBoy" name="(starting node)">
+		<!-- This is a comment that'll show up in the editor. -->
+		<filter target="bottom" type="name" name="Emi Nakashima" />
+		<p>
+			Tamani is here, grinning wolfishly.
+		</p>
+		<script language="text/noxicobotic">
+			<![CDATA[
+				$top.checktag "penis"
+				if exists
+					|<<	"Ready for another fuck, big boy?" >>
+				else
+					|<<	"Ready for another fuck, big girl?" >>
+				endif
+			]]>
+		</script>
+		<action name="tamani take her" />
+		<action name="tamani let her" />
+		<action name="tamani decline" />
+	</scene>
+	<scene id="TamaniTakeHer" name="tamani take her" list="Take her">
+		<filter target="bottom" type="name" name="Emi Nakashima" />
+		<script language="text/noxicobotic">
+			<![CDATA[
+				$top.getcockcount
+				cox = it
+				$top.getcumamount
+				cum = it
+
+				$top.getcockarea
+				if it > 90
+					|<<	You grab hold of the insensate goblin by her pink-dyed hair and shove her into the mud,
+							irritated with her constant demands and rape attempts. The horny slut doesn't even have
+							the grace to be ashamed of her defeat. She just lies in the mud, wiggling her exposed
+							ass back and forth in the air, trying to tempt you with it.
+							[break]
+							It's too tempting of a target to resist. You allow your [t:multicockdescript] to flop
+							free. You're already hard from the enticing display, and in a moment you're pressing
+							against her lust-slicked >>
+					if cox > 1
+						|<<	pussy and tight asshole. >>
+					else
+						|<<	pussy. >>
+					endif
+					|<<	You don't allow her any say in the matter, pushing forward as you feel the small girl's
+							flesh yield around >>
+					if cox > 1
+						|<<	each of your girths. >>
+					else
+						|<<	your girth. >>
+					endif
+					|<<	She squeals happily, clearly getting what she desires. For a moment you feel disappointed
+							in yourself, but the sensations of her tight >>
+					if cox > 1
+						|<<	holes >>
+					else
+						|<<		hole >>
+					endif
+					|<<	clenching and squeezing around you quickly washes it away.
+							[break] >>
+
+				else
+
+					|<<	You throw Tamani on her back, too drunk on desire to care how it feels for the tiny slut.
+							There's no way she could ever take >>
+					if cox > 1
+						|<<	any of your massive members, >>
+					else
+						|<<	your massive member, >>
+					|<<	so you grab her by the ankles and wrap her soft-soled feet about yourself. You start
+							jerking yourself off, using Tamani as a cute but expendable masturbation aid. She chews
+							a fingernail and massages her [b:breastdescript] as she watches you, doing her best to
+							put on a show. The little slut seems to like it.
+							[break]
+							Her feet start to grow slick with your sweat and precum, sliding effortlessly along the
+							length of your shaft as you continue to bring yourself towards orgasm. You watch while
+							Tamani dips her fingers into the slick folds of her hungry cunt, getting off on being
+							used in such a perverse manner. She coos, "How do my feet feel stud? Are they soft and
+							slick when they slide on your cock? Are you going to cum for Tamani and paint her white?
+							You are. You know you are. Cum for Tamani."
+							[break] >>
+
+				endif
+			]]>
+		</script>
+		<action name="tamani take her 2" />
+	</scene>
+	<scene id="TamaniTakeHer2" name="tamani take her 2" list="">
+		<script language="text/noxicobotic">
+			<![CDATA[
+				$top.getcockcount
+				cox = it
+				$top.getcumamount
+				cum = it
+
+				$top.getcockarea
+				if it <= 90
+					|<<	You rock back and forth methodically, treating Tamani like a tight cock-sleeve.
+							The goblin slut's hands rub her belly, not even attempting to pull her face out of the
+							mud as she moans and giggles like a whore. You keep working her cunt like a [t:gender]
+							possessed, sawing in and out with brutal efficiency, the wet squelches of the slut's
+							juices driving you to piston back and forth with even greater force. She gurgles happily, >>
+					if cox > 1
+						|<<	her holes squeezing tightly as she cums hard.[break] >>
+					else
+						|<<	her pussy squeezing tightly as she cums hard.[break] >>
+
+					if cox > 1
+						|<<	Each of your [t:multicockdescript] pulsates, >>
+					else
+						|<<	Your [t:multicockdescript] pulsates, >>
+					endif
+					|<<	spasming inside your goblin-flesh prison, spraying a bit of sticky goo into the happy
+							slut. You can hear her babbling, pleasure-drunk as she quivers around you, "Fuck yes!
+							Cu-ah-ahm in me! Fuck fuckfuckfucKFUCKYEAH! Oooh that's it put me in the dirt and show
+							me who's boss!" >>
+
+				else
+
+					|<<	Oh gods you do... it'd be so easy to just release all over her tight little body, soaking
+							her in cum from head to toe. You know she'd like it. Hell, you'd like it, but you want to
+							make her wait. Your hands keep sliding and squeezing, jerking her now-slippery soles with
+							faster and faster strokes. Holding back is TOO hard! You need to release – the little slut's
+							words ring true as you squeeze tightly, feeling warmth building in your crotch as your body
+							begins to climax.
+							[break]
+							Tamani licks her lips and pushes with her legs, assisting you as you milk yourself with her
+							feet, squeezing out the first jet of hot goblin-treat. It spatters over the green girl's
+							forehead, running into her pink highlights. She opens wide, craning up to catch the next
+							blast of salty seed in her dirty lipstick-coated mouth. Swallowing like a pro, she leans up
+							further, letting you coat her tits with cream.
+							[break] >>
+
+				endif
+			]]>
+		</script>
+		<action name="tamani take her 3" />
+	</scene>
+	<scene id="TamaniTakeHer3" name="tamani take her 3" list="">
+		<script language="text/noxicobotic">
+			<![CDATA[
+				$top.getcockcount
+				cox = it
+				$top.getcumamount
+				cum = it
+
+				$top.getcockarea
+				if it <= 90
+					|<< The words seem to have the desired effect, helping you empty every
+							ounce of cock-cream into the slut's tight >>
+					if cox > 1
+						|<<	holes. >>
+					else
+						|<<	hole. >>
+					endif
+					if cum >= 250
+						|<<	She pants, turning her head in the mud to watch as her belly visibly inflates,
+								stuffed totally full of cum. >>
+					endif
+					if cum >= 500
+						|<<	In no time at all a river of jism pours from her, pooling below as you overwhelm her
+								body's capacity to store spunk. >>
+					endif
+
+					|<<	[break]Tamani winks, sucking on her finger as she staggers up. She coos, "Mmmm Tamani
+							loves it when her stud dominates her. Do you think your >>
+					$top.checktag "balls"
+					if exists
+						|<<	sexy balls have >>
+					else
+						|<<	sweet cock has >>
+					endif
+					|<<	any more cream to give to me?"
+							[break]
+							She doesn't give you a chance to answer as she wobbles off, jiggling pleasantly in all
+							the right places. "Of course you do. I'll be back for the rest later!" >>
+
+					$top.settagval "climax" 0
+					$bottom.settagval "climax" 0
+
+				else
+
+					if cum >= 250
+						|<<	You continue working your [t:cockdescript] with her supple feet, watching your dripping
+								spooge froth and bubble as you continue to pump more onto the sassy wench. >>
+					endif
+					if cum >= 500
+						|<<	She sputters, blowing some of the caked up semen off her face so she can breathe. The
+								slut gathers up the goopy mess as you continue to paint her, alternatively devouring it
+								with her mouth and shoveling drippy handfuls into her eager cunt. >>
+					endif
+
+					|<<	[break]Tamani winks, blinking the cum out of an eye as you finish up, releasing her
+							seed-covered form. She coos, "Mmmm Tamani loves it when you dominate her, stud. Do you
+							think your >>
+					$top.checktag "balls"
+					if exists
+						|<<	sexy balls have >>
+					else
+						|<<	sweet cock has >>
+					endif
+					|<<	any more cream to give to me?"
+							[break]
+							She doesn't give you a chance to answer as she staggers up and strikes a sexy pose.
+							"Of course you do. I'll be back for the rest later!"
+							[break]
+							Tamani wiggles in the sexiest way as she leaves, arousing your body all over again... >>
+
+					$top.settagval "climax" 35
+					$bottom.settagval "climax" 0
+
+				endif
+			]]>
+		</script>
+	</scene>
+
+	<scene id="TamaniDecline" name="tamani decline" list="&quot;No.&quot;">
+		<filter target="bottom" type="npc" value="Tamani" />
+		<p>
+			Tamani adopts a fighting pose and says, "If I have to I'll beat my
+			children out of you!"
+		</p>
+		<script language="text/noxicobotic">
+			<![CDATA[
+				$bottom.addtag "hostile"
+				<<< Tamani has gone hostile!
+			]]>
+		</script>
+	</scene>
+
+	<scene id="EmiTest" name="(starting node)">
+		<filter target="bottom" type="name" name="Emi Nakashima" />
+		<p>
+			Your [t:cockdescript] stirs as [b:name] looks deep in your &lt;c[t:T:eyes/color]>[t:t:eyes/color]&lt;c> eyes.
+		</p>
+	</scene>
+	<scene id="MulticockTest1" name="(starting node)">
+		<filter target="top" type="has" name="penis" value="1" />
+		<p>
+			Exactly one cock.
+		</p>
+	</scene>
+	<scene id="MulticockTest2" name="(starting node)">
+		<filter target="top" type="has" name="penis" value="2" />
+		<p>
+			Exactly two cocks.
+		</p>
+	</scene>
+	<scene id="MulticockTest3" name="(starting node)">
+		<filter target="top" type="has" name="penis" value="2+" />
+		<p>
+			Two or more cocks.
+		</p>
+	</scene>
+	<scene id="DevStart" name="(starting node)">
+		<filter target="bottom" type="gender" value="male" />
+		<p>
+			Development starting node, male bottom.
+		</p>
+		<p>
+			Second paragraph.
+		</p>
+		<short>[t:name] triggers devstart.</short>
+		<action name="dev action 1" />
+		<action name="dev leave" />
+	</scene>
+	<scene id="DevStart2" name="(starting node)">
+		<filter target="bottom" type="gender" value="female" />
+		<p>
+			Development starting node, female bottom.
+		</p>
+		<p>
+			Second paragraph.
+		</p>
+		<short>[t:name] triggers devstart.</short>
+		<action name="dev action 1" />
+		<action name="dev leave" />
+	</scene>
+	<scene id="DevAction1" name="dev action 1" list="Do a jig">
+		<p>
+			Testing scripts...
+		</p>
+		<script language="text/noxicobotic">
+			<![CDATA[
+  			|<< Second paragraph from script. >>
+  		]]>
+		</script>
+		<action name="dev climax" />
+		<action name="dev leave" />
+	</scene>
+	<scene id="DevClimax" name="dev climax" list="Test climax">
+		<script language="text/noxicobotic">
+			<![CDATA[
+  			|<< Increasing climax for top by 20. >>
+				$top.inctagval "Climax" 20
+  		]]>
+		</script>
+		<action name="dev climax" />
+		<action name="dev leave" />
+	</scene>
+	<scene id="DevLeave" name="dev leave" list="Leave">
+		<p>Baibai</p>
+	</scene>
+
+	<scene id="FinalDestination" name="(starting node)">
+		<p>If you can see this, all the other nodes failed.</p>
+	</scene>
+</scenes>

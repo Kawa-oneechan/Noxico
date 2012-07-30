@@ -105,6 +105,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SexScenes.cs" />
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens.cs" />
     <Compile Include="UI.cs" />
@@ -281,6 +282,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Resources\TileSpecialDescriptions.txt" />
+    <Content Include="Resources\Scenes.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="sounds\Alert.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

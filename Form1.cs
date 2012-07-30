@@ -22,7 +22,7 @@ namespace Noxico
 #if DEBUG
 				Console.WriteLine("No postbuild on DEBUG builds.");
 #else
-				var ver = "0.1.6";
+				var ver = "0.1.7";
 				Console.WriteLine("Packing up...");
 				//"c:\Program Files\WinRAR\Rar.exe" u Noxico.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe
 				//"c:\Program Files\WinRAR\Rar.exe" u Noxico_music.rar fmodex64.dll FMODNet.dll music.xml noxico.xml books.dat Noxico.exe music sounds
