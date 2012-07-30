@@ -48,7 +48,7 @@ namespace Noxico
 				player.GetToken("health").Value = max;
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				player.Tokens.Remove(player.GetToken("incapacitated"));
+				player.RemoveToken("helpless");
 			}
 		}
 
