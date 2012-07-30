@@ -203,7 +203,7 @@ terms
 ascii
 	char: U+0062
 bestiary: "A man-sized bee, basically."
-tallness: 1d20+140
+tallness: roll 1d20+140
 hair
 	length: 6
 	color: black
@@ -284,8 +284,8 @@ vagina
 	looseness: 2
 	fuckable
 penis
-	thickness: 1d2+1
-	length: 1d6+20
+	thickness: roll 1d2+1
+	length: roll 1d6+20
 	cumsource
 	canfuck
 costume
@@ -396,7 +396,7 @@ ass
 	fuckable
 hips: roll 1d6
 waist: roll 1d4+1
-fertility: 1d25+5
+fertility: roll 1d25+5
 breastrow
 	amount: 2
 	size: roll 1d4+1
@@ -581,7 +581,7 @@ vagina
 	clit: 0.5
 penis
 	thickness: 2.5
-	length: 1d7+15
+	length: roll 1d7+15
 	cumsource
 	canfuck
 			]]>
@@ -625,7 +625,7 @@ ass
 	fuckable
 hips: roll 1d14+2
 waist: roll 1d12+2
-fertility: 1d25+5
+fertility: roll 1d25+5
 -- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
 -- Requires only one roll and a divisor token. In fact, I could list it right now.
 breastrow
@@ -804,7 +804,7 @@ ass
 	fuckable
 hips: roll 1d6
 waist: roll 1d4+1
-fertility: 1d25+5
+fertility: roll 1d25+5
 breastrow
 	amount: 2
 	size: 4.2

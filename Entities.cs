@@ -717,7 +717,7 @@ namespace Noxico
 
 			if (damage > 0)
 			{
-				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " points.");
+				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".");
 				Character.IncreaseSkill(skill);
 			}
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))
