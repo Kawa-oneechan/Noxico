@@ -344,6 +344,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 		private static Action onYes, onNo;
 		private static Dictionary<object, string> options;
 		private static int option;
+		private static bool allowEscape;
 		public static object Answer { get; private set; }
 
 		public static void Handler()
@@ -391,6 +392,14 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			}
 			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (type == BoxType.Question && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
 			{
+				if (type == BoxType.List && keys[(int)Keys.Escape])
+				{
+					if (!allowEscape)
+						return;
+					else
+						option = -1;
+				}
+
 				if (Subscreens.PreviousScreen.Count == 0)
 				{
 					NoxicoGame.Mode = UserMode.Walkabout;
@@ -430,7 +439,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			}
 		}
 
-		public static void List(string question, Dictionary<object, string> options, Action okay, bool dontPush = false, string title = "")
+		public static void List(string question, Dictionary<object, string> options, Action okay, bool allowEscape = false, bool dontPush = false, string title = "")
 		{
 			if (!dontPush && NoxicoGame.Subscreen != null)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
@@ -441,6 +450,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			option = 0;
 			onYes = okay;
 			MessageBox.options = options;
+			MessageBox.allowEscape = allowEscape;
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}

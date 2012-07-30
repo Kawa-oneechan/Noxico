@@ -727,6 +727,8 @@ namespace Noxico
 
 		public static string Breasts(Token titrow, bool inCups = true)
 		{
+			if (titrow == null)
+				return "glitch";
 			var titDesc = "";
 			var size = titrow.HasToken("size") ? titrow.GetToken("size").Value : 0f;
 			if (size == 0)
@@ -775,6 +777,8 @@ namespace Noxico
 
 		public static string Nipples(Token nipples)
 		{
+			if (nipples == null)
+				return "glitch";
 			var nipDesc = "";
 			var adjective = false;
 			var size = nipples.HasToken("size") ? nipples.GetToken("size").Value : 0.25f;
@@ -921,6 +925,8 @@ namespace Noxico
 
 		public static string Cock(Token cock)
 		{
+			if (cock == null)
+				return "glitch";
 			if (cock.HasToken("horse"))
 				return "horse cock";
 			else if (cock.HasToken("dog"))
@@ -931,6 +937,8 @@ namespace Noxico
 
 		public static string Tail(Token tail)
 		{
+			if (tail == null)
+				return "glitch";
 			var tails = new Dictionary<string, string>()
 			{
 				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
@@ -945,6 +953,8 @@ namespace Noxico
 
 		public static string Tentacle(Token tentacle, float stimulation)
 		{
+			if (tentacle == null)
+				return "glitch";
 			var ret = "tapered tip";
 			if (tentacle.HasToken("penis"))
 				ret = "thick penis head";
@@ -2326,7 +2336,6 @@ namespace Noxico
 			sb.Replace("[is]", pa is Player ? "are" : "is");
 			sb.Replace("[has]", pa is Player ? "have" : "has");
 			sb.Replace("[does]", pa is Player ? "do" : "does");
-			sb.Replace("[is]", pa is Player ? "are" : "is");
 
 			sb.Replace("[skin]", skinName);
 			return sb.ToString();
