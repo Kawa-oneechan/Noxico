@@ -85,6 +85,18 @@ namespace Noxico
 		public int CellHeight = 14;
 		public int GlyphAdjustX = -2, GlyphAdjustY = -1;
 		public bool ClearType = false;
+		
+#if ALLOW_PNG_MODE
+		private bool pngMode = false;
+		private string pngFont = "fixedsex";
+		private Dictionary<int, Bitmap> pngFonts;
+#endif
+#if ALLOW_CANDYTRON
+		private bool candytron = false;
+		private Font candyFont;
+		private System.Drawing.Rectangle viewPort, reflection;
+		private System.Drawing.Drawing2D.LinearGradientBrush shadow, blue, red;
+#endif
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -158,6 +170,24 @@ namespace Noxico
 				IniFile.SetValue("misc", "shotpath", "./screenshots");
 			}
 
+#if ALLOW_PNG_MODE
+			pngMode = IniFile.GetBool("misc", "pngmode", false);
+			pngFont = IniFile.GetString("misc", "pngfont", "fixedsex");
+			pngFonts = new Dictionary<int, Bitmap>();
+			if (pngMode)
+			{
+				if (File.Exists(Path.Combine("fonts", pngFont + "_00.png")))
+				{
+					CachePNGFont('A');
+					CellWidth = pngFonts[0x00].Width / 16;
+					CellHeight = pngFonts[0x00].Height / 16;
+				}
+				else
+					pngMode = false;
+			}
+			if (!pngMode)
+			{
+#endif
 			var family = IniFile.GetString("font", "family", "Consolas");
 			var emSize = IniFile.GetInt("font", "size", 11);
 			var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
@@ -177,6 +207,9 @@ namespace Noxico
 				CellWidth = IniFile.GetInt("font", "cellwidth", 0);
 			if (IniFile.GetInt("font", "cellheight", 0) != 0)
 				CellHeight = IniFile.GetInt("font", "cellheight", 0);
+#if ALLOW_PNG_MODE
+			}
+#endif
 
 			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
 			{
@@ -193,6 +226,34 @@ namespace Noxico
 			}
 
 			ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+#if ALLOW_CANDYTRON
+			if (IniFile.GetBool("misc", "candytron", false))
+			{
+				candytron = true;
+#if ALLOW_PNG_MODE
+				pngMode = false;
+				var emSize = 24;
+				var style = FontStyle.Bold;
+				var family = "Consolas";
+#else
+				emSize = 24;
+				style = FontStyle.Bold;
+#endif
+				GlyphAdjustX = -5;
+				GlyphAdjustY = 0;
+				ClearType = false;
+				CellWidth = 18;
+				CellHeight = 37;
+				FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				WindowState = FormWindowState.Maximized;
+				Font = new Font(family, emSize, style);
+				if (Font.FontFamily.Name != family)
+					Font = new Font(FontFamily.GenericMonospace, emSize, style);
+				colorConverter = (c => c);
+				charConverter = (c => c);
+			}
+#endif
+
 			Show();
 			Refresh();
 
@@ -204,6 +265,15 @@ namespace Noxico
 			{
 				var tx = y.X / (CellWidth);
 				var ty = y.Y / (CellHeight);
+#if ALLOW_CANDYTRON
+				if (candytron)
+				{
+					//TODO: Make coordinates work in Candytron mode
+					return;
+				}
+#endif
+				if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
+					return; 
 				if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
 					Noxico.Player.AutoTravelTo(tx, ty);
 				else if (NoxicoGame.Mode == UserMode.LookAt || NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
@@ -293,6 +363,24 @@ namespace Noxico
 			}
         }
 
+#if ALLOW_PNG_MODE
+		private void CachePNGFont(char p)
+		{
+			var block = (p >> 8);
+			if (!pngFonts.ContainsKey(block))
+			{
+				var file = Path.Combine("fonts", pngFont + "_" + block.ToString("X2") + ".png");
+				if (File.Exists(file))
+					pngFonts.Add(block, (Bitmap)Bitmap.FromFile(file));
+				else
+				{
+					Console.WriteLine("Warning: {0} does not exist!");
+					pngFonts.Add(block, new Bitmap(128, 256));
+				}
+			}
+		}
+#endif
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (backBuffer == null)
@@ -300,6 +388,39 @@ namespace Noxico
 				base.OnPaint(e);
 				return;
 			}
+#if ALLOW_CANDYTRON
+			if (candytron)
+			{
+				e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+				if (viewPort.Width == 0)
+				{
+					var aspect = (float)backBuffer.Width / (float)backBuffer.Height;
+					var h = ClientRectangle.Height / 1.5;
+					var w = h * aspect;
+					var x = (ClientRectangle.Width - w) / 2;
+					var y = (ClientRectangle.Height - h) / 3;
+					viewPort = new System.Drawing.Rectangle((int)x, (int)y, (int)w, (int)h);
+					reflection = new System.Drawing.Rectangle((int)x, (int)(y + h), (int)w, (int)(h / 2));
+					shadow = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, 0, (int)w, (int)(h / 2)), Color.Black, Color.Transparent, 270);
+					red = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height / 3), Color.FromArgb(48, 8, 8), Color.Black, 90);
+					blue = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, ClientRectangle.Height / 4, ClientRectangle.Width, ClientRectangle.Height / 4), Color.FromArgb(32, 16, 64), Color.Transparent, 270);
+					candyFont = new Font("Consolas", 16, FontStyle.Bold);
+				}
+
+				var player = Noxico.Player.Character;
+				var statusLine = player != null ? string.Format("{0}, {1}\tHP: {2}/{3}", player.Name.ToString(true), player.Title, (int)player.GetToken("health").Value, player.GetMaximumHealth()) : "";
+
+				e.Graphics.FillRectangle(red, 0, 0, ClientRectangle.Width, ClientRectangle.Height / 3);
+				e.Graphics.FillRectangle(Brushes.Black, viewPort.Left - 4, viewPort.Top - 4, viewPort.Width + 8, viewPort.Height + 8);
+				e.Graphics.DrawImage(backBuffer, viewPort);
+				e.Graphics.DrawImage(backBuffer, reflection.Left, reflection.Top + reflection.Height, reflection.Width, -reflection.Height);
+				e.Graphics.FillRectangle(shadow, reflection.Left, reflection.Top, reflection.Width, reflection.Height);
+				e.Graphics.FillRectangle(blue, 0, ClientRectangle.Height - (ClientRectangle.Height / 4) + 2, ClientRectangle.Width, ClientRectangle.Height / 4);
+				e.Graphics.DrawString(statusLine, candyFont, Brushes.Black, 6, 6);
+				e.Graphics.DrawString(statusLine, candyFont, Brushes.Yellow, 4, 4);
+			}
+			else
+#endif
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
 		}
 
@@ -410,6 +531,29 @@ namespace Noxico
 			var b = colorConverter(cell.Background);
 			var f = colorConverter(cell.Foreground);
             var c = charConverter(cell.Character);
+
+#if ALLOW_PNG_MODE
+			if (pngMode)
+			{
+				CachePNGFont(c);
+				var block = c >> 8;
+				var c2 = c & 0xFF;
+				var fontBitmap = pngFonts[block];
+				var sSX = (c2 %	16) * CellWidth;
+				var sSY = (c2 / 16) * CellHeight;
+				for (var y = 0; y < CellHeight; y++)
+				{
+					for (var x = 0; x < CellWidth; x++)
+					{
+						var color = fontBitmap.GetPixel(sSX + x, sSY + y);
+						color = (color.R == 0) ? b : f;
+						backBuffer.SetPixel(sTX + x, sTY + y, color);
+					}
+				}
+				return;
+			}
+#endif
+
 			gfx.TextContrast = 0;
 			gfx.TextRenderingHint = ClearType ? System.Drawing.Text.TextRenderingHint.ClearTypeGridFit : System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			using (var backBrush = new SolidBrush(b))
