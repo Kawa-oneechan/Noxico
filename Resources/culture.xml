@@ -190,7 +190,7 @@
 			<set id="m">ais, aric, berich, bern, boin, elm, funs, gar, gard, hard, her, hnod, laic, leub, mar, meri, nanth, ric, ulf, wald, wig, win, wolf</set>
 			<set id="f">a, ais, bern, berta, da, elma, funs, gar, gard, gund, hard, heidis, her, hilda, hnod, ia, ina, laic, mar, mera, ulf, wina, wolf</set>
 			<male>
-				<illegal>Ulfulf, Ulfwolf</illegal>
+				<illegal>Bernbern, Ulfulf, Ulfwolf</illegal>
 				<rules>
 					<rule>
 						<set id="a" />
@@ -199,7 +199,7 @@
 				</rules>
 			</male>
 			<female>
-				<illegal>Ulfulf, Ulfwolf</illegal>
+				<illegal>Bernbern, Ulfulf, Ulfwolf</illegal>
 				<rules>
 					<rule>
 						<set id="a" />

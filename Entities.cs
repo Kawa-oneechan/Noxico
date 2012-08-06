@@ -202,7 +202,10 @@ namespace Noxico
 		public int Range { get; set; }
 		public Intents Intent { get; set; }
 
+		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
+		public List<Point> Tabstops { get; set; }
+		public int Tabstop { get; set; }
 
 		public Cursor()
 		{
@@ -211,6 +214,7 @@ namespace Noxico
 			this.ForegroundColor = Color.White;
 			this.Range = 0;
 			this.Intent = Intents.Look;
+			this.Tabstops = new List<Point>();
 		}
 
 		public override void Draw()
@@ -308,6 +312,17 @@ namespace Noxico
 				ParentBoard.Redraw();
 			}
 
+			if (NoxicoGame.KeyMap[(int)Keys.Tab])
+			{
+				NoxicoGame.ClearKeys();
+				Tabstop++;
+				if (Tabstop == Tabstops.Count)
+					Tabstop = 0;
+				XPosition = Tabstops[Tabstop].X;
+				YPosition = Tabstops[Tabstop].Y;
+				Point();
+			}
+
 			if (NoxicoGame.KeyMap[(int)Keys.Enter])
 			{
 				Subscreens.PreviousScreen.Clear();
@@ -315,6 +330,7 @@ namespace Noxico
 				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (PointingAt != null)
 				{
+					LastTarget = PointingAt;
 					if (PointingAt is DroppedItem && (Intent == Intents.Look || Intent == Intents.Take))
 					{
 						var item = ((DroppedItem)PointingAt).Item;
@@ -426,6 +442,40 @@ namespace Noxico
 				this.Move(Direction.North);
 			else if (NoxicoGame.KeyMap[(int)Keys.Down])
 				this.Move(Direction.South);
+		}
+
+		public void PopulateTabstops()
+		{
+			var player = NoxicoGame.HostForm.Noxico.Player;
+			Tabstops.Clear();
+			foreach (var e in ParentBoard.Entities)
+			{
+				if (Range > 0 && e.DistanceFrom(player) > Range - 1)
+					continue;
+				if ((Intent == Intents.Chat || Intent == Intents.Fuck || Intent == Intents.Shoot) && !(e is BoardChar))
+					continue;
+				else if (Intent == Intents.Take && !(e is DroppedItem))
+					continue;
+				Tabstops.Add(new Point(e.XPosition, e.YPosition));
+			}
+			//Tabstops.Sort();
+			if (LastTarget != null)
+			{
+				var ltp = Tabstops.FirstOrDefault(p => p.X == LastTarget.XPosition && p.Y == LastTarget.YPosition);
+				if (ltp.X + ltp.Y == 0)
+					LastTarget = null;
+				if (LastTarget != null)
+				{
+					if (Intent != Intents.Look && !player.CanSee(LastTarget))
+						LastTarget = null;
+					else
+					{
+						this.XPosition = ltp.X;
+						this.YPosition = ltp.Y;
+						Tabstop = Tabstops.IndexOf(ltp);
+					}
+				}
+			}
 		}
 	}
 
@@ -1054,6 +1104,7 @@ namespace Noxico
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 3;
 				NoxicoGame.Cursor.Intent = Cursor.Intents.Chat;
+				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
 			}
@@ -1067,6 +1118,7 @@ namespace Noxico
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 2;
 				NoxicoGame.Cursor.Intent = Cursor.Intents.Fuck;
+				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
 			}
@@ -1085,6 +1137,7 @@ namespace Noxico
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 16;
 				NoxicoGame.Cursor.Intent = Cursor.Intents.Shoot;
+				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
 			}
@@ -1099,6 +1152,7 @@ namespace Noxico
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 0;
 				NoxicoGame.Cursor.Intent = Cursor.Intents.Look;
+				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
 			}
@@ -1118,6 +1172,7 @@ namespace Noxico
 					NoxicoGame.Cursor.YPosition = this.YPosition;
 					NoxicoGame.Cursor.Range = 2;
 					NoxicoGame.Cursor.Intent = Cursor.Intents.Take;
+					NoxicoGame.Cursor.PopulateTabstops();
 					NoxicoGame.Cursor.Point();
 					return;
 				}
