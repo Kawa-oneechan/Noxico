@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Xml;
 
 namespace Noxico
 {
@@ -374,37 +375,152 @@ namespace Noxico
 	{
 		public Board Board { get; set; }
 		public Culture Culture { get; set; }
+		private int[,] map;
+		private BiomeData biome;
 
-		//public List<RoomExit> Exits { get; private set; }
+		private class Marking
+		{
+			public string Type;
+			public string[] Params;
+			public int Owner;
+		}
+
+		private class Template
+		{
+			public string Name;
+			public int Inhabitants;
+			public int Width, Height;
+			public int PlotWidth, PlotHeight;
+			public string[] MapScans;
+			public Dictionary<char, Marking> Markings;
+			public Template(XmlElement element)
+			{
+				Name = element.GetAttribute("name");
+				Inhabitants = int.Parse(element.GetAttribute("inhabitants"));
+				var map = element.SelectSingleNode("map") as XmlElement;
+				MapScans = map.InnerText.Trim().Split('\n').Select(x => x.Trim()).ToArray();
+				Width = MapScans[0].Length;
+				Height = MapScans.Length;
+				PlotWidth = (int)Math.Ceiling(Width / 10.0);
+				PlotHeight = (int)Math.Ceiling(Height / 12.0);
+				Markings = new Dictionary<char, Marking>();
+				foreach (var marking in element.SelectNodes("markings/marking").OfType<XmlElement>())
+				{
+					var c = marking.GetAttribute("char")[0];
+					var t = marking.GetAttribute("type");
+					var p = new string[0];
+					var o = marking.HasAttribute("owner") ? int.Parse(marking.GetAttribute("owner")) : 0;
+					if (t.Contains(','))
+					{
+						p = t.Substring(t.IndexOf(',') + 1).Split(',');
+						t = t.Remove(t.IndexOf(','));
+					}
+					Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o });
+				}
+			}
+		}
+
+		private static List<Template> templates = null;
+
+		private struct Building
+		{
+			public int XShift, YShift;
+			public Template Template;
+			public string BaseID;
+			public List<Character> Inhabitants;
+			public Building(string baseID, Template template, int x, int y, Culture culture)
+			{
+				Template = template;
+				XShift = x;
+				YShift = y;
+				Inhabitants = new List<Character>();
+				if (template != null && culture != null)
+				{
+					Inhabitants = GetInhabitants(template.Inhabitants, culture);
+					BaseID = string.Format("{0}_{1}", baseID, Inhabitants[0].Name.Surname);
+				}
+				else
+					BaseID = baseID;
+			}
+			private static List<Character> GetInhabitants(int count, Culture culture)
+			{
+				var r = new List<Character>();
+				var familyName = "";
+				//var dontShareSurname = true;
+				var areMarried = Toolkit.Rand.NextDouble() > 0.7;
+				var firstPlan = "";
+				count = 2;
+				for (var i = 0; i < count; i++)
+				{
+					Character c;
+					var plan = culture.Bodyplans[Toolkit.Rand.Next(culture.Bodyplans.Length)];
+					if (i > 0 && Toolkit.Rand.NextDouble() > 0.7)
+						plan = firstPlan;
+					c = Character.Generate(plan, count == 1 ? Gender.Random : (i == 0 ? Gender.Male : Gender.Female));
+					if (i == 0)
+					{
+						familyName = c.Name.Surname;
+						firstPlan = plan;
+					}
+					if (i == 1)
+					{
+						var shipType = Toolkit.Rand.NextDouble() < culture.Marriage ? "spouse" : "friend";
+						//if we chose spouse, handle the wife taking the surname of the husband.
+						var ship = new Token() { Name = c.Name.ToString(true) };
+						ship.Tokens.Add(new Token() { Name = shipType });
+						r[0].Path("ships").Tokens.Add(ship);
+						ship = new Token() { Name = r[0].Name.ToString(true) };
+						ship.Tokens.Add(new Token() { Name = shipType });
+						c.Path("ships").Tokens.Add(ship);
+					}
+					r.Add(c);
+				}
+				return r;
+			}
+		}
+
+		private Building[,] plots;
 
 		public void Create(BiomeData biome)
 		{
-			base.Create(3, 4, 7, 1);
+			this.biome = biome;
+			map = new int[80, 25];
+			plots = new Building[8, 2];
 
-			var rand = Toolkit.Rand;
-
-			//TODO: add special buildings
-			//To do that, check for a terminal BSPNode of appropriate dimensions and remove the associated room.
-		}
-
-		public void MakeRoad(ref Tile[,] map, BSPNode node, List<BSPNode> connectedNodes)
-		{
-			//if (connectedNodes.Contains(node))
-			//	return;
-			if (node.Sibling != null)
+			if (templates == null)
 			{
-				var l1 = node.Bounds.Right - ((node.Bounds.Right - node.Bounds.Left) / 2);
-				var t1 = node.Bounds.Bottom - ((node.Bounds.Bottom - node.Bounds.Top) / 2);
-				var l2 = node.Sibling.Bounds.Right - ((node.Sibling.Bounds.Right - node.Sibling.Bounds.Left) / 2);
-				var t2 = node.Sibling.Bounds.Bottom - ((node.Sibling.Bounds.Bottom - node.Sibling.Bounds.Top) / 2);
-				foreach (var point in Toolkit.Line(l1, t1, l2, t2))
+				templates = new List<Template>();
+				var xDoc = new XmlDocument();
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.buildings, "buildings.xml"));
+				foreach (var t in xDoc.SelectNodes("//template").OfType<XmlElement>())
+					templates.Add(new Template(t));
+			}
+
+			var spill = new Building("<spillover>", null, 0, 0, Culture.DefaultCulture);
+			//var justPlaced = false;
+			for (var row = 0; row < 2; row++)
+			{
+				for (var col = 0; col < 8; col++)
 				{
-					map[point.X, point.Y] = new Tile() { Character = ' ', Background = Toolkit.Lerp(Color.Silver, Color.Gray, Toolkit.Rand.NextDouble()) };
+					if (plots[col, row].BaseID == "<spillover>")
+						continue;
+					//Small chance of not having anything here, for variation.
+					if (Toolkit.Rand.NextDouble() < 0.2)
+					{
+						//justPlaced = false;
+						continue;
+					}
+					var newTemplate = templates[Toolkit.Rand.Next(templates.Count)];
+					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
+					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
+					var sX = newTemplate.Width < 10 ? Toolkit.Rand.Next(1, 10 - newTemplate.Width) : 0;
+					var sY = newTemplate.Height < 12 ? Toolkit.Rand.Next(1, 12 - newTemplate.Height) : 0;
+					//Later on, we might be able to wiggle them out of their assigned plot a bit.
+					//TODO: determine baseID from the first inhabitant's name.
+					var newBuilding = new Building(string.Format("house{0}x{1}", col, row), newTemplate, sX, sY, Culture);
+					plots[col, row] = newBuilding;
+					//justPlaced = true;
 				}
-				connectedNodes.Add(node);
-				connectedNodes.Add(node.Sibling);
-				if (node.Parent != null)
-					MakeRoad(ref map, node.Parent, connectedNodes);
 			}
 		}
 
@@ -413,320 +529,293 @@ namespace Noxico
 			var floorStart = Color.FromArgb(123, 92, 65);
 			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
 			var wall = Color.FromArgb(71, 50, 33);
-			
-			foreach (var room in Rooms)
+
+			var cornerJunctions = new List<Point>();
+
+			for (var row = 0; row < 2; row++)
 			{
-				//Room floors
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-						map[col, row] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
-
-				//Vertical walls  |
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
+				for (var col = 0; col < 8; col++)
 				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				}
-				//Horizontal walls  --
-				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-				{
-					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				}
-				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true };
-
-				//Exit
-				var width = room.Bounds.Right - room.Bounds.Left;
-				var height = room.Bounds.Bottom - room.Bounds.Top;
-
-				if (width < 5)
-				{
-					width = 5;
-					room.Bounds.Right = room.Bounds.Left + 5;
-					if (room.Bounds.Right > 79)
+					if (plots[col, row].BaseID == null || plots[col, row].BaseID == "<spillover>")
+						continue;
+					var building = plots[col, row];
+					var template = building.Template;
+					var sX = (col * 10) + building.XShift;
+					var sY = (row * 12) + building.YShift;
+					for (var y = 0; y < template.Height; y++)
 					{
-						room.Bounds.Right = 79;
-						room.Bounds.Left = 74;
+						for (var x = 0; x < template.Width; x++)
+						{
+							var tc = template.MapScans[y][x];
+							var fg = Color.Black;
+							var bg = Color.Silver;
+							var ch = '?';
+							var s = false;
+							switch (tc)
+							{
+								case '\'':
+									continue;
+								case '.':
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = ' ';
+									break;
+								case '\\': //Exit -- can't be seen, coaxes walls into shape.
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = '\xA0';
+									break;
+								case '+':
+									fg = wall;
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									s = true;
+									cornerJunctions.Add(new Point(sX + x, sY + y));
+									break;
+								case '-':
+									fg = wall;
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = '\x2550';
+									s = true;
+									break;
+								case '|':
+									fg = wall;
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = '\x2551';
+									s = true;
+									break;
+								case '~':
+									fg = wall;
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = '\x2500';
+									s = true;
+									break;
+								case '¦':
+									fg = wall;
+									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = '\x2502';
+									s = true;
+									break;
+								default:
+									if (template.Markings.ContainsKey(tc))
+									{
+										var m = template.Markings[tc];
+										if (m.Type != "block" && m.Type != "floor")
+										{
+											//Keep a floor here. The entity fills in the blank.
+											bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+											ch = ' ';
+											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
+											if (m.Type == "bed")
+											{
+												var newBed = new Clutter()
+												{
+													AsciiChar = '\x0398',
+													XPosition = sX + x,
+													YPosition = sY + y,
+													Name = "Bed",
+													ForegroundColor = Color.Black,
+													BackgroundColor = bg,
+													ID = building.BaseID + "_Bed_" + owner == null ? "Free" : owner.Name.FirstName,
+													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {0} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
+													ParentBoard = Board,
+												};
+												Board.Entities.Add(newBed);
+											}
+											if (m.Type == "container")
+											{
+												var chr = m.Params.Last()[0];
+												var type = chr == '\x006C' ? "cabinet" : chr == '\x03C0' ? "chest" : "container";
+												if (m.Params[0] == "clothes")
+												{
+													//if (type == "cabinet")
+													type = "wardrobe";
+												}
+												var contents = RollContainer(owner, type);  //new List<Token>();
+												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
+												{
+													AsciiChar = m.Params.Last()[0],
+													XPosition = sX + x,
+													YPosition = sY + y,
+													ForegroundColor = Color.Black,
+													BackgroundColor = bg,
+													ParentBoard = Board,
+												};
+												Board.Entities.Add(newContainer);
+											}
+											else if (m.Type == "clutter")
+											{
+												var newClutter = new Clutter()
+												{
+													AsciiChar = m.Params.Last()[0],
+													XPosition = sX + x,
+													YPosition = sY + y,
+													ForegroundColor = Color.Black,
+													BackgroundColor = bg,
+													ParentBoard = Board,
+													Blocking = m.Params.Contains("blocking"),
+												};
+												Board.Entities.Add(newClutter);
+											}
+										}
+										else
+										{
+											fg = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
+											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
+											ch = m.Params.Last()[0];
+											s = m.Type == "block";
+										}
+									}
+									break;
+							}
+							map[sX + x, sY + y] = new Tile() { Character = ch, Foreground = fg, Background = bg, Solid = s };
+						}
+					}
+
+					for (var i = 0; i < building.Inhabitants.Count; i++)
+					{
+						var inhabitant = building.Inhabitants[i];
+						//Find each inhabitant's bed so we can give them a starting place.
+						//Alternatively, place them anywhere there's a ' ' within their sector.
+						var bc = new BoardChar(inhabitant);
+						var bedID = building.BaseID + "_Bed_" + inhabitant.Name.FirstName;
+						var bed = Board.Entities.OfType<Clutter>().FirstOrDefault(b => b.ID == bedID);
+						//if (bed != null)
+						//{
+						//	bc.XPosition = bed.XPosition;
+						//	bc.YPosition = bed.YPosition;
+						//}
+						//else
+						{
+							//TODO: find random ' ' within sector
+							var okay = false;
+							var x = 0;
+							var y = 0;
+							while (!okay)
+							{
+								x = (col * 10) + Toolkit.Rand.Next(10);
+								y = (row * 12) + Toolkit.Rand.Next(12);
+								if (!map[x, y].Solid && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
+									okay = true;
+							}
+							bc.XPosition = x;
+							bc.YPosition = y;
+							//bc.XPosition = (col * 10) + i;
+							//bc.YPosition = row * 12;
+						}
+						bc.Movement = Motor.WanderSector;
+						bc.ParentBoard = Board;
+						bc.Sector = string.Format("s{0}x{1}", row, col);
+						Board.Entities.Add(bc);
 					}
 				}
-				if (width > 10)
-				{
-					width = 10;
-					room.Bounds.Right = room.Bounds.Left + 10;
-				}
-				if (height < 4)
-				{
-					height = 4;
-					room.Bounds.Bottom = room.Bounds.Top + 4;
-					if (room.Bounds.Bottom > 24)
-					{
-						room.Bounds.Bottom = 24;
-						room.Bounds.Top = 20;
-					}
-				}
-
-				var onVertical = false;
-				if (width > height)
-					onVertical = false;
-				else if (width < height)
-					onVertical = true;
-				else
-					onVertical = Toolkit.Rand.NextDouble() < 0.5;
-
-				var left = 0;
-				var top = 0;
-				var side = Direction.North;
-				if (onVertical)
-				{
-					top = Toolkit.Rand.Next(room.Bounds.Top + 1, room.Bounds.Bottom - 1);
-					left = (room.Bounds.Right < 40) ? room.Bounds.Right - 1 : room.Bounds.Left;
-					side = (left == room.Bounds.Left) ? Direction.West : Direction.East;
-				}
-				else
-				{
-					top = (room.Bounds.Bottom < 12) ? room.Bounds.Bottom - 1 : room.Bounds.Top;
-					left = Toolkit.Rand.Next(room.Bounds.Left + 1, room.Bounds.Right - 1);
-					side = (top == room.Bounds.Top) ? Direction.North : Direction.South;
-				}
-				map[left, top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 			}
 
-			Populate(ref map);
-
-			/*
-			foreach (var exit in Exits)
+			//Fix up corners and junctions
+			var cjResults = new[]
 			{
-				map[exit.Left, exit.Top] = new Tile() { Character = ' ', Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
-			}
-			*/
-		}
-
-		private void GetLocation(out int x, out int y, ref Tile[,] map, Room room)
-		{
-			var locationOkay = false;
-			x = 0;
-			y = 0;
-			while (!locationOkay)
-			{
-				x = Toolkit.Rand.Next(room.Bounds.Left, room.Bounds.Right - 1);
-				y = Toolkit.Rand.Next(room.Bounds.Top, room.Bounds.Bottom - 1);
-				if (!map[x, y].Solid)
-					locationOkay = true;
-			}
-		}
-
-		private bool IsTaken(Board board, int x, int y)
-		{
-			if (board.IsSolid(x, y))
-				return true;
-			foreach (var entity in board.Entities)
-				if (entity.XPosition == x && entity.YPosition == y && entity.Blocking)
-					return true;
-			return false;
-		}
-
-		public void Populate(ref Tile[,] map)
-		{
-			//Place a random chest.
-			var contents = new List<Token>();
-			var dagger = new Token() { Name = "dagger" };
-			dagger.Tokens.Add(new Token() { Name = "vorpal" });
-			var suit = new Token() { Name = "sentai_suit" };
-			suit.Tokens.Add(new Token() { Name = "color", Text = "red" });
-			contents.Add(dagger);
-			contents.Add(suit);
-			var chest = new Container("Test Chest", contents)
-			{
-				XPosition = 2,
-				YPosition = 2,
-				ParentBoard = Board,
-				AsciiChar = '#',
-				BackgroundColor = Color.Black,
-				ForegroundColor = Color.Gray,
+				(int)'x', //0 - none
+				0x2551, //1 - only up
+				0x2551, //2 - only down
+				0x2551, //3 - up and down
+				0x2550, //4 - only left
+				0x255D, //5 - left and up
+				0x2557, //6 - left and down
+				0x2563, //7 - left, up, and down
+				0x2550, //8 - only right
+				0x255A, //9 - right and up
+				0x2554, //10 - right and down
+				0x2560, //11 - right, up, and down
+				0x2550, //12 - left and right
+				0x2569, //13 - left, right, and up
+				0x2566, //14 - left, right, and down
+				0x256C, //15 - all
 			};
-			Board.Entities.Add(chest);
-
-			while (Rooms.Count(x => x.ID == null) > 0)
+			foreach (var cj in cornerJunctions)
 			{
-				Character a = null, b = null;
+				var up = cj.Y > 0 ? map[cj.X, cj.Y - 1].Character : 'x';
+				var down = cj.Y < 24 ? map[cj.X, cj.Y + 1].Character : 'x';
+				var left = cj.X > 0 ? map[cj.X - 1, cj.Y].Character : 'x';
+				var right = cj.X < 79 ? map[cj.X + 1, cj.Y].Character : 'x';
+				var mask = 0;
+				if (up == 0x3F || up == 0xA0 || up == 0x2551 || up == 0x2502 || (up >= 0x2551 && up <= 0x2557) || (up >= 0x255E && up <= 0x2566) || (up >= 0x256A && up <= 0x256C))
+					mask |= 1;
+				if (down == 0x3F || down == 0xA0 || down == 0x2551 || down == 0x2502 || (down >= 0x2558 && down <= 0x255D) || (down >= 0x255E && down <= 0x2563) || (down >= 0x2567 && down <= 0x256C))
+					mask |= 2;
+				if (left == 0x3F || left == 0xA0 || left == 0x2550 || left == 0x2500 || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
+					mask |= 4;
+				if (right == 0x3F || right == 0xA0 || right == 0x2550 || right == 0x2500 || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
+					mask |= 8;
+				if (mask == 0)
+					continue;
 
-				var plans = Culture.Bodyplans; //new[] { "human", "felinoid", "fox", "human", "human", "felinoid", "fox", "naga", "human", "felinoid" };
-				var plan = plans[Toolkit.Rand.Next(plans.Length)];
-				var planB = plan;
-				if (Toolkit.Rand.NextDouble() > 0.7)
-					planB = plans[Toolkit.Rand.Next(plans.Length)];
-
-				var roll = Toolkit.Rand.Next(100);
-				if (roll < 15)
-					a = Character.Generate(plan, plan == "naga" ? Gender.Male : Gender.Random);
-				else
-				{
-					a = Character.Generate(plan, Gender.Male);
-					b = Character.Generate(planB, Gender.Female);
-				}
-
-				string familyName = "";
-				var timeNow = Environment.TickCount;
-				var goodToGo = true;
-				var dontShareSurname = false;
-				while (goodToGo)
-				{
-					familyName = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Surname);
-					if (familyName.StartsWith("#patronym"))
-					{
-						dontShareSurname = true;
-						var asspullA = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
-						var asspullB = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
-						a.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
-						if (b != null)
-						{
-							b.Name.Female = b.HasVagina();
-							asspullA = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
-							asspullB = Culture.GetName(a.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
-							b.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
-						}
-						familyName = a.Name.Surname;
-					}
-					if (Rooms.Find(x => x.ID == familyName + "_Home") == null)
-						break;
-					if (Environment.TickCount > timeNow + 1000)
-					{
-						//BAIL!
-						goodToGo = false;
-						continue;
-					}
-				}
-
-				a.Name = new Name(Culture.GetName(a.GetToken("culture").Tokens[0].Name, a.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
-				if (b != null)
-				{
-					var shipType = "friend";
-					if (Toolkit.Rand.NextDouble() < Culture.Marriage)
-						shipType = "spouse";
-
-					b.Name = new Name(Culture.GetName(b.GetToken("culture").Tokens[0].Name, b.HasPenis() ? Culture.NameType.Male : Culture.NameType.Female) + ' ' + familyName);
-					b.Name.Female = b.HasVagina();
-					if (shipType != "spouse" || dontShareSurname)
-					{
-						b.Name.Surname = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Surname);
-						if (b.Name.Surname.StartsWith("#patronym"))
-						{
-							var asspullA = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Male);
-							var asspullB = Culture.GetName(b.GetToken("culture").Tokens[0].Name, Culture.NameType.Female);
-							b.Name.ResolvePatronym(new Name(asspullA), new Name(asspullB));
-						}
-					}
-		
-					var shipAB = new Token() { Name = b.Name.ToString(true) };
-					shipAB.Tokens.Add(new Token() { Name = shipType });
-					a.Path("ships").Tokens.Add(shipAB);
-					shipAB = new Token() { Name = a.Name.ToString(true) };
-					shipAB.Tokens.Add(new Token() { Name = shipType });
-					b.Path("ships").Tokens.Add(shipAB);
-				}
-
-				//Assign a free house to be this family's home
-				var freeRooms = Rooms.Where(x => x.ID == null).ToArray();
-				var freeRoom = freeRooms[Toolkit.Rand.Next(freeRooms.Length)];
-				var roomID = familyName + "_Home";
-				freeRoom.ID = roomID;
-
-				var owners = new List<Character>() { a };
-				if (b != null)
-					owners.Add(b);
-
-				//TODO: make more sense than this.
-				//My suggestion would be to pick a wall of at least two tiles long and place the beds along it.
-				//Something similar for the rest of the clutter.
-				//But for now, this'll do. -- Kawa
-				foreach(var bedOwner in owners)
-				{
-					int x = -1, y = -1;
-					int lives = 1000;
-					while (lives > 0 && IsTaken(Board, x, y))
-					{
-						GetLocation(out x, out y, ref map, freeRoom);
-						lives--;
-					}
-					if (lives == 0)
-						continue;
-					var newBed = new Clutter()
-					{
-						AsciiChar = '\u0398',
-						XPosition = x,
-						YPosition = y,
-						Name =  "Bed",
-						ForegroundColor = Color.Black,
-						BackgroundColor = map[x , y].Background,
-						ID = bedOwner.Name.ToID() + "_Bed",
-						ParentBoard = Board,
-					};
-					Board.Entities.Add(newBed);
-				}
-
-				//TODO: use beds and/or chairs to assign starting positions?
-				BoardChar ba, bb;
-				if (a != null)
-				{
-					ba = new BoardChar(a);
-					var startPos = Board.Entities.OfType<Clutter>().FirstOrDefault(d => d.ID == a.Name.ToID() + "_Bed");
-					if (startPos != null)
-					{
-						ba.XPosition = startPos.XPosition;
-						ba.YPosition = startPos.YPosition;
-					}
-					else
-					{
-						int x, y;
-						GetLocation(out x, out y, ref map, freeRoom);
-						ba.XPosition = x;
-						ba.YPosition = y;
-					}
-					ba.Movement = Motor.WanderSector;
-					ba.ParentBoard = Board;
-					Board.Entities.Add(ba);
-					ba.Sector = roomID;
-				}
-				if (b != null)
-				{
-					bb = new BoardChar(b);
-					//int x, y;
-					//GetLocation(out x, out y, ref map, freeRoom);
-					//bb.XPosition = x;
-					//bb.YPosition = y;
-					var startPos = Board.Entities.OfType<Clutter>().FirstOrDefault(d => d.ID == b.Name.ToID() + "_Bed");
-					if (startPos != null)
-					{
-						bb.XPosition = startPos.XPosition;
-						bb.YPosition = startPos.YPosition;
-					}
-					else
-					{
-						int x, y;
-						GetLocation(out x, out y, ref map, freeRoom);
-						bb.XPosition = x;
-						bb.YPosition = y;
-					} 
-					bb.Movement = Motor.WanderSector;
-					bb.ParentBoard = Board;
-					Board.Entities.Add(bb);
-					bb.Sector = roomID;
-				}
+				map[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
+		}
+
+		private static XmlDocument xDoc;
+
+		private List<Token> RollContainer(Character owner, string type)
+		{
+			if (xDoc == null)
+			{
+				xDoc = new XmlDocument();
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+			}
+			var ret = new List<Token>();
+			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;
+			switch (type)
+			{
+				case "wardrobe":
+					var costumes = xDoc.DocumentElement.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
+					var amount = Toolkit.Rand.Next(2, 7);
+					for (var i = 0; i < amount; i++)
+					{
+						XmlElement x = null;
+						var carrier = new TokenCarrier();
+						Token costume = null;
+						var lives = 20;
+						while (costume == null && lives > 0)
+						{
+							lives--;
+							x = costumes[Toolkit.Rand.Next(costumes.Count)];
+							carrier.Tokens = Token.Tokenize(x.InnerText);
+							if (carrier.HasToken("rare") && Toolkit.Rand.NextDouble() > 0.5)
+								continue;
+							if (gender == Gender.Male && carrier.HasToken("male"))
+								costume = carrier.GetToken("male");
+							if (gender == Gender.Female && carrier.HasToken("female"))
+								costume = carrier.GetToken("female");
+						}
+						if (carrier.HasToken("singleton"))
+							costumes.Remove(x);
+						if (costume == null)
+							break;
+						Toolkit.FoldCostumeRandoms(costume);
+						Toolkit.FoldCostumeVariables(costume);
+						foreach (var request in costume.Tokens)
+						{
+							var find = NoxicoGame.KnownItems.Find(item => item.ID == request.Name);
+							if (find == null)
+								continue;
+							ret.Add(request);
+						}
+					}
+					break;
+				case "chest":
+					break;
+				case "cabinet":
+					break;
+			}
+			return ret;
 		}
 
 		public override void ToSectorMap(Dictionary<string, Rectangle> sectors)
 		{
-			if (string.IsNullOrWhiteSpace(Rooms[0].ID))
-				throw new InvalidOperationException("Run ToTilemap first.");
-			sectors.Clear();
-			foreach (var room in Rooms)
-				sectors.Add(room.ID, room.Bounds.ToRectangle());
+			for (var row = 0; row < 2; row++)
+			{
+				for (var col = 0; col < 8; col++)
+				{
+					sectors.Add(string.Format("s{0}x{1}", row, col), new Rectangle() { Left = col * 10, Right = (col * 10) + 10, Top = row * 12, Bottom = (row * 12) + 12 });
+				}
+			}
 		}
 	}
 

@@ -1,0 +1,79 @@
+<templates>
+	<!-- view with preserved line endings for best effect -->
+	<template name="simple test" inhabitants="1">
+		<map>
+			'''''''''
+			'+---+'''
+			'|Tc.|'''
+			'|c..\'''
+			'|~.~+-+'
+			'|A...C|'
+			'|B..ab|'
+			'+-----+'
+		</map>
+		<markings>
+			<marking char="A" type="bed" owner="1" />
+			<marking char="a" type="bed" owner="2" />
+			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
+			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+			<marking char="C" type="block,darkgreen,floor,&#x00A5;" />
+			<marking char="c" type="clutter,&#x2565;" />
+			<marking char="T" type="clutter,blocking,&#x2564;" />
+		</markings>
+	</template>
+	<template name="simple test 2" inhabitants="1">
+		<map>
+			'''''''''
+			'+-\---+'
+			'|B...A|'
+			'|b..a++'
+			'+----+''
+			'''''''''
+		</map>
+		<markings>
+			<marking char="A" type="bed" owner="1" />
+			<marking char="a" type="bed" owner="2" />
+			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
+			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+		</markings>
+	</template>
+	<template name="simple test 3" inhabitants="2">
+		<map>
+			'''''''''
+			'+-----+'
+			'|BA...|'
+			'|ba...\'
+			'+-----+'
+			'''''''''
+		</map>
+		<markings>
+			<marking char="A" type="bed" owner="1" />
+			<marking char="a" type="bed" owner="2" />
+			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
+			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+		</markings>
+	</template>	<template name="wide test" inhabitants="2">
+		<map>
+			'''''''''''
+			'+---+---+'
+			'|A.B¦b.a|'
+			'|...¦...|'
+			'+~.~+~.~+'
+			'|c......|'
+			'|Tc+\+..|'
+			'+--+'|==|'
+			''''''+--+'
+			'''''''''''
+		</map>
+		<markings>
+			<marking char="A" type="bed" owner="1" />
+			<marking char="a" type="bed" owner="2" />
+			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
+			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+			<marking char="c" type="clutter,&#x2565;" />
+			<marking char="T" type="clutter,blocking,&#x2564;" />
+			<marking char="=" type="block,wall,floor,&#x2261;" />
+		</markings>
+	</template>
+	-->
+</templates>

@@ -76,6 +76,7 @@ namespace Noxico.Properties {
         ///
         ///	&lt;!ELEMENT groundGlyphs (#PCDATA)&gt;
         ///	&lt;!ELEMENT encounters (#PCDATA)&gt;
+        ///	&lt;!ELEMENT cultures (#PCDATA)&gt;
         ///	&lt;!ELEMENT darken EMPTY&gt;
         ///
         ///	&lt;!ATTLIST realm
@@ -89,9 +90,7 @@ namespace Noxico.Properties {
         ///		music CDATA #IMPLIED
         ///		isWater CDATA #IMPLIED
         ///		canBurn CDATA #IMPLIED
-        ///	&gt;
-        ///	&lt;!ATTLIST encounters
-        ///		max  [rest of string was truncated]&quot;;.
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Biomes {
             get {
@@ -148,6 +147,33 @@ namespace Noxico.Properties {
         internal static string BonusTraits {
             get {
                 return ResourceManager.GetString("BonusTraits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;templates&gt;
+        ///	&lt;!-- view with preserved line endings for best effect --&gt;
+        ///	&lt;template name=&quot;simple test&quot; inhabitants=&quot;1&quot;&gt;
+        ///		&lt;map&gt;
+        ///			&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+        ///			&apos;+---+&apos;&apos;&apos;
+        ///			&apos;|Tc.|&apos;&apos;&apos;
+        ///			&apos;|c..\&apos;&apos;&apos;
+        ///			&apos;|~.~+-+&apos;
+        ///			&apos;|A...C|&apos;
+        ///			&apos;|B..ab|&apos;
+        ///			&apos;+-----+&apos;
+        ///		&lt;/map&gt;
+        ///		&lt;markings&gt;
+        ///			&lt;marking char=&quot;A&quot; type=&quot;bed&quot; owner=&quot;1&quot; /&gt;
+        ///			&lt;marking char=&quot;a&quot; type=&quot;bed&quot; owner=&quot;2&quot; /&gt;
+        ///			&lt;marking char=&quot;B&quot; type=&quot;container,clothes,&amp;#x00C6;&quot; owner=&quot;1&quot; /&gt;
+        ///			&lt;marking char=&quot;b&quot; type=&quot;container,clothes,&amp;#x00C6;&quot; owner=&quot;2&quot; /&gt;
+        ///			&lt;marking char [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string buildings {
+            get {
+                return ResourceManager.GetString("buildings", resourceCulture);
             }
         }
         
@@ -340,23 +366,22 @@ namespace Noxico.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;scenes&gt;
-        ///  &lt;scene id=&quot;DevStart&quot; name=&quot;(starting node)&quot;&gt;
-        ///    &lt;filter target=&quot;top&quot; type=&quot;gender&quot; value=&quot;male&quot; /&gt;
-        ///    &lt;p&gt;
-        ///    	Development starting node, male top.
-        ///		&lt;/p&gt;
+        ///	&lt;scene id=&quot;TamaniStartBoy&quot; name=&quot;(starting node)&quot;&gt;
+        ///		&lt;!-- This is a comment that&apos;ll show up in the editor. --&gt;
+        ///		&lt;filter target=&quot;bottom&quot; type=&quot;name&quot; name=&quot;Emi Nakashima&quot; /&gt;
         ///		&lt;p&gt;
-        ///			Second paragraph.
+        ///			Tamani is here, grinning wolfishly.
         ///		&lt;/p&gt;
-        ///    &lt;short&gt;[t:name] triggers devstart.&lt;/short&gt;
-        ///    &lt;action name=&quot;dev action 1&quot; /&gt;
-        ///  	&lt;action name=&quot;dev leave&quot; /&gt;
-        ///  &lt;/scene&gt;
-        ///  &lt;scene id=&quot;DevAction1&quot; name=&quot;dev action 1&quot; list=&quot;Do a jig&quot;&gt;
-        ///  	&lt;p&gt;
-        ///  		Testing scripts...
-        ///  	&lt;/p&gt;
-        ///  	&lt;script language=&quot;text/nox [rest of string was truncated]&quot;;.
+        ///		&lt;script language=&quot;text/noxicobotic&quot;&gt;
+        ///			&lt;![CDATA[
+        ///				$top.checktag &quot;penis&quot;
+        ///				if exists
+        ///					|&lt;&lt;	&quot;Ready for another fuck, big boy?&quot; &gt;&gt;
+        ///				else
+        ///					|&lt;&lt;	&quot;Ready for another fuck, big girl?&quot; &gt;&gt;
+        ///				endif
+        ///			]]&gt;
+        ///		&lt;/scri [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Scenes {
             get {

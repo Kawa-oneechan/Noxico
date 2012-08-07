@@ -216,10 +216,10 @@ namespace Noxico
 		public int BoardNum { get; set; }
 
 		public int Lifetime { get; set; }
-		public string Name { get; set; }
-		public string ID { get; set; }
-		public string Music { get; set; }
-		public BoardType Type { get; set; }
+		public string Name { get { return GetToken("name").Text; } set { GetToken("name").Text = value; } }
+		public string ID { get { return GetToken("id").Text; } set { GetToken("id").Text = value; } }
+		public string Music { get { return GetToken("music").Text; } set { GetToken("music").Text = value; } }
+		public BoardType Type { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
 		public List<Entity> Entities { get; set; }
 		public List<Warp> Warps { get; set; }
 		public List<Location> DirtySpots { get; set; }
@@ -1321,11 +1321,8 @@ namespace Noxico
 
 			var biomeData = WorldGen.Biomes[biome];
 	
-			newBoard.ID = string.Format("OW_{0}x{1}", x, y);
-			newBoard.Name = newBoard.ID;
-			//newBoard.Music = "set://" + ((Biome)biome).ToString();
-			newBoard.Music = biomeData.Music;
-			newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+			var nameID = string.Format("OW_{0}x{1}", x, y);
+			newBoard.Tokens = Token.Tokenize("name: \"" + nameID + "\"\nid: \"" + nameID + "\"\nmusic: \"" + biomeData.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
 
 			var encounters = newBoard.GetToken("encounters");
 			foreach (var e in biomeData.Encounters)
@@ -1350,7 +1347,12 @@ namespace Noxico
 			file.WriteLine("\tID: {0}<br />", ID);
 			file.WriteLine("\tMusic: {0}<br />", Music);
 			file.WriteLine("\tType: {0}<br />", Type);
-			file.WriteLine("</	p>");
+			file.WriteLine("\tBiome: {0}<br />", WorldGen.Biomes[(int)GetToken("biome").Value].Name);
+			file.WriteLine("\tCulture: {0}<br />", HasToken("culture") ? GetToken("culture").Text : "&lt;none&gt;");
+			file.WriteLine("</p>");
+			file.WriteLine("<pre>");
+			file.WriteLine(DumpTokens(Tokens, 0));
+			file.WriteLine("</pre>");
 			file.WriteLine("<h2>Screendump</h2>");
 			file.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 25; row++)
@@ -1440,11 +1442,15 @@ namespace Noxico
 				};
 				newb.XPosition = Toolkit.Rand.Next(2, 78);
 				newb.YPosition = Toolkit.Rand.Next(2, 23);
-				while (IsSolid(newb.YPosition, newb.XPosition))
+				var lives = 100;
+				while (IsSolid(newb.YPosition, newb.XPosition) && lives > 0)
 				{
+					lives--;
 					newb.XPosition = Toolkit.Rand.Next(2, 78);
 					newb.YPosition = Toolkit.Rand.Next(2, 23);
 				}
+				if (lives == 0)
+					continue;
 				newb.Character.Tokens.Add(new Token() { Name = "hostile" });
 				newb.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
 				this.Entities.Add(newb);

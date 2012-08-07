@@ -1372,13 +1372,13 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						containerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
 					}
 					height = containerItems.Count;
-					if (height > 20)
-						height = 20;
+					if (height > 13)
+						height = 13;
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
-					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue });
-					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
+					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue });
+					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 38, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
 					UIManager.Elements.Add(containerList);
 				}
 
@@ -1418,8 +1418,8 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						playerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
 					}
 					var height2 = playerItems.Count;
-					if (height2 > 20)
-						height2 = 20;
+					if (height2 > 13)
+						height2 = 13;
 					if (indexRight >= playerItems.Count)
 						indexRight = playerItems.Count - 1;
 
@@ -1432,7 +1432,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				}
 
 				UIManager.Elements.Add(new UILabel(" Press Enter to store or retrieve the highlighted item.".PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 2, Top = 4 + height, Width = 40, Height = 8, Background = Color.Black, Foreground = Color.Navy });
+				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 2, Top = 4 + height, Width = 40, Height = 6, Background = Color.Black, Foreground = Color.Navy });
 				description = new UILabel("") { Left = 4, Top = 5 + height, Width = 38, Height = 4, Foreground = Color.Silver, Background = Color.Black };
 				UIManager.Elements.Add(description);
 

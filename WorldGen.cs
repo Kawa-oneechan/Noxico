@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -311,14 +311,17 @@ namespace Noxico
 						continue;
 					}
 					//Determine most significant non-Ocean biome
-					if (counts[0] > counts[1] && counts[0] > counts[2] && counts[0] > counts[3])
-						BiomeMap[bRow, bCol] = 0;
-					else if (counts[1] > counts[0] && counts[1] > counts[2] && counts[1] > counts[3])
-						BiomeMap[bRow, bCol] = 1;
-					else if (counts[2] > counts[0] && counts[2] > counts[1] && counts[2] > counts[3])
-						BiomeMap[bRow, bCol] = 2;
-					else if (counts[3] > counts[0] && counts[3] > counts[1] && counts[3] > counts[2])
-						BiomeMap[bRow, bCol] = 3;
+					var highestNumber = 0;
+					var biggestBiome = 0;
+					for (var i = 1; i < counts.Length; i++)
+					{
+						if (counts[i] > highestNumber)
+						{
+							highestNumber = counts[i];
+							biggestBiome = i;
+						}
+					}
+					BiomeMap[bRow, bCol] = biggestBiome;
 				}
 			}
 
@@ -333,7 +336,7 @@ namespace Noxico
 				{
 					//Find a board with a reasonable amount of water
 					
-					if (BiomeMap[bRow, bCol] == 4)
+					if (BiomeMap[bRow, bCol] == 0)
 						continue;
 
 					var waterAmount = 0;
@@ -400,6 +403,7 @@ namespace Noxico
 		public double DarkenDiv { get; private set; }
 		public int MaxEncounters { get; private set; }
 		public string[] Encounters { get; private set; }
+		public string[] Cultures { get; private set; }
 
 		public static BiomeData FromXML(XmlElement x)
 		{
@@ -439,6 +443,14 @@ namespace Noxico
 				if (((XmlElement)encounters).HasAttribute("max"))
 					n.MaxEncounters = int.Parse(((XmlElement)encounters).GetAttribute("max"));
 				n.Encounters = encounters.InnerText.Split(',').Select(e => e.Trim()).ToArray();
+			}
+
+			var cultures = x.SelectSingleNode("cultures");
+			if (cultures == null)
+				n.Cultures = new [] { "human" };
+			else
+			{
+				n.Cultures = cultures.InnerText.Split(',').Select(e => e.Trim()).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
 			}
 
 			return n;

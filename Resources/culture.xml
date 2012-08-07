@@ -117,6 +117,21 @@
 	</culture>
 
 	<culture id="demonic">
+		<cultureinfo>
+			<bodyplans>
+				<plan name="foocubus" />
+				<plan name="imp" />
+				<plan name="goblin" />
+				<plan name="foocubus" />
+				<plan name="goblin" />
+				<plan name="slime" />
+				<plan name="foocubus" />
+				<plan name="imp" />
+				<plan name="goblin" />
+				<plan name="foocubus" />
+				<plan name="goblin" />
+			</bodyplans>
+		</cultureinfo>
 		<namegen>
 			<set id="vowels">a, e, i, o, u</set>
 			<set id="start">Aam, Ab, Ad, Ahr, Alas, Al-A'w, All, Al-M, Ap, As, Ast, Az, Bal, Bal S, Bag, Balb, Ban, Bansh, Baph, Barb, Bath, Bazt, Be'L, Beel, Beelz, Bel, Belph, Ber, Bh, Bifr, Biul, Bush, Caac, Cagn, Caim, Chalk, Char, Chem, Coal, Dag, Dant, Decer, Demog, Dev, Dj, Dragh, Elig, Emp, Errt, Etr, Ett, Eur, Euryn, Gorg, Graph, Grig, Haag, Halph, Haur, Hoeth, Ifr, Inc, Ibl, Ith, Kabh, Kas, Kokb', Kray, Lab, Lam, Lech, Leg, Lil, Lioth, Lix, Luc, Mal, Malph, Mamm, March, Mast, Math, Meph, Merm, Mol, Murm, Naam, Naph, Nek, Neph, Neq, Nix, Noud, Onom, Onos, Orc, Orob, Oul, Paim, Phen, Pont, Proc, Rah, Rak, Raksh, Ram, Rang, Raum, Raz, Rimm, Rub, Rus, Sabn, Salps, Sam, Sat, Sc, Scarm, Seer, Sem, Set, Shait, Shax, Shed, Shez, Sidr, Sitr, Sth, Succ, Surg, Tann, Tart, Tch, Teer, Thamm, Thub, Tlal, Tsab, Val, Vap, Vass, Vep, Verr, Vin, Vol, Vual, Xaph, Xiph, Xitr, Zaeb, Zim, Ziz, Zaln</set>
