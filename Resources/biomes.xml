@@ -6,6 +6,7 @@
 
 	<!ELEMENT groundGlyphs (#PCDATA)>
 	<!ELEMENT encounters (#PCDATA)>
+	<!ELEMENT cultures (#PCDATA)>
 	<!ELEMENT darken EMPTY>
 
 	<!ATTLIST realm

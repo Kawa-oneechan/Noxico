@@ -675,6 +675,56 @@ namespace Noxico
 			else
 				return subject + "'s";
 		}
+
+		public static void FoldCostumeRandoms(Token token)
+		{
+			if (token == null)
+				return;
+			while (token.HasToken("random"))
+			{
+				var rnd = token.GetToken("random");
+				var pick = rnd.Tokens[Toolkit.Rand.Next(rnd.Tokens.Count)];
+				token.Tokens.Remove(rnd);
+				foreach (var t in pick.Tokens)
+					token.Tokens.Add(t);
+				//rnd = pick;
+			}
+		}
+
+		public static void FoldCostumeVariables(Token token, string[] vars = null)
+		{
+			if (token == null)
+				return;
+			if (vars == null)
+				vars = new string[100];
+			while (token.HasToken("setvar"))
+			{
+				var setvar = token.GetToken("setvar");
+				var id = (int)setvar.GetToken("id").Value;
+				var value = setvar.GetToken("value");
+				vars[id] = value.Text;
+				token.RemoveToken("setvar");
+			}
+			while (token.HasToken("var"))
+			{
+				var getvar = token.GetToken("var");
+				var id = (int)getvar.Value;
+				if (string.IsNullOrWhiteSpace(vars[id]))
+					token.RemoveToken("var");
+				else
+					getvar.Name = vars[id];
+			}
+			if (!string.IsNullOrWhiteSpace(token.Text) && token.Text.Trim().StartsWith("var "))
+			{
+				var id = int.Parse(token.Text.Trim().Substring(4));
+				if (string.IsNullOrWhiteSpace(vars[id]))
+					token.Text = "<invalid token>";
+				else
+					token.Text = vars[id];
+			}
+			foreach (var child in token.Tokens)
+				FoldCostumeVariables(child, vars);
+		}	
 	}
 
 	public static class Descriptions
@@ -1532,8 +1582,8 @@ namespace Noxico
 				if (costume == null)
 					return;
 
-				FoldRandom(costume);
-				FoldVariables(costume);
+				Toolkit.FoldCostumeRandoms(costume);
+				Toolkit.FoldCostumeVariables(costume);
 
 				var items = GetToken("items");
 				var toEquip = new Dictionary<InventoryItem, Token>();
@@ -1585,56 +1635,6 @@ namespace Noxico
 				Console.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetName(), string.Join(", ", toDelete));
 				GetToken("items").RemoveSet(toDelete);
 			}
-		}
-
-		private void FoldRandom(Token token)
-		{
-			if (token == null)
-				return;
-			while(token.HasToken("random"))
-			{
-				var rnd = token.GetToken("random");
-				var pick = rnd.Tokens[Toolkit.Rand.Next(rnd.Tokens.Count)];
-				token.Tokens.Remove(rnd);
-				foreach (var t in pick.Tokens)
-					token.Tokens.Add(t);
-				//rnd = pick;
-			}
-		}
-
-		private void FoldVariables(Token token, string[] vars = null)
-		{
-			if (token == null)
-				return;
-			if (vars == null)
-				vars = new string[100];
-			while (token.HasToken("setvar"))
-			{
-				var setvar = token.GetToken("setvar");
-				var id = (int)setvar.GetToken("id").Value;
-				var value = setvar.GetToken("value");
-				vars[id] = value.Text;
-				token.RemoveToken("setvar");
-			}
-			while (token.HasToken("var"))
-			{
-				var getvar = token.GetToken("var");
-				var id = (int)getvar.Value;
-				if (string.IsNullOrWhiteSpace(vars[id]))
-					token.RemoveToken("var");
-				else
-					getvar.Name = vars[id];
-			}
-			if (!string.IsNullOrWhiteSpace(token.Text) && token.Text.Trim().StartsWith("var "))
-			{
-				var id = int.Parse(token.Text.Trim().Substring(4));
-				if (string.IsNullOrWhiteSpace(vars[id]))
-					token.Text = "<invalid token>";
-				else
-					token.Text = vars[id];
-			}
-			foreach (var child in token.Tokens)
-				FoldVariables(child, vars);
 		}
 
 		public void AddSet(List<Token> otherSet)
@@ -2930,9 +2930,9 @@ namespace Noxico
 
 			foreach (var t in equip.Tokens)
 			{
-				if (t.Name == "underpants" && !TempRemove(character, tempRemove, "pants"))
+				if (t.Name == "underpants" && (!TempRemove(character, tempRemove, "pants") || !TempRemove(character, tempRemove, "underpants")))
 					return false;
-				else if (t.Name == "undershirt" && !TempRemove(character, tempRemove, "shirt"))
+				else if (t.Name == "undershirt" && (!TempRemove(character, tempRemove, "shirt") || !TempRemove(character, tempRemove, "undershirt")))
 					return false;
 				else if (t.Name == "shirt" && !TempRemove(character, tempRemove, "jacket"))
 					return false;

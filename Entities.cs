@@ -255,6 +255,8 @@ namespace Noxico
 		public void Point()
 		{
 			PointingAt = null;
+			if (NoxicoGame.Messages.Count == 0)
+				NoxicoGame.AddMessage("<...>");
 			NoxicoGame.Messages.Last().Message = (Intent == Intents.Shoot ? "Aim" : "Point") + " at " + ((Intent == Intents.Look) ? "an object or character." : (Intent == Intents.Take) ? "an object." : "a character.");
 			NoxicoGame.Messages.Last().Color = Color.Gray;
 			foreach (var entity in this.ParentBoard.Entities)
@@ -1555,9 +1557,9 @@ namespace Noxico
 			get
 			{
 				if (string.IsNullOrWhiteSpace(Token.Text))
-					return Token.Text;
-				else
 					return "container";
+				else
+					return Token.Text;
 			}
 		}
 

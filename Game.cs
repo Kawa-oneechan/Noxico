@@ -138,8 +138,8 @@ namespace Noxico
 			towngenTest.DumpToHTML("ground");
 			var townGen = new TownGenerator();
 			townGen.Board = towngenTest;
-			townGen.Create(WorldGen.Biomes[2]);
 			townGen.Culture = Culture.Cultures["human"];
+			townGen.Create(WorldGen.Biomes[2]);
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
 			towngenTest.DumpToHTML("final");
@@ -474,7 +474,8 @@ namespace Noxico
 			{
 				for (var x = 0; x < worldGen.MapSizeX - 1; x++)
 				{
-					if (worldGen.BiomeMap[y, x] == 4)
+					//if (WorldGen.Biomes[worldGen.BiomeMap[y, x]].IsWater)
+					if (worldGen.BiomeMap[y, x] == 0)
 					{
 						Boards.Add(null);
 						continue;
@@ -493,6 +494,8 @@ namespace Noxico
 				{
 					if (worldGen.TownMap[y, x] > 0)
 					{
+						if (Overworld[x, y] == 1)
+							continue;
 						if (StartingOWX == -1)
 						{
 							StartingOWX = x;
@@ -500,15 +503,19 @@ namespace Noxico
 						}
 
 						var thisMap = Boards[Overworld[x, y]];
+						thisMap.Type = BoardType.Town;
 						townGen.Board = thisMap;
-						townGen.Create(worldGen.BiomeMap[y, x]);
-						townGen.Culture = Culture.Cultures["human"];
+						var biome = WorldGen.Biomes[worldGen.BiomeMap[y, x]];
+						var cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
+						townGen.Culture = Culture.Cultures[cultureName]; //Culture.Cultures["human"];
+						townGen.Create(biome);
 						townGen.ToTilemap(ref thisMap.Tilemap);
 						townGen.ToSectorMap(thisMap.Sectors);
-						thisMap.Music = "set://Town";
+						thisMap.GetToken("music").Text = "set://Town";
+						thisMap.Tokens.Add(new Token() { Name = "culture", Text = cultureName });
 						while (true)
 						{
-							var newName = Culture.GetName("human", Culture.NameType.Town);
+							var newName = Culture.GetName(townGen.Culture, Culture.NameType.Town);
 							if (Boards.Find(b => b != null && b.Name == newName) == null)
 							{
 								thisMap.Name = newName;

@@ -43,12 +43,22 @@ soundvolume=100
 ;                relative path. If preceded with "$", that part of the path
 ;                is taken to be %APPDATA% on Windows, or ~/.config on Linux.
 ;      shotpath: Specifies where to put screenshots. Same deal as savepath.
+;     candytron: If your copy is built to support it, enables Candytron Mode,
+;                a modern-looking fullscreen mode.
+;       pngmode: If your copy is built to support it, enables PNG Font Mode,
+;                which replaces the TTF renderer with a bitmap engine like the
+;                first private releases had. If Candytron Mode is enabled,
+;                PNG Mode is automatically disabled.
+;       pngfont: Specifies which set of font bitmaps to use in PNG Mode.
 rememberpause=true
 autorest=100
 skiptitle=false
 vistasaves=true
 savepath=$/Noxico/Saves
 shotpath=$/Noxico/Screenshots
+candytron=false
+pngmode=true
+pngfont=fixedsex
 
 [filters]
 ; color: Specifies the special filter to apply to a cell's color information.
