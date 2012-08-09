@@ -226,10 +226,13 @@ namespace Noxico
 			var l = Left;
 			var t = Top;
 			for (var i = 0; i < Items.Count && i < Height; i++, t++)
-				NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadRight(Width - 2) + ' ',
-					index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
-					index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
-					 l, t);
+				if (i + scroll >= Items.Count)
+					NoxicoGame.HostForm.Write("???", Color.Black, Color.Black, l, t);
+				else
+					NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadRight(Width - 2) + ' ',
+						index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
+						index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
+						 l, t);
 
 		}
 
@@ -243,6 +246,7 @@ namespace Noxico
 		{
 			if (index == 0)
 				return;
+			NoxicoGame.Sound.PlaySound("Cursor");
 			var pi = index;
 			index--;
 			if (index < scroll)
@@ -261,6 +265,7 @@ namespace Noxico
 		{
 			if (index == Items.Count - 1)
 				return;
+			NoxicoGame.Sound.PlaySound("Cursor");
 			var pi = index;
 			index++;
 			if (index - scroll >= Height)
@@ -391,6 +396,7 @@ namespace Noxico
 		{
 			if (index == 0)
 				index = Items.Count;
+			NoxicoGame.Sound.PlaySound("Cursor");
 			Index--;
 			Draw();
 			if (Change != null)
@@ -401,6 +407,7 @@ namespace Noxico
 		{
 			if (index == Items.Count - 1)
 				index = -1;
+			NoxicoGame.Sound.PlaySound("Cursor");
 			Index++;
 			Draw();
 			if (Change != null)
@@ -482,11 +489,13 @@ namespace Noxico
 		public override void DoLeft()
 		{
 			Value = 0;
+			NoxicoGame.Sound.PlaySound("Cursor");
 		}
 
 		public override void DoRight()
 		{
 			Value = 1;
+			NoxicoGame.Sound.PlaySound("Cursor");
 		}
 
 		public override void DoMouse(int left, int top)
@@ -588,6 +597,7 @@ namespace Noxico
 		private static void ProcessTab(bool shift = false)
 		{
 			var hiIndex = Elements.IndexOf(highlight);
+			NoxicoGame.Sound.PlaySound("Cursor");
 			if (!shift)
 			{
 				for (var i = hiIndex + 1; i < Elements.Count; i++)

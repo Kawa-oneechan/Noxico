@@ -376,6 +376,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				if (keys[(int)Keys.Up])
 				{
 					NoxicoGame.ClearKeys();
+					NoxicoGame.Sound.PlaySound("Cursor");
 					if (option == 0)
 						option = options.Count;
 					option--;
@@ -384,6 +385,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				else if (keys[(int)Keys.Down])
 				{
 					NoxicoGame.ClearKeys();
+					NoxicoGame.Sound.PlaySound("Cursor");
 					option++;
 					if (option == options.Count)
 						option = 0;
@@ -416,17 +418,20 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				{
 					if ((keys[(int)Keys.Enter] || keys[(int)Keys.Y]) && onYes != null)
 					{
+						NoxicoGame.Sound.PlaySound("Get Item");
 						NoxicoGame.ClearKeys();
 						onYes();
 					}
 					else if ((keys[(int)Keys.Escape] || keys[(int)Keys.N]) && onNo != null)
 					{
+						NoxicoGame.Sound.PlaySound("Put Item");
 						NoxicoGame.ClearKeys();
 						onNo();
 					}
 				}
 				else if (type == BoxType.List)
 				{
+					NoxicoGame.Sound.PlaySound(option == -1 ? "Put Item" : "Get Item");
 					Answer = options.ElementAt(option).Key;
 					onYes();
 					NoxicoGame.ClearKeys();
@@ -1379,8 +1384,9 @@ Thanks to:     Hammy, Nicole, Seru-kun
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
-					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue });
+					containerWindow = new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue };
 					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 38, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
+					UIManager.Elements.Add(containerWindow);
 					UIManager.Elements.Add(containerList);
 				}
 
@@ -1428,8 +1434,9 @@ Thanks to:     Hammy, Nicole, Seru-kun
 					if (height2 > height)
 						height = height2;
 
-					UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 2 + height2, Background = Color.Black, Foreground = Color.Magenta });
+					playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 2 + height2, Background = Color.Black, Foreground = Color.Magenta };
 					playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = height2, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
+					UIManager.Elements.Add(playerWindow);
 					UIManager.Elements.Add(playerList);
 				}
 
@@ -1463,16 +1470,17 @@ Thanks to:     Hammy, Nicole, Seru-kun
 							containerItems.RemoveAt(containerList.Index);
 							containerTokens.RemoveAt(containerList.Index);
 							containerList.Items.RemoveAt(containerList.Index);
+							if (containerList.Index >= containerList.Items.Count)
+								containerList.Index--;
 							if (containerList.Items.Count == 0)
 							{
 								//Hide list, show text.
 							}
 							else
-								containerList.Height--;
-							if (playerList.Items.Count <= 13)
-								playerList.Height = playerList.Items.Count;
-							//containerWindow.Height = containerList.Items.Count + 2;
-							//playerWindow.Height = playerList.Items.Count + 2;
+								containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
+							playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
+							containerWindow.Height = containerList.Height + 2;
+							playerWindow.Height = playerList.Height + 2;
 							//descriptionWindow.Draw();
 							//description.Draw();
 							UIManager.Draw();
@@ -1503,17 +1511,18 @@ Thanks to:     Hammy, Nicole, Seru-kun
 							playerItems.RemoveAt(playerList.Index);
 							playerTokens.RemoveAt(playerList.Index);
 							playerList.Items.RemoveAt(playerList.Index);
+							if (playerList.Index >= playerList.Items.Count)
+								playerList.Index--;
 							if (playerList.Items.Count == 0)
 							{
 								//Hide list, show text.
 							}
 							else
-								playerList.Height--;
-							if (containerList.Items.Count <= 13)
-								containerList.Height = containerList.Items.Count;
-							//containerWindow.Height = containerList.Items.Count + 2;
-							//playerWindow.Height = playerList.Items.Count + 2;
-							//descriptionWindow.Draw();
+								playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
+							containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
+							containerWindow.Height = containerList.Height + 2;
+							playerWindow.Height = playerList.Height + 2;
+							///descriptionWindow.Draw();
 							//description.Draw();
 							UIManager.Draw();
 						}
@@ -1542,6 +1551,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				containerList.DrawQuick();
 				containerList.Change(null, null);
 				playerList.DrawQuick();
+				NoxicoGame.Sound.PlaySound("Cursor");
 				//UIManager.Draw();
 			}
 			else if (keys[(int)Keys.Right])
@@ -1550,6 +1560,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				playerList.Change(null, null);
 				containerList.DrawQuick();
 				playerList.DrawQuick();
+				NoxicoGame.Sound.PlaySound("Cursor");
 				//UIManager.Draw();
 			}
 			else

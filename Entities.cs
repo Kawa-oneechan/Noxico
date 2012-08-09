@@ -1056,7 +1056,7 @@ namespace Noxico
 			base.Move(targetDirection);
 
 			EndTurn();
-			NoxicoGame.Sound.PlaySound("Push");
+			NoxicoGame.Sound.PlaySound(Character.HasToken("squishy") || Character.Path("skin/type/slime") != null ? "Splorch" : "Step");
 
 			if (lx != XPosition || ly != YPosition)
 			{

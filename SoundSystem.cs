@@ -74,7 +74,7 @@ namespace Noxico
 
 			Console.WriteLine("SoundSystem: acquiring sounds...");
 			sounds = new Dictionary<string, Sound>();
-			foreach (var s in new[] { "Put Item", "Get Item", "Coin", "Door Lock", "Key", "Open Door", "Open Gate", "Push", "Shoot", "Alert" })
+			foreach (var s in new[] { "Put Item", "Get Item", "Alert", "Firebomb", "Splorch", "Cursor", "Door Lock", "Open Gate", "Step" })
 			{
 				var file = Path.Combine("sounds", s + ".wav");
 				if (File.Exists(file))
