@@ -91,6 +91,8 @@ namespace Noxico
 
 	public class UIWindow : UIElement
 	{
+		public Color Title { get; set; }
+
 		public override bool TabStop
 		{
 			get { return false; }
@@ -108,11 +110,16 @@ namespace Noxico
 			var top = (char)0x2554 + new string((char)0x2550, Width - 2) + (char)0x2557;
 			var line = (char)0x2551 + new string(' ', Width - 2) + (char)0x2551;
 			var bottom = (char)0x255A + new string((char)0x2550, Width - 2) + (char)0x255D;
-			var caption = (char)0x2561 + " " + Text + ' ' + (char)0x255E;
+			//var caption = (char)0x2561 + (Title != null ? " <c" + Title.Name + ">" : " ") + Text + (Title != null ? "<c" + Foreground.Name + "> " : " ") + (char)0x255E;
+			var caption = ' ' + (Text.Length > Width - 8 ? Text.Remove(Width - 8) + '\x2026' : Text) + "  ";
 
 			NoxicoGame.HostForm.Write(top, Foreground, Background, Left, Top);
 			if (!string.IsNullOrWhiteSpace(Text))
-				NoxicoGame.HostForm.Write(caption, Foreground, Background, Left + (Width / 2) - (caption.Length / 2), Top);
+			{
+				NoxicoGame.HostForm.Write(caption, Title.A > 0 ? Title : Foreground, Background, Left + (Width / 2) - (caption.Length / 2), Top);
+				NoxicoGame.HostForm.SetCell(Top, Left + (Width / 2) - (caption.Length / 2) - 1, '\x2561', Foreground, Background);
+				NoxicoGame.HostForm.SetCell(Top, Left + (int)Math.Floor((Width / 2.0) + (caption.Length / 2.0)), '\x255E', Foreground, Background);
+			}
 			for (var i = Top + 1; i < Top + Height; i++)
 				NoxicoGame.HostForm.Write(line, Foreground, Background, Left, i);
 			NoxicoGame.HostForm.Write(bottom, Foreground, Background, Left, Top + Height - 1);
@@ -223,16 +230,29 @@ namespace Noxico
 					index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
 					index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
 					 l, t);
+
+		}
+
+		public void DrawQuick()
+		{
+			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
 		}
 
 		public override void DoUp()
 		{
 			if (index == 0)
 				return;
+			var pi = index;
 			index--;
 			if (index < scroll)
+			{
 				scroll--;
-			Draw();
+				NoxicoGame.HostForm.ScrollDown(Top, Top + Height, Left, Left + Width - 1);
+			}
+			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
+			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
 			if (Change != null)
 				Change(this, null);
 		}
@@ -241,10 +261,16 @@ namespace Noxico
 		{
 			if (index == Items.Count - 1)
 				return;
+			var pi = index;
 			index++;
 			if (index - scroll >= Height)
+			{
 				scroll++;
-			Draw();
+				NoxicoGame.HostForm.ScrollUp(Top - 1, Top + Height - 1, Left, Left + Width - 1);
+			}
+			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
+			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
 			if (Change != null)
 				Change(this, null);
 		}
@@ -548,7 +574,9 @@ namespace Noxico
 					break;
 				case Keys.Tab:
 					ProcessTab(shift);
+#if DEBUG
 					NoxicoGame.HostForm.Text = highlight.ToString() + ":\"" + highlight.Text + "\"";
+#endif
 					break;
 				default:
 					if (highlight is UITextBox)

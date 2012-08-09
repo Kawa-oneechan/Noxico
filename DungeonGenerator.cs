@@ -562,6 +562,7 @@ namespace Noxico
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
 									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
 									ch = '\xA0';
+									//TODO: detect water next to the exit. If found, add a veranduh to allow access.
 									break;
 								case '+':
 									fg = wall;

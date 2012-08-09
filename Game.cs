@@ -49,6 +49,11 @@ namespace Noxico
 		public static Dictionary<string, string> BodyplanLevs { get; set; }
 		public static string SavePath { get; private set; }
 
+#if CONTEXT_SENSITIVE
+		public static string ContextMessage { get; set; }
+		private static bool hadContextMessage;
+#endif
+
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 
@@ -168,7 +173,7 @@ namespace Noxico
 
 		public void SaveGame()
 		{
-			NoxicoGame.HostForm.Text = "Saving...";
+			NoxicoGame.HostForm.Text = "Noxico - Saving...";
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
 			Console.WriteLine("Saving player...");
 			var file = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
@@ -215,7 +220,11 @@ namespace Noxico
 			file.Close();
 			Console.WriteLine("Done.");
 			Console.WriteLine("--------------------------");
+#if DEBUG
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
+#else
+			NoxicoGame.HostForm.Text = "Noxico";
+#endif
 		}
 
 		public void LoadGame()
@@ -266,7 +275,11 @@ namespace Noxico
 			Sound.PlayMusic(CurrentBoard.Music);
 
 			file.Close();
+#if DEBUG
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
+#else
+			NoxicoGame.HostForm.Text = "Noxico";
+#endif
 
 			//Add debug characters
 			/*
@@ -312,6 +325,19 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
+#if CONTEXT_SENSITIVE
+			if (!string.IsNullOrWhiteSpace(ContextMessage))
+			{
+				hadContextMessage = true;
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 80 - ContextMessage.Length - 2, 0);
+			}
+			else if (hadContextMessage)
+			{
+				HostForm.Noxico.CurrentBoard.Redraw();
+				hadContextMessage = false;
+			}
+#endif
+		
 			if (Messages.Count == 0)
 				return;
 			var row = 24;
