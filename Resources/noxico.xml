@@ -1575,7 +1575,6 @@ ascii
 		</item>
 		<item id="shortsword" name="short sword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1593,7 +1592,6 @@ ascii
 		</item>
 		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1612,7 +1610,6 @@ ascii
 		</item>
 		<item id="broadsword" name="broadsword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1630,7 +1627,6 @@ ascii
 		</item>
 		<item id="longsword" name="longsword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1648,7 +1644,6 @@ ascii
 		</item>
 		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1668,7 +1663,6 @@ ascii
 		</item>
 		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1687,7 +1681,6 @@ ascii
 		</item>
 		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
 			<![CDATA[
-unique
 fireproof
 equipable
 	hand
@@ -1708,6 +1701,26 @@ ascii
 		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
 		<!-- bullwhip, pistol -->
 		<!-- fancy santa, caledflwch, wrinklefucker, warhammer of zillyhoo, ahab's crosshairs, regisickle, quills of echidna, SORD..... -->
+
+		<item id="whip" name="whip" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	light
+weapon
+	damage: 40
+	skill: whip
+	increase: climax
+-- Increase token doesn't do shit without some extra code but it can be here anyway.
+description: "An ordinary but nevertheless slightly kinky whip."
+ascii
+	char: U+03B6
+	fore
+		brown
+			]]>
+	</item>
 
 		<item id="spandex_suit" name="[color ]spandex bodysuit" a="a" the="the">
 			<![CDATA[
@@ -2111,6 +2124,7 @@ weight
 price: 40
 ascii
 	char: U+00AC
+description: "These [color ]leather panties barely cover the crotch at all, giving an enticing minimum of so-called modesty."	
 			]]>
 		</item>
 		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">

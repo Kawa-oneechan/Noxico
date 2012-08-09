@@ -2832,6 +2832,36 @@ namespace Noxico
 			return string.Format("{0} {1}", the ? The : A, name);
 		}
 
+		public string GetDescription(Token token)
+		{
+			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+			if (this.HasToken("description")) //!token.HasToken("unidentified"))
+			{
+				var ret = GetToken("description").Text;
+				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
+				var reps = new Dictionary<string, string>()
+				{
+					{ "[color]", color },
+					{ "[, color]", ", " + color },
+					{ "[color ]", color + " " },
+					{ "[color, ]", color + ", " },
+				};
+				if (color == "")
+				{
+					foreach (var key in reps.Keys)
+						ret = ret.Replace(key, "");
+				}
+				else
+				{
+					foreach (var item in reps)
+						ret = ret.Replace(item.Key, item.Value);
+				}
+				return ret;
+			}
+			else
+				return "This is " + this.ToString(token) + ".";
+		}
+
 		public static InventoryItem FromXML(XmlElement x)
 		{
 			var ni = new InventoryItem();

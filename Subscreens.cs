@@ -690,6 +690,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				NoxicoGame.Sound.PlaySound("Put Item");
 				MessageBox.Message("Dropped " + chosen.ToString(token, true, true) + ".");
 				/*
 				Subscreens.PreviousScreen.Clear();
@@ -1309,6 +1310,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 
 		private static Container container;
 
+		private static UIWindow containerWindow, playerWindow, descriptionWindow;
 		private static UIList containerList, playerList;
 		private static UILabel description;
 		private static bool onLeft = true;
@@ -1432,8 +1434,9 @@ Thanks to:     Hammy, Nicole, Seru-kun
 				}
 
 				UIManager.Elements.Add(new UILabel(" Press Enter to store or retrieve the highlighted item.".PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 2, Top = 4 + height, Width = 40, Height = 6, Background = Color.Black, Foreground = Color.Navy });
-				description = new UILabel("") { Left = 4, Top = 5 + height, Width = 38, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
+				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 
 				if (containerList != null)
@@ -1443,15 +1446,37 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						indexLeft = containerList.Index;
 						var t = containerTokens[containerList.Index];
 						var i = containerItems[containerList.Index];
-						var r = string.Empty;
-						var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
-						description.Text = Toolkit.Wordwrap(d, description.Width);
-						UIManager.Draw();
+						descriptionWindow.Text = i.ToString(t, false, false);
+						description.Text = Toolkit.Wordwrap(i.GetDescription(t), description.Width);
+						descriptionWindow.Draw();
+						description.Draw();
+						//UIManager.Draw();
 					};
 					containerList.Enter = (s, e) =>
 					{
 						onLeft = true;
 						TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
+						{
+							playerItems.Add(containerItems[playerList.Index]);
+							playerTokens.Add(containerTokens[playerList.Index]);
+							playerList.Items.Add(containerList.Items[playerList.Index]);
+							containerItems.RemoveAt(containerList.Index);
+							containerTokens.RemoveAt(containerList.Index);
+							containerList.Items.RemoveAt(containerList.Index);
+							if (containerList.Items.Count == 0)
+							{
+								//Hide list, show text.
+							}
+							else
+								containerList.Height--;
+							if (playerList.Items.Count <= 13)
+								playerList.Height = playerList.Items.Count;
+							//containerWindow.Height = containerList.Items.Count + 2;
+							//playerWindow.Height = playerList.Items.Count + 2;
+							//descriptionWindow.Draw();
+							//description.Draw();
+							UIManager.Draw();
+						}
 					};
 				}
 				if (playerList != null)
@@ -1461,23 +1486,44 @@ Thanks to:     Hammy, Nicole, Seru-kun
 						indexRight = playerList.Index;
 						var t = playerTokens[playerList.Index];
 						var i = playerItems[playerList.Index];
-						var r = string.Empty;
-						var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
-						description.Text = Toolkit.Wordwrap(d, description.Width);
-						UIManager.Draw();
+						descriptionWindow.Text = i.ToString(t, false, false);
+						description.Text = Toolkit.Wordwrap(i.GetDescription(t), description.Width);
+						descriptionWindow.Draw();
+						description.Draw();
+						//UIManager.Draw();
 					};
 					playerList.Enter = (s, e) =>
 					{
 						onLeft = false;
-						TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]);
+						if (TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]))
+						{
+							containerItems.Add(containerItems[containerList.Index]);
+							containerTokens.Add(containerTokens[containerList.Index]);
+							containerList.Items.Add(containerList.Items[containerList.Index]);
+							playerItems.RemoveAt(playerList.Index);
+							playerTokens.RemoveAt(playerList.Index);
+							playerList.Items.RemoveAt(playerList.Index);
+							if (playerList.Items.Count == 0)
+							{
+								//Hide list, show text.
+							}
+							else
+								playerList.Height--;
+							if (containerList.Items.Count <= 13)
+								containerList.Height = containerList.Items.Count;
+							//containerWindow.Height = containerList.Items.Count + 2;
+							//playerWindow.Height = playerList.Items.Count + 2;
+							//descriptionWindow.Draw();
+							//description.Draw();
+							UIManager.Draw();
+						}
 					};
 				}
 
 				UIManager.Highlight = onLeft ? (containerList ?? null) : (playerList ?? null);
+				UIManager.Draw();
 				if (UIManager.Highlight.Change != null)
 					UIManager.Highlight.Change(null, null);
-				else
-					UIManager.Draw();
 				Subscreens.FirstDraw = false;
 			}
 
@@ -1493,12 +1539,18 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			else if (keys[(int)Keys.Left])
 			{
 				UIManager.Highlight = containerList ?? playerList;
-				UIManager.Draw();
+				containerList.DrawQuick();
+				containerList.Change(null, null);
+				playerList.DrawQuick();
+				//UIManager.Draw();
 			}
 			else if (keys[(int)Keys.Right])
 			{
 				UIManager.Highlight = playerList ?? containerList;
-				UIManager.Draw();
+				playerList.Change(null, null);
+				containerList.DrawQuick();
+				playerList.DrawQuick();
+				//UIManager.Draw();
 			}
 			else
 				UIManager.CheckKeys();
@@ -1512,27 +1564,29 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			con.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
-			Subscreens.FirstDraw = true;
+			NoxicoGame.Sound.PlaySound("Get Item");
+			//Subscreens.FirstDraw = true;
 		}
 
-		private static void TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
+		private static bool TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
 			var inv = boardchar.Character.GetToken("items");
 			var con = container.Token.GetToken("contents");
 			//TODO: give feedback on error.
 			if (token.HasToken("cursed"))
 			{
-				return;
+				return false;
 			}
 			if (token.HasToken("equipped"))
 			{
-				return;
+				return false;
 			}
 			con.Tokens.Add(token);
 			inv.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
-			Subscreens.FirstDraw = true;
+			NoxicoGame.Sound.PlaySound("Put Item");
+			return true;
 		}
 	}
 }

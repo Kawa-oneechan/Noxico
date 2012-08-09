@@ -177,7 +177,9 @@ namespace Noxico
 
 		public void CallScript(string label)
 		{
+#if DEBUG
 			NoxicoGame.HostForm.Text = ID + ": " + label;
+#endif
 			if (this.Script == null || this.Script.Length == 0)
 				return;
 			for (var i = 0; i < this.Script.Length; i++)
@@ -348,6 +350,7 @@ namespace Noxico
 						{
 							((DroppedItem)PointingAt).PickUp(player.Character);
 							NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", ((DroppedItem)PointingAt).ForegroundColor);
+							NoxicoGame.Sound.PlaySound("Get Item");
 							ParentBoard.Redraw();
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
@@ -1062,7 +1065,19 @@ namespace Noxico
 				//this.DijkstraMap.SaveToPNG();
 			}
 
+#if CONTEXT_SENSITIVE
+			NoxicoGame.ContextMessage = null;
+			if (OnWarp())
+				NoxicoGame.ContextMessage = "\x21B2 take exit";
+			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
+				NoxicoGame.ContextMessage = "\x21B2 see contents";
+			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
+				NoxicoGame.ContextMessage = "\x21B2 sleep";
+#endif
+
+#if DEBUG
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4})", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY);
+#endif
 		}
 
 		public override void Update()
@@ -1182,6 +1197,7 @@ namespace Noxico
 				{
 					var item = (DroppedItem)itemsHere[0];
 					item.PickUp(this.Character);
+					NoxicoGame.Sound.PlaySound("Get Item");
 					NoxicoGame.AddMessage("You pick up " + item.Item.ToString(item.Token, true) + ".", item.ForegroundColor);
 					return;
 				}

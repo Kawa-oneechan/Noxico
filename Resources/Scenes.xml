@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT p (#PCDATA)>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id CDATA #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST action name CDATA #REQUIRED>
+]>
 <scenes>
 	<scene id="TamaniStartBoy" name="(starting node)">
 		<!-- This is a comment that'll show up in the editor. -->
