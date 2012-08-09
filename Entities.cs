@@ -276,10 +276,10 @@ namespace Noxico
 						//NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if (entity is Clutter && Intent == Intents.Look)
+					else if ((entity is Clutter || entity is Container) && Intent == Intents.Look)
 					{
 						PointingAt = entity;
-						NoxicoGame.Messages.Last().Message = ((Clutter)PointingAt).Name;
+						NoxicoGame.Messages.Last().Message = entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name;
 						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
@@ -823,10 +823,10 @@ namespace Noxico
 				corpse.Name = Character.GetTitle() + "'s remains";
 				corpse.Description = "These are the remains of " + Character.GetTitle() + ", who died from " + obituary + ".";
 			}
-			
-			//Scatter belongings, if any
+
+			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)
 			var items = Character.GetToken("items");
-			if (items != null && items.Tokens.Count > 0)
+			if (items != null && items.Tokens.Count > 0 && !(this is Player))
 			{
 				while (items.Tokens.Count > 0)
 				{
@@ -1063,6 +1063,11 @@ namespace Noxico
 				this.DijkstraMap.Hotspots[0] = new Point(XPosition, YPosition);
 				this.DijkstraMap.Update();
 				//this.DijkstraMap.SaveToPNG();
+			}
+			else if (AutoTravelling)
+			{
+				AutoTravelling = false;
+				NoxicoGame.AddMessage("* TEST: couldn't go any further. *");
 			}
 
 #if CONTEXT_SENSITIVE

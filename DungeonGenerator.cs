@@ -383,6 +383,8 @@ namespace Noxico
 			public string Type;
 			public string[] Params;
 			public int Owner;
+			public string Name;
+			public string Description;
 		}
 
 		private class Template
@@ -415,7 +417,9 @@ namespace Noxico
 						p = t.Substring(t.IndexOf(',') + 1).Split(',');
 						t = t.Remove(t.IndexOf(','));
 					}
-					Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o });
+					var n = marking.GetAttribute("name");
+					var d = marking.InnerText.Trim();
+					Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o, Name = n, Description = d });
 				}
 			}
 		}
@@ -651,6 +655,8 @@ namespace Noxico
 													ForegroundColor = Color.Black,
 													BackgroundColor = bg,
 													ParentBoard = Board,
+													Name = m.Name,
+													Description = m.Description,
 													Blocking = m.Params.Contains("blocking"),
 												};
 												Board.Entities.Add(newClutter);
