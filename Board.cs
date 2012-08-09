@@ -239,6 +239,8 @@ namespace Noxico
 		public Board()
 		{
 			this.Tokens = new List<Token>();
+			foreach (var t in new[] { "name", "id", "music", "type", "biome", "encounters" })
+				this.Tokens.Add(new Token() { Name = t });
 			this.Entities = new List<Entity>();
 			this.EntitiesToRemove = new List<Entity>();
 			this.EntitiesToAdd = new List<Entity>();

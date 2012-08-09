@@ -17,8 +17,8 @@
 			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
 			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
 			<marking char="C" type="block,darkgreen,floor,&#x00A5;" />
-			<marking char="c" type="clutter,&#x2565;" />
-			<marking char="T" type="clutter,blocking,&#x2564;" />
+			<marking char="c" type="clutter,&#x2565;" name="Chair" />
+			<marking char="T" type="clutter,blocking,&#x2564;" name="Table">Solid fuckin' oak. No IKEA here bitches!</marking>
 		</markings>
 	</template>
 	<template name="simple test 2" inhabitants="1">
@@ -70,8 +70,8 @@
 			<marking char="a" type="bed" owner="2" />
 			<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
 			<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
-			<marking char="c" type="clutter,&#x2565;" />
-			<marking char="T" type="clutter,blocking,&#x2564;" />
+			<marking char="c" type="clutter,&#x2565;" name="Chair" />
+			<marking char="T" type="clutter,blocking,&#x2564;" name="Table" />
 			<marking char="=" type="block,wall,floor,&#x2261;" />
 		</markings>
 	</template>
