@@ -379,7 +379,7 @@ hair
 skin
 	type
 		fur
-	color: oneof brown, orange, white, gray
+	color: oneof brown, orange, white, gray, black
 eyes
 	color: oneof gold, yellow, lime
 face
@@ -559,7 +559,7 @@ skin
 		slime
 hair
 	length: roll 1d8+10
-	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, fuchsia
+	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
 slimeblob
 face
 	normal
@@ -594,6 +594,7 @@ culture
 	ursidous
 normalgenders
 invisiblegender
+fearless
 terms
 	generic: "ursidae"
 	male: "ursidae"
@@ -672,11 +673,15 @@ penis
 		<bodyplan id="bear">
 			<![CDATA[
 beast
+	role
+		predator
+fearless
+hostile
 bestiary: "A ferocious wild animal that would tear apart anyone who dares enter its territory."
 terms
 	generic: "bear"
 	male: "bear"
-	female: "beer"
+	female: "bear"
 skin
 	type
 		fur
@@ -690,6 +695,9 @@ ascii
 		<bodyplan id="wild_dog">
 			<![CDATA[
 beast
+	role
+		predator
+hostile
 bestiary: "Usually domesticated, but not this one."
 terms
 	generic: "dog"
@@ -710,6 +718,7 @@ ascii
 			<!-- Copy of wild_dog for the description's sake. -->
 			<![CDATA[
 beast
+hostile
 bestiary: "Someone's pet dog. Cute."
 normalgenders
 terms
@@ -729,6 +738,9 @@ ascii
 		<bodyplan id="rat">
 			<![CDATA[
 beast
+	role
+		prey
+hostile
 bestiary: "Pesky little vermin."
 terms
 	generic: "rat"
@@ -748,7 +760,10 @@ ascii
 		<bodyplan id="snake">
 			<![CDATA[
 beast
+	role
+		predator
 bestiary: "Pesky little vermin."
+hostile
 terms
 	generic: "snake"
 	male: "snake"
@@ -758,12 +773,29 @@ skin
 	type
 		scales
 	color: oneof saddlebrown, olive, darkslategray
-snaketail
-noarms
 speed: 30
 strength: 5
 ascii
 	char: U+00A7
+	]]>
+		</bodyplan>
+		<bodyplan id="horse">
+			<![CDATA[
+beast
+bestiary: "Large herd animal!"
+terms
+	generic: "horse"
+	male: "stallion"
+	female: "mare"
+normalgenders
+skin
+	type
+		fur
+	color: oneof brown, white, gray, black, saddlebrown
+speed: 30
+strength: 50
+ascii
+	char: U+0072
 	]]>
 		</bodyplan>
 	</bodyplans>
@@ -774,6 +806,8 @@ ascii
 culture
 	japanese
 invisiblegender
+femaleonly
+bestiary: "One of the few cheetah people, very clingy."
 terms
 	generic: "cheetah"
 	male: "cheetah man"
@@ -821,6 +855,7 @@ vagina
 culture
 	demonic
 invisiblegender
+femaleonly
 terms
 	generic: "cubi"
 	male: "incubus"
@@ -1700,7 +1735,101 @@ ascii
 		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
 		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
 		<!-- bullwhip, pistol -->
-		<!-- fancy santa, caledflwch, wrinklefucker, warhammer of zillyhoo, ahab's crosshairs, regisickle, quills of echidna, SORD..... -->
+
+		<item id="fancysanta" name="fancy Santa" a="a" the="the">
+			<![CDATA[
+fireproof
+fearsome
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 30
+	skill: club
+description: "A smallish but ornate statue of a festive holiday character."
+ascii
+	char: U+0455
+	fore
+		red
+			]]>
+		</item>
+		<item id="wrinklefucker" name="wrinklefucker" unidentified="appliance-headed warhammer" a="a" the="the">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+	twohanded
+weight
+	medium
+weapon
+	damage: 100
+	skill: warhammer
+description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
+ascii
+	char: U+0444
+	fore
+		lime
+			]]>
+		</item>
+		<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 300
+	skill: warhammer
+description: "Behold the glory of Zillyhoo!"
+ascii
+	char: U+0444
+	fore
+		blue
+			]]>
+		</item>
+		<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 200
+	range: 30
+	skill: rifle
+description: "Plundered from some sunken galleon somewhere, this is no ordinary rifle -- it's a laser rifle!"
+ascii
+	char: U+0141
+	fore
+		blue
+			]]>
+		</item>
+		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+fearsome
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 250
+	skill: chainsaw
+description: "Awesome. Demonic-looking. Not actually a tube of lipstick. This is a chainsaw to be reckoned with."
+ascii
+	char: U+018C
+	fore
+		purple
+			]]>
+		</item>
+		<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
 
 		<item id="whip" name="whip" a="a" the="the">
 			<![CDATA[
@@ -1782,6 +1911,60 @@ ascii
 		brown
 			]]>
 		</item>
+
+		<item id="bacon" name="bacon strip" a="a" the="the">
+			<![CDATA[
+singleuse
+statbonus
+	health: 5
+weight: feather
+description: "Can't go wrong with bacon."
+ascii
+	char: U+2016
+	fore
+		red
+			]]>
+		</item>
+		<item id="sweetroll" name="sweet roll" a="a" the="the">
+			<![CDATA[
+singleuse
+statbonus
+	health: 10
+weight: feather
+description: "Let me guess."
+ascii
+	char: U+00F8
+	fore
+		yellow
+			]]>
+		</item>
+
+		<!-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf -->
+
+<!--	dilithium crystal		brownish white (listed as white in nethack)
+			diamond							white
+			ruby								red
+			jacinth							orange
+			sapphire						blue
+			black opal					black
+			emerald							green
+			turquoise						green
+			citrine							yellow
+			aquamarine					green
+			amber								yellowish brown
+			topaz								yellowish brown
+			jet									black
+			opal								white
+			chrysoberyl					yellow
+			garnet							red
+			amethyst						violet
+			jasper							red
+			fluorite						violet
+			obsidian						black
+			agate								orange
+			jade								jade
+			worthless piece of @ glass
+-->
 
 		<!-- Clothes from jsNoxico -->
 		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">

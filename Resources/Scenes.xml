@@ -252,9 +252,9 @@
 	</scene>
 
 	<scene id="EmiTest" name="(starting node)">
-		<filter target="bottom" type="name" name="Emi Nakashima" />
+		<filter target="bottom" type="name" name="Mitsuko Murakami" />
 		<p>
-			Your [t:cockdescript] stirs as [b:name] looks deep in your &lt;c[t:T:eyes/color]>[t:t:eyes/color]&lt;c> eyes.
+			Your [t:cock] stirs as [b:name] looks deep in your &lt;c[t:T:eyes/color]>[t:t:eyes/color]&lt;c> eyes.
 		</p>
 	</scene>
 	<scene id="MulticockTest1" name="(starting node)">

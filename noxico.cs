@@ -1051,7 +1051,18 @@ namespace Noxico
 			var final = parts.Last();
 			foreach (var p in parts)
 			{
-				var target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.InvariantCultureIgnoreCase));
+				Token target = null;
+				if (Regex.IsMatch(p, @"\[(?<index>[0-9]+)\]"))
+				{
+					var trueP = p.Remove(p.IndexOf('['));
+					var index = int.Parse(Regex.Match(p, @"\[(?<index>[0-9]+)\]").Groups["index"].ToString());
+					var targets = point.Tokens.FindAll(t => t.Name.Equals(trueP, StringComparison.InvariantCultureIgnoreCase));
+					if (targets == null || index >= targets.Count)
+						return null;
+					target = targets[index];
+				}
+				else
+					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.InvariantCultureIgnoreCase));
 				if (target == null)
 					return null;
 				if (target.Name.Equals(final, StringComparison.InvariantCultureIgnoreCase))
@@ -1288,6 +1299,7 @@ namespace Noxico
 
 		public bool HasNormalSkin()
 		{
+			//TODO: make these use the colors defined for the Human bodytype instead of hardcoding?
 			var regularColors = new[] { "light", "pale", "dark", "olive" };
 			if (Path("skin/type/skin") == null)
 				return false;

@@ -223,8 +223,94 @@ namespace Noxico
 
 		private static string ApplyTokens(string message)
 		{
-			var tIP = NoxicoGame.HostForm.Noxico.Player.Character == top;
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var tIP = player == top;
+			#region Definitions
+			var subcoms = new Dictionary<string, Func<Character, string[], string>>()
+			{
+				{ "You", (c, s) => { return tIP ? "You" : c.HeSheIt(); } },
+				{ "Your", (c, s) => { return tIP ? "Your" : c.HisHerIts(); } },
+				{ "you", (c, s) => { return tIP ? "you" : c.HeSheIt(true); } },
+				{ "your", (c, s) => { return tIP ? "your" : c.HisHerIts(true); } },
 
+				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
+				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && s[2] != "" ? s[2] : s[1]); } },
+				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLowerInvariant(); } },
+				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
+				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
+
+				{ "name", (c, s) => { return c.Name.ToString(); } },
+				{ "fullname", (c, s) => { return c.Name.ToString(true); } },
+				{ "title", (c, s) => { return c.Title; } },
+				{ "gender", (c, s) => { return c.GetGender(); } },
+				{ "His", (c, s) => { return tIP ? "Your" : c.HisHerIts(); } },
+				{ "He", (c, s) => { return tIP ? "You" : c.HeSheIt(); } },
+				{ "his", (c, s) => { return tIP ? "your" : c.HisHerIts(true); } },
+				{ "he", (c, s) => { return tIP ? "you" : c.HeSheIt(true); } },
+				{ "him", (c, s) => { return tIP ? "you" : c.HimHerIt(); } },
+				{ "is", (c, s) => { return tIP ? "are" : "is"; } },
+				{ "has", (c, s) => { return tIP ? "have" : "has"; } },
+				{ "does", (c, s) => { return tIP ? "do" : "does"; } },
+
+				{ "hair", (c, s) => { return Descriptions.Hair(c.Path("hair")); } },
+				{ "breasts", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Breasts(c.Path("breastrow[" + s[0] + "]")); } },
+				{ "nipples", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "waist", (c, s) => { return Descriptions.Waist(c.Path("waist")); } },
+				{ "hips", (c, s) => { return Descriptions.Hips(c.Path("hips")); } },
+				{ "ass", (c, s) => { return Descriptions.Butt(c.Path("ass")); } },
+				{ "tail", (c, s) => { return Descriptions.Tail(c.Path("tail")); } },
+				//{ "multicock", (c, s) => { return Descriptions.MultiCock(c); } },
+				{ "multicock", (c, s) => { return Descriptions.Cock(c.Path("penis[0]")); } },
+				{ "cock", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Cock(c.Path("penis[" + s[0] + "]")); } },
+				//{ "pussy", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Pussy(c.Path("vagina[" + s[0] + "]")); } },
+				{ "pussy", (c, s) => { return "pussy"; } },
+			};
+			#endregion
+			#region Parser
+			var regex = @"\[ ([A-Za-z]+) (?: \: ([A-Za-z/_]+) )* \]";
+			var ro = RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline;
+			while (Regex.IsMatch(message, regex, ro))
+			{
+				var match = Regex.Match(message, regex, ro);
+				var replace = match.ToString();
+				var with = "";
+				var target = bottom;
+				var subcom = "";
+				var parms = new List<string>();
+
+				if (!match.Groups[2].Success)
+				{
+					subcom = match.Groups[1].Value;
+				}
+				else
+				{
+					target = (match.Groups[1].Value[0] == 't' ? top : bottom);
+					subcom = match.Groups[2].Value;
+
+					if (match.Groups[2].Captures.Count > 1)
+					{
+						subcom = match.Groups[2].Captures[0].Value;
+						foreach (Capture c in match.Groups[2].Captures)
+						{
+							Console.WriteLine(c);
+							parms.Add(c.Value);
+						}
+						parms.RemoveAt(0);
+					}
+				}
+
+				parms.Add("");
+				parms.Add("");
+				parms.Add("");
+
+				if (subcoms.ContainsKey(subcom))
+					with = subcoms[subcom](target, parms.ToArray());
+
+				message = message.Replace(replace, with);
+			}
+			#endregion
+			#region Old version
+			/*
 			message = message.Replace("[You]", tIP ? "You" : top.HeSheIt());
 			message = message.Replace("[Your]", tIP ? "Your" : top.HisHerIts());
 			message = message.Replace("[you]", tIP ? "you" : top.HeSheIt(true));
@@ -321,9 +407,8 @@ namespace Noxico
 				var textorval = match.Groups["textorval"].ToString()[0];
 				message = message.Replace(match.Value, path == null ? "<404>" : textorval == 'v' ? path.Value.ToString() : textorval == 'T' ? path.Text : path.Text.ToLowerInvariant());
 			}
-
-
-
+			*/
+			#endregion
 			return message;
 		}
 	}

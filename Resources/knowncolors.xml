@@ -9,6 +9,7 @@
 	<color name="Light" rgb="246,225,214" cga="15" />
 	<color name="Dark" rgb="133,69,67" cga="6" />
 	<color name="Ebony" rgb="23,11,11" cga="0" />
+	<color name="Pale" rgb="246,245,224" cga="15" />
 
 	<!-- Hair colors -->
 	<color name="Blond" rgb="198,167,94" cga="6" />
