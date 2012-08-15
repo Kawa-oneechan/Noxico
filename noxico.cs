@@ -1049,6 +1049,8 @@ namespace Noxico
 			var parts = path.Split('/');
 			var point = this;
 			var final = parts.Last();
+			if (Regex.IsMatch(final, @"\[(?<index>[0-9]+)\]"))
+				final = final.Remove(final.IndexOf('['));
 			foreach (var p in parts)
 			{
 				Token target = null;

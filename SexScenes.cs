@@ -228,33 +228,35 @@ namespace Noxico
 			#region Definitions
 			var subcoms = new Dictionary<string, Func<Character, string[], string>>()
 			{
-				{ "You", (c, s) => { return tIP ? "You" : c.HeSheIt(); } },
-				{ "Your", (c, s) => { return tIP ? "Your" : c.HisHerIts(); } },
-				{ "you", (c, s) => { return tIP ? "you" : c.HeSheIt(true); } },
-				{ "your", (c, s) => { return tIP ? "your" : c.HisHerIts(true); } },
+				{ "You", (c, s) => { return tIP && c == top ? "You" : c.HeSheIt(); } },
+				{ "Your", (c, s) => { return tIP && c == top ? "Your" : c.HisHerIts(); } },
+				{ "you", (c, s) => { return tIP && c == top ? "you" : c.HeSheIt(true); } },
+				{ "your", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
 				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && s[2] != "" ? s[2] : s[1]); } },
 				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLowerInvariant(); } },
 				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
 				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
+				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
 
 				{ "name", (c, s) => { return c.Name.ToString(); } },
 				{ "fullname", (c, s) => { return c.Name.ToString(true); } },
 				{ "title", (c, s) => { return c.Title; } },
 				{ "gender", (c, s) => { return c.GetGender(); } },
-				{ "His", (c, s) => { return tIP ? "Your" : c.HisHerIts(); } },
-				{ "He", (c, s) => { return tIP ? "You" : c.HeSheIt(); } },
-				{ "his", (c, s) => { return tIP ? "your" : c.HisHerIts(true); } },
-				{ "he", (c, s) => { return tIP ? "you" : c.HeSheIt(true); } },
-				{ "him", (c, s) => { return tIP ? "you" : c.HimHerIt(); } },
-				{ "is", (c, s) => { return tIP ? "are" : "is"; } },
-				{ "has", (c, s) => { return tIP ? "have" : "has"; } },
-				{ "does", (c, s) => { return tIP ? "do" : "does"; } },
+				{ "His", (c, s) => { return tIP && c == top ? "Your" : c.HisHerIts(); } },
+				{ "He", (c, s) => { return tIP && c == top ? "You" : c.HeSheIt(); } },
+				{ "his", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },
+				{ "he", (c, s) => { return tIP && c == top ? "you" : c.HeSheIt(true); } },
+				{ "him", (c, s) => { return tIP && c == top ? "you" : c.HimHerIt(); } },
+				{ "is", (c, s) => { return tIP && c == top ? "are" : "is"; } },
+				{ "has", (c, s) => { return tIP && c == top ? "have" : "has"; } },
+				{ "does", (c, s) => { return tIP && c == top ? "do" : "does"; } },
 
 				{ "hair", (c, s) => { return Descriptions.Hair(c.Path("hair")); } },
 				{ "breasts", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Breasts(c.Path("breastrow[" + s[0] + "]")); } },
-				{ "nipples", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "nipple", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "nipples", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")) + 's'; } },
 				{ "waist", (c, s) => { return Descriptions.Waist(c.Path("waist")); } },
 				{ "hips", (c, s) => { return Descriptions.Hips(c.Path("hips")); } },
 				{ "ass", (c, s) => { return Descriptions.Butt(c.Path("ass")); } },
@@ -292,12 +294,12 @@ namespace Noxico
 						subcom = match.Groups[2].Captures[0].Value;
 						foreach (Capture c in match.Groups[2].Captures)
 						{
-							Console.WriteLine(c);
-							parms.Add(c.Value);
+							Console.WriteLine(c);							
+							parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
 						}
 						parms.RemoveAt(0);
 					}
-				}
+					}
 
 				parms.Add("");
 				parms.Add("");
