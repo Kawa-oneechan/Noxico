@@ -17,239 +17,272 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
-	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST script type CDATA #FIXED "text/noxicobotic">
 	<!ATTLIST action name CDATA #REQUIRED>
 ]>
 <scenes>
-	<scene id="TamaniStartBoy" name="(starting node)">
-		<!-- This is a comment that'll show up in the editor. -->
-		<filter target="bottom" type="name" name="Emi Nakashima" />
+
+	<scene id="GenericFriendlyIntro" name="(starting node)">
+		<filter target="top" type="value_lower" name="carnality" value="30-" />
+		<filter target="bottom" type="value_lower" name="carnality" value="30-" />
+		<filter target="top" type="value_lower" name="climax" value="10-" />
+		<filter target="bottom" type="value_lower" name="climax" value="10-" />
 		<p>
-			Tamani is here, grinning wolfishly.
+			You softly embrace [b:name] and kiss [b:him], fully intent on making this as good a time as any.
 		</p>
-		<script language="text/noxicobotic">
-			<![CDATA[
-				$top.checktag "penis"
-				if exists
-					|<<	"Ready for another fuck, big boy?" >>
-				else
-					|<<	"Ready for another fuck, big girl?" >>
-				endif
-			]]>
-		</script>
-		<action name="tamani take her" />
-		<action name="tamani let her" />
-		<action name="tamani decline" />
-	</scene>
-	<scene id="TamaniTakeHer" name="tamani take her" list="Take her">
-		<filter target="bottom" type="name" name="Emi Nakashima" />
-		<script language="text/noxicobotic">
-			<![CDATA[
-				$top.getcockcount
-				cox = it
-				$top.getcumamount
-				cum = it
-
-				$top.getcockarea
-				if it > 90
-					|<<	You grab hold of the insensate goblin by her pink-dyed hair and shove her into the mud,
-							irritated with her constant demands and rape attempts. The horny slut doesn't even have
-							the grace to be ashamed of her defeat. She just lies in the mud, wiggling her exposed
-							ass back and forth in the air, trying to tempt you with it.
-							[break]
-							It's too tempting of a target to resist. You allow your [t:multicockdescript] to flop
-							free. You're already hard from the enticing display, and in a moment you're pressing
-							against her lust-slicked >>
-					if cox > 1
-						|<<	pussy and tight asshole. >>
-					else
-						|<<	pussy. >>
-					endif
-					|<<	You don't allow her any say in the matter, pushing forward as you feel the small girl's
-							flesh yield around >>
-					if cox > 1
-						|<<	each of your girths. >>
-					else
-						|<<	your girth. >>
-					endif
-					|<<	She squeals happily, clearly getting what she desires. For a moment you feel disappointed
-							in yourself, but the sensations of her tight >>
-					if cox > 1
-						|<<	holes >>
-					else
-						|<<		hole >>
-					endif
-					|<<	clenching and squeezing around you quickly washes it away.
-							[break] >>
-
-				else
-
-					|<<	You throw Tamani on her back, too drunk on desire to care how it feels for the tiny slut.
-							There's no way she could ever take >>
-					if cox > 1
-						|<<	any of your massive members, >>
-					else
-						|<<	your massive member, >>
-					|<<	so you grab her by the ankles and wrap her soft-soled feet about yourself. You start
-							jerking yourself off, using Tamani as a cute but expendable masturbation aid. She chews
-							a fingernail and massages her [b:breastdescript] as she watches you, doing her best to
-							put on a show. The little slut seems to like it.
-							[break]
-							Her feet start to grow slick with your sweat and precum, sliding effortlessly along the
-							length of your shaft as you continue to bring yourself towards orgasm. You watch while
-							Tamani dips her fingers into the slick folds of her hungry cunt, getting off on being
-							used in such a perverse manner. She coos, "How do my feet feel stud? Are they soft and
-							slick when they slide on your cock? Are you going to cum for Tamani and paint her white?
-							You are. You know you are. Cum for Tamani."
-							[break] >>
-
-				endif
-			]]>
-		</script>
-		<action name="tamani take her 2" />
-	</scene>
-	<scene id="TamaniTakeHer2" name="tamani take her 2" list="">
-		<script language="text/noxicobotic">
-			<![CDATA[
-				$top.getcockcount
-				cox = it
-				$top.getcumamount
-				cum = it
-
-				$top.getcockarea
-				if it <= 90
-					|<<	You rock back and forth methodically, treating Tamani like a tight cock-sleeve.
-							The goblin slut's hands rub her belly, not even attempting to pull her face out of the
-							mud as she moans and giggles like a whore. You keep working her cunt like a [t:gender]
-							possessed, sawing in and out with brutal efficiency, the wet squelches of the slut's
-							juices driving you to piston back and forth with even greater force. She gurgles happily, >>
-					if cox > 1
-						|<<	her holes squeezing tightly as she cums hard.[break] >>
-					else
-						|<<	her pussy squeezing tightly as she cums hard.[break] >>
-
-					if cox > 1
-						|<<	Each of your [t:multicockdescript] pulsates, >>
-					else
-						|<<	Your [t:multicockdescript] pulsates, >>
-					endif
-					|<<	spasming inside your goblin-flesh prison, spraying a bit of sticky goo into the happy
-							slut. You can hear her babbling, pleasure-drunk as she quivers around you, "Fuck yes!
-							Cu-ah-ahm in me! Fuck fuckfuckfucKFUCKYEAH! Oooh that's it put me in the dirt and show
-							me who's boss!" >>
-
-				else
-
-					|<<	Oh gods you do... it'd be so easy to just release all over her tight little body, soaking
-							her in cum from head to toe. You know she'd like it. Hell, you'd like it, but you want to
-							make her wait. Your hands keep sliding and squeezing, jerking her now-slippery soles with
-							faster and faster strokes. Holding back is TOO hard! You need to release – the little slut's
-							words ring true as you squeeze tightly, feeling warmth building in your crotch as your body
-							begins to climax.
-							[break]
-							Tamani licks her lips and pushes with her legs, assisting you as you milk yourself with her
-							feet, squeezing out the first jet of hot goblin-treat. It spatters over the green girl's
-							forehead, running into her pink highlights. She opens wide, craning up to catch the next
-							blast of salty seed in her dirty lipstick-coated mouth. Swallowing like a pro, she leans up
-							further, letting you coat her tits with cream.
-							[break] >>
-
-				endif
-			]]>
-		</script>
-		<action name="tamani take her 3" />
-	</scene>
-	<scene id="TamaniTakeHer3" name="tamani take her 3" list="">
-		<script language="text/noxicobotic">
-			<![CDATA[
-				$top.getcockcount
-				cox = it
-				$top.getcumamount
-				cum = it
-
-				$top.getcockarea
-				if it <= 90
-					|<< The words seem to have the desired effect, helping you empty every
-							ounce of cock-cream into the slut's tight >>
-					if cox > 1
-						|<<	holes. >>
-					else
-						|<<	hole. >>
-					endif
-					if cum >= 250
-						|<<	She pants, turning her head in the mud to watch as her belly visibly inflates,
-								stuffed totally full of cum. >>
-					endif
-					if cum >= 500
-						|<<	In no time at all a river of jism pours from her, pooling below as you overwhelm her
-								body's capacity to store spunk. >>
-					endif
-
-					|<<	[break]Tamani winks, sucking on her finger as she staggers up. She coos, "Mmmm Tamani
-							loves it when her stud dominates her. Do you think your >>
-					$top.checktag "balls"
-					if exists
-						|<<	sexy balls have >>
-					else
-						|<<	sweet cock has >>
-					endif
-					|<<	any more cream to give to me?"
-							[break]
-							She doesn't give you a chance to answer as she wobbles off, jiggling pleasantly in all
-							the right places. "Of course you do. I'll be back for the rest later!" >>
-
-					$top.settagval "climax" 0
-					$bottom.settagval "climax" 0
-
-				else
-
-					if cum >= 250
-						|<<	You continue working your [t:cockdescript] with her supple feet, watching your dripping
-								spooge froth and bubble as you continue to pump more onto the sassy wench. >>
-					endif
-					if cum >= 500
-						|<<	She sputters, blowing some of the caked up semen off her face so she can breathe. The
-								slut gathers up the goopy mess as you continue to paint her, alternatively devouring it
-								with her mouth and shoveling drippy handfuls into her eager cunt. >>
-					endif
-
-					|<<	[break]Tamani winks, blinking the cum out of an eye as you finish up, releasing her
-							seed-covered form. She coos, "Mmmm Tamani loves it when you dominate her, stud. Do you
-							think your >>
-					$top.checktag "balls"
-					if exists
-						|<<	sexy balls have >>
-					else
-						|<<	sweet cock has >>
-					endif
-					|<<	any more cream to give to me?"
-							[break]
-							She doesn't give you a chance to answer as she staggers up and strikes a sexy pose.
-							"Of course you do. I'll be back for the rest later!"
-							[break]
-							Tamani wiggles in the sexiest way as she leaves, arousing your body all over again... >>
-
-					$top.settagval "climax" 35
-					$bottom.settagval "climax" 0
-
-				endif
-			]]>
-		</script>
-	</scene>
-
-	<scene id="TamaniDecline" name="tamani decline" list="&quot;No.&quot;">
-		<filter target="bottom" type="npc" value="Tamani" />
 		<p>
-			Tamani adopts a fighting pose and says, "If I have to I'll beat my
-			children out of you!"
+			As [b:he] stops to breathe and gaze into your eyes, you let your tongue invade [b:his] mouth and probe around. [b:He] moans into your mouth, urging you to continue your ministrations.
 		</p>
-		<script language="text/noxicobotic">
+		<action name="fondle breasts" />
+	</scene>
+
+	<scene id="GenericFriendlyFondleFemale" name="fondle breasts" list="Fondle breasts">
+		<filter target="bottom" type="gender" value="female" />
+		<!-- Should check for top clothing, but there's no such check yet. -->
+		<p>
+			You reach for [b:his] [b:breasts] and proceed to softly stroke them.
+		</p>
+		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.addtag "hostile"
-				<<< Tamani has gone hostile!
+				$bottom.gettagval "breastrow[0]/size"
+				if it > 4
+					-- E/Pillowy or higher
+					|<< It takes you a while to reach [b:his] [b:nipples] at that speed, but you get there and >>
+				else
+					|<< Shortly, you trace an ever smaller circle up to [b:his] [b:nipples] and >>
+				endif
+				$bottom.gettagval "breastrow[0]/nipples/size"
+				if it > 2
+					|<< pull on >>
+				else
+					|<< teasingly rub >>
+				$bottom.gettagval "breastrow[0]/lactation"
+				if it > 2
+					|<< them, spraying a bit of milk on your fingers. >>
+				else
+					$bottom.checktag "breastrow[0]/fuckable"
+					if exists
+						|<< them, softly stroking the increasingly moist hole on top. >>
+					else
+						$bottom.checktag "breastrow[0]/canfuck"
+						if exists
+							|<< them, exciting them into soft nipple-y erections. >>
+						else
+							|<< them. >>
+						endif
+					endif
+				endif
 			]]>
 		</script>
+		<!-- Should recheck for and remove top clothing, but there's no such command yet. -->
+		<action name="fondle breasts more" />
+		<action name="suckle breasts" />
+		<action name="venture downwards" />
 	</scene>
+
+	<scene id="GenericFriendlyVenture" name="venture downwards" list="Venture downwards">
+		<filter target="bottom" type="gender" value="female" />
+		<!-- Same deal as in GenericFriendlyFondleFemale, but for pants slot. -->
+		<p>
+			You slide your hands slowly down towards [b:name]'s [b:waist] and stroke [b:his] [b:hips], leaving [b:him] in expectation of what comes next.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$bottom.gettagval "vagina[0]/wetness"
+				if it >= 2
+					-- Wet
+					|<< You easily >>
+				else
+					|<< You teasingly rub [b:his] [b:pussy] until it becomes slick with [b:his] feminine juices. >>
+					|<< At the right moment, you >>
+				endif
+				|<< slide a finger >>
+				$bottom.gettagval "vagina[0]/looseness"
+				if it >= 3
+					-- Loose
+					|<< or two >>
+				endif
+				|<< inside [b:him], leaving your thumb to stroke [b:his] aching clit in a vaguely circular motion. >>
+			]]>
+		</script>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				|<< Moaning softly under your ministrations, [name] reaches for your crotch, >>
+				-- Should check for pants and adjust accordingly:
+				-- if blah
+				--	"practically tears off your [t:pants], exposing your [t:cock] to [b:his]"
+				-- else
+					$top.checktag "penis"
+					if exists
+						|<< looking at your [t:cock] with an >>
+					else
+						$top.checktag "vagina"
+						if exists
+							|<< looking at your [t:pussy] with an >>
+						endif
+					endif
+				-- endif
+				|<< increasingly lustful gaze. >>
+			]]>
+		</script>
+		<action name="blowjob" />
+		<action name="handjob" />
+		<action name="eat out" />
+		<action name="put it in" />
+		<action name="demodummy"/>
+	</scene>
+	<scene id="demodummy" name="demodummy" list="Be stupid enough to try and test handjobs while female">
+		<p>lol</p>
+	</scene>
+	<scene id="eatout" name="eat out" list="Don't actually have an &quot;eat out&quot; option yet">
+		<p>lol</p>
+	</scene>
+
+	<scene id="GenericFriendlyTooSmallToPutItIn" name="put it in" list="Put it in!">
+		<filter target="top" type="gender" value="male" />
+		<filter target="bottom" type="gender" value="female" />
+		<!-- Need a way to use the area of the penis instead of just the length. -->
+		<!-- Perhaps a filter that compares against the other participant's vaginal capacity? -->
+		<filter target="top" type="value_lower" name="penis/length" value="6" />
+		<p>
+			As you disrobe, [b:his] face seems disappointed. "Sweetie, I know what you want," [b:he] begins, but you sense what [b:he]'s about to say. You shush [b:her] with a finger on her lip, but [b:he] continues. "But there is no way for either of us to enjoy this with such a ...slender tool."
+		</p>
+		<p>
+			You sigh and put your clothes back on, your lust plummeting with her rejection. Surely there must be a way to get your size big enough to penetrate her properly?
+		</p>
+		<script type="text/noxicobotic">
+			$top.settagval "stimulation" 0
+			$top.settagval "climax" 0
+		</script>
+		<!-- Dead end, stop the system. -->
+	</scene>
+	<scene id="GenericFriendlyTooBigToPutItIn" name="put it in" list="Jam it in!">
+		<filter target="top" type="gender" value="male" />
+		<filter target="bottom" type="gender" value="female" />
+		<filter target="top" type="value_gteq" name="penis/length" value="24" />
+		<p>
+			As if [b:he] wasn't already uncertain by the bulge in your clothes, [b:his] face is that of slight disgust and amazement that put you off.
+		</p>
+		<p>
+			"Oh, uh, Sweetie, I don't think that big boy will fit inside me, but if you'd like we could perhaps settle for a good massage?"
+		</p>
+		<p>
+			[b:His] facial features light up with [b:his] idea, and you nod approvingly. After all, a handjob is nearly as refreshing as a normal fucking, so you aren't one to mind in the slightest.
+		</p>
+		<!-- Whatever we list the handjob scene as, it won't show up. It'll just become "==>" -->
+		<action name="compromise handjob" />
+	</scene>
+
+	<scene id="GenericFriendlyRegularHandjob" name="handjob" list="Get a handjob">
+		<filter target="top" type="gender" value="male" />
+		<!-- Needs to be differentiated from the compromise handjob more. -->
+		<p>
+			[b:name] claps happily as you sit down. Your [b:cock] hangs in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [t:cock] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
+		</p>
+		<!-- Should check for baldness. -->
+		<p>
+			Being too gentle wouldn't get either of you anywhere, and [b:he] recognizes this thoroughly. You would ask if [b:he]'s done this before, but your rational thoughts get eclipsed by [b:his] stimulating pressure and [b:he] begins to ease up somewhat, beginning [b:his] rocking motion and you can't help but to outreach a hand and run through [b:his] hair while [b:he]'s busy working away.
+		</p>
+		<action name="continue handjob" />
+	</scene>
+	<scene id="GenericFriendlyCompromiseHandjob" name="compromise handjob" list="Accept generous compromise">
+		<filter target="top" type="gender" value="male" />
+		<p>
+			[b:He] immediately claps happily and you sit, your [t:l:penis/length] member hanging in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [t:cock] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
+		</p>
+		<!-- Should check for baldness. -->
+		<p>
+			Being too gentle wouldn't get either of you anywhere, and [b:he] recognizes this thoroughly. You would ask if [b:he]'s done this before, but your rational thoughts get eclipsed by [b:his] stimulating pressure and [b:he] begins to ease up somewhat, beginning [b:his] rocking motion and you can't help but to outreach a hand and run through [b:his] hair while [b:he]'s busy working away.
+		</p>
+		<action name="continue handjob" />
+	</scene>
+
+	<scene id="GenericFriendlyContinueHandjob" name="continue handjob" list="Enjoy">
+		<!-- Could need male bottom version. -->
+		<filter target="bottom" type="gender" value="female" />
+		<p>
+			Between your grunts and [b:his] kissing on your chest, you have a relaxed state of mind while your body begins to heat up, especially in your crotch area. [b:name] seems to be enjoying it as well and you notice [b:he]'s dropped a hand from your stick and has begun fingering [b:him]self to officially join the party.
+		</p>
+		<!-- Again, check for baldness. -->
+		<p>
+			You see this as an opening to shift your hands from [b:his] glistening hair to [b:his] [b:breasts], cupping them and playing with them freely, [b:his] [b:nipples] becoming furiously erect from your erotic treatment while your "big boy" is engorged, and you can see your eventual climax forming on the horizon.
+		</p>
+		<action name="finish handjob" />
+	</scene>
+	<scene id="GenericFriendlyFinishHandjob" name="finish handjob" list="Kitaaaa!">
+		<p>
+			After some steamy minutes pass by, your face flushed with crimson and [b:g:his:hers] a tiny bit more, you can feel your cum making its way to your tip and you sigh heavily, watching your semen squirt out frantically and making a mess of yourself, though your lover doesn't seem to mind while [b:he] orgasms [b:him]self, making what you deem sexy moaning noises to mingle with your own sounds.
+		</p>
+		<p>
+			[b:He] pulls away and you lie back some, wanting to do nothing but rest and fully experience the moment.
+		</p>
+		<action name="finish basking from handjob" />
+	</scene>
+	<scene id="GenericFriendlyBaskFromHandjob" name="finish basking from handjob" list="Get up ya pussy.">
+		<p>
+			[b:name] heaves [b:him]self into your arms while your member goes into its more modest flaccid state. You rub against [b:his] back lovingly and with generous grace; [b:his] head digging into your chest. "That was amazing," [b:he] finally admits, and you have nothing to say but agree.
+		</p>
+		<p>
+			Afterwards you both stand up, exchange looks that can only signify that you two would be at it again sometime in the future and clothe yourselves, your encounter coming to a close.
+		</p>
+		<!-- No actions. Dead end. -->
+	</scene>
+
+	<scene id="GenericFriendlyFuckings" name="put it in" list="J-J-JAM IT IN!">
+		<filter target="top" type="gender" value="male" />
+		<filter target="bottom" type="gender" value="female" />
+		<!-- References being good at foreplay; skill check? -->
+		<!-- Should maybe have a version to prevent non-fitting dicks... -->
+		<p>
+			You look upon [b:him] with passive lust and snatch [b:him] up in a tender embrace after discarding your equipment. The moment is now yours and [b:g:his:hers]; you have to say it's a wonderful feeling just standing there and slowly fondling [b:his] [b:breasts], occasionally encircling her [b:nipples] playfully. You seem to be quite good at foreplay and [b:he] returns the gesture with a kiss on the cheek.
+		</p>
+		<p>
+			It doesn't take very long before your more baser human instincts start to itch on the recesses of your mind and you happily give into them, turning your babe around and reeling [b:him] into your lap, [b:his] clit rubbing against your [t:cock], which immediately perks upward in a knee-jerk reaction while [b:he] pulls you into a tender kissing session on your lips, and you grunt with pleasure.
+		</p>
+		<action name="come on put it in" />
+	</scene>
+	<scene id="GenericFriendlyFuckings2" name="come on put it in" list="Do it!">
+		<p>
+			Once you are finished with your teasing, [b:he] backs off your manhood and lets go of you, laying on the ground before you and tempting you with a seductive hand wave, [b:his] legs crossed in an well produced attempt to get you even more aroused and ready to have intercourse than you already visibly are.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				|<< [b:He] eyes up your [t:l:penis/length] dick with a >>
+				$top.gettagval "penis[0]/length"
+				if it > 20
+					|<< zealous >>
+					else
+						if it > 16
+							|<< content >>
+						else
+							|<< longing >>
+						endif
+					endif
+				endif
+				|<< expression and you move swiftly to kneel down and grip [b:his] hips, pulling [b:his] love-hole onto your cock. >>
+			]]>
+		</script>
+		<p>
+			Pleasure overwhelms you and [b:he] squeals like a little school girl, obviously just as excited as you are and you begin thrusting, [b:his] legs wrapping around your back. "Oh, yes; please - more!" [b:He] exclaims, and you oblige [b:him] in every sense of the word.
+		</p>
+		<action name="give her more man" />
+	</scene>
+	<scene id="GenericFriendlyFuckings3" name="give her more man" list="Oblige the lady">
+		<p>
+			Your movements ease themselves into creating a rhythm and you lose some sense of what's going on - for all you're concerned, you're delightfully having sex with your chosen mate, and that's all that matters in your pleasure-induced haze. [b:His] vagina's innards serve as a perfect receptacle for your love-organ, and you fail to resist any urges of being even somewhat restrained, instead finding yourself bucking like a bull in speed, hammering [b:him] completely and it seems like your body is pulsating from all of the sensations that are happening one after another.
+		</p>
+		<action name="give it to her baby aha aha" />
+	</scene>
+	<scene id="GenericFriendlyFuckingsClimax" name="give it to her baby aha aha" list="KITAAA!">
+		<p>
+			Suddenly, your tip (which was already wet with precum and lady fluids) floods with your semen, pouring into [b:name]'s womb while you make noises that aren't of your accord; rather instinctual responses to your orgasm, and [b:he] goes into that perfect state as well, [b:his] figure nearly entirely flushed with red. After calming yourself down you retract from [b:his] hole and your penis deflates, having served its purpose well while you still feel somewhat dazed but manage to find your grip on reality. [b:name] sits up, leaning on you and you pull [b:him] into a warm hug.
+		</p>
+		<p>
+			Time seems to slow down considerably as your nuzzle [b:his] neck and [b:he] grazes your back, but you know that all wonderful things must end at some point and stand, putting your equipment back on to continue your adventure. You assure [b:him] you'll be back for more and [b:he] thanks you for your time with [b:him].
+		</p>
+		<!-- Final dead end. -->
+	</scene>
+
 
 	<scene id="EmiTest" name="(starting node)">
 		<filter target="bottom" type="name" name="Mitsuko Murakami" />
@@ -303,7 +336,7 @@
 		<p>
 			Testing scripts...
 		</p>
-		<script language="text/noxicobotic">
+		<script type="text/noxicobotic">
 			<![CDATA[
   			|<< Second paragraph from script. >>
   		]]>
@@ -312,7 +345,7 @@
 		<action name="dev leave" />
 	</scene>
 	<scene id="DevClimax" name="dev climax" list="Test climax">
-		<script language="text/noxicobotic">
+		<script type="text/noxicobotic">
 			<![CDATA[
   			|<< Increasing climax for top by 20. >>
 				$top.inctagval "Climax" 20
