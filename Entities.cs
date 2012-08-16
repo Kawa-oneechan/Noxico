@@ -530,14 +530,14 @@ namespace Noxico
 			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
+			if (skinColor.Equals("black", StringComparison.InvariantCultureIgnoreCase))
+				ForegroundColor = Color.FromArgb(34, 34, 34);
 
 			if (Character.HasToken("ascii"))
 			{
 				var a = Character.GetToken("ascii");
 				if (a.HasToken("char"))
-				{
 					AsciiChar = (char)a.GetToken("char").Value;
-				}
 				if (a.HasToken("fore"))
 					ForegroundColor = Toolkit.GetColor(a.GetToken("fore").Text); //(int)a.GetToken("fore").Value;
 				if (a.HasToken("back"))
@@ -881,6 +881,7 @@ namespace Noxico
 			}
 			*/
 			newChar.Character = Character.LoadFromFile(stream);
+			newChar.AdjustView();
 			return newChar;
 		}
 	}
