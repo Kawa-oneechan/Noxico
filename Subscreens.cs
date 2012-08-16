@@ -70,16 +70,18 @@ namespace Noxico
 			//First, create the entrance cavern.
 			WorldGen.LoadBiomes();
 			var biomeData = WorldGen.Biomes[3]; //TODO: replace 3 with DungeonGeneratorBiome -- this is for testing.
-			caveGen.Create(biomeData);
 			var newBoard = new Board();
+			caveGen.Create(biomeData);
 			caveGen.ToTilemap(ref newBoard.Tilemap);
 			newBoard.Name = "Dungeon Entrance";
 			newBoard.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_E";
 			newBoard.Music = "set://Dungeon";
-			newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+			newBoard.Type = BoardType.Dungeon;
+			//newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
 			var encounters = newBoard.GetToken("encounters");
 			foreach (var e in biomeData.Encounters)
 				encounters.Tokens.Add(new Token() { Name = e });
+			encounters.Value = biomeData.MaxEncounters;
 			newBoard.RespawnEncounters();
 
 			//Find a good spot for the cave exit.
@@ -124,23 +126,145 @@ namespace Noxico
 			exit.TargetBoard = nox.CurrentBoard.BoardNum;
 			exit.TargetWarpID = entrance.ID;
 
+			var originalExit = exit;
 			var entranceBoard = newBoard;
 			
-			//TODO: excavate more caves.
-			//var depth = 0;
-
-
+			var excavateFrom = entranceBoard;
+			var depth = 0;
+			var deepest = 0;
+			Board deepestBoard = null;
+			var amount = 0;
+			Excavate(entranceBoard, biomeData, ref amount, depth, ref deepest, ref deepestBoard);
+			//TODO: Plant unique treasure in deepestBoard.
 
 			nox.CurrentBoard.EntitiesToRemove.Add(nox.Player);
 			nox.CurrentBoard = entranceBoard;
 			nox.Player.ParentBoard = entranceBoard;
 			entranceBoard.Entities.Add(nox.Player);
-			nox.Player.XPosition = exit.XPosition;
-			nox.Player.YPosition = exit.YPosition;
+			nox.Player.XPosition = originalExit.XPosition;
+			nox.Player.YPosition = originalExit.YPosition;
 			entranceBoard.Redraw();
 			NoxicoGame.Sound.PlayMusic(entranceBoard.Music);
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
+		}
+
+		private static void Excavate(Board excavateFrom, BiomeData biomeData, ref int amount, int depth, ref int deepest, ref Board deepestBoard)
+		{
+			amount++;
+			var nox = NoxicoGame.HostForm.Noxico;
+			var excavateBoard = new Board();
+			var caveGen = new CaveGenerator();
+			caveGen.Create(biomeData);
+			caveGen.ToTilemap(ref excavateBoard.Tilemap);
+			excavateBoard.Name = "Dungeon level " + (depth + 1).ToString();
+			excavateBoard.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_" + amount.ToString();
+			excavateBoard.Music = "set://Dungeon";
+			excavateBoard.Type = BoardType.Dungeon;
+
+			if (depth > deepest)
+			{
+				deepest = depth;
+				deepestBoard = excavateBoard;
+			} 
+
+			//excavateBoard.Tokens = Token.Tokenize("name: \"" + excavateBoard.Name + "\"\nid: \"" + excavateBoard.ID + "\"\nmusic: \"" + excavateBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+			var encounters = excavateBoard.GetToken("encounters");
+			foreach (var e in biomeData.Encounters)
+				encounters.Tokens.Add(new Token() { Name = e });
+			encounters.Value = biomeData.MaxEncounters;
+			excavateBoard.RespawnEncounters();
+
+			var numExits = Toolkit.Rand.Next(1, 3);
+			for (var i = 0; i < numExits; i++)
+			{
+				//Decide on a connection type
+				var isSameLevel = Toolkit.Rand.NextDouble() > 0.7;
+				var isUpward = Toolkit.Rand.NextDouble() > 0.5;
+				if (depth == 0 && isUpward)
+					isUpward = false;
+
+				//Find a good spot for the cave exit.
+				var okay = false;
+				var eX = 0;
+				var eY = 0;
+				while (!okay)
+				{
+					eX = Toolkit.Rand.Next(1, 79);
+					eY = Toolkit.Rand.Next(1, 24);
+
+					var sides = 0;
+					if (excavateBoard.IsSolid(eY - 1, eX))
+						sides++;
+					if (excavateBoard.IsSolid(eY + 1, eX))
+						sides++;
+					if (excavateBoard.IsSolid(eY, eX - 1))
+						sides++;
+					if (excavateBoard.IsSolid(eY, eX + 1))
+						sides++;
+					if (sides < 3 && sides > 1)
+						okay = true;
+				}
+
+				var exit = new Warp()
+				{
+					XPosition = eX,
+					YPosition = eY,
+					ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit" + i.ToString(),
+				};
+				excavateBoard.Warps.Add(exit);
+				var exitChar = isSameLevel ? '\x2261' : isUpward ? '>' : '<';
+				excavateBoard.SetTile(eY, eX, exitChar, Color.Silver, Color.Black);
+
+				//Slot in the new board
+				excavateBoard.BoardNum = nox.Boards.Count;
+				nox.Boards.Add(excavateBoard);
+
+				//Find a spot for the exit on excavateFrom
+				okay = false;
+				eX = 0;
+				eY = 0;
+				while (!okay)
+				{
+					eX = Toolkit.Rand.Next(1, 79);
+					eY = Toolkit.Rand.Next(1, 24);
+
+					var sides = 0;
+					if (excavateFrom.IsSolid(eY - 1, eX))
+						sides++;
+					if (excavateFrom.IsSolid(eY + 1, eX))
+						sides++;
+					if (excavateFrom.IsSolid(eY, eX - 1))
+						sides++;
+					if (excavateFrom.IsSolid(eY, eX + 1))
+						sides++;
+					if (sides < 3 && sides > 1)
+						okay = true;
+				}
+
+				var entrance = new Warp()
+				{
+					XPosition = eX,
+					YPosition = eY,
+					ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Entrance" + i.ToString(),
+				};
+				excavateFrom.Warps.Add(entrance);
+				exitChar = isSameLevel ? '\x2261' : isUpward ? '<' : '>';
+				excavateFrom.SetTile(eY, eX, exitChar, Color.Silver, Color.Black);
+
+				//Connect excavateBoard to excavateFrom
+				entrance.TargetBoard = excavateBoard.BoardNum; //should be this one.
+				entrance.TargetWarpID = exit.ID;
+				exit.TargetBoard = excavateFrom.BoardNum;
+				exit.TargetWarpID = entrance.ID;
+
+				if (amount < 30 && depth < 16)
+					Excavate(excavateBoard, biomeData, ref amount, depth + (isSameLevel ? 0 : isUpward ? -1 : 1), ref deepest, ref deepestBoard);
+			}
+
+			var corner = (depth + 1).ToString();
+			for (var i = 0; i < corner.Length; i++)
+				excavateBoard.SetTile(0, i, corner[i], Color.Silver, Color.Black, true);
 		}
 	}
 
