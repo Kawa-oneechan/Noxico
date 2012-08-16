@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT p (#PCDATA)>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id CDATA #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST action name CDATA #REQUIRED>
+]>
+<scenes>
+	
+	<!-- Several greetings -->
+	<!-- Section 1 - First Contact -->
+	<scene id="GenericUnknownHottie" name="(starting node)">
+		<filter target="bottom" type="relation" value="none" />
+		<filter target="top" type="value_gteq" name="charisma" value="50" />
+		<p>
+			"Ah... Greetings, traveller," [b:he] says with a slightly flushed smile. "Can I... help you, maybe?"
+		</p>
+		<action name="introduce yourself" />
+		<action name="invite to have sex" />
+		<action name="no thank you goodbye" />
+	</scene>
+	<scene id="GenericUnknownNottie" name="(starting node)">
+		<filter target="bottom" type="relation" value="none" />
+		<filter target="top" type="value_lower" name="charisma" value="10" />
+		<p>
+			"Greetings, traveller," [b:he] says. "Can I... help you?"
+		</p>
+		<action name="introduce yourself" />
+		<action name="invite to have sex" />
+		<action name="no thank you goodbye" />
+	</scene>
+	<scene id="GenericUnknown" name="(starting node)">
+		<filter target="bottom" type="relation" value="none" />
+		<p>
+			"Greetings, traveller," [b:he] says with a friendly unassuming smile. "Can I help you?"
+		</p>
+		<action name="introduce yourself" />
+		<action name="invite to have sex" />
+		<action name="no thank you goodbye" />
+	</scene>
+
+	<!-- Section 1 - We Meet Again -->
+	<scene id="GenericKnown" name="(starting node)">
+		<p>
+			"Hello again, [t:name]", [b:he] greets you. "Is there something I can do for you?"
+		</p>
+		<action name="invite to have sex" />
+		<action name="no thank you goodbye" />
+	</scene>
+	
+	<!-- Ways to say goodbye -->
+	<scene id="GenericGoodbye" name="goodbye" list="Goodbye">
+		<p>
+			"We'll probably meet again", you say as you turn away.
+		</p>
+		<p>
+			"Perhaps we will", [b:name] replies.
+		</p>
+	</scene>
+	<scene id="GenericDeclineGoodbye" name="no thank you goodbye" list="No thanks, goodbye">
+		<p>
+			You apologetically shake your head. "No thank you, sorry for bothering", you say.
+		</p>
+	</scene>
+
+	<!-- Mammies, step faw'd 'n express yo'sevs! -->
+	<scene id="GenericIntroduceHottie" name="introduce yourself" list="Introduce yourself">
+		<filter target="top" type="value_gteq" name="charisma" value="50" />
+		<p>
+			You tell [b:name] your name and flash [b:him] a twinkling smile.
+		</p>
+		<p>
+			"It's a pleasure meeting you, [t:name]", [b:he] says a little flustered.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$top.setrelation $bottom "acquaintance"
+				$bottom.setrelation $top "considers hot"
+			]]>
+		</script>
+		<action name="invite to have sex" />
+		<action name="goodbye" />
+	</scene>
+	<scene id="GenericIntroduceNottie" name="introduce yourself" list="Introduce yourself">
+		<filter target="top" type="value_lower" name="charisma" value="10" />
+		<p>
+			You tell [b:name] your name and flash [b:him] a smile.
+		</p>
+		<p>
+			"It's... a pleasure meeting you I'm sure... [t:name]", [b:he] says.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$top.setrelation $bottom "acquaintance"
+				$bottom.setrelation $top "acquaintance"
+			]]>
+		</script>
+		<action name="invite to have sex" />
+		<action name="goodbye" />
+	</scene>
+	<scene id="GenericIntroduce" name="introduce yourself" list="Introduce yourself">
+		<p>
+			You smile back to [b:name] and tell [b:him] your name.
+		</p>
+		<p>
+			"It's a pleasure meeting you, [t:name]", [b:he] says.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$top.setrelation $bottom "acquaintance"
+				$bottom.setrelation $top "acquaintance"
+			]]>
+		</script>
+		<action name="invite to have sex" />
+		<action name="goodbye" />
+	</scene>
+
+</scenes>
