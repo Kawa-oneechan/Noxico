@@ -7,20 +7,30 @@ using System.Xml;
 
 namespace Noxico
 {
-	class SexScenes
+	class SceneSystem
 	{
+		private static XmlDocument xSex, xDlg;
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
 
-		public static void Engage(Character top, Character bottom, string name = "(starting node)")
+		public static void Engage(Character top, Character bottom, bool inDialogue)
 		{
-			//if (xDoc == null)
+			Engage(top, bottom, "(starting node)", inDialogue);
+		}
+
+		public static void Engage(Character top, Character bottom, string name = "(starting node)",  bool inDialogue = false)
+		{
+			if (xSex == null)
 			{
-				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Scenes, "Scenes.xml"));
+				xSex = new XmlDocument();
+				xDlg = new XmlDocument();
+				xSex.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.scenesSex, "scenesSex.xml"));
+				xDlg.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.scenesDlg, "scenesDlg.xml"));
 			}
-			SexScenes.top = top;
-			SexScenes.bottom = bottom;
+			xDoc = inDialogue ? xDlg : xSex;
+			SceneSystem.top = top;
+			SceneSystem.bottom = bottom;
+
 			var openings = FindOpenings(name);
 			if (openings.Count == 0)
 			{
@@ -31,23 +41,26 @@ namespace Noxico
 			var message = ApplyTokens(ExtractParagraphsAndScripts(scene));
 			var actions = ExtractActions(scene);
 
-			if (top.GetToken("climax").Value >= 100 || bottom.GetToken("climax").Value >= 100)
+			if (!inDialogue)
 			{
-				actions.Clear();
-				if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value < 100)
+				if (top.GetToken("climax").Value >= 100 || bottom.GetToken("climax").Value >= 100)
 				{
-					actions.Add("(top climax)", "");
-					top.GetToken("climax").Value = 0;
-				}
-				else if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value >= 100)
-				{
-					actions.Add("(both climax)", "");
-					top.GetToken("climax").Value = bottom.GetToken("climax").Value = 0;
-				}
-				else
-				{
-					actions.Add("(bottom climax)", "");
-					bottom.GetToken("climax").Value = 0;
+					actions.Clear();
+					if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value < 100)
+					{
+						actions.Add("(top climax)", "");
+						top.GetToken("climax").Value = 0;
+					}
+					else if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value >= 100)
+					{
+						actions.Add("(both climax)", "");
+						top.GetToken("climax").Value = bottom.GetToken("climax").Value = 0;
+					}
+					else
+					{
+						actions.Add("(bottom climax)", "");
+						bottom.GetToken("climax").Value = 0;
+					}
 				}
 			}
 
@@ -61,7 +74,7 @@ namespace Noxico
 			if (actions.Count == 0)
 				MessageBox.Message(message, true, bottom.Name.ToString(true));
 			else
-				MessageBox.List(message, actions, () => { Engage(SexScenes.top, SexScenes.bottom, (string)MessageBox.Answer); }, false, true, bottom.Name.ToString(true));
+				MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
 			
 			NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 			NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
@@ -80,7 +93,7 @@ namespace Noxico
 			var ret = new Dictionary<object, string>();
 			foreach (var action in scene.SelectNodes("action").OfType<XmlElement>())
 			{
-				foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == action.GetAttribute("name") && s.HasAttribute("list") && FiltersOkay(s)))
+				foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => !ret.ContainsKey(s.GetAttribute("name")) && s.GetAttribute("name") == action.GetAttribute("name") /* && s.HasAttribute("list") */ && FiltersOkay(s)))
 					ret.Add(s.GetAttribute("name"), s.GetAttribute("list"));
 			}
 			return ret;
@@ -98,13 +111,29 @@ namespace Noxico
 				}
 				else if (part.Name == "script")
 				{
-					var script = part.InnerText.Replace("$top", top.Name.ToID()).Replace("$bottom", bottom.Name.ToID()).Split('\n');
-					var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == top);
-					boardchar.ScriptRunning = true;
-					boardchar.ScriptPointer = 0;
-					ret.AppendLine(Noxicobotic.Run(boardchar, script, true).Trim());
-					ret.AppendLine();
-					boardchar.ScriptRunning = false;
+					if (part.GetAttribute("type") == "text/noxicobotic")
+					{
+						var script = part.InnerText.Replace("$top", top.Name.ToID()).Replace("$bottom", bottom.Name.ToID()).Split('\n');
+						var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == top);
+						boardchar.ScriptRunning = true;
+						boardchar.ScriptPointer = 0;
+						ret.AppendLine(Noxicobotic.Run(boardchar, script, true).Trim());
+						ret.AppendLine();
+						boardchar.ScriptRunning = false;
+					}
+					/*
+					else if (part.GetAttribute("language") == "text/javascript")
+					{
+						var jint = new Jint.JintEngine();
+						var buffer = new StringBuilder();
+						jint.SetParameter("top", top);
+						jint.SetParameter("bottom", bottom);
+						jint.SetFunction("print", new Action<string>(x => buffer.Append(x + ' ')));
+						jint.Run(part.InnerText);
+						ret.AppendLine(buffer.ToString());
+						ret.AppendLine();
+					}
+					*/
 				}
 			}
 			return ret.ToString();
@@ -174,9 +203,18 @@ namespace Noxico
 							return false;
 						break;
 					case "relation":
-						var path = "ships/" + fSecondary.Name + "/" + fValue;
-						if (fPrimary.Path(path) == null)
-							return false;
+						if (fValue != "none")
+						{
+							var path = "ships/" + fSecondary.Name + "/" + fValue;
+							if (fPrimary.Path(path) == null)
+								return false;
+						}
+						else
+						{
+							var path = "ships/" + fSecondary.Name;
+							if (fPrimary.Path(path) != null)
+								return false;
+						}
 						break;
 					case "gender":
 						if (fValue == "male" && fPrimary.GetGender() != "male")
@@ -310,106 +348,6 @@ namespace Noxico
 
 				message = message.Replace(replace, with);
 			}
-			#endregion
-			#region Old version
-			/*
-			message = message.Replace("[You]", tIP ? "You" : top.HeSheIt());
-			message = message.Replace("[Your]", tIP ? "Your" : top.HisHerIts());
-			message = message.Replace("[you]", tIP ? "you" : top.HeSheIt(true));
-			message = message.Replace("[your]", tIP ? "you" : top.HisHerIts(true));
-
-			message = message.Replace("[t:name]", top.Name.ToString());
-			message = message.Replace("[t:fullname]", top.Name.ToString(true));
-			message = message.Replace("[t:title]", top.Title);
-			message = message.Replace("[t:gender]", top.GetGender());
-			message = message.Replace("[t:His]", tIP ? "Your" : top.HisHerIts());
-			message = message.Replace("[t:He]", tIP ? "You" : top.HeSheIt());
-			message = message.Replace("[t:his]", tIP ? "your" : top.HisHerIts(true));
-			message = message.Replace("[t:he]", tIP ? "you" : top.HeSheIt(true));
-			message = message.Replace("[t:him]", tIP ? "you" : top.HimHerIt());
-			message = message.Replace("[t:is]", tIP ? "are" : "is");
-			message = message.Replace("[t:has]", tIP ? "have" : "has");
-			message = message.Replace("[t:does]", tIP ? "do" : "does");
-			message = message.Replace("[t:hairdescript]", Descriptions.Hair(top.GetToken("hair")));
-			message = message.Replace("[t:breastdescript]", Descriptions.Breasts(top.GetToken("breastrow")));
-			message = message.Replace("[t:nippledescript]", Descriptions.Nipples(top.Path("breastrow/nipples")));
-			message = message.Replace("[t:waistdescript]", Descriptions.Waist(top.GetToken("waist")));
-			message = message.Replace("[t:hipsdescript]", Descriptions.Hips(top.GetToken("hips")));
-			message = message.Replace("[t:buttdescript]", Descriptions.Butt(top.GetToken("ass")));
-			message = message.Replace("[t:taildescript]", Descriptions.Tail(top.GetToken("tail")));
-			message = message.Replace("[t:cockdescript]", Descriptions.Cock(top.GetToken("penis")));
-			message = message.Replace("[t:multicockdescript]", Descriptions.Cock(top.GetToken("penis")));
-
-			var freeforms = Regex.Matches(message, @"\[t:(?<you>[^\]]*?)\|(?<him>[^\]]*?)\]");
-			foreach (Match match in freeforms)
-			{
-				var you = match.Groups["you"].ToString();
-				var him = match.Groups["him"].ToString();
-				message = message.Replace(match.Value, tIP ? you : him);
-			}
-			freeforms = Regex.Matches(message, @"\[t:g:(?<male>[^\]]*?)\|(?<female>[^\]]*?)(\|(?<herm>[^\]]*?))\]");
-			var g = top.GetGender();
-			foreach (Match match in freeforms)
-			{
-				var male = match.Groups["male"].ToString();
-				var female = match.Groups["female"].ToString();
-				var herm = match.Groups["herm"].ToString();
-				message = message.Replace(match.Value, g == "male" ? male : g == "female" && herm != "" ? female : herm);
-			}
-			freeforms = Regex.Matches(message, @"\[t:(?<textorval>[Ttv]):(?<path>[^\]]*?)\]");
-			foreach (Match match in freeforms)
-			{
-				var path = top.Path(match.Groups["path"].ToString());
-				var textorval = match.Groups["textorval"].ToString()[0];
-				message = message.Replace(match.Value, path == null ? "<404>" : textorval == 'v' ? path.Value.ToString() : textorval == 'T' ? path.Text : path.Text.ToLowerInvariant());
-			}
-
-			message = message.Replace("[b:name]", bottom.Name.ToString());
-			message = message.Replace("[b:fullname]", bottom.Name.ToString(true));
-			message = message.Replace("[b:title]", bottom.Title);
-			message = message.Replace("[b:gender]", bottom.GetGender());
-			message = message.Replace("[b:His]", tIP ? "Your" : bottom.HisHerIts());
-			message = message.Replace("[b:He]", !tIP ? "You" : bottom.HeSheIt());
-			message = message.Replace("[b:his]", !tIP ? "your" : bottom.HisHerIts(true));
-			message = message.Replace("[b:he]", !tIP ? "You" : bottom.HeSheIt(true));
-			message = message.Replace("[b:him]", !tIP ? "you" : bottom.HimHerIt());
-			message = message.Replace("[b:is]", !tIP ? "are" : "is" );
-			message = message.Replace("[b:has]", !tIP ? "have" : "has");
-			message = message.Replace("[b:does]", !tIP ? "do" : "does");
-			message = message.Replace("[b:hairdescript]", Descriptions.Hair(bottom.GetToken("hair")));
-			message = message.Replace("[b:breastdescript]", Descriptions.Breasts(bottom.GetToken("breastrow")));
-			message = message.Replace("[b:nippledescript]", Descriptions.Nipples(bottom.Path("breastrow/nipples")));
-			message = message.Replace("[b:waistdescript]", Descriptions.Waist(bottom.GetToken("waist")));
-			message = message.Replace("[b:hipsdescript]", Descriptions.Hips(bottom.GetToken("hips")));
-			message = message.Replace("[b:buttdescript]", Descriptions.Butt(bottom.GetToken("ass")));
-			message = message.Replace("[b:taildescript]", Descriptions.Tail(bottom.GetToken("tail")));
-			message = message.Replace("[b:cockdescript]", Descriptions.Cock(bottom.GetToken("penis")));
-			message = message.Replace("[b:multicockdescript]", Descriptions.Cock(bottom.GetToken("penis")));
-
-			freeforms = Regex.Matches(message, @"\[b:(?<you>[^\]]*?)\|(?<him>[^\]]*?)\]");
-			foreach (Match match in freeforms)
-			{
-				var you = match.Groups["you"].ToString();
-				var him = match.Groups["him"].ToString();
-				message = message.Replace(match.Value, !tIP ? you : him);
-			}
-			freeforms = Regex.Matches(message, @"\[b:g:(?<male>[^\]]*?)\|(?<female>[^\]]*?)(\|(?<herm>[^\]]*?))\]");
-			g = bottom.GetGender();
-			foreach (Match match in freeforms)
-			{
-				var male = match.Groups["male"].ToString();
-				var female = match.Groups["female"].ToString();
-				var herm = match.Groups["herm"].ToString();
-				message = message.Replace(match.Value, g == "male" ? male : g == "female" && herm != "" ? female : herm);
-			}
-			freeforms = Regex.Matches(message, @"\[b:(?<textorval>[Ttv]):(?<path>[^\]]*?)\]");
-			foreach (Match match in freeforms)
-			{
-				var path = bottom.Path(match.Groups["path"].ToString());
-				var textorval = match.Groups["textorval"].ToString()[0];
-				message = message.Replace(match.Value, path == null ? "<404>" : textorval == 'v' ? path.Value.ToString() : textorval == 'T' ? path.Text : path.Text.ToLowerInvariant());
-			}
-			*/
 			#endregion
 			return message;
 		}

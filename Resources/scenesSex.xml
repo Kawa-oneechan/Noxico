@@ -22,6 +22,26 @@
 ]>
 <scenes>
 
+	<scene id="GenericImpliedWilling" name="(starting node)">
+		<filter target="bottom" type="hasnot" name="willing" />
+		<filter target="bottom" type="stat" name="carnality" value="70" />
+		<p>
+			For a moment, [b:name] considers shrugging you off, but thinks better of it... or worse.
+		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$bottom.addtag "willing"
+			]]>
+		</script>
+		<action name="(starting node)" />
+	</scene>
+	<scene id="GenericUnwilling" name="(starting node)">
+		<filter target="bottom" type="hasnot" name="willing" />
+		<p>
+			[b:name] does not seem interested in your advances.
+		</p>
+	</scene>
+
 	<scene id="GenericFriendlyIntro" name="(starting node)">
 		<filter target="top" type="value_lower" name="carnality" value="30-" />
 		<filter target="bottom" type="value_lower" name="carnality" value="30-" />
@@ -153,6 +173,7 @@
 		<script type="text/noxicobotic">
 			$top.settagval "stimulation" 0
 			$top.settagval "climax" 0
+			$bottom.removetag "willing"
 		</script>
 		<!-- Dead end, stop the system. -->
 	</scene>
@@ -225,6 +246,11 @@
 		<p>
 			Afterwards you both stand up, exchange looks that can only signify that you two would be at it again sometime in the future and clothe yourselves, your encounter coming to a close.
 		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$bottom.removetag "willing"
+			]]>
+		</script>
 		<!-- No actions. Dead end. -->
 	</scene>
 
@@ -280,9 +306,16 @@
 		<p>
 			Time seems to slow down considerably as your nuzzle [b:his] neck and [b:he] grazes your back, but you know that all wonderful things must end at some point and stand, putting your equipment back on to continue your adventure. You assure [b:him] you'll be back for more and [b:he] thanks you for your time with [b:him].
 		</p>
+		<script type="text/noxicobotic">
+			<![CDATA[
+				$bottom.removetag "willing"
+			]]>
+		</script>
 		<!-- Final dead end. -->
 	</scene>
 
+	
+	
 
 	<scene id="EmiTest" name="(starting node)">
 		<filter target="bottom" type="name" name="Mitsuko Murakami" />

@@ -372,7 +372,7 @@ namespace Noxico
 							else
 								MessageBox.Message("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
 						else if (Intent == Intents.Fuck)
-							SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
+							SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
 					}
 					else if (PointingAt is BoardChar)
 					{
@@ -385,7 +385,7 @@ namespace Noxico
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
 								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
 							else
-								MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { Dialogue.Engage(player.Character, ((BoardChar)PointingAt).Character); }, null, true);
+								MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
 						}
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
 						{
@@ -394,15 +394,13 @@ namespace Noxico
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
 							{
 								if (((BoardChar)PointingAt).Character.HasToken("helpless"))
-								{
-									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
-								}
+									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
 								else
 									MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
 							}
 							else
 							{
-								SexScenes.Engage(player.Character, ((BoardChar)PointingAt).Character);
+								SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
 							}
 						}
 						else if (Intent == Intents.Shoot)
@@ -669,7 +667,7 @@ namespace Noxico
 				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30)
 				{
 					//WRONG KIND OF ATTACK! ABANDON SHIP!!
-					SexScenes.Engage(this.Character, target.Character, "(rape start)");
+					SceneSystem.Engage(this.Character, target.Character, "(rape start)");
 				}
 				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
 				{

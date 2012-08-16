@@ -104,7 +104,6 @@
   <ItemGroup>
     <Compile Include="CryptStream.cs" />
     <Compile Include="Culture.cs" />
-    <Compile Include="Dialogue.cs" />
     <Compile Include="Dijkstra.cs" />
     <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Entities.cs" />
@@ -125,7 +124,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SexScenes.cs" />
+    <Compile Include="Scenes.cs" />
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens.cs" />
     <Compile Include="UI.cs" />
@@ -139,6 +138,8 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\scenesDlg.xml" />
+    <None Include="Resources\scenesSex.xml" />
     <Content Include="sounds\Cursor.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -405,14 +406,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Resources\TileSpecialDescriptions.txt" />
-    <Content Include="Resources\Scenes.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="sounds\Alert.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\dialogue.xml">
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="sounds\Door Lock.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

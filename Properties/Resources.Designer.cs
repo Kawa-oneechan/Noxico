@@ -225,26 +225,6 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-        ///&lt;!-- Bethesda-style dialogue engine for Noxico - MOSTLY SAMPLE DATA --&gt;
-        ///&lt;!DOCTYPE dialogue [
-        ///	&lt;!ELEMENT dialogue (topic*)&gt;
-        ///	&lt;!ELEMENT topic (filter*,info*)&gt;
-        ///	&lt;!ELEMENT info (filter*,p*,script*)&gt;
-        ///	&lt;!ELEMENT filter EMPTY&gt;
-        ///	&lt;!ELEMENT p (#PCDATA)&gt;
-        ///	&lt;!ATTLIST topic id ID #REQUIRED text CDATA #IMPLIED&gt;
-        ///	&lt;!ATTLIST info id ID #REQUIRED&gt;
-        ///	&lt;!ATTLIST filter type CDATA #REQUIRED name CDATA #IMPLIED value CDATA #IMPLIED target CDATA #IMPLIED&gt;
-        ///	&lt;!ELEMENT script (#PCDATA) [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Dialogue {
-            get {
-                return ResourceManager.GetString("Dialogue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Acid Advertisement Age Alloy Alternation Ambiance Amusement Angels Annoyance Apathy Art Ascent Ash Atoll Autumn
         ///Backstabbing Bamboo Bastille Beauty Blankness Blaze Boil Bone Books Braille Brains Brick Bridges Bronze Brooks Bubbles Bulge Burlap Butterflies
         ///Cacophony Cacti Cages Canopy Canyons Carbon Carpet Cathedrals Caves Chains Change Charge Chemicals Chocolate Circuitry Clay Cliffs Clockwork Clouds Cobalt Cobblestone Concrete Construction Contact Contrast Copper Coral Cotton Crossroads Crystal Cubes Cur [rest of string was truncated]&quot;;.
@@ -267,11 +247,11 @@ namespace Noxico.Properties {
         ///	&lt;color name=&quot;Light&quot; rgb=&quot;246,225,214&quot; cga=&quot;15&quot; /&gt;
         ///	&lt;color name=&quot;Dark&quot; rgb=&quot;133,69,67&quot; cga=&quot;6&quot; /&gt;
         ///	&lt;color name=&quot;Ebony&quot; rgb=&quot;23,11,11&quot; cga=&quot;0&quot; /&gt;
+        ///	&lt;color name=&quot;Pale&quot; rgb=&quot;246,245,224&quot; cga=&quot;15&quot; /&gt;
         ///
         ///	&lt;!-- Hair colors --&gt;
         ///	&lt;color name=&quot;Blond&quot; rgb=&quot;198,167,94&quot; cga=&quot;6&quot; /&gt;
-        ///	&lt;color name=&quot;Auburn&quot; rgb=&quot;111,53,26&quot; cga=&quot;6&quot; /&gt;
-        ///        /// [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string KnownColors {
             get {
@@ -364,28 +344,50 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;scenes&gt;
-        ///	&lt;scene id=&quot;TamaniStartBoy&quot; name=&quot;(starting node)&quot;&gt;
-        ///		&lt;!-- This is a comment that&apos;ll show up in the editor. --&gt;
-        ///		&lt;filter target=&quot;bottom&quot; type=&quot;name&quot; name=&quot;Emi Nakashima&quot; /&gt;
-        ///		&lt;p&gt;
-        ///			Tamani is here, grinning wolfishly.
-        ///		&lt;/p&gt;
-        ///		&lt;script language=&quot;text/noxicobotic&quot;&gt;
-        ///			&lt;![CDATA[
-        ///				$top.checktag &quot;penis&quot;
-        ///				if exists
-        ///					|&lt;&lt;	&quot;Ready for another fuck, big boy?&quot; &gt;&gt;
-        ///				else
-        ///					|&lt;&lt;	&quot;Ready for another fuck, big girl?&quot; &gt;&gt;
-        ///				endif
-        ///			]]&gt;
-        ///		&lt;/scri [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!-- Bethesda-style dialogue engine for Noxico - MOSTLY SAMPLE DATA --&gt;
+        ///&lt;!DOCTYPE dialogue [
+        ///	&lt;!ELEMENT dialogue (topic*)&gt;
+        ///	&lt;!ELEMENT topic (filter*,info*)&gt;
+        ///	&lt;!ELEMENT info (filter*,p*,script*)&gt;
+        ///	&lt;!ELEMENT filter EMPTY&gt;
+        ///	&lt;!ELEMENT p (#PCDATA)&gt;
+        ///	&lt;!ATTLIST topic id ID #REQUIRED text CDATA #IMPLIED&gt;
+        ///	&lt;!ATTLIST info id ID #REQUIRED&gt;
+        ///	&lt;!ATTLIST filter type CDATA #REQUIRED name CDATA #IMPLIED value CDATA #IMPLIED target CDATA #IMPLIED&gt;
+        ///	&lt;!ELEMENT script (#PCDATA) [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Scenes {
+        internal static string scenesDlg {
             get {
-                return ResourceManager.GetString("Scenes", resourceCulture);
+                return ResourceManager.GetString("scenesDlg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;!DOCTYPE scenes [
+        ///	&lt;!ELEMENT scenes (scene+)&gt;
+        ///	&lt;!ELEMENT scene (filter*,(p|script)*,action*)&gt;
+        ///	&lt;!ELEMENT filter EMPTY&gt;
+        ///	&lt;!ELEMENT p (#PCDATA)&gt;
+        ///	&lt;!ELEMENT script (#PCDATA)&gt;
+        ///	&lt;!ELEMENT action EMPTY&gt;
+        ///	&lt;!ATTLIST scene
+        ///		id CDATA #REQUIRED
+        ///		name CDATA #REQUIRED
+        ///		list CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ATTLIST filter
+        ///		target (top|bottom) #REQUIRED
+        ///		type CDATA #REQUIRED
+        ///		name CDATA #IMPLIED
+        ///		value CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ATTLIST script type CDATA #FIXED &quot;text/noxicob [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string scenesSex {
+            get {
+                return ResourceManager.GetString("scenesSex", resourceCulture);
             }
         }
         
