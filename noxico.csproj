@@ -138,8 +138,12 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\scenesDlg.xml" />
-    <None Include="Resources\scenesSex.xml" />
+    <None Include="Resources\scenesDlg.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\scenesSex.xml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="sounds\Cursor.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
