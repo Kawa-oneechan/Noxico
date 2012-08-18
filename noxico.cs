@@ -2762,7 +2762,7 @@ namespace Noxico
 			}
 		}
 
-		public bool CanShoot()
+		public InventoryItem CanShoot()
 		{
 			foreach (var carriedItem in this.GetToken("items").Tokens)
 			{
@@ -2780,14 +2780,14 @@ namespace Noxico
 						if (skill == null)
 						{
 							//No skill to determine weapon type by? Assume it's not something you'd throw.
-							return false;
+							return null;
 						}
 						var yes = new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" };
-						return (yes.Contains(skill.Text));
+						return (yes.Contains(skill.Text)) ? find : null;
 					}
 				}
 			}
-			return false;
+			return null;
 		}
 	}
 

@@ -1084,6 +1084,60 @@ namespace Noxico
 #endif
 		}
 
+		public void QuickFire(Direction targetDirection)
+		{
+			NoxicoGame.Modifiers[0] = false;
+			if (this.ParentBoard.Type == BoardType.Town)
+				return;
+			var weapon = Character.CanShoot();
+			if (weapon == null)
+				return; //Don't whine about it.
+			var x = this.XPosition;
+			var y = this.YPosition;
+			var distance = 0;
+			var range = (int)weapon.Path("weapon/range").Value;
+			var damage = (int)weapon.Path("weapon/damage").Value;
+
+			Func<int, int, bool> gotHit = (xPos, yPos) =>
+			{
+				if (this.ParentBoard.IsSolid(y, x, true))
+					return true;
+				var hit = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.XPosition == x && e.YPosition == y);
+				if (hit != null)
+				{
+					Console.WriteLine("You hit {0}.", hit.Character.Name.ToString());
+					hit.Hurt(damage, "shot down by a player who somehow got QuickFire() to work", this, false);
+					return true;
+				}
+				return false;
+			};
+
+			if (targetDirection == Direction.East)
+			{
+				for (x++; x < 80 && distance < range; x++, distance++)
+					if (gotHit(x, y))
+						break;
+			}
+			else if (targetDirection == Direction.West)
+			{
+				for (x--; x >= 0 && distance < range; x--, distance++)
+					if (gotHit(x, y))
+						break;
+			}
+			else if (targetDirection == Direction.South)
+			{
+				for (y++; x < 80 && distance < range; y++, distance++)
+					if (gotHit(x, y))
+						break;
+			}
+			else if (targetDirection == Direction.North)
+			{
+				for (y--; y >= 0 && distance < range; y--, distance++)
+					if (gotHit(x, y))
+						break;
+			}
+		}
+
 		public override void Update()
         {
             //base.Update();
@@ -1146,7 +1200,13 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[(int)Keys.A] && !helpless)
 			{
 				NoxicoGame.ClearKeys();
-				if (!Character.CanShoot())
+				if (this.ParentBoard.Type == BoardType.Town)
+				{
+					NoxicoGame.AddMessage("You cannot attack in a village.");
+					return;
+				}
+				var weapon = Character.CanShoot();
+				if (weapon == null)
 				{
 					NoxicoGame.AddMessage("You are not wielding a throwing weapon or firearm.");
 					return;
@@ -1156,7 +1216,7 @@ namespace Noxico
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
-				NoxicoGame.Cursor.Range = 16;
+				NoxicoGame.Cursor.Range = (int)weapon.Path("weapon/range").Value;
 				NoxicoGame.Cursor.Intent = Cursor.Intents.Shoot;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
@@ -1267,14 +1327,29 @@ namespace Noxico
 
 			if (!AutoTravelling)
 			{
-				if (NoxicoGame.KeyMap[(int)Keys.Left])
-					this.Move(Direction.West);
-				else if (NoxicoGame.KeyMap[(int)Keys.Right])
-					this.Move(Direction.East);
-				else if (NoxicoGame.KeyMap[(int)Keys.Up])
-					this.Move(Direction.North);
-				else if (NoxicoGame.KeyMap[(int)Keys.Down])
-					this.Move(Direction.South);
+				if (!NoxicoGame.Modifiers[0])
+				{
+					if (NoxicoGame.KeyMap[(int)Keys.Left])
+						this.Move(Direction.West);
+					else if (NoxicoGame.KeyMap[(int)Keys.Right])
+						this.Move(Direction.East);
+					else if (NoxicoGame.KeyMap[(int)Keys.Up])
+						this.Move(Direction.North);
+					else if (NoxicoGame.KeyMap[(int)Keys.Down])
+						this.Move(Direction.South);
+				}
+				else if(NoxicoGame.Modifiers[0])
+				{
+					//Console.WriteLine("shift");
+					if (NoxicoGame.KeyMap[(int)Keys.Left])
+						this.QuickFire(Direction.West);
+					else if (NoxicoGame.KeyMap[(int)Keys.Right])
+						this.QuickFire(Direction.East);
+					else if (NoxicoGame.KeyMap[(int)Keys.Up])
+						this.QuickFire(Direction.North);
+					else if (NoxicoGame.KeyMap[(int)Keys.Down])
+						this.QuickFire(Direction.South);
+				}
 			}
 			else
 			{

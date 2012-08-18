@@ -1754,7 +1754,7 @@ ascii
 		red
 			]]>
 		</item>
-		<item id="wrinklefucker" name="wrinklefucker" unidentified="appliance-headed warhammer" a="a" the="the">
+		<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
 			<![CDATA[
 fireproof
 unique
@@ -1802,7 +1802,7 @@ weight
 weapon
 	damage: 200
 	range: 30
-	skill: rifle
+	skill: large_firearm
 description: "Plundered from some sunken galleon somewhere, this is no ordinary rifle -- it's a laser rifle!"
 ascii
 	char: U+0141
