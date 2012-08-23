@@ -1415,6 +1415,8 @@ namespace Noxico
 			var dead = base.Hurt(damage, obituary, aggressor, finishable);
 			if (dead)
 			{
+				Achievements.CheckYASD();
+
 				var relation = Character.Path("ships/" + aggressor.Character.Name.ToString(true));
 				if (relation == null)
 				{

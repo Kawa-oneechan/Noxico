@@ -310,6 +310,8 @@ namespace Noxico
 			tail.GetToken("tentacle").Tokens.Add(new Token() { Name = "penis" });
 			Player.Character.GetToken("stimulation").Value = 90;
 			*/
+
+			Achievements.StartingTime = DateTime.Now;
 		}
 
 		public Board GetBoard(int index)
