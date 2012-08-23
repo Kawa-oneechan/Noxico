@@ -26,7 +26,7 @@ namespace Noxico
 			});
 			Profile.OnMessage += new Action<string>(m =>
 			{
-				if (m == "Profile not found.")
+				if (m == "Profile not found." || m == "Your profile is corrupted.")
 				{
 					MessageBox.Ask("You do not have a gamer profile for this game yet. Would you like to create one?", () =>
 					{

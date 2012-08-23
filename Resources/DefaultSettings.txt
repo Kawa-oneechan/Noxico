@@ -18,7 +18,7 @@ x-adjust=-2
 y-adjust=-1
 cellwidth=0
 cellheight=0
-cleartype=true;
+cleartype=true
 
 [audio]
 ;     enabled: Should be pretty obvious. Volume controls are ignored if false.
@@ -77,3 +77,8 @@ pngfont=fixedsex
 color=none
 char=none
 pal=Noxico.PspPalette
+
+[profile]
+askforonline=true
+useonline=true
+

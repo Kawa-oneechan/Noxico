@@ -69,6 +69,8 @@ namespace GamerServices
 
 		public static bool Load(string filename = "")
 		{
+			if (string.IsNullOrWhiteSpace(profilePath))
+				filename = "profile";
 			if (filename == "")
 				filename = Path.Combine(profilePath, GameName + "_profile");
 			if (!File.Exists(filename))
@@ -130,6 +132,8 @@ namespace GamerServices
 		{
 			if (!IsValid)
 				return;
+			if (string.IsNullOrWhiteSpace(profilePath) && filename == "")
+				filename = "profile";
 			if (filename == "")
 				filename = Path.Combine(profilePath, GameName + "_profile");
 
