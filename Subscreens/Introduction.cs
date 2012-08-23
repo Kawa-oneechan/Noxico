@@ -1,0 +1,480 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Xml;
+using System.Globalization;
+using System.Windows.Forms;
+using System.Drawing;
+
+namespace Noxico
+{
+	public class Introduction
+	{
+		public static void Title()
+		{
+			NoxicoGame.Mode = UserMode.Subscreen;
+			NoxicoGame.Subscreen = Introduction.TitleHandler;
+			NoxicoGame.Immediate = true;
+			NoxicoGame.Sound.PlayMusic("set://Title");
+		}
+
+		public static void TitleHandler()
+		{
+			var host = NoxicoGame.HostForm;
+			var keys = NoxicoGame.KeyMap;
+			if (Subscreens.FirstDraw)
+			{
+				Subscreens.FirstDraw = false;
+				host.Clear();
+				host.LoadBitmap(global::Noxico.Properties.Resources.TitleScreen);
+
+				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
+				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };
+				var histories = "Histories of " + Toolkit.PickOne(i) + " and " + Toolkit.PickOne(j);
+				host.Write(histories, Color.Teal, Color.Transparent, 25 - histories.Length / 2, 10);
+
+				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 9, 12);
+				//host.Write("<cSilver>\u263A   <cYellow,Red>\u263B<c>    <cAqua,Navy>\u263B<c>    <cYellow,Navy>\u263B<c>   <cWhite,Gray>\u263B<c>", Color.Silver, Color.Transparent, 14, 10);
+				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
+			}
+			if (keys[(int)Keys.Enter] || Subscreens.Mouse)
+			{
+				if (Subscreens.Mouse)
+					Subscreens.UsingMouse = true;
+				Subscreens.Mouse = false;
+				Subscreens.FirstDraw = true;
+				var rawSaves = Directory.GetDirectories(NoxicoGame.SavePath);
+				var saves = new List<string>();
+				foreach (var s in rawSaves)
+				{
+					if (File.Exists(Path.Combine(s, "player.bin")))
+						saves.Add(s);
+				}
+				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
+				if (saves.Count > 0)
+				{
+					var saveName = Path.GetFileName(saves[0]);
+					keys[(int)Keys.Enter] = false;
+					Subscreens.Mouse = false;
+					//host.Clear();
+					var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
+					{
+						string p;
+						using (var f = new BinaryReader(File.OpenRead(Path.Combine(s, "player.bin"))))
+						{
+							p = f.ReadString();
+						}
+						return p + ", \"" + Path.GetFileName(s) + "\"";
+					}));
+					options.Add("~", "~ Start new game in \"" + NoxicoGame.WorldName + "\" ~");
+					MessageBox.List("There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
+						() =>
+						{
+							if ((string)MessageBox.Answer == "~")
+							{
+								Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
+								NoxicoGame.Mode = UserMode.Subscreen;
+								NoxicoGame.Subscreen = Introduction.CharacterCreator;
+								NoxicoGame.Immediate = true;
+							}
+							else
+							{
+								NoxicoGame.WorldName = (string)MessageBox.Answer;
+								host.Noxico.LoadGame();
+								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+								Subscreens.FirstDraw = true;
+								NoxicoGame.Immediate = true;
+								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+								NoxicoGame.Mode = UserMode.Walkabout;
+							}
+						}
+					);
+					/*
+					MessageBox.Ask("There is a saved game you could restore -- \"" + saveName + "\". Would you like to do so?",
+						() =>
+						{
+							NoxicoGame.WorldName = saveName;
+							host.Noxico.LoadGame();
+							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+							Subscreens.FirstDraw = true;
+							NoxicoGame.Immediate = true;
+							NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+							NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+							//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+							NoxicoGame.Mode = UserMode.Walkabout;
+						},
+						() =>
+						{
+#if CAREFUL_ABOUT_OVERWRITING
+							MessageBox.Ask("This will <b>overwrite<b> your old saved game. Are you sure?",
+								() =>
+								{
+									NoxicoGame.Mode = UserMode.Subscreen;
+									NoxicoGame.Subscreen = Subscreens.CharacterCreator;
+									NoxicoGame.Immediate = true;
+								},
+								() =>
+								{
+									host.Noxico.LoadGame();
+									NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+									firstDraw = true;
+									NoxicoGame.Immediate = true;
+									NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
+									Subscreens.LookAt(NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<Player>().First());
+								}
+							);
+#else
+							NoxicoGame.Mode = UserMode.Subscreen;
+							NoxicoGame.Subscreen = Introduction.CharacterCreator;
+							NoxicoGame.Immediate = true;
+#endif
+						}
+					);
+					*/
+				}
+				else
+				{
+					NoxicoGame.Mode = UserMode.Subscreen;
+					NoxicoGame.Subscreen = Introduction.CharacterCreator;
+					NoxicoGame.Immediate = true;
+				}
+			}
+		}
+
+
+		private static System.Threading.Thread worldgen;
+
+		public static void KillWorldgen()
+		{
+			if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
+				worldgen.Abort();
+		}
+
+		private class PlayableRace
+		{
+			public string ID { get; set; }
+			public string Name { get; set; }
+			public string Skin { get; set; }
+			public List<string> HairColors { get; set; }
+			public List<string> SkinColors { get; set; }
+			public List<string> EyeColors { get; set; }
+			public List<string> GenderNames { get; set; }
+			public bool GenderLocked { get; set; }
+			public override string ToString()
+			{
+				return Name;
+			}
+		}
+
+		private static List<PlayableRace> CollectPlayables()
+		{
+			var ti = CultureInfo.InvariantCulture.TextInfo;
+			var ret = new List<PlayableRace>();
+			var xDoc = new XmlDocument();
+			Console.WriteLine("Collecting playables...");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+			//var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
+			//foreach (var playable in playables)
+			var bodyPlans = xDoc.SelectNodes("//bodyplan");
+			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
+			{
+				//var bodyPlan = playable.ParentNode as XmlElement;
+				//var id = bodyPlan.GetAttribute("id");
+				var id = bodyPlan.GetAttribute("id");
+				if (bodyPlan.ChildNodes[0].Value == null)
+				{
+					Console.WriteLine(" * Skipping {0} -- old format.", id);
+					continue;
+				}
+				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
+				if (!plan.Contains("playable"))
+					continue;
+				Console.WriteLine(" * Parsing {0}...", id);
+
+				var genlock = plan.Contains("only\n"); //(bodyPlan.("maleonly") != null) || (bodyPlan.SelectSingleNode("femaleonly") != null) ||
+				//(bodyPlan.SelectSingleNode("hermonly") != null) || (bodyPlan.SelectSingleNode("neuteronly") != null);
+
+				var name = id;
+
+				//TODO: write a support function that grabs everything for a specific token?
+				//That is, given "terms \n \t generic ... \n tallness" it'd grab everything up to but not including tallness.
+				//Use that to find subtokens like specific terms or colors.
+				var terms = Toolkit.GrabToken(plan, "terms");
+				var genOffset = terms.IndexOf("\tgeneric: ");
+				var maleOffset = terms.IndexOf("\tmale: ");
+				var femaleOffset = terms.IndexOf("\tfemale: ");
+				if (genOffset != -1)
+				{
+					name = terms.Substring(genOffset + 11);
+					name = name.Remove(name.IndexOf('\"')).Titlecase();
+				}
+				var male = name;
+				var female = name;
+				if (maleOffset != -1)
+				{
+					male = terms.Substring(maleOffset + 8);
+					male = male.Remove(male.IndexOf('\"')).Titlecase();
+				}
+				if (femaleOffset != -1)
+				{
+					female = terms.Substring(femaleOffset + 10);
+					female = female.Remove(female.IndexOf('\"')).Titlecase();
+				}
+				var genders = new List<string>() { male, female };
+
+				var hairs = new List<string>() { "<None>" };
+				var hair = Toolkit.GrabToken(plan, "hair");
+				if (hair != null)
+				{
+					var c = hair.Substring(hair.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
+					{
+						hairs.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => hairs.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+					}
+					else
+					{
+						hairs[0] = c.Remove(c.IndexOf('\n')).Titlecase();
+					}
+				}
+
+				var eyes = new List<string>() { "Brown" };
+				var eye = Toolkit.GrabToken(plan, "eyes");
+				if (eye != null)
+				{
+					var c = eye.Substring(eye.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
+					{
+						eyes.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => eyes.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+					}
+					else
+					{
+						eyes[0] = c.Remove(c.IndexOf('\n')).Titlecase();
+					}
+				}
+
+				var skins = new List<string>();
+				var skinName = "skin";
+				var s = Toolkit.GrabToken(plan, "skin");
+				if (s != null)
+				{
+					if (s.Contains("type"))
+					{
+						skinName = s.Substring(s.IndexOf("type") + 5);
+						skinName = skinName.Remove(skinName.IndexOf('\n')).Trim();
+					}
+					var c = s.Substring(s.IndexOf("color: ") + 7).Trim();
+					if (c.StartsWith("oneof"))
+					{
+						skins.Clear();
+						c = c.Substring(6);
+						c = c.Remove(c.IndexOf('\n'));
+						var oneof = c.Split(',').ToList();
+						oneof.ForEach(x => skins.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+						//skinName = skin;
+						//break;
+					}
+					else
+					{
+						skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
+						//skinName = skin;
+						//break;
+					}
+				}
+
+				if (skins.Count > 0)
+					skins = skins.Distinct().ToList();
+				skins.Sort();
+
+				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, GenderLocked = genlock });
+
+			}
+			return ret;
+		}
+		private static List<PlayableRace> playables;
+
+		private static Dictionary<string, UIElement> controls;
+		private static List<UIElement>[] pages;
+
+		private static int page = 0;
+		private static Action<int> loadPage, loadColors;
+
+		private static void CreateNox()
+		{
+			NoxicoGame.HostForm.Noxico.CreateRealm();
+		}
+
+		public static void CharacterCreator()
+		{
+			if (Subscreens.FirstDraw)
+			{
+				var traitsDoc = new XmlDocument();
+				traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
+				var traits = new List<string>();
+				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
+					traits.Add(trait.GetAttribute("name"));
+
+				controls = new Dictionary<string, UIElement>()
+				{
+					{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
+					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
+					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
+					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
+					{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
+					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = true } },
+
+					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
+					{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
+					{ "nameRandom", new UILabel("[random]") { Left = 60, Top = 7, Hidden = true } },
+					{ "speciesLabel", new UILabel("Species") { Left = 44, Top = 10 } },
+					{ "species", new UISingleList() { Left = 45, Top = 11, Width = 24 } },
+					{ "sexLabel", new UILabel("Sex") { Left = 44, Top = 13 } },
+					{ "sexNo", new UILabel("Not available") { Left = 50, Top = 14 } },
+					{ "sex", new UIBinary("Male", "Female") { Left = 45, Top = 14, Width = 24 } },
+
+					{ "hairLabel", new UILabel("Hair color") { Left = 44, Top = 7 } },
+					{ "hair", new UIColorList() { Left = 45, Top = 8, Width = 24 } },
+					{ "bodyLabel", new UILabel("Body color") { Left = 44, Top = 10 } },
+					{ "bodyNo", new UILabel("Not available") { Left = 45, Top = 11 } },
+					{ "body", new UIColorList() { Left = 45, Top = 11, Width = 24 } },
+					{ "eyesLabel", new UILabel("Eye color") { Left = 44, Top = 13 } },
+					{ "eyes", new UIColorList() { Left = 45, Top = 14, Width = 24 } },
+
+					{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7 } },
+					{ "gift", new UIList("", null, traits) { Left = 45, Top = 8, Width = 24, Height = 8 } },
+
+					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel("") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
+				};
+
+				pages = new List<UIElement>[]
+				{
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["nameLabel"], controls["name"], controls["nameRandom"],
+						controls["speciesLabel"], controls["species"],
+						controls["sexLabel"], controls["sexNo"], controls["sex"],
+						controls["next"],
+					},
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["hairLabel"], controls["hair"],
+						controls["bodyLabel"], controls["bodyNo"], controls["body"],
+						controls["eyesLabel"], controls["eyes"],
+						controls["back"], controls["next"],
+					},
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["giftLabel"], controls["gift"],
+						controls["back"], controls["playNo"], controls["play"],
+					},
+				};
+
+				playables = CollectPlayables();
+
+				loadPage = new Action<int>(p =>
+				{
+					UIManager.Elements.Clear();
+					UIManager.Elements.AddRange(pages[page]);
+					UIManager.Highlight = UIManager.Elements[0];
+				});
+
+				loadColors = new Action<int>(i =>
+				{
+					var species = playables[i];
+					controls["bodyLabel"].Text = species.Skin.Titlecase();
+					((UISingleList)controls["hair"]).Items.Clear();
+					((UISingleList)controls["body"]).Items.Clear();
+					((UISingleList)controls["eyes"]).Items.Clear();
+					((UISingleList)controls["hair"]).Items.AddRange(species.HairColors);
+					((UISingleList)controls["body"]).Items.AddRange(species.SkinColors);
+					((UISingleList)controls["eyes"]).Items.AddRange(species.EyeColors);
+					((UISingleList)controls["hair"]).Index = 0;
+					((UISingleList)controls["body"]).Index = 0;
+					((UISingleList)controls["eyes"]).Index = 0;
+				});
+
+				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
+				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
+				controls["play"].Enter = (s, e) =>
+				{
+					var playerName = controls["name"].Text;
+					var sex = ((UIBinary)controls["sex"]).Value;
+					var species = ((UISingleList)controls["species"]).Index;
+					var hair = ((UISingleList)controls["hair"]).Text;
+					var body = ((UISingleList)controls["body"]).Text;
+					var eyes = ((UISingleList)controls["eyes"]).Text;
+					var bonus = ((UIList)controls["gift"]).Text;
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
+					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
+					NoxicoGame.HostForm.Noxico.SaveGame();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+					Subscreens.FirstDraw = true;
+					NoxicoGame.Immediate = true;
+					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+				};
+
+				((UISingleList)controls["species"]).Items.Clear();
+				playables.ForEach(x => ((UISingleList)controls["species"]).Items.Add(x.Name.Titlecase()));
+				((UISingleList)controls["species"]).Index = 0;
+				loadColors(0);
+				controls["species"].Change = (s, e) =>
+				{
+					var speciesIndex = ((UISingleList)controls["species"]).Index;
+					loadColors(speciesIndex);
+					controls["sex"].Hidden = playables[speciesIndex].GenderLocked;
+					controls["sexNo"].Hidden = !playables[speciesIndex].GenderLocked;
+					UIManager.Draw();
+				};
+				controls["name"].Change = (s, e) =>
+				{
+					controls["nameRandom"].Hidden = (controls["name"].Text != "");
+					UIManager.Draw();
+				};
+
+				UIManager.Initialize();
+				loadPage(page);
+				Subscreens.FirstDraw = false;
+				Subscreens.Redraw = true;
+
+				//Start creating the world as we work...
+				worldgen = new System.Threading.Thread(CreateNox);
+				worldgen.Start();
+			}
+
+			if (Subscreens.Redraw)
+			{
+				UIManager.Draw();
+				Subscreens.Redraw = false;
+			}
+
+			if (worldgen.ThreadState != System.Threading.ThreadState.Running && controls["play"].Hidden)
+			{
+				controls["play"].Hidden = false;
+				if (page == 2)
+					controls["play"].Draw();
+			}
+
+			UIManager.CheckKeys();
+
+		}
+	}
+
+}

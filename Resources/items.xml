@@ -1,0 +1,1607 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE itemdata [
+	<!ELEMENT itemdata (items,costumes)>
+	<!ELEMENT items (item+)>
+	<!ELEMENT item (#PCDATA|script)*>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST item
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		unknown CDATA #IMPLIED
+		proper (true|false) "false"
+		a CDATA #IMPLIED
+		the CDATA #IMPLIED
+	>
+	<!ELEMENT costumes ANY>
+	<!ELEMENT costume (#PCDATA)>
+	<!ATTLIST costume id ID #REQUIRED>
+]>
+<itemdata>
+	<items>
+		<item id="ponifier" name="Element of Perversion" a="" the="the" proper="true">
+			<![CDATA[
+test
+description: "You do not want to know."
+ascii
+	char: U+00A1
+	fore
+		aquamarine
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+-- To replace the multiuse token, this lets us make exceptions in consumption.
+consumed = 1
+morph littlepony 0 window
+				]]>
+			</script>
+		</item>
+
+		<item id="book" name="book" a="a" the="the">
+			<!-- That's all we'll say here. -->
+			<![CDATA[
+-- This is all we'll specify.
+ascii
+	char: U+03B5
+-- Books specifically have their color determined by ID.
+			]]>
+		</item>
+
+		<item id="rope" name="length of rope" a="a" the="the">
+			<![CDATA[
+nouse
+ascii
+	char: U+00A7
+	fore
+		sienna
+			]]>
+		</item>
+		<item id="baseballbat" name="baseball bat" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+canfuck
+-- Metrics are needed if an item has canfuck.
+thickness: 2.75
+length: 42
+weight
+	medium
+weapon
+	damage: 50
+	skill: club
+ascii
+	char: U+0021
+	fore
+		darkgoldenrod
+			]]>
+		</item>
+		<item id="foxite" name="Foxite" a="" the="the" proper="true">
+			<![CDATA[
+test
+description: "This is Foxite. It turns you into a fox with repeated usages."
+ascii
+	char: U+00A1
+	fore
+		aquamarine
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+consumed = 1
+morph fox 0 window
+				]]>
+			</script>
+		</item>
+		<item id="penificator" name="penificator" a="a" the="the">
+			<![CDATA[
+test
+ascii
+	char: U+00A1
+	fore
+		chartreuse
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+!<< It's no use. >>
+consumed = 1
+				]]>
+			</script>
+			<!--
+			<multiuse />
+			<growpenis>
+				<type>
+					<byscore />
+				</type>
+				<initial>5</initial>
+				<increase>2</increase>
+				<fudge>3</fudge>
+				<multichance>50</multichance>
+			</growpenis>
+			<ascii>
+				<char>173</char>
+				<fore>
+					<chartreuse />
+				</fore>
+			</ascii>
+			-->
+		</item>
+		<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 30
+	skill: short_sword
+description: "A nice, sturdy combat knife."
+ascii
+	char: U+2190
+	fore
+		silver
+			]]>
+		</item>
+		<item id="butter_knife" name="butter knife" a="a" the="the">
+			<![CDATA[
+test
+equipable
+	hand
+fireproof
+weapon
+	damage: 10
+	skill: short_sword
+description: "A nice, sturdy butter knife."
+ascii
+	char: U+2190
+	fore
+		silver
+			]]>
+		</item>
+		<item id="test_ring" name="test ring" a="a" the="the">
+			<![CDATA[
+equipable
+	ring
+fireproof
+ascii
+	char: U+25CB
+	fore
+		fìrebrick
+			]]>
+		</item>
+		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
+			<![CDATA[
+unique
+fireproof
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 100
+	skill: long_sword
+statbonus
+	speed: 40
+description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
+ascii
+	char: U+2193
+	fore
+		white
+			]]>
+		</item>
+
+		<item id="catears" name="cat ear headband" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	head
+weight
+	feather
+statbonus
+	charisma: 10
+price: 20
+ascii
+	char: U+03A9
+	fore
+		darkmagenta
+			]]>
+		</item>
+		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	male
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	male
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="plain_panties" name="panties" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 10
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 20
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="plain_bra" name="bra" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 10
+ascii
+	char: U+0077
+			]]>
+		</item>
+		<item id="lacy_bra" name="lacy bra" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 20
+ascii
+	char: U+0077
+			]]>
+		</item>
+		<item id="sheer_top" name="sheer top" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	shirt
+	translucent
+weight
+	feather
+price: 100
+ascii
+	char: U+0077
+			]]>
+		</item>
+
+		<!-- NetHack weapons -->
+		<item id="spear" name="spear" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 40
+	skill: polearm
+weight: heavy
+description: "A long pole with a sharpened point of steel on one end."
+ascii
+	char: U+002F
+	fore
+		darkgoldenrod
+			]]>
+		</item>
+		<item id="javelin" name="javelin" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+weapon
+	damage: 40
+	skill: throwing
+weight: heavy
+description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
+ascii
+	char: U+002F
+	fore
+		darkgoldenrod
+			]]>
+		</item>
+		<item id="dagger" name="dagger" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 30
+	skill: short_sword
+description: "A classic-style rogue's dagger."
+ascii
+	char: U+2190
+	fore
+		silver
+			]]>
+		</item>
+		<item id="fireaxe" name="fire-axe" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 50
+	skill: axe
+weight: medium
+description: "An ordinary looking fire-axe."
+ascii
+	char: U+00A2
+	fore
+		silver
+			]]>
+		</item>
+		<item id="battleaxe" name="battle axe" a="a" the="the">
+			<![CDATA[
+equipable
+	hand
+fireproof
+weapon
+	damage: 70
+	skill: axe
+weight: heavy
+description: "An imposing battle axe. You could take someone's head off with this baby."
+ascii
+	char: U+00A2
+	fore
+		silver
+			]]>
+		</item>
+		<item id="shortsword" name="short sword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 40
+	skill: short_sword
+description: "A plain but servicable short sword."
+ascii
+	char: U+2193
+	fore
+		white
+			]]>
+		</item>
+		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 50
+	skill: short_sword
+identify: weapon_knowledge
+description: "An exotic looking sword with a curved blade."
+ascii
+	char: U+2202
+	fore
+		silver
+			]]>
+		</item>
+		<item id="broadsword" name="broadsword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 50
+	skill: long_sword
+description: "A large sword with an emphasis on the blade's width."
+ascii
+	char: U+2191
+	fore
+		silver
+			]]>
+		</item>
+		<item id="longsword" name="longsword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 60
+	skill: long_sword
+description: "A large sword with an emphasis on length."
+ascii
+	char: U+2191
+	fore
+		silver
+			]]>
+		</item>
+		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+	twohanded
+weight
+	heavy
+weapon
+	damage: 70
+	skill: huge_sword
+identify: weapon_knowledge
+description: "A sword so large you need two hands to wield it."
+ascii
+	char: U+221A
+	fore
+		silver
+			]]>
+		</item>
+		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 70
+	skill: long_sword
+identify: weapon_knowledge
+description: "The common samurai sword."
+ascii
+	char: U+2193
+	fore
+		silver
+			]]>
+		</item>
+		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 70
+	skill: long_sword
+identify: weapon_knowledge
+description: "The common samurai sword, but longer."
+ascii
+	char: U+2193
+	fore
+		silver
+			]]>
+		</item>
+		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
+		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
+		<!-- bullwhip, pistol -->
+
+		<item id="fancysanta" name="fancy Santa" a="a" the="the">
+			<![CDATA[
+fireproof
+fearsome
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 30
+	skill: club
+description: "A smallish but ornate statue of a festive holiday character."
+ascii
+	char: U+0455
+	fore
+		red
+			]]>
+		</item>
+		<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+	twohanded
+weight
+	medium
+weapon
+	damage: 100
+	skill: warhammer
+description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
+ascii
+	char: U+0444
+	fore
+		lime
+			]]>
+		</item>
+		<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+weight
+	heavy
+weapon
+	damage: 300
+	skill: warhammer
+description: "Behold the glory of Zillyhoo!"
+ascii
+	char: U+0444
+	fore
+		blue
+			]]>
+		</item>
+		<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 200
+	range: 30
+	skill: large_firearm
+description: "Plundered from some sunken galleon somewhere, this is no ordinary rifle -- it's a laser rifle!"
+ascii
+	char: U+0141
+	fore
+		blue
+			]]>
+		</item>
+		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
+			<![CDATA[
+fireproof
+unique
+fearsome
+equipable
+	hand
+weight
+	medium
+weapon
+	damage: 250
+	skill: chainsaw
+description: "Awesome. Demonic-looking. Not actually a tube of lipstick. This is a chainsaw to be reckoned with."
+ascii
+	char: U+018C
+	fore
+		purple
+			]]>
+		</item>
+		<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
+
+		<item id="whip" name="whip" a="a" the="the">
+			<![CDATA[
+fireproof
+equipable
+	hand
+weight
+	light
+weapon
+	damage: 40
+	skill: whip
+	increase: climax
+-- Increase token doesn't do shit without some extra code but it can be here anyway.
+description: "An ordinary but nevertheless slightly kinky whip."
+ascii
+	char: U+03B6
+	fore
+		brown
+			]]>
+		</item>
+
+		<item id="spandex_suit" name="[color ]spandex bodysuit" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+weight
+	medium
+statbonus
+	charisma: 18
+description: "A suit that shows off your hot shape when worn."
+price: 100
+ascii
+	char: U+2202
+			]]>
+		</item>
+		<item id="spandex_pants" name="[color ]spandex pants" a="a" the="the">
+			<![CDATA[
+equipable
+	pants
+weight
+	medium
+statbonus
+	charisma: 12
+description: "Feels like David Bowie."
+price: 100
+ascii
+	char: U+220F
+			]]>
+		</item>
+		<item id="sentai_suit" name="[color ]super sentai costume" unknown="[color] power ranger costume" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+weight
+	medium
+identify: pop_culture
+statbonus
+	charisma: 16
+	strength: 16
+description: "Shapes your cool body in a superhero style."
+price: 100
+ascii
+	char: U+2202
+			]]>
+		</item>
+
+		<item id="croissant" name="croissant" a="a" the="le">
+			<![CDATA[
+singleuse
+statbonus
+	health: 10
+weight: feather
+description: "Smaczne, ale nie bardzo nape&#x0142;niania."
+ascii
+	char: U+0063
+	fore
+		brown
+			]]>
+		</item>
+
+		<item id="bacon" name="bacon strip" a="a" the="the">
+			<![CDATA[
+singleuse
+statbonus
+	health: 5
+weight: feather
+description: "Can't go wrong with bacon."
+ascii
+	char: U+2016
+	fore
+		red
+			]]>
+		</item>
+		<item id="sweetroll" name="sweet roll" a="a" the="the">
+			<![CDATA[
+singleuse
+statbonus
+	health: 10
+weight: feather
+description: "Let me guess."
+ascii
+	char: U+00F8
+	fore
+		yellow
+			]]>
+		</item>
+
+		<!-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf -->
+
+		<!--	dilithium crystal		brownish white (listed as white in nethack)
+			diamond							white
+			ruby								red
+			jacinth							orange
+			sapphire						blue
+			black opal					black
+			emerald							green
+			turquoise						green
+			citrine							yellow
+			aquamarine					green
+			amber								yellowish brown
+			topaz								yellowish brown
+			jet									black
+			opal								white
+			chrysoberyl					yellow
+			garnet							red
+			amethyst						violet
+			jasper							red
+			fluorite						violet
+			obsidian						black
+			agate								orange
+			jade								jade
+			worthless piece of @ glass
+-->
+
+		<!-- idea by LadyNistia -->
+		<item id="chainmail_bikini_top" name="chainmail bikini top" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+statbonus
+	charisma: 5
+	sensitivity: 10
+	cunning: -5
+weight
+	light
+price: 200
+description: "Now with even less chain!"
+ascii
+	char: U+221E
+	fore
+		silver
+			]]>
+		</item>
+		<item id="chainmail_bikini_bottom" name="chainmail bikini bottom" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	underpants
+statbonus
+	charisma: 5
+	sensitivity: 10
+	cunning: -5
+weight
+	light
+description: "Now with even less chain!"
+price: 200
+ascii
+	char: U+00AC
+	fore
+		silver
+			]]>
+		</item>
+		<!-- idea by LadyNistia and Pupnik -->
+		<item id="bacon_bikini_top" name="bacon bikini top" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+weight
+	light
+price: 20
+description: "Now with even less class!"
+ascii
+	char: U+221E
+	fore
+		red
+			]]>
+		</item>
+		<item id="bacon_bikini_bottom" name="bacon bikini bottom" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	underpants
+weight
+	light
+description: "Now with even less class!"
+price: 20
+ascii
+	char: U+00AC
+	fore
+		red
+			]]>
+		</item>
+
+		<!-- Clothes from jsNoxico -->
+		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
+			<![CDATA[
+plural
+equipable
+	shirt
+	translucent
+weight
+	light
+ascii
+	char: U+03C0
+			]]>
+		</item>
+		<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
+			<![CDATA[
+plural
+equipable
+	undershirt
+	translucent
+weight
+	light
+ascii
+	char: U+03C0
+			]]>
+		</item>
+		<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
+			<![CDATA[
+plural
+equipable
+	pants
+	translucent
+weight
+	light
+ascii
+	char: U+00B5
+			]]>
+		</item>
+		<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
+			<![CDATA[
+plural
+equipable
+	underpants
+	translucent
+weight
+	light
+ascii
+	char: U+03C4
+			]]>
+		</item>
+		<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
+			<!-- Should be used if a bodysuit is torn apart -->
+			<![CDATA[
+plural
+equipable
+	undershirt
+	underpants
+	translucent
+weight
+	light
+ascii
+	char: U+03C0
+			]]>
+		</item>
+		<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
+			<!-- Should be used if a dress is torn apart -->
+			<![CDATA[
+plural
+equipable
+	shirt
+	pants
+	translucent
+weight
+	light
+ascii
+	char: U+03C0
+			]]>
+		</item>
+		<item id="shirt" name="plain [color ]shirt" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+weight
+	light
+price: 10
+ascii
+	char: U+041F
+			]]>
+		</item>
+		<item id="blouse" name="[color ]blouse" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+weight
+	light
+statbonus
+	cunning: 5
+	strength: -5
+	carnality: -5
+price: 15
+ascii
+	char: U+041F
+			]]>
+		</item>
+		<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	jacket
+weight
+	light
+price: 100
+ascii
+	char: U+041F
+			]]>
+		</item>
+		<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
+			<![CDATA[
+equipable
+	male
+	jacket
+weight
+	medium
+price: 100
+ascii
+	char: U+041F
+			]]>
+		</item>
+		<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	undershirt
+statbonus
+	charisma: 5
+	sensitivity: 5
+	cunning: -5
+weight
+	feather
+price: 100
+ascii
+	char: U+221E
+			]]>
+		</item>
+		<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	pants
+weight
+	light
+price: 20
+ascii
+	char: U+220F
+			]]>
+		</item>
+		<item id="skirt" name="plain [color ]skirt" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	pants
+	reach
+statbonus
+	strength: 5
+	cunning: -5
+weight
+	light
+price: 20
+ascii
+	char: U+004D
+			]]>
+		</item>
+		<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	pants
+	translucent
+	reach
+weight
+	light
+price: 60
+ascii
+	char: U+004D
+			]]>
+		</item>
+		<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	underpants
+statbonus
+	charisma: 5
+	sensitivity: 5
+	cunning: -5
+weight
+	feather
+price: 50
+ascii
+	char: U+00AC
+			]]>
+		</item>
+		<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	pants
+statbonus
+	strength: 5
+	carnality: -5
+weight
+	light
+price: 50
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	pants
+statbonus
+	speed: 5
+	charisma: 5
+	cunning: -5
+	strength: -5
+weight
+	light
+price: 50
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
+			<![CDATA[
+equipable
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	charisma: 10
+	cunning: -10
+weight
+	light
+price: 70
+ascii
+	char: U+006E
+			]]>
+		</item>
+		<item id="sundress" name="[color ]sundress" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	carnality: 10
+	speed: -10
+	strength: -10
+weight
+	light
+price: 60
+ascii
+	char: U+2202
+			]]>
+		</item>
+		<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+	reach
+statbonus
+	sensitivity: 10
+	charisma: 10
+	carnality: 10
+	speed: -10
+	strength: -10
+weight
+	light
+price: 60
+ascii
+	char: U+2211
+			]]>
+		</item>
+		<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
+			<![CDATA[
+equipable
+	shirt
+	pants
+statbonus
+	charisma: 10
+	cunning: 10
+	strength: -10
+weight
+	medium
+price: 100
+ascii
+	char: U+2211
+			]]>
+		</item>
+		<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
+			<![CDATA[
+equipable
+	undershirt
+	underpants
+weight
+	medium
+statbonus
+	charisma: 20
+	sensitivity: 15
+	cunning: 10
+price: 100
+ascii
+	char: U+2202
+			]]>
+		</item>
+		<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
+			<![CDATA[
+equipable
+	coat
+weight
+	medium
+price: 150
+ascii
+	char: U+222B
+			]]>
+		</item>
+
+		<!-- Lena's costume -->
+		<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
+			<![CDATA[
+equipable
+	female
+	undershirt
+weight
+	feather
+price: 30
+ascii
+	char: U+221E
+			]]>
+		</item>
+		<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	feather
+price: 40
+ascii
+	char: U+00AC
+description: "These [color ]leather panties barely cover the crotch at all, giving an enticing minimum of so-called modesty."	
+			]]>
+		</item>
+		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	pants
+	reach
+	translucent
+weight
+	light
+price: 40
+ascii
+	char: U+220F
+			]]>
+		</item>
+		<item id="high_heels" name="high heels" a="a pair of" the="the">
+			<![CDATA[
+plural
+equipable
+	shoes
+weight
+	light
+price: 30
+ascii
+	char: U+221A
+			]]>
+		</item>
+		<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
+			<![CDATA[
+unique
+description: "A blood-red ruby in the shape of a droplet."
+ascii
+	char: U+25CA
+	fore
+		crimson
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+-- Just display a nice custom error.
+!<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
+				]]>
+			</script>
+		</item>
+
+		<!-- Morph lines -->
+		<!-- Rewrite these to use the morph command. -->
+		<item id="catmorph" name="cat morph potion" a="a" the="the">
+			<![CDATA[
+wip
+ascii
+	char: U+00A1
+	fore
+		lightsalmon
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+-- Text stolen from CoC's Whisker Fruit item, for now.
+
+|<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
+				
+-- always increase speed
+gettagval "speed"
+if it < 75
+	if it < 30
+		|<< [break]You feel...more balanced, sure of step. You're certain that you've become just a little bit faster. >>
+		inctagval "speed" 2
+	else
+		if it < 60
+			|<< [break]You stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now. >>
+			inctagval "speed" 1
+		else
+			|<< [break]You pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down. >>
+			inctagval "speed" 0.5
+		endif
+	endif
+	-- end
+endif
+
+-- sometimes increase charisma
+				
+-- grow cat ears
+checktag "ears/cat"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. [break]<cWhite>You now have cat ears.<c> >>
+
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "cat"
+	end
+endif
+
+-- grow cat tail
+checktag "tail/genbeast"
+if not exists
+	-- should check the existing type first
+	|<< [break]You pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. [break]<cWhite>You now have a cat tail.<c> >>
+
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "genbeast"
+					
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
+
+-- grow fangs
+
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
+				
+-- grow digitigrade legs
+				
+-- grow up to two extra breast rows
+				
+				]]>
+			</script>
+		</item>
+		<item id="dogmorph" name="dog morph potion" a="a" the="the">
+			<![CDATA[
+wip
+ascii
+	char: U+00A1
+	fore
+		mistyrose
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+-- Text stolen from CoC's Canine Pepper item, for now.
+
+|<< The pepper is strangely spicy but very tasty. >>
+				
+-- always increase strength
+gettagval "strength"
+if it < 50
+	|<< [break]Your muscles feel more toned. >>
+	inctagval "strength" 2
+endif
+
+-- sometimes increase charisma
+				
+-- grow dog ears
+checktag "ears/dog"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears transform, becoming more canine in appearance.[break]<cWhite>You now have dog ears.<c> >>
+
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "dog"
+	end
+endif
+
+-- grow dog tail
+checktag "tail/dog"
+if not exists
+	-- should check the existing type first
+	|<< [break]You feel your backside shift and change, flesh molding and displacing into a long puffy tail![break]<cWhite>You now have a dog tail.<c> >>
+
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "dog"
+					
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
+
+-- grow fangs
+
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
+				
+-- grow digitigrade legs
+				
+-- grow up to two extra breast rows
+				
+				]]>
+			</script>
+		</item>
+		<item id="foxmorph" name="fox morph potion" a="a" the="the">
+			<![CDATA[
+wip
+ascii
+	char: U+00A1
+	fore
+		orangered
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+|<< You apply the fox morph potion. >>
+				
+-- always increase cunning
+gettagval "cunning"
+if it < 50
+	|<< [break]You feel more cunning. >>
+	inctagval "cunning" 2
+endif
+
+-- sometimes increase charisma
+				
+-- grow dog ears
+checktag "ears/genbeast"
+if not exists
+	-- should check the existing type first
+	|<< [break][Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.[break]<cWhite>[You] now [have] fox ears.<c> >>
+
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "genbeast"
+	end
+endif
+
+-- grow fox tail
+checktag "tail/fox"
+if not exists
+	-- should check the existing type first
+	|<< [break]A fox tail sprouts from just above [your] butt.[break]<cWhite>[You] now [have] a fox tail.<c> >>
+
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "fox"
+					
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
+
+-- grow fangs
+
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>[Your] whole body itches as a thin layer of brown fur grows all over. >>
+	-- renametag "skin" "fur"
+	removetag "skin"
+	removetag "rubber"
+	removetag "slime"
+	removetag "scales"
+	addtag "fur"
+	addtag "fur" "brown"
+	setspecies "foxmorph" "foxboy" "foxgirl"
+	adjustview
+	end
+endif
+				
+-- grow digitigrade legs
+				
+				]]>
+			</script>
+		</item>
+		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
+			<![CDATA[
+wip
+ascii
+	char: U+00A1
+	fore
+		skyblue
+			]]>
+			<script language="text/noxicobotic">
+				<![CDATA[
+|<< You apply the bunny morph potion. >>
+				
+-- always increase libido
+gettagval "libido"
+if it < 80
+	|<< [break]You feel hornier. >>
+	inctagval "libido" 4
+endif
+				
+-- grow bunny ears
+checktag "ears/bunny"
+if not exists
+	-- should check the existing type first
+	|<< [break]Your ears transform, becoming more bunny in appearance.[break]<cWhite>You now have bunny ears.<c> >>
+
+	removetag "ears"
+	addtag "ears"
+	addtag "ears" "bunny"
+	end
+endif
+
+-- grow bunny tail
+checktag "tail/bunny"
+if not exists
+	-- should check the existing type first
+	|<< [break]You feel your backside shift and change, flesh molding and displacing into an adorable puffball![break]<cWhite>You now have a bunny tail.<c> >>
+
+	removetag "tail"
+	addtag "tail"
+	addtag "tail" "bunny"
+					
+	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
+	end
+endif
+
+-- grow fur
+checktag "fur"
+if not exists
+	|<< [break]<cWhite>You grow fur all over. >>
+	renametag "skin" "fur"
+	end
+endif
+
+				]]>
+			</script>
+		</item>
+	</items>
+
+	<costumes>
+		<costume id="school_uniform">
+			<![CDATA[
+male
+	random
+		option
+			plain_boxers
+		option
+			plain_briefs
+	boys_uniform_top
+	shirt
+	pants
+female
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	blouse
+	girls_uniform_top
+	pleated_skirt
+			]]>
+		</costume>
+
+		<costume id="casual">
+			<![CDATA[
+male	
+	setvar
+		id: 1
+		value: oneof blue, black, red, cyan, white, gray
+	random
+		option
+			plain_boxers
+		option
+			plain_briefs
+	shirt
+		color: var 1
+	pants
+female
+	setvar
+		id: 1
+		value: oneof blue, black, red, cyan, white, gray
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	random
+		option
+			random
+				option
+					shirt
+						color: var 1
+				option
+					blouse
+						color: var 1
+			random
+				option
+					skirt
+				option
+					pants
+		option
+			random
+				option
+					sundress
+						color: var 1
+				option
+					elegant_dress
+						color: var 1
+			]]>
+		</costume>
+
+		<costume id="lacy_undies">
+			<![CDATA[
+female
+	lacy_panties
+	lacy_bra
+			]]>
+		</costume>
+
+		<costume id="bikini">
+			<![CDATA[
+female
+	bikini_top
+	bikini_bottom
+			]]>
+		</costume>
+
+		<costume id="dress_test">
+			<![CDATA[
+female
+	random
+		option
+			plain_panties
+			plain_bra
+		option
+			lacy_panties
+			lacy_bra
+	random
+		option
+			elegant_dress
+		option
+			sundress
+		option
+			skimpy_dress
+			]]>
+		</costume>
+
+		<costume id="lena">
+			<![CDATA[
+female
+	strapless_leather_bra
+		color: black
+	kinky_panties
+		color: black
+	knee_socks
+		color: black
+	high_heels
+		color: black
+			]]>
+		</costume>
+	</costumes>
+</itemdata>
