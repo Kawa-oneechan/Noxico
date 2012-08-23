@@ -267,8 +267,6 @@ namespace Noxico
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 			//Console.WriteLine(" * Saving board {0}...", Name);
-			if (index == NoxicoGame.HostForm.Noxico.Overworld[NoxicoGame.StartingOWX, NoxicoGame.StartingOWY])
-				index = index;
 			using (var stream = new BinaryWriter(File.Open(System.IO.Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
 				//stream.Write(Name);
