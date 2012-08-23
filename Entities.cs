@@ -926,10 +926,10 @@ namespace Noxico
 				if (warp.TargetBoard == -1) //ungenerated dungeon
 				{
 					NoxicoGame.Mode = UserMode.Subscreen;
-					NoxicoGame.Subscreen = Subscreens.CreateDungeon;
-					Subscreens.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
-					Subscreens.DungeonGeneratorEntranceWarpID = warp.ID;
-					Subscreens.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
+					NoxicoGame.Subscreen = UnsortedSubscreens.CreateDungeon;
+					UnsortedSubscreens.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
+					UnsortedSubscreens.DungeonGeneratorEntranceWarpID = warp.ID;
+					UnsortedSubscreens.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
 					Subscreens.FirstDraw = true;
 					return;
 				}
@@ -1303,7 +1303,7 @@ namespace Noxico
 						{
 							Character.Tokens.Add(new Token() { Name = "helpless" });
 							NoxicoGame.Mode = UserMode.Subscreen;
-							NoxicoGame.Subscreen = Subscreens.SleepAWhile;
+							NoxicoGame.Subscreen = UnsortedSubscreens.SleepAWhile;
 							Subscreens.FirstDraw = true;
 						}, null, true, "Bed");
 					}

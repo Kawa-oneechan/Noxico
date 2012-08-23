@@ -764,7 +764,7 @@ namespace Noxico
 			if (xDoc == null)
 			{
 				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			}
 			var ret = new List<Token>();
 			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;

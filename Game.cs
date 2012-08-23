@@ -90,11 +90,14 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 			var xDoc = new XmlDocument();
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+			Console.WriteLine("Loading items...");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			KnownItems = new List<InventoryItem>();
-			Views = new Dictionary<string, char>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
+			Console.WriteLine("Loading bodyplans...");
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())

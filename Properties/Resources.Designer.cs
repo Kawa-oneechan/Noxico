@@ -122,6 +122,39 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE bodyplans [
+        ///	&lt;!ELEMENT bodyplans (bodyplan+)&gt;
+        ///	&lt;!ELEMENT bodyplan (#PCDATA)&gt;
+        ///	&lt;!ATTLIST bodyplan id ID #REQUIRED&gt;
+        ///]&gt;
+        ///&lt;bodyplans&gt;
+        ///	&lt;bodyplan id=&quot;human&quot;&gt;
+        ///		&lt;![CDATA[
+        ///playable
+        ///culture
+        ///	human
+        ///normalgenders
+        ///explicitgender
+        ///terms
+        ///	generic: &quot;human&quot;
+        ///	male: &quot;man&quot;
+        ///	female: &quot;woman&quot;
+        ///bestiary: &quot;A typical human of northern stock.&quot;
+        ///ascii
+        ///	char: U+0068
+        ///tallness: roll 1d50+150
+        ///hair
+        ///	length: roll 1d4+5
+        ///	color: oneof blond, brown, black,red, gray, white, [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string BodyPlans {
+            get {
+                return ResourceManager.GetString("BodyPlans", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; ?&gt;
         ///&lt;bonustraits&gt;
         ///	&lt;trait name=&quot;Charismatic&quot;&gt;
@@ -236,6 +269,15 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Items {
+            get {
+                return ResourceManager.GetString("Items", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;!DOCTYPE colortable [
         ///	&lt;!ELEMENT colortable (color*)&gt;
@@ -293,10 +335,7 @@ namespace Noxico.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;!DOCTYPE stuff [
-        ///	&lt;!ELEMENT stuff (bodyplans,uniques,items,costumes)&gt;
-        ///	&lt;!ELEMENT bodyplans (bodyplan+)&gt;
-        ///	&lt;!ELEMENT bodyplan (#PCDATA)&gt;
-        ///	&lt;!ATTLIST bodyplan id ID #REQUIRED&gt;
+        ///	&lt;!ELEMENT stuff (uniques,items,costumes)&gt;
         ///	&lt;!ELEMENT uniques (character+)&gt;
         ///	&lt;!ELEMENT script (#PCDATA)&gt;
         ///	&lt;!ATTLIST script language CDATA #FIXED &quot;text/noxicobotic&quot;&gt;
@@ -307,7 +346,12 @@ namespace Noxico.Properties {
         ///		proper (true|false) &quot;true&quot;
         ///		a CDATA #IMPLIED
         ///	&gt;
-        ///	&lt;!ELEMEN [rest of string was truncated]&quot;;.
+        ///	&lt;!ELEMENT items (item+)&gt;
+        ///	&lt;!ELEMENT item (#PCDATA|script)*&gt;
+        ///	&lt;!ATTLIST item
+        ///		id ID #REQUIRED
+        ///		name CDATA #REQUIRED
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Main {
             get {
@@ -345,17 +389,25 @@ namespace Noxico.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-        ///&lt;!-- Bethesda-style dialogue engine for Noxico - MOSTLY SAMPLE DATA --&gt;
-        ///&lt;!DOCTYPE dialogue [
-        ///	&lt;!ELEMENT dialogue (topic*)&gt;
-        ///	&lt;!ELEMENT topic (filter*,info*)&gt;
-        ///	&lt;!ELEMENT info (filter*,p*,script*)&gt;
+        ///&lt;!DOCTYPE scenes [
+        ///	&lt;!ELEMENT scenes (scene+)&gt;
+        ///	&lt;!ELEMENT scene (filter*,(p|script)*,action*)&gt;
         ///	&lt;!ELEMENT filter EMPTY&gt;
         ///	&lt;!ELEMENT p (#PCDATA)&gt;
-        ///	&lt;!ATTLIST topic id ID #REQUIRED text CDATA #IMPLIED&gt;
-        ///	&lt;!ATTLIST info id ID #REQUIRED&gt;
-        ///	&lt;!ATTLIST filter type CDATA #REQUIRED name CDATA #IMPLIED value CDATA #IMPLIED target CDATA #IMPLIED&gt;
-        ///	&lt;!ELEMENT script (#PCDATA) [rest of string was truncated]&quot;;.
+        ///	&lt;!ELEMENT script (#PCDATA)&gt;
+        ///	&lt;!ELEMENT action EMPTY&gt;
+        ///	&lt;!ATTLIST scene
+        ///		id CDATA #REQUIRED
+        ///		name CDATA #REQUIRED
+        ///		list CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ATTLIST filter
+        ///		target (top|bottom) #REQUIRED
+        ///		type CDATA #REQUIRED
+        ///		name CDATA #IMPLIED
+        ///		value CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ATTLIST script type CDATA #FIXED &quot;text/noxico [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string scenesDlg {
             get {

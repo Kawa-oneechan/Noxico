@@ -1182,7 +1182,7 @@ namespace Noxico
 
 	public class Character : TokenCarrier
 	{
-		private static XmlDocument xDoc;
+		private static XmlDocument bodyPlansDocument, uniquesDocument, itemsDocument;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
@@ -1337,14 +1337,14 @@ namespace Noxico
 
 		public static Character GetUnique(string id)
 		{
-			if (xDoc == null)
+			if (uniquesDocument == null)
 			{
-				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+				uniquesDocument = new XmlDocument();
+				uniquesDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
 
 			var newChar = new Character();
-			var planSource = xDoc.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
+			var planSource = uniquesDocument.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
 			var plan = planSource.ChildNodes[0].Value;
 			newChar.Tokens = Token.Tokenize(plan);
 			newChar.Name = new Name(planSource.GetAttribute("name"));
@@ -1407,14 +1407,14 @@ namespace Noxico
 
 		public static Character Generate(string bodyPlan, Gender gender)
 		{
-			if (xDoc == null)
+			if (bodyPlansDocument == null)
 			{
-				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+				bodyPlansDocument = new XmlDocument();
+				bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			}
 
 			var newChar = new Character();
-			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
+			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
 			var plan = planSource.ChildNodes[0].Value;
 			newChar.Tokens = Token.Tokenize(plan);
 			newChar.Name = new Name();
@@ -1555,6 +1555,11 @@ namespace Noxico
 		{
 			if (HasToken("costume"))
 			{
+				if (itemsDocument == null)
+				{
+					itemsDocument = new XmlDocument();
+					itemsDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
+				}
 				var costumesToken = GetToken("costume");
 				var costumeChoices = costumesToken.Tokens;
 				var costume = new Token();
@@ -1562,7 +1567,7 @@ namespace Noxico
 				while (costume.Tokens.Count == 0 && lives > 0)
 				{
 					var pick = costumeChoices[Toolkit.Rand.Next(costumeChoices.Count)].Name;
-					var xElement = xDoc.SelectSingleNode("//costume[@id=\"" + pick + "\"]") as XmlElement;
+					var xElement = itemsDocument.SelectSingleNode("//costume[@id=\"" + pick + "\"]") as XmlElement;
 					if (xElement != null)
 					{
 						var plan = xElement.ChildNodes[0].Value;
@@ -2511,10 +2516,10 @@ namespace Noxico
 
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
-			if (xDoc == null)
+			if (bodyPlansDocument == null)
 			{
-				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+				bodyPlansDocument = new XmlDocument();
+				bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			}
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
@@ -2531,7 +2536,7 @@ namespace Noxico
 					Character.MorphBuffer.Append(s + ' ');
 			});
 
-			var planSource = xDoc.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + targetPlan + "\"]") as XmlElement;
+			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + targetPlan + "\"]") as XmlElement;
 			if (planSource == null)
 				throw new Exception(string.Format("Unknown target bodyplan \"{0}\".", targetPlan));
 			var plan = planSource.ChildNodes[0].Value;

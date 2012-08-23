@@ -127,6 +127,12 @@
     <Compile Include="Scenes.cs" />
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens.cs" />
+    <Compile Include="Subscreens\ContainerMan.cs" />
+    <Compile Include="Subscreens\Introduction.cs" />
+    <Compile Include="Subscreens\Inventory.cs" />
+    <Compile Include="Subscreens\MessageBox.cs" />
+    <Compile Include="Subscreens\Pause.cs" />
+    <Compile Include="Subscreens\TextScroller.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Vista.cs" />
     <Compile Include="WorldGen.cs" />
@@ -144,6 +150,8 @@
     <None Include="Resources\scenesSex.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Resources\bodyplans.xml" />
+    <None Include="Resources\items.xml" />
     <Content Include="sounds\Cursor.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -432,6 +440,7 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
