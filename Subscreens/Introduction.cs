@@ -38,6 +38,9 @@ namespace Noxico
 				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 9, 12);
 				//host.Write("<cSilver>\u263A   <cYellow,Red>\u263B<c>    <cAqua,Navy>\u263B<c>    <cYellow,Navy>\u263B<c>   <cWhite,Gray>\u263B<c>", Color.Silver, Color.Transparent, 14, 10);
 				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
+
+				if (GamerServices.Profile.IsValid)
+					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 80 - 2 - GamerServices.Profile.Name.Length, 24);
 			}
 			if (keys[(int)Keys.Enter] || Subscreens.Mouse)
 			{
@@ -90,51 +93,10 @@ namespace Noxico
 								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 								NoxicoGame.Mode = UserMode.Walkabout;
+								Achievements.StartingTime = DateTime.Now;
 							}
 						}
 					);
-					/*
-					MessageBox.Ask("There is a saved game you could restore -- \"" + saveName + "\". Would you like to do so?",
-						() =>
-						{
-							NoxicoGame.WorldName = saveName;
-							host.Noxico.LoadGame();
-							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-							Subscreens.FirstDraw = true;
-							NoxicoGame.Immediate = true;
-							NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-							NoxicoGame.AddMessage("Remember, press F1 for help and options.");
-							//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-							NoxicoGame.Mode = UserMode.Walkabout;
-						},
-						() =>
-						{
-#if CAREFUL_ABOUT_OVERWRITING
-							MessageBox.Ask("This will <b>overwrite<b> your old saved game. Are you sure?",
-								() =>
-								{
-									NoxicoGame.Mode = UserMode.Subscreen;
-									NoxicoGame.Subscreen = Subscreens.CharacterCreator;
-									NoxicoGame.Immediate = true;
-								},
-								() =>
-								{
-									host.Noxico.LoadGame();
-									NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-									firstDraw = true;
-									NoxicoGame.Immediate = true;
-									NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".");
-									Subscreens.LookAt(NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<Player>().First());
-								}
-							);
-#else
-							NoxicoGame.Mode = UserMode.Subscreen;
-							NoxicoGame.Subscreen = Introduction.CharacterCreator;
-							NoxicoGame.Immediate = true;
-#endif
-						}
-					);
-					*/
 				}
 				else
 				{
@@ -429,6 +391,7 @@ namespace Noxico
 					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
 					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+					Achievements.StartingTime = DateTime.Now;
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();

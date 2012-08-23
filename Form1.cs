@@ -314,6 +314,13 @@ namespace Noxico
 				NoxicoGame.Mono = true;
 			}
 
+			Achievements.ProfilePath = "";
+			if (portable)
+				Achievements.ProfilePath = "profile";
+			else
+				GamerServices.Profile.Prepare();
+			Achievements.Setup();
+
 			this.Controls.Clear();
 			starting = false;
 			//try
@@ -329,7 +336,9 @@ namespace Noxico
 			//	System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
 			//	Running = false;
 			}
+			Achievements.SaveProfile(true);
         }
+
 
 #if ALLOW_PNG_MODE
 		private void CachePNGFont(char p)
