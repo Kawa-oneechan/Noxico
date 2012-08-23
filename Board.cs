@@ -267,6 +267,8 @@ namespace Noxico
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 			//Console.WriteLine(" * Saving board {0}...", Name);
+			if (index == NoxicoGame.HostForm.Noxico.Overworld[NoxicoGame.StartingOWX, NoxicoGame.StartingOWY])
+				index = index;
 			using (var stream = new BinaryWriter(File.Open(System.IO.Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
 				//stream.Write(Name);
@@ -331,6 +333,7 @@ namespace Noxico
 				//newBoard.ID = stream.ReadString();
 				//newBoard.Music = stream.ReadString();
 				var numTokens = stream.ReadInt32();
+				newBoard.Tokens.Clear();
 				for (var i = 0; i < numTokens; i++)
 					newBoard.Tokens.Add(Token.LoadFromFile(stream));
 				newBoard.Name = newBoard.GetToken("name").Text;
