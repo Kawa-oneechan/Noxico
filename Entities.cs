@@ -1379,6 +1379,10 @@ namespace Noxico
 		public void EndTurn()
 		{
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
+			if (ParentBoard == null)
+			{
+				return;
+			}
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
 			{

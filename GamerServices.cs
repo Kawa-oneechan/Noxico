@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace GamerServices
 
 	public static class Profile
 	{
-		private static Uri server = new Uri("http://localhost/gamerservice.php"); //new Uri("http://helmet.kafuka.org/gamerservice.php");
+		private static Uri server = new Uri("http://helmet.kafuka.org/gamerservice.php");
 		private static string profilePath, settingsFile;
 
 		public static string GameName { get; set; }
