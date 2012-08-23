@@ -315,10 +315,10 @@ namespace Noxico
 			}
 
 			Achievements.ProfilePath = "";
-			if (portable)
-				Achievements.ProfilePath = "profile";
-			else
+			if (!portable)
 				GamerServices.Profile.Prepare();
+			GamerServices.Profile.AskForOnline = IniFile.GetBool("profile", "askforonline", true);
+			GamerServices.Profile.UseOnline = IniFile.GetBool("profile", "useonline", true);
 			Achievements.Setup();
 
 			this.Controls.Clear();
