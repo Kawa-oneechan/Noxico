@@ -605,10 +605,10 @@ namespace Noxico
 					else
 						shipTarget = ((BoardChar)subject.ParentBoard.Entities.Find(x => x.ID.Equals(shipTargetID, StringComparison.InvariantCultureIgnoreCase))).Character;
 					var me = ((BoardChar)subject).Character;
-					var shipToken = me.Path("ships/" + shipTarget.Name.ToString(true));
+					var shipToken = me.Path("ships/" + shipTarget.ID);
 					if (shipToken == null)
 					{
-						shipToken = new Token() { Name = shipTarget.Name.ToString(true) };
+						shipToken = new Token() { Name = shipTarget.ID };
 						me.Path("ships").Tokens.Add(shipToken);
 						shipToken.Tokens.Add(new Token() { Name = parms[1] });
 					}

@@ -12,6 +12,8 @@ namespace Noxico
 {
 	public class Introduction
 	{
+		private static bool restarting = false;
+
 		public static void Title()
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -52,7 +54,7 @@ namespace Noxico
 				var saves = new List<string>();
 				foreach (var s in rawSaves)
 				{
-					if (File.Exists(Path.Combine(s, "player.bin")))
+					//if (File.Exists(Path.Combine(s, "player.bin")))
 						saves.Add(s);
 				}
 				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
@@ -65,13 +67,18 @@ namespace Noxico
 					var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
 					{
 						string p;
-						using (var f = new BinaryReader(File.OpenRead(Path.Combine(s, "player.bin"))))
+						var playerFile = Path.Combine(s, "player.bin");
+						if (File.Exists(playerFile))
 						{
-							p = f.ReadString();
+							using (var f = new BinaryReader(File.OpenRead(playerFile)))
+							{
+								p = f.ReadString();
+							}
+							return p + ", \"" + Path.GetFileName(s) + "\"";
 						}
-						return p + ", \"" + Path.GetFileName(s) + "\"";
+						return "Start over in \"" + Path.GetFileName(s) + "\"";
 					}));
-					options.Add("~", "~ Start new game in \"" + NoxicoGame.WorldName + "\" ~");
+					options.Add("~", "Start new game in \"" + NoxicoGame.WorldName + "\"");
 					MessageBox.List("There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
 						() =>
 						{
@@ -86,14 +93,25 @@ namespace Noxico
 							{
 								NoxicoGame.WorldName = (string)MessageBox.Answer;
 								host.Noxico.LoadGame();
-								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-								Subscreens.FirstDraw = true;
-								NoxicoGame.Immediate = true;
-								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
-								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-								NoxicoGame.Mode = UserMode.Walkabout;
-								Achievements.StartingTime = DateTime.Now;
+								var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
+								if (!File.Exists(playerFile))
+								{
+									NoxicoGame.Mode = UserMode.Subscreen;
+									NoxicoGame.Subscreen = Introduction.CharacterCreator;
+									restarting = true;
+									NoxicoGame.Immediate = true;
+								}
+								else
+								{
+									NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+									Subscreens.FirstDraw = true;
+									NoxicoGame.Immediate = true;
+									NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+									NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+									//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+									NoxicoGame.Mode = UserMode.Walkabout;
+									Achievements.StartingTime = DateTime.Now;
+								}
 							}
 						}
 					);
@@ -294,7 +312,7 @@ namespace Noxico
 					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
 					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
 					{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
-					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = true } },
+					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = !restarting } },
 
 					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
 					{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
@@ -418,8 +436,11 @@ namespace Noxico
 				Subscreens.Redraw = true;
 
 				//Start creating the world as we work...
-				worldgen = new System.Threading.Thread(CreateNox);
-				worldgen.Start();
+				if (!restarting)
+				{
+					worldgen = new System.Threading.Thread(CreateNox);
+					worldgen.Start();
+				}
 			}
 
 			if (Subscreens.Redraw)
@@ -428,7 +449,7 @@ namespace Noxico
 				Subscreens.Redraw = false;
 			}
 
-			if (worldgen.ThreadState != System.Threading.ThreadState.Running && controls["play"].Hidden)
+			if (!restarting && (worldgen.ThreadState != System.Threading.ThreadState.Running && controls["play"].Hidden))
 			{
 				controls["play"].Hidden = false;
 				if (page == 2)

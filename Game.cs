@@ -70,7 +70,7 @@ namespace Noxico
 				SavePath = Path.GetFullPath(SavePath);
 			}
 
-			WorldName = RollWorldName();
+			WorldName = "\xF4EDowhere"; //RollWorldName();
 			if (!Directory.Exists(SavePath))
 				Directory.CreateDirectory(SavePath);
 
@@ -174,17 +174,23 @@ namespace Noxico
 			}
 		}
 
-		public void SaveGame()
+		public void SaveGame(bool noPlayer = false)
 		{
-			NoxicoGame.HostForm.Text = "Noxico - Saving...";
+			if (WorldName == "\xF4EDowhere")
+				return;
+
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
-			Console.WriteLine("Saving player...");
-			var file = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
-			var bin = new BinaryWriter(file);
-			Player.SaveToFile(bin);
-			bin.Flush();
-			file.Flush();
-			file.Close();
+
+			if (!noPlayer)
+			{
+				Console.WriteLine("Saving player...");
+				var pfile = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
+				var pbin = new BinaryWriter(pfile);
+				Player.SaveToFile(pbin);
+				pbin.Flush();
+				pfile.Flush();
+				pfile.Close();
+			}
 
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
@@ -193,8 +199,8 @@ namespace Noxico
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 
-			file = File.Open(Path.Combine(SavePath, WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
-			bin = new BinaryWriter(file);
+			var file = File.Open(Path.Combine(SavePath, WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
+			var bin = new BinaryWriter(file);
 			bin.Write(header);
 
 			bin.Write(Overworld.GetLength(0));
@@ -217,32 +223,33 @@ namespace Noxico
 				}
 			}
 
+			bin.Write(StartingOWX);
+			bin.Write(StartingOWY);
+
 			bin.Flush();
 
 			file.Flush();
 			file.Close();
 			Console.WriteLine("Done.");
 			Console.WriteLine("--------------------------");
-#if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
-#else
-			NoxicoGame.HostForm.Text = "Noxico";
-#endif
 		}
 
 		public void LoadGame()
 		{
-			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-			var file = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Open);
-			var bin = new BinaryReader(file);
-			Player = Player.LoadFromFile(bin);
-			Player.AdjustView();
-			file.Close();
+			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
+			if (File.Exists(playerFile))
+			{
+				var pfile = File.Open(playerFile, FileMode.Open);
+				var pbin = new BinaryReader(pfile);
+				Player = Player.LoadFromFile(pbin);
+				Player.AdjustView();
+				pfile.Close();
+			}
 
 			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
 
-			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
-			bin = new BinaryReader(file);
+			var file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
+			var bin = new BinaryReader(file);
 			var header = bin.ReadBytes(6);
 			if (Encoding.UTF8.GetString(header) != "NOXiCO")
 			{
@@ -269,49 +276,28 @@ namespace Noxico
 				Boards.Add(null);
 			//for (int i = 0; i < boardCount; i++)
 			//	Boards.Add(Board.LoadFromFile(bin));
-			GetBoard(currentIndex);
 
-			CurrentBoard = Boards[currentIndex];
-			CurrentBoard.Entities.Add(Player);
-			Player.ParentBoard = CurrentBoard;
-			CurrentBoard.Redraw();
-			Sound.PlayMusic(CurrentBoard.Music);
+			StartingOWX = bin.ReadInt32();
+			StartingOWY = bin.ReadInt32();
 
 			file.Close();
-#if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", CurrentBoard.Name);
-#else
-			NoxicoGame.HostForm.Text = "Noxico";
-#endif
 
-			//Add debug characters
-			/*
-			for (var i = 0; i < 20; i++)
+			if (File.Exists(playerFile))
 			{
-				var test = new BoardChar(Character.Generate("imp", Gender.Random))
-				{
-					ParentBoard = CurrentBoard,
-					XPosition = Toolkit.Rand.Next(2, 78),
-					YPosition = Toolkit.Rand.Next(2, 23),
-				};
-				test.Character.Tokens.Add(new Token() { Name = "hostile" });
-				test.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
-				CurrentBoard.Entities.Add(test);
-			}
-			*/
-			/*
-			var tail = Player.Character.GetToken("tail");
-			if (tail == null)
-			{
-				tail = new Token() { Name = "tail" };
-				Player.Character.Tokens.Add(tail);
-			}
-			tail.Tokens.Add(new Token() { Name = "tentacle" });
-			tail.GetToken("tentacle").Tokens.Add(new Token() { Name = "penis" });
-			Player.Character.GetToken("stimulation").Value = 90;
-			*/
+				GetBoard(currentIndex);
 
-			Achievements.StartingTime = DateTime.Now;
+				CurrentBoard = Boards[currentIndex];
+				CurrentBoard.Entities.Add(Player);
+				Player.ParentBoard = CurrentBoard;
+				CurrentBoard.Redraw();
+				Sound.PlayMusic(CurrentBoard.Music);
+
+				if (!Player.Character.HasToken("player"))
+					Player.Character.Tokens.Add(new Token() { Name = "player", Value = (int)DateTime.Now.Ticks });
+				SaveGame();
+
+				Achievements.StartingTime = DateTime.Now;
+			}
 		}
 
 		public Board GetBoard(int index)
@@ -410,6 +396,7 @@ namespace Noxico
 						AutoRestTimer--;
 						if (AutoRestTimer <= 0)
 						{
+							Sound.PlaySound("Open Gate");
 							AutoRestTimer = AutoRestSpeed;
 							KeyMap[(int)Keys.OemPeriod] = true;
 						}
@@ -624,6 +611,8 @@ namespace Noxico
 					this.Boards[i] = null;
 			}
 
+			SaveGame(true);
+
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			setStatus("The World is Ready.");
@@ -656,6 +645,8 @@ namespace Noxico
 				pc.Path("hair/color").Text = hairColor;
 			if (pc.HasToken("eyes"))
 				pc.GetToken("eyes").Text = eyeColor;
+
+			pc.Tokens.Add(new Token() { Name = "player", Value = (int)DateTime.Now.Ticks });
 
 			var playerShip = new Token() { Name = Environment.UserName };
 			playerShip.Tokens.Add(new Token() { Name = "player" });
@@ -707,7 +698,10 @@ namespace Noxico
 				}
 			}
 
-			var stride = Overworld.GetUpperBound(0) + 1;
+			if (StartingOWX < 0 || StartingOWY < 0)
+			{
+			}
+
 			this.CurrentBoard = GetBoard(Overworld[StartingOWX, StartingOWY]);
 			this.Player = new Player(pc)
 			{
@@ -729,7 +723,7 @@ namespace Noxico
 				ParentBoard = this.CurrentBoard,
 			});
 			*/
-			//SaveGame();
+			SaveGame();
 		}
 
 		public static int GetOverworldIndex(Board board)

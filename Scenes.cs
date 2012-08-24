@@ -205,13 +205,13 @@ namespace Noxico
 					case "relation":
 						if (fValue != "none")
 						{
-							var path = "ships/" + fSecondary.Name + "/" + fValue;
+							var path = "ships/" + fSecondary.ID + "/" + fValue;
 							if (fPrimary.Path(path) == null)
 								return false;
 						}
 						else
 						{
-							var path = "ships/" + fSecondary.Name;
+							var path = "ships/" + fSecondary.ID;
 							if (fPrimary.Path(path) != null)
 								return false;
 						}

@@ -1191,6 +1191,16 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 
+		public string ID
+		{
+			get
+			{
+				if (HasToken("player"))
+					return "\xF4EF" + Name.ToID() + "#" + GetToken("player").Value;
+				return Name.ToID();
+			}
+		}
+
 		/// <summary>
 		/// Returns the full name of the character with title, or just the title.
 		/// </summary>
@@ -2401,7 +2411,12 @@ namespace Noxico
 			{
 				list.Clear();
 				foreach (var person in GetToken("ships").Tokens)
-					list.Add(person.Name + " -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+				{
+					var reparsed = person.Name.Replace('_', ' ');
+					if (reparsed.StartsWith("\xF4EF"))
+						reparsed = reparsed.Remove(reparsed.IndexOf('#')).Substring(1);
+					list.Add(reparsed + " -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+				}
 				list.Sort();
 				list.ForEach(x => dump.WriteLine(x));
 			}

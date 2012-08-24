@@ -336,6 +336,7 @@ namespace Noxico
 			//	System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
 			//	Running = false;
 			}
+			Noxico.SaveGame();
 			Achievements.SaveProfile(true);
         }
 

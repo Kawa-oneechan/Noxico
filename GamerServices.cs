@@ -224,8 +224,8 @@ namespace GamerServices
 		public static bool IsConnected()
 		{
 			var online = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
-			//if (!online)
-			//	return false;
+			if (!online)
+				return false;
 			if (AskForOnline)
 			{
 				AskForOnline = false;
