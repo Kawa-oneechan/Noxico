@@ -976,6 +976,7 @@ namespace Noxico
 		{
 			var n = NoxicoGame.HostForm.Noxico;
 			this.ParentBoard.EntitiesToRemove.Add(this);
+			this.ParentBoard.SaveToFile(this.ParentBoard.BoardNum);
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);

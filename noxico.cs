@@ -2415,7 +2415,7 @@ namespace Noxico
 					var reparsed = person.Name.Replace('_', ' ');
 					if (reparsed.StartsWith("\xF4EF"))
 						reparsed = reparsed.Remove(reparsed.IndexOf('#')).Substring(1);
-					list.Add(reparsed + " -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+					list.Add(reparsed + " (" + person.Name + ") -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
 				}
 				list.Sort();
 				list.ForEach(x => dump.WriteLine(x));
