@@ -48,7 +48,7 @@ namespace Noxico
 		public static string[] TileDescriptions { get; private set; }
 		public static Dictionary<string, string> BodyplanLevs { get; set; }
 		public static string SavePath { get; private set; }
-		public static bool InGame { get; private set; }
+		public static bool InGame { get; set; }
 #if CONTEXT_SENSITIVE
 		public static string ContextMessage { get; set; }
 		private static bool hadContextMessage;

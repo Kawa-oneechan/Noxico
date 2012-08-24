@@ -286,6 +286,7 @@ namespace Noxico
 
 		private static Dictionary<string, UIElement> controls;
 		private static List<UIElement>[] pages;
+		private static Dictionary<string, string> controlHelps;
 
 		private static int page = 0;
 		private static Action<int> loadPage, loadColors;
@@ -302,8 +303,25 @@ namespace Noxico
 				var traitsDoc = new XmlDocument();
 				traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 				var traits = new List<string>();
+				var traitHelps = new List<string>();
 				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
+				{
 					traits.Add(trait.GetAttribute("name"));
+					traitHelps.Add(trait.InnerText.Trim());
+				}
+				controlHelps = new Dictionary<string, string>()
+				{
+					{ "back", "Go back one page." },
+					{ "next", "Go to the next page." },
+					{ "play", Toolkit.Rand.NextDouble() > 0.7 ? "FRUITY ANGELS MOLEST SHARKY" : "ENGAGE RIDLEY MOTHER FUCKER" },
+					{ "name", "Enter the name for your character. Leave this blank to use a random name." },
+					{ "species", "Select the (initial) species you'll play as." },
+					{ "sex", "Are you a boy? Or are you a girl? Some species may not give you the choice." },
+					{ "hair", "Select the color of your character's hair." },
+					{ "body", "Select the color of your character's body. Some species may not give you a choice." },
+					{ "eyes", "Select the color of your character's eyes. Again, you might not always have a choice." },
+					{ "gift", traitHelps[0] },
+				};
 
 				controls = new Dictionary<string, UIElement>()
 				{
@@ -334,8 +352,9 @@ namespace Noxico
 					{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7 } },
 					{ "gift", new UIList("", null, traits) { Left = 45, Top = 8, Width = 24, Height = 8 } },
 
+					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 40, Height = 4, Foreground = Color.White } },
 					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel("") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel("The world is already here.") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
 				};
 
 				pages = new List<UIElement>[]
@@ -346,7 +365,7 @@ namespace Noxico
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sexNo"], controls["sex"],
-						controls["next"],
+						controls["controlHelp"], controls["next"],
 					},
 					new List<UIElement>()
 					{
@@ -354,13 +373,13 @@ namespace Noxico
 						controls["hairLabel"], controls["hair"],
 						controls["bodyLabel"], controls["bodyNo"], controls["body"],
 						controls["eyesLabel"], controls["eyes"],
-						controls["back"], controls["next"],
+						controls["controlHelp"], controls["back"], controls["next"],
 					},
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["giftLabel"], controls["gift"],
-						controls["back"], controls["playNo"], controls["play"],
+						controls["controlHelp"], controls["back"], controls["playNo"], controls["play"],
 					},
 				};
 
@@ -370,7 +389,7 @@ namespace Noxico
 				{
 					UIManager.Elements.Clear();
 					UIManager.Elements.AddRange(pages[page]);
-					UIManager.Highlight = UIManager.Elements[0];
+					UIManager.Highlight = UIManager.Elements[5];
 				});
 
 				loadColors = new Action<int>(i =>
@@ -429,8 +448,27 @@ namespace Noxico
 					controls["nameRandom"].Hidden = (controls["name"].Text != "");
 					UIManager.Draw();
 				};
+				controls["gift"].Change = (s, e) =>
+				{
+					var giftIndex = ((UIList)controls["gift"]).Index;
+					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(40);
+					controls["controlHelp"].Top = controls["gift"].Top + giftIndex;
+					UIManager.Draw();
+				};
 
 				UIManager.Initialize();
+				UIManager.HighlightChanged = (s, e) =>
+				{
+					var c = controls.First(x => x.Value == UIManager.Highlight);
+					if (controlHelps.ContainsKey(c.Key))
+					{
+						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(40);
+						controls["controlHelp"].Top = c.Value.Top;
+					}
+					else
+						controls["controlHelp"].Text = "";
+					UIManager.Draw();
+				};
 				loadPage(page);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
@@ -441,6 +479,8 @@ namespace Noxico
 					worldgen = new System.Threading.Thread(CreateNox);
 					worldgen.Start();
 				}
+
+				NoxicoGame.InGame = false;
 			}
 
 			if (Subscreens.Redraw)
@@ -457,7 +497,6 @@ namespace Noxico
 			}
 
 			UIManager.CheckKeys();
-
 		}
 	}
 
