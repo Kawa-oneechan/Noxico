@@ -48,7 +48,7 @@ namespace Noxico
 		public static string[] TileDescriptions { get; private set; }
 		public static Dictionary<string, string> BodyplanLevs { get; set; }
 		public static string SavePath { get; private set; }
-
+		public static bool InGame { get; private set; }
 #if CONTEXT_SENSITIVE
 		public static string ContextMessage { get; set; }
 		private static bool hadContextMessage;
@@ -70,7 +70,7 @@ namespace Noxico
 				SavePath = Path.GetFullPath(SavePath);
 			}
 
-			WorldName = "\xF4EDowhere"; //RollWorldName();
+			WorldName = RollWorldName();
 			if (!Directory.Exists(SavePath))
 				Directory.CreateDirectory(SavePath);
 
@@ -174,9 +174,9 @@ namespace Noxico
 			}
 		}
 
-		public void SaveGame(bool noPlayer = false)
+		public void SaveGame(bool noPlayer = false, bool force = false)
 		{
-			if (WorldName == "\xF4EDowhere")
+			if (!InGame && !force)
 				return;
 
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
@@ -281,6 +281,8 @@ namespace Noxico
 			StartingOWY = bin.ReadInt32();
 
 			file.Close();
+
+			InGame = true;
 
 			if (File.Exists(playerFile))
 			{
@@ -610,8 +612,7 @@ namespace Noxico
 				if (i > 0)
 					this.Boards[i] = null;
 			}
-
-			SaveGame(true);
+			SaveGame(true, true);
 
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
@@ -698,10 +699,6 @@ namespace Noxico
 				}
 			}
 
-			if (StartingOWX < 0 || StartingOWY < 0)
-			{
-			}
-
 			this.CurrentBoard = GetBoard(Overworld[StartingOWX, StartingOWY]);
 			this.Player = new Player(pc)
 			{
@@ -723,6 +720,7 @@ namespace Noxico
 				ParentBoard = this.CurrentBoard,
 			});
 			*/
+			InGame = true;
 			SaveGame();
 		}
 
