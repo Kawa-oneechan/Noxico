@@ -6,10 +6,10 @@ msbuild /property:Configuration=Release;Platform=x64
 msbuild /property:Configuration=Release;Platform=x86
 
 cd bin\Release
-..\..\7za.exe a ..\noxico-0.1.9.7z fonts fmodex64.dll Noxico.exe
-..\..\Rar.exe u ..\noxico-0.1.9.rar fonts fmodex64.dll Noxico.exe
+..\..\7za.exe a ..\noxico-0.1.10.7z fonts fmodex64.dll Noxico.exe
+..\..\Rar.exe u ..\noxico-0.1.10.rar fonts fmodex64.dll Noxico.exe
 ..\..\Rar.exe u ..\noxico-music.rar music sounds
 cd ..\Release32
-..\..\7za.exe a ..\noxico-0.1.9-32.7z fonts fmodex.dll Noxico.exe
-..\..\Rar.exe u ..\noxico-0.1.9-32.rar fonts fmodex.dll Noxico.exe
+..\..\7za.exe a ..\noxico-0.1.10-32.7z fonts fmodex.dll Noxico.exe
+..\..\Rar.exe u ..\noxico-0.1.10-32.rar fonts fmodex.dll Noxico.exe
 pause

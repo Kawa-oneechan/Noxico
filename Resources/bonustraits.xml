@@ -3,24 +3,29 @@
 	<trait name="Charismatic">
 		<stat id="charisma" value="15%" />
 		<skill name="Bartering" />
+		(Only stat bonus works) Gives a 15% bonus on Charisma, and a level in bartering.
 	</trait>
 	<trait name="Cunning Bastard">
 		<stat id="cunning" />
 		<skill name="Trap Disarming" />
+		(Only stat bonus works) Gives a 20% bonus on Cunning, and a level in trap disarming.
 	</trait>
 	<trait name="Fast Food">
 		<stat id="speed" />
 		<skill name="Swimming" />
+		(Only stat bonus works) Gives a 20% bonus on Speed, and a level in swimming (which is useless for now).
 	</trait>
 	<trait name="Olympian">
 		<stat id="strength" />
 		<skill name="Acrobatics" />
+		(Only stat bonus works) Gives a 20% bonus on Strength, and a level in acrobatics.
 	</trait>
 	<trait name="Smooth Operator">
 		<stat id="charisma" />
 		<skill name="Sweet Talking" />
 		<skill name="Bartering" level="0.5" />
 		<skill name="Kissing" />
+		(Only stat bonus works) Gives a 20% bonus on Charisma, levels in sweet talking and kissing, and half a level in bartering.
 	</trait>
 	<trait name="Pervert">
 		<stat id="carnality" />
@@ -30,6 +35,7 @@
 		<skill name="Penile Masturbation" gender="male" />
 		<skill name="Vaginal Masturbation" gender="female" />
 		<skill name="Anal Play" />
+		(Only stat bonus works) Gives a 20% bonus on Carnality and Stimulation, levels in blowjobs, masturbation, and anal play, and half a level in sweet talking.
 	</trait>
 	<trait name="Large">
 		<rating id="breasts" value="5" gender="female" />
@@ -38,10 +44,12 @@
 		<rating id="penislength" value="10%" gender="male" />
 		<rating id="balls" value="+1" gender="male" />
 		<rating id="waist" value="7" />
+		(Fully unimplemented) Starts with bigger body parts. Males start with a 10% penis length bonus, and +1 ball size rating. Women start with at least E cups, voluptuous hips, and substantial butts. Both start with at least spongy hips.
 	</trait>
 	<trait name="Messy">
 		<bonus id="cumproduction" value="20%" />
 		<givetoken id="trailer" />
 		<givetoken id="milker" />
+		(Fully unimplemented) Gives a 20% bonus on cum production, with a high chance of leaving trails for a time afterwards. If female, milk production is always at least a dribble at any time.
 	</trait>
 </bonustraits>

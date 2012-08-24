@@ -511,6 +511,7 @@ namespace Noxico
 	{
 		private static UIElement highlight;
 
+		public static EventHandler HighlightChanged { get; set; }
 		public static List<UIElement> Elements { get; set; }
 		public static UIElement Highlight
 		{
@@ -524,6 +525,8 @@ namespace Noxico
 					highlight = value;
 				else
 					highlight = Elements[0];
+				if (HighlightChanged != null)
+					HighlightChanged(null, null);
 			}
 		}
 
@@ -546,6 +549,8 @@ namespace Noxico
 						highlight = item;
 						h.Draw();
 						item.Draw();
+						if (HighlightChanged != null)
+							HighlightChanged(null, null);
 					}
 					item.DoMouse(Subscreens.MouseX - item.Left, Subscreens.MouseY - item.Top);
 				}
@@ -608,6 +613,8 @@ namespace Noxico
 						highlight = Elements[i];
 						oH.Draw();
 						highlight.Draw();
+						if (HighlightChanged != null)
+							HighlightChanged(null, null);
 						return;
 					}
 				}
@@ -620,6 +627,8 @@ namespace Noxico
 						highlight = Elements[i];
 						oH.Draw();
 						highlight.Draw();
+						if (HighlightChanged != null)
+							HighlightChanged(null, null);
 						return;
 					}
 				}
@@ -634,6 +643,8 @@ namespace Noxico
 						highlight = Elements[i];
 						oH.Draw();
 						highlight.Draw();
+						if (HighlightChanged != null)
+							HighlightChanged(null, null);
 						return;
 					}
 				}
@@ -646,6 +657,8 @@ namespace Noxico
 						highlight = Elements[i];
 						oH.Draw();
 						highlight.Draw();
+						if (HighlightChanged != null)
+							HighlightChanged(null, null);
 						return;
 					}
 				}
