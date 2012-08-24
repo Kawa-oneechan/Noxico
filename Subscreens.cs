@@ -151,6 +151,7 @@ namespace Noxico
 			NoxicoGame.Sound.PlayMusic(entranceBoard.Music);
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
+			NoxicoGame.HostForm.Noxico.SaveGame();
 		}
 
 		private static void Excavate(Board excavateFrom, BiomeData biomeData, ref int amount, int depth, ref int deepest, ref Board deepestBoard)

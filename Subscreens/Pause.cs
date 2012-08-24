@@ -146,7 +146,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			sb.AppendLine("Name                " + player.Name);
 			sb.AppendLine("Health              " + player.GetToken("health").Value + " / " + player.GetMaximumHealth());
 			sb.AppendLine("Money               " + player.GetToken("money").Value + " Z");
-			sb.AppendLine("Play time           " + "lol");
+			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
 			sb.AppendLine("Charisma            " + player.GetToken("charisma").Value);
 			sb.AppendLine("Climax              " + player.GetToken("climax").Value);
 			sb.AppendLine("Cunning             " + player.GetToken("cunning").Value);

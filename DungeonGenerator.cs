@@ -470,10 +470,10 @@ namespace Noxico
 					{
 						var shipType = Toolkit.Rand.NextDouble() < culture.Marriage ? "spouse" : "friend";
 						//if we chose spouse, handle the wife taking the surname of the husband.
-						var ship = new Token() { Name = c.Name.ToString(true) };
+						var ship = new Token() { Name = c.ID };
 						ship.Tokens.Add(new Token() { Name = shipType });
 						r[0].Path("ships").Tokens.Add(ship);
-						ship = new Token() { Name = r[0].Name.ToString(true) };
+						ship = new Token() { Name = r[0].ID };
 						ship.Tokens.Add(new Token() { Name = shipType });
 						c.Path("ships").Tokens.Add(ship);
 					}

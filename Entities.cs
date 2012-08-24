@@ -177,9 +177,6 @@ namespace Noxico
 
 		public void CallScript(string label)
 		{
-#if DEBUG
-			NoxicoGame.HostForm.Text = ID + ": " + label;
-#endif
 			if (this.Script == null || this.Script.Length == 0)
 				return;
 			for (var i = 0; i < this.Script.Length; i++)
@@ -893,6 +890,7 @@ namespace Noxico
 		public int OverworldX, OverworldY;
 		public bool OnOverworld;
 		public string CurrentRealm;
+		public TimeSpan PlayingTime;
 
         public Player()
         {
@@ -1039,15 +1037,27 @@ namespace Noxico
 				if (entity.Blocking)
 				{
 					NoxicoGame.ClearKeys();
-					entity.CallScript("playerbump");
-					if (entity is BoardChar && ((BoardChar)entity).Character.HasToken("hostile"))
+					if (entity is BoardChar)
 					{
-						//Strike at your foes!
-						AutoTravelling = false;
-						MeleeAttack((BoardChar)entity);
-						EndTurn();
+						var bc = (BoardChar)entity;
+						if (bc.Character.HasToken("hostile"))
+						{
+							//Strike at your foes!
+							AutoTravelling = false;
+							MeleeAttack(bc);
+							EndTurn();
+							return;
+						}
+						if (bc.Script.Contains("playerbump:"))
+						{
+							bc.CallScript("playerbump");
+							return;
+						}
+						//Displace!
+						NoxicoGame.AddMessage("You displace " + bc.Character.Name.ToString() + ".");
+						bc.XPosition = this.XPosition;
+						bc.YPosition = this.YPosition;
 					}
-					return;
 				}
 				else
 					entity.CallScript("playerstep");
@@ -1378,6 +1388,7 @@ namespace Noxico
 
 		public void EndTurn()
 		{
+			PlayingTime = PlayingTime.Add(new TimeSpan(0,0,5));
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
 			{
@@ -1389,6 +1400,8 @@ namespace Noxico
 				if (Hurt(10, "burned to death", null))
 				{
 					NoxicoGame.AddMessage("GAME OVER", Color.Red);
+					var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
+					File.Delete(playerFile);
 					MessageBox.Ask(
 						"You have burned to death.\n\nWould you like an infodump on the way out?",
 						() =>
@@ -1421,15 +1434,17 @@ namespace Noxico
 			{
 				Achievements.CheckYASD();
 
-				var relation = Character.Path("ships/" + aggressor.Character.Name.ToString(true));
+				var relation = Character.Path("ships/" + aggressor.Character.ID);
 				if (relation == null)
 				{
-					relation = new Token() { Name = aggressor.Character.Name.ToString(true) };
+					relation = new Token() { Name = aggressor.Character.ID };
 					Character.Path("ships").Tokens.Add(relation);
 				}
 				relation.Tokens.Add(new Token() { Name = "killer" });
 
 				NoxicoGame.AddMessage("GAME OVER", Color.Red);
+				var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
+				File.Delete(playerFile);
 				MessageBox.Ask(
 					"You have been slain.\n\nWould you like an infodump on the way out?",
 					() =>
@@ -1453,6 +1468,7 @@ namespace Noxico
 			stream.Write(OnOverworld);
 			stream.Write((byte)OverworldX);
 			stream.Write((byte)OverworldY);
+			stream.Write(PlayingTime.Ticks);
 		}
 
 		public static new Player LoadFromFile(BinaryReader stream)
@@ -1469,6 +1485,7 @@ namespace Noxico
 			newChar.OnOverworld = stream.ReadBoolean();
 			newChar.OverworldX = stream.ReadByte();
 			newChar.OverworldY = stream.ReadByte();
+			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
 			return newChar;
 		}
 
