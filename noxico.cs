@@ -735,13 +735,13 @@ namespace Noxico
 			{
 				var m = Math.Floor(cm / 100);
 				cm %= 100;
-				if (Math.Floor(cm) != cm)
+				if (cm > 0)
 					return m + "." + cm + "m";
 				else
 					return m + "m";
 			}
 			if (Math.Floor(cm) != cm)
-				return cm.ToString("F2") + "cm";
+				return cm.ToString("F1") + "cm";
 			else
 				return cm.ToString("F0") + "cm";
 			//return Math.Floor(cm).ToString() + "cm";
