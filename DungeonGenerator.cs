@@ -691,7 +691,6 @@ namespace Noxico
 						//}
 						//else
 						{
-							//TODO: find random ' ' within sector
 							var okay = false;
 							var x = 0;
 							var y = 0;

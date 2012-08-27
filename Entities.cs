@@ -512,18 +512,6 @@ namespace Noxico
 
 		public virtual void AdjustView()
 		{
-			//TODO: Rewrite this to use Levenshtein system.
-			/*
-			var hS = Character.GetHumanScore();
-			var gS = Character.GetGoblinScore();
-			var dS = Character.GetDemonScore();
-			AsciiChar = NoxicoGame.Views["human"];
-			if (dS > hS && dS > gS)
-				AsciiChar = NoxicoGame.Views["foocubus"];
-			else if (gS > hS)
-				AsciiChar = NoxicoGame.Views["goblin"];
-			*/
-
 			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
@@ -536,9 +524,9 @@ namespace Noxico
 				if (a.HasToken("char"))
 					AsciiChar = (char)a.GetToken("char").Value;
 				if (a.HasToken("fore"))
-					ForegroundColor = Toolkit.GetColor(a.GetToken("fore").Text); //(int)a.GetToken("fore").Value;
+					ForegroundColor = Toolkit.GetColor(a.GetToken("fore").Text);
 				if (a.HasToken("back"))
-					BackgroundColor = Toolkit.GetColor(a.GetToken("back").Text); //(int)a.GetToken("back").Value;
+					BackgroundColor = Toolkit.GetColor(a.GetToken("back").Text);
 			}
 		}
 
@@ -618,7 +606,7 @@ namespace Noxico
 				}
 			}
 
-			var hostile = Character.HasToken("hostile"); //TODO: determine otherwise, probably from tokens
+			var hostile = Character.HasToken("hostile");
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (ParentBoard == player.ParentBoard && hostile && Movement != Motor.Hunt)
 			{
@@ -638,7 +626,6 @@ namespace Noxico
 			if (Character.HasToken("helpless"))
 				return;
 
-			//TODO: Hunt down the target, probably the player.
 			BoardChar target = null;
 			//If no target is given, assume the player.
 			if (Character.HasToken("huntingtarget"))
@@ -657,7 +644,8 @@ namespace Noxico
 				return;
 			}
 
-			var range = 1; //TODO: set to applicable range for ranged weapons. Melee gets 1 for now.
+			var weapon = Character.CanShoot();
+			var range = (weapon == null) ? 1 : (int)weapon.Path("weapon/range").Value;
 			if (DistanceFrom(target) <= range && CanSee(target))
 			{
 				//Within attacking range.
