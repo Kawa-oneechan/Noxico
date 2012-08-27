@@ -28,7 +28,7 @@ namespace Noxico
 			var blockEndRE = @"^(?:endif|else|next)"; //so we don't try to execute these like commands
 			var ro = RegexOptions.IgnorePatternWhitespace;
 
-			//TODO: IF and FOR
+			//TODO: FOR loops
 
 			while (subject.ScriptRunning && subject.ScriptPointer < Script.Length)
 			{

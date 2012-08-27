@@ -303,9 +303,6 @@ namespace Noxico
 				Introduction.KillWorldgen();
 			};
 
-			//TODO: Check for Mono at RUN TIME, not just #if MONO, so we can enable key repeat delays.
-			//This was something with Environment, but WHAT!?
-			//For now, we'll just check OSVersion.Platform.
 			Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
