@@ -561,7 +561,6 @@ namespace Noxico
 				{
 					if (newBoard.Tilemap[col, row].Foreground == Color.Brown && wallPieces.Contains(newBoard.Tilemap[col, row].Character))
 					{
-						//TODO: add more corner possibilities.
 						if (newBoard.Tilemap[col, row].Character == '\xC9' && newBoard.Tilemap[col, row - 1].Character == '\xBA') //╔ ║ > ╠
 							newBoard.Tilemap[col, row].Character = '\xCC';
 						else if (newBoard.Tilemap[col, row].Character == '\xBC' && newBoard.Tilemap[col + 1, row].Character == '\xCD') //╝ ═ > ╩
@@ -780,8 +779,6 @@ namespace Noxico
 				{
 					if (c.GetAttribute("name") == "random")
 					{
-						//TODO: Replace GiveName call with Culture system.
-						//TODO: Rework pairings to use relationship tokens.
 						/*
 						ch.GiveName();
 						if (pa != "")
@@ -1107,108 +1104,6 @@ namespace Noxico
 			foreach (var entity in this.Entities.OfType<BoardChar>())
 				entity.Draw();
 		}
-
-		/*
-		[Obsolete("DungeonGenerator needs replacement (see issue #1)", true)]
-		public static Board FromDungeonGenerator(DungeonGenerator.DungeonGenerator generator)
-		{
-			var dungeon = generator.Generate();
-			var dungeonMap = DungeonGenerator.DungeonGenerator.ExpandToTiles(dungeon);
-			var newBoard = new Board();
-			var grounds = new[] { ',', '\'', '`', '.', };
-			var walls = global::Noxico.Properties.Resources.WallLookup;
-
-			var xBound = dungeonMap.GetUpperBound(0);
-			var yBound = dungeonMap.GetUpperBound(1);
-			for (var x = 0; x <= xBound; x++)
-			{
-				for (var y = 0; y <= yBound; y++)
-				{
-					//TODO: use biome/depth-appropriate colors and ground styles
-					var newTile = new Tile();
-					switch (dungeonMap[x, y])
-					{
-						case 0: //door -- ignore?
-						case 2: //empty space -- use as corridor
-							newTile.Foreground = Color.Silver;
-							newTile.Character = ' ';
-							newTile.Background = Color.Black;
-							break;
-						case 1: //wall
-							newTile.Solid = true;
-							newTile.Foreground = Color.Brown;
-
-							var sample = GetSample(x, y, xBound, yBound, dungeonMap);
-							if (walls[sample] == 0xDB)
-							{
-								newTile.Character = ' ';
-								newTile.Solid = true;
-							}
-							else
-								newTile.Character = (char)walls[sample];
-
-							break;
-						case 3: //room
-							newTile.Foreground = Color.Green;
-							newTile.Character = grounds[Toolkit.Rand.Next(grounds.Length)];
-							break;
-					}
-					newBoard.Tilemap[y, x] = newTile;
-				}
-			}
-
-			//Fix right edge
-			for (var y = 0; y < 25; y++)
-				newBoard.Tilemap[79, y] = new Tile() { Solid = true, Character = ' ', Foreground = Color.Gray };
-
-			//List possible exit locations, and while you're at it, fix a little error in the walls bin: -- above | should be a T. Some patterns that end in T have this right, but some don't.
-			newBoard.ExitPossibilities = new List<Location>();
-			for (var x = 1; x < xBound; x++)
-			{
-				for (var y = 1; y < yBound; y++)
-				{
-					if (newBoard.Tilemap[y, x].Character == (char)0xC4 && newBoard.Tilemap[y, x].Solid &&
-						newBoard.Tilemap[y, x + 1].Character == (char)0xB3 && newBoard.Tilemap[y, x + 1].Solid)
-						newBoard.Tilemap[y, x].Character = (char)0xC2;
-
-					if (newBoard.Tilemap[y, x].Solid)
-						continue;
-
-					if ((newBoard.Tilemap[y + 1, x].Solid && newBoard.Tilemap[y - 1, x].Solid && newBoard.Tilemap[y, x + 1].Solid && !newBoard.Tilemap[y, x - 1].Solid) || // south corridor
-						(newBoard.Tilemap[y + 1, x].Solid && newBoard.Tilemap[y - 1, x].Solid && newBoard.Tilemap[y, x - 1].Solid && !newBoard.Tilemap[y, x + 1].Solid) || // north corridor
-						(newBoard.Tilemap[y + 1, x].Solid && !newBoard.Tilemap[y - 1, x].Solid && newBoard.Tilemap[y, x - 1].Solid && newBoard.Tilemap[y, x + 1].Solid) || // east corridor
-						(!newBoard.Tilemap[y + 1, x].Solid && newBoard.Tilemap[y - 1, x].Solid && newBoard.Tilemap[y, x - 1].Solid && newBoard.Tilemap[y, x + 1].Solid)) // west corridor
-					{
-#if FOOP
-						newBoard.Tilemap[y, x].Character = '?';
-						newBoard.Tilemap[y, x].Foreground = 8;
-#endif
-						newBoard.ExitPossibilities.Add(new Location(y, x));
-					}
-				}
-			}
-
-			//Build a sector list from the generator's rooms
-			for (var i = 0; i < dungeon.Rooms.Count; i++)
-			{
-				var b = dungeon.Rooms[i].Bounds;
-				var newRect = new Rectangle()
-				{
-					Left = b.Top,
-					Right = b.Bottom,
-					Top = b.Left,
-					Bottom = b.Right,
-				};
-				newBoard.Sectors.Add("dungeonRoom" + i, newRect);
-			}
-
-			newBoard.Name = "Unnamed dungeon";
-			newBoard.ID = "DungeonGenerator_" + Board.GeneratorCount;
-			Board.GeneratorCount++;
-			newBoard.Music = "ko0x_-_btto.it";
-			return newBoard;
-		}
-		*/
 
 		private static int GetSample(int x, int y, int ux, int uy, int[,] source)
 		{
