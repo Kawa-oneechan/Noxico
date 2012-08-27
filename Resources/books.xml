@@ -9,10 +9,11 @@
 	<!ATTLIST book
 		id CDATA #REQUIRED
 		title CDATA #REQUIRED
+		author CDATA #IMPLIED
 	>
 ]>
 <library>
-	<book id="1" title="The Lusty Argonian Maid I">
+	<book id="1" title="The Lusty Argonian Maid I" author="Crassius Curio">
 		<p>
 			The Lusty Argonian Maid, Part I<br />
 			Crassius Curio
@@ -54,7 +55,7 @@
 			END OF ACT IV, SCENE III
 		</p>
 	</book>
-	<book id="2" title="The Lusty Argonian Maid II">
+	<book id="2" title="The Lusty Argonian Maid II" author="Crassius Curio">
 		<p>
 			The Lusty Argonian Maid, Part II<br />
 			Crassius Curio
@@ -116,7 +117,7 @@
 			The appearance of succubi varies just about as much as that of demons in general; there is no single definitive depiction. However, they are almost universally depicted as alluring women with unearthly beauty, often with demonic batlike wings; occasionally, they will be given other demonic features (horns, a tail with a spaded tip, snakelike eyes, hooves, etc). Occasionally they appear simply as an attractive woman in dreams that the victim cannot seem to get off their mind. They lure males and in some cases, the male has seemed to fall "in love" with her. Even out of the dream she will not leave his mind. She will remain there slowly draining energy from him.
 		</p>
 	</book>
-	<book id="4" title="Brief History of the Empire I">
+	<book id="4" title="Brief History of the Empire I" author="Stronach k'Thojj III">
 		<p>
 			A Brief History of the Empire<br />
 			Part One
@@ -153,7 +154,7 @@
 			The first attack occurred in the Iliac Bay region, which separates High Rock and Hammerfell.  Kintyra's entourage was massacred and the Empress taken captive.  For two years, Kintyra II languished in an Imperial prison believed to be somewhere in Glenpoint or Glenmoril before she was slain in her cell under mysterious circumstances.  The second attack was on a series of Imperial garrisons along the coastal Morrowind islands.  The Empress' consort Kontin Arynx fell defending the forts.  The third and final attack was a siege of the Imperial City itself, occurring after the Elder Council had split up the army to attack western High Rock and eastern Morrowind.  The weakened government had little defence against Uriel's determined aggression, and capitulated after only a fortnight of resistance.  Uriel took the throne that same evening and proclaimed himself Uriel III, Emperor of Tamriel.  The year was 3E 121.  Thus began the War of the Red Diamond, described in Volume II of this series.
 		</p>
 	</book>
-	<book id="5" title="Brief History of the Empire II">
+	<book id="5" title="Brief History of the Empire II" author="Stronach k'Thojj III">
 		<p>
 			A Brief History of the Empire<br />
 			Part Two
@@ -196,7 +197,7 @@
 			Uriel IV's story is told in the third volume of this series.
 		</p>
 	</book>
-	<book id="6" title="Brief History of the Empire III">
+	<book id="6" title="Brief History of the Empire III" author="Stronach k'Thojj III">
 		<p>
 			A Brief History of the Empire<br />
 			Part Three
@@ -231,7 +232,7 @@
 			The last four Emperors, beginning with Uriel V's infant son, are described in the fourth and final volume of this series.
 		</p>
 	</book>
-	<book id="7" title="Brief History of the Empire IV">
+	<book id="7" title="Brief History of the Empire IV" author="Stronach k'Thojj III">
 		<p>
 			A Brief History of the Empire<br />
 			Part Four
@@ -274,7 +275,7 @@
 			Since his emancipation, Uriel Septim VII has worked diligently to renew the battles that would reunite Tamriel.  Tharn's interference broke the momentum, it is true -- but the years since then have proven that there is hope of the Golden Age of Tiber Septim's rule glorifying Tamriel once again.
 		</p>
 	</book>
-	<book id="8" title="Short History of Morrowind">
+	<book id="8" title="Short History of Morrowind" author="Jeanette Sitte">
 		<p>
 			A Short History of Morrowind
 		</p>
@@ -321,7 +322,7 @@
 			But most serious are the plagues and diseased hosts produced by the blight storms sweeping out from Red Mountain. Vvardenfell and all Morrowind have long been menaced by the legendary evils of Dagoth Ur and his ash vampire kin dwelling beneath Red Mountain. For centuries the Temple has contained this threat within the Ghostfence. But recently the Temple's resources and will have faltered, and the threat from Red Mountain has grown in scale and intensity. If the Ghostfence should fail, and hosts of blighted monsters were to spill out across Vvardenfell's towns and villages, the Empire might have no choice but to evacuate Vvardenfell district and abandon it to disease and corruption.
 		</p>
 	</book>
-	<book id="9" title="Book of the Dragonborn">
+	<book id="9" title="Book of the Dragonborn" author="Prior Emelene Madrine">
 		<p>
 			The Book of the Dragonborn
 		</p>
@@ -367,8 +368,7 @@
 			The World-Eater wakes, and the Wheel turns upon the Last Dragonborn.
 		</p>
 	</book>
-	<book id="10" title="The Bear of Markarth">
-		[pagebreak]
+	<book id="10" title="The Bear of Markarth" author="Arrianus Arius">
 		<p>
 			The Bear of Markarth<br />
 			The Crimes of Ulfric Stormcloak
@@ -450,7 +450,7 @@
 			And that's it. Easy as pie. Haha.
 		</p>
 	</book>
-	<book id="12" title="On Oblivion">
+	<book id="12" title="On Oblivion" author="Morian Zenas">
 		<p>
 			On Oblivion
 		</p>
@@ -479,7 +479,7 @@
 			In preparation for the next instalment in this series, I will be investigating two matters that have intrigued me since I began my career as a Daedra researcher.  The first is on one particular Daedroth, perhaps yet another Daedra prince, referred to in multiple articles of incunabula as Hircine.  Hircine has been called "the Huntsman of the Princes" and "the Father of Man-beasts," but I have yet to find anyone who can summon him.  The other, and perhaps more doubtful, goal I have is to find a practical means for mortal men to pass through to Oblivion.  It has always been my philosophy that we need only fear that which we do not understand -- and with that thought in mind, I ever pursue my objective.
 		</p>
 	</book>
-	<book id="13" title="Wraith's Wedding Dowry">
+	<book id="13" title="Wraith's Wedding Dowry" author="Voltha gra-Yamwort">
 		<p>
 			The Wraith's Wedding Dowry
 		</p>
@@ -551,7 +551,7 @@
 			"I didn't want to dent your present," she replied, between kisses. "And I certainly didn't want to wrinkle my gown."
 		</p>
 	</book>
-	<book id="14" title="Banker's Bet">
+	<book id="14" title="Banker's Bet" author="Porbert Lyttumly">
 		<p>
 			Banker's Bet
 		</p>
@@ -643,7 +643,7 @@
 			"Nothing, dear," she said. "I merely bet him one hundred thousand gold pieces that by this time I would have the president of the Bank of Daggerfall by the balls."
 		</p>
 	</book>
-	<book id="15" title="Songs of Skyrim">
+	<book id="15" title="Songs of Skyrim" author="Giraud Gemaine">
 		<p>
 			Songs Of Skyrim<br />
 			Revised Edition
@@ -746,7 +746,7 @@
 			If Alduin is eternal, then eternity's done. For his story is over and the dragons are... gone.
 		</p>
 	</book>
-	<book id="16" title="Chance's Folly">
+	<book id="16" title="Chance's Folly" author="Zylmoc Golge">
 		<p>
 			Chance's Folly
 		</p>

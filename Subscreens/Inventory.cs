@@ -22,7 +22,6 @@ namespace Noxico
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
 		{
-			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			chosen.Use(character, token);
 			Subscreens.Redraw = true;
@@ -96,23 +95,45 @@ namespace Noxico
 					inventoryItems.Add(find);
 
 					var item = find;
-					var sigil = "";
+					var sigils = new List<string>();
 					var carried = carriedItem;
+					var icon = " ";
+
+					if (item.HasToken("ascii"))
+					{
+						var color = "Silver";
+						if (item.Path("ascii/fore") != null)
+							color = item.Path("ascii/fore").Tokens[0].Name;
+						if (carriedItem.HasToken("color"))
+							color = carriedItem.GetToken("color").Text;
+						if (item.ID == "book")
+						{
+							var cga = new[] { "Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "Purple", "Brown", "Silver", "Gray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White" };
+							color = cga[(int)carriedItem.GetToken("id").Value % cga.Length];
+						}
+						if (color.Equals("black", StringComparison.InvariantCultureIgnoreCase))
+							color = "Gray";
+						icon = "<c" + color + ">" + (char)item.Path("ascii/char").Value;
+					}
+
 					if (item.HasToken("equipable"))
-						sigil += "<c" + (carried.HasToken("equipped") ? "Navy" : "Gray") + ">W";
+						sigils.Add(carried.HasToken("equipped") ? "equipped" : "equipable");
 					if (carried.HasToken("unidentified"))
-						sigil += "<cSilver>?";
+						sigils.Add("unidentified");
 #if DEBUG
 					if (carried.HasToken("cursed"))
-						sigil += "<c" + (carried.GetToken("cursed").HasToken("known") ? "Magenta" : "Purple") + ">C";
+						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : "cursed!");
 #else
 					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
-						sigil += "<c13>C";
+						sigils.Add("cursed");
 #endif
 					var itemString = item.ToString(carried);
-					if (itemString.Length > 30)
-						itemString = item.ToString(carried, false, false); 
-					itemTexts.Add(itemString.PadRight(30) + "<cBlack> " + sigil);
+					if (itemString.Length > 40)
+						itemString = item.ToString(carried, false, false);
+					if (itemString.Length > 40)
+						itemString = itemString.Disemvowel();
+					itemString = itemString.PadRight(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
+					itemTexts.Add(itemString);
 				}
 				var height = inventoryItems.Count;
 				if (height > 13)
@@ -123,11 +144,11 @@ namespace Noxico
 				//descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
 				//description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
 
-				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 37, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
+				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 60, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver };
 				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 36, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = selection };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 58, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = selection };
 				itemList.Change = (s, e) =>
 				{
 					selection = itemList.Index;
@@ -135,7 +156,7 @@ namespace Noxico
 					var t = inventoryTokens[itemList.Index];
 					var i = inventoryItems[itemList.Index];
 					var r = string.Empty;
-					var d = i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+					var d = i.GetDescription(t);
 
 					d = Toolkit.Wordwrap(d, itemDesc.Width);
 

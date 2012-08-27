@@ -39,6 +39,7 @@ namespace Noxico
 		public int OverworldBarrier { get; private set; }
 		public Player Player { get; set; }
 		public static List<string> BookTitles { get; private set; }
+		public static List<string> BookAuthors { get; private set; }
 		public static List<StatusMessage> Messages { get; set; }
 		public static Dictionary<string, double> ScriptVariables = new Dictionary<string, double>();
 		public static UserMode Mode { get; set; }
@@ -126,11 +127,16 @@ namespace Noxico
 
 			Console.WriteLine("Loading books...");
 			BookTitles = new List<string>();
+			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
+			BookAuthors.Add("[null]");
 			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
+			{
 				BookTitles.Add(b.GetAttribute("title"));
+				BookAuthors.Add(b.HasAttribute("author") ? b.GetAttribute("author") : "an unknown author");
+			}
 
 			ScriptVariables.Add("consumed", 0);
 			HostForm.Noxico = this;
@@ -301,6 +307,7 @@ namespace Noxico
 
 				Achievements.StartingTime = DateTime.Now;
 			}
+
 		}
 
 		public Board GetBoard(int index)

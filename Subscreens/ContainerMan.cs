@@ -54,7 +54,7 @@ namespace Noxico
 				var containerTexts = new List<string>();
 
 				containerWindow = new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue };
-				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 38, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
+				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
 				UIManager.Elements.Add(containerWindow);
 				UIManager.Elements.Add(new UILabel("It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
 				UIManager.Elements.Add(containerList);
@@ -75,23 +75,13 @@ namespace Noxico
 						containerItems.Add(find);
 
 						var item = find;
-						var sigil = "";
-						var carried = carriedItem;
-						if (item.HasToken("equipable"))
-							sigil += "<cGray>W";
-						if (carried.HasToken("unidentified"))
-							sigil += "<cSilver>?";
-#if DEBUG
-						if (carried.HasToken("cursed"))
-							sigil += "<c" + (carried.GetToken("cursed").HasToken("known") ? "Magenta" : "Purple") + ">C";
-#else
-					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
-						sigil += "<c13>C";
-#endif
-						var itemString = item.ToString(carried);
-						if (itemString.Length > 30)
-							itemString = item.ToString(carried, false, false);
-						containerTexts.Add(itemString.PadRight(30) + "<cBlack> " + sigil);
+						var itemString = item.ToString(carriedItem);
+						if (itemString.Length > 33)
+							itemString = item.ToString(carriedItem, false, false);
+						if (itemString.Length > 33)
+							itemString = itemString.Disemvowel();
+						itemString = itemString.PadRight(33);
+						containerTexts.Add(itemString);
 					}
 					height = containerItems.Count;
 					if (height > 13)
@@ -110,7 +100,7 @@ namespace Noxico
 				var playerTexts = new List<string>();
 
 				playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.Magenta };
-				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
+				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
 				UIManager.Elements.Add(playerWindow);
 				UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
 				UIManager.Elements.Add(playerList);
@@ -131,23 +121,17 @@ namespace Noxico
 						playerItems.Add(find);
 
 						var item = find;
-						var sigil = "";
-						var carried = carriedItem;
-						if (item.HasToken("equipable"))
-							sigil += "<c" + (carried.HasToken("equipped") ? "Navy" : "Gray") + ">W";
-						if (carried.HasToken("unidentified"))
-							sigil += "<cSilver>?";
-#if DEBUG
-						if (carried.HasToken("cursed"))
-							sigil += "<c" + (carried.GetToken("cursed").HasToken("known") ? "Magenta" : "Purple") + ">C";
-#else
-					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
-						sigil += "<c13>C";
-#endif
-						var itemString = item.ToString(carried);
-						if (itemString.Length > 30)
-							itemString = item.ToString(carried, false, false);
-						playerTexts.Add(itemString.PadRight(30) + "<cBlack> " + sigil); 
+						var itemString = item.ToString(carriedItem);
+						if (itemString.Length > 33)
+							itemString = item.ToString(carriedItem, false, false);
+						if (itemString.Length > 33)
+							itemString = itemString.Disemvowel();
+						itemString = itemString.PadRight(33);
+						if (carriedItem.HasToken("equipped"))
+							itemString = itemString.Remove(32) + "W";
+						if (carriedItem.Path("cursed/known") != null)
+							itemString = itemString.Remove(32) + "C";
+						playerTexts.Add(itemString); 
 					}
 					var height2 = playerItems.Count;
 					if (height2 > 13)
@@ -226,7 +210,12 @@ namespace Noxico
 						var t = playerTokens[playerList.Index];
 						var i = playerItems[playerList.Index];
 						descriptionWindow.Text = i.ToString(t, false, false);
-						description.Text = Toolkit.Wordwrap(i.GetDescription(t), description.Width);
+						var desc = i.GetDescription(t);
+						if (t.Path("cursed/path") != null)
+							desc += "\nThis item is cursed and can't be removed.";
+						else if (i.HasToken("equipable") && t.HasToken("equipped"))
+							desc += "\nThis item is currently equipped.";
+						description.Text = Toolkit.Wordwrap(desc, description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
 						//UIManager.Draw();
@@ -327,6 +316,8 @@ namespace Noxico
 			//TODO: give feedback on error.
 			if (token.HasToken("cursed"))
 			{
+				if (!token.GetToken("cursed").HasToken("known"))
+					token.GetToken("cursed").Tokens.Add(new Token() { Name = "known" });
 				return false;
 			}
 			if (token.HasToken("equipped"))
