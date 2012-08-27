@@ -386,7 +386,7 @@ namespace Noxico
 				}
 
 				var player = Noxico.Player.Character;
-				var statusLine = player != null ? string.Format("{0}, {1}\tHP: {2}/{3}", player.Name.ToString(true), player.Title, (int)player.GetToken("health").Value, player.GetMaximumHealth()) : "";
+				var statusLine = player != null ? string.Format("{0}, {1}\nHP: {2}/{3}   Stim: {4}", player.Name.ToString(true), player.Title, (int)player.GetToken("health").Value, player.GetMaximumHealth(), (int)player.GetToken("stimulation").Value) : "";
 
 				e.Graphics.FillRectangle(red, 0, 0, ClientRectangle.Width, ClientRectangle.Height / 3);
 				e.Graphics.FillRectangle(Brushes.Black, viewPort.Left - 4, viewPort.Top - 4, viewPort.Width + 8, viewPort.Height + 8);

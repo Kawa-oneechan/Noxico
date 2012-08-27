@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE ALLOW_CANDYTRON</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -51,7 +51,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>ALLOW_PNG_MODE</DefineConstants>
+    <DefineConstants>ALLOW_PNG_MODE </DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>

@@ -61,7 +61,7 @@ namespace Noxico
 		public abstract void Draw();
 	}
 
-	public class UIPNGBackground : UIElement
+	public class UIPNG : UIElement
 	{
 		public Bitmap Bitmap { get; set; }
 
@@ -70,22 +70,44 @@ namespace Noxico
 			get { return false; }
 		}
 
-		public UIPNGBackground(Bitmap bitmap)
+		public UIPNG()
+		{
+			throw new Exception("Use the other constructor!");
+		}
+
+		public UIPNG(Bitmap bitmap)
 		{
 			Bitmap = bitmap;
+			Width = bitmap.Width;
+			Height = bitmap.Height / 2;
 		}
 
 		public override void Draw()
 		{
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < Height; row++)
 			{
-				for (var col = 0; col < 80; col++)
+				for (var col = 0; col < Width; col++)
 				{
 					var top = Bitmap.GetPixel(col, row * 2);
 					var bot = Bitmap.GetPixel(col, (row * 2) + 1);
-					NoxicoGame.HostForm.SetCell(row, col, top == bot ? (char)0x20 : (char)0x2580, top, bot);
+					NoxicoGame.HostForm.SetCell(Top + row, Left + col, top == bot ? (char)0x20 : (char)0x2580, top, bot);
 				}
 			}
+		}
+	}
+
+	public class UIPNGBackground : UIPNG
+	{
+		public UIPNGBackground(Bitmap bitmap)
+			: base(bitmap)
+		{
+		}
+
+		public override void Draw()
+		{
+			Left = 0;
+			Top = 0;
+			base.Draw();
 		}
 	}
 

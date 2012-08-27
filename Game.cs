@@ -222,6 +222,7 @@ namespace Noxico
 					Boards[i] = null;
 				}
 			}
+			CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			bin.Write(StartingOWX);
 			bin.Write(StartingOWY);
@@ -638,6 +639,15 @@ namespace Noxico
 			{
 				pc.Name.Culture = Culture.Cultures[pc.GetToken("culture").Tokens[0].Name];
 				pc.Name.Regenerate();
+			
+				if (pc.Name.Surname.StartsWith("#patronym"))
+				{
+					var parentName = new Name() { Culture = pc.Name.Culture };
+					if (gender == Gender.Female)
+						pc.Name.Female = true;
+					parentName.Regenerate();
+					pc.Name.ResolvePatronym(parentName, parentName);
+				}
 			}
 
 			if (pc.Path("skin/type").Tokens[0].Name != "slime")

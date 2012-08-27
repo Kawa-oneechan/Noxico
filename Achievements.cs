@@ -14,6 +14,8 @@ namespace Noxico
 
 		public static void Setup()
 		{
+			if (!GamerServices.Profile.UseOnline)
+				return;
 			Profile.GameName = "Noxico";
 
 			Profile.RegisterAchievement("nethack", "It's Nethack All Over Again", "Die within five minutes.");
@@ -51,10 +53,14 @@ namespace Noxico
 
 		public static bool LoadProfile()
 		{
+			if (!GamerServices.Profile.UseOnline)
+				return false;
 			return Profile.Load(ProfilePath);
 		}
 		public static void SaveProfile(bool publish = false)
 		{
+			if (!GamerServices.Profile.UseOnline)
+				return;
 			Profile.Save(ProfilePath);
 			if (publish)
 				Profile.Publish();
