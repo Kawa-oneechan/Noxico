@@ -72,7 +72,8 @@ namespace Noxico
 						{
 							using (var f = new BinaryReader(File.OpenRead(playerFile)))
 							{
-								p = f.ReadString();
+								//p = f.ReadString();
+								p = Player.LoadFromFile(f).Character.Name.ToString(true);
 							}
 							return p + ", \"" + Path.GetFileName(s) + "\"";
 						}

@@ -13,11 +13,11 @@
 ; cleartype: Enables or disables font smoothing.
 family=Consolas
 size=11
-bold=true
+bold=false
 x-adjust=-2
-y-adjust=-1
-cellwidth=0
-cellheight=0
+y-adjust=1
+cellwidth=8
+cellheight=17
 cleartype=true
 
 [audio]
@@ -79,6 +79,11 @@ char=none
 pal=Noxico.PspPalette
 
 [profile]
+; askforonline: Ask for permission before trying to contact Kawa's profiles
+;               server, assuming there is an Internet connection. If disabled,
+;               assumes it's okay to go online.
+;    useonline: Allow contacting Kawa's profiles server at all. If disabled,
+;               profiles are not a thing, locally speaking.
 askforonline=true
-useonline=true
+useonline=false
 

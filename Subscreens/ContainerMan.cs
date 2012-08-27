@@ -52,10 +52,17 @@ namespace Noxico
 				containerItems.Clear();
 				containerList = null;
 				var containerTexts = new List<string>();
+
+				containerWindow = new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue };
+				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 38, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
+				UIManager.Elements.Add(containerWindow);
+				UIManager.Elements.Add(new UILabel("It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				UIManager.Elements.Add(containerList);
+
 				if (container.Token.GetToken("contents").Tokens.Count == 0)
 				{
-					UIManager.Elements.Add(new UIWindow(container.Name) { Left = 1, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.CornflowerBlue });
-					UIManager.Elements.Add(new UILabel("It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+					containerList.Hidden = true;
+					containerWindow.Height = 3;
 				}
 				else
 				{
@@ -81,7 +88,10 @@ namespace Noxico
 					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
 						sigil += "<c13>C";
 #endif
-						containerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
+						var itemString = item.ToString(carried);
+						if (itemString.Length > 30)
+							itemString = item.ToString(carried, false, false);
+						containerTexts.Add(itemString.PadRight(30) + "<cBlack> " + sigil);
 					}
 					height = containerItems.Count;
 					if (height > 13)
@@ -89,20 +99,26 @@ namespace Noxico
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
-					containerWindow = new UIWindow(container.Name) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue };
-					containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 38, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
-					UIManager.Elements.Add(containerWindow);
-					UIManager.Elements.Add(containerList);
+					containerList.Items = containerTexts;
+					containerWindow.Height = 2 + height;
+					containerList.Height = height;
 				}
 
 				playerTokens.Clear();
 				playerItems.Clear();
 				playerList = null;
 				var playerTexts = new List<string>();
+
+				playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.Magenta };
+				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
+				UIManager.Elements.Add(playerWindow);
+				UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				UIManager.Elements.Add(playerList);
+
 				if (player.Character.GetToken("items").Tokens.Count == 0)
 				{
-					UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.Magenta });
-					UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+					playerList.Hidden = true;
+					playerWindow.Height = 3;
 				}
 				else
 				{
@@ -128,7 +144,10 @@ namespace Noxico
 					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
 						sigil += "<c13>C";
 #endif
-						playerTexts.Add(item.ToString(carried).PadRight(30) + "<cBlack> " + sigil);
+						var itemString = item.ToString(carried);
+						if (itemString.Length > 30)
+							itemString = item.ToString(carried, false, false);
+						playerTexts.Add(itemString.PadRight(30) + "<cBlack> " + sigil); 
 					}
 					var height2 = playerItems.Count;
 					if (height2 > 13)
@@ -139,10 +158,9 @@ namespace Noxico
 					if (height2 > height)
 						height = height2;
 
-					playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 2 + height2, Background = Color.Black, Foreground = Color.Magenta };
-					playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 36, Height = height2, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
-					UIManager.Elements.Add(playerWindow);
-					UIManager.Elements.Add(playerList);
+					playerList.Items = playerTexts;
+					playerWindow.Height = 2 + height2;
+					playerList.Height = height2;
 				}
 
 				UIManager.Elements.Add(new UILabel(" Press Enter to store or retrieve the highlighted item.".PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
@@ -155,6 +173,8 @@ namespace Noxico
 				{
 					containerList.Change = (s, e) =>
 					{
+						if (containerList.Items.Count == 0)
+							return;
 						indexLeft = containerList.Index;
 						var t = containerTokens[containerList.Index];
 						var i = containerItems[containerList.Index];
@@ -166,12 +186,14 @@ namespace Noxico
 					};
 					containerList.Enter = (s, e) =>
 					{
+						if (containerList.Items.Count == 0)
+							return; 
 						onLeft = true;
 						TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
 						{
-							playerItems.Add(containerItems[playerList.Index]);
-							playerTokens.Add(containerTokens[playerList.Index]);
-							playerList.Items.Add(containerList.Items[playerList.Index]);
+							playerItems.Add(containerItems[containerList.Index]);
+							playerTokens.Add(containerTokens[containerList.Index]);
+							playerList.Items.Add(containerList.Items[containerList.Index]);
 							containerItems.RemoveAt(containerList.Index);
 							containerTokens.RemoveAt(containerList.Index);
 							containerList.Items.RemoveAt(containerList.Index);
@@ -179,10 +201,12 @@ namespace Noxico
 								containerList.Index--;
 							if (containerList.Items.Count == 0)
 							{
-								//Hide list, show text.
+								containerList.Hidden = true;
+								keys[(int)Keys.Right] = true;
 							}
 							else
 								containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
+							playerList.Hidden = false; //always the case.
 							playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
@@ -196,6 +220,8 @@ namespace Noxico
 				{
 					playerList.Change = (s, e) =>
 					{
+						if (playerList.Items.Count == 0)
+							return; 
 						indexRight = playerList.Index;
 						var t = playerTokens[playerList.Index];
 						var i = playerItems[playerList.Index];
@@ -207,12 +233,14 @@ namespace Noxico
 					};
 					playerList.Enter = (s, e) =>
 					{
+						if (playerList.Items.Count == 0)
+							return; 
 						onLeft = false;
 						if (TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]))
 						{
-							containerItems.Add(containerItems[containerList.Index]);
-							containerTokens.Add(containerTokens[containerList.Index]);
-							containerList.Items.Add(containerList.Items[containerList.Index]);
+							containerItems.Add(playerItems[playerList.Index]);
+							containerTokens.Add(playerTokens[playerList.Index]);
+							containerList.Items.Add(playerList.Items[playerList.Index]);
 							playerItems.RemoveAt(playerList.Index);
 							playerTokens.RemoveAt(playerList.Index);
 							playerList.Items.RemoveAt(playerList.Index);
@@ -220,10 +248,12 @@ namespace Noxico
 								playerList.Index--;
 							if (playerList.Items.Count == 0)
 							{
-								//Hide list, show text.
+								playerList.Hidden = true;
+								keys[(int)Keys.Left] = true;
 							}
 							else
 								playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
+							containerList.Hidden = false; //always the case.
 							containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
@@ -234,7 +264,7 @@ namespace Noxico
 					};
 				}
 
-				UIManager.Highlight = onLeft ? (containerList ?? null) : (playerList ?? null);
+				UIManager.Highlight = containerList.Items.Count > 0 ? containerList : playerList;
 				UIManager.Draw();
 				if (UIManager.Highlight.Change != null)
 					UIManager.Highlight.Change(null, null);
@@ -252,6 +282,9 @@ namespace Noxico
 			}
 			else if (keys[(int)Keys.Left])
 			{
+				keys[(int)Keys.Left] = false;
+				if (containerList.Items.Count == 0)
+					return; 
 				UIManager.Highlight = containerList ?? playerList;
 				containerList.DrawQuick();
 				containerList.Change(null, null);
@@ -261,6 +294,9 @@ namespace Noxico
 			}
 			else if (keys[(int)Keys.Right])
 			{
+				keys[(int)Keys.Right] = false;
+				if (playerList.Items.Count == 0)
+					return; 
 				UIManager.Highlight = playerList ?? containerList;
 				playerList.Change(null, null);
 				containerList.DrawQuick();
