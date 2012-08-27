@@ -1281,7 +1281,6 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 
-				//TODO: add a top (instead of bottom) message to indicate you're on a hotspot.
 				if (OnWarp())
 					CheckWarps();
 

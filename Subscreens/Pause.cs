@@ -12,7 +12,6 @@ namespace Noxico
 {
 	public class Pause
 	{
-		//TODO: Rewrite to use UIManager
 		private static int page = 0;
 		private static Dictionary<string, string> pages = new Dictionary<string, string>()
 		{
@@ -102,14 +101,6 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			{
 				Subscreens.Redraw = false;
 				UIManager.Draw();
-
-				//Toolkit.DrawWindow(28, 4, 41, 16, null, Color.Blue, Color.Black, Color.Blue);
-				//var titles = pages.Keys.ToArray();
-				//for (var i = 0; i < pages.Count; i++)
-				//	host.Write((' ' + titles[i]).PadRight(20), i == page ? Color.Black : Color.Silver, i == page ? Color.Silver : Color.Black, 6, 5 + i);
-				//var text = pages.Values.ElementAt(page).Split('\n');
-				//for (var i = 0; i < text.Length; i++)
-				//	host.Write(text[i], Color.Silver, Color.Black, 30, 5 + i);
 			}
 
 			if (keys[(int)Keys.Escape])
