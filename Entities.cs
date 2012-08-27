@@ -649,10 +649,11 @@ namespace Noxico
 			if (DistanceFrom(target) <= range && CanSee(target))
 			{
 				//Within attacking range.
-				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30)
+				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30 && range == 1)
 				{
 					//WRONG KIND OF ATTACK! ABANDON SHIP!!
 					SceneSystem.Engage(this.Character, target.Character, "(rape start)");
+					return;
 				}
 				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
 				{
