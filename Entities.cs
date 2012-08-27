@@ -644,12 +644,13 @@ namespace Noxico
 				return;
 			}
 
+			var distance = DistanceFrom(target);
 			var weapon = Character.CanShoot();
 			var range = (weapon == null) ? 1 : (int)weapon.Path("weapon/range").Value;
-			if (DistanceFrom(target) <= range && CanSee(target))
+			if (distance <= range && CanSee(target))
 			{
 				//Within attacking range.
-				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30 && range == 1)
+				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30 && distance == 1)
 				{
 					//WRONG KIND OF ATTACK! ABANDON SHIP!!
 					SceneSystem.Engage(this.Character, target.Character, "(rape start)");
@@ -662,7 +663,7 @@ namespace Noxico
 					return;
 				}
 			}
-			if (DistanceFrom(target) <= 20 && CanSee(target))
+			if (distance <= 20 && CanSee(target))
 			{
 				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
 				var map = target.DijkstraMap;
