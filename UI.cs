@@ -209,6 +209,8 @@ namespace Noxico
 			}
 			set
 			{
+				if (Items == null || Items.Count == 0)
+					return;
 				index = value < Items.Count ? value : 0;
 				Text = Items[index];
 				EnsureVisible();
@@ -260,12 +262,16 @@ namespace Noxico
 
 		public void DrawQuick()
 		{
+			if (Items == null || Items.Count == 0)
+				return;
 			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
 				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
 		}
 
 		public override void DoUp()
 		{
+			if (Items.Count == 0)
+				return;
 			if (index == 0)
 				return;
 			NoxicoGame.Sound.PlaySound("Cursor");
@@ -285,6 +291,8 @@ namespace Noxico
 
 		public override void DoDown()
 		{
+			if (Items.Count == 0)
+				return;
 			if (index == Items.Count - 1)
 				return;
 			NoxicoGame.Sound.PlaySound("Cursor");

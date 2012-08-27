@@ -134,15 +134,10 @@ namespace Noxico
 
 		public static void ReadBook(int bookNum)
 		{
-			/*
-			var filename = Path.Combine("books", "BOK" + bookNum.ToString("00000") + ".TXT");
-			if (File.Exists(filename))
-				text = File.ReadAllText(filename).Wordwrap(68).Split('\n');
-			else
-				text = new[] { "Can't find the content for this book." };
-			*/
 			var xDoc = new XmlDocument();
-			xDoc.Load(new CryptStream(new System.IO.Compression.GZipStream(File.OpenRead("books.dat"), System.IO.Compression.CompressionMode.Decompress)));
+			//OLD AS FUCK I CAN'T BELIEVE THIS WAS STILL THERE!
+			//xDoc.Load(new CryptStream(new System.IO.Compression.GZipStream(File.OpenRead("books.dat"), System.IO.Compression.CompressionMode.Decompress)));
+			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			XmlElement book = null;
 			foreach (var b in books.OfType<XmlElement>())

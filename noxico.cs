@@ -339,6 +339,19 @@ namespace Noxico
 			return ti.ToTitleCase(text);
 		}
 
+		public static string Disemvowel(this string text)
+		{
+			var vowels = "AEIOUaeiou".ToCharArray();
+			var ret = new StringBuilder();
+			foreach (var c in text)
+			{
+				if (vowels.Contains(c))
+					continue;
+				ret.Append(c);
+			}
+			return ret.ToString().Trim();
+		}
+
 		public static string Wordwrap(this string text, int length = 80)
 		{
 			var lines = text.Replace("\r", "").Split('\n');
@@ -2869,6 +2882,9 @@ namespace Noxico
 		public string GetDescription(Token token)
 		{
 			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
+				return string.Format("This is \"{0}\", by {1}.", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
+
 			if (this.HasToken("description")) //!token.HasToken("unidentified"))
 			{
 				var ret = GetToken("description").Text;
@@ -2891,9 +2907,9 @@ namespace Noxico
 						ret = ret.Replace(item.Key, item.Value);
 				}
 				return ret;
-			}
-			else
-				return "This is " + this.ToString(token) + ".";
+			}	
+
+			return "This is " + this.ToString(token) + ".";
 		}
 
 		public static InventoryItem FromXML(XmlElement x)
