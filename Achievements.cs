@@ -61,6 +61,11 @@ namespace Noxico
 		{
 			if (!GamerServices.Profile.UseOnline)
 				return;
+			if (NoxicoGame.HostForm.Noxico.Player.PlayingTime.TotalSeconds > 0)
+			{
+				Profile.SetArbitraryString("playtime", NoxicoGame.HostForm.Noxico.Player.PlayingTime.ToString());
+				Profile.SetArbitraryString("lastchar", NoxicoGame.HostForm.Noxico.Player.Character.ToString());
+			}
 			Profile.Save(ProfilePath);
 			if (publish)
 				Profile.Publish();

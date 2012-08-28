@@ -211,7 +211,7 @@ namespace GamerServices
 			return Arbitraries[id];
 		}
 
-		public static void SetArbitraryInt(string id, string value)
+		public static void SetArbitraryString(string id, string value)
 		{
 			if (!IsValid)
 				return;
