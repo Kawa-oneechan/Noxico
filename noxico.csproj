@@ -154,6 +154,7 @@
     </None>
     <None Include="Resources\bodyplans.xml" />
     <None Include="Resources\items.xml" />
+    <None Include="Resources\makedemonrealm.png" />
     <Content Include="sounds\Cursor.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

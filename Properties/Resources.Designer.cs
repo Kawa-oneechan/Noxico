@@ -160,22 +160,17 @@ namespace Noxico.Properties {
         ///	&lt;trait name=&quot;Charismatic&quot;&gt;
         ///		&lt;stat id=&quot;charisma&quot; value=&quot;15%&quot; /&gt;
         ///		&lt;skill name=&quot;Bartering&quot; /&gt;
+        ///		(Only stat bonus works) Gives a 15% bonus on Charisma, and a level in bartering.
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Cunning Bastard&quot;&gt;
         ///		&lt;stat id=&quot;cunning&quot; /&gt;
         ///		&lt;skill name=&quot;Trap Disarming&quot; /&gt;
+        ///		(Only stat bonus works) Gives a 20% bonus on Cunning, and a level in trap disarming.
         ///	&lt;/trait&gt;
         ///	&lt;trait name=&quot;Fast Food&quot;&gt;
         ///		&lt;stat id=&quot;speed&quot; /&gt;
         ///		&lt;skill name=&quot;Swimming&quot; /&gt;
-        ///	&lt;/trait&gt;
-        ///	&lt;trait name=&quot;Olympian&quot;&gt;
-        ///		&lt;stat id=&quot;strength&quot; /&gt;
-        ///		&lt;skill name=&quot;Acrobatics&quot; /&gt;
-        ///	&lt;/trait&gt;
-        ///	&lt;trait name=&quot;Smooth Operator&quot;&gt;
-        ///		&lt;stat id=&quot;charisma&quot; /&gt;
-        ///		&lt;skill name=&quot;Swe [rest of string was truncated]&quot;;.
+        ///		(Only st [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BonusTraits {
             get {
@@ -269,7 +264,24 @@ namespace Noxico.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;!DOCTYPE itemdata [
+        ///	&lt;!ELEMENT itemdata (items,costumes)&gt;
+        ///	&lt;!ELEMENT items (item+)&gt;
+        ///	&lt;!ELEMENT item (#PCDATA|script)*&gt;
+        ///	&lt;!ELEMENT script (#PCDATA)&gt;
+        ///	&lt;!ATTLIST script language CDATA #FIXED &quot;text/noxicobotic&quot;&gt;
+        ///	&lt;!ATTLIST item
+        ///		id ID #REQUIRED
+        ///		name CDATA #REQUIRED
+        ///		unknown CDATA #IMPLIED
+        ///		proper (true|false) &quot;false&quot;
+        ///		a CDATA #IMPLIED
+        ///		the CDATA #IMPLIED
+        ///	&gt;
+        ///	&lt;!ELEMENT costumes ANY&gt;
+        ///	&lt;!ELEMENT costume (#PCDATA)&gt;
+        ///	&lt;!ATTLIST costume id ID #REQUIRED&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Items {
             get {
@@ -313,18 +325,16 @@ namespace Noxico.Properties {
         ///	&lt;!ATTLIST book
         ///		id CDATA #REQUIRED
         ///		title CDATA #REQUIRED
+        ///		author CDATA #IMPLIED
         ///	&gt;
         ///]&gt;
         ///&lt;library&gt;
-        ///	&lt;book id=&quot;1&quot; title=&quot;The Lusty Argonian Maid I&quot;&gt;
+        ///	&lt;book id=&quot;1&quot; title=&quot;The Lusty Argonian Maid I&quot; author=&quot;Crassius Curio&quot;&gt;
         ///		&lt;p&gt;
         ///			The Lusty Argonian Maid, Part I&lt;br /&gt;
         ///			Crassius Curio
         ///		&lt;/p&gt;
-        ///		&lt;p&gt;
-        ///			Act IV, Scene III, continued
-        ///		&lt;/p&gt;
-        ///	 [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Library {
             get {
@@ -335,7 +345,7 @@ namespace Noxico.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;!DOCTYPE stuff [
-        ///	&lt;!ELEMENT stuff (uniques,items,costumes)&gt;
+        ///	&lt;!ELEMENT stuff (uniques)&gt;
         ///	&lt;!ELEMENT uniques (character+)&gt;
         ///	&lt;!ELEMENT script (#PCDATA)&gt;
         ///	&lt;!ATTLIST script language CDATA #FIXED &quot;text/noxicobotic&quot;&gt;
@@ -346,12 +356,15 @@ namespace Noxico.Properties {
         ///		proper (true|false) &quot;true&quot;
         ///		a CDATA #IMPLIED
         ///	&gt;
-        ///	&lt;!ELEMENT items (item+)&gt;
-        ///	&lt;!ELEMENT item (#PCDATA|script)*&gt;
-        ///	&lt;!ATTLIST item
-        ///		id ID #REQUIRED
-        ///		name CDATA #REQUIRED
-        ///	 [rest of string was truncated]&quot;;.
+        ///]&gt;
+        ///&lt;stuff&gt;
+        ///	&lt;uniques&gt;
+        ///		&lt;character id=&quot;Chelsie&quot; name=&quot;Chelsie&quot; proper=&quot;true&quot;&gt;
+        ///			&lt;![CDATA[
+        ///culture
+        ///	japanese
+        ///invisiblegender
+        ///female [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Main {
             get {
@@ -362,6 +375,13 @@ namespace Noxico.Properties {
         internal static System.Drawing.Bitmap MakeCave {
             get {
                 object obj = ResourceManager.GetObject("MakeCave", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MakeDemonRealm {
+            get {
+                object obj = ResourceManager.GetObject("MakeDemonRealm", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

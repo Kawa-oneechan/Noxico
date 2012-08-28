@@ -54,7 +54,7 @@ namespace Noxico
 				var saves = new List<string>();
 				foreach (var s in rawSaves)
 				{
-					//if (File.Exists(Path.Combine(s, "player.bin")))
+					if (File.Exists(Path.Combine(s, "Nox", "world.bin")))
 						saves.Add(s);
 				}
 				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
