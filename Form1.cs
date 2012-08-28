@@ -244,7 +244,21 @@ namespace Noxico
 					return; 
 				if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
 					Noxico.Player.AutoTravelTo(tx, ty);
-				else if (NoxicoGame.Mode == UserMode.LookAt || NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
+				else if (NoxicoGame.Mode == UserMode.LookAt)
+				{
+					if (y.Button == System.Windows.Forms.MouseButtons.Left)
+					{
+						NoxicoGame.Cursor.XPosition = tx;
+						NoxicoGame.Cursor.YPosition = ty;
+						NoxicoGame.Cursor.Point();
+						NoxicoGame.KeyMap[(int)Keys.Enter] = true;
+					}
+					else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+					{
+						NoxicoGame.KeyMap[(int)Keys.Escape] = true;
+					}
+				}
+				else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
 				{
 					var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
 					if (target != null)

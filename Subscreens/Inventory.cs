@@ -117,7 +117,29 @@ namespace Noxico
 					}
 
 					if (item.HasToken("equipable"))
-						sigils.Add(carried.HasToken("equipped") ? "equipped" : "equipable");
+					{
+						var eq = item.GetToken("equipable");
+						if (item.HasToken("weapon"))
+							sigils.Add("weapon");
+						if (eq.HasToken("head"))
+							sigils.Add("head");
+						if (eq.HasToken("ring"))
+							sigils.Add("ring");
+						if (eq.HasToken("underpants") || eq.HasToken("undershirt"))
+							sigils.Add("undies");
+						if (eq.HasToken("shirt") && !eq.HasToken("pants"))
+							sigils.Add("shirt");
+						if (eq.HasToken("pants") && !eq.HasToken("shirt"))
+							sigils.Add("pants");
+						if (eq.HasToken("shirt") && eq.HasToken("pants"))
+							sigils.Add("suit");
+						if (eq.HasToken("shoes"))
+							sigils.Add("shoes");
+						if (eq.HasToken("coat"))
+							sigils.Add("coat");
+						if (carried.HasToken("equipped"))
+							sigils.Add("equipped");
+					}
 					if (carried.HasToken("unidentified"))
 						sigils.Add("unidentified");
 #if DEBUG
@@ -144,10 +166,10 @@ namespace Noxico
 				//descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
 				//description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
 
-				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 60, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
+				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 78, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver };
-				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4, Foreground = Color.Silver, Background = Color.Black };
 				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 58, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = selection };
 				itemList.Change = (s, e) =>
 				{
