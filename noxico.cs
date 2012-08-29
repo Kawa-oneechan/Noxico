@@ -1697,7 +1697,7 @@ namespace Noxico
 
 			var s = skills.GetToken(skill);
 			var l = (int)s.Value;
-			var i = 0.20 / (1 + (l / 2));
+			var i = 0.0349 / (1 + (l / 2));
 			s.Value += (float)i;
 		}
 
