@@ -17,10 +17,17 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
-	<!ATTLIST script type CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST script type CDATA #REQUIRED>
 	<!ATTLIST action name CDATA #REQUIRED>
 ]>
 <scenes>
+
+	<scene id="test" name="invite to have sex" list="(DEBUG) Set willingness">
+		<script type="text/javascript">
+			bottom.AddToken("willing");
+			print("[b:name] is now willing. Cheater.");
+		</script>
+	</scene>
 	
 	<!-- Several greetings -->
 	<!-- Section 1 - First Contact -->
@@ -87,6 +94,10 @@
 		<p>
 			"It's a pleasure meeting you, [t:name]", [b:he] says a little flustered.
 		</p>
+		<script type="text/javascript">
+			top.SetRelation(bottom, "acquaintance");
+			bottom.SetRelation(top, "considers hot");
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$top.setrelation $bottom "acquaintance"
@@ -104,6 +115,9 @@
 		<p>
 			"It's... a pleasure meeting you I'm sure... [t:name]", [b:he] says.
 		</p>
+		<script type="text/javascript">
+			top.SetRelation(bottom, "acquaintance", true);
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$top.setrelation $bottom "acquaintance"
@@ -120,6 +134,9 @@
 		<p>
 			"It's a pleasure meeting you, [t:name]", [b:he] says.
 		</p>
+		<script type="text/javascript">
+			top.SetRelation(bottom, "acquaintance", true);
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$top.setrelation $bottom "acquaintance"

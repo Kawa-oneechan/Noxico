@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Jint;
 
 namespace Noxico
 {
@@ -111,6 +112,7 @@ namespace Noxico
 				}
 				else if (part.Name == "script")
 				{
+					/*
 					if (part.GetAttribute("type") == "text/noxicobotic")
 					{
 						var script = part.InnerText.Replace("$top", top.Name.ToID()).Replace("$bottom", bottom.Name.ToID()).Split('\n');
@@ -121,19 +123,19 @@ namespace Noxico
 						ret.AppendLine();
 						boardchar.ScriptRunning = false;
 					}
-					/*
-					else if (part.GetAttribute("language") == "text/javascript")
+					else */
+					if (part.GetAttribute("type") == "text/javascript")
 					{
 						var jint = new Jint.JintEngine();
 						var buffer = new StringBuilder();
 						jint.SetParameter("top", top);
 						jint.SetParameter("bottom", bottom);
-						jint.SetFunction("print", new Action<string>(x => buffer.Append(x + ' ')));
+						jint.SetFunction("eval", new Func<string, int>(x => 0));
+						jint.SetFunction("print", new Action<string>(x => buffer.Append(x)));
 						jint.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();
 					}
-					*/
 				}
 			}
 			return ret.ToString();

@@ -17,7 +17,7 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
-	<!ATTLIST script type CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST script type CDATA #REQUIRED>
 	<!ATTLIST action name CDATA #REQUIRED>
 ]>
 <scenes>
@@ -28,9 +28,12 @@
 		<p>
 			For a moment, [b:name] considers shrugging you off, but thinks better of it... or worse.
 		</p>
+		<script type="text/javascript">
+			bottom.AddToken("willing");
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.addtoken "willing"
+				$bottom.addtoken("willing");
 			]]>
 		</script>
 		<action name="(starting node)" />
@@ -62,6 +65,28 @@
 		<p>
 			You reach for [b:his] [b:breasts] and proceed to softly stroke them.
 		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				var breasts = bottom.Path("breastrow[0]");
+				if (breasts.Path("size").Value > 4)
+					//E (Pillowy) or higher
+					print("It takes you a while to reach [b:his] [b:nipples] at that speed, but you get there and ");
+				else
+					print("Shortly, you trace an ever smaller circle up to [b:his] [b:nipples] and");
+				if (breasts.Path("/nipples/size").Value > 2)
+					print("pull on");
+				else
+					print("teasingly rub");
+				if (breasts.Path("lactation").Value > 2)
+					print("them, spraying a bit of milk on your fingers.");
+				else if (breasts.HasToken("fuckable"))
+					print("them, softly stroking the increasingly moist hole on top.");
+				else if (breasts.HasToken("canfuck"))
+					print("them, exciting them into soft nipple-y erections.");
+				else
+					print("them.");
+			]]>
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$bottom.gettokenval "breastrow[0]/size"
@@ -106,6 +131,18 @@
 		<p>
 			You slide your hands slowly down towards [b:name]'s [b:waist] and stroke [b:his] [b:hips], leaving [b:him] in expectation of what comes next.
 		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				if (bottom.Path("vagina[0]/wetness").Value >= 2)
+					print("You easily");
+				else
+					print("You teasingly rub [b:his] [b:pussy] until it becomes slick with [b:his] feminine juices. At the right moment, you ");
+				print("slide a finger ");
+				if (bottom.Path("vagina[0]/looseness").Value >= 3)
+					print("or two ");
+				print("inside [b:him], leaving your thumb to stroke [b:his] aching clit in a vaguely circular motion.");
+			]]>
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$bottom.gettokenval "vagina[0]/wetness"
@@ -123,6 +160,16 @@
 					|<< or two >>
 				endif
 				|<< inside [b:him], leaving your thumb to stroke [b:his] aching clit in a vaguely circular motion. >>
+			]]>
+		</script>
+		<script type="text/javascript">
+			<![CDATA[
+				print("Moaning softly under your ministrations, [b:name] reaches for your crotch, ");
+				if (top.HasToken("penis"))
+					print("looking at your [t:cock]");
+				else if (top.HasToken("vagina"))
+					print("looking at your [t:pussy]");
+				print("with an increasingly lustful gaze.");
 			]]>
 		</script>
 		<script type="text/noxicobotic">
@@ -170,6 +217,11 @@
 		<p>
 			You sigh and put your clothes back on, your lust plummeting with her rejection. Surely there must be a way to get your size big enough to penetrate her properly?
 		</p>
+		<script type="text/javascript">
+			top.GetToken("stimulation").Value = 0;
+			top.GetToken("climax").Value = 0;
+			bottom.RemoveToken("willing");
+		</script>
 		<script type="text/noxicobotic">
 			$top.settokenval "stimulation" 0
 			$top.settokenval "climax" 0
@@ -246,6 +298,9 @@
 		<p>
 			Afterwards you both stand up, exchange looks that can only signify that you two would be at it again sometime in the future and clothe yourselves, your encounter coming to a close.
 		</p>
+		<script type="text/javascript">
+			bottom.RemoveToken("willing");
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				$bottom.removetoken "willing"
@@ -271,6 +326,19 @@
 		<p>
 			Once you are finished with your teasing, [b:he] backs off your manhood and lets go of you, laying on the ground before you and tempting you with a seductive hand wave, [b:his] legs crossed in an well produced attempt to get you even more aroused and ready to have intercourse than you already visibly are.
 		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				print("[b:He] eyes up your [t:l:penis/length] dick with a ");
+				var dickLen = top.Path("penis[0]/length").Value;
+				if (dickLen > 20)
+					print("zealous");
+				else if (dickLen > 16)
+					print("content");
+				else
+					print("longing");
+				print(" expression and you move swiftly to kneel down and grip [b:his] hips, pulling [b:his] love-hole onto your cock.");
+			]]>
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
 				|<< [b:He] eyes up your [t:l:penis/length] dick with a >>
@@ -306,9 +374,12 @@
 		<p>
 			Time seems to slow down considerably as your nuzzle [b:his] neck and [b:he] grazes your back, but you know that all wonderful things must end at some point and stand, putting your equipment back on to continue your adventure. You assure [b:him] you'll be back for more and [b:he] thanks you for your time with [b:him].
 		</p>
+		<script type="text/javascript">
+			bottom.RemoveToken("willing");
+		</script>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.removetoken "willing"
+				$bottom.RemoveToken "willing"
 			]]>
 		</script>
 		<!-- Final dead end. -->
