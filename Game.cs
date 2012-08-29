@@ -57,9 +57,11 @@ namespace Noxico
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
+		public string[] Potions;
 
 		public NoxicoGame(MainForm hostForm)
 		{
+			RollPotions();
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
 			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
@@ -199,6 +201,19 @@ namespace Noxico
 			}
 
 			Console.WriteLine("--------------------------");
+			Console.WriteLine("Saving globals...");
+			var global = Path.Combine(SavePath, WorldName, "global.bin");
+			using (var f = File.Open(global, FileMode.Create))
+			{
+				var b = new BinaryWriter(f);
+				b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
+				b = new BinaryWriter(new CryptStream(f));
+				for (var i = 0; i < 256; i++)
+					b.Write(Potions[i]);
+				b.Write(0);
+			}
+
+			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
 
 			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
@@ -253,11 +268,42 @@ namespace Noxico
 				pfile.Close();
 			}
 
-			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
 
-			var file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
+			var global = Path.Combine(SavePath, WorldName, "global.bin");
+			if (!File.Exists(global))
+			{
+				using (var f = File.Open(global, FileMode.Create))
+				{
+					var b = new BinaryWriter(f);
+					b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
+					b = new BinaryWriter(new CryptStream(f));
+					RollPotions();
+					for (var i = 0; i < 256; i++)
+						b.Write(Potions[i]);
+					b.Write(0);
+				}
+			}
+			var file = File.Open(global, FileMode.Open);
 			var bin = new BinaryReader(file);
 			var header = bin.ReadBytes(6);
+			if (Encoding.UTF8.GetString(header) != "NOXiCO")
+			{
+				MessageBox.Message("Invalid world header.");
+				return;
+			}
+			var crypt = new CryptStream(file);
+			bin = new BinaryReader(crypt);
+			Potions = new string[256];
+			for (var i = 0; i < 256; i++)
+				Potions[i] = bin.ReadString();
+			var numUniques = bin.ReadInt32();
+			file.Close();
+
+			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
+
+			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
+			bin = new BinaryReader(file);
+			header = bin.ReadBytes(6);
 			if (Encoding.UTF8.GetString(header) != "NOXiCO")
 			{
 				MessageBox.Message("Invalid world header.");
@@ -763,6 +809,38 @@ namespace Noxico
 			while(b == a)
 				b = Toolkit.PickOne(x);
 			return "Land of " + a + " and " + b;
+		}
+
+		public void RollPotions()
+		{
+			Potions = new string[256];
+			var colors = new[] { "black", "blue", "green", "red", "yellow", "mauve", "brown", "white", "silver", "purple", "chocolate", "orange", "gray" };
+			var mods = new[] { "", "bubbly ", "fizzy ", "viscious ", "translucent ", "smoky ", "smelly ", "fragrant ", "sparkly ", "tar-like " };
+			for (var i = 0; i < 128; i++)
+			{
+				string roll = null;
+				while (Potions.Contains(roll))
+				{
+					var color = colors[Toolkit.Rand.Next(colors.Length)];
+					var mod = mods[Toolkit.Rand.NextDouble() > 0.6 ? Toolkit.Rand.Next(1, mods.Length) : 0];
+					roll = mod + color + " potion";
+				}
+				Potions[i] = roll;
+			}
+			mods = new[] { "", "shiny ", "sparking ", "warm ", "cold ", "translucent ", "glistening " };
+			for (var i = 128; i < 192; i++)
+			{
+				string roll = null;
+				while (Potions.Contains(roll))
+				{
+					var color = colors[Toolkit.Rand.Next(colors.Length)];
+					var mod = mods[Toolkit.Rand.NextDouble() > 0.6 ? Toolkit.Rand.Next(1, mods.Length) : 0];
+					roll = mod + color + " ring";
+				}
+				Potions[i] = roll;
+			}
+			for (var i = 192; i < 256; i++)
+				Potions[i] = "";
 		}
 	}
 }

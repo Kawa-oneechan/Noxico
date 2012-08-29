@@ -563,6 +563,7 @@ namespace Noxico
 		public static void Initialize()
 		{
 			Elements = new List<UIElement>();
+			HighlightChanged = null;
 		}
 
 		public static void CheckKeys()
