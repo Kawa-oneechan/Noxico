@@ -1050,6 +1050,19 @@ namespace Noxico
 			return t;
 		}
 
+		public Token AddToken(string name, float value, string text)
+		{
+			var t = new Token() { Name = name, Value = value, Text = text };
+			Tokens.Add(t);
+			return t;
+		}
+		public Token AddToken(string name)
+		{
+			var t = new Token() { Name = name };
+			Tokens.Add(t);
+			return t;
+		}
+
 		public void RemoveToken(string name)
 		{
 			var t = Tokens.Find(x => x.Name == name);
@@ -2821,6 +2834,21 @@ namespace Noxico
 				}
 			}
 			return null;
+		}
+
+		public void SetRelation(Character target, string ship, bool mutual = false)
+		{
+			var shipToken = this.Path("ships/" + target.ID);
+			if (shipToken == null)
+			{
+				shipToken = new Token() { Name = target.ID };
+				this.Path("ships").Tokens.Add(shipToken);
+				shipToken.Tokens.Add(new Token() { Name = ship });
+			}
+			else
+				shipToken.Tokens[0].Name = ship;
+			if (mutual)
+				target.SetRelation(this, ship, false);
 		}
 	}
 
