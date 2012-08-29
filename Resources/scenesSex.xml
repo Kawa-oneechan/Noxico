@@ -30,7 +30,7 @@
 		</p>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.addtag "willing"
+				$bottom.addtoken "willing"
 			]]>
 		</script>
 		<action name="(starting node)" />
@@ -64,27 +64,27 @@
 		</p>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.gettagval "breastrow[0]/size"
+				$bottom.gettokenval "breastrow[0]/size"
 				if it > 4
 					-- E/Pillowy or higher
 					|<< It takes you a while to reach [b:his] [b:nipples] at that speed, but you get there and >>
 				else
 					|<< Shortly, you trace an ever smaller circle up to [b:his] [b:nipples] and >>
 				endif
-				$bottom.gettagval "breastrow[0]/nipples/size"
+				$bottom.gettokenval "breastrow[0]/nipples/size"
 				if it > 2
 					|<< pull on >>
 				else
 					|<< teasingly rub >>
-				$bottom.gettagval "breastrow[0]/lactation"
+				$bottom.gettokenval "breastrow[0]/lactation"
 				if it > 2
 					|<< them, spraying a bit of milk on your fingers. >>
 				else
-					$bottom.checktag "breastrow[0]/fuckable"
+					$bottom.checktoken "breastrow[0]/fuckable"
 					if exists
 						|<< them, softly stroking the increasingly moist hole on top. >>
 					else
-						$bottom.checktag "breastrow[0]/canfuck"
+						$bottom.checktoken "breastrow[0]/canfuck"
 						if exists
 							|<< them, exciting them into soft nipple-y erections. >>
 						else
@@ -108,7 +108,7 @@
 		</p>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.gettagval "vagina[0]/wetness"
+				$bottom.gettokenval "vagina[0]/wetness"
 				if it >= 2
 					-- Wet
 					|<< You easily >>
@@ -117,7 +117,7 @@
 					|<< At the right moment, you >>
 				endif
 				|<< slide a finger >>
-				$bottom.gettagval "vagina[0]/looseness"
+				$bottom.gettokenval "vagina[0]/looseness"
 				if it >= 3
 					-- Loose
 					|<< or two >>
@@ -132,11 +132,11 @@
 				-- if blah
 				--	"practically tears off your [t:pants], exposing your [t:cock] to [b:his]"
 				-- else
-					$top.checktag "penis"
+					$top.checktoken "penis"
 					if exists
 						|<< looking at your [t:cock] with an >>
 					else
-						$top.checktag "vagina"
+						$top.checktoken "vagina"
 						if exists
 							|<< looking at your [t:pussy] with an >>
 						endif
@@ -171,9 +171,9 @@
 			You sigh and put your clothes back on, your lust plummeting with her rejection. Surely there must be a way to get your size big enough to penetrate her properly?
 		</p>
 		<script type="text/noxicobotic">
-			$top.settagval "stimulation" 0
-			$top.settagval "climax" 0
-			$bottom.removetag "willing"
+			$top.settokenval "stimulation" 0
+			$top.settokenval "climax" 0
+			$bottom.removetoken "willing"
 		</script>
 		<!-- Dead end, stop the system. -->
 	</scene>
@@ -248,7 +248,7 @@
 		</p>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.removetag "willing"
+				$bottom.removetoken "willing"
 			]]>
 		</script>
 		<!-- No actions. Dead end. -->
@@ -274,7 +274,7 @@
 		<script type="text/noxicobotic">
 			<![CDATA[
 				|<< [b:He] eyes up your [t:l:penis/length] dick with a >>
-				$top.gettagval "penis[0]/length"
+				$top.gettokenval "penis[0]/length"
 				if it > 20
 					|<< zealous >>
 					else
@@ -308,7 +308,7 @@
 		</p>
 		<script type="text/noxicobotic">
 			<![CDATA[
-				$bottom.removetag "willing"
+				$bottom.removetoken "willing"
 			]]>
 		</script>
 		<!-- Final dead end. -->
@@ -381,7 +381,7 @@
 		<script type="text/noxicobotic">
 			<![CDATA[
   			|<< Increasing climax for top by 20. >>
-				$top.inctagval "Climax" 20
+				$top.inctokenval "Climax" 20
   		]]>
 		</script>
 		<action name="dev climax" />

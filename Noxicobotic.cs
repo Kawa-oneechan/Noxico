@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -430,17 +430,17 @@ namespace Noxico
 					return false;
 				#endregion
 				#region Tokens
-				case "checktag":
+				case "checktoken":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("checktag", 1);
+						throw new ParameterMismatchException("checktoken", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					var token = ((BoardChar)subject).Character.Path(parms[0]);
 					NoxicoGame.ScriptVariables["exists"] = token == null ? 0 : 1;
 					return false;
-				case "addtag":
+				case "addtoken":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("addtag", 1);
+						throw new ParameterMismatchException("addtoken", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					if (parms.Length == 2)
@@ -454,9 +454,9 @@ namespace Noxico
 					else if (!((BoardChar)subject).Character.HasToken(parms[0]))
 						((BoardChar)subject).Character.Tokens.Add(new Token() { Name = parms[0] });
 					return false;
-				case "replacetag":
+				case "replacetoken":
 					if (parms.Length < 2)
-						throw new ParameterMismatchException("replacetag", 2);
+						throw new ParameterMismatchException("replacetoken", 2);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -466,9 +466,9 @@ namespace Noxico
 					token.Value = 0;
 					token.Tokens.Clear();
 					return false;
-				case "renametag":
+				case "renametoken":
 					if (parms.Length < 2)
-						throw new ParameterMismatchException("renametag", 2);
+						throw new ParameterMismatchException("renametoken", 2);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -476,9 +476,9 @@ namespace Noxico
 						throw new Exception("No such token path.");
 					token.Name = parms[1];
 					return false;
-				case "removetag":
+				case "removetoken":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("removetag", 1);
+						throw new ParameterMismatchException("removetoken", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					if (parms.Length == 2)
@@ -492,9 +492,9 @@ namespace Noxico
 					else if (((BoardChar)subject).Character.HasToken(parms[0]))
 						((BoardChar)subject).Character.RemoveToken(parms[0]);
 					return false;
-				case "settagval":
+				case "settokenval":
 					if (parms.Length < 2)
-						throw new ParameterMismatchException("settagval", 2);
+						throw new ParameterMismatchException("settokenval", 2);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -502,9 +502,9 @@ namespace Noxico
 						throw new Exception("No such token path.");
 					token.Value = ParseNumber(parms[1]);
 					return false;
-				case "gettagval":
+				case "gettokenval":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("gettagval", 1);
+						throw new ParameterMismatchException("gettokenval", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -513,9 +513,9 @@ namespace Noxico
 					else
 						NoxicoGame.ScriptVariables["it"] = token.Value;
 					return false;
-				case "inctagval":
+				case "inctokenval":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("inctagval", 1);
+						throw new ParameterMismatchException("inctokenval", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -526,9 +526,9 @@ namespace Noxico
 					else
 						token.Value += ParseNumber(parms[1]);
 					return false;
-				case "dectagval":
+				case "dectokenval":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("dectagval", 1);
+						throw new ParameterMismatchException("dectokenval", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
@@ -539,9 +539,9 @@ namespace Noxico
 					else
 						token.Value -= ParseNumber(parms[1]);
 					return false;
-				case "roundtagval":
+				case "roundtokenval":
 					if (parms.Length < 1)
-						throw new ParameterMismatchException("roundtagval", 1);
+						throw new ParameterMismatchException("roundtokenval", 1);
 					if (!(subject is BoardChar))
 						throw new Exception("Noxicobotic subject is not a BoardChar.");
 					token = ((BoardChar)subject).Character.Path(parms[0]);
