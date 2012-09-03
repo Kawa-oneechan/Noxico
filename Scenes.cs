@@ -126,13 +126,13 @@ namespace Noxico
 					else */
 					if (part.GetAttribute("type") == "text/javascript")
 					{
-						var jint = new Jint.JintEngine();
 						var buffer = new StringBuilder();
-						jint.SetParameter("top", top);
-						jint.SetParameter("bottom", bottom);
-						jint.SetFunction("eval", new Func<string, int>(x => 0));
-						jint.SetFunction("print", new Action<string>(x => buffer.Append(x)));
-						jint.Run(part.InnerText);
+						var js = Javascript.MainMachine;
+						Javascript.Ascertain(js);
+						js.SetParameter("top", top);
+						js.SetParameter("bottom", bottom);
+						js.SetFunction("print", new Action<string>(x => buffer.Append(x)));
+						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();
 					}

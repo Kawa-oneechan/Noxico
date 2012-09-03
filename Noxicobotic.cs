@@ -7,6 +7,7 @@ using System.Globalization;
 
 namespace Noxico
 {
+	[Obsolete("Dropped in favor of Jint.", true)]
 	public static class Noxicobotic
 	{
 		enum MessageTypes
@@ -884,6 +885,7 @@ namespace Noxico
 
 	public partial class Entity
 	{
+		[Obsolete("Dropped in favor of Jint.", true)]
 		partial void RunCycle()
 		{
 			if (!ScriptRunning)
@@ -897,12 +899,13 @@ namespace Noxico
 
 			var sp = ScriptPointer;
 			var sr = ScriptRunning;
-			Noxicobotic.Run(this, Script);
+			//Noxicobotic.Run(this, Script);
 			//ScriptPointer = sp;
 			//ScriptRunning = sr;
 		}
 	}
 
+	[Obsolete("Dropped in favor of Jint.", true)]
 	public class ParameterMismatchException : Exception
 	{
 		public ParameterMismatchException(string command, int parms) : base(string.Format("The {0} command expects {1} parameter(s).", command, parms))

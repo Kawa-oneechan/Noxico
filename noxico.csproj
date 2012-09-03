@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="IniFile.cs" />
+    <Compile Include="Jint.cs" />
     <Compile Include="Noxico.cs" />
     <Compile Include="Noxicobotic.cs" />
     <Compile Include="GamerServices.cs" />
