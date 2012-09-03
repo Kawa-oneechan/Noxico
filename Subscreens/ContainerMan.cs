@@ -23,7 +23,7 @@ namespace Noxico
 		private static UIWindow containerWindow, playerWindow, descriptionWindow;
 		private static UIList containerList, playerList;
 		private static UILabel description;
-		private static bool onLeft = true;
+		//private static bool onLeft = true;
 		private static int indexLeft, indexRight;
 
 		public static void Setup(Container container)
@@ -172,7 +172,7 @@ namespace Noxico
 					{
 						if (containerList.Items.Count == 0)
 							return; 
-						onLeft = true;
+						//onLeft = true;
 						TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
 						{
 							playerItems.Add(containerItems[containerList.Index]);
@@ -224,7 +224,7 @@ namespace Noxico
 					{
 						if (playerList.Items.Count == 0)
 							return; 
-						onLeft = false;
+						//onLeft = false;
 						if (TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]))
 						{
 							containerItems.Add(playerItems[playerList.Index]);

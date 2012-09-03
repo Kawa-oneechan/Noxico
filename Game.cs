@@ -41,6 +41,7 @@ namespace Noxico
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
 		public static List<StatusMessage> Messages { get; set; }
+		[Obsolete("Dropped in favor of Jint.", true)]
 		public static Dictionary<string, double> ScriptVariables = new Dictionary<string, double>();
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
@@ -140,8 +141,9 @@ namespace Noxico
 				BookAuthors.Add(b.HasAttribute("author") ? b.GetAttribute("author") : "an unknown author");
 			}
 
-			ScriptVariables.Add("consumed", 0);
+			//ScriptVariables.Add("consumed", 0);
 			HostForm.Noxico = this;
+			Javascript.MainMachine = Javascript.Create();
 
 			WorldGen.LoadBiomes();
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");

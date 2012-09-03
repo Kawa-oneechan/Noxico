@@ -2521,7 +2521,7 @@ namespace Noxico
 					continue;
 				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
 				var equip = find.GetToken("equipable");
-				if (equip.HasToken("pants") || equip.HasToken("underpants"))
+				if (equip != null && (equip.HasToken("pants") || equip.HasToken("underpants")))
 				{
 					var originalname = find.ToString(carriedItem, false, false);
 					if (HasToken("quadruped"))
@@ -2576,6 +2576,27 @@ namespace Noxico
 				else
 					Character.MorphBuffer.Append(s + ' ');
 			});
+			Action finish = () =>
+			{
+				var s = Character.MorphBuffer.ToString();
+				if (string.IsNullOrWhiteSpace(s))
+					return;
+				var bc = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character == this);
+				if (bc != null)
+					bc.AdjustView();
+				var paused = true;
+				MessageBox.ScriptPauseHandler = () =>
+				{
+					paused = false;
+				};
+				MessageBox.Message(s, true);
+				while (paused)
+				{
+					NoxicoGame.HostForm.Noxico.Update();
+					System.Windows.Forms.Application.DoEvents();
+				} 
+				Character.MorphBuffer.Clear();
+			};
 
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + targetPlan + "\"]") as XmlElement;
 			if (planSource == null)
@@ -2661,7 +2682,7 @@ namespace Noxico
 				doNext.Add(false);
 
 				var faceDescription = fooIneReports.ContainsKey(target.GetToken("face").Tokens[0].Name) ? fooIneReports[target.GetToken("face").Tokens[0].Name] : target.GetToken("face").Tokens[0].Name;
-				report.Add((isPlayer ? "Your" : this.Name + "'s") + " face has rearranged to a more " + faceDescription + " form");
+				report.Add((isPlayer ? "Your" : this.Name + "'s") + " face has rearranged to a more " + faceDescription + " form.");
 			}
 
 			//Nothing less drastic to change? Great.
@@ -2712,6 +2733,7 @@ namespace Noxico
 					{
 						doReport((isPlayer ? "You are" : this.Name + " is") + " now a centaur.");
 					}
+					finish();
 					return;
 				}
 				else if (!target.HasToken("quadruped"))
@@ -2725,6 +2747,7 @@ namespace Noxico
 				}
 				{
 					doReport("There was no further effect.");
+					finish();
 					return;
 				}
 			}
@@ -2733,6 +2756,7 @@ namespace Noxico
 			if (toChange.Count == 0)
 			{
 				doReport("There was no further effect.");
+				finish();
 				return;
 			}
 
@@ -2806,6 +2830,12 @@ namespace Noxico
 			{
 				Morph(targetPlan);
 			}
+
+			finish();
+		}
+		public void Morph(string targetPlan)
+		{
+			Morph(targetPlan, MorphReportLevel.PlayerOnly, false, 0);
 		}
 
 		public InventoryItem CanShoot()
@@ -2966,12 +2996,11 @@ namespace Noxico
 #endif
 
 			ni.Script = null;
-			var ses = x.SelectNodes("script");
+			var ses = x.SelectNodes("script").OfType<XmlElement>().ToList();
 			if (ses.Count == 0)
 				return ni;
-			var s = ses[0].ChildNodes.OfType<XmlCDataSection>().FirstOrDefault();
-			if (s != null)
-				ni.Script = s.Value;
+			if (ses[0] != null && ses[0].GetAttribute("type") == "text/javascript")
+				ni.Script = ses[0].InnerText;
 			return ni;
 		}
 
@@ -3253,6 +3282,26 @@ namespace Noxico
 
 			if (!string.IsNullOrWhiteSpace(this.Script))
 			{
+				var js = Javascript.MainMachine;
+				Javascript.Ascertain(js, true);
+				js.SetParameter("user", character);
+				js.SetFunction("consume", new Action<string>(x => character.GetToken("items").Tokens.Remove(item)));
+				js.SetFunction("message", new Action<string>(x =>
+				{
+					var paused = true;
+					MessageBox.ScriptPauseHandler = () =>
+					{
+						paused = false;
+					};
+					MessageBox.Message(x);
+					while (paused)
+					{
+						NoxicoGame.HostForm.Noxico.Update();
+						System.Windows.Forms.Application.DoEvents();
+					}
+				}));
+				js.Run(this.Script);
+				/*
 				Console.WriteLine("------\nSCRIPT\n------");
 				var script = this.Script.Split('\n'); //this.GetToken("script").Text.Split('\n');
 				boardchar.ScriptRunning = true;
@@ -3264,9 +3313,11 @@ namespace Noxico
 				if (NoxicoGame.ScriptVariables["consumed"] != 0)
 					character.GetToken("items").Tokens.Remove(item);
 				return;
+				*/
 			}
 
-			MessageBox.Message(runningDesc.Viewpoint(boardchar));
+			if (!string.IsNullOrWhiteSpace(runningDesc))
+				MessageBox.Message(runningDesc.Viewpoint(boardchar));
 		}
 	}
 

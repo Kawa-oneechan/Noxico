@@ -95,8 +95,9 @@ namespace Noxico
         }
         public virtual void Update()
 		{
-			if (this.Script != null && this.Script.Length > 0)
-				RunCycle();
+			// TODO: make asynchronous scripts unblock if needed.
+			//if (this.Script != null && this.Script.Length > 0)
+			//	RunCycle();
         }
 
         public Direction Opposite(Direction current)

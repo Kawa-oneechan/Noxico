@@ -21,6 +21,7 @@ namespace Noxico
 		private static int option;
 		private static bool allowEscape;
 		public static object Answer { get; private set; }
+		public static Action ScriptPauseHandler { get; set; }
 
 		public static void Handler()
 		{
@@ -115,6 +116,11 @@ namespace Noxico
 				{
 					type = BoxType.Message;
 					NoxicoGame.ClearKeys();
+				}
+				if (ScriptPauseHandler != null)
+				{
+					ScriptPauseHandler();
+					ScriptPauseHandler = null;
 				}
 			}
 		}

@@ -4,7 +4,7 @@
 	<!ELEMENT items (item+)>
 	<!ELEMENT item (#PCDATA|script)*>
 	<!ELEMENT script (#PCDATA)>
-	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ATTLIST script type CDATA #REQUIRED>
 	<!ATTLIST item
 		id ID #REQUIRED
 		name CDATA #REQUIRED
@@ -28,12 +28,9 @@ ascii
 	fore
 		aquamarine
 			]]>
-			<script language="text/noxicobotic">
-				<![CDATA[
--- To replace the multiuse token, this lets us make exceptions in consumption.
-consumed = 1
-morph littlepony 0 window
-				]]>
+			<script type="text/javascript">
+				//consume();
+				user.Morph("littlepony");
 			</script>
 		</item>
 
@@ -84,7 +81,7 @@ ascii
 	fore
 		aquamarine
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 consumed = 1
 morph fox 0 window
@@ -99,7 +96,11 @@ ascii
 	fore
 		chartreuse
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/javascript">
+				message("It's no use.");
+				consume();
+			</script>
+			<script type="text/noxicobotic">
 				<![CDATA[
 !<< It's no use. >>
 consumed = 1
@@ -1197,7 +1198,7 @@ ascii
 	fore
 		crimson
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 -- Just display a nice custom error.
 !<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
@@ -1215,7 +1216,7 @@ ascii
 	fore
 		lightsalmon
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 -- Text stolen from CoC's Whisker Fruit item, for now.
 
@@ -1292,7 +1293,7 @@ ascii
 	fore
 		mistyrose
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 -- Text stolen from CoC's Canine Pepper item, for now.
 
@@ -1358,7 +1359,7 @@ ascii
 	fore
 		orangered
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 |<< You apply the fox morph potion. >>
 				
@@ -1428,7 +1429,7 @@ ascii
 	fore
 		skyblue
 			]]>
-			<script language="text/noxicobotic">
+			<script type="text/noxicobotic">
 				<![CDATA[
 |<< You apply the bunny morph potion. >>
 				
