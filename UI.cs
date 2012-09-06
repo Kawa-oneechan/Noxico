@@ -564,6 +564,7 @@ namespace Noxico
 		{
 			Elements = new List<UIElement>();
 			HighlightChanged = null;
+			highlight = null;
 		}
 
 		public static void CheckKeys()

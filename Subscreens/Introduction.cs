@@ -79,16 +79,27 @@ namespace Noxico
 						}
 						return "Start over in \"" + Path.GetFileName(s) + "\"";
 					}));
-					options.Add("~", "Start new game in \"" + NoxicoGame.WorldName + "\"");
+					options.Add("~", "Start new game...");
 					MessageBox.List("There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
 						() =>
 						{
 							if ((string)MessageBox.Answer == "~")
 							{
+								MessageBox.Input("Enter a name for the new world:", NoxicoGame.WorldName,
+									() =>
+									{
+										NoxicoGame.WorldName = (string)MessageBox.Answer;
+										Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
+										NoxicoGame.Mode = UserMode.Subscreen;
+										NoxicoGame.Subscreen = Introduction.CharacterCreator;
+										NoxicoGame.Immediate = true;
+									});
+								/*
 								Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 								NoxicoGame.Mode = UserMode.Subscreen;
 								NoxicoGame.Subscreen = Introduction.CharacterCreator;
 								NoxicoGame.Immediate = true;
+								*/
 							}
 							else
 							{
