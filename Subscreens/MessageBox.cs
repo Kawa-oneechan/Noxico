@@ -69,7 +69,7 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 6, Top = top + lines + 1, Width = 67, Height = 1, Background = Color.Gray, Foreground = Color.White };
+					txt = new UITextBox((string)Answer) { Left = 7, Top = top + lines + 1, Width = 65, Height = 1, Background = Color.FromArgb(48, 48, 48), Foreground = Color.White };
 					UIManager.Elements.Add(txt);
 				}
 				if (type == BoxType.Message || type == BoxType.Input)

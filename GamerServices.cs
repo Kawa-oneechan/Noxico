@@ -290,6 +290,17 @@ namespace GamerServices
 				OnMessage(respText.Substring(4));
 		}
 
+		public static bool IsTaken(string name)
+		{
+			if (!IsConnected())
+				return false;
+			var client = new WebClient();
+			var response = client.DownloadString(server + "?t=" + name);
+			if (response == "MSG:Profile name taken.")
+				return true;
+			return false;
+		}
+
 		private sealed class CryptStream : Stream
 		{
 			private const string key = "Applebloom!";

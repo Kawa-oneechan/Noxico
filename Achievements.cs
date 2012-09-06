@@ -12,9 +12,26 @@ namespace Noxico
 		public static string ProfilePath { get; set; }
 		public static DateTime StartingTime { get; set; }
 
+		private static void NameLoop(bool wasTaken)
+		{
+			MessageBox.Input(wasTaken ? "That name is already taken. Please try another. If this was your profile and you're running on another system, you may want to try copying the profile from the other system, or visit http://helmet.kafuka.org/noxico/board and ask for a profile download." : "Enter a name for your profile.", Environment.UserName, () =>
+			{
+				var name = ((string)MessageBox.Answer).Trim();
+				if (string.IsNullOrWhiteSpace(name))
+					return;
+				if (Profile.IsTaken(name))
+					NameLoop(true);
+				else
+				{
+					Profile.Create(name);
+					SaveProfile();
+				}
+			});
+		}
+
 		public static void Setup()
 		{
-			if (!GamerServices.Profile.UseOnline)
+			if (!IniFile.GetBool("profile", "useonline", true) || !Profile.IsConnected())
 				return;
 			Profile.GameName = "Noxico";
 
@@ -32,9 +49,7 @@ namespace Noxico
 				{
 					MessageBox.Ask("You do not have a gamer profile for this game yet. Would you like to create one?", () =>
 					{
-						//TODO: add a MessageBox.Input() to get the profile name.
-						Profile.Create(Environment.UserName);
-						SaveProfile();
+						NameLoop(false);
 					},
 						null);
 				}
