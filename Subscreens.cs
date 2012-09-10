@@ -58,6 +58,32 @@ namespace Noxico
 
 		public static void CreateDungeon()
 		{
+			Func<Board, Warp> findWarpSpot = (b) =>
+			{
+				var okay = false;
+				var eX = 0;
+				var eY = 0;
+				while (!okay)
+				{
+					eX = Toolkit.Rand.Next(1, 79);
+					eY = Toolkit.Rand.Next(1, 24);
+
+					var sides = 0;
+					if (b.IsSolid(eY - 1, eX))
+						sides++;
+					if (b.IsSolid(eY + 1, eX))
+						sides++;
+					if (b.IsSolid(eY, eX - 1))
+						sides++;
+					if (b.IsSolid(eY, eX + 1))
+						sides++;
+					if (sides < 3 && sides > 1)
+						okay = true;
+
+				}
+				return new Warp() { XPosition = eX, YPosition = eY };
+			};
+
 			if (Subscreens.FirstDraw)
 			{
 				NoxicoGame.HostForm.LoadBitmap(Toolkit.ResOrFile(global::Noxico.Properties.Resources.MakeCave, "makecave.png"));
@@ -70,76 +96,185 @@ namespace Noxico
 
 			var dunGen = new StoneDungeonGenerator();
 			var caveGen = new CaveGenerator();
-			
-			//First, create the entrance cavern.
+
+			Warp originalExit = null;
+
 			WorldGen.LoadBiomes();
 			var biomeData = WorldGen.Biomes[3]; //TODO: replace 3 with DungeonGeneratorBiome -- this is for testing.
-			var newBoard = new Board();
-			caveGen.Create(biomeData);
-			caveGen.ToTilemap(ref newBoard.Tilemap);
-			newBoard.Name = "Dungeon Entrance";
-			newBoard.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_E";
-			newBoard.Music = "set://Dungeon";
-			newBoard.Type = BoardType.Dungeon;
-			//newBoard.Tokens = Token.Tokenize("name: \"" + newBoard.Name + "\"\nid: \"" + newBoard.ID + "\"\nmusic: \"" + newBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
-			var encounters = newBoard.GetToken("encounters");
-			foreach (var e in biomeData.Encounters)
-				encounters.Tokens.Add(new Token() { Name = e });
-			encounters.Value = biomeData.MaxEncounters;
-			newBoard.RespawnEncounters();
 
-			//Find a good spot for the cave exit.
-			var okay = false;
-			var eX = 0;
-			var eY = 0;
-			while (!okay)
+			/* Step 1 - Randomize jagged array, make boards for each entry.
+			 * ------------------------------------------------------------
+			 * ("goal" board is boss/treasure room, picked at random from bottom floor set.)
+			 * [EXIT] [ 01 ] [ 02 ]
+			 * [ 03 ] [ 04 ]
+			 * [ 05 ] [ 06 ] [ 07 ] [ 08 ]
+			 * [ 09 ] [ 10 ] [ 11 ]
+			 * [GOAL] [ 13 ]
+			*/
+			var levels = new List<List<Board>>();
+			var depth = Toolkit.Rand.Next(3, 6);
+			for (var i = 0; i < depth; i++)
 			{
-				eX = Toolkit.Rand.Next(1, 79);
-				eY = Toolkit.Rand.Next(1, 24);
-
-				var sides = 0;
-				if (newBoard.IsSolid(eY - 1, eX))
-					sides++;
-				if (newBoard.IsSolid(eY + 1, eX))
-					sides++;
-				if (newBoard.IsSolid(eY, eX - 1))
-					sides++;
-				if (newBoard.IsSolid(eY, eX + 1))
-					sides++;
-				if (sides < 3 && sides > 1)
-					okay = true;
+				levels.Add(new List<Board>());
+				var length = Toolkit.Rand.Next(2, 5);
+				for (var j = 0; j < length; j++)
+				{
+					var board = new Board();
+					board.BoardNum = nox.Boards.Count;
+					nox.Boards.Add(board);
+					levels[i].Add(board);
+				}
 			}
 
-			var exit = new Warp()
+			//Decide which boards are the exit and goal
+			var entranceBoard = levels[0][Toolkit.Rand.Next(levels[0].Count)];
+			var goalBoard = levels[levels.Count - 1][Toolkit.Rand.Next(levels[levels.Count - 1].Count)];
+
+			//Generate content for each board
+			for (var i = 0; i < levels.Count; i++)
 			{
-				XPosition = eX,
-				YPosition = eY,
-				ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit",
-			};
-			newBoard.Warps.Add(exit);
-			newBoard.SetTile(eY, eX, '<', Color.Silver, Color.Black);
+				for (var j = 0; j < levels[i].Count; j++)
+				{
+					var board = levels[i][j];
 
-			//Slot in the new board
-			newBoard.BoardNum = nox.Boards.Count;
-			nox.Boards.Add(newBoard);
+					//TODO: uncomment this decision when the dungeon generator gets pathways.
+					//if (Toolkit.Rand.NextDouble() > 0.7)
+					//{
+						caveGen.Create(biomeData);
+						caveGen.ToTilemap(ref board.Tilemap);
+					//}
+					//else
+					//{
+					//	dunGen.Create(biomeData);
+					//	dunGen.ToTilemap(ref board.Tilemap);
+					//}
 
-			//Now hook the two up.
+					board.Name = string.Format("Level {0}-{1}", i + 1, (char)('A' + j));
+					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
+					board.Music = "set://Dungeon";
+					board.Type = BoardType.Dungeon;
+					var encounters = board.GetToken("encounters");
+					foreach (var e in biomeData.Encounters)
+						encounters.Tokens.Add(new Token() { Name = e });
+					encounters.Value = biomeData.MaxEncounters;
+					board.RespawnEncounters();
+
+					//If this is the entrance board, add a warp back to the Overworld.
+					if (board == entranceBoard)
+					{
+						var exit = findWarpSpot(board);
+						originalExit = exit;
+						exit.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit";
+						board.Warps.Add(exit);
+						board.SetTile(exit.YPosition, exit.XPosition, '<', Color.Silver, Color.Black);
+					}
+				}
+			}
+
+			/* Step 2 - Randomly add up/down links
+			 * -----------------------------------
+			 * (imagine for the moment that each board can have more than one exit and that this goes for both directions.)
+			 * [EXIT] [ 01 ] [ 02 ]
+			 *    |
+			 * [ 03 ] [ 04 ]
+			 * 	         |
+			 * [ 05 ] [ 06 ] [ 07 ] [ 08 ]
+			 *    |             |
+			 * [ 09 ] [ 10 ] [ 11 ]
+			 * 	                |
+			 * 	      [GOAL] [ 13 ]
+			 */
+			var connected = new List<Board>();
+			for (var i = 0; i < levels.Count; i++)
+			{
+				var j = Toolkit.Rand.Next(0, levels[i].Count);
+				//while (connected.Contains(levels[i][j]))
+				//	j = Toolkit.Rand.Next(0, levels[i].Count);
+
+				var up = false;
+				var destLevel = i + 1;
+				if (destLevel == levels.Count)
+				{
+					up = true;
+					destLevel = i - 1;
+				}
+				var dest = Toolkit.Rand.Next(0, levels[destLevel].Count);
+
+				var boardHere = levels[i][j];
+				var boardThere = levels[destLevel][dest];
+
+				var here = findWarpSpot(boardHere);
+				var there = findWarpSpot(boardThere);
+				boardHere.Warps.Add(here);
+				boardThere.Warps.Add(there);
+				here.ID = boardHere.ID + boardHere.Warps.Count;
+				there.ID = boardThere.ID + boardThere.Warps.Count;
+				here.TargetBoard = boardThere.BoardNum;
+				there.TargetBoard = boardHere.BoardNum;
+				here.TargetWarpID = there.ID;
+				there.TargetWarpID = here.ID;
+				boardHere.SetTile(here.YPosition, here.XPosition, up ? '<' : '>', Color.Gray, Color.Black);
+				boardThere.SetTile(there.YPosition, there.XPosition, !up ? '<' : '>', Color.Gray, Color.Black);
+
+				Console.WriteLine("Connected {0} || {1}.", boardHere.ID, boardThere.ID);
+
+				connected.Add(boardHere);
+				connected.Add(boardThere);
+			}
+
+			/* Step 3 - Connect the Unconnected
+			 * --------------------------------
+			 * [EXIT]=[ 01 ]=[ 02 ]
+			 * 	|
+			 * [ 03 ]=[ 04 ]
+			 *           |
+			 * [ 05 ]=[ 06 ] [ 07 ]=[ 08 ]
+			 *    |             |
+			 * [ 09 ]=[ 10 ]=[ 11 ]
+			 *                  |
+			 *        [GOAL]=[ 13 ]
+			 */
+
+			for (var i = 0; i < levels.Count; i++)
+			{
+				for (var j = 0; j < levels[i].Count - 1; j++)
+				{
+					//Don't connect if this board AND the right-hand neighbor are already connected.
+					if (connected.Contains(levels[i][j]) && connected.Contains(levels[i][j + 1]))
+						continue;
+
+					var boardHere = levels[i][j];
+					var boardThere = levels[i][j + 1];
+
+					var here = findWarpSpot(boardHere);
+					var there = findWarpSpot(boardThere);
+					boardHere.Warps.Add(here);
+					boardThere.Warps.Add(there);
+					here.ID = boardHere.ID + boardHere.Warps.Count;
+					there.ID = boardThere.ID + boardThere.Warps.Count;
+					here.TargetBoard = boardThere.BoardNum;
+					there.TargetBoard = boardHere.BoardNum;
+					here.TargetWarpID = there.ID;
+					there.TargetWarpID = here.ID;
+					boardHere.SetTile(here.YPosition, here.XPosition, '\x2261', Color.Gray, Color.Black);
+					boardThere.SetTile(there.YPosition, there.XPosition, '\x2261', Color.Gray, Color.Black);
+
+					Console.WriteLine("Connected {0} -- {1}.", boardHere.ID, boardThere.ID);
+
+					connected.Add(boardHere);
+					connected.Add(boardThere);
+				}
+			}
+
+			/* Step 4 - place sick lewt in goalBoard
+			 * TODO: sick lewt
+			 */
+
 			var entrance = nox.CurrentBoard.Warps.Find(w => w.ID == DungeonGeneratorEntranceWarpID);
-			entrance.TargetBoard = newBoard.BoardNum; //should be this one.
-			entrance.TargetWarpID = exit.ID;
-			exit.TargetBoard = nox.CurrentBoard.BoardNum;
-			exit.TargetWarpID = entrance.ID;
-
-			var originalExit = exit;
-			var entranceBoard = newBoard;
-			
-			var excavateFrom = entranceBoard;
-			var depth = 0;
-			var deepest = 0;
-			Board deepestBoard = null;
-			var amount = 0;
-			Excavate(entranceBoard, biomeData, ref amount, depth, ref deepest, ref deepestBoard);
-			//TODO: Plant unique treasure in deepestBoard.
+			entrance.TargetBoard = entranceBoard.BoardNum; //should be this one.
+			entrance.TargetWarpID = originalExit.ID;
+			originalExit.TargetBoard = nox.CurrentBoard.BoardNum;
+			originalExit.TargetWarpID = entrance.ID;
 
 			nox.CurrentBoard.EntitiesToRemove.Add(nox.Player);
 			nox.CurrentBoard = entranceBoard;
@@ -152,124 +287,6 @@ namespace Noxico
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
 			NoxicoGame.HostForm.Noxico.SaveGame();
-		}
-
-		private static void Excavate(Board excavateFrom, BiomeData biomeData, ref int amount, int depth, ref int deepest, ref Board deepestBoard)
-		{
-			amount++;
-			var nox = NoxicoGame.HostForm.Noxico;
-			var excavateBoard = new Board();
-			var caveGen = new CaveGenerator();
-			caveGen.Create(biomeData);
-			caveGen.ToTilemap(ref excavateBoard.Tilemap);
-			excavateBoard.Name = "Dungeon level " + (depth + 1).ToString();
-			excavateBoard.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_" + amount.ToString();
-			excavateBoard.Music = "set://Dungeon";
-			excavateBoard.Type = BoardType.Dungeon;
-
-			if (depth > deepest)
-			{
-				deepest = depth;
-				deepestBoard = excavateBoard;
-			} 
-
-			//excavateBoard.Tokens = Token.Tokenize("name: \"" + excavateBoard.Name + "\"\nid: \"" + excavateBoard.ID + "\"\nmusic: \"" + excavateBoard.Music + "\"\ntype: 2\nbiome: " + DungeonGeneratorBiome + "\nencounters: " + biomeData.MaxEncounters + "\n");
-			var encounters = excavateBoard.GetToken("encounters");
-			foreach (var e in biomeData.Encounters)
-				encounters.Tokens.Add(new Token() { Name = e });
-			encounters.Value = biomeData.MaxEncounters;
-			excavateBoard.RespawnEncounters();
-
-			var numExits = Toolkit.Rand.Next(1, 3);
-			for (var i = 0; i < numExits; i++)
-			{
-				//Decide on a connection type
-				var isSameLevel = Toolkit.Rand.NextDouble() > 0.7;
-				var isUpward = Toolkit.Rand.NextDouble() > 0.5;
-				if (depth == 0 && isUpward)
-					isUpward = false;
-
-				//Find a good spot for the cave exit.
-				var okay = false;
-				var eX = 0;
-				var eY = 0;
-				while (!okay)
-				{
-					eX = Toolkit.Rand.Next(1, 79);
-					eY = Toolkit.Rand.Next(1, 24);
-
-					var sides = 0;
-					if (excavateBoard.IsSolid(eY - 1, eX))
-						sides++;
-					if (excavateBoard.IsSolid(eY + 1, eX))
-						sides++;
-					if (excavateBoard.IsSolid(eY, eX - 1))
-						sides++;
-					if (excavateBoard.IsSolid(eY, eX + 1))
-						sides++;
-					if (sides < 3 && sides > 1)
-						okay = true;
-				}
-
-				var exit = new Warp()
-				{
-					XPosition = eX,
-					YPosition = eY,
-					ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit" + i.ToString(),
-				};
-				excavateBoard.Warps.Add(exit);
-				var exitChar = isSameLevel ? '\x2261' : isUpward ? '>' : '<';
-				excavateBoard.SetTile(eY, eX, exitChar, Color.Silver, Color.Black);
-
-				//Slot in the new board
-				excavateBoard.BoardNum = nox.Boards.Count;
-				nox.Boards.Add(excavateBoard);
-
-				//Find a spot for the exit on excavateFrom
-				okay = false;
-				eX = 0;
-				eY = 0;
-				while (!okay)
-				{
-					eX = Toolkit.Rand.Next(1, 79);
-					eY = Toolkit.Rand.Next(1, 24);
-
-					var sides = 0;
-					if (excavateFrom.IsSolid(eY - 1, eX))
-						sides++;
-					if (excavateFrom.IsSolid(eY + 1, eX))
-						sides++;
-					if (excavateFrom.IsSolid(eY, eX - 1))
-						sides++;
-					if (excavateFrom.IsSolid(eY, eX + 1))
-						sides++;
-					if (sides < 3 && sides > 1)
-						okay = true;
-				}
-
-				var entrance = new Warp()
-				{
-					XPosition = eX,
-					YPosition = eY,
-					ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Entrance" + i.ToString(),
-				};
-				excavateFrom.Warps.Add(entrance);
-				exitChar = isSameLevel ? '\x2261' : isUpward ? '<' : '>';
-				excavateFrom.SetTile(eY, eX, exitChar, Color.Silver, Color.Black);
-
-				//Connect excavateBoard to excavateFrom
-				entrance.TargetBoard = excavateBoard.BoardNum; //should be this one.
-				entrance.TargetWarpID = exit.ID;
-				exit.TargetBoard = excavateFrom.BoardNum;
-				exit.TargetWarpID = entrance.ID;
-
-				if (amount < 30 && depth < 16)
-					Excavate(excavateBoard, biomeData, ref amount, depth + (isSameLevel ? 0 : isUpward ? -1 : 1), ref deepest, ref deepestBoard);
-			}
-
-			var corner = (depth + 1).ToString();
-			for (var i = 0; i < corner.Length; i++)
-				excavateBoard.SetTile(0, i, corner[i], Color.Silver, Color.Black, true);
 		}
 	}
 
