@@ -7,485 +7,122 @@ using System.Xml;
 
 namespace Noxico
 {
-	enum SplitDirection
+	internal class Marking
 	{
-		Horizontal, Vertical
+		public string Type;
+		public string[] Params;
+		public int Owner;
+		public string Name;
+		public string Description;
 	}
 
-	class Boundary
+	internal class Template
 	{
-		public int Left { get; set; }
-		public int Right { get; set; }
-		public int Top { get; set; }
-		public int Bottom { get; set; }
-		public Boundary(int l, int t, int r, int b)
+		public string Name;
+		public int Inhabitants;
+		public int Width, Height;
+		public int PlotWidth, PlotHeight;
+		public string[] MapScans;
+		public Dictionary<char, Marking> Markings;
+		public Template(XmlElement element)
 		{
-			Left = l;
-			Top = t;
-			Right = r;
-			Bottom = b;
-		}
-		public Rectangle ToRectangle()
-		{
-			return new Rectangle()
+			Name = element.GetAttribute("name");
+			Inhabitants = element.HasAttribute("inhabitants") ? int.Parse(element.GetAttribute("inhabitants")) : 0;
+			var map = element.SelectSingleNode("map") as XmlElement;
+			MapScans = map.InnerText.Trim().Split('\n').Select(x => x.Trim()).ToArray();
+			Width = MapScans[0].Length;
+			Height = MapScans.Length;
+			PlotWidth = (int)Math.Ceiling(Width / 10.0);
+			PlotHeight = (int)Math.Ceiling(Height / 12.0);
+			Markings = new Dictionary<char, Marking>();
+			foreach (var marking in element.SelectNodes("markings/marking").OfType<XmlElement>())
 			{
-				Left = this.Left,
-				Right = this.Right - 1,
-				Top = this.Top,
-				Bottom = this.Bottom - 1,
-			};
-		}
-	}
-
-	//A single node in a BSP tree.
-	class BSPNode
-	{
-		public BSPNode Left { get; set; }
-		public BSPNode Right { get; set; }
-		public BSPNode Parent { get; set; }
-		public BSPNode Sibling { get; set; }
-		public SplitDirection SplitDirection { get; set; }
-		public Boundary Bounds { get; set; }
-		public Room Room { get; set; }
-
-		public void Split(Random rand, int level, List<BSPNode> terminals, int maxLevel = 3, int minDist = 5)
-		{
-			//SplitDirection = rand.NextDouble() > 0.5 ? Direction.Horizonal : Direction.Vertical;
-			SplitDirection = Parent == null ? rand.NextDouble() > 0.5 ? SplitDirection.Horizontal : SplitDirection.Vertical : Parent.SplitDirection == SplitDirection.Horizontal ? SplitDirection.Vertical : SplitDirection.Horizontal;
-
-			Left = new BSPNode() { Parent = this };
-			Right = new BSPNode() { Parent = this };
-			Left.Sibling = Right;
-			Right.Sibling = Left;
-
-			try
-			{
-				var dist = 0;
-				var start = Environment.TickCount;
-				if (SplitDirection == SplitDirection.Vertical)
+				var c = marking.GetAttribute("char")[0];
+				var t = marking.GetAttribute("type");
+				var p = new string[0];
+				var o = marking.HasAttribute("owner") ? int.Parse(marking.GetAttribute("owner")) : 0;
+				if (t.Contains(','))
 				{
-					while (dist < minDist)
-					{
-						if ((Environment.TickCount - start) > 100)
-							throw new ArgumentOutOfRangeException("Timer");
-						dist = Bounds.Right - rand.Next(Bounds.Left + 5, Bounds.Right - 5);
-					}
-					Left.Bounds = new Boundary(Bounds.Left, Bounds.Top, Bounds.Left + dist, Bounds.Bottom);
-					Right.Bounds = new Boundary(Bounds.Left + dist, Bounds.Top, Bounds.Right, Bounds.Bottom);
+					p = t.Substring(t.IndexOf(',') + 1).Split(',');
+					t = t.Remove(t.IndexOf(','));
 				}
-				else
-				{
-					while (dist < minDist)
-					{
-						if ((Environment.TickCount - start) > 100)
-							throw new ArgumentOutOfRangeException("Timer");
-						dist = Bounds.Bottom - rand.Next(Bounds.Top + 5, Bounds.Bottom - 5);
-					}
-					Left.Bounds = new Boundary(Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Top + dist);
-					Right.Bounds = new Boundary(Bounds.Left, Bounds.Top + dist, Bounds.Right, Bounds.Bottom);
-				}
-
-				if (level < maxLevel)
-				{
-					Left.Split(rand, level + 1, terminals, maxLevel, minDist);
-					Right.Split(rand, level + 1, terminals, maxLevel, minDist);
-				}
-				else
-				{
-					terminals.Add(Left);
-					terminals.Add(Right);
-				}
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-				//Couldn't split smaller than this, so trim the leaves and bail.
-				terminals.Remove(Left);
-				terminals.Remove(Right);
-				Left = null;
-				Right = null;
-				terminals.Add(this);
+				var n = marking.GetAttribute("name");
+				var d = marking.InnerText.Trim();
+				Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o, Name = n, Description = d });
 			}
 		}
 	}
 
-	//It's a bit more abstract than that.
-	class Room
+	internal struct Building
 	{
-		public BSPNode Parent { get; set; }
-		public Boundary Bounds { get; set; }
-		public string ID { get; set; }
-		public RoomExit Exit { get; set; }
+		public int XShift, YShift;
+		public Template Template;
+		public string BaseID;
+		public List<Character> Inhabitants;
 
-		public Room(Random rand, BSPNode parent, int minSize = 3, int margin = 0)
+		public Building(string baseID, Template template, int x, int y, Culture culture)
 		{
-			Parent = parent;
-			var b = parent.Bounds;
-
-			if (b.Right - b.Left <= minSize || b.Bottom - b.Top <= minSize)
+			Template = template;
+			XShift = x;
+			YShift = y;
+			Inhabitants = new List<Character>();
+			if (template != null && culture != null && template.Inhabitants > 0)
 			{
-				Bounds = new Boundary(b.Left + margin, b.Top + margin, b.Right - margin, b.Bottom - margin);
-				return;
+				Inhabitants = GetInhabitants(template.Inhabitants, culture);
+				BaseID = string.Format("{0}_{1}", baseID, Inhabitants[0].Name.Surname);
 			}
+			else
+				BaseID = baseID;
+		}
 
-			while (true)
+		private static List<Character> GetInhabitants(int count, Culture culture)
+		{
+			var r = new List<Character>();
+			var familyName = "";
+			//var dontShareSurname = true;
+			var areMarried = Toolkit.Rand.NextDouble() > 0.7;
+			var firstPlan = "";
+			count = 2;
+			for (var i = 0; i < count; i++)
 			{
-				var left = rand.Next(b.Left, b.Left + ((b.Right - b.Left) / 2));
-				var right = rand.Next(b.Left + ((b.Right - b.Left) / 2) + 5, b.Right + 5);
-				if (right >= b.Right)
-					right = b.Right - 1;
-
-				var top = rand.Next(b.Top, b.Top + ((b.Bottom - b.Top) / 2));
-				var bottom = rand.Next(b.Top + ((b.Bottom - b.Top) / 2) + 5, b.Bottom + 5);
-				if (bottom >= b.Bottom)
-					bottom = b.Bottom - 1;
-
-				Bounds = new Boundary(left + margin, top + margin, right - margin, bottom - margin);
-
-				//Ensure the room is reasonably sized
-				if (right - left >= minSize && bottom - top >= minSize)
-					return;
+				Character c;
+				var plan = culture.Bodyplans[Toolkit.Rand.Next(culture.Bodyplans.Length)];
+				if (i > 0 && Toolkit.Rand.NextDouble() > 0.7)
+					plan = firstPlan;
+				c = Character.Generate(plan, count == 1 ? Gender.Random : (i == 0 ? Gender.Male : Gender.Female));
+				if (i == 0)
+				{
+					familyName = c.Name.Surname;
+					firstPlan = plan;
+				}
+				if (i == 1)
+				{
+					var shipType = Toolkit.Rand.NextDouble() < culture.Marriage ? "spouse" : "friend";
+					//if we chose spouse, handle the wife taking the surname of the husband.
+					var ship = new Token() { Name = c.ID };
+					ship.Tokens.Add(new Token() { Name = shipType });
+					r[0].Path("ships").Tokens.Add(ship);
+					ship = new Token() { Name = r[0].ID };
+					ship.Tokens.Add(new Token() { Name = shipType });
+					c.Path("ships").Tokens.Add(ship);
+				}
+				r.Add(c);
 			}
+			return r;
 		}
 	}
-
-	//Just for bookkeeping.
-	class RoomExit
-	{
-		public int Left { get; set; }
-		public int Top { get; set; }
-		public Direction Side { get; set; }
-		public RoomExit(int l, int t, Direction side)
-		{
-			Left = l;
-			Top = t;
-			Side = side;
-		}
-	}
-
-	//--------------------//
 
 	abstract class BaseDungeonGenerator
 	{
-		public List<BSPNode> Nodes { get; set; }
-		public BSPNode Root { get; set; }
-		public List<Room> Rooms { get; set; }
-
-		public void Create(int maxLevels = 3, int minDistance = 7, int minRoomSize = 4, int roomMargin = 0)
-		{
-			Nodes = new List<BSPNode>();
-			Rooms = new List<Room>();
-
-			var rand = Toolkit.Rand;
-			Root = new BSPNode();
-			Root.Bounds = new Boundary(0, 0, 79, 24);
-			Root.Split(rand, 0, Nodes, maxLevels, minDistance);
-
-			foreach (var node in Nodes)
-			{
-				var room = new Room(rand, node, minRoomSize, roomMargin);
-				node.Room = room;
-				Rooms.Add(room);
-			}
-		}
-
-		private List<Room> CollectRooms(BSPNode node)
-		{
-			var rooms = new List<Room>();
-			if (node.Left == null)
-			{
-				//It's a terminal, so we can just add and return the current node's room.
-				rooms.Add(Rooms.First(x => x.Parent == node));
-			}
-			else
-			{
-				//It's a parent node, so we drill down.
-				rooms.AddRange(CollectRooms(node.Left));
-				rooms.AddRange(CollectRooms(node.Right));
-			}
-			return rooms;
-		}
-
-		public virtual void ToTilemap(ref Tile[,] map)
-		{
-			throw new NotImplementedException("BaseDungeon.ToTilemap() must be overridden in a subclass.");
-		}
-
-		public virtual void ToSectorMap(Dictionary<string, Rectangle> sectors)
-		{
-			throw new NotImplementedException("BaseDungeon.ToSectorMap() must be overridden in a subclass.");
-		}
-	}
-
-	//Ye Olde Generic Dungeon
-	/*
-		################################################################################
-		###..........###.........############...................###########...........##
-		###..........###.........############...................###########...........##
-		###..........###.........############...................###########...........##
-		###..........###.........############...................###########...........##
-		##..........##...........##...........#############..................###########
-		##..........##...........##...........#############..................###########
-		##..........##...........##...........#############..................###########
-		##..........##...........##...........#############..................###########
-		################################################################################
-		##################################\%%%%%%%%%%%%%%%%%%%%%%%%%%/##################
-		##........##..........############%..........................%#####...........##
-		##........##..........############%..........................%#####...........##
-		##........##..........############%..........................%#####...........##
-		##........##..........############/%%%%%%%%%%%%%%%%%%%%%%%%%%\#####...........##
-		################################################################################
-		################################################################################
-		################################################################################
-		############################\%%%%%/#############################################
-		##........#####.......######%.....%#########.......................#############
-		##........#####.......######%.....%#########.......................#############
-		##........#####.......######%.....%#########.......................#############
-		##........#####.......######/%%%%%\#########.......................#############
-		################################################################################
-		################################################################################
-	*/
-	class StoneDungeonGenerator : BaseDungeonGenerator
-	{
-		private BiomeData biome;
-		//corridor list here
-
-		public void Create(BiomeData biome)
-		{
-			base.Create(3, 5, 4);
-			//TODO: Add dungeon corridors
-			this.biome = biome;
-		}
-
-		public override void ToTilemap(ref Tile[,] map)
-		{
-			//TODO: make these biome-dependant (use this.biome)
-			var floorStart = Color.FromArgb(65, 66, 87);
-			var floorEnd = Color.FromArgb(88, 89, 122);
-			var wallStart = Color.FromArgb(119, 120, 141);
-			var wallEnd = Color.FromArgb(144, 144, 158);
-			var wall = Color.FromArgb(71, 50, 33); 
-			var floorCrud = new[] { ',', '\'', '`', '.', };
-
-
-			//Base fill
-			for (var row = 0; row < 25; row++)
-				for (var col = 0; col < 80; col++)
-					map[col, row] = new Tile() { Character = ' ', Solid = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
-
-			foreach (var room in Rooms)
-			{
-				if (room.Bounds.Top == 0)
-				{
-					room.Bounds.Top++;
-					room.Bounds.Bottom++;
-				}
-				if (room.Bounds.Left == 0)
-				{
-					room.Bounds.Left++;
-					//room.Bounds.Right++;
-				}
-
-				//Room floors
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-					for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-						map[col, row] = new Tile() { Character = floorCrud[Toolkit.Rand.Next(floorCrud.Length)], Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
-
-				var width = room.Bounds.Right - room.Bounds.Left;
-				var height = room.Bounds.Bottom - room.Bounds.Top;
-
-				if (width < 5 || height < 5 || Toolkit.Rand.NextDouble() < 0.25)
-					continue;
-
-				//Vertical walls  |
-				for (var row = room.Bounds.Top; row < room.Bounds.Bottom; row++)
-				{
-					map[room.Bounds.Left, row] = new Tile() { Character = (char)0x258C, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-					map[room.Bounds.Right - 1, row] = new Tile() { Character = (char)0x2590, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-				}
-				//Horizontal walls  --
-				for (var col = room.Bounds.Left; col < room.Bounds.Right; col++)
-				{
-					var bgColor = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-					map[col, room.Bounds.Top] = new Tile() { Character = (char)0x2580, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-					map[col, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2584, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-				}
-				//Corners -- top left, top right, bottom left, bottom right
-				map[room.Bounds.Left, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-				map[room.Bounds.Right - 1, room.Bounds.Top] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-				map[room.Bounds.Left, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-				map[room.Bounds.Right - 1, room.Bounds.Bottom - 1] = new Tile() { Character = (char)0x2588, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = wall, CanBurn = true, Solid = true, SpecialDescription = 2 };
-
-			}
-			
-			//Prepare to fade out the walls
-			var dijkstra = new int[80, 25];
-			for (var col = 0; col < 80; col++)
-				for (var row = 0; row < 25; row++)
-					dijkstra[col, row] = (map[col, row].Solid && !map[col, row].CanBurn) ? 9000 : 0;
-
-			//Get the data
-			Dijkstra.JustDoIt(ref dijkstra);
-
-			//Use it!
-			for (var row = 0; row < 25; row++)
-			{
-				for (var col = 0; col < 80; col++)
-				{
-					if (map[col, row].Solid && !map[col, row].CanBurn)
-					{
-						if (dijkstra[col, row] > 1)
-							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
-						else
-							map[col, row].SpecialDescription = 1;
-					}
-				}
-			}
-		}
-	}
-
-	//It's not even a dungeon -- it's a town.
-	/*
-		................................................................................
-		....+----+............................+-----------------------------+...........
-		....|    |............................|                             |...........
-		....|    |............................|                             |...........
-		....|    |............................|                             |...........
-		....+-- -+............................+------------------------ ----+...........
-		........................................................................+---+...
-		........................................................................    |...
-		........................................................................|   |...
-		........+----- --+.....................+----------------------- -+......|   |...
-		........|        |.....................|                         |......+---+...
-		........|        |.....................|                         |..............
-		........|        |.....................|                         |..............
-		........+--------+.....................|                         |..............
-		.......................................+-------------------------+..............
-		................................................................................
-		........................................................................+---+...
-		.....+----------- -+....................................................|   |...
-		.....|             |...+--------------------------- -----------------+..|   |...
-		.....|             |...|                                             |..|   |...
-		.....|             |...|                                             |..    |...
-		.....+-------------+...|                                             |..+---+...
-		.......................+---------------------------------------------+..........
-		................................................................................
-		................................................................................
-	*/
-	class TownGenerator : BaseDungeonGenerator
-	{
+		protected static Dictionary<string, List<Template>> templates = null;
 		public Board Board { get; set; }
 		public Culture Culture { get; set; }
-		private int[,] map;
-		private BiomeData biome;
+		protected int[,] map;
+		protected BiomeData biome;
+		protected Building[,] plots;
+		protected static XmlDocument xDoc;
 
-		private class Marking
-		{
-			public string Type;
-			public string[] Params;
-			public int Owner;
-			public string Name;
-			public string Description;
-		}
-
-		private class Template
-		{
-			public string Name;
-			public int Inhabitants;
-			public int Width, Height;
-			public int PlotWidth, PlotHeight;
-			public string[] MapScans;
-			public Dictionary<char, Marking> Markings;
-			public Template(XmlElement element)
-			{
-				Name = element.GetAttribute("name");
-				Inhabitants = int.Parse(element.GetAttribute("inhabitants"));
-				var map = element.SelectSingleNode("map") as XmlElement;
-				MapScans = map.InnerText.Trim().Split('\n').Select(x => x.Trim()).ToArray();
-				Width = MapScans[0].Length;
-				Height = MapScans.Length;
-				PlotWidth = (int)Math.Ceiling(Width / 10.0);
-				PlotHeight = (int)Math.Ceiling(Height / 12.0);
-				Markings = new Dictionary<char, Marking>();
-				foreach (var marking in element.SelectNodes("markings/marking").OfType<XmlElement>())
-				{
-					var c = marking.GetAttribute("char")[0];
-					var t = marking.GetAttribute("type");
-					var p = new string[0];
-					var o = marking.HasAttribute("owner") ? int.Parse(marking.GetAttribute("owner")) : 0;
-					if (t.Contains(','))
-					{
-						p = t.Substring(t.IndexOf(',') + 1).Split(',');
-						t = t.Remove(t.IndexOf(','));
-					}
-					var n = marking.GetAttribute("name");
-					var d = marking.InnerText.Trim();
-					Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o, Name = n, Description = d });
-				}
-			}
-		}
-
-		private static List<Template> templates = null;
-
-		private struct Building
-		{
-			public int XShift, YShift;
-			public Template Template;
-			public string BaseID;
-			public List<Character> Inhabitants;
-			public Building(string baseID, Template template, int x, int y, Culture culture)
-			{
-				Template = template;
-				XShift = x;
-				YShift = y;
-				Inhabitants = new List<Character>();
-				if (template != null && culture != null)
-				{
-					Inhabitants = GetInhabitants(template.Inhabitants, culture);
-					BaseID = string.Format("{0}_{1}", baseID, Inhabitants[0].Name.Surname);
-				}
-				else
-					BaseID = baseID;
-			}
-			private static List<Character> GetInhabitants(int count, Culture culture)
-			{
-				var r = new List<Character>();
-				var familyName = "";
-				//var dontShareSurname = true;
-				var areMarried = Toolkit.Rand.NextDouble() > 0.7;
-				var firstPlan = "";
-				count = 2;
-				for (var i = 0; i < count; i++)
-				{
-					Character c;
-					var plan = culture.Bodyplans[Toolkit.Rand.Next(culture.Bodyplans.Length)];
-					if (i > 0 && Toolkit.Rand.NextDouble() > 0.7)
-						plan = firstPlan;
-					c = Character.Generate(plan, count == 1 ? Gender.Random : (i == 0 ? Gender.Male : Gender.Female));
-					if (i == 0)
-					{
-						familyName = c.Name.Surname;
-						firstPlan = plan;
-					}
-					if (i == 1)
-					{
-						var shipType = Toolkit.Rand.NextDouble() < culture.Marriage ? "spouse" : "friend";
-						//if we chose spouse, handle the wife taking the surname of the husband.
-						var ship = new Token() { Name = c.ID };
-						ship.Tokens.Add(new Token() { Name = shipType });
-						r[0].Path("ships").Tokens.Add(ship);
-						ship = new Token() { Name = r[0].ID };
-						ship.Tokens.Add(new Token() { Name = shipType });
-						c.Path("ships").Tokens.Add(ship);
-					}
-					r.Add(c);
-				}
-				return r;
-			}
-		}
-
-		private Building[,] plots;
-
-		public void Create(BiomeData biome)
+		public void Create(BiomeData biome, string templateSet)
 		{
 			this.biome = biome;
 			map = new int[80, 25];
@@ -493,11 +130,16 @@ namespace Noxico
 
 			if (templates == null)
 			{
-				templates = new List<Template>();
+				templates = new Dictionary<string, List<Template>>();
 				var xDoc = new XmlDocument();
 				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.buildings, "buildings.xml"));
-				foreach (var t in xDoc.SelectNodes("//template").OfType<XmlElement>())
-					templates.Add(new Template(t));
+				foreach (var s in xDoc.SelectNodes("//set").OfType<XmlElement>())
+				{
+					var thisSet = s.GetAttribute("id");
+					templates.Add(thisSet, new List<Template>());
+					foreach (var t in s.ChildNodes.OfType<XmlElement>().Where(x => x.Name == "template"))
+						templates[thisSet].Add(new Template(t));
+				}
 			}
 
 			var spill = new Building("<spillover>", null, 0, 0, Culture.DefaultCulture);
@@ -514,7 +156,7 @@ namespace Noxico
 						//justPlaced = false;
 						continue;
 					}
-					var newTemplate = templates[Toolkit.Rand.Next(templates.Count)];
+					var newTemplate = templates[templateSet][Toolkit.Rand.Next(templates[templateSet].Count)];
 					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
 					var sX = newTemplate.Width < 10 ? Toolkit.Rand.Next(1, 10 - newTemplate.Width) : 0;
@@ -528,7 +170,7 @@ namespace Noxico
 			}
 		}
 
-		public override void ToTilemap(ref Tile[,] map)
+		public virtual void ToTilemap(ref Tile[,] map)
 		{
 			var floorStart = Color.FromArgb(123, 92, 65);
 			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
@@ -756,9 +398,7 @@ namespace Noxico
 			}
 		}
 
-		private static XmlDocument xDoc;
-
-		private List<Token> RollContainer(Character owner, string type)
+		protected List<Token> RollContainer(Character owner, string type)
 		{
 			if (xDoc == null)
 			{
@@ -813,6 +453,125 @@ namespace Noxico
 			return ret;
 		}
 
+		public virtual void ToSectorMap(Dictionary<string, Rectangle> sectors)
+		{
+			//throw new NotImplementedException("BaseDungeon.ToSectorMap() must be overridden in a subclass.");
+		}
+	}
+
+	//Ye Olde Generic Dungeon
+	/*
+		################################################################################
+		###..........###.........############...................###########...........##
+		###..........###.........############...................###########...........##
+		###..........###.........############...................###########...........##
+		###..........###.........############...................###########...........##
+		##..........##...........##...........#############..................###########
+		##..........##...........##...........#############..................###########
+		##..........##...........##...........#############..................###########
+		##..........##...........##...........#############..................###########
+		################################################################################
+		##################################\%%%%%%%%%%%%%%%%%%%%%%%%%%/##################
+		##........##..........############%..........................%#####...........##
+		##........##..........############%..........................%#####...........##
+		##........##..........############%..........................%#####...........##
+		##........##..........############/%%%%%%%%%%%%%%%%%%%%%%%%%%\#####...........##
+		################################################################################
+		################################################################################
+		################################################################################
+		############################\%%%%%/#############################################
+		##........#####.......######%.....%#########.......................#############
+		##........#####.......######%.....%#########.......................#############
+		##........#####.......######%.....%#########.......................#############
+		##........#####.......######/%%%%%\#########.......................#############
+		################################################################################
+		################################################################################
+	*/
+	class StoneDungeonGenerator : BaseDungeonGenerator
+	{
+		public void Create(BiomeData biome)
+		{
+			base.Create(biome, "dungeon");
+		}
+
+		public override void ToTilemap(ref Tile[,] map)
+		{
+			//TODO: make these biome-dependant (use this.biome)
+			var floorStart = Color.FromArgb(65, 66, 87);
+			var floorEnd = Color.FromArgb(88, 89, 122);
+			var wallStart = Color.FromArgb(119, 120, 141);
+			var wallEnd = Color.FromArgb(144, 144, 158);
+			var wall = Color.FromArgb(71, 50, 33);
+			var floorCrud = new[] { ',', '\'', '`', '.', };
+
+			//Base fill
+			for (var row = 0; row < 25; row++)
+				for (var col = 0; col < 80; col++)
+					map[col, row] = new Tile() { Character = ' ', Solid = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
+
+			base.ToTilemap(ref map);
+
+			//Prepare to fade out the walls
+			var dijkstra = new int[80, 25];
+			for (var col = 0; col < 80; col++)
+				for (var row = 0; row < 25; row++)
+					dijkstra[col, row] = (map[col, row].Solid && !map[col, row].CanBurn) ? 9000 : 0;
+
+			//Get the data
+			Dijkstra.JustDoIt(ref dijkstra);
+
+			//Use it!
+			for (var row = 0; row < 25; row++)
+			{
+				for (var col = 0; col < 80; col++)
+				{
+					if (map[col, row].Solid && !map[col, row].CanBurn)
+					{
+						if (dijkstra[col, row] > 1)
+							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
+						else
+							map[col, row].SpecialDescription = 1;
+					}
+				}
+			}
+		}
+	}
+
+	//It's not even a dungeon -- it's a town.
+	/*
+		................................................................................
+		....+----+............................+-----------------------------+...........
+		....|    |............................|                             |...........
+		....|    |............................|                             |...........
+		....|    |............................|                             |...........
+		....+-- -+............................+------------------------ ----+...........
+		........................................................................+---+...
+		........................................................................    |...
+		........................................................................|   |...
+		........+----- --+.....................+----------------------- -+......|   |...
+		........|        |.....................|                         |......+---+...
+		........|        |.....................|                         |..............
+		........|        |.....................|                         |..............
+		........+--------+.....................|                         |..............
+		.......................................+-------------------------+..............
+		................................................................................
+		........................................................................+---+...
+		.....+----------- -+....................................................|   |...
+		.....|             |...+--------------------------- -----------------+..|   |...
+		.....|             |...|                                             |..|   |...
+		.....|             |...|                                             |..    |...
+		.....+-------------+...|                                             |..+---+...
+		.......................+---------------------------------------------+..........
+		................................................................................
+		................................................................................
+	*/
+	class TownGenerator : BaseDungeonGenerator
+	{
+		public void Create(BiomeData biome)
+		{
+			base.Create(biome, "town");
+		}
+		
 		public override void ToSectorMap(Dictionary<string, Rectangle> sectors)
 		{
 			for (var row = 0; row < 2; row++)
@@ -855,9 +614,6 @@ namespace Noxico
 	 */
 	class CaveGenerator : BaseDungeonGenerator
 	{
-		private int[,] map;
-		private BiomeData biome;
-
 		public void Create(BiomeData biome)
 		{
 			this.biome = biome;

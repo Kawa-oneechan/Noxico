@@ -1265,6 +1265,9 @@ namespace Noxico
 					var tag = "";
 					var link = "";
 
+					if (chr == "&#x20;")
+						chr = "&nbsp;";
+
 					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
 					if (ent != null)
 					{
