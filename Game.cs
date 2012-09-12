@@ -62,7 +62,6 @@ namespace Noxico
 
 		public NoxicoGame(MainForm hostForm)
 		{
-			RollPotions();
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
 			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
@@ -99,6 +98,9 @@ namespace Noxico
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
+			Console.WriteLine("Randomizing potions and rings...");
+			RollPotions();
+			ApplyRandomPotions();
 			Console.WriteLine("Loading bodyplans...");
 			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			Views = new Dictionary<string, char>();
@@ -299,6 +301,7 @@ namespace Noxico
 			for (var i = 0; i < 256; i++)
 				Potions[i] = bin.ReadString();
 			var numUniques = bin.ReadInt32();
+			ApplyRandomPotions();
 			file.Close();
 
 			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
@@ -355,7 +358,6 @@ namespace Noxico
 
 				Achievements.StartingTime = DateTime.Now;
 			}
-
 		}
 
 		public Board GetBoard(int index)
@@ -843,6 +845,38 @@ namespace Noxico
 			}
 			for (var i = 192; i < 256; i++)
 				Potions[i] = "";
+		}
+
+		public void ApplyRandomPotions()
+		{
+			foreach (var item in KnownItems)
+			{
+				if (item.HasToken("randomized"))
+				{
+					var rid = (int)item.GetToken("randomized").Value;
+					if (item.Path("equipable/ring") != null && rid < 128)
+						rid += 128;
+					var rdesc = Potions[rid];
+
+					if (rdesc.Contains('!'))
+					{
+						//Item has been identified.
+						rdesc = rdesc.Substring(1);
+						item.UnknownName = null;
+					}
+					else
+					{
+						item.UnknownName = rdesc;
+					}
+					//No matter if it's identified or not, we'll want to change the color.
+					var color = Toolkit.NameColor(rdesc.Remove(rdesc.IndexOf(' ')));
+					var fore = item.Path("ascii/fore");
+					if (fore == null)
+						fore = item.GetToken("ascii").AddToken("fore");
+					fore.Tokens.Clear();
+					fore.AddToken(color);
+				}
+			}
 		}
 	}
 }

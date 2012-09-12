@@ -2886,7 +2886,7 @@ namespace Noxico
 	{
 		public string ID { get; private set; }
 		public string Name { get; private set; }
-		public string UnknownName { get; private set; }
+		public string UnknownName { get; set; }
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 		public string The { get; set; }
@@ -2932,9 +2932,14 @@ namespace Noxico
 					name = name.Replace(item.Key, item.Value);
 			}
 
-			if (IsProperNamed || !a)
+			var proper = IsProperNamed && !token.HasToken("unidentified");
+			if (proper || !a)
+			{
+				if (the && The != "")
+					return The + ' ' + name;
 				return name;
-			return string.Format("{0} {1}", the ? The : A, name);
+			}
+			return string.Format("{0} {1}", the ? The : (token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name);
 		}
 
 		public string GetDescription(Token token)
@@ -2942,8 +2947,8 @@ namespace Noxico
 			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
 			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return string.Format("This is \"{0}\", by {1}.", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
-
-			if (this.HasToken("description")) //!token.HasToken("unidentified"))
+			var a = "";
+			if (this.HasToken("description") && !token.HasToken("unidentified"))
 			{
 				var ret = GetToken("description").Text;
 				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
@@ -2965,9 +2970,12 @@ namespace Noxico
 						ret = ret.Replace(item.Key, item.Value);
 				}
 				return ret;
-			}	
-
-			return "This is " + this.ToString(token) + ".";
+			}
+			else
+			{
+				a = Toolkit.StartsWithVowel(this.UnknownName) ? "an " : "a ";
+			}
+			return "This is " + a + this.ToString(token) + ".";
 		}
 
 		public static InventoryItem FromXML(XmlElement x)
@@ -3271,12 +3279,20 @@ namespace Noxico
 				else
 					name.Append(string.IsNullOrWhiteSpace(this.A) ? "" : this.A + ' ');
 				name.Append(this.Name);
-				if(this.HasToken("description"))
+				if (item.HasToken("unidentified") && !string.IsNullOrWhiteSpace(this.UnknownName))
 				{
-					//No need to check for "worn" or "examined" here...
-					runningDesc = this.GetToken("description").Text + "\n\n";
+					runningDesc = "You don't know what this does.\n\nDo you want to find out?";
 				}
-				MessageBox.Ask(runningDesc + "Do you want to use " + this.ToString(item, true) + "?", () => { this.Use(character, item, true); }, null);
+				else
+				{
+					if (this.HasToken("description"))
+					{
+						//No need to check for "worn" or "examined" here...
+						runningDesc = this.GetToken("description").Text + "\n\n";
+					}
+					runningDesc += "Do you want to use " + this.ToString(item, true) + "?";
+				}
+				MessageBox.Ask(runningDesc, () => { this.Use(character, item, true); }, null);
 				return;
 			}
 
@@ -3300,20 +3316,43 @@ namespace Noxico
 						System.Windows.Forms.Application.DoEvents();
 					}
 				}));
-				js.Run(this.Script);
-				/*
-				Console.WriteLine("------\nSCRIPT\n------");
-				var script = this.Script.Split('\n'); //this.GetToken("script").Text.Split('\n');
-				boardchar.ScriptRunning = true;
-				boardchar.ScriptPointer = 0;
-				NoxicoGame.ScriptVariables["consumed"] = 0;
-				Noxicobotic.Run(boardchar, script);
-				boardchar.ScriptRunning = false;
+				js.SetFunction("identify", new Action<string>(x =>
+				{
+					if (character.GetToken("cunning").Value < 10)
+					{
+						//Dumb characters can't identify as well.
+						if (Toolkit.Rand.NextDouble() < 0.5)
+							return;
+					}
 
-				if (NoxicoGame.ScriptVariables["consumed"] != 0)
-					character.GetToken("items").Tokens.Remove(item);
-				return;
-				*/
+					//Random potion identification
+					if (this.HasToken("randomized"))
+					{
+						var rid = (int)this.GetToken("randomized").Value;
+						if (this.Path("equipable/ring") != null && rid < 128)
+							rid += 128;
+						var rdesc = NoxicoGame.HostForm.Noxico.Potions[rid];
+						if (rdesc[0] != '!')
+						{
+							//Still unidentified. Let's rock.
+							rdesc = '!' + rdesc;
+							NoxicoGame.HostForm.Noxico.Potions[rid] = rdesc;
+							this.UnknownName = null;
+						}
+						//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
+						//item.RemoveToken("unidentified");
+						//runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
+						//return;
+					}
+
+					//Regular item identification
+					if (item.HasToken("unidentified"))// && !string.IsNullOrWhiteSpace(this.UnknownName))
+					{
+						item.RemoveToken("unidentified");
+						runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
+					}
+				}));
+				js.Run(this.Script);
 			}
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))

@@ -19,18 +19,20 @@
 ]>
 <itemdata>
 	<items>
-		<item id="ponifier" name="Element of Perversion" a="" the="the" proper="true">
+		<item id="ponifier" name="Element of Perversion" a="an" the="the" proper="true">
 			<![CDATA[
 test
-description: "You do not want to know."
+description: "This turns you into a little pony."
 ascii
 	char: U+00A1
 	fore
 		aquamarine
+randomized: 1
 			]]>
 			<script type="text/javascript">
 				//consume();
 				user.Morph("littlepony");
+				identify();
 			</script>
 		</item>
 
