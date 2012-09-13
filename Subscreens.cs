@@ -138,16 +138,18 @@ namespace Noxico
 					var board = levels[i][j];
 
 					//TODO: uncomment this decision when the dungeon generator gets pathways.
-					//if (Toolkit.Rand.NextDouble() > 0.7)
-					//{
+					if (Toolkit.Rand.NextDouble() > 0.7 || board == entranceBoard)
+					{
+						caveGen.Board = board;
 						caveGen.Create(biomeData);
 						caveGen.ToTilemap(ref board.Tilemap);
-					//}
-					//else
-					//{
-					//	dunGen.Create(biomeData);
-					//	dunGen.ToTilemap(ref board.Tilemap);
-					//}
+					}
+					else
+					{
+						dunGen.Board = board;
+						dunGen.Create(biomeData);
+						dunGen.ToTilemap(ref board.Tilemap);
+					}
 
 					board.Name = string.Format("Level {0}-{1}", i + 1, (char)('A' + j));
 					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
@@ -240,8 +242,8 @@ namespace Noxico
 				for (var j = 0; j < levels[i].Count - 1; j++)
 				{
 					//Don't connect if this board AND the right-hand neighbor are already connected.
-					if (connected.Contains(levels[i][j]) && connected.Contains(levels[i][j + 1]))
-						continue;
+					//if (connected.Contains(levels[i][j]) && connected.Contains(levels[i][j + 1]))
+					//	continue;
 
 					var boardHere = levels[i][j];
 					var boardThere = levels[i][j + 1];

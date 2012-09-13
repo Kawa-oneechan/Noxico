@@ -631,7 +631,7 @@ namespace Noxico
 			var yShift = 0;
 			for (var x = colStart; x < colEnd; x++)
 			{
-				map[x, 12 + yShift] = new Tile() { Character = '#', Background = path, Foreground = path };
+				map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				if (x % 7 == 6)
 				{
 					yShift = Toolkit.Rand.Next(-1, 1);
