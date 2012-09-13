@@ -152,17 +152,18 @@ namespace Noxico
 
 #if DEBUG
 			//Towngen test
-			var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
+			//var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
+			var towngenTest = Board.CreateBasicOverworldBoard(2, "DungeonTest", "DunGen Test", "set://debug");
 			towngenTest.Type = BoardType.Town;
 			CurrentBoard = towngenTest;
-			towngenTest.DumpToHTML("ground");
-			var townGen = new TownGenerator();
+			var townGen = new StoneDungeonGenerator(); //new TownGenerator();
 			townGen.Board = towngenTest;
 			townGen.Culture = Culture.Cultures["human"];
 			townGen.Create(WorldGen.Biomes[2]);
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
 			towngenTest.DumpToHTML("final");
+			Application.Exit();
 #endif
 
 			CurrentBoard = new Board();
