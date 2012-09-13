@@ -193,7 +193,7 @@ namespace Noxico
 
 			var header = Encoding.UTF8.GetBytes("NOXiCO");
 
-			if (!noPlayer)
+			if (!noPlayer && !Player.Character.HasToken("gameover"))
 			{
 				Console.WriteLine("Saving player...");
 				var pfile = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
