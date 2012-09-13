@@ -57,76 +57,74 @@ namespace Noxico
 					if (File.Exists(Path.Combine(s, "Nox", "world.bin")))
 						saves.Add(s);
 				}
-				//if (File.Exists(Path.Combine(NoxicoGame.WorldName, "player.bin"))) //(File.Exists("world.bin"))
-				if (saves.Count > 0)
+				//if (saves.Count > 0)
+				//{
+				keys[(int)Keys.Enter] = false;
+				Subscreens.Mouse = false;
+				var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
 				{
-					var saveName = Path.GetFileName(saves[0]);
-					keys[(int)Keys.Enter] = false;
-					Subscreens.Mouse = false;
-					//host.Clear();
-					var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
+					string p;
+					var playerFile = Path.Combine(s, "player.bin");
+					if (File.Exists(playerFile))
 					{
-						string p;
-						var playerFile = Path.Combine(s, "player.bin");
-						if (File.Exists(playerFile))
+						using (var f = new BinaryReader(File.OpenRead(playerFile)))
 						{
-							using (var f = new BinaryReader(File.OpenRead(playerFile)))
-							{
-								//p = f.ReadString();
-								p = Player.LoadFromFile(f).Character.Name.ToString(true);
-							}
-							return p + ", \"" + Path.GetFileName(s) + "\"";
+							//p = f.ReadString();
+							p = Player.LoadFromFile(f).Character.Name.ToString(true);
 						}
-						return "Start over in \"" + Path.GetFileName(s) + "\"";
-					}));
-					options.Add("~", "Start new game...");
-					MessageBox.List("There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
-						() =>
+						return p + ", \"" + Path.GetFileName(s) + "\"";
+					}
+					return "Start over in \"" + Path.GetFileName(s) + "\"";
+				}));
+				options.Add("~", "Start new game...");
+				MessageBox.List(saves.Count == 0 ? "Welcome to Noxico." : "There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
+					() =>
+					{
+						if ((string)MessageBox.Answer == "~")
 						{
-							if ((string)MessageBox.Answer == "~")
+							MessageBox.Input("Enter a name for the new world:", NoxicoGame.WorldName,
+								() =>
+								{
+									NoxicoGame.WorldName = (string)MessageBox.Answer;
+									Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
+									NoxicoGame.Mode = UserMode.Subscreen;
+									NoxicoGame.Subscreen = Introduction.CharacterCreator;
+									NoxicoGame.Immediate = true;
+								});
+							/*
+							Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
+							NoxicoGame.Mode = UserMode.Subscreen;
+							NoxicoGame.Subscreen = Introduction.CharacterCreator;
+							NoxicoGame.Immediate = true;
+							*/
+						}
+						else
+						{
+							NoxicoGame.WorldName = (string)MessageBox.Answer;
+							host.Noxico.LoadGame();
+							var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
+							if (!File.Exists(playerFile))
 							{
-								MessageBox.Input("Enter a name for the new world:", NoxicoGame.WorldName,
-									() =>
-									{
-										NoxicoGame.WorldName = (string)MessageBox.Answer;
-										Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
-										NoxicoGame.Mode = UserMode.Subscreen;
-										NoxicoGame.Subscreen = Introduction.CharacterCreator;
-										NoxicoGame.Immediate = true;
-									});
-								/*
-								Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 								NoxicoGame.Mode = UserMode.Subscreen;
 								NoxicoGame.Subscreen = Introduction.CharacterCreator;
+								restarting = true;
 								NoxicoGame.Immediate = true;
-								*/
 							}
 							else
 							{
-								NoxicoGame.WorldName = (string)MessageBox.Answer;
-								host.Noxico.LoadGame();
-								var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
-								if (!File.Exists(playerFile))
-								{
-									NoxicoGame.Mode = UserMode.Subscreen;
-									NoxicoGame.Subscreen = Introduction.CharacterCreator;
-									restarting = true;
-									NoxicoGame.Immediate = true;
-								}
-								else
-								{
-									NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-									Subscreens.FirstDraw = true;
-									NoxicoGame.Immediate = true;
-									NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-									NoxicoGame.AddMessage("Remember, press F1 for help and options.");
-									//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-									NoxicoGame.Mode = UserMode.Walkabout;
-									Achievements.StartingTime = DateTime.Now;
-								}
+								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+								Subscreens.FirstDraw = true;
+								NoxicoGame.Immediate = true;
+								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
+								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+								NoxicoGame.Mode = UserMode.Walkabout;
+								Achievements.StartingTime = DateTime.Now;
 							}
 						}
-					);
+					}
+				);
+				/*
 				}
 				else
 				{
@@ -134,6 +132,7 @@ namespace Noxico
 					NoxicoGame.Subscreen = Introduction.CharacterCreator;
 					NoxicoGame.Immediate = true;
 				}
+				*/
 			}
 		}
 
