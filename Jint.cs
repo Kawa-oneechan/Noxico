@@ -19,6 +19,7 @@ namespace Noxico
 
 		public static void Ascertain(JintEngine jint, bool asBoardChars = false)
 		{
+			jint.SetDebugMode(true);
 			jint.SetFunction("eval", new Func<string, int>(x => 0));
 			if (NoxicoGame.HostForm.Noxico.Player != null)
 			{
