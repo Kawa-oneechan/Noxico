@@ -62,6 +62,8 @@ namespace Noxico
 
 		public NoxicoGame(MainForm hostForm)
 		{
+			Console.WriteLine("IT BEGINS...");
+
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
 			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
@@ -207,13 +209,20 @@ namespace Noxico
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving globals...");
 			var global = Path.Combine(SavePath, WorldName, "global.bin");
+			Console.WriteLine("Location will be {0}", global);
 			using (var f = File.Open(global, FileMode.Create))
 			{
 				var b = new BinaryWriter(f);
+				Console.WriteLine("Header...");
 				b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
+				Console.WriteLine("Potion check...");
+				if (Potions[0] == null)
+					RollPotions();
+				Console.WriteLine("Potions...");
 				b = new BinaryWriter(new CryptStream(f));
 				for (var i = 0; i < 256; i++)
-					b.Write(Potions[i]);
+					b.Write(Potions[i] ?? "...");
+				Console.WriteLine("Unique Items counter lol...");
 				b.Write(0);
 			}
 
@@ -858,6 +867,13 @@ namespace Noxico
 						rid += 128;
 					var rdesc = Potions[rid];
 
+					if (rdesc == null)
+					{
+						Console.WriteLine("Fuckup in applying to {0}.", item.ToString());
+						continue;
+					}
+					if (rdesc == "...")
+						continue;
 					if (rdesc.Contains('!'))
 					{
 						//Item has been identified.

@@ -2866,6 +2866,14 @@ namespace Noxico
 			return null;
 		}
 
+		/* TODO: CRAZY BUG in Jint causes this and probably other calls like it to fail.
+		 * A line like
+		 *	top.SetRelation(bottom, "acquaintance", true)
+		 * seems to be (mis)understood as
+		 *	SetRelation(Joe Blow, a human male, 'acquaintance', true)
+		 * That is, it reads "bottom" as "bottom.ToString()" if it's used as a parameter, but /only/ in Mono.
+		 * This has been confirmed to also happen when running in Windows.
+		 */
 		public void SetRelation(Character target, string ship, bool mutual = false)
 		{
 			var shipToken = this.Path("ships/" + target.ID);
@@ -2932,7 +2940,7 @@ namespace Noxico
 					name = name.Replace(item.Key, item.Value);
 			}
 
-			var proper = IsProperNamed && !token.HasToken("unidentified");
+			var proper = IsProperNamed && (token != null && !token.HasToken("unidentified"));
 			if (proper || !a)
 			{
 				if (the && The != "")

@@ -318,6 +318,7 @@ namespace Noxico
 			};
 
 			Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
+			Console.WriteLine(Environment.OSVersion);
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
 				Console.WriteLine("*** You are running on a *nix system. ***");
