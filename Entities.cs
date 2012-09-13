@@ -1432,6 +1432,7 @@ namespace Noxico
 					Character.Path("ships").Tokens.Add(relation);
 				}
 				relation.Tokens.Add(new Token() { Name = "killer" });
+				Character.AddToken("gameover");
 
 				NoxicoGame.AddMessage("GAME OVER", Color.Red);
 				var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
