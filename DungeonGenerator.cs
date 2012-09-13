@@ -121,6 +121,7 @@ namespace Noxico
 		protected BiomeData biome;
 		protected Building[,] plots;
 		protected static XmlDocument xDoc;
+		protected bool allowCaveFloor;
 
 		public void Create(BiomeData biome, string templateSet)
 		{
@@ -174,6 +175,8 @@ namespace Noxico
 		{
 			var floorStart = Color.FromArgb(123, 92, 65);
 			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
+			var caveStart = Color.FromArgb(65, 66, 87);
+			var caveEnd = Color.FromArgb(88, 89, 122);
 			var wall = Color.FromArgb(71, 50, 33);
 
 			var cornerJunctions = new List<Point>();
@@ -239,6 +242,13 @@ namespace Noxico
 									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
 									ch = '\x2502';
 									s = true;
+									break;
+								case '#':
+									if (allowCaveFloor)
+										bg = Toolkit.Lerp(caveStart, caveEnd, Toolkit.Rand.NextDouble());
+									else
+										bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									ch = ' ';
 									break;
 								default:
 									if (template.Markings.ContainsKey(tc))
@@ -307,7 +317,7 @@ namespace Noxico
 										else
 										{
 											fg = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
-											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
+											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
 											ch = m.Params.Last()[0];
 											s = m.Type == "block";
 										}
@@ -491,6 +501,7 @@ namespace Noxico
 	{
 		public void Create(BiomeData biome)
 		{
+			allowCaveFloor = true;
 			base.Create(biome, "dungeon");
 		}
 
@@ -502,6 +513,7 @@ namespace Noxico
 			var wallStart = Color.FromArgb(119, 120, 141);
 			var wallEnd = Color.FromArgb(144, 144, 158);
 			var wall = Color.FromArgb(71, 50, 33);
+			var path = Color.FromArgb(32, 32, 32);
 			var floorCrud = new[] { ',', '\'', '`', '.', };
 
 			//Base fill
@@ -510,6 +522,126 @@ namespace Noxico
 					map[col, row] = new Tile() { Character = ' ', Solid = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
 
 			base.ToTilemap(ref map);
+
+			//Connect plots
+			var colStart = 40;
+			var colEnd = 40;
+			for (var row = 0; row < 2; row++)
+			{
+				for (var col = 0; col < 8; col++)
+				{
+					if (plots[col, row].BaseID == null)
+						continue; //I dunno, place a hub pathway or something?
+
+					var building = plots[col, row];
+					//var x = (col * 10) + building.XShift + 2 + Toolkit.Rand.Next(building.Template.Width - 4);
+					//var y = (row * 12) + building.YShift + 2 + Toolkit.Rand.Next(building.Template.Height - 4);
+					var x = (col * 10) + building.XShift + (building.Template.Width / 2);
+					var y = (row * 12) + building.YShift + (building.Template.Height / 2);
+					//map[x, y].Background = Color.Magenta;
+
+					var direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : (Toolkit.Rand.NextDouble() > 0.5 ? Direction.East : Direction.West);
+					if (col == 0 && direction == Direction.West)
+						direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.East;
+					else if (col == 7 && direction == Direction.East)
+						direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.West;
+					if ((direction == Direction.East && plots[col + 1, row].Template == null) ||
+						(direction == Direction.West && plots[col - 1, row].Template == null))
+						direction = row == 0 ? Direction.South : Direction.North;
+
+					Toolkit.PredictLocation(x, y, direction, ref x, ref y);
+					while (!map[x, y].Solid)
+						Toolkit.PredictLocation(x, y, direction, ref x, ref y);
+
+					if (x < colStart)
+						colStart = x;
+					else if (x > colEnd)
+						colEnd = x + 1;
+
+					if (direction == Direction.North)
+					{
+						if (map[x, y].CanBurn) //means we started in a walled building
+						{
+							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
+							y--;
+						}
+						while (y > Toolkit.Rand.Next(4, 8))
+						{
+							if (map[x, y].Character == ' ')
+								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+							else
+								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
+							y--;
+							if (!map[x, y].Solid)
+								break;
+						}
+					}
+					else if (direction == Direction.South)
+					{
+						if (map[x, y].CanBurn)
+						{
+							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
+							y++;
+						}
+						while (y < Toolkit.Rand.Next(12, 20))
+						{
+							if (map[x, y].Character == ' ')
+								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+							else
+								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
+							y++;
+							if (!map[x, y].Solid)
+								break;
+						}
+					}
+					else if (direction == Direction.West)
+					{
+						if (map[x, y].CanBurn) //means we started in a walled building
+						{
+							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
+							x--;
+						}
+						while (x > 1 && map[x, y].Solid)
+						{
+							if (map[x, y].Character == ' ')
+								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+							else
+								map[x, y] = new Tile() { Character = ' ', Background = map[x,y].Background };
+							x--;
+						}
+					}
+					else if (direction == Direction.East)
+					{
+						if (map[x, y].CanBurn)
+						{
+							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
+							x++;
+						}
+						while (x < 79 && map[x, y].Solid)
+						{
+							if (map[x, y].Character == ' ')
+								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+							else
+								map[x, y] = new Tile() { Character = ' ', Background = map[x,y].Background };
+							x++;
+						}
+					}
+				}
+			}
+			var yShift = 0;
+			for (var x = colStart; x < colEnd; x++)
+			{
+				map[x, 12 + yShift] = new Tile() { Character = '#', Background = path, Foreground = path };
+				if (x % 7 == 6)
+				{
+					yShift = Toolkit.Rand.Next(-1, 1);
+					map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+				}
+			}
+			//Sunshine, sunshine
+			//Ladybugs awake
+			//Clap your hooves
+			//And do a little shake ♥
 
 			//Prepare to fade out the walls
 			var dijkstra = new int[80, 25];
