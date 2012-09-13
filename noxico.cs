@@ -2939,7 +2939,7 @@ namespace Noxico
 					return The + ' ' + name;
 				return name;
 			}
-			return string.Format("{0} {1}", the ? The : (token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name);
+			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name);
 		}
 
 		public string GetDescription(Token token)
