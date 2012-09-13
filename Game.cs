@@ -163,7 +163,6 @@ namespace Noxico
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
 			towngenTest.DumpToHTML("final");
-			Application.Exit();
 #endif
 
 			CurrentBoard = new Board();

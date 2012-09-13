@@ -417,7 +417,9 @@
     <None Include="Resources\title.png" />
     <None Include="Resources\Homestuck.txt" />
     <None Include="Resources\makecave.png" />
-    <Content Include="Resources\buildings.xml" />
+    <Content Include="Resources\buildings.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Resources\music.xml">
       <SubType>Designer</SubType>
     </Content>
