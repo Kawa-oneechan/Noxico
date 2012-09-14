@@ -285,7 +285,7 @@ namespace Noxico
 													//if (type == "cabinet")
 													type = "wardrobe";
 												}
-												var contents = RollContainer(owner, type);  //new List<Token>();
+												var contents = InventoryItem.RollContainer(owner, type);  //new List<Token>();
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
 													AsciiChar = m.Params.Last()[0],
@@ -406,61 +406,6 @@ namespace Noxico
 
 				map[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
-		}
-
-		protected List<Token> RollContainer(Character owner, string type)
-		{
-			if (xDoc == null)
-			{
-				xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
-			}
-			var ret = new List<Token>();
-			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;
-			switch (type)
-			{
-				case "wardrobe":
-					var costumes = xDoc.DocumentElement.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
-					var amount = Toolkit.Rand.Next(2, 7);
-					for (var i = 0; i < amount; i++)
-					{
-						XmlElement x = null;
-						var carrier = new TokenCarrier();
-						Token costume = null;
-						var lives = 20;
-						while (costume == null && lives > 0)
-						{
-							lives--;
-							x = costumes[Toolkit.Rand.Next(costumes.Count)];
-							carrier.Tokens = Token.Tokenize(x.InnerText);
-							if (carrier.HasToken("rare") && Toolkit.Rand.NextDouble() > 0.5)
-								continue;
-							if (gender == Gender.Male && carrier.HasToken("male"))
-								costume = carrier.GetToken("male");
-							if (gender == Gender.Female && carrier.HasToken("female"))
-								costume = carrier.GetToken("female");
-						}
-						if (carrier.HasToken("singleton"))
-							costumes.Remove(x);
-						if (costume == null)
-							break;
-						Toolkit.FoldCostumeRandoms(costume);
-						Toolkit.FoldCostumeVariables(costume);
-						foreach (var request in costume.Tokens)
-						{
-							var find = NoxicoGame.KnownItems.Find(item => item.ID == request.Name);
-							if (find == null)
-								continue;
-							ret.Add(request);
-						}
-					}
-					break;
-				case "chest":
-					break;
-				case "cabinet":
-					break;
-			}
-			return ret;
 		}
 
 		public virtual void ToSectorMap(Dictionary<string, Rectangle> sectors)

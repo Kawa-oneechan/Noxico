@@ -142,6 +142,14 @@ namespace Noxico
 					}
 					if (carried.HasToken("unidentified"))
 						sigils.Add("unidentified");
+					if (item.HasToken("statbonus"))
+					{
+						foreach (var bonus in item.GetToken("statbonus").Tokens)
+						{
+							if (bonus.Name == "health")
+								sigils.Add(bonus.Value + "HP");
+						}
+					}
 #if DEBUG
 					if (carried.HasToken("cursed"))
 						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : "cursed!");

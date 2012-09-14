@@ -2901,6 +2901,7 @@ namespace Noxico
 		public string Script { get; private set; }
 
 		public Token tempToken { get; set; }
+		private static XmlDocument itemDoc;
 
 		/*
 		public override string ToString()
@@ -2947,7 +2948,7 @@ namespace Noxico
 					return The + ' ' + name;
 				return name;
 			}
-			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name);
+			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name).Trim();
 		}
 
 		public string GetDescription(Token token)
@@ -2956,7 +2957,7 @@ namespace Noxico
 			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return string.Format("This is \"{0}\", by {1}.", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
 			var a = "";
-			if (this.HasToken("description") && !token.HasToken("unidentified"))
+			if (this.HasToken("description"))
 			{
 				var ret = GetToken("description").Text;
 				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
@@ -3304,6 +3305,20 @@ namespace Noxico
 				return;
 			}
 
+			var statBonus = this.GetToken("statbonus");
+			if (statBonus != null)
+			{
+				foreach (var bonus in statBonus.Tokens)
+				{
+					if (bonus.Name == "health")
+					{
+						character.GetToken("health").Value += bonus.Value;
+						if (character.GetToken("health").Value > character.GetMaximumHealth())
+							character.GetToken("health").Value = character.GetMaximumHealth();
+					}
+				}
+			}
+
 			if (!string.IsNullOrWhiteSpace(this.Script))
 			{
 				var js = Javascript.MainMachine;
@@ -3362,9 +3377,88 @@ namespace Noxico
 				}));
 				js.Run(this.Script);
 			}
+			else if(this.HasToken("singleuse"))
+			{
+				character.GetToken("items").Tokens.Remove(item);
+			}
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
 				MessageBox.Message(runningDesc.Viewpoint(boardchar));
+		}
+
+		public static List<Token> RollContainer(Character owner, string type)
+		{
+			if (itemDoc == null)
+			{
+				itemDoc = new XmlDocument();
+				itemDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
+			}
+			var ret = new List<Token>();
+			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;
+			switch (type)
+			{
+				case "wardrobe":
+					var costumes = itemDoc.DocumentElement.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
+					var amount = Toolkit.Rand.Next(2, 7);
+					for (var i = 0; i < amount; i++)
+					{
+						XmlElement x = null;
+						var carrier = new TokenCarrier();
+						Token costume = null;
+						var lives = 20;
+						while (costume == null && lives > 0)
+						{
+							lives--;
+							x = costumes[Toolkit.Rand.Next(costumes.Count)];
+							carrier.Tokens = Token.Tokenize(x.InnerText);
+							if (carrier.HasToken("rare") && Toolkit.Rand.NextDouble() > 0.5)
+								continue;
+							if (gender == Gender.Male && carrier.HasToken("male"))
+								costume = carrier.GetToken("male");
+							if (gender == Gender.Female && carrier.HasToken("female"))
+								costume = carrier.GetToken("female");
+						}
+						if (carrier.HasToken("singleton"))
+							costumes.Remove(x);
+						if (costume == null)
+							break;
+						Toolkit.FoldCostumeRandoms(costume);
+						Toolkit.FoldCostumeVariables(costume);
+						foreach (var request in costume.Tokens)
+						{
+							var find = NoxicoGame.KnownItems.Find(item => item.ID == request.Name);
+							if (find == null)
+								continue;
+							ret.Add(request);
+						}
+					}
+					break;
+				case "chest":
+					//TODO: fill chests.
+					break;
+				case "cabinet":
+					//TODO: fill cabinets.
+					break;
+				case "dungeontreasure":
+					//TODO: allow more special shit to appear in dungeon treasure chests.
+					//For now, let's go with weapons.
+					var playerItems  = NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items");
+					var weapons = NoxicoGame.KnownItems.Where(ki => ki.HasToken("weapon") && !playerItems.HasToken(ki.ID)).ToList();
+					//We should now have a list of all weapons, excluding the ones carried by the player.
+					var choice = weapons[Toolkit.Rand.Next(weapons.Count)];
+					ret.Add(new Token() { Name = choice.ID });
+					//Now add some healing items.
+					var healers = NoxicoGame.KnownItems.Where(ki => ki.Path("statbonus/health") != null).ToList();
+					amount = Toolkit.Rand.Next(2, 6);
+					while (amount > 0)
+					{
+						choice = healers[Toolkit.Rand.Next(healers.Count)];
+						ret.Add(new Token() { Name = choice.ID });
+						amount--;
+					}
+					break;
+			}
+			return ret;
 		}
 	}
 
