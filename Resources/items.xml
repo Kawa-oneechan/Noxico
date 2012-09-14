@@ -672,7 +672,7 @@ singleuse
 statbonus
 	health: 10
 weight: feather
-description: "Smaczne, ale nie bardzo nape&#x0142;niania."
+description: "Smaczne, ale nie bardzo nape<g0142>niania."
 ascii
 	char: U+0063
 	fore

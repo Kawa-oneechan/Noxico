@@ -63,7 +63,7 @@ namespace Noxico
 				var okay = false;
 				var eX = 0;
 				var eY = 0;
-				while (!okay)
+				while (true)
 				{
 					eX = Toolkit.Rand.Next(1, 79);
 					eY = Toolkit.Rand.Next(1, 24);
@@ -78,8 +78,7 @@ namespace Noxico
 					if (b.IsSolid(eY, eX + 1))
 						sides++;
 					if (sides < 3 && sides > 1)
-						okay = true;
-
+						break;
 				}
 				return new Warp() { XPosition = eX, YPosition = eY };
 			};
@@ -268,9 +267,38 @@ namespace Noxico
 				}
 			}
 
-			/* Step 4 - place sick lewt in goalBoard
-			 * TODO: sick lewt
-			 */
+			// Step 4 - place sick lewt in goalBoard
+			var treasureX = 0;
+			var treasureY = 0;
+			while (true)
+			{
+				treasureX = Toolkit.Rand.Next(1, 79);
+				treasureY = Toolkit.Rand.Next(1, 24);
+
+				var sides = 0;
+				if (goalBoard.IsSolid(treasureY - 1, treasureX))
+					sides++;
+				if (goalBoard.IsSolid(treasureY + 1, treasureX))
+					sides++;
+				if (goalBoard.IsSolid(treasureY, treasureX - 1))
+					sides++;
+				if (goalBoard.IsSolid(treasureY, treasureX + 1))
+					sides++;
+				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
+					break;
+			}
+			var treasure = InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasureChest = new Container("Treasure chest", treasure)
+			{
+				AsciiChar = (char)0x00C6,
+				XPosition = treasureX,
+				YPosition = treasureY,
+				ForegroundColor = Color.SaddleBrown,
+				BackgroundColor = Color.Black,
+				ParentBoard = goalBoard,
+				Blocking = false,
+			};
+			goalBoard.Entities.Add(treasureChest);
 
 			var entrance = nox.CurrentBoard.Warps.Find(w => w.ID == DungeonGeneratorEntranceWarpID);
 			entrance.TargetBoard = entranceBoard.BoardNum; //should be this one.
