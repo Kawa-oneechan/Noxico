@@ -17,12 +17,12 @@ echo BUILD COMPLETED
 echo ---------------
 echo Packing...
 cd bin\Release
-..\..\7za.exe a ..\noxico-0.1.10.7z fonts fmodex64.dll Jint.dll Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.10.rar fonts fmodex64.dll Jint.dll Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.10.7z fonts fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.10.rar fonts fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.exe > nul
 ..\..\Rar.exe u ..\noxico-music.rar music sounds > nul
 cd ..\Release32
-..\..\7za.exe a ..\noxico-0.1.10-32.7z fonts fmodex.dll Jint.dll Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.10-32.rar fonts fmodex.dll Jint.dll Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.10-32.7z fonts fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.10-32.rar fonts fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.exe > nul
 cd ..\..
 pause
 exit /b 0
