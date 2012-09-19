@@ -209,8 +209,9 @@ namespace Noxico
 			var colorName = "";
 			if (colorTable == null)
 			{
-				colorTable = new XmlDocument();
-				colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
+				colorTable = Mix.GetXMLDocument("knowncolors.xml");
+				//colorTable = new XmlDocument();
+				//colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
 			}
 			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
 			{
@@ -241,8 +242,9 @@ namespace Noxico
 				return Color.Silver;
 			if (colorTable == null)
 			{
-				colorTable = new XmlDocument();
-				colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
+				colorTable = Mix.GetXMLDocument("knowncolors.xml");
+				//colorTable = new XmlDocument();
+				//colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
 			}
 			var req = color.ToLower().Replace("_", "").Replace(" ", "");
 			//var entry = colorTable.DocumentElement.SelectSingleNode("//color[@name=\"" + req + "\"]") as XmlElement;
@@ -608,6 +610,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a string from the project's resources, but from a specific file if it exists otherwise.
 		/// </summary>
+		[Obsolete("Use the Mix system.", true)]
 		public static string ResOrFile(string resource, string filename)
 		{
 			if (File.Exists(filename))
@@ -619,6 +622,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a Bitmap from the project's resources, but from a specific file if it exists otherwise.
 		/// </summary>
+		[Obsolete("Use the Mix system.", true)]
 		public static Bitmap ResOrFile(Bitmap resource, string filename)
 		{
 			if (File.Exists(filename))
@@ -1375,8 +1379,9 @@ namespace Noxico
 		{
 			if (uniquesDocument == null)
 			{
-				uniquesDocument = new XmlDocument();
-				uniquesDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
+				uniquesDocument = Mix.GetXMLDocument("noxico.xml");
+				//uniquesDocument = new XmlDocument();
+				//uniquesDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
 
 			var newChar = new Character();
@@ -1445,8 +1450,9 @@ namespace Noxico
 		{
 			if (bodyPlansDocument == null)
 			{
-				bodyPlansDocument = new XmlDocument();
-				bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+				//bodyPlansDocument = new XmlDocument();
+				//bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			}
 
 			var newChar = new Character();
@@ -1593,8 +1599,9 @@ namespace Noxico
 			{
 				if (itemsDocument == null)
 				{
-					itemsDocument = new XmlDocument();
-					itemsDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
+					itemsDocument = Mix.GetXMLDocument("items.xml");
+					//itemsDocument = new XmlDocument();
+					//itemsDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 				}
 				var costumesToken = GetToken("costume");
 				var costumeChoices = costumesToken.Tokens;
@@ -2559,8 +2566,9 @@ namespace Noxico
 		{
 			if (bodyPlansDocument == null)
 			{
-				bodyPlansDocument = new XmlDocument();
-				bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+				//bodyPlansDocument = new XmlDocument();
+				//bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			}
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
@@ -3390,8 +3398,9 @@ namespace Noxico
 		{
 			if (itemDoc == null)
 			{
-				itemDoc = new XmlDocument();
-				itemDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
+				itemDoc = Mix.GetXMLDocument("items.xml");
+				//itemDoc = new XmlDocument();
+				//itemDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			}
 			var ret = new List<Token>();
 			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;

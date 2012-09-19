@@ -132,8 +132,9 @@ namespace Noxico
 			if (templates == null)
 			{
 				templates = new Dictionary<string, List<Template>>();
-				var xDoc = new XmlDocument();
-				xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.buildings, "buildings.xml"));
+				xDoc = Mix.GetXMLDocument("buildings.xml");
+				//var xDoc = new XmlDocument();
+				//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.buildings, "buildings.xml"));
 				foreach (var s in xDoc.SelectNodes("//set").OfType<XmlElement>())
 				{
 					var thisSet = s.GetAttribute("id");

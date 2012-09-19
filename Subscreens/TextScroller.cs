@@ -134,10 +134,10 @@ namespace Noxico
 
 		public static void ReadBook(int bookNum)
 		{
-			var xDoc = new XmlDocument();
+			var xDoc = Mix.GetXMLDocument("books.xml"); //new XmlDocument();
 			//OLD AS FUCK I CAN'T BELIEVE THIS WAS STILL THERE!
 			//xDoc.Load(new CryptStream(new System.IO.Compression.GZipStream(File.OpenRead("books.dat"), System.IO.Compression.CompressionMode.Decompress)));
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			XmlElement book = null;
 			foreach (var b in books.OfType<XmlElement>())

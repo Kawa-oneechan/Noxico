@@ -104,8 +104,9 @@ namespace Noxico
 			}
 
 			Biomes = new List<BiomeData>();
-			var x = new XmlDocument();
-			x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
+			var x = Mix.GetXMLDocument("biomes.xml");
+			//var x = new XmlDocument();
+			//x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
 			var realm = x.SelectSingleNode("//realm[@id=\"" + realmId + "\"]") as XmlElement;
 			WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
 			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())

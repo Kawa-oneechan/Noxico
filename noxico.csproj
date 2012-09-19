@@ -121,6 +121,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="Jint.cs" />
+    <Compile Include="Mix.cs" />
     <Compile Include="Noxico.cs" />
     <Compile Include="Noxicobotic.cs" />
     <Compile Include="GamerServices.cs" />
@@ -150,6 +151,9 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Noxico.mix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\scenesDlg.xml">
       <SubType>Designer</SubType>
     </None>

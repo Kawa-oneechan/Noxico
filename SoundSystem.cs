@@ -85,8 +85,9 @@ namespace Noxico
 			}
 
 			Console.WriteLine("SoundSystem: loading library...");
-			library = new XmlDocument();
-			library.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Music, "music.xml"));
+			library = Mix.GetXMLDocument("music.xml");
+			//library = new XmlDocument();
+			//library.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Music, "music.xml"));
 
 			Console.WriteLine("SoundSystem: _ctor DONE");
 			Console.WriteLine("Null report:");

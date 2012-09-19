@@ -94,9 +94,10 @@ namespace Noxico
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
 
-			var xDoc = new XmlDocument();
+			//var xDoc = new XmlDocument();
 			Console.WriteLine("Loading items...");
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
+			var xDoc = Mix.GetXMLDocument("items.xml");
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
@@ -104,7 +105,8 @@ namespace Noxico
 			RollPotions();
 			ApplyRandomPotions();
 			Console.WriteLine("Loading bodyplans...");
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+			xDoc = Mix.GetXMLDocument("bodyplans.xml");
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
@@ -130,14 +132,15 @@ namespace Noxico
 			}
 
 			//Tile descriptions
-			TileDescriptions = global::Noxico.Properties.Resources.TileSpecialDescriptions.Split('\n');
+			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
 
 			Console.WriteLine("Loading books...");
 			BookTitles = new List<string>();
 			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
 			BookAuthors.Add("[null]");
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
+			xDoc = Mix.GetXMLDocument("books.xml");
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
 			{
@@ -728,9 +731,10 @@ namespace Noxico
 			var playerShip = new Token() { Name = Environment.UserName };
 			playerShip.Tokens.Add(new Token() { Name = "player" });
 			pc.GetToken("ships").Tokens.Add(playerShip);
-			
-			var traitsDoc = new XmlDocument();
-			traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
+
+			var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
+			//var traitsDoc = new XmlDocument();
+			//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + BonusTrait + "\"]");
 			if (trait != null)
 			{
@@ -816,7 +820,7 @@ namespace Noxico
 			//var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
 			//var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
 			//return ret;
-			var x = Toolkit.ResOrFile(global::Noxico.Properties.Resources.Homestuck, "Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var x = Mix.GetString("Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			var a = Toolkit.PickOne(x);
 			var b = Toolkit.PickOne(x);
 			while(b == a)
