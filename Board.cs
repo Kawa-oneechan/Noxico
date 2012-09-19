@@ -387,8 +387,9 @@ namespace Noxico
 		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
 		public static Board Load(string id)
 		{
-			var xDoc = new XmlDocument();
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Boards, "boards.xml"));
+			var xDoc = Mix.GetXMLDocument("boards.xml");
+			//var xDoc = new XmlDocument();
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Boards, "boards.xml"));
 			var source = xDoc.SelectSingleNode("//board[@id=\"" + id + "\"]") as XmlElement;
 			if (source == null)
 				throw new Exception("No such board.");

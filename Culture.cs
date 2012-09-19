@@ -27,8 +27,9 @@ namespace Noxico
 		{
 			Console.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
-			xDoc = new XmlDocument();
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Cultures, "culture.xml"));
+			xDoc = Mix.GetXMLDocument("culture.xml");
+			//xDoc = new XmlDocument();
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Cultures, "culture.xml"));
 			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
 				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
 			DefaultCulture = Cultures["default"];

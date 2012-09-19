@@ -30,7 +30,7 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				host.LoadBitmap(global::Noxico.Properties.Resources.TitleScreen);
+				host.LoadBitmap(Mix.GetBitmap("title.png"));
 
 				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
 				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };
@@ -165,9 +165,10 @@ namespace Noxico
 		{
 			var ti = CultureInfo.InvariantCulture.TextInfo;
 			var ret = new List<PlayableRace>();
-			var xDoc = new XmlDocument();
+			//var xDoc = new XmlDocument();
 			Console.WriteLine("Collecting playables...");
-			xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
+			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
+			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			//var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
 			//foreach (var playable in playables)
 			var bodyPlans = xDoc.SelectNodes("//bodyplan");
@@ -311,8 +312,9 @@ namespace Noxico
 		{
 			if (Subscreens.FirstDraw)
 			{
-				var traitsDoc = new XmlDocument();
-				traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
+				var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
+				//var traitsDoc = new XmlDocument();
+				//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
 				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
@@ -336,7 +338,7 @@ namespace Noxico
 
 				controls = new Dictionary<string, UIElement>()
 				{
-					{ "backdrop", new UIPNGBackground(global::Noxico.Properties.Resources.CharacterGenerator) },
+					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
 					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
 					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
 					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },

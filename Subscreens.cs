@@ -60,7 +60,6 @@ namespace Noxico
 		{
 			Func<Board, Warp> findWarpSpot = (b) =>
 			{
-				var okay = false;
 				var eX = 0;
 				var eY = 0;
 				while (true)
@@ -85,7 +84,7 @@ namespace Noxico
 
 			if (Subscreens.FirstDraw)
 			{
-				NoxicoGame.HostForm.LoadBitmap(Toolkit.ResOrFile(global::Noxico.Properties.Resources.MakeCave, "makecave.png"));
+				NoxicoGame.HostForm.LoadBitmap(Mix.GetBitmap("makecave.png"));
 				NoxicoGame.HostForm.Write("Generating dungeon. Please wait.", Color.Silver, Color.Transparent, 2, 1);
 				Subscreens.FirstDraw = false;
 				return;

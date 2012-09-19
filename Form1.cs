@@ -99,6 +99,14 @@ namespace Noxico
 				Location = new System.Drawing.Point(16,16)
 			});
 
+			Mix.Initialize("Noxico");
+			if (!Mix.FileExists("noxico.xml"))
+			{
+				System.Windows.Forms.MessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Close();
+				return;
+			}
+
 			colorConverter = (c => c);
 			charConverter = (c => c);
 
@@ -128,7 +136,7 @@ namespace Noxico
 			}
 
 			if (!File.Exists(iniPath))
-				File.WriteAllText(iniPath, global::Noxico.Properties.Resources.DefaultSettings);
+				File.WriteAllText(iniPath, Mix.GetString("DefaultSettings.txt"));
 			IniFile.Load(iniPath);
 
 			if (portable)
