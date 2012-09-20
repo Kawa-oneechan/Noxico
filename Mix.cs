@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -204,6 +204,19 @@ namespace Noxico
 			if (Directory.Exists(Path.Combine("data", path)))
 				ret.AddRange(Directory.GetFiles(Path.Combine("data", path)).Select(x => x.Substring("data\\".Length)).Where(x => !ret.Contains(x)));
 			return ret.ToArray();
+		}
+		
+		public static void GetFileRange(string filename, out int offset, out int length, out string mixFile)
+		{
+			offset = -1;
+			length = -1;
+			mixFile = string.Empty;
+			if (!fileList.ContainsKey(filename))
+				return;
+			var entry = fileList[filename];
+			offset = entry.Offset;
+			length = entry.Length;
+			mixFile = entry.MixFile;
 		}
 	}
 }
