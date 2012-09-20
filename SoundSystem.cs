@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,11 +14,31 @@ namespace Noxico
 			private FMOD.System system;
 			public FMOD.Sound InnerSound { get; private set; }
 			public FMOD.Channel Channel { get; private set; }
-			public Sound(string file, FMOD.System system)
+			public Sound(string file, FMOD.System system, FMOD.MODE mode = FMOD.MODE.DEFAULT)
 			{
 				this.system = system;
 				FMOD.Sound ns = null;
-				var res = system.createSound(file, FMOD.MODE.DEFAULT, ref ns);
+				var res = FMOD.RESULT.OK;
+
+				if (File.Exists(Path.Combine("data", file)))
+					res = system.createSound(file, mode, ref ns);
+				else if (Mix.FileExists(file))
+				{
+					var offset = -1;
+					var length = -1;
+					var mixFile = string.Empty;
+					Mix.GetFileRange(file, out offset, out length, out mixFile);
+					var exInfo = new FMOD.CREATESOUNDEXINFO()
+					{
+						cbsize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(FMOD.CREATESOUNDEXINFO)),
+						fileoffset = (uint)offset,
+						length = (uint)length,
+					};
+					res = system.createSound(mixFile, mode, ref exInfo, ref ns);
+				}
+				else
+					return;
+				
 				InnerSound = ns;
 				Channel = new FMOD.Channel();
 			}
@@ -76,8 +96,10 @@ namespace Noxico
 			sounds = new Dictionary<string, Sound>();
 			foreach (var s in new[] { "Put Item", "Get Item", "Alert", "Firebomb", "Splorch", "Cursor", "Door Lock", "Open Gate", "Step" })
 			{
-				var file = Path.Combine("sounds", s + ".wav");
-				if (File.Exists(file))
+				//var file = Path.Combine("sounds", s + ".wav");
+				//if (File.Exists(file))
+				var file = s + ".wav";
+				if (Mix.FileExists(file))
 				{
 					sounds.Add(s, new Sound(file, system));
 					//sounds.Add(s, ns);
@@ -117,7 +139,8 @@ namespace Noxico
 					while (setNode.HasChildNodes)
 					{
 						var pick = setNode.ChildNodes[Toolkit.Rand.Next(setNode.ChildNodes.Count)] as XmlElement;
-						if (!File.Exists(Path.Combine("music", pick.GetAttribute("href"))))
+						//if (!File.Exists(Path.Combine("music", pick.GetAttribute("href"))))
+						if (!Mix.FileExists(pick.GetAttribute("href")))
 							setNode.RemoveChild(pick);
 						else
 						{
@@ -150,18 +173,21 @@ namespace Noxico
 			}
 			else if (musicPlaying != name)
 			{
-				var file = Path.Combine("music", name);
-				if (File.Exists(file))
+				//var file = Path.Combine("music", name);
+				var file = name;
+				if (Mix.FileExists(file))
 				{
 					if (musicChannel != null)
 						musicChannel.stop();
 					if (music != null)
 						music.release();
 					//var ret = system.createStream(file, FMOD.MODE.LOOP_NORMAL, ref music);
-					var ret = system.createSound(file, FMOD.MODE.LOOP_NORMAL, ref music);
-					Console.WriteLine("system.createStream(\"{0}\"... {1}", file, ret);
-					if (ret != FMOD.RESULT.OK)
-						return;
+					//var ret = system.createSound(file, FMOD.MODE.LOOP_NORMAL, ref music);
+					var sound = new Sound(file, system, FMOD.MODE.LOOP_NORMAL);
+					music = sound.InnerSound;
+					//Console.WriteLine("system.createStream(\"{0}\"... {1}", file, ret);
+					//if (ret != FMOD.RESULT.OK)
+					//	return;
 					system.playSound(FMOD.CHANNELINDEX.REUSE, music, false, ref musicChannel);
 					musicPlaying = name;
 					currentSet = set;
