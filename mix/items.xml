@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE itemdata [
-	<!ELEMENT itemdata (items,costumes)>
+<!DOCTYPE items [
 	<!ELEMENT items (item+)>
 	<!ELEMENT item (#PCDATA|script)*>
 	<!ELEMENT script (#PCDATA)>
@@ -17,10 +16,9 @@
 	<!ELEMENT costume (#PCDATA)>
 	<!ATTLIST costume id ID #REQUIRED>
 ]>
-<itemdata>
-	<items>
-		<item id="ponifier" name="Element of Perversion" a="an" the="the" proper="true">
-			<![CDATA[
+<items>
+	<item id="ponifier" name="Element of Perversion" a="an" the="the" proper="true">
+		<![CDATA[
 test
 description: "This turns you into a little pony."
 ascii
@@ -29,34 +27,34 @@ ascii
 		aquamarine
 randomized: 1
 			]]>
-			<script type="text/javascript">
-				//consume();
-				user.Morph("littlepony");
-				identify();
-			</script>
-		</item>
+		<script type="text/javascript">
+			//consume();
+			user.Morph("littlepony");
+			identify();
+		</script>
+	</item>
 
-		<item id="book" name="book" a="a" the="the">
-			<!-- That's all we'll say here. -->
-			<![CDATA[
+	<item id="book" name="book" a="a" the="the">
+		<!-- That's all we'll say here. -->
+		<![CDATA[
 -- This is all we'll specify.
 ascii
 	char: U+03B5
 -- Books specifically have their color determined by ID.
 			]]>
-		</item>
+	</item>
 
-		<item id="rope" name="length of rope" a="a" the="the">
-			<![CDATA[
+	<item id="rope" name="length of rope" a="a" the="the">
+		<![CDATA[
 nouse
 ascii
 	char: U+00A7
 	fore
 		sienna
 			]]>
-		</item>
-		<item id="baseballbat" name="baseball bat" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="baseballbat" name="baseball bat" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 canfuck
@@ -73,9 +71,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-		</item>
-		<item id="foxite" name="Foxite" a="" the="the" proper="true">
-			<![CDATA[
+	</item>
+	<item id="foxite" name="Foxite" a="" the="the" proper="true">
+		<![CDATA[
 test
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
@@ -83,32 +81,32 @@ ascii
 	fore
 		aquamarine
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 consumed = 1
 morph fox 0 window
 				]]>
-			</script>
-		</item>
-		<item id="penificator" name="penificator" a="a" the="the">
-			<![CDATA[
+		</script>
+	</item>
+	<item id="penificator" name="penificator" a="a" the="the">
+		<![CDATA[
 test
 ascii
 	char: U+00A1
 	fore
 		chartreuse
 			]]>
-			<script type="text/javascript">
-				message("It's no use.");
-				consume();
-			</script>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/javascript">
+			message("It's no use.");
+			consume();
+		</script>
+		<script type="text/noxicobotic">
+			<![CDATA[
 !<< It's no use. >>
 consumed = 1
 				]]>
-			</script>
-			<!--
+		</script>
+		<!--
 			<multiuse />
 			<growpenis>
 				<type>
@@ -126,9 +124,9 @@ consumed = 1
 				</fore>
 			</ascii>
 			-->
-		</item>
-		<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 fireproof
@@ -141,9 +139,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="butter_knife" name="butter knife" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="butter_knife" name="butter knife" a="a" the="the">
+		<![CDATA[
 test
 equipable
 	hand
@@ -157,20 +155,20 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="test_ring" name="test ring" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="test_ring" name="test ring" a="a" the="the">
+		<![CDATA[
 equipable
 	ring
 fireproof
 ascii
 	char: U+25CB
 	fore
-		fìrebrick
+		firebrick
 			]]>
-		</item>
-		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
+		<![CDATA[
 unique
 fireproof
 equipable
@@ -188,10 +186,10 @@ ascii
 	fore
 		white
 			]]>
-		</item>
+	</item>
 
-		<item id="catears" name="cat ear headband" a="a" the="the">
-			<![CDATA[
+	<item id="catears" name="cat ear headband" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	head
@@ -205,9 +203,9 @@ ascii
 	fore
 		darkmagenta
 			]]>
-		</item>
-		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="plain_briefs" name="briefs" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	male
@@ -218,9 +216,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	male
@@ -231,9 +229,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="plain_panties" name="panties" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="plain_panties" name="panties" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -244,9 +242,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -257,9 +255,9 @@ price: 20
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="plain_bra" name="bra" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="plain_bra" name="bra" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -270,9 +268,9 @@ price: 10
 ascii
 	char: U+0077
 			]]>
-		</item>
-		<item id="lacy_bra" name="lacy bra" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="lacy_bra" name="lacy bra" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -283,9 +281,9 @@ price: 20
 ascii
 	char: U+0077
 			]]>
-		</item>
-		<item id="sheer_top" name="sheer top" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="sheer_top" name="sheer top" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	shirt
@@ -296,11 +294,11 @@ price: 100
 ascii
 	char: U+0077
 			]]>
-		</item>
+	</item>
 
-		<!-- NetHack weapons -->
-		<item id="spear" name="spear" a="a" the="the">
-			<![CDATA[
+	<!-- NetHack weapons -->
+	<item id="spear" name="spear" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 weapon
@@ -313,9 +311,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-		</item>
-		<item id="javelin" name="javelin" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="javelin" name="javelin" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 weapon
@@ -328,9 +326,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-		</item>
-		<item id="dagger" name="dagger" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="dagger" name="dagger" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 fireproof
@@ -343,9 +341,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="fireaxe" name="fire-axe" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="fireaxe" name="fire-axe" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 fireproof
@@ -359,9 +357,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="battleaxe" name="battle axe" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="battleaxe" name="battle axe" a="a" the="the">
+		<![CDATA[
 equipable
 	hand
 fireproof
@@ -375,9 +373,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="shortsword" name="short sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="shortsword" name="short sword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -392,9 +390,9 @@ ascii
 	fore
 		white
 			]]>
-		</item>
-		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -410,9 +408,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="broadsword" name="broadsword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="broadsword" name="broadsword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -427,9 +425,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="longsword" name="longsword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="longsword" name="longsword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -444,9 +442,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -463,9 +461,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -481,9 +479,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -499,13 +497,13 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
-		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
-		<!-- bullwhip, pistol -->
+	</item>
+	<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
+	<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
+	<!-- bullwhip, pistol -->
 
-		<item id="fancysanta" name="fancy Santa" a="a" the="the">
-			<![CDATA[
+	<item id="fancysanta" name="fancy Santa" a="a" the="the">
+		<![CDATA[
 fireproof
 fearsome
 equipable
@@ -521,9 +519,9 @@ ascii
 	fore
 		red
 			]]>
-		</item>
-		<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
+		<![CDATA[
 fireproof
 unique
 equipable
@@ -540,9 +538,9 @@ ascii
 	fore
 		lime
 			]]>
-		</item>
-		<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
-			<![CDATA[
+	</item>
+	<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
+		<![CDATA[
 fireproof
 unique
 equipable
@@ -558,9 +556,9 @@ ascii
 	fore
 		blue
 			]]>
-		</item>
-		<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
-			<![CDATA[
+	</item>
+	<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
+		<![CDATA[
 fireproof
 unique
 equipable
@@ -577,9 +575,9 @@ ascii
 	fore
 		blue
 			]]>
-		</item>
-		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
-			<![CDATA[
+	</item>
+	<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
+		<![CDATA[
 fireproof
 unique
 fearsome
@@ -596,11 +594,11 @@ ascii
 	fore
 		purple
 			]]>
-		</item>
-		<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
+	</item>
+	<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
 
-		<item id="whip" name="whip" a="a" the="the">
-			<![CDATA[
+	<item id="whip" name="whip" a="a" the="the">
+		<![CDATA[
 fireproof
 equipable
 	hand
@@ -617,10 +615,10 @@ ascii
 	fore
 		brown
 			]]>
-		</item>
+	</item>
 
-		<item id="spandex_suit" name="[color ]spandex bodysuit" a="a" the="the">
-			<![CDATA[
+	<item id="spandex_suit" name="[color ]spandex bodysuit" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 	pants
@@ -633,9 +631,9 @@ price: 100
 ascii
 	char: U+2202
 			]]>
-		</item>
-		<item id="spandex_pants" name="[color ]spandex pants" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="spandex_pants" name="[color ]spandex pants" a="a" the="the">
+		<![CDATA[
 equipable
 	pants
 weight
@@ -647,9 +645,9 @@ price: 100
 ascii
 	char: U+220F
 			]]>
-		</item>
-		<item id="sentai_suit" name="[color ]super sentai costume" unknown="[color] power ranger costume" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="sentai_suit" name="[color ]super sentai costume" unknown="[color] power ranger costume" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 	pants
@@ -664,10 +662,10 @@ price: 100
 ascii
 	char: U+2202
 			]]>
-		</item>
+	</item>
 
-		<item id="croissant" name="croissant" a="a" the="le">
-			<![CDATA[
+	<item id="croissant" name="croissant" a="a" the="le">
+		<![CDATA[
 singleuse
 statbonus
 	health: 10
@@ -678,10 +676,10 @@ ascii
 	fore
 		brown
 			]]>
-		</item>
+	</item>
 
-		<item id="bacon" name="bacon strip" a="a" the="the">
-			<![CDATA[
+	<item id="bacon" name="bacon strip" a="a" the="the">
+		<![CDATA[
 singleuse
 statbonus
 	health: 5
@@ -692,9 +690,9 @@ ascii
 	fore
 		red
 			]]>
-		</item>
-		<item id="sweetroll" name="sweet roll" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="sweetroll" name="sweet roll" a="a" the="the">
+		<![CDATA[
 singleuse
 statbonus
 	health: 10
@@ -705,11 +703,11 @@ ascii
 	fore
 		yellow
 			]]>
-		</item>
+	</item>
 
-		<!-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf -->
+	<!-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf -->
 
-		<!--	dilithium crystal		brownish white (listed as white in nethack)
+	<!--	dilithium crystal		brownish white (listed as white in nethack)
 			diamond							white
 			ruby								red
 			jacinth							orange
@@ -734,9 +732,9 @@ ascii
 			worthless piece of @ glass
 -->
 
-		<!-- idea by LadyNistia -->
-		<item id="chainmail_bikini_top" name="chainmail bikini top" a="a" the="the">
-			<![CDATA[
+	<!-- idea by LadyNistia -->
+	<item id="chainmail_bikini_top" name="chainmail bikini top" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -754,9 +752,9 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<item id="chainmail_bikini_bottom" name="chainmail bikini bottom" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="chainmail_bikini_bottom" name="chainmail bikini bottom" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	underpants
@@ -773,10 +771,10 @@ ascii
 	fore
 		silver
 			]]>
-		</item>
-		<!-- idea by LadyNistia and Pupnik -->
-		<item id="bacon_bikini_top" name="bacon bikini top" a="a" the="the">
-			<![CDATA[
+	</item>
+	<!-- idea by LadyNistia and Pupnik -->
+	<item id="bacon_bikini_top" name="bacon bikini top" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -790,9 +788,9 @@ ascii
 	fore
 		red
 			]]>
-		</item>
-		<item id="bacon_bikini_bottom" name="bacon bikini bottom" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="bacon_bikini_bottom" name="bacon bikini bottom" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	underpants
@@ -805,11 +803,11 @@ ascii
 	fore
 		red
 			]]>
-		</item>
+	</item>
 
-		<!-- Clothes from jsNoxico -->
-		<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
-			<![CDATA[
+	<!-- Clothes from jsNoxico -->
+	<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
+		<![CDATA[
 plural
 equipable
 	shirt
@@ -819,9 +817,9 @@ weight
 ascii
 	char: U+03C0
 			]]>
-		</item>
-		<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
-			<![CDATA[
+	</item>
+	<item id="tatteredshreds_undershirt" name="tattered shreds" a="" the="the">
+		<![CDATA[
 plural
 equipable
 	undershirt
@@ -831,9 +829,9 @@ weight
 ascii
 	char: U+03C0
 			]]>
-		</item>
-		<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
-			<![CDATA[
+	</item>
+	<item id="tatteredshreds_pants" name="tattered shreds" a="" the="the">
+		<![CDATA[
 plural
 equipable
 	pants
@@ -843,9 +841,9 @@ weight
 ascii
 	char: U+00B5
 			]]>
-		</item>
-		<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
-			<![CDATA[
+	</item>
+	<item id="tatteredshreds_underpants" name="tattered shreds" a="" the="the">
+		<![CDATA[
 plural
 equipable
 	underpants
@@ -855,10 +853,10 @@ weight
 ascii
 	char: U+03C4
 			]]>
-		</item>
-		<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
-			<!-- Should be used if a bodysuit is torn apart -->
-			<![CDATA[
+	</item>
+	<item id="tatteredshreds_under" name="tattered shreds" a="" the="the">
+		<!-- Should be used if a bodysuit is torn apart -->
+		<![CDATA[
 plural
 equipable
 	undershirt
@@ -869,10 +867,10 @@ weight
 ascii
 	char: U+03C0
 			]]>
-		</item>
-		<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
-			<!-- Should be used if a dress is torn apart -->
-			<![CDATA[
+	</item>
+	<item id="tatteredshreds_over" name="tattered shreds" a="" the="the">
+		<!-- Should be used if a dress is torn apart -->
+		<![CDATA[
 plural
 equipable
 	shirt
@@ -883,9 +881,9 @@ weight
 ascii
 	char: U+03C0
 			]]>
-		</item>
-		<item id="shirt" name="plain [color ]shirt" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="shirt" name="plain [color ]shirt" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 weight
@@ -894,9 +892,9 @@ price: 10
 ascii
 	char: U+041F
 			]]>
-		</item>
-		<item id="blouse" name="[color ]blouse" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="blouse" name="[color ]blouse" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 weight
@@ -909,9 +907,9 @@ price: 15
 ascii
 	char: U+041F
 			]]>
-		</item>
-		<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="girls_uniform_top" name="schoolgirl uniform top" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	jacket
@@ -921,9 +919,9 @@ price: 100
 ascii
 	char: U+041F
 			]]>
-		</item>
-		<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="boys_uniform_top" name="school uniform jacket" a="a" the="the">
+		<![CDATA[
 equipable
 	male
 	jacket
@@ -933,9 +931,9 @@ price: 100
 ascii
 	char: U+041F
 			]]>
-		</item>
-		<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="bikini_top" name="[color ]bikini top" a="a" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -950,9 +948,9 @@ price: 100
 ascii
 	char: U+221E
 			]]>
-		</item>
-		<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	pants
@@ -962,9 +960,9 @@ price: 20
 ascii
 	char: U+220F
 			]]>
-		</item>
-		<item id="skirt" name="plain [color ]skirt" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="skirt" name="plain [color ]skirt" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	pants
@@ -978,9 +976,9 @@ price: 20
 ascii
 	char: U+004D
 			]]>
-		</item>
-		<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="pleated_skirt" name="pleated [color ]skirt" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	pants
@@ -992,9 +990,9 @@ price: 60
 ascii
 	char: U+004D
 			]]>
-		</item>
-		<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="bikini_bottom" name="[color ]bikini bottom" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	underpants
@@ -1008,9 +1006,9 @@ price: 50
 ascii
 	char: U+00AC
 			]]>
-		</item>
-		<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="shorts" name="[color ]shorts" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	pants
@@ -1023,9 +1021,9 @@ price: 50
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="short_shorts" name="[color ]short shorts" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	pants
@@ -1040,9 +1038,9 @@ price: 50
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="short_skirt" name="short [color ]skirt" a="a" the="the">
+		<![CDATA[
 equipable
 	pants
 	reach
@@ -1056,9 +1054,9 @@ price: 70
 ascii
 	char: U+006E
 			]]>
-		</item>
-		<item id="sundress" name="[color ]sundress" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="sundress" name="[color ]sundress" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 	pants
@@ -1074,9 +1072,9 @@ price: 60
 ascii
 	char: U+2202
 			]]>
-		</item>
-		<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="skimpy_dress" name="skimpy [color ]dress" a="a" the="the">
+		<![CDATA[
 equipable
 	shirt
 	pants
@@ -1093,9 +1091,9 @@ price: 60
 ascii
 	char: U+2211
 			]]>
-		</item>
-		<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
-			<![CDATA[
+	</item>
+	<item id="elegant_dress" name="elegant [color ]dress" a="an" the="the">
+		<![CDATA[
 equipable
 	shirt
 	pants
@@ -1109,9 +1107,9 @@ price: 100
 ascii
 	char: U+2211
 			]]>
-		</item>
-		<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="latex_suit" name="[color ]latex suit" a="a" the="the">
+		<![CDATA[
 equipable
 	undershirt
 	underpants
@@ -1125,9 +1123,9 @@ price: 100
 ascii
 	char: U+2202
 			]]>
-		</item>
-		<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
-			<![CDATA[
+	</item>
+	<item id="stylish_cloak" name="stylish [color ]cloak" a="a" the="the">
+		<![CDATA[
 equipable
 	coat
 weight
@@ -1136,11 +1134,11 @@ price: 150
 ascii
 	char: U+222B
 			]]>
-		</item>
+	</item>
 
-		<!-- Lena's costume -->
-		<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
-			<![CDATA[
+	<!-- Lena's costume -->
+	<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
+		<![CDATA[
 equipable
 	female
 	undershirt
@@ -1150,9 +1148,9 @@ price: 30
 ascii
 	char: U+221E
 			]]>
-		</item>
-		<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	female
@@ -1164,9 +1162,9 @@ ascii
 	char: U+00AC
 description: "These [color ]leather panties barely cover the crotch at all, giving an enticing minimum of so-called modesty."	
 			]]>
-		</item>
-		<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="knee_socks" name="silk [color ]knee socks" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	pants
@@ -1178,9 +1176,9 @@ price: 40
 ascii
 	char: U+220F
 			]]>
-		</item>
-		<item id="high_heels" name="high heels" a="a pair of" the="the">
-			<![CDATA[
+	</item>
+	<item id="high_heels" name="high heels" a="a pair of" the="the">
+		<![CDATA[
 plural
 equipable
 	shoes
@@ -1190,9 +1188,9 @@ price: 30
 ascii
 	char: U+221A
 			]]>
-		</item>
-		<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
-			<![CDATA[
+	</item>
+	<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
+		<![CDATA[
 unique
 description: "A blood-red ruby in the shape of a droplet."
 ascii
@@ -1200,26 +1198,26 @@ ascii
 	fore
 		crimson
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 -- Just display a nice custom error.
 !<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
 				]]>
-			</script>
-		</item>
+		</script>
+	</item>
 
-		<!-- Morph lines -->
-		<!-- Rewrite these to use the morph command. -->
-		<item id="catmorph" name="cat morph potion" a="a" the="the">
-			<![CDATA[
+	<!-- Morph lines -->
+	<!-- Rewrite these to use the morph command. -->
+	<item id="catmorph" name="cat morph potion" a="a" the="the">
+		<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		lightsalmon
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 -- Text stolen from CoC's Whisker Fruit item, for now.
 
 |<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
@@ -1285,18 +1283,18 @@ endif
 -- grow up to two extra breast rows
 				
 				]]>
-			</script>
-		</item>
-		<item id="dogmorph" name="dog morph potion" a="a" the="the">
-			<![CDATA[
+		</script>
+	</item>
+	<item id="dogmorph" name="dog morph potion" a="a" the="the">
+		<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		mistyrose
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 -- Text stolen from CoC's Canine Pepper item, for now.
 
 |<< The pepper is strangely spicy but very tasty. >>
@@ -1351,18 +1349,18 @@ endif
 -- grow up to two extra breast rows
 				
 				]]>
-			</script>
-		</item>
-		<item id="foxmorph" name="fox morph potion" a="a" the="the">
-			<![CDATA[
+		</script>
+	</item>
+	<item id="foxmorph" name="fox morph potion" a="a" the="the">
+		<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		orangered
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 |<< You apply the fox morph potion. >>
 				
 -- always increase cunning
@@ -1421,18 +1419,18 @@ endif
 -- grow digitigrade legs
 				
 				]]>
-			</script>
-		</item>
-		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
-			<![CDATA[
+		</script>
+	</item>
+	<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
+		<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		skyblue
 			]]>
-			<script type="text/noxicobotic">
-				<![CDATA[
+		<script type="text/noxicobotic">
+			<![CDATA[
 |<< You apply the bunny morph potion. >>
 				
 -- always increase libido
@@ -1477,134 +1475,6 @@ if not exists
 endif
 
 				]]>
-			</script>
-		</item>
-	</items>
-
-	<costumes>
-		<costume id="school_uniform">
-			<![CDATA[
-male
-	random
-		option
-			plain_boxers
-		option
-			plain_briefs
-	boys_uniform_top
-	shirt
-	pants
-female
-	random
-		option
-			plain_panties
-			plain_bra
-		option
-			lacy_panties
-			lacy_bra
-	blouse
-	girls_uniform_top
-	pleated_skirt
-			]]>
-		</costume>
-
-		<costume id="casual">
-			<![CDATA[
-male	
-	setvar
-		id: 1
-		value: oneof blue, black, red, cyan, white, gray
-	random
-		option
-			plain_boxers
-		option
-			plain_briefs
-	shirt
-		color: var 1
-	pants
-female
-	setvar
-		id: 1
-		value: oneof blue, black, red, cyan, white, gray
-	random
-		option
-			plain_panties
-			plain_bra
-		option
-			lacy_panties
-			lacy_bra
-	random
-		option
-			random
-				option
-					shirt
-						color: var 1
-				option
-					blouse
-						color: var 1
-			random
-				option
-					skirt
-				option
-					pants
-		option
-			random
-				option
-					sundress
-						color: var 1
-				option
-					elegant_dress
-						color: var 1
-			]]>
-		</costume>
-
-		<costume id="lacy_undies">
-			<![CDATA[
-female
-	lacy_panties
-	lacy_bra
-			]]>
-		</costume>
-
-		<costume id="bikini">
-			<![CDATA[
-female
-	bikini_top
-	bikini_bottom
-			]]>
-		</costume>
-
-		<costume id="dress_test">
-			<![CDATA[
-female
-	random
-		option
-			plain_panties
-			plain_bra
-		option
-			lacy_panties
-			lacy_bra
-	random
-		option
-			elegant_dress
-		option
-			sundress
-		option
-			skimpy_dress
-			]]>
-		</costume>
-
-		<costume id="lena">
-			<![CDATA[
-female
-	strapless_leather_bra
-		color: black
-	kinky_panties
-		color: black
-	knee_socks
-		color: black
-	high_heels
-		color: black
-			]]>
-		</costume>
-	</costumes>
-</itemdata>
+		</script>
+	</item>
+</items>

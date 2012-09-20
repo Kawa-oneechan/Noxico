@@ -99,7 +99,7 @@ namespace Noxico
 			var xDoc = Mix.GetXMLDocument("items.xml");
 			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			KnownItems = new List<InventoryItem>();
-			foreach (var item in xDoc.SelectNodes("//items/item").OfType<XmlElement>())
+			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
 			Console.WriteLine("Randomizing potions and rings...");
 			RollPotions();
@@ -175,6 +175,7 @@ namespace Noxico
 			{
 				CurrentRealm = "Nox",
 			};
+			/*
 			if (IniFile.GetBool("misc", "skiptitle", false) && Directory.Exists(WorldName)) //File.Exists("world.bin"))
 			{
 				LoadGame();
@@ -186,6 +187,7 @@ namespace Noxico
 				Mode = UserMode.Walkabout;
 			}
 			else
+			*/
 			{
 				Introduction.Title();
 			}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -151,6 +151,59 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fonts\fixedsex_00.png" />
+    <Content Include="fonts\fixedsex_01.png" />
+    <Content Include="fonts\fixedsex_02.png" />
+    <Content Include="fonts\fixedsex_03.png" />
+    <Content Include="fonts\fixedsex_04.png" />
+    <Content Include="fonts\fixedsex_05.png" />
+    <Content Include="fonts\fixedsex_16.png" />
+    <Content Include="fonts\fixedsex_19.png" />
+    <Content Include="fonts\fixedsex_1D.png" />
+    <Content Include="fonts\fixedsex_1E.png" />
+    <Content Include="fonts\fixedsex_1F.png" />
+    <Content Include="fonts\fixedsex_20.png" />
+    <Content Include="fonts\fixedsex_21.png" />
+    <Content Include="fonts\fixedsex_22.png" />
+    <Content Include="fonts\fixedsex_23.png" />
+    <Content Include="fonts\fixedsex_24.png" />
+    <Content Include="fonts\fixedsex_25.png" />
+    <Content Include="fonts\fixedsex_26.png" />
+    <Content Include="fonts\fixedsex_28.png" />
+    <Content Include="fonts\fixedsex_2C.png" />
+    <Content Include="fonts\fixedsex_2D.png" />
+    <Content Include="fonts\fixedsex_4D.png" />
+    <Content Include="fonts\fixedsex_E2.png" />
+    <Content Include="fonts\fixedsex_F4.png" />
+    <Content Include="fonts\fixedsex_F5.png" />
+    <Content Include="fonts\fixedsex_F7.png" />
+    <Content Include="fonts\fixedsex_F8.png" />
+    <Content Include="fonts\fixedsex_FB.png" />
+    <Content Include="fonts\fixedsex_FE.png" />
+    <Content Include="fonts\fixedsex_FF.png" />
+    <Content Include="mix\aee66af32c5a2e6277484acc9715ee6a.jpg" />
+    <Content Include="mix\biomes.xml" />
+    <Content Include="mix\boards.xml" />
+    <Content Include="mix\bodyplans.xml" />
+    <Content Include="mix\bonustraits.xml" />
+    <Content Include="mix\books.xml" />
+    <Content Include="mix\books.xsl" />
+    <Content Include="mix\buildings.xml" />
+    <Content Include="mix\chargen.png" />
+    <Content Include="mix\costumes.xml" />
+    <Content Include="mix\culture.xml" />
+    <Content Include="mix\DefaultSettings.txt" />
+    <Content Include="mix\Homestuck.txt" />
+    <Content Include="mix\items.xml" />
+    <Content Include="mix\knowncolors.xml" />
+    <Content Include="mix\makecave.png" />
+    <Content Include="mix\makedemonrealm.png" />
+    <Content Include="mix\music.xml" />
+    <Content Include="mix\noxico.xml" />
+    <Content Include="mix\scenesDlg.xml" />
+    <Content Include="mix\scenesSex.xml" />
+    <Content Include="mix\TileSpecialDescriptions.txt" />
+    <Content Include="mix\title.png" />
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -160,57 +213,69 @@
     <Content Include="Music.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\scenesDlg.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\scenesSex.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\bodyplans.xml" />
-    <None Include="Resources\items.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\makedemonrealm.png" />
+    <Content Include="sounds\Alert.wav" />
+    <Content Include="sounds\Cursor.wav" />
+    <Content Include="sounds\Door Lock.wav" />
+    <Content Include="sounds\Firebomb.wav" />
+    <Content Include="sounds\Get Item.wav" />
+    <Content Include="sounds\Open Gate.wav" />
+    <Content Include="sounds\Put Item.wav" />
+    <Content Include="sounds\Splorch.wav" />
+    <Content Include="sounds\Step.wav" />
+    <None Include="mix\chargen.pspimage" />
+    <None Include="mix\title.pspimage" />
+    <None Include="music\409920kb.s3m" />
+    <None Include="music\8bit_party.it" />
+    <None Include="music\a0-insnej.xm" />
+    <None Include="music\aa-molec.s3m" />
+    <None Include="music\beek-ita.it" />
+    <None Include="music\C3INTRO.MOD" />
+    <None Include="music\caramel_-_karamel_special_k.s3m" />
+    <None Include="music\computer_weekend.mod" />
+    <None Include="music\crizz_-_milkyway.xm" />
+    <None Include="music\crizz_-_r2-d248k_4chnl_edit.xm" />
+    <None Include="music\cutegg.it" />
+    <None Include="music\cutesy1v2.mod" />
+    <None Include="music\dynamite_-_over_the_top.s3m" />
+    <None Include="music\fixedsys.xm" />
+    <None Include="music\humpin.xm" />
+    <None Include="music\hyo-dum.it" />
+    <None Include="music\insan-01.s3m" />
+    <None Include="music\INSAN-03.s3m" />
+    <None Include="music\i_like_your_atari.xm" />
+    <None Include="music\joule-littlewe_kladdcakes.xm" />
+    <None Include="music\joule-mozarella_filofox.xm" />
+    <None Include="music\joule_-_rainbow.xm" />
+    <None Include="music\jumping-499.xm" />
+    <None Include="music\karbofos_-_1.xm" />
+    <None Include="music\ko0x_-_btto.it" />
+    <None Include="music\ko0x_-_gias_rush.it" />
+    <None Include="music\ko0x_-_gizgame_level1.it" />
+    <None Include="music\ko0x_-_idksidc.it" />
+    <None Include="music\ko0x_-_snowmans_land.xm" />
+    <None Include="music\ko0x_-_without_you.xm" />
+    <None Include="music\ko0x_-_zenon.xm" />
+    <None Include="music\lepra_-_high_on_popcorns.xm" />
+    <None Include="music\loonie_-_cronologie_4_remix.xm" />
+    <None Include="music\mathcexam.it" />
+    <None Include="music\MRKMAGIC.s3m" />
+    <None Include="music\my_little_ponies.mod" />
+    <None Include="music\robric600.xm" />
+    <None Include="music\robric993.xm" />
+    <None Include="music\rubber.xm" />
+    <None Include="music\sc2-smp.it" />
+    <None Include="music\serpent_-_my_dream.xm" />
+    <None Include="music\strobe_-_crystal_tears.xm" />
+    <None Include="music\ub-ihni.it" />
+    <None Include="music\_hh_vibes.mod" />
+    <None Include="music\_x_1.mod" />
     <Content Include="fmodex.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\biomes.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Resources\boards.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Resources\books.xml">
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="fmodex64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Noxico.ico" />
-    <None Include="Resources\DefaultSettings.txt" />
-    <None Include="Resources\culture.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\chargen.png" />
-    <None Include="Resources\title.png" />
-    <None Include="Resources\Homestuck.txt" />
-    <None Include="Resources\makecave.png" />
-    <Content Include="Resources\buildings.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Resources\music.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="Resources\bonustraits.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\TileSpecialDescriptions.txt" />
-    <Content Include="Resources\knowncolors.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Resources\noxico.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Sounds.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

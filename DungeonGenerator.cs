@@ -238,7 +238,7 @@ namespace Noxico
 									ch = '\x2500';
 									s = true;
 									break;
-								case '¦':
+								case ';':
 									fg = wall;
 									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
 									ch = '\x2502';

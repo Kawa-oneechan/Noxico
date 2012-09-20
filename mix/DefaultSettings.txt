@@ -35,8 +35,6 @@ soundvolume=100
 ;      autorest: Specifies the timeout at which the game will automatically
 ;                press the Rest key, to give the illusion of realtime gameplay.
 ;                The lower, the faster.
-;     skiptitle: Skip the title screen if there's already a game to restore.
-;                Has no effect on a clean slate.
 ;    vistasaves: Save to %USERPROFILE%\Saved Games on Windows Vista and 7.
 ;                Has no effect on any other operating system.
 ;      savepath: Specifies where to save world data. Can be an absolute or
@@ -52,7 +50,6 @@ soundvolume=100
 ;       pngfont: Specifies which set of font bitmaps to use in PNG Mode.
 rememberpause=true
 autorest=100
-skiptitle=false
 vistasaves=true
 savepath=$/Noxico/Saves
 shotpath=$/Noxico/Screenshots
