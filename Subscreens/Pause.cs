@@ -138,14 +138,22 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			sb.AppendLine("Health              " + player.GetToken("health").Value + " / " + player.GetMaximumHealth());
 			sb.AppendLine("Money               " + player.GetToken("money").Value + " Z");
 			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
-			sb.AppendLine("Charisma            " + player.GetToken("charisma").Value);
-			sb.AppendLine("Climax              " + player.GetToken("climax").Value);
-			sb.AppendLine("Cunning             " + player.GetToken("cunning").Value);
-			sb.AppendLine("Carnality           " + player.GetToken("carnality").Value);
-			sb.AppendLine("Stimulation         " + player.GetToken("stimulation").Value);
-			sb.AppendLine("Sensitivity         " + player.GetToken("sensitivity").Value);
-			sb.AppendLine("Speed               " + player.GetToken("speed").Value);
-			sb.AppendLine("Strength            " + player.GetToken("strength").Value);
+
+			var statNames = Enum.GetNames(typeof(Stat));
+			foreach (var stat in statNames)
+			{
+				if (stat == "Health")
+					continue;
+				var bonus = "";
+				var statBonus = player.GetToken(stat.ToLower() + "bonus").Value;
+				var statBase = player.GetToken(stat.ToLower()).Value;
+				var total = statBase + statBonus;
+				if (statBonus > 0)
+					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
+				else if (statBonus < 0)
+					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
+				sb.AppendLine(stat.PadRight(20) + total + bonus);
+			}
 			pages["Character stats"] = sb.ToString();
 
 			sb.Clear();

@@ -1210,6 +1210,11 @@ namespace Noxico
 		}
 	}
 
+	public enum Stat
+	{
+		Health, Charisma, Climax, Cunning, Carnality, Stimulation, Sensitivity, Speed, Strength
+	}
+
 	public class Character : TokenCarrier
 	{
 		private static XmlDocument bodyPlansDocument, uniquesDocument, itemsDocument;
@@ -1599,7 +1604,7 @@ namespace Noxico
 			{
 				if (itemsDocument == null)
 				{
-					itemsDocument = Mix.GetXMLDocument("items.xml");
+					itemsDocument = Mix.GetXMLDocument("costumes.xml");
 					//itemsDocument = new XmlDocument();
 					//itemsDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 				}
@@ -2874,14 +2879,6 @@ namespace Noxico
 			return null;
 		}
 
-		/* TODO: CRAZY BUG in Jint causes this and probably other calls like it to fail.
-		 * A line like
-		 *	top.SetRelation(bottom, "acquaintance", true)
-		 * seems to be (mis)understood as
-		 *	SetRelation(Joe Blow, a human male, 'acquaintance', true)
-		 * That is, it reads "bottom" as "bottom.ToString()" if it's used as a parameter, but /only/ in Mono.
-		 * This has been confirmed to also happen when running in Windows.
-		 */
 		public void SetRelation(Character target, string ship, bool mutual = false)
 		{
 			var shipToken = this.Path("ships/" + target.ID);
@@ -2895,6 +2892,45 @@ namespace Noxico
 				shipToken.Tokens[0].Name = ship;
 			if (mutual)
 				target.SetRelation(this, ship, false);
+		}
+
+		public void RecalculateStatBonuses()
+		{
+			var statNames = Enum.GetNames(typeof(Stat)).Select(s => s.ToLower());
+			foreach (var stat in statNames.Select(s => s + "bonus"))
+				if (HasToken(stat))
+					RemoveToken(stat);
+			var bonuses = new Dictionary<string, float>();
+			foreach (var stat in statNames)
+				bonuses.Add(stat, 0);
+			foreach (var carriedItem in GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+			{
+				var knownItem = NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == carriedItem.Name);
+				if (knownItem == null)
+					continue;
+				var sB = knownItem.Path("statbonus");
+				if (sB == null)
+					continue;
+				foreach (var stat in sB.Tokens)
+				{
+					if (!bonuses.ContainsKey(stat.Name))
+						continue;
+					bonuses[stat.Name] += stat.Value;
+				}
+			}
+			foreach (var stat in bonuses)
+				AddToken(stat.Key + "bonus", stat.Value, string.Empty);
+		}
+
+		public float GetStat(Stat stat)
+		{
+			var statName = stat.ToString().ToLower();
+			var statBonusName = statName + "bonus";
+			if (!HasToken(statBonusName))
+				RecalculateStatBonuses();
+			var statBase = GetToken(statName);
+			var statBonus = GetToken(statBonusName);
+			return statBase.Value + statBonus.Value;
 		}
 	}
 
@@ -3103,6 +3139,7 @@ namespace Noxico
 			}
 
 			item.Tokens.Add(new Token() { Name = "equipped" });
+			character.RecalculateStatBonuses();
 
 			//Difficult bit: gotta re-equip tempremovals without removing the target item all over. THAT WOULD BE QUITE BAD.
 			return true;
@@ -3150,7 +3187,8 @@ namespace Noxico
 			//Not sure about automatically putting pants back on after taking them off to take off underpants...
 			//while (tempRemove.Count > 0)
 			//	tempRemove.Pop().Tokens.Add(new Token() { Name = "equipped" });
-			
+
+			character.RecalculateStatBonuses();
 			return true;
 		}
 
