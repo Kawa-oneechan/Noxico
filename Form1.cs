@@ -152,7 +152,8 @@ namespace Noxico
 			pngFonts = new Dictionary<int, Bitmap>();
 			if (pngMode)
 			{
-				if (File.Exists(Path.Combine("fonts", pngFont + "_00.png")))
+				//if (File.Exists(Path.Combine("fonts", pngFont + "_00.png")))
+				if (Mix.FileExists(pngFont + "_00.png"))
 				{
 					CachePNGFont('A');
 					CellWidth = pngFonts[0x00].Width / 16;
@@ -367,9 +368,12 @@ namespace Noxico
 			var block = (p >> 8);
 			if (!pngFonts.ContainsKey(block))
 			{
-				var file = Path.Combine("fonts", pngFont + "_" + block.ToString("X2") + ".png");
-				if (File.Exists(file))
-					pngFonts.Add(block, (Bitmap)Bitmap.FromFile(file));
+				//var file = Path.Combine("fonts", pngFont + "_" + block.ToString("X2") + ".png");
+				//if (File.Exists(file))
+				//	pngFonts.Add(block, (Bitmap)Bitmap.FromFile(file));
+				var file = pngFont + "_" + block.ToString("X2") + ".png";
+				if (Mix.FileExists(file))
+					pngFonts.Add(block, Mix.GetBitmap(file));
 				else
 				{
 					Console.WriteLine("Warning: {0} does not exist!");
