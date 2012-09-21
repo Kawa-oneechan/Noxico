@@ -194,7 +194,9 @@
     <Content Include="mix\culture.xml" />
     <Content Include="mix\DefaultSettings.txt" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\items.xml" />
+    <Content Include="mix\items.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\knowncolors.xml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
