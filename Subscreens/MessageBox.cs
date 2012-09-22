@@ -50,7 +50,7 @@ namespace Noxico
 				if (UIManager.Elements == null || fromWalkaround)
 					UIManager.Initialize();
 
-				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 5, Top = top, Width = 69, Height = height, Background = Color.Black, Foreground = Color.Gray };
+				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 5, Top = top, Width = 70, Height = height, Background = Color.Black, Foreground = Color.Gray };
 				UIManager.Elements.Add(win);
 				lbl = new UILabel(text) { Left = 7, Top = top + 1, Width = 68, Height = lines };
 				UIManager.Elements.Add(lbl);

@@ -14,6 +14,8 @@ namespace Noxico
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
 
+		private static bool letBottomChoose; 
+
 		public static void Engage(Character top, Character bottom, bool inDialogue)
 		{
 			Engage(top, bottom, "(starting node)", inDialogue);
@@ -76,11 +78,27 @@ namespace Noxico
 				actions.Add(target, "==>");
 			}
 
-			if (actions.Count == 0)
-				MessageBox.Message(message, true, bottom.Name.ToString(true));
+			if (bottom == NoxicoGame.HostForm.Noxico.Player.Character && !letBottomChoose)
+			{
+				if (actions.Count == 0)
+					MessageBox.Message(message, true, bottom.Name.ToString(true));
+				else
+				{
+					var randomAction = actions.Keys.ToArray()[Toolkit.Rand.Next(actions.Count)];
+					actions.Clear();
+					actions.Add(randomAction, "==>");
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
+				}
+			}
 			else
-				MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
-			
+			{
+				letBottomChoose = false;
+				if (actions.Count == 0)
+					MessageBox.Message(message, true, bottom.Name.ToString(true));
+				else
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
+			}
+
 			NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 			NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 		}
@@ -116,18 +134,6 @@ namespace Noxico
 				}
 				else if (part.Name == "script")
 				{
-					/*
-					if (part.GetAttribute("type") == "text/noxicobotic")
-					{
-						var script = part.InnerText.Replace("$top", top.Name.ToID()).Replace("$bottom", bottom.Name.ToID()).Split('\n');
-						var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == top);
-						boardchar.ScriptRunning = true;
-						boardchar.ScriptPointer = 0;
-						ret.AppendLine(Noxicobotic.Run(boardchar, script, true).Trim());
-						ret.AppendLine();
-						boardchar.ScriptRunning = false;
-					}
-					else */
 					if (part.GetAttribute("type") == "text/javascript")
 					{
 						var buffer = new StringBuilder();
@@ -136,6 +142,7 @@ namespace Noxico
 						js.SetParameter("top", top);
 						js.SetParameter("bottom", bottom);
 						js.SetFunction("print", new Action<string>(x => buffer.Append(x)));
+						js.SetFunction("letbottomchoose", new Action<string>(x => letBottomChoose = true));
 						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();
@@ -230,7 +237,7 @@ namespace Noxico
 						break;
 					case "bodylev":
 						var primaryLev = Toolkit.GetLevenshteinString(fPrimary);
-						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fValue]);
+						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fName]);
 						if (distance > 0) //?
 							return false;
 						break;
