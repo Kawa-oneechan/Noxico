@@ -140,6 +140,7 @@ Thanks to:     Hammy, Nicole, Seru-kun
 			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
 
 			var statNames = Enum.GetNames(typeof(Stat));
+			player.RecalculateStatBonuses();
 			foreach (var stat in statNames)
 			{
 				if (stat == "Health")

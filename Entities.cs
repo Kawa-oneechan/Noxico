@@ -557,6 +557,20 @@ namespace Noxico
 			base.Move(targetDirection);
 		}
 
+		public void Excite()
+		{
+			foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < 3))
+			{
+				if (other.Character.GetStat(Stat.Charisma) >= 10)
+				{
+					var increase = (other.Character.GetStat(Stat.Charisma) / 10) * (other.DistanceFrom(this) * 2);
+					this.Character.GetToken("stimulation").Value += increase;
+					if (other.DistanceFrom(this) < 2)
+						this.Character.GetToken("stimulation").Value += 2;
+				}
+			}
+		}
+
 		public override void Update()
 		{
 			if (Character.GetToken("health").Value <= 0)
@@ -574,8 +588,26 @@ namespace Noxico
 				else
 					return;
 			}
+			if (Character.HasToken("waitforplayer") && !(this is Player))
+			{
+				if (!NoxicoGame.HostForm.Noxico.Player.Character.HasToken("helpless"))
+				{
+					Character.RemoveToken("waitforplayer");
+					Character.AddToken("cooldown", 5, "");
+				}
+				return;
+			}
+			if (Character.HasToken("cooldown"))
+			{
+				Character.GetToken("cooldown").Value--;
+				if (Character.GetToken("cooldown").Value == 0)
+					Character.RemoveToken("cooldown");
+				else
+					return;
+			}
 
 			base.Update();
+			Excite();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
@@ -620,6 +652,8 @@ namespace Noxico
 				MoveSpeed = 0;
 				Movement = Motor.Hunt;
 			}
+			if (Movement == Motor.Hunt && !hostile)
+				Movement = Motor.Wander;
 		}
 
 		private void Hunt()
@@ -651,10 +685,11 @@ namespace Noxico
 			if (distance <= range && CanSee(target))
 			{
 				//Within attacking range.
-				if (target.Character.HasToken("helpless") && Character.GetToken("carnality").Value > 30 && distance == 1)
+				if (target.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && distance == 1)
 				{
 					//WRONG KIND OF ATTACK! ABANDON SHIP!!
-					SceneSystem.Engage(this.Character, target.Character, "(rape start)");
+					Character.AddToken("waitforplayer");
+					SceneSystem.Engage(this.Character, target.Character, "(loss rape start)");
 					return;
 				}
 				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
@@ -1149,7 +1184,7 @@ namespace Noxico
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{
-				if (Toolkit.Rand.NextDouble() < 0.2)
+				if (Toolkit.Rand.NextDouble() < 0.05)
 				{
 					Character.GetToken("health").Value += 2;
 					NoxicoGame.AddMessage("You get back up.");
@@ -1188,6 +1223,11 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[(int)Keys.F] && !helpless)
 			{
 				NoxicoGame.ClearKeys();
+				if (Character.GetStat(Stat.Stimulation) < 30)
+				{
+					NoxicoGame.AddMessage("You are not nearly turned on enough to consider that.");
+					return;
+				}
 				NoxicoGame.AddMessage("[Fuck message]");
 				NoxicoGame.Mode = UserMode.LookAt;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
@@ -1324,7 +1364,10 @@ namespace Noxico
 			}
 #endif
 			if (helpless)
+			{
+				EndTurn();
 				return;
+			}
 
 			if (!AutoTravelling)
 			{
@@ -1379,6 +1422,8 @@ namespace Noxico
 
 		public void EndTurn()
 		{
+			Excite();
+
 			PlayingTime = PlayingTime.Add(new TimeSpan(0,0,5));
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)

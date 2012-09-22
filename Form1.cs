@@ -14,9 +14,21 @@ namespace Noxico
 {
 	static class Program
 	{
+		public static Action<string> Report = null;
+
 		[STAThread]
 		static void Main(string[] args)
 		{
+			Report = (s) => { return; };
+			if (args.Length > 0)
+			{
+				if (args[0] == "spam")
+				{
+					Report = (s) => { System.Windows.Forms.MessageBox.Show("Startup report:\r\n" + s, Application.ProductName); };
+					Report("You will get a lot of these messages. If the game crashes, they'll let Kawa pinpoint where that happened. Tell him which message came last.");
+				}
+			}
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			try
@@ -78,6 +90,7 @@ namespace Noxico
 
         public MainForm()
         {
+			Program.Report("MainForm construct");
 			this.Text = "Noxico";
 			this.BackColor = System.Drawing.Color.Black;
 			this.DoubleBuffered = true;
@@ -99,7 +112,9 @@ namespace Noxico
 				Location = new System.Drawing.Point(16,16)
 			});
 
+			Program.Report("Mix.Initialize");
 			Mix.Initialize("Noxico");
+			Program.Report("Game data check");
 			if (!Mix.FileExists("noxico.xml"))
 			{
 				System.Windows.Forms.MessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -112,11 +127,13 @@ namespace Noxico
 
 			var portable = false;
 			var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+			Program.Report("Portable Mode check");
 			if (File.Exists("portable"))
 			{
 				portable = true;
 				var oldIniPath = iniPath;
 				iniPath = "noxico.ini";
+				Program.Report("Trying to determine if portable mode could work...");
 				var fi = new FileInfo(Application.ExecutablePath);
 				var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 				if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
@@ -135,8 +152,10 @@ namespace Noxico
 				}
 			}
 
+			Program.Report("Checking for INI file");
 			if (!File.Exists(iniPath))
 				File.WriteAllText(iniPath, Mix.GetString("DefaultSettings.txt"));
+			Program.Report("Loading INI file");
 			IniFile.Load(iniPath);
 
 			if (portable)
@@ -152,6 +171,7 @@ namespace Noxico
 			pngFonts = new Dictionary<int, Bitmap>();
 			if (pngMode)
 			{
+				Program.Report("PNG Mode is requested. Checking for font...");
 				//if (File.Exists(Path.Combine("fonts", pngFont + "_00.png")))
 				if (Mix.FileExists(pngFont + "_00.png"))
 				{
@@ -165,6 +185,7 @@ namespace Noxico
 			if (!pngMode)
 			{
 #endif
+			Program.Report("Setting up TTF font...");
 			var family = IniFile.GetString("font", "family", "Consolas");
 			var emSize = IniFile.GetInt("font", "size", 11);
 			var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
@@ -188,6 +209,7 @@ namespace Noxico
 			}
 #endif
 
+			Program.Report("Setting up filters...");
 			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
 			{
 				case "cga": colorConverter = ToCGA; break;
@@ -206,6 +228,7 @@ namespace Noxico
 #if ALLOW_CANDYTRON
 			if (IniFile.GetBool("misc", "candytron", false))
 			{
+				Program.Report("Setting up Candytron Mode...");
 				candytron = true;
 #if ALLOW_PNG_MODE
 				pngMode = false;
@@ -234,10 +257,13 @@ namespace Noxico
 			Show();
 			Refresh();
 
+			Program.Report("Preparing render buffers...");
 			backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
 			scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
+			Program.Report("Creating NoxicoGame instance...");
 			Noxico = new NoxicoGame(this);
-            
+
+			Program.Report("Setting up events...");
 			MouseUp += (x, y) =>
 			{
 				var tx = y.X / (CellWidth);
@@ -326,6 +352,7 @@ namespace Noxico
 				Introduction.KillWorldgen();
 			};
 
+			Program.Report("Checking for Mono...");
 			Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
 			Console.WriteLine(Environment.OSVersion);
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
@@ -335,6 +362,7 @@ namespace Noxico
 				NoxicoGame.Mono = true;
 			}
 
+			Program.Report("Setting up achievements");
 			Achievements.ProfilePath = "";
 			if (!portable)
 				GamerServices.Profile.Prepare();
@@ -344,6 +372,7 @@ namespace Noxico
 
 			this.Controls.Clear();
 			starting = false;
+			Program.Report("Starting game loop...");
 			//try
 			{
 				while (Running)
@@ -357,7 +386,9 @@ namespace Noxico
 			//	System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
 			//	Running = false;
 			}
+			Program.Report("Saving for exit.");
 			Noxico.SaveGame();
+			Program.Report("Saving profile");
 			Achievements.SaveProfile(true);
         }
 

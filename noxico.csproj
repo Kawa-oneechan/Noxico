@@ -203,7 +203,9 @@
     <Content Include="mix\music.xml" />
     <Content Include="mix\noxico.xml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenesSex.xml" />
+    <Content Include="mix\scenesSex.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="Noxico.mix">

@@ -2932,6 +2932,14 @@ namespace Noxico
 			var statBonus = GetToken(statBonusName);
 			return statBase.Value + statBonus.Value;
 		}
+
+		public int GetSkillLevel(string skillName)
+		{
+			var skillToken = this.Path("skills/" + skillName);
+			if (skillToken == null)
+				return 0;
+			return (int)skillToken.Value;
+		}
 	}
 
 	public class InventoryItem : TokenCarrier
@@ -2945,7 +2953,7 @@ namespace Noxico
 		public string Script { get; private set; }
 
 		public Token tempToken { get; set; }
-		private static XmlDocument itemDoc;
+		private static XmlDocument itemDoc, costumeDoc;
 
 		/*
 		public override string ToString()
@@ -3434,8 +3442,9 @@ namespace Noxico
 
 		public static List<Token> RollContainer(Character owner, string type)
 		{
-			if (itemDoc == null)
+			if (costumeDoc == null)
 			{
+				costumeDoc = Mix.GetXMLDocument("costumes.xml");
 				itemDoc = Mix.GetXMLDocument("items.xml");
 				//itemDoc = new XmlDocument();
 				//itemDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
@@ -3445,7 +3454,7 @@ namespace Noxico
 			switch (type)
 			{
 				case "wardrobe":
-					var costumes = itemDoc.DocumentElement.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
+					var costumes = costumeDoc.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
 					var amount = Toolkit.Rand.Next(2, 7);
 					for (var i = 0; i < amount; i++)
 					{
@@ -3492,14 +3501,17 @@ namespace Noxico
 					var playerItems  = NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items");
 					var weapons = NoxicoGame.KnownItems.Where(ki => ki.HasToken("weapon") && !playerItems.HasToken(ki.ID)).ToList();
 					//We should now have a list of all weapons, excluding the ones carried by the player.
-					var choice = weapons[Toolkit.Rand.Next(weapons.Count)];
-					ret.Add(new Token() { Name = choice.ID });
+					if (weapons.Count > 0)
+					{
+						var choice = weapons[Toolkit.Rand.Next(weapons.Count)];
+						ret.Add(new Token() { Name = choice.ID });
+					}
 					//Now add some healing items.
 					var healers = NoxicoGame.KnownItems.Where(ki => ki.Path("statbonus/health") != null).ToList();
 					amount = Toolkit.Rand.Next(2, 6);
 					while (amount > 0)
 					{
-						choice = healers[Toolkit.Rand.Next(healers.Count)];
+						var choice = healers[Toolkit.Rand.Next(healers.Count)];
 						ret.Add(new Token() { Name = choice.ID });
 						amount--;
 					}

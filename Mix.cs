@@ -124,8 +124,11 @@ namespace Noxico
 			}
 
 			var otherFiles = fileList.Keys.Where(e => e != filename && e.EndsWith(filename)).ToList();
-			var externalOtherFiles = Directory.GetFiles("data", "*.xml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != filename && e.EndsWith(filename));
-			otherFiles.AddRange(externalOtherFiles);
+			if (Directory.Exists("data"))
+			{
+				var externalOtherFiles = Directory.GetFiles("data", "*.xml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != filename && e.EndsWith(filename));
+				otherFiles.AddRange(externalOtherFiles);
+			}
 			if (otherFiles.Count() == 0)
 			{
 				x.LoadXml(GetString(filename));
