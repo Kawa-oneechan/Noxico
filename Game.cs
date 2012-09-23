@@ -688,6 +688,9 @@ namespace Noxico
 				}
 			}
 
+			setStatus("Applying missions...");
+			ApplyMissions();
+
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
 			{
@@ -911,6 +914,66 @@ namespace Noxico
 					fore.Tokens.Clear();
 					fore.AddToken(color);
 				}
+			}
+		}
+
+		public void ApplyMissions()
+		{
+			//TODO: add board drawing functions. This is JUST enough to implement Pettancow.
+
+			Func<BoardType, int, Board> pickBoard = (boardType, biome) =>
+			{
+				var options = new List<Board>();
+				foreach (var board in Boards)
+				{
+					if (board == null)
+						continue;
+					if (board.Type != boardType)
+						continue;
+					if (biome > 0 && board.GetToken("biome").Value != biome)
+						continue;
+					options.Add(board);
+				}
+				if (options.Count == 0)
+					return null;
+				var choice = options[Toolkit.Rand.Next(options.Count)];
+				return choice;
+			};
+
+			var js = Javascript.Create();
+			Javascript.Ascertain(js);
+			js.SetParameter("BoardType", typeof(BoardType));
+			js.SetParameter("Character", typeof(Character));
+			js.SetFunction("PickBoard", pickBoard);
+			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
+			js.SetDebugMode(false);
+			js.Step += (s, di) =>
+			{
+				Console.WriteLine("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+			};
+
+			var missionDirs = Mix.GetFilesInPath("missions");
+			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
+			{
+				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				var path = Path.GetDirectoryName(missionDir);
+				var jsFile = Path.Combine(path, "mission.js");
+				if (!Mix.FileExists(jsFile))
+					continue;
+				var okay = true;
+				for (var i = 2; i < manifest.Length; i++)
+				{
+					if (!Mix.FileExists(Path.Combine(path, manifest[i])))
+						okay = false;
+				}
+				if (!okay)
+				{
+					Console.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
+					continue;
+				}
+				Console.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
+				var jsCode = Mix.GetString(jsFile);
+				js.Run(jsCode);
 			}
 		}
 	}

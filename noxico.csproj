@@ -208,6 +208,7 @@
     </Content>
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
+    <Content Include="mix\uniques.xml" />
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

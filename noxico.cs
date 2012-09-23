@@ -1384,7 +1384,7 @@ namespace Noxico
 		{
 			if (uniquesDocument == null)
 			{
-				uniquesDocument = Mix.GetXMLDocument("noxico.xml");
+				uniquesDocument = Mix.GetXMLDocument("uniques.xml");
 				//uniquesDocument = new XmlDocument();
 				//uniquesDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
 			}
@@ -2939,6 +2939,34 @@ namespace Noxico
 			if (skillToken == null)
 				return 0;
 			return (int)skillToken.Value;
+		}
+
+		public BoardChar GetBoardChar()
+		{
+			//Assume that our board is still in memory.
+			foreach (var board in NoxicoGame.HostForm.Noxico.Boards.Where(x => x != null))
+			{
+				var me = board.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character == this);
+				if (me != null)
+					return me;
+			}
+			return null;
+		}
+
+		public Character GetSpouse()
+		{
+			//Assume that our spouse is on the same board.
+			foreach (var ship in GetToken("ships").Tokens)
+			{
+				if (ship.HasToken("spouse") || ship.HasToken("friend"))
+				{
+					var me = GetBoardChar();
+					var them = me.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character.ID == ship.Name);
+					if (them != null)
+						return them.Character;
+				}
+			}
+			return null;
 		}
 	}
 
