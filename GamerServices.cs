@@ -42,6 +42,7 @@ namespace GamerServices
 
 		public static void Prepare()
 		{
+			Noxico.Program.Report("Preparing...");
 			profilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Kafuka");
 			if (!Directory.Exists(profilePath))
 				Directory.CreateDirectory(profilePath);
