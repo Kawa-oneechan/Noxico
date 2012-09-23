@@ -1369,7 +1369,27 @@ namespace Noxico
 			foreach (var c in this.Entities.OfType<Clutter>().Where(c => c.Life > 0))
 				this.EntitiesToRemove.Add(c);
 		}
-		
+	
+		//for JS use
+		public BoardChar PickBoardChar(Gender gender)
+		{
+			Func<BoardChar, bool> isOkay = (x) => { return true; };
+			if (gender != Gender.Random)
+				isOkay = (x) =>
+					{
+						var g = x.Character.GetGender();
+						if (g == "male" && gender == Gender.Male ||
+							g == "female" && gender == Gender.Female ||
+							g == "hermaphrodite" && gender == Gender.Herm)
+							return true;
+						return false;
+					};
+			var options = this.Entities.OfType<BoardChar>().Where(e => !(e is Player) && isOkay(e)).ToList();
+			if (options.Count == 0)
+				return null;
+			var choice = options[Toolkit.Rand.Next(options.Count)];
+			return choice;
+		}
 	}
 
 

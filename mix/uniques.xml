@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE stuff [
-	<!ELEMENT stuff (uniques)>
+<!DOCTYPE uniques [
 	<!ELEMENT uniques (character+)>
 	<!ELEMENT script (#PCDATA)>
 	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
@@ -12,6 +11,6 @@
 		a CDATA #IMPLIED
 	>
 ]>
-<stuff>
-	<!-- lol -->
-</stuff>
+<uniques>
+	<!-- None in the base package -->
+</uniques>

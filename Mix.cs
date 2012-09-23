@@ -207,7 +207,10 @@ namespace Noxico
 			foreach (var entry in fileList.Values.Where(x => x.Filename.StartsWith(path)))
 				ret.Add(entry.Filename);
 			if (Directory.Exists(Path.Combine("data", path)))
-				ret.AddRange(Directory.GetFiles(Path.Combine("data", path)).Select(x => x.Substring("data\\".Length)).Where(x => !ret.Contains(x)));
+			{
+				var getFiles = Directory.GetFiles(Path.Combine("data", path), "*", SearchOption.AllDirectories);
+				ret.AddRange(getFiles.Select(x => x.Substring("data\\".Length)).Where(x => !ret.Contains(x)));
+			}
 			return ret.ToArray();
 		}
 		
