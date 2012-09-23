@@ -204,6 +204,7 @@
 					print("[t:name] gasps in shock as you expertly navigate [t:his] [t:pussy], teasing every part in just the right way.\n");
 					print("Rapid shivers of pleasure move up and down [t:his] body until finally [t:he] screams and cums hard on your quick tongue.\n");
 				}
+				bottom.IncreaseSkill("cunnilingus");
 			]]>
 		</script>
 		<action name="naga loss finish" />
