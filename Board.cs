@@ -1390,6 +1390,19 @@ namespace Noxico
 			var choice = options[Toolkit.Rand.Next(options.Count)];
 			return choice;
 		}
+
+		//for JS use
+		public List<Entity> GetEntitiesWith(string ending, bool includeBoardChars)
+		{
+			var ret = new List<Entity>();
+			foreach (var entity in this.Entities.Where(x => x.ID.EndsWith(ending)))
+			{
+				if (!includeBoardChars && entity is BoardChar)
+					continue;
+				ret.Add(entity);
+			}
+			return ret;
+		}
 	}
 
 
