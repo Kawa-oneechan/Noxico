@@ -944,13 +944,16 @@ namespace Noxico
 			Javascript.Ascertain(js);
 			js.SetParameter("BoardType", typeof(BoardType));
 			js.SetParameter("Character", typeof(Character));
+			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetFunction("PickBoard", pickBoard);
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
-			js.SetDebugMode(false);
+#if DEBUG
+			js.SetDebugMode(true);
 			js.Step += (s, di) =>
 			{
-				Console.WriteLine("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
 			};
+#endif
 
 			var missionDirs = Mix.GetFilesInPath("missions");
 			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))

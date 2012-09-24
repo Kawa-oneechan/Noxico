@@ -271,7 +271,7 @@ namespace Noxico
 													Name = "Bed",
 													ForegroundColor = Color.Black,
 													BackgroundColor = bg,
-													ID = building.BaseID + "_Bed_" + owner == null ? "Free" : owner.Name.FirstName,
+													ID = building.BaseID + "_Bed_" + (owner == null ? "Free" : owner.Name.FirstName),
 													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {0} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
 													ParentBoard = Board,
 												};
@@ -294,7 +294,7 @@ namespace Noxico
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
 													BackgroundColor = bg,
-													ID = building.BaseID + "_Container_" + type + "_" + owner == null ? "Free" : owner.Name.FirstName,
+													ID = building.BaseID + "_Container_" + type + "_" + (owner == null ? "Free" : owner.Name.FirstName),
 													ParentBoard = Board,
 												};
 												Board.Entities.Add(newContainer);
