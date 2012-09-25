@@ -212,7 +212,58 @@ namespace Noxico
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
 									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
 									ch = '\xA0';
-									//TODO: detect water next to the exit. If found, add a veranduh to allow access.
+
+									#region Veranda check -- prevents exits from being blocked by water.
+									var veranda = -1;
+									if (sX + x < 79 && map[sX + x + 1, sY + y].IsWater)
+										veranda = 1; //vertical veranda to the east
+									else if (sX + x > 1 && map[sX + x - 1, sY + y].IsWater)
+										veranda = 2; //vertical veranda to the west
+									else if (sY + y < 24 && map[sX + x, sY + y + 1].IsWater)
+										veranda = 3; //horizontal veranda to the south
+									else if (sY + y > 1 && map[sX + x, sY + y - 1].IsWater)
+										veranda = 4; //horizontal veranda to the north
+									if (veranda > 0)
+									{
+										if (veranda <= 2) //vertical
+										{
+											var vX = sX + x + (veranda == 1 ? 1 : -1);
+											for (var vY = sY + y; vY > 0; vY--) //trace up
+											{
+												if (map[vX, vY].IsWater)
+													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
+												else
+													break;
+											}
+											for (var vY = sY + y + 1; vY < 25; vY++) //trace down
+											{
+												if (map[vX, vY].IsWater)
+													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
+												else
+													break;
+											}
+										}
+										else //vertical
+										{
+											var vY = sY + y + (veranda == 1 ? 1 : -1);
+											for (var vX = sX + x; vX > 0; vX--) //trace left
+											{
+												if (map[vX, vY].IsWater)
+													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
+												else
+													break;
+											}
+											for (var vX = sX + x + 1; vX < 80; vX++) //trace right
+											{
+												if (map[vX, vY].IsWater)
+													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
+												else
+													break;
+											}
+										}
+									}
+									#endregion
+
 									break;
 								case '+':
 									fg = wall;
@@ -254,6 +305,7 @@ namespace Noxico
 								default:
 									if (template.Markings.ContainsKey(tc))
 									{
+										#region Custom markings
 										var m = template.Markings[tc];
 										if (m.Type != "block" && m.Type != "floor")
 										{
@@ -323,6 +375,7 @@ namespace Noxico
 											ch = m.Params.Last()[0];
 											s = m.Type == "block";
 										}
+										#endregion
 									}
 									break;
 							}
