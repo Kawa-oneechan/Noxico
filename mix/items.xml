@@ -296,6 +296,20 @@ ascii
 			]]>
 	</item>
 
+	<item id="egg" name="egg" a="an" the="the">
+		<![CDATA[
+singleuse
+statbonus
+	health: 10
+weight: feather
+description: "Unfertilized and high in protein."
+ascii
+	char: U+0473
+	fore
+		white
+			]]>
+	</item>
+
 	<!-- NetHack weapons -->
 	<item id="spear" name="spear" a="a" the="the">
 		<![CDATA[
