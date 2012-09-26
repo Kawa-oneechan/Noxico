@@ -571,6 +571,28 @@ namespace Noxico
 			}
 		}
 
+		public bool UpdateEggs()
+		{
+			if (!Character.HasToken("egglayer") || !Character.HasToken("vagina"))
+				return false;
+			var eggToken = Character.GetToken("egglayer");
+			eggToken.Value++;
+			if (eggToken.Value == 500)
+			{
+				eggToken.Value = 0;
+				NoxicoGame.Sound.PlaySound("Put Item");
+				var egg = new DroppedItem("egg")
+				{
+					XPosition = XPosition,
+					YPosition = YPosition,
+					ParentBoard = ParentBoard,
+				};
+				egg.PickUp(Character);
+				return true;
+			}
+			return false;
+		}
+
 		public override void Update()
 		{
 			if (Character.GetToken("health").Value <= 0)
@@ -608,6 +630,7 @@ namespace Noxico
 
 			base.Update();
 			Excite();
+			UpdateEggs();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
@@ -1423,6 +1446,8 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
+			if (UpdateEggs())
+				NoxicoGame.AddMessage("You have laid an egg.");
 
 			PlayingTime = PlayingTime.Add(new TimeSpan(0,0,5));
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
