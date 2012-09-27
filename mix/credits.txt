@@ -1,0 +1,37 @@
+
+
+<cCornflowerBlue>           <g2588><g2588><g2584>  <g2588><g2588> <g2584><g2588><g2580><g2580><g2588><g2584> <g2580><g2588>   <g2588><g2580> <g2580><g2588><g2588><g2580> <g2584><g2588><g2580><g2580><g2588><g2584> <g2584><g2588><g2580><g2580><g2580><g2588><g2584>
+<cCornflowerBlue>           <g2588><g2588><g2588><g2588><g2584><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2580><g2588><g2584><g2588><g2580>   <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>           <g2588><g2588><g2580><g2588><g2588><g2588><g2588> <g2588><g2588>  <g2588><g2588>   <g2584><g2588><g2584>    <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>           <g2588><g2588>  <g2580><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2588><g2580> <g2580><g2588>   <g2588><g2588>  <g2588><g2588>  <g2584><g2584> <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>           <g2588><g2588>   <g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2580>   <g2580><g2580> <g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2588><g2584>  <g2588><g2588>
+<cCornflowerBlue>           <g2580>  <g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>
+
+
+         Programming and idea                      Kawa
+
+         Inspiration from:                       Fenoxo
+                                             Tarn Adams
+                                            Greg Janson
+                                       The NetHack team
+
+
+                            Writers
+                           <g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500>
+
+<to be listed>
+
+
+             Check our website for music credits:
+
+               http://helmet.kafuka.org/noxico
+
+
+                           Thanks to
+                          <g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500>
+
+Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and
+RogueBasin coolkids, all GameDev.StackExchange.com users...
+
+                            and mom for not making a fuss over it.
+ 

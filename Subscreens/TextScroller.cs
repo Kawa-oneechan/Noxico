@@ -66,6 +66,7 @@ namespace Noxico
 			if (keys[(int)Keys.S])
 			{
 				File.WriteAllText("current.txt", string.Join("\n", text));
+				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
 			}
 
 			if (keys[(int)Keys.Escape])
@@ -161,6 +162,18 @@ namespace Noxico
 			Subscreens.FirstDraw = true;
 		}
 
+		public static void Plain(string message, string header = "", bool wrap = true)
+		{
+			if (wrap)
+				text = (header + '\n' + message.Wordwrap(68)).Split('\n');
+			else
+				text = (header + '\n' + message).Split('\n');
+			NoxicoGame.Subscreen = Handler;
+			NoxicoGame.Mode = UserMode.Subscreen;
+			Subscreens.FirstDraw = true;
+		}
+
+		[Obsolete]
 		public static void Noxicobotic(Entity source, string message)
 		{
 			var header = "";
