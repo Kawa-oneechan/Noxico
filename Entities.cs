@@ -73,27 +73,34 @@ namespace Noxico
 			YPosition = newY;
 			Flow = targetDirection;
         }
-        public virtual object CanMove(Direction targetDirection)
+
+		public virtual object CanMove(Board board, int x, int y, bool ignoreWater = false)
+		{
+			if (x < 0 || y < 0 || x > 79 || y > 24)
+				return false;
+
+			if (board.IsSolid(y, x))
+				return false;
+
+			foreach (var entity in board.Entities)
+			{
+				if (entity == this)
+					continue;
+				if (entity.XPosition == x && entity.YPosition == y && entity.Blocking)
+					return entity;
+			}
+			return null;
+		}
+
+		public virtual object CanMove(Direction targetDirection)
         {
             var newX = this.XPosition;
             var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
-            if (newX < 0 || newY < 0 || newX > 79 || newY > 24)
-                return false;
-
-			if (ParentBoard.IsSolid(newY, newX))
-				return false;
-
-            foreach (var entity in this.ParentBoard.Entities)
-            {
-                if (entity == this)
-                    continue;
-                if (entity.XPosition == newX && entity.YPosition == newY && entity.Blocking)
-                    return entity;
-            }
-            return null;
+			return CanMove(this.ParentBoard, newX, newY);
         }
-        public virtual void Update()
+ 
+		public virtual void Update()
 		{
 			// TODO: make asynchronous scripts unblock if needed.
 			//if (this.Script != null && this.Script.Length > 0)
@@ -1048,8 +1055,12 @@ namespace Noxico
 			if (OnOverworld)
 			{
 				var n = NoxicoGame.HostForm.Noxico;
+				Board otherBoard = null;
 				if (lx == 79 && targetDirection == Direction.East && OverworldX < n.Overworld.GetUpperBound(0))
 				{
+					otherBoard = n.GetBoard(n.Overworld[this.OverworldX + 1, this.OverworldY]);
+					if (CanMove(otherBoard, 0, ly) != null)
+						return;
 					this.XPosition = 0;
 					this.OverworldX++;
 					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
@@ -1057,6 +1068,9 @@ namespace Noxico
 				}
 				else if (lx == 0 && targetDirection == Direction.West && OverworldX > 0)
 				{
+					otherBoard = n.GetBoard(n.Overworld[this.OverworldX - 1, this.OverworldY]);
+					if (CanMove(otherBoard, 79, ly) != null)
+						return;
 					this.XPosition = 79;
 					this.OverworldX--;
 					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
@@ -1064,6 +1078,9 @@ namespace Noxico
 				}
 				else if (ly == 24 && targetDirection == Direction.South && OverworldY < n.Overworld.GetUpperBound(1))
 				{
+					otherBoard = n.GetBoard(n.Overworld[this.OverworldX, this.OverworldY + 1]);
+					if (CanMove(otherBoard, lx, 0) != null)
+						return;
 					this.YPosition = 0;
 					this.OverworldY++;
 					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
@@ -1071,6 +1088,9 @@ namespace Noxico
 				}
 				else if (ly == 0 && targetDirection == Direction.North && OverworldY > 0)
 				{
+					otherBoard = n.GetBoard(n.Overworld[this.OverworldX, this.OverworldY - 1]);
+					if (CanMove(otherBoard, lx, 24) != null)
+						return;
 					this.YPosition = 24;
 					this.OverworldY--;
 					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
