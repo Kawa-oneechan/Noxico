@@ -506,11 +506,14 @@ namespace Noxico
 		{
 			var html = new StringBuilder();
 			var lines = text.Split('\n');
+			var glyph = @"\<g([0-9a-fA-F]{4})\>";
 			var color = @"<c(?:(?:(?<fore>\w+)(?:(?:,(?<back>\w+))?))?)>";
 			html.Append("<pre>");
 			foreach (var line in lines)
 			{
 				var s = line;
+				if (s.Equals(lines[0]))
+					s = "<h3>" + s + "</h3>";
 				var colorClosers = 0;
 				while (Regex.IsMatch(s, color))
 				{
@@ -526,6 +529,10 @@ namespace Noxico
 						s = s.Substring(0, match.Index) + "<span style=\"color: rgb(" + col.R + "," + col.G + "," + col.B + ");\">" + s.Substring(match.Index + match.Length);
 						colorClosers++;
 					}
+				}
+				while (Regex.IsMatch(s, glyph))
+				{
+					s = Regex.Replace(s, glyph, @"&#x$1;");
 				}
 				html.Append(s);
 				while (colorClosers > 0)

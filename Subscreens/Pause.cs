@@ -36,20 +36,7 @@ f   - Attempt to have sex with someone
 #endif
 @"F12 - Take screenshot" },
 			{ "Credits",
-@"Programming and idea              Kawa
-
-Inspiration from:           Tarn Adams
-                           Greg Janson
-                      The NetHack team
-
- Check our website for music credits:
-   http://helmet.kafuka.org/noxico
-
-Thanks to:     Hammy, Nicole, Seru-kun
-            CyclopsCaveman, Mega-Mario
-     all #rgrd and RogueBasin coolkids
-   all GameDev.StackExchange.com users
- and mom for not making a fuss over it" },
+@"Press Enter to view full credits." },
 			{ "Memory stats", "..." },
 #if DEBUG
 			{ "Debug cheats", "..." },
@@ -85,6 +72,10 @@ Thanks to:     Hammy, Nicole, Seru-kun
 					{
 						host.Noxico.SaveGame();
 						host.Close();
+					}
+					else if (list.Index == 4)
+					{
+						TextScroller.Plain(Mix.GetString("credits.txt"), "Credits", false);
 					}
 				};
 				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 5 };

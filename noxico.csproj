@@ -184,7 +184,9 @@
     <Content Include="mix\aee66af32c5a2e6277484acc9715ee6a.jpg" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
-    <Content Include="mix\bodyplans.xml" />
+    <Content Include="mix\bodyplans.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\bonustraits.xml" />
     <Content Include="mix\books.xml" />
     <Content Include="mix\books.xsl" />
