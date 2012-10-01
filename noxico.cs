@@ -386,6 +386,23 @@ namespace Noxico
 			return sb.ToString();
 		}
 
+		public static string SmartQuote(this string text)
+		{
+			var ret = new StringBuilder();
+			var open = false;
+			foreach (var ch in text)
+			{
+				if (ch == '\"')
+				{
+					ret.Append(open ? '\u201D' : '\u201C');
+					open = !open;
+				}
+				else
+					ret.Append(ch);
+			}
+			return ret.ToString();
+		}
+
 		public static void DrawWindow(int left, int top, int width, int height, string title, Color fgColor, Color bgColor, Color titleColor, bool single = false)
 		{
 			var host = NoxicoGame.HostForm;
@@ -1863,7 +1880,7 @@ namespace Noxico
 
 				if (!this.HasToken("ears") || this.GetToken("ears").HasToken("human"))
 					sb.AppendFormat("[His] {0} looks good, accentuating [his] features well.", hairDesc);
-				else if (this.GetToken("ears").HasToken("elfin"))
+				else /* TODO: rework into lookup table */ if (this.GetToken("ears").HasToken("elfin"))
 					sb.AppendFormat("[His] {0} is parted by a pair of long, pointed ears.", hairDesc);
 				else if (this.GetToken("ears").HasToken("genbeast"))
 					sb.AppendFormat("[His] {0} is parted by a pair of sizable, triangular ears.", hairDesc);
