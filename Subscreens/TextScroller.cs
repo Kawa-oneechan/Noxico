@@ -114,31 +114,27 @@ namespace Noxico
 			}
 		}
 
-		public static void LookAt(BoardChar target)
+		public static void Plain(string message, string header = "", bool wrap = true)
 		{
-			//var host = NoxicoGame.HostForm;
-			var pa = target;
-			//var keys = NoxicoGame.KeyMap;
-			var sb = new StringBuilder();
-
-			var chr = ((BoardChar)pa).Character;
-			sb.Append(chr.Name.ToString(true));
-
-			sb.AppendLine();
-			sb.Append(chr.LookAt(pa));
-
-			text = Toolkit.Wordwrap(sb.ToString(), 68).Split('\n');
-			Subscreens.FirstDraw = true;
+			if (wrap)
+				text = (header + '\n' + message.SmartQuote().Wordwrap(68)).Split('\n');
+			else
+				text = (header + '\n' + message).SmartQuote().Split('\n');
 			NoxicoGame.Subscreen = Handler;
 			NoxicoGame.Mode = UserMode.Subscreen;
+			Subscreens.FirstDraw = true;
+		}
+
+		public static void LookAt(BoardChar target)
+		{
+			var pa = target;
+			var chr = ((BoardChar)pa).Character;
+			Plain(chr.LookAt(pa), chr.Name.ToString(true));
 		}
 
 		public static void ReadBook(int bookNum)
 		{
 			var xDoc = Mix.GetXMLDocument("books.xml"); //new XmlDocument();
-			//OLD AS FUCK I CAN'T BELIEVE THIS WAS STILL THERE!
-			//xDoc.Load(new CryptStream(new System.IO.Compression.GZipStream(File.OpenRead("books.dat"), System.IO.Compression.CompressionMode.Decompress)));
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			XmlElement book = null;
 			foreach (var b in books.OfType<XmlElement>())
@@ -149,28 +145,17 @@ namespace Noxico
 					break;
 				}
 			}
+			var text = "";
+			var header = "";
 			if (book == null)
-				text = new[] { "Can't find the content for this book." };
+				text = "Can't find the content for this book.";
 			else
 			{
-				var t = book.GetAttribute("title") + '\n' + book.Noxicize();
-				text = t.Wordwrap(68).Split('\n');
+				header = book.GetAttribute("title");
+				text = book.Noxicize();
 			}
 
-			NoxicoGame.Subscreen = Handler;
-			NoxicoGame.Mode = UserMode.Subscreen;
-			Subscreens.FirstDraw = true;
-		}
-
-		public static void Plain(string message, string header = "", bool wrap = true)
-		{
-			if (wrap)
-				text = (header + '\n' + message.Wordwrap(68)).Split('\n');
-			else
-				text = (header + '\n' + message).Split('\n');
-			NoxicoGame.Subscreen = Handler;
-			NoxicoGame.Mode = UserMode.Subscreen;
-			Subscreens.FirstDraw = true;
+			Plain(text, header);
 		}
 
 		[Obsolete]
