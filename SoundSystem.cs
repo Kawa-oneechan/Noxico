@@ -21,7 +21,7 @@ namespace Noxico
 				var res = FMOD.RESULT.OK;
 
 				if (File.Exists(Path.Combine("data", file)))
-					res = system.createSound(file, mode, ref ns);
+					res = system.createSound(Path.Combine("data", file), mode, ref ns);
 				else if (Mix.FileExists(file))
 				{
 					var offset = -1;
@@ -38,6 +38,8 @@ namespace Noxico
 				}
 				else
 					return;
+				if (res != FMOD.RESULT.OK)
+					throw new Exception("FMOD error loading sound " + file + ": " + FMOD.Error.String(res));
 				
 				InnerSound = ns;
 				Channel = new FMOD.Channel();
