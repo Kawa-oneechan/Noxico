@@ -30,29 +30,57 @@ namespace Noxico
 		public static int DungeonGeneratorEntranceBoardNum;
 		public static string DungeonGeneratorEntranceWarpID;
 		public static int DungeonGeneratorBiome;
+		public static bool UntilMorning;
 
 		public static void SleepAWhile()
 		{
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.HostForm.Noxico.Player;
+			var pchar = player.Character;
+			var max = pchar.GetMaximumHealth();
+			var heal = new TimeSpan(0, 10, 0);
+			var sleep = new TimeSpan(0, 30, 0);
 
-			var max = player.GetMaximumHealth();
-			var now = player.GetToken("health").Value;
-			if (player.GetToken("health").Value < max)
+			if (UntilMorning)
 			{
-				player.GetToken("health").Value += 0.2f;
+				if (NoxicoGame.InGameTime.Hour > 20 || NoxicoGame.InGameTime.Hour < 6)
+				{
+					for (var i = 0; i < 25; i++)
+						for (var j = 0; j < 80; j++)
+							NoxicoGame.HostForm.DarkenCell(i, j);
+					player.PlayingTime = player.PlayingTime.Add(sleep);
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(sleep);
+				}
+				else
+				{
+					pchar.GetToken("health").Value = max;
+					NoxicoGame.Mode = UserMode.Walkabout;
+					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					pchar.RemoveToken("helpless");
+				}
+				return;
+			}
+
+			var now = pchar.GetToken("health").Value;
+			if (pchar.GetToken("health").Value < max)
+			{
+				pchar.GetToken("health").Value += 0.2f;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update(true);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				for (var i = 0; i < 25; i++)
 					for (var j = 0; j < 80; j++)
 						NoxicoGame.HostForm.DarkenCell(i, j);
-				return;
+
+				player.PlayingTime = player.PlayingTime.Add(heal);
+				NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(heal);
 			}
 			else
 			{
-				player.GetToken("health").Value = max;
+				pchar.GetToken("health").Value = max;
 				NoxicoGame.Mode = UserMode.Walkabout;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				player.RemoveToken("helpless");
+				pchar.RemoveToken("helpless");
 			}
 		}
 
@@ -119,6 +147,8 @@ namespace Noxico
 				{
 					var board = new Board();
 					board.BoardNum = nox.Boards.Count;
+					if (i > 0)
+						board.AddToken("dark");
 					nox.Boards.Add(board);
 					levels[i].Add(board);
 				}

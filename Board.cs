@@ -227,6 +227,7 @@ namespace Noxico
 		public List<Entity> EntitiesToAdd { get; set; }
 
 		public Tile[,] Tilemap = new Tile[80, 25];
+		public bool[,] Lightmap = new bool[25, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; set; }
 		public List<Location> ExitPossibilities { get; set; }
@@ -378,6 +379,19 @@ namespace Noxico
 				newBoard.CleanUpSlimeTrails();
 
 				newBoard.BindEntities();
+
+				//DEBUG: place torch next to top left corners.
+				/*
+				for (int row = 0; row < 25; row++)
+				{
+					for (int col = 0; col < 80; col++)
+					{
+						if (newBoard.Tilemap[col, row].Character == '\u2554')
+							newBoard.Entities.Add(new Clutter('\u00A5', Color.Chocolate, newBoard.Tilemap[col, row].Background, false, "random torch", "This is a testing torch.") { XPosition = col - 1, YPosition = row - 1, ID = "TestingTorch", ParentBoard = newBoard });
+					}
+				}
+				newBoard.UpdateLightmap(null, true);
+				*/
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
 			}
@@ -904,6 +918,13 @@ namespace Noxico
 			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
 		}
 
+		public bool IsLit(int row, int col)
+		{
+			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+				return false;
+			return Lightmap[row, col];
+		}
+
 		public TileDescription? GetSpecialDescription(int row, int col)
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
@@ -1092,7 +1113,10 @@ namespace Noxico
 			foreach (var l in this.DirtySpots)
 			{
 				var t = this.Tilemap[l.X, l.Y];
-				NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
+				if (Lightmap[l.Y, l.X])
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
+				else
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground.Darken(), t.Background.Darken(), force);
 			}
 			this.DirtySpots.Clear();
 
@@ -1106,6 +1130,61 @@ namespace Noxico
 				entity.Draw();
 		}
 
+		public void UpdateLightmap(Entity source, bool torches)
+		{
+			if ((source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || (!HasToken("dark") && !Toolkit.IsNight()))
+			{
+				for (int row = 0; row < 25; row++)
+					for (int col = 0; col < 80; col++)
+						Lightmap[row, col] = true;
+				return;
+			}
+
+			var previousMap = new bool[25, 80];
+			for (int row = 0; row < 25; row++)
+			{
+				for (int col = 0; col < 80; col++)
+				{
+					previousMap[row, col] = Lightmap[row, col];
+					Lightmap[row, col] = false;
+				}
+			}
+
+			Func<int, int, bool> f = (x1, y1) =>
+			{
+				if (y1 < 0 || y1 >= 25 | x1 < 0 || x1 >= 80)
+					return true;
+				return !Tilemap[x1, y1].IsWater && Tilemap[x1, y1].Solid;
+			};
+			Action<int, int> a = (x2, y2) =>
+			{
+				if (y2 < 0 || y2 >= 25 | x2 < 0 || x2 >= 80)
+					return;
+				Lightmap[y2, x2] = true;
+			};
+
+			if (source != null)
+				SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(source.XPosition, source.YPosition, 10, f, a);
+
+			if (torches)
+			{
+				foreach (var light in Entities.OfType<Clutter>().Where(x => x.ID.Contains("Torch")))
+				{
+					SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(light.XPosition, light.YPosition, 5, f, a);
+				}
+			}
+
+			for (int row = 0; row < 25; row++)
+			{
+				for (int col = 0; col < 80; col++)
+				{
+					if (Lightmap[row, col] != previousMap[row, col])
+						DirtySpots.Add(new Location(col, row));
+				}
+			}
+		}
+
+		/*
 		private static int GetSample(int x, int y, int ux, int uy, int[,] source)
 		{
 			var mask = new BitVector32();
@@ -1125,7 +1204,7 @@ namespace Noxico
 			}
 			return mask.Data;
 		}
-
+		*/
 		[Obsolete("THIS IS STUPID. Also broken.", true)]
 		public void CalculateLightmap()
 		{

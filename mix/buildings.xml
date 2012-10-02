@@ -156,7 +156,7 @@
 				'''''''
 			</map>
 			<markings>
-				<marking char="w" type="block,blue,navy,&#x007E;" />
+				<marking char="w" type="water,blue,navy,&#x007E;" />
 			</markings>
 		</template>
 	</set>

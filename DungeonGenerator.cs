@@ -201,6 +201,7 @@ namespace Noxico
 							var bg = Color.Silver;
 							var ch = '?';
 							var s = false;
+							var w = false;
 							switch (tc)
 							{
 								case '\'':
@@ -307,7 +308,7 @@ namespace Noxico
 									{
 										#region Custom markings
 										var m = template.Markings[tc];
-										if (m.Type != "block" && m.Type != "floor")
+										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
 											bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
@@ -373,13 +374,14 @@ namespace Noxico
 											fg = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
 											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
 											ch = m.Params.Last()[0];
-											s = m.Type == "block";
+											s = m.Type != "floor";
+											w = m.Type == "water";
 										}
 										#endregion
 									}
 									break;
 							}
-							map[sX + x, sY + y] = new Tile() { Character = ch, Foreground = fg, Background = bg, Solid = s };
+							map[sX + x, sY + y] = new Tile() { Character = ch, Foreground = fg, Background = bg, Solid = s, IsWater = w };
 						}
 					}
 
@@ -615,8 +617,14 @@ namespace Noxico
 			//Prepare to fade out the walls
 			var dijkstra = new int[80, 25];
 			for (var col = 0; col < 80; col++)
+			{
 				for (var row = 0; row < 25; row++)
+				{
+					if (map[col, row].IsWater)
+						continue;
 					dijkstra[col, row] = (map[col, row].Solid && !map[col, row].CanBurn) ? 9000 : 0;
+				}
+			}
 
 			//Get the data
 			Dijkstra.JustDoIt(ref dijkstra);
@@ -626,12 +634,18 @@ namespace Noxico
 			{
 				for (var col = 0; col < 80; col++)
 				{
+					if (map[col, row].IsWater)
+						continue;
 					if (map[col, row].Solid && !map[col, row].CanBurn)
 					{
 						if (dijkstra[col, row] > 1)
 							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
 						else
 							map[col, row].SpecialDescription = 1;
+					}
+					if (map[col, row].Solid && map[col, row].CanBurn)
+					{
+						map[col, row].SpecialDescription = 2;
 					}
 				}
 			}

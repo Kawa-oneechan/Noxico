@@ -59,6 +59,7 @@ namespace Noxico
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 		public string[] Potions;
+		public static DateTime InGameTime;
 
 		public NoxicoGame(MainForm hostForm)
 		{
@@ -167,6 +168,8 @@ namespace Noxico
 			Program.Report("Creating generic ocean filler board.");
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
+			InGameTime = new DateTime(40, 6, 26, DateTime.Now.Hour, 0, 0);
+
 #if DEBUG
 			//Towngen test
 			//var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
@@ -242,6 +245,7 @@ namespace Noxico
 					b.Write(Potions[i] ?? "...");
 				Console.WriteLine("Unique Items counter lol...");
 				b.Write(0);
+				b.Write(InGameTime.ToBinary());
 			}
 
 			Console.WriteLine("--------------------------");
@@ -328,6 +332,15 @@ namespace Noxico
 			for (var i = 0; i < 256; i++)
 				Potions[i] = bin.ReadString();
 			var numUniques = bin.ReadInt32();
+			try
+			{
+				InGameTime = new DateTime(bin.ReadInt64());
+			}
+			catch (EndOfStreamException)
+			{
+				//Old save game, change is... fixable.
+				InGameTime = new DateTime(40, 6, 26, DateTime.Now.Hour, 0, 0);
+			}
 			ApplyRandomPotions();
 			file.Close();
 
@@ -376,6 +389,7 @@ namespace Noxico
 				CurrentBoard = Boards[currentIndex];
 				CurrentBoard.Entities.Add(Player);
 				Player.ParentBoard = CurrentBoard;
+				CurrentBoard.UpdateLightmap(Player, true);
 				CurrentBoard.Redraw();
 				Sound.PlayMusic(CurrentBoard.Music);
 

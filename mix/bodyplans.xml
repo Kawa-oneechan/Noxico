@@ -93,6 +93,7 @@ face
 	normal
 eyes
 	color: yellow
+	glow
 ears
 	human
 legs
@@ -359,6 +360,7 @@ skin
 	color: oneof brown, orange, white, gray, black
 eyes
 	color: oneof gold, yellow, lime
+	glow
 face
 	cat
 ears
