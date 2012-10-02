@@ -690,6 +690,11 @@ namespace Noxico
 			return ((((((diy + epact) * 6) + 11) % 177) / 22) & 7);
 		}
 
+		public static bool IsNight()
+		{
+			return NoxicoGame.InGameTime.Hour < 6 || NoxicoGame.InGameTime.Hour > 21;
+		}
+
 		/// <summary>
 		/// From Nethack. Returns the ordinal suffix for the given number -- insert 4, get "th" as in "4th".
 		/// </summary>

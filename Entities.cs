@@ -55,7 +55,10 @@ namespace Noxico
 
 		public virtual void Draw()
 		{
-			NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor, this.BackgroundColor);
+			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor, this.BackgroundColor);
+			else
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor.Darken(), this.BackgroundColor.Darken());
 		}
 
 		public virtual void Move(Direction targetDirection)
@@ -168,10 +171,10 @@ namespace Noxico
 			return (dX < dY) ? dY : dX;
 		}
 
-		public bool CanSee(Entity other)
+		public virtual bool CanSee(Entity other)
 		{
 			foreach (var point in Toolkit.Line(XPosition, YPosition, other.XPosition, other.YPosition))
-				if (ParentBoard.IsSolid(point.Y, point.X))
+				if (ParentBoard.IsSolid(point.Y, point.X) && ParentBoard.IsLit(point.Y, point.X))
 					return false;
 			return true;
 		}
@@ -270,6 +273,25 @@ namespace Noxico
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
 				{
+					if (!this.ParentBoard.IsLit(YPosition, XPosition) && NoxicoGame.HostForm.Noxico.Player.CanSee(entity))
+					{
+						if (NoxicoGame.HostForm.Noxico.Player.Character.Path("eyes/glow") == null)
+						{
+							//No darkvision
+							if (entity is BoardChar && ((BoardChar)entity).Character.Path("eyes/glow") != null)
+							{
+								//Entity has glowing eyes, but we don't let the player actually interact with them.
+								NoxicoGame.Messages.Last().Message = "Eyes in the darkness";
+								NoxicoGame.Messages.Last().Color = Toolkit.GetColor(((BoardChar)entity).Character.Path("eyes/color").Text);
+							}
+							return;
+						}
+						else
+						{
+							//Player does have darkvision, ignore all this.
+						}
+					}
+
 					if (entity is BoardChar && Intent != Intents.Take)
 					{
 						PointingAt = entity;
@@ -562,6 +584,25 @@ namespace Noxico
 			if (Character.HasToken("slimeblob"))
 				ParentBoard.TrailSlime(YPosition, XPosition, ForegroundColor);
 			base.Move(targetDirection);
+		}
+
+		public override void Draw()
+		{
+			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
+				base.Draw();
+			else if (Character.Path("eyes/glow") != null)
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes/color").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
+		}
+
+		public override bool CanSee(Entity other)
+		{
+			if (Character.Path("eyes/glow") == null)
+				return base.CanSee(other);
+			//But if we do have glowing eyes, ignore illumination.
+			foreach (var point in Toolkit.Line(XPosition, YPosition, other.XPosition, other.YPosition))
+				if (ParentBoard.IsSolid(point.Y, point.X))
+					return false;
+			return true;
 		}
 
 		public void Excite()
@@ -1016,6 +1057,7 @@ namespace Noxico
 					XPosition = twarp.XPosition;
 					YPosition = twarp.YPosition;
 				}
+				ParentBoard.UpdateLightmap(this, true);
 				ParentBoard.Redraw();
 				NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
 				NoxicoGame.Immediate = true;
@@ -1036,6 +1078,7 @@ namespace Noxico
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
+			ParentBoard.UpdateLightmap(this, true);
 			ParentBoard.Redraw();
 			NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
 			NoxicoGame.Immediate = true;
@@ -1134,6 +1177,8 @@ namespace Noxico
 			}
 			base.Move(targetDirection);
 
+			ParentBoard.UpdateLightmap(this, true);
+
 			EndTurn();
 			NoxicoGame.Sound.PlaySound(Character.HasToken("squishy") || Character.Path("skin/type/slime") != null ? "Splorch" : "Step");
 
@@ -1160,7 +1205,7 @@ namespace Noxico
 #endif
 
 #if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4})", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY);
+			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4}) @ {5}", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY, NoxicoGame.InGameTime.ToLongTimeString());
 #endif
 		}
 
@@ -1383,10 +1428,22 @@ namespace Noxico
 				{
 					if (Character.GetToken("health").Value < Character.GetMaximumHealth())
 					{
-						MessageBox.Ask("Rest a while?", () =>
+						MessageBox.Ask("Rest until healed?", () =>
 						{
 							Character.Tokens.Add(new Token() { Name = "helpless" });
 							NoxicoGame.Mode = UserMode.Subscreen;
+							UnsortedSubscreens.UntilMorning = false;
+							NoxicoGame.Subscreen = UnsortedSubscreens.SleepAWhile;
+							Subscreens.FirstDraw = true;
+						}, null, true, "Bed");
+					}
+					else if (NoxicoGame.InGameTime.Hour >= 21) //Allow going to bed until morning one hour in advance
+					{
+						MessageBox.Ask("Sleep until morning?", () =>
+						{
+							Character.Tokens.Add(new Token() { Name = "helpless" });
+							NoxicoGame.Mode = UserMode.Subscreen;
+							UnsortedSubscreens.UntilMorning = true;
 							NoxicoGame.Subscreen = UnsortedSubscreens.SleepAWhile;
 							Subscreens.FirstDraw = true;
 						}, null, true, "Bed");
@@ -1469,7 +1526,10 @@ namespace Noxico
 			if (UpdateEggs())
 				NoxicoGame.AddMessage("You have laid an egg.");
 
-			PlayingTime = PlayingTime.Add(new TimeSpan(0,0,5));
+			var five = new TimeSpan(0,0,5);
+			PlayingTime = PlayingTime.Add(five);
+			NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(five);
+
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
 			{
