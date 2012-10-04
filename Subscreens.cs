@@ -48,7 +48,7 @@ namespace Noxico
 						for (var j = 0; j < 80; j++)
 							NoxicoGame.HostForm.DarkenCell(i, j);
 					player.PlayingTime = player.PlayingTime.Add(sleep);
-					NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(sleep);
+					NoxicoGame.InGameTime.Add(sleep);
 
 					if (NoxicoGame.InGameTime.Hour == 0 && NoxicoGame.InGameTime.Minute < 30)
 					{
@@ -88,7 +88,7 @@ namespace Noxico
 						NoxicoGame.HostForm.DarkenCell(i, j);
 
 				player.PlayingTime = player.PlayingTime.Add(heal);
-				NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(heal);
+				NoxicoGame.InGameTime.Add(heal);
 			}
 			else
 			{
