@@ -145,6 +145,21 @@ namespace Noxico
 				foreach (var e in otherX.DocumentElement.ChildNodes.OfType<XmlNode>())
 					x.DocumentElement.InnerXml = (injectOnTop ? e.OuterXml + x.DocumentElement.InnerXml : x.DocumentElement.InnerXml + e.OuterXml);
 			}
+
+			//Prioritize nodes
+			var priorityNodes = x.SelectNodes("//*[@priority='high']");
+			if (priorityNodes.Count > 0)
+			{
+				var placeholder = x.CreateComment("Priority placeholder");
+				x.DocumentElement.InsertBefore(placeholder, x.DocumentElement.FirstChild);
+				foreach (var n in priorityNodes.OfType<XmlElement>())
+				{
+					var p = n.ParentNode;
+					p.RemoveChild(n);
+					p.InsertBefore(n, placeholder);
+				}
+			}
+
 			return x;
 		}
 
