@@ -27,12 +27,6 @@ namespace Noxico
 			{
 				xSex = Mix.GetXMLDocument("scenesSex.xml", true);
 				xDlg = Mix.GetXMLDocument("scenesDlg.xml", true);
-				/*
-				xSex = new XmlDocument();
-				xDlg = new XmlDocument();
-				xSex.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.scenesSex, "scenesSex.xml"));
-				xDlg.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.scenesDlg, "scenesDlg.xml"));
-				*/
 			}
 			xDoc = inDialogue ? xDlg : xSex;
 			SceneSystem.top = top;

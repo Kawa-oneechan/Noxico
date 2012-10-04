@@ -10,6 +10,7 @@
 		id CDATA #REQUIRED
 		name CDATA #REQUIRED
 		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
 	>
 	<!ATTLIST filter
 		target (top|bottom) #REQUIRED
@@ -22,13 +23,20 @@
 ]>
 <scenes>
 
-	<scene id="test" name="invite to have sex" list="(DEBUG) Set willingness">
+	<scene id="test" name="invite to have sex" list="(DEBUG) Set willingness" priority="high">
 		<script type="text/javascript">
 			bottom.AddToken("willing");
 			print("[b:name] is now willing. Cheater.");
 		</script>
 	</scene>
-	
+	<scene id="test" name="lol" list="Priority test" priority="high">
+		<p>
+			This should appear BELOW "(DEBUG) Set willingness" and ABOVE "(rape start)"
+		</p>
+	</scene>
+
+
+
 	<!-- Several greetings -->
 	<!-- Section 1 - First Contact -->
 	<scene id="GenericUnknownHottie" name="(starting node)">
