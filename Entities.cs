@@ -1205,7 +1205,7 @@ namespace Noxico
 #endif
 
 #if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4}) @ {5}", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY, NoxicoGame.InGameTime.ToLongTimeString());
+			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4}) @ {5} {6}", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
 #endif
 		}
 
@@ -1437,7 +1437,7 @@ namespace Noxico
 							Subscreens.FirstDraw = true;
 						}, null, true, "Bed");
 					}
-					else if (NoxicoGame.InGameTime.Hour >= 21) //Allow going to bed until morning one hour in advance
+					else if (NoxicoGame.InGameTime.Hour >= 21 || NoxicoGame.InGameTime.Hour < 5) //Allow going to bed until morning one hour in advance
 					{
 						MessageBox.Ask("Sleep until morning?", () =>
 						{
@@ -1528,7 +1528,7 @@ namespace Noxico
 
 			var five = new TimeSpan(0,0,5);
 			PlayingTime = PlayingTime.Add(five);
-			NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(five);
+			NoxicoGame.InGameTime.Add(five);
 
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
