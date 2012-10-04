@@ -13,6 +13,7 @@ namespace Noxico
 		private static XmlDocument xSex, xDlg;
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
+		public static bool Dreaming;
 
 		private static bool letBottomChoose; 
 
@@ -21,7 +22,7 @@ namespace Noxico
 			Engage(top, bottom, "(starting node)", inDialogue);
 		}
 
-		public static void Engage(Character top, Character bottom, string name = "(starting node)",  bool inDialogue = false)
+		public static void Engage(Character top, Character bottom, string name = "(starting node)", bool inDialogue = false)
 		{
 			if (xSex == null)
 			{
@@ -88,13 +89,20 @@ namespace Noxico
 			{
 				letBottomChoose = false;
 				if (actions.Count == 0)
-					MessageBox.Message(message, true, bottom.Name.ToString(true));
+					MessageBox.Message(message, !Dreaming, bottom.Name.ToString(true));
 				else
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.Name.ToString(true));
 			}
 
-			NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-			NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+			if (Dreaming)
+			{
+				NoxicoGame.HostForm.LoadBitmap(Mix.GetBitmap("dream.png"));
+			}
+			else
+			{
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+			}
 		}
 
 		private static List<XmlElement> FindOpenings(string sceneName)

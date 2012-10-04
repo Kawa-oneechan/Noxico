@@ -36,6 +36,18 @@
 	</scene>
 
 
+	<scene id="DreamTest" name="(dream)">
+		<p>
+			To sleep, perchance, to dream...
+		</p>
+		<action name="dreamtest" />
+	</scene>
+	<scene id="DreamTest2" name="dreamtest">
+		<p>
+			What is it worth anyway?
+		</p>
+	</scene>
+
 
 	<!-- Several greetings -->
 	<!-- Section 1 - First Contact -->
