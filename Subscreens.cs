@@ -49,9 +49,25 @@ namespace Noxico
 							NoxicoGame.HostForm.DarkenCell(i, j);
 					player.PlayingTime = player.PlayingTime.Add(sleep);
 					NoxicoGame.InGameTime = NoxicoGame.InGameTime.Add(sleep);
+
+					if (NoxicoGame.InGameTime.Hour == 0 && NoxicoGame.InGameTime.Minute < 30)
+					{
+						//To sleep, perchance, to dream...
+						var dlg = Mix.GetXMLDocument("scenesDlg.xml", true);
+						var dreams = dlg.SelectNodes("//scene[@name='(dream)']");
+						if (dreams.Count > 0)
+						{
+							var dream = new Character();
+							dream.Name = new Name("Dream");
+							dream.IsProperNamed = true;
+							SceneSystem.Dreaming = true;
+							SceneSystem.Engage(pchar, dream, "(dream)", true);
+						}
+					}
 				}
 				else
 				{
+					SceneSystem.Dreaming = false;
 					pchar.GetToken("health").Value = max;
 					NoxicoGame.Mode = UserMode.Walkabout;
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
