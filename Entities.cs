@@ -336,14 +336,14 @@ namespace Noxico
 			NoxicoGame.Messages.Last().New = true;
 			NoxicoGame.UpdateMessages();
 
-			if (NoxicoGame.KeyMap[(int)Keys.Escape])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back)) //(NoxicoGame.KeyMap[(int)Keys.Escape])
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.Messages.Remove(NoxicoGame.Messages.Last());
 				ParentBoard.Redraw();
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.Tab])
+			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus)) //(NoxicoGame.KeyMap[(int)Keys.Tab])
 			{
 				NoxicoGame.ClearKeys();
 				Tabstop++;
@@ -354,7 +354,7 @@ namespace Noxico
 				Point();
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.Enter])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Accept)) //(NoxicoGame.KeyMap[(int)Keys.Enter])
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
@@ -464,13 +464,13 @@ namespace Noxico
 			}
 #endif
 
-			if (NoxicoGame.KeyMap[(int)Keys.Left])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Left)) //(NoxicoGame.KeyMap[(int)Keys.Left])
 				this.Move(Direction.West);
-			else if (NoxicoGame.KeyMap[(int)Keys.Right])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Right)) //(NoxicoGame.KeyMap[(int)Keys.Right])
 				this.Move(Direction.East);
-			else if (NoxicoGame.KeyMap[(int)Keys.Up])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Up)) //(NoxicoGame.KeyMap[(int)Keys.Up])
 				this.Move(Direction.North);
-			else if (NoxicoGame.KeyMap[(int)Keys.Down])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Down)) //(NoxicoGame.KeyMap[(int)Keys.Down])
 				this.Move(Direction.South);
 		}
 
@@ -1284,20 +1284,20 @@ namespace Noxico
 				}
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.F1])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Pause)) //(NoxicoGame.KeyMap[(int)Keys.F1])
 			{
 				Pause.Open();
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && !NoxicoGame.Modifiers[0])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Rest)) //(NoxicoGame.KeyMap[(int)Keys.OemPeriod] && !NoxicoGame.Modifiers[0])
 			{
 				NoxicoGame.ClearKeys();
 				EndTurn();
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.C])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Chat)) //(NoxicoGame.KeyMap[(int)Keys.C])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Chat message]");
@@ -1311,7 +1311,7 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.KeyMap[(int)Keys.F] && !helpless)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Fuck) /*(NoxicoGame.KeyMap[(int)Keys.F] */ && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				if (Character.GetStat(Stat.Stimulation) < 30)
@@ -1330,7 +1330,7 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.KeyMap[(int)Keys.A] && !helpless)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) /*(NoxicoGame.KeyMap[(int)Keys.A] */ && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				if (this.ParentBoard.Type == BoardType.Town)
@@ -1356,7 +1356,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Look) || NoxicoGame.IsKeyDown(KeyBinding.LookAlt)) //(NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Lookat message]");
@@ -1371,7 +1371,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.P] || NoxicoGame.KeyMap[(int)Keys.Oemcomma])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Take) || NoxicoGame.IsKeyDown(KeyBinding.TakeAlt)) //(NoxicoGame.KeyMap[(int)Keys.P] || NoxicoGame.KeyMap[(int)Keys.Oemcomma])
 			{
 				if (helpless)
 					return;
@@ -1400,7 +1400,7 @@ namespace Noxico
 				}
 			}
 
-			if (NoxicoGame.KeyMap[(int)Keys.I])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Items)) //(NoxicoGame.KeyMap[(int)Keys.I])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Mode = UserMode.Subscreen;
@@ -1410,7 +1410,7 @@ namespace Noxico
 			}
 
 			//if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
-			if (NoxicoGame.KeyMap[(int)Keys.Enter] && !helpless)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Activate) /* (NoxicoGame.KeyMap[(int)Keys.Enter] */ && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 
@@ -1476,31 +1476,31 @@ namespace Noxico
 			{
 				if (!NoxicoGame.Modifiers[0])
 				{
-					if (NoxicoGame.KeyMap[(int)Keys.Left])
+					if (NoxicoGame.IsKeyDown(KeyBinding.Left)) //(NoxicoGame.KeyMap[(int)Keys.Left])
 						this.Move(Direction.West);
-					else if (NoxicoGame.KeyMap[(int)Keys.Right])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
 						this.Move(Direction.East);
-					else if (NoxicoGame.KeyMap[(int)Keys.Up])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Up))
 						this.Move(Direction.North);
-					else if (NoxicoGame.KeyMap[(int)Keys.Down])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Down))
 						this.Move(Direction.South);
 				}
 				else if(NoxicoGame.Modifiers[0])
 				{
 					//Console.WriteLine("shift");
-					if (NoxicoGame.KeyMap[(int)Keys.Left])
+					if (NoxicoGame.IsKeyDown(KeyBinding.Left))
 						this.QuickFire(Direction.West);
-					else if (NoxicoGame.KeyMap[(int)Keys.Right])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
 						this.QuickFire(Direction.East);
-					else if (NoxicoGame.KeyMap[(int)Keys.Up])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Up))
 						this.QuickFire(Direction.North);
-					else if (NoxicoGame.KeyMap[(int)Keys.Down])
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Down))
 						this.QuickFire(Direction.South);
 				}
 			}
 			else
 			{
-				if (NoxicoGame.KeyMap[(int)Keys.Left] || NoxicoGame.KeyMap[(int)Keys.Right] || NoxicoGame.KeyMap[(int)Keys.Up] || NoxicoGame.KeyMap[(int)Keys.Down])
+				if (NoxicoGame.IsKeyDown(KeyBinding.Left) || NoxicoGame.IsKeyDown(KeyBinding.Right) || NoxicoGame.IsKeyDown(KeyBinding.Up) || NoxicoGame.IsKeyDown(KeyBinding.Down))//(NoxicoGame.KeyMap[(int)Keys.Left] || NoxicoGame.KeyMap[(int)Keys.Right] || NoxicoGame.KeyMap[(int)Keys.Up] || NoxicoGame.KeyMap[(int)Keys.Down])
 				{
 					AutoTravelling = false;
 					return;

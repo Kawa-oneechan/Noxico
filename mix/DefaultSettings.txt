@@ -84,3 +84,26 @@ palfile=Noxico.PspPalette
 askforonline=true
 useonline=false
 
+[keymap]
+left=left
+right=right
+up=up
+down=down
+rest=period
+activate=enter
+items=i
+look=l
+aim=a
+chat=c
+fuck=f
+take=p ;for pick up
+accept=enter ;also left mouse button
+back=escape ;also right mouse button
+pause=f1
+screenshot=f12
+lookalt=question ;aka slash
+takealt=comma
+backalt=back ;backspace
+tabfocus=tab
+scrollup=up ;for scrolling text windows, also mousewheel
+scrolldown=down

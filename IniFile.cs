@@ -17,8 +17,10 @@ namespace Noxico
 			var lines = File.ReadAllLines(filename);
 			foreach (var line in lines)
 			{
-				var l = line.Trim();
-				if (l.StartsWith(";") || l == "")
+				var l = line;
+				if (l.Contains(';'))
+					l = l.Remove(l.IndexOf(';'));
+				if (string.IsNullOrWhiteSpace(l))
 					continue;
 				if (l.StartsWith("[") && l.EndsWith("]"))
 				{
@@ -31,7 +33,13 @@ namespace Noxico
 					var sep = l.IndexOf('=');
 					var key = l.Substring(0, sep).Trim();
 					var val = l.Substring(sep + 1).Trim();
-					settings[thisSection].Add(key, val);
+					if (settings[thisSection].ContainsKey(key))
+					{
+						//throw new Exception("There's an error in the INI file: the key \"" + key + "\" has already been used.");
+						settings[thisSection][key] = val;
+					}
+					else
+						settings[thisSection].Add(key, val);
 				}
 			}
 		}

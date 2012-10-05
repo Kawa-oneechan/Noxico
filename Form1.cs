@@ -85,7 +85,7 @@ namespace Noxico
 				{ Keys.NumPad4, Keys.Left },
 				{ Keys.NumPad6, Keys.Right },
 				{ Keys.NumPad5, Keys.OemPeriod },
-				{ Keys.Back, Keys.Escape },
+				//{ Keys.Back, Keys.Escape },
 			};
 
         public MainForm()
@@ -286,11 +286,11 @@ namespace Noxico
 						NoxicoGame.Cursor.XPosition = tx;
 						NoxicoGame.Cursor.YPosition = ty;
 						NoxicoGame.Cursor.Point();
-						NoxicoGame.KeyMap[(int)Keys.Enter] = true;
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
 					}
 					else if (y.Button == System.Windows.Forms.MouseButtons.Right)
 					{
-						NoxicoGame.KeyMap[(int)Keys.Escape] = true;
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
 					}
 				}
 				else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
@@ -318,7 +318,7 @@ namespace Noxico
 					{
 						if (NoxicoGame.Subscreen == MessageBox.Handler)
 						{
-							NoxicoGame.KeyMap[(int)Keys.Enter] = true;
+							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
 							return;
 						}
 						Subscreens.MouseX = tx;
@@ -327,7 +327,7 @@ namespace Noxico
 					}
 					else if (y.Button == System.Windows.Forms.MouseButtons.Right)
 					{
-						NoxicoGame.KeyMap[(int)Keys.Escape] = true;
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
 					}
 				}
 			};
@@ -337,12 +337,12 @@ namespace Noxico
 				{
 					if (y.Delta < 0)
 					{
-						NoxicoGame.KeyMap[(int)Keys.Down] = true;
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollDown]] = true;
 						NoxicoGame.ScrollWheeled = true;
 					}
 					else if (y.Delta > 0)
 					{
-						NoxicoGame.KeyMap[(int)Keys.Up] = true;
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollUp]] = true;
 						NoxicoGame.ScrollWheeled = true;
 					}
 				}
@@ -863,7 +863,7 @@ namespace Noxico
 			if (e.Modifiers == Keys.Shift)
 				NoxicoGame.Modifiers[0] = false;
 
-			if (e.KeyCode == Keys.F12)
+			if (e.KeyCode == (Keys)NoxicoGame.KeyBindings[KeyBinding.Screenshot])
 			{
 				var shotDir = IniFile.GetString("misc", "shotpath", "screenshots");
 				if (shotDir.StartsWith("$"))
