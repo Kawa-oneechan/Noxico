@@ -611,10 +611,13 @@ namespace Noxico
 			{
 				if (other.Character.GetStat(Stat.Charisma) >= 10)
 				{
+					var stim = this.Character.GetToken("stimulation");
 					var increase = (other.Character.GetStat(Stat.Charisma) / 10) * (other.DistanceFrom(this) * 2);
-					this.Character.GetToken("stimulation").Value += increase;
+					stim.Value += increase;
 					if (other.DistanceFrom(this) < 2)
-						this.Character.GetToken("stimulation").Value += 2;
+						stim.Value += 2;
+					if (stim.Value > 100)
+						stim.Value = 100;
 				}
 			}
 		}
