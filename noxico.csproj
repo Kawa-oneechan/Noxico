@@ -151,36 +151,55 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\fixedsex_00.png" />
-    <Content Include="fonts\fixedsex_01.png" />
-    <Content Include="fonts\fixedsex_02.png" />
-    <Content Include="fonts\fixedsex_03.png" />
-    <Content Include="fonts\fixedsex_04.png" />
-    <Content Include="fonts\fixedsex_05.png" />
-    <Content Include="fonts\fixedsex_16.png" />
-    <Content Include="fonts\fixedsex_19.png" />
-    <Content Include="fonts\fixedsex_1D.png" />
-    <Content Include="fonts\fixedsex_1E.png" />
-    <Content Include="fonts\fixedsex_1F.png" />
-    <Content Include="fonts\fixedsex_20.png" />
-    <Content Include="fonts\fixedsex_21.png" />
-    <Content Include="fonts\fixedsex_22.png" />
-    <Content Include="fonts\fixedsex_23.png" />
-    <Content Include="fonts\fixedsex_24.png" />
-    <Content Include="fonts\fixedsex_25.png" />
-    <Content Include="fonts\fixedsex_26.png" />
-    <Content Include="fonts\fixedsex_28.png" />
-    <Content Include="fonts\fixedsex_2C.png" />
-    <Content Include="fonts\fixedsex_2D.png" />
-    <Content Include="fonts\fixedsex_4D.png" />
-    <Content Include="fonts\fixedsex_E2.png" />
-    <Content Include="fonts\fixedsex_F4.png" />
-    <Content Include="fonts\fixedsex_F5.png" />
-    <Content Include="fonts\fixedsex_F7.png" />
-    <Content Include="fonts\fixedsex_F8.png" />
-    <Content Include="fonts\fixedsex_FB.png" />
-    <Content Include="fonts\fixedsex_FE.png" />
-    <Content Include="fonts\fixedsex_FF.png" />
+    <Content Include="fonts\fixedsys\fixedsex_00.png" />
+    <Content Include="fonts\fixedsys\fixedsex_01.png" />
+    <Content Include="fonts\fixedsys\fixedsex_02.png" />
+    <Content Include="fonts\fixedsys\fixedsex_03.png" />
+    <Content Include="fonts\fixedsys\fixedsex_04.png" />
+    <Content Include="fonts\fixedsys\fixedsex_05.png" />
+    <Content Include="fonts\fixedsys\fixedsex_16.png" />
+    <Content Include="fonts\fixedsys\fixedsex_19.png" />
+    <Content Include="fonts\fixedsys\fixedsex_1D.png" />
+    <Content Include="fonts\fixedsys\fixedsex_1E.png" />
+    <Content Include="fonts\fixedsys\fixedsex_1F.png" />
+    <Content Include="fonts\fixedsys\fixedsex_20.png" />
+    <Content Include="fonts\fixedsys\fixedsex_21.png" />
+    <Content Include="fonts\fixedsys\fixedsex_22.png" />
+    <Content Include="fonts\fixedsys\fixedsex_23.png" />
+    <Content Include="fonts\fixedsys\fixedsex_24.png" />
+    <Content Include="fonts\fixedsys\fixedsex_25.png" />
+    <Content Include="fonts\fixedsys\fixedsex_26.png" />
+    <Content Include="fonts\fixedsys\fixedsex_28.png" />
+    <Content Include="fonts\fixedsys\fixedsex_2C.png" />
+    <Content Include="fonts\fixedsys\fixedsex_2D.png" />
+    <Content Include="fonts\fixedsys\fixedsex_4D.png" />
+    <Content Include="fonts\fixedsys\fixedsex_E2.png" />
+    <Content Include="fonts\fixedsys\fixedsex_F4.png" />
+    <Content Include="fonts\fixedsys\fixedsex_F5.png" />
+    <Content Include="fonts\fixedsys\fixedsex_F7.png" />
+    <Content Include="fonts\fixedsys\fixedsex_F8.png" />
+    <Content Include="fonts\fixedsys\fixedsex_FB.png" />
+    <Content Include="fonts\fixedsys\fixedsex_FE.png" />
+    <Content Include="fonts\fixedsys\fixedsex_FF.png" />
+    <Content Include="fonts\unifont\unifont_00.png" />
+    <Content Include="fonts\unifont\unifont_01.png" />
+    <Content Include="fonts\unifont\unifont_02.png" />
+    <Content Include="fonts\unifont\unifont_03.png" />
+    <Content Include="fonts\unifont\unifont_04.png" />
+    <Content Include="fonts\unifont\unifont_1D.png" />
+    <Content Include="fonts\unifont\unifont_1E.png" />
+    <Content Include="fonts\unifont\unifont_1F.png" />
+    <Content Include="fonts\unifont\unifont_20.png" />
+    <Content Include="fonts\unifont\unifont_21.png" />
+    <Content Include="fonts\unifont\unifont_22.png" />
+    <Content Include="fonts\unifont\unifont_23.png" />
+    <Content Include="fonts\unifont\unifont_24.png" />
+    <Content Include="fonts\unifont\unifont_25.png" />
+    <Content Include="fonts\unifont\unifont_26.png" />
+    <Content Include="fonts\unifont\unifont_28.png" />
+    <Content Include="fonts\unifont\unifont_2B.png" />
+    <Content Include="fonts\unifont\unifont_2E.png" />
+    <Content Include="fonts\unifont\unifont_FF.png" />
     <Content Include="mix\aee66af32c5a2e6277484acc9715ee6a.jpg" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
@@ -286,6 +305,9 @@
     <Content Include="Sounds.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Unifont font.mix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
