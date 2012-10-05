@@ -449,6 +449,9 @@ namespace Noxico
 					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 					Achievements.StartingTime = DateTime.Now;
+					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
+					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
+					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
