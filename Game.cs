@@ -12,6 +12,12 @@ using System.Xml;
 
 namespace Noxico
 {
+	public enum KeyBinding
+	{
+		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Accept, Back,
+		Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
+	}
+
 	public class NoxicoGame
 	{
 		public static SoundSystem Sound;
@@ -30,6 +36,8 @@ namespace Noxico
 		public static int AutoRestTimer { get; set; }
 		public static int AutoRestSpeed { get; set; }
 		public static bool Mono { get; set; }
+
+		public static Dictionary<KeyBinding, int> KeyBindings { get; set; }
 
 		public static List<InventoryItem> KnownItems { get; private set; }
 		public List<Board> Boards { get; set; }
@@ -61,9 +69,54 @@ namespace Noxico
 		public string[] Potions;
 		public static NoxicanDate InGameTime;
 
+		public static bool IsKeyDown(KeyBinding binding)
+		{
+			if (KeyBindings[binding] == 0)
+				return false;
+			return (NoxicoGame.KeyMap[(int)KeyBindings[binding]]);
+		}
+
 		public NoxicoGame(MainForm hostForm)
 		{
 			Console.WriteLine("IT BEGINS...");
+
+			Func<string, Keys, int> GetIniKey = (s, d) =>
+			{
+				var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToLowerInvariant());
+				var keyValue = IniFile.GetString("keymap", s, d.ToString()).ToLowerInvariant();
+				if (keyNames.Contains(keyValue))
+					return (int)(Keys)Enum.Parse(typeof(Keys), keyValue, true);
+				keyValue = "oem" + keyValue; //try unfriendly name
+				if (keyNames.Contains(keyValue))
+					return (int)(Keys)Enum.Parse(typeof(Keys), keyValue, true);
+				//give up and return default
+				return (int)d;
+			};
+			KeyBindings = new Dictionary<KeyBinding, int>()
+			{
+				{ KeyBinding.Left, GetIniKey("left", Keys.Left) },
+				{ KeyBinding.Right, GetIniKey("right", Keys.Right) },
+				{ KeyBinding.Up, GetIniKey("up", Keys.Up) },
+				{ KeyBinding.Down, GetIniKey("down", Keys.Down) },
+				{ KeyBinding.Rest, GetIniKey("rest", Keys.OemPeriod) },
+				{ KeyBinding.Activate, GetIniKey("activate", Keys.Enter) },
+				{ KeyBinding.Items, GetIniKey("items", Keys.I) },
+				{ KeyBinding.Look, GetIniKey("look", Keys.L) },
+				{ KeyBinding.Aim, GetIniKey("aim", Keys.A) },
+				{ KeyBinding.Chat, GetIniKey("chat", Keys.C) },
+				{ KeyBinding.Fuck, GetIniKey("fuck", Keys.F) },
+				{ KeyBinding.Take, GetIniKey("take", Keys.P) },
+				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
+				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },
+				{ KeyBinding.Pause, GetIniKey("pause", Keys.F1) },
+				{ KeyBinding.Screenshot, GetIniKey("screenshot", Keys.F12) },
+				{ KeyBinding.LookAlt, GetIniKey("lookalt", Keys.OemQuestion) },
+				{ KeyBinding.TakeAlt, GetIniKey("takealt", Keys.Oemcomma) },
+				{ KeyBinding.BackAlt, GetIniKey("backalt", Keys.Back) },
+				{ KeyBinding.TabFocus, GetIniKey("tabfocus", Keys.Tab) },
+				{ KeyBinding.ScrollUp, GetIniKey("scrollup", Keys.Up) },
+				{ KeyBinding.ScrollDown, GetIniKey("scrolldown", Keys.Down) },
+			};
 
 			Program.Report("Determining savegame location");
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
@@ -499,7 +552,7 @@ namespace Noxico
 						{
 							Sound.PlaySound("Open Gate");
 							AutoRestTimer = AutoRestSpeed;
-							KeyMap[(int)Keys.OemPeriod] = true;
+							KeyMap[KeyBindings[KeyBinding.Rest]] = true;
 						}
 						CurrentBoard.Update();
 
@@ -546,8 +599,8 @@ namespace Noxico
 				KeyTrg[i] = false;
 			if (ScrollWheeled)
 			{
-				KeyMap[(int)Keys.Up] = false;
-				KeyMap[(int)Keys.Down] = false;
+				KeyMap[KeyBindings[KeyBinding.ScrollUp]] = false;
+				KeyMap[KeyBindings[KeyBinding.ScrollDown]] = false;
 				ScrollWheeled = false;
 			}
 		}
