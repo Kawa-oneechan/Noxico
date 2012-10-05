@@ -168,7 +168,7 @@ namespace Noxico
 			Program.Report("Creating generic ocean filler board.");
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
-			InGameTime = new NoxicanDate(40, 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new NoxicanDate(40 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 
 #if DEBUG
 			//Towngen test
