@@ -518,6 +518,7 @@ namespace Noxico
 		public int MoveSpeed { get; set; }
 
 		public Dijkstra DijkstraMap { get; private set; }
+		private Dijkstra dijkstraBed;
 		public Character Character { get; set; }
 
 		public BoardChar()
@@ -590,7 +591,7 @@ namespace Noxico
 		{
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 				base.Draw();
-			else if (Character.Path("eyes/glow") != null)
+			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes/color").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
 		}
 
@@ -677,6 +678,77 @@ namespace Noxico
 					Character.RemoveToken("cooldown");
 				else
 					return;
+			}
+
+			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
+			{
+				if (Character.HasToken("goingtosleep"))
+				{
+					var beds = this.ParentBoard.Entities.OfType<Clutter>().Where(x => x.ID.EndsWith("_Bed_" + this.Character.Name.FirstName)).ToList();
+					if (beds == null)
+					{
+						//Give up and sleep where you at for now.
+						Character.RemoveToken("goingtosleep");
+						Character.AddToken("sleeping");
+					}
+					else
+					{
+						var bed = beds[0];
+						if (beds.Count > 1)
+						{
+							bed = beds.FirstOrDefault(x => x.ID.Contains(this.Sector.Substring(1)));
+						}
+						if (this.XPosition == bed.XPosition && this.YPosition == bed.YPosition)
+						{
+							Character.RemoveToken("goingtosleep");
+							Character.AddToken("sleeping");
+						}
+						else
+						{
+							if (NoxicoGame.InGameTime.Hour > 21)
+							{
+								this.XPosition = bed.XPosition;
+								this.YPosition = bed.YPosition;
+							}
+							if (dijkstraBed == null)
+							{
+								dijkstraBed = new Dijkstra();
+								dijkstraBed.Hotspots.Add(new Point(bed.XPosition, bed.YPosition));
+								dijkstraBed.UpdateWalls();
+								dijkstraBed.Update();
+							}
+							var dir = Direction.North;
+							dijkstraBed.Ignore = DijkstraIgnores.Type;
+							dijkstraBed.IgnoreType = typeof(BoardChar);
+							if (dijkstraBed.RollDown(this.YPosition, this.XPosition, ref dir))
+								Move(dir);
+						}
+					}
+				}
+				else if (Character.HasToken("sleeping"))
+				{
+					Movement = Motor.Stand;
+					if (NoxicoGame.InGameTime.Hour >= 6 && NoxicoGame.InGameTime.Hour < 21 && NoxicoGame.InGameTime.Minute > Toolkit.Rand.Next(60))
+					{
+						Character.RemoveToken("sleeping");
+						Movement = Motor.WanderSector;
+					}
+				}
+				else
+				{
+					if (NoxicoGame.InGameTime.Hour == 21 && NoxicoGame.InGameTime.Minute > Toolkit.Rand.Next(60))
+						Character.AddToken("goingtosleep");
+					else if (NoxicoGame.InGameTime.Hour > 21)
+					{
+						Character.AddToken("sleeping");
+						var bed = this.ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(x => x.ID.EndsWith("_Bed_" + this.Character.Name.FirstName) && ParentBoard.SectorContains(this.Sector, x.XPosition, x.YPosition));
+						if (bed != null)
+						{
+							this.XPosition = bed.XPosition;
+							this.YPosition = bed.YPosition;
+						}
+					}
+				}
 			}
 
 			base.Update();
@@ -981,6 +1053,18 @@ namespace Noxico
 			newChar.AdjustView();
 			return newChar;
 		}
+
+		public void ReassignStuff(Name oldName)
+		{
+			var oldID = oldName.FirstName;
+			var newID = this.Character.Name.FirstName;
+			foreach (var thing in this.ParentBoard.Entities.OfType<Clutter>().Where(x => x.ID.Contains(oldID)))
+			{
+				thing.ID = thing.ID.Replace(oldID, newID);
+				thing.Description = thing.Description.Replace(oldName.ToString(true), this.Character.Name.ToString(true));
+				thing.Description = thing.Description.Replace(oldName.ToString(), this.Character.Name.ToString());
+			}
+		}
 	}
 
     public class Player : BoardChar
@@ -1180,8 +1264,6 @@ namespace Noxico
 			}
 			base.Move(targetDirection);
 
-			ParentBoard.UpdateLightmap(this, true);
-
 			EndTurn();
 			NoxicoGame.Sound.PlaySound(Character.HasToken("squishy") || Character.Path("skin/type/slime") != null ? "Splorch" : "Step");
 
@@ -1282,6 +1364,12 @@ namespace Noxico
 					Character.RemoveToken("helpless");
 					helpless = false;
 				}
+			}
+
+			if (NoxicoGame.KeyMap[(int)Keys.Z])
+			{
+				NoxicoGame.ClearKeys();
+				NoxicoGame.InGameTime.AddMinutes(30);
 			}
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Pause)) //(NoxicoGame.KeyMap[(int)Keys.F1])
@@ -1531,7 +1619,11 @@ namespace Noxico
 
 			var five = new TimeSpan(0,0,5);
 			PlayingTime = PlayingTime.Add(five);
+			var wasNight = Toolkit.IsNight();
 			NoxicoGame.InGameTime.Add(five);
+			ParentBoard.UpdateLightmap(this, true);
+			if (wasNight == !Toolkit.IsNight())
+				ParentBoard.Redraw();
 
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)

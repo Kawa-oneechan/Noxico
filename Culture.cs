@@ -218,7 +218,7 @@ namespace Noxico
 		public void AddMilliseconds(int milliseconds)
 		{
 			this.Millisecond += milliseconds;
-			while (this.Millisecond > 100)
+			while (this.Millisecond >= 100)
 			{
 				this.Millisecond -= 100;
 				this.AddSeconds(1);
@@ -228,7 +228,7 @@ namespace Noxico
 		public void AddSeconds(int seconds)
 		{
 			this.Second += seconds;
-			while (this.Second > 60)
+			while (this.Second >= 60)
 			{
 				this.Second -= 60;
 				this.AddMinutes(1);
@@ -238,7 +238,7 @@ namespace Noxico
 		public void AddMinutes(int minutes)
 		{
 			this.Minute += minutes;
-			if (this.Minute > 60)
+			if (this.Minute >= 60)
 			{
 				this.Minute -= 60;
 				this.AddHours(1);
@@ -258,7 +258,7 @@ namespace Noxico
 		public void AddDays(int days)
 		{
 			this.Day += days;
-			while (this.Day > 30)
+			while (this.Day >= 30)
 			{
 				this.Day -= 30;
 				this.AddMonths(1);

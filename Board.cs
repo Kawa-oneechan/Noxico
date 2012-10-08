@@ -1482,6 +1482,18 @@ namespace Noxico
 			}
 			return ret;
 		}
+
+		public bool SectorContains(string sector, int x, int y)
+		{
+			if (string.IsNullOrWhiteSpace(sector) || Sectors.Count == 0)
+				return true;
+			if (!Sectors.ContainsKey(sector))
+				return false;
+			var s = Sectors[sector];
+			if (s.Left >= x && s.Right <= x && s.Top >= y && s.Bottom <= y)
+				return true;
+			return false;
+		}
 	}
 
 
