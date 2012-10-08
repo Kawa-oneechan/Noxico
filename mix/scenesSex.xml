@@ -10,6 +10,7 @@
 		id CDATA #REQUIRED
 		name CDATA #REQUIRED
 		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
 	>
 	<!ATTLIST filter
 		target (top|bottom) #REQUIRED
@@ -21,6 +22,15 @@
 	<!ATTLIST action name CDATA #REQUIRED>
 ]>
 <scenes>
+	<scene id="zzz1" name="(starting node)" priority="high">
+		<filter target="bottom" type="has" name="sleeping" />
+		<p>
+			[b:name] is sleeping right now.
+		</p>
+		<p>
+			Maybe, if you were mean enough to try, and there were scenes for such a thing, you could take [b:him] in [b:his] sleep, but no such luck.
+		</p>
+	</scene>
 
 	<!-- TDM -->
 	<scene id="WinAgainstNaga" name="(rape start)">

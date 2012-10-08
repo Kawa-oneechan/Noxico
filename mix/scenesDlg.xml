@@ -29,9 +29,16 @@
 			print("[b:name] is now willing. Cheater.");
 		</script>
 	</scene>
-	<scene id="test" name="lol" list="Priority test" priority="high">
+	<scene id="zzz1" name="(starting node)" priority="high">
+		<filter target="bottom" type="has" name="sleeping" />
 		<p>
-			This should appear BELOW "(DEBUG) Set willingness" and ABOVE "(rape start)"
+			[b:name] is sleeping and can't hear you.
+		</p>
+	</scene>
+	<scene id="zzz2" name="(starting node)" priority="high">
+		<filter target="bottom" type="has" name="goingtosleep" />
+		<p>
+			"Would you mind? I'd really rather go to sleep now. It's late."
 		</p>
 	</scene>
 

@@ -208,7 +208,7 @@ namespace Noxico
 	{
 		public enum Intents { Look, Take, Chat, Fuck, Shoot };
 
-		private static int BlinkRate = 500;
+		private static int blinkRate = 500;
 		public int Range { get; set; }
 		public Intents Intent { get; set; }
 
@@ -229,7 +229,7 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			if (Environment.TickCount % BlinkRate * 2 < BlinkRate)
+			if (Environment.TickCount % blinkRate * 2 < blinkRate)
 				base.Draw();
 		}
 
@@ -511,6 +511,8 @@ namespace Noxico
 
 	public class BoardChar : Entity
 	{
+		private static int blinkRate = 1000;
+
 		public Motor Movement { get; set; }
 		public string Sector { get; set; }
 		public string Pairing { get; set; }
@@ -590,7 +592,12 @@ namespace Noxico
 		public override void Draw()
 		{
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
+			{
 				base.Draw();
+				if (Character.HasToken("sleeping"))
+					if (Environment.TickCount % blinkRate * 2 < blinkRate)
+						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
+			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes/color").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
 		}
@@ -1366,11 +1373,13 @@ namespace Noxico
 				}
 			}
 
+#if DEBUG
 			if (NoxicoGame.KeyMap[(int)Keys.Z])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.InGameTime.AddMinutes(30);
 			}
+#endif
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Pause)) //(NoxicoGame.KeyMap[(int)Keys.F1])
 			{
