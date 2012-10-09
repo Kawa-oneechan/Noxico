@@ -116,7 +116,6 @@ namespace Noxico
 				{ KeyBinding.ScrollDown, GetIniKey("scrolldown", Keys.Down) },
 			};
 
-			Program.Report("Determining savegame location");
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
 			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
@@ -128,12 +127,10 @@ namespace Noxico
 				SavePath = Path.GetFullPath(SavePath);
 			}
 
-			Program.Report("Generating initial worldname and ensuring savegame folder exists");
 			WorldName = RollWorldName();
 			if (!Directory.Exists(SavePath))
 				Directory.CreateDirectory(SavePath);
 
-			Program.Report("Setting up objects...");
 			lastUpdate = DateTime.Now;
 			Speed = 60;
 			this.Boards = new List<Board>();
@@ -147,27 +144,22 @@ namespace Noxico
 				AutoRestSpeed = 5;
 			Cursor = new Cursor();
 			Messages = new List<StatusMessage>();
-			Program.Report("Initializing sound system...");
 			Sound = new SoundSystem();
 
 			//var xDoc = new XmlDocument();
-			Program.Report("Loading items...");
 			Console.WriteLine("Loading items...");
 			var xDoc = Mix.GetXMLDocument("items.xml");
 			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
-			Program.Report("Randomizing potions and rings...");
 			Console.WriteLine("Randomizing potions and rings...");
 			RollPotions();
 			ApplyRandomPotions();
-			Program.Report("Loading bodyplans...");
 			Console.WriteLine("Loading bodyplans...");
 			xDoc = Mix.GetXMLDocument("bodyplans.xml");
 			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			Views = new Dictionary<string, char>();
-			Program.Report("Creating Levenshtein table...");
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
@@ -194,7 +186,6 @@ namespace Noxico
 			//Tile descriptions
 			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
 
-			Program.Report("Loading books...");
 			Console.WriteLine("Loading books...");
 			BookTitles = new List<string>();
 			BookAuthors = new List<string>();
@@ -211,12 +202,9 @@ namespace Noxico
 
 			//ScriptVariables.Add("consumed", 0);
 			HostForm.Noxico = this;
-			Program.Report("Creating main JS instance...");
 			Javascript.MainMachine = Javascript.Create();
 
-			Program.Report("Loading WorldGen biome data...");
 			WorldGen.LoadBiomes();
-			Program.Report("Creating generic ocean filler board.");
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
 			InGameTime = new NoxicanDate(40 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
@@ -236,7 +224,6 @@ namespace Noxico
 			towngenTest.DumpToHTML("final");
 #endif
 
-			Program.Report("Creating void board and player...");
 			CurrentBoard = new Board();
 			this.Player = new Player()
 			{

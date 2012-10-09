@@ -397,6 +397,8 @@ namespace Noxico
 				*/
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
+
+				//newBoard.Entities.OfType<BoardChar>().ElementAt(0).MoveTo(1, 1, "lol");
 			}
 			return newBoard;
 		}

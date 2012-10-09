@@ -14,21 +14,9 @@ namespace Noxico
 {
 	static class Program
 	{
-		public static Action<string> Report = null;
-
 		[STAThread]
 		static void Main(string[] args)
 		{
-			Report = (s) => { return; };
-			if (args.Length > 0)
-			{
-				if (args[0] == "spam")
-				{
-					Report = (s) => { System.Windows.Forms.MessageBox.Show("Startup report:\r\n" + s, Application.ProductName); };
-					Report("You will get a lot of these messages. If the game crashes, they'll let Kawa pinpoint where that happened. Tell him which message came last.");
-				}
-			}
-
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			try
@@ -88,294 +76,280 @@ namespace Noxico
 				//{ Keys.Back, Keys.Escape },
 			};
 
-        public MainForm()
-        {
-			Program.Report("MainForm construct");
-			this.Text = "Noxico";
-			this.BackColor = System.Drawing.Color.Black;
-			this.DoubleBuffered = true;
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-			this.Icon = global::Noxico.Properties.Resources.app;
-			this.ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
-			this.Controls.Add(new Label()
+		public MainForm()
+		{
+			var fatal = false;
+			try
 			{
-				Text = "Please hold...",
-				AutoSize = true,
-				Font = new System.Drawing.Font("Garamond", 16, FontStyle.Bold | FontStyle.Italic),
-				ForeColor = System.Drawing.Color.Yellow,
-				Visible = true,
-				Location = new System.Drawing.Point(16,16)
-			});
-
-			Program.Report("Mix.Initialize");
-			Mix.Initialize("Noxico");
-			Program.Report("Game data check");
-			if (!Mix.FileExists("noxico.xml"))
-			{
-				System.Windows.Forms.MessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Close();
-				return;
-			}
-
-			colorConverter = (c => c);
-			charConverter = (c => c);
-
-			var portable = false;
-			var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
-			Program.Report("Portable Mode check");
-			if (File.Exists("portable"))
-			{
-				portable = true;
-				var oldIniPath = iniPath;
-				iniPath = "noxico.ini";
-				Program.Report("Trying to determine if portable mode could work...");
-				var fi = new FileInfo(Application.ExecutablePath);
-				var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-				if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
+				this.Text = "Noxico";
+				this.BackColor = System.Drawing.Color.Black;
+				this.DoubleBuffered = true;
+				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+				this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+				this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+				this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+				this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
+				this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
+				this.Icon = global::Noxico.Properties.Resources.app;
+				this.ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+				this.Controls.Add(new Label()
 				{
-					var response = System.Windows.Forms.MessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-					if (response == System.Windows.Forms.DialogResult.Cancel)
+					Text = "Please hold...",
+					AutoSize = true,
+					Font = new System.Drawing.Font("Garamond", 16, FontStyle.Bold | FontStyle.Italic),
+					ForeColor = System.Drawing.Color.Yellow,
+					Visible = true,
+					Location = new System.Drawing.Point(16, 16)
+				});
+
+				foreach (var reqDll in new [] { "Antlr3.Runtime.dll", "Jint.dll" })
+					if (!File.Exists(reqDll))
+						throw new FileNotFoundException("Required DLL " + reqDll + " is missing.");
+
+				Mix.Initialize("Noxico");
+				if (!Mix.FileExists("noxico.xml"))
+				{
+					System.Windows.Forms.MessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					Close();
+					return;
+				}
+
+				colorConverter = (c => c);
+				charConverter = (c => c);
+
+				var portable = false;
+				var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+				if (File.Exists("portable"))
+				{
+					portable = true;
+					var oldIniPath = iniPath;
+					iniPath = "noxico.ini";
+					var fi = new FileInfo(Application.ExecutablePath);
+					var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+					if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
 					{
-						Close();
-						return;
-					}
-					else if (response == System.Windows.Forms.DialogResult.Yes)
-					{
-						iniPath = oldIniPath;
-						portable = false;
+						var response = System.Windows.Forms.MessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+						if (response == System.Windows.Forms.DialogResult.Cancel)
+						{
+							Close();
+							return;
+						}
+						else if (response == System.Windows.Forms.DialogResult.Yes)
+						{
+							iniPath = oldIniPath;
+							portable = false;
+						}
 					}
 				}
-			}
 
-			Program.Report("Checking for INI file");
-			if (!File.Exists(iniPath))
-				File.WriteAllText(iniPath, Mix.GetString("DefaultSettings.txt"));
-			Program.Report("Loading INI file");
-			IniFile.Load(iniPath);
+				if (!File.Exists(iniPath))
+					File.WriteAllText(iniPath, Mix.GetString("DefaultSettings.txt"));
+				IniFile.Load(iniPath);
 
-			if (portable)
-			{
-				IniFile.SetValue("misc", "vistasaves", false);
-				IniFile.SetValue("misc", "savepath", "./saves");
-				IniFile.SetValue("misc", "shotpath", "./screenshots");
-			}
-
-#if ALLOW_PNG_MODE
-			pngMode = IniFile.GetBool("misc", "pngmode", false);
-			pngFont = IniFile.GetString("misc", "pngfont", "fixedsex");
-			pngFonts = new Dictionary<int, Bitmap>();
-			if (pngMode)
-			{
-				Program.Report("PNG Mode is requested. Checking for font...");
-				//if (File.Exists(Path.Combine("fonts", pngFont + "_00.png")))
-				if (Mix.FileExists(pngFont + "_00.png"))
+				if (portable)
 				{
-					CachePNGFont('A');
-					CellWidth = pngFonts[0x00].Width / 16;
-					CellHeight = pngFonts[0x00].Height / 16;
+					IniFile.SetValue("misc", "vistasaves", false);
+					IniFile.SetValue("misc", "savepath", "./saves");
+					IniFile.SetValue("misc", "shotpath", "./screenshots");
 				}
-				else
-					pngMode = false;
-			}
-			if (!pngMode)
-			{
-#endif
-			Program.Report("Setting up TTF font...");
-			var family = IniFile.GetString("font", "family", "Consolas");
-			var emSize = IniFile.GetInt("font", "size", 11);
-			var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
-			GlyphAdjustX = IniFile.GetInt("font", "x-adjust", -2);
-			GlyphAdjustY = IniFile.GetInt("font", "y-adjust", -1);
-			ClearType = IniFile.GetBool("font", "cleartype", true);
-			Font = new Font(family, emSize, style);
-			if (Font.FontFamily.Name != family)
-				Font = new Font(FontFamily.GenericMonospace, emSize, style);
-			using (var gfx = Graphics.FromHwnd(this.Handle))
-			{
-				var em = gfx.MeasureString("M", this.Font);
-				CellWidth = (int)Math.Ceiling(em.Width * 0.75);
-				CellHeight = (int)Math.Ceiling(em.Height * 0.85);
-			}
-			if (IniFile.GetInt("font", "cellwidth", 0) != 0)
-				CellWidth = IniFile.GetInt("font", "cellwidth", 0);
-			if (IniFile.GetInt("font", "cellheight", 0) != 0)
-				CellHeight = IniFile.GetInt("font", "cellheight", 0);
+
 #if ALLOW_PNG_MODE
-			}
+				pngMode = IniFile.GetBool("misc", "pngmode", false);
+				pngFont = IniFile.GetString("misc", "pngfont", "fixedsex");
+				pngFonts = new Dictionary<int, Bitmap>();
+				if (pngMode)
+				{
+					if (Mix.FileExists(pngFont + "_00.png"))
+					{
+						CachePNGFont('A');
+						CellWidth = pngFonts[0x00].Width / 16;
+						CellHeight = pngFonts[0x00].Height / 16;
+					}
+					else
+						pngMode = false;
+				}
+				if (!pngMode)
+				{
+#endif
+					var family = IniFile.GetString("font", "family", "Consolas");
+					var emSize = IniFile.GetInt("font", "size", 11);
+					var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
+					GlyphAdjustX = IniFile.GetInt("font", "x-adjust", -2);
+					GlyphAdjustY = IniFile.GetInt("font", "y-adjust", -1);
+					ClearType = IniFile.GetBool("font", "cleartype", true);
+					Font = new Font(family, emSize, style);
+					if (Font.FontFamily.Name != family)
+						Font = new Font(FontFamily.GenericMonospace, emSize, style);
+					using (var gfx = Graphics.FromHwnd(this.Handle))
+					{
+						var em = gfx.MeasureString("M", this.Font);
+						CellWidth = (int)Math.Ceiling(em.Width * 0.75);
+						CellHeight = (int)Math.Ceiling(em.Height * 0.85);
+					}
+					if (IniFile.GetInt("font", "cellwidth", 0) != 0)
+						CellWidth = IniFile.GetInt("font", "cellwidth", 0);
+					if (IniFile.GetInt("font", "cellheight", 0) != 0)
+						CellHeight = IniFile.GetInt("font", "cellheight", 0);
+#if ALLOW_PNG_MODE
+				}
 #endif
 
-			Program.Report("Setting up filters...");
-			switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
-			{
-				case "cga": colorConverter = ToCGA; break;
-				case "psp": colorConverter = ToPspPal; break;
-				case "mono": colorConverter = ToMono; break;
-				default: colorConverter = (c => c); break;
-			}
-			switch (IniFile.GetString("filters", "char", "none").ToLowerInvariant())
-			{
-				case "437": charConverter = To437; break;
-				case "7bit": charConverter = To7Bit; break;
-				default: charConverter = (c => c); break;
-			}
+				switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
+				{
+					case "cga": colorConverter = ToCGA; break;
+					case "psp": colorConverter = ToPspPal; break;
+					case "mono": colorConverter = ToMono; break;
+					default: colorConverter = (c => c); break;
+				}
+				switch (IniFile.GetString("filters", "char", "none").ToLowerInvariant())
+				{
+					case "437": charConverter = To437; break;
+					case "7bit": charConverter = To7Bit; break;
+					default: charConverter = (c => c); break;
+				}
 
-			ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+				ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
 #if ALLOW_CANDYTRON
-			if (IniFile.GetBool("misc", "candytron", false))
-			{
-				Program.Report("Setting up Candytron Mode...");
-				candytron = true;
+				if (IniFile.GetBool("misc", "candytron", false))
+				{
+					candytron = true;
 #if ALLOW_PNG_MODE
-				pngMode = false;
-				var emSize = 24;
-				var style = FontStyle.Bold;
-				var family = "Consolas";
+					pngMode = false;
+					var emSize = 24;
+					var style = FontStyle.Bold;
+					var family = "Consolas";
 #else
 				emSize = 24;
 				style = FontStyle.Bold;
 #endif
-				GlyphAdjustX = -5;
-				GlyphAdjustY = 0;
-				ClearType = false;
-				CellWidth = 18;
-				CellHeight = 37;
-				FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				WindowState = FormWindowState.Maximized;
-				Font = new Font(family, emSize, style);
-				if (Font.FontFamily.Name != family)
-					Font = new Font(FontFamily.GenericMonospace, emSize, style);
-				colorConverter = (c => c);
-				charConverter = (c => c);
-			}
+					GlyphAdjustX = -5;
+					GlyphAdjustY = 0;
+					ClearType = false;
+					CellWidth = 18;
+					CellHeight = 37;
+					FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+					WindowState = FormWindowState.Maximized;
+					Font = new Font(family, emSize, style);
+					if (Font.FontFamily.Name != family)
+						Font = new Font(FontFamily.GenericMonospace, emSize, style);
+					colorConverter = (c => c);
+					charConverter = (c => c);
+				}
 #endif
 
-			Show();
-			Refresh();
+				Show();
+				Refresh();
 
-			Program.Report("Preparing render buffers...");
-			backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-			scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-			Program.Report("Creating NoxicoGame instance...");
-			Noxico = new NoxicoGame(this);
+				backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
+				scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
+				Noxico = new NoxicoGame(this);
 
-			Program.Report("Setting up events...");
-			MouseUp += (x, y) =>
-			{
-				var tx = y.X / (CellWidth);
-				var ty = y.Y / (CellHeight);
+				MouseUp += (x, y) =>
+				{
+					var tx = y.X / (CellWidth);
+					var ty = y.Y / (CellHeight);
 #if ALLOW_CANDYTRON
-				if (candytron)
-				{
-					//TODO: Make coordinates work in Candytron mode
-					return;
-				}
+					if (candytron)
+					{
+						//TODO: Make coordinates work in Candytron mode
+						return;
+					}
 #endif
-				if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
-					return; 
-				if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
-					Noxico.Player.AutoTravelTo(tx, ty);
-				else if (NoxicoGame.Mode == UserMode.LookAt)
-				{
-					if (y.Button == System.Windows.Forms.MouseButtons.Left)
+					if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
+						return;
+					if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
+						Noxico.Player.AutoTravelTo(tx, ty);
+					else if (NoxicoGame.Mode == UserMode.LookAt)
 					{
-						NoxicoGame.Cursor.XPosition = tx;
-						NoxicoGame.Cursor.YPosition = ty;
-						NoxicoGame.Cursor.Point();
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-					}
-					else if (y.Button == System.Windows.Forms.MouseButtons.Right)
-					{
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
-					}
-				}
-				else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
-				{
-					var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
-					if (target != null)
-					{
-						Subscreens.UsingMouse = true;
-						if (target is BoardChar)
-							TextScroller.LookAt((BoardChar)target);
-						else if (target is Clutter)
+						if (y.Button == System.Windows.Forms.MouseButtons.Left)
 						{
-							var text = ((Clutter)target).Description;
-							text = text.Trim();
-							if (text == "")
-								return;
-							//var lines = text.Split('\n').Length;
-							MessageBox.Message(text, true);
-						}
-					}
-				}
-				else if (NoxicoGame.Mode == UserMode.Subscreen)
-				{
-					if (y.Button == System.Windows.Forms.MouseButtons.Left)
-					{
-						if (NoxicoGame.Subscreen == MessageBox.Handler)
-						{
+							NoxicoGame.Cursor.XPosition = tx;
+							NoxicoGame.Cursor.YPosition = ty;
+							NoxicoGame.Cursor.Point();
 							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-							return;
 						}
-						Subscreens.MouseX = tx;
-						Subscreens.MouseY = ty;
-						Subscreens.Mouse = true;
+						else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+						{
+							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
+						}
 					}
-					else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+					else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
 					{
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
+						var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
+						if (target != null)
+						{
+							Subscreens.UsingMouse = true;
+							if (target is BoardChar)
+								TextScroller.LookAt((BoardChar)target);
+							else if (target is Clutter)
+							{
+								var text = ((Clutter)target).Description;
+								text = text.Trim();
+								if (text == "")
+									return;
+								//var lines = text.Split('\n').Length;
+								MessageBox.Message(text, true);
+							}
+						}
 					}
-				}
-			};
-			MouseWheel += (x, y) =>
-			{
-				if (NoxicoGame.Mode == UserMode.Subscreen)
+					else if (NoxicoGame.Mode == UserMode.Subscreen)
+					{
+						if (y.Button == System.Windows.Forms.MouseButtons.Left)
+						{
+							if (NoxicoGame.Subscreen == MessageBox.Handler)
+							{
+								NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
+								return;
+							}
+							Subscreens.MouseX = tx;
+							Subscreens.MouseY = ty;
+							Subscreens.Mouse = true;
+						}
+						else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+						{
+							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
+						}
+					}
+				};
+				MouseWheel += (x, y) =>
 				{
-					if (y.Delta < 0)
+					if (NoxicoGame.Mode == UserMode.Subscreen)
 					{
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollDown]] = true;
-						NoxicoGame.ScrollWheeled = true;
+						if (y.Delta < 0)
+						{
+							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollDown]] = true;
+							NoxicoGame.ScrollWheeled = true;
+						}
+						else if (y.Delta > 0)
+						{
+							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollUp]] = true;
+							NoxicoGame.ScrollWheeled = true;
+						}
 					}
-					else if (y.Delta > 0)
-					{
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollUp]] = true;
-						NoxicoGame.ScrollWheeled = true;
-					}
+				};
+				FormClosed += (x, y) =>
+				{
+					Introduction.KillWorldgen();
+				};
+
+				Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
+				Console.WriteLine(Environment.OSVersion);
+				if (Environment.OSVersion.Platform == PlatformID.Unix)
+				{
+					Console.WriteLine("*** You are running on a *nix system. ***");
+					Console.WriteLine("Key repeat delays exaggerated.");
+					NoxicoGame.Mono = true;
 				}
-			};
-			FormClosed += (x, y) =>
-			{
-				Introduction.KillWorldgen();
-			};
 
-			Program.Report("Checking for Mono...");
-			Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
-			Console.WriteLine(Environment.OSVersion);
-			if (Environment.OSVersion.Platform == PlatformID.Unix)
-			{
-				Console.WriteLine("*** You are running on a *nix system. ***");
-				Console.WriteLine("Key repeat delays exaggerated.");
-				NoxicoGame.Mono = true;
-			}
+				Achievements.ProfilePath = "";
+				if (!portable)
+					GamerServices.Profile.Prepare();
+				GamerServices.Profile.AskForOnline = IniFile.GetBool("profile", "askforonline", true);
+				GamerServices.Profile.UseOnline = IniFile.GetBool("profile", "useonline", true);
+				Achievements.Setup();
 
-			Program.Report("Setting up achievements");
-			Achievements.ProfilePath = "";
-			if (!portable)
-				GamerServices.Profile.Prepare();
-			GamerServices.Profile.AskForOnline = IniFile.GetBool("profile", "askforonline", true);
-			GamerServices.Profile.UseOnline = IniFile.GetBool("profile", "useonline", true);
-			Achievements.Setup();
-
-			this.Controls.Clear();
-			starting = false;
-			Program.Report("Starting game loop...");
-			var fatal = false;
-			try
-			{
+				this.Controls.Clear();
+				starting = false;
 				while (Running)
 				{
 					Noxico.Update();
@@ -392,12 +366,10 @@ namespace Noxico
 			}
 			if (!fatal)
 			{
-				Program.Report("Saving for exit.");
 				Noxico.SaveGame();
-				Program.Report("Saving profile");
 				Achievements.SaveProfile(true);
 			}
-        }
+		}
 
 
 #if ALLOW_PNG_MODE
