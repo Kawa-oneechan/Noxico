@@ -373,7 +373,8 @@ namespace Noxico
 			this.Controls.Clear();
 			starting = false;
 			Program.Report("Starting game loop...");
-			//try
+			var fatal = false;
+			try
 			{
 				while (Running)
 				{
@@ -381,15 +382,21 @@ namespace Noxico
 					Application.DoEvents();
 				}
 			}
-			//catch (Exception x)
+			catch (Exception x)
 			{
-			//	System.Windows.Forms.MessageBox.Show(this, x.ToString() + Environment.NewLine + Environment.NewLine + x.Message, Application.ProductName, MessageBoxButtons.OK);
-			//	Running = false;
+				new ErrorForm(x).ShowDialog(this);
+				//System.Windows.Forms.MessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
+				Running = false;
+				fatal = true;
+				Application.ExitThread();
 			}
-			Program.Report("Saving for exit.");
-			Noxico.SaveGame();
-			Program.Report("Saving profile");
-			Achievements.SaveProfile(true);
+			if (!fatal)
+			{
+				Program.Report("Saving for exit.");
+				Noxico.SaveGame();
+				Program.Report("Saving profile");
+				Achievements.SaveProfile(true);
+			}
         }
 
 

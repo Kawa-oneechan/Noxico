@@ -33,4 +33,24 @@ namespace Noxico
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
 		}
 	}
+
+	public enum ForJSUsage
+	{
+		Only,
+		Never,
+		Either,
+	}
+
+	public class ForJSAttribute : Attribute
+	{
+		public ForJSUsage Usage { get; private set; }
+		public ForJSAttribute()
+		{
+			Usage = ForJSUsage.Either;
+		}
+		public ForJSAttribute(ForJSUsage usage)
+		{
+			Usage = usage;
+		}
+	}
 }

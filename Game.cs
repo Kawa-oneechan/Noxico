@@ -49,8 +49,6 @@ namespace Noxico
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
 		public static List<StatusMessage> Messages { get; set; }
-		[Obsolete("Dropped in favor of Jint.", true)]
-		public static Dictionary<string, double> ScriptVariables = new Dictionary<string, double>();
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }

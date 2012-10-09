@@ -111,6 +111,12 @@
     <Compile Include="Dijkstra.cs" />
     <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Entities.cs" />
+    <Compile Include="ErrorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorForm.Designer.cs">
+      <DependentUpon>ErrorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="fmod\fmod.cs" />
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
