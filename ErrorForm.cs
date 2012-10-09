@@ -45,7 +45,7 @@ namespace Noxico
 			}
 			else if (textBox1.Text.Contains("Player.LoadFromFile"))
 			{
-					label3.Text = "The problem is a corrupted player state." + Environment.NewLine + Environment.NewLine + "It's too bad we can't tell which world's player data it is, so the best we can suggest is that you delete (or rename) each world's player.bin file until you can proceed. You'll need to start over, though.";
+				label3.Text = "The problem is a corrupted player state." + Environment.NewLine + Environment.NewLine + "It's too bad we can't tell which world's player data it is, so the best we can suggest is that you delete (or rename) each world's player.bin file until you can proceed. You'll need to start over, though.";
 			}
 			else if (typeName == "EndOfStreamException")
 			{
@@ -74,6 +74,8 @@ namespace Noxico
 				else
 					label3.Text = "An XML file somewhere has gone wrong. This is one point where posting the exception data would be helpful.";
 			}
+			else if (typeName == "ArgumentException" && textBox1.Text.Contains("System.Drawing.Bitmap..ctor"))
+				label3.Text = "The problem is a bitmap that is not actually a bitmap." + Environment.NewLine + Environment.NewLine + "Noxico only uses PNG files, but can load BMP, GIF, and JPEG as well. If an image is requested, but the file is not actually an image of one of those types, or not even an image at all, things break.";
 			else
 			{
 				tabControl1.TabPages.RemoveAt(1);
