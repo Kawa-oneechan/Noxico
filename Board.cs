@@ -380,6 +380,9 @@ namespace Noxico
 
 				newBoard.BindEntities();
 
+				foreach (var e in newBoard.Entities.OfType<BoardChar>())
+					e.RunScript(e.OnLoad);
+
 				//DEBUG: place torch next to top left corners.
 				/*
 				for (int row = 0; row < 25; row++)
@@ -1449,7 +1452,7 @@ namespace Noxico
 				this.EntitiesToRemove.Add(c);
 		}
 	
-		//for JS use
+		[ForJS]
 		public BoardChar PickBoardChar(Gender gender)
 		{
 			Func<BoardChar, bool> isOkay = (x) => { return true; };
@@ -1470,7 +1473,7 @@ namespace Noxico
 			return choice;
 		}
 
-		//for JS use
+		[ForJS]
 		public List<Entity> GetEntitiesWith(string ending, bool includeBoardChars)
 		{
 			var ret = new List<Entity>();

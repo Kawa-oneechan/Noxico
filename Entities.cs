@@ -29,7 +29,7 @@ namespace Noxico
         }
     }
 
-    public partial class Entity
+    public class Entity
     {
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
@@ -42,14 +42,8 @@ namespace Noxico
 		public bool Blocking { get; set; }
 		public bool Passive { get; set; }
 
-		public string[] Script { get; set; }
-		public int ScriptPointer { get; set; }
-		public bool ScriptRunning { get; set; }
-		public int ScriptDelay { get; set; }
-
 		public Entity()
 		{
-			Script = new string[0];
 			ID = "[null]";
 		}
 
@@ -134,12 +128,6 @@ namespace Noxico
 			stream.Write((byte)YPosition);
 			stream.Write((byte)Flow);
 			stream.Write(Blocking);
-			stream.Write(ScriptPointer);
-			stream.Write(ScriptRunning);
-			stream.Write((Int16)ScriptDelay);
-			stream.Write((Int16)Script.Length);
-			foreach (var line in Script)
-				stream.Write(line);
 		}
 
 		public static Entity LoadFromFile(BinaryReader stream)
@@ -153,13 +141,6 @@ namespace Noxico
 			newEntity.YPosition = stream.ReadByte();
 			newEntity.Flow = (Direction)stream.ReadByte();
 			newEntity.Blocking = stream.ReadBoolean();
-			newEntity.ScriptPointer = stream.ReadInt32();
-			newEntity.ScriptRunning = stream.ReadBoolean();
-			newEntity.ScriptDelay = stream.ReadInt16();
-			var numLines = stream.ReadInt16();
-			newEntity.Script = new string[numLines];
-			for (int i = 0; i < numLines; i++)
-				newEntity.Script[i] = stream.ReadString();
 			//Console.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
 			return newEntity;
 		}
@@ -178,30 +159,6 @@ namespace Noxico
 					return false;
 			return true;
 		}
-
-		public void LoadScript(string script)
-		{
-			this.Script = script.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-			this.ScriptPointer = 0;
-			//this.ScriptRunning = true;
-		}
-
-		public void CallScript(string label)
-		{
-			if (this.Script == null || this.Script.Length == 0)
-				return;
-			for (var i = 0; i < this.Script.Length; i++)
-			{
-				if (this.Script[i] == label + ":")
-				{
-					this.ScriptPointer = i;
-					this.ScriptRunning = true;
-					return;
-				}
-			}
-		}
-
-		partial void RunCycle();
 	}
 
 	public class Cursor : Entity
@@ -523,6 +480,18 @@ namespace Noxico
 		private Dijkstra dijkstraBed;
 		public Character Character { get; set; }
 
+		public string OnTick { get; set; }
+		public string OnLoad { get; set; }
+		public string OnPlayerBump { get; set; }
+		public string OnHurt { get; set; }
+		public string OnPathFinish { get; set; }
+		public bool ScriptPathing { get; set; }
+		public Dijkstra ScriptPathTarget { get; private set; }
+		public int ScriptPathTargetX { get; private set; }
+		public int ScriptPathTargetY { get; private set; }
+		public string ScriptPathID { get; set; }
+		private Jint.JintEngine js;
+
 		public BoardChar()
 		{
 			this.AsciiChar = (char)255;
@@ -568,7 +537,7 @@ namespace Noxico
 			var canMove = base.CanMove(targetDirection);
 			if (canMove != null && canMove is bool && !(bool)canMove)
 				return canMove;
-			if (Movement == Motor.WanderSector)
+			if (Movement == Motor.WanderSector && !ScriptPathing)
 			{
 				if (!ParentBoard.Sectors.ContainsKey(Sector))
 					return canMove;
@@ -687,6 +656,8 @@ namespace Noxico
 					return;
 			}
 
+			RunScript(OnTick);
+
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 			{
 				if (Character.HasToken("goingtosleep"))
@@ -771,11 +742,23 @@ namespace Noxico
 			else if (MoveSpeed > 0)
 				MoveTimer++;
 
-			if (ScriptRunning)
-				return;
-
 			if (MoveTimer == 0)
 			{
+				if (ScriptPathing)
+				{
+					var dir = Direction.North;
+					ScriptPathTarget.Ignore = DijkstraIgnores.Type;
+					ScriptPathTarget.IgnoreType = typeof(BoardChar);
+					if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
+						Move(dir);
+					if (this.XPosition == ScriptPathTargetX && this.YPosition == ScriptPathTargetY)
+					{
+						ScriptPathing = false;
+						RunScript(OnPathFinish);
+					}
+					return;
+				}
+
 				switch (Movement)
 				{
 					default:
@@ -801,7 +784,6 @@ namespace Noxico
 				if (!CanSee(player))
 					return;
 				NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MSG Alert -- would normally be done in Noxicobotic, I guess...
-				CallScript("alert");
 				MoveSpeed = 0;
 				Movement = Motor.Hunt;
 			}
@@ -957,6 +939,7 @@ namespace Noxico
 
 		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
 		{
+			RunScript(OnHurt, "damage", damage);
 			var health = Character.GetToken("health").Value;
 			if (health - damage <= 0)
 			{
@@ -1021,15 +1004,11 @@ namespace Noxico
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
-			/*
-			stream.Write(OnPathfinder);
-			if (OnPathfinder)
-			{
-				stream.Write((Int16)Path.Count);
-				foreach (var step in Path)
-					stream.Write((byte)step);
-			}
-			*/
+			stream.Write(OnTick ?? "");
+			stream.Write(OnLoad ?? "");
+			stream.Write(OnPlayerBump ?? "");
+			stream.Write(OnHurt ?? "");
+			stream.Write(OnPathFinish ?? "");
 			Character.SaveToFile(stream);
 		}
 
@@ -1040,22 +1019,17 @@ namespace Noxico
 			{
 				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
-				Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptDelay = e.ScriptDelay,
-			}; 
+			};
 			newChar.Movement = (Motor)stream.ReadByte();
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
-			/*
-			newChar.OnPathfinder = stream.ReadBoolean();
-			if (newChar.OnPathfinder)
-			{
-				newChar.Path = new List<Direction>();
-				var steps = stream.ReadInt16();
-				for (var i = 0; i < steps; i++)
-					newChar.Path.Add((Direction)stream.ReadByte());
-			}
-			*/
+			newChar.OnTick = stream.ReadString();
+			newChar.OnLoad = stream.ReadString();
+			newChar.OnPlayerBump = stream.ReadString();
+			newChar.OnHurt = stream.ReadString();
+			newChar.OnPathFinish = stream.ReadString();
+			//No need to load scriptpath state -- OnLoad will handle that.
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			return newChar;
@@ -1070,6 +1044,109 @@ namespace Noxico
 				thing.ID = thing.ID.Replace(oldID, newID);
 				thing.Description = thing.Description.Replace(oldName.ToString(true), this.Character.Name.ToString(true));
 				thing.Description = thing.Description.Replace(oldName.ToString(), this.Character.Name.ToString());
+			}
+		}
+
+		public void RunScript(string script, string extraParm = "", float extraVal = 0)
+		{
+			if (string.IsNullOrWhiteSpace(script))
+				return;
+			if (js == null)
+				js = Javascript.Create();
+			Javascript.Ascertain(js, true);
+			js.SetParameter("this", this);
+			js.SetParameter("target", ScriptPathID);
+			if (extraParm != "")
+				js.SetParameter(extraParm, extraVal);
+			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
+			js.SetFunction("message", new Action<string>(x =>
+			{
+				var paused = true;
+				MessageBox.ScriptPauseHandler = () =>
+				{
+					paused = false;
+				};
+				MessageBox.Message(x, true, this.Character.Name.ToString(true));
+				while (paused)
+				{
+					NoxicoGame.HostForm.Noxico.Update();
+					System.Windows.Forms.Application.DoEvents();
+				}
+			}));
+			js.Run(script);
+		}
+
+		public void AssertJS()
+		{
+			var stack = new System.Diagnostics.StackTrace().GetFrames();
+			var isFromJint = false;
+			var shouldBeFromJint = false;
+			var caller = stack[1].GetMethod();
+			var callerAttributes = caller.GetCustomAttributes(false);
+			var forJS = callerAttributes.FirstOrDefault(x => x is ForJSAttribute) as ForJSAttribute;
+			if (forJS == null)
+				return;
+			if (forJS.Usage == ForJSUsage.Only)
+				shouldBeFromJint = true;
+			foreach (var frame in stack)
+			{
+				var m = frame.GetMethod();
+				if (m.Name == "jsWrapper")
+				{
+					isFromJint = true;
+					break;
+				}
+			}
+			if (isFromJint && !shouldBeFromJint)
+				throw new Exception("Tried to call " + caller.Name + " from Javascript, but is not allowed.");
+			else if (!isFromJint && shouldBeFromJint)
+				throw new Exception("Tried to call " + caller.Name + " from hard code, but is only meant for Javascript use.");
+		}
+
+		[ForJS(ForJSUsage.Only)]
+		public void MoveTo(int x, int y, string target)
+		{
+			AssertJS();
+
+			ScriptPathTarget = new Dijkstra();
+			ScriptPathTarget.Hotspots.Add(new Point(x, y));
+			ScriptPathTarget.UpdateWalls();
+			ScriptPathTarget.Update();
+			ScriptPathID = target;
+			ScriptPathTargetX = x;
+			ScriptPathTargetY = y;
+			ScriptPathing = true;
+		}
+
+		[ForJS]
+		public void AssignScripts(string id)
+		{
+			var xml = Mix.GetXMLDocument("uniques.xml");
+			var planSource = xml.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as System.Xml.XmlElement;
+			var scripts = planSource.SelectNodes("script").OfType<System.Xml.XmlElement>();
+			foreach (var script in scripts)
+			{
+				var target = script.GetAttribute("target").ToLowerInvariant();
+				switch (target)
+				{
+					case "tick":
+						OnTick = script.InnerText;
+						break;
+					case "load":
+						OnLoad = script.InnerText;
+						break;
+					case "bump":
+					case "playerbump":
+						OnPlayerBump = script.InnerText;
+						break;
+					case "hurt":
+						OnHurt = script.InnerText;
+						break;
+					case "path":
+					case "pathfinish":
+						OnPathFinish = script.InnerText;
+						break;
+				}
 			}
 		}
 	}
@@ -1255,9 +1332,9 @@ namespace Noxico
 							EndTurn();
 							return;
 						}
-						if (bc.Script.Contains("playerbump:"))
+						if (!string.IsNullOrWhiteSpace(bc.OnPlayerBump))
 						{
-							bc.CallScript("playerbump");
+							bc.RunScript(bc.OnPlayerBump);
 							return;
 						}
 						//Displace!
@@ -1266,8 +1343,6 @@ namespace Noxico
 						bc.YPosition = this.YPosition;
 					}
 				}
-				else
-					entity.CallScript("playerstep");
 			}
 			base.Move(targetDirection);
 
@@ -1725,7 +1800,6 @@ namespace Noxico
 				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 				Character = e.Character,
-				//Script = e.Script, ScriptPointer = e.ScriptPointer, ScriptRunning = e.ScriptRunning, ScriptWaitTime = e.ScriptWaitTime, //Don't transfer any script data that might be there. Why would it!?
 			};
 			newChar.CurrentRealm = stream.ReadString();
 			newChar.OnOverworld = stream.ReadBoolean();
