@@ -35,11 +35,9 @@ namespace Noxico
 				return;
 			Profile.GameName = "Noxico";
 
-			Program.Report("Registering achievements...");
 			Profile.RegisterAchievement("nethack", "It's Nethack All Over Again", "Die within five minutes.");
 			Profile.RegisterAchievement("yasd", "Yet Another Stupid Death", "Die within five minutes... for the 100th time.");
 
-			Program.Report("Hooking up events...");
 			Profile.OnAchievement += new Action<Achievement>(a =>
 			{
 				NoxicoGame.AddMessage("Achievement Get: " + a.Name);

@@ -28,7 +28,6 @@ namespace Noxico
 			var keys = NoxicoGame.KeyMap;
 			if (Subscreens.FirstDraw)
 			{
-				Program.Report("Drawing title screen...");
 				Subscreens.FirstDraw = false;
 				host.Clear();
 				host.LoadBitmap(Mix.GetBitmap("title.png"));
@@ -53,7 +52,6 @@ namespace Noxico
 				Subscreens.FirstDraw = true;
 				var rawSaves = Directory.GetDirectories(NoxicoGame.SavePath);
 				var saves = new List<string>();
-				Program.Report("Enumerating savegames...");
 				foreach (var s in rawSaves)
 				{
 					if (File.Exists(Path.Combine(s, "Nox", "world.bin")))
@@ -63,7 +61,6 @@ namespace Noxico
 				//{
 				keys[(int)Keys.Enter] = false;
 				Subscreens.Mouse = false;
-				Program.Report("Creating savegame list...");
 				var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
 				{
 					string p;
@@ -108,7 +105,6 @@ namespace Noxico
 							var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 							if (!File.Exists(playerFile))
 							{
-								Program.Report("Restarting game...");
 								NoxicoGame.Mode = UserMode.Subscreen;
 								NoxicoGame.Subscreen = Introduction.CharacterCreator;
 								restarting = true;
@@ -116,7 +112,6 @@ namespace Noxico
 							}
 							else
 							{
-								Program.Report("Resuming game...");
 								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 								Subscreens.FirstDraw = true;
 								NoxicoGame.Immediate = true;
@@ -171,7 +166,6 @@ namespace Noxico
 			var ti = CultureInfo.InvariantCulture.TextInfo;
 			var ret = new List<PlayableRace>();
 			//var xDoc = new XmlDocument();
-			Program.Report("Collecting playables...");
 			Console.WriteLine("Collecting playables...");
 			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
 			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
@@ -318,7 +312,6 @@ namespace Noxico
 		{
 			if (Subscreens.FirstDraw)
 			{
-				Program.Report("Drawing character creation screen. This part should be pretty solid so no more messages about this will appear.");
 				var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
 				//var traitsDoc = new XmlDocument();
 				//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));

@@ -78,7 +78,7 @@ namespace Noxico
 			if (File.Exists(Path.Combine("data", filename)))
 				return new MemoryStream(File.ReadAllBytes(Path.Combine("data", filename)));
 			if (!fileList.ContainsKey(filename))
-				return null;
+				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
 			MemoryStream ret;
 			var entry = fileList[filename];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
@@ -100,7 +100,7 @@ namespace Noxico
 			if (File.Exists(Path.Combine("data", filename)))
 				return File.ReadAllText(Path.Combine("data", filename));
 			if (!fileList.ContainsKey(filename))
-				return null;
+				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
 			var bytes = GetBytes(filename);
 			var ret = Encoding.UTF8.GetString(bytes);
 			return ret;
@@ -118,7 +118,7 @@ namespace Noxico
 			{
 				var s = GetString(filename);
 				if (s == null)
-					return null;
+					throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
 				x.LoadXml(s);
 				return x;
 			}
@@ -175,7 +175,7 @@ namespace Noxico
 			if (File.Exists(Path.Combine("data", filename)))
 				return new Bitmap(Path.Combine("data", filename));
 			if (!fileList.ContainsKey(filename))
-				return null;
+				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
 			Bitmap ret;
 			var entry = fileList[filename];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
@@ -200,7 +200,7 @@ namespace Noxico
 			if (File.Exists(Path.Combine("data", filename)))
 				return File.ReadAllBytes(Path.Combine("data", filename));
 			if (!fileList.ContainsKey(filename))
-				return null;
+				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
 			byte[] ret;
 			var entry = fileList[filename];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
