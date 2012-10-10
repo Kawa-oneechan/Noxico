@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Noxico
@@ -24,7 +25,28 @@ namespace Noxico
 			sb.AppendLine("Main message: " + x.Message);
 			sb.AppendLine();
 			sb.AppendLine("Stack trace:");
-			sb.AppendLine(x.StackTrace);
+			var trace = x.StackTrace;
+
+			var tokenLoad = new Regex(@"(?:.*)Noxico.Token.LoadFromFile(?:.*)", RegexOptions.Multiline);
+			if (tokenLoad.IsMatch(trace))
+			{
+				var matches = tokenLoad.Matches(trace);
+				if (matches.Count > 2)
+				{
+					var a = trace.Remove(matches[1].Index);
+					var b = trace.Substring(matches[matches.Count - 1].Index + matches[matches.Count - 1].Length);
+					trace = a + "(lots of Token.LoadFromFile calls removed for clarity)" + b;
+				}
+			}
+			var formsLoad = new Regex(@"(?:.*)System.Windows.Forms(?:.*)", RegexOptions.Multiline);
+			if (formsLoad.IsMatch(trace))
+			{
+				var matches = formsLoad.Matches(trace);
+				if (matches.Count > 1)
+					trace = trace.Remove(matches[1].Index) + "(WinForms stuff removed for clarity)";
+			}
+
+			sb.AppendLine(trace);
 			sb.AppendLine();
 			sb.AppendLine("Background info:");
 			sb.AppendLine(Application.ProductName + " " + Application.ProductVersion);
@@ -50,9 +72,9 @@ namespace Noxico
 			else if (typeName == "EndOfStreamException")
 			{
 				if (textBox1.Text.Contains("NoxicoGame.LoadGame"))
-					label3.Text = "The problem is a corrupted world state." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
+					label3.Text = "The problem is a corrupted world state, or maybe the savegame is from an older version that's missing new data." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
 				else if (textBox1.Text.Contains("Board.LoadFromFile"))
-					label3.Text = "The problem is a corrupted board state." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
+					label3.Text = "The problem is a corrupted board state, or maybe the savegame is from an older version that's missing new data." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
 				else
 					label3.Text = "Something is missing a piece of data, but that's all we know. This is one point where posting the exception data would be helpful.";
 			}
