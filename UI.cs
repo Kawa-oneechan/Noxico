@@ -350,7 +350,7 @@ namespace Noxico
 
 		public void DoKey(Keys key, bool shift)
 		{
-			if (key == Keys.Escape) //really Backspace
+			if (key == Keys.Back)
 			{
 				if (Text.Length > 0 && caret > 0)
 				{
