@@ -626,6 +626,19 @@ namespace Noxico
 			if (Character.GetToken("health").Value <= 0)
 				return;
 
+			if (NoxicoGame.HostForm.Noxico.Player.Character.HasToken("haste") && !(this is Player))
+			{
+				if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("haste").Value == 1)
+					return; //skip a turn
+			}
+			if (this.Character.HasToken("slow"))
+			{
+				var slow = this.Character.GetToken("slow");
+				slow.Value = (int)slow.Value ^ 1;
+				if (slow.Value == 1)
+					return; //skip a turn
+			}
+
 			if (Character.HasToken("helpless"))
 			{
 				if (Toolkit.Rand.NextDouble() < 0.05)
@@ -742,6 +755,15 @@ namespace Noxico
 			else if (MoveSpeed > 0)
 				MoveTimer++;
 
+			ActuallyMove();
+			if (Character.HasToken("haste"))
+			{
+					ActuallyMove();
+			}
+		}
+
+		private void ActuallyMove()
+		{
 			if (MoveTimer == 0)
 			{
 				if (ScriptPathing)
@@ -1320,6 +1342,15 @@ namespace Noxico
 			base.Move(targetDirection);
 
 			EndTurn();
+			if (this.Character.HasToken("slow"))
+				EndTurn();
+
+			if (this.Character.HasToken("haste"))
+			{
+				var haste = this.Character.GetToken("haste");
+				haste.Value = (int)haste.Value ^ 1;
+			}
+
 			NoxicoGame.Sound.PlaySound(Character.HasToken("squishy") || Character.Path("skin/type/slime") != null ? "Splorch" : "Step");
 
 			if (lx != XPosition || ly != YPosition)
@@ -1409,6 +1440,31 @@ namespace Noxico
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
+			/*
+			if (NoxicoGame.KeyMap[(int)Keys.D])
+			{
+				NoxicoGame.ClearKeys();
+				var options = new Dictionary<object, string>()
+				{
+					{ "slow", "Slow" },
+					{ "haste", "Hastened" },
+					{ "normal", "Normal" },
+				};
+				MessageBox.List("What speed do you want to have?", options, () =>
+					{
+						Subscreens.PreviousScreen.Clear();
+						var target = this; //this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.ID == "Nori_Sakamoto");
+						target.Character.RemoveToken("slow");
+						target.Character.RemoveToken("haste");
+						if ((string)MessageBox.Answer == "slow")
+							target.Character.AddToken("slow");
+						else if ((string)MessageBox.Answer == "haste")
+							target.Character.AddToken("haste");
+					}, false, true, "Debug Mode!");
+				return;
+			}
+			*/
+
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{
@@ -1438,7 +1494,9 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Rest)) //(NoxicoGame.KeyMap[(int)Keys.OemPeriod] && !NoxicoGame.Modifiers[0])
 			{
 				NoxicoGame.ClearKeys();
-				EndTurn();
+				if (this.Character.HasToken("haste"))
+					this.Character.GetToken("haste").Value = 0;
+					EndTurn();
 				return;
 			}
 
@@ -1676,11 +1734,14 @@ namespace Noxico
 
 			var five = new TimeSpan(0,0,5);
 			PlayingTime = PlayingTime.Add(five);
-			var wasNight = Toolkit.IsNight();
-			NoxicoGame.InGameTime.Add(five);
-			ParentBoard.UpdateLightmap(this, true);
-			if (wasNight == !Toolkit.IsNight())
-				ParentBoard.Redraw();
+			if (!(this.Character.HasToken("haste") && this.Character.GetToken("haste").Value == 0))
+			{
+				var wasNight = Toolkit.IsNight();
+				NoxicoGame.InGameTime.Add(five);
+				ParentBoard.UpdateLightmap(this, true);
+				if (wasNight == !Toolkit.IsNight())
+					ParentBoard.Redraw();
+			}
 
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
