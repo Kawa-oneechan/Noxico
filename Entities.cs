@@ -155,7 +155,7 @@ namespace Noxico
 		public virtual bool CanSee(Entity other)
 		{
 			foreach (var point in Toolkit.Line(XPosition, YPosition, other.XPosition, other.YPosition))
-				if (ParentBoard.IsSolid(point.Y, point.X) && ParentBoard.IsLit(point.Y, point.X))
+				if ((ParentBoard.IsSolid(point.Y, point.X) && !ParentBoard.IsWater(point.Y, point.X)) && ParentBoard.IsLit(point.Y, point.X))
 					return false;
 			return true;
 		}
@@ -325,7 +325,7 @@ namespace Noxico
 						var token = ((DroppedItem)PointingAt).Token;
 						if (Intent == Intents.Look)
 						{
-							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString() + ".";
+							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString(token) + ".";
 							text = text.Trim();
 							var lines = text.Split('\n').Length;
 							MessageBox.Message(text, true);
@@ -1402,7 +1402,7 @@ namespace Noxico
 				if (hit != null)
 				{
 					Console.WriteLine("You hit {0}.", hit.Character.Name.ToString());
-					hit.Hurt(damage, "shot down by a player who somehow got QuickFire() to work", this, false);
+					hit.Hurt(damage, "being shot down by a player who somehow got QuickFire() to work", this, false);
 					return true;
 				}
 				return false;
@@ -1544,7 +1544,7 @@ namespace Noxico
 				var weapon = Character.CanShoot();
 				if (weapon == null)
 				{
-					NoxicoGame.AddMessage("You are not wielding a throwing weapon or firearm.");
+					NoxicoGame.AddMessage("You are not wielding a throwing weapon or loaded firearm.");
 					return;
 				}
 				NoxicoGame.AddMessage("[Shoot message]");
@@ -1843,11 +1843,53 @@ namespace Noxico
 			return newChar;
 		}
 
-		public void AimShot(Entity PointingAt)
+		public void AimShot(Entity target)
 		{
 			//TODO: throw whatever is being held by the player at the target, according to their Throwing skill and the total distance.
 			//If it's a gun they're holding, fire it instead, according to their Shooting skill.
-			MessageBox.Message("Can't shoot yet, sorry.", true);
+			//MessageBox.Message("Can't shoot yet, sorry.", true);
+
+			if (target is Player)
+			{
+				MessageBox.Message("Dont shoot yourself in the foot!", true);
+				return;
+			}
+
+			var weap = Character.CanShoot().GetToken("weapon");
+			var skill = weap.GetToken("skill");
+			if (new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(skill.Text))
+			{
+				if (weap.HasToken("ammo"))
+				{
+					var ammoName = weap.GetToken("ammo").Text;
+					var carriedAmmo = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == ammoName);
+					if (carriedAmmo == null)
+						return;
+					var knownAmmo = NoxicoGame.KnownItems.Find(ki => ki.ID == ammoName);
+					if (knownAmmo == null)
+						return;
+					knownAmmo.Consume(Character, carriedAmmo);
+				}
+			}
+			else
+			{
+				MessageBox.Message("Can't throw yet, sorry.", true);
+				return;
+			}
+			var aimSuccess = true; //TODO: make this skill-relevant.
+			if (aimSuccess)
+			{
+				var damage = weap.Path("damage").Value;
+				if (target is BoardChar)
+				{
+					var hit = target as BoardChar;
+					Console.WriteLine("You hit {0}.", hit.Character.Name.ToString());
+					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+				}
+			}
+
+			NoxicoGame.Mode = UserMode.Walkabout;
+			EndTurn();
 		}
 	}
 
@@ -1940,14 +1982,16 @@ namespace Noxico
 			}
 		}
 
-		public DroppedItem(string item) : this(NoxicoGame.KnownItems.First(i => i.ID == item))
+		public DroppedItem(string item) : this(NoxicoGame.KnownItems.First(i => i.ID == item), null)
 		{
 		}
 
-		public DroppedItem(InventoryItem item)
+		public DroppedItem(InventoryItem item, Token carriedItem)
 		{
 			Item = item;
 			Token = new Token() { Name = item.ID };
+			if (carriedItem != null)
+				Token.AddSet(carriedItem.Tokens);
 
 			this.AsciiChar = '?';
 			this.ForegroundColor = Color.Silver;

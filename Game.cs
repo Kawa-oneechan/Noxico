@@ -527,6 +527,7 @@ namespace Noxico
 			{
 				if (Mode == UserMode.Walkabout)
 				{
+					Subscreens.PreviousScreen.Clear();
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;
 					if ((timeNow - lastUpdate).Milliseconds >= Speed)

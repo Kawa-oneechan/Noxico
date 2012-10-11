@@ -2900,8 +2900,22 @@ namespace Noxico
 							//No skill to determine weapon type by? Assume it's not something you'd throw.
 							return null;
 						}
-						var yes = new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" };
-						return (yes.Contains(skill.Text)) ? find : null;
+						if (new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(skill.Text))
+						{
+							if (weap.HasToken("ammo"))
+							{
+								var ammoName = weap.GetToken("ammo").Text;
+								var carriedAmmo = this.GetToken("items").Tokens.Find(ci => ci.Name == ammoName);
+								if (carriedAmmo == null)
+									return null;
+								return find;
+							}
+							else
+							{
+								return find;
+							}
+						}
+						return null;
 					}
 				}
 			}
@@ -3056,6 +3070,21 @@ namespace Noxico
 				if (the && The != "")
 					return The + ' ' + name;
 				return name;
+			}
+			if (HasToken("charge") && token != null)
+			{
+				var charge = 0;
+				var limit = "inf";
+				if (GetToken("charge").HasToken("limit"))
+					limit = Path("charge/limit").Value.ToString();
+				if (token.HasToken("charge") && token.GetToken("charge").Value > 0)
+				{
+					charge = (int)token.GetToken("charge").Value;
+					var collective = Path("charge/collectivename");
+					if (collective != null)
+						name = collective.Text;
+				}
+				return string.Format("{0} {1} ({2}/{3})", the ? The : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
 			}
 			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a" ) : A), name).Trim();
 		}
@@ -3296,7 +3325,7 @@ namespace Noxico
 					break;
 				lives--;
 			}
-			var droppedItem = new DroppedItem(this)
+			var droppedItem = new DroppedItem(this, item)
 			{
 				XPosition = x,
 				YPosition = y,
@@ -3382,6 +3411,12 @@ namespace Noxico
 			}
 			#endregion
 
+			if (this.HasToken("ammo"))
+			{
+				MessageBox.Message("This is ammo. To use it, fire the weapon that requires this kind of munition.");
+				return;
+			}
+
 			if (this.HasToken("quest"))
 			{
 				if (this.HasToken("description"))
@@ -3435,7 +3470,7 @@ namespace Noxico
 				var js = Javascript.MainMachine;
 				Javascript.Ascertain(js, true);
 				js.SetParameter("user", character);
-				js.SetFunction("consume", new Action<string>(x => character.GetToken("items").Tokens.Remove(item)));
+				js.SetFunction("consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
 				js.SetFunction("message", new Action<string>(x =>
 				{
 					var paused = true;
@@ -3488,13 +3523,31 @@ namespace Noxico
 				}));
 				js.Run(this.Script);
 			}
+			else
+				this.Consume(character, item);
+			/*
 			else if(this.HasToken("singleuse"))
 			{
 				character.GetToken("items").Tokens.Remove(item);
 			}
+			*/
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
 				MessageBox.Message(runningDesc.Viewpoint(boardchar));
+		}
+
+		public void Consume(Character carrier, Token carriedItem)
+		{
+			if (this.HasToken("charge"))
+			{
+				var charge = carriedItem.Path("charge");
+				if (charge == null || charge.Value == 1)
+					carrier.GetToken("items").Tokens.Remove(carriedItem);
+				else
+					charge.Value--;
+			}
+			else
+				carrier.GetToken("items").Tokens.Remove(carriedItem);
 		}
 
 		public static List<Token> RollContainer(Character owner, string type)

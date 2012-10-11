@@ -23,6 +23,7 @@ namespace Noxico
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
 		{
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			itemList.Enabled = false;
 			chosen.Use(character, token);
 			Subscreens.Redraw = true;
 		}
@@ -31,6 +32,7 @@ namespace Noxico
 		{
 			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			itemList.Enabled = false;
 			if (token.HasToken("equipped"))
 				try
 				{
