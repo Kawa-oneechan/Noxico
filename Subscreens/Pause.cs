@@ -18,6 +18,7 @@ namespace Noxico
 			{ "Character stats", "dynamic page" },
 			{ "Skill levels", "dynamic page" },
 			{ "Important keys",
+				//TODO: make this page dynamic so remapped keys are shown correctly.
 @"<g2194> <g2195> - Move
 l / - Look
 i   - Inventory
@@ -132,6 +133,7 @@ f   - Attempt to have sex with someone
 
 			var statNames = Enum.GetNames(typeof(Stat));
 			player.RecalculateStatBonuses();
+			player.CheckHasteSlow();
 			foreach (var stat in statNames)
 			{
 				if (stat == "Health")
@@ -146,6 +148,13 @@ f   - Attempt to have sex with someone
 					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
 				sb.AppendLine(stat.PadRight(20) + total + bonus);
 			}
+
+			sb.Append("Modifiers".PadRight(20));
+			if (player.HasToken("haste"))
+				sb.Append("Haste ");
+			if (player.HasToken("slow"))
+				sb.Append("Slow  ");
+	
 			pages["Character stats"] = sb.ToString();
 
 			sb.Clear();

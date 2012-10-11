@@ -3011,6 +3011,42 @@ namespace Noxico
 			}
 			return null;
 		}
+
+		public void CheckHasteSlow()
+		{
+			var score = 0;
+			this.RemoveToken("slow");
+			this.RemoveToken("haste");
+
+			//inherent
+			if (this.Path("inherent/slow") != null)
+				score--;
+			else if (this.Path("inherent/haste") != null)
+				score++;
+
+			//item weight
+			
+			//body weight
+			
+			//equips
+			foreach (var carriedItem in this.GetToken("items").Tokens.Where(ci => ci.HasToken("equipped")))
+			{
+				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
+				if (knownItem == null)
+					continue;
+				if (knownItem.Path("equipable/slow") != null)
+					score--;
+				if (knownItem.Path("equipable/haste") != null)
+					score++;
+			}
+
+			//apply
+			if (score < 0)
+				this.AddToken("slow");
+			else if (score > 0)
+				this.AddToken("haste");
+
+		}
 	}
 
 	public class InventoryItem : TokenCarrier
@@ -3234,6 +3270,7 @@ namespace Noxico
 
 			item.Tokens.Add(new Token() { Name = "equipped" });
 			character.RecalculateStatBonuses();
+			character.CheckHasteSlow();
 
 			//Difficult bit: gotta re-equip tempremovals without removing the target item all over. THAT WOULD BE QUITE BAD.
 			return true;
@@ -3283,6 +3320,7 @@ namespace Noxico
 			//	tempRemove.Pop().Tokens.Add(new Token() { Name = "equipped" });
 
 			character.RecalculateStatBonuses();
+			character.CheckHasteSlow();
 			return true;
 		}
 
@@ -3334,6 +3372,7 @@ namespace Noxico
 			droppedItem.AdjustView();
 			droppedItem.ParentBoard.EntitiesToAdd.Add(droppedItem);
 			boardChar.Character.GetToken("items").Tokens.Remove(item);
+			boardChar.Character.CheckHasteSlow();
 		}
 
 		public void Use(Character character, Token item, bool noConfirm = false)
@@ -3417,7 +3456,7 @@ namespace Noxico
 				return;
 			}
 
-			if (this.HasToken("quest"))
+			if (this.HasToken("quest") || this.HasToken("nouse"))
 			{
 				if (this.HasToken("description"))
 					runningDesc = this.GetToken("description").Text + "\n\n";
@@ -3542,12 +3581,34 @@ namespace Noxico
 			{
 				var charge = carriedItem.Path("charge");
 				if (charge == null || charge.Value == 1)
-					carrier.GetToken("items").Tokens.Remove(carriedItem);
+				{
+					if (HasToken("revert"))
+					{
+						carriedItem.Name = GetToken("revert").Text;
+						carriedItem.Tokens.Clear();
+					}
+					else
+					{
+						carrier.GetToken("items").Tokens.Remove(carriedItem);
+						carrier.CheckHasteSlow();
+					}
+				}
 				else
 					charge.Value--;
 			}
 			else
-				carrier.GetToken("items").Tokens.Remove(carriedItem);
+			{
+				if (HasToken("revert"))
+				{
+					carriedItem.Name = GetToken("revert").Text;
+					carriedItem.Tokens.Clear();
+				}
+				else
+				{
+					carrier.GetToken("items").Tokens.Remove(carriedItem);
+					carrier.CheckHasteSlow();
+				}
+			}
 		}
 
 		public static List<Token> RollContainer(Character owner, string type)

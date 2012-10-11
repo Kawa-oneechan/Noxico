@@ -1388,12 +1388,26 @@ namespace Noxico
 			var weapon = Character.CanShoot();
 			if (weapon == null)
 				return; //Don't whine about it.
+
+			var weap = weapon.GetToken("weapon");
+			if (weap.HasToken("ammo"))
+			{
+				var ammoName = weap.GetToken("ammo").Text;
+				var carriedAmmo = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == ammoName);
+				if (carriedAmmo == null)
+					return;
+				var knownAmmo = NoxicoGame.KnownItems.Find(ki => ki.ID == ammoName);
+				if (knownAmmo == null)
+					return;
+				knownAmmo.Consume(Character, carriedAmmo);
+			}
+
 			var x = this.XPosition;
 			var y = this.YPosition;
 			var distance = 0;
 			var range = (int)weapon.Path("weapon/range").Value;
 			var damage = (int)weapon.Path("weapon/damage").Value;
-
+			var skill = weap.GetToken("skill").Text;
 			Func<int, int, bool> gotHit = (xPos, yPos) =>
 			{
 				if (this.ParentBoard.IsSolid(y, x, true))
@@ -1401,8 +1415,9 @@ namespace Noxico
 				var hit = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.XPosition == x && e.YPosition == y);
 				if (hit != null)
 				{
-					Console.WriteLine("You hit {0}.", hit.Character.Name.ToString());
-					hit.Hurt(damage, "being shot down by a player who somehow got QuickFire() to work", this, false);
+					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+					this.Character.IncreaseSkill(skill);
 					return true;
 				}
 				return false;
@@ -1883,9 +1898,10 @@ namespace Noxico
 				if (target is BoardChar)
 				{
 					var hit = target as BoardChar;
-					Console.WriteLine("You hit {0}.", hit.Character.Name.ToString());
+					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
 				}
+				this.Character.IncreaseSkill(skill.Text);
 			}
 
 			NoxicoGame.Mode = UserMode.Walkabout;
@@ -2061,6 +2077,7 @@ namespace Noxico
 				taker.Tokens.Add(new Noxico.Token() { Name = "items" });
 			taker.GetToken("items").Tokens.Add(Token);
 			ParentBoard.EntitiesToRemove.Add(this);
+			taker.CheckHasteSlow();
 		}
 	}
 
