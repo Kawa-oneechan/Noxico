@@ -923,6 +923,13 @@ namespace Noxico
 			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
 		}
 
+		public bool IsWater(int row, int col)
+		{
+			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+				return false;
+			return Tilemap[col, row].IsWater;
+		}
+
 		public bool IsLit(int row, int col)
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)

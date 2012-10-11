@@ -27,6 +27,7 @@ namespace Noxico
 		public int Height { get; set; }
 		public Color Foreground { get; set; }
 		public Color Background { get; set; }
+		public bool Enabled { get; set; }
 
 		public void DoEnter()
 		{
@@ -188,6 +189,7 @@ namespace Noxico
 			Height = 1;
 			Foreground = Color.Black;
 			Background = Color.Gray;
+			Enabled = true;
 		}
 
 		public override void Draw()
@@ -232,6 +234,7 @@ namespace Noxico
 			Width = 32;
 			Foreground = Color.Black;
 			Background = Color.White;
+			Enabled = true;
 		}
 
 		public UIList(string text, EventHandler enter, IEnumerable<string> items, int index = 0)
@@ -243,6 +246,7 @@ namespace Noxico
 			Width = 32;
 			Foreground = Color.Black;
 			Background = Color.White;
+			Enabled = true;
 		}
 
 		public override void Draw()
@@ -346,6 +350,7 @@ namespace Noxico
 			Height = 1;
 			Foreground = Color.Black;
 			Background = Color.White;
+			Enabled = true;
 		}
 
 		public void DoKey(Keys key, bool shift)
@@ -405,6 +410,7 @@ namespace Noxico
 			Height = 1;
 			Foreground = Color.Black;
 			Background = Color.White;
+			Enabled = true;
 		}
 
 		public override void Draw()
@@ -499,6 +505,7 @@ namespace Noxico
 			Height = 1;
 			Foreground = Color.Black;
 			Background = Color.Transparent;
+			Enabled = true;
 		}
 
 		public override bool TabStop
@@ -572,7 +579,7 @@ namespace Noxico
 			if (Subscreens.Mouse)
 			{
 				Subscreens.Mouse = false;
-				var item = Elements.FindLast(x => x.TabStop && !x.Hidden && Subscreens.MouseX >= x.Left && Subscreens.MouseY >= x.Top && Subscreens.MouseX < x.Left + x.Width && Subscreens.MouseY < x.Top + (x.Height == 0 ? 1 : x.Height));
+				var item = Elements.FindLast(x => x.TabStop && x.Enabled && !x.Hidden && Subscreens.MouseX >= x.Left && Subscreens.MouseY >= x.Top && Subscreens.MouseX < x.Left + x.Width && Subscreens.MouseY < x.Top + (x.Height == 0 ? 1 : x.Height));
 				if (item != null)
 				{
 					if (item != highlight)
@@ -601,6 +608,8 @@ namespace Noxico
 
 		public static void ProcessKey(Keys key, bool shift = false)
 		{
+			if (!highlight.Enabled)
+				return;
 			switch (key)
 			{
 				case Keys.Enter:
