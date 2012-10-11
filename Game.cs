@@ -433,6 +433,8 @@ namespace Noxico
 
 				if (!Player.Character.HasToken("player"))
 					Player.Character.Tokens.Add(new Token() { Name = "player", Value = (int)DateTime.Now.Ticks });
+				Player.Character.RecalculateStatBonuses();
+				Player.Character.CheckHasteSlow();
 				SaveGame();
 
 				Achievements.StartingTime = DateTime.Now;
@@ -863,14 +865,9 @@ namespace Noxico
 			};
 			this.CurrentBoard.Entities.Add(Player);
 
-			/*
-			this.CurrentBoard.Entities.Add(new LOSTester()
-			{
-				XPosition = 44,
-				YPosition = 12,
-				ParentBoard = this.CurrentBoard,
-			});
-			*/
+			Player.Character.RecalculateStatBonuses();
+			Player.Character.CheckHasteSlow();
+
 			InGame = true;
 			SaveGame();
 		}
