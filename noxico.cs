@@ -3205,6 +3205,8 @@ namespace Noxico
 				if (!carriedItem.HasToken("equipped"))
 					continue;
 				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
 				var equip = find.GetToken("equipable");
 				if (equip.HasToken(slot))
 					worn++;

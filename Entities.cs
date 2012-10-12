@@ -1011,6 +1011,9 @@ namespace Noxico
 				{
 					var itemToken = items.Tokens[0];
 					var knownItem = NoxicoGame.KnownItems.First(i => i.ID == itemToken.Name);
+					if (knownItem == null)
+						continue;
+					itemToken.RemoveToken("equipped");
 					knownItem.Drop(this, itemToken);
 				}
 			}

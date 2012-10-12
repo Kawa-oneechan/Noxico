@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -134,6 +134,8 @@ namespace Noxico
 						playerTexts.Add(itemString); 
 					}
 					var height2 = playerItems.Count;
+					if (height2 == 0)
+						height2 = 1;
 					if (height2 > 13)
 						height2 = 13;
 					if (indexRight >= playerItems.Count)
