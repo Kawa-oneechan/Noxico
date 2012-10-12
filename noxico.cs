@@ -1255,6 +1255,9 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 
+		public float Capacity { get; private set; }
+		public float Carried { get; private set; }
+
 		public string ID
 		{
 			get
@@ -3025,7 +3028,53 @@ namespace Noxico
 				score++;
 
 			//item weight
-			
+			var weightClasses = new Dictionary<string, float>()
+			{
+				{ "feather", 0.1f },
+ 				{ "light", 1 },
+				{ "medium", 2 },
+				{ "heavy", 4 },
+				{ "immense", 16 },
+			};
+			var strengthToCapacity = new Dictionary<int, int>()
+			{
+				{ 0, 1 }, //Boneless Chicken
+				{ 10, 4 }, //Picked Last at P.E.
+				{ 20, 8 }, //Average Joe
+				{ 40, 16 }, //Heavy Delivery
+				{ 60, 32 }, //Bench Press a Bunch
+				{ 80, 56 }, //Olympic God
+				{ 100, 64 }, //Demigod
+			};
+			var strength = GetStat(Stat.Strength);
+			var capacity = 0;
+			foreach (var s2c in strengthToCapacity)
+			{
+				capacity = s2c.Value;
+				if (s2c.Key > strength)
+					break;
+			}
+			Capacity = capacity;
+			var totalWeight = 0f;
+			foreach (var carriedItem in this.GetToken("items").Tokens)
+			{
+				var itemWeight = 1.0f; //assume Light
+				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
+				if (knownItem != null && knownItem.HasToken("weight"))
+				{
+					var weightToken = knownItem.GetToken("weight");
+					if (string.IsNullOrWhiteSpace(weightToken.Text))
+						itemWeight = weightToken.Value;
+					else if (weightClasses.ContainsKey(weightToken.Text))
+						itemWeight = weightClasses[weightToken.Text];
+				}
+				totalWeight += itemWeight;
+			}
+			Carried = totalWeight;
+			if (totalWeight >= capacity - 1)
+				score--;
+			//TODO: if (totalWeight > capacity) become immobile
+
 			//body weight
 			
 			//equips

@@ -19,6 +19,7 @@ namespace Noxico
 		private static List<InventoryItem> inventoryItems = new List<InventoryItem>();
 		private static UIList itemList;
 		private static UILabel howTo, itemDesc;
+		private static UILabel capacity;
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
 		{
@@ -221,9 +222,11 @@ namespace Noxico
 				{
 					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 				};
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22, Foreground = Color.Silver, Background = Color.Black };
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
 				UIManager.Elements.Add(itemDesc);
+				UIManager.Elements.Add(capacity);
 				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 70, Top = 21, Width = 6, Height = 1 });
 				UIManager.Highlight = itemList;
 				itemList.Index = selection;

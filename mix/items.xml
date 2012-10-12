@@ -61,8 +61,7 @@ canfuck
 -- Metrics are needed if an item has canfuck.
 thickness: 2.75
 length: 42
-weight
-	medium
+weight: medium
 weapon
 	damage: 50
 	skill: club
@@ -393,8 +392,7 @@ ascii
 fireproof
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 40
 	skill: short_sword
@@ -410,8 +408,7 @@ ascii
 fireproof
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 50
 	skill: short_sword
@@ -481,8 +478,7 @@ ascii
 fireproof
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 70
 	skill: long_sword
@@ -499,8 +495,7 @@ ascii
 fireproof
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 70
 	skill: long_sword
@@ -522,8 +517,7 @@ fireproof
 fearsome
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 30
 	skill: club
@@ -541,8 +535,7 @@ unique
 equipable
 	hand
 	twohanded
-weight
-	medium
+weight: medium
 weapon
 	damage: 100
 	skill: warhammer
@@ -559,8 +552,7 @@ fireproof
 unique
 equipable
 	hand
-weight
-	heavy
+weight: heavy
 weapon
 	damage: 300
 	skill: warhammer
@@ -577,8 +569,7 @@ fireproof
 unique
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 200
 	range: 30
@@ -597,8 +588,7 @@ unique
 fearsome
 equipable
 	hand
-weight
-	medium
+weight: medium
 weapon
 	damage: 250
 	skill: chainsaw
@@ -616,8 +606,7 @@ ascii
 fireproof
 equipable
 	hand
-weight
-	light
+weight: light
 weapon
 	damage: 40
 	skill: whip
@@ -636,8 +625,7 @@ ascii
 equipable
 	shirt
 	pants
-weight
-	medium
+weight: medium
 statbonus
 	charisma: 18
 description: "A suit that shows off your hot shape when worn."
@@ -650,8 +638,7 @@ ascii
 		<![CDATA[
 equipable
 	pants
-weight
-	medium
+weight: medium
 statbonus
 	charisma: 12
 description: "Feels like David Bowie."
