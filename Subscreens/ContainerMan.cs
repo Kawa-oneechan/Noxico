@@ -23,6 +23,7 @@ namespace Noxico
 		private static UIWindow containerWindow, playerWindow, descriptionWindow;
 		private static UIList containerList, playerList;
 		private static UILabel description;
+		private static UILabel capacity;
 		//private static bool onLeft = true;
 		private static int indexLeft, indexRight;
 
@@ -152,8 +153,10 @@ namespace Noxico
 				UIManager.Elements.Add(new UILabel(" Press Enter to store or retrieve the highlighted item.".PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
 				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22, Foreground = Color.Silver, Background = Color.Black };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
+				UIManager.Elements.Add(capacity);
 
 				if (containerList != null)
 				{
@@ -168,6 +171,7 @@ namespace Noxico
 						description.Text = Toolkit.Wordwrap(i.GetDescription(t), description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
+						capacity.Draw();
 						//UIManager.Draw();
 					};
 					containerList.Enter = (s, e) =>
@@ -196,8 +200,7 @@ namespace Noxico
 							playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
-							//descriptionWindow.Draw();
-							//description.Draw();
+							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							UIManager.Draw();
 						}
 					};
@@ -220,6 +223,7 @@ namespace Noxico
 						description.Text = Toolkit.Wordwrap(desc, description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
+						capacity.Draw();
 						//UIManager.Draw();
 					};
 					playerList.Enter = (s, e) =>
@@ -248,8 +252,7 @@ namespace Noxico
 							containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
-							///descriptionWindow.Draw();
-							//description.Draw();
+							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							UIManager.Draw();
 						}
 					};
@@ -307,6 +310,7 @@ namespace Noxico
 			con.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
+			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("Get Item");
 			//Subscreens.FirstDraw = true;
 		}
@@ -330,6 +334,7 @@ namespace Noxico
 			inv.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
+			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("Put Item");
 			return true;
 		}
