@@ -861,10 +861,58 @@ namespace Noxico
 					return;
 				}
 			}
-			if (distance <= 20 && CanSee(target))
+
+			if (!CanSee(target) && Character.HasToken("targetlastpos"))
 			{
+				if (ScriptPathTarget == null)
+				{
+					var lastPos = Character.GetToken("targetlastpos");
+					ScriptPathTarget = new Dijkstra();
+					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
+					ScriptPathTarget.Update();
+				}
+				Console.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				var map = ScriptPathTarget;
+				var dir = Direction.North;
+				map.Ignore = DijkstraIgnores.Type;
+				map.IgnoreType = typeof(BoardChar);
+				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
+					Move(dir);
+				else
+				{
+					Console.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+					MoveSpeed = 2;
+					Movement = Motor.Wander;
+				}
+				if (CanSee(target))
+				{
+					var lastPos = Character.Path("targetlastpos");
+					lastPos.GetToken("x").Value = target.XPosition;
+					lastPos.GetToken("y").Value = target.YPosition;
+				}
+			}
+			else if (distance <= 20 && CanSee(target))
+			{
+				var lastPos = Character.Path("targetlastpos");
+				if (lastPos == null)
+				{
+					lastPos = Character.AddToken("targetlastpos");
+					lastPos.AddToken("x");
+					lastPos.AddToken("y");
+				}
+				lastPos.GetToken("x").Value = target.XPosition;
+				lastPos.GetToken("y").Value = target.YPosition;
+				if (ScriptPathTarget == null)
+				{
+					ScriptPathTarget = new Dijkstra();
+				}
+				ScriptPathTarget.Hotspots.Clear();
+				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
+				ScriptPathTarget.Update();
+				Console.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+
 				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
-				var map = target.DijkstraMap;
+				var map = ScriptPathTarget; //target.DijkstraMap;
 				var dir = Direction.North;
 				map.Ignore = DijkstraIgnores.Type;
 				map.IgnoreType = typeof(BoardChar);
@@ -873,6 +921,7 @@ namespace Noxico
 			}
 			else
 			{
+				/*
 				//If we're out of range, switch back to wandering.
 				MoveSpeed = 2;
 				Movement = Motor.Wander;
@@ -880,6 +929,7 @@ namespace Noxico
 					Movement = Motor.WanderSector;
 				//TODO: go back to assigned sector.
 				return;
+				*/
 			}
 		}
 
@@ -1115,7 +1165,6 @@ namespace Noxico
 
 			ScriptPathTarget = new Dijkstra();
 			ScriptPathTarget.Hotspots.Add(new Point(x, y));
-			ScriptPathTarget.UpdateWalls();
 			ScriptPathTarget.Update();
 			ScriptPathID = target;
 			ScriptPathTargetX = x;
