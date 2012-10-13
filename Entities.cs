@@ -638,6 +638,11 @@ namespace Noxico
 				if (slow.Value == 1)
 					return; //skip a turn
 			}
+			if (this.Character.HasToken("justmeleed"))
+			{
+				this.Character.RemoveToken("justmeleed");
+				return; //guess what
+			}
 
 			if (Character.HasToken("helpless"))
 			{
@@ -878,7 +883,7 @@ namespace Noxico
 			}
 		}
 
-		public void MeleeAttack(BoardChar target)
+		public virtual bool MeleeAttack(BoardChar target)
 		{
 			//First we need to figure out if we're armed.
 			Token weaponData = null;
@@ -945,7 +950,7 @@ namespace Noxico
 			if (dodged)
 			{
 				NoxicoGame.AddMessage((target is Player ? targetName : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
-				return;
+				return false;
 			}
 
 			if (damage > 0)
@@ -956,7 +961,9 @@ namespace Noxico
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))
 			{
 				//Gain a bonus from killing the target?
+				return true;
 			}
+			return false;
 		}
 
 		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
@@ -1255,6 +1262,37 @@ namespace Noxico
 			this.DijkstraMap.UpdateWalls();
 			this.DijkstraMap.Update();
 			this.AutoTravelMap.UpdateWalls();
+		}
+
+		public override bool MeleeAttack(BoardChar target)
+		{
+			var mySpeed = this.Character.GetStat(Stat.Speed);
+			var theirSpeed = target.Character.GetStat(Stat.Speed);
+			var meFirst = false;
+			
+			if (mySpeed > theirSpeed)
+				meFirst = true;
+			else if (mySpeed == theirSpeed)
+				meFirst = Toolkit.Rand.NextDouble() > 0.5;
+
+			if (meFirst)
+			{
+				var killedThem = base.MeleeAttack(target);
+				if (!killedThem && !target.Character.HasToken("helpless"))
+				{
+					target.Character.AddToken("justmeleed");
+					target.MeleeAttack(this);
+				}
+				return killedThem;
+			}
+			else
+			{
+				var killedMe = target.MeleeAttack(this);
+				target.Character.AddToken("justmeleed");
+				if (!killedMe)
+					return base.MeleeAttack(target);
+				return false;
+			}
 		}
 
 		public override void Move(Direction targetDirection)
