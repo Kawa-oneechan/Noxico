@@ -1289,7 +1289,7 @@ namespace Noxico
 			{
 				var killedMe = target.MeleeAttack(this);
 				target.Character.AddToken("justmeleed");
-				if (!killedMe)
+				if (!killedMe && !this.Character.HasToken("helpless"))
 					return base.MeleeAttack(target);
 				return false;
 			}
