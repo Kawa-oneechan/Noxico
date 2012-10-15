@@ -995,6 +995,9 @@ namespace Noxico
 			js.SetParameter("BoardType", typeof(BoardType));
 			js.SetParameter("Character", typeof(Character));
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
+			js.SetParameter("Tile", typeof(Tile));
+			js.SetParameter("Color", typeof(System.Drawing.Color));
+			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
 			js.SetFunction("PickBoard", pickBoard);
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
 #if DEBUG
@@ -1004,6 +1007,7 @@ namespace Noxico
 				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
 			};
 #endif
+			Board.DrawJS = js;
 
 			var missionDirs = Mix.GetFilesInPath("missions");
 			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))

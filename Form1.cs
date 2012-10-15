@@ -190,6 +190,7 @@ namespace Noxico
 						CellWidth = IniFile.GetInt("font", "cellwidth", 0);
 					if (IniFile.GetInt("font", "cellheight", 0) != 0)
 						CellHeight = IniFile.GetInt("font", "cellheight", 0);
+
 #if ALLOW_PNG_MODE
 				}
 #endif
@@ -712,14 +713,7 @@ namespace Noxico
 					//if (c >= 0x2190 && c <= 0x263B)
 					//	sTX -= 1;
 #endif
-
-					//gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-					//gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-					//gfx.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-					//gfx.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
 					gfx.DrawString(c.ToString(), this.Font, foreBrush, sTX + GlyphAdjustX, sTY + GlyphAdjustY);
-					//BufferCharacter(c);
-					//gfx.DrawImage(glyphBuffer[c], sTX, sTY);
 				}
 			}
         }
