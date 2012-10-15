@@ -3062,6 +3062,8 @@ namespace Noxico
 				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
 				if (knownItem != null && knownItem.HasToken("weight"))
 				{
+					if (!knownItem.HasToken("weapon") && carriedItem.HasToken("equipped"))
+						continue;
 					var weightToken = knownItem.GetToken("weight");
 					if (string.IsNullOrWhiteSpace(weightToken.Text))
 						itemWeight = weightToken.Value;
@@ -3313,9 +3315,9 @@ namespace Noxico
 					return false;
 				else if (t.Name == "undershirt" && (!TempRemove(character, tempRemove, "shirt") || !TempRemove(character, tempRemove, "undershirt")))
 					return false;
-				else if (t.Name == "shirt" && !TempRemove(character, tempRemove, "jacket"))
+				else if (t.Name == "shirt" && (!TempRemove(character, tempRemove, "shirt") || !TempRemove(character, tempRemove, "jacket")))
 					return false;
-				else if (t.Name == "jacket" && !TempRemove(character, tempRemove, "cloak"))
+				else if (t.Name == "jacket" && (!TempRemove(character, tempRemove, "cloak") || !TempRemove(character, tempRemove, "jacket")))
 					return false;
 			}
 
@@ -3393,7 +3395,7 @@ namespace Noxico
 				{
 					if (equip.HasToken("reach"))
 						return true;
-					var success = find.Unequip(character, null);
+					var success = find.Unequip(character, carriedItem);
 					if (success)
 						list.Push(carriedItem);
 					return success;

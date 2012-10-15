@@ -138,8 +138,10 @@ namespace Noxico
 							sigils.Add("suit");
 						if (eq.HasToken("shoes"))
 							sigils.Add("shoes");
-						if (eq.HasToken("coat"))
-							sigils.Add("coat");
+						if (eq.HasToken("jacket"))
+							sigils.Add("jacket");
+						if (eq.HasToken("cloak"))
+							sigils.Add("cloak");
 						if (carried.HasToken("equipped"))
 							sigils.Add("equipped");
 					}

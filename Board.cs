@@ -83,7 +83,7 @@ namespace Noxico
 	/// <summary>
 	/// A single tile on a board.
 	/// </summary>
-	public class Tile
+	public partial class Tile
 	{
 		public char Character { get; set; }
 		public Color Foreground { get; set; }
@@ -92,7 +92,6 @@ namespace Noxico
 		public bool CanBurn { get; set; }
 		public bool IsWater { get; set; }
 		public int BurnTimer { get; set; }
-		public bool HasExTile { get; set; }
 		public bool CanFlyOver { get; set; }
 		public int SpecialDescription { get; set; }
 
@@ -213,7 +212,7 @@ namespace Noxico
 		Wild, Town, Dungeon, Special
 	}
 
-	public class Board : TokenCarrier
+	public partial class Board : TokenCarrier
 	{
 		public static int GeneratorCount = 0;
 
@@ -1264,22 +1263,8 @@ namespace Noxico
 
 		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music)
 		{
-			var biome = WorldGen.Biomes[biomeID];
 			var newBoard = new Board();
-			for (int row = 0; row < 25; row++)
-			{
-				for (int col = 0; col < 80; col++)
-				{
-					newBoard.Tilemap[col, row] = new Tile()
-					{
-						Character = biome.GroundGlyphs[Toolkit.Rand.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
-						CanBurn = biome.CanBurn,
-						IsWater = biome.IsWater,
-					};
-				}
-			}
+			newBoard.Clear(biomeID);
 			newBoard.Tokens = Token.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
