@@ -234,6 +234,7 @@
     <Content Include="mix\scenesSex.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\uniques.xml" />

@@ -674,7 +674,8 @@ namespace Noxico
 					return;
 			}
 
-			RunScript(OnTick);
+			if (!RunScript(OnTick))
+				return;
 
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 			{
@@ -762,9 +763,7 @@ namespace Noxico
 
 			ActuallyMove();
 			if (Character.HasToken("haste"))
-			{
 					ActuallyMove();
-			}
 		}
 
 		private void ActuallyMove()
@@ -1129,10 +1128,10 @@ namespace Noxico
 			}
 		}
 
-		public void RunScript(string script, string extraParm = "", float extraVal = 0)
+		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
 		{
 			if (string.IsNullOrWhiteSpace(script))
-				return;
+				return true;
 			if (js == null)
 				js = Javascript.Create();
 			Javascript.Ascertain(js, true);
@@ -1155,7 +1154,10 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
-			js.Run(script);
+			var r = js.Run(script);
+			if (r is bool)
+				return (bool)r;
+			return true;
 		}
 
 		[ForJS(ForJSUsage.Only)]
