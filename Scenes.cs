@@ -360,6 +360,7 @@ namespace Noxico
 
 				if (subcoms.ContainsKey(subcom))
 					with = subcoms[subcom](target, parms.ToArray());
+				//possibility: allow unknown tokens with no extra parameters to just "be as-is": "[b:clit]" -> just "clit", until further notice.
 
 				message = message.Replace(replace, with);
 			}

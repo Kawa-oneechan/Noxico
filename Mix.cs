@@ -142,8 +142,9 @@ namespace Noxico
 				Console.WriteLine("Splicing in {0}...", f);
 				var otherX = new System.Xml.XmlDocument();
 				otherX.LoadXml(GetString(f));
-				foreach (var e in otherX.DocumentElement.ChildNodes.OfType<XmlNode>())
-					x.DocumentElement.InnerXml = (injectOnTop ? e.OuterXml + x.DocumentElement.InnerXml : x.DocumentElement.InnerXml + e.OuterXml);
+				x.DocumentElement.InnerXml = otherX.DocumentElement.InnerXml + x.DocumentElement.InnerXml;
+				//foreach (var e in otherX.DocumentElement.ChildNodes.OfType<XmlNode>())
+				//	x.DocumentElement.InnerXml = (injectOnTop ? e.OuterXml + x.DocumentElement.InnerXml : x.DocumentElement.InnerXml + e.OuterXml);
 			}
 
 			//Prioritize nodes
