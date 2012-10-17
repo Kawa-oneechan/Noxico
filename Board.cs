@@ -1301,7 +1301,7 @@ namespace Noxico
 			var biomeData = WorldGen.Biomes[biome];
 	
 			var nameID = string.Format("OW_{0}x{1}", x, y);
-			newBoard.Tokens = Token.Tokenize("name: \"" + nameID + "\"\nid: \"" + nameID + "\"\nmusic: \"" + biomeData.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
+			newBoard.Tokens = Token.Tokenize("name: \"" + nameID + "\"\nid: \"" + nameID + "\"\nx: " + x + "\ny: " + y + "\nmusic: \"" + biomeData.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
 
 			var encounters = newBoard.GetToken("encounters");
 			foreach (var e in biomeData.Encounters)
