@@ -25,11 +25,45 @@ namespace Noxico
 	public partial class Board : TokenCarrier
 	{
 		public static Jint.JintEngine DrawJS;
+		public static WorldGen WorldGen;
 
 		[ForJS(ForJSUsage.Either)]
 		public void Clear(int biomeID)
 		{
 			this.Entities.Clear();
+			if (biomeID == -1)
+			{
+				if (!this.HasToken("x"))
+					return;
+				var bitmap = WorldGen.BiomeBitmap;
+				var x = (int)this.GetToken("x").Value;
+				var y = (int)this.GetToken("y").Value;
+				for (int row = 0; row < 25; row++)
+				{
+					for (int col = 0; col < 80; col++)
+					{
+						var b = bitmap[(y * 25) + row, (x * 80) + col];
+						var d = WorldGen.Biomes[b];
+						var fg = d.Color.Darken();
+						var bg = d.Color;
+						if (d.DarkenPlus != 0 && d.DarkenDiv != 0)
+						{
+							fg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
+							bg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
+						}
+						this.Tilemap[col, row] = new Tile()
+						{
+							Character = d.GroundGlyphs[Toolkit.Rand.Next(d.GroundGlyphs.Length)],
+							Foreground = fg,
+							Background = bg,
+							CanBurn = d.CanBurn,
+							IsWater = d.IsWater,
+						};
+					}
+				}
+				return;
+			}
+
 			var biome = WorldGen.Biomes[biomeID];
 			for (int row = 0; row < 25; row++)
 			{

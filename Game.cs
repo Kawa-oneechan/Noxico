@@ -744,6 +744,7 @@ namespace Noxico
 			}
 
 			setStatus("Applying missions...");
+			Board.WorldGen = worldGen;
 			ApplyMissions();
 
 			setStatus("Saving chunks... (lol)");
@@ -971,7 +972,7 @@ namespace Noxico
 		{
 			//TODO: add board drawing functions. This is JUST enough to implement Pettancow.
 
-			Func<BoardType, int, Board> pickBoard = (boardType, biome) =>
+			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
 			{
 				var options = new List<Board>();
 				foreach (var board in Boards)
@@ -982,6 +983,16 @@ namespace Noxico
 						continue;
 					if (biome > 0 && board.GetToken("biome").Value != biome)
 						continue;
+					if (maxWater != -1)
+					{
+						var water = 0;
+						for (var y = 0; y < 25; y++)
+							for (var x = 0; x < 80; x++)
+								if (board.Tilemap[x, y].IsWater)
+									water++;
+						if (water > maxWater)
+							continue;
+					}
 					options.Add(board);
 				}
 				if (options.Count == 0)

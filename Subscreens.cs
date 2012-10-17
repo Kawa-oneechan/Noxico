@@ -69,6 +69,8 @@ namespace Noxico
 				{
 					SceneSystem.Dreaming = false;
 					pchar.GetToken("health").Value = max;
+					pchar.GetToken("climax").Value = 0;
+					pchar.GetToken("stimulation").Value = 0;
 					NoxicoGame.Mode = UserMode.Walkabout;
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
@@ -93,6 +95,8 @@ namespace Noxico
 			else
 			{
 				pchar.GetToken("health").Value = max;
+				pchar.GetToken("climax").Value = 0;
+				pchar.GetToken("stimulation").Value = 0;
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
