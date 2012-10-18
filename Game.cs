@@ -1013,10 +1013,10 @@ namespace Noxico
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
-			js.Step += (s, di) =>
-			{
-				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-			};
+			//js.Step += (s, di) =>
+			//{
+			//	Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+			//};
 #endif
 			Board.DrawJS = js;
 
