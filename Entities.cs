@@ -1107,14 +1107,9 @@ namespace Noxico
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
-			newChar.OnTick = stream.ReadString();
-			newChar.OnLoad = stream.ReadString();
-			newChar.OnPlayerBump = stream.ReadString();
-			newChar.OnHurt = stream.ReadString();
-			newChar.OnPathFinish = stream.ReadString();
-			//No need to load scriptpath state -- OnLoad will handle that.
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
+			newChar.ReassignScripts();
 			return newChar;
 		}
 
@@ -1176,7 +1171,7 @@ namespace Noxico
 			ScriptPathing = true;
 		}
 
-		[ForJS]
+		[ForJS(ForJSUsage.Either)]
 		public void AssignScripts(string id)
 		{
 			var xml = Mix.GetXMLDocument("uniques.xml");
@@ -1206,6 +1201,15 @@ namespace Noxico
 						break;
 				}
 			}
+			this.Character.RemoveToken("script");
+			this.Character.AddToken("script", 0, id);
+		}
+		public void ReassignScripts()
+		{
+			var scriptSource = this.Character.Path("script");
+			if (scriptSource == null)
+				return;
+			AssignScripts(scriptSource.Text);
 		}
 	}
 
