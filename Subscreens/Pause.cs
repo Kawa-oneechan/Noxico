@@ -159,8 +159,10 @@ f   - Attempt to have sex with someone
 
 			sb.Clear();
 			foreach (var skill in player.GetToken("skills").Tokens)
+			{
 				if ((int)skill.Value > 0)
-					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(20) + ((int)skill.Value).ToString());
+					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(30) + ((int)skill.Value).ToString());
+			}
 			pages["Skill levels"] = sb.ToString();
 
 			var entities = 0;
