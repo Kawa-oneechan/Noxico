@@ -1428,22 +1428,21 @@ namespace Noxico
 			newChar.Name = new Name(planSource.GetAttribute("name"));
 			newChar.A = "a";
 			newChar.IsProperNamed = planSource.HasAttribute("proper");
-			/*
-			var newChar = new Character();
-			var planSource = xDoc.SelectSingleNode("//uniques/character[@name=\"" + name + "\"]") as XmlElement;
-			var plan = xDoc.CreateElement("character");
-			plan.InnerXml = planSource.InnerXml;
-			newChar.IsProperNamed = planSource.HasAttribute("proper");
-			newChar.Name = new Name(planSource.GetAttribute("name"));
-			newChar.Species = planSource.GetAttribute("species");
-			newChar.A = planSource.GetAttribute("a");
-			Roll(plan);
-			OneOf(plan);
-			newChar.Tokens = Token.Tokenize(plan);
-			*/
 
-			var prefabTokens = new[] { "items", "health", "perks", "skills", "charisma", "climax", "cunning", "carnality", "stimulation", "sensitivity", "speed", "strength", "money", "ships" };
-			var prefabTokenValues = new[] { 0, 10, 0, 0, 10, 0, 10, 0, 10, 10, 10, 15, 100, 0 };
+			var prefabTokens = new[]
+			{
+				"items", "health", "perks", "skills",
+				"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",
+				"money", "ships", "paragon", "renegade"
+			};
+			var prefabTokenValues = new[]
+			{
+				0, 10, 0, 0,
+				10, 0, 10, 0,
+				10, 10, 10, 15,
+				100, 0, 0, 0,
+			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });
@@ -1586,8 +1585,20 @@ namespace Noxico
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
 
-			var prefabTokens = new[] { "items", "health", "perks", "skills", "charisma", "climax", "cunning", "stimulation", "carnality", "sensitivity", "speed", "strength", "money", "ships" };
-			var prefabTokenValues = new[] { 0, 20, 0, 0, 10, 0, 10, 0, 10, 10, 10, 15, 100, 0 }; 
+			var prefabTokens = new[]
+			{
+				"items", "health", "perks", "skills",
+				"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",
+				"money", "ships", "paragon", "renegade"
+			};
+			var prefabTokenValues = new[]
+			{
+				0, 10, 0, 0,
+				10, 0, 10, 0,
+				10, 10, 10, 15,
+				100, 0, 0, 0,
+			};
 			for(var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });

@@ -58,7 +58,7 @@ f   - Attempt to have sex with someone
 				Subscreens.FirstDraw = false;
 				UIManager.Initialize();
 				UIManager.Elements.Add(new UIWindow("PAUSED") { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2, Background = Color.Black, Foreground = Color.Maroon });
-				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 4, Width = 42, Height = 16, Background = Color.Black, Foreground = Color.Blue });
+				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 2, Width = 44, Height = 18, Background = Color.Black, Foreground = Color.Blue });
 				list = new UIList() { Background = Color.Black, Foreground = Color.Silver, Width = 20, Height = pages.Count, Left = 6, Top = 5 };
 				list.Items.AddRange(pages.Keys);
 				list.Change += (s, e) =>
@@ -79,7 +79,7 @@ f   - Attempt to have sex with someone
 						TextScroller.Plain(Mix.GetString("credits.txt"), "Credits", false);
 					}
 				};
-				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 5 };
+				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 3 };
 				UIManager.Elements.Add(list);
 				UIManager.Elements.Add(text);
 				list.Index = IniFile.GetBool("misc", "rememberpause", true) ? page : 0;
@@ -125,11 +125,20 @@ f   - Attempt to have sex with someone
 			var nox = host.Noxico;
 			var player = nox.Player.Character;
 
+			var hpNow = player.GetToken("health").Value;
+			var hpMax = player.GetMaximumHealth();
+			var health = hpNow + " / " + hpMax;
+			if (hpNow <= hpMax / 4)
+				health = "<cRed>" + health + "<cSilver>";
+			else if (hpNow <= hpMax / 2)
+				health = "<cYellow>" + health + "<cSilver>";
+
 			var sb = new StringBuilder();
 			sb.AppendLine("Name                " + player.Name);
-			sb.AppendLine("Health              " + player.GetToken("health").Value + " / " + player.GetMaximumHealth());
+			sb.AppendLine("Health              " + health);
 			sb.AppendLine("Money               " + player.GetToken("money").Value + " Z");
 			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
+			sb.AppendLine("World time          " + NoxicoGame.InGameTime.ToString());
 
 			var statNames = Enum.GetNames(typeof(Stat));
 			player.RecalculateStatBonuses();
@@ -150,10 +159,30 @@ f   - Attempt to have sex with someone
 			}
 
 			sb.Append("Modifiers".PadRight(20));
+			var haveMods = false;
 			if (player.HasToken("haste"))
+			{
+				haveMods = true;
 				sb.Append("Haste ");
+			}
 			if (player.HasToken("slow"))
+			{
+				haveMods = true;
 				sb.Append("Slow  ");
+			}
+			if (!haveMods)
+				sb.Append("<cGray>None<cSilver>");
+			sb.AppendLine();
+
+			var paragadeLength = 18;
+			var renegadeLight = (int)Math.Ceiling((player.GetToken("renegade").Value / 100) * paragadeLength);
+			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
+			var renegadeDark = 18 - renegadeLight;
+			var paragonDark = 18 - paragonLight;
+			sb.Append("<g2660> ");
+			sb.Append("<cMaroon>" + new string('-', renegadeDark) + "<cRed>" + new string('=', renegadeLight));
+			sb.Append("<cBlue>" + new string('=', paragonLight) + "<cNavy>" + new string('-', paragonDark));
+			sb.AppendLine(" <cSilver><g2665>");
 	
 			pages["Character stats"] = sb.ToString();
 
