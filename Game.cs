@@ -848,9 +848,50 @@ namespace Noxico
 							break;
 						case "rating":
 							//TODO: implement the rating bonus trait effect.
+							var path = bonus.GetAttribute("id");
+							var v = bonus.GetAttribute("value");
+							var g = bonus.GetAttribute("gender");
+							if ((g == "female" && gender != Gender.Female) || (g == "male" && gender != Gender.Male))
+								continue;
+							var plus = false;
+							percent = false;
+							if (v.EndsWith("%"))
+							{
+								percent = true;
+								v = v.Remove(v.Length - 1);
+							}
+							else if (v.StartsWith("+"))
+							{
+								plus = true;
+								v = v.Substring(1);
+							}
+							increase = int.Parse(v);
+							var aspect = pc.Path(path);
+							if (aspect == null)
+								continue;
+							oldVal = aspect.Value;
+							if (plus)
+								newVal = oldVal + increase;
+							else if (percent)
+								newVal = oldVal + ((increase / 100.0f) * oldVal);
+							else
+								newVal = Math.Max(increase, oldVal);
+							aspect.Value = newVal;
 							break;
-						case "givetoken":
-							//TODO: implement the givetoken bonus trait effect.
+						case "token":
+							path = bonus.GetAttribute("id");
+							v = bonus.GetAttribute("value");
+							g = bonus.GetAttribute("gender");
+							if ((g == "female" && gender != Gender.Female) || (g == "male" && gender != Gender.Male))
+								continue;
+							var token = pc.Path(path);
+							if (token == null)
+							{
+								if (path.Contains('/'))
+									continue;
+								token = pc.AddToken(path);
+							}
+							token.Value = float.Parse(v);
 							break;
 					}
 				}
