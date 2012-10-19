@@ -1087,11 +1087,6 @@ namespace Noxico
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
-			stream.Write(OnTick ?? "");
-			stream.Write(OnLoad ?? "");
-			stream.Write(OnPlayerBump ?? "");
-			stream.Write(OnHurt ?? "");
-			stream.Write(OnPathFinish ?? "");
 			Character.SaveToFile(stream);
 		}
 
