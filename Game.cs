@@ -840,8 +840,11 @@ namespace Noxico
 							break;
 						case "skill":
 							var skill = bonus.GetAttribute("name").Replace(' ', '_').ToLowerInvariant();
-							var by = bonus.HasAttribute("level") ? double.Parse(bonus.GetAttribute("level"), NumberStyles.Float, CultureInfo.InvariantCulture) : 1.0;
-							pc.IncreaseSkill(skill);
+							var by = bonus.HasAttribute("level") ? float.Parse(bonus.GetAttribute("level"), NumberStyles.Float, CultureInfo.InvariantCulture) : 1.0f;
+							var skillToken = pc.Path("skills/" + skill);
+							if (skillToken == null)
+								skillToken = pc.GetToken("skills").AddToken(skill);
+							skillToken.Value += by;
 							break;
 						case "rating":
 							//TODO: implement the rating bonus trait effect.

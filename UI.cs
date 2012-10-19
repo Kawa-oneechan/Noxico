@@ -289,6 +289,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
 			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
 				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
+			Text = Items[index];
 			if (Change != null)
 				Change(this, null);
 		}
@@ -310,6 +311,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
 			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
 				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
+			Text = Items[index];
 			if (Change != null)
 				Change(this, null);
 		}
