@@ -3109,6 +3109,22 @@ namespace Noxico
 				this.AddToken("haste");
 
 		}
+
+		public void GiveRenegadePoints(int points)
+		{
+			var renegade = this.GetToken("renegade");
+			renegade.Value += points;
+			if (renegade.Value > 100)
+				renegade.Value = 100;
+		}
+
+		public void GiveParagonPoints(int points)
+		{
+			var paragon = this.GetToken("paragon");
+			paragon.Value += points;
+			if (paragon.Value > 100)
+				paragon.Value = 100;
+		}
 	}
 
 	public class InventoryItem : TokenCarrier
@@ -3720,6 +3736,7 @@ namespace Noxico
 							var find = NoxicoGame.KnownItems.Find(item => item.ID == request.Name);
 							if (find == null)
 								continue;
+							request.AddToken("owner", 0, owner.ID);
 							ret.Add(request);
 						}
 					}
@@ -3964,12 +3981,15 @@ namespace Noxico
 
 		public void AddSet(List<Token> otherSet)
 		{
+			this.Tokens.AddRange(otherSet);
+			/*
 			foreach (var toAdd in otherSet)
 			{
 				this.Tokens.Add(new Token() { Name = toAdd.Name, Text = toAdd.Text, Value = toAdd.Value });
 				if (toAdd.Tokens.Count > 0)
 					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
+			*/
 		}
 	}
 

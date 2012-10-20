@@ -439,14 +439,6 @@ namespace Noxico
 
 				Achievements.StartingTime = DateTime.Now;
 			}
-
-			if (!Player.Character.HasToken("paragon"))
-			{
-				Player.Character.AddToken("paragon", 6, string.Empty);
-				Player.Character.AddToken("renegade", 3, string.Empty);
-			}
-			Player.Character.GetToken("renegade").Value = 16;
-			Player.Character.GetToken("paragon").Value = 33;
 		}
 
 		public Board GetBoard(int index)
