@@ -380,6 +380,7 @@ namespace Noxico
 
 				newBoard.RespawnEncounters();
 				newBoard.CleanUpSlimeTrails();
+				newBoard.CleanUpCorpses();
 
 				newBoard.BindEntities();
 
@@ -404,6 +405,13 @@ namespace Noxico
 				//newBoard.Entities.OfType<BoardChar>().ElementAt(0).MoveTo(1, 1, "lol");
 			}
 			return newBoard;
+		}
+
+		private void CleanUpCorpses()
+		{
+			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
+				if (Toolkit.Rand.NextDouble() > 0.7)
+					this.EntitiesToRemove.Add(corpse);
 		}
 
 		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
@@ -1437,11 +1445,6 @@ namespace Noxico
 				newb.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
 				this.Entities.Add(newb);
 			}
-
-			//Clean up some of the corpses at random.
-			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
-				if (Toolkit.Rand.NextDouble() > 0.7)
-					this.EntitiesToRemove.Add(corpse);
 		}
 
 		private void CleanUpSlimeTrails()

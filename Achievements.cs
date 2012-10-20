@@ -37,6 +37,7 @@ namespace Noxico
 
 			Profile.RegisterAchievement("nethack", "It's Nethack All Over Again", "Die within five minutes.");
 			Profile.RegisterAchievement("yasd", "Yet Another Stupid Death", "Die within five minutes... for the 100th time.");
+			Profile.RegisterAchievement("townkiller", "Criminal Scum", "Kill twenty villagers.");
 
 			Profile.OnAchievement += new Action<Achievement>(a =>
 			{
@@ -96,5 +97,15 @@ namespace Noxico
 			if (times == 100)
 				Profile.UnlockAchievement("yasd");
 		}
+
+		public static void CheckCriminalScum()
+		{
+			var times = Profile.GetArbitraryInt("criminalscum");
+			times++;
+			Profile.SetArbitraryInt("criminalscum", times);
+			if (times == 20)
+				Profile.UnlockAchievement("townkiller");
+		}
+
 	}
 }

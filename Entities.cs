@@ -623,6 +623,26 @@ namespace Noxico
 			return false;
 		}
 
+		public void CheckForCriminalScum()
+		{
+			if (Character.HasToken("hostile") || Character.HasToken("sleeping"))
+				return;
+			var player = NoxicoGame.HostForm.Noxico.Player;
+			if (CanSee(player) && DistanceFrom(player) < 10)
+			{
+				var myID = this.Character.ID;
+				var items = player.Character.GetToken("items").Tokens;
+				foreach (var item in items)
+				{
+					var owner = item.Path("owner");
+					if (owner != null && owner.Text == myID)
+					{
+						SceneSystem.Engage(player.Character, this.Character, "(criminalscum)", true);
+					}
+				}
+			}
+		}
+
 		public override void Update()
 		{
 			if (Character.GetToken("health").Value <= 0)
@@ -678,6 +698,8 @@ namespace Noxico
 
 			if (!RunScript(OnTick))
 				return;
+
+			CheckForCriminalScum();
 
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 			{
@@ -841,6 +863,8 @@ namespace Noxico
 				//TODO: use pathfinder to go back to assigned sector.
 				return;
 			}
+
+			MoveSpeed = 0;
 
 			var distance = DistanceFrom(target);
 			var weapon = Character.CanShoot();
@@ -1034,6 +1058,11 @@ namespace Noxico
 				}
 				//Dead, but how?
 				Character.GetToken("health").Value = 0;
+				if (Character.HasToken("stolenfrom") && aggressor is Player)
+				{
+					Achievements.CheckCriminalScum();
+					aggressor.Character.GiveRenegadePoints(10);
+				}
 				LeaveCorpse(obituary);
 				return true;
 			}

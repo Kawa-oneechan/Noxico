@@ -42,6 +42,15 @@
 		</p>
 	</scene>
 
+	<scene id="ohboy" name="(criminalscum)">
+		<p>
+			"Stop right there, criminal scum!"
+		</p>
+		<script type="text/javascript">
+			bottom.AddToken("stolenfrom");
+			bottom.AddToken("hostile");
+		</script>
+	</scene>
 
 	<scene id="DreamTest" name="(dream)">
 		<p>
