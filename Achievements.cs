@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace Noxico
 
 		private static void NameLoop(bool wasTaken)
 		{
-			MessageBox.Input(wasTaken ? "That name is already taken. Please try another. If this was your profile and you're running on another system, you may want to try copying the profile from the other system, or visit http://helmet.kafuka.org/noxico/board and ask for a profile download." : "Enter a name for your profile.", Environment.UserName, () =>
+			MessageBox.Input(wasTaken ? "That name is already taken. Please try another. If this was your profile and you're running on another system, you may want to try copying the profile from the other system, or visit http://helmet.kafuka.org/noxico/board and ask for a profile download." : "Enter a name for your profile.", "", () =>
 			{
 				var name = ((string)MessageBox.Answer).Trim();
 				if (string.IsNullOrWhiteSpace(name))

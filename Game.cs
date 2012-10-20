@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Drawing;
@@ -207,7 +207,7 @@ namespace Noxico
 			WorldGen.LoadBiomes();
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
-			InGameTime = new NoxicanDate(40 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new NoxicanDate(740 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 
 #if DEBUG
 			//Towngen test
