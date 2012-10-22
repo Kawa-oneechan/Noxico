@@ -351,10 +351,14 @@ namespace Noxico
 						if (Intent == Intents.Look)
 							TextScroller.LookAt((BoardChar)PointingAt);
 						else if (Intent == Intents.Chat)
+						{
+							if (Culture.CheckSummoningDay())
+								return;
 							if (player.Character.Path("cunning").Value >= 10)
 								MessageBox.Message("Talking to yourself is the first sign of insanity.", true);
 							else
 								MessageBox.Message("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
+						}
 						else if (Intent == Intents.Fuck)
 							SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
 					}

@@ -1792,6 +1792,8 @@ namespace Noxico
 
 			var sb = new StringBuilder();
 
+			//TODO: account for slimeblobs -- "[He] [is] {0} tall upright, but effectively only {1}."
+			//var legLength = this.GetToken("tallness").Value * 0.53;
 			sb.AppendFormat("[He] [is] {0} tall. ", Descriptions.Length(this.GetToken("tallness").Value));
 
 			var stimulation = this.GetToken("stimulation").Value;
@@ -2119,7 +2121,7 @@ namespace Noxico
 					//Can't have sharp feet as a slime. Is this a thing? Slimes don't have legs!
 					if (legs.HasToken("stilleto") || legs.HasToken("claws") || legs.HasToken("insect"))
 					{
-						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to genbeast.) ");
+						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to human.) ");
 						legs.Tokens.Clear();
 						legs.Tokens.Add(new Token() { Name = "human" });
 					}
