@@ -48,7 +48,6 @@
 		<song href="computer_weekend.mod" />
 		<song href="robric600.xm" />
 		<song href="serpent_-_my_dream.xm" />
-		<song href="C3INTRO.MOD" />
 	</set>
 	<set name="Snow">
 		<song href="ko0x_-_snowmans_land.xm" />
@@ -75,8 +74,6 @@
 	<set name="Dungeon">
 		<song href="i_like_your_atari.xm" />
 		<song href="jumping-499.xm" />
-		<song href="insan-01.s3m" />
-		<song href="MRKMAGIC.s3m" />
 		<song href="a0-insnej.xm" />
 		<song href="computer_weekend.mod" />
 		<song href="strobe_-_crystal_tears.xm" />
@@ -93,7 +90,6 @@
 	</set>
 	<set name="Combat">
 		<song href="jumping-499.xm" />
-		<song href="INSAN-03.s3m" />
 		<song href="fixedsys.xm" />
 		<song href="i_like_your_atari.xm" />
 		<song href="mathcexam.it" />
@@ -106,5 +102,17 @@
 	<set name="Ponies">
 		<song href="my_little_ponies.mod" />
 		<song href="eat_sum_muffin.mod" />
+	</set>
+	<set name="Eternity">
+		<song href="the_eternal.mod" />
+	</set>
+	<set name="Death">
+		<song href="darkmere_deathtune.mod" />
+	</set>
+	<set name="TheHarlot">
+		<song href="sex_with_a_bottle.xm" />
+	</set>
+	<set name="TheCommander">
+		<song href="_space_lovers_.xm" />
 	</set>
 </music>
