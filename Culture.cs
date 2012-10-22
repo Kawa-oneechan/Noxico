@@ -19,12 +19,20 @@ namespace Noxico
 			Male, Female, Surname, Town, Location
 		}
 
+		public static List<Deity> Deities;
+
 		public static Culture DefaultCulture;
 
 		public static Dictionary<string, Culture> Cultures;
 
 		static Culture()
 		{
+			Console.WriteLine("Loading deities...");
+			Deities = new List<Deity>();
+			xDoc = Mix.GetXMLDocument("deities.xml");
+			foreach (var d in xDoc.SelectNodes("//deity").OfType<XmlElement>())
+				Deities.Add(new Deity(d)); 
+			
 			Console.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			xDoc = Mix.GetXMLDocument("culture.xml");
@@ -135,6 +143,49 @@ namespace Noxico
 			if (Cultures.ContainsKey(culture))
 				return Cultures[culture].GetName(type);
 			return DefaultCulture.GetName(type);
+		}
+
+		public static bool CheckSummoningDay()
+		{
+			var today = NoxicoGame.InGameTime;
+			var month = today.Month;
+			var day = today.Day;
+			var deity = Deities.Find(d => d.CanSummon && d.SummonDay == day && d.SummonMonth == month);
+			if (deity == null)
+				return false;
+			var summon = new Character();
+			summon.Name = new Name(deity.Name);
+			summon.IsProperNamed = true;
+			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook, true);
+			return true;
+		}
+	}
+
+	public class Deity
+	{
+		public string Name { get; private set; }
+		public System.Drawing.Color Color { get; private set; }
+		public bool CanSummon { get; private set; }
+		public string DialogueHook { get; private set; }
+		public int SummonMonth { get; private set; }
+		public int SummonDay { get; private set; }
+		public Deity(XmlElement x)
+		{
+			Name = x.GetAttribute("name");
+			Color = Toolkit.GetColor(x.GetAttribute("color"));
+			CanSummon = false;
+			var summon = x.SelectSingleNode("date") as XmlElement;
+			if (summon != null)
+			{
+				CanSummon = true;
+				SummonMonth = int.Parse(summon.GetAttribute("month")) - 1;
+				SummonDay = int.Parse(summon.GetAttribute("day")) - 1;
+				DialogueHook = ((XmlElement)x.SelectSingleNode("dialogue")).GetAttribute("id");
+			}
+		}
+		public override string ToString()
+		{
+			return Name;
 		}
 	}
 

@@ -1192,19 +1192,15 @@ ascii
 	</item>
 	<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
 		<![CDATA[
-unique
+equipable
+	head
+weight: feather
 description: "A blood-red ruby in the shape of a droplet."
 ascii
 	char: U+25CA
 	fore
 		crimson
 			]]>
-		<script type="text/noxicobotic">
-			<![CDATA[
--- Just display a nice custom error.
-!<< The ruby pendant has no use whatsoever, really. It just looks nice. >>
-				]]>
-		</script>
 	</item>
 
 	<!-- Morph lines -->
