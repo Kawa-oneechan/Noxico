@@ -1706,7 +1706,7 @@ namespace Noxico
 					if (!find.HasToken("equipable"))
 						continue;
 					var equipable = find.GetToken("equipable");
-					if (!equipable.HasToken("undershirt") && !equipable.HasToken("underpants") && !equipable.HasToken("shirt") && !equipable.HasToken("pants") && !equipable.HasToken("jacket") && !equipable.HasToken("coat"))
+					if (!equipable.HasToken("undershirt") && !equipable.HasToken("underpants") && !equipable.HasToken("shirt") && !equipable.HasToken("pants") && !equipable.HasToken("jacket") && !equipable.HasToken("cloak"))
 						continue;
 					//if (equipable.Tokens.Count > 1 && !equipable.HasToken(costume.Name))
 					//	continue;
