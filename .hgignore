@@ -1,6 +1,8 @@
 syntax: glob
 obj
 bin
+nsis
+diffs.txt
 *.suo
 *.cachefile
 *.mix
