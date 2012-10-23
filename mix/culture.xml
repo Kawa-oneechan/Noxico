@@ -386,4 +386,34 @@
 			<town copy="default" />
 		</namegen>
 	</culture>
+
+	<culture id="roidrage">
+		<namegen>
+			<set id="a">Slab, Fridge, Punt, Butch, Bold, Splint, Flint, Bolt, Thick, Blast, Buff, Crunch, Fist, Stump, Smash, Punch, Buck, Stump, Dirk, Rip, Slate, Crud, Brick, Rip, Punch, Gristle, Slate, Buff, Bob, Blast, Crunch, Slab, Lump, Touch, Beef, Big, Smoke, Beat, Hack, Roll</set>
+			<set id="b">Bulkhead, Largemeat, Speedchunk, Deadlift, Bigflank, Chesthair, Ironstag, Vanderhuge, McRunfast, Hardcheese, Drinklots, Slamchest, Rockbone, Beefknob, Lampjaw, Rockgroin, Plankchest, Junkman, Hardpec, Steakface, Slabrock, Bonemeal, Hardmeat, Slagcheek, Sideiron, McThornbody, Fistcrunch, Hardback, Johnson, Thickneck, Buttsteak, Squatthrust, Beefbroth, Rustrod, Blastbody, McLargehuge, Manmuscle, Punchmeat, Blowfist, Fizzlebeef</set>
+			<male>
+				<rules>
+					<rule>
+						<set id="a" />
+					</rule>
+				</rules>
+			</male>
+			<female>
+				<rules>
+					<rule>
+						<set id="a" />
+					</rule>
+				</rules>
+			</female>
+			<surname>
+				<rules>
+					<rule>
+						<set id="b" />
+					</rule>
+				</rules>
+			</surname>
+			<town copy="default" />
+		</namegen>
+	</culture>
+
 </cultures>
