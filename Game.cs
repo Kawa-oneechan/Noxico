@@ -614,7 +614,7 @@ namespace Noxico
 					return;
 				line.Text = s.PadRight(70);
 				line.Draw();
-				Console.WriteLine(s);
+				//Console.WriteLine(s);
 			});
 
 			var host = NoxicoGame.HostForm;
@@ -622,7 +622,7 @@ namespace Noxico
 
 			setStatus("Generating world map...");
 			var worldGen = new WorldGen();
-			worldGen.Generate(setStatus, "pandora");
+			worldGen.Generate(setStatus /*, "pandora" */);
 
 			setStatus("Generating boards...");
 			Overworld = new int[worldGen.MapSizeX, worldGen.MapSizeY];

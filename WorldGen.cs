@@ -92,6 +92,7 @@ namespace Noxico
 
 		public static List<BiomeData> Biomes;
 		public static int WaterLevel;
+		public TimeSpan CreationTime { get; private set; }
 
 		public static void LoadBiomes(string realmId = "")
 		{
@@ -113,7 +114,7 @@ namespace Noxico
 				Biomes.Add(BiomeData.FromXML(b));
 		}
 
-		private static byte[,] CreateHeightMap(int reach)
+		private static byte[,] CreateHeightMap(int reach, Action<string> setStatus)
 		{
 			var map = new byte[reach, reach];
 			var noise = new PerlinNoise(reach, reach);
@@ -121,16 +122,20 @@ namespace Noxico
 			var hDiv = 1 / (double)reach;
 			var dist = reach / 3;
 			var distMod = 1 / (float)dist;
+
+			var pct = reach / 100f;
+
 			for (var row = 0; row < reach; row++)
 			{
 				for (var col = 0; col < reach; col++)
 				{
 					var overall = noise.GetRandomHeight(col, row, 1f, 0.02f, 0.65f, 0.4f, 4) + 0.3;
 					var rough = noise.GetRandomHeight(col, row, 1f, 0.05f, 0.65f, 0.5f, 8);
-					var extra = noise.GetRandomHeight(col, row, 0.05f, 1f, 1f, 1f, 8);
+					//var extra = noise.GetRandomHeight(col, row, 0.05f, 1f, 1f, 1f, 8);
 					//var rough = 0f;
-					//var extra = 0f;
+					var extra = 0f;
 					var v = (overall + (rough * 0.75) + extra) + 0.3; // + 0.5;
+					//var v = noise.GetRandomHeight(col, row, 1f, 0.01f, 0.45f, 0.4f, 4) + 0.5;
 
 					if (row < dist) v *= distMod * row;
 					if (col < dist) v *= distMod * col;
@@ -143,11 +148,12 @@ namespace Noxico
 
 					map[row, col] = b;
 				}
+				setStatus("Creating heightmap... (" + (row / pct).ToString("0") + "%)");
 			}
 			return map;
 		}
 
-		private static byte[,] CreateClouds(int reach, float freq, double offset = 0.3, bool poles = false)
+		private static byte[,] CreateClouds(int reach, float freq, double offset, Action<string> setStatus, string thing, bool poles = false)
 		{
 			var map = new byte[reach, reach];
 			var noise = new PerlinNoise(reach, reach);
@@ -155,6 +161,9 @@ namespace Noxico
 			var hDiv = 1 / (double)reach;
 			var dist = reach / 5;
 			var distMod = 1 / (float)dist;
+
+			var pct = reach / 100f;
+
 			for (var row = 0; row < reach; row++)
 			{
 				for (var col = 0; col < reach; col++)
@@ -175,6 +184,7 @@ namespace Noxico
 
 					map[row, col] = b;
 				}
+				setStatus("Creating " + thing + "... (" + (row / pct).ToString("0") + "%)");
 			}
 			return map;
 		}
@@ -220,10 +230,10 @@ namespace Noxico
 			return map;
 		}
 
-		public void Generate( Action<string> setStatus, string randSeed = "")
+		public void Generate(Action<string> setStatus, string randSeed = "")
 		{
 			var seed = 0xF00D;
-			var reach = 1000;
+			var reach = 2000;
 
 			if (!string.IsNullOrWhiteSpace(randSeed))
 			{
@@ -261,16 +271,17 @@ namespace Noxico
 			LoadBiomes();
 
 			setStatus("Creating heightmap...");
-			var height = CreateHeightMap(reach);
+			var height = CreateHeightMap(reach, setStatus);
 			setStatus("Creating precipitation map...");
-			var precip = CreateClouds(reach, 0.010f, 0.3, false);
+			var precip = CreateClouds(reach, 0.010f, 0.3, setStatus, "precipitation map", false);
 			setStatus("Creating temperature map...");
-			var temp = CreateClouds(reach, 0.005f, 0.5, true);
+			var temp = CreateClouds(reach, 0.005f, 0.5, setStatus, "temperature map", true);
 			setStatus("Creating biome map...");
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
 			watch.Stop();
 			Console.WriteLine("Generated a world of {0}²px in {1}.", reach, watch.Elapsed.ToString());
+			CreationTime = watch.Elapsed;
 
 			setStatus("Drawing board bitmap...");
 			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
@@ -336,7 +347,7 @@ namespace Noxico
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					//Find a board with a reasonable amount of water
-					
+
 					if (BiomeMap[bRow, bCol] == 0)
 						continue;
 
@@ -349,6 +360,10 @@ namespace Noxico
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
+						//Randomly DON'T mark
+						if (Toolkit.Rand.NextDouble() > 0.5)
+							continue;
+
 						//Seems like a nice place. Mark off.
 						TownMap[bRow, bCol] = -1;
 						wateringHoles++;
@@ -448,7 +463,7 @@ namespace Noxico
 
 			var cultures = x.SelectSingleNode("cultures");
 			if (cultures == null)
-				n.Cultures = new [] { "human" };
+				n.Cultures = new[] { "human" };
 			else
 			{
 				n.Cultures = cultures.InnerText.Split(',').Select(e => e.Trim()).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
