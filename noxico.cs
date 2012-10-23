@@ -1170,13 +1170,13 @@ namespace Noxico
 		public string FirstName { get; set; }
 		public string Surname { get; set; }
 		public string Title { get; set; }
-		public Culture Culture { get; set; }
+		public string NameGen { get; set; }
 		public Name()
 		{
 			FirstName = "";
 			Surname = "";
 			Title = "";
-			Culture = Culture.DefaultCulture;
+			NameGen = "";
 		}
 		public Name(string name) : this()
 		{
@@ -1188,8 +1188,8 @@ namespace Noxico
 		}
 		public void Regenerate()
 		{
-			FirstName = this.Culture.GetName(Female ? Noxico.Culture.NameType.Female : Noxico.Culture.NameType.Male);
-			Surname = this.Culture.GetName(Noxico.Culture.NameType.Surname);
+			FirstName = Culture.GetName(NameGen, Female ? Noxico.Culture.NameType.Female : Noxico.Culture.NameType.Male);
+			Surname = Culture.GetName(NameGen, Noxico.Culture.NameType.Surname);
 			Title = "";
 		}
 		public void ResolvePatronym(Name father, Name mother)
@@ -1224,7 +1224,7 @@ namespace Noxico
 			stream.Write(FirstName);
 			stream.Write(Surname);
 			stream.Write(Title);
-			stream.Write(Culture.ID);
+			stream.Write(NameGen);
 		}
 		public static Name LoadFromFile(BinaryReader stream)
 		{
@@ -1232,9 +1232,9 @@ namespace Noxico
 			newName.FirstName = stream.ReadString();
 			newName.Surname = stream.ReadString();
 			newName.Title = stream.ReadString();
-			var cultureName = stream.ReadString();
-			if (Culture.Cultures.ContainsKey(cultureName))
-				newName.Culture = Culture.Cultures[cultureName];
+			var namegen = stream.ReadString();
+			if (Culture.NameGens.Contains(namegen))
+				newName.NameGen = namegen;
 			return newName;
 		}
 	}
@@ -1254,6 +1254,7 @@ namespace Noxico
 		public string Title { get; set; }
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
+		public Culture Culture { get; set; }
 
 		public float Capacity { get; private set; }
 		public float Carried { get; private set; }
@@ -1447,10 +1448,7 @@ namespace Noxico
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });
 			if (!newChar.HasToken("culture"))
-			{
-				newChar.Tokens.Add(new Token() { Name = "culture" });
-				newChar.GetToken("culture").Tokens.Add(new Token() { Name = "human" });
-			}
+				newChar.AddToken("culture", 0, Culture.DefaultCulture.ID);
 			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
 
 			var gender = Gender.Neuter;
@@ -1477,6 +1475,14 @@ namespace Noxico
 			newChar.ApplyCostume();
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
+
+			newChar.Culture = Culture.DefaultCulture;
+			if (newChar.HasToken("culture"))
+			{
+				var culture = newChar.GetToken("culture").Text;
+				if (Culture.Cultures.ContainsKey(culture))
+					newChar.Culture = Culture.Cultures[culture];
+			}
 
 			Console.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
@@ -1538,35 +1544,21 @@ namespace Noxico
 				newChar.RemoveToken("balls");
 			}
 
-			/*
-			var skinTypes = new[] { "fur", "scales", "rubber", "slime" };
-			foreach (var skinType in skinTypes)
-			{
-				if (newChar.HasToken(skinType) && newChar.GetToken(skinType).HasToken("copyhair"))
-				{
-					newChar.GetToken(skinType).Tokens.Clear();
-					newChar.GetToken(skinType).Tokens.Add(newChar.GetToken("hair").GetToken("color").Tokens[0]);
-					newChar.GetToken(skinType).Tokens.Add(new Token() { Name = "copyhair" }); //replace it so that NoxicoGame.CreatePlayerCharacter() can overrule.
-					break;
-				}
-			}
-			*/
-
 			if (!newChar.HasToken("beast"))
 			{
-				if (newChar.HasToken("culture") && newChar.GetToken("culture").Tokens.Count > 0)
+				if (newChar.HasToken("namegen"))
 				{
-					var culture = newChar.GetToken("culture").Tokens[0].Name;
-					if (Culture.Cultures.ContainsKey(culture))
-						newChar.Name.Culture = Culture.Cultures[culture];
+					var namegen = newChar.GetToken("namegen").Text;
+					if (Culture.NameGens.Contains(namegen))
+						newChar.Name.NameGen = namegen;
 				}
 				if (gender == Gender.Female)
 					newChar.Name.Female = true;
 				else if (gender == Gender.Herm || gender == Gender.Neuter)
 					newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
 				newChar.Name.Regenerate();
-				var patFather = new Name() { Culture = newChar.Name.Culture, Female = false };
-				var patMother = new Name() { Culture = newChar.Name.Culture, Female = true };
+				var patFather = new Name() { NameGen = newChar.Name.NameGen, Female = false };
+				var patMother = new Name() { NameGen = newChar.Name.NameGen, Female = true };
 				patFather.Regenerate();
 				patMother.Regenerate();
 				newChar.Name.ResolvePatronym(patFather, patMother);
@@ -1602,14 +1594,17 @@ namespace Noxico
 			for(var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });
-			if (!newChar.HasToken("culture"))
-			{
-				newChar.Tokens.Add(new Token() { Name = "culture" });
-				newChar.GetToken("culture").Tokens.Add(new Token() { Name = "human" });
-			}
 			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
 
 			newChar.ApplyCostume();
+
+			newChar.Culture = Culture.DefaultCulture;
+			if (newChar.HasToken("culture"))
+			{
+				var culture = newChar.GetToken("culture").Text;
+				if (Culture.Cultures.ContainsKey(culture))
+					newChar.Culture = Culture.Cultures[culture];
+			}
 
 			//Console.WriteLine("Generated {0}.", newChar);
 			return newChar;
@@ -1617,12 +1612,12 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			//stream.Write(Name ?? "");
 			Name.SaveToFile(stream);
 			stream.Write(Species ?? "");
 			stream.Write(Title ?? "");
 			stream.Write(IsProperNamed);
 			stream.Write(A ?? "a");
+			stream.Write(Culture.ID);
 			stream.Write(Tokens.Count);
 			Tokens.ForEach(x => x.SaveToFile(stream));
 		}
@@ -1630,11 +1625,15 @@ namespace Noxico
 		public static Character LoadFromFile(BinaryReader stream)
 		{
 			var newChar = new Character();
-			newChar.Name = Name.LoadFromFile(stream); //stream.ReadString();
+			newChar.Name = Name.LoadFromFile(stream);
 			newChar.Species = stream.ReadString();
 			newChar.Title = stream.ReadString();
 			newChar.IsProperNamed = stream.ReadBoolean();
 			newChar.A = stream.ReadString();
+			var culture = stream.ReadString();
+			newChar.Culture = Culture.DefaultCulture;
+			if (Culture.Cultures.ContainsKey(culture))
+				newChar.Culture = Culture.Cultures[culture];
 			var numTokens = stream.ReadInt32();
 			for (var i = 0; i < numTokens; i++)
 				newChar.Tokens.Add(Token.LoadFromFile(stream));

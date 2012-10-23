@@ -9,21 +9,23 @@ namespace Noxico
 {
 	public class Culture
 	{
-		private static XmlDocument xDoc;
-		public string ID;
-		public string[] Bodyplans;
-		public double Marriage = 0.25, Monogamous = 1;
-
 		public enum NameType
 		{
 			Male, Female, Surname, Town, Location
 		}
 
+		private static XmlDocument xDoc;
+		public string ID, TownName;
+		public string[] Bodyplans;
+		public double Marriage = 0.25, Monogamous = 1;
+
 		public static List<Deity> Deities;
 
 		public static Culture DefaultCulture;
+		public static string DefaultNameGen;
 
 		public static Dictionary<string, Culture> Cultures;
+		public static List<string> NameGens;
 
 		static Culture()
 		{
@@ -35,15 +37,19 @@ namespace Noxico
 			
 			Console.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
+			NameGens = new List<string>();
 			xDoc = Mix.GetXMLDocument("culture.xml");
 			//xDoc = new XmlDocument();
 			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Cultures, "culture.xml"));
 			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
 				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
-			DefaultCulture = Cultures["default"];
+			DefaultCulture = Cultures.ElementAt(0).Value;
+			foreach (var c in xDoc.SelectNodes("//namegen").OfType<XmlElement>())
+				NameGens.Add(c.GetAttribute("id"));
+			DefaultNameGen = NameGens[0];
 		}
 
-		private static Culture FromXml(XmlElement x)
+		public static Culture FromXml(XmlElement x)
 		{
 			var nc = new Culture();
 			nc.ID = x.GetAttribute("id");
@@ -66,7 +72,7 @@ namespace Noxico
 			return nc;
 		}
 
-		private string[] TrySelect(string name, XmlNode parent)
+		private static string[] TrySelect(string name, XmlNode parent)
 		{
 			var n = parent.SelectSingleNode(name);
 			if (n == null)
@@ -74,13 +80,15 @@ namespace Noxico
 			return n.InnerText.Trim().Split(',');
 		}
 
-		public string GetName(NameType type)
+		public static string GetName(string id, NameType type)
 		{
-			var namegen = "//culture[@id='" + ID + "']/namegen";
+			if (string.IsNullOrWhiteSpace(id))
+				id = DefaultNameGen;
+			var namegen = "//namegen[@id='" + id + "']";
 			var rand = Toolkit.Rand;
 			var sets = new Dictionary<string, string[]>();
 			var x = xDoc.SelectNodes(namegen + "/set");
-			foreach(var set in x.OfType<XmlElement>())
+			foreach (var set in x.OfType<XmlElement>())
 				sets.Add(set.GetAttribute("id"), set.InnerText.Trim().Split(','));
 			var typeName = type.ToString().ToLowerInvariant();
 			var typeSet = xDoc.SelectSingleNode(namegen + "/" + typeName) as XmlElement;
@@ -133,18 +141,6 @@ namespace Noxico
 			}
 		}
 
-		public static string GetName(Culture culture, NameType type)
-		{
-			return culture.GetName(type);
-		}
-
-		public static string GetName(string culture, NameType type)
-		{
-			if (Cultures.ContainsKey(culture))
-				return Cultures[culture].GetName(type);
-			return DefaultCulture.GetName(type);
-		}
-
 		public static bool CheckSummoningDay()
 		{
 			var today = NoxicoGame.InGameTime;
@@ -159,6 +155,26 @@ namespace Noxico
 			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook, true);
 			return true;
 		}
+	}
+
+	public class NameGenerator
+	{
+		public string ID;
+
+		public static NameGenerator FromXml(XmlElement x)
+		{
+			var ng = new NameGenerator();
+			ng.ID = x.GetAttribute("id");
+			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
+			if (info == null)
+			{
+				Console.WriteLine("Culture \"{0}\" has no cultureinfo element.", ng.ID);
+				return ng;
+			}
+			return ng;
+		}
+
+
 	}
 
 	public class Deity

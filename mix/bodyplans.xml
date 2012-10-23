@@ -8,8 +8,8 @@
 	<bodyplan id="human">
 		<![CDATA[
 playable
-culture
-	human
+culture: human
+namegen: oneof norse, germanic
 normalgenders
 explicitgender
 terms
@@ -72,8 +72,8 @@ items
 
 	<bodyplan id="imp">
 		<![CDATA[
-culture
-	demonic
+culture: demons
+namegen: demonic
 maleonly
 invisiblegender
 terms
@@ -122,8 +122,8 @@ carnality: 50
 
 	<bodyplan id="goblin">
 		<![CDATA[
-culture
-	demonic
+culture: demons
+namegen: demonic
 femaleonly
 invisiblegender
 terms
@@ -168,8 +168,8 @@ carnality: 60
 
 	<bodyplan id="bee">
 		<![CDATA[
-culture
-	japanese
+culture: human
+namegen: japanese
 femaleonly
 invisiblegender
 terms
@@ -222,8 +222,8 @@ vagina
 	<bodyplan id="naga">
 		<![CDATA[
 playable
-culture
-	japanese
+culture: human
+namegen: japanese
 normalgenders
 terms
 	generic: "naga"
@@ -275,8 +275,8 @@ costume
 	<bodyplan id="foocubus">
 		<![CDATA[
 playable
-culture
-	demonic
+culture: demons
+namegen: demonic
 neverneuter
 invisiblegender
 terms
@@ -338,8 +338,8 @@ items
 	<bodyplan id="felinoid">
 		<![CDATA[
 playable
-culture
-	japanese
+culture: human
+namegen: japanese
 normalgenders
 invisiblegender
 terms
@@ -400,8 +400,8 @@ balls
 	<bodyplan id="fox">
 		<![CDATA[
 playable
-culture
-	japanese
+culture: human
+namegen: japanese
 normalgenders
 invisiblegender
 terms
@@ -463,8 +463,8 @@ cunning: 20
 	<bodyplan id="littlepony">
 		<![CDATA[
 playable
-culture
-	pony
+culture: equestrian
+namegen: pony
 normalgenders
 invisiblegender
 terms
@@ -521,8 +521,8 @@ balls
 	<bodyplan id="slime">
 		<![CDATA[
 playable
-culture
-	japanese
+culture: demons
+namegen: japanese
 neverneuter
 invisiblegender
 terms
@@ -569,8 +569,8 @@ penis
 	<bodyplan id="ursidae">
 		<![CDATA[
 playable
-culture
-	ursidous
+culture: ursidous
+namegen: bears
 normalgenders
 invisiblegender
 fearless
@@ -655,6 +655,7 @@ beast
 	role
 		predator
 fearless
+namegen: bears
 hostile
 bestiary: "A ferocious wild animal that would tear apart anyone who dares enter its territory."
 terms
@@ -762,6 +763,7 @@ ascii
 		<![CDATA[
 beast
 bestiary: "Large herd animal!"
+namegen: pony
 terms
 	generic: "horse"
 	male: "stallion"
