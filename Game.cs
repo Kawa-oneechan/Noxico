@@ -675,7 +675,7 @@ namespace Noxico
 						thisMap.Tokens.Add(new Token() { Name = "culture", Text = cultureName });
 						while (true)
 						{
-							var newName = Culture.GetName(townGen.Culture, Culture.NameType.Town);
+							var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
 							if (Boards.Find(b => b != null && b.Name == newName) == null)
 							{
 								thisMap.Name = newName;
@@ -780,12 +780,12 @@ namespace Noxico
 			}
 			else
 			{
-				pc.Name.Culture = Culture.Cultures[pc.GetToken("culture").Tokens[0].Name];
+				pc.Name.NameGen = pc.GetToken("namegen").Text;
 				pc.Name.Regenerate();
 			
 				if (pc.Name.Surname.StartsWith("#patronym"))
 				{
-					var parentName = new Name() { Culture = pc.Name.Culture };
+					var parentName = new Name() { NameGen = pc.Name.NameGen };
 					if (gender == Gender.Female)
 						pc.Name.Female = true;
 					parentName.Regenerate();
