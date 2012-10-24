@@ -1797,6 +1797,127 @@ namespace Noxico
 
 			var stimulation = this.GetToken("stimulation").Value;
 
+			#region Equipment phase 1
+			var breastsVisible = false;
+			var crotchVisible = false;
+			var carried = new List<InventoryItem>();
+			var hands = new List<InventoryItem>();
+			var fingers = new List<InventoryItem>();
+			InventoryItem underpants = null;
+			InventoryItem undershirt = null;
+			InventoryItem pants = null;
+			InventoryItem shirt = null;
+			InventoryItem jacket = null;
+			InventoryItem cloak = null;
+			InventoryItem hat = null;
+			InventoryItem goggles = null;
+			InventoryItem mask = null;
+			InventoryItem neck = null;
+			foreach (var carriedItem in this.GetToken("items").Tokens)
+			{
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
+				if (find.HasToken("equipable") && carriedItem.HasToken("equipped"))
+				{
+					var eq = find.GetToken("equipable");
+					if (eq.HasToken("underpants"))
+					{
+						underpants = find;
+						underpants.tempToken = carriedItem;
+					}
+					if (eq.HasToken("undershirt"))
+					{
+						undershirt = find;
+						undershirt.tempToken = carriedItem;
+					}
+					if (eq.HasToken("pants"))
+					{
+						pants = find;
+						pants.tempToken = carriedItem;
+					}
+					if (eq.HasToken("shirt"))
+					{
+						shirt = find;
+						shirt.tempToken = carriedItem;
+					}
+					if (eq.HasToken("jacket"))
+					{
+						jacket = find;
+						jacket.tempToken = carriedItem;
+					}
+					if (eq.HasToken("cloak"))
+					{
+						cloak = find;
+						cloak.tempToken = carriedItem;
+					}
+					if (eq.HasToken("hat"))
+					{
+						hat = find;
+						hat.tempToken = carriedItem;
+					}
+					if (eq.HasToken("goggles"))
+					{
+						goggles = find;
+						goggles.tempToken = carriedItem;
+					}
+					if (eq.HasToken("mask"))
+					{
+						mask = find;
+						mask.tempToken = carriedItem;
+					}
+					if (eq.HasToken("neck"))
+					{
+						neck = find;
+						neck.tempToken = carriedItem;
+					}
+					if (eq.HasToken("ring"))
+					{
+						find.tempToken = carriedItem;
+						fingers.Add(find);
+					}
+					if (eq.HasToken("hand"))
+					{
+						find.tempToken = carriedItem;
+						hands.Add(find);
+					}
+				}
+				else
+					carried.Add(find);
+			}
+			var visible = new List<string>();
+			if (hat != null)
+				visible.Add(hat.ToString(hat.tempToken));
+			if (goggles != null)
+				visible.Add(goggles.ToString(goggles.tempToken));
+			if (mask != null)
+				visible.Add(mask.ToString(mask.tempToken));
+			if (neck != null)
+				visible.Add(neck.ToString(neck.tempToken));
+			if (cloak != null)
+				visible.Add(cloak.ToString(cloak.tempToken));
+			if (jacket != null)
+				visible.Add(jacket.ToString(jacket.tempToken));
+			if (shirt != null)
+				visible.Add(shirt.ToString(shirt.tempToken));
+			if (pants != null && pants != shirt)
+				visible.Add(pants.ToString(pants.tempToken));
+			if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
+			{
+				breastsVisible = undershirt.CanSeeThrough();
+				visible.Add(undershirt.ToString(undershirt.tempToken));
+			}
+			else
+				breastsVisible = (shirt == null || shirt.CanSeeThrough());
+			if (underpants != null && (pants == null || pants.CanSeeThrough()))
+			{
+				crotchVisible = underpants.CanSeeThrough();
+				visible.Add(underpants.ToString(underpants.tempToken));
+			}
+			else
+				crotchVisible = (pants == null || pants.CanSeeThrough());
+			#endregion
+
 			#region Face and Skin
 			var skinDescriptions = new Dictionary<string, Dictionary<string, string>>()
 				{
@@ -1882,6 +2003,8 @@ namespace Noxico
 			var faceType = this.HasToken("face") ? this.GetToken("face").Tokens[0].Name : "normal";
 			var hairColor = this.Path("hair/color") != null ? Toolkit.NameColor(this.Path("hair/color").Text).ToLowerInvariant() : "<null>";
 			var skinColor = skinName == "slime" ? hairColor : Toolkit.NameColor(this.Path("skin/color").Text).ToLowerInvariant();
+			//TODO: hide some info if wearing a mask.
+			//if (mask != null && !mask.CanSeeThrough())
 			sb.AppendFormat(skinDescriptions[skinName][faceType], skinColor, hairColor);
 			sb.AppendLine();
 			#endregion
@@ -2174,110 +2297,7 @@ namespace Noxico
 
 			//Pregnancy
 
-			var breastsVisible = false;
-			var crotchVisible = false;
-			#region Equipment
-			var carried = new List<InventoryItem>();
-			var hands = new List<InventoryItem>();
-			var fingers = new List<InventoryItem>();
-			InventoryItem underpants = null;
-			InventoryItem undershirt = null;
-			InventoryItem pants = null;
-			InventoryItem shirt = null;
-			InventoryItem jacket = null;
-			InventoryItem cloak = null;
-			InventoryItem head = null;
-			#region Collection
-			foreach (var carriedItem in this.GetToken("items").Tokens)
-			{
-				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-				if (find == null)
-					continue;
-				if (find.HasToken("equipable") && carriedItem.HasToken("equipped"))
-				{
-					var eq = find.GetToken("equipable");
-					if (eq.HasToken("underpants"))
-					{
-						underpants = find;
-						underpants.tempToken = carriedItem;
-					}
-					if (eq.HasToken("undershirt"))
-					{
-						undershirt = find;
-						undershirt.tempToken = carriedItem;
-					}
-					if (eq.HasToken("pants"))
-					{
-						pants = find;
-						pants.tempToken = carriedItem;
-					}
-					if (eq.HasToken("shirt"))
-					{
-						shirt = find;
-						shirt.tempToken = carriedItem;
-					}
-					if (eq.HasToken("jacket"))
-					{
-						jacket = find;
-						jacket.tempToken = carriedItem;
-					}
-					if (eq.HasToken("cloak"))
-					{
-						cloak = find;
-						cloak.tempToken = carriedItem;
-					}
-					if (eq.HasToken("head"))
-					{
-						head = find;
-						head.tempToken = carriedItem;
-					}
-					if (eq.HasToken("ring"))
-					{
-						find.tempToken = carriedItem;
-						fingers.Add(find);
-					}
-					if (eq.HasToken("hand"))
-					{
-						find.tempToken = carriedItem;
-						hands.Add(find);
-					}
-					/*
-					sb.AppendLine();
-					if (find.GetToken("equipable").HasToken("description") && find.GetToken("equipable").GetToken("description").HasToken("equipped"))
-						sb.AppendFormat(find.GetToken("equipable").GetToken("description").GetToken("equipped").Text);
-					else
-						sb.AppendFormat("[He] [is] {0} {1}.", "wearing", find.ToString(carriedItem));
-					*/
-				}
-				else
-					carried.Add(find);
-			}
-			#endregion
-			var visible = new List<string>();
-			if (head != null)
-				visible.Add(head.ToString(head.tempToken));
-			if (cloak != null)
-				visible.Add(cloak.ToString(cloak.tempToken));
-			if (jacket != null)
-				visible.Add(jacket.ToString(jacket.tempToken));
-			if (shirt != null)
-				visible.Add(shirt.ToString(shirt.tempToken));
-			if (pants != null && pants != shirt)
-				visible.Add(pants.ToString(pants.tempToken));
-			if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
-			{
-				breastsVisible = undershirt.CanSeeThrough();
-				visible.Add(undershirt.ToString(undershirt.tempToken));
-			}
-			else
-				breastsVisible = (shirt == null || shirt.CanSeeThrough());
-			if (underpants != null && (pants == null || pants.CanSeeThrough()))
-			{
-				crotchVisible = underpants.CanSeeThrough();
-				visible.Add(underpants.ToString(underpants.tempToken));
-			}
-			else
-				crotchVisible = (pants == null || pants.CanSeeThrough());
+			#region Equipment phase 2
 			if (visible.Count == 0)
 			{
 				crotchVisible = true;
@@ -2319,7 +2339,6 @@ namespace Noxico
 			}
 			sb.AppendLine();
 			#endregion
-
 
 			#region Breasts
 			if (this.HasToken("breastrow") && (this.HasToken("noarms") && this.HasToken("legs") && this.GetToken("legs").HasToken("quadruped")))

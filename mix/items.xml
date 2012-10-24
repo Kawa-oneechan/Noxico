@@ -191,7 +191,7 @@ ascii
 		<![CDATA[
 plural
 equipable
-	head
+	hat
 weight
 	feather
 statbonus
@@ -1193,7 +1193,7 @@ ascii
 	<item id="lena_ruby" name="Lena's ruby pendant" proper="true">
 		<![CDATA[
 equipable
-	head
+	neck
 weight: feather
 description: "A blood-red ruby in the shape of a droplet."
 ascii
