@@ -71,7 +71,7 @@
 		</cultureinfo>
 	</culture>
 
-	<culture id="demons">
+	<culture id="meldevar">
 		<cultureinfo>
 			<bodyplans>
 				<plan name="foocubus" />
