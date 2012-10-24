@@ -72,7 +72,7 @@ items
 
 	<bodyplan id="imp">
 		<![CDATA[
-culture: demons
+culture: meldevar
 namegen: demonic
 maleonly
 invisiblegender
@@ -122,7 +122,7 @@ carnality: 50
 
 	<bodyplan id="goblin">
 		<![CDATA[
-culture: demons
+culture: meldevar
 namegen: demonic
 femaleonly
 invisiblegender
@@ -275,7 +275,7 @@ costume
 	<bodyplan id="foocubus">
 		<![CDATA[
 playable
-culture: demons
+culture: meldevar
 namegen: demonic
 neverneuter
 invisiblegender
@@ -521,7 +521,7 @@ balls
 	<bodyplan id="slime">
 		<![CDATA[
 playable
-culture: demons
+culture: meldevar
 namegen: japanese
 neverneuter
 invisiblegender
