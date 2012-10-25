@@ -131,7 +131,7 @@ namespace Noxico
 			{
 				if (part.Name == "p")
 				{
-					ret.AppendLine(part.InnerText.Trim());
+					ParseParagraph(ret, part);
 					ret.AppendLine();
 				}
 				else if (part.Name == "script")
@@ -151,125 +151,168 @@ namespace Noxico
 					}
 				}
 			}
-			return ret.ToString();
+			return ret.ToString().TrimEnd();
 		}
 
-		private static bool FiltersOkay(XmlElement scene)
+		private static void ParseParagraph(StringBuilder ret, XmlElement part)
+		{
+			var trimmers = new[] {'\t', '\n', '\r'};
+			var hadFalseIf = false;
+			foreach (var node in part.ChildNodes)
+			{
+				if (node is XmlText)
+				{
+					var text = (node as XmlText).Value;
+					if (trimmers.Contains(text[0]))
+						text = text.TrimStart();
+					if (trimmers.Contains(text[text.Length - 1]))
+						text = text.TrimEnd();
+					ret.Append(text);
+				}
+				else if (node is XmlElement)
+				{
+					var element = node as XmlElement;
+					if (element.Name == "if")
+					{
+						if (FiltersOkay(element))
+							ParseParagraph(ret, element);
+						else
+							hadFalseIf = true;
+					}
+					else if (element.Name == "else" && hadFalseIf)
+					{
+						ParseParagraph(ret, element);
+						hadFalseIf = false;
+					}
+				}
+			}
+			//ret.AppendLine(part.InnerText.Trim());
+			//ret.AppendLine();
+		}
+
+		private static bool SceneFiltersOkay(XmlElement scene)
 		{
 			foreach (var filter in scene.ChildNodes.OfType<XmlElement>().Where(f => f.Name == "filter"))
 			{
-				var fType = filter.GetAttribute("type");
-				var fName = filter.GetAttribute("name");
-				var fValue = filter.GetAttribute("value");
-				var fPrimary = filter.HasAttribute("target") ? (filter.GetAttribute("target") == "top" ? top : bottom) : bottom;
-				var fSecondary = fPrimary == top ? bottom : top;
-				var fValueF = 0f;
-				var fValuePM = '\0';
-				if (fValue.EndsWith("+") || fValue.EndsWith("-"))
-				{
-					fValuePM = fValue[fValue.Length - 1];
-					fValue = fValue.Remove(fValue.Length - 1);
-				}
-				float.TryParse(fValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out fValueF);
-				switch (fType)
-				{
-					case "name":
-						if (!(fPrimary.Name.ToString(true).Trim().Equals(fName, StringComparison.InvariantCultureIgnoreCase)))
-							return false;
-						break;
-					case "has":
-						if (fPrimary.Path(fName) == null)
-							return false;
-						if (fValueF > 0)
+				if (!FiltersOkay(filter))
+					return false;
+			}
+			return true;
+		}
+
+		private static bool FiltersOkay(XmlElement filter)
+		{
+			var fType = filter.GetAttribute("type");
+			var fName = filter.GetAttribute("name");
+			var fValue = filter.GetAttribute("value");
+			var fPrimary = filter.HasAttribute("target") ? (filter.GetAttribute("target") == "top" ? top : bottom) : bottom;
+			var fSecondary = fPrimary == top ? bottom : top;
+			var fValueF = 0f;
+			var fValuePM = '\0';
+			if (fValue.EndsWith("+") || fValue.EndsWith("-"))
+			{
+				fValuePM = fValue[fValue.Length - 1];
+				fValue = fValue.Remove(fValue.Length - 1);
+			}
+			float.TryParse(fValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out fValueF);
+			switch (fType)
+			{
+				case "name":
+					if (!(fPrimary.Name.ToString(true).Trim().Equals(fName, StringComparison.InvariantCultureIgnoreCase)))
+						return false;
+					break;
+				case "has":
+					if (fPrimary.Path(fName) == null)
+						return false;
+					if (fValueF > 0)
+					{
+						var num = fPrimary.Tokens.Count(t => t.Name == fName);
+						if (fValuePM == '\0')
 						{
-							var num = fPrimary.Tokens.Count(t => t.Name == fName);
-							if (fValuePM == '\0')
-							{
-								if (num != fValueF)
-									return false;
-							}
-							else if (fValuePM == '+')
-							{
-								if (num < fValueF)
-									return false;
-							}
-							else if (fValuePM == '-')
-							{
-								if (num > fValueF)
-									return false;
-							}
-						}
-						break;
-					case "hasnot":
-						if (fPrimary.Path(fName) != null)
-							return false;
-						break;
-					case "stat":
-					case "value_gteq":
-						if (fPrimary.Path(fName).Value < fValueF)
-							return false;
-						break;
-					case "value_equal":
-						if (fPrimary.Path(fName).Value != fValueF)
-							return false;
-						break;
-					case "value_lower":
-						if (fPrimary.Path(fName).Value >= fValueF)
-							return false;
-						break;
-					case "relation":
-						if (fValue != "none")
-						{
-							var path = "ships/" + fSecondary.ID + "/" + fValue;
-							if (fPrimary.Path(path) == null)
+							if (num != fValueF)
 								return false;
 						}
-						else
+						else if (fValuePM == '+')
 						{
-							var path = "ships/" + fSecondary.ID;
-							if (fPrimary.Path(path) != null)
+							if (num < fValueF)
 								return false;
 						}
-						break;
-					case "gender":
-						if (fValue == "male" && fPrimary.GetGender() != "male")
-							return false;
-						else if (fValue == "female" && fPrimary.GetGender() != "female")
-							return false;
-						break;
-					case "bodylev":
-						var primaryLev = Toolkit.GetLevenshteinString(fPrimary);
-						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fName]);
-						if (distance > 0) //?
-							return false;
-						break;
-					case "hasdildo":
-						if (!fPrimary.HasToken("items"))
-							return false;
-						var hasDildo = false;
-						foreach (var item in fPrimary.GetToken("items").Tokens)
+						else if (fValuePM == '-')
 						{
-							var knownItem = NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == item.Name);
-							if (knownItem == null)
-								continue;
-							if (knownItem.HasToken("canfuck"))
-							{
-								if (fValueF > 0)
-								{
-									var surface = knownItem.GetToken("thickness").Value * knownItem.GetToken("length").Value;
-									if (fValuePM == '+' && surface < fValueF)
-										continue;
-									else if (surface > fValueF)
-										continue;
-								}
-								hasDildo = true;
-								break;
-							}
+							if (num > fValueF)
+								return false;
 						}
-						if (!hasDildo)
+					}
+					break;
+				case "hasnot":
+					if (fPrimary.Path(fName) != null)
+						return false;
+					break;
+				case "stat":
+				case "value_gteq":
+					if (fPrimary.Path(fName).Value < fValueF)
+						return false;
+					break;
+				case "value_equal":
+					if (fPrimary.Path(fName).Value != fValueF)
+						return false;
+					break;
+				case "value_lower":
+					if (fPrimary.Path(fName).Value >= fValueF)
+						return false;
+					break;
+				case "relation":
+					if (fValue != "none")
+					{
+						var path = "ships/" + fSecondary.ID + "/" + fValue;
+						if (fPrimary.Path(path) == null)
 							return false;
-						break;
-				}
+					}
+					else
+					{
+						var path = "ships/" + fSecondary.ID;
+						if (fPrimary.Path(path) != null)
+							return false;
+					}
+					break;
+				case "gender":
+					if (fValue == "male" && fPrimary.GetGender() != "male")
+						return false;
+					else if (fValue == "female" && fPrimary.GetGender() != "female")
+						return false;
+					break;
+				case "bodylev":
+					var primaryLev = Toolkit.GetLevenshteinString(fPrimary);
+					var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fName]);
+					if (distance > 0) //?
+						return false;
+					break;
+				case "hasdildo":
+					if (!fPrimary.HasToken("items"))
+						return false;
+					var hasDildo = false;
+					foreach (var item in fPrimary.GetToken("items").Tokens)
+					{
+						var knownItem = NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == item.Name);
+						if (knownItem == null)
+							continue;
+						if (knownItem.HasToken("canfuck"))
+						{
+							if (fValueF > 0)
+							{
+								var surface = knownItem.GetToken("thickness").Value * knownItem.GetToken("length").Value;
+								if (fValuePM == '+' && surface < fValueF)
+									continue;
+								else if (surface > fValueF)
+									continue;
+							}
+							hasDildo = true;
+							break;
+						}
+					}
+					if (!hasDildo)
+						return false;
+					break;
 			}
 			return true;
 		}

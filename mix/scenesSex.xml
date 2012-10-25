@@ -3,7 +3,6 @@
 	<!ELEMENT scenes (scene+)>
 	<!ELEMENT scene (filter*,(p|script)*,action*)>
 	<!ELEMENT filter EMPTY>
-	<!ELEMENT p (#PCDATA)>
 	<!ELEMENT script (#PCDATA)>
 	<!ELEMENT action EMPTY>
 	<!ATTLIST scene
@@ -20,6 +19,18 @@
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
 	<!ATTLIST action name CDATA #REQUIRED>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
 ]>
 <scenes>
 	<scene id="zzz1" name="(starting node)" priority="high">
