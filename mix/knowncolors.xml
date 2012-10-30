@@ -13,14 +13,14 @@
 
 	<!-- Hair colors -->
 	<color name="Blond" rgb="198,167,94" cga="6" />
-	<color name="Auburn" rgb="111,53,26" cga="6" />
+	<color name="Auburn" rgb="111,53,26" cga="4" />
 
-	<!-- System.Drawing.KnownColor, with CGA approximation for display -->
-  <color name="AliceBlue" rgb="240,248,255" cga="9" />
+	<!-- System.Drawing.KnownColor -->
+  <color name="AliceBlue" rgb="240,248,255" cga="15" />
   <color name="AntiqueWhite" rgb="250,235,215" cga="14" />
   <color name="Aqua" rgb="0,255,255" cga="11" />
   <color name="Aquamarine" rgb="127,255,212" cga="11" />
-  <color name="Azure" rgb="240,255,255" cga="11" />
+  <color name="Azure" rgb="240,255,255" cga="15" />
   <color name="Beige" rgb="245,245,220" cga="14" />
   <color name="Bisque" rgb="255,228,196" cga="14" />
   <color name="Black" rgb="0,0,0" cga="0" />
@@ -29,13 +29,13 @@
   <color name="BlueViolet" rgb="138,43,226" cga="13" />
   <color name="Brown" rgb="165,42,42" cga="4" />
   <color name="BurlyWood" rgb="222,184,135" cga="14" />
-  <color name="CadetBlue" rgb="95,158,160" cga="11" />
+  <color name="CadetBlue" rgb="95,158,160" cga="3" />
   <color name="Chartreuse" rgb="127,255,0" cga="10" />
-  <color name="Chocolate" rgb="210,105,30" cga="6" />
+  <color name="Chocolate" rgb="210,105,30" cga="12" />
   <color name="Coral" rgb="255,127,80" cga="14" />
   <color name="CornflowerBlue" rgb="100,149,237" cga="9" />
   <color name="Cornsilk" rgb="255,248,220" cga="14" />
-  <color name="Crimson" rgb="220,20,60" cga="5" />
+  <color name="Crimson" rgb="220,20,60" cga="12" />
   <color name="Cyan" rgb="0,255,255" cga="11" />
   <color name="DarkBlue" rgb="0,0,139" cga="1" />
   <color name="DarkCyan" rgb="0,139,139" cga="3" />
@@ -45,13 +45,13 @@
   <color name="DarkKhaki" rgb="189,183,107" cga="14" />
   <color name="DarkMagenta" rgb="139,0,139" cga="5" />
   <color name="DarkOliveGreen" rgb="85,107,47" cga="2" />
-  <color name="DarkOrange" rgb="255,140,0" cga="14" />
+  <color name="DarkOrange" rgb="255,140,0" cga="6" />
   <color name="DarkOrchid" rgb="153,50,204" cga="5" />
   <color name="DarkRed" rgb="139,0,0" cga="4" />
-  <color name="DarkSalmon" rgb="233,150,122" cga="14" />
+  <color name="DarkSalmon" rgb="233,150,122" cga="12" />
   <color name="DarkSeaGreen" rgb="143,188,139" cga="10" />
   <color name="DarkSlateBlue" rgb="72,61,139" cga="1" />
-  <color name="DarkSlateGray" rgb="47,79,79" cga="3" />
+  <color name="DarkSlateGray" rgb="47,79,79" cga="8" />
   <color name="DarkTurquoise" rgb="0,206,209" cga="3" />
   <color name="DarkViolet" rgb="148,0,211" cga="5" />
   <color name="DeepPink" rgb="255,20,147" cga="13" />
@@ -62,11 +62,11 @@
   <color name="FloralWhite" rgb="255,250,240" cga="14" />
   <color name="ForestGreen" rgb="34,139,34" cga="2" />
   <color name="Fuchsia" rgb="255,0,255" cga="13" />
-  <color name="Gainsboro" rgb="220,220,220" cga="15" />
-  <color name="GhostWhite" rgb="248,248,255" cga="9" />
+  <color name="Gainsboro" rgb="220,220,220" cga="7" />
+  <color name="GhostWhite" rgb="248,248,255" cga="15" />
   <color name="Gold" rgb="255,215,0" cga="14" />
   <color name="Goldenrod" rgb="218,165,32" cga="6" />
-  <color name="Gray" rgb="128,128,128" cga="0" />
+  <color name="Gray" rgb="128,128,128" cga="8" />
   <color name="Green" rgb="0,128,0" cga="2" />
   <color name="GreenYellow" rgb="173,255,47" cga="10" />
   <color name="Honeydew" rgb="240,255,240" cga="10" />
@@ -75,22 +75,22 @@
   <color name="Indigo" rgb="75,0,130" cga="5" />
   <color name="Ivory" rgb="255,255,240" cga="14" />
   <color name="Khaki" rgb="240,230,140" cga="14" />
-  <color name="Lavender" rgb="230,230,250" cga="9" />
-  <color name="LavenderBlush" rgb="255,240,245" cga="13" />
-  <color name="LawnGreen" rgb="124,252,0" cga="2" />
+  <color name="Lavender" rgb="230,230,250" cga="11" />
+  <color name="LavenderBlush" rgb="255,240,245" cga="15" />
+  <color name="LawnGreen" rgb="124,252,0" cga="10" />
   <color name="LemonChiffon" rgb="255,250,205" cga="14" />
-  <color name="LightBlue" rgb="173,216,230" cga="9" />
+  <color name="LightBlue" rgb="173,216,230" cga="11" />
   <color name="LightCoral" rgb="240,128,128" cga="12" />
   <color name="LightCyan" rgb="224,255,255" cga="11" />
   <color name="LightGoldenrodYellow" rgb="250,250,210" cga="14" />
-  <color name="LightGray" rgb="211,211,211" cga="15" />
+  <color name="LightGray" rgb="211,211,211" cga="7" />
   <color name="LightGreen" rgb="144,238,144" cga="10" />
   <color name="LightPink" rgb="255,182,193" cga="12" />
-  <color name="LightSalmon" rgb="255,160,122" cga="14" />
+  <color name="LightSalmon" rgb="255,160,122" cga="12" />
   <color name="LightSeaGreen" rgb="32,178,170" cga="3" />
   <color name="LightSkyBlue" rgb="135,206,250" cga="9" />
-  <color name="LightSlateGray" rgb="119,136,153" cga="0" />
-  <color name="LightSteelBlue" rgb="176,196,222" cga="9" />
+  <color name="LightSlateGray" rgb="119,136,153" cga="8" />
+  <color name="LightSteelBlue" rgb="176,196,222" cga="7" />
   <color name="LightYellow" rgb="255,255,224" cga="14" />
   <color name="Lime" rgb="0,255,0" cga="10" />
   <color name="LimeGreen" rgb="50,205,50" cga="10" />
@@ -100,14 +100,14 @@
   <color name="MediumAquamarine" rgb="102,205,170" cga="11" />
   <color name="MediumBlue" rgb="0,0,205" cga="1" />
   <color name="MediumOrchid" rgb="186,85,211" cga="13" />
-  <color name="MediumPurple" rgb="147,112,219" cga="9" />
+  <color name="MediumPurple" rgb="147,112,219" cga="5" />
   <color name="MediumSeaGreen" rgb="60,179,113" cga="2" />
   <color name="MediumSlateBlue" rgb="123,104,238" cga="9" />
   <color name="MediumSpringGreen" rgb="0,250,154" cga="3" />
   <color name="MediumTurquoise" rgb="72,209,204" cga="11" />
   <color name="MediumVioletRed" rgb="199,21,133" cga="5" />
   <color name="MidnightBlue" rgb="25,25,112" cga="1" />
-  <color name="MintCream" rgb="245,255,250" cga="10" />
+  <color name="MintCream" rgb="245,255,250" cga="15" />
   <color name="MistyRose" rgb="255,228,225" cga="12" />
   <color name="Moccasin" rgb="255,228,181" cga="14" />
   <color name="NavajoWhite" rgb="255,222,173" cga="14" />
@@ -116,7 +116,7 @@
   <color name="Olive" rgb="128,128,0" cga="6" />
   <color name="OliveDrab" rgb="107,142,35" cga="2" />
   <color name="Orange" rgb="255,165,0" cga="14" />
-  <color name="OrangeRed" rgb="255,69,0" cga="14" />
+  <color name="OrangeRed" rgb="255,69,0" cga="12" />
   <color name="Orchid" rgb="218,112,214" cga="13" />
   <color name="PaleGoldenrod" rgb="238,232,170" cga="14" />
   <color name="PaleGreen" rgb="152,251,152" cga="10" />
@@ -124,28 +124,28 @@
   <color name="PaleVioletRed" rgb="219,112,147" cga="13" />
   <color name="PapayaWhip" rgb="255,239,213" cga="14" />
   <color name="PeachPuff" rgb="255,218,185" cga="14" />
-  <color name="Peru" rgb="205,133,63" cga="14" />
+  <color name="Peru" rgb="205,133,63" cga="6" />
   <color name="Pink" rgb="255,192,203" cga="13" />
   <color name="Plum" rgb="221,160,221" cga="13" />
   <color name="PowderBlue" rgb="176,224,230" cga="11" />
   <color name="Purple" rgb="128,0,128" cga="5" />
   <color name="Red" rgb="255,0,0" cga="12" />
-  <color name="RosyBrown" rgb="188,143,143" cga="12" />
+  <color name="RosyBrown" rgb="188,143,143" cga="8" />
   <color name="RoyalBlue" rgb="65,105,225" cga="9" />
   <color name="SaddleBrown" rgb="139,69,19" cga="6" />
   <color name="Salmon" rgb="250,128,114" cga="12" />
   <color name="SandyBrown" rgb="244,164,96" cga="14" />
   <color name="SeaGreen" rgb="46,139,87" cga="2" />
-  <color name="SeaShell" rgb="255,245,238" cga="14" />
+  <color name="SeaShell" rgb="255,245,238" cga="15" />
   <color name="Sienna" rgb="160,82,45" cga="6" />
   <color name="Silver" rgb="192,192,192" cga="7" />
-  <color name="SkyBlue" rgb="135,206,235" cga="9" />
+  <color name="SkyBlue" rgb="135,206,235" cga="11" />
   <color name="SlateBlue" rgb="106,90,205" cga="9" />
-  <color name="SlateGray" rgb="112,128,144" cga="0" />
-  <color name="Snow" rgb="255,250,250" cga="12" />
+  <color name="SlateGray" rgb="112,128,144" cga="8" />
+  <color name="Snow" rgb="255,250,250" cga="15" />
   <color name="SpringGreen" rgb="0,255,127" cga="10" />
   <color name="SteelBlue" rgb="70,130,180" cga="1" />
-  <color name="Tan" rgb="210,180,140" cga="14" />
+  <color name="Tan" rgb="210,180,140" cga="6" />
   <color name="Teal" rgb="0,128,128" cga="3" />
   <color name="Thistle" rgb="216,191,216" cga="7" />
   <color name="Tomato" rgb="255,99,71" cga="12" />

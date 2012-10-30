@@ -15,7 +15,7 @@ namespace GamerServices
 
 	public static class Profile
 	{
-		private static Uri server = new Uri("http://helmet.kafuka.org/gamerservice.php");
+		public static Uri Server { get; private set; }
 		private static string profilePath, settingsFile;
 
 		public static string GameName { get; set; }
@@ -38,6 +38,8 @@ namespace GamerServices
 			KnownAchievements = new Dictionary<string, Achievement>();
 			AskForOnline = false;
 			UseOnline = false;
+
+			Server = new Uri(Noxico.IniFile.GetString("profile", "server", "http://helmet.kafuka.org/gamerservice.php"));
 		}
 
 		public static void Prepare()
@@ -224,7 +226,7 @@ namespace GamerServices
 		public static bool IsConnected()
 		{
 			var online = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
-			if (!online)
+			if (!online && Server.Host != "localhost")
 				return false;
 			if (AskForOnline)
 			{
@@ -245,7 +247,7 @@ namespace GamerServices
 			var data = new System.Collections.Specialized.NameValueCollection();
 			data.Add("r", name);
 			data.Add("g", GameName);
-			var response = client.UploadValues(server, data);
+			var response = client.UploadValues(Server, data);
 			var respText = new string(Array.ConvertAll<byte, char>(response, (b) => { return (char)b; }));
 			if (respText.StartsWith("MSG:"))
 			{
@@ -284,7 +286,7 @@ namespace GamerServices
 			data.Add("g", GameName);
 			data.Add("r", raw);
 			data.Add("l", LastSave.ToString());
-			var response = client.UploadValues(server, data);
+			var response = client.UploadValues(Server, data);
 			var respText = new string(Array.ConvertAll<byte, char>(response, (b) => { return (char)b; }));
 			if (respText.StartsWith("MSG:") && OnMessage != null)
 				OnMessage(respText.Substring(4));
@@ -295,7 +297,7 @@ namespace GamerServices
 			if (!IsConnected())
 				return false;
 			var client = new WebClient();
-			var response = client.DownloadString(server + "?t=" + name);
+			var response = client.DownloadString(Server + "?t=" + name);
 			if (response == "MSG:Profile name taken.")
 				return true;
 			return false;
