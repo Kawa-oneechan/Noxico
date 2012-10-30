@@ -31,7 +31,7 @@ namespace Noxico
 
 		public static void Setup()
 		{
-			if (!IniFile.GetBool("profile", "useonline", true) || !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+			if (!IniFile.GetBool("profile", "useonline", true) || !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && Profile.Server.Host != "localhost")
 				return;
 			Profile.GameName = "Noxico";
 
