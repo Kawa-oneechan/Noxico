@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE items [
-	<!ELEMENT items (item+)>
+	<!ELEMENT items (item|category)+>
+	<!ELEMENT category (item+)>
 	<!ELEMENT item (#PCDATA|script)*>
+	<!ATTLIST category name CDATA #REQUIRED>
 	<!ELEMENT script (#PCDATA)>
-	<!ATTLIST script type CDATA #REQUIRED>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
 	<!ATTLIST item
 		id ID #REQUIRED
 		name CDATA #REQUIRED
@@ -28,7 +30,7 @@ ascii
 randomized: 1
 			]]>
 		<script type="text/javascript">
-			//consume();
+			consume();
 			user.Morph("littlepony");
 			identify();
 		</script>
@@ -44,17 +46,18 @@ ascii
 			]]>
 	</item>
 
-	<item id="rope" name="length of rope" a="a" the="the">
-		<![CDATA[
+	<category name="">
+		<item id="rope" name="length of rope" a="a" the="the">
+			<![CDATA[
 nouse
 ascii
 	char: U+00A7
 	fore
 		sienna
 			]]>
-	</item>
-	<item id="baseballbat" name="baseball bat" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="baseballbat" name="baseball bat" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 canfuck
@@ -70,9 +73,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-	</item>
-	<item id="foxite" name="Foxite" a="" the="the" proper="true">
-		<![CDATA[
+		</item>
+		<item id="foxite" name="Foxite" a="" the="the" proper="true">
+			<![CDATA[
 test
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
@@ -80,52 +83,28 @@ ascii
 	fore
 		aquamarine
 			]]>
-		<script type="text/noxicobotic">
+			<script type="text/javascript">
+				consume();
+				user.Morph("fox");
+				identify();
+			</script>
+		</item>
+		<item id="penificator" name="penificator" a="a" the="the">
 			<![CDATA[
-consumed = 1
-morph fox 0 window
-				]]>
-		</script>
-	</item>
-	<item id="penificator" name="penificator" a="a" the="the">
-		<![CDATA[
 test
 ascii
 	char: U+00A1
 	fore
 		chartreuse
 			]]>
-		<script type="text/javascript">
-			message("It's no use.");
-			consume();
-		</script>
-		<script type="text/noxicobotic">
-			<![CDATA[
-!<< It's no use. >>
-consumed = 1
+			<script type="text/javascript">
+				<![CDATA[
+					//TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
 				]]>
-		</script>
-		<!--
-			<multiuse />
-			<growpenis>
-				<type>
-					<byscore />
-				</type>
-				<initial>5</initial>
-				<increase>2</increase>
-				<fudge>3</fudge>
-				<multichance>50</multichance>
-			</growpenis>
-			<ascii>
-				<char>173</char>
-				<fore>
-					<chartreuse />
-				</fore>
-			</ascii>
-			-->
-	</item>
-	<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
-		<![CDATA[
+			</script>
+		</item>
+		<item id="knife" name="combat knife" unknown="knife" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 fireproof
@@ -138,9 +117,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="butter_knife" name="butter knife" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="butter_knife" name="butter knife" a="a" the="the">
+			<![CDATA[
 test
 equipable
 	hand
@@ -154,9 +133,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="test_ring" name="test ring" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="test_ring" name="test ring" a="a" the="the">
+			<![CDATA[
 equipable
 	ring
 fireproof
@@ -165,9 +144,9 @@ ascii
 	fore
 		firebrick
 			]]>
-	</item>
-	<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
+			<![CDATA[
 unique
 fireproof
 equipable
@@ -185,10 +164,10 @@ ascii
 	fore
 		white
 			]]>
-	</item>
+		</item>
 
-	<item id="catears" name="cat ear headband" a="a" the="the">
-		<![CDATA[
+		<item id="catears" name="cat ear headband" a="a" the="the">
+			<![CDATA[
 plural
 equipable
 	hat
@@ -202,9 +181,9 @@ ascii
 	fore
 		darkmagenta
 			]]>
-	</item>
-	<item id="plain_briefs" name="briefs" a="a pair of" the="the">
-		<![CDATA[
+		</item>
+		<item id="plain_briefs" name="briefs" a="a pair of" the="the">
+			<![CDATA[
 plural
 equipable
 	male
@@ -215,9 +194,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-	</item>
-	<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
-		<![CDATA[
+		</item>
+		<item id="plain_boxers" name="boxer shorts" a="a pair of" the="the">
+			<![CDATA[
 plural
 equipable
 	male
@@ -228,9 +207,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-	</item>
-	<item id="plain_panties" name="panties" a="a pair of" the="the">
-		<![CDATA[
+		</item>
+		<item id="plain_panties" name="panties" a="a pair of" the="the">
+			<![CDATA[
 plural
 equipable
 	female
@@ -241,9 +220,9 @@ price: 10
 ascii
 	char: U+006E
 			]]>
-	</item>
-	<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
-		<![CDATA[
+		</item>
+		<item id="lacy_panties" name="lacy panties" a="a pair of" the="the">
+			<![CDATA[
 plural
 equipable
 	female
@@ -254,9 +233,9 @@ price: 20
 ascii
 	char: U+006E
 			]]>
-	</item>
-	<item id="plain_bra" name="bra" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="plain_bra" name="bra" a="a" the="the">
+			<![CDATA[
 plural
 equipable
 	female
@@ -267,9 +246,9 @@ price: 10
 ascii
 	char: U+0077
 			]]>
-	</item>
-	<item id="lacy_bra" name="lacy bra" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="lacy_bra" name="lacy bra" a="a" the="the">
+			<![CDATA[
 plural
 equipable
 	female
@@ -280,9 +259,9 @@ price: 20
 ascii
 	char: U+0077
 			]]>
-	</item>
-	<item id="sheer_top" name="sheer top" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="sheer_top" name="sheer top" a="a" the="the">
+			<![CDATA[
 equipable
 	female
 	shirt
@@ -293,8 +272,9 @@ price: 100
 ascii
 	char: U+0077
 			]]>
-	</item>
-
+		</item>
+	</category>
+	
 	<item id="egg" name="egg" a="an" the="the">
 		<![CDATA[
 singleuse
@@ -309,9 +289,9 @@ ascii
 			]]>
 	</item>
 
-	<!-- NetHack weapons -->
-	<item id="spear" name="spear" a="a" the="the">
-		<![CDATA[
+	<category name="NetHack weapons">
+		<item id="spear" name="spear" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 weapon
@@ -324,9 +304,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-	</item>
-	<item id="javelin" name="javelin" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="javelin" name="javelin" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 weapon
@@ -339,9 +319,9 @@ ascii
 	fore
 		darkgoldenrod
 			]]>
-	</item>
-	<item id="dagger" name="dagger" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="dagger" name="dagger" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 fireproof
@@ -354,9 +334,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="fireaxe" name="fire-axe" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="fireaxe" name="fire-axe" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 fireproof
@@ -370,9 +350,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="battleaxe" name="battle axe" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="battleaxe" name="battle axe" a="a" the="the">
+			<![CDATA[
 equipable
 	hand
 fireproof
@@ -386,9 +366,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="shortsword" name="short sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="shortsword" name="short sword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -402,9 +382,9 @@ ascii
 	fore
 		white
 			]]>
-	</item>
-	<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -419,9 +399,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="broadsword" name="broadsword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="broadsword" name="broadsword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -436,9 +416,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="longsword" name="longsword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="longsword" name="longsword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -453,9 +433,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -472,9 +452,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -489,9 +469,9 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
+			<![CDATA[
 fireproof
 equipable
 	hand
@@ -506,13 +486,15 @@ ascii
 	fore
 		silver
 			]]>
-	</item>
-	<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
-	<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
-	<!-- bullwhip, pistol -->
+		</item>
+		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
+		<!-- bagh nakh (wolverine claws), riding crop, two-by-four -->
+		<!-- bullwhip, pistol -->
+	</category>
 
-	<item id="fancysanta" name="fancy Santa" a="a" the="the">
-		<![CDATA[
+	<category name="Homestuck">
+		<item id="fancysanta" name="fancy Santa" a="a" the="the">
+			<![CDATA[
 fireproof
 fearsome
 equipable
@@ -527,9 +509,9 @@ ascii
 	fore
 		red
 			]]>
-	</item>
-	<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
-		<![CDATA[
+		</item>
+		<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
+			<![CDATA[
 fireproof
 unique
 equipable
@@ -545,9 +527,9 @@ ascii
 	fore
 		lime
 			]]>
-	</item>
-	<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
-		<![CDATA[
+		</item>
+		<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
+			<![CDATA[
 fireproof
 unique
 equipable
@@ -562,9 +544,9 @@ ascii
 	fore
 		blue
 			]]>
-	</item>
-	<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
-		<![CDATA[
+		</item>
+		<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
+			<![CDATA[
 fireproof
 unique
 equipable
@@ -580,9 +562,9 @@ ascii
 	fore
 		blue
 			]]>
-	</item>
-	<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
-		<![CDATA[
+		</item>
+		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
+			<![CDATA[
 fireproof
 unique
 fearsome
@@ -598,9 +580,10 @@ ascii
 	fore
 		purple
 			]]>
-	</item>
-	<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
-
+		</item>
+		<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
+	</category>
+	
 	<item id="whip" name="whip" a="a" the="the">
 		<![CDATA[
 fireproof
@@ -806,7 +789,7 @@ ascii
 			]]>
 	</item>
 
-	<!-- Clothes from jsNoxico -->
+	<category name="Clothes from jsNoxico">
 	<item id="tatteredshreds_shirt" name="tattered shreds" a="" the="the">
 		<![CDATA[
 plural
@@ -1136,8 +1119,9 @@ ascii
 	char: U+222B
 			]]>
 	</item>
+	</category>
 
-	<!-- Lena's costume -->
+	<category name="Lena's costume, should be put in a mission">
 	<item id="strapless_leather_bra" name="[color ]leather bra" a="a" the="the">
 		<![CDATA[
 equipable
@@ -1202,276 +1186,326 @@ ascii
 		crimson
 			]]>
 	</item>
+	</category>
 
-	<!-- Morph lines -->
-	<!-- Rewrite these to use the morph command. -->
-	<item id="catmorph" name="cat morph potion" a="a" the="the">
-		<![CDATA[
+	<category name="TF items">
+		<item id="catmorph" name="cat morph potion" a="a" the="the">
+			<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		lightsalmon
 			]]>
-		<script type="text/noxicobotic">
-			<![CDATA[
--- Text stolen from CoC's Whisker Fruit item, for now.
-
-|<< You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside. >>
-				
--- always increase speed
-gettokenval "speed"
-if it < 75
-	if it < 30
-		|<< [break]You feel...more balanced, sure of step. You're certain that you've become just a little bit faster. >>
-		inctokenval "speed" 2
-	else
-		if it < 60
-			|<< [break]You stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now. >>
-			inctokenval "speed" 1
-		else
-			|<< [break]You pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down. >>
-			inctokenval "speed" 0.5
-		endif
-	endif
-	-- end
-endif
-
--- sometimes increase charisma
-				
--- grow cat ears
-checktoken "ears/cat"
-if not exists
-	-- should check the existing type first
-	|<< [break]Your ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. [break]<cWhite>You now have cat ears.<c> >>
-
-	removetoken "ears"
-	addtoken "ears"
-	addtoken "ears" "cat"
-	end
-endif
-
--- grow cat tail
-checktoken "tail/genbeast"
-if not exists
-	-- should check the existing type first
-	|<< [break]You pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. [break]<cWhite>You now have a cat tail.<c> >>
-
-	removetag "tail"
-	addtoken "tail"
-	addtoken "tail" "genbeast"
+			<script type="text/javascript">
+				<![CDATA[
+					//Text stolen from CoC's Whisker Fruit item, for now.
 					
-	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-	end
-endif
+					//We want to buffer the output. Calling message() would result in several separate ones.
+					var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
 
--- grow fangs
+					//Always boost speed.
+					var speed = user.GetToken("speed");
+					if (speed.Value < 75)
+					{
+						if (speed.Value < 30)
+						{
+							speed.Value += 2;
+							ret += "\n\nYou feel... more balanced, sure of step. You're certain that you've become just a little bit faster.";
+						}
+						else if (speed.Value < 60)
+						{
+							speed.Value += 1;
+							ret += "\n\nYou stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now.";
+						}
+						else
+						{
+							speed.Value += 0.5;
+							ret += "\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.";
+						}
+					}
+					
+					//Sometimes increase charisma.
+					
+					//Grow cat ears.
+					if (user.Path("ears/cat") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
+						
+						user.RemoveToken("ears");
+						user.AddToken("ears").AddToken("cat");
 
--- grow fur
-checktoken "fur"
-if not exists
-	|<< [break]<cWhite>You grow fur all over. >>
-	renametoken "skin" "fur"
-	end
-endif
-				
--- grow digitigrade legs
-				
--- grow up to two extra breast rows
-				
+						message(ret);
+						return;
+					}
+					
+					//Grow cat tail.
+					if (user.Path("tail/genbeast") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYou pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+						user.RemoveToken("tail");
+						user.AddToken("tail").AddToken("genbeast");
+
+						message(ret);
+						return;
+					}
+					
+					//Grow fangs.
+
+					//Grow fur.
+					var skinType = user.Path("skin/type");
+					if (skinType.Item(0).Name != "fur")
+					{
+						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
+						skinType.Item(0).Name = "fur";
+
+						user.SetTerms("felinoid", "catboy", "catgirl", "catherm");
+						if (!user.HasToken("invisiblegender"));
+						{
+							user.RemoveToken("explicitgender");
+							user.AddToken("invisiblegender");
+						}
+						userbc.AdjustView();
+
+						message(ret);
+						return;
+					}
+					
+					//Grow digitigrade legs.
+					
+					//Grow up to two extra breast rows.
+
+					message(ret);
 				]]>
-		</script>
-	</item>
-	<item id="dogmorph" name="dog morph potion" a="a" the="the">
-		<![CDATA[
+			</script>
+		</item>
+		<item id="dogmorph" name="dog morph potion" a="a" the="the">
+			<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		mistyrose
 			]]>
-		<script type="text/noxicobotic">
-			<![CDATA[
--- Text stolen from CoC's Canine Pepper item, for now.
-
-|<< The pepper is strangely spicy but very tasty. >>
-				
--- always increase strength
-gettokenval "strength"
-if it < 50
-	|<< [break]Your muscles feel more toned. >>
-	inctokenval "strength" 2
-endif
-
--- sometimes increase charisma
-				
--- grow dog ears
-checktoken "ears/dog"
-if not exists
-	-- should check the existing type first
-	|<< [break]Your ears transform, becoming more canine in appearance.[break]<cWhite>You now have dog ears.<c> >>
-
-	removetoken "ears"
-	addtoken "ears"
-	addtoken "ears" "dog"
-	end
-endif
-
--- grow dog tail
-checktoken "tail/dog"
-if not exists
-	-- should check the existing type first
-	|<< [break]You feel your backside shift and change, flesh molding and displacing into a long puffy tail![break]<cWhite>You now have a dog tail.<c> >>
-
-	removetoken "tail"
-	addtoken "tail"
-	addtoken "tail" "dog"
+			<script type="text/javascript">
+				<![CDATA[
+					//Text stolen from CoC's Canine Pepper item, for now.
 					
-	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-	end
-endif
+					var ret = "The pepper is strangely spicy but very tasty.";
 
--- grow fangs
+					//Always boost strength.
+					var strength = user.GetToken("strength");
+					if (strength.Value < 50)
+					{
+						strength.Value += 2;
+						ret += "\n\nYour muscles feel more toned.";
+					}
 
--- grow fur
-checktoken "fur"
-if not exists
-	|<< [break]<cWhite>You grow fur all over. >>
-	renametoken "skin" "fur"
-	end
-endif
-				
--- grow digitigrade legs
-				
--- grow up to two extra breast rows
-				
+					//Sometimes increase charisma.
+					
+					//Grow dog ears.
+					if (user.Path("ears/dog") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
+						
+						user.RemoveToken("ears");
+						user.AddToken("ears").AddToken("dog");
+
+						message(ret);
+						return;
+					}
+
+					//Grow dog tail.
+					if (user.Path("tail/dog") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into a long puffy tail! <cWhite>You now have a dog tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+						user.RemoveToken("tail");
+						user.AddToken("tail").AddToken("dog");
+
+						message(ret);
+						return;
+					}
+
+					//Grow fangs.
+
+					//Grow fur.
+					var skinType = user.Path("skin/type");
+					if (skinType.Item(0).Name != "fur")
+					{
+						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
+						skinType.Item(0).Name = "fur";
+
+						user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
+						if (!user.HasToken("invisiblegender"));
+						{
+							user.RemoveToken("explicitgender");
+							user.AddToken("invisiblegender");
+						}
+						userbc.AdjustView();
+
+						message(ret);
+						return;
+					}
+					
+					//Grow digitigrade legs.
+					
+					//Grow up to two extra breast rows.
+
+					message(ret);
 				]]>
-		</script>
-	</item>
-	<item id="foxmorph" name="fox morph potion" a="a" the="the">
-		<![CDATA[
+			</script>
+		</item>
+		<item id="foxmorph" name="fox morph potion" a="a" the="the">
+			<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		orangered
 			]]>
-		<script type="text/noxicobotic">
-			<![CDATA[
-|<< You apply the fox morph potion. >>
-				
--- always increase cunning
-gettokenval "cunning"
-if it < 50
-	|<< [break]You feel more cunning. >>
-	inctokenval "cunning" 2
-endif
+			<script type="text/javascript">
+				<![CDATA[
+					var ret = "You apply the fox morph potion.";
 
--- sometimes increase charisma
-				
--- grow dog ears
-checktoken "ears/genbeast"
-if not exists
-	-- should check the existing type first
-	|<< [break][Your] head itches as [you] grow[s] a pair of fuzzy, pointed ears.[break]<cWhite>[You] now [have] fox ears.<c> >>
+					//Always boost cunning.
+					var cunning = user.GetToken("cunning");
+					if (cunning.Value < 50)
+					{
+						cunning.Value += 2;
+						ret += "\n\nYou feel more cunning.";
+					}
 
-	removetoken "ears"
-	addtoken "ears"
-	addtoken "ears" "genbeast"
-	end
-endif
-
--- grow fox tail
-checktoken "tail/fox"
-if not exists
-	-- should check the existing type first
-	|<< [break]A fox tail sprouts from just above [your] butt.[break]<cWhite>[You] now [have] a fox tail.<c> >>
-
-	removetoken "tail"
-	addtoken "tail"
-	addtoken "tail" "fox"
+					//Sometimes increase charisma.
 					
-	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-	end
-endif
+					//Grow dog ears.
+					if (user.Path("ears/genbeast") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
+						
+						user.RemoveToken("ears");
+						user.AddToken("ears").AddToken("genbeast");
 
--- grow fangs
+						message(ret);
+						return;
+					}
 
--- grow fur
-checktoken "fur"
-if not exists
-	|<< [break]<cWhite>[Your] whole body itches as a thin layer of brown fur grows all over. >>
-	-- renametoken "skin" "fur"
-	removetoken "skin"
-	removetoken "rubber"
-	removetoken "slime"
-	removetoken "scales"
-	addtoken "fur"
-	addtoken "fur" "brown"
-	setspecies "foxmorph" "foxboy" "foxgirl"
-	adjustview
-	end
-endif
-				
--- grow digitigrade legs
-				
+					//Grow fox tail.
+					if (user.Path("tail/fox") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+						user.RemoveToken("tail");
+						user.AddToken("tail").AddToken("fox");
+
+						message(ret);
+						return;
+					}
+
+					//Grow fangs.
+
+					//Grow fur.
+					var skinType = user.Path("skin/type");
+					if (skinType.Item(0).Name != "fur")
+					{
+						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
+						skinType.Item(0).Name = "fur";
+						user.Path("skin/color").Text = "brown";
+
+						user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
+						if (!user.HasToken("invisiblegender"));
+						{
+							user.RemoveToken("explicitgender");
+							user.AddToken("invisiblegender");
+						}
+						userbc.AdjustView();
+
+						message(ret);
+						return;
+					}
+					
+					//Grow digitigrade legs.
+
+					message(ret);
 				]]>
-		</script>
-	</item>
-	<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
-		<![CDATA[
+			</script>
+		</item>
+		<item id="bunnymorph" name="bunny morph potion" a="a" the="the">
+			<![CDATA[
 wip
 ascii
 	char: U+00A1
 	fore
 		skyblue
 			]]>
-		<script type="text/noxicobotic">
-			<![CDATA[
-|<< You apply the bunny morph potion. >>
-				
--- always increase libido
-gettokenval "libido"
-if it < 80
-	|<< [break]You feel hornier. >>
-	inctokenval "libido" 4
-endif
-				
--- grow bunny ears
-checktoken "ears/bunny"
-if not exists
-	-- should check the existing type first
-	|<< [break]Your ears transform, becoming more bunny in appearance.[break]<cWhite>You now have bunny ears.<c> >>
+			<script type="text/javascript">
+				<![CDATA[
+					var ret = "You apply the bunny morph potion.";
 
-	removetoken "ears"
-	addtoken "ears"
-	addtoken "ears" "bunny"
-	end
-endif
+					//Always boost libido.
+					var sensitivity = user.GetToken("sensitivity");
+					if (sensitivity.Value < 80)
+					{
+						sensitivity.Value += 4;
+						ret += "\n\nYou feel hornier.";
+					}
 
--- grow bunny tail
-checktoken "tail/bunny"
-if not exists
-	-- should check the existing type first
-	|<< [break]You feel your backside shift and change, flesh molding and displacing into an adorable puffball![break]<cWhite>You now have a bunny tail.<c> >>
+					//Grow bunny ears.
+					if (user.Path("ears/bunny") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
+						
+						user.RemoveToken("ears");
+						user.AddToken("ears").AddToken("bunny");
 
-	removetoken "tail"
-	addtoken "tail"
-	addtoken "tail" "bunny"
-					
-	|<< [break]<cYellow>Now would be an excellent time to stop taking this stuff.<c> >>
-	end
-endif
+						message(ret);
+						return;
+					}
 
--- grow fur
-checktoken "fur"
-if not exists
-	|<< [break]<cWhite>You grow fur all over. >>
-	renametoken "skin" "fur"
-	end
-endif
+					//Grow bunny tail.
+					if (user.Path("tail/bunny") == null)
+					{
+						//Should check the existing type first.
+						ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
 
+						user.RemoveToken("tail");
+						user.AddToken("tail").AddToken("bunny");
+
+						message(ret);
+						return;
+					}
+
+					//Grow fur.
+					var skinType = user.Path("skin/type");
+					if (skinType.Item(0).Name != "fur")
+					{
+						ret += "Your whole body itches as a thin layer of white fur grows all over.";
+						skinType.Item(0).Name = "fur";
+						user.Path("skin/color").Text = "white";
+
+						user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
+						if (!user.HasToken("invisiblegender"));
+						{
+							user.RemoveToken("explicitgender");
+							user.AddToken("invisiblegender");
+						}
+						userbc.AdjustView();
+
+						message(ret);
+						return;
+					}
+
+					message(ret);
 				]]>
-		</script>
-	</item>
+			</script>
+		</item>
+	</category>
 </items>
