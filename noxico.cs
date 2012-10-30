@@ -1133,6 +1133,13 @@ namespace Noxico
 			return null;
 		}
 
+		public Token Item(int i)
+		{
+			if (i < 0 || i >= Tokens.Count)
+				throw new ArgumentOutOfRangeException("i");
+			return Tokens[i];
+		}
+
 #if DEBUG
 		public string DumpTokens(List<Token> list, int tabs)
 		{
@@ -2037,6 +2044,8 @@ namespace Noxico
 					sb.AppendFormat("[His] {0} is parted by a pair of rounded cow-ears that stick out sideways.", hairDesc);
 				else if (this.GetToken("ears").HasToken("frill"))
 					sb.AppendFormat("[His] {0} is parted by a pair of draconic frills.", hairDesc);
+				else if (this.GetToken("ears").HasToken("bunny"))
+					sb.AppendFormat("[His] {0} is parted by a pair of long, floppy bunny ears.", hairDesc);
 
 				if (this.HasToken("antennae"))
 					sb.AppendFormat(" Floppy antennae grow from just behind [his] hairline, bouncing and swaying in the breeze.");
@@ -3145,6 +3154,26 @@ namespace Noxico
 			if (paragon.Value > 100)
 				paragon.Value = 100;
 		}
+
+		public void SetTerms(string generic, string male, string female, string herm)
+		{
+			var g = this.Path("terms/generic");
+			var m = this.Path("terms/male");
+			var f = this.Path("terms/female");
+			var h = this.Path("terms/herm");
+			if (g == null)
+				g = this.GetToken("terms").AddToken("generic");
+			if (m == null)
+				m = this.GetToken("terms").AddToken("male");
+			if (f == null)
+				f = this.GetToken("terms").AddToken("female");
+			if (h == null)
+				h = this.GetToken("terms").AddToken("herm");
+			g.Text = generic;
+			m.Text = male;
+			f.Text = female;
+			h.Text = herm;
+		}
 	}
 
 	public class InventoryItem : TokenCarrier
@@ -3285,6 +3314,8 @@ namespace Noxico
 #endif
 
 			ni.Script = null;
+			if (ni.ID == "catmorph")
+				ni.ID = "catmorph";
 			var ses = x.SelectNodes("script").OfType<XmlElement>().ToList();
 			if (ses.Count == 0)
 				return ni;
@@ -3609,6 +3640,7 @@ namespace Noxico
 				var js = Javascript.MainMachine;
 				Javascript.Ascertain(js, true);
 				js.SetParameter("user", character);
+				js.SetParameter("userbc", boardchar);
 				js.SetFunction("consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
 				js.SetFunction("message", new Action<string>(x =>
 				{
@@ -3660,6 +3692,13 @@ namespace Noxico
 						runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
 					}
 				}));
+#if DEBUG
+				js.SetDebugMode(true);
+				js.Step += (s, di) =>
+				{
+					Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+				};
+#endif
 				js.Run(this.Script);
 			}
 			else
