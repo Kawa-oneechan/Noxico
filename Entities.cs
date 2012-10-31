@@ -605,24 +605,70 @@ namespace Noxico
 			}
 		}
 
-		public bool UpdateEggs()
+		public bool UpdatePregancy()
 		{
-			if (!Character.HasToken("egglayer") || !Character.HasToken("vagina"))
+			if (!Character.HasToken("vagina"))
 				return false;
-			var eggToken = Character.GetToken("egglayer");
-			eggToken.Value++;
-			if (eggToken.Value == 500)
+			if (Character.HasToken("egglayer") && !Character.HasToken("pregnancy"))
 			{
-				eggToken.Value = 0;
-				NoxicoGame.Sound.PlaySound("Put Item");
-				var egg = new DroppedItem("egg")
+				var eggToken = Character.GetToken("egglayer");
+				eggToken.Value++;
+				if (eggToken.Value == 500)
 				{
-					XPosition = XPosition,
-					YPosition = YPosition,
-					ParentBoard = ParentBoard,
-				};
-				egg.PickUp(Character);
-				return true;
+					eggToken.Value = 0;
+					NoxicoGame.Sound.PlaySound("Put Item");
+					var egg = new DroppedItem("egg")
+					{
+						XPosition = XPosition,
+						YPosition = YPosition,
+						ParentBoard = ParentBoard,
+					};
+					egg.PickUp(Character);
+					if (this is Player)
+						NoxicoGame.AddMessage("You have laid an egg.");
+					return false;
+				}
+			}
+			else if (Character.HasToken("pregnancy"))
+			{
+				var pregnancy = Character.GetToken("pregnancy");
+				var gestation = pregnancy.GetToken("gestation");
+				gestation.Value++;
+				if (gestation.Value >= gestation.GetToken("max").Value)
+				{
+					var child = pregnancy.Path("child");
+					var location = Character.Path("childlocation");
+					var childName = new Name();
+
+					Character childChar = null;
+
+					if ((child != null && location == null) || (child == null))
+					{
+						//Invalidated location or no child definition.
+						childName.Female = Toolkit.Rand.NextDouble() > 0.5;
+						childName.NameGen = Character.GetToken("namegen").Text;
+					}
+					else
+					{
+						childName.Female = child.HasToken("vagina");
+						childName.NameGen = child.GetToken("namegen").Text;
+					}
+					childName.Regenerate();
+					if (childName.Surname.StartsWith("#patronym"))
+						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), Character.Name);
+
+					var ships = Character.GetToken("ships");
+					ships.AddToken(childName.ToID()).AddToken("child");
+					if (childChar != null)
+					{
+						//also ship the child to the parent, can use SetRelation this time.
+						childChar.SetRelation(Character, "mother"); 
+					}
+
+					//Midwife Daemon goes here, using the location token.
+
+					return true;
+				}
 			}
 			return false;
 		}
@@ -778,7 +824,7 @@ namespace Noxico
 
 			base.Update();
 			Excite();
-			UpdateEggs();
+			UpdatePregancy();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
@@ -1870,8 +1916,8 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
-			if (UpdateEggs())
-				NoxicoGame.AddMessage("You have laid an egg.");
+			if (UpdatePregancy())
+				return;
 
 			var five = new TimeSpan(0,0,5);
 			PlayingTime = PlayingTime.Add(five);
