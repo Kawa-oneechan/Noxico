@@ -1813,6 +1813,13 @@ namespace Noxico
 			f.Text = female;
 			h.Text = herm;
 		}
+
+		public void EnsureColor(Token colorToken, string options)
+		{
+			var o = options.Split(',').Select(x => x.Trim()).ToArray();
+			if (!o.Contains(colorToken.Text))
+				colorToken.Text = Toolkit.PickOne(o);
+		}
 	}
 
 	public class Name

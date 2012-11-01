@@ -667,6 +667,10 @@ namespace Noxico
 
 					//Midwife Daemon goes here, using the location token.
 
+					//Until then, we'll just message you.
+					MessageBox.Message("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
+
+					Character.RemoveToken("pregnancy");
 					return true;
 				}
 			}
