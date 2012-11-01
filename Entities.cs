@@ -518,7 +518,7 @@ namespace Noxico
 
 		public virtual void AdjustView()
 		{
-			var skinColor = Character.Path((Character.Path("skin/type").Tokens[0].Name == "slime" ? "hair" : "skin") + "/color").Text;
+			var skinColor = Character.Path((Character.Path("skin/type").Text == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
 			if (skinColor.Equals("black", StringComparison.InvariantCultureIgnoreCase))
@@ -572,7 +572,7 @@ namespace Noxico
 						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
 			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes/color").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
 		}
 
 		public override bool CanSee(Entity other)

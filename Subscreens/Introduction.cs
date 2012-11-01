@@ -165,17 +165,11 @@ namespace Noxico
 		{
 			var ti = CultureInfo.InvariantCulture.TextInfo;
 			var ret = new List<PlayableRace>();
-			//var xDoc = new XmlDocument();
 			Console.WriteLine("Collecting playables...");
 			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
-			//var playables = xDoc.SelectNodes("//playable").OfType<XmlElement>();
-			//foreach (var playable in playables)
 			var bodyPlans = xDoc.SelectNodes("//bodyplan");
 			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
 			{
-				//var bodyPlan = playable.ParentNode as XmlElement;
-				//var id = bodyPlan.GetAttribute("id");
 				var id = bodyPlan.GetAttribute("id");
 				if (bodyPlan.ChildNodes[0].Value == null)
 				{
@@ -187,8 +181,7 @@ namespace Noxico
 					continue;
 				Console.WriteLine(" * Parsing {0}...", id);
 
-				var genlock = plan.Contains("only\n"); //(bodyPlan.("maleonly") != null) || (bodyPlan.SelectSingleNode("femaleonly") != null) ||
-				//(bodyPlan.SelectSingleNode("hermonly") != null) || (bodyPlan.SelectSingleNode("neuteronly") != null);
+				var genlock = plan.Contains("only\n");
 
 				var name = id;
 
@@ -238,10 +231,8 @@ namespace Noxico
 				}
 
 				var eyes = new List<string>() { "Brown" };
-				var eye = Toolkit.GrabToken(plan, "eyes");
-				if (eye != null)
 				{
-					var c = eye.Substring(eye.IndexOf("color: ") + 7).Trim();
+					var c = plan.Substring(plan.IndexOf("\neyes: ") + 7);
 					if (c.StartsWith("oneof"))
 					{
 						eyes.Clear();
@@ -433,7 +424,11 @@ namespace Noxico
 					var bonus = ((UIList)controls["gift"]).Text;
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
+					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
+					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
+					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
 					NoxicoGame.HostForm.Noxico.SaveGame();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
@@ -442,9 +437,6 @@ namespace Noxico
 					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 					Achievements.StartingTime = DateTime.Now;
-					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
-					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
-					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
