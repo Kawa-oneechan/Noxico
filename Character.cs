@@ -159,7 +159,7 @@ namespace Noxico
 		{
 			//TODO: make these use the colors defined for the Human bodytype instead of hardcoding?
 			var regularColors = new[] { "light", "pale", "dark", "olive" };
-			if (Path("skin/type/skin") == null)
+			if (Path("skin/type") == null || Path("skin/type").Text != "skin")
 				return false;
 			var color = Path("skin/color");
 			if (color == null)
@@ -698,92 +698,101 @@ namespace Noxico
 
 			#region Face and Skin
 			var skinDescriptions = new Dictionary<string, Dictionary<string, string>>()
+			{
+				{ "skin",
+					new Dictionary<string, string>()
+					{
+						{ "normal", "[He] [has] a fairly normal face, with {0} skin." },
+						{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+						{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+						{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+						{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
+						{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
+						{ "reptile", "[He] [has] a face resembling that of a lizard, and with [his] toothy maw, [he] [has] quite a fearsome visage. [He] [does] look a little odd as a lizard without scales." },
+					}
+				},
 				{
-					{ "skin",
-						new Dictionary<string, string>()
-						{
-							{ "normal", "[He] [has] a fairly normal face, with {0} skin." },
-							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
-							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin." },
-							{ "reptile", "[He] [has] a face resembling that of a lizard, and with [his] toothy maw, [he] [has] quite a fearsome visage. [He] [does] look a little odd as a lizard without scales." },
-						}
-					},
+					"fur",
+					new Dictionary<string, string>()
 					{
-						"fur",
-						new Dictionary<string, string>()
-						{
-							{ "normal", "Under [his] {0} fur [he] [has] a human-shaped head." },
-							{ "genbeast", "[He] [has] a face like an animal, but still recognizably humanoid. [His] fur is {0}." },
-							{ "horse", "[His] face is almost entirely equine in appearance, even having {0} fur." },
-							{ "dog", "[He] [has] a dog's face, complete with wet nose and panting tongue. [His] fur is {0}." },
-							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. [His] {0} fur thickens noticably on [his] head, looking shaggy and monstrous." },
-							{ "cat", "[He] [has] a cat's face, complete with moist nose, whiskers, and slitted eyes. [His] fur is {0}." },
-							{ "reptile", "[He] [has] a face resembling that of a lizard. Between the toothy maw, pointed snout, and the layer of {0} fur covering [his] face, [he] [has] quite the fearsome visage." },
-						}
-					},
+						{ "normal", "Under [his] {0} fur [he] [has] a human-shaped head." },
+						{ "genbeast", "[He] [has] a face like an animal, but still recognizably humanoid. [His] fur is {0}." },
+						{ "horse", "[His] face is almost entirely equine in appearance, even having {0} fur." },
+						{ "dog", "[He] [has] a dog's face, complete with wet nose and panting tongue. [His] fur is {0}." },
+						{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. [His] {0} fur thickens noticably on [his] head, looking shaggy and monstrous." },
+						{ "cat", "[He] [has] a cat's face, complete with moist nose, whiskers, and slitted eyes. [His] fur is {0}." },
+						{ "reptile", "[He] [has] a face resembling that of a lizard. Between the toothy maw, pointed snout, and the layer of {0} fur covering [his] face, [he] [has] quite the fearsome visage." },
+					}
+				},
+				{
+					"rubber",
+					new Dictionary<string, string>
 					{
-						"rubber",
-						new Dictionary<string, string>
-						{
-							{ "normal", "[His] face is fairly human in shape, but is covered in {0} rubber." },
-							{ "genbeast", "[He] [has] a face like an animal, but overlaid with glittering {0} rubber instead of fur. The look is very strange, but not unpleasant." },
-							{ "horse", "[He] [has] the face and head structure of a horse, overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "dog", "[He] [has] the face and head structure of a dog, wet nose and all, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "cow", "[His] face resembles a minotaur's, though strangely it is covered in shimmering {0} scales, right up to the flat cow-like noise that protrudes from [his] face." },
-							{ "cat", "[He] [has] the facial structure of a cat, moist nose, whisker, and slitted eyes included, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
-							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} rubber completes the look, making [him] look quite fearsome." },
-						}
-					},
+						{ "normal", "[His] face is fairly human in shape, but is covered in {0} rubber." },
+						{ "genbeast", "[He] [has] a face like an animal, but overlaid with glittering {0} rubber instead of fur. The look is very strange, but not unpleasant." },
+						{ "horse", "[He] [has] the face and head structure of a horse, overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+						{ "dog", "[He] [has] the face and head structure of a dog, wet nose and all, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+						{ "cow", "[His] face resembles a minotaur's, though strangely it is covered in shimmering {0} scales, right up to the flat cow-like noise that protrudes from [his] face." },
+						{ "cat", "[He] [has] the facial structure of a cat, moist nose, whisker, and slitted eyes included, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant." },
+						{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} rubber completes the look, making [him] look quite fearsome." },
+					}
+				},
+				{
+					"scales",
+					new Dictionary<string, string>
 					{
-						"scales",
-						new Dictionary<string, string>
-						{
-							{ "normal", "[He] [has] a fairly normal face, with {0} scales." },
-							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
-							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
-							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} scales complete the look, making [him] look quite fearsome." },
-						}
-					},
+						{ "normal", "[He] [has] a fairly normal face, with {0} scales." },
+						{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+						{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+						{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+						{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz." },
+						{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [he] [has] no fur, only {0} scales." },
+						{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} scales complete the look, making [him] look quite fearsome." },
+					}
+				},
+				{
+					"slime",
+					new Dictionary<string, string>
 					{
-						"slime",
-						new Dictionary<string, string>
-						{
-							{ "normal", "[He] [has] a fairly normal face, made of translucent {0} slime." },
-							{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [his] face is made of translucent {0} slime." },
-							{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Translucent {0} slime completes the look, making [him] look quite fearsome." },
-						}
-					},
+						{ "normal", "[He] [has] a fairly normal face, made of translucent {0} slime." },
+						{ "genbeast", "[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+						{ "horse", "[His] face is equine in shape and structure. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+						{ "dog", "[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+						{ "cow", "[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+						{ "cat", "[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and slitted eyes. It looks somewhat odd as [his] face is made of translucent {0} slime." },
+						{ "reptile", "[His] face is that of a lizard, complete with a toothy maw and pointed snout. Translucent {0} slime completes the look, making [him] look quite fearsome." },
+					}
+				},
+				{
+					"metal",
+					new Dictionary<string, string>
 					{
-						"metal",
-						new Dictionary<string, string>
-						{
-							{ "normal", "[His] face is fairly human in basic shape, but made of a rigid-looking metallic substance, {0} in color." },
-							{ "genbeast", "[His] face looks metallic and bestial, made of small slivers of {0} metal." },
-							{ "horse", "[His] face is equine in appearance, with a smooth, metallic {0} surface." },
-							{ "dog", "[He] [has] a dog-like face, made of smooth metal plates, {0} in color." },
-							{ "cow", "[He] [has] a bovine face, made of a rigid-looking {0} metal." },
-							{ "cat", "[His] face is cat-like, with the outer surface made of smooth little metal plates, {0} in color." },
-							{ "reptile", "[His] face is lizard-like, made of smoothly laid out slivers of {0} metal." },
-						}
-					},
-				};
-			var skinName = this.Path("skin/type") != null ? this.Path("skin/type").Tokens[0].Name : "skin";
-			var faceType = this.HasToken("face") ? this.GetToken("face").Tokens[0].Name : "normal";
+						{ "normal", "[His] face is fairly human in basic shape, but made of a rigid-looking metallic substance, {0} in color." },
+						{ "genbeast", "[His] face looks metallic and bestial, made of small slivers of {0} metal." },
+						{ "horse", "[His] face is equine in appearance, with a smooth, metallic {0} surface." },
+						{ "dog", "[He] [has] a dog-like face, made of smooth metal plates, {0} in color." },
+						{ "cow", "[He] [has] a bovine face, made of a rigid-looking {0} metal." },
+						{ "cat", "[His] face is cat-like, with the outer surface made of smooth little metal plates, {0} in color." },
+						{ "reptile", "[His] face is lizard-like, made of smoothly laid out slivers of {0} metal." },
+					}
+				},
+			};
+			var skinName = this.Path("skin/type") != null ? this.Path("skin/type").Text : "skin";
+			var faceType = this.HasToken("face") ? this.GetToken("face").Text : "normal";
 			var hairColor = this.Path("hair/color") != null ? Toolkit.NameColor(this.Path("hair/color").Text).ToLowerInvariant() : "<null>";
 			var skinColor = skinName == "slime" ? hairColor : Toolkit.NameColor(this.Path("skin/color").Text).ToLowerInvariant();
 			//TODO: hide some info if wearing a mask.
 			//if (mask != null && !mask.CanSeeThrough())
 			sb.AppendFormat(skinDescriptions[skinName][faceType], skinColor, hairColor);
+			//Simple two eyes setup for everybody, can expand to more eyes or special kinds later.
+			var eyeColor = Toolkit.NameColor(this.GetToken("eyes").Text);
+			sb.AppendFormat(" [He] has {0} eyes", eyeColor);
+			if (this.Path("skin/pattern") != null)
+			{
+				var pattern = this.Path("skin/pattern");
+				sb.AppendFormat(" and [his] body is covered in {0} {1}", pattern.GetToken("color").Text, pattern.Text);
+			}
+			sb.Append('.');
 			sb.AppendLine();
 			#endregion
 
@@ -799,25 +808,26 @@ namespace Noxico
 				else if (skinName == "metal")
 					hairDesc = "plastic-like, " + hairDesc;
 
-				if (!this.HasToken("ears") || this.GetToken("ears").HasToken("human"))
-					sb.AppendFormat("[His] {0} looks good, accentuating [his] features well.", hairDesc);
-				else /* TODO: rework into lookup table */ if (this.GetToken("ears").HasToken("elfin"))
-					sb.AppendFormat("[His] {0} is parted by a pair of long, pointed ears.", hairDesc);
-				else if (this.GetToken("ears").HasToken("genbeast"))
-					sb.AppendFormat("[His] {0} is parted by a pair of sizable, triangular ears.", hairDesc);
-				else if (this.GetToken("ears").HasToken("horse"))
-					sb.AppendFormat("[His] {0} parts around a pair of very horse-like ears that grow up from [his] head.", hairDesc);
-				else if (this.GetToken("ears").HasToken("dog"))
-					sb.AppendFormat("[His] {0} is parted by a pair of pointed dog-ears.", hairDesc);
-				else if (this.GetToken("ears").HasToken("cat"))
-					sb.AppendFormat("[His] {0} is parted by a pair of cat ears.", hairDesc);
-				else if (this.GetToken("ears").HasToken("cow"))
-					sb.AppendFormat("[His] {0} is parted by a pair of rounded cow-ears that stick out sideways.", hairDesc);
-				else if (this.GetToken("ears").HasToken("frill"))
-					sb.AppendFormat("[His] {0} is parted by a pair of draconic frills.", hairDesc);
-				else if (this.GetToken("ears").HasToken("bunny"))
-					sb.AppendFormat("[His] {0} is parted by a pair of long, floppy bunny ears.", hairDesc);
-
+				var earDescriptions = new Dictionary<string, string>()
+				{
+					{ "human", "[His] {0} looks good, accentuating [his] features well." },
+					{ "elfin", "[His] {0} is parted by a pair of long, pointed ears." },
+					{ "genbeast", "[His] {0} is parted by a pair of sizable, triangular ears." },
+					{ "horse", "[His] {0} parts around a pair of very horse-like ears that grow up from [his] head." },
+					{ "dog", "[His] {0} is parted by a pair of pointed dog-ears." },
+					{ "cat", "[His] {0} is parted by a pair of cat ears." },
+					{ "cow", "[His] {0} is parted by a pair of rounded cow-ears that stick out sideways." },
+					{ "frill", "[His] {0} is parted by a pair of draconic frills." },
+					{ "bunny", "[His] {0} is parted by a pair of long, floppy bunny ears." },
+				};
+				if (this.HasToken("ears"))
+				{
+					var earType = "human";
+					if (!string.IsNullOrWhiteSpace(this.GetToken("ears").Text))
+						earType = this.GetToken("ears").Text;
+					if (earDescriptions.ContainsKey(earType))
+						sb.AppendFormat(earDescriptions[earType], hairDesc);
+				}
 				if (this.HasToken("antennae"))
 					sb.AppendFormat(" Floppy antennae grow from just behind [his] hairline, bouncing and swaying in the breeze.");
 				sb.AppendLine();
@@ -829,23 +839,25 @@ namespace Noxico
 				else
 					sb.AppendFormat("[He] [has] no hair, only a thin layer of fur atop of [his] head.");
 
-				if (this.GetToken("ears").HasToken("elfin"))
-					sb.AppendFormat(" A pair of large pointy ears stick out from [his] skull.");
-				else if (this.GetToken("ears").HasToken("genbeast"))
-					sb.AppendFormat(" A pair of large-ish animal ears have sprouted from the top of [his] head.");
-				else if (this.GetToken("ears").HasToken("horse"))
-					sb.AppendFormat(" A pair of horse-like ears rise up from the top of [his] head.");
-				else if (this.GetToken("ears").HasToken("dog"))
-					sb.AppendFormat(" A pair of dog ears protrude from [his] skull, flopping down adorably.");
-				else if (this.GetToken("ears").HasToken("cat"))
-					sb.AppendFormat(" A pair of cute, fuzzy cat-ears have sprouted from the top of [his] head.");
-				else if (this.GetToken("ears").HasToken("cow"))
-					sb.AppendFormat(" A pair of round, floppy cow ears protrude from the sides of [his] skull.");
-				else if (this.GetToken("ears").HasToken("frill"))
-					sb.AppendFormat(" A set of draconic frills extend from the sides of [his] skull.");
-				else if (this.GetToken("ears").HasToken("bunny"))
-					sb.AppendFormat(" A pair of long bunny ears stand up from [his] skull, flopping down adorably.");
-
+				var earDescriptions = new Dictionary<string, string>()
+				{
+					{ "elfin", " A pair of large pointy ears stick out from [his] skull." },
+					{ "genbeast", " A pair of large-ish animal ears have sprouted from the top of [his] head." },
+					{ "horse", " A pair of horse-like ears rise up from the top of [his] head." },
+					{ "dog", " A pair of dog ears protrude from [his] skull, flopping down adorably." },
+					{ "cat", " A pair of cute, fuzzy cat-ears have sprouted from the top of [his] head." },
+					{ "cow", " A pair of round, floppy cow ears protrude from the sides of [his] skull." },
+					{ "frill", " A set of draconic frills extend from the sides of [his] skull." },
+					{ "bunny", " A pair of long bunny ears stand up from [his] skull, flopping down adorably." },
+				};
+				if (this.HasToken("ears"))
+				{
+					var earType = "";
+					if (!string.IsNullOrWhiteSpace(this.GetToken("ears").Text))
+						earType = this.GetToken("ears").Text;
+					if (earDescriptions.ContainsKey(earType))
+						sb.AppendFormat(earDescriptions[earType]);
+				}
 				if (this.HasToken("antennae"))
 					sb.AppendFormat(" Floppy antennae also appear on [his] skull, bouncing and swaying in the breeze.");
 			}
@@ -936,40 +948,38 @@ namespace Noxico
 				var tail = this.GetToken("tail");
 				//var hairColor = Color(this.GetToken("hair").Tokens.Find(x => x.Name != "length").Name);
 				var buttDesc = Toolkit.PickOne("butt", "ass", Descriptions.Butt(this.GetToken("ass")));
-				if (tail.HasToken("spider"))
+				if (tail.Text == "spider")
 				{
-					var spider = tail.GetToken("spider");
-					if (!spider.HasToken("venom"))
-						spider.Tokens.Add(new Token() { Name = "venom", Value = 10 });
+					if (!tail.HasToken("venom"))
+						tail.Tokens.Add(new Token() { Name = "venom", Value = 10 });
 					sb.AppendFormat("A large spherical spider-abdomen grows out from [his] backside{0}. Though it weighs heavy and bobs with every motion, it doesn't seem to slow [him] down.", "" /* TODO: ", covered in shiny red and black chitin" should be skintyped */);
 					if (pa is Player)
 					{
-						if (spider.GetToken("venom").Value > 50 && spider.GetToken("venom").Value < 80)
+						if (tail.GetToken("venom").Value > 50 && tail.GetToken("venom").Value < 80)
 							sb.AppendFormat(" [His] bulging arachnid posterior feels fairly full of webbing.");
-						else if (spider.GetToken("venom").Value >= 80 && spider.GetToken("venom").Value < 100)
+						else if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
 							sb.AppendFormat(" [His] bulbous arachnid rear bulges and feels very full of webbing.");
-						else if (spider.GetToken("venom").Value == 100)
+						else if (tail.GetToken("venom").Value == 100)
 							sb.AppendFormat(" [His] swollen spider-butt is distended with the sheer amount of webbing it's holding.");
 					}
 					else
 					{
-						if (spider.GetToken("venom").Value >= 80 && spider.GetToken("venom").Value < 100)
+						if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
 							sb.AppendFormat(" [His] bulbous arachnid rear bulges as if full of webbing.");
-						else if (spider.GetToken("venom").Value == 100)
+						else if (tail.GetToken("venom").Value == 100)
 							sb.AppendFormat(" [His] swollen spider-butt is distended with the sheer amount of webbing it's holding.");
 					}
 				}
-				else if (tail.HasToken("stinger"))
+				else if (tail.Text == "stinger")
 				{
-					var stinger = tail.GetToken("stinger");
-					if (!stinger.HasToken("venom"))
-						stinger.Tokens.Add(new Token() { Name = "venom", Value = 10 });
+					if (!tail.HasToken("venom"))
+						tail.Tokens.Add(new Token() { Name = "venom", Value = 10 });
 					sb.AppendFormat("A large insectile bee-abdomen dangles from just above [his] backside, bobbing with its own weight. It is {0}tipped with a dagger-like stinger.", "" /* TODO: as above, "covered in hard chitin with black and yellow stripes, " */);
-					if (stinger.GetToken("venom").Value > 50 && stinger.GetToken("venom").Value < 80)
+					if (tail.GetToken("venom").Value > 50 && tail.GetToken("venom").Value < 80)
 						sb.AppendFormat(" A single drop of poison hangs from [his] exposed stinger.");
-					else if (stinger.GetToken("venom").Value >= 80 && stinger.GetToken("venom").Value < 100)
+					else if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
 						sb.AppendFormat(" Poisonous bee venom coats [his] stinger completely.");
-					else if (stinger.GetToken("venom").Value == 100)
+					else if (tail.GetToken("venom").Value == 100)
 						sb.AppendFormat(" Venom drips from [his] poisoned stinger regularly.");
 				}
 				else
@@ -990,9 +1000,7 @@ namespace Noxico
 							{ "bunny", "A adorable puffball sprouts just above [his] {2}." },
 							{ "tentacle", "A thick tentacle extends from [his] {2}, ending in a {3}." },
 						};
-					var tailT = tail.Tokens.Count > 0 ? tail.Tokens[0].Name : "genbeast";
-					if (!tail.HasToken(tailT))
-						tailT = "invalid";
+					var tailT = string.IsNullOrWhiteSpace(tail.Text) ? "genbeast" : tail.Text;
 					var tentacleEnd = string.Empty;
 					if (tailT == "tentacle")
 						tentacleEnd = Descriptions.Tentacle(tail.Tokens[0], stimulation);
@@ -1021,51 +1029,50 @@ namespace Noxico
 				if (skinName == "slime")
 				{
 					//Can't have sharp feet as a slime. Is this a thing? Slimes don't have legs!
-					if (legs.HasToken("stilleto") || legs.HasToken("claws") || legs.HasToken("insect"))
+					if (legs.Text == "stilleto" || legs.Text == "claws" || legs.Text == "insect")
 					{
 						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to human.) ");
-						legs.Tokens.Clear();
-						legs.Tokens.Add(new Token() { Name = "human" });
+						legs.Text = null;
 					}
 				}
 				if (this.HasToken("quadruped"))
 				{
 					//Assume horse, accept genbeast, cow or dog legs, mock and reject others.
-					if (legs.Tokens.Count == 0)
+					if (string.IsNullOrWhiteSpace(legs.Text))
 					{
 						sb.AppendFormat("(<b>NOTICE<b>: no leg type specified. Assuming horse legs.) ");
-						legs.Tokens.Add(new Token() { Name = "horse" });
+						legs.Text = "horse";
 					}
-					if (legs.HasToken("stilleto") || legs.HasToken("claws") || legs.HasToken("insect"))
+					if (legs.Text == "stilleto" || legs.Text == "claws" || legs.Text == "insect")
 					{
 						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to genbeast.) ");
-						//Clear out everything, then re-add quadruped and genbeast.
-						legs.Tokens.Clear();
-						legs.Tokens.Add(new Token() { Name = "genbeast" });
+						legs.Text = "genbest";
 					}
-					if (legs.HasToken("horse") || legs.HasToken("cow"))
+					if (legs.Text == "horse" || legs.Text == "cow")
 						sb.AppendFormat("Four perfectly reasonable horse legs extend from [his] chest and waist, ending in {0} hooves.", this.HasToken("marshmallow") ? "soft" : "sturdy");
-					else if (legs.HasToken("genbeast"))
+					else if (legs.Text == "genbeast")
 						sb.AppendFormat("[He] [has] four digitigrade legs growing downwards from [his] body, ending in beastly paws.");
-					else if (legs.HasToken("dog"))
+					else if (legs.Text == "dog")
 						sb.AppendFormat("[He] [has] four digitigrade legs growing downwards from [his] chest and waist, ending in dog-like paws.");
 				}
 				else
 				{
-					if (legs.Tokens.Count == 0 || legs.HasToken("human"))
-						sb.AppendFormat("Two normal human legs grow down from [his] waist, ending in normal human feet.");
-					else if (legs.HasToken("genbeast"))
-						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in beastlike hind-paws.");
-					else if (legs.HasToken("cow") || legs.HasToken("horse"))
-						sb.AppendFormat("[His] legs are muscled and jointed oddly and end in a pair of {0} hooves.", this.HasToken("marshmallow") ? "soft" : "bestial"); //, covered in fur,
-					else if (legs.HasToken("dog"))
-						sb.AppendFormat("Two digitigrade legs grow downwards from [his] waist, ending in dog-like hind-paws.");
-					else if (legs.HasToken("stilleto"))
-						sb.AppendFormat("[His] perfect lissom legs end in mostly human feet, apart from the horn protruding straight down from the heel that forces [him] to walk with a sexy, swaying gait.");
-					else if (legs.HasToken("claws"))
-						sb.AppendFormat("[His] lithe legs are capped with flexible clawed feet. Sharp black nails grow from the toes, giving [him] fantastic grip.");
-					else if (legs.HasToken("insect"))
-						sb.AppendFormat("[His] legs are covered in a shimmering insectile carapace up to mid-thigh, looking more like a pair of 'fuck me' boots than exoskeleton. A bit of downy yellow and black fur fuzzes [his] upper thighs.");
+					var legTypes = new Dictionary<string, string>()
+					{
+						{ "human", "Two normal human legs grow down from [his] waist, ending in normal human feet." },
+						{ "genbeast", "Two digitigrade legs grow downwards from [his] waist, ending in beastlike hind-paws." },
+						{ "cow", "[His] legs are muscled and jointed oddly and end in a pair of {0} hooves." },
+						{ "horse", string.Format("[His] legs are muscled and jointed oddly and end in a pair of {0} hooves.", this.HasToken("marshmallow") ? "soft" : "bestial") },
+						{ "dog", "Two digitigrade legs grow downwards from [his] waist, ending in dog-like hind-paws." },
+						{ "stiletto", "[His] perfect lissom legs end in mostly human feet, apart from the horn protruding straight down from the heel that forces [him] to walk with a sexy, swaying gait." },
+						{ "claws", "[His] lithe legs are capped with flexible clawed feet. Sharp black nails grow from the toes, giving [him] fantastic grip." },
+						{ "insect", "[His] legs are covered in a shimmering insectile carapace up to mid-thigh, looking more like a pair of 'fuck me' boots than exoskeleton. A bit of downy yellow and black fur fuzzes [his] upper thighs." },
+					};
+					var legType = string.IsNullOrWhiteSpace(legs.Text) ? "human" : legs.Text;
+					if (!legTypes.ContainsKey(legType))
+						legType = "human";
+					sb.AppendFormat(legTypes[legType]);
+					sb.AppendLine();
 				}
 			}
 			else if (this.HasToken("snaketail"))
@@ -1471,32 +1478,28 @@ namespace Noxico
 				source.Tokens.Add(new Token() { Name = "tail" });
 			if (!target.HasToken("tail"))
 				target.Tokens.Add(new Token() { Name = "tail" });
-			if (source.GetToken("tail").Tokens.Count == 0)
-				source.GetToken("tail").Tokens.Add(new Token() { Name = "<none>" });
-			if (target.GetToken("tail").Tokens.Count == 0)
-				target.GetToken("tail").Tokens.Add(new Token() { Name = "<none>" });
 
 			//Change tail type?
-			if (target.GetToken("tail").Tokens[0].Name != source.GetToken("tail").Tokens[0].Name)
+			if (target.GetToken("tail").Text != source.GetToken("tail").Text)
 			{
 				toChange.Add(source.Path("tail"));
 				changeTo.Add(target.Path("tail"));
 				doNext.Add(false);
 
-				if (source.Path("tail/<none>") != null)
+				if (string.IsNullOrWhiteSpace(source.Path("tail").Text))
 					report.Add((isPlayer ? "You have" : this.Name + " has") + " sprouted a " + Descriptions.Tail(target.Path("tail")) + ".");
 				else
 					report.Add((isPlayer ? "Your" : this.Name + "'s") + " tail has become a " + Descriptions.Tail(target.Path("tail")) + ".");
 			}
 
 			//Change entire skin type?
-			if (target.Path("skin/type").Tokens[0].Name != source.Path("skin/type").Tokens[0].Name)
+			if (target.Path("skin/type").Text != source.Path("skin/type").Text)
 			{
 				toChange.Add(source.Path("skin"));
 				changeTo.Add(target.Path("skin"));
 				doNext.Add(false);
 
-				switch (target.Path("skin/type").Tokens[0].Name)
+				switch (target.Path("skin/type").Text)
 				{
 					case "skin":
 						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + " skin all over.");
@@ -1514,7 +1517,7 @@ namespace Noxico
 						report.Add((isPlayer ? "You have" : this.Name + " has") + " turned to " + Toolkit.NameColor(target.Path("hair/color").Text) + " slime.");
 						break;
 					default:
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Tokens[0].Name + '.');
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Text + '.');
 						break;
 				}
 			}
@@ -1531,13 +1534,13 @@ namespace Noxico
 			};
 
 			//Change facial structure?
-			if (target.GetToken("face").Tokens[0].Name != source.GetToken("face").Tokens[0].Name)
+			if (target.GetToken("face").Text != source.GetToken("face").Text)
 			{
 				toChange.Add(source.Path("face"));
 				changeTo.Add(target.Path("face"));
 				doNext.Add(false);
 
-				var faceDescription = fooIneReports.ContainsKey(target.GetToken("face").Tokens[0].Name) ? fooIneReports[target.GetToken("face").Tokens[0].Name] : target.GetToken("face").Tokens[0].Name;
+				var faceDescription = fooIneReports.ContainsKey(target.GetToken("face").Text) ? fooIneReports[target.GetToken("face").Text] : target.GetToken("face").Text;
 				report.Add((isPlayer ? "Your" : this.Name + "'s") + " face has rearranged to a more " + faceDescription + " form.");
 			}
 
@@ -1562,14 +1565,14 @@ namespace Noxico
 				{
 					if (!source.HasToken("legs"))
 						source.Tokens.Add(new Token() { Name = "legs" });
-					if (source.GetToken("legs").Tokens.Count == 0)
-						source.GetToken("legs").Tokens.Add(new Token() { Name = "human" });
+					if (string.IsNullOrWhiteSpace(source.GetToken("legs").Text))
+						source.GetToken("legs").Text = "human";
 
-					if (source.GetToken("legs").Tokens[0].Name != target.GetToken("legs").Tokens[0].Name)
+					if (source.GetToken("legs").Text != target.GetToken("legs").Text)
 					{
-						var legDescription = fooIneReports.ContainsKey(target.GetToken("legs").Tokens[0].Name) ? fooIneReports[target.GetToken("legs").Tokens[0].Name] : target.GetToken("legs").Tokens[0].Name;
+						var legDescription = fooIneReports.ContainsKey(target.GetToken("legs").Text) ? fooIneReports[target.GetToken("legs").Text] : target.GetToken("legs").Text;
 						doReport((isPlayer ? "You have" : this.Name + " has") + " grown " + legDescription + " legs.");
-						source.GetToken("legs").Tokens[0].Name = target.GetToken("legs").Tokens[0].Name;
+						source.GetToken("legs").Text  = target.GetToken("legs").Text;
 					}
 				}
 
@@ -1624,28 +1627,22 @@ namespace Noxico
 			#region Slime TO
 			//Handle changing skin type to and from slime
 			//TODO: make this handle any skin type transition?
-			if (toThis.Name == "skin" && toThis.Path("type/slime") != null)
+			if (toThis.Name == "skin" && toThis.Path("type").Text == "slime")
 			{
 				//To slime
-				var origName = Path("skin/type").Tokens[0].Name;
-				var originalSkin = Path("originalskins");
+				var origName = Path("skin/type").Text;
+				var originalSkin = Path("originalskins/" + origName);
 				if (originalSkin == null)
 				{
 					Tokens.Add(new Token() { Name = "originalskins" });
-					originalSkin = GetToken("originalskins");
+					originalSkin = GetToken("originalskins").AddToken(origName);
 				}
-				var thisSkin = originalSkin.Path(origName);
-				if (thisSkin == null)
-				{
-					originalSkin.Tokens.Add(new Token() { Name = origName });
-					thisSkin = originalSkin.GetToken(origName);
-				}
-				thisSkin.Text = Path("skin/color").Text;
-
-				if (!originalSkin.HasToken("hair"))
-					originalSkin.Tokens.Add(new Token() { Name = "hair" });
-				originalSkin.GetToken("hair").Text = Path("hair/color").Text;
-
+				originalSkin.RemoveToken("color");
+				originalSkin.RemoveToken("hair");
+				originalSkin.AddToken("color", 0, Path("skin/color").Text);
+				if (Path("hair") != null)
+					originalSkin.AddToken("hair", 0, Path("hair/color").Text);
+	
 				//Now that that's done, grab a new hair color while you're there.
 				var newHair = target.Path("hair/color").Text;
 				Path("hair/color").Text = newHair;
@@ -1665,7 +1662,7 @@ namespace Noxico
 				//From slime -- restore the original color for the target skin type if available.
 				var thisSkin = Path("skin");
 				//See if we have this skin type memorized
-				var memorized = Path("originalskins/" + thisSkin.GetToken("type").Tokens[0].Name);
+				var memorized = Path("originalskins/" + thisSkin.GetToken("type").Text);
 				if (memorized != null)
 				{
 					if (!thisSkin.HasToken("color"))
@@ -1673,13 +1670,13 @@ namespace Noxico
 					Path("skin/color").Text = memorized.Text;
 				}
 				//Grab the hair too?
-				if (Path("hair/color") != null)
-					Path("hair/color").Text = Path("originalskins/hair").Text;
+				if (Path("hair/color") != null && memorized.HasToken("hair"))
+					Path("hair/color").Text = memorized.GetToken("hair").Text;
 			}
 			#endregion
 
 			//remove any dummy tails
-			if (source.Path("tail/<none>") != null)
+			if (string.IsNullOrWhiteSpace(source.Path("tail").Text))
 				source.RemoveToken("tail");
 
 			if (doNext[choice] || Toolkit.Rand.Next(100) < continueChance)

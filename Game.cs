@@ -165,6 +165,7 @@ namespace Noxico
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
 				var id = bodyPlan.GetAttribute("id");
+				Console.WriteLine("Loading {0}...", id);
 				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
 				var ascii = Toolkit.GrabToken(plan, "ascii");
 				if (ascii != null)
@@ -793,7 +794,7 @@ namespace Noxico
 				}
 			}
 
-			if (pc.Path("skin/type").Tokens[0].Name != "slime")
+			if (pc.Path("skin/type").Text != "slime")
 				pc.Path("skin/color").Text = bodyColor;
 			if (pc.Path("hair/color") != null)
 				pc.Path("hair/color").Text = hairColor;

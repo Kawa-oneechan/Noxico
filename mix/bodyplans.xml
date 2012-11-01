@@ -25,15 +25,11 @@ hair
 	color: oneof blond, brown, black,red, gray, white, auburn
 -- repeating a few options to increase their chances 
 skin
-	type
-		skin
+	type: skin
 	color: oneof light, light, light, pale, pale, dark, dark, olive
-eyes
-	color: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
-face
-	normal
-ears
-	human
+eyes: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
+face: normal
+ears: human
 legs
 ass
 	virgin
@@ -86,19 +82,14 @@ hair
 	length: 5
 	color: black
 skin
-	type
-		skin
+	type: skin
 	color: oneof red, firebrick, darkred, brown
-face
-	normal
-eyes
-	color: yellow
+face: normal
+eyes: yellow
 	glow
-ears
-	human
+ears: human
 legs
-wings
-	bat
+wings: bat
 	small
 ass
 	size: 4
@@ -136,15 +127,11 @@ hair
 	length: 4
 	color: oneof purple, palevioletred, mediumorchid, hotpink, deeppink
 skin
-	type
-		skin
+	type: skin
 	color: oneof olivedrab, darkslategray, darkolivegreen
-face
-	normal
-eyes
-	color: oneof plum, mediumvioletred, mediumorchid, orchid
-ears
-	elfin
+face: normal
+eyes: oneof plum, mediumvioletred, mediumorchid, orchid
+ears: elfin
 legs
 waist: roll 1d2+1
 hips: roll 1d3+4
@@ -184,26 +171,19 @@ hair
 	length: 6
 	color: black
 skin
-	type
-		skin
+	type: skin
 	color: oneof yellow, gold, goldenrod
-face
-	normal
-eyes
-	color: black
-legs
-	insect
+face: normal
+eyes: black
+legs: insect
 antennae
-wings
-	insect
-tail
-	stinger
-		venom: 100
-		recharge: 5
+wings: insect
+tail: stinger
+	venom: 100
+	recharge: 5
 hips: 6
 fertility: 10
-ass
-	insect
+ass: insect
 	size: 13
 	looseness: 4
 	wetness: 1
@@ -235,15 +215,12 @@ hair
 	length: 14
 	color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
 skin
-	type
-		skin
+	type: skin
 	color: oneof aqua, darkseagreen, cadetblue, darkslategray
-face
-	normal
+face: normal
 tongue
 	long
-eyes
-	color: yellow
+eyes: yellow
 snaketail
 waist: 4
 hips: 5
@@ -293,19 +270,13 @@ hair
 	length: roll 1d3+4
 	color: oneof red, black, blue, darkred, green
 skin
-	type
-		skin
+	type: skin
 	color: oneof pale, brown, purple
-face
-	normal
-eyes
-	color: oneof red, yellow, aqua, white
-ears
-	elfin
-wings
-	bat
-legs
-	oneof claws, stiletto, stiletto, human, human, human
+face: normal
+eyes: oneof red, yellow, aqua, white
+ears: elfin
+wings: bat
+legs: oneof claws, stiletto, stiletto, human, human, human
 waist: roll 1d3+2
 hips: 6
 ass
@@ -321,8 +292,7 @@ vagina
 	wetness: 4
 	looseness: 1
 	fuckable
-penis
-	studded
+penis: studded
 	thickness: roll 1d3+1
 	length: roll 1d6+17
 	cumsource
@@ -355,20 +325,14 @@ hair
 	length: roll 1d4+5
 	color: oneof blond, brown, black, red, orange, gray, white, auburn
 skin
-	type
-		fur
+	type: fur
 	color: oneof brown, orange, white, gray, black
-eyes
-	color: oneof gold, yellow, lime
+eyes: oneof gold, yellow, lime
 	glow
-face
-	cat
-ears
-	cat
-legs
-	oneof human, genbeast
-tail
-	genbeast
+face: cat
+ears: cat
+legs: oneof human, genbeast
+tail: genbeast
 ass
 	virgin
 	size: 5
@@ -417,19 +381,13 @@ hair
 	length: roll 1d6+3
 	color: oneof blond, brown, black, red
 skin
-	type
-		fur
+	type: fur
 	color: sandybrown
-eyes
-	color: green
-ears
-	genbeast
-face
-	genbeast
-legs
-	dog
-tail
-	fox
+eyes: green
+ears: genbeast
+face: genbeast
+legs: dog
+tail: fox
 ass
 	virgin
 	size: 4
@@ -447,8 +405,7 @@ vagina
 	virgin
 	fuckable
 	clit: 0.25
-penis
-	sheath
+penis: sheath
 	thickness: 2
 	length: roll 1d7+14
 	cumsource
@@ -481,23 +438,17 @@ hair
 	length: 16
 	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
 skin
-	type
-		fur
+	type: fur
 	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
-face
-	horse
-eyes
-	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
-legs
-	horse
+face: horse
+eyes: color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+legs: horse
 -- defining quadruped makes it a centaur...
 quadruped
 -- but noarms makes it a PROPER quadruped!
 noarms
-ears
-	horse
-tail
-	horse
+ears: horse
+tail: horse
 ass
 	size: 6
 	fuckable
@@ -506,8 +457,7 @@ vagina
 	virgin
 	fuckable
 	clit: 1.5
-penis
-	horse
+penis: horse
 	thickness: 3
 	length: 16
 	cumsource
@@ -515,6 +465,8 @@ penis
 balls
 	amount: 2
 	size: 3
+tattoos
+	hip: "cutie mark"
 		]]>
 	</bodyplan>
 
@@ -534,16 +486,13 @@ ascii
 bestiary: "I am gross and perverted. I'm obsessed and deranged."
 tallness: roll 1d50+100
 skin
-	type
-		slime
+	type: slime
 hair
 	length: roll 1d8+10
 	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
 slimeblob
-face
-	normal
-eyes
-	color: white
+face: normal
+eyes: white
 ass
 	size: roll 1d4+4
 	fuckable
@@ -586,18 +535,13 @@ hair
 	length: roll 1d4+7
 	color: oneof brown, black, gray, white, auburn
 skin
-	type
-		fur
+	type: fur
 	color: oneof brown, black, white, gray, auburn
-eyes
-	color: black
-face
-	normal
-ears
-	bear
+eyes: black
+face: normal
+ears: bear
 -- short, round, and resting atop the head
-legs
-	bear
+legs: bear
 -- heavily furred, with humanoid feet having fur only atop the foot, and a calloused underside
 ass
 	virgin
@@ -642,9 +586,9 @@ penis
 	length: roll 1d10+12
 	cumsource
 	canfuck
-	balls
-		amount: 2
-		size: 0.8
+balls
+	amount: 2
+	size: 0.8
 			]]>
 	</bodyplan>
 
@@ -663,8 +607,7 @@ terms
 	male: "bear"
 	female: "bear"
 skin
-	type
-		fur
+	type: fur
 	color: brown
 speed: 30
 strength: 40
@@ -685,8 +628,7 @@ terms
 	female: "bitch"
 normalgenders
 skin
-	type
-		fur
+	type: fur
 	color: brown
 speed: 40
 strength: 25
@@ -706,8 +648,7 @@ terms
 	male: "dog"
 	female: "bitch"
 skin
-	type
-		fur
+	type: fur
 	color: brown
 speed: 40
 strength: 25
@@ -728,8 +669,7 @@ terms
 	female: "rat"
 normalgenders
 skin
-	type
-		fur
+	type: fur
 	color: brown
 speed: 30
 strength: 5
@@ -750,8 +690,7 @@ terms
 	female: "snake"
 normalgenders
 skin
-	type
-		scales
+	type: scales
 	color: oneof saddlebrown, olive, darkslategray
 speed: 30
 strength: 5
@@ -770,8 +709,7 @@ terms
 	female: "mare"
 normalgenders
 skin
-	type
-		fur
+	type: fur
 	color: oneof brown, white, gray, black, saddlebrown
 speed: 30
 strength: 50

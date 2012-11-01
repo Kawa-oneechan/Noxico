@@ -66,54 +66,82 @@ namespace Noxico
 
 			if (token.Path("skin") == null)
 				ret.Append('s');
-			else if (token.Path("skin/type/skin") != null)
-				ret.Append('s');
-			else if (token.Path("skin/type/fur") != null)
-				ret.Append('f');
-			else if (token.Path("skin/type/scales") != null)
-				ret.Append('c');
-			else if (token.Path("skin/type/slime") != null)
-				ret.Append('j');
-			else if (token.Path("skin/type/rubber") != null)
-				ret.Append('r');
+			else
+			{
+				var skinTypeToken = token.Path("skin/type");
+				if (skinTypeToken == null)
+					ret.Append('s');
+				else
+				{
+					var skinTypes = new Dictionary<string, char>()
+					{
+						{ "skin", 's' },
+						{ "fur", 'f' },
+						{ "scales", 'c' },
+						{ "slime", 'j' },
+						{ "rubber", 'r' },
+						{ "metal", 'm' },
+					};
+					if (skinTypes.ContainsKey(skinTypeToken.Text))
+						ret.Append(skinTypes[skinTypeToken.Text]);
+					else
+						ret.Append('s');
+				}
+			}
 
 			if (token.Path("face") == null)
 				ret.Append(' ');
-			else if (token.Path("face/normal") != null)
-				ret.Append(' ');
-			else if (token.Path("face/genbeast") != null)
-				ret.Append('b');
-			else if (token.Path("face/horse") != null)
-				ret.Append('h');
-			else if (token.Path("face/dog") != null)
-				ret.Append('d');
-			else if (token.Path("face/cow") != null)
-				ret.Append('m');
-			else if (token.Path("face/cat") != null)
-				ret.Append('c');
-			else if (token.Path("face/reptile") != null)
-				ret.Append('r');
+			else
+			{
+				var faceToken = token.Path("face");
+				if (faceToken == null)
+					ret.Append(' ');
+				else
+				{
+					var faceTypes = new Dictionary<string, char>()
+					{
+						{ "normal", ' ' },
+						{ "genbeast", 'b' },
+						{ "horse", 'h' },
+						{ "dog", 'd' },
+						{ "cow", 'm' },
+						{ "cat", 'c' },
+						{ "reptile", 'r' },
+					};
+					if (faceTypes.ContainsKey(faceToken.Text))
+						ret.Append(faceTypes[faceToken.Text]);
+					else
+						ret.Append(' ');
+				}
+			}
 
 			if (token.Path("ears") == null)
 				ret.Append(' ');
-			else if (token.Path("ears/human") != null)
-				ret.Append(' ');
-			else if (token.Path("ears/elfin") != null)
-				ret.Append('e');
-			else if (token.Path("ears/genbeast") != null)
-				ret.Append('b');
-			else if (token.Path("ears/horse") != null)
-				ret.Append('h');
-			else if (token.Path("ears/dog") != null)
-				ret.Append('d');
-			else if (token.Path("ears/cat") != null)
-				ret.Append('c');
-			else if (token.Path("ears/cow") != null)
-				ret.Append('m');
-			else if (token.Path("ears/frill") != null)
-				ret.Append('f');
-			else if (token.Path("ears/bear") != null)
-				ret.Append('u');
+			else
+			{
+				var earsToken = token.Path("face");
+				if (earsToken == null)
+					ret.Append(' ');
+				else
+				{
+					var earTypes = new Dictionary<string, char>()
+					{
+						{ "human", ' ' },
+						{ "elfin", 'e' },
+						{ "genbeast", 'b' },
+						{ "horse", 'h' },
+						{ "dog", 'd' },
+						{ "cat", 'c' },
+						{ "cow", 'm' },
+						{ "frill", 'f' },
+						{ "bear", 'u' },
+					};
+					if (earTypes.ContainsKey(earsToken.Text))
+						ret.Append(earTypes[earsToken.Text]);
+					else
+						ret.Append(' ');
+				}
+			}
 
 			if (token.Path("antennae") == null)
 				ret.Append(' ');
@@ -121,29 +149,34 @@ namespace Noxico
 				ret.Append('!');
 
 			if (token.Path("snaketail") != null)
-				ret.Append("S");
+				ret.Append('S');
 			else if (token.Path("tail") == null)
-				ret.Append(" ");
-			else if (token.Path("tail/genbeast") != null)
-				ret.Append("t");
-			else if (token.Path("tail/horse") != null)
-				ret.Append("h");
-			else if (token.Path("tail/dog") != null)
-				ret.Append("t");
-			else if (token.Path("tail/fox") != null)
-				ret.Append("T");
-			else if (token.Path("tail/squirrel") != null)
-				ret.Append("T");
-			else if (token.Path("tail/cow") != null)
-				ret.Append("c");
-			else if (token.Path("tail/tentacle") != null)
-				ret.Append("!");
-			else if (token.Path("tail/stinger") != null)
-				ret.Append("v");
-			else if (token.Path("tail/spider") != null)
-				ret.Append("S");
-			else if (token.Path("tail") != null)
-				ret.Append("t");
+				ret.Append(' ');
+			else
+			{
+				var tailToken = token.Path("tail");
+				if (tailToken == null)
+					ret.Append(' ');
+				else
+				{
+					var tailTypes = new Dictionary<string, char>()
+					{
+						{ "genbeast", 'b' },
+						{ "horse", 'h' },
+						{ "dog", 't' },
+						{ "fox", 'T' },
+						{ "squirrel", 'T' },
+						{ "cow", 'c' },
+						{ "tentacle", '!' },
+						{ "stinger", 'v' },
+						{ "spider", 'S' },
+					};
+					if (tailTypes.ContainsKey(tailToken.Text))
+						ret.Append(tailTypes[tailToken.Text]);
+					else
+						ret.Append('t');
+				}
+			}
 
 			return ret.ToString();
 		}
