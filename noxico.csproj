@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -229,6 +229,19 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="mix\knowncolors.xml" />
+    <Content Include="mix\lookat\ears.txt" />
+    <Content Include="mix\lookat\ears_bald.txt" />
+    <Content Include="mix\lookat\faces_fur.txt" />
+    <Content Include="mix\lookat\faces_metal.txt" />
+    <Content Include="mix\lookat\faces_rubber.txt" />
+    <Content Include="mix\lookat\faces_scales.txt" />
+    <Content Include="mix\lookat\faces_skin.txt" />
+    <Content Include="mix\lookat\faces_slime.txt" />
+    <Content Include="mix\lookat\legs.txt" />
+    <Content Include="mix\lookat\legs_quad.txt" />
+    <Content Include="mix\lookat\tails.txt" />
+    <Content Include="mix\lookat\wings.txt" />
+    <Content Include="mix\lookat\wings_small.txt" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
     <Content Include="mix\music.xml" />

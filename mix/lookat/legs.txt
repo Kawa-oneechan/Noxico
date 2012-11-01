@@ -1,0 +1,8 @@
+human	Two normal human legs grow down from [his] waist, ending in normal human feet.
+genbeast	Two digitigrade legs grow downwards from [his] waist, ending in beastlike hind-paws.
+cow	[His] legs are muscled and jointed oddly and end in a pair of bovine hooves.
+horse	[His] legs are muscled and jointed oddly and end in a pair of {0} hooves.
+dog	Two digitigrade legs grow downwards from [his] waist, ending in dog-like hind-paws.
+stiletto	[His] perfect lissom legs end in mostly human feet, apart from the horn protruding straight down from the heel that forces [him] to walk with a sexy, swaying gait.
+claws	[His] lithe legs are capped with flexible clawed feet. Sharp black nails grow from the toes, giving [him] fantastic grip.
+insect	[His] legs are covered in a shimmering insectile carapace up to mid-thigh, looking more like a pair of 'fuck me' boots than exoskeleton. A bit of downy yellow and black fur fuzzes [his] upper thighs.

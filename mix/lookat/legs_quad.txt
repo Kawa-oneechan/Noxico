@@ -1,0 +1,4 @@
+genbeast	[He] [has] four digitigrade legs growing downwards from [his] body, ending in beastly paws.
+cow	Four perfectly reasonable horse legs extend from [his] chest and waist, ending in bovine hooves.
+horse	Four perfectly reasonable horse legs extend from [his] chest and waist, ending in {0} hooves.
+dog	[He] [has] four digitigrade legs growing downwards from [his] chest and waist, ending in dog-like paws.
