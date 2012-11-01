@@ -1,0 +1,7 @@
+normal	[His] face is fairly human in shape, but is covered in {0} rubber.
+genbeast	[He] [has] a face like an animal, but overlaid with glittering {0} rubber instead of fur. The look is very strange, but not unpleasant.
+horse	[He] [has] the face and head structure of a horse, overlaid with glittering {0} rubber. The look is strange, but not unpleasant.
+dog	[He] [has] the face and head structure of a dog, wet nose and all, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant.
+cow	[His] face resembles a minotaur's, though strangely it is covered in shimmering {0} scales, right up to the flat cow-like noise that protrudes from [his] face.
+cat	[He] [has] the facial structure of a cat, moist nose, whisker, and eyes included, but overlaid with glittering {0} rubber. The look is strange, but not unpleasant.
+reptile	[His] face is that of a lizard, complete with a toothy maw and pointed snout. Reflective {0} rubber completes the look, making [him] look quite fearsome.

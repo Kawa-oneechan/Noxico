@@ -1,0 +1,10 @@
+human	[His] {0} looks good, accentuating [his] features well.
+elfin	[His] {0} is parted by a pair of long, pointed ears.
+genbeast	[His] {0} is parted by a pair of sizable, triangular ears.
+horse	[His] {0} parts around a pair of very horse-like ears that grow up from [his] head.
+dog	[His] {0} is parted by a pair of pointed dog-ears.
+cat	[His] {0} is parted by a pair of cat ears.
+cow	[His] {0} is parted by a pair of rounded cow-ears that stick out sideways.
+frill	[His] {0} is parted by a pair of draconic frills.
+bunny	[His] {0} is parted by a pair of long, floppy bunny ears.
+hole	[He] [has] {0}.
