@@ -914,6 +914,13 @@ namespace Noxico
 			Player.Character.RecalculateStatBonuses();
 			Player.Character.CheckHasteSlow();
 
+			/*
+			var pregTest = Player.Character.AddToken("pregnancy");
+			pregTest.AddToken("gestation").AddToken("max", 10, "");
+			pregTest.AddToken("father", 0, "Ulfric Stormcloak");
+			*/
+			Player.Character.GetToken("items").AddToken("catmorph");
+
 			InGame = true;
 			SaveGame();
 		}

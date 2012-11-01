@@ -1228,39 +1228,47 @@ ascii
 					//Sometimes increase charisma.
 					
 					//Grow cat ears.
-					if (user.Path("ears/cat") == null)
+					if (!user.HasToken("ears") || user.GetToken("ears").Text != "cat")
 					{
 						//Should check the existing type first.
 						ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
 						
 						user.RemoveToken("ears");
-						user.AddToken("ears").AddToken("cat");
+						user.AddToken("ears").Text = "cat";
 
 						message(ret);
 						return;
 					}
 					
 					//Grow cat tail.
-					if (user.Path("tail/genbeast") == null)
+					if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
 					{
 						//Should check the existing type first.
 						ret += "\n\nYou pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
 
 						user.RemoveToken("tail");
-						user.AddToken("tail").AddToken("genbeast");
+						user.AddToken("tail").Text = "genbeast";
 
 						message(ret);
 						return;
+					}
+					
+					//Gain darkvision
+					if (user.Path("eyes/glow") == null)
+					{
+						ret += "\n\nYou feel as if you can see better.";
+						user.GetToken("eyes").AddToken("glow");
 					}
 					
 					//Grow fangs.
 
 					//Grow fur.
 					var skinType = user.Path("skin/type");
-					if (skinType.Item(0).Name != "fur")
+					if (skinType.Text != "fur")
 					{
-						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
-						skinType.Item(0).Name = "fur";
+						skinType.Text = "fur";
+						user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+						ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
 
 						user.SetTerms("felinoid", "catboy", "catgirl", "catherm");
 						if (!user.HasToken("invisiblegender"));
@@ -1268,6 +1276,7 @@ ascii
 							user.RemoveToken("explicitgender");
 							user.AddToken("invisiblegender");
 						}
+						user.UpdateTitle();
 						userbc.AdjustView();
 
 						message(ret);
@@ -1307,13 +1316,13 @@ ascii
 					//Sometimes increase charisma.
 					
 					//Grow dog ears.
-					if (user.Path("ears/dog") == null)
+					if (!user.HasToken("ears") || user.GetToken("ears").Text != "dog")
 					{
 						//Should check the existing type first.
 						ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
 						
 						user.RemoveToken("ears");
-						user.AddToken("ears").AddToken("dog");
+						user.AddToken("ears").Text = "dog";
 
 						message(ret);
 						return;
@@ -1336,10 +1345,11 @@ ascii
 
 					//Grow fur.
 					var skinType = user.Path("skin/type");
-					if (skinType.Item(0).Name != "fur")
+					if (skinType.Text != "fur")
 					{
-						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
-						skinType.Item(0).Name = "fur";
+						skinType.Text = "fur";						
+						user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+						ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
 
 						user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
 						if (!user.HasToken("invisiblegender"));
@@ -1347,6 +1357,7 @@ ascii
 							user.RemoveToken("explicitgender");
 							user.AddToken("invisiblegender");
 						}
+						user.UpdateTitle();
 						userbc.AdjustView();
 
 						message(ret);
@@ -1384,26 +1395,26 @@ ascii
 					//Sometimes increase charisma.
 					
 					//Grow dog ears.
-					if (user.Path("ears/genbeast") == null)
+					if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
 					{
 						//Should check the existing type first.
 						ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
 						
 						user.RemoveToken("ears");
-						user.AddToken("ears").AddToken("genbeast");
+						user.AddToken("ears").Text = "genbeast";
 
 						message(ret);
 						return;
 					}
 
 					//Grow fox tail.
-					if (user.Path("tail/fox") == null)
+					if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
 					{
 						//Should check the existing type first.
 						ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
 
 						user.RemoveToken("tail");
-						user.AddToken("tail").AddToken("fox");
+						user.AddToken("tail").Text = "fox";
 
 						message(ret);
 						return;
@@ -1413,11 +1424,11 @@ ascii
 
 					//Grow fur.
 					var skinType = user.Path("skin/type");
-					if (skinType.Item(0).Name != "fur")
+					if (skinType.Text != "fur")
 					{
-						ret += "Your whole body itches as a thin layer of brown fur grows all over.";
-						skinType.Item(0).Name = "fur";
-						user.Path("skin/color").Text = "brown";
+						skinType.Text = "fur";
+						user.EnsureColor(user.Path("skin/color"), "sandybrown");
+						ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
 
 						user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
 						if (!user.HasToken("invisiblegender"));
@@ -1425,6 +1436,7 @@ ascii
 							user.RemoveToken("explicitgender");
 							user.AddToken("invisiblegender");
 						}
+						user.UpdateTitle();
 						userbc.AdjustView();
 
 						message(ret);
@@ -1458,13 +1470,13 @@ ascii
 					}
 
 					//Grow bunny ears.
-					if (user.Path("ears/bunny") == null)
+					if (!user.HasToken("ears") || user.GetToken("ears").Text != "bunny")
 					{
 						//Should check the existing type first.
 						ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
 						
 						user.RemoveToken("ears");
-						user.AddToken("ears").AddToken("bunny");
+						user.AddToken("ears").Text = "bunny";
 
 						message(ret);
 						return;
@@ -1477,7 +1489,7 @@ ascii
 						ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
 
 						user.RemoveToken("tail");
-						user.AddToken("tail").AddToken("bunny");
+						user.AddToken("tail").Text = "bunny";
 
 						message(ret);
 						return;
@@ -1485,11 +1497,11 @@ ascii
 
 					//Grow fur.
 					var skinType = user.Path("skin/type");
-					if (skinType.Item(0).Name != "fur")
+					if (skinType.Text != "fur")
 					{
-						ret += "Your whole body itches as a thin layer of white fur grows all over.";
-						skinType.Item(0).Name = "fur";
-						user.Path("skin/color").Text = "white";
+						skinType.Text = "fur";
+						user.EnsureColor(user.Path("skin/color"), "white, gray, aliceblue, gainsboro, lightpink, plum");
+						ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
 
 						user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
 						if (!user.HasToken("invisiblegender"));
@@ -1497,6 +1509,7 @@ ascii
 							user.RemoveToken("explicitgender");
 							user.AddToken("invisiblegender");
 						}
+						user.UpdateTitle();
 						userbc.AdjustView();
 
 						message(ret);
