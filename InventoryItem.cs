@@ -14,7 +14,10 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 		public string The { get; set; }
-		public string Script { get; private set; }
+		public string OnUse { get; private set; }
+		public string OnEquip { get; private set; }
+		public string OnUnequip { get; private set; }
+
 
 		public Token tempToken { get; set; }
 		private static XmlDocument itemDoc, costumeDoc;
@@ -82,6 +85,12 @@ namespace Noxico
 			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a") : A), name).Trim();
 		}
 
+		//Added for Jint's sake.
+		public string ToString(Token token)
+		{
+			return this.ToString(token, false, true);
+		}
+
 		public string GetDescription(Token token)
 		{
 			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
@@ -143,14 +152,27 @@ namespace Noxico
 			}
 #endif
 
-			ni.Script = null;
+			ni.OnUse = null;
 			if (ni.ID == "catmorph")
 				ni.ID = "catmorph";
 			var ses = x.SelectNodes("script").OfType<XmlElement>().ToList();
 			if (ses.Count == 0)
 				return ni;
-			if (ses[0] != null && ses[0].GetAttribute("type") == "text/javascript")
-				ni.Script = ses[0].InnerText;
+			foreach (var script in ses)
+			{
+				switch (script.GetAttribute("for"))
+				{
+					case "equip":
+						ni.OnEquip = script.InnerText;
+						break;
+					case "unequip":
+						ni.OnUnequip = script.InnerText;
+						break;
+					default:
+						ni.OnUse = script.InnerText;
+						break;
+				}
+			}
 			return ni;
 		}
 
@@ -229,12 +251,17 @@ namespace Noxico
 					return false;
 			}
 
-			item.Tokens.Add(new Token() { Name = "equipped" });
+			var succeed = true;
+			if (!string.IsNullOrWhiteSpace(this.OnEquip))
+				succeed = (bool)RunScript(item, this.OnEquip, character, null, null);
+			if (succeed)
+				item.AddToken("equipped");
+
 			character.RecalculateStatBonuses();
 			character.CheckHasteSlow();
 
 			//Difficult bit: gotta re-equip tempremovals without removing the target item all over. THAT WOULD BE QUITE BAD.
-			return true;
+			return false;
 		}
 
 		public bool Unequip(Character character, Token item)
@@ -274,7 +301,11 @@ namespace Noxico
 				throw new ItemException("[You] tr[ies] to unequip " + this.ToString(item, true) + ", but find[s] " + (this.HasToken("plural") ? "them" : "it") + " stuck to [your] body!\n");
 			}
 
-			item.Tokens.Remove(item.GetToken("equipped"));
+			var succeed = true;
+			if (!string.IsNullOrWhiteSpace(this.OnUnequip))
+				succeed = (bool)RunScript(item, this.OnUnequip, character, null, null);
+			if (succeed)
+				item.RemoveToken("equipped");
 
 			//Not sure about automatically putting pants back on after taking them off to take off underpants...
 			//while (tempRemove.Count > 0)
@@ -282,7 +313,7 @@ namespace Noxico
 
 			character.RecalculateStatBonuses();
 			character.CheckHasteSlow();
-			return true;
+			return succeed;
 		}
 
 		private bool TempRemove(Character character, Stack<Token> list, string slot)
@@ -375,7 +406,8 @@ namespace Noxico
 						{
 							runningDesc += c.Message;
 						}
-						MessageBox.Message(runningDesc.Viewpoint(boardchar));
+						if (!string.IsNullOrWhiteSpace(runningDesc))
+							MessageBox.Message(runningDesc.Viewpoint(boardchar));
 						return;
 					},
 						null);
@@ -402,7 +434,8 @@ namespace Noxico
 						{
 							runningDesc += x.Message;
 						}
-						MessageBox.Message(runningDesc.Viewpoint(boardchar));
+						if (!string.IsNullOrWhiteSpace(runningDesc))
+							MessageBox.Message(runningDesc.Viewpoint(boardchar));
 						return;
 					},
 						null);
@@ -465,80 +498,10 @@ namespace Noxico
 				}
 			}
 
-			if (!string.IsNullOrWhiteSpace(this.Script))
-			{
-				var js = Javascript.MainMachine;
-				Javascript.Ascertain(js, true);
-				js.SetParameter("user", character);
-				js.SetParameter("userbc", boardchar);
-				js.SetFunction("consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
-				js.SetFunction("message", new Action<string>(x =>
-				{
-					var paused = true;
-					MessageBox.ScriptPauseHandler = () =>
-					{
-						paused = false;
-					};
-					MessageBox.Message(x);
-					while (paused)
-					{
-						NoxicoGame.HostForm.Noxico.Update();
-						System.Windows.Forms.Application.DoEvents();
-					}
-				}));
-				js.SetFunction("identify", new Action<string>(x =>
-				{
-					if (character.GetToken("cunning").Value < 10)
-					{
-						//Dumb characters can't identify as well.
-						if (Toolkit.Rand.NextDouble() < 0.5)
-							return;
-					}
-
-					//Random potion identification
-					if (this.HasToken("randomized"))
-					{
-						var rid = (int)this.GetToken("randomized").Value;
-						if (this.Path("equipable/ring") != null && rid < 128)
-							rid += 128;
-						var rdesc = NoxicoGame.HostForm.Noxico.Potions[rid];
-						if (rdesc[0] != '!')
-						{
-							//Still unidentified. Let's rock.
-							rdesc = '!' + rdesc;
-							NoxicoGame.HostForm.Noxico.Potions[rid] = rdesc;
-							this.UnknownName = null;
-						}
-						//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
-						//item.RemoveToken("unidentified");
-						//runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
-						//return;
-					}
-
-					//Regular item identification
-					if (item.HasToken("unidentified"))// && !string.IsNullOrWhiteSpace(this.UnknownName))
-					{
-						item.RemoveToken("unidentified");
-						runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
-					}
-				}));
-#if DEBUG
-				js.SetDebugMode(true);
-				js.Step += (s, di) =>
-				{
-					Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-				};
-#endif
-				js.Run(this.Script);
-			}
+			if (!string.IsNullOrWhiteSpace(this.OnUse))
+				RunScript(item, this.OnUse, character, boardchar, (x => runningDesc += x));
 			else
 				this.Consume(character, item);
-			/*
-			else if(this.HasToken("singleuse"))
-			{
-				character.GetToken("items").Tokens.Remove(item);
-			}
-			*/
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
 				MessageBox.Message(runningDesc.Viewpoint(boardchar));
@@ -658,6 +621,77 @@ namespace Noxico
 					}
 					break;
 			}
+			return ret;
+		}
+
+		public object RunScript(Token item, string script, Character character, BoardChar boardchar, Action<string> running)
+		{
+			var js = Javascript.MainMachine;
+			Javascript.Ascertain(js, true);
+			js.SetParameter("user", character);
+			js.SetParameter("userbc", boardchar);
+			js.SetFunction("consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
+			js.SetFunction("message", new Action<string>(x =>
+			{
+				var paused = true;
+				MessageBox.ScriptPauseHandler = () =>
+				{
+					paused = false;
+				};
+				MessageBox.Message(x);
+				while (paused)
+				{
+					NoxicoGame.HostForm.Noxico.Update();
+					System.Windows.Forms.Application.DoEvents();
+				}
+			}));
+			js.SetFunction("identify", new Action<string>(x =>
+			{
+				if (character.GetToken("cunning").Value < 10)
+				{
+					//Dumb characters can't identify as well.
+					if (Toolkit.Rand.NextDouble() < 0.5)
+						return;
+				}
+
+				//Random potion identification
+				if (this.HasToken("randomized"))
+				{
+					var rid = (int)this.GetToken("randomized").Value;
+					if (this.Path("equipable/ring") != null && rid < 128)
+						rid += 128;
+					var rdesc = NoxicoGame.HostForm.Noxico.Potions[rid];
+					if (rdesc[0] != '!')
+					{
+						//Still unidentified. Let's rock.
+						rdesc = '!' + rdesc;
+						NoxicoGame.HostForm.Noxico.Potions[rid] = rdesc;
+						this.UnknownName = null;
+					}
+					//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
+					//item.RemoveToken("unidentified");
+					//runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
+					//return;
+				}
+
+				//Regular item identification
+				if (item.HasToken("unidentified"))// && !string.IsNullOrWhiteSpace(this.UnknownName))
+				{
+					item.RemoveToken("unidentified");
+					if (running != null)
+						running("You have identified this as " + this.ToString(item, true) + ".");
+				}
+			}));
+#if DEBUG
+			js.SetDebugMode(true);
+			js.Step += (s, di) =>
+			{
+				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+			};
+#endif
+			var ret = js.Run(script);
+			if (!(ret is bool))
+				ret = true;
 			return ret;
 		}
 	}
