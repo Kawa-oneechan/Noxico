@@ -481,7 +481,7 @@ namespace Noxico
 		public int MoveSpeed { get; set; }
 
 		public Dijkstra DijkstraMap { get; private set; }
-		private Dijkstra dijkstraBed;
+		private Dijkstra villagerAIMap;
 		public Character Character { get; set; }
 
 		public string OnTick { get; set; }
@@ -755,6 +755,7 @@ namespace Noxico
 
 			CheckForCriminalScum();
 
+			#region Villager AI
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 			{
 				if (Character.HasToken("goingtosleep"))
@@ -777,6 +778,32 @@ namespace Noxico
 						{
 							Character.RemoveToken("goingtosleep");
 							Character.AddToken("sleeping");
+
+							var wardrobes = this.ParentBoard.Entities.OfType<Container>().Where(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName)).ToList();
+							if (wardrobes != null)
+							{
+								var wardrobe = wardrobes[0];
+								var content = wardrobe.Token.GetToken("contents").Tokens;
+								var parts = new[] { "underpants", "undershirt", "shirt", "pants" };
+								var carried = this.Character.GetToken("items").Tokens.Where(x => x.HasToken("equipped")).ToList();
+								foreach (var item in carried)
+								{
+									var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == item.Name);
+									foreach (var part in parts)
+									{
+										if (knownItem.Path("equipable/" + part) != null)
+										{
+											if (knownItem.HasToken("cursed"))
+												continue;
+											Console.WriteLine("{0} takes off {1} {2}.", this.Character.Name, part, knownItem.Name);
+											knownItem.RemoveToken("equipped");
+											this.Character.GetToken("items").Tokens.Remove(item);
+											content.Add(item);
+											break;
+										}
+									}
+								}
+							}
 						}
 						else
 						{
@@ -785,17 +812,18 @@ namespace Noxico
 								this.XPosition = bed.XPosition;
 								this.YPosition = bed.YPosition;
 							}
-							if (dijkstraBed == null)
+							if (villagerAIMap == null)
 							{
-								dijkstraBed = new Dijkstra();
-								dijkstraBed.Hotspots.Add(new Point(bed.XPosition, bed.YPosition));
-								dijkstraBed.UpdateWalls();
-								dijkstraBed.Update();
+								villagerAIMap = new Dijkstra();
+								villagerAIMap.UpdateWalls();
 							}
+							villagerAIMap.Hotspots.Clear();
+							villagerAIMap.Hotspots.Add(new Point(bed.XPosition, bed.YPosition));
+							villagerAIMap.Update();
 							var dir = Direction.North;
-							dijkstraBed.Ignore = DijkstraIgnores.Type;
-							dijkstraBed.IgnoreType = typeof(BoardChar);
-							if (dijkstraBed.RollDown(this.YPosition, this.XPosition, ref dir))
+							villagerAIMap.Ignore = DijkstraIgnores.Type;
+							villagerAIMap.IgnoreType = typeof(BoardChar);
+							if (villagerAIMap.RollDown(this.YPosition, this.XPosition, ref dir))
 								Move(dir);
 						}
 					}
@@ -806,7 +834,83 @@ namespace Noxico
 					if (NoxicoGame.InGameTime.Hour >= 6 && NoxicoGame.InGameTime.Hour < 21 && NoxicoGame.InGameTime.Minute > Toolkit.Rand.Next(60))
 					{
 						Character.RemoveToken("sleeping");
-						Movement = Motor.WanderSector;
+						Character.AddToken("wakingup");
+
+						//TODO: skip if No Nudity Taboo applies
+						var wardrobes = this.ParentBoard.Entities.OfType<Container>().Where(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName)).ToList();
+						if (wardrobes == null || wardrobes[0].Token.GetToken("contents").Tokens.Count == 0)
+						{
+							//fuck it, I'm going naked today!
+							Console.WriteLine("Fuck it. {0} is going naked today!", this.Character.Name);
+							Character.RemoveToken("getdressed");
+							Character.RemoveToken("wakingup");
+							this.Movement = Motor.WanderSector;
+						}
+						else
+						{
+							Console.WriteLine("{0} finding wardrobe to get dressed.", this.Character.Name);
+							var wardrobe = wardrobes[0];
+							if (villagerAIMap == null)
+							{
+								villagerAIMap = new Dijkstra();
+								villagerAIMap.UpdateWalls();
+							}
+							villagerAIMap.Hotspots.Clear();
+							villagerAIMap.Hotspots.Add(new Point(wardrobe.XPosition, wardrobe.YPosition));
+							villagerAIMap.Update();
+							Character.AddToken("getdressed");
+						}
+					}
+				}
+				else if (Character.HasToken("wakingup"))
+				{
+					if (Character.HasToken("getdressed"))
+					{
+						if (this.XPosition == villagerAIMap.Hotspots[0].X && this.YPosition == villagerAIMap.Hotspots[0].Y)
+						{
+							Character.RemoveToken("getdressed");
+							Character.RemoveToken("wakingup");
+							this.Movement = Motor.WanderSector;
+
+							//Found the wardrobe, yay.
+							var parts = new[] { "underpants", "undershirt", "shirt", "pants" };
+							var wardrobe = this.ParentBoard.Entities.OfType<Container>().First(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName));
+							var content = wardrobe.Token.GetToken("contents").Tokens;
+							var carried = this.Character.GetToken("items");
+							try
+							{
+								foreach (var part in parts)
+								{
+									var lives = 20;
+									while (lives > 0 && content.Count > 0)
+									{
+										lives--;
+										var randomContent = content[Toolkit.Rand.Next(content.Count)];
+										var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == randomContent.Name);
+										if (knownItem.Path("equipable/" + part) != null)
+										{
+											Console.WriteLine("{0} takes out {1}.", this.Character.Name, knownItem.Name);
+											randomContent.AddToken("equipped");
+											carried.Tokens.Add(randomContent);
+											content.Remove(randomContent);
+											break;
+										}
+									}
+									Console.WriteLine("{0} gives up on finding {1}.", this.Character.Name, part);
+								}
+							}
+							catch (Exception x)
+							{
+							}
+						}
+						else
+						{
+							var dir = Direction.North;
+							villagerAIMap.Ignore = DijkstraIgnores.Type;
+							villagerAIMap.IgnoreType = typeof(BoardChar);
+							if (villagerAIMap.RollDown(this.YPosition, this.XPosition, ref dir))
+								Move(dir);
+						}
 					}
 				}
 				else
@@ -825,6 +929,7 @@ namespace Noxico
 					}
 				}
 			}
+			#endregion
 
 			base.Update();
 			Excite();
