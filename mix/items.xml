@@ -5,7 +5,7 @@
 	<!ELEMENT item (#PCDATA|script)*>
 	<!ATTLIST category name CDATA #REQUIRED>
 	<!ELEMENT script (#PCDATA)>
-	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST script type CDATA #FIXED "text/javascript" for CDATA #IMPLIED>
 	<!ATTLIST item
 		id ID #REQUIRED
 		name CDATA #REQUIRED
@@ -19,6 +19,39 @@
 	<!ATTLIST costume id ID #REQUIRED>
 ]>
 <items>
+
+	<item id="strapon" name="strapon" a="a" the="the">
+		<![CDATA[
+plural
+equipable
+	female
+	underpants
+weight
+	light
+price: 100
+ascii
+	char: U+006E
+			]]>
+		<script type="text/javascript" for="equip">
+			<![CDATA[
+				if (user.HasToken("penis"))
+				{
+					message ("You're a man!");
+					return false;
+				}
+				var p = user.AddToken("penis");
+				p.Text = "strapon";
+				p.AddToken("thickness").Value = 3;
+				p.AddToken("length").Value = 20;
+			]]>
+		</script>
+		<script type="text/javascript" for="unequip">
+			<![CDATA[
+				user.RemoveToken("penis", "strapon");
+			]]>
+		</script>
+	</item>
+
 	<item id="ponifier" name="Element of Perversion" a="an" the="the" proper="true">
 		<![CDATA[
 test

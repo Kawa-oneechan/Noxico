@@ -38,11 +38,41 @@ namespace Noxico
 			return t;
 		}
 
-		public void RemoveToken(string name)
+		public Token AddToken(Token t)
+		{
+			Tokens.Add(t);
+			return t;
+		}
+
+		public Token RemoveToken(string name)
 		{
 			var t = Tokens.Find(x => x.Name == name);
 			if (t != null)
 				Tokens.Remove(t);
+			return t;
+		}
+
+		public Token RemoveToken(string name, string text)
+		{
+			var t = Tokens.Find(x => x.Name == name && x.Text == text);
+			if (t != null)
+				Tokens.Remove(t);
+			return t;
+		}
+
+		public Token RemoveToken(Token t)
+		{
+			Tokens.Remove(t);
+			return t;
+		}
+
+		public Token RemoveToken(int i)
+		{
+			if (i < 0 || i >= Tokens.Count)
+				throw new ArgumentOutOfRangeException("i");
+			var t = Tokens[i];
+			Tokens.Remove(t);
+			return t;
 		}
 
 		public Token Path(string path)
