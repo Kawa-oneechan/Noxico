@@ -796,7 +796,8 @@ namespace Noxico
 											if (knownItem.HasToken("cursed"))
 												continue;
 											Console.WriteLine("{0} takes off {1} {2}.", this.Character.Name, part, knownItem.Name);
-											knownItem.RemoveToken("equipped");
+											//knownItem.RemoveToken("equipped");
+											knownItem.Unequip(this.Character, item);
 											this.Character.GetToken("items").Tokens.Remove(item);
 											content.Add(item);
 											break;
@@ -866,42 +867,36 @@ namespace Noxico
 				{
 					if (Character.HasToken("getdressed"))
 					{
+						if (NoxicoGame.InGameTime.Hour >= 7)
+						{
+							Console.WriteLine("{0} timed out getting dressed.", this.Character.Name);
+							Character.RemoveToken("getdressed");
+							Character.RemoveToken("wakingup");
+							Character.AddToken("dressup");
+							this.Movement = Motor.WanderSector;
+							return;
+						}
+						if (villagerAIMap == null)
+						{
+							villagerAIMap = new Dijkstra();
+							villagerAIMap.UpdateWalls();
+							var wardrobe = this.ParentBoard.Entities.OfType<Container>().FirstOrDefault(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName));
+							if (wardrobe == null)
+							{
+								Console.WriteLine("{0} restarted to find wardrobe missing while getting dressed. Skipping.", this.Character.Name);
+								Character.RemoveToken("getdressed");
+								Character.RemoveToken("wakingup");
+								return;
+							}
+							else
+								villagerAIMap.Hotspots.Add(new Point(wardrobe.XPosition, wardrobe.YPosition));
+						}
 						if (this.XPosition == villagerAIMap.Hotspots[0].X && this.YPosition == villagerAIMap.Hotspots[0].Y)
 						{
 							Character.RemoveToken("getdressed");
 							Character.RemoveToken("wakingup");
+							Character.AddToken("dressup");
 							this.Movement = Motor.WanderSector;
-
-							//Found the wardrobe, yay.
-							var parts = new[] { "underpants", "undershirt", "shirt", "pants" };
-							var wardrobe = this.ParentBoard.Entities.OfType<Container>().First(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName));
-							var content = wardrobe.Token.GetToken("contents").Tokens;
-							var carried = this.Character.GetToken("items");
-							try
-							{
-								foreach (var part in parts)
-								{
-									var lives = 20;
-									while (lives > 0 && content.Count > 0)
-									{
-										lives--;
-										var randomContent = content[Toolkit.Rand.Next(content.Count)];
-										var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == randomContent.Name);
-										if (knownItem.Path("equipable/" + part) != null)
-										{
-											Console.WriteLine("{0} takes out {1}.", this.Character.Name, knownItem.Name);
-											randomContent.AddToken("equipped");
-											carried.Tokens.Add(randomContent);
-											content.Remove(randomContent);
-											break;
-										}
-									}
-									Console.WriteLine("{0} gives up on finding {1}.", this.Character.Name, part);
-								}
-							}
-							catch (Exception x)
-							{
-							}
 						}
 						else
 						{
@@ -912,6 +907,34 @@ namespace Noxico
 								Move(dir);
 						}
 					}
+				}
+				else if (this.Character.HasToken("dressup"))
+				{
+					var parts = new[] { "underpants", "undershirt", "shirt", "pants" };
+					var wardrobe = this.ParentBoard.Entities.OfType<Container>().First(x => x.ID.EndsWith("_wardrobe_" + this.Character.Name.FirstName));
+					var content = wardrobe.Token.GetToken("contents").Tokens;
+					var carried = this.Character.GetToken("items");
+					foreach (var part in parts)
+					{
+						var lives = 20;
+						while (lives > 0 && content.Count > 0)
+						{
+							lives--;
+							var randomContent = content[Toolkit.Rand.Next(content.Count)];
+							var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == randomContent.Name);
+							if (knownItem.Path("equipable/" + part) != null)
+							{
+								Console.WriteLine("{0} takes out {1}.", this.Character.Name, knownItem.Name);
+								//randomContent.AddToken("equipped");
+								content.Remove(randomContent);
+								carried.Tokens.Add(randomContent);
+								knownItem.Equip(this.Character, randomContent);
+								break;
+							}
+						}
+						Console.WriteLine("{0} gives up on finding {1}.", this.Character.Name, part);
+					}
+					Character.RemoveToken("dressup");
 				}
 				else
 				{
