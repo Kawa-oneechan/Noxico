@@ -79,7 +79,7 @@ namespace Noxico
 		public MainForm()
 		{
 			var fatal = false;
-			try
+			//try
 			{
 				this.Text = "Noxico";
 				this.BackColor = System.Drawing.Color.Black;
@@ -357,9 +357,9 @@ namespace Noxico
 					Application.DoEvents();
 				}
 			}
-			catch (Exception x)
+			//catch (Exception x)
 			{
-				new ErrorForm(x).ShowDialog(this);
+				//new ErrorForm(x).ShowDialog(this);
 				//System.Windows.Forms.MessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
 				Running = false;
 				fatal = true;

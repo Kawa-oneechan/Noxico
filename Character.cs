@@ -560,6 +560,23 @@ namespace Noxico
 			return ret;
 		}
 
+		private void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
+		{
+			var totalRows = Math.Max(col1.Count, col2.Count);
+			print(header1.PadRight(pad) + header2 + "\n");
+			for (var i = 0; i < totalRows; i++)
+			{
+				if (i < col1.Count)
+					print(("| " + col1[i]).PadRight(pad));
+				else
+					print("".PadRight(pad));
+				if (i < col2.Count)
+					print("| " + col2[i]);
+				print("\n");
+			}
+			print("\n");
+		}
+
 		public string LookAt(Entity pa)
 		{
 			if (this.HasToken("beast"))
@@ -569,554 +586,588 @@ namespace Noxico
 
 			var sb = new StringBuilder();
 
-			//TODO: account for slimeblobs -- "[He] [is] {0} tall upright, but effectively only {1}."
-			//var legLength = this.GetToken("tallness").Value * 0.53;
-			sb.AppendFormat("[He] [is] {0} tall. ", Descriptions.Length(this.GetToken("tallness").Value));
+			//Backporting from .js mockup :D
+			//Things not listed: pregnancy, horns and wings.
+			#region Backport compatibility
+			Action<string> print = new Action<string>(x => sb.Append(x));
+			Func<string, InventoryItem> getKnownItem = new Func<string, InventoryItem>(x =>
+			{
+				return NoxicoGame.KnownItems.Find(y => y.ID == x);
+			}
+			);
+			Func<string, string> nameColor = new Func<string, string>(x => Toolkit.NameColor(x));
+			Func<float, string> count = new Func<float, string>(x => Toolkit.Count(x));
+			var isPlayer = pa is Player;
+			#endregion
+
+			//Begin backport!
 
 			var stimulation = this.GetToken("stimulation").Value;
+			var legLength = this.GetToken("tallness").Value * 0.53f;
 
-			#region Equipment phase 1
-			var breastsVisible = false;
-			var crotchVisible = false;
+			print(("Name: " + this.Name.ToString(true)).PadRight(34) + "Type: " + this.Title + (isPlayer ? " (player)" : "") + "\n");
+			print("\n");
+
+			#region Equipment, phase 1
+			bool breastsVisible = false, crotchVisible = false;
 			var carried = new List<InventoryItem>();
+			var worn = new List<string>();
 			var hands = new List<InventoryItem>();
 			var fingers = new List<InventoryItem>();
 			InventoryItem underpants = null;
 			InventoryItem undershirt = null;
-			InventoryItem pants = null;
 			InventoryItem shirt = null;
+			InventoryItem pants = null;
 			InventoryItem jacket = null;
 			InventoryItem cloak = null;
 			InventoryItem hat = null;
 			InventoryItem goggles = null;
 			InventoryItem mask = null;
 			InventoryItem neck = null;
-			foreach (var carriedItem in this.GetToken("items").Tokens)
+			var carriedItems = this.GetToken("items");
+			for (var i = 0; i < carriedItems.Tokens.Count; i++)
 			{
-				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-				if (find == null)
-					continue;
-				if (find.HasToken("equipable") && carriedItem.HasToken("equipped"))
+				var carriedItem = carriedItems.Item(i);
+				var foundItem = getKnownItem(carriedItem.Name);
+				if (foundItem == null)
 				{
-					var eq = find.GetToken("equipable");
+					print("Can't handle " + carriedItem.Name + ".\n");
+					continue;
+				}
+
+				if (foundItem.HasToken("equipable") && carriedItem.HasToken("equipped"))
+				{
+					var eq = foundItem.GetToken("equipable");
 					if (eq.HasToken("underpants"))
 					{
-						underpants = find;
+						underpants = foundItem;
 						underpants.tempToken = carriedItem;
 					}
 					if (eq.HasToken("undershirt"))
 					{
-						undershirt = find;
+						undershirt = foundItem;
 						undershirt.tempToken = carriedItem;
 					}
 					if (eq.HasToken("pants"))
 					{
-						pants = find;
+						pants = foundItem;
 						pants.tempToken = carriedItem;
 					}
 					if (eq.HasToken("shirt"))
 					{
-						shirt = find;
+						shirt = foundItem;
 						shirt.tempToken = carriedItem;
 					}
 					if (eq.HasToken("jacket"))
 					{
-						jacket = find;
+						jacket = foundItem;
 						jacket.tempToken = carriedItem;
 					}
 					if (eq.HasToken("cloak"))
 					{
-						cloak = find;
+						cloak = foundItem;
 						cloak.tempToken = carriedItem;
 					}
 					if (eq.HasToken("hat"))
 					{
-						hat = find;
+						hat = foundItem;
 						hat.tempToken = carriedItem;
 					}
 					if (eq.HasToken("goggles"))
 					{
-						goggles = find;
+						goggles = foundItem;
 						goggles.tempToken = carriedItem;
 					}
 					if (eq.HasToken("mask"))
 					{
-						mask = find;
+						mask = foundItem;
 						mask.tempToken = carriedItem;
 					}
 					if (eq.HasToken("neck"))
 					{
-						neck = find;
+						neck = foundItem;
 						neck.tempToken = carriedItem;
 					}
 					if (eq.HasToken("ring"))
 					{
-						find.tempToken = carriedItem;
-						fingers.Add(find);
+						foundItem.tempToken = carriedItem;
+						fingers.Add(foundItem);
 					}
 					if (eq.HasToken("hand"))
 					{
-						find.tempToken = carriedItem;
-						hands.Add(find);
+						foundItem.tempToken = carriedItem;
+						hands.Add(foundItem);
 					}
 				}
 				else
-					carried.Add(find);
+				{
+					carried.Add(foundItem);
+				}
 			}
-			var visible = new List<string>();
+
 			if (hat != null)
-				visible.Add(hat.ToString(hat.tempToken));
+				worn.Add(hat.ToString(hat.tempToken));
 			if (goggles != null)
-				visible.Add(goggles.ToString(goggles.tempToken));
+				worn.Add(goggles.ToString(goggles.tempToken));
 			if (mask != null)
-				visible.Add(mask.ToString(mask.tempToken));
+				worn.Add(mask.ToString(mask.tempToken));
 			if (neck != null)
-				visible.Add(neck.ToString(neck.tempToken));
+				worn.Add(neck.ToString(neck.tempToken));
 			if (cloak != null)
-				visible.Add(cloak.ToString(cloak.tempToken));
+				worn.Add(cloak.ToString(cloak.tempToken));
 			if (jacket != null)
-				visible.Add(jacket.ToString(jacket.tempToken));
+				worn.Add(jacket.ToString(jacket.tempToken));
 			if (shirt != null)
-				visible.Add(shirt.ToString(shirt.tempToken));
+				worn.Add(shirt.ToString(shirt.tempToken));
 			if (pants != null && pants != shirt)
-				visible.Add(pants.ToString(pants.tempToken));
-			if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
+				worn.Add(pants.ToString(pants.tempToken));
+			if (!isPlayer)
 			{
-				breastsVisible = undershirt.CanSeeThrough();
-				visible.Add(undershirt.ToString(undershirt.tempToken));
+				if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
+				{
+					breastsVisible = undershirt.CanSeeThrough();
+					worn.Add(undershirt.ToString(undershirt.tempToken));
+				}
+				else
+					breastsVisible = (shirt == null || shirt.CanSeeThrough());
+				if (underpants != null && (pants == null || pants.CanSeeThrough()))
+				{
+					crotchVisible = underpants.CanSeeThrough();
+					worn.Add(underpants.ToString(underpants.tempToken));
+				}
+				else
+					crotchVisible = (pants == null || pants.CanSeeThrough());
 			}
 			else
-				breastsVisible = (shirt == null || shirt.CanSeeThrough());
-			if (underpants != null && (pants == null || pants.CanSeeThrough()))
 			{
-				crotchVisible = underpants.CanSeeThrough();
-				visible.Add(underpants.ToString(underpants.tempToken));
+				if (undershirt != null)
+					worn.Add(undershirt.ToString(undershirt.tempToken));
+				if (underpants != null)
+					worn.Add(underpants.ToString(underpants.tempToken));
+				crotchVisible = breastsVisible = true;
 			}
-			else
-				crotchVisible = (pants == null || pants.CanSeeThrough());
 			#endregion
 
-			#region Face and Skin
-			var skinDescriptions = new Dictionary<string, Dictionary<string, string>>()
-			{
-				{ "skin", LoadDictionary("faces_skin") },
-				{ "fur", LoadDictionary("faces_fur") },
-				{ "rubber", LoadDictionary("faces_rubber") },
-				{ "scales", LoadDictionary("faces_scales") },
-				{ "slime", LoadDictionary("faces_slime") },
-				{ "metal", LoadDictionary("faces_metal") },
-			};
-			var skinName = this.Path("skin/type") != null ? this.Path("skin/type").Text : "skin";
-			var faceType = this.HasToken("face") ? this.GetToken("face").Text : "normal";
-			var hairColor = this.Path("hair/color") != null ? Toolkit.NameColor(this.Path("hair/color").Text).ToLowerInvariant() : "<null>";
-			var skinColor = skinName == "slime" ? hairColor : Toolkit.NameColor(this.Path("skin/color").Text).ToLowerInvariant();
-			//TODO: hide some info if wearing a mask.
-			//if (mask != null && !mask.CanSeeThrough())
-			sb.AppendFormat(skinDescriptions[skinName][faceType], skinColor, hairColor);
-			//Simple two eyes setup for everybody, can expand to more eyes or special kinds later.
-			var eyeColor = Toolkit.NameColor(this.GetToken("eyes").Text);
-			sb.AppendFormat(" [He] [has] {0} eyes", eyeColor);
+			#region Body and Face
+			print("General\n-------\n");
+
+			var bodyThings = new List<string>();
+			var headThings = new List<string>();
+
+			if (this.HasToken("slimeblob"))
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value - legLength) + " tall");
+			else
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
+			if (this.HasToken("snaketail"))
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
+
+			bodyThings.Add(nameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
 			if (this.Path("skin/pattern") != null)
-			{
-				var pattern = this.Path("skin/pattern");
-				sb.AppendFormat(" and [his] body is covered in {0} {1}", pattern.GetToken("color").Text, pattern.Text);
-			}
-			sb.Append('.');
-			sb.AppendLine();
-			#endregion
+				bodyThings.Add(nameColor(this.Path("skin/pattern/color").Text) + " " + this.Path("skin/pattern").Text);
 
-			#region Hair and Ears
-			if (this.HasToken("hair") && this.GetToken("hair").GetToken("length").Value > 0)
-			{
-				var hairDesc = Descriptions.Hair(this.GetToken("hair"));
-
-				if (skinName == "slime")
-					hairDesc = "goopy, " + hairDesc;
-				else if (skinName == "rubber")
-					hairDesc = "thick, " + hairDesc;
-				else if (skinName == "metal")
-					hairDesc = "plastic-like, " + hairDesc;
-
-				var earDescriptions = LoadDictionary("ears");
-				var earType = "human";
-				if (this.HasToken("ears"))
-				{
-					if (!string.IsNullOrWhiteSpace(this.GetToken("ears").Text))
-						earType = this.GetToken("ears").Text;
-				}
-				else
-					earType = "hole";
-				if (earDescriptions.ContainsKey(earType))
-					sb.AppendFormat(earDescriptions[earType], hairDesc);
-				if (this.HasToken("antennae"))
-					sb.AppendFormat(" Floppy antennae grow from just behind [his] hairline, bouncing and swaying in the breeze.");
-				sb.AppendLine();
-			}
-			else
-			{
-				if (skinName != "skin")
-					sb.AppendFormat("[He] [is] totally bald, showing only shiny {0} {1} where [his] hair should be.", skinColor, skinName);
-				else
-					sb.AppendFormat("[He] [has] no hair, only a thin layer of fur atop of [his] head.");
-
-				var earDescriptions = LoadDictionary("ears_bald");
-				var earType = "human";
-				if (this.HasToken("ears"))
-				{
-					if (!string.IsNullOrWhiteSpace(this.GetToken("ears").Text))
-						earType = this.GetToken("ears").Text;
-				}
-				else
-					earType = "hole";
-				if (earDescriptions.ContainsKey(earType))
-					sb.AppendFormat(earDescriptions[earType]);
-				if (this.HasToken("antennae"))
-					sb.AppendFormat(" Floppy antennae also appear on [his] skull, bouncing and swaying in the breeze.");
-			}
-			#endregion
-
-			#region Horns
-			if (this.HasToken("horns"))
-			{
-				if (this.GetToken("horns").HasToken("cow"))
-				{
-					var hornSize = this.GetToken("horns").Value;
-					if (hornSize <= 3)
-						sb.AppendFormat("Two tiny horn-like nubs protrude from [his] forehead, resembling the horns of young livestock.");
-					else if (hornSize <= 6)
-						sb.AppendFormat("Two moderately sized horns grow from [his] forehead, similar in size to those on a young bovine.");
-					else if (hornSize <= 12)
-						sb.AppendFormat("Two large horns sprout from [his] forehead, curving forwards like those of a bull.");
-					else if (hornSize <= 20)
-						sb.AppendFormat("Two very large and dangerous looking horns sprout from [his] head, curving forward and over a foot long. They have dangerous looking points.");
-					else
-						sb.AppendFormat("Two huge horns erupt from [his] forehead, curving outward at first, then forwards. The weight of them is heavy, and they end in dangerous looking points.");
-				}
-				else
-				{
-					var numHorns = this.GetToken("horns").Value;
-					if (numHorns == 2)
-						sb.AppendFormat("A small pair of pointed horns has broken through the [skin] on [his] forehead, proclaiming some demonic taint to any who see them.");
-					else if (numHorns == 4)
-						sb.AppendFormat("A quartet of prominant horns has broken through [his] [skin]. The back pair are longer, and curve back along [his] head. The front pair protrude forward demonically.");
-					else if (numHorns == 6)
-						sb.AppendFormat("Six horns have sprouted through [his] [skin], the back two pairs curve backwards over [his] head and down towards [his] neck, while the front two horns stand almost eight inches long upwards and a little forward.");
-					else
-						sb.AppendFormat("A large number of thick demonic horns sprout through [his] [skin], each pair sprouting behind the ones before.  The front jut forwards nearly ten inches while the rest curve back over [his] head, some of the points ending just below [his] ears.  You estimate [he] [has] a total of {0} horns.", numHorns);
-				}
-				sb.AppendLine();
-			}
-			#endregion
-
-			#region Wings
-			if (this.HasToken("wings"))
-			{
-				var small = this.GetToken("wings").HasToken("small");
-				var wingTypes = LoadDictionary(small ? "wings_small" : "wings");
-				var wingType = this.GetToken("wings").Text;
-				if (string.IsNullOrWhiteSpace(wingType))
-					wingType = "feather";
-				if (!wingTypes.ContainsKey(wingType))	
-					wingType = "invalid";
-				sb.AppendFormat(wingTypes[wingType]);
-				sb.AppendLine();
-			}
-			#endregion
-
-			//TODO: support certain skintype limitations
-			//Possibility: allow skin and fur to count as one.
-			#region Tails
-			if (this.HasToken("tail"))
-			{
-				//TODO: buttdescript
-				var tail = this.GetToken("tail");
-				//var hairColor = Color(this.GetToken("hair").Tokens.Find(x => x.Name != "length").Name);
-				var buttDesc = Toolkit.PickOne("butt", "ass", Descriptions.Butt(this.GetToken("ass")));
-				if (tail.Text == "spider")
-				{
-					if (!tail.HasToken("venom"))
-						tail.Tokens.Add(new Token() { Name = "venom", Value = 10 });
-					sb.AppendFormat("A large spherical spider-abdomen grows out from [his] backside{0}. Though it weighs heavy and bobs with every motion, it doesn't seem to slow [him] down.", "" /* TODO: ", covered in shiny red and black chitin" should be skintyped */);
-					if (pa is Player)
-					{
-						if (tail.GetToken("venom").Value > 50 && tail.GetToken("venom").Value < 80)
-							sb.AppendFormat(" [His] bulging arachnid posterior feels fairly full of webbing.");
-						else if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
-							sb.AppendFormat(" [His] bulbous arachnid rear bulges and feels very full of webbing.");
-						else if (tail.GetToken("venom").Value == 100)
-							sb.AppendFormat(" [His] swollen spider-butt is distended with the sheer amount of webbing it's holding.");
-					}
-					else
-					{
-						if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
-							sb.AppendFormat(" [His] bulbous arachnid rear bulges as if full of webbing.");
-						else if (tail.GetToken("venom").Value == 100)
-							sb.AppendFormat(" [His] swollen spider-butt is distended with the sheer amount of webbing it's holding.");
-					}
-				}
-				else if (tail.Text == "stinger")
-				{
-					if (!tail.HasToken("venom"))
-						tail.Tokens.Add(new Token() { Name = "venom", Value = 10 });
-					sb.AppendFormat("A large insectile bee-abdomen dangles from just above [his] backside, bobbing with its own weight. It is {0}tipped with a dagger-like stinger.", "" /* TODO: as above, "covered in hard chitin with black and yellow stripes, " */);
-					if (tail.GetToken("venom").Value > 50 && tail.GetToken("venom").Value < 80)
-						sb.AppendFormat(" A single drop of poison hangs from [his] exposed stinger.");
-					else if (tail.GetToken("venom").Value >= 80 && tail.GetToken("venom").Value < 100)
-						sb.AppendFormat(" Poisonous bee venom coats [his] stinger completely.");
-					else if (tail.GetToken("venom").Value == 100)
-						sb.AppendFormat(" Venom drips from [his] poisoned stinger regularly.");
-				}
-				else
-				{
-					//TODO: skintype these, like faces are.
-					var tails = LoadDictionary("tails"); //could do that by doing "tails" + skinName...
-					var tailT = string.IsNullOrWhiteSpace(tail.Text) ? "genbeast" : tail.Text;
-					var tentacleEnd = string.Empty;
-					if (tailT == "tentacle")
-						tentacleEnd = Descriptions.Tentacle(tail.Tokens[0], stimulation);
-					sb.AppendFormat(tails[tailT], skinColor, hairColor, buttDesc, tentacleEnd);
-				}
-				sb.AppendLine();
-			}
-			#endregion
-
-			#region Hips, Waist and Butt
-			var waist = Descriptions.Waist(this.GetToken("waist"));
-			var butt = Descriptions.Butt(this.GetToken("ass"), true);
-			sb.AppendLine();
-			sb.AppendFormat("[He] [has] {0}{1} and {3}{2}.",
-				Descriptions.Hips(this.GetToken("hips")),
-				waist != null ? "," + (waist.StartsWithVowel() ? " an " : " a ") + waist + "," : "",
-				butt,
-				butt.StartsWithVowel() ? "an " : "a ");
-			sb.AppendLine();
-			#endregion
-
-			#region Legs
 			if (this.HasToken("legs"))
 			{
-				var legs = this.GetToken("legs");
-				if (skinName == "slime")
-				{
-					//Can't have sharp feet as a slime. Is this a thing? Slimes don't have legs!
-					if (legs.Text == "stilleto" || legs.Text == "claws" || legs.Text == "insect")
-					{
-						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to human.) ");
-						legs.Text = null;
-					}
-				}
+				var lt = this.GetToken("legs").Text;
+				var legs = lt == "" ? "human" : lt;
+				if (legs == "genbeast")
+					legs = "beastly";
+				else if (legs == "stiletto")
+					legs = "stiletto-heeled";
+				else if (legs == "claws")
+					legs = "clawed";
+				else if (legs == "insect")
+					legs = "downy insectoid";
+				bodyThings.Add(legs + " legs");
 				if (this.HasToken("quadruped"))
 				{
-					//Assume horse, accept genbeast, cow or dog legs, mock and reject others.
-					if (string.IsNullOrWhiteSpace(legs.Text))
-					{
-						sb.AppendFormat("(<b>NOTICE<b>: no leg type specified. Assuming horse legs.) ");
-						legs.Text = "horse";
-					}
-					if (legs.Text == "stilleto" || legs.Text == "claws" || legs.Text == "insect")
-					{
-						sb.AppendFormat("(<b>NOTICE<b>: silly leg type specified. Changing to genbeast.) ");
-						legs.Text = "genbest";
-					}
-					var legTypes = LoadDictionary("legs_quad");
-					var legType = string.IsNullOrWhiteSpace(legs.Text) ? "genbeast" : legs.Text;
-					if (!legTypes.ContainsKey(legType))
-						legType = "genbeast";
-					sb.AppendFormat(legTypes[legType], this.HasToken("marshmallow") ? "soft" : "bestial");
-				}
-				else
-				{
-					var legTypes = LoadDictionary("legs");
-					var legType = string.IsNullOrWhiteSpace(legs.Text) ? "human" : legs.Text;
-					if (!legTypes.ContainsKey(legType))
-						legType = "human";
-					sb.AppendFormat(legTypes[legType], this.HasToken("marshmallow") ? "soft" : "bestial");
-					sb.AppendLine();
-				}
-			}
-			else if (this.HasToken("snaketail"))
-				sb.AppendFormat("Below [his] waist [his] flesh is fused together into an a very long snake-like tail.");
-			else if (this.HasToken("slimeblob"))
-				sb.AppendFormat("Below [his] waist is nothing but a shapeless mass of goo, the very top of leg-like shapes just barely recognizable.");
-			sb.AppendLine();
-			#endregion
-
-			//Pregnancy
-
-			#region Equipment phase 2
-			if (visible.Count == 0)
-			{
-				crotchVisible = true;
-				breastsVisible = true;
-				sb.AppendLine();
-				sb.AppendFormat("[He] [is] wearing nothing at all.");
-			}
-			else if (visible.Count == 1)
-			{
-				sb.AppendLine();
-				sb.AppendFormat("[He] [is] wearing {0}.", visible[0]);
-			}
-			else if (visible.Count == 2)
-			{
-				sb.AppendLine();
-				sb.AppendFormat("[He] [is] wearing {0} and {1}.", visible[0], visible[1]);
-			}
-			else
-			{
-				sb.AppendLine();
-				sb.AppendFormat("[He] [is] wearing {0}", visible[0]);
-				for (var i = 1; i < visible.Count; i++)
-					sb.AppendFormat("{1}{0}", visible[i], i == visible.Count - 1 ? ", and " : ", ");
-				sb.AppendFormat(".");
-			}
-			sb.Append(' ');
-			if (HasToken("noarms") && hands.Count > 0)
-			{
-				if (hands.Count == 2)
-					sb.AppendFormat("(<b>NOTICE<b>: dual wielding with mouth?) ");
-				sb.AppendFormat("[He] [has] {0} held between [his] teeth.", hands[0]);
-			}
-			else
-			{
-				if (hands.Count == 1)
-					sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
-				else if (hands.Count == 1)
-					sb.AppendFormat("[He] [has] {0} in [his] hands.", hands[0]);
-			}
-			sb.AppendLine();
-			#endregion
-
-			#region Breasts
-			if (this.HasToken("breastrow") && (this.HasToken("noarms") && this.HasToken("legs") && this.GetToken("legs").HasToken("quadruped")))
-			{
-				sb.AppendFormat("(<b>NOTICE<b>: character has tits but is a full quadruped.)");
-				this.Tokens.RemoveAll(x => x.Name == "breastrow");
-			}
-			if (this.HasToken("breastrow") && breastsVisible)
-			{
-				sb.AppendLine();
-				var numRows = this.Tokens.Count(x => x.Name == "breastrow");
-				var totalTits = 0f;
-				var totalNipples = 0f;
-				var averageTitSize = 0f;
-				var averageNippleSize = 0f;
-				foreach (var row in this.Tokens.FindAll(x => x.Name == "breastrow"))
-				{
-					totalTits += row.GetToken("amount").Value;
-					totalNipples += row.GetToken("nipples").Value * row.GetToken("amount").Value;
-					averageTitSize += row.GetToken("size").Value;
-					var nipSize = row.GetToken("nipples").HasToken("size") ? row.GetToken("nipples").GetToken("size").Value : 0.25f;
-					averageNippleSize += row.GetToken("nipples").Value * row.GetToken("amount").Value * (row.GetToken("nipples").HasToken("size") ? row.GetToken("nipples").GetToken("size").Value : 1);
-				}
-				averageTitSize /= totalTits;
-				averageNippleSize /= totalNipples;
-				if (numRows == 1)
-				{
-					var nipsPerTit = this.GetToken("breastrow").GetToken("nipples").Value;
-					sb.AppendFormat("[He] [has] {0} {1}, each supporting {2} {3} {4}{5}.", Toolkit.Count(totalTits), Descriptions.Breasts(this.GetToken("breastrow")), Toolkit.Count(nipsPerTit), Descriptions.Length(averageNippleSize), Descriptions.Nipples(this.GetToken("breastrow").GetToken("nipples")), nipsPerTit == 1 ? "" : "s");
-				}
-				else
-				{
-					//TODO: rewrite this to produce concise info instead of repeating most stuff
-					sb.AppendFormat("[He] [has] {0} rows of tits.", Toolkit.Count(numRows));
-					var theNth = "The first";
-					var rowNum = 0;
-					foreach (var row in this.Tokens.FindAll(x => x.Name == "breastrow"))
-					{
-						rowNum++;
-						var nipSize = row.GetToken("nipples").Value * (row.GetToken("nipples").HasToken("size") ? row.GetToken("nipples").GetToken("size").Value : 1);
-						sb.AppendFormat(" {0} row has {1} {2}, each with {3} {4}\" {5}{6}.", theNth, Toolkit.Count(row.GetToken("amount").Value), Descriptions.Breasts(row), Toolkit.Count(row.GetToken("nipples").Value), nipSize, Descriptions.Nipples(row.GetToken("nipples")), row.GetToken("nipples").Value == 1 ? "" : "s");
-						theNth = (rowNum < numRows - 1) ? "The next" : "The last";
-					}
-				}
-				sb.AppendLine();
-			}
-			#endregion
-
-			#region Genitalia
-			var hasGens = this.HasToken("penis") || this.HasToken("vagina");
-			sb.AppendLine();
-			if (!hasGens)
-				sb.AppendFormat("[He] [has] a curious, total lack of sexual endowments.");
-			else if (!crotchVisible)
-			{
-				//Can't hide a big one, no matter what.
-				if (PenisArea() > 50)
-					sb.AppendFormat("A large dick is plainly visible beneath [his] clothes.");
-				else if (PenisArea() > 20)
-				{
-					if (stimulation > 50)
-						sb.AppendFormat("A large bulge is plainly visible beneath [his] clothes.");
-					else if (stimulation > 20)
-						sb.AppendFormat("There is a noticable bump beneath [his] clothes.");
-				}
-				//else, nothing is visible.
-			}
-			else
-			{
-				if (this.HasToken("legs") && this.GetToken("legs").HasToken("quadruped"))
-					sb.AppendFormat("Between [his] back legs [he] [has] ");
-				else if (this.HasToken("snaketail"))
-					sb.AppendFormat("[His] crotch is almost featureless, except for a handy, hidden slit wherein [he] [has] hidden ");
-				else if (this.HasToken("slimeblob"))
-					sb.AppendFormat("Just above the point where [his] body ends and becomes formless, [he] [has] ");
-				else
-					sb.AppendFormat("Between [his] legs, [he] [has] ");
-				if (this.HasToken("penis"))
-				{
-					//TODO: multicock and different kinds.
-					//Don't forget to allow tentacle cocks.
-					var cockCount = this.Tokens.Count(x => x.Name == "penis");
-					if (cockCount == 1)
-					{
-						var cock = this.GetToken("penis");
-						sb.AppendFormat("a {0} {2}, {1} thick", Descriptions.Length(cock.GetToken("length").Value), Descriptions.Length(cock.GetToken("thickness").Value), Descriptions.Cock(cock));
-						if (stimulation > 50)
-							sb.AppendFormat(", sticking out and throbbing");
-						else if (stimulation > 20)
-							sb.AppendFormat(", eagerly standing at attention");
-					}
+					if (this.HasToken("noarms"))
+						bodyThings.Add("quadruped");
 					else
-						sb.AppendFormat("a bunch of dicks I'm not gonna try to describe just yet");
+						bodyThings.Add("taur");
 				}
-				if (this.HasToken("vagina"))
-				{
-					//TODO: vaginal descriptions.
-					//Allow cock-clits?
-					if (this.HasToken("penis"))
-						sb.AppendFormat(", and ");
-					var pussy = this.GetToken("vagina");
-					var pussyLoose = Descriptions.Looseness(pussy.GetToken("looseness"));
-					var pussyWet = Descriptions.Wetness(pussy.GetToken("wetness"));
-					sb.AppendFormat("a{0}{1}{2}vagina",
-						(pussyLoose != null ? " " + pussyLoose : ""),
-						(pussyLoose != null && pussyWet != null ? ", " : " "),
-						(pussyWet != null ? pussyWet + " " : ""));
-				}
-				sb.AppendFormat(".");
 			}
-			sb.AppendLine();
+
+			if (this.HasToken("tail"))
+			{
+				var tt = this.GetToken("tail").Text;
+				var tail = tt == "" ? "genbeast" : tt;
+				if (tail == "genbeast")
+					tail = "beastly";
+				if (tail == "demon")
+					tail = "spaded demon";
+				if (tail == "bunny")
+					bodyThings.Add("bunny poofball");
+				else if (tail == "tentacle")
+				{
+					var tentail = this.Path("tail/tip");
+					if (tentail == null || tentail.Text == "tapered")
+						bodyThings.Add("tapered tail tentacle");
+					else if (tentail.Text == "penis")
+						bodyThings.Add("cock-headed tail tentacle");
+					else
+						bodyThings.Add("tail tentacle");
+				}
+				else
+					bodyThings.Add(tail + " tail");
+			}
+
+			//tone
+
+
+			var faceType = this.GetToken("face").Text;
+			if (faceType == "normal")
+				faceType = "human";
+			else if (faceType == "genbeast")
+				faceType = "beastly";
+			else if (faceType == "cow")
+				faceType = "bovine";
+			else if (faceType == "reptile")
+				faceType = "reptilian";
+			else
+				faceType += "like";
+			headThings.Add(faceType);
+
+			if (this.HasToken("eyes"))
+			{
+				var eyes = nameColor(this.GetToken("eyes").Text) + " eyes";
+				if (this.Path("eyes/glow") != null)
+					eyes = "glowing " + eyes;
+				headThings.Add(eyes);
+			}
+
+			var ears = "human";
+			if (this.HasToken("ears"))
+				ears = this.GetToken("ears").Text;
+			if (ears == "frill")
+				headThings.Add("head frills");
+			else
+			{
+				if (ears == "genbeast")
+					ears = "animal";
+				headThings.Add(ears + " ears");
+			}
+
+			//femininity slider
+
+			//Columnize it!
+			Columnize(print, 34, bodyThings, headThings, "Body", "Head");
+			#endregion
+
+			#region Hair and Hips
+			//Because Descriptions.Hair() returns length and color + "hair".
+			Func<float, string> hairLength = new Func<float, string>(i =>
+			{
+				if (i == 0)
+					return "bald";
+				if (i < 1)
+					return "trim";
+				if (i < 3)
+					return "short";
+				if (i < 6)
+					return "shaggy";
+				if (i < 10)
+					return "moderately long";
+				if (i < 16)
+					return "shoulder-length";
+				if (i < 26)
+					return "very long";
+				if (i < 40)
+					return "ass-length";
+				return "obscenely long";
+			});
+			//Same for these.
+			Func<float, string> hips = new Func<float, string>(i =>
+			{
+				if (i < 1)
+					return "tiny";
+				if (i < 4)
+					return "slender";
+				if (i < 6)
+					return "average";
+				if (i < 10)
+					return "ample";
+				if (i < 15)
+					return "curvy";
+				if (i < 20)
+					return "fertile";
+				return "cow-like";
+			});
+			Func<float, string> waist = new Func<float, string>(i =>
+			{
+				if (i < 1)
+					return "emaciated";
+				if (i < 4)
+					return "thin";
+				if (i < 6)
+					return "average";
+				if (i < 8)
+					return "soft";
+				if (i < 11)
+					return "chubby";
+				if (i < 14)
+					return "plump";
+				if (i < 17)
+					return "stout";
+				if (i < 20)
+					return "obese";
+				return "morbid";
+			});
+			Func<float, string> ass = new Func<float, string>(i =>
+			{
+				if (i < 1)
+					return "insignificant";
+				if (i < 4)
+					return "firm";
+				if (i < 6)
+					return "regular";
+				if (i < 8)
+					return "shapely";
+				if (i < 11)
+					return "large";
+				if (i < 13)
+					return "spacious";
+				if (i < 16)
+					return "voluminous";
+				if (i < 20)
+					return "huge";
+				return "colossal";
+			});
+
+			var hairThings = new List<string>();
+			var hipThings = new List<string>();
+			if (this.HasToken("hair") && this.Path("hair/length").Value > 0)
+			{
+				hairThings.Add(hairLength(this.Path("hair/length").Value));
+				hairThings.Add(nameColor(this.Path("hair/color").Text));
+				//style
+			}
+			hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
+			hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
+			hipThings.Add(ass(this.GetToken("ass").Value) + " ass");
+			Columnize(print, 34, hairThings, hipThings, "Hair", "Hips and Waist");
+			#endregion
+
+			#region Clothing
+			print("Clothing\n");
+			if (worn.Count == 0)
+				print("| none\n");
+			else
+				for (var i = 0; i < worn.Count; i++)
+					print("| " + worn[i] + "\n");
+			print("\n");
+			#endregion
+
+			#region Equipment
+			print("Equipment\n");
+			if (this.HasToken("noarms") && hands.Count > 1)
+				print("<b>NOTICE<b>: dual wielding with mouth.\n");
+			if (hands.Count > 2)
+				print("<b>NOTICE<b>: Shiva called.\n");
+			if (hands.Count == 0)
+				print("| none\n");
+			else
+				for (var i = 0; i < hands.Count; i++)
+					print("| " + hands[i] + "\n");
+			//Extend from
+			// | combat knife
+			//to
+			// | combat knife (30 dmg, m<g00EA>l<g00E9>e)
+			print("\n");
+			#endregion
+
+			#region Sexual characteristics
+			print("Sexual characteristics\n----------------------\n");
+			var cocks = new List<Token>(); var vaginas = new List<Token>(); var breastRows = new List<Token>();
+			Token nuts;
+			var ballCount = 0;
+			var ballSize = 0.25f;
+			var slit = this.HasToken("snaketail");
+			var aroused = stimulation > 50;
+
+			for (var i = 0; i < this.Tokens.Count; i++)
+			{
+				var gen = this.Item(i);
+				if (gen.Name == "penis")
+					cocks.Add(gen);
+				else if (gen.Name == "vagina")
+					vaginas.Add(gen);
+				else if (gen.Name == "breastrow")
+					breastRows.Add(gen);
+				else if (gen.Name == "balls")
+				{
+					nuts = gen;
+					ballCount = nuts.HasToken("amount") ? (int)nuts.GetToken("amount").Value : 2;
+					ballSize = nuts.HasToken("size") ? nuts.GetToken("size").Value : 0.25f;
+				}
+			}
+
+			Func<float, string> breast = new Func<float, string>(i =>
+			{
+				if (i == 0)
+					return "flat";
+				if (i < 0.5)
+					return "tiny";
+				if (i < 1)
+					return "small";
+				if (i < 2.5)
+					return "fair";
+				if (i < 3.5)
+					return "appreciable";
+				if (i < 4.5)
+					return "ample";
+				if (i < 6)
+					return "pillowy";
+				if (i < 7)
+					return "large";
+				if (i < 8)
+					return "ridiculous";
+				if (i < 9)
+					return "huge";
+				if (i < 10)
+					return "spacious";
+				if (i < 12)
+					return "back-breaking";
+				if (i < 13)
+					return "mountainous";
+				if (i < 14)
+					return "ludicrous";
+				if (i < 15)
+					return "exploding";
+				return "absurdly huge";
+			});
+
+			print("Breasts: ");
+			if (breastRows.Count == 0)
+				print("none\n");
+			else
+			{
+				print(count(breastRows.Count) + " row" + (breastRows.Count == 1 ? "" : "s") + "\n");
+				for (var i = 0; i < breastRows.Count; i++)
+				{
+					var row = breastRows[i];
+					print("| " + count(row.GetToken("amount").Value) + " " + breast(row.GetToken("size").Value) + " breast");
+					if (row.GetToken("amount").Value > 1)
+						print("s");
+					if (!breastsVisible)
+					{
+						print("\n");
+						continue;
+					}
+					var nipSize = 0.5f;
+					if (row.Path("nipples/size") != null)
+						nipSize = row.Path("nipples/size").Value;
+					print(", " + count(row.GetToken("nipples").Value) + " " + Descriptions.Length(nipSize) + " nipple");
+					if (row.GetToken("nipples").Value > 1)
+						print("s");
+					print(" on each\n");
+				}
+			}
+			print("\n");
+
+			print("Vaginas: ");
+			if (!crotchVisible)
+			{
+				if (this.GetGender() == "male")
+					print("can't tell, none assumed\n");
+				else if (this.GetGender() == "female")
+					print("can't tell, one assumed\n");
+				else
+					print("can't tell\n");
+			}
+			else
+			{
+				if (vaginas.Count == 0)
+					print("none\n");
+				else
+				{
+					print(count(vaginas.Count) + "\n");
+					for (var i = 0; i < vaginas.Count; i++)
+					{
+						var vagina = vaginas[i];
+						if (vagina == null)
+							print("OH NO!");
+						var loose = Descriptions.Looseness(vagina, false);
+						if (loose == null)
+							loose = "regular";
+						var clit = vagina.Path("clit");
+						var clitSize = 0.25f;
+						if (clit != null)
+							clitSize = clit.Value;
+						print("| " + loose + ", with a " + Descriptions.Length(clitSize) + " clit\n");
+					}
+				}
+			}
+			print("\n");
+
+
+			Func<float, string> balls = new Func<float, string>(i =>
+			{
+				if (i < 1)
+					return "";
+				if (i < 2)
+					return "large";
+				if (i < 3)
+					return "baseball-sized";
+				if (i < 4)
+					return "apple-sized";
+				if (i < 5)
+					return "grapefruit-sized";
+				if (i < 7)
+					return "cantaloupe-sized";
+				if (i < 9)
+					return "soccer ball-sized";
+				if (i < 12)
+					return "basketball-sized";
+				if (i < 15)
+					return "watermelon-sized";
+				if (i < 18)
+					return "beach ball-sized";
+				return "hideously swollen";
+			});
+
+			print("Cocks: ");
+			if (!crotchVisible)
+			{
+				if (this.GetGender() == "male")
+					print("can't tell, one assumed\n");
+				else if (this.GetGender() == "female")
+					print("can't tell, none assumed\n");
+				else
+					print("can't tell\n");
+			}
+			else
+			{
+				if (cocks.Count == 0)
+					print("none\n");
+				else
+				{
+					print(count(cocks.Count) + "\n");
+					for (var i = 0; i < cocks.Count; i++)
+					{
+						var cock = cocks[i];
+						var cockType = cock.Text;
+						if (cockType == "")
+							cockType = "human-like";
+						print("| " + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
+						print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
+					}
+				}
+				if (ballCount > 0)
+				{
+					print("| " + count(ballCount) + " " + (ballSize < 1 ? "" : balls(ballSize) + " ") + "testicles\n");
+				}
+			}
+			print("\n");
 			#endregion
 
 #if DEBUG
-			#region Debug
-			sb.AppendLine();
-			sb.AppendLine("<cGray>- Debug -");
-			sb.AppendLine("<cGray>Cum amount: " + this.CumAmount() + "mLs.");
-			#endregion
+			print("\n\n\n\n");
+			print("<cGray>Debug\n<cGray>-----\n");
+			print("<cGray>Cum amount: " + this.CumAmount() + "mLs.\n");
 #endif
 
-			sb.Replace("[This is]", pa is Player ? "You are" : "This is");
-			sb.Replace("[His]", pa is Player ? "Your" : this.HisHerIts());
-			sb.Replace("[He]", pa is Player ? "You" : this.HeSheIt());
-			sb.Replace("[his]", pa is Player ? "your" : this.HisHerIts(true));
-			sb.Replace("[he]", pa is Player ? "you" : this.HeSheIt(true));
-			sb.Replace("[him]", pa is Player ? "you" : this.HimHerIt());
-			sb.Replace("[is]", pa is Player ? "are" : "is");
-			sb.Replace("[has]", pa is Player ? "have" : "has");
-			sb.Replace("[does]", pa is Player ? "do" : "does");
+			//End backport!
 
-			sb.Replace("[skin]", skinName);
 			return sb.ToString();
 		}
 

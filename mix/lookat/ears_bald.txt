@@ -1,9 +1,0 @@
-elfin	 A pair of large pointy ears stick out from [his] skull.
-genbeast	 A pair of large-ish animal ears have sprouted from the top of [his] head.
-horse	 A pair of horse-like ears rise up from the top of [his] head.
-dog	 A pair of dog ears protrude from [his] skull, flopping down adorably.
-cat	 A pair of cute, fuzzy cat-ears have sprouted from the top of [his] head.
-cow	 A pair of round, floppy cow ears protrude from the sides of [his] skull.
-frill	 A set of draconic frills extend from the sides of [his] skull.
-bunny	 A pair of long bunny ears stand up from [his] skull, flopping down adorably.
-hole	 A pair of tiny earholes pierce the side of [his] skull.

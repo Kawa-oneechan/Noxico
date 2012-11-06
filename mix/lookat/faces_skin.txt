@@ -1,7 +1,0 @@
-normal	[He] [has] a fairly normal face, with {0} skin.
-genbeast	[He] [has] an animalistic face, though it's difficult to tell exactly what kind of animal. It looks somewhat odd as [he] [has] no fur, only {0} skin.
-horse	[His] face is equine in shape and structure. It looks somewhat odd as [he] [has] no fur, only {0} skin.
-dog	[He] [has] a dog-like face, complete with a wet nose. It looks somewhat odd as [he] [has] no fur, only {0} skin.
-cow	[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. Despite [his] lack of fur elsewhere, [his] head does have a short layer of {1} fuzz.
-cat	[He] [has] a cat-like face, complete with a cute, moist nose, whiskers, and eyes. It looks somewhat odd as [he] [has] no fur, only {0} skin.
-reptile	[He] [has] a face resembling that of a lizard, and with [his] toothy maw, [he] [has] quite a fearsome visage. [He] [does] look a little odd as a lizard without scales.

@@ -1,7 +1,0 @@
-normal	[His] face is fairly human in basic shape, but made of a rigid-looking metallic substance, {0} in color.
-genbeast	[His] face looks metallic and bestial, made of small slivers of {0} metal.
-horse	[His] face is equine in appearance, with a smooth, metallic {0} surface.
-dog	[He] [has] a dog-like face, made of smooth metal plates, {0} in color.
-cow	[He] [has] a bovine face, made of a rigid-looking {0} metal.
-cat	[His] face is cat-like, with the outer surface made of smooth little metal plates, {0} in color.
-reptile	[His] face is lizard-like, made of smoothly laid out slivers of {0} metal.

@@ -1,7 +1,0 @@
-normal	Under [his] {0} fur [he] [has] a human-shaped head.
-genbeast	[He] [has] a face like an animal, but still recognizably humanoid. [His] fur is {0}.
-horse	[His] face is almost entirely equine in appearance, even having {0} fur.
-dog	[He] [has] a dog's face, complete with wet nose and panting tongue. [His] fur is {0}.
-cow	[He] [has] a face resembling that of a minotaur, with cow-like features, particularly a squared off wet nose. [His] {0} fur thickens noticably on [his] head, looking shaggy and monstrous.
-cat	[He] [has] a cat's face, complete with moist nose, whiskers, and eyes. [His] fur is {0}.
-reptile	[He] [has] a face resembling that of a lizard. Between the toothy maw, pointed snout, and the layer of {0} fur covering [his] face, [he] [has] quite the fearsome visage.

@@ -374,5 +374,9 @@ namespace Noxico
 			return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
 		}
 
+		public void SetMidday()
+		{
+			Hour = 13;
+		}
 	}
 }
