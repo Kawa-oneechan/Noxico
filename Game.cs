@@ -61,6 +61,9 @@ namespace Noxico
 		public static string ContextMessage { get; set; }
 		private static bool hadContextMessage;
 #endif
+		private static string healthMessage;
+		private static Color healthColor;
+		private static int healthTimer;
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
@@ -470,7 +473,9 @@ namespace Noxico
 				hadContextMessage = false;
 			}
 #endif
-		
+			if (healthTimer > 0)
+				HostForm.Write(healthMessage, healthColor, Color.Black, 0, 0);
+
 			if (Messages.Count == 0)
 				return;
 			var row = 24;
@@ -490,6 +495,9 @@ namespace Noxico
 		}
 		public static void UpdateMessages()
 		{
+			if (healthTimer > 0)
+				healthTimer--;
+
 			if (Messages.Count == 0)
 				return;
 			if (Messages[0].New)
@@ -507,6 +515,20 @@ namespace Noxico
 		public static void AddMessage(string message)
 		{
 			Messages.Add(new StatusMessage() { Message = message, Color = Color.Silver, New = true });
+		}
+
+		public static void HealthMessage()
+		{
+			healthTimer = 5;
+			var pc = HostForm.Noxico.Player.Character;
+			var hp = pc.GetStat(Stat.Health);
+			var max = pc.GetMaximumHealth();
+			healthColor = Color.Lime;
+			if (hp <= max / 4)
+				healthColor = Color.Red;
+			else if (hp <= max / 2)
+				healthColor = Color.Yellow;
+			healthMessage = string.Format("{0}/{1}", hp, max);
 		}
 
 		public void FlushDungeons()
