@@ -2103,6 +2103,7 @@ namespace Noxico
 				AutoTravelling = false;
 			}
 			var dead = base.Hurt(damage, obituary, aggressor, finishable);
+			NoxicoGame.HealthMessage();
 			if (dead)
 			{
 				Achievements.CheckYASD();
