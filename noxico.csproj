@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE ALLOW_CANDYTRON</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE ALLOW_CANDYTRON CONTEXT_SENSITIVE</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>

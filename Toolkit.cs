@@ -794,6 +794,31 @@ namespace Noxico
 			foreach (var child in token.Tokens)
 				FoldCostumeVariables(child, vars);
 		}
+
+		public static string TranslateKey(KeyBinding binding)
+		{
+			return TranslateKey((System.Windows.Forms.Keys)NoxicoGame.KeyBindings[binding]);
+		}
+		public static string TranslateKey(System.Windows.Forms.Keys key)
+		{
+			var keyName = key.ToString();
+			var specials = new Dictionary<string, string>()
+			{
+				{ "Left", "\u2190" },
+				{ "Up", "\u2191" },
+				{ "Right", "\u2192" },
+				{ "Down", "\u2193" },
+				{ "Return", "\u21B2" },
+				{ "OemQuestion", "/" },
+				{ "Oemcomma", "," },
+				{ "Escape", "Esc." },
+			};
+			if (specials.ContainsKey(keyName))
+				return specials[keyName];
+			if (keyName.StartsWith("Oem"))
+				return keyName.Substring(3);
+			return keyName;
+		}
 	}
 }
 

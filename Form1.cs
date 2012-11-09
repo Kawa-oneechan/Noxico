@@ -53,7 +53,9 @@ namespace Noxico
 		public int CellHeight = 14;
 		public int GlyphAdjustX = -2, GlyphAdjustY = -1;
 		public bool ClearType = false;
-		
+
+		public string IniPath { get; private set; }
+
 #if ALLOW_PNG_MODE
 		private bool pngMode = false;
 		private string pngFont = "fixedsex";
@@ -118,12 +120,12 @@ namespace Noxico
 				charConverter = (c => c);
 
 				var portable = false;
-				var iniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+				IniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
 				if (File.Exists("portable"))
 				{
 					portable = true;
-					var oldIniPath = iniPath;
-					iniPath = "noxico.ini";
+					var oldIniPath = IniPath;
+					IniPath = "noxico.ini";
 					var fi = new FileInfo(Application.ExecutablePath);
 					var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 					if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
@@ -136,15 +138,15 @@ namespace Noxico
 						}
 						else if (response == System.Windows.Forms.DialogResult.Yes)
 						{
-							iniPath = oldIniPath;
+							IniPath = oldIniPath;
 							portable = false;
 						}
 					}
 				}
 
-				if (!File.Exists(iniPath))
-					File.WriteAllText(iniPath, Mix.GetString("DefaultSettings.txt"));
-				IniFile.Load(iniPath);
+				if (!File.Exists(IniPath))
+					File.WriteAllText(IniPath, Mix.GetString("DefaultSettings.txt"));
+				IniFile.Load(IniPath);
 
 				if (portable)
 				{
@@ -814,6 +816,8 @@ namespace Noxico
 				return;
 			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[(int)e.KeyCode]).Milliseconds < 100)
 				return;
+			if (e.Control && e.KeyCode == Keys.R || e.KeyCode == Keys.A)
+				return;
 			NoxicoGame.KeyRepeat[(int)e.KeyCode] = DateTime.Now;
 			NoxicoGame.KeyMap[(int)e.KeyCode] = true;
 			if (numpad.ContainsKey(e.KeyCode))
@@ -855,11 +859,18 @@ namespace Noxico
 
 			if (e.KeyCode == Keys.R && e.Control)
 			{
+				NoxicoGame.KeyMap[(int)Keys.R] = false;
 				for (int row = 0; row < 25; row++)
 					for (int col = 0; col < 80; col++)
 						previousImage[col, row].Character = (char)0x500;
 			}
-        }
+		
+			if (e.KeyCode == Keys.A && e.Control && NoxicoGame.Mode == UserMode.Walkabout)
+			{
+				NoxicoGame.KeyMap[(int)Keys.A] = false;
+				NoxicoGame.ShowMessageLog();
+			}
+		}
 
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)
 		{

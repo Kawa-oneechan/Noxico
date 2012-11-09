@@ -116,7 +116,7 @@ namespace Noxico
 								Subscreens.FirstDraw = true;
 								NoxicoGame.Immediate = true;
 								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-								NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+								NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
 								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 								NoxicoGame.Mode = UserMode.Walkabout;
 								Achievements.StartingTime = DateTime.Now;
@@ -435,7 +435,7 @@ namespace Noxico
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
 					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-					NoxicoGame.AddMessage("Remember, press F1 for help and options.");
+					NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 					Achievements.StartingTime = DateTime.Now;
 				};
