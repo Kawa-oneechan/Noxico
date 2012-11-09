@@ -1672,11 +1672,11 @@ namespace Noxico
 #if CONTEXT_SENSITIVE
 			NoxicoGame.ContextMessage = null;
 			if (OnWarp())
-				NoxicoGame.ContextMessage = "\x21B2 take exit";
+				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " take exit";
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = "\x21B2 see contents";
+				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " see contents";
 			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
-				NoxicoGame.ContextMessage = "\x21B2 sleep";
+				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " sleep";
 #endif
 
 #if DEBUG

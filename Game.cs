@@ -70,6 +70,8 @@ namespace Noxico
 		public string[] Potions;
 		public static NoxicanDate InGameTime;
 
+		private static List<string> messageLog = new List<string>();
+
 		public static bool IsKeyDown(KeyBinding binding)
 		{
 			if (KeyBindings[binding] == 0)
@@ -510,11 +512,26 @@ namespace Noxico
 		}
 		public static void AddMessage(string message, Color color)
 		{
-			Messages.Add(new StatusMessage() { Message = message, Color = color, New = true });
+			if (Messages.Count > 0 && Messages.Last().Message == message)
+				Messages.Last().New = true;
+			else
+			{
+				Messages.Add(new StatusMessage() { Message = message, Color = color, New = true });
+				if (Mode == UserMode.Walkabout)
+					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
+			}
 		}
 		public static void AddMessage(string message)
 		{
-			Messages.Add(new StatusMessage() { Message = message, Color = Color.Silver, New = true });
+			AddMessage(message, Color.Silver);
+		}
+
+		public static void ShowMessageLog()
+		{
+			if (messageLog.Count == 0)
+				MessageBox.Message("There are no messages to display.", true);
+			else
+				TextScroller.Plain(string.Join("\n", messageLog));
 		}
 
 		public static void HealthMessage()

@@ -158,7 +158,7 @@ namespace Noxico
 			Plain(text, header);
 		}
 
-		[Obsolete]
+		[Obsolete("Noxicobotic?", true)]
 		public static void Noxicobotic(Entity source, string message)
 		{
 			var header = "";

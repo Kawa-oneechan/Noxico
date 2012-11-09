@@ -15,34 +15,30 @@ namespace Noxico
 		private static int page = 0;
 		private static Dictionary<string, string> pages = new Dictionary<string, string>()
 		{
-			{ "Character stats", "dynamic page" },
-			{ "Skill levels", "dynamic page" },
-			{ "Important keys",
-				//TODO: make this page dynamic so remapped keys are shown correctly.
-@"<g2194> <g2195> - Move
-l / - Look
-i   - Inventory
-p , - Pick up
-c   - Chat with someone
-a   - Aim a shot or throw at someone
-f   - Attempt to have sex with someone
-<g21B2>   - Use stairs, enter door, use bed
-.   - Rest" },
-			{ "Other keys",
-@"F1  - Open this menu
-" +
-#if DEBUG
-@"F3  - Dump board to HTML (debug only)
-" +
-#endif
-@"F12 - Take screenshot" },
-			{ "Credits",
-@"Press Enter to view full credits." },
+			{ "Character stats", "..." },
+			{ "Skill levels", "..." },
+			{ "Important keys", "..." },
+			{ "Other keys", "..." },
+			{ "Credits", "Press Enter to view full credits." },
 			{ "Memory stats", "..." },
 #if DEBUG
 			{ "Debug cheats", "..." },
 #endif
-			{ "Save and exit", "Press Enter to save." },
+			{ "Open settings",
+@"Press Enter to open noxico.ini.
+
+From there, you can change a bunch of
+things, including key mappings and how
+long you get until auto-rest triggers." },
+			{ "Save and exit",
+@"Press Enter to save.
+
+The game will automatically exit when
+done. Note that clicking the Close
+button or pressing Alt-F4 or whatever
+your operating system's methods are
+has the same effect." },
+
 		};
 		private static UIList list;
 		private static UILabel text;
@@ -73,6 +69,10 @@ f   - Attempt to have sex with someone
 					{
 						host.Noxico.SaveGame();
 						host.Close();
+					}
+					else if (list.Index == list.Items.Count - 2) //same
+					{
+						System.Diagnostics.Process.Start(host.IniPath);
 					}
 					else if (list.Index == 4)
 					{
@@ -193,6 +193,30 @@ f   - Attempt to have sex with someone
 					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(30) + ((int)skill.Value).ToString());
 			}
 			pages["Skill levels"] = sb.ToString();
+
+			sb.Clear();
+			for (var i = 0; i < 4; i++)
+				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
+			sb.AppendLine(" - Move");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadRight(4) + " - Use something");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadRight(4) + " - Rest");
+			sb.AppendLine((Toolkit.TranslateKey(KeyBinding.Look) + ' ' + Toolkit.TranslateKey(KeyBinding.LookAlt)).PadRight(4) + " - Look");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadRight(4) + " - Inventory");
+			sb.AppendLine((Toolkit.TranslateKey(KeyBinding.Take) + ' ' + Toolkit.TranslateKey(KeyBinding.TakeAlt)).PadRight(4) + " - Pick up");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Chat).PadRight(4) + " - Chat with someone");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fuck).PadRight(4) + " - Attempt to have sex with someone");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Aim).PadRight(4) + " - Aim a shot or throw at someone");
+			sb.AppendLine();
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadRight(4) + " - Accept");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadRight(4) + " - Go back");
+			pages["Important keys"] = sb.ToString();
+			sb.Clear();
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadRight(4) + " - Open this menu");
+#if DEBUG
+			sb.AppendLine(Toolkit.TranslateKey(Keys.F3).PadRight(4) + " - Dump board to HTML (debug only)");
+#endif
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadRight(4) + " - Take screenshot");
+			pages["Other keys"] = sb.ToString();
 
 			var entities = 0;
 			var tokens = 0;
