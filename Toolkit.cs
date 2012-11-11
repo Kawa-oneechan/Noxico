@@ -819,6 +819,14 @@ namespace Noxico
 				return keyName.Substring(3);
 			return keyName;
 		}
+
+		public static string InitialCase(this string text)
+		{
+			var initial = text[0];
+			if (char.IsLower(initial))
+				return initial.ToString().ToUpperInvariant() + text.Substring(1);
+			return text;
+		}
 	}
 }
 

@@ -592,6 +592,59 @@ balls
 			]]>
 	</bodyplan>
 
+
+	<bodyplan id="canine">
+		<![CDATA[
+culture: human
+namegen: germanic
+normalgenders
+invisiblegender
+terms
+	generic: "canine"
+	male: "dogboy"
+	female: "doggirl"
+	herm: "dogherm"
+ascii
+	char: U+0044
+hair
+	length: roll 1d6+3
+	color: oneof blond, brown, black, red
+skin
+	type: fur
+	color: brown
+eyes: yellow
+ears: genbeast
+face: genbeast
+legs: dog
+tail: dog
+ass
+	virgin
+	size: 4
+	fuckable
+hips: roll 1d2+1
+waist: 2
+fertility: roll 1d20+10
+breastrow
+	amount: 2
+	size: roll 1d3+3
+	nipples: 1
+		size: roll 1d2+2
+	milksource
+vagina
+	virgin
+	fuckable
+	clit: 0.25
+penis: sheath
+	thickness: 2
+	length: roll 1d7+14
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 0.6
+		]]>
+	</bodyplan>
+
 	<!-- Beasties -->
 	<bodyplan id="bear">
 		<![CDATA[
@@ -634,6 +687,7 @@ speed: 40
 strength: 25
 ascii
 	char: U+0064
+infectswith: canine
 			]]>
 	</bodyplan>
 	<bodyplan id="tame_dog">
@@ -654,6 +708,7 @@ speed: 40
 strength: 25
 ascii
 	char: U+0064
+neverprefix
 		]]>
 	</bodyplan>
 	<bodyplan id="rat">

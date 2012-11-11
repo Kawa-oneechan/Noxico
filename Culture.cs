@@ -335,7 +335,7 @@ namespace Noxico
 		public void AddMonths(int months)
 		{
 			this.Month += months;
-			if (this.Month > 12)
+			if (this.Month >= 12)
 			{
 				this.Month -= 12;
 				this.AddYears(1);

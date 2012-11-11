@@ -304,7 +304,7 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 				Tabstop++;
-				if (Tabstop == Tabstops.Count)
+				if (Tabstop >= Tabstops.Count)
 					Tabstop = 0;
 				XPosition = Tabstops[Tabstop].X;
 				YPosition = Tabstops[Tabstop].Y;
@@ -590,6 +590,8 @@ namespace Noxico
 		{
 			foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < 3))
 			{
+				if (other.Character.HasToken("beast"))
+					continue;
 				if (other.Character.GetStat(Stat.Charisma) >= 10)
 				{
 					var stim = this.Character.GetToken("stimulation");
@@ -1028,6 +1030,9 @@ namespace Noxico
 			if (Character.HasToken("helpless"))
 				return;
 
+			if (Character.HasToken("beast"))
+				Character.GetToken("stimulation").Value = 0;
+
 			BoardChar target = null;
 			//If no target is given, assume the player.
 			if (Character.HasToken("huntingtarget"))
@@ -1065,6 +1070,8 @@ namespace Noxico
 				{
 					//Melee attacks can only be orthogonal.
 					MeleeAttack(target);
+					if (Character.Path("prefixes/infectious") != null && Toolkit.Rand.NextDouble() > 0.25)
+						target.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
 					return;
 				}
 			}
@@ -1194,6 +1201,11 @@ namespace Noxico
 				damage = baseDamage;
 			}
 
+			if (this.Character.Path("prefixes/vorpal") != null)
+				damage *= 1.5f;
+			if (this.Character.Path("prefixes/underfed") != null)
+				damage *= 0.25f;
+
 			//Account for armor and such
 			//Add some randomization
 			//Determine dodges
@@ -1206,13 +1218,13 @@ namespace Noxico
 
 			if (dodged)
 			{
-				NoxicoGame.AddMessage((target is Player ? targetName : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
+				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
 				return false;
 			}
 
 			if (damage > 0)
 			{
-				NoxicoGame.AddMessage((target is Player ? attackerName : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".");
+				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".");
 				Character.IncreaseSkill(skill);
 			}
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))

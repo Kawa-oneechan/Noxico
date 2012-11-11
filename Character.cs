@@ -103,6 +103,11 @@ namespace Noxico
 		{
 			var g = GetGender();
 			Title = GetToken("terms").GetToken("generic").Text;
+			if (HasToken("prefixes"))
+			{
+				foreach (var prefix in GetToken("prefixes").Tokens)
+					Title = prefix.Name + " " + Title;
+			}
 			if (HasToken("invisiblegender"))
 			{
 				if (g == "male" && GetToken("terms").HasToken("male"))
@@ -382,6 +387,18 @@ namespace Noxico
 				var culture = newChar.GetToken("culture").Text;
 				if (Culture.Cultures.ContainsKey(culture))
 					newChar.Culture = Culture.Cultures[culture];
+			}
+
+			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix") && Toolkit.Rand.NextDouble() > 0.5)
+			{
+				var prefixes = new[] { "vorpal", "poisonous", "infectious", "dire", "underfed" };
+				var prefix = newChar.AddToken("prefixes");
+				var chosen = prefixes[Toolkit.Rand.Next(prefixes.Length)];
+				if (!newChar.HasToken("infectswith"))
+					while (chosen == "infectious")
+						chosen = prefixes[Toolkit.Rand.Next(prefixes.Length)];
+				var token = prefix.AddToken(chosen);
+				newChar.UpdateTitle();
 			}
 
 			//Console.WriteLine("Generated {0}.", newChar);
@@ -768,7 +785,7 @@ namespace Noxico
 			if (this.HasToken("legs"))
 			{
 				var lt = this.GetToken("legs").Text;
-				var legs = lt == "" ? "human" : lt;
+				var legs = string.IsNullOrWhiteSpace(lt) ? "human" : lt;
 				if (legs == "genbeast")
 					legs = "beastly";
 				else if (legs == "stiletto")
@@ -790,7 +807,7 @@ namespace Noxico
 			if (this.HasToken("tail"))
 			{
 				var tt = this.GetToken("tail").Text;
-				var tail = tt == "" ? "genbeast" : tt;
+				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
 				if (tail == "genbeast")
 					tail = "beastly";
 				if (tail == "demon")
@@ -1417,8 +1434,8 @@ namespace Noxico
 			//Change entire skin type?
 			if (target.Path("skin/type").Text != source.Path("skin/type").Text)
 			{
-				toChange.Add(source.Path("skin"));
-				changeTo.Add(target.Path("skin"));
+				toChange.Add(source.Path("skin/type"));
+				changeTo.Add(target.Path("skin/type"));
 				doNext.Add(false);
 
 				switch (target.Path("skin/type").Text)
@@ -1571,9 +1588,7 @@ namespace Noxico
 			}
 			#endregion
 
-			changeThis.Name = toThis.Name;
-			changeThis.Tokens.Clear();
-			changeThis.AddSet(toThis.Tokens);
+			changeThis.Text = toThis.Text;
 
 			//CheckHands();
 			CheckPants();
@@ -2219,7 +2234,7 @@ namespace Noxico
 				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
 				{ "genbeast", Toolkit.Rand.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
 			};
-			var tailName = tail.Tokens[0].Name;
+			var tailName = tail.Text;
 			if (tails.ContainsKey(tailName))
 				return tails[tailName];
 			else
