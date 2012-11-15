@@ -427,7 +427,6 @@ namespace Noxico
 					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
-					NoxicoGame.InGameTime.SetMidday(); //ensure we don't upset the villager AI
 					NoxicoGame.HostForm.Noxico.SaveGame();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();

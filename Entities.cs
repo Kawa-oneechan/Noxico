@@ -58,7 +58,18 @@ namespace Noxico
 		public virtual void Move(Direction targetDirection)
         {
             var touched = this.CanMove(targetDirection);
-            if (touched != null)
+			if (touched is Door)
+			{
+				var door = touched as Door;
+				if (door.Locked)
+					return;
+				if (door.Closed)
+				{
+					NoxicoGame.Sound.PlaySound("Open Gate");
+					door.Closed = false;
+				}
+			}
+			else if (touched != null)
             {
                 return;
             }
@@ -83,8 +94,13 @@ namespace Noxico
 			{
 				if (entity == this)
 					continue;
-				if (entity.XPosition == x && entity.YPosition == y && entity.Blocking)
-					return entity;
+				if (entity.XPosition == x && entity.YPosition == y)
+				{
+					if (entity is Door && ((Door)entity).Closed)
+						return entity as Door;
+					if (entity.Blocking)
+						return entity;
+				}
 			}
 			return null;
 		}
@@ -757,7 +773,8 @@ namespace Noxico
 
 			CheckForCriminalScum();
 
-			#region Villager AI
+			#region Villager AI -- commented out for Schedule subsystem
+			/*
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 			{
 				if (Character.HasToken("goingtosleep"))
@@ -954,7 +971,10 @@ namespace Noxico
 					}
 				}
 			}
+			*/
 			#endregion
+			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
+				RunSchedule();
 
 			base.Update();
 			Excite();
@@ -963,6 +983,9 @@ namespace Noxico
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
 					return;
+
+			if (this.Character.HasToken("sleeping"))
+				return;
 
 			if (MoveTimer > MoveSpeed)
 				MoveTimer = 0;
@@ -1310,6 +1333,9 @@ namespace Noxico
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
+			stream.Write((byte)LastScheduleDay);
+			stream.Write((byte)LastScheduleHour);
+			stream.Write((byte)LastScheduleMinute);
 			Character.SaveToFile(stream);
 		}
 
@@ -1325,6 +1351,9 @@ namespace Noxico
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
+			newChar.LastScheduleDay = stream.ReadByte();
+			newChar.LastScheduleHour = stream.ReadByte();
+			newChar.LastScheduleMinute = stream.ReadByte();
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			newChar.ReassignScripts();
@@ -1428,6 +1457,245 @@ namespace Noxico
 			if (scriptSource == null)
 				return;
 			AssignScripts(scriptSource.Text);
+		}
+
+
+
+
+		private enum ScheduleActionType
+		{
+			Wait, Find, Perform, Add, Remove
+		}
+		private class ScheduleAction
+		{
+			public ScheduleActionType Type;
+			public int WaitHour, WaitMinute;
+			public string Param;
+		}
+
+		private List<ScheduleAction> schedule;
+		private int LastScheduleDay, LastScheduleHour, LastScheduleMinute;
+		private string LastTarget;
+		private int TargetTimeout;
+
+		public void RunSchedule()
+		{
+			var day = NoxicoGame.InGameTime.Day;
+			var hour = NoxicoGame.InGameTime.Hour;
+			var minute = NoxicoGame.InGameTime.Minute;
+
+			if (schedule == null)
+				schedule = new List<ScheduleAction>();
+
+			if (hour < LastScheduleHour)
+			{
+				Console.WriteLine("AI for {0} reset.", this.Character.Name);
+				schedule.Clear();
+
+				//typical villager AI, does not account for nudity taboos (in that the wardrobe steps could be removed)
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 6, WaitMinute = 0 });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Remove, Param = "sleeping" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "wardrobe" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "dressup" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "freeroam" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 21, WaitMinute = 0 });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "wardrobe" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "disrobe" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "bed" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Add, Param = "sleeping" });
+				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 23 });
+
+				//catch up
+				while (schedule.Count > 0)
+				{
+					var entry = schedule[0];
+					if (entry.Type == ScheduleActionType.Wait
+						&& (entry.WaitHour > LastScheduleHour && entry.WaitMinute > LastScheduleMinute)
+						|| (entry.WaitHour >= hour && entry.WaitMinute >= minute))
+					{
+						break;
+					}
+					else if (entry.Type == ScheduleActionType.Find)
+					{
+						var idToFind = "_" + entry.Param + "_" + this.Character.Name.FirstName;
+						var target = this.ParentBoard.Entities.OfType<Entity>().FirstOrDefault(x => x.ID.EndsWith(idToFind, StringComparison.InvariantCultureIgnoreCase));
+						if (target == null)
+						{
+							Console.WriteLine("AI for {0} could not catch up to Finding {1}.", this.Character.Name, entry.Param);
+							return;
+						}
+						else
+						{
+							Console.WriteLine("AI for {0} cought up to finding {1} at {2}x{3}.", this.Character.Name, entry.Param, target.XPosition, target.YPosition);
+							this.XPosition = target.XPosition;
+							this.YPosition = target.YPosition;
+						}
+					}
+					else if (entry.Type == ScheduleActionType.Perform)
+					{
+						//lol
+					}
+					else
+					{
+						if (entry.Type == ScheduleActionType.Add)
+						{
+							Console.WriteLine("AI for {0} caught up to adding {1}.", this.Character.Name, entry.Param);
+							Character.AddToken(entry.Param);
+						}
+						else if (entry.Type == ScheduleActionType.Remove)
+						{
+							Console.WriteLine("AI for {0} caught up to removing {1}.", this.Character.Name, entry.Param);
+							Character.RemoveToken(entry.Param);
+						}
+					}
+					schedule.RemoveAt(0);
+				}
+
+				LastScheduleDay = day;
+				LastScheduleHour = hour;
+				LastScheduleMinute = minute;
+			}
+
+			if (schedule.Count == 0)
+				return;
+
+			//execute normally
+			var task = schedule[0];
+			if (task.Type == ScheduleActionType.Wait)
+			{
+				if (hour < task.WaitHour)
+					return;
+				schedule.RemoveAt(0);
+			}
+			else if (task.Type == ScheduleActionType.Find)
+			{
+				if (LastTarget != task.Param)
+				{
+					Console.WriteLine("AI for {0} has to Find {1}.", this.Character.Name, task.Param);
+
+					villagerAIMap = new Dijkstra();
+					villagerAIMap.UpdateWalls();
+					var idToFind = "_" + task.Param + "_" + this.Character.Name.FirstName;
+					var target = this.ParentBoard.Entities.OfType<Entity>().FirstOrDefault(x => x.ID.EndsWith(idToFind, StringComparison.InvariantCultureIgnoreCase));
+					if (target == null)
+					{
+						Console.WriteLine("AI for {0} could not Find {1}.", this.Character.Name, task.Param);
+						schedule.RemoveAt(0);
+						return;
+					}
+					else
+					{
+						Console.WriteLine("AI for {0} found {1} at {2}x{3}.", this.Character.Name, task.Param, target.XPosition, target.YPosition);
+						villagerAIMap.Hotspots.Add(new Point(target.XPosition, target.YPosition));
+					}
+					LastTarget = task.Param;
+					TargetTimeout = 0;
+				}
+
+				if (this.XPosition == villagerAIMap.Hotspots[0].X && this.YPosition == villagerAIMap.Hotspots[0].Y)
+				{
+					Console.WriteLine("AI for {0} reached {1}.", this.Character.Name, task.Param);
+					schedule.RemoveAt(0);
+					return;
+				}
+				else
+				{
+					//add timeout?
+					Console.WriteLine("AI for {0} pathing to {1}...", this.Character.Name, task.Param);
+					TargetTimeout++;
+					if (TargetTimeout == 20)
+					{
+						Console.WriteLine("AI for {0} didn't quite reach {1}.", this.Character.Name, task.Param);
+						this.XPosition = villagerAIMap.Hotspots[0].X;
+						this.YPosition = villagerAIMap.Hotspots[0].Y;
+						schedule.RemoveAt(0);
+						return;
+					}
+					var dir = Direction.North;
+					villagerAIMap.Ignore = DijkstraIgnores.Type;
+					villagerAIMap.IgnoreType = typeof(BoardChar);
+					if (villagerAIMap.RollDown(this.YPosition, this.XPosition, ref dir))
+						Move(dir);
+				}
+			}
+			else if (task.Type == ScheduleActionType.Perform)
+			{
+				//do it
+				schedule.RemoveAt(0);
+			}
+			else
+			{
+				if (task.Type == ScheduleActionType.Add)
+					Character.AddToken(task.Param);
+				else if (task.Type == ScheduleActionType.Remove)
+					Character.RemoveToken(task.Param);
+				schedule.RemoveAt(0);
+			}
+
+			/*
+			Typical villager routine:
+			* Get up
+			* Find wardrobe
+			* Get dressed
+			* Cut loose
+			* Find wardrobe
+			* Undress
+			* Find bed
+			* Sleep
+
+			Hardcoding all this lowers readability already, and is why the undress stage skips finding the wardrobe.
+			Suggestion is to have a list of actions and times.
+
+			1) Action lists are not saved, only the last known time is.
+			2) Every day, and every time a board is loaded, the list is rebuilt. At this point, minute variations can be introduced.
+			3) If a board is loaded, and an action is missed, fast-forward through the list, skipping the "find X" actions and executing the rest.
+			4) Use tokens to flavor the "cut loose" step. Probably straight-up parsing the child nodes of an [AISchedule] token.
+
+			There are three kinds of items in the list:
+			* Wait for XX:XX
+			* Find and go to Y
+			* Perform action Y
+
+			Wait actions aren't executed per se.
+			Find actions take time in that the schedule is suspended until it can be found. If it can't, because the BoardChar has been twitching between two tiles with no clue as to how to get there, teleport them to the target.
+
+			Specific actions could include:
+			* get dressed
+			* undress
+			* cut loose
+			* set token X
+			* remove token X
+			* run script with the AIStep variable set to X
+
+			Having no nudity taboo can be implemented in two ways:
+			1) in rebuilding the action list, skip the standard wardrobe steps.
+			2) in executing, detect and skip them.
+
+			Example:
+			Village is loaded at 12:00, because the game was just started. Villager lists are rebuilt. A typical list:
+			{ wait for 06:00, remove token [sleeping], find wardrobe, get dressed, cut loose,
+			  wait for 21:00, find wardrobe, undress, find bed, set token [sleeping] }
+			All actions are scanned through, looking for waits set after the last known one and at or after 12:00, and all the actions inbetween.
+			foreach action in list
+				if action is wait and time > last hit and time >= now
+					break
+				else
+					if action is find
+						either skip it entirely or TP the character there
+					else
+						perform the action
+			It's 12:00 so we do the following things:
+			* remove token [sleeping]
+			* get dressed
+			* cut loose
+			* mark 12:00 as the last time we caught up to.
+			The board is reloaded at 21:10. The wait for 06:00 is skipped, because we hit that one last time. The wait for 21:00 is hit, because it's later than the remembered 06:00 and earlier than the current time (by 10 minutes), so we do the following things:
+			* undress
+			* find bed
+			* set token [sleeping]
+			* mark 21:10 as the last time we caught up to.
+			Minding the 24-hour clock, remembering only the time would mean that if you arrive at the right moments, a character would never go to sleep or get redressed. This can be fixed by also remembering the day, and perhaps more of the date. In that case, only one missed day should probably be run.
+			 */
 		}
 	}
 
@@ -2461,6 +2729,60 @@ namespace Noxico
 					this.BackgroundColor = this.ForegroundColor.Darken();
 			}
 		}
+	}
+
+	public class Door : Entity
+	{
+		public int KeyIndex { get; set; }
+		public bool Closed { get; set; }
+		public bool Locked { get; set; }
+		private bool horizontal;
+		private bool dirInited;
+
+		private void FindDirection()
+		{
+			horizontal = ParentBoard.IsSolid(YPosition - 1, XPosition) && ParentBoard.IsSolid(YPosition + 1, XPosition);
+			dirInited = true;
+		}
+
+		public override void Draw()
+		{
+			if (!dirInited)
+				FindDirection();
+			if (Closed)
+				AsciiChar = '+';
+			else
+				AsciiChar = horizontal ? '|' : '-';
+			base.Draw();
+		}
+
+		public override void SaveToFile(BinaryWriter stream)
+		{
+			base.SaveToFile(stream);
+			stream.Write(KeyIndex);
+			stream.Write(Closed);
+			stream.Write(Locked);
+		}
+
+		public static new Door LoadFromFile(BinaryReader stream)
+		{
+			var e = Entity.LoadFromFile(stream);
+			var newDoor = new Door()
+			{
+				ID = e.ID,
+				AsciiChar = e.AsciiChar,
+				ForegroundColor = e.ForegroundColor,
+				BackgroundColor = e.BackgroundColor,
+				XPosition = e.XPosition,
+				YPosition = e.YPosition,
+				Blocking = e.Blocking
+			};
+			newDoor.KeyIndex = stream.ReadInt32();
+			newDoor.Closed = stream.ReadBoolean();
+			newDoor.Locked = stream.ReadBoolean();
+			return newDoor;
+		}
+
 	}
 
 	[Obsolete("This is for testing only.")]
