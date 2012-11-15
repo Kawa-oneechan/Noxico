@@ -661,6 +661,10 @@ namespace Noxico
 			this.Boards.Clear();
 
 			setStatus("Generating world map...");
+
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
+
 			var worldGen = new WorldGen();
 			worldGen.Generate(setStatus /*, "pandora" */);
 
@@ -787,6 +791,8 @@ namespace Noxico
 			Board.WorldGen = worldGen;
 			ApplyMissions();
 
+			Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
 			{
@@ -796,7 +802,10 @@ namespace Noxico
 				if (i > 0)
 					this.Boards[i] = null;
 			}
+			stopwatch.Stop();
+			Console.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 			SaveGame(true, true);
+
 
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);

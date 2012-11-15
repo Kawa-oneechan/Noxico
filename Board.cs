@@ -285,6 +285,7 @@ namespace Noxico
 				stream.Write(Entities.OfType<DroppedItem>().Count());
 				stream.Write(Entities.OfType<Clutter>().Count() - Entities.OfType<Clutter>().Where(c => c.Life > 0).Count());
 				stream.Write(Entities.OfType<Container>().Count());
+				stream.Write(Entities.OfType<Door>().Count());
 				stream.Write(Warps.Count);
 
 				for (int row = 0; row < 25; row++)
@@ -316,6 +317,8 @@ namespace Noxico
 					else
 						e.SaveToFile(stream);
 				foreach (var e in Entities.OfType<Container>())
+					e.SaveToFile(stream);
+				foreach (var e in Entities.OfType<Door>())
 					e.SaveToFile(stream);
 
 				Warps.ForEach(x => x.SaveToFile(stream));
@@ -349,6 +352,7 @@ namespace Noxico
 				var drpCt = stream.ReadInt32();
 				var cltCt = stream.ReadInt32();
 				var conCt = stream.ReadInt32();
+				var dorCt = stream.ReadInt32();
 				var wrpCt = stream.ReadInt32();
 
 				for (int row = 0; row < 25; row++)
@@ -367,13 +371,18 @@ namespace Noxico
 
 				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
 				for (int i = 0; i < chrCt; i++)
-					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
+					if (i == 0)
+						newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
+					else
+						BoardChar.LoadFromFile(stream);
 				for (int i = 0; i < drpCt; i++)
 					newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
 				for (int i = 0; i < cltCt; i++)
 					newBoard.Entities.Add(Clutter.LoadFromFile(stream));
 				for (int i = 0; i < conCt; i++)
 					newBoard.Entities.Add(Container.LoadFromFile(stream));
+				for (int i = 0; i < dorCt; i++)
+					newBoard.Entities.Add(Door.LoadFromFile(stream));
 
 				for (int i = 0; i < wrpCt; i++)
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
@@ -1143,6 +1152,8 @@ namespace Noxico
 			}
 			this.DirtySpots.Clear();
 
+			foreach (var entity in this.Entities.OfType<Door>())
+				entity.Draw();
 			foreach (var entity in this.Entities.OfType<Clutter>())
 				entity.Draw();
 			foreach (var entity in this.Entities.OfType<Container>())

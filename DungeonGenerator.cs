@@ -181,6 +181,7 @@ namespace Noxico
 			var wall = Color.FromArgb(71, 50, 33);
 
 			var cornerJunctions = new List<Point>();
+			var doorCount = 0;
 
 			for (var row = 0; row < 2; row++)
 			{
@@ -202,6 +203,13 @@ namespace Noxico
 							var ch = '?';
 							var s = false;
 							var w = false;
+
+							var addDoor = true;
+							if (tc == '/')
+							{
+								addDoor = false;
+								tc = '\\';
+							}
 							switch (tc)
 							{
 								case '\'':
@@ -265,6 +273,21 @@ namespace Noxico
 									}
 									#endregion
 
+									if (addDoor)
+									{
+										doorCount++;
+										var door = new Door()
+										{
+											XPosition = sX + x,
+											YPosition = sY + y,
+											ForegroundColor = floorStart,
+											BackgroundColor = bg.Darken(),
+											ID = building.BaseID + "_Door" + doorCount,
+											ParentBoard = Board,
+											Closed = true,
+										};
+										Board.Entities.Add(door);
+									}
 									break;
 								case '+':
 									fg = wall;
