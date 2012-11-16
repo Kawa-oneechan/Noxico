@@ -312,10 +312,7 @@ namespace Noxico
 				foreach (var e in Entities.OfType<DroppedItem>())
 					e.SaveToFile(stream);
 				foreach (var e in Entities.OfType<Clutter>())
-					if (e.Life > 0)
-						continue;
-					else
-						e.SaveToFile(stream);
+					e.SaveToFile(stream);
 				foreach (var e in Entities.OfType<Container>())
 					e.SaveToFile(stream);
 				foreach (var e in Entities.OfType<Door>())
@@ -371,10 +368,7 @@ namespace Noxico
 
 				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
 				for (int i = 0; i < chrCt; i++)
-					if (i == 0)
-						newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
-					else
-						BoardChar.LoadFromFile(stream);
+					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
 				for (int i = 0; i < drpCt; i++)
 					newBoard.Entities.Add(DroppedItem.LoadFromFile(stream));
 				for (int i = 0; i < cltCt; i++)

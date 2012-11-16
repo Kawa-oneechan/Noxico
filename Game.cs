@@ -974,7 +974,7 @@ namespace Noxico
 			pregTest.AddToken("gestation").AddToken("max", 10, "");
 			pregTest.AddToken("father", 0, "Ulfric Stormcloak");
 			*/
-			Player.Character.GetToken("items").AddToken("catmorph");
+			//Player.Character.GetToken("items").AddToken("catmorph");
 
 			InGame = true;
 			SaveGame();
