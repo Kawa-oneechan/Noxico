@@ -233,7 +233,7 @@ namespace Noxico
 		public void Generate(Action<string> setStatus, string randSeed = "")
 		{
 			var seed = 0xF00D;
-			var reach = 1000;
+			var reach = 2000;
 
 			if (!string.IsNullOrWhiteSpace(randSeed))
 			{

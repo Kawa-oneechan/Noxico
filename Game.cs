@@ -331,12 +331,19 @@ namespace Noxico
 
 			file.Flush();
 			file.Close();
+
+			var verCheck = Path.Combine(SavePath, WorldName, "version");
+			File.WriteAllText(verCheck, "14");
 			Console.WriteLine("Done.");
 			Console.WriteLine("--------------------------");
 		}
 
 		public void LoadGame()
 		{
+			var verCheck = Path.Combine(SavePath, WorldName, "version");
+			if (!File.Exists(verCheck) || File.ReadAllText(verCheck) != "14")
+				throw new Exception("Tried to open an old worldsave.");
+
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
 			if (File.Exists(playerFile))
 			{
