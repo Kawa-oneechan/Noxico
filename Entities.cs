@@ -973,8 +973,11 @@ namespace Noxico
 			}
 			*/
 			#endregion
+			//Disabled for 0.1.14 release
+#if SCHEDULE
 			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
 				RunSchedule();
+#endif
 
 			base.Update();
 			Excite();
@@ -1333,9 +1336,11 @@ namespace Noxico
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
+#if SCHEDULE
 			stream.Write((byte)LastScheduleDay);
 			stream.Write((byte)LastScheduleHour);
 			stream.Write((byte)LastScheduleMinute);
+#endif
 			Character.SaveToFile(stream);
 		}
 
@@ -1351,9 +1356,11 @@ namespace Noxico
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
+#if SCHEDULE
 			newChar.LastScheduleDay = stream.ReadByte();
 			newChar.LastScheduleHour = stream.ReadByte();
 			newChar.LastScheduleMinute = stream.ReadByte();
+#endif
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			newChar.ReassignScripts();
@@ -1460,8 +1467,7 @@ namespace Noxico
 		}
 
 
-
-
+#if SCHEDULE
 		private enum ScheduleActionType
 		{
 			Wait, Find, Perform, Add, Remove
@@ -1697,6 +1703,7 @@ namespace Noxico
 			Minding the 24-hour clock, remembering only the time would mean that if you arrive at the right moments, a character would never go to sleep or get redressed. This can be fixed by also remembering the day, and perhaps more of the date. In that case, only one missed day should probably be run.
 			 */
 		}
+#endif
 	}
 
     public class Player : BoardChar

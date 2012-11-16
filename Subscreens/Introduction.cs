@@ -54,6 +54,9 @@ namespace Noxico
 				var saves = new List<string>();
 				foreach (var s in rawSaves)
 				{
+					var verCheck = Path.Combine(s, "version");
+					if (!File.Exists(verCheck) || File.ReadAllText(verCheck) != "14")
+						continue;
 					if (File.Exists(Path.Combine(s, "Nox", "world.bin")))
 						saves.Add(s);
 				}

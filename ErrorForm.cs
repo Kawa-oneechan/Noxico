@@ -69,6 +69,10 @@ namespace Noxico
 			{
 				label3.Text = "The problem is a corrupted player state." + Environment.NewLine + Environment.NewLine + "It's too bad we can't tell which world's player data it is, so the best we can suggest is that you delete (or rename) each world's player.bin file until you can proceed. You'll need to start over, though.";
 			}
+			else if (x.Message.Contains("open an old worldsave"))
+			{
+				label3.Text = "Exactly what it says on the tin. The worldsave format has changed and you somehow managed to bypass the initial checks." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
+			}
 			else if (typeName == "EndOfStreamException")
 			{
 				if (textBox1.Text.Contains("NoxicoGame.LoadGame"))
