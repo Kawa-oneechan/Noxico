@@ -1177,11 +1177,12 @@ namespace Noxico
 			print("\n");
 			#endregion
 
-#if DEBUG
+//#if DEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>-----\n");
+			print("<cGray>GetGender(): " + this.GetGender() + "\n");
 			print("<cGray>Cum amount: " + this.CumAmount() + "mLs.\n");
-#endif
+//#endif
 
 			//End backport!
 

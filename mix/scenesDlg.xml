@@ -145,12 +145,6 @@
 			top.SetRelation(bottom, "acquaintance");
 			bottom.SetRelation(top, "considers hot");
 		</script>
-		<script type="text/noxicobotic">
-			<![CDATA[
-				$top.setrelation $bottom "acquaintance"
-				$bottom.setrelation $top "considers hot"
-			]]>
-		</script>
 		<action name="invite to have sex" />
 		<action name="goodbye" />
 	</scene>
@@ -165,12 +159,6 @@
 		<script type="text/javascript">
 			top.SetRelation(bottom, "acquaintance", true);
 		</script>
-		<script type="text/noxicobotic">
-			<![CDATA[
-				$top.setrelation $bottom "acquaintance"
-				$bottom.setrelation $top "acquaintance"
-			]]>
-		</script>
 		<action name="invite to have sex" />
 		<action name="goodbye" />
 	</scene>
@@ -183,12 +171,6 @@
 		</p>
 		<script type="text/javascript">
 			top.SetRelation(bottom, "acquaintance", true);
-		</script>
-		<script type="text/noxicobotic">
-			<![CDATA[
-				$top.setrelation $bottom "acquaintance"
-				$bottom.setrelation $top "acquaintance"
-			]]>
 		</script>
 		<action name="invite to have sex" />
 		<action name="goodbye" />
