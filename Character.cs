@@ -778,7 +778,10 @@ namespace Noxico
 			if (this.HasToken("snaketail"))
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
 
-			bodyThings.Add(nameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
+			if (this.Path("skin/type").Text == "slime")
+				bodyThings.Add(nameColor(this.Path("hair/color").Text) + " slime");
+			else
+				bodyThings.Add(nameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
 			if (this.Path("skin/pattern") != null)
 				bodyThings.Add(nameColor(this.Path("skin/pattern/color").Text) + " " + this.Path("skin/pattern").Text);
 
@@ -957,6 +960,8 @@ namespace Noxico
 				hairThings.Add(hairLength(this.Path("hair/length").Value));
 				hairThings.Add(nameColor(this.Path("hair/color").Text));
 				//style
+				if (this.Path("skin/type").Text == "slime")
+					hairThings.Add("goopy");
 			}
 			if (!HasToken("quadruped"))
 			{

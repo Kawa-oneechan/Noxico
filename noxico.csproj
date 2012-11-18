@@ -51,7 +51,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>ALLOW_PNG_MODE </DefineConstants>
+    <DefineConstants>ALLOW_PNG_MODE  ALLOW_CANDYTRON CONTEXT_SENSITIVE NICE_ERRORS</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>

@@ -81,7 +81,9 @@ namespace Noxico
 		public MainForm()
 		{
 			var fatal = false;
+#if NICE_ERRORS
 			try
+#endif
 			{
 				this.Text = "Noxico";
 				this.BackColor = System.Drawing.Color.Black;
@@ -359,6 +361,7 @@ namespace Noxico
 					Application.DoEvents();
 				}
 			}
+#if NICE_ERRORS
 			catch (Exception x)
 			{
 				new ErrorForm(x).ShowDialog(this);
@@ -367,6 +370,7 @@ namespace Noxico
 				fatal = true;
 				Application.ExitThread();
 			}
+#endif
 			if (!fatal)
 			{
 				Noxico.SaveGame();

@@ -947,7 +947,9 @@ namespace Noxico
 									continue;
 								token = pc.AddToken(path);
 							}
-							token.Value = float.Parse(v);
+							var f = 0f;
+							if (float.TryParse(v, out f))
+								token.Value = f;
 							break;
 					}
 				}
