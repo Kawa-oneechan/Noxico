@@ -958,9 +958,16 @@ namespace Noxico
 				hairThings.Add(nameColor(this.Path("hair/color").Text));
 				//style
 			}
-			hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
-			hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
-			hipThings.Add(ass(this.GetToken("ass").Value) + " ass");
+			if (!HasToken("quadruped"))
+			{
+				hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
+				hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
+				hipThings.Add(ass(this.GetToken("ass").Value) + " ass");
+			}
+			else
+			{
+				hipThings.Add("quadruped");
+			}
 			Columnize(print, 34, hairThings, hipThings, "Hair", "Hips and Waist");
 			#endregion
 
