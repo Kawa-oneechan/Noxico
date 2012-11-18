@@ -400,8 +400,8 @@ namespace Noxico
 							newBoard.Entities.Add(new Clutter('\u00A5', Color.Chocolate, newBoard.Tilemap[col, row].Background, false, "random torch", "This is a testing torch.") { XPosition = col - 1, YPosition = row - 1, ID = "TestingTorch", ParentBoard = newBoard });
 					}
 				}
-				newBoard.UpdateLightmap(null, true);
 				*/
+				newBoard.UpdateLightmap(null, true);
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
 
