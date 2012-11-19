@@ -71,6 +71,7 @@ namespace Noxico
 		public static NoxicanDate InGameTime;
 
 		private static List<string> messageLog = new List<string>();
+		public static int WorldVersion { get; private set; }
 
 		public static bool IsKeyDown(KeyBinding binding)
 		{
@@ -285,10 +286,13 @@ namespace Noxico
 					RollPotions();
 				Console.WriteLine("Potions...");
 				b = new BinaryWriter(new CryptStream(f));
+				Toolkit.SaveExpectation(b, "POTI");
 				for (var i = 0; i < 256; i++)
 					b.Write(Potions[i] ?? "...");
 				Console.WriteLine("Unique Items counter lol...");
+				Toolkit.SaveExpectation(b, "UNIQ");
 				b.Write(0);
+				Toolkit.SaveExpectation(b, "TIME");
 				b.Write(InGameTime.ToBinary());
 			}
 
@@ -303,13 +307,14 @@ namespace Noxico
 			var bin = new BinaryWriter(file);
 			bin.Write(header);
 
+			Toolkit.SaveExpectation(bin, "OWID");
 			bin.Write(Overworld.GetLength(0));
 			bin.Write(Overworld.GetLength(1));
 			for (var y = 0; y < Overworld.GetLength(1); y++)
 				for (var x = 0; x < Overworld.GetLength(0); x++)
 					bin.Write(Overworld[x, y]);
 
-
+			Toolkit.SaveExpectation(bin, "OWAM");
 			bin.Write(CurrentBoard.BoardNum);
 			bin.Write(Boards.Count);
 			//foreach (var b in Boards)
@@ -341,7 +346,10 @@ namespace Noxico
 		public void LoadGame()
 		{
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			if (!File.Exists(verCheck) || File.ReadAllText(verCheck) != "14")
+			if (!File.Exists(verCheck))
+				throw new Exception("Tried to open an old worldsave.");
+			WorldVersion = int.Parse(File.ReadAllText(verCheck));
+			if (WorldVersion < 14)
 				throw new Exception("Tried to open an old worldsave.");
 
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
@@ -356,19 +364,6 @@ namespace Noxico
 
 
 			var global = Path.Combine(SavePath, WorldName, "global.bin");
-			if (!File.Exists(global))
-			{
-				using (var f = File.Open(global, FileMode.Create))
-				{
-					var b = new BinaryWriter(f);
-					b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
-					b = new BinaryWriter(new CryptStream(f));
-					RollPotions();
-					for (var i = 0; i < 256; i++)
-						b.Write(Potions[i]);
-					b.Write(0);
-				}
-			}
 			var file = File.Open(global, FileMode.Open);
 			var bin = new BinaryReader(file);
 			var header = bin.ReadBytes(6);
@@ -379,19 +374,14 @@ namespace Noxico
 			}
 			var crypt = new CryptStream(file);
 			bin = new BinaryReader(crypt);
+			Toolkit.ExpectFromFile(bin, "POTI", "potion and ring");
 			Potions = new string[256];
 			for (var i = 0; i < 256; i++)
 				Potions[i] = bin.ReadString();
+			Toolkit.ExpectFromFile(bin, "UNIQ", "unique item tracking");
 			var numUniques = bin.ReadInt32();
-			try
-			{
-				InGameTime = new NoxicanDate(bin.ReadInt64());
-			}
-			catch (EndOfStreamException)
-			{
-				//Old save game, change is... fixable.
-				InGameTime = new NoxicanDate(40, 6, 26, DateTime.Now.Hour, 0, 0);
-			}
+			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");
+			InGameTime = new NoxicanDate(bin.ReadInt64());
 			ApplyRandomPotions();
 			file.Close();
 
@@ -406,6 +396,7 @@ namespace Noxico
 				return;
 			}
 
+			Toolkit.ExpectFromFile(bin, "OWID", "overworld board index");
 			var owX = bin.ReadInt32();
 			var owY = bin.ReadInt32();
 			Overworld = new int[owX, owY];
@@ -418,6 +409,7 @@ namespace Noxico
 				}
 			}
 
+			Toolkit.ExpectFromFile(bin, "OWAM", "overworld amount");
 			var currentIndex = bin.ReadInt32();
 			var boardCount = bin.ReadInt32();
 			Boards = new List<Board>(boardCount);
