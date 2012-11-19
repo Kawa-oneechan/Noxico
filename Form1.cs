@@ -820,7 +820,7 @@ namespace Noxico
 				return;
 			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[(int)e.KeyCode]).Milliseconds < 100)
 				return;
-			if (e.Control && e.KeyCode == Keys.R || e.KeyCode == Keys.A)
+			if (e.Control && (e.KeyCode == Keys.R || e.KeyCode == Keys.A))
 				return;
 			NoxicoGame.KeyRepeat[(int)e.KeyCode] = DateTime.Now;
 			NoxicoGame.KeyMap[(int)e.KeyCode] = true;

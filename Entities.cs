@@ -136,6 +136,7 @@ namespace Noxico
 		public virtual void SaveToFile(BinaryWriter stream)
 		{
 			//Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
+			Toolkit.SaveExpectation(stream, "ENTT");
 			stream.Write(ID ?? "<Null>");
 			stream.Write(AsciiChar);
 			BackgroundColor.SaveToFile(stream);
@@ -148,6 +149,7 @@ namespace Noxico
 
 		public static Entity LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "ENTT", "entity");
 			var newEntity = new Entity();
 			newEntity.ID = stream.ReadString();
 			newEntity.AsciiChar = stream.ReadChar();
@@ -1131,6 +1133,7 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "BCHR");
 			base.SaveToFile(stream);
 			stream.Write((byte)Movement);
 			stream.Write(Sector ?? "<null>");
@@ -1146,6 +1149,7 @@ namespace Noxico
 
 		public static new BoardChar LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "BCHR", "boardchar entity");
 			var e = Entity.LoadFromFile(stream);
 			var newChar = new BoardChar()
 			{
@@ -2225,6 +2229,7 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "PLAY");
 			base.SaveToFile(stream);
 			stream.Write(CurrentRealm);
 			stream.Write(OnOverworld);
@@ -2235,6 +2240,7 @@ namespace Noxico
 
 		public static new Player LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "PLAY", "player entity");
 			var e = BoardChar.LoadFromFile(stream);
 			var newChar = new Player()
 			{
@@ -2352,6 +2358,7 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "CLUT");
 			base.SaveToFile(stream);
 			stream.Write(Name ?? "");
 			stream.Write(Description ?? "");
@@ -2361,6 +2368,7 @@ namespace Noxico
 
 		public static new Clutter LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "CLUT", "clutter entity");
 			var e = Entity.LoadFromFile(stream);
 			var newDress = new Clutter()
 			{
@@ -2442,6 +2450,7 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "DROP");
 			base.SaveToFile(stream);
 			stream.Write(Item.ID);
 			Token.SaveToFile(stream);
@@ -2449,6 +2458,7 @@ namespace Noxico
 
 		public static new DroppedItem LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "DROP", "dropped item entity");
 			var e = Entity.LoadFromFile(stream);
 			var newItem = new DroppedItem(stream.ReadString())
 			{
@@ -2501,12 +2511,14 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "CONT");
 			base.SaveToFile(stream);
 			Token.SaveToFile(stream);
 		}
 
 		public static new Container LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "CONT", "container entity");
 			var e = Entity.LoadFromFile(stream);
 			var newContainer = new Container("", null)
 			{
@@ -2565,6 +2577,7 @@ namespace Noxico
 
 		public override void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "DOOR");
 			base.SaveToFile(stream);
 			stream.Write(KeyIndex);
 			stream.Write(Closed);
@@ -2573,6 +2586,7 @@ namespace Noxico
 
 		public static new Door LoadFromFile(BinaryReader stream)
 		{
+			Toolkit.ExpectFromFile(stream, "DOOR", "door entity");
 			var e = Entity.LoadFromFile(stream);
 			var newDoor = new Door()
 			{
@@ -2588,42 +2602,6 @@ namespace Noxico
 			newDoor.Closed = stream.ReadBoolean();
 			newDoor.Locked = stream.ReadBoolean();
 			return newDoor;
-		}
-
-	}
-
-	[Obsolete("This is for testing only.")]
-	public class LOSTester : BoardChar
-	{
-		public override void Update()
-		{
-			base.Update();
-			var player = NoxicoGame.HostForm.Noxico.Player;
-			var canSee = true;
-			foreach (var point in Toolkit.Line(XPosition, YPosition, player.XPosition, player.YPosition))
-			{
-				if (ParentBoard.IsSolid(point.Y, point.X))
-				{
-					canSee = false;
-					break;
-				}
-				else
-					NoxicoGame.HostForm.SetCell(point.Y, point.X, 'x', Color.White, Color.Navy, true);
-
-			}
-			AsciiChar = canSee ? '!' : '.';
-		}
-	}
-
-	[Obsolete("This never got anywhere.")]
-	public class LightSource : Entity
-	{
-		public int Brightness { get; set; }
-		public LightSource()
-		{
-			this.AsciiChar = '*';
-			this.ForegroundColor = Color.Yellow;
-			this.Brightness = 64;
 		}
 	}
 }

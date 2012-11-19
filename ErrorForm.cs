@@ -73,6 +73,10 @@ namespace Noxico
 			{
 				label3.Text = "Exactly what it says on the tin. The worldsave format has changed and you somehow managed to bypass the initial checks." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
 			}
+			else if (x.Message.Contains("Expected to find"))
+			{
+				label3.Text = "The problem is a corrupted board state. Some data was expected but not found." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
+			}
 			else if (typeName == "EndOfStreamException")
 			{
 				if (textBox1.Text.Contains("NoxicoGame.LoadGame"))

@@ -306,6 +306,7 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
+			//No expectations here -- that'd be TOO damn much, unless we get to compress things.
 			stream.Write(Name ?? "Blank");
 			stream.Write((Single)Value);
 			stream.Write(Text ?? "");

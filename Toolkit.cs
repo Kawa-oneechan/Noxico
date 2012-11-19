@@ -827,6 +827,19 @@ namespace Noxico
 				return initial.ToString().ToUpperInvariant() + text.Substring(1);
 			return text;
 		}
+
+		public static void SaveExpectation(BinaryWriter stream, string expectation)
+		{
+			//Don't use this until the next version
+			//stream.Write(expectation.ToCharArray());
+		}
+		public static void ExpectFromFile(BinaryReader stream, string expected, string friendly)
+		{
+			//Don't use this until the next version
+			//var found = stream.ReadChars(expected.Length);
+			//if ((new string(found)) != expected)
+			//	throw new Exception("Expected to find " + friendly + " data.");
+		}
 	}
 }
 

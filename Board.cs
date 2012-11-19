@@ -273,25 +273,26 @@ namespace Noxico
 			//Console.WriteLine(" * Saving board {0}...", Name);
 			using (var stream = new BinaryWriter(File.Open(System.IO.Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
-				//stream.Write(Name);
-				//stream.Write(ID);
-				//stream.Write(Music);
+				Toolkit.SaveExpectation(stream, "BORD");
+				Toolkit.SaveExpectation(stream, "TOKS");
 				stream.Write(Tokens.Count);
-				Tokens.ForEach(x => x.SaveToFile(stream));				
+				Tokens.ForEach(x => x.SaveToFile(stream));
 
+				Toolkit.SaveExpectation(stream, "AMNT");
 				stream.Write(Sectors.Count);
-				//stream.Write(Entities.OfType<FloorBot>().Count());
 				stream.Write(Entities.OfType<BoardChar>().Count() - Entities.OfType<Player>().Count());
 				stream.Write(Entities.OfType<DroppedItem>().Count());
-				stream.Write(Entities.OfType<Clutter>().Count() - Entities.OfType<Clutter>().Where(c => c.Life > 0).Count());
+				stream.Write(Entities.OfType<Clutter>().Count());
 				stream.Write(Entities.OfType<Container>().Count());
 				stream.Write(Entities.OfType<Door>().Count());
 				stream.Write(Warps.Count);
 
+				Toolkit.SaveExpectation(stream, "TMAP");
 				for (int row = 0; row < 25; row++)
 					for (int col = 0; col < 80; col++)
 						Tilemap[col, row].SaveToFile(stream);
 
+				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
 				{
 					//TODO: give sectors their own serialization function. For readability.
@@ -302,8 +303,7 @@ namespace Noxico
 					stream.Write(sector.Value.Bottom);
 				}
 
-				//foreach (var e in Entities.OfType<FloorBot>())
-				//	e.SaveToFile(stream);
+				Toolkit.SaveExpectation(stream, "ENTT");
 				foreach (var e in Entities.OfType<BoardChar>())
 					if (e is Player)
 						continue;
@@ -318,6 +318,7 @@ namespace Noxico
 				foreach (var e in Entities.OfType<Door>())
 					e.SaveToFile(stream);
 
+				Toolkit.SaveExpectation(stream, "WARP");
 				Warps.ForEach(x => x.SaveToFile(stream));
 			}
 		}
@@ -331,9 +332,8 @@ namespace Noxico
 			var newBoard = new Board();
 			using (var stream = new BinaryReader(File.Open(file, FileMode.Open)))
 			{
-				//newBoard.Name = stream.ReadString();
-				//newBoard.ID = stream.ReadString();
-				//newBoard.Music = stream.ReadString();
+				Toolkit.ExpectFromFile(stream, "BORD", "board description");
+				Toolkit.ExpectFromFile(stream, "TOKS", "board token tree");
 				var numTokens = stream.ReadInt32();
 				newBoard.Tokens.Clear();
 				for (var i = 0; i < numTokens; i++)
@@ -343,6 +343,7 @@ namespace Noxico
 				newBoard.Music = newBoard.GetToken("music").Text;
 				newBoard.Type = (BoardType)newBoard.GetToken("type").Value;
 
+				Toolkit.ExpectFromFile(stream, "AMNT", "board part amounts");
 				var secCt = stream.ReadInt32();
 				//var botCt = stream.ReadInt32();
 				var chrCt = stream.ReadInt32();
@@ -352,10 +353,12 @@ namespace Noxico
 				var dorCt = stream.ReadInt32();
 				var wrpCt = stream.ReadInt32();
 
+				Toolkit.ExpectFromFile(stream, "TMAP", "tile map");
 				for (int row = 0; row < 25; row++)
 					for (int col = 0; col < 80; col++)
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
 
+				Toolkit.ExpectFromFile(stream, "SECT", "sector");
 				for (int i = 0; i < secCt; i++)
 				{
 					var secName = stream.ReadString();
@@ -366,6 +369,7 @@ namespace Noxico
 					newBoard.Sectors.Add(secName, new Rectangle() { Left = l, Top = t, Right = r, Bottom = b });
 				}
 
+				Toolkit.ExpectFromFile(stream, "ENTT", "board entity");
 				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
 				for (int i = 0; i < chrCt; i++)
 					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
@@ -378,6 +382,7 @@ namespace Noxico
 				for (int i = 0; i < dorCt; i++)
 					newBoard.Entities.Add(Door.LoadFromFile(stream));
 
+				Toolkit.ExpectFromFile(stream, "WARP", "board warp");
 				for (int i = 0; i < wrpCt; i++)
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
 
@@ -390,22 +395,9 @@ namespace Noxico
 				foreach (var e in newBoard.Entities.OfType<BoardChar>())
 					e.RunScript(e.OnLoad);
 
-				//DEBUG: place torch next to top left corners.
-				/*
-				for (int row = 0; row < 25; row++)
-				{
-					for (int col = 0; col < 80; col++)
-					{
-						if (newBoard.Tilemap[col, row].Character == '\u2554')
-							newBoard.Entities.Add(new Clutter('\u00A5', Color.Chocolate, newBoard.Tilemap[col, row].Background, false, "random torch", "This is a testing torch.") { XPosition = col - 1, YPosition = row - 1, ID = "TestingTorch", ParentBoard = newBoard });
-					}
-				}
-				*/
 				newBoard.UpdateLightmap(null, true);
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
-
-				//newBoard.Entities.OfType<BoardChar>().ElementAt(0).MoveTo(1, 1, "lol");
 			}
 			return newBoard;
 		}
@@ -1210,68 +1202,6 @@ namespace Noxico
 						DirtySpots.Add(new Location(col, row));
 				}
 			}
-		}
-
-		/*
-		private static int GetSample(int x, int y, int ux, int uy, int[,] source)
-		{
-			var mask = new BitVector32();
-			var i = 1;
-			for (var x1 = x - 1; x1 <= x + 1; x1++)
-			{
-					for (var y1 = y - 1; y1 <= y + 1; y1++)
-					{
-					var isWall = false;
-					if (x1 < 0 || x1 > ux || y1 < 0 || y1 > uy)
-						isWall = true;
-					else
-						isWall = (source[x1, y1] == 1);
-					mask[i] = isWall;
-					i <<= 1;
-				}
-			}
-			return mask.Data;
-		}
-		*/
-		[Obsolete("THIS IS STUPID. Also broken.", true)]
-		public void CalculateLightmap()
-		{
-			if (Entities.OfType<LightSource>().Count() == 0)
-				return;
-			var map = new int[80, 25];
-			for (int y = 0; y < 25; y++)
-				for (int x = 0; x < 80; x++)
-					map[x, y] = -1;
-			foreach (var light in Entities.OfType<LightSource>())
-			{
-				//map[light.XPosition, light.YPosition] = light.Brightness;
-				//SpreadValue(map, light.XPosition, light.YPosition, light.Brightness);
-			}
-			var bmp = new System.Drawing.Bitmap(80, 25);
-			for (int y = 0; y < 25; y++)
-			{
-				for (int x = 0; x < 80; x++)
-				{
-					var c = map[x, y];
-					if (c < 0)
-						c = 0;
-					bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(c, c, c));
-				}
-			}
-			bmp.Save("lightmap_" + ID + ".png", System.Drawing.Imaging.ImageFormat.Png);
-		}
-		[Obsolete("Used by CalculateLightmap.", true)]
-		private void SpreadValue(int[,] map, int x, int y, int b, int level = 0)
-		{
-			if (x < 0 || x >= 80 || y < 0 || y >= 25 || b <= 0 || map[x, y] != -1)
-				return;
-			if (level % 10 == 0)
-				NoxicoGame.HostForm.Write(string.Format("{0}x{1} {2} ({3})", x, y, b, level), Color.Silver, Color.Gray, 50, 0);
-			map[x, y] = b;
-			SpreadValue(map, x - 1, y, b - 1, level + 1);
-			SpreadValue(map, x, y - 1, b - 2, level + 1);
-			SpreadValue(map, x + 1, y, b - 1, level + 1);
-			SpreadValue(map, x, y + 1, b - 2, level + 1);
 		}
 
 		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music)

@@ -407,12 +407,14 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "CHAR");
 			Name.SaveToFile(stream);
 			stream.Write(Species ?? "");
 			stream.Write(Title ?? "");
 			stream.Write(IsProperNamed);
 			stream.Write(A ?? "a");
 			stream.Write(Culture.ID);
+			Toolkit.SaveExpectation(stream, "TOKS");
 			stream.Write(Tokens.Count);
 			Tokens.ForEach(x => x.SaveToFile(stream));
 		}
@@ -420,6 +422,7 @@ namespace Noxico
 		public static Character LoadFromFile(BinaryReader stream)
 		{
 			var newChar = new Character();
+			Toolkit.ExpectFromFile(stream, "CHAR", "character");
 			newChar.Name = Name.LoadFromFile(stream);
 			newChar.Species = stream.ReadString();
 			newChar.Title = stream.ReadString();
@@ -429,6 +432,7 @@ namespace Noxico
 			newChar.Culture = Culture.DefaultCulture;
 			if (Culture.Cultures.ContainsKey(culture))
 				newChar.Culture = Culture.Cultures[culture];
+			Toolkit.ExpectFromFile(stream, "TOKS", "character token tree");
 			var numTokens = stream.ReadInt32();
 			for (var i = 0; i < numTokens; i++)
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
@@ -790,7 +794,7 @@ namespace Noxico
 				var lt = this.GetToken("legs").Text;
 				var legs = string.IsNullOrWhiteSpace(lt) ? "human" : lt;
 				if (legs == "genbeast")
-					legs = "beastly";
+					legs = "digitigrade";
 				else if (legs == "stiletto")
 					legs = "stiletto-heeled";
 				else if (legs == "claws")
@@ -1959,6 +1963,7 @@ namespace Noxico
 		}
 		public void SaveToFile(BinaryWriter stream)
 		{
+			Toolkit.SaveExpectation(stream, "NGEN");
 			stream.Write(FirstName);
 			stream.Write(Surname);
 			stream.Write(Title);
@@ -1967,6 +1972,7 @@ namespace Noxico
 		public static Name LoadFromFile(BinaryReader stream)
 		{
 			var newName = new Name();
+			Toolkit.ExpectFromFile(stream, "NGEN", "name");
 			newName.FirstName = stream.ReadString();
 			newName.Surname = stream.ReadString();
 			newName.Title = stream.ReadString();
