@@ -75,6 +75,12 @@ namespace Noxico
 			return t;
 		}
 
+		public void RemoveAll(string name)
+		{
+			foreach (var t in Tokens.FindAll(x => x.Name == name))
+				Tokens.Remove(t);
+		}
+
 		public Token Path(string path)
 		{
 			var parts = path.Split('/');
