@@ -20,6 +20,7 @@ bestiary: "A typical human of northern stock."
 ascii
 	char: U+0068
 tallness: roll 1d50+150
+femalesmaller
 hair
 	length: roll 1d4+5
 	color: oneof blond, brown, black,red, gray, white, auburn
@@ -321,6 +322,7 @@ ascii
 	char: U+0046
 bestiary: "Typical trading cat people."
 tallness: roll 1d40+150
+femalesmaller
 hair
 	length: roll 1d4+5
 	color: oneof blond, brown, black, red, orange, gray, white, auburn
@@ -591,7 +593,6 @@ balls
 	size: 0.8
 			]]>
 	</bodyplan>
-
 
 	<bodyplan id="canine">
 		<![CDATA[

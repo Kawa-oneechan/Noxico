@@ -267,6 +267,8 @@ namespace Noxico
 					newChar.Culture = Culture.Cultures[culture];
 			}
 
+			newChar.RemoveMetaTokens();
+
 			Console.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
 		}
@@ -401,8 +403,27 @@ namespace Noxico
 				newChar.UpdateTitle();
 			}
 
+			if (newChar.HasToken("femalesmaller"))
+			{
+				if (gender == Gender.Female)
+					newChar.GetToken("tallness").Value -= Toolkit.Rand.Next(5, 10);
+				else if (gender == Gender.Herm)
+					newChar.GetToken("tallness").Value -= Toolkit.Rand.Next(1, 6);
+			}
+
+			newChar.RemoveMetaTokens();
+
 			//Console.WriteLine("Generated {0}.", newChar);
 			return newChar;
+		}
+
+		private void RemoveMetaTokens()
+		{
+			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
+			foreach (var t in metaTokens)
+				this.RemoveAll(t);
+			if (!this.HasToken("beast"))
+				this.RemoveAll("bestiary");
 		}
 
 		public void SaveToFile(BinaryWriter stream)
