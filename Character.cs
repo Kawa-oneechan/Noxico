@@ -639,7 +639,7 @@ namespace Noxico
 			);
 			Func<string, string> nameColor = new Func<string, string>(x => Toolkit.NameColor(x));
 			Func<float, string> count = new Func<float, string>(x => Toolkit.Count(x));
-			var isPlayer = pa is Player;
+			var isPlayer = (pa != null && pa is Player);
 			#endregion
 
 			//Begin backport!
@@ -992,7 +992,7 @@ namespace Noxico
 			{
 				hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
 				hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
-				hipThings.Add(ass(this.GetToken("ass").Value) + " ass");
+				hipThings.Add(ass(this.Path("ass/size").Value) + " ass");
 			}
 			else
 			{
@@ -1099,7 +1099,7 @@ namespace Noxico
 				for (var i = 0; i < breastRows.Count; i++)
 				{
 					var row = breastRows[i];
-					print("| " + count(row.GetToken("amount").Value) + " " + breast(row.GetToken("size").Value) + " breast");
+					print("| " + count(row.GetToken("amount").Value) + " " + breast(/* row.GetToken("size").Value */ GetBreastRowSize(i)) + " breast");
 					if (row.GetToken("amount").Value > 1)
 						print("s");
 					if (!breastsVisible)
@@ -1110,7 +1110,20 @@ namespace Noxico
 					var nipSize = 0.5f;
 					if (row.Path("nipples/size") != null)
 						nipSize = row.Path("nipples/size").Value;
-					print(", " + count(row.GetToken("nipples").Value) + " " + Descriptions.Length(nipSize) + " nipple");
+					var nipType = Descriptions.Length(nipSize) + " " + "nipple";
+					if (row.Path("nipples/canfuck") != null)
+						nipType = Descriptions.Length(nipSize) + " " + "dicknipple";
+					else if (row.Path("nipples/fuckable") != null)
+					{
+						var loose = Descriptions.Looseness(row.Path("nipples/looseness"), false);
+						var wet = Descriptions.Wetness(row.Path("nipples/wetness"));
+						if (wet != null && loose != null)
+							wet = " and " + wet;
+						else if (wet == null && loose == null)
+							loose = "";
+						nipType = (loose + wet + " nipplecunt").Trim();
+					}
+					print(", " + count(row.GetToken("nipples").Value) + " " + nipType);
 					if (row.GetToken("nipples").Value > 1)
 						print("s");
 					print(" on each\n");
@@ -1140,14 +1153,17 @@ namespace Noxico
 						var vagina = vaginas[i];
 						if (vagina == null)
 							print("OH NO!");
-						var loose = Descriptions.Looseness(vagina, false);
-						if (loose == null)
+						var loose = Descriptions.Looseness(vagina.GetToken("looseness"), false);
+						var wet = Descriptions.Wetness(vagina.GetToken("wetness"));
+						if (wet != null && loose != null)
+							wet = " and " + wet;
+						else if (wet == null && loose == null)
 							loose = "regular";
 						var clit = vagina.Path("clit");
 						var clitSize = 0.25f;
 						if (clit != null)
 							clitSize = clit.Value;
-						print("| " + loose + ", with a " + Descriptions.Length(clitSize) + " clit\n");
+						print("| " + loose + wet + ", with a " + Descriptions.Length(clitSize) + " clit\n");
 					}
 				}
 			}
@@ -1200,7 +1216,7 @@ namespace Noxico
 					{
 						var cock = cocks[i];
 						var cockType = cock.Text;
-						if (cockType == "")
+						if (string.IsNullOrWhiteSpace(cockType))
 							cockType = "human-like";
 						print("| " + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
 						print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
@@ -1219,7 +1235,14 @@ namespace Noxico
 			print("<cGray>Debug\n<cGray>-----\n");
 			print("<cGray>GetGender(): " + this.GetGender() + "\n");
 			print("<cGray>Cum amount: " + this.CumAmount() + "mLs.\n");
-//#endif
+			print("<cGray>Biggest breast row: #" + this.GetBiggestBreastrowNumber() + " @ " + this.GetBreastRowSize(this.GetBiggestBreastrowNumber()) + "'\n");
+			print("<cGray>Biggest penis (length only): #" + this.GetBiggestPenisNumber(false) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(false), false) + "cm\n");
+			print("<cGray>Biggest penis (l * t): #" + this.GetBiggestPenisNumber(true) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(true), true) + "cm\n");
+			print("<cGray>Highest capacity cooch: #" + this.GetLargestVaginaNumber() + " @ " + this.GetVaginaCapacity(this.GetLargestVaginaNumber()) + "\n");
+			print("<cGray>Smallest breast row: #" + this.GetSmallestBreastrowNumber() + " @ " + this.GetBreastRowSize(this.GetSmallestBreastrowNumber()) + "'\n");
+			print("<cGray>Smallest penis (l * t): #" + this.GetSmallestPenisNumber(true) + " @ " + this.GetPenisSize(this.GetSmallestPenisNumber(true), true) + "cm\n");
+			print("<cGray>Lowest capacity cooch: #" + this.GetSmallestVaginaNumber() + " @ " + this.GetVaginaCapacity(this.GetSmallestVaginaNumber()) + "\n");
+			//#endif
 
 			//End backport!
 
@@ -1301,40 +1324,6 @@ namespace Noxico
 		public bool HasVagina()
 		{
 			return HasToken("vagina");
-		}
-
-		public float PenisArea()
-		{
-			if (!HasToken("penis"))
-				return 0f;
-			var area = 0f;
-			foreach (var p in Tokens.Where(t => t.Name == "penis"))
-				area += PenisArea(p);
-			return area;
-		}
-
-		public float PenisArea(Token p)
-		{
-			var area = p.GetToken("thickness").Value * p.GetToken("length").Value;
-			if (GetToken("stimulation").Value < 20)
-				area /= 2;
-			return area;
-		}
-
-		public float VaginalCapacity()
-		{
-			if (!HasVagina())
-				return 0f;
-			return VaginalCapacity(GetToken("vagina"));
-		}
-
-		public float VaginalCapacity(Token v)
-		{
-			var lut = new[] { 8f, 16f, 24f, 36f, 56f, 100f };
-			var l = (int)Math.Ceiling(v.GetToken("looseness").Value);
-			if (l > lut.Length)
-				l = lut.Length - 1;
-			return lut[l];
 		}
 
 		public void CheckPants(MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false)
@@ -1923,6 +1912,280 @@ namespace Noxico
 			var o = options.Split(',').Select(x => x.Trim()).ToArray();
 			if (!o.Contains(colorToken.Text))
 				colorToken.Text = Toolkit.PickOne(o);
+		}
+
+
+
+		public float[] GetBreastSizes()
+		{
+			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
+			var sizes = new float[rows.Length];
+			var fromPrevious = false;
+			var multiplier = 1f;
+			sizes[0] = rows[0].GetToken("size").Value;
+			for (var i = 1; i < rows.Length; i++)
+			{
+				if (rows[i].HasToken("size"))
+				{
+					fromPrevious = false;
+					sizes[i] = rows[i].GetToken("size").Value;
+				}
+				else if (rows[i].HasToken("sizefromprevious") || fromPrevious)
+				{
+					fromPrevious = true;
+					if (rows[i].HasToken("sizefromprevious"))
+					{
+						multiplier = rows[i].GetToken("sizefromprevious").Value;
+						if (multiplier == 0f)
+							multiplier = 1f;
+					}
+					sizes[i] = sizes[i - 1] * multiplier;
+				}
+			}
+			return sizes;
+		}
+
+		public float GetBreastRowSize(Token row)
+		{
+			var sizes = GetBreastSizes();
+			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
+			for (var i = 0; i < rows.Length; i++)
+			{
+				if (rows[i] == row)
+					return sizes[i];
+			}
+			return -1f;
+		}
+
+		public float GetBreastRowSize(int row)
+		{
+			var sizes = GetBreastSizes();
+			if (row >= sizes.Length || row < 0)
+				return -1f;
+			return sizes[row];
+		}
+
+		public Token GetBreastRowByNumber(int row)
+		{
+			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
+			if (row >= rows.Length || row < 0)
+				return null;
+			return rows[row];
+		}
+
+		public int GetBiggestBreastrowNumber()
+		{
+			var sizes = GetBreastSizes();
+			if (sizes.Length == 0)
+				return -1;
+			var biggest = -1f;
+			var ret = -1;
+			for (var i = 0; i < sizes.Length; i++)
+			{
+				if (sizes[i] > biggest)
+				{
+					biggest = sizes[i];
+					ret = i;
+				}
+			}
+			return ret;
+		}
+
+		public int GetSmallestBreastrowNumber()
+		{
+			var sizes = GetBreastSizes();
+			if (sizes.Length == 0)
+				return -1;
+			var smallest = 99999f;
+			var ret = -1;
+			for (var i = 0; i < sizes.Length; i++)
+			{
+				if (sizes[i] < smallest)
+				{
+					smallest = sizes[i];
+					ret = i;
+				}
+			}
+			return ret;
+		}
+
+		public float GetPenisSize(Token penis, bool withThickness)
+		{
+			var ret =  penis.GetToken("length").Value;
+			if (withThickness)
+				ret *= penis.GetToken("thickness").Value;
+			return ret;
+		}
+
+		public float[] GetPenisSizes(bool withThickness)
+		{
+			var cocks = this.Tokens.FindAll(x => x.Name == "penis").ToArray();
+			var sizes = new float[cocks.Length];
+			for (var i = 0; i < cocks.Length; i++)
+			{
+				sizes[i] = GetPenisSize(cocks[i], withThickness);
+			}
+			return sizes;
+		}
+
+		public float GetPenisSize(int penis, bool withThickness)
+		{
+			var sizes = GetPenisSizes(withThickness);
+			if (penis >= sizes.Length || penis < 0)
+				return -1f;
+			return sizes[penis];
+		}
+
+		public Token GetPenisByNumber(int penis)
+		{
+			var cocks = this.Tokens.FindAll(x => x.Name == "penis").ToArray();
+			if (penis >= cocks.Length || penis < 0)
+				return null;
+			return cocks[penis];
+		}
+
+		public int GetBiggestPenisNumber(bool withThickness)
+		{
+			var sizes = GetPenisSizes(withThickness);
+			if (sizes.Length == 0)
+				return -1;
+			var biggest = -1f;
+			var ret = -1;
+			for (var i = 0; i < sizes.Length; i++)
+			{
+				if (sizes[i] > biggest)
+				{
+					biggest = sizes[i];
+					ret = i;
+				}
+			}
+			return ret;
+		}
+
+		public int GetSmallestPenisNumber(bool withThickness)
+		{
+			var sizes = GetPenisSizes(withThickness);
+			if (sizes.Length == 0)
+				return -1;
+			var smallest = 99999f;
+			var ret = -1;
+			for (var i = 0; i < sizes.Length; i++)
+			{
+				if (sizes[i] < smallest)
+				{
+					smallest = sizes[i];
+					ret = i;
+				}
+			}
+			return ret;
+		}
+
+		public float GetVaginaCapacity(Token vagina)
+		{
+			/* TODO: math stolen from CoC, which I think uses inches? Anyway, I get results like "4884.479" and I don't know if that's right.
+			 * CoC's cockThatFits(x) takes a vaginal capacity and compares it against each cock's area, which according to cockArea(x) is thickness * length.
+			 * For example, my testing character has a penis that is 24cm long and 2.5cm thick, giving a cockArea of 60, and a vagina that has wetness 4 ("drooling")
+			 * and looseness 2 (undescribed), which this function (again adapted from CoC) gives a capacity of 4884.479...
+			 * *sharp inhale*
+			 * means that it is POSITIVELY CAVERNOUS!
+			 * ...
+			 * ...
+			 * Okay, I tried again with a vagina that is wetness 0 ("dry") and looseness 0 ("virgin"), still no bonuses (did I forget to mention this is all without
+			 * bonuses being applied?) and guess what? **576**
+			 * We've got a cock that would make Ron Jeremy consider joining a monastery in shame, and a DRY VIRGIN COOCH that could take several of those!
+			 * Changing "looseness * looseness" to just "looseness" turns 576 into 72, which is much better. But still, against such an inhuman cock...
+			 */
+
+			var loosenesses = new[] { 8, 16, 24, 36, 56, 100 };
+			var looseness = 0f;
+			if (vagina.HasToken("looseness"))
+				looseness = vagina.GetToken("looseness").Value;
+			if (looseness < loosenesses.Length)
+				looseness = loosenesses[(int)looseness];
+			else
+				looseness = 10000;
+
+			var wetnesses = new[] { 1.25f, 1, 0.8f, 0.7f, 0.6f, 0.5f };
+			var wetness = 0f;
+			if (vagina.HasToken("wetness"))
+				wetness = vagina.GetToken("wetness").Value;
+			if (wetness < wetnesses.Length)
+				wetness = wetnesses[(int)wetness];
+			else
+				wetness = 0.5f;
+
+			var bonus = 0f;
+			if (this.HasToken("vcapbonus"))
+				bonus = this.GetToken("vcapbonus").Value;
+
+			var bodyBonus = 0f;
+
+			var ret = (bodyBonus + bonus + 8 * looseness /* * looseness */) * (1 + wetness / 10);
+			return ret;
+		}
+		//can double as GetNipplecuntCapacity yay
+
+		public float[] GetVaginaCapacities()
+		{
+			var pussies = this.Tokens.FindAll(x => x.Name == "vagina").ToArray();
+			var caps = new float[pussies.Length];
+			for (var i = 0; i < pussies.Length; i++)
+			{
+				caps[i] = GetVaginaCapacity(pussies[i]);
+			}
+			return caps;
+		}
+
+		public float GetVaginaCapacity(int vagina)
+		{
+			var caps = GetVaginaCapacities();
+			if (vagina >= caps.Length || vagina < 0)
+				return -1f;
+			return caps[vagina];
+		}
+
+		public Token GetVaginaByNumber(int vagina)
+		{
+			var pussies = this.Tokens.FindAll(x => x.Name == "vagina").ToArray();
+			if (vagina >= pussies.Length || vagina < 0)
+				return null;
+			return pussies[vagina];
+		}
+
+		public int GetLargestVaginaNumber()
+		{
+			var caps = GetVaginaCapacities();
+			if (caps.Length == 0)
+				return -1;
+			var largest = -1f;
+			var ret = -1;
+			for (var i = 0; i < caps.Length; i++)
+			{
+				if (caps[i] > largest)
+				{
+					largest = caps[i];
+					ret = i;
+				}
+			}
+			return ret;
+		}
+	
+		public int GetSmallestVaginaNumber()
+		{
+			var caps = GetVaginaCapacities();
+			if (caps.Length == 0)
+				return -1;
+			var smallest = 99999f;
+			var ret = -1;
+			for (var i = 0; i < caps.Length; i++)
+			{
+				if (caps[i] < smallest)
+				{
+					smallest = caps[i];
+					ret = i;
+				}
+			}
+			return ret;
 		}
 	}
 
