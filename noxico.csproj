@@ -222,6 +222,7 @@
     <Content Include="mix\buildings.xml" />
     <Content Include="mix\chargen.png" />
     <Content Include="mix\costumes.xml" />
+    <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.xml" />
     <Content Include="mix\DefaultSettings.txt" />
     <Content Include="mix\Homestuck.txt" />
