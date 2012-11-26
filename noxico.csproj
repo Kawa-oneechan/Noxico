@@ -210,7 +210,6 @@
     <Content Include="fonts\unifont\unifont_2B.png" />
     <Content Include="fonts\unifont\unifont_2E.png" />
     <Content Include="fonts\unifont\unifont_FF.png" />
-    <Content Include="mix\aee66af32c5a2e6277484acc9715ee6a.jpg" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
     <Content Include="mix\bodyplans.xml">
@@ -330,7 +329,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)MixMaster $(ProjectDir)mix $(ProjectDir)Noxico.mix</PreBuildEvent>
+    <PreBuildEvent>"$(ProjectDir)MixMaster" "$(ProjectDir)mix" "$(ProjectDir)Noxico.mix"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
