@@ -411,6 +411,15 @@ namespace Noxico
 					newChar.GetToken("tallness").Value -= Toolkit.Rand.Next(1, 6);
 			}
 
+			while (newChar.HasToken("either"))
+			{
+				var either = newChar.GetToken("either");
+				var eitherChoice = Toolkit.Rand.Next(-1, either.Tokens.Count);
+				if (eitherChoice > -1)
+					newChar.AddToken(either.Tokens[eitherChoice]);
+				newChar.RemoveToken(either);
+			}
+
 			newChar.RemoveMetaTokens();
 
 			//Console.WriteLine("Generated {0}.", newChar);
@@ -832,6 +841,14 @@ namespace Noxico
 				}
 			}
 
+			if (this.HasToken("wings"))
+			{
+				var wt = this.GetToken("wings").Text + " wings";
+				if (this.Path("wings/small") != null)
+					wt = "small " + wt;
+				bodyThings.Add(wt);
+			}
+
 			if (this.HasToken("tail"))
 			{
 				var tt = this.GetToken("tail").Text;
@@ -875,9 +892,35 @@ namespace Noxico
 			if (this.HasToken("eyes"))
 			{
 				var eyes = nameColor(this.GetToken("eyes").Text) + " eyes";
+				var eyesHidden = false;
+				if (goggles != null && !goggles.CanSeeThrough())
+					eyesHidden = true;
 				if (this.Path("eyes/glow") != null)
+				{
 					eyes = "glowing " + eyes;
-				headThings.Add(eyes);
+					eyesHidden = false;
+				}
+				if (!eyesHidden)
+					headThings.Add(eyes);
+			}
+
+			if (mask != null && mask.CanSeeThrough())
+			{
+				var teeth = this.Path("teeth");
+				if (teeth != null && !string.IsNullOrWhiteSpace(teeth.Text) && teeth.Text != "normal")
+				{
+					var teethStyle = "";
+					if (teeth.Text == "fangs")
+						teethStyle = "fangs";
+					else if (teeth.Text == "sharp")
+						teethStyle = "sharp teeth";
+					else if (teeth.Text == "osmond")
+						teethStyle = "fearsome teeth";
+					headThings.Add(teethStyle);
+				}
+				var tongue = this.Path("tongue");
+				if (tongue != null && !string.IsNullOrWhiteSpace(tongue.Text) && tongue.Text != "normal")
+					headThings.Add(tongue.Text + " tongue");
 			}
 
 			var ears = "human";
@@ -892,7 +935,11 @@ namespace Noxico
 				headThings.Add(ears + " ears");
 			}
 
+			if (this.HasToken("monoceros"))
+				headThings.Add("unicorn horn");
+
 			//femininity slider
+
 
 			//Columnize it!
 			Columnize(print, 34, bodyThings, headThings, "Body", "Head");
@@ -984,9 +1031,14 @@ namespace Noxico
 			{
 				hairThings.Add(hairLength(this.Path("hair/length").Value));
 				hairThings.Add(nameColor(this.Path("hair/color").Text));
-				//style
+				if (this.Path("hair/style") != null)
+					hairThings.Add(this.Path("hair/style").Text);
 				if (this.Path("skin/type").Text == "slime")
 					hairThings.Add("goopy");
+				if (this.Path("skin/type").Text == "rubber")
+					hairThings.Add("stringy");
+				if (this.Path("skin/type").Text == "metal")
+					hairThings.Add("cord-like");
 			}
 			if (!HasToken("quadruped"))
 			{
@@ -1013,9 +1065,10 @@ namespace Noxico
 
 			#region Equipment
 			print("Equipment\n");
-			if (this.HasToken("noarms") && hands.Count > 1)
+			var mono = HasToken("monoceros") ? 1 : 0;
+			if (this.HasToken("noarms") && hands.Count > 1 + mono)
 				print("<b>NOTICE<b>: dual wielding with mouth.\n");
-			if (hands.Count > 2)
+			if (hands.Count > 2 + mono)
 				print("<b>NOTICE<b>: Shiva called.\n");
 			if (hands.Count == 0)
 				print("| none\n");
@@ -1920,6 +1973,8 @@ namespace Noxico
 		{
 			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
 			var sizes = new float[rows.Length];
+			if (rows.Length == 0)
+				return sizes;
 			var fromPrevious = false;
 			var multiplier = 1f;
 			sizes[0] = rows[0].GetToken("size").Value;

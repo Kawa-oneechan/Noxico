@@ -179,6 +179,20 @@ namespace Noxico
 		public void CheckHands(Character character, string slot)
 		{
 			var max = slot == "ring" ? 8 : 2;
+			if (character.HasToken("monoceros"))
+				max = slot == "ring" ? 10 : 3;
+			if (character.HasToken("noarms"))
+			{
+				if (slot == "hand")
+					max = character.HasToken("monoceros") ? 2 : 1;
+				else
+					max = character.HasToken("monoceros") ? 2 : 0;
+			}
+			/* therefore:
+			 *           normal  pony  unicorn  humancorn
+			 * rings     8       0     2        10
+			 * weapons   2       1     2        3
+			 */
 			var worn = 0;
 			var items = character.GetToken("items");
 			foreach (var carriedItem in items.Tokens)

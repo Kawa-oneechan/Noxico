@@ -232,26 +232,8 @@ namespace Noxico
 #endif
 
 			CurrentBoard = new Board();
-			this.Player = new Player()
-			{
-				CurrentRealm = "Nox",
-			};
-			/*
-			if (IniFile.GetBool("misc", "skiptitle", false) && Directory.Exists(WorldName)) //File.Exists("world.bin"))
-			{
-				LoadGame();
-				HostForm.Noxico.CurrentBoard.Draw();
-				Subscreens.FirstDraw = true;
-				Immediate = true;
-				AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-				AddMessage("Remember, press F1 for help and options.");
-				Mode = UserMode.Walkabout;
-			}
-			else
-			*/
-			{
+			this.Player = new Player() { CurrentRealm = "Nox" };
 				Introduction.Title();
-			}
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false)

@@ -71,7 +71,7 @@
 		</cultureinfo>
 	</culture>
 
-	<culture id="meldevar">
+	<culture id="seradevar">
 		<cultureinfo>
 			<bodyplans>
 				<plan name="foocubus" />

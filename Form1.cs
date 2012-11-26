@@ -80,6 +80,7 @@ namespace Noxico
 
 		public MainForm()
 		{
+			Write("Pokemon? Pokémon?! Poke\x0301mon!", Color.Silver, Color.Black, 0, 0);
 			var fatal = false;
 #if NICE_ERRORS
 			try
@@ -484,6 +485,9 @@ namespace Noxico
 
 		public void Write(string text, Color forecolor, Color backcolor, int x = 0, int y = 0)
 		{
+			if (!text.IsNormalized())
+				text = text.Normalize();
+
 			var rx = x;
 			for (var i = 0; i < text.Length; i++)
 			{

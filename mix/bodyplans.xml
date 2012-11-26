@@ -25,11 +25,14 @@ hair
 	length: roll 1d4+5
 	color: oneof blond, brown, black,red, gray, white, auburn
 -- repeating a few options to increase their chances 
+	style: oneof wavy, wavy, ponytail, straight, straight, straight, straight, curly, braided
 skin
 	type: skin
 	color: oneof light, light, light, pale, pale, dark, dark, olive
 eyes: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
 face: normal
+tongue: normal
+teeth: normal
 ears: human
 legs
 ass
@@ -69,7 +72,7 @@ items
 
 	<bodyplan id="imp">
 		<![CDATA[
-culture: meldevar
+culture: seradevar
 namegen: demonic
 maleonly
 invisiblegender
@@ -82,10 +85,13 @@ tallness: roll 1d40+100
 hair
 	length: 5
 	color: black
+	style: oneof mohawk, emo
 skin
 	type: skin
 	color: oneof red, firebrick, darkred, brown
 face: normal
+tongue: oneof normal, normal, normal, forked
+teeth: fangs
 eyes: yellow
 	glow
 ears: human
@@ -114,7 +120,7 @@ carnality: 50
 
 	<bodyplan id="goblin">
 		<![CDATA[
-culture: meldevar
+culture: seradevar
 namegen: demonic
 femaleonly
 invisiblegender
@@ -127,10 +133,13 @@ tallness: roll 1d40+120
 hair
 	length: 4
 	color: oneof purple, palevioletred, mediumorchid, hotpink, deeppink
+	style: oneof wavy, pigtail, mohawk, curly, spiky, emo
 skin
 	type: skin
 	color: oneof olivedrab, darkslategray, darkolivegreen
 face: normal
+tongue: normal
+teeth: fangs
 eyes: oneof plum, mediumvioletred, mediumorchid, orchid
 ears: elfin
 legs
@@ -171,10 +180,13 @@ tallness: roll 1d20+140
 hair
 	length: 6
 	color: black
+	style: oneof curly, wavy, afro, curly, wavy
 skin
 	type: skin
 	color: oneof yellow, gold, goldenrod
 face: normal
+tongue: long
+teeth: normal
 eyes: black
 legs: insect
 antennae
@@ -215,12 +227,13 @@ bestiary: "Half beautiful humanoid, half snake, all desert-y allure."
 hair
 	length: 14
 	color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
+	style: oneof straight, straight, wavy
 skin
 	type: skin
 	color: oneof aqua, darkseagreen, cadetblue, darkslategray
 face: normal
-tongue
-	long
+tongue: long
+teeth: oneof fangs, sharp
 eyes: yellow
 snaketail
 waist: 4
@@ -253,7 +266,7 @@ costume
 	<bodyplan id="foocubus">
 		<![CDATA[
 playable
-culture: meldevar
+culture: seradevar
 namegen: demonic
 neverneuter
 invisiblegender
@@ -270,10 +283,13 @@ tallness: roll 1d20+170
 hair
 	length: roll 1d3+4
 	color: oneof red, black, blue, darkred, green
+	style: oneof straight, curly, straight, straight, bun
 skin
 	type: skin
 	color: oneof pale, brown, purple
 face: normal
+teeth: oneof normal, normal, fangs, fangs, sharp, osmond
+tongue: oneof normal, normal, forked, long
 eyes: oneof red, yellow, aqua, white
 ears: elfin
 wings: bat
@@ -326,12 +342,15 @@ femalesmaller
 hair
 	length: roll 1d4+5
 	color: oneof blond, brown, black, red, orange, gray, white, auburn
+	style: oneof straight, wavy, ponytail, braided
 skin
 	type: fur
 	color: oneof brown, orange, white, gray, black
 eyes: oneof gold, yellow, lime
 	glow
 face: cat
+teeth: fangs
+tongue: oneof barbed, normal
 ears: cat
 legs: oneof human, genbeast
 tail: genbeast
@@ -382,10 +401,13 @@ tallness: roll 1d20+150
 hair
 	length: roll 1d6+3
 	color: oneof blond, brown, black, red
+	style: oneof straight, wavy, ponytail, braided
 skin
 	type: fur
 	color: sandybrown
 eyes: green
+tongue: normal
+teeth: fangs
 ears: genbeast
 face: genbeast
 legs: dog
@@ -449,6 +471,11 @@ legs: horse
 quadruped
 -- but noarms makes it a PROPER quadruped!
 noarms
+-- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
+either
+	wings: feather
+	monoceros
+-- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
 ears: horse
 tail: horse
 ass
@@ -475,7 +502,7 @@ tattoos
 	<bodyplan id="slime">
 		<![CDATA[
 playable
-culture: meldevar
+culture: seradevar
 namegen: japanese
 neverneuter
 invisiblegender
@@ -492,6 +519,7 @@ skin
 hair
 	length: roll 1d8+10
 	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
+	style: straight
 slimeblob
 face: normal
 eyes: white
@@ -536,10 +564,12 @@ tallness: roll 1d150+150
 hair
 	length: roll 1d4+7
 	color: oneof brown, black, gray, white, auburn
+	style: oneof wavy, curly, braided, braided, braided ponytail, afro
 skin
 	type: fur
 	color: oneof brown, black, white, gray, auburn
 eyes: black
+teeth: sharp
 face: normal
 ears: bear
 -- short, round, and resting atop the head
@@ -610,12 +640,15 @@ ascii
 hair
 	length: roll 1d6+3
 	color: oneof blond, brown, black, red
+	style: oneof straight, wavy, ponytail, braided
 skin
 	type: fur
 	color: brown
 eyes: yellow
 ears: genbeast
 face: genbeast
+teeth: sharp
+tongue: long
 legs: dog
 tail: dog
 ass
