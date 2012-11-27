@@ -14,8 +14,8 @@ namespace Noxico
 {
 	public enum KeyBinding
 	{
-		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Accept, Back,
-		Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
+		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop,
+		Accept, Back, Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
 	}
 
 	public class NoxicoGame
@@ -110,6 +110,7 @@ namespace Noxico
 				{ KeyBinding.Chat, GetIniKey("chat", Keys.C) },
 				{ KeyBinding.Fuck, GetIniKey("fuck", Keys.F) },
 				{ KeyBinding.Take, GetIniKey("take", Keys.P) },
+				{ KeyBinding.Drop, GetIniKey("drop", Keys.D) },
 				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
 				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },
 				{ KeyBinding.Pause, GetIniKey("pause", Keys.F1) },

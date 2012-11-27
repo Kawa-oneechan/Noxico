@@ -124,8 +124,16 @@ namespace Noxico
 						var eq = item.GetToken("equipable");
 						if (item.HasToken("weapon"))
 							sigils.Add("weapon");
-						if (eq.HasToken("head"))
-							sigils.Add("head");
+						//if (eq.HasToken("head"))
+						//	sigils.Add("head");
+						if (eq.HasToken("hat"))
+							sigils.Add("hat");
+						if (eq.HasToken("goggles"))
+							sigils.Add("goggles");
+						if (eq.HasToken("mask"))
+							sigils.Add("mask");
+						if (eq.HasToken("neck"))
+							sigils.Add("neck");
 						if (eq.HasToken("ring"))
 							sigils.Add("ring");
 						if (eq.HasToken("underpants") || eq.HasToken("undershirt"))
@@ -196,7 +204,7 @@ namespace Noxico
 					d = Toolkit.Wordwrap(d, itemDesc.Width);
 
 					if (i.ID == "book")
-						r = "Press Enter to read.";
+						r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to read.";
 					else if (i.HasToken("equipable"))
 					{
 						if (t.HasToken("equipped"))
@@ -204,15 +212,15 @@ namespace Noxico
 							if (t.Path("cursed/known") != null)
 								r = "Cannot unequip.";
 							else
-								r = "Press Enter to unequip.";
+								r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to unequip.";
 						}
 						else
-							r = "Press Enter to equip.";
+							r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to equip.";
 					}
 					else if (i.HasToken("quest"))
 						r = "This is a quest key item.";
 					else
-						r = "Press Enter to try and use.";
+						r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to try and use.";
 
 					howTo.Text = (' ' + r).PadRight(80);
 					itemDesc.Text = d;
@@ -236,7 +244,7 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (keys[(int)Keys.Escape] || keys[(int)Keys.I])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Items))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
@@ -245,7 +253,7 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
-			else if (keys[(int)Keys.D])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Drop))
 			{
 				TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 			}

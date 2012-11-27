@@ -265,7 +265,7 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 			}
 
-			if (keys[(int)Keys.Escape])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
@@ -274,9 +274,9 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
-			else if (keys[(int)Keys.Left])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Left))
 			{
-				keys[(int)Keys.Left] = false;
+				NoxicoGame.ClearKeys();
 				if (containerList.Items.Count == 0)
 					return; 
 				UIManager.Highlight = containerList ?? playerList;
@@ -286,9 +286,9 @@ namespace Noxico
 				NoxicoGame.Sound.PlaySound("Cursor");
 				//UIManager.Draw();
 			}
-			else if (keys[(int)Keys.Right])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
 			{
-				keys[(int)Keys.Right] = false;
+				NoxicoGame.ClearKeys();
 				if (playerList.Items.Count == 0)
 					return; 
 				UIManager.Highlight = playerList ?? containerList;

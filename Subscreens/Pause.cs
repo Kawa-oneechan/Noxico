@@ -87,7 +87,6 @@ has the same effect." },
 
 				//Toolkit.DrawWindow(5, 4, 21, 1 + pages.Count, "PAUSED", Color.Maroon, Color.Black, Color.Red);
 				Subscreens.Redraw = true;
-				keys[(int)Keys.Escape] = false;
 			}
 			if (Subscreens.Redraw)
 			{
@@ -95,7 +94,7 @@ has the same effect." },
 				UIManager.Draw();
 			}
 
-			if (keys[(int)Keys.Escape])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
 			{
 				NoxicoGame.Immediate = true;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
