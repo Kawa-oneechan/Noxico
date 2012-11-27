@@ -243,6 +243,13 @@ namespace Noxico
 								return false;
 						}
 					}
+					else if (fValue != "")
+					{
+						//Added this to allow checking for a specific text value, such as long tongues:
+						//<filter target="bottom" type="has" name="tongue" value="long" />
+						if (fPrimary.Path(fName).Text != fValue)
+							return false;
+					}
 					break;
 				case "hasnot":
 					if (fPrimary.Path(fName) != null)

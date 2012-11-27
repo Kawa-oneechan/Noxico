@@ -44,7 +44,7 @@ namespace Noxico
 				if (GamerServices.Profile.IsValid)
 					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 80 - 2 - GamerServices.Profile.Name.Length, 24);
 			}
-			if (keys[(int)Keys.Enter] || Subscreens.Mouse)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse)
 			{
 				if (Subscreens.Mouse)
 					Subscreens.UsingMouse = true;
@@ -65,7 +65,7 @@ namespace Noxico
 				}
 				//if (saves.Count > 0)
 				//{
-				keys[(int)Keys.Enter] = false;
+				NoxicoGame.ClearKeys();
 				Subscreens.Mouse = false;
 				var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
 				{

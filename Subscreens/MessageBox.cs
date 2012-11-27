@@ -88,16 +88,16 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (keys[(int)Keys.Escape] || keys[(int)Keys.Enter] || (type == BoxType.Question && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Accept) || (type == BoxType.Question && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
 			{
-				if (type == BoxType.List && keys[(int)Keys.Escape])
+				if (type == BoxType.List && NoxicoGame.IsKeyDown(KeyBinding.Back))
 				{
 					if (!allowEscape)
 						return;
 					else
 						option = -1;
 				}
-				if (type == BoxType.Input && keys[(int)Keys.Escape])
+				if (type == BoxType.Input && NoxicoGame.IsKeyDown(KeyBinding.Back))
 				{
 					UIManager.CheckKeys();
 					return;
@@ -107,13 +107,13 @@ namespace Noxico
 
 				if (type == BoxType.Question)
 				{
-					if ((keys[(int)Keys.Enter] || keys[(int)Keys.Y]) && onYes != null)
+					if ((NoxicoGame.IsKeyDown(KeyBinding.Accept) || keys[(int)Keys.Y]) && onYes != null)
 					{
 						NoxicoGame.Sound.PlaySound("Get Item");
 						NoxicoGame.ClearKeys();
 						onYes();
 					}
-					else if ((keys[(int)Keys.Escape] || keys[(int)Keys.N]) && onNo != null)
+					else if ((NoxicoGame.IsKeyDown(KeyBinding.Back) || keys[(int)Keys.N]) && onNo != null)
 					{
 						NoxicoGame.Sound.PlaySound("Put Item");
 						NoxicoGame.ClearKeys();

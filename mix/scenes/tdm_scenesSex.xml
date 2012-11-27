@@ -139,7 +139,7 @@
 		</script>
 	</scene>
 	<scene id="BipedGetCunnilingusSoftMode" name="eaten out licked" list="Get licked">
-		<filter target="bottom" type="has" name="tongue/long" />
+		<filter target="bottom" type="has" name="tongue" value="long" />
 		<p>
 			You put your [t:vagina] in [b:name]'s face and wait a few moments to see what [b:he] will do. When you tell [b:him] to get on with it, the [b:title] starts to put [b:his] tongue to work.
 		</p>
@@ -147,7 +147,7 @@
 			[b:He] probes your folds a few times, and you sigh in pleasure from the pleasant feeling. Encouraged, [b:name] moves past the folds, and shows just how far [b:his] tongue is able to go.
 		</p>
 		<p>
-			You're certainly enjoying yourself, especially when [b:he] starts to stir up your insides by spinning [b:his] tongue about your interior. Finally, [b:name] pulls [b:his] cunt licker half way out, so [b:he] can have a go at your clit at the same time. You gasp in ecstasy as the [b:title]'s natural skill brings your pleasure to its peak.
+			You're certainly enjoying yourself, especially when [b:he] starts to stir up your insides by spinning [b:his] tongue about your interior. Finally, [b:name] pulls [b:his] cunt licker half way out, so [b:he] can have a go at your clit at the same time. You gasp in ecstasy as the [b:title]'s natural skill brings your pleasure to its peak, and your orgasm washes over you and covers the unfortunate [b:title]'s face and girl tickler.
 		</p>
 		<p>
 			Your orgasm washes over you and covers the unfortunate [b:title]'s face. Satisfied, you pull back from your defeated foe, and let [b:him] fall to the ground exhausted.
@@ -177,6 +177,68 @@
 		<action name="get cock ridden with vagina" />
 		<action name="get cock ridden with ass" />
 	</scene>
+	<scene id="LoseAgainstNagaForcedFellatio" name="get forced to blowjob">
+		<filter target="top" type="has" name="snaketail" />
+		<filter target="top" type="has" name="penis" />
+		<p>
+			[t:He] quickly moves around your body and wraps it up tightly inside a serpentine embrace. [t:He] then picks up your head and you get a full view of the [t:title]'s [t:cock] emerging from its slit.
+		</p>
+		<p>
+			You look back up at [t:name]'s grinning face as [t:he] says, "Well little [b:g:boy:girl], get to work."
+		</p>
+		<p>
+			Will you give [t:him] the oral pleasure that [t:he] obviously wants, or refuse?
+		</p>
+		<script type="text/javascript">
+			letbottomchoose();
+		</script>
+		<!-- The script above lets the player choose between these. This is automatically reset. -->
+		<action name="get forced to blowjob okay" />
+		<action name="get forced to blowjob resist" />
+	</scene>
+	<scene id="LoseAgainstNagaForcedFellatiOkay" name="get forced to blowjob okay" list="Blow it">
+		<p>
+			You take a deep breath, and open your mouth wide. [t:name] wastes no time in jamming [t:his] [t:cock] down your throat as far as it will go. The [t:title] gives a loud groan of approval and starts to roughly pump [t:him]self in and out of your gullet.
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				//Here's where it gets cool.
+				var skill = bottom.GetSkillLevel("fellatio");
+				if (skill < 1)
+				{
+					print("You cough and sputter from the unfamiliar invader being forced down your throat, and can't do much else as you are roughly facefucked.\n");
+					print("[t:name] doesn't mind, and just keeps hammering away at you for a few minutes before grunting and letting loose [t:his] load into your stomach.\n");
+				}
+				else if (skill < 3)
+				{
+					print("Having had some experience with long hard things inside your mouth, having a [t:cock] in it doesn't leave you completely helpless. Despite the rough treatment that [t:name] is giving you, you are able to give some additional pleasure to the invader with your tongue and throat.\n");
+					print("The [t:title] starts moaning in approval and slows down [t:his] assault on your body. It is fairly obvious you aren't at the level of [t:his] usual victims, especially when [t:he] starts panting and cums hard into your stomach.\n");
+				}
+				else
+				{
+					print("You easily accept the [t:cock] into your mouth, and start to use your expert blowjob-giving skills to give this [t:title] the best job [t:he]'s probably ever had. Almost at once, [t:name] gives a sharp intake of breath and freezes in place at the feel of your tongue, lips, and throat expertly working [t:his] shaft.\n");
+					print("In moments, [t:he] grabs your head again and forces [t:him]self in as far as possible, while crying out in alarm. It certainly didn't take long for you to bring an orgasm into your stomach from [t:him].\n");
+				}
+				bottom.IncreaseSkill("fellatio");
+			]]>
+		</script>
+		<action name="naga loss finish" />
+	</scene>
+	<scene id="LoseAgainstNagaForcedFellatiNO" name="get forced to blowjob resist" list="Refuse">
+		<p>
+			You grit your teeth and turn away from the [t:title]'s [t:cock] to the best of your abilities, given your situation. [t:Name] just shrugs [t:his] shoulders and says, "Well, I know a hole that no one can refuse entry to."
+		</p>
+		<p>
+			Unceremoniously, [t:he] turns your body around and you feel the grip on your hips loosen up. After a moment, you feel <!-- wearing clothing: your [lower garments] being removed, and --> something push up against the entrance to your [b:asshole]. You give a bit of a shudder, anticipating the feel of being violated by that [t:title].
+		</p>
+		<p>
+			In response, [t:name] chuckles, "If you don't like it, then you should just let me take your mouth next time."
+		</p>
+		<p>
+			[t:He] then wastes no more time and pushes [t:his] length into your body. Once fully inside, the [t:title] waits a few moments to let you and [t:him] adjust to the feeling of your [b:asshole]. [t:name] then starts to pump [t:his] [t:cock] in and out of your back door, while grunting in pleasure. After a few minutes of this, your rapist gives one more gasp and you feel the [t:title]'s semen flow into your [b:asshole].
+		</p>
+		<action name="naga loss finish" />
+	</scene>
 	<scene id="LoseAgainstNagaForcedCunnilingus" name="get forced to eat out">
 		<filter target="top" type="has" name="snaketail" />
 		<filter target="top" type="has" name="vagina" />
@@ -192,7 +254,6 @@
 		<script type="text/javascript">
 			letbottomchoose();
 		</script>
-		<!-- The script above lets the player choose between these. This is automatically reset. -->
 		<action name="get forced to eat out okay" />
 		<action name="get forced to eat out resist" />
 	</scene>
@@ -202,7 +263,7 @@
 		</p>
 		<script type="text/javascript">
 			<![CDATA[
-				//Here's where it gets cool.
+				//This might be a good place to try Inline If.
 				var skill = bottom.GetSkillLevel("cunnilingus");
 				if (skill < 1)
 				{

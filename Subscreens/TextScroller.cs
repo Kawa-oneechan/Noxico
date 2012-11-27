@@ -69,9 +69,9 @@ namespace Noxico
 				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
 			}
 
-			if (keys[(int)Keys.Escape])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.BackAlt))
 			{
-				keys[(int)Keys.Escape] = false;
+				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
@@ -79,7 +79,7 @@ namespace Noxico
 				Subscreens.FirstDraw = true;
 			}
 
-			if (keys[(int)Keys.Up] && (DateTime.Now - slow).Milliseconds >= 100)
+			if (NoxicoGame.IsKeyDown(KeyBinding.ScrollUp) && (DateTime.Now - slow).Milliseconds >= 100)
 			{
 				slow = DateTime.Now;
 				scroll--;
@@ -93,7 +93,7 @@ namespace Noxico
 					Subscreens.Redraw = true;
 				}
 			}
-			if (keys[(int)Keys.Down] && (DateTime.Now - slow).Milliseconds >= 100)
+			if (NoxicoGame.IsKeyDown(KeyBinding.ScrollDown) && (DateTime.Now - slow).Milliseconds >= 100)
 			{
 				slow = DateTime.Now;
 				scroll++;
