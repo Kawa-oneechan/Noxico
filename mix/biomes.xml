@@ -40,7 +40,7 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 			<encounters max="10">imp, imp, wild_dog, imp</encounters>
 		</biome>
 		<biome name="Grass Desert" rect="48 0 160 64" color="146 182 131" music="set://Desert" canBurn="true">
-			<encounters max="2">wild_dog</encounters>
+			<encounters max="10">wild_dog, canine, canine, goblin, slime</encounters>
 		</biome>
 		<biome name="Desert" rect="160 0 256 64" color="210 203 152" music="set://Desert">
 			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
