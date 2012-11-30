@@ -845,9 +845,29 @@ namespace Noxico
 					return;
 				if (!CanSee(player))
 					return;
-				NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MSG Alert -- would normally be done in Noxicobotic, I guess...
+				NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MGS Alert -- would normally be done in Noxicobotic, I guess...
 				MoveSpeed = 0;
 				Movement = Motor.Hunt;
+				
+				//If we're gonna rape the target, we'd want them for ourself. Otherwise...
+				if (Character.GetStat(Stat.Stimulation) < 30)
+				{
+					//...we call out to nearby hostiles
+					var called = 0;
+					foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(x => !(x is Player) && x != this && DistanceFrom(x) < 10))
+					{
+						called++;
+						other.CallTo(player);
+					}
+					if (called > 0)
+					{
+						if (!Character.HasToken("beast"))
+							NoxicoGame.AddMessage(Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"", this.ForegroundColor);
+						else
+							NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", this.ForegroundColor);
+						Console.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
+					}
+				}
 			}
 			if (Movement == Motor.Hunt && !hostile)
 				Movement = Motor.Wander;
@@ -973,6 +993,22 @@ namespace Noxico
 				return;
 				*/
 			}
+		}
+
+		public void CallTo(BoardChar target)
+		{
+			MoveSpeed = 0;
+			Movement = Motor.Hunt;
+			var lastPos = Character.Path("targetlastpos");
+			if (lastPos == null)
+			{
+				lastPos = Character.AddToken("targetlastpos");
+				lastPos.AddToken("x");
+				lastPos.AddToken("y");
+			}
+			lastPos.GetToken("x").Value = target.XPosition;
+			lastPos.GetToken("y").Value = target.YPosition;
+			Console.WriteLine("{0} called to action.", this.Character.Name);
 		}
 
 		public virtual bool MeleeAttack(BoardChar target)
