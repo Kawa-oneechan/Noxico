@@ -320,6 +320,26 @@ namespace Noxico
 					if (!hasDildo)
 						return false;
 					break;
+				case "canfitdickinpussy":
+					var dickSizes = fPrimary.GetPenisSizes(true);
+					var pussySizes = fSecondary.GetVaginaCapacities();
+					if (dickSizes.Length == 0 || pussySizes.Length == 0)
+						return false; //no dicks to fit, or no pussies to fit in.
+					var canFit = false;
+					foreach (var dick in dickSizes)
+					{
+						foreach (var pussy in pussySizes)
+						{
+							if (dick < pussy)
+							{
+								canFit = true;
+								break;
+							}
+						}
+					}
+					if (!canFit)
+						return false;
+					break;
 			}
 			return true;
 		}
