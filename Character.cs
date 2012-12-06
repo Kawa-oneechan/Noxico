@@ -2614,6 +2614,103 @@ namespace Noxico
 				ret += ", a thick dollop of lubrication at tbe tip";
 			return ret;
 		}
+
+		#region PillowShout's additions
+		/// <summary>
+		/// Returns a string describing the token 'cock's type.
+		/// </summary>
+		/// <param name="cock">The penis token to be evaluated.</param>
+		/// <returns>A string containing only the 'cock's type.</returns>
+		public static string CockType(Token cock)
+		{
+			if (cock == null)
+				return "glitch";
+			if (cock.HasToken("horse"))
+				return Toolkit.PickOne("equine", "horse-like", "flared");
+			else if (cock.HasToken("dog"))
+				return Toolkit.PickOne("canine", "dog-like", "pointed", "knotted");
+			else if (cock.HasToken("bear"))
+				return Toolkit.PickOne("ursine", "bear-like", "tapered");
+			else if (cock.HasToken("lizard"))
+				return Toolkit.PickOne("reptilian", "lizard-like", "snake-like");
+			else if (cock.HasToken("cat"))
+				return Toolkit.PickOne("feline", "cat-like", "barbed");
+			else if (cock.HasToken("studded"))
+				return Toolkit.PickOne("studded", "bumpy");
+			else if (cock.HasToken("human"))
+				return Toolkit.PickOne("human", "human-like", "knobby");
+			return Toolkit.PickOne("regular", "normal");
+		}
+
+		/// <summary>
+		/// Provides a description of a character's foot based on their leg type.
+		/// </summary>
+		/// <param name="leg">The leg token to be evaluated.</param>
+		/// <param name="plural">If set to true, the returned description will be for both feet.</param>
+		/// <returns>A string containing a description of the foot type.</returns>
+		public static string Foot(Token leg, bool plural = false)
+		{
+			if (leg == null)
+				return "glitch";
+			if (leg.HasToken("horse"))
+				return plural ? "hooves" : "hoof";
+			else if (leg.HasToken("dog") || leg.HasToken("bear"))
+				return plural ? "paws" : "paw";
+			else if (leg.HasToken("insect"))
+				return plural ? "claws" : "claw";
+
+			return plural ? "feet" : "foot";
+		}
+
+		/// <summary>
+		/// Chooses a random euphemism for penis and returns it as a string.
+		/// </summary>
+		/// <returns>A string containing a euphemism for penis.</returns>
+		public static string CockRandom()
+		{
+			return Toolkit.PickOne("penis", "cock", "dick", "pecker", "prick", "rod", "shaft");
+		}
+
+		/// <summary>
+		/// Chooses a random euphemism for vagina and returns it as a string.
+		/// </summary>
+		/// <returns>A string containing a euphemism for vagina.</returns>
+		public static string PussyRandom()
+		{
+			return Toolkit.PickOne("vagina", "pussy", "cunt", "cooter", "cooch", "cunny", "quim", "twat");
+		}
+
+		/// <summary>
+		/// Chooses a random euphemism for anus and returns it as a string.
+		/// </summary>
+		/// <returns>A string containing a euphemism for anus.</returns>
+		public static string AnusRandom()
+		{
+			return Toolkit.PickOne("anus", "asshole", "butthole", "rosebud", "pucker");
+		}
+		
+		/// <summary>
+		/// Chooses a random euphemism for clitoris and returns it as a string.
+		/// </summary>
+		/// <returns>A string containing a euphemism for clitoris.</returns>
+		public static string ClitRandom()
+		{
+			return Toolkit.PickOne("clitoris", "clit", "fun button", "clitty", "love button");
+		}
+
+		/// <summary>
+		/// Chooses a random euphemism for breast and returns it as a string.
+		/// </summary>
+		/// <param name="plural">Flag for returning a plural euphmism insead of a singular.</param>
+		/// <returns>A string containing a euphemism for breast(s).</returns>
+		public static string BreastRandom(bool plural = false)
+		{
+			if (plural)
+				return Toolkit.PickOne("breasts", "boobs", "tits", "knockers", "mounds", "titties");
+			else
+				return Toolkit.PickOne("breast", "boob", "tit", "knocker", "mound");
+		}
+		#endregion
 	}
 
 }
