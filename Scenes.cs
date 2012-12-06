@@ -389,6 +389,21 @@ namespace Noxico
 				{ "cock", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Cock(c.Path("penis[" + s[0] + "]")); } },
 				//{ "pussy", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Pussy(c.Path("vagina[" + s[0] + "]")); } },
 				{ "pussy", (c, s) => { return "pussy"; } },
+
+				#region PillowShout's additions
+				{ "cocktype", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
+				{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
+				{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
+				{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
+				{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
+				{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
+				{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
+				{ "pussywetness", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")) ?? "moist"; } },
+				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")) ?? "average"; } },
+				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true) ?? "average"; } },
+				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },
+				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
+				#endregion
 			};
 			#endregion
 			#region Parser

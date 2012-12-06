@@ -499,7 +499,6 @@ namespace Noxico
 		public int MoveSpeed { get; set; }
 
 		public Dijkstra DijkstraMap { get; private set; }
-		private Dijkstra villagerAIMap;
 		public Character Character { get; set; }
 
 		public string OnTick { get; set; }
@@ -1308,6 +1307,8 @@ namespace Noxico
 
 
 #if SCHEDULE
+		private Dijkstra villagerAIMap;
+
 		private enum ScheduleActionType
 		{
 			Wait, Find, Perform, Add, Remove
