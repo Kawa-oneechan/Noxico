@@ -80,7 +80,6 @@ namespace Noxico
 
 		public MainForm()
 		{
-			Write("Pokemon? Pokémon?! Poke\x0301mon!", Color.Silver, Color.Black, 0, 0);
 			var fatal = false;
 #if NICE_ERRORS
 			try
