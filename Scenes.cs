@@ -447,7 +447,10 @@ namespace Noxico
 					with = subcoms[subcom](target, parms.ToArray());
 				//possibility: allow unknown tokens with no extra parameters to just "be as-is": "[b:clit]" -> just "clit", until further notice.
 
-				message = message.Replace(replace, with);
+				//message = message.Replace(replace, with);
+				var left = message.Substring(0, match.Groups[0].Index);
+				var right = message.Substring(match.Groups[0].Index + match.Groups[0].Length);
+				message = left + with + right;
 			}
 			#endregion
 			return message;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -212,9 +212,7 @@
     <Content Include="fonts\unifont\unifont_FF.png" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
-    <Content Include="mix\bodyplans.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\bodyplans.xml" />
     <Content Include="mix\bonustraits.xml" />
     <Content Include="mix\books.xml" />
     <Content Include="mix\books.xsl" />
@@ -225,22 +223,16 @@
     <Content Include="mix\culture.xml" />
     <Content Include="mix\DefaultSettings.txt" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\items.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\items.xml" />
     <Content Include="mix\knowncolors.xml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
     <Content Include="mix\music.xml" />
     <Content Include="mix\noxico.xml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenesSex.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
-    <Content Include="mix\scenes\tdm_scenesSex.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\uniques.xml" />
