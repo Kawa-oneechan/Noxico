@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -403,7 +403,8 @@ namespace Noxico
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true) ?? "average"; } },
 				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },
 				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
-				#endregion
+				{ "cumrand", (c, s) => {return Descriptions.CumRandom(); } },
+ 				#endregion
 			};
 			#endregion
 			#region Parser

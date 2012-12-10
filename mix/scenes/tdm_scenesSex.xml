@@ -7,7 +7,7 @@
 	<!ELEMENT script (#PCDATA)>
 	<!ELEMENT action EMPTY>
 	<!ATTLIST scene
-		id CDATA #REQUIRED
+		id ID #REQUIRED
 		name CDATA #REQUIRED
 		list CDATA #IMPLIED
 		priority CDATA #IMPLIED

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -2625,21 +2625,21 @@ namespace Noxico
 		{
 			if (cock == null)
 				return "glitch";
-			if (cock.HasToken("horse"))
+			if (cock.Text == "horse")
 				return Toolkit.PickOne("equine", "horse-like", "flared");
-			else if (cock.HasToken("dog"))
+			else if (cock.Text == "dog")
 				return Toolkit.PickOne("canine", "dog-like", "pointed", "knotted");
-			else if (cock.HasToken("bear"))
+			else if (cock.Text == "bear")
 				return Toolkit.PickOne("ursine", "bear-like", "tapered");
-			else if (cock.HasToken("lizard"))
+			else if (cock.Text == "lizard")
 				return Toolkit.PickOne("reptilian", "lizard-like", "snake-like");
-			else if (cock.HasToken("cat"))
+			else if (cock.Text == "cat")
 				return Toolkit.PickOne("feline", "cat-like", "barbed");
-			else if (cock.HasToken("studded"))
-				return Toolkit.PickOne("studded", "bumpy");
-			else if (cock.HasToken("human"))
+			else if (cock.Text == "studded")
+				return Toolkit.PickOne("studded", "bumpy", "stud covered");
+			else if (cock.Text == "human")
 				return Toolkit.PickOne("human", "human-like", "knobby");
-			return Toolkit.PickOne("regular", "normal");
+			return Toolkit.PickOne("unusual", "indescribable", "oddly shaped");
 		}
 
 		/// <summary>
@@ -2652,11 +2652,11 @@ namespace Noxico
 		{
 			if (leg == null)
 				return "glitch";
-			if (leg.HasToken("horse"))
+			if (leg.Text == "horse")
 				return plural ? "hooves" : "hoof";
-			else if (leg.HasToken("dog") || leg.HasToken("bear"))
+			else if (leg.Text == "dog" || leg.Text == "bear")
 				return plural ? "paws" : "paw";
-			else if (leg.HasToken("insect"))
+			else if (leg.Text == "insect")
 				return plural ? "claws" : "claw";
 
 			return plural ? "feet" : "foot";
@@ -2710,6 +2710,16 @@ namespace Noxico
 			else
 				return Toolkit.PickOne("breast", "boob", "tit", "knocker", "mound");
 		}
+
+		/// <summary>
+		/// Chooses a random euphemism for semen and returns it as a string.
+		/// </summary>
+		/// <returns>A string containing a euphemism for semen.</returns>
+		public static string CumRandom()
+		{
+			return Toolkit.PickOne("semen", "cum", "jizz", "spunk", "seed");
+		}
+
 		#endregion
 	}
 
