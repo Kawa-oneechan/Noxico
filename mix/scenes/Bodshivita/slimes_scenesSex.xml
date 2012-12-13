@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action name CDATA #REQUIRED>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+<scenes>
+
+	<!-- Slime scenes by Bodshivita -->
+
+	<scene id="WinAgainstSlime" name="(rape start)">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="has" name="skin/type/slime" />
+		<p>
+			Deciding to claim the "spoils" of your victory rather than [b:his] life you gaze upon the defeated [b:title]'s semi solid body with an aroused glint in your eyes. Simply thinking of the myriad of pleasures your victim's malleable body could provide sends a shiver down your spine, getting you all bothered and hot.
+		</p>
+		<action name="get blowjob" />
+		<action name="get eaten out" />
+		<action name="titty fuck" />
+		<action name="fuck vagina" />
+		<action name="fuck ass" />
+		<action name="ride cock vaginally" />
+		<action name="ride cock anally" />
+		<action name="get a titty fuck" />
+		<action name="drink milk" />
+		<action name="scissor" />
+		<action name="science" />
+		<action name="slime on slime" />
+		<action name="never mind" />
+	</scene>
+
+	<scene id="WinSlimeEatenOut" name="get eaten out" list="Get eaten out">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			A groan of desire escapes your throat as you saunter up to the [b:title], swaying your [t:hips] sensuously. Giving your lips a long slow lick, you part your steadily moistening pussy lips, letting [b:him] know in no uncertain terms what your plans are.
+		</p>
+		<p>
+			[b:name] can only watch languidly as you close the distance between the two of you and rub your labia in [b:his] face, imploring it to have a taste of your slick honey pot whether [b:he] wants to or not.
+		</p>
+		<p>
+			Quite literally faced with your unrelenting grinding the [b:title] gives in to the mounting pressure and opens [b:his] mouth, exposing a goopy tongue before your lower lips. With an extended "ahhhhh~", [b:he] then proceeds to probe the sensitive petals of your delicate flower with [b:his] skilled tongue, making you cry out lustily in an effort to spur your pet on.
+		</p>
+		<action name="slime eat out 2" />
+	</scene>
+	<scene id="WinSlimeEatenOut2" name="slime eaten out 2" list="==>">
+		<p>
+			As [b:name] spreads your moist lips apart with [b:his] flexible oral organ, a wave of gentle heat assails your [t:pussy], making it feel just so hot and juicy! Looking down you see [b:name]'s eyes dart about innocently as it hums the resulting vibrations making your box tingle in the most delightful way, before [b:he] forces [b:his] lovely oral muscle deeper, injecting you with another dose of that heavenly warmth. <!-- Opening to use vagina/wetness token here. -->
+		</p>
+		<p>
+			Finally getting into the groove, you lower your body along, with your partner's head, to the ground bucking your hips to the rhythm of your heartbeat, sending subtle vibrations through your slimy oral slave's sensitive membrane. You don't know why, but this seems to have some sort of effect on the [b:title]; sending [b:him] into some sort of passionate frenzy, and before you know it your velvety love canal is being filled with an ever increasing amount hot gooey tongue, soon followed by a symphony of highly erotic inarticulate gurgles of mindless lust emanating from your slave's entire being.
+		</p>
+		<action name="slime eat out 3" />
+	</scene>
+	<scene id="WinSlimeEatenOut3" name="slime eaten out 3" list="==>">
+		<p>
+			Moaning like a whore, you bounce yourself off the [b:title]'s oral intruder again and again, rocking your [t:hips] slowly at the tip before bottoming out again, impaling yourself with glee as [b:his] tongue brushes gently against your cervix, sending that maddening heat into your womb. After several glorious minutes of rough face riding, a second smaller tongue branches off from the first and slowly circles your clit, giving it a sample of that tender heat. You stop your wild bronco ride in stiffened anticipation for what is about to transpire, and without warning [b:name] attacks your love button mercilessly, driving you into an explosive orgasm.
+		</p>
+		<p>
+			Thoroughly sated you rub your cunt on the [b:title]'s face as [b:he] cleans your juicy femcum off of your snatch till it's spotless, before heading off to continue your journey with a smile on your face and pep in your step.
+		</p>
+		<script type="text/javascript">
+			top.GetToken("climax").Value = 0;
+			top.GetToken("stimulation").Value = 10;
+			bottom.GetToken("climax").Value = 0;
+			bottom.GetToken("stimulation").Value = 10;
+			top.IncreaseSkill("domination");
+		</script>
+	</scene>
+
+	<scene id="WinSlimeBlowjobLargeSized" name="get blowjob" list="Get a blowjob">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="top" type="has" name="penis" />
+		<filter target="top" type="value_gteq" name="penis/length" value="24" />
+		<filter target="bottom" type="has" name="slimeblob" />
+		<p>
+			As the defeated [b:title] slumps down on [b:his] lower blob huffing raggedly in exhaustion, you can't help but find your gaze shifting to the translucent creature's mouth. [b:His] steamy oral orifice visibly fogs the air around it, viscous strands of runny slime seeping out of [b:his] mouth. [b:His] panting tongue slips out, just hanging there for several moments, swaying to and fro invitingly just begging for you to take [b:his] sweltering, oral cum sponge.
+		</p>
+		<p>
+			<if target="top" type="isclothed" name="pants">The [b:title]'s eyes widen in awe, as [b:he] watches you cup your [t:cock] through your [t:clothing:pants]. Removing the offending garment, you</if><else>The [b:title]'s eyes widen in awe, as [b:he] watches you cup your [t:cock]. You</else> let [b:name] bask in the sight of your [t:cock], savoring [b:his] expression as [b:his] eyes drink in the sheer amount of cock meat placed before [b:him].
+		</p>
+		<p>
+			Pointing your powerful pecker in [b:her] direction, you stride up to the dick entranced cumslut and place the crown of your cock against [b:her] soft lips, telling it, no, demanding that it service your impossibly, thick schlong.
+		</p>
+		<action name="slime get big cock blown" />
+	</scene>
+	<scene id="WinSlimeBlowjobLargeSized2" name="slime get big cock blown" list="==>">
+		<p>
+			Still under your twitching dick's hypnotic charms, the [b:title] opens [b:his] mouth obediently. If [b:he] had any idea what you have planned, it would have gotten away from you as soon as possible. Oh well.
+		</p>
+		<p>
+			Slipping the tip of your massive [t:cockrand] into the warm orifice your oral slut has so graciously provided you with, you slide your shaft into [b:his] mouth as far as you can. You brutally stuff your behemoth of a [t:cockrand] down [b:his] throat until you can see the length of your thick cock throb inside of [b:his] translucent windpipe. [b:name] moans in satisfaction as [b:he] chokes on your twitching fuckstick, [b:his] mouth gaped into a welcoming "O" around your hot, invading member. [b:He] groans mindlessly around your girthy [t:cockrand] as [b:his] body begins to slurp upon your *CONT'D*
+		</p>
+	</scene>
+
+	<scene id="WinSlimeBlowjobNormalSized" name="get blowjob" list="Get a blowjob">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="top" type="has" name="penis" />
+		<filter target="bottom" type="has" name="skin/type/slime" />
+		<p>
+			Smiling deviously you stride up to the [b:title], asking [b:him] if [b:he]'d like a tasty treat. Cut off mid-sentence, [b:name] lunges forward, far too eager to suck you off than you'd like. Casually evading the cum-hungry [b:g:bastard:slut], if [b:he] wants to have [b:his] throat speared by your [t:cock], that's just fine with you.
+		</p>
+		<p>
+			Taking advantage of your overeager victim's moment of inattention, you rush forward, grabbing [b:him] by the head and sinking your fingers a few inches into [b:his] goopy skin. [b:His] face contorts into a dopey expression of bliss as your new bitch quite literally becomes putty in your hands. You inform [b:him] that it'll be doing things your way and receive an ecstatic nod in response, [b:his] head bopping back and forth in submission. Not that you needed it... wait, did [b:his] head just come off?!
+		</p>
+		<action name="slime blowjob 2" />
+	</scene>
+	<scene id="WinSlimeBlowjob2Balls" name="slime blowjob 2" list="==>">
+		<filter target="top" type="has" name="balls" />
+		<p>
+			Intrigued by this strange development you flop down on the [b:title]'s headless body as if it were some sort of warm bean bag and relax, taking [b:his] disembodied head and lowering it towards your hot throbbing cock and swaying nutsack.
+		</p>
+		<p>
+			You lower your bitch's head down to your sack and press it against your testes. Catching on, [b:name] opens [b:his] mouth and wags [b:his] tongue at you teasingly. [b:He] then wraps it around one of your nuts as if it were a succulent grape, before sucking them both into [b:his] steamy tunnel, letting both your sperm tanks bask in the unnatural warmth of [b:his] oral prison. The [b:title] gurgles and slurps on your balls like a jawbreaker, puffing out [b:his] cheeks <if target="top" type="value_gteq" name="balls/size" value="4">tremendously, your huge sack displacing much of [b:his] face, all visible through [b:his] translucent membrane</if><else>
+				<if target="top" type="value_gteq" name="balls/size" value="2">as if [b:he] were a squirrel with a face full of nuts</if>
+				<else>a little</else>
+			</else>. Running [b:his] hot syrupy tongue around every inch of your sack, the vacuum like suction causes you to groan in a hysteric fit of pleasure.
+		</p>
+		<p>
+			Feeling that you can't take the obscene amount of pleasure you receive from the simple act of having your balls sucked any longer you try to pull out but meet significant resistance. Startled you pull [b:his] head back until you see your sack emerge from the viscous hell that is the [b:title]'s mouth. With a final act of defiance [b:name] suckles hard on your nuts and lets them free with an audible "POP", leaving a raspberry on them. Disapproving of your pet's insubordination, you promptly chastise your portable face fuck with a slap of your [t:cock].
+		</p>
+		<action name="slime blowjob 3" />
+	</scene>
+	<scene id="WinSlimeBlowjob2NoBalls" name="slime blowjob 2" list="==>">
+		<p>
+			Intrigued by this strange development you flop down on the [b:title]'s headless body as if it were some sort of warm bean bag and relax, taking [b:his] disembodied head and lowering it towards your hot throbbing cock.
+		</p>
+		<action name="slime blowjob 3" />
+	</scene>
+	<scene id="WinSlimeBlowjob3" name="slime blowjob 3" list="==>">
+		<p>
+			Taking [b:name]'s head you place it on the tippy top of your cock, watching as it slides down your dick with several sexy gurgles and a long wistful moan, making your [t:cock] even more turgid. Ever so slowly, you thrust your [t:hips], bouncing the [b:title]'s head up and down drawing even naughtier sounds from the head being impaled on your cock repeatedly.
+		</p>
+		<p>
+			The only thing more magnificent than the heat of the [b:title]'s head is the first class show you receive through your disembodied onahole's clear membrane: you can see every contraction that causes your cum whore to gag on your manhood, every ripple of [b:his] stretched skin caused by your throbbing cock... Sporting a dopey grin you lie back against the [b:title]'s body and thrust, overwhelmed by the constant sensory sextravaganza.
+		</p>
+		<action name="slime blowjob 4" />
+	</scene>
+	<scene id="WinSlimeBlowjob4LowCum" name="slime blowjob 4" list="==>">
+		<!-- Filter to low cum amounts -->
+		<p>
+			Feeling that you're close to your limit, you draw [b:his] head up and begin to fuck it savagely, thrusting in, out and back again with animalistic grunts, drawing lewd squelches, slurps and screams of pleasure from your handheld cum dumpster. Your twitching prick fills the [b:title]'s head with small bubbles of your hot precum; a prelude to the impending climax to come.
+		</p>
+		<p>
+			Rolling over you pound the [b:title]'s head against the ground with several forceful pelvic thrusts, entrenching your dick flesh as far as it will go into your makeshift condom, before ejaculating wildly, painting [b:name]'s translucent flesh with your thick, long delayed load. Still panting from the entire ordeal, you pull the inflated head off with a long *slurp* before tossing it back towards the fumbling body behind you, quite pleased with yourself.
+		</p>
+		<script type="text/javascript">
+			top.GetToken("climax").Value = 0;
+			top.GetToken("stimulation").Value = 10;
+		</script>
+	</scene>
+	<scene id="WinSlimeBlowjob4HighCum" name="slime blowjob 4" list="==>">
+		<!-- Filter to high cum amounts -->
+		<p>
+			You grin devilishly as you feel the thick globs of cum well up within you. Turning to the [b:title]'s headless body you fellate yourself with [b:his] head at a breakneck pace, slapping the head against your crotch as fast as you can and attempting to draw as huge a load you as you can before you perform your final charitable act by "returning" [b:his] head.
+		</p>
+		<p>
+			Blowing a sharp whistle, you get the [b:title]'s stumbling body to wander towards you before you cum. Round gobs of spunk travel up your dilated urethra and soon exit your gushing cum slit, filling the [b:title]'s head with gouts of your hot seed and ballooning it up to freakish proportions. Thick runners of your spunk gush out of [b:his] nose and ears before your release it. The utterly abused [b:title]'s head is propelled off your cock, spluttering streams of your spooge in mid-air before it forcefully collides with [b:his] body, knocking it prone. With a smile you click your heels together and whistle a merry tune as you move on.
+		</p>
+		<script type="text/javascript">
+			top.GetToken("climax").Value = 0;
+			top.GetToken("stimulation").Value = 10;
+		</script>
+	</scene>
+	
+	<scene id="WinSlimeTitfuck" name="titty fuck" list="Titty fuck?">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="has" name="breastrow" />
+		<filter target="bottom" type="has" name="slimeblob" />
+		<filter target="bottom" type="has" name="skin/type/slime" />
+		<!-- Can probably inline-if this one. -->
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Ever since you first saw this [b:title], the only things on your mind were the pair of [b:breasts] attached to that unnaturally [b:waist]. Now that you have her, all you want to do is slide your [t:cock] against those bouncy jello jugs until you paint her face and transparent tits in a thick layer of hot spooge.
+		</p>
+		<p>
+			[b:He] follows your intense gaze down to her [b:breasts] and looks away in embarrassment before sinking into [b:his] lower mound, expanding the puddle of slimy goo until [b:his] gelatinous jugs are level with your crotch. Finished, [b:he] subtly puffs out [b:his] breast as if offering them to you on a silver platter, which is all the encouragement you need.
+		</p>
+		<p>
+			You <if target="top" type="isclothed" name="pants">remove your [t:clothing:pants] and</if> rub your schlong against her face, bringing it to full attention within moments. Soaking up the gentle warmth courtesy of her aphrodisiacs, she eyes <if target="top" type="value_lower" name="penis/length" value="4">your small cock with a hint of disappointment</if><else>
+				<if target="top" type="value_gt" name="penis/length" value="18">your huge prick with a very slack jawed expression, utterly astonished at the size of your massive member</if>
+				<else>your dick with a look of hunger</else>
+			</else> as you place your [t:cock] on [b:his] face and slide it down towards [b:his] bosom slowly. As it nears [b:his] lips [b:he] can't help but loll out [b:his] tongue and drag it sensually against your descending phallus, coating it in aphrodisiacs and saliva as your scepter nears the end of its journey to its throne.
+		</p>
+		<action name="slime titfuck crazy" />
+		<action name="slime titfuck regular" />
+	</scene>
+	<scene id="WinSlimeTitfuckCrazy" name="slime titfuck crazy" list="==>">
+		<filter target="bottom" type="has" name="breastrow/nipples/fuckable" />
+		<p>
+			Letting your insatiable urge to have [b:his] wobbling jugs engulf your pecker overwhelm you, you plunge your prick into [b:name]'s soft, wet cleavage, burrowing your dick inside [b:his] warm gooey breast flesh until <if target="top" type="value_gt" name="penis/length" value="18">you can see your dick appear on the other side of her rack.</if><else>your dick disappears between her tits.</else>
+		</p>
+		<p>
+			Basking in the feeling of having your cock so perfectly cocooned in [b:his] moist tit flesh you simply stand there as your prick hardens further from the increasing heat emanating from [b:his] tits, [b:his] supple flesh caresses your throbbing dick molding and squeezing your rod with gentle slicks. Your moment of reverence is suddenly broken by a long throaty cry of passion. Looking down to find the source of the disturbance you discover to your utter shock and growing arousal that [b:name]'s wildly driving [b:his] fingers into [b:his] nipples!
+		</p>
+		<p>
+			You can only watch in splendor as the little whore demonstrates the abilities of [b:his] alien anatomy, opening [b:his] cunt-like nipples with a soft slick, before closing them again just as soon. As you begin to thrust into [b:his] cleavage [b:name] speeds up to match your pace. Sure enough you find yourself wondering just how tight those lewd, squelching nipple holes are.
+		</p>
+		<action name="slime titfuck regular" />
+		<action name="slime titfuck crazy 2" />
+	</scene>
+	<scene id="WinSlimeTitfuckRegular" name="slime titfuck regular" list="Nah, just get a normal tit fuck">
+		<p>
+			You moan, arching your back as your throbbing [t:cockrand] penetrates [b:name]'s soft, pliant titflesh and rubs against the warm, slippery orbs with sloppy wet squelches. You thrust your hips rapidly, slapping the slime [b:g:boy:girl] roughly in [b:his] membrane several times, drawing ecstatic moans from [b:his] drooling lips as you stimulate [b:his] overly sensitive skin.
+		</p>
+		<p>
+			
+		</p>
+	</scene>
+
+	<scene id="WinSlimePussyFuck" name="fuck vagina" list="Fuck that slime's pussy!">
+		<filter target="top" type="has" name="penis" />
+		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="has" name="vagina" />
+		<p>
+			You grin as you look on at the helpless goo [b:g:boy:girl] while [b:he] coos at the sight of your [t:cock], slipping [b:his] fingers into [b:his] [b:pussyrand] and jilling [b:his] sloshing hole, letting you hear the moist slicks of her box. Treated to the sight of the whore who was so aggressive just a moment ago, your [t:cock] stiffens as your ears are assaulted by the lewd sounds coming from that juicy snatch.
+		</p>
+		<p>
+			Licking your lips slowly, you pin the debilitatingly turned-on slime slut, pressing your lips against [b:his] as you slide your tongue into [b:his] warm, moaning mouth. You swirl it around as [b:he] wraps [b:his] sweet oral appendage around your own. Gasping in surprise you pull out as your tongue tingles with an arousing heat that hits your loins instantly, making your already rock hard [t:cockrand] dribble pre. Giving [b:him] a thump on [b:his] head in chastisement, your eyes widen as [b:he] moans again, the force of your slight flick rippling throughout [b:his] wobbling flesh.
+		</p>
+		<p>
+			Well, isn't [b:he] just full of surprises? If [b:he] liked that [b:he]'ll love what's coming next!
+		</p>
+	</scene>
+
+	<scene id="WinSlimeDecline" name="never mind" list="Nah, never mind">
+		<filter target="bottom" type="bodylev" name="slime" />
+		<p>
+			You shrug and turn away not wanting to fuck the shit out of your gelatinous captive at this particular moment. Perhaps you can subdue [b:him] later when you need a nice hot [t:g:screw:cum dump]?
+		</p>
+	</scene>
+</scenes>
