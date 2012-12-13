@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -231,6 +231,9 @@
     <Content Include="mix\noxico.xml" />
     <Content Include="mix\scenesDlg.xml" />
     <Content Include="mix\scenesSex.xml" />
+    <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
