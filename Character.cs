@@ -2242,6 +2242,135 @@ namespace Noxico
 			}
 			return ret;
 		}
+
+		#region PillowShout's additions
+		/// <summary>
+        /// Checks the character's inventory to see if it contains at least one item with a matching ID.
+        /// </summary>
+        /// <param name="itemID">The ID of the item to search for.</param>
+        /// <returns>True if an item with a matching ID is found or false if not.</returns>
+        public bool HasItem(string itemID)
+        {
+            return (GetInventoryItems(itemID).Count > 0);
+        }
+
+        /// <summary>
+        /// Checks the character's inventory to see if it contains an item with a matching ID,
+        /// and if that item has been equipped by the character.
+        /// </summary>
+        /// <param name="itemID">The ID of the item to search for.</param>
+        /// <returns>True if an item with a matching ID is equipped or or false if not.</returns>
+        public bool HasItemEquipped(string itemID)
+        {
+            var itemList = GetInventoryItems(itemID);
+            var item = itemList.Find(y => y.tempToken.HasToken("equipped"));
+
+            return (item != null);
+        }
+
+        /// <summary>
+        /// Checks the character's inventory to see if the character has an item equipped in a particular item slot.
+        /// </summary>
+        /// <param name="itemSlot">The name of the item slot to check. Valid options are:
+        /// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt</param>
+        /// <returns>True if the character has an item equipped to the specified slot, or false if not.</returns>
+        public bool HasItemInSlot(string itemSlot)
+        {
+            return (GetEquippedItemBySlot(itemSlot) != null);
+        }
+
+        /// <summary>
+        /// Checks if a character has an item with the specified ID in their inventory, and returns a list containing all matching items.
+        /// </summary>
+        /// <param name="itemID">The ID of the item to search for.</param>
+		/// <returns>A list containing all the items in the character's inventory with matching IDs. Each element is an <see cref="InventoryItem"/> from
+		/// <see cref="NoxicoGame.KnownItems"/> that matches the item held by the character. A reference to the character held item itself is stored in
+		/// <see cref="InventoryItem.tempToken"/>. If no matching items are found, returns an empty list.</returns>
+        public List<InventoryItem> GetInventoryItems(string itemID)
+        {
+            // Code mostly taken from LookAt
+
+            Func<string, InventoryItem> getKnownItem = new Func<string, InventoryItem>(x =>
+                {
+                    return NoxicoGame.KnownItems.Find(y => y.ID == x);
+                }
+            );
+
+            var carried = new List<InventoryItem>();
+
+            var carriedItems = this.GetToken("items");
+            for (var i = 0; i < carriedItems.Tokens.Count; i++)
+            {
+                Token carriedItem = carriedItems.Item(i);
+                InventoryItem foundItem = getKnownItem(carriedItem.Name);
+                if (foundItem == null)
+                {
+                    continue;
+                }
+
+                if(foundItem.ID == itemID)
+                {
+                    foundItem.tempToken = carriedItem;
+                    carried.Add(foundItem);
+                }
+            }
+
+            return carried;
+        }
+
+        /// <summary>
+        /// Checks if a character has an item with the specified ID in their inventory, and returns the first encountered instance of that item.
+        /// </summary>
+        /// <param name="itemID">The ID of the item to search for.</param>
+        /// <returns>The first matching item or if no matching items are found, then null.</returns>
+        public InventoryItem GetFirstInventoryItem(string itemID)
+        {
+            var itemList = GetInventoryItems(itemID);
+            return itemList.Count > 0 ? itemList[0] : null;
+        }
+
+        /// <summary>
+        /// Checks if the character has an item equipped to the specified item slot and returns the item.
+        /// </summary>
+        /// <param name="itemSlot">The name of the item slot to check. Valid options are:
+        /// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt</param>
+        /// <returns>Returns an InventoryItem from <see cref="NoxicoGame.KnownItems"/> matching the item held by the character. A reference to the character
+		/// held item itself is stored in <see cref="InventoryItem.tempToken"/>. If there is no item in the character slot, then null is returned. </returns>
+        public InventoryItem GetEquippedItemBySlot(string itemSlot)
+        {
+            // Code mostly taken from LookAt
+            
+            Func<string, InventoryItem> getKnownItem = new Func<string, InventoryItem>(x =>
+            {
+                return NoxicoGame.KnownItems.Find(y => y.ID == x);
+            }
+            );
+
+            var carriedItems = this.GetToken("items");
+
+            for (var i = 0; i < carriedItems.Tokens.Count; i++)
+            {
+                var carriedItem = carriedItems.Item(i);
+                var foundItem = getKnownItem(carriedItem.Name);
+                if (foundItem == null)
+                {
+                    continue;
+                }
+
+                if (foundItem.HasToken("equipable") && carriedItem.HasToken("equipped"))
+                {
+                    var eq = foundItem.GetToken("equipable");
+                    if (eq.HasToken(itemSlot))
+                    {
+                        foundItem.tempToken = carriedItem;
+                        return foundItem;
+                    }
+                }
+            }
+
+            return null;
+        }
+		#endregion
 	}
 
 	public class Name
@@ -2720,6 +2849,46 @@ namespace Noxico
 			return Toolkit.PickOne("semen", "cum", "jizz", "spunk", "seed");
 		}
 
+		/// <summary>
+		/// Returns a string describing a piece of equipment using its name, (optionally) color (if available), and (optionally) an appropriate article.
+		/// </summary>
+		/// <param name="item">An InventoryItem from <see cref="NoxicoGame.KnownItems"/>.</param>
+		/// <param name="token">An item token from a <see cref="Character"/>'s inventory that matches the type of item in the first parameter.</param>
+		/// <param name="article">Adds either the definite article (if "the" is passed), the indefinite article (if "a" is passed), or no article (anything else is passed)
+		/// to the front of the descriptive string.</param>
+		/// <param name="withColor">If set to true, the returned string will also describe the color of the item if it has one.</param>
+		/// <returns>A string containing the description of the item as defined by the parameters. If 'item' is null, then null is returned instead.</returns>
+		public static string Item(InventoryItem item, Token token, string article = "", bool withColor = false)
+		{
+			if (item == null)
+				return null;
+			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(item.UnknownName)) ? item.UnknownName : item.Name;
+			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
+			var reps = new Dictionary<string, string>()
+			{
+				{ "[color]", color },
+				{ "[, color]", ", " + color },
+				{ "[color ]", color + " " },
+				{ "[color, ]", color + ", " },
+			};
+			if (withColor && color != "")
+			{
+				foreach (var i in reps)
+					name = name.Replace(i.Key, i.Value);
+			}
+			else
+			{
+				foreach (var key in reps.Keys)
+					name = name.Replace(key, "");
+			}
+
+			if (article == "the")
+				name = item.The + " " + name;
+			else if (article == "a")
+				name = item.A + " " + name;
+
+			return name;
+		}
 		#endregion
 	}
 

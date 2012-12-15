@@ -404,7 +404,8 @@ namespace Noxico
 				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },
 				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
 				{ "cumrand", (c, s) => {return Descriptions.CumRandom(); } },
- 				#endregion
+				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
+				#endregion
 			};
 			#endregion
 			#region Parser
@@ -454,6 +455,7 @@ namespace Noxico
 				message = left + with + right;
 			}
 			#endregion
+
 			return message;
 		}
 	}

@@ -23,7 +23,7 @@
 ]>
 <scenes>
 	<!-- Naga scenes by TheDarkMaster -->
-	<scene id="WinAgainstNaga" name="(rape start)">
+	<scene id="TDMWinAgainstNaga" name="(rape start)">
 		<filter target="bottom" type="bodylev" name="naga" />
 		<p>
 			With less than savory plans for the defeated [b:title], you take stock of [b:name] and consider how you should take advantage.
@@ -35,7 +35,7 @@
 		<action name="ride cock anally" />
 		<action name="never mind" />
 	</scene>
-	<scene id="BipedGetFellatio" name="get blowjob" list="Get a blowjob">
+	<scene id="TDMBipedGetFellatio" name="get blowjob" list="Get a blowjob">
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="hasnot" name="noarms" />
 		<!-- Original text prescribes the bottom to have a human-like face -->
@@ -51,7 +51,7 @@
 		<action name="get blowjob facefuck" />
 		<action name="get blowjob softly" />
 	</scene>
-	<scene id="BipedGetFellatioHardMode" name="get blowjob facefuck" list="Rough facefuck">
+	<scene id="TDMBipedGetFellatioHardMode" name="get blowjob facefuck" list="Rough facefuck">
 		<p>
 			Grabbing a hold of the [b:title]'s head, you start to rapidly piston your [t:cock] in and out of [b:his] maw, casing [b:him] to sputter and gag around your length. [b:His] distress isn't your concern, only getting off at [b:his] expense.
 		</p>
@@ -61,7 +61,7 @@
 		<action name="get blowjob cum in mouth" />
 		<action name="get blowjob cum on face" />
 	</scene>
-	<scene id="BipedGetFellatioHardModeInside" name="get blowjob cum in mouth" list="Cum in their mouth">
+	<scene id="TDMBipedGetFellatioHardModeInside" name="get blowjob cum in mouth" list="Cum in their mouth">
 		<p>
 			You force your length in as far as it will go, and feel your release take you, right down the [b:title]'s throat leaving [b:him] no choice but to swallow everything you have to offer.
 		</p>
@@ -73,7 +73,7 @@
 			top.GetToken("stimulation").Value = 10;
 		</script>
 	</scene>
-	<scene id="BipedGetFellatioHardModeOutside" name="get blowjob cum on face" list="Cum over their face">
+	<scene id="TDMBipedGetFellatioHardModeOutside" name="get blowjob cum on face" list="Cum over their face">
 		<p>
 			Feeling a little merciful (or maybe you want to mark your prize), you pull your [t:cock] from the confines of [b:his] throat just as you feel your peak hit.
 		</p>
@@ -88,7 +88,7 @@
 			top.GetToken("stimulation").Value = 10;
 		</script>
 	</scene>
-	<scene id="BipedGetFellatioSoftModeNaga" name="get blowjob softly" list="Let things play out">
+	<scene id="TDMBipedGetFellatioSoftModeNaga" name="get blowjob softly" list="Let things play out">
 		<filter target="bottom" type="has" name="tongue/long" />
 		<p>
 			When [b:he] just sits there for a few moments, you inform [b:him], in annoyance, to get on with it. Sighing softly, the [b:title] hesitantly starts to move your [t:cock] around in [b:his] mouth.
@@ -104,7 +104,7 @@
 			top.GetToken("stimulation").Value = 10;
 		</script>
 	</scene>
-	<scene id="BipedGetCunnilingus" name="get eaten out" list="Get some cunnilingus">
+	<scene id="TDMBipedGetCunnilingus" name="get eaten out" list="Get some cunnilingus">
 		<filter target="top" type="has" name="vagina" />
 		<filter target="top" type="hasnot" name="noarms" />
 		<!-- Original text prescribes the bottom to have a human-like face -->
@@ -120,7 +120,7 @@
 		<action name="eaten out faceride" />
 		<action name="eaten out licked" />
 	</scene>
-	<scene id="BipedGetCunnilingusHardMode" name="eaten out faceride" list="Rough faceride">
+	<scene id="TDMBipedGetCunnilingusHardMode" name="eaten out faceride" list="Rough faceride">
 		<p>
 			You push [b:name] to the ground, and almost literally sit on [b:his] face. You move your hips back and forth a few times as you settle your [t:pussy] right over [b:his] mouth and start grinding yourself into [b:him].
 		</p>
@@ -138,7 +138,7 @@
 			top.GetToken("stimulation").Value = 10;
 		</script>
 	</scene>
-	<scene id="BipedGetCunnilingusSoftMode" name="eaten out licked" list="Get licked">
+	<scene id="TDMBipedGetCunnilingusSoftMode" name="eaten out licked" list="Get licked">
 		<filter target="bottom" type="has" name="tongue" value="long" />
 		<p>
 			You put your [t:vagina] in [b:name]'s face and wait a few moments to see what [b:he] will do. When you tell [b:him] to get on with it, the [b:title] starts to put [b:his] tongue to work.
@@ -162,7 +162,7 @@
 			You change your mind about raping the naga, and reconsider what you should do with it laying there.
 		</p>
 	</scene>
-	<scene id="LoseAgainstNaga" name="(loss rape start)">
+	<scene id="TDMLoseAgainstNaga" name="(loss rape start)">
 		<filter target="top" type="bodylev" name="naga" />
 		<p>
 			You look up exhausted to see the face of [t:name] looking down at you with a sick grin on [t:his] face..
@@ -177,7 +177,7 @@
 		<action name="get cock ridden with vagina" />
 		<action name="get cock ridden with ass" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedFellatio" name="get forced to blowjob">
+	<scene id="TDMLoseAgainstNagaForcedFellatio" name="get forced to blowjob">
 		<filter target="top" type="has" name="snaketail" />
 		<filter target="top" type="has" name="penis" />
 		<p>
@@ -196,7 +196,7 @@
 		<action name="get forced to blowjob okay" />
 		<action name="get forced to blowjob resist" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedFellatiOkay" name="get forced to blowjob okay" list="Blow it">
+	<scene id="TDMLoseAgainstNagaForcedFellatiOkay" name="get forced to blowjob okay" list="Blow it">
 		<p>
 			You take a deep breath, and open your mouth wide. [t:name] wastes no time in jamming [t:his] [t:cock] down your throat as far as it will go. The [t:title] gives a loud groan of approval and starts to roughly pump [t:him]self in and out of your gullet.
 		</p>
@@ -224,7 +224,7 @@
 		</script>
 		<action name="naga loss finish" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedFellatiNO" name="get forced to blowjob resist" list="Refuse">
+	<scene id="TDMLoseAgainstNagaForcedFellatiNO" name="get forced to blowjob resist" list="Refuse">
 		<p>
 			You grit your teeth and turn away from the [t:title]'s [t:cock] to the best of your abilities, given your situation. [t:Name] just shrugs [t:his] shoulders and says, "Well, I know a hole that no one can refuse entry to."
 		</p>
@@ -239,7 +239,7 @@
 		</p>
 		<action name="naga loss finish" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedCunnilingus" name="get forced to eat out">
+	<scene id="TDMLoseAgainstNagaForcedCunnilingus" name="get forced to eat out">
 		<filter target="top" type="has" name="snaketail" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
@@ -257,7 +257,7 @@
 		<action name="get forced to eat out okay" />
 		<action name="get forced to eat out resist" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedCunnilingusOkay" name="get forced to eat out okay" list="Engage in a good licking">
+	<scene id="TDMLoseAgainstNagaForcedCunnilingusOkay" name="get forced to eat out okay" list="Engage in a good licking">
 		<p>
 			You heave a sigh, and give into the [t:title]'s demands. You open your mouth and tentatively lick at the folds of [t:his] slit. Moaning appreciatively, [t:name] starts to sensually sway [t:his] body and pushes [t:him]self closer to you giving you better access. Knowing what's expected of you, you start to eat [t:him] out in earnest.
 		</p>
@@ -285,7 +285,7 @@
 		</script>
 		<action name="naga loss finish" />
 	</scene>
-	<scene id="LoseAgainstNagaForcedCunnilingusNo" name="get forced to eat out resist" list="Refuse">
+	<scene id="TDMLoseAgainstNagaForcedCunnilingusNo" name="get forced to eat out resist" list="Refuse">
 		<filter target="top" type="has" name="snaketail" />
 		<p>
 			You grit your teeth and keep your mouth clamped shut.  You aren't going to give her the pleasure of your final surrender. After it becomes obvious to the [t:title] that you aren't going to give [t:him] what [t:he] wants, [t:name] simply laughs at you and says, "That's okay [b:g:boy:girl], I can take what I want."
@@ -298,7 +298,7 @@
 		</p>
 		<action name="naga loss finish" />
 	</scene>
-	<scene id="LoseAgainstNagaSheRidesYou" name="get cock ridden with vagina">
+	<scene id="TDMLoseAgainstNagaSheRidesYou" name="get cock ridden with vagina">
 		<filter target="top" type="has" name="snaketail" />
 		<!--
 		<filter target="top" type="has" name="vagina" />
@@ -313,7 +313,7 @@
 		</p>
 		<action name="get cock ridden with vagina 2"/>
 	</scene>
-	<scene id="LoseAgainstNagaSheRidesYou2" name="get cock ridden with vagina 2">
+	<scene id="TDMLoseAgainstNagaSheRidesYou2" name="get cock ridden with vagina 2">
 		<p>
 			You inhale sharply as the walls of the [t:title]'s pussy contract tightly around your [b:cock], almost like it is being constricted. However, [t:name] pays no mind to your discomfort, and simply starts to ride your shaft with wild abandon. [t:His] [t:pussy] is so well lubricated, that even while your [b:cock] feels like it is being strangled, the [t:title] has no trouble pumping it in and out of her body very quickly. To make matters worse, [t:he] seems to be tightening [t:his] tail's grip on your body as she gets closer and closer to reaching her peak.
 		</p>
@@ -322,7 +322,7 @@
 		</p>
 		<action name="naga loss finish" />
 	</scene>
-	<scene id="LoseAgainstNagaFinish" name="naga loss finish">
+	<scene id="TDMLoseAgainstNagaFinish" name="naga loss finish">
 		<filter target="top" type="has" name="snaketail" />
 		<p>
 			Finished with you, [t:name] the [t:title] disentangles you from [t:his] coils and drops you on the ground still covered in [t:his] fluids before slithering away.

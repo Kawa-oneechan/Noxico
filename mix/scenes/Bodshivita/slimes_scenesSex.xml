@@ -36,7 +36,7 @@
 
 	<!-- Slime scenes by Bodshivita -->
 
-	<scene id="WinAgainstSlime" name="(rape start)">
+	<scene id="BodhiWinAgainstSlime" name="(rape start)">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="skin/type/slime" />
 		<p>
@@ -57,7 +57,7 @@
 		<action name="never mind" />
 	</scene>
 
-	<scene id="WinSlimeEatenOut" name="get eaten out" list="Get eaten out">
+	<scene id="BodhiWinSlimeEatenOut" name="get eaten out" list="Get eaten out">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="skin/type/slime" />
 		<filter target="top" type="has" name="vagina" />
@@ -72,7 +72,7 @@
 		</p>
 		<action name="slime eat out 2" />
 	</scene>
-	<scene id="WinSlimeEatenOut2" name="slime eaten out 2" list="==>">
+	<scene id="BodhiWinSlimeEatenOut2" name="slime eaten out 2" list="==>">
 		<p>
 			As [b:name] spreads your moist lips apart with [b:his] flexible oral organ, a wave of gentle heat assails your [t:pussy], making it feel just so hot and juicy! Looking down you see [b:name]'s eyes dart about innocently as it hums the resulting vibrations making your box tingle in the most delightful way, before [b:he] forces [b:his] lovely oral muscle deeper, injecting you with another dose of that heavenly warmth. <!-- Opening to use vagina/wetness token here. -->
 		</p>
@@ -81,7 +81,7 @@
 		</p>
 		<action name="slime eat out 3" />
 	</scene>
-	<scene id="WinSlimeEatenOut3" name="slime eaten out 3" list="==>">
+	<scene id="BodhiWinSlimeEatenOut3" name="slime eaten out 3" list="==>">
 		<p>
 			Moaning like a whore, you bounce yourself off the [b:title]'s oral intruder again and again, rocking your [t:hips] slowly at the tip before bottoming out again, impaling yourself with glee as [b:his] tongue brushes gently against your cervix, sending that maddening heat into your womb. After several glorious minutes of rough face riding, a second smaller tongue branches off from the first and slowly circles your clit, giving it a sample of that tender heat. You stop your wild bronco ride in stiffened anticipation for what is about to transpire, and without warning [b:name] attacks your love button mercilessly, driving you into an explosive orgasm.
 		</p>
@@ -97,7 +97,7 @@
 		</script>
 	</scene>
 
-	<scene id="WinSlimeBlowjobLargeSized" name="get blowjob" list="Get a blowjob">
+	<scene id="BodhiWinSlimeBlowjobLargeSized" name="get blowjob" list="Get a blowjob">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="skin/type/slime" />
 		<filter target="top" type="has" name="penis" />
@@ -114,7 +114,7 @@
 		</p>
 		<action name="slime get big cock blown" />
 	</scene>
-	<scene id="WinSlimeBlowjobLargeSized2" name="slime get big cock blown" list="==>">
+	<scene id="BodhiWinSlimeBlowjobLargeSized2" name="slime get big cock blown" list="==>">
 		<p>
 			Still under your twitching dick's hypnotic charms, the [b:title] opens [b:his] mouth obediently. If [b:he] had any idea what you have planned, it would have gotten away from you as soon as possible. Oh well.
 		</p>
@@ -123,7 +123,7 @@
 		</p>
 	</scene>
 
-	<scene id="WinSlimeBlowjobNormalSized" name="get blowjob" list="Get a blowjob">
+	<scene id="BodhiWinSlimeBlowjobNormalSized" name="get blowjob" list="Get a blowjob">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="top" type="has" name="penis" />
 		<filter target="bottom" type="has" name="skin/type/slime" />
@@ -135,7 +135,7 @@
 		</p>
 		<action name="slime blowjob 2" />
 	</scene>
-	<scene id="WinSlimeBlowjob2Balls" name="slime blowjob 2" list="==>">
+	<scene id="BodhiWinSlimeBlowjob2Balls" name="slime blowjob 2" list="==>">
 		<filter target="top" type="has" name="balls" />
 		<p>
 			Intrigued by this strange development you flop down on the [b:title]'s headless body as if it were some sort of warm bean bag and relax, taking [b:his] disembodied head and lowering it towards your hot throbbing cock and swaying nutsack.
@@ -151,13 +151,13 @@
 		</p>
 		<action name="slime blowjob 3" />
 	</scene>
-	<scene id="WinSlimeBlowjob2NoBalls" name="slime blowjob 2" list="==>">
+	<scene id="BodhiWinSlimeBlowjob2NoBalls" name="slime blowjob 2" list="==>">
 		<p>
 			Intrigued by this strange development you flop down on the [b:title]'s headless body as if it were some sort of warm bean bag and relax, taking [b:his] disembodied head and lowering it towards your hot throbbing cock.
 		</p>
 		<action name="slime blowjob 3" />
 	</scene>
-	<scene id="WinSlimeBlowjob3" name="slime blowjob 3" list="==>">
+	<scene id="BodhiWinSlimeBlowjob3" name="slime blowjob 3" list="==>">
 		<p>
 			Taking [b:name]'s head you place it on the tippy top of your cock, watching as it slides down your dick with several sexy gurgles and a long wistful moan, making your [t:cock] even more turgid. Ever so slowly, you thrust your [t:hips], bouncing the [b:title]'s head up and down drawing even naughtier sounds from the head being impaled on your cock repeatedly.
 		</p>
@@ -166,7 +166,7 @@
 		</p>
 		<action name="slime blowjob 4" />
 	</scene>
-	<scene id="WinSlimeBlowjob4LowCum" name="slime blowjob 4" list="==>">
+	<scene id="BodhiWinSlimeBlowjob4LowCum" name="slime blowjob 4" list="==>">
 		<!-- Filter to low cum amounts -->
 		<p>
 			Feeling that you're close to your limit, you draw [b:his] head up and begin to fuck it savagely, thrusting in, out and back again with animalistic grunts, drawing lewd squelches, slurps and screams of pleasure from your handheld cum dumpster. Your twitching prick fills the [b:title]'s head with small bubbles of your hot precum; a prelude to the impending climax to come.
@@ -179,7 +179,7 @@
 			top.GetToken("stimulation").Value = 10;
 		</script>
 	</scene>
-	<scene id="WinSlimeBlowjob4HighCum" name="slime blowjob 4" list="==>">
+	<scene id="BodhiWinSlimeBlowjob4HighCum" name="slime blowjob 4" list="==>">
 		<!-- Filter to high cum amounts -->
 		<p>
 			You grin devilishly as you feel the thick globs of cum well up within you. Turning to the [b:title]'s headless body you fellate yourself with [b:his] head at a breakneck pace, slapping the head against your crotch as fast as you can and attempting to draw as huge a load you as you can before you perform your final charitable act by "returning" [b:his] head.
@@ -193,7 +193,7 @@
 		</script>
 	</scene>
 	
-	<scene id="WinSlimeTitfuck" name="titty fuck" list="Titty fuck?">
+	<scene id="BodhiWinSlimeTitfuck" name="titty fuck" list="Titty fuck?">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="breastrow" />
 		<filter target="bottom" type="has" name="slimeblob" />
@@ -215,7 +215,7 @@
 		<action name="slime titfuck crazy" />
 		<action name="slime titfuck regular" />
 	</scene>
-	<scene id="WinSlimeTitfuckCrazy" name="slime titfuck crazy" list="==>">
+	<scene id="BodhiWinSlimeTitfuckCrazy" name="slime titfuck crazy" list="==>">
 		<filter target="bottom" type="has" name="breastrow/nipples/fuckable" />
 		<p>
 			Letting your insatiable urge to have [b:his] wobbling jugs engulf your pecker overwhelm you, you plunge your prick into [b:name]'s soft, wet cleavage, burrowing your dick inside [b:his] warm gooey breast flesh until <if target="top" type="value_gt" name="penis/length" value="18">you can see your dick appear on the other side of her rack.</if><else>your dick disappears between her tits.</else>
@@ -229,7 +229,7 @@
 		<action name="slime titfuck regular" />
 		<action name="slime titfuck crazy 2" />
 	</scene>
-	<scene id="WinSlimeTitfuckRegular" name="slime titfuck regular" list="Nah, just get a normal tit fuck">
+	<scene id="BodhiWinSlimeTitfuckRegular" name="slime titfuck regular" list="Nah, just get a normal tit fuck">
 		<p>
 			You moan, arching your back as your throbbing [t:cockrand] penetrates [b:name]'s soft, pliant titflesh and rubs against the warm, slippery orbs with sloppy wet squelches. You thrust your hips rapidly, slapping the slime [b:g:boy:girl] roughly in [b:his] membrane several times, drawing ecstatic moans from [b:his] drooling lips as you stimulate [b:his] overly sensitive skin.
 		</p>
@@ -238,7 +238,7 @@
 		</p>
 	</scene>
 
-	<scene id="WinSlimePussyFuck" name="fuck vagina" list="Fuck that slime's pussy!">
+	<scene id="BodhiWinSlimePussyFuck" name="fuck vagina" list="Fuck that slime's pussy!">
 		<filter target="top" type="has" name="penis" />
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="vagina" />
@@ -253,7 +253,7 @@
 		</p>
 	</scene>
 
-	<scene id="WinSlimeDecline" name="never mind" list="Nah, never mind">
+	<scene id="BodhiWinSlimeDecline" name="never mind" list="Nah, never mind">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<p>
 			You shrug and turn away not wanting to fuck the shit out of your gelatinous captive at this particular moment. Perhaps you can subdue [b:him] later when you need a nice hot [t:g:screw:cum dump]?

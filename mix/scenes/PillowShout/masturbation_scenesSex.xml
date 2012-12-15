@@ -3,7 +3,6 @@
 	<!ELEMENT scenes (scene+)>
 	<!ELEMENT scene (filter*,(p|script)*,action*)>
 	<!ELEMENT filter EMPTY>
-	<!ELEMENT p (#PCDATA)>
 	<!ELEMENT script (#PCDATA)>
 	<!ELEMENT action EMPTY>
 	<!ATTLIST scene
@@ -20,9 +19,21 @@
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
 	<!ATTLIST action name CDATA #REQUIRED>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
 ]>
 <scenes>
-	<!-- Writen by PillowShout -->
+	<!-- Written by PillowShout -->
 	<scene id="PillowMasturbationStart" name="(masturbate)">
 		<script type="text/javascript">
 			<![CDATA[
@@ -44,17 +55,42 @@
 		<action name="masturbate cont biped"/>
 		<action name="masturbate cont centaur"/>
 		<action name="masturbate cont quadruped"/>
-		<action name="masturbate cont naga slime"/>
+		<action name="masturbate cont no legs"/>
 	</scene>
 
 	<scene id="PillowMasturbationContinueBiped" name="masturbate cont biped">
 		<filter target="top" type="hasnot" name="quadruped"/>
-		<filter target="top" type="hasnot" name="snaketail"/>
-		<filter target="top" type="hasnot" name="slimeblob"/>
+		<filter target="top" type="has" name="legs"/>
 		<script type="text/javascript">
 			<![CDATA[
-				// TODO Add clothing removal
-				print("You find yourself a comfortable place to sit and lower yourself onto the ground. Once you're seated, you lean back on one hand and splay your legs while you run the other ");
+				print("You find yourself a comfortable place to sit and lower yourself onto the ground. "); 
+				
+				if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants"))
+				{
+					print("Once you're seated, you remove your [t:equipment:pants] and [t:equipment:underpants] and leave them off to the side. With that out of the way, you ");
+				}
+				else if(top.HasItemInSlot("pants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("pants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you're seated, you take off your [t:equipment:pants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else if (top.HasItemInSlot("underpants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("underpants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you're seated, you slide off your [t:equipment:underpants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else
+					print("Once you're seated, you ") 
+					
+				print("lean back on one hand and splay your legs while you run the other ");
 				
 				var breasts = top.Path("breastrow[0]");
 				var size = 0;
@@ -191,12 +227,11 @@
 		</script>
 		<action name="masturbation end"/>
 	</scene>
-	
-	<scene id="PillowMasturbationContinueNaga" name="masturbate cont naga">
-		<filter target="top" type="hasnot" name="quadruped"/>
+
+	<scene id="PillowMasturbationContinueNoLegs" name="masturbate cont no legs">
+		<filter target="top" type="hasnot" name="legs"/>
 		<script type="text/javascript">
 			<![CDATA[
-				// TODO Add clothing removal
 				print("You find yourself a comfortable place to sit and ")
 
 				if(top.HasToken("snaketail"))
@@ -350,7 +385,7 @@
 		</script>
 		<action name="masturbation end"/>
 	</scene>
-	
+
 	<scene id="PillowMasturbationContinueCentaur" name="masturbate cont centaur">
 		<filter target="top" type="has" name="quadruped"/>
 		<filter target="top" type="hasnot" name="noarms"/>
@@ -364,14 +399,41 @@
 		</script>
 		<action name="masturbation end"/>
 	</scene>
-	
+
 	<scene id="PillowMasturbationContinuePureQuadruped" name="masturbate cont quadruped">
 		<filter target="top" type="has" name="quadruped"/>
 		<filter target="top" type="has" name="noarms"/>
 		<script type="text/javascript">
 			<![CDATA[
-				// TODO Add clothing removal
-				print("You find yourself a decent looking spot and then drop down and roll onto your back. Once you've made yourself comfortable, you spread your hind legs and reach a [t:foot] down over your stomach, towards your groin.\n\n");
+			
+				print("You find yourself a decent looking spot and then drop down and roll onto your back. "); 
+				
+				if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants"))
+				{
+					print("Once you've made yourself comfortable, you remove your [t:equipment:pants] and [t:equipment:underpants] and leave them off to the side. With that out of the way, you ");
+				}
+				else if(top.HasItemInSlot("pants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("pants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you've made yourself comfortable, you take off your [t:equipment:pants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else if (top.HasItemInSlot("underpants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("underpants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you've made yourself comfortable, you slide off your [t:equipment:underpants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else
+					print("Once you've made yourself comfortable, you ") 
+			
+				print("spread your hind legs and reach a [t:foot] down over your stomach, towards your groin.\n\n");
 				
 				var g = top.GetGender();
 				var stim = top.GetToken("stimulation").Value;
@@ -475,15 +537,22 @@
 				
 			]]>
 		</script>
-	
+
 		<action name="masturbation end"/>
 	</scene>
-	
+
 	<scene id="PillowAfterMasturbation" name="masturbation end">
-		<p>
-			You lay there for a while, breathing steadily as you wait for your body to recover. Once a few minutes have passed, you decide that you've rested enough and get up to leave.
-		</p>
-		
+		<script type="text/javascript">
+			<![CDATA[
+				print("You lay there for a while, breathing steadily as you wait for your body to recover. Once a few minutes have passed, you decide that you've rested enough");
+
+				if(top.HasItemInSlot("pants") || top.HasItemInSlot("underpants"))
+					print(", and put your clothes back on before getting up to leave.");
+				else
+				print(" and get up to leave.");
+			]]>
+		</script>
+
 		<script type="text/javascript">
 			top.GetToken("climax").Value = 0;
 			top.GetToken("stimulation").Value = 10;
