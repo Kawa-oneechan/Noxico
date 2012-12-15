@@ -708,6 +708,18 @@ namespace Noxico
 				ret = true;
 			return ret;
 		}
+
+		#region PillowShout's additions
+        public bool IsSuit()
+        {
+            var eq = this.GetToken("equipable");
+
+            if (eq != null)
+                return eq.HasToken("pants") && eq.HasToken("shirt");
+
+            return false;
+        }
+		#endregion
 	}
 
 	public class ItemException : Exception
