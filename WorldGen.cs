@@ -3,411 +3,423 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Drawing;
 
 namespace Noxico
 {
-	//Stolen from... somewhere.
-	public class PerlinNoise
+	public static class WorldGen
 	{
-		/// Perlin Noise Constructot
-		public PerlinNoise(int width, int height)
-		{
-			this.MAX_WIDTH = width;
-			this.MAX_HEIGHT = height;
-		}
+		private static TownGenerator townGen;
 
-		public int MAX_WIDTH = 256;
-		public int MAX_HEIGHT = 256;
-
-		/// Gets the value for a specific X and Y coordinate
-		/// results in range [-1, 1] * maxHeight
-		public float GetRandomHeight(float X, float Y, float MaxHeight,
-			float Frequency, float Amplitude, float Persistance,
-			int Octaves)
+		public static Board CreateTown(int biomeID, string cultureName, string name, bool withSurroundings)
 		{
-			GenerateNoise();
-			float FinalValue = 0.0f;
-			for (int i = 0; i < Octaves; ++i)
-			{
-				FinalValue += GetSmoothNoise(X * Frequency, Y * Frequency) * Amplitude;
-				Frequency *= 2.0f;
-				Amplitude *= Persistance;
-			}
-			if (FinalValue < -1.0f)
-			{
-				FinalValue = -1.0f;
-			}
-			else if (FinalValue > 1.0f)
-			{
-				FinalValue = 1.0f;
-			}
-			return FinalValue * MaxHeight;
-		}
+			if (townGen == null)
+				townGen = new TownGenerator();
 
-		//This function is a simple bilinear filtering function which is good (and easy) enough.
-		private float GetSmoothNoise(float X, float Y)
-		{
-			float FractionX = X - (int)X;
-			float FractionY = Y - (int)Y;
-			int X1 = ((int)X + MAX_WIDTH) % MAX_WIDTH;
-			int Y1 = ((int)Y + MAX_HEIGHT) % MAX_HEIGHT;
-			//for cool art deco looking images, do +1 for X2 and Y2 instead of -1...
-			int X2 = ((int)X + MAX_WIDTH - 1) % MAX_WIDTH;
-			int Y2 = ((int)Y + MAX_HEIGHT - 1) % MAX_HEIGHT;
-			float FinalValue = 0.0f;
-			FinalValue += FractionX * FractionY * Noise[X1, Y1];
-			FinalValue += FractionX * (1 - FractionY) * Noise[X1, Y2];
-			FinalValue += (1 - FractionX) * FractionY * Noise[X2, Y1];
-			FinalValue += (1 - FractionX) * (1 - FractionY) * Noise[X2, Y2];
-			return FinalValue;
-		}
+			if (biomeID < 0)
+				biomeID = Toolkit.Rand.Next(2, 5);
 
-		float[,] Noise;
-		bool NoiseInitialized = false;
-		/// create a array of randoms
-		private void GenerateNoise()
-		{
-			if (NoiseInitialized)                //A boolean variable in the class to make sure we only do this once
-				return;
-			Noise = new float[MAX_WIDTH, MAX_HEIGHT];    //Create the noise table where MAX_WIDTH and MAX_HEIGHT are set to some value>0
-			for (int x = 0; x < MAX_WIDTH; ++x)
+			var boards = NoxicoGame.HostForm.Noxico.Boards;
+			var thisMap = new Board();
+			var biome = BiomeData.Biomes[biomeID];
+
+			if (string.IsNullOrEmpty(cultureName))
+				cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
+
+			thisMap.Clear(biomeID);
+			thisMap.Type = BoardType.Town;
+			thisMap.Music = "set://Town";
+			thisMap.AddToken("culture", 0, cultureName);
+
+			townGen.Board = thisMap;
+			townGen.Culture = Culture.Cultures[cultureName];
+			townGen.Create(biome);
+			townGen.ToTilemap(ref thisMap.Tilemap);
+			townGen.ToSectorMap(thisMap.Sectors);
+
+			if (string.IsNullOrEmpty(name))
 			{
-				for (int y = 0; y < MAX_HEIGHT; ++y)
+				while (true)
 				{
-					Noise[x, y] = ((float)(Toolkit.Rand.NextDouble()) - 0.5f) * 2.0f;  //Generate noise between -1 and 1
+					name = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+					if (boards.Find(b => b != null && b.Name == name) == null)
+						break;
 				}
 			}
-			NoiseInitialized = true;
-		}
+			thisMap.Name = name;
 
-	}
+			thisMap.BoardNum = boards.Count;
+			thisMap.ID = thisMap.Name.ToID() + thisMap.BoardNum;
 
-	public class WorldGen
-	{
-		public int[,] BiomeMap, TownMap;
-		public int MapSizeX, MapSizeY;
-		public int OverworldSize;
-		public int[] OceanBitmap;
-		public byte[,] BiomeBitmap;
+			boards.Add(thisMap);
 
-		public static List<BiomeData> Biomes;
-		public static int WaterLevel;
-		public TimeSpan CreationTime { get; private set; }
+			if (!withSurroundings)
+				return thisMap;
 
-		public static void LoadBiomes(string realmId = "")
-		{
-			if (string.IsNullOrWhiteSpace(realmId))
+			//Generate surroundings
+			var north = new Board();
+			var south = new Board();
+			var east = new Board();
+			var west = new Board();
+			var northWest = new Board();
+			var northEast = new Board();
+			var southWest = new Board();
+			var southEast = new Board();
+			foreach (var lol in new[] { northWest, north, northEast, east, southEast, south, southWest, west })
 			{
-				if (NoxicoGame.HostForm.Noxico.Player == null)
-					realmId = "Nox";
-				else
-					realmId = NoxicoGame.HostForm.Noxico.Player.CurrentRealm;
-			}
-
-			Biomes = new List<BiomeData>();
-			var x = Mix.GetXMLDocument("biomes.xml");
-			//var x = new XmlDocument();
-			//x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
-			var realm = x.SelectSingleNode("//realm[@id=\"" + realmId + "\"]") as XmlElement;
-			WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
-			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-				Biomes.Add(BiomeData.FromXML(b));
-		}
-
-		private static byte[,] CreateHeightMap(int reach, Action<string> setStatus)
-		{
-			var map = new byte[reach, reach];
-			var noise = new PerlinNoise(reach, reach);
-			var wDiv = 1 / (double)reach;
-			var hDiv = 1 / (double)reach;
-			var dist = reach / 3;
-			var distMod = 1 / (float)dist;
-
-			var pct = reach / 100f;
-
-			for (var row = 0; row < reach; row++)
-			{
-				for (var col = 0; col < reach; col++)
+				lol.Clear(biomeID);
+				lol.Type = BoardType.Wild;
+				lol.Music = "set://Town";
+				lol.BoardNum = boards.Count;
+				lol.Name = thisMap.Name + " Outskirts";
+				lol.ID = lol.Name.ToID() + lol.BoardNum;
+				if (Toolkit.Rand.NextDouble() > 0.5 && biome.Encounters.Length > 0)
 				{
-					var overall = noise.GetRandomHeight(col, row, 1f, 0.02f, 0.65f, 0.4f, 4) + 0.3;
-					var rough = noise.GetRandomHeight(col, row, 1f, 0.05f, 0.65f, 0.5f, 8);
-					//var extra = noise.GetRandomHeight(col, row, 0.05f, 1f, 1f, 1f, 8);
-					//var rough = 0f;
-					var extra = 0f;
-					var v = (overall + (rough * 0.75) + extra) + 0.3; // + 0.5;
-					//var v = noise.GetRandomHeight(col, row, 1f, 0.01f, 0.45f, 0.4f, 4) + 0.5;
-
-					if (row < dist) v *= distMod * row;
-					if (col < dist) v *= distMod * col;
-					if (row > reach - dist) v *= distMod * (reach - row);
-					if (col > reach - dist) v *= distMod * (reach - col);
-
-					if (v < 0) v = 0;
-					if (v > 1) v = 1;
-					var b = (byte)(v * 255);
-
-					map[row, col] = b;
+					var encounters = lol.GetToken("encounters");
+					encounters.Value = biome.MaxEncounters;
+					foreach (var e in biome.Encounters)
+						encounters.AddToken(e);
 				}
-				setStatus("Creating heightmap... (" + (row / pct).ToString("0") + "%)");
-			}
-			return map;
-		}
-
-		private static byte[,] CreateClouds(int reach, float freq, double offset, Action<string> setStatus, string thing, bool poles = false)
-		{
-			var map = new byte[reach, reach];
-			var noise = new PerlinNoise(reach, reach);
-			var wDiv = 1 / (double)reach;
-			var hDiv = 1 / (double)reach;
-			var dist = reach / 5;
-			var distMod = 1 / (float)dist;
-
-			var pct = reach / 100f;
-
-			for (var row = 0; row < reach; row++)
-			{
-				for (var col = 0; col < reach; col++)
+				else if (Toolkit.Rand.NextDouble() > 0.8)
 				{
-					var overall = noise.GetRandomHeight(col, row, 1f, freq, 0.45f, 0.8f, 2) + offset;
-					var v = overall;
-
-					if (poles)
-					{
-						v += 0.04;
-						if (row < dist) v -= 2 - ((distMod * row) * 2);
-						if (row > reach - dist) v -= 2 - ((distMod * (reach - row)) * 2);
-					}
-
-					if (v < 0) v = 0;
-					if (v > 1) v = 1;
-					var b = (byte)(v * 255);
-
-					map[row, col] = b;
+					lol.Type = BoardType.Town;
+					lol.Name = thisMap.Name;
+					lol.ID = lol.Name.ToID() + lol.BoardNum;
+					townGen.Board = lol;
+					townGen.Create(biome);
+					townGen.ToTilemap(ref lol.Tilemap);
+					townGen.ToSectorMap(lol.Sectors);
 				}
-				setStatus("Creating " + thing + "... (" + (row / pct).ToString("0") + "%)");
+				boards.Add(lol);
 			}
-			return map;
+			thisMap.Connect(Direction.North, north);
+			thisMap.Connect(Direction.South, south);
+			thisMap.Connect(Direction.East, east);
+			thisMap.Connect(Direction.West, west);
+			north.Connect(Direction.West, northWest);
+			north.Connect(Direction.East, northEast);
+			south.Connect(Direction.West, southWest);
+			south.Connect(Direction.East, southEast);
+			east.Connect(Direction.North, northEast);
+			east.Connect(Direction.South, southEast);
+			west.Connect(Direction.North, northWest);
+			west.Connect(Direction.South, southWest);
+
+			return thisMap;
 		}
 
-		private static byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
+		public static Board CreateTown()
 		{
-			var map = new byte[(reach / 2) + 25, reach + 80];
-			for (var row = 0; row < reach / 2; row++)
+			return CreateTown(-1, null, null, true);
+		}
+
+
+
+
+
+		public static int DungeonGeneratorEntranceBoardNum;
+		public static string DungeonGeneratorEntranceWarpID;
+		public static int DungeonGeneratorBiome;
+
+		public static void CreateDungeon()
+		{
+			CreateDungeon(false, null);
+		}
+
+		public static Board CreateDungeon(int biomeID, string cultureName, string name)
+		{
+			DungeonGeneratorBiome = biomeID < 0 ? biomeID = Toolkit.Rand.Next(2, 5) : biomeID;
+			return CreateDungeon(true, name);
+		}
+
+		public static Board CreateDungeon(bool forTravel, string name)
+		{
+			var host = NoxicoGame.HostForm;
+			var nox = host.Noxico;
+
+			host.LoadBitmap(Mix.GetBitmap("makecave.png"));
+			host.Write("Generating dungeon. Please wait.", Color.Silver, Color.Transparent, 2, 1);
+			host.Draw();
+
+			var dunGen = new StoneDungeonGenerator();
+			var caveGen = new CaveGenerator();
+
+			Func<Board, Warp> findWarpSpot = (b) =>
 			{
-				for (var col = 0; col < reach; col++)
+				var eX = 0;
+				var eY = 0;
+				while (true)
 				{
-					var h = height[row * 2, col];
-					var p = precip[row * 2, col];
-					var t = temp[row * 2, col];
-					/*
-					if (h < 64)
-						map[row, col] = 4; //Water
-					//else if (h > 253)
-					//	map[row, col] = 3; //Mountain snow
-					else if (p < 128 && t > 160)
-						map[row, col] = 1; //Desert
-					else if (t < 64)
-						map[row, col] = 2; //Snow
-					else if (p > 160)
-						map[row, col] = 3; //Swamp
-					*/
-					if (h < WaterLevel)
-					{
-						map[row, col] = 0;
-						continue;
-					}
-					for (var i = 0; i < Biomes.Count; i++)
-					{
-						var b = Biomes[i];
-						if (t >= b.Rect.Left && t <= b.Rect.Right && p >= b.Rect.Top && p <= b.Rect.Bottom)
-						{
-							map[row, col] = (byte)i;
-							continue;
-						}
-					}
+					eX = Toolkit.Rand.Next(1, 79);
+					eY = Toolkit.Rand.Next(1, 24);
+
+					var sides = 0;
+					if (b.IsSolid(eY - 1, eX))
+						sides++;
+					if (b.IsSolid(eY + 1, eX))
+						sides++;
+					if (b.IsSolid(eY, eX - 1))
+						sides++;
+					if (b.IsSolid(eY, eX + 1))
+						sides++;
+					if (sides < 3 && sides > 1)
+						break;
+				}
+				return new Warp() { XPosition = eX, YPosition = eY };
+			};
+
+			Warp originalExit = null;
+
+			BiomeData.LoadBiomes();
+			var biomeData = BiomeData.Biomes[DungeonGeneratorBiome]; //TODO: replace 3 with DungeonGeneratorBiome -- this is for testing.
+
+			/* Step 1 - Randomize jagged array, make boards for each entry.
+			 * ------------------------------------------------------------
+			 * ("goal" board is boss/treasure room, picked at random from bottom floor set.)
+			 * [EXIT] [ 01 ] [ 02 ]
+			 * [ 03 ] [ 04 ]
+			 * [ 05 ] [ 06 ] [ 07 ] [ 08 ]
+			 * [ 09 ] [ 10 ] [ 11 ]
+			 * [GOAL] [ 13 ]
+			*/
+			var levels = new List<List<Board>>();
+			var depth = Toolkit.Rand.Next(3, 6);
+			for (var i = 0; i < depth; i++)
+			{
+				levels.Add(new List<Board>());
+				var length = Toolkit.Rand.Next(2, 5);
+				for (var j = 0; j < length; j++)
+				{
+					var board = new Board();
+					board.BoardNum = nox.Boards.Count;
+					if (i > 0)
+						board.AddToken("dark");
+					nox.Boards.Add(board);
+					levels[i].Add(board);
 				}
 			}
-			return map;
-		}
 
-		public void Generate(Action<string> setStatus, string randSeed = "")
-		{
-			var seed = 0xF00D;
-			var reach = 2000;
+			//Decide which boards are the exit and goal
+			var entranceBoard = levels[0][Toolkit.Rand.Next(levels[0].Count)];
+			var goalBoard = levels[levels.Count - 1][Toolkit.Rand.Next(levels[levels.Count - 1].Count)];
 
-			if (!string.IsNullOrWhiteSpace(randSeed))
+			//Generate content for each board
+			for (var i = 0; i < levels.Count; i++)
 			{
-				if (randSeed.StartsWith("0x"))
+				for (var j = 0; j < levels[i].Count; j++)
 				{
-					randSeed = randSeed.Substring(2);
-					if (!int.TryParse(randSeed, System.Globalization.NumberStyles.HexNumber, null, out seed))
+					var board = levels[i][j];
+
+					//TODO: uncomment this decision when the dungeon generator gets pathways.
+					if (Toolkit.Rand.NextDouble() > 0.7 || board == entranceBoard)
 					{
-						seed = randSeed.GetHashCode();
-						Console.WriteLine("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed);
+						caveGen.Board = board;
+						caveGen.Create(biomeData);
+						caveGen.ToTilemap(ref board.Tilemap);
 					}
 					else
-						Console.WriteLine("Using seed 0x{0:X}.", seed);
-				}
-				else
-				{
-					if (!int.TryParse(randSeed, out seed))
 					{
-						seed = randSeed.GetHashCode();
-						Console.WriteLine("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed);
+						dunGen.Board = board;
+						dunGen.Create(biomeData);
+						dunGen.ToTilemap(ref board.Tilemap);
 					}
-					else
-						Console.WriteLine("Using seed 0x{0:X}.", seed);
+
+					board.Name = string.Format("Level {0}-{1}", i + 1, (char)('A' + j));
+					if (!string.IsNullOrWhiteSpace(name))
+						board.Name = string.Format("{0}, level {1}-{2}", name, i + 1, (char)('A' + j));
+					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
+					board.Music = "set://Dungeon";
+					board.Type = BoardType.Dungeon;
+					var encounters = board.GetToken("encounters");
+					foreach (var e in biomeData.Encounters)
+						encounters.Tokens.Add(new Token() { Name = e });
+					encounters.Value = biomeData.MaxEncounters;
+					board.RespawnEncounters();
+
+					//If this is the entrance board, add a warp back to the Overworld.
+					if (board == entranceBoard)
+					{
+						var exit = findWarpSpot(board);
+						originalExit = exit;
+						exit.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit";
+						board.Warps.Add(exit);
+						board.SetTile(exit.YPosition, exit.XPosition, '<', Color.Silver, Color.Black);
+					}
 				}
 			}
-			else
+
+			/* Step 2 - Randomly add up/down links
+			 * -----------------------------------
+			 * (imagine for the moment that each board can have more than one exit and that this goes for both directions.)
+			 * [EXIT] [ 01 ] [ 02 ]
+			 *    |
+			 * [ 03 ] [ 04 ]
+			 * 	         |
+			 * [ 05 ] [ 06 ] [ 07 ] [ 08 ]
+			 *    |             |
+			 * [ 09 ] [ 10 ] [ 11 ]
+			 * 	                |
+			 * 	      [GOAL] [ 13 ]
+			 */
+			var connected = new List<Board>();
+			for (var i = 0; i < levels.Count; i++)
 			{
-				Console.WriteLine("Using timer as seed.");
-				seed = Environment.TickCount;
+				var j = Toolkit.Rand.Next(0, levels[i].Count);
+				//while (connected.Contains(levels[i][j]))
+				//	j = Toolkit.Rand.Next(0, levels[i].Count);
+
+				var up = false;
+				var destLevel = i + 1;
+				if (destLevel == levels.Count)
+				{
+					up = true;
+					destLevel = i - 1;
+				}
+				var dest = Toolkit.Rand.Next(0, levels[destLevel].Count);
+
+				var boardHere = levels[i][j];
+				var boardThere = levels[destLevel][dest];
+
+				var here = findWarpSpot(boardHere);
+				var there = findWarpSpot(boardThere);
+				boardHere.Warps.Add(here);
+				boardThere.Warps.Add(there);
+				here.ID = boardHere.ID + boardHere.Warps.Count;
+				there.ID = boardThere.ID + boardThere.Warps.Count;
+				here.TargetBoard = boardThere.BoardNum;
+				there.TargetBoard = boardHere.BoardNum;
+				here.TargetWarpID = there.ID;
+				there.TargetWarpID = here.ID;
+				boardHere.SetTile(here.YPosition, here.XPosition, up ? '<' : '>', Color.Gray, Color.Black);
+				boardThere.SetTile(there.YPosition, there.XPosition, !up ? '<' : '>', Color.Gray, Color.Black);
+
+				Console.WriteLine("Connected {0} || {1}.", boardHere.ID, boardThere.ID);
+
+				connected.Add(boardHere);
+				connected.Add(boardThere);
 			}
 
-			var watch = new System.Diagnostics.Stopwatch();
-			watch.Start();
+			/* Step 3 - Connect the Unconnected
+			 * --------------------------------
+			 * [EXIT]=[ 01 ]=[ 02 ]
+			 * 	|
+			 * [ 03 ]=[ 04 ]
+			 *           |
+			 * [ 05 ]=[ 06 ] [ 07 ]=[ 08 ]
+			 *    |             |
+			 * [ 09 ]=[ 10 ]=[ 11 ]
+			 *                  |
+			 *        [GOAL]=[ 13 ]
+			 */
 
-			LoadBiomes();
-
-			setStatus("Creating heightmap...");
-			var height = CreateHeightMap(reach, setStatus);
-			setStatus("Creating precipitation map...");
-			var precip = CreateClouds(reach, 0.010f, 0.3, setStatus, "precipitation map", false);
-			setStatus("Creating temperature map...");
-			var temp = CreateClouds(reach, 0.005f, 0.5, setStatus, "temperature map", true);
-			setStatus("Creating biome map...");
-			var biome = CreateBiomeMap(reach, height, precip, temp);
-
-			watch.Stop();
-			Console.WriteLine("Generated a world of {0}²px in {1}.", reach, watch.Elapsed.ToString());
-			CreationTime = watch.Elapsed;
-
-			setStatus("Drawing board bitmap...");
-			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
-			var bmpHeight = reach / 2;
-			var bmp = new byte[bmpHeight + 1, bmpWidth + 1];
-			for (var row = 0; row < bmpHeight; row++)
-				for (var col = 0; col < bmpWidth; col++)
-					bmp[row, col] = biome[row, col];
-			BiomeBitmap = bmp;
-
-			MapSizeX = reach / 80; //1000 -> 12
-			MapSizeY = (reach / 2) / 25; //1000 -> 20
-			OverworldSize = MapSizeX * MapSizeY;
-			BiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
-			OceanBitmap = new int[OverworldSize];
-			var oceans = 0;
-			setStatus("Determining biomes...");
-			for (var bRow = 0; bRow < MapSizeY; bRow++)
+			for (var i = 0; i < levels.Count; i++)
 			{
-				for (var bCol = 0; bCol < MapSizeX; bCol++)
+				for (var j = 0; j < levels[i].Count - 1; j++)
 				{
-					var counts = new int[255];
-					var oceanTreshold = 2000 - 4;
-					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
-					for (var pRow = 0; pRow < 25; pRow++)
-					{
-						for (var pCol = 0; pCol < 80; pCol++)
-						{
-							var b = biome[(bRow * 25) + pRow, (bCol * 80) + pCol];
-							counts[b]++;
-						}
-					}
-					//Special rule for Oceans
-					if (counts[0] >= oceanTreshold)
-					{
-						BiomeMap[bRow, bCol] = 0;
-						//OceanBitmap[(bRow * 21) + bCol] = 1;
-						oceans++;
-						continue;
-					}
-					//Determine most significant non-Ocean biome
-					var highestNumber = 0;
-					var biggestBiome = 0;
-					for (var i = 1; i < counts.Length; i++)
-					{
-						if (counts[i] > highestNumber)
-						{
-							highestNumber = counts[i];
-							biggestBiome = i;
-						}
-					}
-					BiomeMap[bRow, bCol] = biggestBiome;
+					//Don't connect if this board AND the right-hand neighbor are already connected.
+					//if (connected.Contains(levels[i][j]) && connected.Contains(levels[i][j + 1]))
+					//	continue;
+
+					var boardHere = levels[i][j];
+					var boardThere = levels[i][j + 1];
+
+					var here = findWarpSpot(boardHere);
+					var there = findWarpSpot(boardThere);
+					boardHere.Warps.Add(here);
+					boardThere.Warps.Add(there);
+					here.ID = boardHere.ID + boardHere.Warps.Count;
+					there.ID = boardThere.ID + boardThere.Warps.Count;
+					here.TargetBoard = boardThere.BoardNum;
+					there.TargetBoard = boardHere.BoardNum;
+					here.TargetWarpID = there.ID;
+					there.TargetWarpID = here.ID;
+					boardHere.SetTile(here.YPosition, here.XPosition, '\x2261', Color.Gray, Color.Black);
+					boardThere.SetTile(there.YPosition, there.XPosition, '\x2261', Color.Gray, Color.Black);
+
+					Console.WriteLine("Connected {0} -- {1}.", boardHere.ID, boardThere.ID);
+
+					connected.Add(boardHere);
+					connected.Add(boardThere);
 				}
 			}
 
-			setStatus("Finding watering holes...");
-			var towns = 0;
-			var townBoards = 0;
-			var wateringHoles = 0;
-			TownMap = new int[MapSizeY, MapSizeX]; //0 - none, -1 - watering hole (town can go nearby), >0 - town
-			for (var bRow = 0; bRow < MapSizeY; bRow++)
+			// Step 4 - place sick lewt in goalBoard
+			var treasureX = 0;
+			var treasureY = 0;
+			while (true)
 			{
-				for (var bCol = 0; bCol < MapSizeX; bCol++)
-				{
-					//Find a board with a reasonable amount of water
+				treasureX = Toolkit.Rand.Next(1, 79);
+				treasureY = Toolkit.Rand.Next(1, 24);
 
-					if (BiomeMap[bRow, bCol] == 0)
-						continue;
-
-					var waterAmount = 0;
-					var waterMin = 128;
-					var waterMax = 256;
-					for (var pRow = 0; pRow < 25; pRow++)
-						for (var pCol = 0; pCol < 80; pCol++)
-							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == 0)
-								waterAmount++;
-					if (waterAmount >= waterMin && waterAmount <= waterMax)
-					{
-						//Randomly DON'T mark
-						if (Toolkit.Rand.NextDouble() > 0.5)
-							continue;
-
-						//Seems like a nice place. Mark off.
-						TownMap[bRow, bCol] = -1;
-						wateringHoles++;
-					}
-				}
+				var sides = 0;
+				if (goalBoard.IsSolid(treasureY - 1, treasureX))
+					sides++;
+				if (goalBoard.IsSolid(treasureY + 1, treasureX))
+					sides++;
+				if (goalBoard.IsSolid(treasureY, treasureX - 1))
+					sides++;
+				if (goalBoard.IsSolid(treasureY, treasureX + 1))
+					sides++;
+				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
+					break;
 			}
-			setStatus("Marking town locations...");
-			for (var bRow = 0; bRow < MapSizeY; bRow++)
+			var treasure = InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasureChest = new Container("Treasure chest", treasure)
 			{
-				for (var bCol = 0; bCol < MapSizeX; bCol++)
-				{
-					if (TownMap[bRow, bCol] == -1)
-					{
-						var added = 0;
-						for (var row = bRow - 1; row < bRow + 1; row++)
-						{
-							for (var col = bCol - 1; col < bCol + 1; col++)
-							{
-								if (TownMap[row, col] != 0)
-									continue;
-								var waterAmount = 0;
-								var waterMax = 128;
-								for (var pRow = 0; pRow < 25; pRow++)
-									for (var pCol = 0; pCol < 80; pCol++)
-										if (biome[(row * 25) + pRow, (col * 80) + pCol] == 0)
-											waterAmount++;
-								if (waterAmount < waterMax)
-								{
-									TownMap[row, col] = towns + 1;
-									townBoards++;
-									added++;
-								}
-							}
-						}
-						if (added > 0)
-							towns++;
-					}
-				}
+				AsciiChar = (char)0x00C6,
+				XPosition = treasureX,
+				YPosition = treasureY,
+				ForegroundColor = Color.SaddleBrown,
+				BackgroundColor = Color.Black,
+				ParentBoard = goalBoard,
+				Blocking = false,
+			};
+			goalBoard.Entities.Add(treasureChest);
+
+			if (forTravel)
+			{
+				originalExit.TargetBoard = -2; //causes Travel menu to appear on use.
+				return entranceBoard;
 			}
+
+			var entrance = nox.CurrentBoard.Warps.Find(w => w.ID == DungeonGeneratorEntranceWarpID);
+			entrance.TargetBoard = entranceBoard.BoardNum; //should be this one.
+			entrance.TargetWarpID = originalExit.ID;
+			originalExit.TargetBoard = nox.CurrentBoard.BoardNum;
+			originalExit.TargetWarpID = entrance.ID;
+
+			nox.CurrentBoard.EntitiesToRemove.Add(nox.Player);
+			nox.CurrentBoard = entranceBoard;
+			nox.Player.ParentBoard = entranceBoard;
+			entranceBoard.Entities.Add(nox.Player);
+			nox.Player.XPosition = originalExit.XPosition;
+			nox.Player.YPosition = originalExit.YPosition;
+			entranceBoard.Redraw();
+			NoxicoGame.Sound.PlayMusic(entranceBoard.Music);
+			NoxicoGame.Immediate = true;
+			NoxicoGame.Mode = UserMode.Walkabout;
+			NoxicoGame.HostForm.Noxico.SaveGame();
+
+			return entranceBoard;
 		}
 	}
 
 	public class BiomeData
 	{
+		public static List<BiomeData> Biomes;
+
+		public static void LoadBiomes()
+		{
+			Biomes = new List<BiomeData>();
+			var x = Mix.GetXMLDocument("biomes.xml");
+			//var x = new XmlDocument();
+			//x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
+			var realm = x.SelectSingleNode("//realm") as XmlElement;
+			//WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
+			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
+				Biomes.Add(BiomeData.FromXML(b));
+		}
+
 		public string Name { get; private set; }
 		public System.Drawing.Color Color { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }

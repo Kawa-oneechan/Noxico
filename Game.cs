@@ -14,7 +14,7 @@ namespace Noxico
 {
 	public enum KeyBinding
 	{
-		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop,
+		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop, Travel,
 		Accept, Back, Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
 	}
 
@@ -43,8 +43,6 @@ namespace Noxico
 		public List<Board> Boards { get; set; }
 		public Board CurrentBoard { get; set; }
 		public static Board Ocean { get; set; }
-		public int[,] Overworld { get; set; }
-		public int OverworldBarrier { get; private set; }
 		public Player Player { get; set; }
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
@@ -68,10 +66,14 @@ namespace Noxico
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 		public string[] Potions;
+		public static List<int> KnownTargets;
+		public static Dictionary<int, string> TargetNames;
 		public static NoxicanDate InGameTime;
 
 		private static List<string> messageLog = new List<string>();
 		public static int WorldVersion { get; private set; }
+
+		public static Dictionary<int, Expectation> Expectations = new Dictionary<int, Expectation>();
 
 		public static bool IsKeyDown(KeyBinding binding)
 		{
@@ -111,6 +113,7 @@ namespace Noxico
 				{ KeyBinding.Fuck, GetIniKey("fuck", Keys.F) },
 				{ KeyBinding.Take, GetIniKey("take", Keys.P) },
 				{ KeyBinding.Drop, GetIniKey("drop", Keys.D) },
+				{ KeyBinding.Travel, GetIniKey("travel", Keys.T) },
 				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
 				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },
 				{ KeyBinding.Pause, GetIniKey("pause", Keys.F1) },
@@ -212,10 +215,12 @@ namespace Noxico
 			HostForm.Noxico = this;
 			Javascript.MainMachine = Javascript.Create();
 
-			WorldGen.LoadBiomes();
+			BiomeData.LoadBiomes();
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
 			InGameTime = new NoxicanDate(740 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			KnownTargets = new List<int>();
+			TargetNames = new Dictionary<int, string>();
 
 #if DEBUG
 			//Towngen test
@@ -226,14 +231,14 @@ namespace Noxico
 			var townGen = new StoneDungeonGenerator(); //new TownGenerator();
 			townGen.Board = towngenTest;
 			townGen.Culture = Culture.Cultures["human"];
-			townGen.Create(WorldGen.Biomes[2]);
+			townGen.Create(BiomeData.Biomes[2]);
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
 			towngenTest.DumpToHTML("final");
 #endif
 
 			CurrentBoard = new Board();
-			this.Player = new Player() { CurrentRealm = "Nox" };
+			this.Player = new Player();
 				Introduction.Title();
 		}
 
@@ -267,8 +272,12 @@ namespace Noxico
 				Console.WriteLine("Potion check...");
 				if (Potions[0] == null)
 					RollPotions();
-				Console.WriteLine("Potions...");
 				b = new BinaryWriter(new CryptStream(f));
+				Console.WriteLine("Player data...");
+				Toolkit.SaveExpectation(b, "PLAY");
+				b.Write(CurrentBoard.BoardNum);
+				b.Write(Boards.Count);
+				Console.WriteLine("Potions...");
 				Toolkit.SaveExpectation(b, "POTI");
 				for (var i = 0; i < 256; i++)
 					b.Write(Potions[i] ?? "...");
@@ -277,31 +286,28 @@ namespace Noxico
 				b.Write(0);
 				Toolkit.SaveExpectation(b, "TIME");
 				b.Write(InGameTime.ToBinary());
+				Toolkit.SaveExpectation(b, "TARG");
+				b.Write(KnownTargets.Count);
+				KnownTargets.ForEach(x => b.Write(x));
+				Toolkit.SaveExpectation(b, "TARN");
+				b.Write(TargetNames.Count);
+				foreach (var target in TargetNames)
+				{
+					b.Write(target.Key);
+					b.Write(target.Value);
+				}
+				Toolkit.SaveExpectation(b, "EXPL");
+				b.Write(Expectations.Count);
+				foreach (var expectation in Expectations)
+				{
+					b.Write(expectation.Key);
+					expectation.Value.SaveToFile(b);
+				}
 			}
 
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Saving World...");
 
-			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
-			if (!Directory.Exists(realm))
-				Directory.CreateDirectory(realm);
-
-			var file = File.Open(Path.Combine(SavePath, WorldName, Player.CurrentRealm, "world.bin"), FileMode.Create);
-			var bin = new BinaryWriter(file);
-			bin.Write(header);
-
-			Toolkit.SaveExpectation(bin, "OWID");
-			bin.Write(Overworld.GetLength(0));
-			bin.Write(Overworld.GetLength(1));
-			for (var y = 0; y < Overworld.GetLength(1); y++)
-				for (var x = 0; x < Overworld.GetLength(0); x++)
-					bin.Write(Overworld[x, y]);
-
-			Toolkit.SaveExpectation(bin, "OWAM");
-			bin.Write(CurrentBoard.BoardNum);
-			bin.Write(Boards.Count);
-			//foreach (var b in Boards)
-			//	b.SaveToFile(bin);
 			for (var i = 0; i < Boards.Count; i++)
 			{
 				if (Boards[i] != null)
@@ -310,18 +316,11 @@ namespace Noxico
 					Boards[i] = null;
 				}
 			}
-			CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
-
-			bin.Write(StartingOWX);
-			bin.Write(StartingOWY);
-
-			bin.Flush();
-
-			file.Flush();
-			file.Close();
+			if (!string.IsNullOrEmpty(CurrentBoard.Name))
+				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "14");
+			File.WriteAllText(verCheck, "15");
 			Console.WriteLine("Done.");
 			Console.WriteLine("--------------------------");
 		}
@@ -332,7 +331,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 14)
+			if (WorldVersion < 15)
 				throw new Exception("Tried to open an old worldsave.");
 
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
@@ -357,6 +356,9 @@ namespace Noxico
 			}
 			var crypt = new CryptStream(file);
 			bin = new BinaryReader(crypt);
+			Toolkit.ExpectFromFile(bin, "PLAY", "player position");
+			var currentIndex = bin.ReadInt32();
+			var boardCount = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "POTI", "potion and ring");
 			Potions = new string[256];
 			for (var i = 0; i < 256; i++)
@@ -365,44 +367,27 @@ namespace Noxico
 			var numUniques = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");
 			InGameTime = new NoxicanDate(bin.ReadInt64());
+			Toolkit.ExpectFromFile(bin, "TARG", "known targets list");
+			var numTargets = bin.ReadInt32();
+			KnownTargets = new List<int>();
+			for (var i = 0; i < numTargets; i++)
+				KnownTargets.Add(bin.ReadInt32());
+			Toolkit.ExpectFromFile(bin, "TARN", "target names list");
+			numTargets = bin.ReadInt32();
+			TargetNames = new Dictionary<int, string>();
+			for (var i = 0; i < numTargets; i++)
+				TargetNames.Add(bin.ReadInt32(), bin.ReadString());
+			Toolkit.ExpectFromFile(bin, "EXPL", "expectation list");
+			var numExpectations = bin.ReadInt32();
+			Expectations = new Dictionary<int, Expectation>();
+			for (var i = 0; i < numExpectations; i++)
+				Expectations.Add(bin.ReadInt32(), Expectation.LoadFromFile(bin));
 			ApplyRandomPotions();
 			file.Close();
 
-			var realm = Path.Combine(SavePath, WorldName, Player.CurrentRealm);
-
-			file = File.Open(Path.Combine(realm, "world.bin"), FileMode.Open);
-			bin = new BinaryReader(file);
-			header = bin.ReadBytes(6);
-			if (Encoding.UTF8.GetString(header) != "NOXiCO")
-			{
-				MessageBox.Message("Invalid world header.");
-				return;
-			}
-
-			Toolkit.ExpectFromFile(bin, "OWID", "overworld board index");
-			var owX = bin.ReadInt32();
-			var owY = bin.ReadInt32();
-			Overworld = new int[owX, owY];
-			OverworldBarrier = owX * owY;
-			for (var y = 0; y < owY; y++)
-			{
-				for (var x = 0; x < owX; x++)
-				{
-					Overworld[x, y] = bin.ReadInt32();
-				}
-			}
-
-			Toolkit.ExpectFromFile(bin, "OWAM", "overworld amount");
-			var currentIndex = bin.ReadInt32();
-			var boardCount = bin.ReadInt32();
 			Boards = new List<Board>(boardCount);
 			for (int i = 0; i < boardCount; i++)
 				Boards.Add(null);
-			//for (int i = 0; i < boardCount; i++)
-			//	Boards.Add(Board.LoadFromFile(bin));
-
-			StartingOWX = bin.ReadInt32();
-			StartingOWY = bin.ReadInt32();
 
 			file.Close();
 
@@ -625,10 +610,8 @@ namespace Noxico
 			}
 		}
 
-		public void CreateRealm(string realm = "Nox")
+		public void CreateRealm()
 		{
-			Console.WriteLine("Creating realm \"{0}\"...", realm);
-
 			var setStatus = new Action<string>(s =>
 			{
 				var line = UIManager.Elements.Find(x => x.Tag == "worldGen");
@@ -642,136 +625,67 @@ namespace Noxico
 			var host = NoxicoGame.HostForm;
 			this.Boards.Clear();
 
-			setStatus("Generating world map...");
-
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 
-			var worldGen = new WorldGen();
-			worldGen.Generate(setStatus /*, "pandora" */);
-
-			setStatus("Generating boards...");
-			Overworld = new int[worldGen.MapSizeX, worldGen.MapSizeY];
-			for (var y = 0; y < worldGen.MapSizeY - 1; y++)
-				for (var x = 0; x < worldGen.MapSizeX - 1; x++)
-					Overworld[x, y] = -1;
-			OverworldBarrier = worldGen.MapSizeX * worldGen.MapSizeY;
-			for (var y = 0; y < worldGen.MapSizeY - 1; y++)
-			{
-				for (var x = 0; x < worldGen.MapSizeX - 1; x++)
-				{
-					//if (WorldGen.Biomes[worldGen.BiomeMap[y, x]].IsWater)
-					if (worldGen.BiomeMap[y, x] == 0)
-					{
-						Boards.Add(null);
-						continue;
-					}
-					var newBoard = Board.CreateFromBitmap(worldGen.BiomeBitmap, worldGen.BiomeMap[y,x], x, y);
-					this.Boards.Add(newBoard);
-					Overworld[x, y] = Boards.Count - 1;
-				}
-			}
-
-			setStatus("Placing towns...");
+			setStatus("Generating handful of towns...");
 			var townGen = new TownGenerator();
-			for (int y = 0; y < worldGen.MapSizeY - 1; y++)
+			for (var i = 0; i < 8; i++)
 			{
-				for (int x = 0; x < worldGen.MapSizeX - 1; x++)
-				{
-					if (worldGen.TownMap[y, x] > 0)
-					{
-						if (Overworld[x, y] == 1)
-							continue;
-						if (StartingOWX == -1)
-						{
-							StartingOWX = x;
-							StartingOWY = y;
-						}
-
-						var thisMap = Boards[Overworld[x, y]];
-						thisMap.Type = BoardType.Town;
-						townGen.Board = thisMap;
-						var biome = WorldGen.Biomes[worldGen.BiomeMap[y, x]];
-						var cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
-						townGen.Culture = Culture.Cultures[cultureName]; //Culture.Cultures["human"];
-						townGen.Create(biome);
-						townGen.ToTilemap(ref thisMap.Tilemap);
-						townGen.ToSectorMap(thisMap.Sectors);
-						thisMap.GetToken("music").Text = "set://Town";
-						thisMap.Tokens.Add(new Token() { Name = "culture", Text = cultureName });
-						while (true)
-						{
-							var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
-							if (Boards.Find(b => b != null && b.Name == newName) == null)
-							{
-								thisMap.Name = newName;
-								break;
-							}
-						}
-					}
-				}
+				var thisMap = WorldGen.CreateTown(-1, null, null, true);
+				KnownTargets.Add(thisMap.BoardNum);
+				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
 			}
 
-			var dungeonEntrances = 0;
-			while (dungeonEntrances < 25)
+			KnownTargets.Add(-10);
+			TargetNames.Add(-10, "OndemandVille");
+			Expectations.Add(-10, new Expectation() { Biome = 9 });
+			KnownTargets.Add(-12);
+			TargetNames.Add(-12, "Dreadmor Caverns");
+			Expectations.Add(-12, new Expectation() { Dungeon = true });
+
+
+			setStatus("Placing dungeon entrances...");
+			foreach (var board in Boards)
 			{
-				setStatus("Placing dungeon entrances... (" + dungeonEntrances + ")");
-				for (int y = 0; y < worldGen.MapSizeY - 1; y++)
+				if (board.Type == BoardType.Town)
+					continue;
+
+				//Don't always place one, to prevent clumping
+				if (Toolkit.Rand.NextDouble() > 0.4)
+					continue;
+
+				var eX = Toolkit.Rand.Next(2, 78);
+				var eY = Toolkit.Rand.Next(1, 23);
+
+				if (board.IsSolid(eY, eX))
+					continue;
+				var sides = 0;
+				if (board.IsSolid(eY - 1, eX))
+					sides++;
+				if (board.IsSolid(eY + 1, eX))
+					sides++;
+				if (board.IsSolid(eY, eX - 1))
+					sides++;
+				if (board.IsSolid(eY, eX + 1))
+					sides++;
+				if (sides > 3)
+					continue;
+
+				var newWarp = new Warp()
 				{
-					for (int x = 0; x < worldGen.MapSizeX - 1; x++)
-					{
-						//Don't place one in oceans
-						if (worldGen.BiomeMap[y, x] == 0)
-							continue;
-						//Don't place one in towns either
-						if (worldGen.TownMap[y, x] > 0)
-							continue;
-
-						//Don't always place one, to prevent north-west clumping
-						if (Toolkit.Rand.NextDouble() > 0.4)
-							continue;
-
-						//And don't place one where there already is one.
-						if (worldGen.TownMap[y, x] == -2)
-							continue;
-
-						var thisMap = Boards[Overworld[x, y]];
-						var eX = Toolkit.Rand.Next(2, 78);
-						var eY = Toolkit.Rand.Next(1, 23);
-
-						if (thisMap.IsSolid(eY, eX))
-							continue;
-						var sides = 0;
-						if (thisMap.IsSolid(eY - 1, eX))
-							sides++;
-						if (thisMap.IsSolid(eY + 1, eX))
-							sides++;
-						if (thisMap.IsSolid(eY, eX - 1))
-							sides++;
-						if (thisMap.IsSolid(eY, eX + 1))
-							sides++;
-						if (sides > 3)
-							continue;
-						worldGen.TownMap[y, x] = -2;
-
-						var newWarp = new Warp()
-						{
-							TargetBoard = -1, //mark as ungenerated dungeon
-							ID = thisMap.ID + "_Dungeon",
-							XPosition = eX,
-							YPosition = eY,
-						};
-						thisMap.Warps.Add(newWarp);
-						thisMap.SetTile(eY, eX, '>', Color.Silver, Color.Black);
-
-						dungeonEntrances++;
-					}
-				}
+					TargetBoard = -1, //mark as ungenerated dungeon
+					ID = board.ID + "_Dungeon",
+					XPosition = eX,
+					YPosition = eY,
+				};
+				board.Warps.Add(newWarp);
+				board.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 			}
-
+		
 			setStatus("Applying missions...");
-			Board.WorldGen = worldGen;
-			ApplyMissions();
+			//Board.WorldGen = worldGen;
+			//ApplyMissions();
 
 			Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
@@ -930,16 +844,12 @@ namespace Noxico
 				}
 			}
 
-			this.CurrentBoard = GetBoard(Overworld[StartingOWX, StartingOWY]);
+			this.CurrentBoard = GetBoard(KnownTargets[0]);
 			this.Player = new Player(pc)
 			{
 				XPosition = 40,
 				YPosition = 12,
 				ParentBoard = this.CurrentBoard,
-				OverworldX = StartingOWX,
-				OverworldY = StartingOWY,
-				OnOverworld = true,
-				CurrentRealm = "Nox",
 			};
 			this.CurrentBoard.Entities.Add(Player);
 
@@ -957,16 +867,6 @@ namespace Noxico
 			SaveGame();
 		}
 
-		public static int GetOverworldIndex(Board board)
-		{
-			var n = HostForm.Noxico;
-			for (var i = 0; i < n.Boards.Count && i < HostForm.Noxico.OverworldBarrier; i++)
-				if (n.GetBoard(i).ID == board.ID)
-					return i;
-			return -1;
-		}
-
-		//TODO: have the game ask for a name through UITextBox. Use this for when 
 		public string RollWorldName()
 		{
 			//var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
@@ -1127,6 +1027,51 @@ namespace Noxico
 				var jsCode = Mix.GetString(jsFile);
 				js.Run(jsCode);
 			}
+		}
+	}
+
+	public class Expectation
+	{
+		public bool Dungeon { get; set; }
+		public int Biome { get; set; }
+		public string Culture { get; set; }
+		public List<string> Roles { get; set; }
+		public List<string> Species { get; set; }
+		public Expectation()
+		{
+			Dungeon = false;
+			Biome = -1;
+			Culture = string.Empty;
+			Roles = new List<string>();
+			Species = new List<string>();
+		}
+		public static Expectation LoadFromFile(BinaryReader stream)
+		{
+			Toolkit.ExpectFromFile(stream, "EXPT", "location expectation");
+			var exp = new Expectation();
+			exp.Dungeon = stream.ReadBoolean();
+			exp.Biome = (int)stream.ReadInt16();
+			exp.Culture = stream.ReadString();
+			var numRoles = stream.ReadInt16();
+			var numSpecies = stream.ReadInt16();
+			for (var i = 0; i < numRoles; i++)
+				exp.Roles.Add(stream.ReadString());
+			for (var i = 0; i < numSpecies; i++)
+				exp.Species.Add(stream.ReadString());
+			return exp;
+		}
+		public void SaveToFile(BinaryWriter stream)
+		{
+			Toolkit.SaveExpectation(stream, "EXPT");
+			stream.Write(Dungeon);
+			stream.Write((Int16)Biome);
+			stream.Write(Culture ?? string.Empty);
+			stream.Write((Int16)Roles.Count);
+			stream.Write((Int16)Species.Count);
+			foreach (var role in Roles)
+				stream.Write(role);
+			foreach (var species in Species)
+				stream.Write(species);
 		}
 	}
 }

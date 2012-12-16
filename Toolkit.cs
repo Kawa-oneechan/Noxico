@@ -848,6 +848,11 @@ namespace Noxico
 			if ((new string(found)) != expected)
 				throw new Exception("Expected to find " + friendly + " data.");
 		}
+
+		public static string ToID(this string name)
+		{
+			return Regex.Replace(name.ToLower(), "(^[A-Z])", "");
+		}
 	}
 }
 

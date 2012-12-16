@@ -242,5 +242,30 @@ namespace Noxico
 			length = entry.Length;
 			mixFile = entry.MixFile;
 		}
+
+		public static void SpreadEm()
+		{
+			Console.WriteLine("Spreadin' em...");
+			if (fileList == null || fileList.Count == 0)
+				Initialize();
+			foreach (var entry in fileList.Values)
+			{
+				if (entry.Length == 0)
+				{
+					Console.WriteLine("* Bogus entry with zero length: \"{0}\", offset {1}", entry.Filename, entry.Offset);
+					continue;
+				}
+				var targetPath = Path.Combine("data", entry.MixFile.Remove(entry.MixFile.Length - 4), entry.Filename);
+				var targetDir = Path.GetDirectoryName(targetPath);
+				if (!Directory.Exists(targetDir))
+					Directory.CreateDirectory(targetDir);
+				using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
+				{
+					mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
+					File.WriteAllBytes(targetPath, mStream.ReadBytes(entry.Length));
+				}
+			}
+			Console.WriteLine("All entries in mix files extracted. Happy Hacking.");
+		}
 	}
 }

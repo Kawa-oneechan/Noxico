@@ -1551,9 +1551,6 @@ namespace Noxico
     {
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
-		public int OverworldX, OverworldY;
-		public bool OnOverworld;
-		public string CurrentRealm;
 		public TimeSpan PlayingTime;
 
         public Player()
@@ -1587,25 +1584,28 @@ namespace Noxico
 			{
 				if (warp.TargetBoard == -1) //ungenerated dungeon
 				{
+					/*
 					NoxicoGame.Mode = UserMode.Subscreen;
 					NoxicoGame.Subscreen = UnsortedSubscreens.CreateDungeon;
 					UnsortedSubscreens.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
 					UnsortedSubscreens.DungeonGeneratorEntranceWarpID = warp.ID;
 					UnsortedSubscreens.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
 					Subscreens.FirstDraw = true;
+					*/
+					WorldGen.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
+					WorldGen.DungeonGeneratorEntranceWarpID = warp.ID;
+					WorldGen.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
+					WorldGen.CreateDungeon();
+					return;
+				}
+				else if (warp.TargetBoard == -2) //unconnected dungeon
+				{
+					Travel.Open();
 					return;
 				}
 
 				var game = NoxicoGame.HostForm.Noxico;
 				var targetBoard = game.GetBoard(warp.TargetBoard); //game.Boards[warp.TargetBoard]; //.Find(b => b.ID == warp.TargetBoard);
-
-				/*
-				if (targetBoard == null)
-				{
-					targetBoard = Board.Load(warp.TargetBoard);
-					game.Boards.Add(targetBoard);
-				}
-				*/
 
 				var sourceBoard = ParentBoard;
 
@@ -1629,7 +1629,6 @@ namespace Noxico
 				NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
 				NoxicoGame.Immediate = true;
 
-				
 				//Going from a dungeon to a wild board?
 				if (targetBoard.GetToken("type").Value == 0 && sourceBoard.GetToken("type").Value == 2)
 					game.FlushDungeons();
@@ -1692,51 +1691,39 @@ namespace Noxico
 			var ly = YPosition;
 
 			#region Inter-board travel
-			//TODO: Hoist this up to BoardChar?
-			if (OnOverworld)
+			var n = NoxicoGame.HostForm.Noxico;
+			Board otherBoard = null;
+			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
-				var n = NoxicoGame.HostForm.Noxico;
-				Board otherBoard = null;
-				if (lx == 79 && targetDirection == Direction.East && OverworldX < n.Overworld.GetUpperBound(0))
-				{
-					otherBoard = n.GetBoard(n.Overworld[this.OverworldX + 1, this.OverworldY]);
-					if (CanMove(otherBoard, 0, ly) != null)
-						return;
-					this.XPosition = 0;
-					this.OverworldX++;
-					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
+				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
+				if (this.CanMove(otherBoard, lx, 24) != null)
 					return;
-				}
-				else if (lx == 0 && targetDirection == Direction.West && OverworldX > 0)
-				{
-					otherBoard = n.GetBoard(n.Overworld[this.OverworldX - 1, this.OverworldY]);
-					if (CanMove(otherBoard, 79, ly) != null)
-						return;
-					this.XPosition = 79;
-					this.OverworldX--;
-					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
+				this.YPosition = 24;
+				OpenBoard(this.ParentBoard.ToNorth);
+			}
+			else if (ly == 24 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
+			{
+				otherBoard = n.GetBoard(this.ParentBoard.ToSouth);
+				if (this.CanMove(otherBoard, lx, 0) != null)
 					return;
-				}
-				else if (ly == 24 && targetDirection == Direction.South && OverworldY < n.Overworld.GetUpperBound(1))
-				{
-					otherBoard = n.GetBoard(n.Overworld[this.OverworldX, this.OverworldY + 1]);
-					if (CanMove(otherBoard, lx, 0) != null)
-						return;
-					this.YPosition = 0;
-					this.OverworldY++;
-					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
+				this.YPosition = 0;
+				OpenBoard(this.ParentBoard.ToSouth);
+			}
+			else if (lx == 0 && targetDirection == Direction.West && this.ParentBoard.ToWest > -1)
+			{
+				otherBoard = n.GetBoard(this.ParentBoard.ToWest);
+				if (this.CanMove(otherBoard, 79, ly) != null)
 					return;
-				}
-				else if (ly == 0 && targetDirection == Direction.North && OverworldY > 0)
-				{
-					otherBoard = n.GetBoard(n.Overworld[this.OverworldX, this.OverworldY - 1]);
-					if (CanMove(otherBoard, lx, 24) != null)
-						return;
-					this.YPosition = 24;
-					this.OverworldY--;
-					OpenBoard(n.Overworld[this.OverworldX, this.OverworldY]);
+				this.XPosition = 79;
+				OpenBoard(this.ParentBoard.ToWest);
+			}
+			else if (lx == 79 && targetDirection == Direction.East && this.ParentBoard.ToEast > -1)
+			{
+				otherBoard = n.GetBoard(this.ParentBoard.ToEast);
+				if (this.CanMove(otherBoard, 0, ly) != null)
 					return;
-				}
+				this.XPosition = 0;
+				OpenBoard(this.ParentBoard.ToEast);
 			}
 			#endregion
 
@@ -1808,7 +1795,7 @@ namespace Noxico
 #endif
 
 #if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}, {3}x{4}) @ {5} {6}", ParentBoard.Name, XPosition, YPosition, OverworldX, OverworldY, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
+			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}) @ {3} {4}", ParentBoard.Name, XPosition, YPosition, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
 #endif
 		}
 
@@ -1887,31 +1874,6 @@ namespace Noxico
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
-			/*
-			if (NoxicoGame.KeyMap[(int)Keys.D])
-			{
-				NoxicoGame.ClearKeys();
-				var options = new Dictionary<object, string>()
-				{
-					{ "slow", "Slow" },
-					{ "haste", "Hastened" },
-					{ "normal", "Normal" },
-				};
-				MessageBox.List("What speed do you want to have?", options, () =>
-					{
-						Subscreens.PreviousScreen.Clear();
-						var target = this; //this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.ID == "Nori_Sakamoto");
-						target.Character.RemoveToken("slow");
-						target.Character.RemoveToken("haste");
-						if ((string)MessageBox.Answer == "slow")
-							target.Character.AddToken("slow");
-						else if ((string)MessageBox.Answer == "haste")
-							target.Character.AddToken("haste");
-					}, false, true, "Debug Mode!");
-				return;
-			}
-			*/
-
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{
@@ -1935,6 +1897,12 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Pause)) //(NoxicoGame.KeyMap[(int)Keys.F1])
 			{
 				Pause.Open();
+				return;
+			}
+
+			if (NoxicoGame.IsKeyDown(KeyBinding.Travel) && this.ParentBoard.Type != BoardType.Dungeon)
+			{
+				Travel.Open();
 				return;
 			}
 
@@ -2268,10 +2236,6 @@ namespace Noxico
 		{
 			Toolkit.SaveExpectation(stream, "PLAY");
 			base.SaveToFile(stream);
-			stream.Write(CurrentRealm);
-			stream.Write(OnOverworld);
-			stream.Write((byte)OverworldX);
-			stream.Write((byte)OverworldY);
 			stream.Write(PlayingTime.Ticks);
 		}
 
@@ -2285,10 +2249,6 @@ namespace Noxico
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 				Character = e.Character,
 			};
-			newChar.CurrentRealm = stream.ReadString();
-			newChar.OnOverworld = stream.ReadBoolean();
-			newChar.OverworldX = stream.ReadByte();
-			newChar.OverworldY = stream.ReadByte();
 			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
 			return newChar;
 		}

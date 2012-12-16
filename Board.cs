@@ -223,6 +223,10 @@ namespace Noxico
 		public string ID { get { return GetToken("id").Text; } set { GetToken("id").Text = value; } }
 		public string Music { get { return GetToken("music").Text; } set { GetToken("music").Text = value; } }
 		public BoardType Type { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
+		public int ToNorth { get { return (int)GetToken("north").Value; } set { GetToken("north").Value = value; } }
+		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
+		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
+		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
 		public List<Entity> Entities { get; set; }
 		public List<Warp> Warps { get; set; }
 		public List<Location> DirtySpots { get; set; }
@@ -237,14 +241,16 @@ namespace Noxico
 
 		public override string ToString()
 		{
-			return string.Format("{0} - \"{1}\"", ID, Name);
+			return string.Format("#{0} {1} - \"{2}\"", BoardNum, ID, Name);
 		}
 
 		public Board()
 		{
 			this.Tokens = new List<Token>();
 			foreach (var t in new[] { "name", "id", "music", "type", "biome", "encounters" })
-				this.Tokens.Add(new Token() { Name = t });
+				this.AddToken(t);
+			foreach (var t in new[] { "north", "south", "east", "west" })
+				this.AddToken(t, -1, string.Empty);
 			this.Entities = new List<Entity>();
 			this.EntitiesToRemove = new List<Entity>();
 			this.EntitiesToAdd = new List<Entity>();
@@ -267,7 +273,7 @@ namespace Noxico
 
 		public void SaveToFile(int index)
 		{
-			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "boards");
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
 			//Console.WriteLine(" * Saving board {0}...", Name);
@@ -325,7 +331,7 @@ namespace Noxico
 
 		public static Board LoadFromFile(int index)
 		{
-			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, NoxicoGame.HostForm.Noxico.Player.CurrentRealm);
+			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "boards");
 			var file = System.IO.Path.Combine(realm, "Board" + index + ".brd");
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Board #" + index + " not found!");
@@ -407,510 +413,6 @@ namespace Noxico
 			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
 				if (Toolkit.Rand.NextDouble() > 0.7)
 					this.EntitiesToRemove.Add(corpse);
-		}
-
-		[Obsolete("Don't use until the Home Base system is in. Other than that, cannibalize away me hearties." , true)]
-		public static Board Load(string id)
-		{
-			var xDoc = Mix.GetXMLDocument("boards.xml");
-			//var xDoc = new XmlDocument();
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Boards, "boards.xml"));
-			var source = xDoc.SelectSingleNode("//board[@id=\"" + id + "\"]") as XmlElement;
-			if (source == null)
-				throw new Exception("No such board.");
-
-			var newBoard = new Board();
-			newBoard.Name = id;
-			newBoard.Music = source.GetAttribute("music");
-			NoxicoGame.HostForm.Text = "Noxico - Loading...";
-
-			#region Base
-			if (source.HasAttribute("base"))
-			{
-				if (source.GetAttribute("base") == "grass")
-				{
-					var grasses = new[] { ',', '\'', '`', '.', };
-					for (int row = 0; row < 25; row++)
-					{
-						for (int col = 0; col < 80; col++)
-						{
-							newBoard.Tilemap[col, row] = new Tile()
-							{
-								Character = grasses[Toolkit.Rand.Next(grasses.Length)],
-								Background = Color.Black,
-								Foreground = Color.Green,
-								CanBurn = true
-							};
-						}
-					}
-				}
-				else if (source.GetAttribute("base") == "inside")
-				{
-					for (int row = 0; row < 25; row++)
-						for (int col = 0; col < 80; col++)
-							newBoard.Tilemap[col, row] = new Tile()
-							{
-								Character = (char)0xB1,
-								Background = Color.Black,
-								Foreground = Color.Gray,
-								CanBurn = false,
-								Solid = true,
-							};
-				}
-			}
-			#endregion
-
-			#region Buildings
-			var buildings = source.SelectNodes("building");
-			foreach (var b in buildings.OfType<XmlElement>())
-			{
-				var x1 = int.Parse(b.GetAttribute("left"));
-				var y1 = int.Parse(b.GetAttribute("top"));
-				var x2 = int.Parse(b.GetAttribute("right"));
-				var y2 = int.Parse(b.GetAttribute("bottom"));
-
-				if (b.HasAttribute("id"))
-				{
-					var sid = b.GetAttribute("id");
-					if (!newBoard.Sectors.ContainsKey(sid))
-						newBoard.Sectors.Add(sid, new Rectangle() { Left = x1, Top = y1, Bottom = x2, Right = y2 });
-				}
-
-				for (int row = y1; row <= y2; row++)
-				{
-					for (int col = x1; col <= x2; col++)
-					{
-						newBoard.Tilemap[col, row] = new Tile()
-						{
-							Character = ' ',
-							Background = Color.Black,
-							Foreground = Color.Brown,
-							CanBurn = false
-						};
-					}
-				}
-
-				//Left and right walls
-				for (int row = y1 + 1; row < y2; row++)
-				{
-					newBoard.Tilemap[x1, row].Character = (char)0xBA;
-					newBoard.Tilemap[x1, row].Solid = true;
-					newBoard.Tilemap[x1, row].CanBurn = true;
-
-					newBoard.Tilemap[x2, row].Character = (char)0xBA;
-					newBoard.Tilemap[x2, row].Solid = true;
-					newBoard.Tilemap[x2, row].CanBurn = true;
-				}
-
-				//Top and bottom walls
-				for (int col = x1 + 1; col < x2; col++)
-				{
-					newBoard.Tilemap[col, y1].Character = (char)0xCD;
-					newBoard.Tilemap[col, y1].Solid = true;
-					newBoard.Tilemap[col, y1].CanBurn = true;
-
-					newBoard.Tilemap[col, y2].Character = (char)0xCD;
-					newBoard.Tilemap[col, y2].Solid = true;
-					newBoard.Tilemap[col, y2].CanBurn = true;
-				}
-
-				//Top left corner
-				newBoard.Tilemap[x1, y1].Character = (char)0xC9;
-				newBoard.Tilemap[x1, y1].Solid = true;
-				newBoard.Tilemap[x1, y1].CanBurn = true;
-
-				//Top right corner
-				newBoard.Tilemap[x2, y1].Character = (char)0xBB;
-				newBoard.Tilemap[x2, y1].Solid = true;
-				newBoard.Tilemap[x2, y1].CanBurn = true;
-
-				//Bottom left corner
-				newBoard.Tilemap[x1, y2].Character = (char)0xC8;
-				newBoard.Tilemap[x1, y2].Solid = true;
-				newBoard.Tilemap[x1, y2].CanBurn = true;
-
-				//Bottom right corner
-				newBoard.Tilemap[x2, y2].Character = (char)0xBC;
-				newBoard.Tilemap[x2, y2].Solid = true;
-				newBoard.Tilemap[x2, y2].CanBurn = true;
-
-				var exits = b.SelectNodes("exit");
-				foreach (var e in exits.OfType<XmlElement>())
-				{
-					var eH = false;
-					var eX = 0;
-					var eY = 0;
-					switch (e.GetAttribute("direction"))
-					{
-						case "east":
-							eX = x2;
-							eY = y1 + (y2 - y1) / 2;
-							break;
-						case "west":
-							eX = x1;
-							eY = y1 + (y2 - y1) / 2;
-							break;
-						case "north":
-							eH = true;
-							eX = x1 + (x2 - x1) / 2;
-							eY = y1;
-							break;
-						case "south":
-							eH = true;
-							eX = x1 + (x2 - x1) / 2;
-							eY = y2;
-							break;
-					}
-
-					if (eH)
-					{
-						newBoard.Tilemap[eX - 1, eY].Character = (char)0xB5;
-						newBoard.Tilemap[eX + 1, eY].Character = (char)0xC6;
-						newBoard.Tilemap[eX, eY].Character = ' ';
-						newBoard.Tilemap[eX, eY].Solid = false;
-					}
-					else
-					{
-						newBoard.Tilemap[eX, eY - 1].Character = (char)0xD0;
-						newBoard.Tilemap[eX, eY + 1].Character = (char)0xD2;
-						newBoard.Tilemap[eX, eY].Character = ' ';
-						newBoard.Tilemap[eX, eY].Solid = false;
-					}
-				}
-			}
-
-			//Fix wall pieces
-			var wallPieces = "\xBA\xCE\xCD\xC9\xCB\xBB\xB9\xBC\xCA\xC8\xCC";
-			for (var row = 1; row < 24; row++)
-			{
-				for (var col = 1; col < 24; col++)
-				{
-					if (newBoard.Tilemap[col, row].Foreground == Color.Brown && wallPieces.Contains(newBoard.Tilemap[col, row].Character))
-					{
-						if (newBoard.Tilemap[col, row].Character == '\xC9' && newBoard.Tilemap[col, row - 1].Character == '\xBA') //╔ ║ > ╠
-							newBoard.Tilemap[col, row].Character = '\xCC';
-						else if (newBoard.Tilemap[col, row].Character == '\xBC' && newBoard.Tilemap[col + 1, row].Character == '\xCD') //╝ ═ > ╩
-							newBoard.Tilemap[col, row].Character = '\xCA';
-						else if (newBoard.Tilemap[col, row].Character == '\xBB' && newBoard.Tilemap[col + 1, row].Character == '\xCD') //╗ ═ > ╦
-							newBoard.Tilemap[col, row].Character = '\xCB';
-						else if (newBoard.Tilemap[col, row].Character == '\xBB' && newBoard.Tilemap[col, row - 1].Character == '\xD2') //╗ ╥ > ╣
-							newBoard.Tilemap[col, row].Character = '\xB9';
-					}
-				}
-			}
-			#endregion
-
-			#region Patches
-			var patches = source.SelectNodes("patch");
-			foreach (var p in patches.OfType<XmlElement>())
-			{
-				var x1 = int.Parse(p.GetAttribute("left"));
-				var y1 = int.Parse(p.GetAttribute("top"));
-				var x2 = x1;
-				var y2 = y1;
-				if (p.HasAttribute("right"))
-					x2 = int.Parse(p.GetAttribute("right"));
-				if (p.HasAttribute("bottom"))
-					y2 = int.Parse(p.GetAttribute("bottom"));
-				if (p.HasAttribute("id"))
-				{
-					var sid = p.GetAttribute("id");
-					if (!newBoard.Sectors.ContainsKey(sid))
-						newBoard.Sectors.Add(sid, new Rectangle() { Left = x1, Top = y1, Right = x2, Bottom = y2 });
-				}
-				var ch = ' ';
-				var fg = Color.Silver;
-				var bg = Color.Black;
-				try
-				{
-					ch = (char)int.Parse(p.GetAttribute("character"));
-				}
-				catch
-				{
-					ch = p.GetAttribute("character")[0];
-				}
-				try
-				{
-					fg = Toolkit.GetColor(p.GetAttribute("forecolor")); //int.Parse(p.GetAttribute("forecolor"));
-					bg = Toolkit.GetColor(p.GetAttribute("backcolor")); //int.Parse(p.GetAttribute("backcolor"));
-				}
-				catch
-				{ }
-				var bu = p.GetAttribute("burns") == "true";
-				var so = p.GetAttribute("solid") == "true";
-				for (int row = y1; row <= y2; row++)
-				{
-					for (int col = x1; col <= x2; col++)
-					{
-						newBoard.Tilemap[col, row] = new Tile()
-						{
-							Character = ch,
-							Background = bg,
-							Foreground = fg,
-							CanBurn = bu,
-							Solid = so,
-						};
-					}
-				}
-			}
-			#endregion
-
-			#region Structures
-			var structs = source.SelectNodes("structure");
-			foreach (var s in structs.OfType<XmlElement>())
-			{
-				var x = int.Parse(s.GetAttribute("left"));
-				var y = int.Parse(s.GetAttribute("top"));
-				var w = int.Parse(s.GetAttribute("width"));
-				var h = int.Parse(s.GetAttribute("height"));
-				var x1 = x;
-				var y1 = y;
-				if (s.HasAttribute("id"))
-				{
-					var sid = s.GetAttribute("id");
-					if (!newBoard.Sectors.ContainsKey(sid))
-						newBoard.Sectors.Add(sid, new Rectangle() { Left = x, Top = y, Right = x + w, Bottom = y + h });
-				}
-				foreach (var c in s.ChildNodes.OfType<XmlElement>())
-				{
-					if (c.Name != "tile")
-						continue;
-
-					var ch = ' ';
-					var fg = Color.Silver;
-					var bg = Color.Black;
-					try
-					{
-						ch = (char)int.Parse(c.GetAttribute("character"));
-					}
-					catch
-					{
-						ch = c.GetAttribute("character")[0];
-					}
-					try
-					{
-						fg = Toolkit.GetColor(c.GetAttribute("forecolor")); //int.Parse(c.GetAttribute("forecolor"));
-						bg = Toolkit.GetColor(c.GetAttribute("backcolor")); //int.Parse(c.GetAttribute("backcolor"));
-					}
-					catch
-					{ }
-					var bu = c.GetAttribute("burns") == "true";
-					var so = c.GetAttribute("solid") == "true";
-					newBoard.Tilemap[x1, y1] = new Tile()
-					{
-						Character = ch,
-						Background = bg,
-						Foreground = fg,
-						CanBurn = bu,
-						Solid = so,
-					};
-					x1++;
-					if (x1 == x + w)
-					{
-						x1 = x;
-						y1++;
-					}
-				}
-			}
-			#endregion
-
-			#region Floorbots
-			/*
-			var floorbots = source.SelectNodes("floorbot");
-			foreach (var f in floorbots.OfType<XmlElement>())
-			{
-				var x = int.Parse(f.GetAttribute("left"));
-				var y = int.Parse(f.GetAttribute("top"));
-				var ch = ' ';
-				var fg = 7;
-				var bg = 0;
-				try
-				{
-					ch = (char)int.Parse(f.GetAttribute("character"));
-				}
-				catch
-				{
-					ch = f.GetAttribute("character")[0];
-				}
-				try
-				{
-					fg = int.Parse(f.GetAttribute("forecolor"));
-					bg = int.Parse(f.GetAttribute("backcolor"));
-				}
-				catch
-				{ }
-				var script = f.InnerText.Trim();
-				var floorbot = new FloorBot() { XPosition = x, YPosition = y, AsciiChar = ch, ForegroundColor = fg, BackgroundColor = bg };
-				floorbot.LoadScript(script);
-				newBoard.Entities.Add(floorbot);
-			}
-			*/
-			#endregion
-
-			#region Clutter
-			var clutter = source.SelectNodes("clutter");
-			foreach (var d in clutter.OfType<XmlElement>())
-			{
-				var x = int.Parse(d.GetAttribute("left"));
-				var y = int.Parse(d.GetAttribute("top"));
-				var ch = ' ';
-				var fg = Color.Silver;
-				var bg = Color.Black;
-				try
-				{
-					ch = (char)int.Parse(d.GetAttribute("character"));
-				}
-				catch
-				{
-					ch = d.GetAttribute("character")[0];
-				}
-				try
-				{
-					fg = Toolkit.GetColor(d.GetAttribute("forecolor")); //int.Parse(d.GetAttribute("forecolor"));
-					bg = Toolkit.GetColor(d.GetAttribute("backcolor")); //int.Parse(d.GetAttribute("backcolor"));
-				}
-				catch
-				{ }
-				var block = d.GetAttribute("blocking") == "true";
-				var name = d.GetAttribute("name");
-				var description = d.InnerText.Trim();
-				newBoard.Entities.Add(new Clutter(ch, fg, bg, block, name, description) { XPosition = x, YPosition = y });
-			}
-			#endregion
-
-			#region Characters
-			var characters = source.SelectNodes("character");
-			foreach (var c in characters.OfType<XmlElement>())
-			{
-				var x = int.Parse(c.GetAttribute("left"));
-				var y = int.Parse(c.GetAttribute("top"));
-				var m = c.GetAttribute("movement");
-				var mm = Motor.Stand;
-				if (m == "wander")
-					mm = Motor.Wander;
-				else if (newBoard.Sectors.ContainsKey(m))
-					mm = Motor.WanderSector;
-				var bp = c.GetAttribute("bodyplan");
-				var nm = c.GetAttribute("name");
-				var pa = c.GetAttribute("pairing");
-				Character ch;
-				if (bp != "")
-				{
-					var g = (Gender)Enum.Parse(typeof(Gender), c.GetAttribute("gender"), true);
-					ch = Character.Generate(bp, g);
-				}
-				else
-					ch = Character.GetUnique(nm);
-				if (c.HasAttribute("name"))
-				{
-					if (c.GetAttribute("name") == "random")
-					{
-						/*
-						ch.GiveName();
-						if (pa != "")
-						{
-							foreach (var so in newBoard.Entities.OfType<BoardChar>())
-							{
-								if (so.Pairing == pa)
-								{
-									ch.FamilyName = so.Character.FamilyName;
-									break;
-								}
-							}
-						}
-						*/
-					}
-					else
-						ch.Name = new Name(c.GetAttribute("name"));
-				}
-				newBoard.Entities.Add(new BoardChar(ch)
-				{
-					XPosition = x,
-					YPosition = y,
-					Movement = mm,
-					Sector = m,
-					Pairing = pa,
-					ParentBoard = newBoard
-				});
-			}
-			#endregion
-
-			#region Warps
-			var warps = source.SelectNodes("warp");
-			foreach (var w in warps.OfType<XmlElement>())
-			{
-				var x = int.Parse(w.GetAttribute("left"));
-				var y = int.Parse(w.GetAttribute("top"));
-				var wi = w.GetAttribute("id");
-				var tb = w.GetAttribute("target");
-				var tw = w.GetAttribute("warp");
-				//newBoard.Warps.Add(new Warp() { XPosition = x, YPosition = y, ID = wi, TargetBoard = tb, TargetWarpID = tw });
-				if (w.HasChildNodes)
-				{
-					var t = w.SelectSingleNode("tile") as XmlElement;
-					if (t != null)
-					{
-						var ch = ' ';
-						var fg = Color.Silver;
-						var bg = Color.Black;
-						try
-						{
-							ch = (char)int.Parse(t.GetAttribute("character"));
-						}
-						catch
-						{
-							ch = t.GetAttribute("character")[0];
-						}
-						try
-						{
-							fg = Toolkit.GetColor(t.GetAttribute("forecolor")); //int.Parse(t.GetAttribute("forecolor"));
-							bg = Toolkit.GetColor(t.GetAttribute("backcolor")); //int.Parse(t.GetAttribute("backcolor"));
-						}
-						catch
-						{ }
-						newBoard.Tilemap[x, y] = new Tile()
-						{
-							Character = ch,
-							Background = bg,
-							Foreground = fg,
-						};
-
-					}
-				}
-			}
-			#endregion
-
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0}", id);
-			return newBoard;
-		}
-
-		[Obsolete("Used by Load.", true)]
-		private static char CombineWall(char oldWall, char newWall)
-		{
-			if (oldWall == newWall)
-				return newWall;
-			var starters = "\xBA\xCE\xCD\xC9\xCB\xBB\xB9\xBC\xCA\xC8\xCC"; //"║╬═╔╦╗╣╝╩╚╠";
-			if (!starters.Contains(oldWall) || !starters.Contains(newWall))
-				return newWall;
-			var combos = new[]
-			{
-				"\xBA\xCD\xCE",
-				"\xBA\xBB\xB9", "\xBA\xBC\xB9", "\xBA\xC9\xCC", "\xBA\xC8\xCC", "\xBA\xB9\xB9", "\xBA\xCC\xCC", "\xBA\xCB\xCE", "\xBA\xCA\xCE",
-				"\xCD\xBB\xCB", "\xCD\xC9\xCB", "\xCD\xC8\xCA", "\xCD\xBC\xCA", "\xCD\xB9\xCE", "\xCD\xCC\xCE", "\xCD\xCB\xCB", "\xCD\xCA\xCA",
-				//"║═╬",
-				//"║╗╣", "║╝╣", "║╔╠", "║╚╠", "║╣╣", "║╠╠", "║╦╬", "║╩╬",
-				//"═╗╦", "═╔╦", "═╚╩", "═╝╩", "═╣╬", "═╠╬", "═╦╦", "═╩╩",
-			};
-			var c = new List<string>();
-			foreach (var combo in combos)
-			{
-				c.Add(combo);
-				c.Add(string.Format("{1}{0}{2}", combo[0], combo[1], combo[2]));
-			}
-			var thisCombo = c.Find(x => x[0] == oldWall && x[1] == newWall);
-			if (thisCombo == null)
-				return newWall;
-			return thisCombo[2];
 		}
 
 		public bool IsSolid(int row, int col, bool flying = false)
@@ -1093,29 +595,44 @@ namespace Noxico
 			if (this != nox.CurrentBoard)
 				return;
 			var p = nox.Player;
-			if (p.OnOverworld)
+			if (this.ToNorth > -1)
+				nox.GetBoard(this.ToNorth).Update(true, true);
+			if (this.ToSouth > -1)
+				nox.GetBoard(this.ToNorth).Update(true, true);
+			if (this.ToEast > -1)
+				nox.GetBoard(this.ToEast).Update(true, true);
+			if (this.ToWest > -1)
+				nox.GetBoard(this.ToWest).Update(true, true);
+
+			//Handle the NorthWest corner through either North or West.
+			if (this.ToNorth > -1 || this.ToWest > -1)
 			{
-				//We are on the overworld. Update the surrounding boards.
-				var owW = nox.Overworld.GetUpperBound(0);
-				var owH = nox.Overworld.GetUpperBound(1);
-				var owX = p.OverworldX;
-				var owY = p.OverworldY;
-				if (owY > 0) //north
-					nox.GetBoard(nox.Overworld[owX, owY - 1]).Update(true, true);
-				if (owX > 0 && owY > 0) //northwest
-					nox.GetBoard(nox.Overworld[owX - 1, owY - 1]).Update(true, true);
-				if (owX > 0) //west
-					nox.GetBoard(nox.Overworld[owX - 1, owY]).Update(true, true);
-				if (owX > 0 && owY < owH - 1) //southwest
-					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
-				if (owY < owH - 1) //south
-					nox.GetBoard(nox.Overworld[owX, owY + 1]).Update(true, true);
-				if (owX < owW - 1 && owY < owH - 1) //southeast
-					nox.GetBoard(nox.Overworld[owX + 1, owY + 1]).Update(true, true);
-				if (owX < owW - 1) //east
-					nox.GetBoard(nox.Overworld[owX + 1, owY]).Update(true, true);
-				if (owX > 0 && owY < owH - 1) //northwest
-					nox.GetBoard(nox.Overworld[owX - 1, owY + 1]).Update(true, true);
+				if (this.ToNorth > -1 && nox.GetBoard(this.ToNorth).ToWest > -1)
+					nox.GetBoard(nox.GetBoard(this.ToNorth).ToWest).Update(true, true);
+				else if (this.ToWest > -1 && nox.GetBoard(this.ToWest).ToNorth > -1)
+					nox.GetBoard(nox.GetBoard(this.ToWest).ToNorth).Update(true, true);
+			}
+			//Similar for other corners
+			if (this.ToNorth > -1 || this.ToEast > -1)
+			{
+				if (this.ToNorth > -1 && nox.GetBoard(this.ToNorth).ToEast > -1)
+					nox.GetBoard(nox.GetBoard(this.ToNorth).ToEast).Update(true, true);
+				else if (this.ToEast > -1 && nox.GetBoard(this.ToEast).ToNorth > -1)
+					nox.GetBoard(nox.GetBoard(this.ToEast).ToNorth).Update(true, true);
+			}
+			if (this.ToSouth > -1 || this.ToWest > -1)
+			{
+				if (this.ToSouth > -1 && nox.GetBoard(this.ToSouth).ToWest > -1)
+					nox.GetBoard(nox.GetBoard(this.ToSouth).ToWest).Update(true, true);
+				else if (this.ToWest > -1 && nox.GetBoard(this.ToWest).ToSouth > -1)
+					nox.GetBoard(nox.GetBoard(this.ToWest).ToSouth).Update(true, true);
+			}
+			if (this.ToSouth > -1 || this.ToEast > -1)
+			{
+				if (this.ToSouth > -1 && nox.GetBoard(this.ToSouth).ToEast > -1)
+					nox.GetBoard(nox.GetBoard(this.ToSouth).ToEast).Update(true, true);
+				else if (this.ToEast > -1 && nox.GetBoard(this.ToEast).ToSouth > -1)
+					nox.GetBoard(nox.GetBoard(this.ToEast).ToSouth).Update(true, true);
 			}
 		}
 
@@ -1223,7 +740,7 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					var b = bitmap[(y * 25) + row, (x * 80) + col];
-					var d = WorldGen.Biomes[b];
+					var d = BiomeData.Biomes[b];
 					var fg = d.Color.Darken();
 					var bg = d.Color;
 					if (d.DarkenPlus != 0 && d.DarkenDiv != 0)
@@ -1241,7 +758,7 @@ namespace Noxico
 				}
 			}
 
-			var biomeData = WorldGen.Biomes[biome];
+			var biomeData = BiomeData.Biomes[biome];
 	
 			var nameID = string.Format("OW_{0}x{1}", x, y);
 			newBoard.Tokens = Token.Tokenize("name: \"" + nameID + "\"\nid: \"" + nameID + "\"\nx: " + x + "\ny: " + y + "\nmusic: \"" + biomeData.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
@@ -1269,7 +786,7 @@ namespace Noxico
 			file.WriteLine("\tID: {0}<br />", ID);
 			file.WriteLine("\tMusic: {0}<br />", Music);
 			file.WriteLine("\tType: {0}<br />", Type);
-			file.WriteLine("\tBiome: {0}<br />", WorldGen.Biomes[(int)GetToken("biome").Value].Name);
+			file.WriteLine("\tBiome: {0}<br />", BiomeData.Biomes[(int)GetToken("biome").Value].Name);
 			file.WriteLine("\tCulture: {0}<br />", HasToken("culture") ? GetToken("culture").Text : "&lt;none&gt;");
 			file.WriteLine("</p>");
 			file.WriteLine("<pre>");
@@ -1432,6 +949,29 @@ namespace Noxico
 			if (s.Left >= x && s.Right <= x && s.Top >= y && s.Bottom <= y)
 				return true;
 			return false;
+		}
+
+		public void Connect(Direction dir, Board target)
+		{
+			switch (dir)
+			{
+				case Direction.North:
+					this.ToNorth = target.BoardNum;
+					target.ToSouth = this.BoardNum;
+					break;
+				case Direction.South:
+					this.ToSouth = target.BoardNum;
+					target.ToNorth = this.BoardNum;
+					break;
+				case Direction.East:
+					this.ToEast = target.BoardNum;
+					target.ToWest = this.BoardNum;
+					break;
+				case Direction.West:
+					this.ToWest = target.BoardNum;
+					target.ToEast = this.BoardNum;
+					break;
+			}
 		}
 	}
 

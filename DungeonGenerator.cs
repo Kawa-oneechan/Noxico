@@ -179,6 +179,7 @@ namespace Noxico
 			var caveStart = Color.FromArgb(65, 66, 87);
 			var caveEnd = Color.FromArgb(88, 89, 122);
 			var wall = Color.FromArgb(71, 50, 33);
+			var water = BiomeData.Biomes[0];
 
 			var cornerJunctions = new List<Point>();
 			var doorCount = 0;
@@ -221,57 +222,6 @@ namespace Noxico
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
 									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
 									ch = '\xA0';
-
-									#region Veranda check -- prevents exits from being blocked by water.
-									var veranda = -1;
-									if (sX + x < 79 && map[sX + x + 1, sY + y].IsWater)
-										veranda = 1; //vertical veranda to the east
-									else if (sX + x > 1 && map[sX + x - 1, sY + y].IsWater)
-										veranda = 2; //vertical veranda to the west
-									else if (sY + y < 24 && map[sX + x, sY + y + 1].IsWater)
-										veranda = 3; //horizontal veranda to the south
-									else if (sY + y > 1 && map[sX + x, sY + y - 1].IsWater)
-										veranda = 4; //horizontal veranda to the north
-									if (veranda > 0)
-									{
-										if (veranda <= 2) //vertical
-										{
-											var vX = sX + x + (veranda == 1 ? 1 : -1);
-											for (var vY = sY + y; vY > 0; vY--) //trace up
-											{
-												if (map[vX, vY].IsWater)
-													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
-												else
-													break;
-											}
-											for (var vY = sY + y + 1; vY < 25; vY++) //trace down
-											{
-												if (map[vX, vY].IsWater)
-													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
-												else
-													break;
-											}
-										}
-										else //vertical
-										{
-											var vY = sY + y + (veranda == 1 ? 1 : -1);
-											for (var vX = sX + x; vX > 0; vX--) //trace left
-											{
-												if (map[vX, vY].IsWater)
-													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
-												else
-													break;
-											}
-											for (var vX = sX + x + 1; vX < 80; vX++) //trace right
-											{
-												if (map[vX, vY].IsWater)
-													map[vX, vY] = new Tile() { Character = '#', Foreground = floorStart, Background = floorEnd };
-												else
-													break;
-											}
-										}
-									}
-									#endregion
 
 									if (addDoor)
 									{
@@ -392,13 +342,19 @@ namespace Noxico
 												Board.Entities.Add(newClutter);
 											}
 										}
+										else if (m.Type == "water")
+										{
+											ch = water.GroundGlyphs[Toolkit.Rand.Next(water.GroundGlyphs.Length)];
+											fg = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
+											bg = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
+											w = water.IsWater;
+										}
 										else
 										{
 											fg = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
 											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
 											ch = m.Params.Last()[0];
 											s = m.Type != "floor";
-											w = m.Type == "water";
 										}
 										#endregion
 									}
