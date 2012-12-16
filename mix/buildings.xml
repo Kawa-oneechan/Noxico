@@ -77,6 +77,36 @@
 				<marking char="=" type="block,wall,floor,&#x2261;" />
 			</markings>
 		</template>
+		<template name="water!">
+			<map>
+				'''''''''''
+				'''www'''''
+				''wwwww''''
+				'wwwwwww'''
+				''wwwwwww''
+				''wwwwwwww'
+				''''wwwwww'
+				''''''www''
+				'''''''''''
+			</map>
+			<markings>
+				<marking char="w" type="water,blue,navy,&#x007E;" />
+			</markings>
+		</template>
+		<template name="water!">
+			<map>
+				''''''''''
+				'www''''''
+				'ww''wwww'
+				''''wwwww'
+				'''''www''
+				''''''''''
+				''''''''''
+			</map>
+			<markings>
+				<marking char="w" type="water,blue,navy,&#x007E;" />
+			</markings>
+		</template>
 	</set>
 	<set id="dungeon">
 		<template name="simple dungeon cell">

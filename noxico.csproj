@@ -131,6 +131,7 @@
     <Compile Include="InventoryItem.cs" />
     <Compile Include="Jint.cs" />
     <Compile Include="Mix.cs" />
+    <Compile Include="Subscreens\Travel.cs" />
     <Compile Include="Tokens.cs" />
     <Compile Include="GamerServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

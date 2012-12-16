@@ -17,6 +17,12 @@ namespace Noxico
 		[STAThread]
 		static void Main(string[] args)
 		{
+			if (args.Contains("-spreadem"))
+			{
+				Mix.SpreadEm();
+				return;
+			}
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			try
