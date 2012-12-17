@@ -630,19 +630,21 @@ namespace Noxico
 
 			setStatus("Generating handful of towns...");
 			var townGen = new TownGenerator();
-			for (var i = 0; i < 8; i++)
+			for (var i = 0; i < 2; i++)
 			{
 				var thisMap = WorldGen.CreateTown(-1, null, null, true);
 				KnownTargets.Add(thisMap.BoardNum);
 				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
 			}
 
+			/*
 			KnownTargets.Add(-10);
 			TargetNames.Add(-10, "OndemandVille");
 			Expectations.Add(-10, new Expectation() { Biome = 9 });
 			KnownTargets.Add(-12);
 			TargetNames.Add(-12, "Dreadmor Caverns");
 			Expectations.Add(-12, new Expectation() { Dungeon = true });
+			*/
 
 
 			setStatus("Placing dungeon entrances...");
@@ -1037,6 +1039,7 @@ namespace Noxico
 		public string Culture { get; set; }
 		public List<string> Roles { get; set; }
 		public List<string> Species { get; set; }
+		
 		public Expectation()
 		{
 			Dungeon = false;
@@ -1045,6 +1048,7 @@ namespace Noxico
 			Roles = new List<string>();
 			Species = new List<string>();
 		}
+		
 		public static Expectation LoadFromFile(BinaryReader stream)
 		{
 			Toolkit.ExpectFromFile(stream, "EXPT", "location expectation");
@@ -1060,6 +1064,7 @@ namespace Noxico
 				exp.Species.Add(stream.ReadString());
 			return exp;
 		}
+		
 		public void SaveToFile(BinaryWriter stream)
 		{
 			Toolkit.SaveExpectation(stream, "EXPT");
@@ -1072,6 +1077,49 @@ namespace Noxico
 				stream.Write(role);
 			foreach (var species in Species)
 				stream.Write(species);
+		}
+
+		public int ID
+		{
+			get
+			{
+				return NoxicoGame.Expectations.First(e => e.Value == this).Key;
+			}
+		}
+		public string Name
+		{
+			get
+			{
+				return NoxicoGame.TargetNames[ID];
+			}
+		}
+
+		public static Expectation ExpectTown(string name, int biomeID)
+		{
+			var boards = NoxicoGame.HostForm.Noxico.Boards;
+			if (biomeID < 0)
+				biomeID = Toolkit.Rand.Next(2, 5);
+			var biome = BiomeData.Biomes[biomeID];
+			var cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
+			var culture = Noxico.Culture.Cultures[cultureName];
+
+			if (string.IsNullOrEmpty(name))
+			{
+				while (true)
+				{
+					name = Noxico.Culture.GetName(culture.TownName, Noxico.Culture.NameType.Town);
+					if (boards.Find(b => b != null && b.Name == name) == null)
+						break;
+				}
+			}
+			var id = -10;
+			if (NoxicoGame.Expectations.Count > 0)
+				id = NoxicoGame.Expectations.Last().Key;
+			id--;
+			NoxicoGame.Expectations.Add(id, new Expectation() { Biome = biomeID, Culture = cultureName });
+			NoxicoGame.TargetNames.Add(id, name);
+			NoxicoGame.KnownTargets.Add(id);
+			return NoxicoGame.Expectations[id];
 		}
 	}
 }
