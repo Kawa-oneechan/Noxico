@@ -40,6 +40,21 @@
 			print("[b:name] is now willing. Cheater.");
 		</script>
 	</scene>
+	<scene id="test2a" name="tell about location a" list="(DEBUG) Tell about random location again" priority="high">
+		<filter target="bottom" type="has" name="gavenewtown"/>
+		<p>
+			"I told you, you should visit [b:T:gavenewtown]."
+		</p>
+	</scene>
+	<scene id="test2b" name="tell about location a" list="(DEBUG) Tell about random location" priority="high">
+		<script type="text/javascript">
+			<![CDATA[
+				var newExpectation = expecttown(null, -1);
+				print("\"Have you heard of " + newExpectation.Name + "?\"");
+				bottom.AddToken("gavenewtown", newExpectation.ID, newExpectation.Name);				
+			]]>
+		</script>
+	</scene>
 	<scene id="zzz1" name="(starting node)" priority="high">
 		<filter target="bottom" type="has" name="sleeping" />
 		<p>
@@ -103,6 +118,7 @@
 		<p>
 			"Greetings, traveller," [b:he] says with a friendly unassuming smile. "Can I help you?"
 		</p>
+		<action name="tell about location a" />
 		<action name="introduce yourself" />
 		<action name="invite to have sex" />
 		<action name="no thank you goodbye" />
