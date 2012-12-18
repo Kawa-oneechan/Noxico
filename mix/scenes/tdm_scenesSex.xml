@@ -170,7 +170,7 @@
 		<p>
 			Looks like you're going to be the recipient of more than just some physical injuries from this [t:title].
 		</p>
-		<!-- Game chooses from the below. We can call letbottomchoose() in a script block to allow the player some choice in the matter. -->
+		<!-- Game chooses from the below. We can call LetBottomChoose() in a script block to allow the player some choice in the matter. -->
 		<action name="get forced to blowjob" />
 		<action name="get forced to eat out" />
 		<action name="get fucked in vagina" />
@@ -190,7 +190,7 @@
 			Will you give [t:him] the oral pleasure that [t:he] obviously wants, or refuse?
 		</p>
 		<script type="text/javascript">
-			letbottomchoose();
+			LetBottomChoose();
 		</script>
 		<!-- The script above lets the player choose between these. This is automatically reset. -->
 		<action name="get forced to blowjob okay" />

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action name CDATA #REQUIRED>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+
+<scenes>
+	<!-- Written by PillowShout -->
+	
+	<!-- Player win rapes -->
+	<scene id="Pillow_PlayerWinImpRapeStart" name="(rape start)">
+	<filter target="bottom" type="bodylev" name="imp" />
+		<p>
+			Seeing this as the perfect opportunity for some payback, you stand over the enfeebled [b:title] and smirk as [t:he] glares up at you. You hold [b:his] head between your <if target="top" type="has" name="noarms">[t:feet]</if><else>hands</else>, force [t:him] to look you in the eyes and tell [b:him] in no uncertain terms that [b:he] is yours to do with as you please.
+			
+		</p>
+		<p/>
+		<p>
+			The [b:title]'s eyes widen and [t:he] struggles for a moment before you subdue [b:him] again. Once you have a firm hold on him, [t:he] finally seems to realize that he's not going anywhere on [b:his] own and gives up fighting.
+		</p>
+		<action name="player win get imp blowjob" />
+		<action name="player win get eaten out by imp" />
+		<action name="player win fuck imp butt" />
+		<action name="player win ride imp vaginally" />
+		<action name="player win ride imp anally" />
+		<action name="leave the imp" />
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinImpBlowjob" name="player win get imp blowjob" list="Get a blowjob">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Blowjob scene... **WIP**
+		</p>
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinImpBlowjob" name="player win get eaten out by imp" list="Get eaten out">
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Eaten out scene... **WIP**
+		</p>
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinImpAssRape" name="player win fuck imp butt" list="Fuck the imp's ass">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Imp ass fuck scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinRapeImpWithVagina" name="player win ride imp vaginally" list="Take him in your pussy">
+		<filter target="bottom" type="has" name="penis" />
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Vaginal ride scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinRapeImpWithAss" name="player win ride imp anally" list="Take him in your ass">
+		<filter target="bottom" type="has" name="penis" />
+		<p>
+			Anal ride scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	
+	<scene id="Pillow_PlayerWinLeave" name="leave the imp" list="Leave">
+		<filter target="bottom" type="bodylev" name="imp" />
+		<p>
+			Although you find yourself enjoying the [b:title]'s submission, once you're given a moment to examine [b:him], you realize that [t:he] has little to interest you with. You sigh disappointedly and release [b:his] head, leaving the [b:title] to look at you in confusion as you walk away.
+		</p>
+	</scene>
+	
+	
+	
+	<!-- Player loss rapes -->
+	
+	<scene id="Pillow_PlayerLossImpRapeStart" name="(loss rape start)">
+		<filter target="top" type="bodylev" name="imp" />
+		<p>
+			After taking a final hit from the [t:title], you grunt in pain and fall to the ground beaten and exhausted. You try to stand once more, but a sudden pressure on the top of your head forces you back onto the ground. 
+		</p>
+		<p/>
+		<p>
+			You look up and see the [t:title] holding you down, [t:his] dagger-like teeth showing through a predatory grin. <if target="bottom" type="value_lower" name="carnality" value="33">
+			Your heart drops as you quickly realize that you're not going to be leaving until this [t:title]'s had [t:his] way with you.</if><else>
+			<if target="bottom" type="value_lower" name="carnality" value="66">In return, you smile cautiously and feel your loins start to tingle as you realize what [t:he] intends to do with you.</if>
+			<else>Your smile quickly joins [t:his] as you realize what [t:he] has in mind. This might not be the way you meant to go about it, but you're not about to turn down a free fuck.</else></else>
+		</p>
+		<!--<action name="player loss imp oral rape" />-->
+		<action name="player loss imp anal rape" />
+		<!--<action name="player loss imp vaginal rape" />-->
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerLossImpOralRape" name="player loss imp oral rape">
+		<filter target="top" type="has" name="penis" />
+		<!-- Clothing removal -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		
+		<!-- Force entry or willing BJ -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		
+		<!-- Force entry or willing BJ -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		<action name="player loss imp oral rape 2" />
+	</scene>
+	<scene id="Pillow_PlayerLossImpOralRape2" name="player loss imp oral rape 2">
+		<filter target="top" type="has" name="penis" />
+		<!-- Start sex -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		
+		<!-- Continue sex  -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		
+		<!-- Finish -->
+		<p>
+			Skull fucking scene... **WIP**
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.Orgasm();
+				
+				bottom.IncreaseSkill("fellatio");
+			]]>
+		</script>
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerLossImpAnalRape" name="player loss imp anal rape">
+		<filter target="top" type="has" name="penis" />
+		
+		<p>
+			The [t:title] forces your head to the ground and holds you there for a moment. [t:He] growls something unintelligible and after a final shove, removes [t:his] hand from your head. 
+		</p>
+		<p/>
+		<script type="text/javascript">
+			<![CDATA[
+				var carn = bottom.GetToken("carnality").Value;
+				if (carn < 33)
+				{
+					print("You try to get up again, only to have [t:him] shove you back down, this time with ");
+					
+					if(top.HasItemInSlot("hand"))
+						print("[t:his] [t:equipment:hand] pointed under your chin. ");
+					else
+						print("[t:his] other hand closed around your throat. ");
+		
+					print("Taking the hint, you resign yourself to whatever fate this [t:title] has in mind for you and wait anxiously as [t:he] takes [t:his] ");
+
+					if(top.HasItemInSlot("hand"))
+						print("[t:equipment:hand]");
+					else
+						print("hand");
+						
+					print(" away from your neck.\n\nYou follow him with your eyes as [t:he] walks around to your backside and shudder anxiously as you then feel [t:him] take hold of your [b:hips] and lift your ass into the air. ");
+					
+					if(bottom.HasVagina())
+						print("A knot slowly forms in your stomach as you're forced to wait for [t:him] to make the next move.");
+					else
+						print("With only one hole back there, it doesn't take long for you to figure out what the [t:title] has in mind.");
+				}
+				else if (carn < 66)
+				{
+					print("You keep your head down and looking forward as you hear [t:him] walk around to your backside. Those lusty tingles from earlier work their way up to butterflies in your stomach as you wait to see what [t:he] does.\n\n");
+					print("After a short while of not hearing anything from [t:him], you can't stand not knowing anymore and look over your shoulder. You see [t:him] eyeing your [b:ass] with ");
+					
+					var ass = bottom.Path("ass/size").Value;
+					if(ass < 6)
+						print ("a disappointed frown");
+					else if(ass < 10)
+						print("a contemplative frown");
+					else if(ass < 16)
+						print("a satisfied smile");
+					else
+						print("a gleeful grin");
+						
+					print(" on [t:his] face before [t:he] seems to decide that [t:he]'s seen enough and moves toward your rear. You continue to watch as [t:he] grabs you by your [b:hips] and lifts your ass into the air.");
+				}
+				else
+				{
+					print("You continue to grin salaciously, and in anticipation of the [t:title]'s desires, you lift your ass into the air and give it a good shake. The growling chuckle that comes from behind you gives you a little thrill as the [t:title] seems to enjoy the show.\n\n");
+					print("You jump as you feel something hard strike your [b:ass] and look behind yourself to see the [t:title] holding [t:his] hand up momentarily before taking another swing. You shudder happily from the impact and rest your head on your ");
+					
+					if(bottom.HasToken("noarms"))
+						print("[b:feet]");
+					else
+						print("hands");
+		
+					print(" as you wait to see what [t:he] does next.");
+				}
+			]]>
+		</script>
+		
+		<action name="player loss imp anal rape 2" />
+	</scene>
+	<scene id="Pillow_PlayerLossImpAnalRape2" name="player loss imp anal rape 2">
+		<filter target="top" type="has" name="penis" />
+		
+		<script type="text/javascript">
+			<![CDATA[
+				if(bottom.HasItemInSlot("pants") || bottom.HasItemInSlot("underpants"))
+				{
+					print("Now that [t:he]'s got you how [t:he] wants you, the [t:title] decides that it's time to get down to business and starts to remove your attire. Seeming to care little for what you're wearing, [t:he] ");
+					if(bottom.HasItemInSlot("pants"))
+					{
+						var pants = bottom.GetEquippedItemBySlot("pants");
+						var pronoun = "it";
+						if(pants.HasToken("plural"))
+							pronoun = "them";
+						
+						if(pants.CanReachThrough())
+							print("hastily lifts up your [b:equipment:pants] and throws " + pronoun + " over your back");
+						else if (pants.IsSuit())
+							print("hastily takes your [b:equipment:pants] and tosses " + pronoun + " off to the side");
+						else
+							print("hastily pulls down your [b:equipment:pants] and leaves " + pronoun + " around your legs")
+					}
+					if(bottom.HasItemInSlot("pants") && bottom.HasItemInSlot("underpants"))
+						print(" and then ");
+					if(bottom.HasItemInSlot("underpants"))
+					{
+						var pronoun = "it";
+						if(bottom.GetEquippedItemBySlot("underpants").HasToken("plural"))
+							pronoun = "them";
+					
+						print("nearly rips your [b:equipment:underpants] as [t:he] pulls " + pronoun + " down off your ass");
+					}
+	
+					print(".\n\n[t:He] seems to take a moment to enjoy the view of your now exposed rear before [t:he] steps forward and takes hold of your hips with one hand before using the other to line up [t:his] [cockrand] with your [b:anuslooseness] [anusrand].");
+				}
+				else
+				{
+					print("As the [t:title] stands behind you, [t:he] seems almost happy to find that you're not wearing anything bellow the waist, and gives you ");
+					
+					if(bottom.GetToken("carnality").Value < 66)
+						print("a quick");
+					else 
+						print("another");
+						
+					print(" slap on the butt to show [t:his] appreciation. Using [t:his] hands, [t:he] spreads your ass cheeks apart and stares greedily at your [b:anuslooseness] [anusrand]. ");
+					print("\n\nAfter a few seconds have passed, the [t:title] decides that [t:he]'s seen enough and drops one of [t:his] hands from your ass and instead uses it to line up the head of [t:his] [cockrand] with your [anusrand].");
+				}
+			]]>
+		</script>
+		
+		<p>
+			You feel the precum slicked head of the [t:title]'s [cockrand] press into your [anusrand], <if target="bottom" type="value_lower" name="carnality" value="33">
+				and you instinctively pull away and clench your sphincter. Not having any of that, [t:he] grabs you by the hips and pulls you back into place.
+			</if><else>
+				and you relax as much as you can and push back. [t:He] grunts approvingly as [t:his] length slips off your [anusrand] and slides between your asscheeks.
+			</else>
+		</p>
+		<p/>
+		<p>
+			<if target="bottom" type="value_lower" name="ass/looseness" value="2">
+				Once again, the [t:title] lines up [t:his] [cockrand] against your backdoor and pushes forward. Your [b:anuslooseness] [anusrand] refuses to yeild, and you feel a sharp pain shoot up your spine as the [t:title] continues to push forward. You grunt and groan as [t:he] slowly forces [t:his] way in, until suddenly you yelp in pain as [t:he] finally manages to slip through.
+			</if><else><if target="bottom" type="value_lower" name="ass/looseness" value="4">
+				The [t:title] once again lines up [t:his] [cockrand] against your backdoor and pushes forward. Your [b:anuslooseness] [anusrand] provides some brief resistance against [t:his] [cockrand], but after causing you only some minor discomfort, [t:he]'s managed stretch out your [anusrand] enough that it comfortably accommodates [t:him].
+				</if><else>
+					As [t:he] once again lines up [t:his] [cockrand] against your backdoor and pushes forward, your [b:anuslooseness] [anusrand] quickly gives in and swallows the [t:title]'s [cockrand] to the hilt. [t:He] seems surprized and a little disappointed that it went in so easily, but that doesn't stop [t:him] as [t:he] draws [t:his] [cockrand] back out before thrusting in once more.
+				</else>
+			</else>
+		</p>
+		<action name="player loss imp anal rape finish" />
+	</scene>
+	<scene id="Pillow_PlayerLossImpAnalRapeFinish" name="player loss imp anal rape finish">
+		<script type="text/javascript">
+			<![CDATA[				
+				var wasVirgin = bottom.RemoveVirgin(bottom.GetToken("ass"));
+				var stretched = bottom.StretchHole(bottom.GetToken("ass"), top.GetToken("penis"))
+				
+				if(wasVirgin)
+					print("Your eyes water as [t:he] pushes in again, your formerly virgin [anusrand] now painfully stretched around the [t:title]'s [cockrand]. [t:He]'s clearly not bothered by the amount of pain you're in as [t:he] continues to increase the force and speed of [t:his] thrusts. If anything, the [t:title] actually seems to be enjoying your discomfort.");
+				else if (stretched)
+					print("Even though this isn't the first time you've been taken in the ass, the [t:title]'s [cockrand] still leaves your [anusrand] painfully stretched, and you wouldn't be surprized to find yourself being a bit looser back there the next time you check. The [t:title] is clearly not bothered by the amount of pain you're in as [t:he] continues to increase the force and speed of [t:his] thrusts. If anything, [t:he] actually seems to be enjoying your discomfort."); 
+				else if (bottom.Path("ass/looseness").Value < 4)
+					print("As the [t:title] continues to thrust [t:his] [cockrand] in and out of your [anusrand], [t:he] slowly seems to be gaining momentum as the stream of precum leaking from [t:his] member serves to further lubricate your back passage. In little time at all, you're being repeatedly bumped forward by the [t:title]'s thrusts as [t:he] seems to have found [t:his] stride.");
+				else
+				{
+					if(bottom.GetToken("carnality").Value < 33)
+						print("As the [t:title] continues to pump into your [anusrand], it quickly becomes apparent that [t:his] member is much smaller than what you've dealt with in the past. You smile weakly at the [t:title]'s growing frustration, and you do everything in your power to make this as unsatisfying as possible for [t:him]. ");
+					else
+						print("Much to both your and the [t:title]'s growing disappointment, it's become very apparent that [t:his] member is much smaller than what you're [anusrand] is used to dealing with. Even with you clamping down as much as you can, the [t:title] soon grows tired of dealing with your [b:anuslooseness] [anusrand]. ");
+						
+					print("After stopping briefly, the [t:title] grabs your buttocks and squeezes them together around [t:his] [cockrand] and then starts pumping into you harder and faster than ever before.");
+				}
+			]]>
+		</script>
+		
+		<p>
+			The rhythmic slapping of the [t:title]'s hips against your backside slowly increases in tempo as [t:he] nears [t:his] climax. <if target="bottom" type="value_lower" name="carnality" value="33">
+				Wanting this ordeal to finally be over, you hold your face in your <if target="bottom" type="has" name="noarms">[b:feet]</if><else>hands</else> and wait silently as [t:he] continues to hump away at your ass. You wince as the [t:title] suddenly digs [t:his] fingers into your <if target="bottom" type="value_lower" name="ass/looseness" value="4">hips</if><else>ass cheeks</else> and thrusts in one final time. You're left slightly feeling ill as [t:his] oily [cumrand] starts squirting into your rear.
+			</if><else><if target="bottom" type="value_lower" name="carnality" value="66">
+					You moan contentedly and rest your face on your <if target="bottom" type="has" name="noarms">[b:feet]</if><else>hands</else> as [t:he] continues to hump away at your ass. You jerk in surprize as the [t:title] suddenly digs [t:his] fingers into your <if target="bottom" type="value_lower" name="ass/looseness" value="4">hips</if><else>ass cheeks</else>, and after [t:he] thrusts in one final time, you feel [t:his] pleasantly warm and oily [cumrand] start squirting into your backside.
+				</if><else>
+					You try to meet [t:him] stoke for stroke, but in your weakened state the most you can do is push back a little each time. You arch your back suddenly as the [t:title] digs [t:his] fingers into your <if target="bottom" type="value_lower" name="ass/looseness" value="4">hips</if><else>ass cheeks</else> and makes a final thrust, and immediately you feel [t:his] deliciously warm and oily [cumrand] start squirting into your back door.
+				</else>
+			</else>
+		</p>
+		<p/>
+		<p>
+			The [t:title] stays where [t:he] is for a while as [t:he] rides out [t:his] orgasm, and you quickly feel the volume of [t:his] ejaculations taper off to nothing. You're left waiting a moment more before you feel a sudden vacancy in your rectum and hear the wet sucking noise [t:his] [cockrand] makes as [t:he] pulls it out of your [anusrand]. You sigh in relief and slump down on the ground just before [t:title] decides to give you a parting smack on the ass.
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.Orgasm();
+				
+				bottom.ChangeStat("carnality", 1);	// From the Imp's cum
+			]]>
+		</script>
+	</scene>
+	
+	<scene id="Pillow_PlayerLossImpVaginalRape" name="player loss imp vaginal rape">
+		<filter target="top" type="has" name="penis" />
+		<filter target="bottom" type="has" name="vagina" />
+		<!-- Clothing removal -->
+		<p>
+			
+		</p>
+		
+		<!-- Minor oral and fingering -->
+		<p>
+			Vaginal rape scene... **WIP**
+		</p>
+		
+		<!-- Insertion -->
+		<p>
+			
+		</p>
+		<action name="player loss imp vaginal rape 2" />
+	</scene>
+	<scene id="Pillow_PlayerLossImpVaginalRape2" name="player loss imp vaginal rape 2">
+		<filter target="top" type="has" name="penis" />
+		<filter target="bottom" type="has" name="vagina" />
+		<!-- Start sex  -->
+		<p>
+			
+		</p>
+		
+		<!-- Continue sex  -->
+		<p>
+			Vaginal rape scene... **WIP**
+		</p>
+		
+		<!-- Finish  -->
+		<p>
+			
+		</p>
+		
+		<script type="text/javascript">
+			<![CDATA[
+				top.Orgasm();
+				
+				
+			]]>
+		</script>
+	</scene>
+
+</scenes>

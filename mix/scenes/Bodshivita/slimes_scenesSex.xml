@@ -38,7 +38,7 @@
 
 	<scene id="BodhiWinAgainstSlime" name="(rape start)">
 		<filter target="bottom" type="bodylev" name="slime" />
-		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<p>
 			Deciding to claim the "spoils" of your victory rather than [b:his] life you gaze upon the defeated [b:title]'s semi solid body with an aroused glint in your eyes. Simply thinking of the myriad of pleasures your victim's malleable body could provide sends a shiver down your spine, getting you all bothered and hot.
 		</p>
@@ -59,7 +59,7 @@
 
 	<scene id="BodhiWinSlimeEatenOut" name="get eaten out" list="Get eaten out">
 		<filter target="bottom" type="bodylev" name="slime" />
-		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
 			A groan of desire escapes your throat as you saunter up to the [b:title], swaying your [t:hips] sensuously. Giving your lips a long slow lick, you part your steadily moistening pussy lips, letting [b:him] know in no uncertain terms what your plans are.
@@ -99,7 +99,7 @@
 
 	<scene id="BodhiWinSlimeBlowjobLargeSized" name="get blowjob" list="Get a blowjob">
 		<filter target="bottom" type="bodylev" name="slime" />
-		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="value_gteq" name="penis/length" value="24" />
 		<filter target="bottom" type="has" name="slimeblob" />
@@ -126,7 +126,7 @@
 	<scene id="BodhiWinSlimeBlowjobNormalSized" name="get blowjob" list="Get a blowjob">
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="top" type="has" name="penis" />
-		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<p>
 			Smiling deviously you stride up to the [b:title], asking [b:him] if [b:he]'d like a tasty treat. Cut off mid-sentence, [b:name] lunges forward, far too eager to suck you off than you'd like. Casually evading the cum-hungry [b:g:bastard:slut], if [b:he] wants to have [b:his] throat speared by your [t:cock], that's just fine with you.
 		</p>
@@ -197,7 +197,7 @@
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="breastrow" />
 		<filter target="bottom" type="has" name="slimeblob" />
-		<filter target="bottom" type="has" name="skin/type/slime" />
+		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<!-- Can probably inline-if this one. -->
 		<filter target="top" type="has" name="penis" />
 		<p>

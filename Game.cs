@@ -223,6 +223,7 @@ namespace Noxico
 			TargetNames = new Dictionary<int, string>();
 
 #if DEBUG
+			/*
 			//Towngen test
 			//var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
 			var towngenTest = Board.CreateBasicOverworldBoard(2, "DungeonTest", "DunGen Test", "set://debug");
@@ -235,6 +236,7 @@ namespace Noxico
 			townGen.ToTilemap(ref towngenTest.Tilemap);
 			townGen.ToSectorMap(towngenTest.Sectors);
 			towngenTest.DumpToHTML("final");
+			*/
 #endif
 
 			CurrentBoard = new Board();
@@ -686,8 +688,7 @@ namespace Noxico
 			}
 		
 			setStatus("Applying missions...");
-			//Board.WorldGen = worldGen;
-			//ApplyMissions();
+			ApplyMissions();
 
 			Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
@@ -956,36 +957,28 @@ namespace Noxico
 
 		public void ApplyMissions()
 		{
-			//TODO: add board drawing functions. This is JUST enough to implement Pettancow.
-
-			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
+			var addBoard = new Func<string, Board>(id =>
 			{
-				var options = new List<Board>();
-				foreach (var board in Boards)
-				{
-					if (board == null)
-						continue;
-					if (board.Type != boardType)
-						continue;
-					if (biome > 0 && board.GetToken("biome").Value != biome)
-						continue;
-					if (maxWater != -1)
-					{
-						var water = 0;
-						for (var y = 0; y < 25; y++)
-							for (var x = 0; x < 80; x++)
-								if (board.Tilemap[x, y].IsWater)
-									water++;
-						if (water > maxWater)
-							continue;
-					}
-					options.Add(board);
-				}
-				if (options.Count == 0)
-					return null;
-				var choice = options[Toolkit.Rand.Next(options.Count)];
-				return choice;
-			};
+				var board = new Board();
+				board.BoardNum = Boards.Count;
+				board.ID = id.ToID();
+				Boards.Add(board);
+				return board;
+			});
+			var makeBoardTarget = new Action<Board>(board =>
+			{
+				if (string.IsNullOrWhiteSpace(board.Name))
+					throw new Exception("Board must have a name before it can be added to the target list.");
+				if (TargetNames.ContainsKey(board.BoardNum))
+					throw new Exception("Board is already a travel target.");
+				TargetNames.Add(board.BoardNum, board.Name);
+			});
+			var makeBoardKnown = new Action<Board>(board =>
+			{
+				if (!TargetNames.ContainsKey(board.BoardNum))
+					throw new Exception("Board must be in the travel targets list before it can be known.");
+				KnownTargets.Add(board.BoardNum);
+			});
 
 			var js = Javascript.Create();
 			Javascript.Ascertain(js);
@@ -994,8 +987,11 @@ namespace Noxico
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(System.Drawing.Color));
+			js.SetFunction("AddBoard", addBoard);
+			js.SetFunction("MakeBoardTarget", makeBoardTarget);
+			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
-			js.SetFunction("PickBoard", pickBoard);
+			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
