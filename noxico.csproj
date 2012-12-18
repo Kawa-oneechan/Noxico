@@ -230,11 +230,14 @@
     <Content Include="mix\makedemonrealm.png" />
     <Content Include="mix\music.xml" />
     <Content Include="mix\noxico.xml" />
-    <Content Include="mix\scenesDlg.xml" />
+    <Content Include="mix\scenesDlg.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\scenesSex.xml" />
     <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />

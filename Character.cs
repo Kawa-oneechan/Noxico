@@ -433,6 +433,15 @@ namespace Noxico
 				this.RemoveAll(t);
 			if (!this.HasToken("beast"))
 				this.RemoveAll("bestiary");
+
+			//While we're there, make sure asses have looseness and such.
+			if (this.HasToken("ass"))
+			{
+				if (this.Path("ass/looseness") == null)
+					this.GetToken("ass").AddToken("looseness");
+				if (this.Path("ass/wetness") == null)
+					this.GetToken("ass").AddToken("wetness");
+			}
 		}
 
 		public void SaveToFile(BinaryWriter stream)
@@ -2370,6 +2379,98 @@ namespace Noxico
 
             return null;
         }
+
+		/// <summary>
+		/// If the passed body part has the "virgin" token, it is removed.
+		/// </summary>
+		/// <param name="bodypart">The body part to remove the virginity of.</param>
+		/// <returns>Returns true if the body part had the virgin token, or false if it did not.</returns>
+		public bool RemoveVirgin(Token bodypart)
+		{
+			if (bodypart.HasToken("virgin"))
+			{
+				bodypart.RemoveToken("virgin");
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Increases the 'looseness' of a hole-type token to fit the thickness of the passed penis token. If the hole is already
+		/// large enough, then the looseness of the hole is not increased.
+		/// </summary>
+		/// <param name="hole">A token for the bodily orifice to stretch. Its only requirement is that it has a looseness value.</param>
+		/// <param name="penis">A token for the penis or penis-like object that the orifice is being stretched by. Its only requirement is that it has a thickness value.</param>
+		/// <returns>Returns true if the hole has been stretched, or false if the hole has not been stretched.</returns>
+		public bool StretchHole(Token hole, Token penis)
+		{
+			if (hole == null || penis == null)
+				return false;
+
+			var dickSize = 0f;
+			var holeSize = 0f;
+
+			if (penis.HasToken("thickness"))
+				dickSize = penis.GetToken("thickness").Value;
+
+			var holeSizes = new[] { 0, 2, 4, 6, 10, 16 };  // Penis thicknesses the hole will fit without being stretched
+			var looseness = 0f;
+			if (hole.HasToken("looseness"))
+				looseness = hole.GetToken("looseness").Value;
+
+			if (looseness < holeSizes.Length)
+				holeSize = holeSizes[(int)looseness];
+			else
+				holeSize = 100;
+
+			if (dickSize > holeSize)
+			{
+				// Stretch hole until penis fits
+				for (int i = 1; i < holeSizes.Length; i++)
+				{
+					if (holeSizes[i] >= dickSize || i == holeSizes.Length - 1) // Hole either big enough or is the largest size.
+					{
+						hole.GetToken("looseness").Value = i;
+						break;
+					}
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Resets the values of climax and stimulation.
+		/// </summary>
+		public void Orgasm()
+		{
+			GetToken("climax").Value = 0;
+			GetToken("stimulation").Value = 10;
+		}
+
+		/// <summary>
+		/// Changes the value of the passed stat by the amount passed. If the stat is increased beyond 100, it is set to 100.
+		/// Likewise if the stat is reduced below 0, it is set to 0;
+		/// </summary>
+		/// <param name="statname">The name of the stat to change the value of.</param>
+		/// <param name="amount">The amount to change the stat value by. Positive numbers increase the value, and negative numbers decrease the value.</param>
+		/// <returns>The new value of the stat.</returns>
+		public float ChangeStat(string statname, float amount)
+		{
+			var stat = GetToken(statname).Value;
+
+			stat += amount;
+
+			if (stat > 100)
+				stat = 100;
+			if (stat < 0)
+				stat = 0;
+
+			return GetToken(statname).Value = stat;
+		}
 		#endregion
 	}
 
