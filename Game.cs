@@ -639,6 +639,12 @@ namespace Noxico
 				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
 			}
 
+			KnownTargets.Add(-10);
+			TargetNames.Add(-10, "OndemandVille");
+			var expectation = new Expectation() { Biome = 9 };
+			expectation.Characters.Add("bodyplan=human;gender=female;firstname=Leela;token=carnality(100);token=items/strapon/equipped;token=!vagina/virgin");
+			Expectations.Add(-10, expectation);
+
 			/*
 			KnownTargets.Add(-10);
 			TargetNames.Add(-10, "OndemandVille");
@@ -992,6 +998,7 @@ namespace Noxico
 			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
 			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
+			js.SetParameter("Expectations", NoxicoGame.Expectations);
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
@@ -1033,7 +1040,7 @@ namespace Noxico
 		public bool Dungeon { get; set; }
 		public int Biome { get; set; }
 		public string Culture { get; set; }
-		public List<string> Roles { get; set; }
+		public List<string> Characters { get; set; }
 		public List<string> Species { get; set; }
 		
 		public Expectation()
@@ -1041,7 +1048,7 @@ namespace Noxico
 			Dungeon = false;
 			Biome = -1;
 			Culture = string.Empty;
-			Roles = new List<string>();
+			Characters = new List<string>();
 			Species = new List<string>();
 		}
 		
@@ -1052,10 +1059,10 @@ namespace Noxico
 			exp.Dungeon = stream.ReadBoolean();
 			exp.Biome = (int)stream.ReadInt16();
 			exp.Culture = stream.ReadString();
-			var numRoles = stream.ReadInt16();
+			var numChars = stream.ReadInt16();
 			var numSpecies = stream.ReadInt16();
-			for (var i = 0; i < numRoles; i++)
-				exp.Roles.Add(stream.ReadString());
+			for (var i = 0; i < numChars; i++)
+				exp.Characters.Add(stream.ReadString());
 			for (var i = 0; i < numSpecies; i++)
 				exp.Species.Add(stream.ReadString());
 			return exp;
@@ -1067,10 +1074,10 @@ namespace Noxico
 			stream.Write(Dungeon);
 			stream.Write((Int16)Biome);
 			stream.Write(Culture ?? string.Empty);
-			stream.Write((Int16)Roles.Count);
+			stream.Write((Int16)Characters.Count);
 			stream.Write((Int16)Species.Count);
-			foreach (var role in Roles)
-				stream.Write(role);
+			foreach (var character in Characters)
+				stream.Write(character);
 			foreach (var species in Species)
 				stream.Write(species);
 		}
@@ -1116,6 +1123,142 @@ namespace Noxico
 			NoxicoGame.TargetNames.Add(id, name);
 			NoxicoGame.KnownTargets.Add(id);
 			return NoxicoGame.Expectations[id];
+		}
+
+		//TODO: probaby better to use while still creating the board, re spouses
+		public static void AddCharacters(Board board, List<string> characters)
+		{
+			var culture = Noxico.Culture.DefaultCulture;
+			if (board.HasToken("culture") && !string.IsNullOrWhiteSpace(board.GetToken("culture").Text))
+				culture = Noxico.Culture.Cultures[board.GetToken("culture").Text];
+			var tokens = new List<string>();
+
+			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation")).ToList();
+
+			foreach (var expectedChar in characters)
+			{
+				var replacement = unexpected[Toolkit.Rand.Next(unexpected.Count)];
+				var fullReplace = true;
+
+				var bodyplan = Toolkit.PickOne(culture.Bodyplans);
+				var gender = Gender.Random;
+				var firstName = "";
+				var surName = "";
+				tokens.Clear();
+
+				foreach (var item in expectedChar.Split(';'))
+				{
+					var stuff = item.Split('=');
+					switch (stuff[0])
+					{
+						case "bodyplan":
+							bodyplan = stuff[1];
+							break;
+						case "gender":
+							gender = (Gender)Enum.Parse(typeof(Gender), stuff[1], true);
+							break;
+						case "firstname":
+							firstName = stuff[1];
+							break;
+						case "surname":
+							surName = stuff[1];
+							break;
+						case "token":
+							tokens.Add(stuff[1]);
+							break;
+					}
+				}
+
+				//See if there's a character on the board with this bodyplan and gender already
+				foreach (var person in unexpected)
+				{
+					var primaryLev = Toolkit.GetLevenshteinString(person.Character);
+					var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[bodyplan]);
+					if (distance == 0) //?
+					{
+						var pg = person.Character.GetGender();
+						if (gender == Gender.Male && pg != "male")
+							continue;
+						if (gender == Gender.Female && pg != "female")
+							continue;
+						replacement = person;
+						fullReplace = false;
+						break;
+					}
+				}
+
+				var character = fullReplace ? Character.Generate(bodyplan, gender) : replacement.Character;
+
+				if (firstName != "")
+					character.Name.FirstName = firstName;
+				if (surName != "")
+					character.Name.Surname = surName;
+
+				foreach (var tokenEntry in tokens)
+				{
+					var token = (tokenEntry + ' ').TrimEnd();
+					Token t = null;
+					var tVal = "";
+					if (token.StartsWith("!"))
+					{
+						token = token.Substring(1);
+						t = character.Path(token);
+						if (t != null)
+						{
+							token = token.Remove(token.LastIndexOf('/'));
+							character.Path(token).RemoveToken(t);
+						}
+						continue;
+					}
+					if (token.Contains('('))
+					{
+						tVal = token.Substring(token.IndexOf('(') + 1);
+						tVal = tVal.Remove(tVal.Length - 1);
+						token = token.Remove(token.IndexOf('('));
+					}
+					if (!token.Contains('/'))
+					{
+						if (character.HasToken(token))
+							t = character.GetToken(token);
+						else
+						{
+							t = new Token() { Name = token };
+							character.AddToken(t);
+						}
+					}
+					else
+					{
+						TokenCarrier o = character;
+						foreach (var part in token.Split('/'))
+						{
+							if (o.HasToken(part))
+								o = o.GetToken(part);
+							else
+							{
+								t = new Token() { Name = part };
+								o.AddToken(t);
+								o = t;
+							}
+						}
+					}
+					if (tVal != "")
+					{
+						var fVal = 0.0f;
+						var isNumeric = float.TryParse(tVal, out fVal);
+						if (isNumeric)
+							t.Value = fVal;
+						else
+							t.Text = tVal;
+					}
+				}
+
+				character.AddToken("expectation");
+
+				unexpected.Remove(replacement);
+				replacement.Character = character;
+				replacement.ID = character.Name.ToID();
+				replacement.AdjustView();
+			}
 		}
 	}
 }
