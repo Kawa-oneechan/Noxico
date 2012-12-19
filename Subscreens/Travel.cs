@@ -78,6 +78,8 @@ namespace Noxico
 						else
 							thisMap = WorldGen.CreateDungeon(expectation.Biome, expectation.Culture, NoxicoGame.TargetNames[key]);
 
+						Expectation.AddCharacters(thisMap, expectation.Characters);
+
 						NoxicoGame.KnownTargets.Remove(key);
 						NoxicoGame.TargetNames.Remove(key);
 						NoxicoGame.KnownTargets.Add(thisMap.BoardNum);
