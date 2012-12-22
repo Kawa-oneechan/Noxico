@@ -2252,6 +2252,90 @@ namespace Noxico
 			return ret;
 		}
 
+
+
+		public bool UpdatePregnancy()
+		{
+			if (!this.HasToken("vagina"))
+				return false;
+			if (this.HasToken("egglayer") && !this.HasToken("pregnancy"))
+			{
+				var boardChar = this.GetBoardChar();
+				var eggToken = this.GetToken("egglayer");
+				eggToken.Value++;
+				if (eggToken.Value == 500)
+				{
+					eggToken.Value = 0;
+					NoxicoGame.Sound.PlaySound("Put Item");
+					var egg = new DroppedItem("egg")
+					{
+						XPosition = boardChar.XPosition,
+						YPosition = boardChar.YPosition,
+						ParentBoard = boardChar.ParentBoard,
+					};
+					egg.PickUp(this);
+					if (boardChar is Player)
+						NoxicoGame.AddMessage("You have laid an egg.");
+					return false;
+				}
+			}
+			else if (this.HasToken("pregnancy"))
+			{
+				var pregnancy = this.GetToken("pregnancy");
+				var gestation = pregnancy.GetToken("gestation");
+				gestation.Value++;
+				if (gestation.Value >= gestation.GetToken("max").Value)
+				{
+					var child = pregnancy.Path("child");
+					var location = this.Path("childlocation");
+					var childName = new Name();
+
+					Character childChar = null;
+
+					if ((child != null && location == null) || (child == null))
+					{
+						//Invalidated location or no child definition.
+						childName.Female = Toolkit.Rand.NextDouble() > 0.5;
+						childName.NameGen = this.GetToken("namegen").Text;
+					}
+					else
+					{
+						childName.Female = child.HasToken("vagina");
+						childName.NameGen = child.GetToken("namegen").Text;
+					}
+					childName.Regenerate();
+					if (childName.Surname.StartsWith("#patronym"))
+						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), this.Name);
+
+					//TODO: Actually copy the child token's contents to childChar here.
+
+					var ships = this.GetToken("ships");
+					ships.AddToken(childName.ToID()).AddToken("child");
+					if (childChar != null)
+					{
+						//also ship the child to the parent, can use SetRelation this time.
+						childChar.SetRelation(this, "mother");
+					}
+
+					//Midwife Daemon goes here, using the location token.
+
+					//Until then, we'll just message you.
+					MessageBox.Message("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
+
+					this.RemoveToken("pregnancy");
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public bool Fertilize(Character father)
+		{
+			//Unimplemented for now.
+			return false;
+		}
+
+
 		#region PillowShout's additions
 		/// <summary>
         /// Checks the character's inventory to see if it contains at least one item with a matching ID.
@@ -2989,6 +3073,44 @@ namespace Noxico
 				name = item.A + " " + name;
 
 			return name;
+		}
+
+		/// <summary>
+		/// Returns a string containing a description of the parameter 'tongue's type.
+		/// </summary>
+		/// <param name="tongue">A tongue token from a character.</param>
+		/// <returns>A string containing the description of the tongue based on its type.</returns>
+		public static string TongueType(Token tongue)
+		{
+			if (tongue == null)
+				return "glitch";
+
+			var ret = "";
+			var text = tongue.Text;
+			switch (text)
+			{
+				case "normal":
+					ret = Toolkit.PickOne("smooth", "nimble");
+					break;
+
+				case "barbed":
+					ret = Toolkit.PickOne("rough", "barbed");
+					break;
+
+				case "long":
+					ret = Toolkit.PickOne("prehensile", "flexible");
+					break;
+
+				case "forked":
+					ret = Toolkit.PickOne("forked", "serpentine");
+					break;
+
+				default:
+					ret = Toolkit.PickOne("indescribable", "unusual");
+					break;
+			}
+
+			return ret;
 		}
 		#endregion
 	}

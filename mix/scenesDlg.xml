@@ -49,7 +49,7 @@
 	<scene id="test2b" name="tell about location a" list="(DEBUG) Tell about random location" priority="high">
 		<script type="text/javascript">
 			<![CDATA[
-				var newExpectation = expecttown(null, -1);
+				var newExpectation = ExpectTown(null, -1);
 				print("\"Have you heard of " + newExpectation.Name + "?\"");
 				bottom.AddToken("gavenewtown", newExpectation.ID, newExpectation.Name);				
 			]]>
