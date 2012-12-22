@@ -343,6 +343,16 @@ namespace Noxico
 					if (!canFit)
 						return false;
 					break;
+				case "isfather":
+					var pregnancy = fSecondary.Path("pregnancy");
+					if (pregnancy == null)
+						return false;
+					var father = fSecondary.Path("pregnancy/father");
+					if (father == null)
+						return false;
+					if (father.Text != fPrimary.ID)
+						return false;
+					break;
 			}
 			return true;
 		}
@@ -408,6 +418,7 @@ namespace Noxico
 				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
 				{ "cumrand", (c, s) => {return Descriptions.CumRandom(); } },
 				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
+				{ "tonguetype", (c, s) => {return Descriptions.TongueType(c.GetToken("tongue")); } },
 				#endregion
 			};
 			#endregion
