@@ -641,11 +641,10 @@ namespace Noxico
 		public object RunScript(Token item, string script, Character character, BoardChar boardchar, Action<string> running)
 		{
 			var js = Javascript.MainMachine;
-			Javascript.Ascertain(js, true);
+			Javascript.Ascertain(js);
 			js.SetParameter("user", character);
-			js.SetParameter("userbc", boardchar);
-			js.SetFunction("consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
-			js.SetFunction("message", new Action<string>(x =>
+			js.SetFunction("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
+			js.SetFunction("print", new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
@@ -659,7 +658,7 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
-			js.SetFunction("identify", new Action<string>(x =>
+			js.SetFunction("Identify", new Action<string>(x =>
 			{
 				if (character.GetToken("cunning").Value < 10)
 				{

@@ -36,7 +36,7 @@ ascii
 			<![CDATA[
 				if (user.HasToken("penis"))
 				{
-					message ("You're a man!");
+					print ("You're a man!");
 					return false;
 				}
 				var p = user.AddToken("penis");
@@ -63,9 +63,9 @@ ascii
 randomized: 1
 			]]>
 		<script type="text/javascript">
-			consume();
+			Consume();
 			user.Morph("littlepony");
-			identify();
+			Identify();
 		</script>
 	</item>
 
@@ -117,9 +117,9 @@ ascii
 		aquamarine
 			]]>
 			<script type="text/javascript">
-				consume();
+				Consume();
 				user.Morph("fox");
-				identify();
+				Identify();
 			</script>
 		</item>
 		<item id="penificator" name="penificator" a="a" the="the">
@@ -695,6 +695,20 @@ ascii
 			]]>
 	</item>
 
+	<item id="bagel" name="bagel" a="a" the="the">
+		<![CDATA[
+singleuse
+statbonus
+	health: 12
+weight: feather
+description: "Vkusno, no ne ochen zapolneniyu."
+ascii
+	char: U+2609
+	fore
+		brown
+			]]>
+	</item>
+
 	<item id="bacon" name="bacon strip" a="a" the="the">
 		<![CDATA[
 singleuse
@@ -1234,7 +1248,7 @@ ascii
 				<![CDATA[
 					//Text stolen from CoC's Whisker Fruit item, for now.
 					
-					//We want to buffer the output. Calling message() would result in several separate ones.
+					//We want to buffer the output. Calling print() would result in several separate ones.
 					var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
 
 					//Always boost speed.
@@ -1269,7 +1283,7 @@ ascii
 						user.RemoveToken("ears");
 						user.AddToken("ears").Text = "cat";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 					
@@ -1282,7 +1296,7 @@ ascii
 						user.RemoveToken("tail");
 						user.AddToken("tail").Text = "genbeast";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 					
@@ -1310,9 +1324,9 @@ ascii
 							user.AddToken("invisiblegender");
 						}
 						user.UpdateTitle();
-						userbc.AdjustView();
+						user.GetBoardChar().AdjustView();
 
-						message(ret);
+						print(ret);
 						return;
 					}
 					
@@ -1320,7 +1334,7 @@ ascii
 					
 					//Grow up to two extra breast rows.
 
-					message(ret);
+					print(ret);
 				]]>
 			</script>
 		</item>
@@ -1357,7 +1371,7 @@ ascii
 						user.RemoveToken("ears");
 						user.AddToken("ears").Text = "dog";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1370,7 +1384,7 @@ ascii
 						user.RemoveToken("tail");
 						user.AddToken("tail").AddToken("dog");
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1391,9 +1405,9 @@ ascii
 							user.AddToken("invisiblegender");
 						}
 						user.UpdateTitle();
-						userbc.AdjustView();
+						user.GetBoardChar().AdjustView();
 
-						message(ret);
+						print(ret);
 						return;
 					}
 					
@@ -1401,7 +1415,7 @@ ascii
 					
 					//Grow up to two extra breast rows.
 
-					message(ret);
+					print(ret);
 				]]>
 			</script>
 		</item>
@@ -1436,7 +1450,7 @@ ascii
 						user.RemoveToken("ears");
 						user.AddToken("ears").Text = "genbeast";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1449,7 +1463,7 @@ ascii
 						user.RemoveToken("tail");
 						user.AddToken("tail").Text = "fox";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1470,15 +1484,15 @@ ascii
 							user.AddToken("invisiblegender");
 						}
 						user.UpdateTitle();
-						userbc.AdjustView();
+						user.GetBoardChar().AdjustView();
 
-						message(ret);
+						print(ret);
 						return;
 					}
 					
 					//Grow digitigrade legs.
 
-					message(ret);
+					print(ret);
 				]]>
 			</script>
 		</item>
@@ -1511,7 +1525,7 @@ ascii
 						user.RemoveToken("ears");
 						user.AddToken("ears").Text = "bunny";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1524,7 +1538,7 @@ ascii
 						user.RemoveToken("tail");
 						user.AddToken("tail").Text = "bunny";
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
@@ -1543,13 +1557,13 @@ ascii
 							user.AddToken("invisiblegender");
 						}
 						user.UpdateTitle();
-						userbc.AdjustView();
+						user.GetBoardChar().AdjustView();
 
-						message(ret);
+						print(ret);
 						return;
 					}
 
-					message(ret);
+					print(ret);
 				]]>
 			</script>
 		</item>

@@ -17,20 +17,16 @@ namespace Noxico
 			return jint;
 		}
 
-		public static void Ascertain(JintEngine jint, bool asBoardChars = false)
+		public static void Ascertain(JintEngine jint)
 		{
 			jint.SetDebugMode(true);
 			jint.SetFunction("eval", new Func<string, int>(x => 0));
 			if (NoxicoGame.HostForm.Noxico.Player != null)
-			{
-				if (asBoardChars)
-					jint.SetParameter("player", NoxicoGame.HostForm.Noxico.Player);
-				else
-					jint.SetParameter("player", NoxicoGame.HostForm.Noxico.Player.Character);
-			}
+				jint.SetParameter("player", NoxicoGame.HostForm.Noxico.Player.Character);
 			//TODO: predefine more stuff.
 			jint.SetParameter("Gender", typeof(Gender));
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
+			jint.SetParameter("Stat", typeof(Stat));
 		}
 
 		public static void Assert()

@@ -1152,13 +1152,13 @@ namespace Noxico
 				return true;
 			if (js == null)
 				js = Javascript.Create();
-			Javascript.Ascertain(js, true);
-			js.SetParameter("this", this);
+			Javascript.Ascertain(js);
+			js.SetParameter("this", this.Character);
 			js.SetParameter("target", ScriptPathID);
 			if (extraParm != "")
 				js.SetParameter(extraParm, extraVal);
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
-			js.SetFunction("message", new Action<string>(x =>
+			js.SetFunction("print", new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
