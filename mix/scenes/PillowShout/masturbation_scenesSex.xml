@@ -59,6 +59,7 @@
 	</scene>
 
 	<scene id="PillowMasturbationContinueBiped" name="masturbate cont biped">
+		<filter target="top" type="hasnot" name="taur"/>
 		<filter target="top" type="hasnot" name="quadruped"/>
 		<filter target="top" type="has" name="legs"/>
 		<script type="text/javascript">
@@ -387,8 +388,7 @@
 	</scene>
 
 	<scene id="PillowMasturbationContinueCentaur" name="masturbate cont centaur">
-		<filter target="top" type="has" name="quadruped"/>
-		<filter target="top" type="hasnot" name="noarms"/>
+		<filter target="top" type="has" name="taur"/>
 		<script type="text/javascript">
 			<![CDATA[
 				// TODO Add clothing removal
@@ -402,7 +402,6 @@
 
 	<scene id="PillowMasturbationContinuePureQuadruped" name="masturbate cont quadruped">
 		<filter target="top" type="has" name="quadruped"/>
-		<filter target="top" type="has" name="noarms"/>
 		<script type="text/javascript">
 			<![CDATA[
 			

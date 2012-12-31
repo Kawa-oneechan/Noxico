@@ -467,10 +467,7 @@ skin
 face: horse
 eyes: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
 legs: horse
--- defining quadruped makes it a centaur...
 quadruped
--- but noarms makes it a PROPER quadruped!
-noarms
 -- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
 either
 	wings: feather
