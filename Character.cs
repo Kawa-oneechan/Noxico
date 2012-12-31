@@ -548,7 +548,8 @@ namespace Noxico
 					//if (equipable.Tokens.Count > 1 && !equipable.HasToken(costume.Name))
 					//	continue;
 					//check for pants and lack of suitable lower body, but watch out for bodysuits and dresses because those are fair game!
-					if ((HasToken("legs") && GetToken("legs").HasToken("quadruped")) || HasToken("snaketail") || HasToken("slimeblob"))
+					//if ((HasToken("legs") && GetToken("legs").HasToken("quadruped")) || HasToken("snaketail") || HasToken("slimeblob"))
+					if (HasToken("taur") || HasToken("quadruped") || HasToken("snaketail") || HasToken("slimeblob"))
 					{
 						if ((equipable.HasToken("underpants") && !equipable.HasToken("undershirt")) ||
 							(equipable.HasToken("pants") && !equipable.HasToken("shirt")))
@@ -842,12 +843,9 @@ namespace Noxico
 					legs = "downy insectoid";
 				bodyThings.Add(legs + " legs");
 				if (this.HasToken("quadruped"))
-				{
-					if (this.HasToken("noarms"))
-						bodyThings.Add("quadruped");
-					else
-						bodyThings.Add("taur");
-				}
+					bodyThings.Add("quadruped");
+				else if (this.HasToken("taur"))
+					bodyThings.Add("taur");
 			}
 
 			if (this.HasToken("wings"))
@@ -1049,7 +1047,7 @@ namespace Noxico
 				if (this.Path("skin/type").Text == "metal")
 					hairThings.Add("cord-like");
 			}
-			if (!HasToken("quadruped"))
+			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
 				hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
 				hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
@@ -1057,7 +1055,7 @@ namespace Noxico
 			}
 			else
 			{
-				hipThings.Add("quadruped");
+				//hipThings.Add("quadruped");
 			}
 			Columnize(print, 34, hairThings, hipThings, "Hair", "Hips and Waist");
 			#endregion
@@ -1402,7 +1400,7 @@ namespace Noxico
 					Character.MorphBuffer.Append(s + ' ');
 			});
 
-			if (!HasToken("slimeblob") && !HasToken("snaketail") && !HasToken("quadruped"))
+			if (!HasToken("slimeblob") && !HasToken("snaketail") && !HasToken("quadruped") && !HasToken("taur"))
 				return;
 			var items = GetToken("items");
 			foreach (var carriedItem in items.Tokens)
@@ -1414,7 +1412,7 @@ namespace Noxico
 				if (equip != null && (equip.HasToken("pants") || equip.HasToken("underpants")))
 				{
 					var originalname = find.ToString(carriedItem, false, false);
-					if (HasToken("quadruped"))
+					if (HasToken("quadruped") || HasToken("taur"))
 					{
 						//Rip it apart!
 						var slot = "pants";
@@ -1604,34 +1602,25 @@ namespace Noxico
 					}
 				}
 
-				if (target.HasToken("quadruped") && !source.HasToken("quadruped"))
+				foreach (var taurQuad in new[] { "taur", "quadruped" })
 				{
-					Tokens.Add(new Token() { Name = "quadruped" });
-					CheckPants();
-					if (target.HasToken("marshmallow") && !source.HasToken("marshmallow"))
-						source.Tokens.Add(new Token() { Name = "marshmallow" });
-					if (target.HasToken("noarms") && !source.HasToken("noarms"))
+					if (target.HasToken(taurQuad) && !source.HasToken(taurQuad))
 					{
-						doReport((isPlayer ? "You are" : this.Name + " is") + " now a full quadruped.");
-						source.Tokens.Add(new Token() { Name = "noarms" });
-						//CheckHands();
+						Tokens.Add(new Token() { Name = taurQuad });
+						CheckPants();
+						if (target.HasToken("marshmallow") && !source.HasToken("marshmallow"))
+							source.Tokens.Add(new Token() { Name = "marshmallow" });
+						doReport((isPlayer ? "You are" : this.Name + " is") + " now a " + taurQuad + ".");
+						CheckPants();
+						finish();
+						return;
 					}
-					else
+					else if (!target.HasToken(taurQuad))
 					{
-						doReport((isPlayer ? "You are" : this.Name + " is") + " now a centaur.");
+						RemoveToken(taurQuad);
 					}
-					finish();
-					return;
 				}
-				else if (!target.HasToken("quadruped"))
-				{
-					RemoveToken("quadruped");
-					//Always return arms
-					if (source.HasToken("noarms"))
-						source.RemoveToken("noarms");
-					if (source.HasToken("marshmallow"))
-						source.RemoveToken("marshmallow");
-				}
+
 				{
 					doReport("There was no further effect.");
 					finish();

@@ -245,7 +245,7 @@ namespace Noxico
 
 			//TODO: make full quadrupeds equip weapons in their mouth instead of the hands they don't have.
 			//This means they can carry only ONE weapon at a time, and maybe not be able to converse until unequipped.
-			if ((equip.HasToken("hands") || equip.HasToken("ring")) && (character.HasToken("noarms")))
+			if ((equip.HasToken("hands") || equip.HasToken("ring")) && (character.HasToken("quadruped")))
 				throw new ItemException("[You] cannot put on the " + this.Name + " because [you] lack[s] hands.");
 
 			if (equip.HasToken("hand"))
