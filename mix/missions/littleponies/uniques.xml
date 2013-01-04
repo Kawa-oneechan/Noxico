@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE uniques [
+	<!ELEMENT uniques (character+)>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ELEMENT character (#PCDATA|script)*>
+	<!ATTLIST character
+		id ID #REQUIRED
+		name CDATA #IMPLIED
+		proper (true|false) "true"
+		a CDATA #IMPLIED
+	>
+]>
+<uniques>
+	<character id="PonyLeader" name="Lofty Goal">
+		<![CDATA[
+culture: equestrian
+invisiblegender
+terms
+	generic: "little pony"
+	male: "stallion"
+	female: "mare"
+ascii
+	char: U+0075
+marshmallow
+tallness: 140
+hair
+	length: 16
+	color: hotpink
+skin
+	type: fur
+	color: oneof blond
+face: horse
+eyes: forestgreen
+legs: horse
+quadruped
+monoceros
+ears: horse
+tail: horse
+ass
+	size: 6
+	fuckable
+	virgin
+vagina
+	fuckable
+	clit: 1.5
+tattoos
+	hip: "cutie mark"
+		]]>
+	</character>
+</uniques>
