@@ -3101,6 +3101,49 @@ namespace Noxico
 
 			return ret;
 		}
+
+		/// <summary>
+		/// Takes a tail type token from a character and returns a string describing that tail's type.
+		/// </summary>
+		/// <param name="tail">The tail token to be evaluated.</param>
+		/// <returns>A string containing a description of the tail's type. Return's 'glitch' if 'tail is null.</returns>
+		public static string TailType(Token tail)
+		{
+			if (tail == null)
+				return "glitch";
+
+			var ret = "";
+			var text = tail.Text;
+			switch (text)
+			{
+				case "genbeast":
+					ret = Toolkit.PickOne("furry");
+					break;
+
+				case "fox":
+					ret = Toolkit.PickOne("vulpine", "fluffy");
+					break;
+
+				case "stinger":
+					ret = Toolkit.PickOne("barbed", "segmented");
+					break;
+
+				case "horse":
+					ret = Toolkit.PickOne("long-haired", "equine");
+					break;
+
+				case "dog":
+					ret = Toolkit.PickOne("canine", "furry");
+					break;
+
+				default:
+					ret = Toolkit.PickOne("indescribable", "unusual");
+					break;
+			}
+
+			return ret;
+		}
+		
 		#endregion
 	}
 

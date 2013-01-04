@@ -37,6 +37,12 @@
 	<scene id="PillowMasturbationStart" name="(masturbate)">
 		<script type="text/javascript">
 			<![CDATA[
+				if(!top.GetToken("vagina").HasToken("looseness"))
+					top.GetToken("vagina").AddToken("looseness", 0);
+					
+				if(!top.GetToken("vagina").HasToken("wetness"))
+					top.GetToken("vagina").AddToken("wetness", 1);
+			
 				var stim = top.GetToken("stimulation").Value;
 				if (stim < 50)
 				{
@@ -59,8 +65,8 @@
 	</scene>
 
 	<scene id="PillowMasturbationContinueBiped" name="masturbate cont biped">
-		<filter target="top" type="hasnot" name="taur"/>
 		<filter target="top" type="hasnot" name="quadruped"/>
+		<filter target="top" type="hasnot" name="taur"/>
 		<filter target="top" type="has" name="legs"/>
 		<script type="text/javascript">
 			<![CDATA[
@@ -229,7 +235,168 @@
 		<action name="masturbation end"/>
 	</scene>
 
+	<scene id="PillowMasturbationContinueCentaur" name="masturbate cont centaur">
+		<filter target="top" type="has" name="taur"/>
+		<!-- KAWA: Removed the !noarms check, now that taur implies !noarms already. -->
+		<script type="text/javascript">
+			<![CDATA[
+				// TODO Add clothing removal
+				print("And then you wanked... <placeholder text>");
+				
+				// TODO Figure out how flexible centaurs are...
+				
+				//KAWA: mind the part about pants in the quadruped scene.
+			]]>
+		</script>
+		<action name="masturbation end"/>
+	</scene>
+
+	<scene id="PillowMasturbationContinuePureQuadruped" name="masturbate cont quadruped">
+		<filter target="top" type="has" name="quadruped"/>
+		<script type="text/javascript">
+			<![CDATA[
+			
+				print("You find yourself a decent looking spot and then drop down and roll onto your back. "); 
+				/* KAWA: Quadrupeds, centaurs, slimes, and nagas can't wear pants. In fact, if you wear any and become a centaur or quadruped, you tear them.
+				 * That is, they'll be replaced with tatteredshreds_SLOTNAME. If you grow a snaketail or slimeblob, you merely slip out and get to keep the pants.
+				 * TLDR, These check will always be false.
+				if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants"))
+				{
+					print("Once you've made yourself comfortable, you remove your [t:equipment:pants] and [t:equipment:underpants] and leave them off to the side. With that out of the way, you ");
+				}
+				else if(top.HasItemInSlot("pants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("pants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you've made yourself comfortable, you take off your [t:equipment:pants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else if (top.HasItemInSlot("underpants"))
+				{
+					var pronoun = "it";
+					
+					if(top.GetEquippedItemBySlot("underpants").HasToken("plural"))
+						pronoun = "them";
+				
+					print("Once you've made yourself comfortable, you slide off your [t:equipment:underpants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
+				}
+				else
+				*/
+					print("Once you've made yourself comfortable, you ") 
+			
+				print("spread your hind legs and reach a [t:foot] down over your stomach, towards your groin.\n\n");
+				
+				var g = top.GetGender();
+				var stim = top.GetToken("stimulation").Value;
+				if(g == "male")
+				{
+					if(stim < 50)
+					{
+						print("Seeing that your [t:cocktype] [cockrand] is still soft, you start by rolling your [cockrand] around with your [t:foot] before you start rubbing it with more force. Your [cockrand] steadily grows larger and stiffer under your ministrations, and in short order it's standing fully erect. Now that you're ready to go, you wrap both [t:feet] around your [cockrand] and start sliding them back and forth along your length.");
+					}
+					else if (stim < 80)
+					{
+						print("You run a [t:foot] over your hardening [t:cocktype] [cockrand] and groan a little as your stroking continues to exite you. In little time at all, your [cockrand] is standing at attention and even has a small bead of pre forming on the tip. You wipe the drop of precum away with your [t:foot], and after using it to lube up your shaft a bit, your wrap both [t:feet] around your [cockrand] and start stroking yourself.");
+					}
+					else
+					{
+						print("Your painfully erect [t:cocktype] [cockrand] bounces against your stomach as you start to rub your [t:foot] along it. Using the small stream of precum flowing from the tip of your [cockrand], you slather your lube over your [cockrand] until glistens from base to tip. You then wrap both [t:feet] around your slicked up [cockrand] and start vigorously stroking yourself.");
+					}
+					
+					print("\n\nYou continue to awkwardly pump your [t:cocktype] [cockrand] with your [t:feet], and soon enough you can feel a pressure building in your loins. You speed up your strokes as you feel yourself drawing closer to orgasm, and as you finally reach your climax, you feel ");
+					
+					if(stim < 50)
+					{
+						print("a pleasant warmth");
+					}
+					else if (stim < 80)
+					{
+						print("a tingling heat");
+					}
+					else
+					{
+						print("an immense sense of relief");
+					}
+					
+					print(" flood your body while your [cumrand] shoots onto your chest and stomach.");
+					
+					top.IncreaseSkill("penile masturbation");
+				}
+				else if(g == "female")
+				{
+					var vag = top.Path("vagina");
+					var wetness = 1;
+					if(vag && vag.HasToken("wetness"))
+						wetness = vag.GetToken("wetness").Value;
+						
+					var skin = top.Path("skin/type").Text;
+						
+					print("You run your [t:foot] over your ");
+						
+					if(skin == "scales")
+						print("scaly");
+					else if(skin == "skin")
+						print("smooth");
+					else if(skin == "fur")
+						print("fur covered")
+					else
+						print("smooth")
+						
+					print(" labia ");
+				
+					if(stim < 50 && wetness < 2)
+					{
+						print("and start to slowly but deeply massage your [pussyrand]. As you continue to rub your [pussyrand], find yourself growing more and more excited, and soon you can feel a trickle of moisture forming at the entrance of your [pussyrand]. Using your [t:foot] as best you can, you gather up the lube and start rolling it onto your [clitrand].");
+					}
+					else if (stim < 80)
+					{
+						print("and find that your [pussyrand] is already wet with your juices. After rubbing your [t:foot] into your [pussyrand], you take your now equally lubed up [t:foot] and begin to rub your fluids onto your [clitrand].");
+					}
+					else
+					{
+						print("and find it to be so wet that at soon as you try spreading your [pussyrand], you feel some of your juice leak out and trickle down over your [anusrand]. Using your [t:foot] to gather some lube fresh from the source, you rub your lube slicked [t:foot] over your [clitrand] and sigh contentedly as your neglected [pussyrand] is finally given some attention.");
+					}
+					
+					print("\n\nYou continue to rub your [t:foot] into your [clitrand], and soon enough you can feel a pressure building in your loins. You rub your [clitrand] more vigorously as you feel yourself drawing closer to orgasm, and as you finally reach your climax, you feel ");
+					
+					if(stim < 50)
+					{
+						print("a pleasant warmth flow through you, leaving you feeling relaxed and content for a while afterwards.");
+					}
+					else if (stim < 80)
+					{
+						print("a tingling heat flood your body, leaving you feeling light and satisfied for a while afterwards.");
+					}
+					else
+					{
+						print("an immense sense of relief wash over you, leaving you feeling tired but happy.");
+					}
+					
+					top.IncreaseSkill("vaginal masturbation");
+				}
+				else if (g == "hermaphrodite")
+				{
+					print("\n\nAnd then you wanked... *placeholder text*");
+					
+					top.IncreaseSkill("penile masturbation");
+					top.IncreaseSkill("vaginal masturbation");
+				}
+				else
+				{
+					print("After several minutes of fruitless rubbing, you groan in frustration and give up on trying to pleasure yourself. *placeholder text*");
+				}
+				
+			]]>
+		</script>
+
+		<action name="masturbation end"/>
+	</scene>
+
+
 	<scene id="PillowMasturbationContinueNoLegs" name="masturbate cont no legs">
+		<!-- KAWA: Moved this below the centaur and quadruped scenes just to make sure it sorts out right. -->
 		<filter target="top" type="hasnot" name="legs"/>
 		<script type="text/javascript">
 			<![CDATA[
@@ -384,159 +551,6 @@
 				}
 			]]>
 		</script>
-		<action name="masturbation end"/>
-	</scene>
-
-	<scene id="PillowMasturbationContinueCentaur" name="masturbate cont centaur">
-		<filter target="top" type="has" name="taur"/>
-		<script type="text/javascript">
-			<![CDATA[
-				// TODO Add clothing removal
-				print("And then you wanked... <placeholder text>");
-				
-				// TODO Figure out how flexible centaurs are...
-			]]>
-		</script>
-		<action name="masturbation end"/>
-	</scene>
-
-	<scene id="PillowMasturbationContinuePureQuadruped" name="masturbate cont quadruped">
-		<filter target="top" type="has" name="quadruped"/>
-		<script type="text/javascript">
-			<![CDATA[
-			
-				print("You find yourself a decent looking spot and then drop down and roll onto your back. "); 
-				
-				if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants"))
-				{
-					print("Once you've made yourself comfortable, you remove your [t:equipment:pants] and [t:equipment:underpants] and leave them off to the side. With that out of the way, you ");
-				}
-				else if(top.HasItemInSlot("pants"))
-				{
-					var pronoun = "it";
-					
-					if(top.GetEquippedItemBySlot("pants").HasToken("plural"))
-						pronoun = "them";
-				
-					print("Once you've made yourself comfortable, you take off your [t:equipment:pants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
-				}
-				else if (top.HasItemInSlot("underpants"))
-				{
-					var pronoun = "it";
-					
-					if(top.GetEquippedItemBySlot("underpants").HasToken("plural"))
-						pronoun = "them";
-				
-					print("Once you've made yourself comfortable, you slide off your [t:equipment:underpants:color] and leave " + pronoun + " off to the side. With that out of the way, you ");
-				}
-				else
-					print("Once you've made yourself comfortable, you ") 
-			
-				print("spread your hind legs and reach a [t:foot] down over your stomach, towards your groin.\n\n");
-				
-				var g = top.GetGender();
-				var stim = top.GetToken("stimulation").Value;
-				if(g == "male")
-				{
-					if(stim < 50)
-					{
-						print("Seeing that your [t:cocktype] [cockrand] is still soft, you start by rolling your [cockrand] around with your [t:foot] before you start rubbing it with more force. Your [cockrand] steadily grows larger and stiffer under your ministrations, and in short order it's standing fully erect. Now that you're ready to go, you wrap both [t:feet] around your [cockrand] and start sliding them back and forth along your length.");
-					}
-					else if (stim < 80)
-					{
-						print("You run a [t:foot] over your hardening [t:cocktype] [cockrand] and groan a little as your stroking continues to exite you. In little time at all, your [cockrand] is standing at attention and even has a small bead of pre forming on the tip. You wipe the drop of precum away with your [t:foot], and after using it to lube up your shaft a bit, your wrap both [t:feet] around your [cockrand] and start stroking yourself.");
-					}
-					else
-					{
-						print("Your painfully erect [t:cocktype] [cockrand] bounces against your stomach as you start to rub your [t:foot] along it. Using the small stream of precum flowing from the tip of your [cockrand], you slather your lube over your [cockrand] until glistens from base to tip. You then wrap both [t:feet] around your slicked up [cockrand] and start vigorously stroking yourself.");
-					}
-					
-					print("\n\nYou continue to awkwardly pump your [t:cocktype] [cockrand] with your [t:feet], and soon enough you can feel a pressure building in your loins. You speed up your strokes as you feel yourself drawing closer to orgasm, and as you finally reach your climax, you feel ");
-					
-					if(stim < 50)
-					{
-						print("a pleasant warmth");
-					}
-					else if (stim < 80)
-					{
-						print("a tingling heat");
-					}
-					else
-					{
-						print("an immense sense of relief");
-					}
-					
-					print(" flood your body while your [cumrand] shoots onto your chest and stomach.");
-					
-					top.IncreaseSkill("penile masturbation");
-				}
-				else if(g == "female")
-				{
-					var vag = top.Path("vagina");
-					var wetness = 1;
-					if(vag && vag.HasToken("wetness"))
-						wetness = vag.GetToken("wetness").Value;
-						
-					var skin = top.Path("skin/type").Text;
-						
-					print("You run your [t:foot] over your ");
-						
-					if(skin == "scales")
-						print("scaly");
-					else if(skin == "skin")
-						print("smooth");
-					else if(skin == "fur")
-						print("fur covered")
-					else
-						print("smooth")
-						
-					print(" labia ");
-				
-					if(stim < 50 && wetness < 2)
-					{
-						print("and start to slowly but deeply massage your [pussyrand]. As you continue to rub your [pussyrand], find yourself growing more and more excited, and soon you can feel a trickle of moisture forming at the entrance of your [pussyrand]. Using your [t:foot] as best you can, you gather up the lube and start rolling it onto your [clitrand].");
-					}
-					else if (stim < 80)
-					{
-						print("and find that your [pussyrand] is already wet with your juices. After rubbing your [t:foot] into your [pussyrand], you take your now equally lubed up [t:foot] and begin to rub your fluids onto your [clitrand].");
-					}
-					else
-					{
-						print("and find it to be so wet that at soon as you try spreading your [pussyrand], you feel some of your juice leak out and trickle down over your [anusrand]. Using your [t:foot] to gather some lube fresh from the source, you rub your lube slicked [t:foot] over your [clitrand] and sigh contentedly as your neglected [pussyrand] is finally given some attention.");
-					}
-					
-					print("\n\nYou continue to rub your [t:foot] into your [clitrand], and soon enough you can feel a pressure building in your loins. You rub your [clitrand] more vigorously as you feel yourself drawing closer to orgasm, and as you finally reach your climax, you feel ");
-					
-					if(stim < 50)
-					{
-						print("a pleasant warmth flow through you, leaving you feeling relaxed and content for a while afterwards.");
-					}
-					else if (stim < 80)
-					{
-						print("a tingling heat flood your body, leaving you feeling light and satisfied for a while afterwards.");
-					}
-					else
-					{
-						print("an immense sense of relief wash over you, leaving you feeling tired but happy.");
-					}
-					
-					top.IncreaseSkill("vaginal masturbation");
-				}
-				else if (g == "hermaphrodite")
-				{
-					print("\n\nAnd then you wanked... *placeholder text*");
-					
-					top.IncreaseSkill("penile masturbation");
-					top.IncreaseSkill("vaginal masturbation");
-				}
-				else
-				{
-					print("After several minutes of fruitless rubbing, you groan in frustration and give up on trying to pleasure yourself. *placeholder text*");
-				}
-				
-			]]>
-		</script>
-
 		<action name="masturbation end"/>
 	</scene>
 
