@@ -594,6 +594,10 @@ ascii
 	char: U+0141
 	fore
 		blue
+effect
+	char: U+002A
+	fore: blue
+	back: navy
 			]]>
 		</item>
 		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">

@@ -213,7 +213,9 @@
     <Content Include="fonts\unifont\unifont_FF.png" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
-    <Content Include="mix\bodyplans.xml" />
+    <Content Include="mix\bodyplans.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\bonustraits.xml" />
     <Content Include="mix\books.xml" />
     <Content Include="mix\books.xsl" />
@@ -242,7 +244,9 @@
     <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
+    <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />

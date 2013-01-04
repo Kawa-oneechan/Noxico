@@ -892,8 +892,25 @@ namespace Noxico
 				}
 				if (lives == 0)
 					continue;
-				newb.Character.Tokens.Add(new Token() { Name = "hostile" });
 				newb.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
+				newb.Character.AddToken("hostile");
+				//arm them
+				if (!newb.Character.HasToken("beast"))
+				{
+					var items = newb.Character.Path("items");
+					if (items == null)
+						items = newb.Character.AddToken("items");
+					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat", "crosshairs" };
+					var w = Toolkit.Rand.Next(1, 3);
+					while (w > 0)
+					{
+						var weapon = Toolkit.PickOne(weapons);
+						if (items.HasToken(weapon))
+							continue;
+						items.AddToken(weapon);
+						w--;
+					}
+				}
 				this.Entities.Add(newb);
 			}
 		}
