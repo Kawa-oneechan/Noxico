@@ -639,11 +639,15 @@ namespace Noxico
 				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
 			}
 
+			/*
 			KnownTargets.Add(-10);
 			TargetNames.Add(-10, "OndemandVille");
 			var expectation = new Expectation() { Biome = 9 };
 			expectation.Characters.Add("bodyplan=human;gender=female;firstname=Leela;token=carnality(100);token=items/strapon/equipped;token=!vagina/virgin");
 			Expectations.Add(-10, expectation);
+			*/
+			var expectation = Expectation.ExpectTown("OndemandVille", 9);
+			expectation.Characters.Add("bodyplan=human;gender=female;firstname=Leela;token=carnality(100);token=items/strapon/equipped;token=!vagina/virgin");			
 
 			/*
 			KnownTargets.Add(-10);
@@ -1002,10 +1006,10 @@ namespace Noxico
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
-			//js.Step += (s, di) =>
-			//{
-			//	Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-			//};
+			js.Step += (s, di) =>
+			{
+				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+			};
 #endif
 			Board.DrawJS = js;
 
@@ -1040,6 +1044,7 @@ namespace Noxico
 		public bool Dungeon { get; set; }
 		public int Biome { get; set; }
 		public string Culture { get; set; }
+		public string BuildingSet { get; set; }
 		public List<string> Characters { get; set; }
 		public List<string> Species { get; set; }
 		
@@ -1119,7 +1124,7 @@ namespace Noxico
 			if (NoxicoGame.Expectations.Count > 0)
 				id = NoxicoGame.Expectations.Last().Key;
 			id--;
-			NoxicoGame.Expectations.Add(id, new Expectation() { Biome = biomeID, Culture = cultureName });
+			NoxicoGame.Expectations.Add(id, new Expectation() { Biome = biomeID, Culture = cultureName, BuildingSet = "town" });
 			NoxicoGame.TargetNames.Add(id, name);
 			NoxicoGame.KnownTargets.Add(id);
 			return NoxicoGame.Expectations[id];
