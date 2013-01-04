@@ -275,7 +275,7 @@ namespace Noxico
 			character.CheckHasteSlow();
 
 			//Difficult bit: gotta re-equip tempremovals without removing the target item all over. THAT WOULD BE QUITE BAD.
-			return false;
+			return succeed;
 		}
 
 		public bool Unequip(Character character, Token item)

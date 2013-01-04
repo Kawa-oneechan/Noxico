@@ -257,7 +257,7 @@ namespace Noxico
 							{
 								//Entity has glowing eyes, but we don't let the player actually interact with them.
 								NoxicoGame.Messages.Last().Message = "Eyes in the darkness";
-								NoxicoGame.Messages.Last().Color = Toolkit.GetColor(((BoardChar)entity).Character.Path("eyes/color").Text);
+								NoxicoGame.Messages.Last().Color = Toolkit.GetColor(((BoardChar)entity).Character.Path("eyes").Text);
 							}
 							return;
 						}
@@ -829,8 +829,62 @@ namespace Noxico
 			MoveSpeed = 0;
 
 			var distance = DistanceFrom(target);
-			var weapon = Character.CanShoot();
-			var range = (weapon == null) ? 1 : (int)weapon.Path("weapon/range").Value;
+			//var weapon = Character.CanShoot();
+			var weapon = this.Character.GetEquippedItemBySlot("hand");
+			if (weapon != null && !weapon.HasToken("weapon"))
+				weapon = null;
+			var range = (weapon == null || weapon.Path("weapon/range") == null) ? 1 : (int)weapon.Path("weapon/range").Value;
+
+			//Determine best weapon for the job.
+			if ((distance <= 2 && range > 2) || weapon == null)
+			{
+				//Close by, could be better to use short-range weapon, or unarmed.
+				foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+				{
+					if (carriedItem.HasToken("equipped"))
+						continue;
+					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+					if (find == null)
+						continue;
+					if (find.HasToken("equipable") && find.HasToken("weapon"))
+					{
+						var r = find.Path("weapon/range");
+						if (r == null || r.Value == 1)
+						{
+							if (find.Equip(this.Character, carriedItem))
+							{
+								Console.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+								return; //end turn
+							}
+						}
+					}
+				}
+			}
+			else if ((distance > 2 && range == 1) || weapon == null)
+			{
+				//Far awaya, could be better to use long-range weapon, or unarmed
+				foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+				{
+					if (carriedItem.HasToken("equipped"))
+						continue;
+					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+					if (find == null)
+						continue;
+					if (find.HasToken("equipable") && find.HasToken("weapon"))
+					{
+						var r = find.Path("weapon/range");
+						if (r != null && r.Value > 3)
+						{
+							if (find.Equip(this.Character, carriedItem))
+							{
+								Console.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+								return; //end turn
+							}
+						}
+					}
+				}
+			}
+
 			if (distance <= range && CanSee(target))
 			{
 				//Within attacking range.
@@ -848,6 +902,10 @@ namespace Noxico
 					if (Character.Path("prefixes/infectious") != null && Toolkit.Rand.NextDouble() > 0.25)
 						target.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
 					return;
+				}
+				else if (weapon != null)
+				{
+					AimShot(target);
 				}
 			}
 
@@ -1233,6 +1291,73 @@ namespace Noxico
 			AssignScripts(scriptSource.Text);
 		}
 
+		public void AimShot(Entity target)
+		{
+			var weapon = Character.CanShoot();
+			if (weapon == null)
+				return;
+			var weap = weapon.GetToken("weapon");
+			var skill = weap.GetToken("skill");
+			if (new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(skill.Text))
+			{
+				if (weap.HasToken("ammo"))
+				{
+					var ammoName = weap.GetToken("ammo").Text;
+					var carriedAmmo = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == ammoName);
+					if (carriedAmmo == null)
+						return;
+					var knownAmmo = NoxicoGame.KnownItems.Find(ki => ki.ID == ammoName);
+					if (knownAmmo == null)
+						return;
+					knownAmmo.Consume(Character, carriedAmmo);
+				}
+				FireLine(Character.CanShoot().Path("effect"), target);
+			}
+			else
+			{
+				Console.WriteLine("{0} tried to throw a weapon.", this.Character.Name.ToString());
+				return;
+			}
+			var aimSuccess = true; //TODO: make this skill-relevant.
+			if (aimSuccess)
+			{
+				var damage = weap.Path("damage").Value;
+				if (target is Player)
+				{
+					var hit = target as Player;
+					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+				}
+				this.Character.IncreaseSkill(skill.Text);
+			}
+
+			NoxicoGame.Mode = UserMode.Walkabout;
+		}
+
+		public void FireLine(Token effect, int x, int y)
+		{
+			foreach (var point in Toolkit.Line(XPosition, YPosition, x, y))
+			{
+				var particle = new Clutter()
+				{
+					ParentBoard = this.ParentBoard,
+					ForegroundColor = Toolkit.GetColor(effect.GetToken("fore").Text),
+					BackgroundColor = Toolkit.GetColor(effect.GetToken("back").Text),
+					AsciiChar = (char)effect.GetToken("char").Value,
+					Blocking = false,
+					XPosition = point.X,
+					YPosition = point.Y,
+					Life = 2 + Toolkit.Rand.Next(2),
+				};
+				this.ParentBoard.EntitiesToAdd.Add(particle);
+			}
+		}
+
+		public void FireLine(Token effect, Entity target)
+		{
+			if (effect != null)
+				FireLine(effect, target.XPosition, target.YPosition);
+		}
 
 #if SCHEDULE
 		private Dijkstra villagerAIMap;
@@ -1758,10 +1883,14 @@ namespace Noxico
 			Func<int, int, bool> gotHit = (xPos, yPos) =>
 			{
 				if (this.ParentBoard.IsSolid(y, x, true))
+				{
+					FireLine(weapon.Path("effect"), x, y);
 					return true;
+				}
 				var hit = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.XPosition == x && e.YPosition == y);
 				if (hit != null)
 				{
+					FireLine(weapon.Path("effect"), x, y);
 					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
 					this.Character.IncreaseSkill(skill);
@@ -2181,7 +2310,7 @@ namespace Noxico
 			return newChar;
 		}
 
-		public void AimShot(Entity target)
+		public new void AimShot(Entity target)
 		{
 			//TODO: throw whatever is being held by the player at the target, according to their Throwing skill and the total distance.
 			//If it's a gun they're holding, fire it instead, according to their Shooting skill.
@@ -2208,6 +2337,7 @@ namespace Noxico
 						return;
 					knownAmmo.Consume(Character, carriedAmmo);
 				}
+				FireLine(Character.CanShoot().Path("effect"), target);
 			}
 			else
 			{

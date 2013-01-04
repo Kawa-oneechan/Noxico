@@ -64,9 +64,6 @@ balls
 	amount: 2
 costume
 	casual
-items
-	knife
-		equipped
 		]]>
 	</bodyplan>
 
@@ -111,9 +108,6 @@ penis
 balls
 	amount: 2
 	size: 1
-items
-	knife
-		equipped
 carnality: 50
 		]]>
 	</bodyplan>
