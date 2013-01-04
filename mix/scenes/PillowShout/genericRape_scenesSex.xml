@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action name CDATA #REQUIRED>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+
+<scenes>
+<!-- Written by PillowShout -->
+	
+	<!-- Player win rapes -->	
+	
+	<scene id="Pillow_PlayerWinGenericBlowjob" name="player win get generic blowjob" list="Get a blowjob.">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Blowjob scene... **WIP**
+		</p>
+		<action name="player win get generic blowjob 2"/>
+		<action name="player win generic 69 with penis"/>
+		<action name="player win generic skull fuck"/>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericBlowjob2" name="player win get generic blowjob 2" list="Let them continue">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Blowjob scene... **WIP**
+		</p>
+	</scene>
+	<scene id="Pillow_PlayerWinGeneric69Penis" name="player win generic 69 with penis" list="Go for a 69">
+		<filter target="top" type="has" name="penis" />
+		<filter target="top" type="value_gteq" name="carnality" value="33"/>
+		<p>
+			Blowjob scene... **WIP**
+		</p>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericSkullFuck" name="player win generic skull fuck" list="Skull fuck them">
+		<filter target="top" type="has" name="penis" />
+		<filter target="top" type="value_gteq" name="carnality" value="66"/>
+		<p>
+			Blowjob scene... **WIP**
+		</p>
+	</scene>
+	
+	
+	
+	<scene id="Pillow_PlayerWinGenericEatOut" name="player win generic get eaten out" list="Get eaten out">
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Eaten out scene... **WIP**
+		</p>
+		<action name="player win generic get eaten out 2"/>
+		<action name="player win generic 69 with vagina"/>
+		<action name="player win generic facesit"/>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericEatOut2" name="player win generic get eaten out 2" list="Let them continue">
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Eaten out scene... **WIP**
+		</p>
+	</scene>
+	<scene id="Pillow_PlayerWinGeneric69Vagina" name="player win generic 69 with vagina" list="Go for a 69">
+		<filter target="top" type="has" name="vagina" />
+		<filter target="top" type="value_gteq" name="carnality" value="33"/>
+		<p>
+			Eaten out scene... **WIP**
+		</p>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericFacesit" name="player win generic facesit" list="Grind on their face">
+		<filter target="top" type="has" name="vagina" />
+		<filter target="top" type="value_gteq" name="carnality" value="66"/>
+		<p>
+			Eaten out scene... **WIP**
+		</p>
+	</scene>
+	
+	
+	
+	<scene id="Pillow_PlayerWinGenericAssRape" name="player win generic butt fuck" list="Fuck their ass">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Ass fuck scene... **WIP**
+		</p>
+		<action name="player win generic butt fuck 2"/>
+		<action name="player win generic butt fuck reach around"/>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericAssRape2" name="player win generic butt fuck 2" list="Keep going">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Ass fuck scene... **WIP**
+		</p>
+		
+	</scene>
+	<scene id="Pillow_PlayerWinGenericAssRapeReachAround" name="player win generic butt fuck reach around" list="Give them a reach-around">
+		<filter target="top" type="has" name="penis" />
+		<filter target="top" type="value_gteq" name="carnality" value="33"/>
+		<p>
+			Ass fuck scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	
+	<scene id="Pillow_PlayerWinRapeGenericWithVagina" name="player win generic vaginal ride" list="Take them in your pussy">
+		<filter target="bottom" type="has" name="penis" />
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Vaginal ride scene... **WIP**
+		</p>
+		<action name="player win generic vaginal ride 2"/>
+		<action name="player win generic vaginal ride make out"/>
+	</scene>
+	<scene id="Pillow_PlayerWinRapeGenericWithVagina2" name="player win generic vaginal ride 2" list="Keep going">
+		<filter target="bottom" type="has" name="penis" />
+		<filter target="top" type="has" name="vagina" />
+		<p>
+			Vaginal ride scene... **WIP**
+		</p>
+		
+	</scene>
+	<scene id="Pillow_PlayerWinRapeGenericWithVaginaMakeOut" name="player win generic vaginal ride make out" list="Make out with them">
+		<filter target="bottom" type="has" name="penis" />
+		<filter target="top" type="has" name="vagina" />
+		<filter target="top" type="value_gteq" name="carnality" value="33"/>
+		<p>
+			Vaginal ride scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	<scene id="Pillow_PlayerWinRapeGenericWithAss" name="player win generic anal ride" list="Take them in your ass">
+		<filter target="bottom" type="has" name="penis" />
+		<p>
+			Put them on their back and start getting them hard. **WIP**
+		</p>
+		<p>
+			if hasLegs => stradle them
+			else if hasSnaketail => wrap their up and line up your back door
+			else if slimeblob => goo up his chest and arms and line up your back door
+		</p>
+		<p>
+			lower yourself onto them
+			if looseness value_lower 2 => do it slow
+			else if looseness value_lower 4 => do it moderately quickly
+			else => just slide it in
+		</p>
+		<action name="player win generic anal ride 2"/>
+	</scene>
+	<scene id="Pillow_PlayerWinRapeGenericWithAss2" name="player win generic anal ride 2">
+		<filter target="bottom" type="has" name="penis" />
+		<p>
+			Anal ride scene... **WIP**
+		</p>
+		<p>
+			Anal ride scene... **WIP**
+		</p>
+		<p>
+			Anal ride scene... **WIP**
+		</p>
+		
+	</scene>
+
+</scenes>
