@@ -245,6 +245,7 @@
     <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="mix\scenes\PillowShout\genericRape_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml">
       <SubType>Designer</SubType>
     </Content>
