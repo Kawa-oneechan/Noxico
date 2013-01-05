@@ -1139,6 +1139,7 @@ namespace Noxico
 			var tokens = new List<string>();
 
 			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation")).ToList();
+			Character character = null;
 
 			foreach (var expectedChar in characters)
 			{
@@ -1151,113 +1152,134 @@ namespace Noxico
 				var surName = "";
 				tokens.Clear();
 
-				foreach (var item in expectedChar.Split(';'))
+				if (expectedChar.StartsWith("unique="))
 				{
-					var stuff = item.Split('=');
-					switch (stuff[0])
-					{
-						case "bodyplan":
-							bodyplan = stuff[1];
-							break;
-						case "gender":
-							gender = (Gender)Enum.Parse(typeof(Gender), stuff[1], true);
-							break;
-						case "firstname":
-							firstName = stuff[1];
-							break;
-						case "surname":
-							surName = stuff[1];
-							break;
-						case "token":
-							tokens.Add(stuff[1]);
-							break;
-					}
-				}
+					var unique = expectedChar.Split('=')[1];
+					character = Character.GetUnique(unique);
 
-				//See if there's a character on the board with this bodyplan and gender already
-				foreach (var person in unexpected)
-				{
-					var primaryLev = Toolkit.GetLevenshteinString(person.Character);
-					var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[bodyplan]);
-					if (distance == 0) //?
+					//See if there's a character on the board with this gender
+					var cg = character.GetGender();
+					foreach (var person in unexpected)
 					{
 						var pg = person.Character.GetGender();
-						if (gender == Gender.Male && pg != "male")
-							continue;
-						if (gender == Gender.Female && pg != "female")
-							continue;
-						replacement = person;
-						fullReplace = false;
-						break;
+						if (cg == pg)
+						{
+							replacement = person;
+							fullReplace = false;
+							break;
+						}
 					}
 				}
-
-				var character = fullReplace ? Character.Generate(bodyplan, gender) : replacement.Character;
-
-				if (firstName != "")
-					character.Name.FirstName = firstName;
-				if (surName != "")
-					character.Name.Surname = surName;
-
-				foreach (var tokenEntry in tokens)
+				else
 				{
-					var token = (tokenEntry + ' ').TrimEnd();
-					Token t = null;
-					var tVal = "";
-					if (token.StartsWith("!"))
+					foreach (var item in expectedChar.Split(';'))
 					{
-						token = token.Substring(1);
-						t = character.Path(token);
-						if (t != null)
+						var stuff = item.Split('=');
+						switch (stuff[0])
 						{
-							token = token.Remove(token.LastIndexOf('/'));
-							character.Path(token).RemoveToken(t);
-						}
-						continue;
-					}
-					if (token.Contains('('))
-					{
-						tVal = token.Substring(token.IndexOf('(') + 1);
-						tVal = tVal.Remove(tVal.Length - 1);
-						token = token.Remove(token.IndexOf('('));
-					}
-					if (!token.Contains('/'))
-					{
-						if (character.HasToken(token))
-							t = character.GetToken(token);
-						else
-						{
-							t = new Token() { Name = token };
-							character.AddToken(t);
+							case "bodyplan":
+								bodyplan = stuff[1];
+								break;
+							case "gender":
+								gender = (Gender)Enum.Parse(typeof(Gender), stuff[1], true);
+								break;
+							case "firstname":
+								firstName = stuff[1];
+								break;
+							case "surname":
+								surName = stuff[1];
+								break;
+							case "token":
+								tokens.Add(stuff[1]);
+								break;
 						}
 					}
-					else
+
+					//See if there's a character on the board with this bodyplan and gender already
+					foreach (var person in unexpected)
 					{
-						TokenCarrier o = character;
-						foreach (var part in token.Split('/'))
+						var primaryLev = Toolkit.GetLevenshteinString(person.Character);
+						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[bodyplan]);
+						if (distance == 0) //?
 						{
-							if (o.HasToken(part))
-								o = o.GetToken(part);
+							var pg = person.Character.GetGender();
+							if (gender == Gender.Male && pg != "male")
+								continue;
+							if (gender == Gender.Female && pg != "female")
+								continue;
+							replacement = person;
+							fullReplace = false;
+							break;
+						}
+					}
+
+					character = fullReplace ? Character.Generate(bodyplan, gender) : replacement.Character;
+
+					if (firstName != "")
+						character.Name.FirstName = firstName;
+					if (surName != "")
+						character.Name.Surname = surName;
+
+					foreach (var tokenEntry in tokens)
+					{
+						var token = (tokenEntry + ' ').TrimEnd();
+						Token t = null;
+						var tVal = "";
+						if (token.StartsWith("!"))
+						{
+							token = token.Substring(1);
+							t = character.Path(token);
+							if (t != null)
+							{
+								token = token.Remove(token.LastIndexOf('/'));
+								character.Path(token).RemoveToken(t);
+							}
+							continue;
+						}
+						if (token.Contains('('))
+						{
+							tVal = token.Substring(token.IndexOf('(') + 1);
+							tVal = tVal.Remove(tVal.Length - 1);
+							token = token.Remove(token.IndexOf('('));
+						}
+						if (!token.Contains('/'))
+						{
+							if (character.HasToken(token))
+								t = character.GetToken(token);
 							else
 							{
-								t = new Token() { Name = part };
-								o.AddToken(t);
-								o = t;
+								t = new Token() { Name = token };
+								character.AddToken(t);
 							}
 						}
-					}
-					if (tVal != "")
-					{
-						var fVal = 0.0f;
-						var isNumeric = float.TryParse(tVal, out fVal);
-						if (isNumeric)
-							t.Value = fVal;
 						else
-							t.Text = tVal;
+						{
+							TokenCarrier o = character;
+							foreach (var part in token.Split('/'))
+							{
+								if (o.HasToken(part))
+									o = o.GetToken(part);
+								else
+								{
+									t = new Token() { Name = part };
+									o.AddToken(t);
+									o = t;
+								}
+							}
+						}
+						if (tVal != "")
+						{
+							var fVal = 0.0f;
+							var isNumeric = float.TryParse(tVal, out fVal);
+							if (isNumeric)
+								t.Value = fVal;
+							else
+								t.Text = tVal;
+						}
 					}
-				}
 
-				character.AddToken("expectation");
+					character.AddToken("expectation");
+				}
 
 				unexpected.Remove(replacement);
 				replacement.Character = character;
