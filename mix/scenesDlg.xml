@@ -18,7 +18,10 @@
 		value CDATA #IMPLIED
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
-	<!ATTLIST action name CDATA #REQUIRED>
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
 
 	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
 	<!ELEMENT p (#PCDATA|if|else)*>
