@@ -67,12 +67,6 @@ namespace Noxico
 		private string pngFont = "fixedsex";
 		private Dictionary<int, Bitmap> pngFonts;
 #endif
-#if ALLOW_CANDYTRON
-		private bool candytron = false;
-		private Font candyFont;
-		private System.Drawing.Rectangle viewPort, reflection;
-		private System.Drawing.Drawing2D.LinearGradientBrush shadow, blue, red;
-#endif
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -220,33 +214,6 @@ namespace Noxico
 				}
 
 				ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
-#if ALLOW_CANDYTRON
-				if (IniFile.GetBool("misc", "candytron", false))
-				{
-					candytron = true;
-#if ALLOW_PNG_MODE
-					pngMode = false;
-					var emSize = 24;
-					var style = FontStyle.Bold;
-					var family = "Consolas";
-#else
-				emSize = 24;
-				style = FontStyle.Bold;
-#endif
-					GlyphAdjustX = -5;
-					GlyphAdjustY = 0;
-					ClearType = false;
-					CellWidth = 18;
-					CellHeight = 37;
-					FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-					WindowState = FormWindowState.Maximized;
-					Font = new Font(family, emSize, style);
-					if (Font.FontFamily.Name != family)
-						Font = new Font(FontFamily.GenericMonospace, emSize, style);
-					colorConverter = (c => c);
-					charConverter = (c => c);
-				}
-#endif
 
 				Show();
 				Refresh();
@@ -259,13 +226,6 @@ namespace Noxico
 				{
 					var tx = y.X / (CellWidth);
 					var ty = y.Y / (CellHeight);
-#if ALLOW_CANDYTRON
-					if (candytron)
-					{
-						//TODO: Make coordinates work in Candytron mode
-						return;
-					}
-#endif
 					if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
 						return;
 					if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
@@ -413,40 +373,6 @@ namespace Noxico
 				base.OnPaint(e);
 				return;
 			}
-#if ALLOW_CANDYTRON
-			if (candytron)
-			{
-				e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
-				if (viewPort.Width == 0)
-				{
-					var aspect = (float)backBuffer.Width / (float)backBuffer.Height;
-					var h = ClientRectangle.Height / 1.5;
-					var w = h * aspect;
-					var x = (ClientRectangle.Width - w) / 2;
-					var y = (ClientRectangle.Height - h) / 3;
-					viewPort = new System.Drawing.Rectangle((int)x, (int)y, (int)w, (int)h);
-					reflection = new System.Drawing.Rectangle((int)x, (int)(y + h), (int)w, (int)(h / 2));
-					shadow = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, 0, (int)w, (int)(h / 2)), Color.Black, Color.Transparent, 270);
-					red = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, 0, ClientRectangle.Width, ClientRectangle.Height / 3), Color.FromArgb(48, 8, 8), Color.Black, 90);
-					blue = new System.Drawing.Drawing2D.LinearGradientBrush(new System.Drawing.Rectangle(0, ClientRectangle.Height / 4, ClientRectangle.Width, ClientRectangle.Height / 4), Color.FromArgb(32, 16, 64), Color.Transparent, 270);
-					candyFont = new Font("Consolas", 16, FontStyle.Bold);
-				}
-
-				var player = Noxico.Player.Character;
-				var board = Noxico.CurrentBoard;
-				var statusLine = player != null ? string.Format("{0}, {1}    {5}, {6}    {7}\nHP: {2}/{3}   Stim: {4}", player.Name.ToString(true), player.Title, (int)player.GetToken("health").Value, player.GetMaximumHealth(), (int)player.GetToken("stimulation").Value, NoxicoGame.InGameTime.ToShortTimeString(), NoxicoGame.InGameTime.ToLongDateString(), board.Name) : "";
-
-				e.Graphics.FillRectangle(red, 0, 0, ClientRectangle.Width, ClientRectangle.Height / 3);
-				e.Graphics.FillRectangle(Brushes.Black, viewPort.Left - 4, viewPort.Top - 4, viewPort.Width + 8, viewPort.Height + 8);
-				e.Graphics.DrawImage(backBuffer, viewPort);
-				e.Graphics.DrawImage(backBuffer, reflection.Left, reflection.Top + reflection.Height, reflection.Width, -reflection.Height);
-				e.Graphics.FillRectangle(shadow, reflection.Left, reflection.Top, reflection.Width, reflection.Height);
-				e.Graphics.FillRectangle(blue, 0, ClientRectangle.Height - (ClientRectangle.Height / 4) + 2, ClientRectangle.Width, ClientRectangle.Height / 4);
-				e.Graphics.DrawString(statusLine, candyFont, Brushes.Black, 6, 6);
-				e.Graphics.DrawString(statusLine, candyFont, Brushes.Yellow, 4, 4);
-			}
-			else
-#endif
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
 		}
 

@@ -78,14 +78,24 @@ namespace Noxico
 			if (musicVolume + soundVolume == 0)
 				return;
 
-			Console.Write("SoundSystem: creating FMOD system...");
-			var ret = FMOD.Factory.System_Create(ref system);
-			Console.WriteLine(" " + ret.ToString());
-			if (ret != FMOD.RESULT.OK)
+			var ret = FMOD.RESULT.OK;
+
+			Console.Write("SoundSystem: creating FMOD system... ");
+			try
+			{
+				ret = FMOD.Factory.System_Create(ref system);
+				Console.WriteLine(ret.ToString());
+				if (ret != FMOD.RESULT.OK)
+					return;
+			}
+			catch (DllNotFoundException)
+			{
+				Console.WriteLine("FMOD not found, disabling sound.");
 				return;
-			Console.Write("SoundSystem: system.init...");
+			}
+			Console.Write("SoundSystem: system.init... ");
 			ret = system.init(8, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
-			Console.WriteLine(" " + ret.ToString());
+			Console.WriteLine(ret.ToString());
 			if (ret != FMOD.RESULT.OK)
 			{
 				system = null;
