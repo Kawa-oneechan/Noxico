@@ -851,18 +851,23 @@ namespace Noxico
 						var r = find.Path("weapon/range");
 						if (r == null || r.Value == 1)
 						{
-							if (find.Equip(this.Character, carriedItem))
+							try
 							{
-								Console.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
-								return; //end turn
+								if (find.Equip(this.Character, carriedItem))
+								{
+									Console.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+									return; //end turn
+								}
 							}
+							catch (ItemException)
+							{ }
 						}
 					}
 				}
 			}
-			else if ((distance > 2 && range == 1) || weapon == null)
+			if ((distance > 2 && range == 1) || weapon == /* still */ null)
 			{
-				//Far awaya, could be better to use long-range weapon, or unarmed
+				//Far away, could be better to use long-range weapon, or unarmed
 				foreach (var carriedItem in this.Character.GetToken("items").Tokens)
 				{
 					if (carriedItem.HasToken("equipped"))
@@ -875,11 +880,16 @@ namespace Noxico
 						var r = find.Path("weapon/range");
 						if (r != null && r.Value > 3)
 						{
-							if (find.Equip(this.Character, carriedItem))
+							try
 							{
-								Console.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
-								return; //end turn
+								if (find.Equip(this.Character, carriedItem))
+								{
+									Console.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+									return; //end turn
+								}
 							}
+							catch (ItemException)
+							{ }
 						}
 					}
 				}
@@ -1322,15 +1332,15 @@ namespace Noxico
 			if (aimSuccess)
 			{
 				var damage = weap.Path("damage").Value;
+				this.Character.IncreaseSkill(skill.Text);
 				if (target is Player)
 				{
 					var hit = target as Player;
-					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+					return;
 				}
-				this.Character.IncreaseSkill(skill.Text);
 			}
-
 			NoxicoGame.Mode = UserMode.Walkabout;
 		}
 
@@ -2273,6 +2283,7 @@ namespace Noxico
 				NoxicoGame.AddMessage("GAME OVER", Color.Red);
 				var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 				File.Delete(playerFile);
+				NoxicoGame.Sound.PlayMusic("set://Death");
 				MessageBox.Ask(
 					"You have been slain.\n\nWould you like an infodump on the way out?",
 					() =>
