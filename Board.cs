@@ -900,8 +900,8 @@ namespace Noxico
 					var items = newb.Character.Path("items");
 					if (items == null)
 						items = newb.Character.AddToken("items");
-					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat", "crosshairs" };
-					var w = Toolkit.Rand.Next(1, 3);
+					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat" }; //TODO: make this cultural
+					var w = Toolkit.Rand.Next(1, 2);
 					while (w > 0)
 					{
 						var weapon = Toolkit.PickOne(weapons);
