@@ -222,22 +222,15 @@ namespace Noxico
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
-#if DEBUG
 			/*
-			//Towngen test
-			//var towngenTest = Board.CreateBasicOverworldBoard(2, "TowngenTest", "Towngen Test", "set://debug");
-			var towngenTest = Board.CreateBasicOverworldBoard(2, "DungeonTest", "DunGen Test", "set://debug");
-			towngenTest.Type = BoardType.Town;
-			CurrentBoard = towngenTest;
-			var townGen = new StoneDungeonGenerator(); //new TownGenerator();
-			townGen.Board = towngenTest;
-			townGen.Culture = Culture.Cultures["human"];
-			townGen.Create(BiomeData.Biomes[2]);
-			townGen.ToTilemap(ref towngenTest.Tilemap);
-			townGen.ToSectorMap(towngenTest.Sectors);
-			towngenTest.DumpToHTML("final");
+			//Genetics test
+			var mother = Character.Generate("human", Gender.Female);
+			var father = Character.Generate("felinoid", Gender.Male);
+			mother.Fertilize(father);
+			File.WriteAllText("mother.txt", mother.DumpTokens(mother.Tokens, 0));
+			File.WriteAllText("father.txt", father.DumpTokens(father.Tokens, 0));
+			File.WriteAllText("child.txt", mother.DumpTokens(mother.Path("pregnancy/child").Tokens, 0));
 			*/
-#endif
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
