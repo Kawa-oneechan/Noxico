@@ -133,7 +133,7 @@ namespace Noxico
 			{
 				SavePath = IniFile.GetString("misc", "savepath", @"$/Noxico"); //"saves"; //Use <startup>\saves instead
 				if (SavePath.StartsWith("$"))
-					SavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + SavePath.Substring(1);
+					SavePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + SavePath.Substring(1);
 				SavePath = Path.GetFullPath(SavePath);
 			}
 

@@ -122,7 +122,7 @@ namespace Noxico
 				charConverter = (c => c);
 
 				var portable = false;
-				IniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "noxico.ini");
+				IniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "noxico.ini");
 				if (File.Exists("portable"))
 				{
 					portable = true;
@@ -740,10 +740,6 @@ namespace Noxico
 			Refresh();
 		}
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Running = false;
@@ -783,7 +779,7 @@ namespace Noxico
 			{
 				var shotDir = IniFile.GetString("misc", "shotpath", "screenshots");
 				if (shotDir.StartsWith("$"))
-					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + shotDir.Substring(1);
+					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + shotDir.Substring(1);
 
 				if (!Directory.Exists(shotDir))
 					Directory.CreateDirectory(shotDir);
