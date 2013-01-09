@@ -99,6 +99,17 @@ namespace Noxico
 			return "gender-neutral";
 		}
 
+		public Gender GetGenderEnum()
+		{
+			if (HasToken("penis") && HasToken("vagina"))
+				return Gender.Herm;
+			else if (HasToken("penis"))
+				return Gender.Male;
+			else if (HasToken("vagina"))
+				return Gender.Female;
+			return Gender.Neuter;
+		}
+
 		public void UpdateTitle()
 		{
 			var g = GetGender();
@@ -589,7 +600,7 @@ namespace Noxico
 		{
 			foreach (var toAdd in otherSet)
 			{
-				this.Tokens.Add(new Token() { Name = toAdd.Name });
+				this.Tokens.Add(new Token() { Name = toAdd.Name, Text = toAdd.Text, Value = toAdd.Value });
 				if (toAdd.Tokens.Count > 0)
 					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
@@ -2295,8 +2306,43 @@ namespace Noxico
 					childName.Regenerate();
 					if (childName.Surname.StartsWith("#patronym"))
 						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), this.Name);
+					
+					if (location != null)
+					{
+						childChar = new Character();
+						childChar.Tokens = child.Tokens;
 
-					//TODO: Actually copy the child token's contents to childChar here.
+						childChar.Culture = Culture.DefaultCulture;
+						if (childChar.HasToken("culture"))
+						{
+							var culture = childChar.GetToken("culture").Text;
+							if (Culture.Cultures.ContainsKey(culture))
+								childChar.Culture = Culture.Cultures[culture];
+						}
+
+						var gender = childChar.GetGenderEnum();
+
+						var terms = childChar.GetToken("terms");
+						childChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
+						if (gender == Gender.Male && terms.HasToken("male"))
+							childChar.Species = terms.GetToken("male").Text;
+						else if (gender == Gender.Female && terms.HasToken("female"))
+							childChar.Species = terms.GetToken("female").Text;
+						else if (gender == Gender.Herm && terms.HasToken("herm"))
+							childChar.Species = terms.GetToken("herm").Text;
+
+						childChar.UpdateTitle();
+
+						if (childChar.HasToken("femalesmaller"))
+						{
+							if (gender == Gender.Female)
+								childChar.GetToken("tallness").Value -= Toolkit.Rand.Next(5, 10);
+							else if (gender == Gender.Herm)
+								childChar.GetToken("tallness").Value -= Toolkit.Rand.Next(1, 6);
+						}
+
+						childChar.GetToken("health").Value = childChar.GetMaximumHealth();
+					}
 
 					var ships = this.GetToken("ships");
 					ships.AddToken(childName.ToID()).AddToken("child");
@@ -2309,7 +2355,8 @@ namespace Noxico
 					//Midwife Daemon goes here, using the location token.
 
 					//Until then, we'll just message you.
-					MessageBox.Message("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
+					if (this.HasToken("player"))
+						MessageBox.Message("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
 
 					this.RemoveToken("pregnancy");
 					return true;
@@ -2320,8 +2367,99 @@ namespace Noxico
 
 		public bool Fertilize(Character father)
 		{
-			//Unimplemented for now.
-			return false;
+			var fertility = 0.0;
+			if (this.HasToken("fertility"))
+				fertility = this.GetToken("fertility").Value;
+			//Simple version for now -- should involve the father, too.
+			if (Toolkit.Rand.Next() > fertility)
+				return false;
+
+			if (!this.HasToken("childlocation"))
+				return true; //abstract pregnancy -- no need to actually mix up a baby
+			
+			//Now, let's play God.
+
+			var pregnancy = this.Path("pregnancy");
+			if (pregnancy == null)
+				pregnancy = this.AddToken("pregnancy");
+			var child = pregnancy.AddToken("child");
+			var mother = this; //for clarity
+
+			var fromMothersPlan = new[]
+			{
+				"normalgenders", "explicitgenders", "invisiblegender", "terms", "ascii", "femalesmaller",
+			};
+			var fromEitherPlan = new[]
+			{
+				"ass", "hips", "waist", "fertility", "breastrow", "vagina", "penis", "balls", "either",
+			};
+			var inheritable = new[]
+			{
+				"hair", "skin", "eyes", "face", "tongue", "teeth", "ears", "legs", "taur", "quadruped", "snaketail", "slimeblob", "wings", "horn", "monoceros",
+			};
+			var alwaysThere = new[]
+			{
+				"items", "health", "perks", "skills",
+				"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",
+				"money", "ships", "paragon", "renegade"
+			};
+			var alwaysThereVals = new[]
+			{
+				0, 10, 0, 0,
+				10, 0, 10, 0,
+				10, 10, 10, 15,
+				100, 0, 0, 0,
+			};
+
+			//TODO: make fromMothersPlan and fromEitherPlan use FRESHLY ROLLED data from the closest bodyplan matches.
+
+			foreach (var item in fromMothersPlan)
+			{
+				if (mother.HasToken(item))
+					child.AddToken(item, mother.GetToken(item).Value, mother.GetToken(item).Text).AddSet(mother.GetToken(item).Tokens);
+			}
+
+			foreach (var item in fromEitherPlan)
+			{
+				var source = Toolkit.Rand.NextDouble() > 0.5 ? father : mother;
+				var other = source == father ? mother : father;
+				if (source.HasToken(item))
+					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
+				else if (other.HasToken(item))
+					child.AddToken(item, other.GetToken(item).Value, other.GetToken(item).Text).AddSet(other.GetToken(item).Tokens);
+			}
+
+			foreach (var item in inheritable)
+			{
+				var source = Toolkit.Rand.NextDouble() > 0.5 ? father : mother;
+				var other = source == father ? mother : father;
+				if (source.HasToken(item))
+					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
+				else if (other.HasToken(item))
+					child.AddToken(item, other.GetToken(item).Value, other.GetToken(item).Text).AddSet(other.GetToken(item).Tokens);
+			}
+
+			for (var i = 0; i < alwaysThere.Length; i++)
+				child.AddToken(alwaysThere[i], alwaysThereVals[i]);
+
+			var gender = Toolkit.Rand.NextDouble() > 0.5 ? Gender.Male : Gender.Female;
+
+			if (gender == Gender.Male)
+			{
+				child.RemoveToken("fertility");
+				child.RemoveToken("milksource");
+				child.RemoveToken("vagina");
+				if (child.HasToken("breastrow"))
+					child.GetToken("breastrow").GetToken("size").Value = 0f;
+			}
+			else if (gender == Gender.Female)
+			{
+				child.RemoveToken("penis");
+				child.RemoveToken("balls");
+			}
+
+			return true;
 		}
 
 
