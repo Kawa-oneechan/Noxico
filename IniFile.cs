@@ -35,8 +35,8 @@ namespace Noxico
 					var val = l.Substring(sep + 1).Trim();
 					if (settings[thisSection].ContainsKey(key))
 					{
-						//throw new Exception("There's an error in the INI file: the key \"" + key + "\" has already been used.");
-						settings[thisSection][key] = val;
+						throw new Exception("There's an error in the INI file: the key \"" + key + "\" in section \"" + thisSection + "\" has already been used in that section.");
+						//settings[thisSection][key] = val;
 					}
 					else
 						settings[thisSection].Add(key, val);
@@ -46,20 +46,61 @@ namespace Noxico
 
 		public static void Save(string filename)
 		{
-			var sb = new StringBuilder("");
-			foreach (var section in settings)
+			if (!File.Exists(filename))
 			{
-				sb.AppendLine();
-				sb.AppendFormat("[{0}]", section.Key);
-				foreach (var entry in section.Value)
+				var sb = new StringBuilder("");
+				foreach (var section in settings)
 				{
+					sb.AppendFormat("[{0}]", section.Key);
+					foreach (var entry in section.Value)
+					{
+						sb.AppendLine();
+						sb.AppendFormat("{0}={1}", entry.Key, entry.Value);
+					}
 					sb.AppendLine();
-					sb.AppendFormat("{0}={1}", entry.Key, entry.Value);
+					sb.AppendLine();
 				}
-				sb.AppendLine();
+				File.WriteAllText(filename, sb.ToString());
 			}
-			sb.AppendLine();
-			File.WriteAllText(filename, sb.ToString());
+			else
+			{
+				var lines = File.ReadAllLines(filename).Select(l => l.Trim()).ToArray();
+				foreach (var section in settings)
+				{
+					for (var i = 0; i < lines.Length; i++)
+					{
+						if (lines[i].StartsWith("[" + section.Key + "]"))
+						{
+							var sStart = i + 1;
+							var sEnd = lines.Length;
+							for (i = sStart; i < lines.Length; i++)
+							{
+								if (lines[i].StartsWith("["))
+								{
+									sEnd = i;
+									break;
+								}
+							}
+							foreach (var entry in section.Value)
+							{
+								for (i = sStart; i < sEnd; i++)
+								{
+									if (lines[i].Contains('=') && lines[i].StartsWith(entry.Key))
+									{
+										var comment = string.Empty;
+										if (lines[i].Contains(';'))
+											comment = ' ' + lines[i].Substring(lines[i].IndexOf(';'));
+										lines[i] = entry.Key + "=" + entry.Value + comment;
+										break;
+									}
+								}
+							}
+							break;
+						}
+					}
+				}
+				File.WriteAllLines(filename, lines);
+			}
 		}
 
 		public static string GetString(string section, string key, string def)
