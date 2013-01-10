@@ -77,6 +77,10 @@ namespace Noxico
 			{
 				label3.Text = "The problem is a corrupted board state. Some data was expected but not found." + Environment.NewLine + Environment.NewLine + "Delete the worldsave and start over.";
 			}
+			else if (x.Message.Contains("error in the INI file"))
+			{
+				label3.Text = "Find the game's INI file (noxico.ini, in " + Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + " if not running in portable mode) and see if there's any repeated settings, such as the one mentioned on the Data tab.";
+			}
 			else if (typeName == "EndOfStreamException")
 			{
 				if (textBox1.Text.Contains("NoxicoGame.LoadGame"))
