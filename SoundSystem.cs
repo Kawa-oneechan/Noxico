@@ -162,6 +162,8 @@ namespace Noxico
 					}
 				}
 			}
+			else
+				currentSet = string.Empty;
 
 			if (set == currentSet)
 				return;

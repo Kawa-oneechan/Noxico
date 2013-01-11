@@ -13,7 +13,7 @@ namespace Noxico
 		private static XmlDocument xSex, xDlg;
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
-		public static bool Dreaming;
+		public static bool Dreaming, LeavingDream;
 
 		private static bool letBottomChoose; 
 
@@ -29,6 +29,10 @@ namespace Noxico
 				xSex = Mix.GetXMLDocument("scenesSex.xml", true);
 				xDlg = Mix.GetXMLDocument("scenesDlg.xml", true);
 			}
+
+			if (Dreaming)
+				NoxicoGame.Sound.PlayMusic("robric993.xm");
+			
 			xDoc = inDialogue ? xDlg : xSex;
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
@@ -79,7 +83,9 @@ namespace Noxico
 			if (bottom == NoxicoGame.HostForm.Noxico.Player.Character && !letBottomChoose)
 			{
 				if (actions.Count == 0)
+				{
 					MessageBox.Message(message, true, bottom.Name.ToString(true));
+				}
 				else
 				{
 					var randomAction = actions.Keys.ToArray()[Toolkit.Rand.Next(actions.Count)];
@@ -92,7 +98,11 @@ namespace Noxico
 			{
 				letBottomChoose = false;
 				if (actions.Count == 0)
+				{
 					MessageBox.Message(message, !Dreaming, bottom.Name.ToString(true));
+					if (Dreaming)
+						LeavingDream = true;
+				}
 				else
 					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.Name.ToString(true));
 			}

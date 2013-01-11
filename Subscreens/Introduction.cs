@@ -439,10 +439,20 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
+					Achievements.StartingTime = DateTime.Now;
+
 					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
 					NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-					Achievements.StartingTime = DateTime.Now;
+
+					if (!IniFile.GetBool("misc", "skipintro", true))
+					{
+						var dream = new Character();
+						dream.Name = new Name("Dream");
+						dream.IsProperNamed = true;
+						SceneSystem.Dreaming = true;
+						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)", true);
+					}
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();

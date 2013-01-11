@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+<scenes>
+
+	<!-- Start -->
+	<scene id="NewGameIntro_Start" name="(new game start)">
+		<script type="text/javascript">
+			<![CDATA[
+				if(!top.HasToken("dream"))
+					top.AddToken("dream");
+			]]>
+		</script>
+	
+		<p>
+			You know this is a dream. You shouldn't as you can't see or hear anything, and yet you know it all the same. You try to understand how, but you can only remember the feeling of being told by someone, though not who by or when. 
+		</p>
+		<p/>
+		<p>
+			Around you, the world quickly unfolds and builds itself from the dark into a verdant forest. Tall redwoods and broad leaved ferns surround the small, rocky clearing you stand in, and beneath your <if target="top" type="has" name="legs">uncovered [t:feet]</if>
+			<else><if target="top" type="has" name="snaketail">serpentine lower body</if>
+				<else>
+					<if target="top" type="has" name="slimeblob">translucent, sluglike lower half</if>
+				</else>
+			</else>, you feel a pleasant softness from the carpet of moist lichen that covers the earth.
+		</p>
+		<p/>
+		<p>
+			As you stand there admiring the scenery, you hear the sound of quiet footsteps to your left and turn to see one of the most unusual creatures you've ever laid eyes on standing barely an arm's length away.
+		</p>
+		<action name="new game start 2"/>
+	</scene>
+	<scene id="NewGameIntro_Start2" name="new game start 2">
+		<p/>
+		<p>
+			It - for the creature lacks the form or features of either sex - stands before you, unclothed and unashamed. Though it appears human, its body is hairless and unblemished, and its porcelain skin is broken up only by a pair of thin, rosy lips and a set of piercingly blue eyes.
+		</p>
+		<p/>
+		<p>
+			You find your gaze drawn up to its face, and you see it smile at you before speaking. "Hello [t:name], I come to bring you a warning."
+		</p>
+		<action name="new game what is warning"/>
+		<action name="new game done this before"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_WhatWarning" name="new game what is warning" list="A warning of what, exactly?">
+		<p>
+			"The demon empress Melfina has grown tired of waiting for Nox to fall to her influence, and has begun to gather forces from her realm for a second great invasion."
+		</p>
+		<p/>
+		<p>
+			"She intends to claim Nox by destroying or corrupting all that is untainted and right in the world," it continues as its voice takes on a melancholy tone, "Once she does, the realm will be hers alone, and the peoples of Nox will cease to exist as we know them."
+		</p>
+		
+		<action name="new game how do i fit in"/>
+		<action name="new game who is melfina"/>
+		<action name="new game what is first invasion"/>
+	</scene>
+	<scene id="NewGameIntro_HowDoIFitInToThis" name="new game how do i fit in" list="How do I fit into this?">
+		<filter target="top" type="hasnot" name="dream/playerfate"/>
+		<p>
+			"My matron, the Earth Mother, has seen in your fate the potential to destroy Melfina's forces and to end her defilement of Nox."
+		</p>
+		<p/>
+		<p>
+			You ask it what it means by that and scoff at the idea that you're some kind of messiah or chosen one.
+		</p>
+		<p/>
+		<p>
+			It smiles serenely and replies, "No, you are not a 'chosen one' as you put it, as you're not the only one to have this fate. However, you are still one of very few."
+		</p>
+		<p/>
+		<p>
+			The creature sees your confusion and continues its explanation. "The mortal understanding of fate is flawed. Fate is not simply a linear path that you follow regardless, but rather it is a convoluted roadway with many forks, intersections and ends."
+		</p>
+		<action name="new game how do i fit in 2"/>
+	</scene>
+	<scene id="NewGameIntro_HowDoIFitInToThis2" name="new game how do i fit in 2">
+		<p>
+			"When the Earth Mother scried your fate, she only saw where a few of those paths would lead, and that some led to either the death or crippling of Melfina and her armies. Likewise, there are others whose paths take them to the same place, though of course they would come by different routes."
+		</p>
+		<p/>
+		<p>
+			*** WIP ***
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("playerfate");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	<scene id="NewGameIntro_WhoIsMelfina" name="new game who is melfina" list="Who is Melfina?">
+		<filter target="top" type="hasnot" name="dream/melfinatalk"/>
+		<p>
+			It stares at you with its mouth agape and takes a moment before it responds, "You mean to say that you don't know who Melfina is?"
+		</p>
+		<p/>
+		<p>
+			You shake your head slowly and wonder why the creature seems so upset. It turns its head away for a moment and mutters something under its breath before looking at you once more. The creature seems to scrutinize you for a few seconds before it finally sighs and says, "I will show you what I can in the time we have."
+		</p>
+		<p/>
+		<p>
+			*** WIP ***
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("melfinatalk");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	<scene id="NewGameIntro_WhatIsFirstInvasion" name="new game what is first invasion" list="Second great invasion? There was a first?">
+		<filter target="top" type="hasnot" name="dream/invasiontalk"/>
+		<p>
+			<if target="top" type="hasnot" name="dream/melfinatalk">"I take it that you're not a student of history," it replies and you shake your head.</if>
+				<else>"I suppose if you knew nothing of Melfina, it would be too much to expect you to know anything about the first invasion," it replies as you look away sheepishly.</else>
+		</p>
+		<p/>
+		<p>
+			It smiles graciously and says, "In that case, I'll give you the short version."
+		</p>
+		<p/>
+		<p>
+			*** WIP ***
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("invasiontalk");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	<scene id="NewGameIntro_AnyMoreQuestions" name="new game any more questions">
+		<script type="text/javascript">
+			<![CDATA[
+				var dream = top.GetToken("dream")
+			
+				if(dream.HasToken("invasiontalk") && dream.HasToken("melfinatalk") && dream.HasToken("playerfate"))
+					print("\"Unfortunately, I don't have enough time to answer any more questions. If you need to learn more, you will have to do so on your own.\"");
+				else
+					print("\"Is there anything else you wanted to ask of me?\"");
+			]]>
+		</script>
+		<action name="new game how do i fit in"/>
+		<action name="new game who is melfina"/>
+		<action name="new game what is first invasion"/>
+		<action name="new game no more questions"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_NoMoreQuestions" name="new game no more questions" list="No, I think I've got it now.">
+		<p>
+			"There is however something I need to ask you before I go," it tells you and looks at you grimly, "Do you know how to fight?"
+		</p>
+		<action name="new game dream end" listas="Yes, I know how." />
+		<action name="new game placeholder tutorial" />
+	</scene>
+	<scene id="NewGameIntro_YesICanFight" name="new game dream end">
+		<p>
+			Apparently satisfied, the creature nods to you and seems to concentrate for a moment. The sky above you darkens and soon the trees at the edge of the forest start to dissolve away.
+		</p>
+		<p/>
+		<p>
+			"Fighting Melfina will not be easy. You will need every advantage and ally you can find, so take help wherever you can. Fare well, [t:name]"
+		</p>
+		<p/>
+		<p>
+			As the last of the forest disappears, the creature smiles supportively before it vanishes as well. When the forest is finally gone and all that remains is the sea of black, you finally lose all sensation and feel yourself fall back into a dreamless sleep.
+		</p>
+		<p/>
+		<p>
+			When you wake up the next morning, you're greeted by the familiar sight of your bedroom. As you lay in bed, you wonder if there was any truth to the odd dream or if it was just your imagination. In the end, you decide to put it out of your mind until later and get out of bed.
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.RemoveToken("dream");
+			]]>
+		</script>
+	</scene>
+	<scene id="NewGameIntro_NoICantFight" name="new game placeholder tutorial" list="No, I've never fought before.">
+		<p>
+			The creature looks at you thoughtfully, and then replies, "I will teach you what I can, but we're short on time as it is."
+		</p>
+		<p/>
+		<p>
+			**** Placeholder Tutorial ****
+		</p>
+		<p/>
+		<p>
+			Move using the arrow keys. Look at things with 'L', converse with NPC's using 'C', attempt sex with 'F', pick up objects with 'P', travel with 'T' and select with 'Enter'.
+		</p>
+		<p/>
+		<p>
+			To attack an enemy with a melee weapon, stand next to them and press the arrow key in their direction.
+		</p>
+		<p/>
+		<p>
+			To attack an enemy with a ranged weapon, press the 'A' key and move the targeting cursor over them, then press 'Enter'.
+		</p>
+		<p/>
+		<p>
+			To access the menu and see the full list of commands, press 'F1'.
+		</p>
+		<p/>
+		<p>
+			"This is all I can teach you for now. You'll have to learn the rest as you go."
+		</p>
+		<action name="new game dream end" />
+	</scene>
+	
+	
+	<!-- Quick End -->
+	<scene id="NewGameIntro_DoneThisBefore" name="new game done this before" list="Wait. I think I've had this dream before.">
+		<p>
+			The creature looks perplexed by your response. "If I had spoken to you before, I'm certain I would have remembered."
+		</p>
+		<p/>
+		<p>
+			It gestures to the woods around you and speaks again. "The forest you see is made to seem familiar and welcoming, so perhaps that is what you feel. The message I bring, however, is one only known to those outside the realm of Nox."
+		</p>
+			
+		<action name="new game what is warning" listas="Alright, so what's this about?"/>
+		<action name="new game fast start wake up"/>
+	</scene>
+	<scene id="NewGameIntro_FastStartWakeUp" name="new game fast start wake up" list="No, I definitely remember this. I'm just gonna wake up now.">
+		<p>
+			"Wait! Don't go!" it shouts at you, but the forest has already started to dissolve back into nothing. While at first it appears dismayed at your impending departure, it quickly resolves itself to continue as it had intended.
+		</p>
+		<p/>
+		<p>
+			"[t:name], you must join the fight against Melfina! If you do not, Nox will-" Its voice dies out abrubtly as the last of the forest disappears, and you fall back into a dreamless sleep.
+		</p>
+		<p/>
+		<p>
+			When you wake up the next morning, you're greeted by the familiar sight of your bedroom. You lay in bed for a while and wonder if there was any truth to the odd dream. Ultimately, you can't choose one way or the other, and you decide to put it out of your mind for now as you throw off your blankets and get out of bed.
+		</p>
+		
+		<script type="text/javascript">
+			<![CDATA[
+				top.RemoveToken("dream");
+			]]>
+		</script>
+	</scene>
+</scenes>
+
