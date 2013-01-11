@@ -637,6 +637,13 @@ namespace Noxico
 
 		public void Redraw()
 		{
+			//HACK!
+			if (SceneSystem.LeavingDream)
+			{
+				SceneSystem.LeavingDream = false;
+				NoxicoGame.Sound.PlayMusic(this.Music);
+			}
+
 			for (int row = 0; row < 25; row++)
 				for (int col = 0; col < 80; col++)
 					DirtySpots.Add(new Location(col, row));
