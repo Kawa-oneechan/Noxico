@@ -641,6 +641,7 @@ namespace Noxico
 			if (SceneSystem.LeavingDream)
 			{
 				SceneSystem.LeavingDream = false;
+				SceneSystem.Dreaming = false;
 				NoxicoGame.Sound.PlayMusic(this.Music);
 			}
 
