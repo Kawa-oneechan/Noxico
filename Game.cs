@@ -609,12 +609,14 @@ namespace Noxico
 		{
 			var setStatus = new Action<string>(s =>
 			{
+				/*
 				var line = UIManager.Elements.Find(x => x.Tag == "worldGen");
 				if (line == null)
 					return;
 				line.Text = s.PadRight(70);
 				line.Draw();
-				//Console.WriteLine(s);
+				*/
+				Console.WriteLine(s);
 			});
 
 			var host = NoxicoGame.HostForm;
@@ -623,77 +625,31 @@ namespace Noxico
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 
-			setStatus("Generating handful of towns...");
-			var townGen = new TownGenerator();
+			setStatus("Creating player's starting town...");
+			var pcCulture = Player.Character.GetToken("culture").Text;
+			var thisMap = WorldGen.CreateTown(-1, pcCulture, null, true);
+			KnownTargets.Add(thisMap.BoardNum);
+			TargetNames.Add(thisMap.BoardNum, thisMap.Name);
+
+			setStatus("Generating handful of other towns...");
 			for (var i = 0; i < 2; i++)
 			{
-				var thisMap = WorldGen.CreateTown(-1, null, null, true);
+				thisMap = WorldGen.CreateTown(-1, null, null, true);
 				KnownTargets.Add(thisMap.BoardNum);
 				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
-			}
-
-			/*
-			KnownTargets.Add(-10);
-			TargetNames.Add(-10, "OndemandVille");
-			var expectation = new Expectation() { Biome = 9 };
-			expectation.Characters.Add("bodyplan=human;gender=female;firstname=Leela;token=carnality(100);token=items/strapon/equipped;token=!vagina/virgin");
-			Expectations.Add(-10, expectation);
-			*/
-			var expectation = Expectation.ExpectTown("OndemandVille", 9);
-			expectation.Characters.Add("bodyplan=human;gender=female;firstname=Leela;token=carnality(100);token=items/strapon/equipped;token=!vagina/virgin");			
-
-			/*
-			KnownTargets.Add(-10);
-			TargetNames.Add(-10, "OndemandVille");
-			Expectations.Add(-10, new Expectation() { Biome = 9 });
-			KnownTargets.Add(-12);
-			TargetNames.Add(-12, "Dreadmor Caverns");
-			Expectations.Add(-12, new Expectation() { Dungeon = true });
-			*/
-
-
-			setStatus("Placing dungeon entrances...");
-			foreach (var board in Boards)
-			{
-				if (board.Type == BoardType.Town)
-					continue;
-
-				//Don't always place one, to prevent clumping
-				if (Toolkit.Rand.NextDouble() > 0.4)
-					continue;
-
-				var eX = Toolkit.Rand.Next(2, 78);
-				var eY = Toolkit.Rand.Next(1, 23);
-
-				if (board.IsSolid(eY, eX))
-					continue;
-				var sides = 0;
-				if (board.IsSolid(eY - 1, eX))
-					sides++;
-				if (board.IsSolid(eY + 1, eX))
-					sides++;
-				if (board.IsSolid(eY, eX - 1))
-					sides++;
-				if (board.IsSolid(eY, eX + 1))
-					sides++;
-				if (sides > 3)
-					continue;
-
-				var newWarp = new Warp()
-				{
-					TargetBoard = -1, //mark as ungenerated dungeon
-					ID = board.ID + "_Dungeon",
-					XPosition = eX,
-					YPosition = eY,
-				};
-				board.Warps.Add(newWarp);
-				board.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 			}
 		
 			setStatus("Applying missions...");
 			ApplyMissions();
 
 			Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+
+			//TODO: give the player a proper home.
+			this.CurrentBoard = GetBoard(KnownTargets[0]);
+			this.Player.XPosition = 40;
+			this.Player.YPosition = 12;
+			this.Player.ParentBoard = this.CurrentBoard;
+			this.CurrentBoard.Entities.Add(Player);
 
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
@@ -719,6 +675,7 @@ namespace Noxico
 		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string BonusTrait)
 		{
 			var pc = Character.Generate(bodyplan, gender);
+			this.Player = new Player(pc);
 
 			pc.IsProperNamed = true;
 			if (!string.IsNullOrWhiteSpace(name))
@@ -850,6 +807,8 @@ namespace Noxico
 				}
 			}
 
+			//Moved to Game.CreateRealm()
+			/*
 			this.CurrentBoard = GetBoard(KnownTargets[0]);
 			this.Player = new Player(pc)
 			{
@@ -858,6 +817,7 @@ namespace Noxico
 				ParentBoard = this.CurrentBoard,
 			};
 			this.CurrentBoard.Entities.Add(Player);
+			*/
 
 			Player.Character.RecalculateStatBonuses();
 			Player.Character.CheckHasteSlow();

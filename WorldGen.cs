@@ -79,6 +79,37 @@ namespace Noxico
 					encounters.Value = biome.MaxEncounters;
 					foreach (var e in biome.Encounters)
 						encounters.AddToken(e);
+
+					//Possibility of linked dungeons
+					if (Toolkit.Rand.NextDouble() < 0.4)
+					{
+						var eX = Toolkit.Rand.Next(2, 78);
+						var eY = Toolkit.Rand.Next(1, 23);
+
+						if (lol.IsSolid(eY, eX))
+							continue;
+						var sides = 0;
+						if (lol.IsSolid(eY - 1, eX))
+							sides++;
+						if (lol.IsSolid(eY + 1, eX))
+							sides++;
+						if (lol.IsSolid(eY, eX - 1))
+							sides++;
+						if (lol.IsSolid(eY, eX + 1))
+							sides++;
+						if (sides > 3)
+							continue;
+
+						var newWarp = new Warp()
+						{
+							TargetBoard = -1, //mark as ungenerated dungeon
+							ID = lol.ID + "_Dungeon",
+							XPosition = eX,
+							YPosition = eY,
+						};
+						lol.Warps.Add(newWarp);
+						lol.SetTile(eY, eX, '>', Color.Silver, Color.Black);
+					}
 				}
 				else if (Toolkit.Rand.NextDouble() > 0.8)
 				{

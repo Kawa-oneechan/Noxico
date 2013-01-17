@@ -5,6 +5,8 @@
 	<!ATTLIST bodyplan id ID #REQUIRED>
 ]>
 <bodyplans>
+	<!-- When the time comes, many playables should be unmarked: foocubus, littlepony, slime, ursidae -->
+	
 	<bodyplan id="human">
 		<![CDATA[
 playable

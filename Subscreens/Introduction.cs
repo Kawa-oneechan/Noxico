@@ -143,14 +143,6 @@ namespace Noxico
 		}
 
 
-		private static System.Threading.Thread worldgen;
-
-		public static void KillWorldgen()
-		{
-			if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
-				worldgen.Abort();
-		}
-
 		private class PlayableRace
 		{
 			public string ID { get; set; }
@@ -339,8 +331,8 @@ namespace Noxico
 					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
 					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
 					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
-					{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
-					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10, Hidden = !restarting } },
+					//{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
+					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10 /*, Hidden = !restarting */} },
 
 					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
 					{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24 } },
@@ -364,7 +356,7 @@ namespace Noxico
 
 					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 40, Height = 4, Foreground = Color.White } },
 					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel("The world is already here.") { Tag = "worldGen", Left = 1, Top = 24, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel("ah...") { Left = 1, Top = 24, Foreground = Color.Silver } },
 				};
 
 				pages = new List<UIElement>[]
@@ -389,7 +381,7 @@ namespace Noxico
 					{
 						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["giftLabel"], controls["gift"],
-						controls["controlHelp"], controls["back"], controls["playNo"], controls["play"],
+						controls["controlHelp"], controls["back"], /* controls["playNo"], */ controls["play"],
 					},
 				};
 
@@ -429,11 +421,11 @@ namespace Noxico
 					var eyes = ((UISingleList)controls["eyes"]).Text;
 					var bonus = ((UIList)controls["gift"]).Text;
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
+					NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
 					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
-					NoxicoGame.HostForm.Noxico.SaveGame();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
@@ -497,12 +489,14 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 
+				/*
 				//Start creating the world as we work...
 				if (!restarting)
 				{
 					worldgen = new System.Threading.Thread(CreateNox);
 					worldgen.Start();
 				}
+				*/
 
 				NoxicoGame.InGame = false;
 			}
@@ -512,13 +506,15 @@ namespace Noxico
 				UIManager.Draw();
 				Subscreens.Redraw = false;
 			}
-
+			
+			/*
 			if (!restarting && (worldgen.ThreadState != System.Threading.ThreadState.Running && controls["play"].Hidden))
 			{
 				controls["play"].Hidden = false;
 				if (page == 2)
 					controls["play"].Draw();
 			}
+			*/
 
 			UIManager.CheckKeys();
 		}
