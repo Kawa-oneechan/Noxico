@@ -297,10 +297,12 @@ namespace Noxico
 						}
 					}
 				};
+				/*
 				FormClosed += (x, y) =>
 				{
 					Introduction.KillWorldgen();
 				};
+				*/
 
 				Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
 				Console.WriteLine(Environment.OSVersion);
