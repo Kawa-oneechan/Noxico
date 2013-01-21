@@ -15,7 +15,7 @@ namespace Noxico
 		private static Character top, bottom;
 		public static bool Dreaming, LeavingDream;
 
-		private static bool letBottomChoose; 
+		private static bool letBottomChoose, wantToTrade; 
 
 		public static void Engage(Character top, Character bottom, bool inDialogue)
 		{
@@ -32,6 +32,7 @@ namespace Noxico
 
 			if (Dreaming)
 				NoxicoGame.Sound.PlayMusic("robric993.xm");
+			wantToTrade = false;
 			
 			xDoc = inDialogue ? xDlg : xSex;
 			SceneSystem.top = top;
@@ -102,6 +103,8 @@ namespace Noxico
 					MessageBox.Message(message, !Dreaming, bottom.Name.ToString(true));
 					if (Dreaming)
 						LeavingDream = true;
+					else if (wantToTrade)
+						ContainerMan.Setup(bottom);
 				}
 				else
 					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.Name.ToString(true));
@@ -165,6 +168,7 @@ namespace Noxico
 						js.SetFunction("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
 						js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 						js.SetParameter("Expectations", NoxicoGame.Expectations);
+						js.SetFunction("Trade", new Action<string>(x => wantToTrade = true));
 						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();
