@@ -76,6 +76,11 @@
 			]]>
 		</script>
 	</scene>
+	<scene id="test3" name="token replacement test" list="Let [b:him] help you test in-list replacement tokens" priority="high">
+		<p>It worked.</p>
+	</scene>
+	
+	
 	<scene id="zzz1" name="(starting node)" priority="high">
 		<filter target="bottom" type="has" name="sleeping" />
 		<p>
@@ -140,6 +145,7 @@
 			"Greetings, traveller," [b:he] says with a friendly unassuming smile. "Can I help you?"
 		</p>
 		<action name="trade" />
+		<action name="token replacement test" />
 		<action name="tell about location a" />
 		<action name="introduce yourself" />
 		<action name="invite to have sex" />

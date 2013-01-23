@@ -619,30 +619,32 @@ namespace Noxico
 				Console.WriteLine(s);
 			});
 
-			var host = NoxicoGame.HostForm;
-			this.Boards.Clear();
-
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 
-			setStatus("Creating player's starting town...");
-			var pcCulture = Player.Character.GetToken("culture").Text;
-			var thisMap = WorldGen.CreateTown(-1, pcCulture, null, true);
-			KnownTargets.Add(thisMap.BoardNum);
-			TargetNames.Add(thisMap.BoardNum, thisMap.Name);
-
-			setStatus("Generating handful of other towns...");
-			for (var i = 0; i < 2; i++)
+			var host = NoxicoGame.HostForm;
+			//this.Boards.Clear();
+			if (this.Boards.Count == 0)
 			{
-				thisMap = WorldGen.CreateTown(-1, null, null, true);
+				setStatus("Creating player's starting town...");
+				var pcCulture = Player.Character.GetToken("culture").Text;
+				var thisMap = WorldGen.CreateTown(-1, pcCulture, null, true);
 				KnownTargets.Add(thisMap.BoardNum);
 				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
-			}
-		
-			setStatus("Applying missions...");
-			ApplyMissions();
 
-			Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+				setStatus("Generating handful of other towns...");
+				for (var i = 0; i < 2; i++)
+				{
+					thisMap = WorldGen.CreateTown(-1, null, null, true);
+					KnownTargets.Add(thisMap.BoardNum);
+					TargetNames.Add(thisMap.BoardNum, thisMap.Name);
+				}
+
+				setStatus("Applying missions...");
+				ApplyMissions();
+
+				Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+			}
 
 			//TODO: give the player a proper home.
 			this.CurrentBoard = GetBoard(KnownTargets[0]);

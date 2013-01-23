@@ -38,8 +38,8 @@ namespace Noxico
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
 
-			if (name.Contains('!'))
-				name = name.Remove(name.LastIndexOf('!'));
+			if (name.Contains('\xE064'))
+				name = name.Remove(name.LastIndexOf('\xE064'));
 
 			var openings = FindOpenings(name);
 			if (openings.Count == 0)
@@ -134,12 +134,28 @@ namespace Noxico
 			var ret = new Dictionary<object, string>();
 			foreach (var action in scene.SelectNodes("action").OfType<XmlElement>())
 			{
+				foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
+				{
+					var key = action.GetAttribute("name");
+					var listAs = s.GetAttribute("list");
+					if (action.HasAttribute("listas"))
+					{
+						key = s.GetAttribute("name") + '\xE064' + ret.Count.ToString();
+						listAs = action.GetAttribute("listas");
+					}
+					if (listAs.Contains('['))
+						listAs = ApplyTokens(listAs);
+					if (!ret.ContainsKey(key))
+						ret.Add(key, listAs);
+				}
+				/*
 				if (action.HasAttribute("listas"))
 					foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
 						ret.Add(s.GetAttribute("name") + '!' + ret.Count.ToString(), action.GetAttribute("listas"));
 				else
 					foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => !ret.ContainsKey(s.GetAttribute("name")) && s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
 						ret.Add(s.GetAttribute("name"), s.GetAttribute("list"));
+				*/
 			}
 			return ret;
 		}
