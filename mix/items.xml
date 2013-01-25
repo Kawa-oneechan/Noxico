@@ -101,6 +101,7 @@ weight: medium
 weapon
 	damage: 50
 	skill: club
+	attacktype: crush
 ascii
 	char: U+0021
 	fore
@@ -144,6 +145,7 @@ fireproof
 weapon
 	damage: 30
 	skill: short_sword
+	attacktype: stab
 description: "A nice, sturdy combat knife."
 ascii
 	char: U+2190
@@ -160,6 +162,7 @@ fireproof
 weapon
 	damage: 10
 	skill: short_sword
+	attacktype: stab
 description: "A nice, sturdy butter knife."
 ascii
 	char: U+2190
@@ -330,6 +333,7 @@ equipable
 weapon
 	damage: 40
 	skill: polearm
+	attacktype: pierce
 weight: heavy
 description: "A long pole with a sharpened point of steel on one end."
 ascii
@@ -345,6 +349,7 @@ equipable
 weapon
 	damage: 40
 	skill: throwing
+	attacktype: pierce
 weight: heavy
 description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
 ascii
@@ -361,6 +366,7 @@ fireproof
 weapon
 	damage: 30
 	skill: short_sword
+	attacktype: stab
 description: "A classic-style rogue's dagger."
 ascii
 	char: U+2190
@@ -536,6 +542,7 @@ weight: medium
 weapon
 	damage: 30
 	skill: club
+	attacktype: crush
 description: "A smallish but ornate statue of a festive holiday character."
 ascii
 	char: U+0455
@@ -554,6 +561,7 @@ weight: medium
 weapon
 	damage: 100
 	skill: warhammer
+	attacktype: crush
 description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
 ascii
 	char: U+0444
@@ -571,6 +579,7 @@ weight: heavy
 weapon
 	damage: 300
 	skill: warhammer
+	attacktype: crush
 description: "Behold the glory of Zillyhoo!"
 ascii
 	char: U+0444
@@ -611,6 +620,7 @@ weight: medium
 weapon
 	damage: 250
 	skill: chainsaw
+	attacktype: tear
 description: "Awesome. Demonic-looking. Not actually a tube of lipstick. This is a chainsaw to be reckoned with."
 ascii
 	char: U+018C
