@@ -1,4 +1,5 @@
-﻿//All of the below by Eric Lippert
+//All of the below by Eric Lippert
+//http://blogs.msdn.com/b/ericlippert/archive/2011/12/12/shadowcasting-in-c-part-one.aspx
 using System;
 using System.Collections.Generic;
 namespace SilverlightShadowCasting
