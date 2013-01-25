@@ -157,20 +157,6 @@ namespace Noxico
 
 			Plain(text, header);
 		}
-
-		[Obsolete("Noxicobotic?", true)]
-		public static void Noxicobotic(Entity source, string message)
-		{
-			var header = "";
-			if (source is BoardChar)
-			{
-				header = ((BoardChar)source).Character.GetName();
-				message = message.Viewpoint((BoardChar)source);
-			}
-			text = (header + "\n" + message.Wordwrap(68)).Split('\n');
-			NoxicoGame.Subscreen = Handler;
-			NoxicoGame.Mode = UserMode.Subscreen;
-		}
 	}
 
 }
