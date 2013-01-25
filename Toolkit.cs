@@ -655,30 +655,6 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Returns a string from the project's resources, but from a specific file if it exists otherwise.
-		/// </summary>
-		[Obsolete("Use the Mix system.", true)]
-		public static string ResOrFile(string resource, string filename)
-		{
-			if (File.Exists(filename))
-				return File.ReadAllText(filename);
-			else
-				return resource;
-		}
-
-		/// <summary>
-		/// Returns a Bitmap from the project's resources, but from a specific file if it exists otherwise.
-		/// </summary>
-		[Obsolete("Use the Mix system.", true)]
-		public static Bitmap ResOrFile(Bitmap resource, string filename)
-		{
-			if (File.Exists(filename))
-				return (Bitmap)Bitmap.FromFile(filename);
-			else
-				return resource;
-		}
-
-		/// <summary>
 		/// From Nethack. True if it's Friday the 13th.
 		/// </summary>
 		public static bool IsFriday13()
