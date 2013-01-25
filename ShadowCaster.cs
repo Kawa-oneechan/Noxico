@@ -1,4 +1,5 @@
-﻿using System;
+﻿//All of the below by Eric Lippert
+using System;
 using System.Collections.Generic;
 namespace SilverlightShadowCasting
 {
