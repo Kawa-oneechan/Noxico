@@ -83,48 +83,45 @@ namespace GamerServices
 			}
 			using (var f = File.Open(filename, FileMode.Open))
 			{
-				using (var c = new CryptStream(f))
+				using (var stream = new BinaryReader(f))
 				{
-					using (var stream = new BinaryReader(c))
 					{
+						var header = new string(stream.ReadChars(20));
+						if (header != "Kafuka Gamer Profile")
 						{
-							var header = new string(stream.ReadChars(20));
-							if (header != "Kafuka Gamer Profile")
+							if (OnMessage != null)
+								OnMessage("Your profile is corrupted.");
+							stream.Close();
+							return false;
+						}
+						Name = stream.ReadString();
+						LastSave = stream.ReadInt64();
+						Achievements.Clear();
+						Arbitraries.Clear();
+						try
+						{
+							var numAchievements = stream.ReadInt16();
+							for (var i = 0; i < numAchievements; i++)
+								Achievements.Add(stream.ReadString());
+							var numArbitraries = stream.ReadInt16();
+							for (var i = 0; i < numArbitraries; i++)
+								Arbitraries.Add(stream.ReadString(), string.Empty);
+							var keys = Arbitraries.Keys.ToArray();
+							foreach (var k in keys)
+								Arbitraries[k] = stream.ReadString();
+						}
+						catch (Exception x)
+						{
+							if (OnMessage != null)
 							{
-								if (OnMessage != null)
-									OnMessage("Your profile is corrupted.");
-								stream.Close();
+								OnMessage("Your profile is corrupted.");
 								return false;
 							}
-							Name = stream.ReadString();
-							LastSave = stream.ReadInt64();
-							Achievements.Clear();
-							Arbitraries.Clear();
-							try
-							{
-								var numAchievements = stream.ReadInt16();
-								for (var i = 0; i < numAchievements; i++)
-									Achievements.Add(stream.ReadString());
-								var numArbitraries = stream.ReadInt16();
-								for (var i = 0; i < numArbitraries; i++)
-									Arbitraries.Add(stream.ReadString(), string.Empty);
-								var keys = Arbitraries.Keys.ToArray();
-								foreach (var k in keys)
-									Arbitraries[k] = stream.ReadString();
-							}
-							catch (Exception x)
-							{
-								if (OnMessage != null)
-								{
-									OnMessage("Your profile is corrupted.");
-									return false;
-								}
-								else
-									throw x;
-							}
-							IsValid = true;
-							return true;
+							else
+								throw x;
 						}
+						IsValid = true;
+						return true;
 					}
 				}
 			}
@@ -142,22 +139,19 @@ namespace GamerServices
 			LastSave = DateTime.Now.ToUniversalTime().ToBinary();
 			using (var f = File.Open(filename, FileMode.Create))
 			{
-				using (var c = new CryptStream(f))
+				using (var stream = new BinaryWriter(f))
 				{
-					using (var stream = new BinaryWriter(c))
-					{
-						stream.Write("Kafuka Gamer Profile".ToCharArray());
-						stream.Write(Name);
-						stream.Write(LastSave);
-						stream.Write((Int16)Achievements.Count);
-						Achievements.ForEach(x => stream.Write(x));
-						stream.Write((Int16)Arbitraries.Count);
-						foreach (var x in Arbitraries)
-							stream.Write(x.Key);
-						foreach (var x in Arbitraries)
-							stream.Write(x.Value);
-						stream.Close();
-					}
+					stream.Write("Kafuka Gamer Profile".ToCharArray());
+					stream.Write(Name);
+					stream.Write(LastSave);
+					stream.Write((Int16)Achievements.Count);
+					Achievements.ForEach(x => stream.Write(x));
+					stream.Write((Int16)Arbitraries.Count);
+					foreach (var x in Arbitraries)
+						stream.Write(x.Key);
+					foreach (var x in Arbitraries)
+						stream.Write(x.Value);
+					stream.Close();
 				}
 			}
 		}
@@ -301,84 +295,6 @@ namespace GamerServices
 			if (response == "MSG:Profile name taken.")
 				return true;
 			return false;
-		}
-
-		private sealed class CryptStream : Stream
-		{
-			private const string key = "Applebloom!";
-			private int keyLen = key.Length;
-			public Stream BaseStream { get; private set; }
-
-			public CryptStream(Stream stream)
-			{
-				if (!stream.CanSeek)
-					throw new InvalidOperationException("CryptStream can only work with seekable streams.");
-				BaseStream = stream;
-			}
-
-			public override bool CanRead
-			{
-				get { return BaseStream.CanRead; }
-			}
-
-			public override bool CanSeek
-			{
-				get { return BaseStream.CanSeek; }
-			}
-
-			public override bool CanWrite
-			{
-				get { return BaseStream.CanWrite; }
-			}
-
-			public override void Flush()
-			{
-				BaseStream.Flush();
-			}
-
-			public override long Length
-			{
-				get { return BaseStream.Length; }
-			}
-
-			public override long Position
-			{
-				get
-				{
-					return BaseStream.Position;
-				}
-				set
-				{
-					BaseStream.Position = value;
-				}
-			}
-
-			public override int Read(byte[] buffer, int offset, int count)
-			{
-				var cb = new Byte[count];
-				var j = BaseStream.Read(cb, 0, count);
-				for (var i = 0; i < count; i++)
-					buffer[i + offset] = (byte)(cb[i] /*^ 0x80 ^ (byte)key[(int)BaseStream.Position % keyLen]*/);
-				return j;
-			}
-
-			public override long Seek(long offset, SeekOrigin origin)
-			{
-				return BaseStream.Seek(offset, origin);
-			}
-
-			public override void SetLength(long value)
-			{
-				BaseStream.SetLength(value);
-			}
-
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				var cb = new byte[count];
-				for (int i = 0; i < count; i++)
-					cb[i] = (byte)(buffer[i + offset] /*^ 0x80 ^ (byte)key[(int)BaseStream.Position % keyLen]*/);
-				BaseStream.Write(cb, 0, count);
-			}
 		}
 	}
 }
