@@ -221,88 +221,8 @@ namespace Noxico
 				scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
 				Noxico = new NoxicoGame(this);
 
-				MouseUp += (x, y) =>
-				{
-					var tx = y.X / (CellWidth);
-					var ty = y.Y / (CellHeight);
-					if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
-						return;
-					if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
-						Noxico.Player.AutoTravelTo(tx, ty);
-					else if (NoxicoGame.Mode == UserMode.LookAt)
-					{
-						if (y.Button == System.Windows.Forms.MouseButtons.Left)
-						{
-							NoxicoGame.Cursor.XPosition = tx;
-							NoxicoGame.Cursor.YPosition = ty;
-							NoxicoGame.Cursor.Point();
-							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-						}
-						else if (y.Button == System.Windows.Forms.MouseButtons.Right)
-						{
-							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
-						}
-					}
-					else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
-					{
-						var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
-						if (target != null)
-						{
-							Subscreens.UsingMouse = true;
-							if (target is BoardChar)
-								TextScroller.LookAt((BoardChar)target);
-							else if (target is Clutter)
-							{
-								var text = ((Clutter)target).Description;
-								text = text.Trim();
-								if (text == "")
-									return;
-								//var lines = text.Split('\n').Length;
-								MessageBox.Message(text, true);
-							}
-						}
-					}
-					else if (NoxicoGame.Mode == UserMode.Subscreen)
-					{
-						if (y.Button == System.Windows.Forms.MouseButtons.Left)
-						{
-							if (NoxicoGame.Subscreen == MessageBox.Handler)
-							{
-								NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-								return;
-							}
-							Subscreens.MouseX = tx;
-							Subscreens.MouseY = ty;
-							Subscreens.Mouse = true;
-						}
-						else if (y.Button == System.Windows.Forms.MouseButtons.Right)
-						{
-							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
-						}
-					}
-				};
-				MouseWheel += (x, y) =>
-				{
-					if (NoxicoGame.Mode == UserMode.Subscreen)
-					{
-						if (y.Delta < 0)
-						{
-							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollDown]] = true;
-							NoxicoGame.ScrollWheeled = true;
-						}
-						else if (y.Delta > 0)
-						{
-							NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollUp]] = true;
-							NoxicoGame.ScrollWheeled = true;
-						}
-					}
-				};
-				/*
-				FormClosed += (x, y) =>
-				{
-					Introduction.KillWorldgen();
-				};
-				*/
+				MouseUp += new MouseEventHandler(MainForm_MouseUp);
+				MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
 
 				Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
 				Console.WriteLine(Environment.OSVersion);
@@ -344,7 +264,6 @@ namespace Noxico
 				Achievements.SaveProfile(true);
 			}
 		}
-
 
 #if ALLOW_PNG_MODE
 		private void CachePNGFont(char p)
@@ -811,6 +730,84 @@ namespace Noxico
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			NoxicoGame.LastPress = e.KeyChar;
+		}
+
+		private void MainForm_MouseUp(object x, MouseEventArgs y)
+		{
+			var tx = y.X / (CellWidth);
+			var ty = y.Y / (CellHeight);
+			if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
+				return;
+			if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
+				Noxico.Player.AutoTravelTo(tx, ty);
+			else if (NoxicoGame.Mode == UserMode.LookAt)
+			{
+				if (y.Button == System.Windows.Forms.MouseButtons.Left)
+				{
+					NoxicoGame.Cursor.XPosition = tx;
+					NoxicoGame.Cursor.YPosition = ty;
+					NoxicoGame.Cursor.Point();
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
+				}
+				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+				{
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
+				}
+			}
+			else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
+				if (target != null)
+				{
+					Subscreens.UsingMouse = true;
+					if (target is BoardChar)
+						TextScroller.LookAt((BoardChar)target);
+					else if (target is Clutter)
+					{
+						var text = ((Clutter)target).Description;
+						text = text.Trim();
+						if (text == "")
+							return;
+						//var lines = text.Split('\n').Length;
+						MessageBox.Message(text, true);
+					}
+				}
+			}
+			else if (NoxicoGame.Mode == UserMode.Subscreen)
+			{
+				if (y.Button == System.Windows.Forms.MouseButtons.Left)
+				{
+					if (NoxicoGame.Subscreen == MessageBox.Handler)
+					{
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
+						return;
+					}
+					Subscreens.MouseX = tx;
+					Subscreens.MouseY = ty;
+					Subscreens.Mouse = true;
+				}
+				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+				{
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
+				}
+			}
+		}
+
+		private void MainForm_MouseWheel(object x, MouseEventArgs y)
+		{
+			if (NoxicoGame.Mode == UserMode.Subscreen)
+			{
+				if (y.Delta < 0)
+				{
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollDown]] = true;
+					NoxicoGame.ScrollWheeled = true;
+				}
+				else if (y.Delta > 0)
+				{
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.ScrollUp]] = true;
+					NoxicoGame.ScrollWheeled = true;
+				}
+			}
 		}
 
 		public void LoadBitmap(Bitmap bitmap)

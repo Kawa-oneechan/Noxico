@@ -306,6 +306,8 @@ namespace Noxico
 
 		public override void Update()
 		{
+			//TOTAL MESS. Suggest refactoring BIG TIME.
+
 			base.Update();
 			ParentBoard.Redraw();
 			NoxicoGame.Messages.Last().New = true;
