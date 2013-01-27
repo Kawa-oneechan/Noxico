@@ -14,6 +14,7 @@ namespace Noxico
 		{
 			public string MixFile, Filename;
 			public int Offset, Length;
+			public bool NeedsPremultiply;
 			public bool IsCompressed;
 		}
 
@@ -46,7 +47,9 @@ namespace Noxico
 						var entry = new MixFileEntry();
 						entry.Offset = mStream.ReadInt32();
 						entry.Length = mStream.ReadInt32();
-						entry.IsCompressed = mStream.ReadByte() == 1;
+						var flags = mStream.ReadByte();
+						entry.NeedsPremultiply = ((flags & 1) == 1);
+						entry.IsCompressed = ((flags & 2) == 2);
 						var fileNameC = mStream.ReadChars(55);
 						var fileName = new string(fileNameC).Replace("\0", "");
 						entry.MixFile = mixfile;
