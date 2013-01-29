@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE scenes [
 	<!ELEMENT scenes (scene+)>
 	<!ELEMENT scene (filter*,(p|script)*,action*)>
 	<!ELEMENT filter EMPTY>
-	<!ELEMENT p (#PCDATA)>
 	<!ELEMENT script (#PCDATA)>
 	<!ELEMENT action EMPTY>
 	<!ATTLIST scene
@@ -19,173 +18,212 @@
 		value CDATA #IMPLIED
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
-	<!ATTLIST action name CDATA #REQUIRED>
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
 ]>
 <scenes>
 	<!-- Naga scenes by TheDarkMaster -->
-	<scene id="TDMWinAgainstNaga" name="(rape start)">
+	
+	<!-- Player win rapes -->
+	<scene id="TDM_WinAgainstNaga" name="(rape start)">
 		<filter target="bottom" type="bodylev" name="naga" />
 		<p>
 			With less than savory plans for the defeated [b:title], you take stock of [b:name] and consider how you should take advantage.
 		</p>
-		<action name="get blowjob" />
-		<action name="get eaten out" />
-		<action name="fuck vagina" />
-		<action name="ride cock vaginally" />
-		<action name="ride cock anally" />
-		<action name="never mind" />
+		<action name="player win naga get blowjob" />
+		<action name="player win naga get eaten out" />
+		<action name="player win naga fuck vagina" />
+		<action name="player win naga ride cock vaginally" />
+		<action name="player win naga ride cock anally" />
+		<action name="leave the naga" />
 	</scene>
-	<scene id="TDMBipedGetFellatio" name="get blowjob" list="Get a blowjob">
+	<scene id="TDM_BipedGetFellatio" name="player win naga get blowjob" list="Get a blowjob">
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="hasnot" name="noarms" />
 		<!-- Original text prescribes the bottom to have a human-like face -->
 		<p>
 			Smiling wickedly, you fish out your [t:cock] and calmly tell [b:name] that [b:he]'s going to show it a good time before pushing it up against the side of [b:his] face.
 		</p>
+		<p/>
 		<p>
 			Knowing full well that [b:he] isn't in any shape to be refusing you, the [b:title] opens up its mouth and accepts your phallus into [b:his] jaws.
 		</p>
+		<p/>
 		<p>
 			Now that you're inside [b:name], what to do next?
 		</p>
-		<action name="get blowjob facefuck" />
-		<action name="get blowjob softly" />
+		<action name="player win naga get blowjob facefuck" />
+		<action name="player win naga get blowjob softly" />
 	</scene>
-	<scene id="TDMBipedGetFellatioHardMode" name="get blowjob facefuck" list="Rough facefuck">
+	<scene id="TDM_BipedGetFellatioHardMode" name="player win naga get blowjob facefuck" list="Rough facefuck">
 		<p>
 			Grabbing a hold of the [b:title]'s head, you start to rapidly piston your [t:cock] in and out of [b:his] maw, casing [b:him] to sputter and gag around your length. [b:His] distress isn't your concern, only getting off at [b:his] expense.
 		</p>
+		<p/>
 		<p>
 			Feeling your peak approach, it's time to decide how to finish things off.
 		</p>
-		<action name="get blowjob cum in mouth" />
-		<action name="get blowjob cum on face" />
+		<action name="player win naga get blowjob cum in mouth" />
+		<action name="player win naga get blowjob cum on face" />
 	</scene>
-	<scene id="TDMBipedGetFellatioHardModeInside" name="get blowjob cum in mouth" list="Cum in their mouth">
+	<scene id="TDM_BipedGetFellatioHardModeInside" name="player win naga get blowjob cum in mouth" list="Cum in [b:his] mouth">
 		<p>
 			You force your length in as far as it will go, and feel your release take you, right down the [b:title]'s throat leaving [b:him] no choice but to swallow everything you have to offer.
 		</p>
+		<p/>
 		<p>
 			Feeling thoroughly satisfied, you pull your [t:cock] out of the abused [b:title]'s mouth and let [b:him] fall to the ground, exhausted.
 		</p>
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
-	<scene id="TDMBipedGetFellatioHardModeOutside" name="get blowjob cum on face" list="Cum over their face">
+	<scene id="TDM_BipedGetFellatioHardModeOutside" name="player win naga get blowjob cum on face" list="Cum over [b:his] face">
 		<p>
 			Feeling a little merciful (or maybe you want to mark your prize), you pull your [t:cock] from the confines of [b:his] throat just as you feel your peak hit.
 		</p>
+		<p/>
 		<p>
 			For an instant, the [b:title] hesitates, looking at your [t:cock] before it squirts [b:him] in the eye, and you proceed paint [b:his] face white.
 		</p>
+		<p/>
 		<p>
 			Feeling thoroughly satisfied, you pull your [t:cock] out of the abused [b:title]'s mouth and let [b:him] fall to the ground, exhausted.
 		</p>
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
-	<scene id="TDMBipedGetFellatioSoftModeNaga" name="get blowjob softly" list="Let things play out">
-		<filter target="bottom" type="has" name="tongue/long" />
+	<scene id="TDM_BipedGetFellatioSoftModeNaga" name="player win naga get blowjob softly" list="Let things play out">
+		<filter target="bottom" type="has" name="tongue" value="long" />
 		<p>
 			When [b:he] just sits there for a few moments, you inform [b:him], in annoyance, to get on with it. Sighing softly, the [b:title] hesitantly starts to move your [t:cock] around in [b:his] mouth.
 		</p>
+		<p/>
 		<p>
 			You sigh in pleasure, and encourage [b:him]. Feeling bolder, [b:name] starts to use [b:his] long tongue on your length. [b:He] runs it up and down the sides a few times before wrapping his serpentine licker all the way around you, and pumping you almost like a hand would. The [b:title]'s natural ability with [b:his] tongue is more than enough to push you over the edge, and let loose the proof of your orgasm all over [b:name]'s cock sucking tool of choice.
 		</p>
+		<p/>
 		<p>
 			Satisfied, you pull back from your defeated foe, and let [b:him] fall to the ground exhausted.
 		</p>
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
-	<scene id="TDMBipedGetCunnilingus" name="get eaten out" list="Get some cunnilingus">
+	
+	
+	
+	<scene id="TDM_BipedGetCunnilingus" name="player win naga get eaten out" list="Get some cunnilingus">
 		<filter target="top" type="has" name="vagina" />
 		<filter target="top" type="hasnot" name="noarms" />
 		<!-- Original text prescribes the bottom to have a human-like face -->
 		<p>
 			With a malevolent glint in your eye, you ready your [t:pussy] for the upcoming fun and casually inform [b:name] just what [b:he]'s going to be doing for you.
 		</p>
+		<p/>
 		<p>
 			The [b:title] obviously realizes that [b:he] isn't in any shape to be fighting back, and gives a small nod.
 		</p>
+		<p/>
 		<p>
 			Now then, how to sate yourself?
 		</p>
-		<action name="eaten out faceride" />
-		<action name="eaten out licked" />
+		<action name="player win naga eaten out faceride" />
+		<action name="player win naga eaten out licked" />
 	</scene>
-	<scene id="TDMBipedGetCunnilingusHardMode" name="eaten out faceride" list="Rough faceride">
+	<scene id="TDM_BipedGetCunnilingusHardMode" name="player win naga eaten out faceride" list="Rough faceride">
 		<p>
 			You push [b:name] to the ground, and almost literally sit on [b:his] face. You move your hips back and forth a few times as you settle your [t:pussy] right over [b:his] mouth and start grinding yourself into [b:him].
 		</p>
+		<p/>
 		<p>
 			You don't even give the [b:title] a chance to get [b:his] mouth open to pleasure you, instead content to just drown [b:him] in your [t:pussy].
 		</p>
+		<p/>
 		<p>
 			You stop for a moment and lift off to see how [b:he] is doing. You let him gasp and cough for air a few times before getting back into the action. Finding a good rhythm, it isn't too long before your pleasure pops, and you pull back satisfied.
 		</p>
+		<p/>
 		<p>
 			Just in time to see [b:name] pass out from the abuse.
 		</p>
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
-	<scene id="TDMBipedGetCunnilingusSoftMode" name="eaten out licked" list="Get licked">
+	<scene id="TDM_BipedGetCunnilingusSoftMode" name="player win naga eaten out licked" list="Get licked">
 		<filter target="bottom" type="has" name="tongue" value="long" />
 		<p>
 			You put your [t:vagina] in [b:name]'s face and wait a few moments to see what [b:he] will do. When you tell [b:him] to get on with it, the [b:title] starts to put [b:his] tongue to work.
 		</p>
+		<p/>
 		<p>
 			[b:He] probes your folds a few times, and you sigh in pleasure from the pleasant feeling. Encouraged, [b:name] moves past the folds, and shows just how far [b:his] tongue is able to go.
 		</p>
+		<p/>
 		<p>
 			You're certainly enjoying yourself, especially when [b:he] starts to stir up your insides by spinning [b:his] tongue about your interior. Finally, [b:name] pulls [b:his] cunt licker half way out, so [b:he] can have a go at your clit at the same time. You gasp in ecstasy as the [b:title]'s natural skill brings your pleasure to its peak, and your orgasm washes over you and covers the unfortunate [b:title]'s face and girl tickler.
 		</p>
+		<p/>
 		<p>
 			Your orgasm washes over you and covers the unfortunate [b:title]'s face. Satisfied, you pull back from your defeated foe, and let [b:him] fall to the ground exhausted.
 		</p>
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
-	<scene id="TDMReconsider" name="never mind" list="Never mind">
+	<scene id="TDM_Reconsider" name="leave the naga" list="Never mind">
 		<p>
 			You change your mind about raping the naga, and reconsider what you should do with it laying there.
 		</p>
 	</scene>
-	<scene id="TDMLoseAgainstNaga" name="(loss rape start)">
+	
+	
+	
+	
+	<!-- Player loss rapes -->
+	<scene id="TDM_LoseAgainstNaga" name="(loss rape start)">
 		<filter target="top" type="bodylev" name="naga" />
 		<p>
 			You look up exhausted to see the face of [t:name] looking down at you with a sick grin on [t:his] face..
 		</p>
+		<p/>
 		<p>
 			Looks like you're going to be the recipient of more than just some physical injuries from this [t:title].
 		</p>
 		<!-- Game chooses from the below. We can call LetBottomChoose() in a script block to allow the player some choice in the matter. -->
-		<action name="get forced to blowjob" />
-		<action name="get forced to eat out" />
-		<action name="get fucked in vagina" />
-		<action name="get cock ridden with vagina" />
-		<action name="get cock ridden with ass" />
+		<action name="player loss naga get forced to blowjob" />
+		<action name="player loss naga get forced to eat out" />
+		<action name="player loss naga get fucked in vagina" />
+		<action name="player loss naga get cock ridden with vagina" />
+		<action name="player loss naga get cock ridden with ass" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedFellatio" name="get forced to blowjob">
+	<scene id="TDM_LoseAgainstNagaForcedFellatio" name="player loss naga get forced to blowjob">
 		<filter target="top" type="has" name="snaketail" />
 		<filter target="top" type="has" name="penis" />
 		<p>
 			[t:He] quickly moves around your body and wraps it up tightly inside a serpentine embrace. [t:He] then picks up your head and you get a full view of the [t:title]'s [t:cock] emerging from its slit.
 		</p>
+		<p/>
 		<p>
 			You look back up at [t:name]'s grinning face as [t:he] says, "Well little [b:g:boy:girl], get to work."
 		</p>
+		<p/>
 		<p>
 			Will you give [t:him] the oral pleasure that [t:he] obviously wants, or refuse?
 		</p>
@@ -193,112 +231,127 @@
 			LetBottomChoose();
 		</script>
 		<!-- The script above lets the player choose between these. This is automatically reset. -->
-		<action name="get forced to blowjob okay" />
-		<action name="get forced to blowjob resist" />
+		<action name="player loss naga get forced to blowjob okay" />
+		<action name="player loss naga get forced to blowjob resist" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedFellatiOkay" name="get forced to blowjob okay" list="Blow it">
+	<scene id="TDM_LoseAgainstNagaForcedFellatiOkay" name="player loss naga get forced to blowjob okay" list="Blow it">
 		<p>
 			You take a deep breath, and open your mouth wide. [t:name] wastes no time in jamming [t:his] [t:cock] down your throat as far as it will go. The [t:title] gives a loud groan of approval and starts to roughly pump [t:him]self in and out of your gullet.
 		</p>
+		<p/>
 		<script type="text/javascript">
 			<![CDATA[
 				//Here's where it gets cool.
 				var skill = bottom.GetSkillLevel("fellatio");
 				if (skill < 1)
 				{
-					print("You cough and sputter from the unfamiliar invader being forced down your throat, and can't do much else as you are roughly facefucked.\n");
-					print("[t:name] doesn't mind, and just keeps hammering away at you for a few minutes before grunting and letting loose [t:his] load into your stomach.\n");
+					print("You cough and sputter from the unfamiliar invader being forced down your throat, and can't do much else as you are roughly facefucked.\n\n");
+					print("[t:name] doesn't mind, and just keeps hammering away at you for a few minutes before grunting and letting loose [t:his] load into your stomach.");
 				}
 				else if (skill < 3)
 				{
-					print("Having had some experience with long hard things inside your mouth, having a [t:cock] in it doesn't leave you completely helpless. Despite the rough treatment that [t:name] is giving you, you are able to give some additional pleasure to the invader with your tongue and throat.\n");
-					print("The [t:title] starts moaning in approval and slows down [t:his] assault on your body. It is fairly obvious you aren't at the level of [t:his] usual victims, especially when [t:he] starts panting and cums hard into your stomach.\n");
+					print("Having had some experience with long hard things inside your mouth, having a [t:cock] in it doesn't leave you completely helpless. Despite the rough treatment that [t:name] is giving you, you are able to give some additional pleasure to the invader with your tongue and throat.\n\n");
+					print("The [t:title] starts moaning in approval and slows down [t:his] assault on your body. It is fairly obvious you aren't at the level of [t:his] usual victims, especially when [t:he] starts panting and cums hard into your stomach.");
 				}
 				else
 				{
-					print("You easily accept the [t:cock] into your mouth, and start to use your expert blowjob-giving skills to give this [t:title] the best job [t:he]'s probably ever had. Almost at once, [t:name] gives a sharp intake of breath and freezes in place at the feel of your tongue, lips, and throat expertly working [t:his] shaft.\n");
-					print("In moments, [t:he] grabs your head again and forces [t:him]self in as far as possible, while crying out in alarm. It certainly didn't take long for you to bring an orgasm into your stomach from [t:him].\n");
+					print("You easily accept the [t:cock] into your mouth, and start to use your expert blowjob-giving skills to give this [t:title] the best job [t:he]'s probably ever had. Almost at once, [t:name] gives a sharp intake of breath and freezes in place at the feel of your tongue, lips, and throat expertly working [t:his] shaft.\n\n");
+					print("In moments, [t:he] grabs your head again and forces [t:him]self in as far as possible, while crying out in alarm. It certainly didn't take long for you to bring an orgasm into your stomach from [t:him].");
 				}
 				bottom.IncreaseSkill("fellatio");
 			]]>
 		</script>
-		<action name="naga loss finish" />
+		<action name="player loss naga finish" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedFellatiNO" name="get forced to blowjob resist" list="Refuse">
+	<scene id="TDM_LoseAgainstNagaForcedFellatiNO" name="player loss naga get forced to blowjob resist" list="Refuse">
 		<p>
-			You grit your teeth and turn away from the [t:title]'s [t:cock] to the best of your abilities, given your situation. [t:Name] just shrugs [t:his] shoulders and says, "Well, I know a hole that no one can refuse entry to."
+			You grit your teeth and turn away from the [t:title]'s [t:cock] to the best of your abilities, given your situation. [t:name] just shrugs [t:his] shoulders and says, "Well, I know a hole that no one can refuse entry to."
 		</p>
+		<p/>
 		<p>
-			Unceremoniously, [t:he] turns your body around and you feel the grip on your hips loosen up. After a moment, you feel <!-- wearing clothing: your [lower garments] being removed, and --> something push up against the entrance to your [b:asshole]. You give a bit of a shudder, anticipating the feel of being violated by that [t:title].
+			Unceremoniously, [t:he] turns your body around and you feel the grip on your hips loosen up. After a moment, you feel<!-- wearing clothing: your [lower garments] being removed, and --> something push up against the entrance to your [anusrand]. You give a bit of a shudder, anticipating the feel of being violated by the [t:title].
 		</p>
+		<p/>
 		<p>
 			In response, [t:name] chuckles, "If you don't like it, then you should just let me take your mouth next time."
 		</p>
+		<p/>
 		<p>
-			[t:He] then wastes no more time and pushes [t:his] length into your body. Once fully inside, the [t:title] waits a few moments to let you and [t:him] adjust to the feeling of your [b:asshole]. [t:name] then starts to pump [t:his] [t:cock] in and out of your back door, while grunting in pleasure. After a few minutes of this, your rapist gives one more gasp and you feel the [t:title]'s semen flow into your [b:asshole].
+			[t:He] then wastes no more time and pushes [t:his] length into your body. Once fully inside, the [t:title] waits a few moments to let you and [t:him] adjust to the feeling of your [anusrand]. [t:name] then starts to pump [t:his] [t:cock] in and out of your back door, while grunting in pleasure. After a few minutes of this, your rapist gives one more gasp and you feel the [t:title]'s semen flow into your [anusrand].
 		</p>
-		<action name="naga loss finish" />
+		<action name="player loss naga finish" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedCunnilingus" name="get forced to eat out">
+	
+	
+	
+	<scene id="TDM_LoseAgainstNagaForcedCunnilingus" name="player loss naga get forced to eat out">
 		<filter target="top" type="has" name="snaketail" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
 			[t:He] slowly wraps [t:his] body around you, coiling you up into a tight full-body serpentine embrace. When [t:he]'s done, all that's left free is your face.
 		</p>
+		<p/>
 		<p>
 			[t:He] then moves next to your face and gently whispers in your ear, "Time to get to work, [b:g:boy:girl]." before presenting you with [t:his] moistening [t:pussy].
 		</p>
+		<p/>
 		<p>
 			Now, time to decide if you'll give [t:him] the satisfaction or resist to the end.
 		</p>
 		<script type="text/javascript">
-			letbottomchoose();
+			LetBottomChoose();
 		</script>
-		<action name="get forced to eat out okay" />
-		<action name="get forced to eat out resist" />
+		<action name="player loss naga get forced to eat out okay" />
+		<action name="player loss naga get forced to eat out resist" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedCunnilingusOkay" name="get forced to eat out okay" list="Engage in a good licking">
+	<scene id="TDM_LoseAgainstNagaForcedCunnilingusOkay" name="player loss naga get forced to eat out okay" list="Engage in a good licking">
 		<p>
 			You heave a sigh, and give into the [t:title]'s demands. You open your mouth and tentatively lick at the folds of [t:his] slit. Moaning appreciatively, [t:name] starts to sensually sway [t:his] body and pushes [t:him]self closer to you giving you better access. Knowing what's expected of you, you start to eat [t:him] out in earnest.
 		</p>
+		<p/>
 		<script type="text/javascript">
 			<![CDATA[
 				//This might be a good place to try Inline If.
 				var skill = bottom.GetSkillLevel("cunnilingus");
 				if (skill < 1)
 				{
-					print("Your lack of skill at this doesn't seem to bother the [t:title] too much, [t:he]'s probably getting what [t:he] expects from [t:his] victims.\n");
-					print("Before too long she puts her hands on the back of your head and grinds you into her face until she goes over her limit and sprays your face with her fluids.\n");
+					print("Your lack of skill at this doesn't seem to bother the [t:title] too much, [t:he]'s probably getting what [t:he] expects from [t:his] victims.\n\n");
+					print("Before too long she puts her hands on the back of your head and grinds you into her face until she goes over her limit and sprays your face with her fluids.");
 				}
 				else if (skill < 3)
 				{
-					print("[t:He] gasps in surprise from your efforts and says with obvious pleasure, \"Oh, you've done this before, haven't you [b:g:boy:girl]? I'm so glad I caught a skilled pussy licker!\"\n");
-					print("It's fairly obvious from both [t:his] words and [t:his] moans that you're a cut above the [t:title]'s usual victims, and the proof of that is spilling across your face in moments.\n");
+					print("[t:He] gasps in surprise from your efforts and says with obvious pleasure, \"Oh, you've done this before, haven't you [b:g:boy:girl]? I'm so glad I caught a skilled pussy licker!\"\n\n");
+					print("It's fairly obvious from both [t:his] words and [t:his] moans that you're a cut above the [t:title]'s usual victims, and the proof of that is spilling across your face in moments.");
 				}
 				else
 				{
-					print("[t:name] gasps in shock as you expertly navigate [t:his] [t:pussy], teasing every part in just the right way.\n");
-					print("Rapid shivers of pleasure move up and down [t:his] body until finally [t:he] screams and cums hard on your quick tongue.\n");
+					print("[t:name] gasps in shock as you expertly navigate [t:his] [t:pussy], teasing every part in just the right way.\n\n");
+					print("Rapid shivers of pleasure move up and down [t:his] body until finally [t:he] screams and cums hard on your quick tongue.");
 				}
 				bottom.IncreaseSkill("cunnilingus");
 			]]>
 		</script>
-		<action name="naga loss finish" />
+		<action name="player loss naga finish" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaForcedCunnilingusNo" name="get forced to eat out resist" list="Refuse">
+	<scene id="TDM_LoseAgainstNagaForcedCunnilingusNo" name="player loss naga get forced to eat out resist" list="Refuse">
 		<filter target="top" type="has" name="snaketail" />
 		<p>
 			You grit your teeth and keep your mouth clamped shut.  You aren't going to give her the pleasure of your final surrender. After it becomes obvious to the [t:title] that you aren't going to give [t:him] what [t:he] wants, [t:name] simply laughs at you and says, "That's okay [b:g:boy:girl], I can take what I want."
 		</p>
+		<p/>
 		<p>
 			[t:He] puts her hands on the back of your head, and forces it into her waiting [t:pussy]. With another wicked laugh, [t:he] starts to grind your face into [t:his] [t:pussy], causing you to gasp for breath. However, it is fairly clear that [t:he] doesn't care about your discomfort and simply continues to roughly rub [t:him]self all over your face, while you're helpless to resist inside [t:her] tight serpent grip.
 		</p>
+		<p/>
 		<p>
 			Finally you're given a chance to gasp for air, just as [t:his] orgasm hits you in the face, leaving you sputtering again.
 		</p>
-		<action name="naga loss finish" />
+		<action name="player loss naga finish" />
 	</scene>
-	<scene id="TDMLoseAgainstNagaSheRidesYou" name="get cock ridden with vagina">
+	
+	
+	
+	<scene id="TDM_LoseAgainstNagaSheRidesYou" name="player loss naga get cock ridden with vagina">
 		<filter target="top" type="has" name="snaketail" />
 		<!--
 		<filter target="top" type="has" name="vagina" />
@@ -308,29 +361,36 @@
 		<p>
 			Laughing, [t:he] pins you to the ground with [t:his] coils and takes stock of what you've got on offer in the genital department. [t:name] gives a sigh of approval, and you feel [t:him] run [t:his] hand over your [b:cock]. Whether it was voluntary or not, you quickly become erect at the [t:title]'s touch.
 		</p>
+		<p/>
 		<p>
-			The [t:title] sets [t:her] hips down on your [b:legs], and slowly wraps up your body in [t:his] long serpentine tail. You notice that [t:he] makes sure that your [b:cock] is uncovered, and can be easily reached by the spot you guess is where [t:his] womanhood is hidden. Your guess is proven correct when you're fully trapped within [t:name]'s coils, and a slit on [t:his] body opens to reveal a moist pink interior. That pink hole is quickly forced onto your [b:cock], and your length is engulfed in an instant.
+			The [t:title] sets [t:his] hips down on your legs, and slowly wraps up your body in [t:his] long serpentine tail. You notice that [t:he] makes sure that your [b:cock] is uncovered, and can be easily reached by the spot you guess is where [t:his] womanhood is hidden. Your guess is proven correct when you're fully trapped within [t:name]'s coils, and a slit on [t:his] body opens to reveal a moist pink interior. That pink hole is quickly forced onto your [b:cock], and your length is engulfed in an instant.
 		</p>
-		<action name="get cock ridden with vagina 2"/>
+		<action name="player loss naga get cock ridden with vagina 2"/>
 	</scene>
-	<scene id="TDMLoseAgainstNagaSheRidesYou2" name="get cock ridden with vagina 2">
+	<scene id="TDM_LoseAgainstNagaSheRidesYou2" name="player loss naga get cock ridden with vagina 2">
 		<p>
 			You inhale sharply as the walls of the [t:title]'s pussy contract tightly around your [b:cock], almost like it is being constricted. However, [t:name] pays no mind to your discomfort, and simply starts to ride your shaft with wild abandon. [t:His] [t:pussy] is so well lubricated, that even while your [b:cock] feels like it is being strangled, the [t:title] has no trouble pumping it in and out of her body very quickly. To make matters worse, [t:he] seems to be tightening [t:his] tail's grip on your body as she gets closer and closer to reaching her peak.
 		</p>
+		<p/>
 		<p>
 			The good news is that it doesn't take very long for this [t:title] to take the pleasure out of your body that [t:he] wanted, and soon reaches [t:his] peak. While this is the point where [t:his] body almost chokes the life out of you, [t:his] [t:pussy] has a more unusual feeling to it. The death grip that was once being forced on you turns into a rapid rippling pumping feel to it. With the tightness that strangled your own pleasure suddenly replaced by something that wants you to come as soon as possible, you can't help but feel the increadible rush of an orgasm explode from your body. The [t:title] relaxes soon after.
 		</p>
-		<action name="naga loss finish" />
+		<action name="player loss naga finish" />
+		<script type="text/javascript">
+			bottom.Orgasm();
+		</script>
 	</scene>
-	<scene id="TDMLoseAgainstNagaFinish" name="naga loss finish">
+	
+	
+	
+	<scene id="TDM_LoseAgainstNagaFinish" name="player loss naga finish">
 		<filter target="top" type="has" name="snaketail" />
 		<p>
 			Finished with you, [t:name] the [t:title] disentangles you from [t:his] coils and drops you on the ground still covered in [t:his] fluids before slithering away.
 		</p>
 		<!-- TODO: possibly rob and/or attack the player. TDM writes that the naga should despawn, but this could result in unique items being Lost Forever, so let's not do that. -->
 		<script type="text/javascript">
-			top.GetToken("climax").Value = 0;
-			top.GetToken("stimulation").Value = 10;
+			top.Orgasm();
 		</script>
 	</scene>
 </scenes>

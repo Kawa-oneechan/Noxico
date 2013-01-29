@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE scenes [
 	<!ELEMENT scenes (scene+)>
 	<!ELEMENT scene (filter*,(p|script)*,action*)>
@@ -18,7 +18,10 @@
 		value CDATA #IMPLIED
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
-	<!ATTLIST action name CDATA #REQUIRED>
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
 
 	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
 	<!ELEMENT p (#PCDATA|if|else)*>
@@ -38,7 +41,7 @@
 	
 	<!-- Player win rapes -->	
 	
-	<scene id="Pillow_PlayerWinGenericBlowjob" name="player win get generic blowjob" list="Get a blowjob.">
+	<scene id="Pillow_PlayerWinGenericBlowjob" name="player win get generic blowjob" list="Get a blowjob">
 		<filter target="top" type="has" name="penis" />
 		<p>
 			Blowjob scene... **WIP**
@@ -47,7 +50,7 @@
 		<action name="player win generic 69 with penis"/>
 		<action name="player win generic skull fuck"/>
 	</scene>
-	<scene id="Pillow_PlayerWinGenericBlowjob2" name="player win get generic blowjob 2" list="Let them continue">
+	<scene id="Pillow_PlayerWinGenericBlowjob2" name="player win get generic blowjob 2" list="Let [b:him] continue">
 		<filter target="top" type="has" name="penis" />
 		<p>
 			Blowjob scene... **WIP**
@@ -60,7 +63,7 @@
 			Blowjob scene... **WIP**
 		</p>
 	</scene>
-	<scene id="Pillow_PlayerWinGenericSkullFuck" name="player win generic skull fuck" list="Skull fuck them">
+	<scene id="Pillow_PlayerWinGenericSkullFuck" name="player win generic skull fuck" list="Skull fuck [b:him]">
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="value_gteq" name="carnality" value="66"/>
 		<p>
@@ -72,37 +75,101 @@
 	
 	<scene id="Pillow_PlayerWinGenericEatOut" name="player win generic get eaten out" list="Get eaten out">
 		<filter target="top" type="has" name="vagina" />
+		<script type="text/javascript">
+			<![CDATA[
+				print("Your loins tingle in excitement from what you're about to do with the [b:title], and you feel your [pussyrand] flush in anticipation as you wonder how good [b:he] is with [b:his] mouth. ");
+				
+				if(top.HasItemInSlot("pants") || top.HasItemInSlot("underpants"))
+				{
+					print("The [b:title], on the other hand, watches you ");
+					
+					var othercarn = bottom.GetToken("carnality").Value;
+					
+					if(othercarn < 25)
+						print("apprehensively");
+					else if (othercarn < 50)
+						print("expectantly");
+					else
+						print("excitedly");
+						
+					print(" as you take off your ");
+					
+					if(top.HasItemInSlot("pants"))
+						print("[t:equipment:pants]");
+					if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants"))
+						print(" and ");
+					if(top.HasItemInSlot("underpants"))
+						print("[t:equipment:underpants]");
+						
+					var pronoun = "it";
+					
+					// The pronoun changes if both items are worn by the player, or if the single worn item has the plural token.
+					if(top.HasItemInSlot("pants") && top.HasItemInSlot("underpants") || 
+						top.HasItemInSlot("pants") && top.GetEquippedItemBySlot("pants").HasToken("plural") ||
+						top.HasItemInSlot("underpants") && top.GetEquippedItemBySlot("underpants").HasToken("plural"))
+						pronoun = "them";
+						
+					print(" and discard " + pronoun + " on the ground.");
+				}
+				else
+					print("Remembering back to the fight, you noticed [b:him] checking out your uncovered [pussyrand] and hope that [b:he]'s still as interested now.");
+				
+				print("\n\n");
+				
+				print("Deciding not to stand on ceremony, you ");
+				
+				if(top.HasToken("legs"))
+				{
+					if(top.HasToken("taur") || top.HasToken("quadruped"))
+					{
+						print("turn around and ");
+						if(top.HasToken("tail"))
+							print("lift your tail out of the way");
+						else
+							print("widen your stance a bit");
+					}
+					else
+						print("sit down in front of the [b:title] and spread your legs");
+				}
+				else if(top.HasToken("snaketail"))
+					print("coil your tail into a cushion and push your hips forward");
+				else if(top.HasToken("slimeblob"))
+					print("relax into your gelatinous lower body and push out your hips");
+					
+				print(" before telling [b:him] to start licking your [pussyrand]. [b:He] looks at your exposed [pussyrand] and seems to weigh [b:his] options. You quickly remind [b:him] that if [t:he] wants to come away from this alive, then [b:he]'s going to do what you tell [b:him] to do.");
+			]]>
+		</script>
 		<p>
-			Eaten out scene... **WIP**
+			Mind seemingly made up, the [b:title] crawls closer to you and brings [b:his] face in front of your [pussyrand]. You feel a puff of warm breath on your labia just before [b:his] mouth makes contact, and the [b:title] starts lazily sliding [b:his] tongue between your nether lips. While it is at least doing something for you, you can't help but wonder if you could find some way to motivate [b:him] to do more.
 		</p>
 		<action name="player win generic get eaten out 2"/>
-		<action name="player win generic 69 with vagina"/>
 		<action name="player win generic facesit"/>
+		<action name="player win generic 69 with vagina"/>
 	</scene>
-	<scene id="Pillow_PlayerWinGenericEatOut2" name="player win generic get eaten out 2" list="Let them continue">
+	<scene id="Pillow_PlayerWinGenericEatOut2" name="player win generic get eaten out 2" list="Let [b:him] continue">
 		<filter target="top" type="has" name="vagina" />
 		<p>
 			Eaten out scene... **WIP**
 		</p>
 	</scene>
-	<scene id="Pillow_PlayerWinGeneric69Vagina" name="player win generic 69 with vagina" list="Go for a 69">
+	<scene id="Pillow_PlayerWinGenericFacesit" name="player win generic facesit" list="Grind on [b:his] face">
 		<filter target="top" type="has" name="vagina" />
-		<filter target="top" type="value_gteq" name="carnality" value="33"/>
+		<filter target="top" type="value_gteq" name="carnality" value="0"/>
 		<p>
-			Eaten out scene... **WIP**
+			Face grind scene... **WIP**
 		</p>
 	</scene>
-	<scene id="Pillow_PlayerWinGenericFacesit" name="player win generic facesit" list="Grind on their face">
+	<scene id="Pillow_PlayerWinGeneric69Vagina" name="player win generic 69 with vagina" list="Go for a sixty-nine">
 		<filter target="top" type="has" name="vagina" />
-		<filter target="top" type="value_gteq" name="carnality" value="66"/>
+		<filter target="top" type="value_gteq" name="carnality" value="0"/>
 		<p>
-			Eaten out scene... **WIP**
+			69ing scene... **WIP**
 		</p>
 	</scene>
 	
 	
 	
-	<scene id="Pillow_PlayerWinGenericAssRape" name="player win generic butt fuck" list="Fuck their ass">
+	<scene id="Pillow_PlayerWinGenericAssRape" name="player win generic butt fuck" list="Fuck [b:his] ass">
 		<filter target="top" type="has" name="penis" />
 		<p>
 			Ass fuck scene... **WIP**
@@ -117,7 +184,7 @@
 		</p>
 		
 	</scene>
-	<scene id="Pillow_PlayerWinGenericAssRapeReachAround" name="player win generic butt fuck reach around" list="Give them a reach-around">
+	<scene id="Pillow_PlayerWinGenericAssRapeReachAround" name="player win generic butt fuck reach around" list="Give [b:him] a reach-around">
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="value_gteq" name="carnality" value="33"/>
 		<p>
@@ -128,7 +195,24 @@
 	
 	
 	
-	<scene id="Pillow_PlayerWinRapeGenericWithVagina" name="player win generic vaginal ride" list="Take them in your pussy">
+	<scene id="Pillow_PlayerWinGenericPussyRape" name="player win generic pussy fuck" list="Fuck [b:his] pussy">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Pussy fuck scene... **WIP**
+		</p>
+		<action name="player win generic pussy fuck 2"/>
+	</scene>
+	<scene id="Pillow_PlayerWinGenericPussyRape2" name="player win generic pussy fuck 2">
+		<filter target="top" type="has" name="penis" />
+		<p>
+			Pussy fuck scene... **WIP**
+		</p>
+		
+	</scene>
+	
+	
+	
+	<scene id="Pillow_PlayerWinRapeGenericWithVagina" name="player win generic vaginal ride" list="Take [b:him] in your pussy">
 		<filter target="bottom" type="has" name="penis" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
@@ -145,7 +229,7 @@
 		</p>
 		
 	</scene>
-	<scene id="Pillow_PlayerWinRapeGenericWithVaginaMakeOut" name="player win generic vaginal ride make out" list="Make out with them">
+	<scene id="Pillow_PlayerWinRapeGenericWithVaginaMakeOut" name="player win generic vaginal ride make out" list="Make out with [b:him]">
 		<filter target="bottom" type="has" name="penis" />
 		<filter target="top" type="has" name="vagina" />
 		<filter target="top" type="value_gteq" name="carnality" value="33"/>
@@ -156,7 +240,8 @@
 	</scene>
 	
 	
-	<scene id="Pillow_PlayerWinRapeGenericWithAss" name="player win generic anal ride" list="Take them in your ass">
+	
+	<scene id="Pillow_PlayerWinRapeGenericWithAss" name="player win generic anal ride" list="Take [b:him] in your ass">
 		<filter target="bottom" type="has" name="penis" />
 		<p>
 			Put them on their back and start getting them hard. **WIP**

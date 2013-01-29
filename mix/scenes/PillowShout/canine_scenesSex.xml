@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+
+<scenes>
+	<!-- Written by PillowShout -->
+	
+	<!-- Player win rapes -->
+	<scene id="Pillow_PlayerWinCanineRapeStart" name="(rape start)">
+	<filter target="bottom" type="bodylev" name="canine" />
+	<filter target="bottom" type="has" name="terms/generic" value="canine"/>
+		<script type="text/javascript">
+			<![CDATA[
+				print("The [b:title] lays before you bloodied and weak, and it's clear that [b:he]'s not going to be getting up again any time soon. ");
+			
+				var n = Math.random();
+				
+				if(n < 0.5)
+					print("[b:He] glares at you as you stand over [b:him] and barks out, \"Go on then, end it!\"");
+				else
+					print("[b:He] looks down in shame and pleads to you, \"Just make it clean.\"");
+			]]>
+		</script>
+		<p>
+			That wasn't at all what you had in mind for [b:him]. Rather, you feel like having a bit of fun with the [b:title] now that [b:he]'s not trying to kill you. 
+		</p>
+		<action name="player win get generic blowjob" />
+		<action name="player win generic get eaten out" />
+		<action name="player win generic pussy fuck"/>
+		<action name="player win generic butt fuck" />
+		<action name="player win generic vaginal ride" />
+		<action name="player win generic anal ride" />
+		<action name="leave the canine" />
+	</scene>
+	
+	<scene id="Pillow_PlayerWinLeaveCanine" name="leave the canine" list="Leave">
+		<p>
+			Unfortunately, [b:his] dour mood has put a damper on yours, and you find yourself losing interest in the [b:title]. You shrug and walk away, leaving [b:him] for someone else to abuse.
+		</p>
+	</scene>
+	
+	
+	<!-- Player loss rapes -->
+	
+</scenes>
