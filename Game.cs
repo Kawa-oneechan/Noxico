@@ -14,7 +14,7 @@ namespace Noxico
 {
 	public enum KeyBinding
 	{
-		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop, Travel,
+		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop, Fly, Travel,
 		Accept, Back, Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
 	}
 
@@ -113,6 +113,7 @@ namespace Noxico
 				{ KeyBinding.Fuck, GetIniKey("fuck", Keys.F) },
 				{ KeyBinding.Take, GetIniKey("take", Keys.P) },
 				{ KeyBinding.Drop, GetIniKey("drop", Keys.D) },
+				{ KeyBinding.Fly, GetIniKey("fly", Keys.Q) },
 				{ KeyBinding.Travel, GetIniKey("travel", Keys.T) },
 				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
 				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },

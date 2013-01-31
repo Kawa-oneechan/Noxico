@@ -146,7 +146,7 @@ namespace Noxico
 				}
 
 				if (!File.Exists(IniPath))
-					File.WriteAllText(IniPath, Mix.GetString("DefaultSettings.txt"));
+					File.WriteAllText(IniPath, Mix.GetString("noxico.ini"));
 				IniFile.Load(IniPath);
 
 				if (portable)
@@ -756,8 +756,6 @@ namespace Noxico
 			}
 			else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
 			{
-				var tile = Noxico.CurrentBoard.Tilemap[tx, ty];
-
 				var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
 				if (target != null)
 				{

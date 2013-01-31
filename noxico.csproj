@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -224,7 +224,7 @@
     <Content Include="mix\costumes.xml" />
     <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.xml" />
-    <Content Include="mix\DefaultSettings.txt" />
+    <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
     <Content Include="mix\items.xml">
       <SubType>Designer</SubType>

@@ -103,7 +103,7 @@ namespace Noxico
 		public int SpecialDescription { get; set; }
 
 		public bool SolidToWalker { get { return Wall || Water || Fence || Cliff; } }
-		public bool SolidToFlyer { get { return (Ceiling && Fence) || Wall; } }
+		public bool SolidToFlyer { get { return Ceiling || Wall; } }
 		public bool SolidToProjectile { get { return (Wall && !Grate); } }
 		public bool SolidToSwimmer { get { return Wall || Fence || Cliff; } }
 

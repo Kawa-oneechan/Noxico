@@ -369,6 +369,15 @@ namespace Noxico
 					break;
 				lives--;
 			}
+			if (lives == 0)
+			{
+				var tile = boardChar.ParentBoard.Tilemap[x, y];
+				if (tile.Water || tile.Cliff)
+					NoxicoGame.AddMessage((boardChar is Player ? "You" : boardChar.Character.Name.ToString()) + " dropped " + this.ToString(item, true, false) + " in the " + (tile.Cliff ? "depths" : "water") + "!");
+				boardChar.Character.GetToken("items").Tokens.Remove(item);
+				boardChar.Character.CheckHasteSlow();
+				return;
+			}
 			var droppedItem = new DroppedItem(this, item)
 			{
 				XPosition = x,
