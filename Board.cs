@@ -69,6 +69,11 @@ namespace Noxico
 		Walkabout, LookAt, Subscreen
 	}
 
+	public enum SolidityCheck
+	{
+		Walker, Flyer, Projectile, Swimmer
+	}
+
 	/// <summary>
 	/// A special description for board tiles.
 	/// </summary>
@@ -87,12 +92,20 @@ namespace Noxico
 		public char Character { get; set; }
 		public Color Foreground { get; set; }
 		public Color Background { get; set; }
-		public bool Solid { get; set; }
+		public bool Wall { get; set; }
+		public bool Water { get; set; }
+		public bool Ceiling { get; set; }
+		public bool Cliff { get; set; }
+		public bool Fence { get; set; }
+		public bool Grate { get; set; }
 		public bool CanBurn { get; set; }
-		public bool IsWater { get; set; }
 		public int BurnTimer { get; set; }
-		public bool CanFlyOver { get; set; }
 		public int SpecialDescription { get; set; }
+
+		public bool SolidToWalker { get { return Wall || Water || Fence || Cliff; } }
+		public bool SolidToFlyer { get { return (Ceiling && Fence) || Wall; } }
+		public bool SolidToProjectile { get { return (Wall && !Grate); } }
+		public bool SolidToSwimmer { get { return Wall || Fence || Cliff; } }
 
 		/// <summary>
 		/// Returns a TileDescription if this tile has one.
@@ -113,22 +126,28 @@ namespace Noxico
 		public void SaveToFile(BinaryWriter stream)
 		{
 			stream.Write(Character);
-			//stream.Write((byte)((Background * 16) + (Foreground % 16)));
 			Foreground.SaveToFile(stream);
 			Background.SaveToFile(stream);
 
 			var bits = new BitVector32();
 			bits[1] = CanBurn;
-			bits[2] = Solid;
-			bits[4] = CanFlyOver;
-			bits[8] = IsWater;
-			bits[16] = BurnTimer > 0;
-			bits[32] = false; //reserved
-			bits[64] = SpecialDescription > 0; //was HasExTile
-			bits[128] = false; //reserved for "has more settings"
-			//stream.Write((byte)((HasExTile ? 8 : 0) | (BurnTimer > 0 ? 8 : 0) | (CanFlyOver ? 4 : 0) | (Solid ? 2 : 0) | (CanBurn ? 1 : 0)));
+			bits[2] = Wall;
+			bits[4] = Water;
+			bits[8] = Ceiling;
+			bits[16] = Cliff;
+			bits[32] = (BurnTimer > 0);
+			bits[64] = (SpecialDescription > 0);
+			bits[128] = (Fence || Grate); //Has more settings
 			stream.Write((byte)bits.Data);
-			if(BurnTimer > 0)
+			if (bits[128])
+			{
+				bits = new BitVector32();
+				bits[1] = Fence;
+				bits[2] = Grate;
+				//rest reserved.
+				stream.Write((byte)bits.Data);
+			}
+			if (BurnTimer > 0)
 				stream.Write((byte)BurnTimer);
 			if (SpecialDescription > 0)
 				stream.Write((Int16)SpecialDescription);
@@ -137,21 +156,26 @@ namespace Noxico
 		public void LoadFromFile(BinaryReader stream)
 		{
 			Character = stream.ReadChar();
-			//var col = stream.ReadByte();
-			//Foreground = col % 16;
-			//Background = col / 16;
 			Foreground = Toolkit.LoadColorFromFile(stream);
 			Background = Toolkit.LoadColorFromFile(stream);
+
 			var set = stream.ReadByte();
 			var bits = new BitVector32(set);
 			CanBurn = bits[1];
-			Solid = bits[2];
-			CanFlyOver = bits[4];
-			IsWater = bits[8];
-			var HasBurn = bits[16];
-			//HasReversed = bits[32];
+			Wall = bits[2];
+			Water = bits[4];
+			Ceiling = bits[8];
+			Cliff = bits[16];
+			var HasBurn = bits[32];
 			var HasSpecialDescription = bits[64];
-			//HasMoreSettings = bits[128];
+			var HasMoreSettings = bits[128];
+			if (HasMoreSettings)
+			{
+				set = stream.ReadByte();
+				bits = new BitVector32(set);
+				Fence = bits[1];
+				Grate = bits[2];
+			}
 			if (HasBurn)
 				BurnTimer = stream.ReadByte();
 			if (HasSpecialDescription)
@@ -400,6 +424,9 @@ namespace Noxico
 				foreach (var e in newBoard.Entities.OfType<BoardChar>())
 					e.RunScript(e.OnLoad);
 
+				foreach (var e in newBoard.Entities.OfType<Door>())
+					e.UpdateMapSolidity();
+
 				newBoard.UpdateLightmap(null, true);
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
@@ -414,13 +441,19 @@ namespace Noxico
 					this.EntitiesToRemove.Add(corpse);
 		}
 
-		public bool IsSolid(int row, int col, bool flying = false)
+		public bool IsSolid(int row, int col, SolidityCheck check = SolidityCheck.Walker)
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return true;
-			if (Tilemap[col, row].IsWater || Tilemap[col, row].CanFlyOver)
-				return !flying;
-			return Tilemap[col, row].Solid;
+			if (check == SolidityCheck.Walker && Tilemap[col, row].SolidToWalker)
+				return true;
+			else if (check == SolidityCheck.Flyer && Tilemap[col, row].SolidToFlyer)
+				return true;
+			else if (check == SolidityCheck.Projectile && Tilemap[col, row].SolidToProjectile)
+				return true;
+			else if (check == SolidityCheck.Swimmer && Tilemap[col, row].SolidToSwimmer)
+				return true;
+			return Tilemap[col, row].Wall;
 		}
 
 		public bool IsBurning(int row, int col)
@@ -434,7 +467,7 @@ namespace Noxico
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return false;
-			return Tilemap[col, row].IsWater;
+			return Tilemap[col, row].Water;
 		}
 
 		public bool IsLit(int row, int col)
@@ -451,7 +484,7 @@ namespace Noxico
 			return Tilemap[col, row].GetSpecialDescription();
 		}
 
-		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool solid = false, bool burn = false, bool fly = false)
+		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool wall = false, bool burn = false, bool water = false, bool cliff = false)
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return;
@@ -460,9 +493,10 @@ namespace Noxico
 				Character = tile,
 				Foreground = foreColor,
 				Background = backColor,
-				Solid = solid,
+				Wall = wall,
+				Water = water,
+				Cliff = cliff,
 				CanBurn = burn,
-				CanFlyOver = fly,
 			};
 			Tilemap[col, row] = t;
 			DirtySpots.Add(new Location(col, row));
@@ -473,7 +507,7 @@ namespace Noxico
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return;
 			var tile = Tilemap[col, row];
-			if (tile.CanBurn)
+			if (tile.CanBurn && !tile.Water)
 			{
 				tile.BurnTimer = Toolkit.Rand.Next(20, 23);
 				tile.Character = (char)0xB1; //(char)0x15;
@@ -698,7 +732,8 @@ namespace Noxico
 			{
 				if (y1 < 0 || y1 >= 25 | x1 < 0 || x1 >= 80)
 					return true;
-				return !Tilemap[x1, y1].IsWater && Tilemap[x1, y1].Solid;
+				return Tilemap[x1, y1].SolidToProjectile;
+				//return !Tilemap[x1, y1].IsWater && Tilemap[x1, y1].Solid;
 			};
 			Action<int, int> a = (x2, y2) =>
 			{
@@ -736,44 +771,6 @@ namespace Noxico
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
-			return newBoard;
-		}
-
-		public static Board CreateFromBitmap(byte[,] bitmap, int biome, int x, int y)
-		{
-			var newBoard = new Board();
-			for (int row = 0; row < 25; row++)
-			{
-				for (int col = 0; col < 80; col++)
-				{
-					var b = bitmap[(y * 25) + row, (x * 80) + col];
-					var d = BiomeData.Biomes[b];
-					var fg = d.Color.Darken();
-					var bg = d.Color;
-					if (d.DarkenPlus != 0 && d.DarkenDiv != 0)
-					{
-						fg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
-						bg = d.Color.Darken(d.DarkenPlus + (Toolkit.Rand.NextDouble() / d.DarkenDiv));
-					}
-					newBoard.Tilemap[col, row] = new Tile()
-					{
-						Character = d.GroundGlyphs[Toolkit.Rand.Next(d.GroundGlyphs.Length)],
-						Foreground = fg, Background = bg,
-						CanBurn = d.CanBurn,
-						IsWater = d.IsWater,
-					};
-				}
-			}
-
-			var biomeData = BiomeData.Biomes[biome];
-	
-			var nameID = string.Format("OW_{0}x{1}", x, y);
-			newBoard.Tokens = Token.Tokenize("name: \"" + nameID + "\"\nid: \"" + nameID + "\"\nx: " + x + "\ny: " + y + "\nmusic: \"" + biomeData.Music + "\"\ntype: 0\nbiome: " + biome + "\nencounters: " + biomeData.MaxEncounters + "\n");
-
-			var encounters = newBoard.GetToken("encounters");
-			foreach (var e in biomeData.Encounters)
-				encounters.Tokens.Add(new Token() { Name = e });
-
 			return newBoard;
 		}
 

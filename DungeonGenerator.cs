@@ -199,11 +199,16 @@ namespace Noxico
 						for (var x = 0; x < template.Width; x++)
 						{
 							var tc = template.MapScans[y][x];
-							var fg = Color.Black;
-							var bg = Color.Silver;
-							var ch = '?';
-							var s = false;
-							var w = false;
+							var fgd = Color.Black;
+							var bgd = Color.Silver;
+							var chr = '?';
+							var wal = false;
+							var wat = false;
+							var cei = false;
+							var cli = false;
+							var fen = false;
+							var gra = false;
+							var bur = false;
 
 							var addDoor = true;
 							if (tc == '/')
@@ -216,12 +221,16 @@ namespace Noxico
 								case '\'':
 									continue;
 								case '.':
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = ' ';
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									cei = true;
+									bur = true;
+									chr = ' ';
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = '\xA0';
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									chr = '\xA0';
+									cei = true;
+									bur = true;
 
 									if (addDoor)
 									{
@@ -231,7 +240,7 @@ namespace Noxico
 											XPosition = sX + x,
 											YPosition = sY + y,
 											ForegroundColor = floorStart,
-											BackgroundColor = bg.Darken(),
+											BackgroundColor = bgd.Darken(),
 											ID = building.BaseID + "_Door" + doorCount,
 											ParentBoard = Board,
 											Closed = true,
@@ -240,41 +249,52 @@ namespace Noxico
 									}
 									break;
 								case '+':
-									fg = wall;
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									s = true;
+									fgd = wall;
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									wal = true;
+									cei = true;
+									bur = true;
 									cornerJunctions.Add(new Point(sX + x, sY + y));
 									break;
 								case '-':
-									fg = wall;
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = '\x2550';
-									s = true;
+									fgd = wall;
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									chr = '\x2550';
+									wal = true;
+									cei = true;
+									bur = true;
 									break;
 								case '|':
-									fg = wall;
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = '\x2551';
-									s = true;
+									fgd = wall;
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									chr = '\x2551';
+									wal = true;
+									cei = true;
+									bur = true;
 									break;
 								case '~':
-									fg = wall;
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = '\x2500';
-									s = true;
+									fgd = wall;
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									chr = '\x2500';
+									wal = true;
+									cei = true;
+									bur = true;
 									break;
 								case ';':
-									fg = wall;
-									bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = '\x2502';
-									s = true;
+									fgd = wall;
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									chr = '\x2502';
+									wal = true;
+									cei = true;
+									bur = true;
 									break;
 								case '#':
 									if (allowCaveFloor)
-										bg = Toolkit.Lerp(caveStart, caveEnd, Toolkit.Rand.NextDouble());
+										bgd = Toolkit.Lerp(caveStart, caveEnd, Toolkit.Rand.NextDouble());
 									else
-										bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-									ch = ' ';
+										bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bur = !allowCaveFloor;
+									chr = ' ';
 									break;
 								default:
 									if (template.Markings.ContainsKey(tc))
@@ -284,8 +304,8 @@ namespace Noxico
 										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
-											bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-											ch = ' ';
+											bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+											chr = ' ';
 											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											if (m.Type == "bed")
 											{
@@ -296,7 +316,7 @@ namespace Noxico
 													YPosition = sY + y,
 													Name = "Bed",
 													ForegroundColor = Color.Black,
-													BackgroundColor = bg,
+													BackgroundColor = bgd,
 													ID = building.BaseID + "_Bed_" + (owner == null ? "Free" : owner.Name.FirstName),
 													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {0} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
 													ParentBoard = Board,
@@ -305,8 +325,8 @@ namespace Noxico
 											}
 											if (m.Type == "container")
 											{
-												var chr = m.Params.Last()[0];
-												var type = chr == '\x006C' ? "cabinet" : chr == '\x03C0' ? "chest" : "container";
+												var c = m.Params.Last()[0];
+												var type = c == '\x006C' ? "cabinet" : c == '\x03C0' ? "chest" : "container";
 												if (m.Params[0] == "clothes")
 												{
 													//if (type == "cabinet")
@@ -319,7 +339,7 @@ namespace Noxico
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
-													BackgroundColor = bg,
+													BackgroundColor = bgd,
 													ID = building.BaseID + "_Container_" + type + "_" + (owner == null ? "Free" : owner.Name.FirstName),
 													ParentBoard = Board,
 												};
@@ -333,7 +353,7 @@ namespace Noxico
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
-													BackgroundColor = bg,
+													BackgroundColor = bgd,
 													ParentBoard = Board,
 													Name = m.Name,
 													Description = m.Description,
@@ -344,23 +364,35 @@ namespace Noxico
 										}
 										else if (m.Type == "water")
 										{
-											ch = water.GroundGlyphs[Toolkit.Rand.Next(water.GroundGlyphs.Length)];
-											fg = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
-											bg = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
-											w = water.IsWater;
+											chr = water.GroundGlyphs[Toolkit.Rand.Next(water.GroundGlyphs.Length)];
+											fgd = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
+											bgd = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
+											wat = water.IsWater;
 										}
 										else
 										{
-											fg = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
-											bg = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
-											ch = m.Params.Last()[0];
-											s = m.Type != "floor";
+											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
+											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
+											chr = m.Params.Last()[0];
+											wal = m.Type != "floor";
 										}
 										#endregion
 									}
 									break;
 							}
-							map[sX + x, sY + y] = new Tile() { Character = ch, Foreground = fg, Background = bg, Solid = s, IsWater = w };
+							map[sX + x, sY + y] = new Tile()
+							{
+								Character = chr,
+								Foreground = fgd,
+								Background = bgd,
+								Wall = wal,
+								Water = wat,
+								Ceiling = cei,
+								Cliff = cli,
+								Fence = fen,
+								Grate = gra,
+								CanBurn = bur,
+							};
 						}
 					}
 
@@ -386,7 +418,7 @@ namespace Noxico
 							{
 								x = (col * 10) + Toolkit.Rand.Next(10);
 								y = (row * 12) + Toolkit.Rand.Next(12);
-								if (!map[x, y].Solid && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
+								if (!map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
 									okay = true;
 							}
 							bc.XPosition = x;
@@ -473,7 +505,7 @@ namespace Noxico
 			//Base fill
 			for (var row = 0; row < 25; row++)
 				for (var col = 0; col < 80; col++)
-					map[col, row] = new Tile() { Character = ' ', Solid = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
+					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
 
 			base.ToTilemap(ref map);
 
@@ -504,7 +536,7 @@ namespace Noxico
 						direction = row == 0 ? Direction.South : Direction.North;
 
 					Toolkit.PredictLocation(x, y, direction, ref x, ref y);
-					while (!map[x, y].Solid)
+					while (!map[x, y].Wall)
 						Toolkit.PredictLocation(x, y, direction, ref x, ref y);
 
 					if (x < colStart)
@@ -526,7 +558,7 @@ namespace Noxico
 							else
 								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
 							y--;
-							if (!map[x, y].Solid)
+							if (!map[x, y].Wall)
 								break;
 						}
 					}
@@ -544,7 +576,7 @@ namespace Noxico
 							else
 								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
 							y++;
-							if (!map[x, y].Solid)
+							if (!map[x, y].Wall)
 								break;
 						}
 					}
@@ -555,7 +587,7 @@ namespace Noxico
 							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
 							x--;
 						}
-						while (x > 1 && map[x, y].Solid)
+						while (x > 1 && map[x, y].Wall)
 						{
 							if (map[x, y].Character == ' ')
 								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
@@ -571,7 +603,7 @@ namespace Noxico
 							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
 							x++;
 						}
-						while (x < 79 && map[x, y].Solid)
+						while (x < 79 && map[x, y].Wall)
 						{
 							if (map[x, y].Character == ' ')
 								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
@@ -599,9 +631,9 @@ namespace Noxico
 			{
 				for (var row = 0; row < 25; row++)
 				{
-					if (map[col, row].IsWater)
+					if (map[col, row].SolidToProjectile)
 						continue;
-					dijkstra[col, row] = (map[col, row].Solid && !map[col, row].CanBurn) ? 9000 : 0;
+					dijkstra[col, row] = (map[col, row].Wall && !map[col, row].CanBurn) ? 9000 : 0;
 				}
 			}
 
@@ -613,16 +645,16 @@ namespace Noxico
 			{
 				for (var col = 0; col < 80; col++)
 				{
-					if (map[col, row].IsWater)
+					if (map[col, row].Water)
 						continue;
-					if (map[col, row].Solid && !map[col, row].CanBurn)
+					if (map[col, row].Wall && !map[col, row].CanBurn)
 					{
 						if (dijkstra[col, row] > 1)
 							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
 						else
 							map[col, row].SpecialDescription = 1;
 					}
-					if (map[col, row].Solid && map[col, row].CanBurn)
+					if (map[col, row].Wall && map[col, row].CanBurn)
 					{
 						map[col, row].SpecialDescription = 2;
 					}
@@ -736,11 +768,11 @@ namespace Noxico
 				{
 					if (this.map[col, row] == 1)
 					{
-						map[col, row] = new Tile() { Character = ' ', Solid = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
+						map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
 					}
 					else
 					{
-						map[col, row] = new Tile() { Character = floorCrud[Toolkit.Rand.Next(floorCrud.Length)], Solid = false, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
+						map[col, row] = new Tile() { Character = floorCrud[Toolkit.Rand.Next(floorCrud.Length)], Wall = false, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
 					}
 				}
 			}
