@@ -591,9 +591,13 @@ namespace Noxico
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				base.Draw();
-				if (Character.HasToken("sleeping"))
-					if (Environment.TickCount % blinkRate * 2 < blinkRate)
+				if (Environment.TickCount % blinkRate * 2 < blinkRate)
+				{
+					if (Character.HasToken("sleeping"))
 						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
+					else if (Character.HasToken("flying"))
+						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '^', this.ForegroundColor, this.BackgroundColor);
+				}
 			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
@@ -1034,7 +1038,7 @@ namespace Noxico
 			var dodged = false;
 			var skill = "unarmed_combat";
 			var verb = "struck";
-			var obituary = "being struck down";
+			var obituary = "died from being struck down";
 			var attackerName = this.Character.IsProperNamed ? this.Character.Name.ToString() : "the " + this.Character.Title;
 			var attackerFullName = this.Character.IsProperNamed ? this.Character.Name.ToString(true) : "the " + this.Character.Title;
 			var targetName = target.Character.IsProperNamed ? target.Character.Name.ToString() : "the " + target.Character.Title;
@@ -1163,7 +1167,7 @@ namespace Noxico
 			return ret;
 		}
 
-		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
+		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			RunScript(OnHurt, "damage", damage);
 			var health = Character.GetToken("health").Value;
@@ -1180,12 +1184,16 @@ namespace Noxico
 				}
 				//Dead, but how?
 				Character.GetToken("health").Value = 0;
-				if (Character.HasToken("stolenfrom") && aggressor is Player)
+				if (aggressor != null)
 				{
-					Achievements.CheckCriminalScum();
-					aggressor.Character.GiveRenegadePoints(10);
+					if (Character.HasToken("stolenfrom") && aggressor is Player)
+					{
+						Achievements.CheckCriminalScum();
+						aggressor.Character.GiveRenegadePoints(10);
+					}
 				}
-				LeaveCorpse(obituary);
+				if (leaveCorpse)
+					LeaveCorpse(obituary);
 				return true;
 			}
 			Character.GetToken("health").Value -= damage;
@@ -1202,14 +1210,14 @@ namespace Noxico
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
 				Name = Character.Name.ToString(true) + "'s remains",
-				Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who died from " + obituary + ".",
+				Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
 			if (!Character.IsProperNamed)
 			{
 				corpse.Name = Character.GetTitle() + "'s remains";
-				corpse.Description = "These are the remains of " + Character.GetTitle() + ", who died from " + obituary + ".";
+				corpse.Description = "These are the remains of " + Character.GetTitle() + ", who " + obituary + ".";
 			}
 
 			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)
@@ -1703,6 +1711,16 @@ namespace Noxico
 			AsciiChar = '@';
 		}
 
+		public override void Draw()
+		{
+			base.Draw();
+			if (Character.HasToken("flying"))
+			{
+				var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
+				NoxicoGame.HostForm.Write(flightTimer, Color.CornflowerBlue, Color.Black, 40 - (flightTimer.Length / 2), 0);
+			}
+		}
+
 		public bool OnWarp()
 		{
 			var warp = ParentBoard.Warps.Find(w => w.XPosition == XPosition && w.YPosition == YPosition);
@@ -2025,6 +2043,7 @@ namespace Noxico
 					helpless = false;
 				}
 			}
+			var flying = Character.HasToken("flying");
 
 #if DEBUG
 			if (NoxicoGame.KeyMap[(int)Keys.Z])
@@ -2034,7 +2053,7 @@ namespace Noxico
 			}
 #endif
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Pause)) //(NoxicoGame.KeyMap[(int)Keys.F1])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Pause))
 			{
 				Pause.Open();
 				return;
@@ -2046,7 +2065,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Rest)) //(NoxicoGame.KeyMap[(int)Keys.OemPeriod] && !NoxicoGame.Modifiers[0])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Rest))
 			{
 				NoxicoGame.ClearKeys();
 				if (this.Character.HasToken("haste"))
@@ -2055,7 +2074,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Chat)) //(NoxicoGame.KeyMap[(int)Keys.C])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Chat))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Chat message]");
@@ -2069,7 +2088,8 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.IsKeyDown(KeyBinding.Fuck) /*(NoxicoGame.KeyMap[(int)Keys.F] */ && !helpless)
+
+			if (NoxicoGame.IsKeyDown(KeyBinding.Fuck) && !helpless && !flying)
 			{
 				NoxicoGame.ClearKeys();
 				if (Character.GetStat(Stat.Stimulation) < 30)
@@ -2088,7 +2108,8 @@ namespace Noxico
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) /*(NoxicoGame.KeyMap[(int)Keys.A] */ && !helpless)
+	
+			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				if (this.ParentBoard.Type == BoardType.Town)
@@ -2114,7 +2135,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Look) || NoxicoGame.IsKeyDown(KeyBinding.LookAlt)) //(NoxicoGame.KeyMap[(int)Keys.L] || NoxicoGame.KeyMap[(int)Keys.OemQuestion])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Look) || NoxicoGame.IsKeyDown(KeyBinding.LookAlt))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("[Lookat message]");
@@ -2129,9 +2150,9 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Take) || NoxicoGame.IsKeyDown(KeyBinding.TakeAlt)) //(NoxicoGame.KeyMap[(int)Keys.P] || NoxicoGame.KeyMap[(int)Keys.Oemcomma])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Take) || NoxicoGame.IsKeyDown(KeyBinding.TakeAlt))
 			{
-				if (helpless)
+				if (helpless || flying)
 					return;
 				NoxicoGame.ClearKeys();
 				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);
@@ -2158,7 +2179,7 @@ namespace Noxico
 				}
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Items)) //(NoxicoGame.KeyMap[(int)Keys.I])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Items))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Mode = UserMode.Subscreen;
@@ -2167,8 +2188,54 @@ namespace Noxico
 				return;
 			}
 
-			//if (NoxicoGame.KeyMap[(int)Keys.OemPeriod] && NoxicoGame.Modifiers[0])
-			if (NoxicoGame.IsKeyDown(KeyBinding.Activate) /* (NoxicoGame.KeyMap[(int)Keys.Enter] */ && !helpless)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Fly) && !helpless)
+			{
+				NoxicoGame.ClearKeys();
+				if (Character.HasToken("flying"))
+				{
+					//Land
+					NoxicoGame.AddMessage("You land.");
+					Character.RemoveToken("flying");
+					//add swim capability?
+					var tile = ParentBoard.Tilemap[XPosition, YPosition];
+					if (tile.Water)
+						Hurt(9999, "dove into the water and drowned", null, false);
+					else if (tile.Cliff)
+						Hurt(9999, "dove into the depths", null, false, false);
+				}
+				else
+				{
+					if (Character.HasToken("wings"))
+					{
+						if (Character.GetToken("wings").HasToken("small"))
+						{
+							NoxicoGame.AddMessage("Your wings are too small.");
+							return;
+						}
+						var tile = ParentBoard.Tilemap[XPosition, YPosition];
+						if (tile.Ceiling)
+						{
+							if (Character.GetStat(Stat.Cunning) < 10 ||
+								(Character.GetStat(Stat.Cunning) < 20 && Toolkit.Rand.NextDouble() < 0.5))
+							{
+								Hurt(2, "hit the ceiling when trying to fly", null, false);
+								NoxicoGame.AddMessage("You hit your head on the ceiling.");
+							}
+							else
+								NoxicoGame.AddMessage("You can't fly here - there's a ceiling in the way.");
+							return;
+						}
+						//Take off
+						Character.AddToken("flying").Value = 100;
+						NoxicoGame.AddMessage("You take off.");
+						return;
+					}
+					NoxicoGame.AddMessage("You have no wings.");
+				}
+				return;
+			}
+
+			if (NoxicoGame.IsKeyDown(KeyBinding.Activate) && !helpless && !flying)
 			{
 				NoxicoGame.ClearKeys();
 
@@ -2234,7 +2301,7 @@ namespace Noxico
 			{
 				if (!NoxicoGame.Modifiers[0])
 				{
-					if (NoxicoGame.IsKeyDown(KeyBinding.Left)) //(NoxicoGame.KeyMap[(int)Keys.Left])
+					if (NoxicoGame.IsKeyDown(KeyBinding.Left))
 						this.Move(Direction.West);
 					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
 						this.Move(Direction.East);
@@ -2298,6 +2365,20 @@ namespace Noxico
 					ParentBoard.Redraw();
 			}
 
+			if (Character.HasToken("flying"))
+			{
+				var f = Character.GetToken("flying");
+				f.Value--;
+				if (!Character.HasToken("wings") || Character.GetToken("wings").HasToken("small"))
+				{
+					NoxicoGame.AddMessage("You lose your ability to fly!");
+					f.Value = -10;
+				}
+				if (f.Value <= 0)
+					NoxicoGame.KeyMap[(int)NoxicoGame.KeyBindings[KeyBinding.Fly]] = true; //force a landing
+			}
+
+
 			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
 			{
@@ -2305,33 +2386,13 @@ namespace Noxico
 			}
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
-			{
-				if (Hurt(10, "burned to death", null))
-				{
-					NoxicoGame.AddMessage("GAME OVER", Color.Red);
-					var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
-					File.Delete(playerFile);
-					MessageBox.Ask(
-						"You have burned to death.\n\nWould you like an infodump on the way out?",
-						() =>
-						{
-							Character.CreateInfoDump();
-							NoxicoGame.HostForm.Close();
-						},
-						() =>
-						{
-							NoxicoGame.HostForm.Close();
-						}
-						);
-					return;
-				}
-			}
+				Hurt(10, "burned to death", null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 
 			NoxicoGame.UpdateMessages();
 		}
 
-		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false)
+		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			if (AutoTravelling)
 			{
@@ -2344,13 +2405,16 @@ namespace Noxico
 			{
 				Achievements.CheckYASD();
 
-				var relation = Character.Path("ships/" + aggressor.Character.ID);
-				if (relation == null)
+				if (aggressor != null)
 				{
-					relation = new Token() { Name = aggressor.Character.ID };
-					Character.Path("ships").Tokens.Add(relation);
+					var relation = Character.Path("ships/" + aggressor.Character.ID);
+					if (relation == null)
+					{
+						relation = new Token() { Name = aggressor.Character.ID };
+						Character.Path("ships").Tokens.Add(relation);
+					}
+					relation.Tokens.Add(new Token() { Name = "killer" });
 				}
-				relation.Tokens.Add(new Token() { Name = "killer" });
 				Character.AddToken("gameover");
 
 				NoxicoGame.AddMessage("GAME OVER", Color.Red);
@@ -2358,7 +2422,7 @@ namespace Noxico
 				File.Delete(playerFile);
 				NoxicoGame.Sound.PlayMusic("set://Death");
 				MessageBox.Ask(
-					"You have been slain.\n\nWould you like an infodump on the way out?",
+					"You " + obituary + ".\n\nWould you like an infodump on the way out?",
 					() =>
 					{
 						Character.CreateInfoDump();
