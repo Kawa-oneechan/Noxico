@@ -16,9 +16,13 @@ namespace Noxico
 				Character = this.Character,
 				Foreground = this.Foreground.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
 				Background = this.Background.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-				Solid = this.Solid,
+				Wall = this.Wall,
+				Water = this.Water,
+				Ceiling = this.Ceiling,
+				Cliff = this.Cliff,
+				Fence = this.Fence,
+				Grate = this.Grate,
 				CanBurn = this.CanBurn,
-				IsWater = this.IsWater,
 			};
 		}
 	}
@@ -43,7 +47,7 @@ namespace Noxico
 						Foreground = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
 						Background = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
 						CanBurn = biome.CanBurn,
-						IsWater = biome.IsWater,
+						Water = biome.IsWater,
 					};
 				}
 			}
@@ -159,12 +163,16 @@ namespace Noxico
 			{
 				for (var x = 0; x < 80; x++)
 				{
-					var fg = Color.Black;
-					var bg = Color.Silver;
-					var ch = '?';
-					var s = false;
-					var w = false;
-					var b = false;
+					var fgd = Color.Black;
+					var bgd = Color.Silver;
+					var chr = '?';
+					var wal = false;
+					var wat = false;
+					var cei = false;
+					var cli = false;
+					var fen = false;
+					var gra = false;
+					var bur = false;
 					var color = bitmap.GetPixel(x, y);
 
 					if (color.Name == "ff000000" || color.A == 0)
@@ -180,31 +188,43 @@ namespace Noxico
 					switch (color.Name)
 					{
 						case "ff800080": //Purple, floor
-							bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-							ch = ' ';
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							chr = ' ';
+							cei = true;
+							bur = true;
 							break;
 						case "ffff0000": //Red, outer | wall
-							fg = wall;
-							bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-							ch = '\x2551';
-							s = true;
-							b = true;
+							fgd = wall;
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							chr = '\x2551';
+							wal = true;
+							cei = true;
+							bur = true;
 							break;
 						case "ffff8080": //Light red, outer corner
-							fg = wall;
-							bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-							s = true;
+							fgd = wall;
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							wal = true;
+							cei = true;
+							bur = true;
 							cornerJunctions.Add(new Point(x, y));
 							break;
 						case "ff800000": //Dark red, outer -- wall
-							fg = wall;
-							bg = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
-							ch = '\x2550';
-							s = true;
-							b = true;
+							fgd = wall;
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							chr = '\x2550';
+							wal = true;
+							cei = true;
+							bur = true;
 							break;
 					}
-					this.Tilemap[x, y] = new Tile() { Character = ch, Foreground = fg, Background = bg, Solid = s, IsWater = w, CanBurn = b };
+					this.Tilemap[x, y] = new Tile()
+					{
+						Character = chr, Foreground = fgd, Background = bgd,
+						Wall = wal, Water = wat, Ceiling = cei,
+						Cliff = cli, Fence = fen, Grate = gra,
+						CanBurn = bur,
+					};
 				}
 			}
 

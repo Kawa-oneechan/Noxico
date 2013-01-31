@@ -55,9 +55,9 @@ namespace Noxico
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor.Darken(), this.BackgroundColor.Darken());
 		}
 
-		public virtual void Move(Direction targetDirection)
+		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
         {
-            var touched = this.CanMove(targetDirection);
+            var touched = this.CanMove(targetDirection, check);
 			if (touched is Door)
 			{
 				var door = touched as Door;
@@ -82,12 +82,9 @@ namespace Noxico
 			Flow = targetDirection;
         }
 
-		public virtual object CanMove(Board board, int x, int y, bool ignoreWater = false)
+		public virtual object CanMove(Board board, int x, int y, SolidityCheck check = SolidityCheck.Walker)
 		{
 			if (x < 0 || y < 0 || x > 79 || y > 24)
-				return false;
-
-			if (board.IsSolid(y, x))
 				return false;
 
 			foreach (var entity in board.Entities)
@@ -102,15 +99,19 @@ namespace Noxico
 						return entity;
 				}
 			}
+
+			if (board.IsSolid(y, x, check))
+				return false;
+
 			return null;
 		}
 
-		public virtual object CanMove(Direction targetDirection)
+		public virtual object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
         {
             var newX = this.XPosition;
             var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
-			return CanMove(this.ParentBoard, newX, newY);
+			return CanMove(this.ParentBoard, newX, newY, check);
         }
  
 		public virtual void Update()
@@ -173,7 +174,8 @@ namespace Noxico
 		public virtual bool CanSee(Entity other)
 		{
 			foreach (var point in Toolkit.Line(XPosition, YPosition, other.XPosition, other.YPosition))
-				if ((ParentBoard.IsSolid(point.Y, point.X) && !ParentBoard.IsWater(point.Y, point.X)) && ParentBoard.IsLit(point.Y, point.X))
+				//if ((ParentBoard.IsSolid(point.Y, point.X) && !ParentBoard.IsWater(point.Y, point.X)) && ParentBoard.IsLit(point.Y, point.X))
+				if (ParentBoard.IsSolid(point.Y, point.X, SolidityCheck.Projectile) && ParentBoard.IsLit(point.Y, point.X))
 					return false;
 			return true;
 		}
@@ -208,10 +210,10 @@ namespace Noxico
 				base.Draw();
 		}
 
-		public override void Move(Direction targetDirection)
+		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
-			if (CanMove(targetDirection) != null)
+			if (CanMove(targetDirection, check) != null)
 				return;
 			var newX = 0;
 			var newY = 0;
@@ -221,7 +223,7 @@ namespace Noxico
 			Point();
 		}
 
-		public override object CanMove(Direction targetDirection)
+		public override object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			var newX = this.XPosition;
 			var newY = this.YPosition;
@@ -555,9 +557,9 @@ namespace Noxico
 			}
 		}
 
-		public override object CanMove(Direction targetDirection)
+		public override object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			var canMove = base.CanMove(targetDirection);
+			var canMove = base.CanMove(targetDirection, check);
 			if (canMove != null && canMove is bool && !(bool)canMove)
 				return canMove;
 			if (Movement == Motor.WanderSector && !ScriptPathing)
@@ -574,11 +576,14 @@ namespace Noxico
 			return canMove;
 		}
 
-		public override void Move(Direction targetDirection)
+		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			if (Character.HasToken("slimeblob"))
 				ParentBoard.TrailSlime(YPosition, XPosition, ForegroundColor);
-			base.Move(targetDirection);
+			check = SolidityCheck.Walker;
+			if (Character.HasToken("flying"))
+				check = SolidityCheck.Flyer;
+			base.Move(targetDirection, check);
 		}
 
 		public override void Draw()
@@ -1812,10 +1817,14 @@ namespace Noxico
 			}
 		}
 
-		public override void Move(Direction targetDirection)
+		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			var lx = XPosition;
 			var ly = YPosition;
+
+			check = SolidityCheck.Walker;
+			if (Character.HasToken("flying"))
+				check = SolidityCheck.Flyer;
 
 			#region Inter-board travel
 			var n = NoxicoGame.HostForm.Noxico;
@@ -1823,7 +1832,7 @@ namespace Noxico
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
-				if (this.CanMove(otherBoard, lx, 24) != null)
+				if (this.CanMove(otherBoard, lx, 24, check) != null)
 					return;
 				this.YPosition = 24;
 				OpenBoard(this.ParentBoard.ToNorth);
@@ -1831,7 +1840,7 @@ namespace Noxico
 			else if (ly == 24 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToSouth);
-				if (this.CanMove(otherBoard, lx, 0) != null)
+				if (this.CanMove(otherBoard, lx, 0, check) != null)
 					return;
 				this.YPosition = 0;
 				OpenBoard(this.ParentBoard.ToSouth);
@@ -1839,7 +1848,7 @@ namespace Noxico
 			else if (lx == 0 && targetDirection == Direction.West && this.ParentBoard.ToWest > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToWest);
-				if (this.CanMove(otherBoard, 79, ly) != null)
+				if (this.CanMove(otherBoard, 79, ly, check) != null)
 					return;
 				this.XPosition = 79;
 				OpenBoard(this.ParentBoard.ToWest);
@@ -1847,7 +1856,7 @@ namespace Noxico
 			else if (lx == 79 && targetDirection == Direction.East && this.ParentBoard.ToEast > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToEast);
-				if (this.CanMove(otherBoard, 0, ly) != null)
+				if (this.CanMove(otherBoard, 0, ly, check) != null)
 					return;
 				this.XPosition = 0;
 				OpenBoard(this.ParentBoard.ToEast);
@@ -1885,7 +1894,7 @@ namespace Noxico
 					}
 				}
 			}
-			base.Move(targetDirection);
+			base.Move(targetDirection, check);
 
 			EndTurn();
 			if (this.Character.HasToken("slow"))
@@ -1956,7 +1965,7 @@ namespace Noxico
 			var skill = weap.GetToken("skill").Text;
 			Func<int, int, bool> gotHit = (xPos, yPos) =>
 			{
-				if (this.ParentBoard.IsSolid(y, x, true))
+				if (this.ParentBoard.IsSolid(y, x, SolidityCheck.Projectile))
 				{
 					FireLine(weapon.Path("effect"), x, y);
 					return true;
@@ -2480,9 +2489,8 @@ namespace Noxico
 			}
 		}
 
-		public override void Move(Direction targetDirection)
+		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			//base.Move(targetDirection);
 			Console.WriteLine("Trying to move clutter.");
 		}
 
@@ -2573,7 +2581,7 @@ namespace Noxico
 				ParentBoard.EntitiesToRemove.Add(this);
 		}
 
-		public override void Move(Direction targetDirection)
+		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			Console.WriteLine("Trying to move dropped item.");
 		}
@@ -2682,11 +2690,18 @@ namespace Noxico
 
 	public class Door : Entity
 	{
+
 		public int KeyIndex { get; set; }
-		public bool Closed { get; set; }
 		public bool Locked { get; set; }
+		public bool Closed
+		{
+			get { return closed; }
+			set { closed = value; UpdateMapSolidity(); }
+		}
+		private bool closed;
 		private bool horizontal;
 		private bool dirInited;
+		private int closeTimer;
 
 		private void FindDirection()
 		{
@@ -2698,11 +2713,31 @@ namespace Noxico
 		{
 			if (!dirInited)
 				FindDirection();
-			if (Closed)
+			if (closed)
 				AsciiChar = '+';
 			else
 				AsciiChar = horizontal ? '|' : '-';
 			base.Draw();
+		}
+
+		public void UpdateMapSolidity()
+		{
+			if (ParentBoard == null)
+				return;
+			ParentBoard.Tilemap[XPosition, YPosition].Wall = closed;
+		}
+
+		public override void Update()
+		{
+			if (!closed)
+			{
+				closeTimer++;
+				if (closeTimer > 20)
+				{
+					Closed = true;
+					closeTimer = 0;
+				}
+			}
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
@@ -2710,7 +2745,7 @@ namespace Noxico
 			Toolkit.SaveExpectation(stream, "DOOR");
 			base.SaveToFile(stream);
 			stream.Write(KeyIndex);
-			stream.Write(Closed);
+			stream.Write(true /* Closed */);
 			stream.Write(Locked);
 		}
 
