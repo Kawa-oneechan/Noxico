@@ -43,6 +43,8 @@
 		<rating id="butt" value="8" gender="female" />
 		<rating id="penis/length" value="10%" gender="male" />
 		<rating id="waist" value="7" />
+		<rating id="vagina/clit" value="100%" gender="female" ifhas="quadruped" />
+		<rating id="vagina/clit" value="100%" gender="female" ifhas="taur" />
 		Starts with bigger body parts. Males start with a 20% penis length bonus. Women start with at least E cups, voluptuous hips, and substantial butts. Both start with at least spongy hips.
 	</trait>
 	<trait name="Messy">

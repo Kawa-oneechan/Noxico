@@ -758,10 +758,12 @@ namespace Noxico
 							skillToken.Value += by;
 							break;
 						case "rating":
-							//TODO: implement the rating bonus trait effect.
 							var path = bonus.GetAttribute("id");
 							var v = bonus.GetAttribute("value");
 							var g = bonus.GetAttribute("gender");
+							var ifhas = bonus.GetAttribute("ifhas");
+							if (!string.IsNullOrWhiteSpace(ifhas) && pc.Path(ifhas) == null)
+								continue;
 							if ((g == "female" && gender != Gender.Female) || (g == "male" && gender != Gender.Male))
 								continue;
 							var plus = false;
