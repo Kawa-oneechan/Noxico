@@ -295,10 +295,13 @@ namespace Noxico
 
 			var newChar = new Character();
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
+			//gToolkit.VerifyBodyplan(planSource); //by PillowShout
 			var plan = planSource.ChildNodes[0].Value;
 			newChar.Tokens = Token.Tokenize(plan);
 			newChar.Name = new Name();
 			newChar.A = "a";
+
+			newChar.HandleSelectTokens(); //by PillowShout
 
 			if (newChar.HasToken("femaleonly"))
 				gender = Gender.Female;
@@ -2681,6 +2684,50 @@ namespace Noxico
 				stat = 0;
 
 			return GetToken(statname).Value = stat;
+		}
+
+		/// <summary>
+		/// Deals with the select tokens found in a new character's bodyplan during character generation.
+		/// </summary>
+		private void HandleSelectTokens()
+		{
+			while (this.HasToken("select"))
+			{
+				var select = this.GetToken("select");
+				var tokenSets = new List<Token>();
+				var probs = new List<float>();
+
+				// Extract token sets and probabilities
+				while (select.HasToken("set"))
+				{
+					tokenSets.Add(select.GetToken("set"));
+					probs.Add(select.GetToken("set").Value);
+					select.RemoveToken("set");
+				}
+
+				// Get weighted probabilities
+				var sum = 0f;
+
+				foreach (var p in probs) { sum += p; }
+				for (var i = 0; i < probs.Count; i++) { probs[i] /= sum; }
+
+				// Select a set to add
+				var r = Toolkit.Rand.NextDouble();
+				sum = 0f;
+				int choice = 0;
+
+				for (var i = 0; i < probs.Count; i++)
+				{
+					sum += probs[i];
+
+					if (r <= sum) { choice = i; break; }
+				}
+
+				// Add the set to the character
+				foreach (var t in tokenSets[choice].Tokens) { this.AddToken(t); }
+
+				this.RemoveToken(select);
+			}
 		}
 		#endregion
 	}

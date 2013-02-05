@@ -213,9 +213,7 @@
     <Content Include="fonts\unifont\unifont_FF.png" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
-    <Content Include="mix\bodyplans.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\bodyplans.xml" />
     <Content Include="mix\bonustraits.xml" />
     <Content Include="mix\books.xml" />
     <Content Include="mix\books.xsl" />
@@ -226,9 +224,7 @@
     <Content Include="mix\culture.xml" />
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\items.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\items.xml" />
     <Content Include="mix\knowncolors.xml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
@@ -238,23 +234,13 @@
     <Content Include="mix\missions\littleponies\uniques.xml" />
     <Content Include="mix\music.xml" />
     <Content Include="mix\noxico.xml" />
-    <Content Include="mix\scenesDlg.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenesDlg.xml" />
     <Content Include="mix\scenesSex.xml" />
-    <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\genericRape_scenesSex.xml" />
-    <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml" />
+    <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
+    <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />

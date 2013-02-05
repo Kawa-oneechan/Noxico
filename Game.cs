@@ -191,6 +191,7 @@ namespace Noxico
 					}
 				}
 				ohboy.Tokens = Token.Tokenize(plan);
+				Toolkit.VerifyBodyplan(ohboy, id);
 				var lev = Toolkit.GetLevenshteinString(ohboy);
 				BodyplanLevs.Add(id, lev);
 			}

@@ -395,7 +395,7 @@ namespace Noxico
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
 								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
 							else
-								MessageBox.Ask("Strike a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
+								MessageBox.Ask("Strike up a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
 						}
 						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
 						{
