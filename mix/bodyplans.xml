@@ -36,15 +36,14 @@ face: normal
 tongue: normal
 teeth: normal
 ears: human
-legs
+legs: human
 ass
 	virgin
+	looseness: 0
 	size: roll 1d4+4
 	fuckable
 waist: roll 1d4+1
 hips: roll 1d2+4
-costume
-	casual
 -- The creature creator adjusts this part.
 fertility: roll 1d15+5
 breastrow
@@ -55,15 +54,18 @@ breastrow
 	milksource
 vagina
 	virgin
+	looseness: 0
+	wetness: 1
 	fuckable
 	clit: 0.25
-penis
+penis: human
 	thickness: 2.5
 	length: roll 1d5+13
 	cumsource
 	canfuck
 balls
 	amount: 2
+	size: 0.6
 costume
 	casual
 		]]>
@@ -94,15 +96,16 @@ teeth: fangs
 eyes: yellow
 	glow
 ears: human
-legs
+waist: roll 1d2+3
+hips: roll 1d2+3
+legs: human
 wings: bat
 	small
 ass
 	size: 4
 	looseness: 1
-	wetness: 1
 	fuckable
-penis
+penis: human
 	thickness: 2.5
 	length: roll 1d2+17
 	cumsource
@@ -138,7 +141,7 @@ tongue: normal
 teeth: fangs
 eyes: oneof plum, mediumvioletred, mediumorchid, orchid
 ears: elfin
-legs
+legs: human
 waist: roll 1d2+1
 hips: roll 1d3+4
 fertility: 50
@@ -155,7 +158,16 @@ vagina
 	wetness: 4
 	looseness: 1
 	fuckable
-carnality: 60
+	clit: 1.0
+select
+	set: 0.3
+		addict
+		carnality: 70
+	set: 0.1
+		drugist
+		carnality: 50
+	set: 0.6
+		carnality: 60
 		]]>
 	</bodyplan>
 
@@ -184,6 +196,7 @@ face: normal
 tongue: long
 teeth: normal
 eyes: black
+ears: pointed
 legs: insect
 antennae
 wings: insect
@@ -196,7 +209,6 @@ fertility: 10
 ass: insect
 	size: 13
 	looseness: 4
-	wetness: 1
 	fuckable
 breastrow
 	amount: 2
@@ -206,6 +218,7 @@ vagina
 	wetness: 5
 	looseness: 3
 	fuckable
+	clit: 0.3
 		]]>
 	</bodyplan>
 
@@ -232,6 +245,7 @@ face: normal
 tongue: long
 teeth: oneof fangs, sharp
 eyes: yellow
+ears: flat
 snaketail
 waist: 4
 hips: 5
@@ -239,7 +253,6 @@ fertility: 20
 ass
 	size: 6
 	looseness: 1
-	wetness: 0
 	fuckable
 breastrow
 	amount: 2
@@ -249,11 +262,16 @@ vagina
 	wetness: 2
 	looseness: 2
 	fuckable
-penis
+	clit: 0.25
+penis: lizard
 	thickness: roll 1d2+1
 	length: roll 1d6+20
 	cumsource
 	canfuck
+balls
+	amount: 2
+	size: 0.7
+	hidden
 costume
 	lacy_undies
 	bikini
@@ -293,6 +311,7 @@ wings: bat
 legs: oneof claws, stiletto, stiletto, human, human, human
 waist: roll 1d3+2
 hips: 6
+fertility: roll 1d20+30
 ass
 	size: 7
 	looseness: 2
@@ -305,7 +324,7 @@ breastrow
 vagina
 	wetness: 4
 	looseness: 1
-	fuckable
+	clit: 1.6
 penis: studded
 	thickness: roll 1d3+1
 	length: roll 1d6+17
@@ -313,7 +332,7 @@ penis: studded
 	canfuck
 balls
 	amount: 2
-	size: roll 1d2
+	size: roll 1d2+1
 items
 	rope
 		]]>
@@ -353,6 +372,7 @@ legs: oneof human, genbeast
 tail: genbeast
 ass
 	virgin
+	looseness: 0
 	size: 5
 	fuckable
 hips: roll 1d6
@@ -366,13 +386,16 @@ breastrow
 	milksource
 vagina
 	virgin
+	looseness: 0
+	wetness: 1
 	fuckable
 	clit: 0.25
-penis
+penis: cat
 	thickness: 3
 	length: roll 1d6+12
 	cumsource
 	canfuck
+	sheath
 balls
 	amount: 2
 	size: 0.6
@@ -412,6 +435,7 @@ tail: fox
 ass
 	virgin
 	size: 4
+	looseness: 0
 	fuckable
 hips: roll 1d2+1
 waist: 2
@@ -424,13 +448,16 @@ breastrow
 	milksource
 vagina
 	virgin
+	wetness: 1
+	looseness: 0
 	fuckable
 	clit: 0.25
-penis: sheath
+penis: dog
 	thickness: 2
 	length: roll 1d7+14
 	cumsource
 	canfuck
+	sheath
 balls
 	amount: 2
 	size: 0.6
@@ -463,6 +490,8 @@ skin
 	color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
 face: horse
 eyes: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+teeth
+tongue
 legs: horse
 quadruped
 -- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
@@ -472,12 +501,16 @@ either
 -- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
 ears: horse
 tail: horse
+fertility: roll 1d25+10
 ass
 	size: 6
 	fuckable
+	looseness: 0
 	virgin
 vagina
 	virgin
+	wetness: 1
+	looseness: 0
 	fuckable
 	clit: 1.5
 penis: horse
@@ -485,6 +518,7 @@ penis: horse
 	length: 16
 	cumsource
 	canfuck
+	sheath
 balls
 	amount: 2
 	size: 3
@@ -516,12 +550,17 @@ hair
 	style: straight
 slimeblob
 face: normal
+teeth: soft
+tongue: normal
+ears: flat
 eyes: white
 ass
 	size: roll 1d4+4
+	looseness: 2
 	fuckable
 waist: roll 1d5+1
 hips: roll 1d3+4
+fertility: roll 1d15+5
 breastrow
 	amount: 2
 	size: roll 1d7+4
@@ -530,12 +569,17 @@ breastrow
 	milksource
 vagina
 	fuckable
+	looseness: 2
+	wetness: 2
 	clit: 0.5
-penis
+penis: human
 	thickness: 2.5
 	length: roll 1d7+15
 	cumsource
 	canfuck
+balls
+	amount: 2
+	size: 1.5
 		]]>
 	</bodyplan>
 
@@ -567,10 +611,12 @@ teeth: sharp
 face: normal
 ears: bear
 -- short, round, and resting atop the head
+tongue
 legs: bear
 -- heavily furred, with humanoid feet having fur only atop the foot, and a calloused underside
 ass
 	virgin
+	looseness: 0
 	size: 7
 	fuckable
 hips: roll 1d14+2
@@ -605,9 +651,11 @@ breastrow
 	milksource
 vagina
 	virgin
+	looseness: 0
+	wetness: 1
 	fuckable
 	clit: 0.5
-penis
+penis: bear
 	thickness: 4
 	length: roll 1d10+12
 	cumsource
@@ -638,6 +686,7 @@ hair
 skin
 	type: fur
 	color: brown
+tallness: roll 1d20+170
 eyes: yellow
 ears: genbeast
 face: genbeast
@@ -648,6 +697,7 @@ tail: dog
 ass
 	virgin
 	size: 4
+	looseness: 0
 	fuckable
 hips: roll 1d2+1
 waist: 2
@@ -660,13 +710,16 @@ breastrow
 	milksource
 vagina
 	virgin
+	looseness: 0
+	wetness: 1
 	fuckable
 	clit: 0.25
-penis: sheath
+penis: dog
 	thickness: 2
 	length: roll 1d7+14
 	cumsource
 	canfuck
+	sheath
 balls
 	amount: 2
 	size: 0.6
@@ -719,8 +772,8 @@ infectswith: canine
 			]]>
 	</bodyplan>
 	<bodyplan id="tame_dog">
-		<!-- Copy of wild_dog for the description's sake. -->
 		<![CDATA[
+-- Copy of wild_dog for the description's sake.
 beast
 hostile
 bestiary: "Someone's pet dog. Cute."

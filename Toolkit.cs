@@ -829,6 +829,118 @@ namespace Noxico
 		{
 			return Regex.Replace(name.ToLower(), "(^[A-Z])", "");
 		}
+
+		#region PillowShout's additions
+/// <summary>
+        /// Checks the passed body plan to ensure that it contains all required components and throws an exception if a part is missing.
+        /// Will not work with 'beast' bodyplans.
+        /// </summary>
+        /// <param name="bodyPlan">The xml bodyplan to be evaluated.</param>
+        public static void VerifyBodyplan(XmlElement bodyPlan)
+        {
+			var plan = new Token();
+			var name = bodyPlan.GetAttribute("id");
+			plan.Tokens = Token.Tokenize(bodyPlan.ChildNodes[0].Value);
+			VerifyBodyplan(plan, name);
+		}
+
+		public static void VerifyBodyplan(TokenCarrier bodyPlan, string name)
+		{
+			var plan = bodyPlan;
+			var missing = new List<string>();
+
+			//Rewrite by Kawa to allow ONE exception to list ALL missing tokens. It certainly reduced the amount of restarts when fixing all these missing tokens...
+			if (plan.HasToken("beast"))
+				return;
+
+			foreach (var t in new[] { "culture", "namegen", "terms", "tallness", "hair", "skin", "eyes", "ears", "face", "teeth", "tongue" })
+				if (!plan.HasToken(t))
+					missing.Add(t);
+
+			if (!(plan.HasToken("legs") || plan.HasToken("snaketail") || plan.HasToken("slimeblob")))
+				missing.Add("legs, snaketail, or slimeblob");
+
+			if (plan.HasToken("legs") & !(plan.HasToken("quadruped") || plan.HasToken("taur")))
+			{
+				if (!plan.HasToken("hips"))
+					missing.Add("hips");
+				if (!plan.HasToken("waist"))
+					missing.Add("waist");
+			}
+
+			if (plan.HasToken("ass"))
+			{
+				foreach (var t in new[] { "ass/size", "ass/looseness" /* , "ass/fuckable" */ }) //not including ass/fuckable, that's a switch that may not even survive until 1.0.
+					if (plan.Path(t) == null)
+						missing.Add(t);
+			}
+			else
+				missing.Add("ass");
+
+			if (!(plan.HasToken("maleonly") || plan.HasToken("neuteronly")))
+			{
+				if (!plan.HasToken("fertility"))
+					missing.Add("fertility");
+				
+				if (plan.HasToken("vagina"))
+				{
+					var vaginas = plan.Tokens.FindAll(x => x.Name == "vagina");
+					foreach (var v in vaginas)
+					{
+						foreach (var t in new[] { "clit", "looseness", "wetness" /* , "fuckable" */ }) //as above re fuckable
+							if (!v.HasToken(t))
+								missing.Add("vagina/" + t);
+					}
+				}
+				else
+					missing.Add("vagina");
+
+				if (plan.HasToken("breastrow"))
+				{
+					var breastrows = plan.Tokens.FindAll(x => x.Name == "breastrow");
+					foreach (var b in breastrows)
+					{
+						foreach (var t in new[] { "amount", "size", "nipples" })
+							if (!b.HasToken(t))
+								missing.Add("breastrow/" + t);
+					}
+				}
+				else if (!plan.HasToken("quadruped"))
+				{
+					//Only consider missing breastrows a problem if the character is not a quadruped.
+					missing.Add("breastrow");
+				}
+			}
+
+			if (!(plan.HasToken("femaleonly") || plan.HasToken("neuteronly")))
+			{
+				if (plan.HasToken("penis"))
+				{
+					var penises = plan.Tokens.FindAll(x => x.Name == "penis");
+					foreach (var p in penises)
+					{
+						foreach (var t in new[] { "thickness", "length" /* , "canfuck", "cumsource" */ })
+							if (!p.HasToken(t))
+								missing.Add("penis/" + t);
+					}
+				}
+				else
+					missing.Add("penis");
+
+				if (plan.HasToken("balls"))
+				{
+					foreach (var t in new[] { "balls/size", "balls/amount" })
+						if (plan.Path(t) == null)
+							missing.Add(t);
+				}
+				else
+					missing.Add("balls");
+			}
+
+			if (missing.Count > 0)
+				throw new Exception("The \"" + name + "\" bodyplan is missing the following token(s):\r\n * " + string.Join("\r\n * ", missing));
+        }
+		#endregion
 	}
 }
 

@@ -81,6 +81,10 @@ namespace Noxico
 			{
 				label3.Text = "Find the game's INI file (noxico.ini, in " + Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + " if not running in portable mode) and see if there's any repeated settings, such as the one mentioned on the Data tab.";
 			}
+			else if (x.Message.Contains("bodyplan is missing the"))
+			{
+				label3.Text = "The specified bodyplan data is missing a token that's required for various things to work correctly. Contact Kawa and quote only the exception's message.";
+			}
 			else if (typeName == "EndOfStreamException")
 			{
 				if (textBox1.Text.Contains("NoxicoGame.LoadGame"))
