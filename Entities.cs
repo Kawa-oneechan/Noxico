@@ -597,6 +597,8 @@ namespace Noxico
 						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
 					else if (Character.HasToken("flying"))
 						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '^', this.ForegroundColor, this.BackgroundColor);
+					else if (Character.Path("role/vendor") != null)
+						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '$', this.ForegroundColor, this.BackgroundColor);
 				}
 			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))

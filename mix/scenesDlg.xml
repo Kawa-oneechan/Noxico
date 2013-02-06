@@ -37,13 +37,19 @@
 ]>
 <scenes>
 
-	<scene id="test1" name="trade" list="(DEBUG) Open trade negotiations" priority="high">
-		<p>
-			"Certainly. What do you have?"
-		</p>
+	<scene id="Trade" name="trade" list="Trade">
+		<filter target="bottom" type="has" name="role/vendor" />
+		<script type="text/javascript">
+			<![CDATA[
+			if (bottom.GetToken("items").Length > 10)
+				print ("\"Sure, I got all sorts of things.\"");
+			else
+				print ("\"Sure, I might have something left.\"");
+			]]>
+		</script>
 		<action name="(trade go)" />
 	</scene>
-	<scene id="test1b" name="(trade go)" list="==>" priority="high">
+	<scene id="Trade2" name="(trade go)" list="==>" priority="high">
 		<script type="text/javascript">
 			Trade();
 		</script>
