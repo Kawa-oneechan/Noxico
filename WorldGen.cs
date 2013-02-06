@@ -23,6 +23,8 @@ namespace Noxico
 			var thisMap = new Board();
 			var biome = BiomeData.Biomes[biomeID];
 
+			var vendorChance = 0.5;
+
 			if (string.IsNullOrEmpty(cultureName))
 				cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
 
@@ -36,6 +38,12 @@ namespace Noxico
 			townGen.Create(biome);
 			townGen.ToTilemap(ref thisMap.Tilemap);
 			townGen.ToSectorMap(thisMap.Sectors);
+
+			if (Toolkit.Rand.NextDouble() < vendorChance)
+			{
+				if (AddVendor(thisMap))
+					vendorChance *= 0.75;
+			}
 
 			if (string.IsNullOrEmpty(name))
 			{
@@ -120,6 +128,11 @@ namespace Noxico
 					townGen.Create(biome);
 					townGen.ToTilemap(ref lol.Tilemap);
 					townGen.ToSectorMap(lol.Sectors);
+					if (Toolkit.Rand.NextDouble() < vendorChance)
+					{
+						if (AddVendor(lol))
+							vendorChance *= 0.75;
+					}
 				}
 				boards.Add(lol);
 			}
@@ -144,7 +157,30 @@ namespace Noxico
 			return CreateTown(-1, null, null, true);
 		}
 
-
+		public static bool AddVendor(Board board)
+		{
+			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
+			if (unexpected.Count == 0)
+				return false;
+			var vendor = unexpected[0].Character;
+			vendor.RemoveAll("role");
+			vendor.AddToken("role").AddToken("vendor");
+			vendor.GetToken("money").Value = 1000 + (Toolkit.Rand.Next(0, 20) * 50);
+			var stock = vendor.GetToken("items");
+			var count = Toolkit.Rand.Next(10, 20);
+			var sellable = NoxicoGame.KnownItems.FindAll(x => x.HasToken("price")).ToList();
+			while (count > 0)
+			{
+				if (sellable.Count == 0)
+					break;
+				var item = sellable[Toolkit.Rand.Next(sellable.Count)];
+				stock.AddToken(item.ID);
+				if (Toolkit.Rand.NextDouble() < 0.8)
+					sellable.Remove(item);
+			}
+			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
+			return true;
+		}
 
 
 
