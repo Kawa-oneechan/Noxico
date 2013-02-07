@@ -2691,42 +2691,94 @@ namespace Noxico
 		/// </summary>
 		private void HandleSelectTokens()
 		{
-			while (this.HasToken("select"))
+			TraverseForSelectTokens(this);
+		}
+
+		/// <summary>
+		/// Traverses the token tree and looks for select tokens, then uses ResolveSelectToken to deal with them.
+		/// </summary>
+		/// <param name="parent"></param>
+		private void TraverseForSelectTokens(TokenCarrier parent)
+		{
+			while (parent.HasToken("select"))
 			{
-				var select = this.GetToken("select");
-				var tokenSets = new List<Token>();
-				var probs = new List<float>();
+				var select = parent.GetToken("select");
+				ResolveSelectToken(select, parent);
+				parent.RemoveToken(select);
+			}
 
-				// Extract token sets and probabilities
-				while (select.HasToken("set"))
+			foreach (var t in parent.Tokens)
+			{
+				if (t.Tokens.Count > 0)
+					TraverseForSelectTokens(t);
+			}
+		}
+
+		/// <summary>
+		/// Resolves select token groups. Randomly chooses one of the sets of tokens inside select and then adds it to the parent.
+		/// Also deals with 'addto' and 'overwrite' tokens inside sets.
+		/// </summary>
+		/// <param name="select">The token tree headed by the select token and containing the set tokens.</param>
+		/// <param name="parent">The token tree of which select is an immediate child node.</param>
+		private void ResolveSelectToken(Token select, TokenCarrier parent)
+		{
+			var tokenSets = new List<Token>();
+			var probs = new List<float>();
+
+			// Extract token sets and probabilities
+			while (select.HasToken("set"))
+			{
+				tokenSets.Add(select.GetToken("set"));
+				probs.Add(select.GetToken("set").Value);
+				select.RemoveToken("set");
+			}
+
+			// Get weighted probabilities
+			var sum = 0f;
+
+			foreach (var p in probs) { sum += p; }
+			for (var i = 0; i < probs.Count; i++) { probs[i] /= sum; }
+
+			// Select a set to add
+			var r = Toolkit.Rand.NextDouble();
+			sum = 0f;
+			int choice = 0;
+
+			for (var i = 0; i < probs.Count; i++)
+			{
+				sum += probs[i];
+
+				if (r <= sum) { choice = i; break; }
+			}
+
+
+
+			// Add the set to the TokenCarrier
+			foreach (var t in tokenSets[choice].Tokens)
+			{
+				if (t.Name == "addto")
 				{
-					tokenSets.Add(select.GetToken("set"));
-					probs.Add(select.GetToken("set").Value);
-					select.RemoveToken("set");
+					var temp = Token.Tokenize(t.Text)[0];
+					var target = parent.Path(temp.Name);
+
+					if (target != null)
+					{
+						target.Tokens.AddRange(t.Tokens);
+					}
 				}
-
-				// Get weighted probabilities
-				var sum = 0f;
-
-				foreach (var p in probs) { sum += p; }
-				for (var i = 0; i < probs.Count; i++) { probs[i] /= sum; }
-
-				// Select a set to add
-				var r = Toolkit.Rand.NextDouble();
-				sum = 0f;
-				int choice = 0;
-
-				for (var i = 0; i < probs.Count; i++)
+				else if (t.Name == "overwrite")
 				{
-					sum += probs[i];
+					var temp = Token.Tokenize(t.Text)[0];
+					var target = parent.Path(temp.Name);
 
-					if (r <= sum) { choice = i; break; }
+					if (target != null)
+					{
+						target.Text = temp.Text;
+						target.Value = temp.Value;
+					}
 				}
-
-				// Add the set to the character
-				foreach (var t in tokenSets[choice].Tokens) { this.AddToken(t); }
-
-				this.RemoveToken(select);
+				else
+					parent.AddToken(t);
 			}
 		}
 		#endregion

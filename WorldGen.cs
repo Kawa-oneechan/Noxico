@@ -10,6 +10,7 @@ namespace Noxico
 	public static class WorldGen
 	{
 		private static TownGenerator townGen;
+		private static List<Func<InventoryItem, bool>> vendorTypeList;
 
 		public static Board CreateTown(int biomeID, string cultureName, string name, bool withSurroundings)
 		{
@@ -24,6 +25,23 @@ namespace Noxico
 			var biome = BiomeData.Biomes[biomeID];
 
 			var vendorChance = 0.5;
+			if (vendorTypeList == null)
+			{
+				vendorTypeList = new List<Func<InventoryItem, bool>>()
+				{
+					new Func<InventoryItem, bool>(x => x.Path("equipable/male") != null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //mens clothing
+					new Func<InventoryItem, bool>(x => x.Path("equipable/female") != null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //womens clothing
+					new Func<InventoryItem, bool>(x => x.Path("equipable/female") == null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //other clothing
+					new Func<InventoryItem, bool>(x => x.Path("equipable/male") != null && (x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //mens underwear
+					new Func<InventoryItem, bool>(x => x.Path("equipable/female") != null && (x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //lingerie
+					new Func<InventoryItem, bool>(x => x.Path("statbonus/health") != null && x.Path("singleuse") == null), //foodstuffs
+					new Func<InventoryItem, bool>(x => x.Path("weapon") != null && x.Path("weapon/range") == null), //short-range weapons
+
+					new Func<InventoryItem, bool>(x => x.Path("statbonus/health") != null && x.Path("singleuse") == null), //repeat for bias
+					new Func<InventoryItem, bool>(x => x.Path("weapon") != null && x.Path("weapon/range") == null),
+				};
+			}
+			var vendorTypes = new List<Func<InventoryItem, bool>>();
 
 			if (string.IsNullOrEmpty(cultureName))
 				cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
@@ -40,10 +58,8 @@ namespace Noxico
 			townGen.ToSectorMap(thisMap.Sectors);
 
 			if (Toolkit.Rand.NextDouble() < vendorChance)
-			{
-				if (AddVendor(thisMap))
+				if (AddVendor(thisMap, vendorTypes))
 					vendorChance *= 0.75;
-			}
 
 			if (string.IsNullOrEmpty(name))
 			{
@@ -129,10 +145,8 @@ namespace Noxico
 					townGen.ToTilemap(ref lol.Tilemap);
 					townGen.ToSectorMap(lol.Sectors);
 					if (Toolkit.Rand.NextDouble() < vendorChance)
-					{
-						if (AddVendor(lol))
+						if (AddVendor(lol, vendorTypes))
 							vendorChance *= 0.75;
-					}
 				}
 				boards.Add(lol);
 			}
@@ -157,18 +171,29 @@ namespace Noxico
 			return CreateTown(-1, null, null, true);
 		}
 
-		public static bool AddVendor(Board board)
+		public static bool AddVendor(Board board, List<Func<InventoryItem, bool>> typeList)
 		{
 			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
 			if (unexpected.Count == 0)
 				return false;
 			var vendor = unexpected[0].Character;
-			vendor.RemoveAll("role");
-			vendor.AddToken("role").AddToken("vendor");
-			vendor.GetToken("money").Value = 1000 + (Toolkit.Rand.Next(0, 20) * 50);
 			var stock = vendor.GetToken("items");
 			var count = Toolkit.Rand.Next(10, 20);
-			var sellable = NoxicoGame.KnownItems.FindAll(x => x.HasToken("price")).ToList();
+			if (typeList.Count == 0)
+				typeList.AddRange(vendorTypeList);
+			var criterion = typeList[Toolkit.Rand.Next(typeList.Count)];
+			typeList.Remove(criterion);
+			var sellable = NoxicoGame.KnownItems.FindAll(x => x.HasToken("price") && criterion(x)).ToList();
+			while (sellable.Count == 0)
+			{
+				criterion = typeList[Toolkit.Rand.Next(typeList.Count)];
+				typeList.Remove(criterion);
+				if (typeList.Count == 0)
+				{
+					Console.WriteLine("*** Gave up trying to make {0} a vendor ***", vendor.Name.ToString(true));
+					return false;
+				}
+			}
 			while (count > 0)
 			{
 				if (sellable.Count == 0)
@@ -178,6 +203,9 @@ namespace Noxico
 				if (Toolkit.Rand.NextDouble() < 0.8)
 					sellable.Remove(item);
 			}
+			vendor.RemoveAll("role");
+			vendor.AddToken("role").AddToken("vendor");
+			vendor.GetToken("money").Value = 1000 + (Toolkit.Rand.Next(0, 20) * 50);
 			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
 			return true;
 		}

@@ -24,6 +24,7 @@ namespace Noxico
 		private static string title;
 		private static Character vendorChar;
 		private static float price;
+		private static bool vendorCaughtYou;
 
 		private static UIWindow containerWindow, playerWindow, descriptionWindow;
 		private static UIList containerList, playerList;
@@ -42,6 +43,7 @@ namespace Noxico
 			title = container.Name;
 			isVendor = false;
 			vendorChar = null;
+			vendorCaughtYou = false;
 		}
 
 		public static void Setup(Character vendor)
@@ -54,6 +56,7 @@ namespace Noxico
 			title = vendor.Name.ToString(true);
 			isVendor = true;
 			vendorChar = vendor;
+			vendorCaughtYou = false;
 		}
 
 		public static void Handler()
@@ -214,7 +217,8 @@ namespace Noxico
 						if (containerList.Items.Count == 0)
 							return; 
 						//onLeft = true;
-						if(TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]))
+						var tryAttempt = TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
+						if (string.IsNullOrWhiteSpace(tryAttempt))
 						{
 							playerItems.Add(containerItems[containerList.Index]);
 							playerTokens.Add(containerTokens[containerList.Index]);
@@ -239,6 +243,10 @@ namespace Noxico
 							if (isVendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
 							UIManager.Draw();
+						}
+						else
+						{
+							MessageBox.Message(tryAttempt);
 						}
 					};
 				}
@@ -274,7 +282,8 @@ namespace Noxico
 						if (playerList.Items.Count == 0)
 							return; 
 						//onLeft = false;
-						if (TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]))
+						var tryAttempt = TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]);
+						if (string.IsNullOrWhiteSpace(tryAttempt))
 						{
 							containerItems.Add(playerItems[playerList.Index]);
 							containerTokens.Add(playerTokens[playerList.Index]);
@@ -299,6 +308,21 @@ namespace Noxico
 							if (isVendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
 							UIManager.Draw();
+						}
+						else
+						{
+							if (vendorCaughtYou)
+							{
+								NoxicoGame.ClearKeys();
+								NoxicoGame.Immediate = true;
+								NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+								NoxicoGame.Mode = UserMode.Walkabout;
+								Subscreens.FirstDraw = true;
+								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)", true);
+							}
+							else
+								MessageBox.Message(tryAttempt);
 						}
 					};
 				}
@@ -350,20 +374,19 @@ namespace Noxico
 		}
 
 		//Take something OUT of a container, or BUY it from a vendor.
-		private static bool TryRetrieve(BoardChar boardchar, Token token, InventoryItem chosen)
+		private static string TryRetrieve(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
 			var inv = boardchar.Character.GetToken("items");
 			var con = other; //container.Token.GetToken("contents");
-			//TODO: give feedback on error.
 			if (token.HasToken("cursed"))
 			{
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
-				return false;
+				return isVendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this.";
 			}
 			if (token.HasToken("equipped"))
 			{
-				return false;
+				return vendorChar.Name.ToString() + " is using this.";
 			}
 			if (isVendor && price != 0)
 			{
@@ -371,7 +394,7 @@ namespace Noxico
 				var vMoney = vendorChar.GetToken("money");
 				//TODO: add charisma and relationship bonuses -- look good for free food, or get a friends discount.
 				if (pMoney.Value - price < 0)
-					return false; //player can't afford
+					return "You can't afford this item.";
 				vMoney.Value += price;
 				pMoney.Value -= price;
 			}
@@ -381,30 +404,34 @@ namespace Noxico
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("Get Item");
-			return true;
+			return null;
 		}
 
-		private static bool TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
+		private static string TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
 			var inv = boardchar.Character.GetToken("items");
 			var con = other; //container.Token.GetToken("contents");
-			//TODO: give feedback on error.
 			if (token.HasToken("cursed"))
 			{
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
-				return false;
+				return "It's cursed! You can't unequip it.";
 			}
 			if (token.HasToken("equipped"))
 			{
-				return false;
+				return "You're using this. Unequip it first.";
+			}
+			if (isVendor && token.HasToken("owner") && token.GetToken("owner").Text == vendorChar.Name.ToID())
+			{
+				vendorCaughtYou = true;
+				return vendorChar.Name.ToString() + " recognized it as " + vendorChar.HisHerIts(true) + " property!";
 			}
 			if (isVendor && price != 0)
 			{
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
 				if (vMoney.Value - price < 0)
-					return false; //vendor can't afford
+					return vendorChar.Name.ToString() + " can't afford this item.";
 				//TODO: add charisma and relationship bonuses -- I'll throw in another tenner cos you're awesome.
 				//notice that the bonus is determined AFTER the budget check so a vendor won't bug out on that.
 				pMoney.Value += price;
@@ -416,7 +443,7 @@ namespace Noxico
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("Put Item");
-			return true;
+			return null;
 		}
 	}
 }
