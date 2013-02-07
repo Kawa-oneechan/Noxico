@@ -66,9 +66,9 @@ namespace Noxico
 			var marriage = info.SelectSingleNode("marriage") as XmlElement;
 			var monogamous = info.SelectSingleNode("monogamous") as XmlElement;
 			if (marriage != null)
-				nc.Marriage = double.Parse(marriage.InnerText, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+				nc.Marriage = double.Parse(marriage.InnerText, System.Globalization.NumberStyles.Float);
 			if (monogamous != null)
-				nc.Monogamous = double.Parse(monogamous.InnerText, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+				nc.Monogamous = double.Parse(monogamous.InnerText, System.Globalization.NumberStyles.Float);
 			return nc;
 		}
 

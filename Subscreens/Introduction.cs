@@ -356,7 +356,7 @@ namespace Noxico
 
 					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 40, Height = 4, Foreground = Color.White } },
 					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel("ah...") { Left = 1, Top = 24, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel(Toolkit.TranslateKey(KeyBinding.TabFocus) + " to switch controls, " + Toolkit.TranslateKey(KeyBinding.Up) + '/' + Toolkit.TranslateKey(KeyBinding.Down) + '/' + Toolkit.TranslateKey(KeyBinding.Left) + '/' + Toolkit.TranslateKey(KeyBinding.Right) + " and " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to choose. Or use a mouse.") { Left = 1, Top = 24, Foreground = Color.Silver } },
 				};
 
 				pages = new List<UIElement>[]

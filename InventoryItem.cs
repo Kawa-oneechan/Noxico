@@ -728,6 +728,35 @@ namespace Noxico
             return false;
         }
 		#endregion
+
+		internal string ToLongString(Token token)
+		{
+			var info = new List<string>();
+			if (HasToken("equipable"))
+			{
+				if (HasToken("weapon"))
+				{
+					info.Add(Path("weapon/damage").Value + " dmg");
+					if (new [] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(Path("weapon/skill").Text))
+						info.Add("ranged");
+					else
+						info.Add("m<g00EA>l<g00E9>e");
+				}
+				if (HasToken("statbonus"))
+				{
+					foreach (var bonus in GetToken("statbonus").Tokens)
+					{
+						if (bonus.Name == "health")
+							info.Add(bonus.Value + " HP");
+						else
+							info.Add(bonus.Value + " " + bonus.Name.Remove(3));
+					}
+				}
+			}
+			if (info.Count == 0)
+				return ToString(token);
+			return ToString(token) + " (" + string.Join(", ", info) + ")";
+		}
 	}
 
 	public class ItemException : Exception

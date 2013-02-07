@@ -135,7 +135,7 @@ has the same effect." },
 			var sb = new StringBuilder();
 			sb.AppendLine("Name                " + player.Name);
 			sb.AppendLine("Health              " + health);
-			sb.AppendLine("Money               " + player.GetToken("money").Value + " Z");
+			sb.AppendLine("Money               " + player.GetToken("money").Value.ToString("C"));
 			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
 			sb.AppendLine("World time          " + NoxicoGame.InGameTime.ToString());
 

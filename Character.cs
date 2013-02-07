@@ -781,34 +781,34 @@ namespace Noxico
 			}
 
 			if (hat != null)
-				worn.Add(hat.ToString(hat.tempToken));
+				worn.Add(hat.ToLongString(hat.tempToken));
 			if (goggles != null)
-				worn.Add(goggles.ToString(goggles.tempToken));
+				worn.Add(goggles.ToLongString(goggles.tempToken));
 			if (mask != null)
-				worn.Add(mask.ToString(mask.tempToken));
+				worn.Add(mask.ToLongString(mask.tempToken));
 			if (neck != null)
-				worn.Add(neck.ToString(neck.tempToken));
+				worn.Add(neck.ToLongString(neck.tempToken));
 			if (cloak != null)
-				worn.Add(cloak.ToString(cloak.tempToken));
+				worn.Add(cloak.ToLongString(cloak.tempToken));
 			if (jacket != null)
-				worn.Add(jacket.ToString(jacket.tempToken));
+				worn.Add(jacket.ToLongString(jacket.tempToken));
 			if (shirt != null)
-				worn.Add(shirt.ToString(shirt.tempToken));
+				worn.Add(shirt.ToLongString(shirt.tempToken));
 			if (pants != null && pants != shirt)
-				worn.Add(pants.ToString(pants.tempToken));
+				worn.Add(pants.ToLongString(pants.tempToken));
 			if (!isPlayer)
 			{
 				if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
 				{
 					breastsVisible = undershirt.CanSeeThrough();
-					worn.Add(undershirt.ToString(undershirt.tempToken));
+					worn.Add(undershirt.ToLongString(undershirt.tempToken));
 				}
 				else
 					breastsVisible = (shirt == null || shirt.CanSeeThrough());
 				if (underpants != null && (pants == null || pants.CanSeeThrough()))
 				{
 					crotchVisible = underpants.CanSeeThrough();
-					worn.Add(underpants.ToString(underpants.tempToken));
+					worn.Add(underpants.ToLongString(underpants.tempToken));
 				}
 				else
 					crotchVisible = (pants == null || pants.CanSeeThrough());
@@ -816,9 +816,9 @@ namespace Noxico
 			else
 			{
 				if (undershirt != null)
-					worn.Add(undershirt.ToString(undershirt.tempToken));
+					worn.Add(undershirt.ToLongString(undershirt.tempToken));
 				if (underpants != null)
-					worn.Add(underpants.ToString(underpants.tempToken));
+					worn.Add(underpants.ToLongString(underpants.tempToken));
 				crotchVisible = breastsVisible = true;
 			}
 			#endregion
@@ -1091,15 +1091,15 @@ namespace Noxico
 				print("<b>NOTICE<b>: dual wielding with mouth.\n");
 			if (hands.Count > 2 + mono)
 				print("<b>NOTICE<b>: Shiva called.\n");
-			if (hands.Count == 0)
+			if (hands.Count + fingers.Count == 0)
 				print("| none\n");
 			else
+			{
 				for (var i = 0; i < hands.Count; i++)
-					print("| " + hands[i] + "\n");
-			//Extend from
-			// | combat knife
-			//to
-			// | combat knife (30 dmg, m<g00EA>l<g00E9>e)
+					print("| " + hands[i].ToLongString(hands[i].tempToken) + "\n");
+				for (var i = 0; i < fingers.Count; i++)
+					print("| " + fingers[i].ToLongString(fingers[i].tempToken) + "\n");
+			}
 			print("\n");
 			#endregion
 

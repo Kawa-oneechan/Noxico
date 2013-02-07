@@ -26,9 +26,10 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 
 				Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
-				host.SetCell(21, 19, (char)0x2561, Color.Navy, Color.Black);
-				host.SetCell(21, 60, (char)0x255E, Color.Navy, Color.Black);
-				host.Write(" Press <b>\u2191<b> and <b>\u2193<b> to scroll, <b>Esc<b> to return ", Color.Cyan, Color.Black, 20, 21);
+				var help = " Press " + Toolkit.TranslateKey(KeyBinding.ScrollUp) + " and " + Toolkit.TranslateKey(KeyBinding.ScrollDown) + " to scroll, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to return ";
+				host.Write(help, Color.Teal, Color.Black, 40 - (help.Length / 2), 21);
+				host.SetCell(21, 40 - (help.Length / 2) - 1, (char)0x2561, Color.Navy, Color.Black);
+				host.SetCell(21, 40 + (help.Length / 2) + 1, (char)0x255E, Color.Navy, Color.Black);
 				for (int i = scroll; i < text.Length && i - scroll < 17; i++)
 				{
 					if (i < 1)

@@ -8,6 +8,8 @@ namespace Noxico
 {
 	class Travel
 	{
+		private static int expectationStart;
+
 		public static void Open()
 		{
 			if (NoxicoGame.KnownTargets.Count < 2)
@@ -37,11 +39,17 @@ namespace Noxico
 				var list = new UIList()
 				{
 					//Items = NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList(),
-					Left = 1,
-					Top = 3,
-					Width = 40,
-					Height = 20,
+					Left = 4,
+					Top = 4,
+					Width = 28,
+					Height = 16,
 				};
+				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
+				UIManager.Elements.Add(new UILabel("Travel Mode") { Left = 1, Top = 0, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UILabel(Toolkit.TranslateKey(KeyBinding.Up, true) + '/' + Toolkit.TranslateKey(KeyBinding.Down, true) + '/' + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to select, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to cancel.") { Left = 1, Top = 24, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UILabel("Current location:\n <g2022><cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 34, Top = 2, Width = 30, Foreground = Color.Teal });
+				UIManager.Elements.Add(new UILabel("You have not been here before.") { Left = 34, Top = 6, Tag = "expect", Foreground = Color.Teal, Hidden = true });
+				UIManager.Elements.Add(list);
 				
 				//NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList();
 				var targets = new List<int>();
@@ -54,8 +62,14 @@ namespace Noxico
 				moreTargets.Sort();
 				list.Items = new List<string>();
 				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
+				expectationStart = list.Items.Count;
 				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt]));
 
+				list.Change = (s, e) =>
+				{
+					UIManager.Elements.Find(x => x.Tag == "expect").Hidden = (list.Index < expectationStart);
+					UIManager.Draw();
+				};
 				list.Enter = (s, e) =>
 				{
 					var key = NoxicoGame.TargetNames.First(tn => tn.Value == list.Text).Key; //NoxicoGame.TargetNames.Keys.ToArray()[list.Index];
@@ -113,9 +127,6 @@ namespace Noxico
 				//list.Index = NoxicoGame.TargetNames.First(tn => tn.Key == thisBoard).Key;
 				var thisBoard = NoxicoGame.TargetNames.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
 				list.Index = list.Items.FindIndex(i => thisBoard.Value.StartsWith(i));
-
-				UIManager.Elements.Add(list);
-				UIManager.Elements.Add(new UILabel("Obvious WIP is obvious.") { Left = 1, Top = 1, Foreground = Color.Black, Background = Color.White });
 			}
 			if (Subscreens.Redraw)
 			{
