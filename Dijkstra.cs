@@ -155,34 +155,6 @@ namespace Noxico
 			
 		}
 
-		public void SaveToPNG()
-		{
-			var bmp = new System.Drawing.Bitmap(80, 25);
-			for (int y = 0; y < 25; y++)
-			{
-				for (int x = 0; x < 80; x++)
-				{
-					var c = map[y, x] * 3;
-					if (c < 0)
-						c = 0;
-					if (c > 255)
-						c = 255;
-					bmp.SetPixel(x, y, System.Drawing.Color.FromArgb(c, c, c));
-				}
-			}
-			foreach (var spot in Hotspots)
-			{
-				bmp.SetPixel(spot.X, spot.Y, System.Drawing.Color.Red);
-			}
-			try
-			{
-				bmp.Save("dijkstra.png", System.Drawing.Imaging.ImageFormat.Png);
-			}
-			catch (Exception)
-			{
-			}
-		}
-
 		public static void JustDoIt(ref int[,] map, int mapRows = 25, int mapCols = 80, bool diagonals = true)
 		{
 			var vhn = 9000;
