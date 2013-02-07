@@ -676,7 +676,7 @@ namespace Noxico
 			//this.CurrentBoard.Redraw();
 		}
 
-		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string BonusTrait)
+		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
 		{
 			var pc = Character.Generate(bodyplan, gender);
 			this.Player = new Player(pc);
@@ -721,7 +721,7 @@ namespace Noxico
 			var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
 			//var traitsDoc = new XmlDocument();
 			//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
-			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + BonusTrait + "\"]");
+			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + bonusTrait + "\"]");
 			if (trait != null)
 			{
 				foreach (var bonus in trait.ChildNodes.OfType<XmlElement>())
@@ -752,7 +752,7 @@ namespace Noxico
 							break;
 						case "skill":
 							var skill = bonus.GetAttribute("name").Replace(' ', '_').ToLowerInvariant();
-							var by = bonus.HasAttribute("level") ? float.Parse(bonus.GetAttribute("level"), NumberStyles.Float, CultureInfo.InvariantCulture) : 1.0f;
+							var by = bonus.HasAttribute("level") ? float.Parse(bonus.GetAttribute("level"), NumberStyles.Float) : 1.0f;
 							var skillToken = pc.Path("skills/" + skill);
 							if (skillToken == null)
 								skillToken = pc.GetToken("skills").AddToken(skill);
@@ -1070,7 +1070,7 @@ namespace Noxico
 				while (true)
 				{
 					name = Noxico.Culture.GetName(culture.TownName, Noxico.Culture.NameType.Town);
-					if (boards.Find(b => b != null && b.Name == name) == null)
+					if (!NoxicoGame.TargetNames.ContainsValue(name))
 						break;
 				}
 			}

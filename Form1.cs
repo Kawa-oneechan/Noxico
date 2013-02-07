@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.IO;
 using System.Windows.Forms;
-using System.Drawing.Imaging;
 
 namespace Noxico
 {
@@ -17,6 +15,10 @@ namespace Noxico
 		[STAThread]
 		static void Main(string[] args)
 		{
+			//Switch to Invariant so we get "¤1,000.50" instead of "€ 1.000,50" or "$1,000.50" by default.
+			//Can't do this in certain cases, which should be inapplicable to this program.
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
 			if (args.Contains("-spreadem"))
 			{
 				Mix.SpreadEm();
