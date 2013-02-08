@@ -215,7 +215,7 @@ namespace Noxico
 				if (tokenName.StartsWith("oneof "))
 				{
 					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
-					var choice = options[Toolkit.Rand.Next(options.Length)].Trim();
+					var choice = options[Random.Next(options.Length)].Trim();
 					tokenName = choice;
 				}
 				else if (l.Contains(": "))
@@ -229,7 +229,7 @@ namespace Noxico
 					else if (l.Contains(": oneof "))
 					{
 						var options = l.Substring(l.IndexOf("of ") + 3).Split(',');
-						var choice = options[Toolkit.Rand.Next(options.Length)].Trim();
+						var choice = options[Random.Next(options.Length)].Trim();
 						newOne.Text = choice;
 					}
 					else if (l.Contains(": roll "))
@@ -246,7 +246,7 @@ namespace Noxico
 						y = int.Parse(m.Groups[1].Value);
 						if (m.Groups.Count == 3)
 							z = int.Parse(m.Groups[2].Value);
-						var roll = Toolkit.Rand.Next(y) + z;
+						var roll = Random.Next(y) + z;
 						newOne.Value = roll;
 					}
 					else if (l.Contains(": U+"))

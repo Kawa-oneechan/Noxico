@@ -437,7 +437,7 @@ namespace Noxico
 		private void CleanUpCorpses()
 		{
 			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
-				if (Toolkit.Rand.NextDouble() > 0.7)
+				if (Random.NextDouble() > 0.7)
 					this.EntitiesToRemove.Add(corpse);
 		}
 
@@ -509,7 +509,7 @@ namespace Noxico
 			var tile = Tilemap[col, row];
 			if (tile.CanBurn && !tile.Water)
 			{
-				tile.BurnTimer = Toolkit.Rand.Next(20, 23);
+				tile.BurnTimer = Random.Next(20, 23);
 				tile.Character = (char)0xB1; //(char)0x15;
 				tile.Background = Color.Red;
 				tile.Foreground = Color.Yellow;
@@ -522,13 +522,13 @@ namespace Noxico
 			var slime = new Clutter()
 			{
 				ParentBoard = this,
-				ForegroundColor = color.Darken(2 + Toolkit.Rand.NextDouble()).Darken(),
+				ForegroundColor = color.Darken(2 + Random.NextDouble()).Darken(),
 				BackgroundColor = color.Darken(1.4),
-				AsciiChar = (char)Toolkit.Rand.Next(0xB0, 0xB3),
+				AsciiChar = (char)Random.Next(0xB0, 0xB3),
 				Blocking = false,
 				XPosition = col,
 				YPosition = row,
-				Life = 5 + Toolkit.Rand.Next(10),
+				Life = 5 + Random.Next(10),
 				Description = string.Format("This is a slime trail."),
 				Name = "slime trail",
 			};
@@ -550,8 +550,8 @@ namespace Noxico
 				{
 					if (Tilemap[col, row].BurnTimer > 0)
 					{
-						Tilemap[col, row].Foreground = Color.FromArgb(Toolkit.Rand.Next(20, 25) * 10, Toolkit.Rand.Next(5, 25) * 10, 0); //flameColors[Toolkit.Rand.Next(flameColors.Length)];
-						Tilemap[col, row].Background = Color.FromArgb(Toolkit.Rand.Next(20, 25) * 10, Toolkit.Rand.Next(5, 25) * 10, 0);//flameColors[Toolkit.Rand.Next(flameColors.Length)];
+						Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
+						Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0);//flameColors[Randomizer.Next(flameColors.Length)];
 						DirtySpots.Add(new Location(col, row));
 						if (!spread)
 							continue;
@@ -571,7 +571,7 @@ namespace Noxico
 							Immolate(row, col - 1);
 							Immolate(row + 1, col);
 							Immolate(row, col + 1);
-							if (Toolkit.Rand.Next(100) > 50)
+							if (Random.Next(100) > 50)
 							{
 								Immolate(row - 1, col - 1);
 								Immolate(row - 1, col + 1);
@@ -886,18 +886,18 @@ namespace Noxico
 				{
 					ParentBoard = this,
 				};
-				newb.XPosition = Toolkit.Rand.Next(2, 78);
-				newb.YPosition = Toolkit.Rand.Next(2, 23);
+				newb.XPosition = Random.Next(2, 78);
+				newb.YPosition = Random.Next(2, 23);
 				var lives = 100;
 				while (IsSolid(newb.YPosition, newb.XPosition) && lives > 0)
 				{
 					lives--;
-					newb.XPosition = Toolkit.Rand.Next(2, 78);
-					newb.YPosition = Toolkit.Rand.Next(2, 23);
+					newb.XPosition = Random.Next(2, 78);
+					newb.YPosition = Random.Next(2, 23);
 				}
 				if (lives == 0)
 					continue;
-				newb.Character.GetToken("health").Value = 12 * Toolkit.Rand.Next(3);
+				newb.Character.GetToken("health").Value = 12 * Random.Next(3);
 				newb.Character.AddToken("hostile");
 				//arm them
 				if (!newb.Character.HasToken("beast"))
@@ -906,7 +906,7 @@ namespace Noxico
 					if (items == null)
 						items = newb.Character.AddToken("items");
 					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat" }; //TODO: make this cultural
-					var w = Toolkit.Rand.Next(1, 2);
+					var w = Random.Next(1, 2);
 					while (w > 0)
 					{
 						var weapon = Toolkit.PickOne(weapons);
@@ -943,7 +943,7 @@ namespace Noxico
 			var options = this.Entities.OfType<BoardChar>().Where(e => !(e is Player) && isOkay(e)).ToList();
 			if (options.Count == 0)
 				return null;
-			var choice = options[Toolkit.Rand.Next(options.Count)];
+			var choice = options[Random.Next(options.Count)];
 			return choice;
 		}
 

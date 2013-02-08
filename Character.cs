@@ -210,11 +210,7 @@ namespace Noxico
 		public static Character GetUnique(string id)
 		{
 			if (uniquesDocument == null)
-			{
 				uniquesDocument = Mix.GetXMLDocument("uniques.xml");
-				//uniquesDocument = new XmlDocument();
-				//uniquesDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Main, "noxico.xml"));
-			}
 
 			var newChar = new Character();
 			var planSource = uniquesDocument.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
@@ -255,7 +251,7 @@ namespace Noxico
 			if (gender == Gender.Female)
 				newChar.Name.Female = true;
 			else if (gender == Gender.Herm || gender == Gender.Neuter)
-				newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+				newChar.Name.Female = Random.NextDouble() > 0.5;
 
 			var terms = newChar.GetToken("terms");
 			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
@@ -287,11 +283,7 @@ namespace Noxico
 		public static Character Generate(string bodyPlan, Gender gender)
 		{
 			if (bodyPlansDocument == null)
-			{
 				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
-				//bodyPlansDocument = new XmlDocument();
-				//bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
-			}
 
 			var newChar = new Character();
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
@@ -320,7 +312,7 @@ namespace Noxico
 					max = 2;
 				else if (newChar.HasToken("neverneuter"))
 					max = 3;
-				var g = Toolkit.Rand.Next(min, max + 1);
+				var g = Random.Next(min, max + 1);
 				gender = (Gender)g;
 			}
 
@@ -354,7 +346,7 @@ namespace Noxico
 				if (gender == Gender.Female)
 					newChar.Name.Female = true;
 				else if (gender == Gender.Herm || gender == Gender.Neuter)
-					newChar.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+					newChar.Name.Female = Random.NextDouble() > 0.5;
 				newChar.Name.Regenerate();
 				var patFather = new Name() { NameGen = newChar.Name.NameGen, Female = false };
 				var patMother = new Name() { NameGen = newChar.Name.NameGen, Female = true };
@@ -405,14 +397,14 @@ namespace Noxico
 					newChar.Culture = Culture.Cultures[culture];
 			}
 
-			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix") && Toolkit.Rand.NextDouble() > 0.5)
+			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix") && Random.NextDouble() > 0.5)
 			{
 				var prefixes = new[] { "vorpal", "poisonous", "infectious", "dire", "underfed" };
 				var prefix = newChar.AddToken("prefixes");
-				var chosen = prefixes[Toolkit.Rand.Next(prefixes.Length)];
+				var chosen = prefixes[Random.Next(prefixes.Length)];
 				if (!newChar.HasToken("infectswith"))
 					while (chosen == "infectious")
-						chosen = prefixes[Toolkit.Rand.Next(prefixes.Length)];
+						chosen = prefixes[Random.Next(prefixes.Length)];
 				var token = prefix.AddToken(chosen);
 				newChar.UpdateTitle();
 			}
@@ -420,15 +412,15 @@ namespace Noxico
 			if (newChar.HasToken("femalesmaller"))
 			{
 				if (gender == Gender.Female)
-					newChar.GetToken("tallness").Value -= Toolkit.Rand.Next(5, 10);
+					newChar.GetToken("tallness").Value -= Random.Next(5, 10);
 				else if (gender == Gender.Herm)
-					newChar.GetToken("tallness").Value -= Toolkit.Rand.Next(1, 6);
+					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
 
 			while (newChar.HasToken("either"))
 			{
 				var either = newChar.GetToken("either");
-				var eitherChoice = Toolkit.Rand.Next(-1, either.Tokens.Count);
+				var eitherChoice = Random.Next(-1, either.Tokens.Count);
 				if (eitherChoice > -1)
 					newChar.AddToken(either.Tokens[eitherChoice]);
 				newChar.RemoveToken(either);
@@ -497,18 +489,15 @@ namespace Noxico
 			if (HasToken("costume"))
 			{
 				if (itemsDocument == null)
-				{
 					itemsDocument = Mix.GetXMLDocument("costumes.xml");
-					//itemsDocument = new XmlDocument();
-					//itemsDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
-				}
+
 				var costumesToken = GetToken("costume");
 				var costumeChoices = costumesToken.Tokens;
 				var costume = new Token();
 				var lives = 10;
 				while (costume.Tokens.Count == 0 && lives > 0)
 				{
-					var pick = costumeChoices[Toolkit.Rand.Next(costumeChoices.Count)].Name;
+					var pick = costumeChoices[Random.Next(costumeChoices.Count)].Name;
 					var xElement = itemsDocument.SelectSingleNode("//costume[@id=\"" + pick + "\"]") as XmlElement;
 					if (xElement != null)
 					{
@@ -519,10 +508,6 @@ namespace Noxico
 							continue;
 						}
 						costume.Tokens = Token.Tokenize(plan);
-						//var plan = xDoc.CreateElement("costume");
-						//plan.InnerXml = xElement.InnerXml;
-						//OneOf(plan);
-						//costume.Tokens = Token.Tokenize(plan);
 					}
 					lives--;
 				}
@@ -537,7 +522,7 @@ namespace Noxico
 					else if (costume.HasToken("neuter"))
 						costume = costume.GetToken("neuter");
 					else
-						costume = costume.GetToken(Toolkit.Rand.Next(100) > 50 ? "male" : "female");
+						costume = costume.GetToken(Random.Next(100) > 50 ? "male" : "female");
 				}
 
 				if (costume == null)
@@ -1460,11 +1445,7 @@ namespace Noxico
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
 			if (bodyPlansDocument == null)
-			{
 				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
-				//bodyPlansDocument = new XmlDocument();
-				//bodyPlansDocument.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
-			}
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
 
@@ -1650,7 +1631,7 @@ namespace Noxico
 				return;
 			}
 
-			var choice = Toolkit.Rand.Next(toChange.Count);
+			var choice = Random.Next(toChange.Count);
 			var changeThis = toChange[choice];
 			var toThis = changeTo[choice];
 			doReport(report[choice]);
@@ -1708,7 +1689,7 @@ namespace Noxico
 			if (string.IsNullOrWhiteSpace(source.Path("tail").Text))
 				source.RemoveToken("tail");
 
-			if (doNext[choice] || Toolkit.Rand.Next(100) < continueChance)
+			if (doNext[choice] || Random.Next(100) < continueChance)
 			{
 				Morph(targetPlan);
 			}
@@ -2298,7 +2279,7 @@ namespace Noxico
 					if ((child != null && location == null) || (child == null))
 					{
 						//Invalidated location or no child definition.
-						childName.Female = Toolkit.Rand.NextDouble() > 0.5;
+						childName.Female = Random.NextDouble() > 0.5;
 						childName.NameGen = this.GetToken("namegen").Text;
 					}
 					else
@@ -2339,9 +2320,9 @@ namespace Noxico
 						if (childChar.HasToken("femalesmaller"))
 						{
 							if (gender == Gender.Female)
-								childChar.GetToken("tallness").Value -= Toolkit.Rand.Next(5, 10);
+								childChar.GetToken("tallness").Value -= Random.Next(5, 10);
 							else if (gender == Gender.Herm)
-								childChar.GetToken("tallness").Value -= Toolkit.Rand.Next(1, 6);
+								childChar.GetToken("tallness").Value -= Random.Next(1, 6);
 						}
 
 						childChar.GetToken("health").Value = childChar.GetMaximumHealth();
@@ -2374,7 +2355,7 @@ namespace Noxico
 			if (this.HasToken("fertility"))
 				fertility = this.GetToken("fertility").Value;
 			//Simple version for now -- should involve the father, too.
-			if (Toolkit.Rand.Next() > fertility)
+			if (Random.Next() > fertility)
 				return false;
 
 			if (!this.HasToken("childlocation"))
@@ -2425,7 +2406,7 @@ namespace Noxico
 
 			foreach (var item in fromEitherPlan)
 			{
-				var source = Toolkit.Rand.NextDouble() > 0.5 ? father : mother;
+				var source = Random.NextDouble() > 0.5 ? father : mother;
 				var other = source == father ? mother : father;
 				if (source.HasToken(item))
 					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
@@ -2435,7 +2416,7 @@ namespace Noxico
 
 			foreach (var item in inheritable)
 			{
-				var source = Toolkit.Rand.NextDouble() > 0.5 ? father : mother;
+				var source = Random.NextDouble() > 0.5 ? father : mother;
 				var other = source == father ? mother : father;
 				if (source.HasToken(item))
 					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
@@ -2446,7 +2427,7 @@ namespace Noxico
 			for (var i = 0; i < alwaysThere.Length; i++)
 				child.AddToken(alwaysThere[i], alwaysThereVals[i]);
 
-			var gender = Toolkit.Rand.NextDouble() > 0.5 ? Gender.Male : Gender.Female;
+			var gender = Random.NextDouble() > 0.5 ? Gender.Male : Gender.Female;
 
 			if (gender == Gender.Male)
 			{
@@ -2463,6 +2444,29 @@ namespace Noxico
 			}
 
 			return true;
+		}
+
+
+
+		public void GiveRapistPoints(Character bottom)
+		{
+			var points = Random.Next(4, 8);
+			if (!bottom.HasToken("hostile"))
+				points *= 2;
+			ChangeStat("renegade", points);
+			ChangeStat("carnality", Random.Next(5, 15));
+			//TODO: more effects?
+		}
+
+		public void GiveRapeVictimPoints(Character top)
+		{
+			//TODO: change a couple stats that fit the bill
+		}
+
+		public void GiveConsentualPoints(Character bottom)
+		{
+			ChangeStat("paragon", Random.Next(1, 4));
+			//TODO: more effects?
 		}
 
 
@@ -2740,7 +2744,7 @@ namespace Noxico
 			for (var i = 0; i < probs.Count; i++) { probs[i] /= sum; }
 
 			// Select a set to add
-			var r = Toolkit.Rand.NextDouble();
+			var r = Random.NextDouble();
 			sum = 0f;
 			int choice = 0;
 
@@ -2954,7 +2958,7 @@ namespace Noxico
 			var words = new[] { "tits", "breasts", "mounds", "jugs", "titties", "boobs" };
 			while (true)
 			{
-				var word = words[Toolkit.Rand.Next(words.Length)];
+				var word = words[Random.Next(words.Length)];
 				if (titDesc[0] == word[0])
 					continue;
 				titDesc += ' ' + word;
@@ -3130,7 +3134,7 @@ namespace Noxico
 			var tails = new Dictionary<string, string>()
 			{
 				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
-				{ "genbeast", Toolkit.Rand.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
+				{ "genbeast", Random.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
 			};
 			var tailName = tail.Text;
 			if (tails.ContainsKey(tailName))

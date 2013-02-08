@@ -12,8 +12,6 @@ namespace Noxico
 {
 	public class Introduction
 	{
-		private static bool restarting = false;
-
 		public static void Title()
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -38,7 +36,6 @@ namespace Noxico
 				host.Write(histories, Color.Teal, Color.Transparent, 25 - histories.Length / 2, 10);
 
 				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 9, 12);
-				//host.Write("<cSilver>\u263A   <cYellow,Red>\u263B<c>    <cAqua,Navy>\u263B<c>    <cYellow,Navy>\u263B<c>   <cWhite,Gray>\u263B<c>", Color.Silver, Color.Transparent, 14, 10);
 				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
 
 				if (GamerServices.Profile.IsValid)
@@ -63,8 +60,6 @@ namespace Noxico
 					if (File.Exists(Path.Combine(s, "global.bin")))
 						saves.Add(s);
 				}
-				//if (saves.Count > 0)
-				//{
 				NoxicoGame.ClearKeys();
 				Subscreens.Mouse = false;
 				var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
@@ -97,12 +92,6 @@ namespace Noxico
 									NoxicoGame.Subscreen = Introduction.CharacterCreator;
 									NoxicoGame.Immediate = true;
 								});
-							/*
-							Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
-							NoxicoGame.Mode = UserMode.Subscreen;
-							NoxicoGame.Subscreen = Introduction.CharacterCreator;
-							NoxicoGame.Immediate = true;
-							*/
 						}
 						else
 						{
@@ -113,7 +102,7 @@ namespace Noxico
 							{
 								NoxicoGame.Mode = UserMode.Subscreen;
 								NoxicoGame.Subscreen = Introduction.CharacterCreator;
-								restarting = true;
+								//restarting = true;
 								NoxicoGame.Immediate = true;
 							}
 							else
@@ -130,15 +119,6 @@ namespace Noxico
 						}
 					}
 				);
-				/*
-				}
-				else
-				{
-					NoxicoGame.Mode = UserMode.Subscreen;
-					NoxicoGame.Subscreen = Introduction.CharacterCreator;
-					NoxicoGame.Immediate = true;
-				}
-				*/
 			}
 		}
 
@@ -302,8 +282,6 @@ namespace Noxico
 			if (Subscreens.FirstDraw)
 			{
 				var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
-				//var traitsDoc = new XmlDocument();
-				//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
 				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
@@ -315,7 +293,7 @@ namespace Noxico
 				{
 					{ "back", "Go back one page." },
 					{ "next", "Go to the next page." },
-					{ "play", Toolkit.Rand.NextDouble() > 0.7 ? "FRUITY ANGELS MOLEST SHARKY" : "ENGAGE RIDLEY MOTHER FUCKER" },
+					{ "play", Random.NextDouble() > 0.7 ? "FRUITY ANGELS MOLEST SHARKY" : "ENGAGE RIDLEY MOTHER FUCKER" },
 					{ "name", "Enter the name for your character. Leave this blank to use a random name." },
 					{ "species", "Select the (initial) species you'll play as." },
 					{ "sex", "Are you a boy? Or are you a girl? Some species may not give you the choice." },
@@ -331,7 +309,6 @@ namespace Noxico
 					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
 					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
 					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
-					//{ "playNo", new UILabel("Wait...") { Left = 60, Top = 17, Foreground = Color.Gray } },
 					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10 /*, Hidden = !restarting */} },
 
 					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7 } },
@@ -423,9 +400,9 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
-					NoxicoGame.InGameTime.AddYears(Toolkit.Rand.Next(0, 10));
-					NoxicoGame.InGameTime.AddDays(Toolkit.Rand.Next(20, 340));
-					NoxicoGame.InGameTime.AddHours(Toolkit.Rand.Next(10, 54));
+					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
+					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
+					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
@@ -489,15 +466,6 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 
-				/*
-				//Start creating the world as we work...
-				if (!restarting)
-				{
-					worldgen = new System.Threading.Thread(CreateNox);
-					worldgen.Start();
-				}
-				*/
-
 				NoxicoGame.InGame = false;
 			}
 
@@ -506,15 +474,6 @@ namespace Noxico
 				UIManager.Draw();
 				Subscreens.Redraw = false;
 			}
-			
-			/*
-			if (!restarting && (worldgen.ThreadState != System.Threading.ThreadState.Running && controls["play"].Hidden))
-			{
-				controls["play"].Hidden = false;
-				if (page == 2)
-					controls["play"].Draw();
-			}
-			*/
 
 			UIManager.CheckKeys();
 		}

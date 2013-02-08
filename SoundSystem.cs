@@ -108,20 +108,13 @@ namespace Noxico
 			sounds = new Dictionary<string, Sound>();
 			foreach (var s in new[] { "Put Item", "Get Item", "Alert", "Firebomb", "Splorch", "Cursor", "Door Lock", "Open Gate", "Step" })
 			{
-				//var file = Path.Combine("sounds", s + ".wav");
-				//if (File.Exists(file))
 				var file = s + ".wav";
 				if (Mix.FileExists(file))
-				{
 					sounds.Add(s, new Sound(file, system));
-					//sounds.Add(s, ns);
-				}
 			}
 
 			Console.WriteLine("SoundSystem: loading library...");
 			library = Mix.GetXMLDocument("music.xml");
-			//library = new XmlDocument();
-			//library.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Music, "music.xml"));
 
 			Console.WriteLine("SoundSystem: _ctor DONE");
 			Console.WriteLine("Null report:");
@@ -150,8 +143,7 @@ namespace Noxico
 					name = "-";
 					while (setNode.HasChildNodes)
 					{
-						var pick = setNode.ChildNodes[Toolkit.Rand.Next(setNode.ChildNodes.Count)] as XmlElement;
-						//if (!File.Exists(Path.Combine("music", pick.GetAttribute("href"))))
+						var pick = setNode.ChildNodes[Random.Next(setNode.ChildNodes.Count)] as XmlElement;
 						if (!Mix.FileExists(pick.GetAttribute("href")))
 							setNode.RemoveChild(pick);
 						else
@@ -187,7 +179,6 @@ namespace Noxico
 			}
 			else if (musicPlaying != name)
 			{
-				//var file = Path.Combine("music", name);
 				var file = name;
 				if (Mix.FileExists(file))
 				{
@@ -195,18 +186,12 @@ namespace Noxico
 						musicChannel.stop();
 					if (music != null)
 						music.release();
-					//var ret = system.createStream(file, FMOD.MODE.LOOP_NORMAL, ref music);
-					//var ret = system.createSound(file, FMOD.MODE.LOOP_NORMAL, ref music);
 					var sound = new Sound(file, system, FMOD.MODE.LOOP_NORMAL);
 					music = sound.InnerSound;
-					//Console.WriteLine("system.createStream(\"{0}\"... {1}", file, ret);
-					//if (ret != FMOD.RESULT.OK)
-					//	return;
 					system.playSound(FMOD.CHANNELINDEX.REUSE, music, false, ref musicChannel);
 					musicPlaying = name;
 					currentSet = set;
 					musicChannel.setVolume(musicVolume);
-					//NoxicoGame.HostForm.Text = file;
 
 					var songName = new StringBuilder();
 					music.getName(songName, 256);
@@ -214,8 +199,6 @@ namespace Noxico
 				}
 				else
 					Console.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);
-				//else
-				//	System.Windows.Forms.MessageBox.Show(string.Format("Couldn't load song \"{0}\".", name), "404");
 			}
 		}
 

@@ -334,7 +334,6 @@
 		<p>
 			Second paragraph.
 		</p>
-		<short>[t:name] triggers devstart.</short>
 		<action name="dev action 1" />
 		<action name="dev leave" />
 	</scene>
@@ -346,7 +345,6 @@
 		<p>
 			Second paragraph.
 		</p>
-		<short>[t:name] triggers devstart.</short>
 		<action name="dev action 1" />
 		<action name="dev leave" />
 	</scene>
@@ -377,7 +375,7 @@
 	<scene id="FinalDestination2" name="(rape start)">
 		<p>If you can see this, all the other nodes failed. (Rape)</p>
 	</scene>
-	<scene id="FinalDestination2" name="(loss rape start)">
+	<scene id="FinalDestination3" name="(loss rape start)">
 		<p>If you can see this, all the other nodes failed. (Loss Rape)</p>
 	</scene>
 </scenes>
