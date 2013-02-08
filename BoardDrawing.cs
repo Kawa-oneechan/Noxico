@@ -14,8 +14,8 @@ namespace Noxico
 			return new Tile()
 			{
 				Character = this.Character,
-				Foreground = this.Foreground.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
-				Background = this.Background.Darken(2 + (Toolkit.Rand.NextDouble() / 2)),
+				Foreground = this.Foreground.Darken(2 + (Random.NextDouble() / 2)),
+				Background = this.Background.Darken(2 + (Random.NextDouble() / 2)),
 				Wall = this.Wall,
 				Water = this.Water,
 				Ceiling = this.Ceiling,
@@ -43,9 +43,9 @@ namespace Noxico
 				{
 					this.Tilemap[col, row] = new Tile()
 					{
-						Character = biome.GroundGlyphs[Toolkit.Rand.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color.Darken(biome.DarkenPlus + (Toolkit.Rand.NextDouble() / biome.DarkenDiv)),
+						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
+						Foreground = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Background = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
 					};
@@ -188,14 +188,14 @@ namespace Noxico
 					switch (color.Name)
 					{
 						case "ff800080": //Purple, floor
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 							chr = ' ';
 							cei = true;
 							bur = true;
 							break;
 						case "ffff0000": //Red, outer | wall
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 							chr = '\x2551';
 							wal = true;
 							cei = true;
@@ -203,7 +203,7 @@ namespace Noxico
 							break;
 						case "ffff8080": //Light red, outer corner
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 							wal = true;
 							cei = true;
 							bur = true;
@@ -211,7 +211,7 @@ namespace Noxico
 							break;
 						case "ff800000": //Dark red, outer -- wall
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 							chr = '\x2550';
 							wal = true;
 							cei = true;

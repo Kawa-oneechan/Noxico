@@ -80,14 +80,14 @@ namespace Noxico
 			var r = new List<Character>();
 			var familyName = "";
 			//var dontShareSurname = true;
-			var areMarried = Toolkit.Rand.NextDouble() > 0.7;
+			var areMarried = Random.NextDouble() > 0.7;
 			var firstPlan = "";
 			count = 2;
 			for (var i = 0; i < count; i++)
 			{
 				Character c;
-				var plan = culture.Bodyplans[Toolkit.Rand.Next(culture.Bodyplans.Length)];
-				if (i > 0 && Toolkit.Rand.NextDouble() > 0.7)
+				var plan = culture.Bodyplans[Random.Next(culture.Bodyplans.Length)];
+				if (i > 0 && Random.NextDouble() > 0.7)
 					plan = firstPlan;
 				c = Character.Generate(plan, count == 1 ? Gender.Random : (i == 0 ? Gender.Male : Gender.Female));
 				if (i == 0)
@@ -97,7 +97,7 @@ namespace Noxico
 				}
 				if (i == 1)
 				{
-					var shipType = Toolkit.Rand.NextDouble() < culture.Marriage ? "spouse" : "friend";
+					var shipType = Random.NextDouble() < culture.Marriage ? "spouse" : "friend";
 					//if we chose spouse, handle the wife taking the surname of the husband.
 					var ship = new Token() { Name = c.ID };
 					ship.Tokens.Add(new Token() { Name = shipType });
@@ -133,8 +133,6 @@ namespace Noxico
 			{
 				templates = new Dictionary<string, List<Template>>();
 				xDoc = Mix.GetXMLDocument("buildings.xml");
-				//var xDoc = new XmlDocument();
-				//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.buildings, "buildings.xml"));
 				foreach (var s in xDoc.SelectNodes("//set").OfType<XmlElement>())
 				{
 					var thisSet = s.GetAttribute("id");
@@ -153,16 +151,16 @@ namespace Noxico
 					if (plots[col, row].BaseID == "<spillover>")
 						continue;
 					//Small chance of not having anything here, for variation.
-					if (Toolkit.Rand.NextDouble() < 0.2)
+					if (Random.NextDouble() < 0.2)
 					{
 						//justPlaced = false;
 						continue;
 					}
-					var newTemplate = templates[templateSet][Toolkit.Rand.Next(templates[templateSet].Count)];
+					var newTemplate = templates[templateSet][Random.Next(templates[templateSet].Count)];
 					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
-					var sX = newTemplate.Width < 10 ? Toolkit.Rand.Next(1, 10 - newTemplate.Width) : 0;
-					var sY = newTemplate.Height < 12 ? Toolkit.Rand.Next(1, 12 - newTemplate.Height) : 0;
+					var sX = newTemplate.Width < 10 ? Random.Next(1, 10 - newTemplate.Width) : 0;
+					var sY = newTemplate.Height < 12 ? Random.Next(1, 12 - newTemplate.Height) : 0;
 					//Later on, we might be able to wiggle them out of their assigned plot a bit.
 					//TODO: determine baseID from the first inhabitant's name.
 					var newBuilding = new Building(string.Format("house{0}x{1}", row, col), newTemplate, sX, sY, Culture);
@@ -221,13 +219,13 @@ namespace Noxico
 								case '\'':
 									continue;
 								case '.':
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									cei = true;
 									bur = true;
 									chr = ' ';
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									chr = '\xA0';
 									cei = true;
 									bur = true;
@@ -250,7 +248,7 @@ namespace Noxico
 									break;
 								case '+':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									wal = true;
 									cei = true;
 									bur = true;
@@ -258,7 +256,7 @@ namespace Noxico
 									break;
 								case '-':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									chr = '\x2550';
 									wal = true;
 									cei = true;
@@ -266,7 +264,7 @@ namespace Noxico
 									break;
 								case '|':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									chr = '\x2551';
 									wal = true;
 									cei = true;
@@ -274,7 +272,7 @@ namespace Noxico
 									break;
 								case '~':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									chr = '\x2500';
 									wal = true;
 									cei = true;
@@ -282,7 +280,7 @@ namespace Noxico
 									break;
 								case ';':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									chr = '\x2502';
 									wal = true;
 									cei = true;
@@ -290,9 +288,9 @@ namespace Noxico
 									break;
 								case '#':
 									if (allowCaveFloor)
-										bgd = Toolkit.Lerp(caveStart, caveEnd, Toolkit.Rand.NextDouble());
+										bgd = Toolkit.Lerp(caveStart, caveEnd, Random.NextDouble());
 									else
-										bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+										bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 									bur = !allowCaveFloor;
 									chr = ' ';
 									break;
@@ -304,7 +302,7 @@ namespace Noxico
 										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
-											bgd = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble());
+											bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
 											chr = ' ';
 											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											if (m.Type == "bed")
@@ -364,15 +362,15 @@ namespace Noxico
 										}
 										else if (m.Type == "water")
 										{
-											chr = water.GroundGlyphs[Toolkit.Rand.Next(water.GroundGlyphs.Length)];
-											fgd = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
-											bgd = water.Color.Darken(water.DarkenPlus + (Toolkit.Rand.NextDouble() / water.DarkenDiv));
+											chr = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)];
+											fgd = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv));
+											bgd = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv));
 											wat = water.IsWater;
 										}
 										else
 										{
-											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
-											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
+											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
+											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
 											chr = m.Params.Last()[0];
 											wal = m.Type != "floor";
 										}
@@ -416,8 +414,8 @@ namespace Noxico
 							var y = 0;
 							while (!okay)
 							{
-								x = (col * 10) + Toolkit.Rand.Next(10);
-								y = (row * 12) + Toolkit.Rand.Next(12);
+								x = (col * 10) + Random.Next(10);
+								y = (row * 12) + Random.Next(12);
 								if (!map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
 									okay = true;
 							}
@@ -505,7 +503,7 @@ namespace Noxico
 			//Base fill
 			for (var row = 0; row < 25; row++)
 				for (var col = 0; col < 80; col++)
-					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
+					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
 
 			base.ToTilemap(ref map);
 
@@ -520,17 +518,17 @@ namespace Noxico
 						continue; //I dunno, place a hub pathway or something?
 
 					var building = plots[col, row];
-					//var x = (col * 10) + building.XShift + 2 + Toolkit.Rand.Next(building.Template.Width - 4);
-					//var y = (row * 12) + building.YShift + 2 + Toolkit.Rand.Next(building.Template.Height - 4);
+					//var x = (col * 10) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
+					//var y = (row * 12) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
 					var x = (col * 10) + building.XShift + (building.Template.Width / 2);
 					var y = (row * 12) + building.YShift + (building.Template.Height / 2);
 					//map[x, y].Background = Color.Magenta;
 
-					var direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : (Toolkit.Rand.NextDouble() > 0.5 ? Direction.East : Direction.West);
+					var direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : (Random.NextDouble() > 0.5 ? Direction.East : Direction.West);
 					if (col == 0 && direction == Direction.West)
-						direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.East;
+						direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.East;
 					else if (col == 7 && direction == Direction.East)
-						direction = Toolkit.Rand.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.West;
+						direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.West;
 					if ((direction == Direction.East && plots[col + 1, row].Template == null) ||
 						(direction == Direction.West && plots[col - 1, row].Template == null))
 						direction = row == 0 ? Direction.South : Direction.North;
@@ -551,7 +549,7 @@ namespace Noxico
 							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
 							y--;
 						}
-						while (y > Toolkit.Rand.Next(4, 8))
+						while (y > Random.Next(4, 8))
 						{
 							if (map[x, y].Character == ' ')
 								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
@@ -569,7 +567,7 @@ namespace Noxico
 							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
 							y++;
 						}
-						while (y < Toolkit.Rand.Next(12, 20))
+						while (y < Random.Next(12, 20))
 						{
 							if (map[x, y].Character == ' ')
 								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
@@ -620,7 +618,7 @@ namespace Noxico
 				map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				if (x % 7 == 6)
 				{
-					yShift = Toolkit.Rand.Next(-1, 1);
+					yShift = Random.Next(-1, 1);
 					map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				}
 			}
@@ -708,10 +706,9 @@ namespace Noxico
 			}
 
 			//Scatter some seed tiles
-			var rand = Toolkit.Rand;
 			for (var i = 0; i < 25; i++)
 				for (var j = 0; j < 80; j++)
-					if (rand.NextDouble() < 0.25)
+					if (Random.NextDouble() < 0.25)
 						map[j, i] = 1;
 
 			//Melt the cave layout with a cellular automata system.
@@ -768,11 +765,11 @@ namespace Noxico
 				{
 					if (this.map[col, row] == 1)
 					{
-						map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Toolkit.Rand.NextDouble()) };
+						map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
 					}
 					else
 					{
-						map[col, row] = new Tile() { Character = floorCrud[Toolkit.Rand.Next(floorCrud.Length)], Wall = false, Background = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Toolkit.Rand.NextDouble()) };
+						map[col, row] = new Tile() { Character = floorCrud[Random.Next(floorCrud.Length)], Wall = false, Background = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) };
 					}
 				}
 			}

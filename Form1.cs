@@ -39,9 +39,6 @@ namespace Noxico
 
     public class MainForm : Form
     {
-		private Func<Color, Color> colorConverter;
-		private Func<Char, Char> charConverter;
-
         private struct Cell
         {
             public char Character;
@@ -118,9 +115,6 @@ namespace Noxico
 					Close();
 					return;
 				}
-
-				colorConverter = (c => c);
-				charConverter = (c => c);
 
 				var portable = false;
 				IniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "noxico.ini");
@@ -199,20 +193,6 @@ namespace Noxico
 #if ALLOW_PNG_MODE
 				}
 #endif
-
-				switch (IniFile.GetString("filters", "color", "none").ToLowerInvariant())
-				{
-					case "cga": colorConverter = ToCGA; break;
-					case "psp": colorConverter = ToPspPal; break;
-					case "mono": colorConverter = ToMono; break;
-					default: colorConverter = (c => c); break;
-				}
-				switch (IniFile.GetString("filters", "char", "none").ToLowerInvariant())
-				{
-					case "437": charConverter = To437; break;
-					case "7bit": charConverter = To7Bit; break;
-					default: charConverter = (c => c); break;
-				}
 
 				ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
 
@@ -405,9 +385,9 @@ namespace Noxico
         {
 			var sTX = col * CellWidth;
             var sTY = row * CellHeight;
-			var b = colorConverter(cell.Background);
-			var f = colorConverter(cell.Foreground);
-            var c = charConverter(cell.Character);
+			var b = cell.Background;
+			var f = cell.Foreground;
+            var c = cell.Character;
 
 #if ALLOW_PNG_MODE
 			if (pngMode)
@@ -812,6 +792,7 @@ namespace Noxico
 			}
 		}
 
+		[Obsolete("Consider using UIPNGBackground instead.")]
 		public void LoadBitmap(Bitmap bitmap)
 		{
 			for (var row = 0; row < 25; row ++)
@@ -825,149 +806,10 @@ namespace Noxico
 			}
 		}
 
+		[Obsolete("Consider using UIPNGBackground instead.")]
 		public void LoadBitmap(string file)
 		{
 			LoadBitmap((Bitmap)Bitmap.FromFile(file));
-		}
-
-		
-		//Filters
-
-		private Color ToCGA(Color color)
-		{
-			var cga = new[,]
-			{
-				{ 0x00, 0x00, 0x00 },
-				{ 0x00, 0x00, 0xAA },
-				{ 0x00, 0xAA, 0x00 },
-				{ 0x00, 0xAA, 0xAA },
-				{ 0xAA, 0x00, 0x00 },
-				{ 0xAA, 0x00, 0xAA },
-				{ 0xAA, 0x55, 0x00 },
-				{ 0xAA, 0xAA, 0xAA },
-
-				{ 0x55, 0x55, 0x55 },
-				{ 0x55, 0x55, 0xFF },
-				{ 0x55, 0xFF, 0x55 },
-				{ 0x55, 0xFF, 0xFF },
-				{ 0xFF, 0x55, 0x55 },
-				{ 0xFF, 0x55, 0xFF },
-				{ 0xFF, 0xFF, 0x55 },
-				{ 0xFF, 0xFF, 0xFF },
-			};
-
-			var r = color.R;
-			var g = color.G;
-			var b = color.B;
-
-			var lowestDist = 9999d;
-			var bestMatch = -1;
-			for (var i = 0; i < 16; i++)
-			{
-				var dR = Math.Pow(r - cga[i, 0], 2);
-				var dG = Math.Pow(g - cga[i, 1], 2);
-				var dB = Math.Pow(b - cga[i, 2], 2);
-				var dist = Math.Sqrt(dR + dG + dB);
-				if (dist < lowestDist)
-				{
-					lowestDist = dist;
-					bestMatch = i;
-				}
-			}
-			return Color.FromArgb(cga[bestMatch, 0], cga[bestMatch, 1], cga[bestMatch, 2]);
-		}
-
-		private byte[,] pspPal;
-		private Color ToPspPal(Color color)
-		{
-			if (pspPal == null)
-			{
-				var palName = IniFile.GetString("filters", "palfile", "noxico.PspPalette");
-				if (!File.Exists(palName))
-				{
-					colorConverter = (c => c);
-					return color;
-				}
-				using (var palFile = new StreamReader(palName))
-				{
-					var i = palFile.ReadLine();
-					if (i != "JASC-PAL")
-					{
-						colorConverter = (c => c);
-						return color;
-					}
-					i = palFile.ReadLine();
-					if (i != "0100")
-					{
-						colorConverter = (c => c);
-						return color;
-					}
-					i = palFile.ReadLine();
-					var numColors = int.Parse(i);
-					pspPal = new byte[numColors, 3];
-					for (var c = 0; c < numColors; c++)
-					{
-						i = palFile.ReadLine();
-						var vals = i.Split(' ').Select(x => byte.Parse(x)).ToArray();
-						pspPal[c, 0] = vals[0];
-						pspPal[c, 1] = vals[1];
-						pspPal[c, 2] = vals[2];
-					}
-				}
-			}
-
-			var r = color.R;
-			var g = color.G;
-			var b = color.B;
-
-			var lowestDist = 9999d;
-			var bestMatch = -1;
-			for (var i = 0; i < pspPal.GetLength(0); i++)
-			{
-				var dR = Math.Pow(r - pspPal[i, 0], 2);
-				var dG = Math.Pow(g - pspPal[i, 1], 2);
-				var dB = Math.Pow(b - pspPal[i, 2], 2);
-				var dist = Math.Sqrt(dR + dG + dB);
-				if (dist < lowestDist)
-				{
-					lowestDist = dist;
-					bestMatch = i;
-				}
-			}
-			return Color.FromArgb(pspPal[bestMatch, 0], pspPal[bestMatch, 1], pspPal[bestMatch, 2]);
-		}
-
-		private Color ToMono(Color color)
-		{
-			var mono = (11 * color.R + 16 * color.G + 5 * color.B) / 32; 
-			return Color.FromArgb(mono, mono, mono);
-		}
-
-		private char To437(char codePoint)
-		{
-			if (codePoint < 128)
-				return codePoint;
-			var uni = Encoding.UTF8;
-			var dos = Encoding.GetEncoding(437);
-			var oldBytes = uni.GetBytes(codePoint.ToString());
-			var newBytes = Encoding.Convert(uni, dos, oldBytes);
-			var newCode = dos.GetChars(newBytes)[0];
-			return newCode;
-		}
-
-		private char To7Bit(char codePoint)
-		{
-			if (codePoint < 127)
-				return codePoint;
-			if (new[] { 0x2502, 0x2551 }.Contains(codePoint))
-				return '|';
-			if (new[] { 0x2509, 0x2550 }.Contains(codePoint))
-				return '-';
-			if (codePoint > 0x2500 && codePoint <= 0x256C)
-				return '+';
-			if (codePoint >= 0x2580 && codePoint <= 0x2593)
-				return ' ';
-			return '?';
 		}
     }
 }

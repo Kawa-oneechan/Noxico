@@ -18,7 +18,7 @@ namespace Noxico
 				townGen = new TownGenerator();
 
 			if (biomeID < 0)
-				biomeID = Toolkit.Rand.Next(2, 5);
+				biomeID = Random.Next(2, 5);
 
 			var boards = NoxicoGame.HostForm.Noxico.Boards;
 			var thisMap = new Board();
@@ -44,7 +44,7 @@ namespace Noxico
 			var vendorTypes = new List<Func<InventoryItem, bool>>();
 
 			if (string.IsNullOrEmpty(cultureName))
-				cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
+				cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
 
 			thisMap.Clear(biomeID);
 			thisMap.Type = BoardType.Town;
@@ -57,7 +57,7 @@ namespace Noxico
 			townGen.ToTilemap(ref thisMap.Tilemap);
 			townGen.ToSectorMap(thisMap.Sectors);
 
-			if (Toolkit.Rand.NextDouble() < vendorChance)
+			if (Random.NextDouble() < vendorChance)
 				if (AddVendor(thisMap, vendorTypes))
 					vendorChance *= 0.75;
 
@@ -97,7 +97,7 @@ namespace Noxico
 				lol.BoardNum = boards.Count;
 				lol.Name = thisMap.Name + " Outskirts";
 				lol.ID = lol.Name.ToID() + lol.BoardNum;
-				if (Toolkit.Rand.NextDouble() > 0.5 && biome.Encounters.Length > 0)
+				if (Random.NextDouble() > 0.5 && biome.Encounters.Length > 0)
 				{
 					var encounters = lol.GetToken("encounters");
 					encounters.Value = biome.MaxEncounters;
@@ -105,10 +105,10 @@ namespace Noxico
 						encounters.AddToken(e);
 
 					//Possibility of linked dungeons
-					if (Toolkit.Rand.NextDouble() < 0.4)
+					if (Random.NextDouble() < 0.4)
 					{
-						var eX = Toolkit.Rand.Next(2, 78);
-						var eY = Toolkit.Rand.Next(1, 23);
+						var eX = Random.Next(2, 78);
+						var eY = Random.Next(1, 23);
 
 						if (lol.IsSolid(eY, eX))
 							continue;
@@ -135,7 +135,7 @@ namespace Noxico
 						lol.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 					}
 				}
-				else if (Toolkit.Rand.NextDouble() > 0.8)
+				else if (Random.NextDouble() > 0.8)
 				{
 					lol.Type = BoardType.Town;
 					lol.Name = thisMap.Name;
@@ -144,7 +144,7 @@ namespace Noxico
 					townGen.Create(biome);
 					townGen.ToTilemap(ref lol.Tilemap);
 					townGen.ToSectorMap(lol.Sectors);
-					if (Toolkit.Rand.NextDouble() < vendorChance)
+					if (Random.NextDouble() < vendorChance)
 						if (AddVendor(lol, vendorTypes))
 							vendorChance *= 0.75;
 				}
@@ -178,15 +178,15 @@ namespace Noxico
 				return false;
 			var vendor = unexpected[0].Character;
 			var stock = vendor.GetToken("items");
-			var count = Toolkit.Rand.Next(10, 20);
+			var count = Random.Next(10, 20);
 			if (typeList.Count == 0)
 				typeList.AddRange(vendorTypeList);
-			var criterion = typeList[Toolkit.Rand.Next(typeList.Count)];
+			var criterion = typeList[Random.Next(typeList.Count)];
 			typeList.Remove(criterion);
 			var sellable = NoxicoGame.KnownItems.FindAll(x => x.HasToken("price") && criterion(x)).ToList();
 			while (sellable.Count == 0)
 			{
-				criterion = typeList[Toolkit.Rand.Next(typeList.Count)];
+				criterion = typeList[Random.Next(typeList.Count)];
 				typeList.Remove(criterion);
 				if (typeList.Count == 0)
 				{
@@ -198,14 +198,14 @@ namespace Noxico
 			{
 				if (sellable.Count == 0)
 					break;
-				var item = sellable[Toolkit.Rand.Next(sellable.Count)];
+				var item = sellable[Random.Next(sellable.Count)];
 				stock.AddToken(item.ID);
-				if (Toolkit.Rand.NextDouble() < 0.8)
+				if (Random.NextDouble() < 0.8)
 					sellable.Remove(item);
 			}
 			vendor.RemoveAll("role");
 			vendor.AddToken("role").AddToken("vendor");
-			vendor.GetToken("money").Value = 1000 + (Toolkit.Rand.Next(0, 20) * 50);
+			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
 			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
 			return true;
 		}
@@ -223,7 +223,7 @@ namespace Noxico
 
 		public static Board CreateDungeon(int biomeID, string cultureName, string name)
 		{
-			DungeonGeneratorBiome = biomeID < 0 ? biomeID = Toolkit.Rand.Next(2, 5) : biomeID;
+			DungeonGeneratorBiome = biomeID < 0 ? biomeID = Random.Next(2, 5) : biomeID;
 			return CreateDungeon(true, name);
 		}
 
@@ -245,8 +245,8 @@ namespace Noxico
 				var eY = 0;
 				while (true)
 				{
-					eX = Toolkit.Rand.Next(1, 79);
-					eY = Toolkit.Rand.Next(1, 24);
+					eX = Random.Next(1, 79);
+					eY = Random.Next(1, 24);
 
 					var sides = 0;
 					if (b.IsSolid(eY - 1, eX))
@@ -278,11 +278,11 @@ namespace Noxico
 			 * [GOAL] [ 13 ]
 			*/
 			var levels = new List<List<Board>>();
-			var depth = Toolkit.Rand.Next(3, 6);
+			var depth = Random.Next(3, 6);
 			for (var i = 0; i < depth; i++)
 			{
 				levels.Add(new List<Board>());
-				var length = Toolkit.Rand.Next(2, 5);
+				var length = Random.Next(2, 5);
 				for (var j = 0; j < length; j++)
 				{
 					var board = new Board();
@@ -295,8 +295,8 @@ namespace Noxico
 			}
 
 			//Decide which boards are the exit and goal
-			var entranceBoard = levels[0][Toolkit.Rand.Next(levels[0].Count)];
-			var goalBoard = levels[levels.Count - 1][Toolkit.Rand.Next(levels[levels.Count - 1].Count)];
+			var entranceBoard = levels[0][Random.Next(levels[0].Count)];
+			var goalBoard = levels[levels.Count - 1][Random.Next(levels[levels.Count - 1].Count)];
 
 			//Generate content for each board
 			for (var i = 0; i < levels.Count; i++)
@@ -306,7 +306,7 @@ namespace Noxico
 					var board = levels[i][j];
 
 					//TODO: uncomment this decision when the dungeon generator gets pathways.
-					if (Toolkit.Rand.NextDouble() > 0.7 || board == entranceBoard)
+					if (Random.NextDouble() > 0.7 || board == entranceBoard)
 					{
 						caveGen.Board = board;
 						caveGen.Create(biomeData);
@@ -359,9 +359,9 @@ namespace Noxico
 			var connected = new List<Board>();
 			for (var i = 0; i < levels.Count; i++)
 			{
-				var j = Toolkit.Rand.Next(0, levels[i].Count);
+				var j = Random.Next(0, levels[i].Count);
 				//while (connected.Contains(levels[i][j]))
-				//	j = Toolkit.Rand.Next(0, levels[i].Count);
+				//	j = Randomizer.Next(0, levels[i].Count);
 
 				var up = false;
 				var destLevel = i + 1;
@@ -370,7 +370,7 @@ namespace Noxico
 					up = true;
 					destLevel = i - 1;
 				}
-				var dest = Toolkit.Rand.Next(0, levels[destLevel].Count);
+				var dest = Random.Next(0, levels[destLevel].Count);
 
 				var boardHere = levels[i][j];
 				var boardThere = levels[destLevel][dest];
@@ -443,8 +443,8 @@ namespace Noxico
 			var treasureY = 0;
 			while (true)
 			{
-				treasureX = Toolkit.Rand.Next(1, 79);
-				treasureY = Toolkit.Rand.Next(1, 24);
+				treasureX = Random.Next(1, 79);
+				treasureY = Random.Next(1, 24);
 
 				var sides = 0;
 				if (goalBoard.IsSolid(treasureY - 1, treasureX))
@@ -507,10 +507,7 @@ namespace Noxico
 		{
 			Biomes = new List<BiomeData>();
 			var x = Mix.GetXMLDocument("biomes.xml");
-			//var x = new XmlDocument();
-			//x.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Biomes, "biomes.xml"));
 			var realm = x.SelectSingleNode("//realm") as XmlElement;
-			//WaterLevel = int.Parse(realm.GetAttribute("waterLevel"));
 			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
 				Biomes.Add(BiomeData.FromXML(b));
 		}

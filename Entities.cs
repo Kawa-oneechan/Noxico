@@ -682,7 +682,7 @@ namespace Noxico
 
 			if (Character.HasToken("helpless"))
 			{
-				if (Toolkit.Rand.NextDouble() < 0.05)
+				if (Random.NextDouble() < 0.05)
 				{
 					Character.GetToken("health").Value += 2;
 					NoxicoGame.AddMessage((this is Player ? "You get" : Character.Name.ToString() + " gets") + " back up.");
@@ -769,7 +769,7 @@ namespace Noxico
 						break;
 					case Motor.Wander:
 					case Motor.WanderSector:
-						this.Move((Direction)Toolkit.Rand.Next(4));
+						this.Move((Direction)Random.Next(4));
 						break;
 					case Motor.Hunt:
 						Hunt();
@@ -922,7 +922,7 @@ namespace Noxico
 				{
 					//Melee attacks can only be orthogonal.
 					MeleeAttack(target);
-					if (Character.Path("prefixes/infectious") != null && Toolkit.Rand.NextDouble() > 0.25)
+					if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
 						target.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
 					return;
 				}
@@ -1065,7 +1065,7 @@ namespace Noxico
 			{
 				var gradient = (baseDamage - 1) / 5;
 				var minimalDamage = (gradient * level + 1) + 1;
-				damage = (float)Toolkit.Rand.Next((int)minimalDamage, (int)baseDamage);
+				damage = (float)Random.Next((int)minimalDamage, (int)baseDamage);
 			}
 			else
 			{
@@ -1436,7 +1436,7 @@ namespace Noxico
 					Blocking = false,
 					XPosition = point.X,
 					YPosition = point.Y,
-					Life = 2 + Toolkit.Rand.Next(2),
+					Life = 2 + Random.Next(2),
 				};
 				this.ParentBoard.EntitiesToAdd.Add(particle);
 			}
@@ -1815,7 +1815,7 @@ namespace Noxico
 			if (mySpeed > theirSpeed)
 				meFirst = true;
 			else if (mySpeed == theirSpeed)
-				meFirst = Toolkit.Rand.NextDouble() > 0.5;
+				meFirst = Random.NextDouble() > 0.5;
 
 			if (meFirst)
 			{
@@ -2037,7 +2037,7 @@ namespace Noxico
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{
-				if (Toolkit.Rand.NextDouble() < 0.05)
+				if (Random.NextDouble() < 0.05)
 				{
 					Character.GetToken("health").Value += 2;
 					NoxicoGame.AddMessage("You get back up.");
@@ -2218,7 +2218,7 @@ namespace Noxico
 						if (tile.Ceiling)
 						{
 							if (Character.GetStat(Stat.Cunning) < 10 ||
-								(Character.GetStat(Stat.Cunning) < 20 && Toolkit.Rand.NextDouble() < 0.5))
+								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
 							{
 								Hurt(2, "hit the ceiling when trying to fly", null, false);
 								NoxicoGame.AddMessage("You hit your head on the ceiling.");

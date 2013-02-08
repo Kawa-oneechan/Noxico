@@ -363,8 +363,8 @@ namespace Noxico
 			int lives = 1000, x = 0, y = 0;
 			while (lives > 0)
 			{
-				x = boardChar.XPosition + Toolkit.Rand.Next(-1, 2);
-				y = boardChar.YPosition + Toolkit.Rand.Next(-1, 2);
+				x = boardChar.XPosition + Random.Next(-1, 2);
+				y = boardChar.YPosition + Random.Next(-1, 2);
 				if (!boardChar.ParentBoard.IsSolid(y, x) && !boardChar.ParentBoard.IsBurning(y, x))
 					break;
 				lives--;
@@ -572,8 +572,6 @@ namespace Noxico
 			{
 				costumeDoc = Mix.GetXMLDocument("costumes.xml");
 				itemDoc = Mix.GetXMLDocument("items.xml");
-				//itemDoc = new XmlDocument();
-				//itemDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			}
 			var ret = new List<Token>();
 			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;
@@ -581,7 +579,7 @@ namespace Noxico
 			{
 				case "wardrobe":
 					var costumes = costumeDoc.SelectNodes("costumes/costume").OfType<XmlElement>().ToList();
-					var amount = Toolkit.Rand.Next(2, 7);
+					var amount = Random.Next(2, 7);
 					for (var i = 0; i < amount; i++)
 					{
 						XmlElement x = null;
@@ -591,9 +589,9 @@ namespace Noxico
 						while (costume == null && lives > 0)
 						{
 							lives--;
-							x = costumes[Toolkit.Rand.Next(costumes.Count)];
+							x = costumes[Random.Next(costumes.Count)];
 							carrier.Tokens = Token.Tokenize(x.InnerText);
-							if (carrier.HasToken("rare") && Toolkit.Rand.NextDouble() > 0.5)
+							if (carrier.HasToken("rare") && Random.NextDouble() > 0.5)
 								continue;
 							if (gender == Gender.Male && carrier.HasToken("male"))
 								costume = carrier.GetToken("male");
@@ -630,15 +628,15 @@ namespace Noxico
 					//We should now have a list of all weapons, excluding the ones carried by the player.
 					if (weapons.Count > 0)
 					{
-						var choice = weapons[Toolkit.Rand.Next(weapons.Count)];
+						var choice = weapons[Random.Next(weapons.Count)];
 						ret.Add(new Token() { Name = choice.ID });
 					}
 					//Now add some healing items.
 					var healers = NoxicoGame.KnownItems.Where(ki => ki.Path("statbonus/health") != null).ToList();
-					amount = Toolkit.Rand.Next(2, 6);
+					amount = Random.Next(2, 6);
 					while (amount > 0)
 					{
-						var choice = healers[Toolkit.Rand.Next(healers.Count)];
+						var choice = healers[Random.Next(healers.Count)];
 						ret.Add(new Token() { Name = choice.ID });
 						amount--;
 					}
@@ -672,7 +670,7 @@ namespace Noxico
 				if (character.GetToken("cunning").Value < 10)
 				{
 					//Dumb characters can't identify as well.
-					if (Toolkit.Rand.NextDouble() < 0.5)
+					if (Random.NextDouble() < 0.5)
 						return;
 				}
 

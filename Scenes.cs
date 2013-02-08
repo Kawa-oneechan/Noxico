@@ -89,7 +89,7 @@ namespace Noxico
 				}
 				else
 				{
-					var randomAction = actions.Keys.ToArray()[Toolkit.Rand.Next(actions.Count)];
+					var randomAction = actions.Keys.ToArray()[Random.Next(actions.Count)];
 					actions.Clear();
 					actions.Add(randomAction, "==>");
 					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));

@@ -13,14 +13,7 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-		private static XmlDocument colorTable;
-
-		public static Random Rand { get; private set; }
-
-		static Toolkit()
-		{
-			Rand = new Random();
-		}
+		private static XmlDocument colorTable = Mix.GetXMLDocument("knowncolors.xml");
 
 		/// <summary>
 		/// Returns the amount of change between two strings.
@@ -208,7 +201,7 @@ namespace Noxico
 		/// </summary>
 		public static string PickOne(params string[] options)
 		{
-			return options[Toolkit.Rand.Next(options.Length)];
+			return options[Random.Next(options.Length)];
 		}
 
 		/// <summary>
@@ -230,12 +223,6 @@ namespace Noxico
 		{
 			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
 			var colorName = "";
-			if (colorTable == null)
-			{
-				colorTable = Mix.GetXMLDocument("knowncolors.xml");
-				//colorTable = new XmlDocument();
-				//colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
-			}
 			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
 			{
 				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.InvariantCultureIgnoreCase))
@@ -263,12 +250,6 @@ namespace Noxico
 		{
 			if (string.IsNullOrEmpty(color))
 				return Color.Silver;
-			if (colorTable == null)
-			{
-				colorTable = Mix.GetXMLDocument("knowncolors.xml");
-				//colorTable = new XmlDocument();
-				//colorTable.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.KnownColors, "knowncolors.xml"));
-			}
 			var req = color.ToLower().Replace("_", "").Replace(" ", "");
 			//var entry = colorTable.DocumentElement.SelectSingleNode("//color[@name=\"" + req + "\"]") as XmlElement;
 			XmlElement entry = null;
@@ -728,7 +709,7 @@ namespace Noxico
 			while (token.HasToken("random"))
 			{
 				var rnd = token.GetToken("random");
-				var pick = rnd.Tokens[Toolkit.Rand.Next(rnd.Tokens.Count)];
+				var pick = rnd.Tokens[Random.Next(rnd.Tokens.Count)];
 				token.Tokens.Remove(rnd);
 				foreach (var t in pick.Tokens)
 					token.Tokens.Add(t);

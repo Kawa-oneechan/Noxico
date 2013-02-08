@@ -157,10 +157,8 @@ namespace Noxico
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
 
-			//var xDoc = new XmlDocument();
 			Console.WriteLine("Loading items...");
 			var xDoc = Mix.GetXMLDocument("items.xml");
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Items, "items.xml"));
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
@@ -169,7 +167,6 @@ namespace Noxico
 			ApplyRandomPotions();
 			Console.WriteLine("Loading bodyplans...");
 			xDoc = Mix.GetXMLDocument("bodyplans.xml");
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BodyPlans, "bodyplans.xml"));
 			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
@@ -205,7 +202,6 @@ namespace Noxico
 			BookTitles.Add("[null]");
 			BookAuthors.Add("[null]");
 			xDoc = Mix.GetXMLDocument("books.xml");
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Library, "books.xml"));
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
 			{
@@ -220,7 +216,7 @@ namespace Noxico
 			BiomeData.LoadBiomes();
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
 
-			InGameTime = new NoxicanDate(740 + Toolkit.Rand.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
@@ -688,7 +684,7 @@ namespace Noxico
 				if (gender == Gender.Female)
 					pc.Name.Female = true;
 				else if (gender == Gender.Herm || gender == Gender.Neuter)
-					pc.Name.Female = Toolkit.Rand.NextDouble() > 0.5;
+					pc.Name.Female = Random.NextDouble() > 0.5;
 			}
 			else
 			{
@@ -719,8 +715,6 @@ namespace Noxico
 			pc.GetToken("ships").Tokens.Add(playerShip);
 
 			var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
-			//var traitsDoc = new XmlDocument();
-			//traitsDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.BonusTraits, "bonustraits.xml"));
 			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + bonusTrait + "\"]");
 			if (trait != null)
 			{
@@ -858,8 +852,8 @@ namespace Noxico
 				string roll = null;
 				while (Potions.Contains(roll))
 				{
-					var color = colors[Toolkit.Rand.Next(colors.Length)];
-					var mod = mods[Toolkit.Rand.NextDouble() > 0.6 ? Toolkit.Rand.Next(1, mods.Length) : 0];
+					var color = colors[Random.Next(colors.Length)];
+					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
 					roll = mod + color + " potion";
 				}
 				Potions[i] = roll;
@@ -870,8 +864,8 @@ namespace Noxico
 				string roll = null;
 				while (Potions.Contains(roll))
 				{
-					var color = colors[Toolkit.Rand.Next(colors.Length)];
-					var mod = mods[Toolkit.Rand.NextDouble() > 0.6 ? Toolkit.Rand.Next(1, mods.Length) : 0];
+					var color = colors[Random.Next(colors.Length)];
+					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
 					roll = mod + color + " ring";
 				}
 				Potions[i] = roll;
@@ -1060,9 +1054,9 @@ namespace Noxico
 		{
 			var boards = NoxicoGame.HostForm.Noxico.Boards;
 			if (biomeID < 0)
-				biomeID = Toolkit.Rand.Next(2, 5);
+				biomeID = Random.Next(2, 5);
 			var biome = BiomeData.Biomes[biomeID];
-			var cultureName = biome.Cultures[Toolkit.Rand.Next(biome.Cultures.Length)];
+			var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
 			var culture = Noxico.Culture.Cultures[cultureName];
 
 			if (string.IsNullOrEmpty(name))
@@ -1097,7 +1091,7 @@ namespace Noxico
 
 			foreach (var expectedChar in characters)
 			{
-				var replacement = unexpected[Toolkit.Rand.Next(unexpected.Count)];
+				var replacement = unexpected[Random.Next(unexpected.Count)];
 				var fullReplace = true;
 
 				var bodyplan = Toolkit.PickOne(culture.Bodyplans);

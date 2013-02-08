@@ -39,8 +39,6 @@ namespace Noxico
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new List<string>();
 			xDoc = Mix.GetXMLDocument("culture.xml");
-			//xDoc = new XmlDocument();
-			//xDoc.LoadXml(Toolkit.ResOrFile(global::Noxico.Properties.Resources.Cultures, "culture.xml"));
 			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
 				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
 			DefaultCulture = Cultures.ElementAt(0).Value;
@@ -85,7 +83,6 @@ namespace Noxico
 			if (string.IsNullOrWhiteSpace(id))
 				id = DefaultNameGen;
 			var namegen = "//namegen[@id='" + id + "']";
-			var rand = Toolkit.Rand;
 			var sets = new Dictionary<string, string[]>();
 			var x = xDoc.SelectNodes(namegen + "/set");
 			foreach (var set in x.OfType<XmlElement>())
@@ -106,7 +103,7 @@ namespace Noxico
 			var rules = typeSet.SelectNodes("rules/rule");
 			while (true)
 			{
-				var rule = rules[rand.Next(rules.Count)];
+				var rule = rules[Random.Next(rules.Count)];
 				var name = "";
 				foreach (var part in rule.ChildNodes.OfType<XmlElement>())
 				{
@@ -118,13 +115,13 @@ namespace Noxico
 					if (part.HasAttribute("chance"))
 					{
 						var chance = int.Parse(part.GetAttribute("chance"));
-						if (rand.Next(100) > chance)
+						if (Random.Next(100) > chance)
 							continue;
 					}
 					if (!sets.ContainsKey(part.GetAttribute("id")))
 						continue;
 					var list = sets[part.GetAttribute("id")];
-					var word = list[rand.Next(list.Length)].Trim();
+					var word = list[Random.Next(list.Length)].Trim();
 					name += word;
 				}
 				var reject = false;
