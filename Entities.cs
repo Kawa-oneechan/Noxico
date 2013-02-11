@@ -1953,10 +1953,6 @@ namespace Noxico
 			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " sleep";
 #endif
-
-#if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}) @ {3} {4}", ParentBoard.Name, XPosition, YPosition, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
-#endif
 		}
 
 		public void QuickFire(Direction targetDirection)
@@ -2395,6 +2391,10 @@ namespace Noxico
 				Hurt(10, "burned to death", null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 
+
+#if DEBUG
+			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}) @ {3} {4}", ParentBoard.Name, XPosition, YPosition, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
+#endif
 			NoxicoGame.UpdateMessages();
 		}
 

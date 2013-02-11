@@ -152,8 +152,12 @@ namespace Noxico
 			KeyTrg = new bool[256];
 			KeyRepeat = new DateTime[256];
 			Modifiers = new bool[3];
-			AutoRestExploreSpeed = IniFile.GetInt("misc", "autorest", 100); //100;
+			AutoRestExploreSpeed = IniFile.GetInt("misc", "autorest", 50);
+			if (AutoRestExploreSpeed > 0 && AutoRestExploreSpeed < 5)
+				AutoRestExploreSpeed = 5;
 			AutoRestCombatSpeed = IniFile.GetInt("misc", "combatrest", 0);
+			if (AutoRestCombatSpeed > 0 && AutoRestCombatSpeed < 5)
+				AutoRestCombatSpeed = 5;
 			Cursor = new Cursor();
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
