@@ -131,7 +131,6 @@ namespace Noxico
 			public List<string> HairColors { get; set; }
 			public List<string> SkinColors { get; set; }
 			public List<string> EyeColors { get; set; }
-			public List<string> GenderNames { get; set; }
 			public bool GenderLocked { get; set; }
 			public override string ToString()
 			{
@@ -166,28 +165,6 @@ namespace Noxico
 				//TODO: write a support function that grabs everything for a specific token?
 				//That is, given "terms \n \t generic ... \n tallness" it'd grab everything up to but not including tallness.
 				//Use that to find subtokens like specific terms or colors.
-				var terms = Toolkit.GrabToken(plan, "terms");
-				var genOffset = terms.IndexOf("\tgeneric: ");
-				var maleOffset = terms.IndexOf("\tmale: ");
-				var femaleOffset = terms.IndexOf("\tfemale: ");
-				if (genOffset != -1)
-				{
-					name = terms.Substring(genOffset + 11);
-					name = name.Remove(name.IndexOf('\"')).Titlecase();
-				}
-				var male = name;
-				var female = name;
-				if (maleOffset != -1)
-				{
-					male = terms.Substring(maleOffset + 8);
-					male = male.Remove(male.IndexOf('\"')).Titlecase();
-				}
-				if (femaleOffset != -1)
-				{
-					female = terms.Substring(femaleOffset + 10);
-					female = female.Remove(female.IndexOf('\"')).Titlecase();
-				}
-				var genders = new List<string>() { male, female };
 
 				var hairs = new List<string>() { "<None>" };
 				var hair = Toolkit.GrabToken(plan, "hair");
@@ -258,7 +235,7 @@ namespace Noxico
 					skins = skins.Distinct().ToList();
 				skins.Sort();
 
-				ret.Add(new PlayableRace() { ID = id, Name = name, GenderNames = genders, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, GenderLocked = genlock });
+				ret.Add(new PlayableRace() { ID = id, Name = name, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, GenderLocked = genlock });
 
 			}
 			return ret;

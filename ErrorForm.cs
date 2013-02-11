@@ -63,7 +63,7 @@ namespace Noxico
 				if (x.Message.Contains("not allowed."))
 					label3.Text += "If you are a mod developer and this is your work, you tried to call a method that is meant for internal usage only.";
 				else
-					label3.Text += "Kawa made a mistake somewhere and tried to call a method that he himself marked as \"for Javascript use only\". What a dumbass. Call him out on it if you want, and it'll be fixed ASAP.";
+					label3.Text += "Kawa made a mistake somewhere and tried to call a method that he himself marked as \"for JavaScript use only\". What a dumbass. Call him out on it if you want, and it'll be fixed ASAP.";
 			}
 			else if (textBox1.Text.Contains("Player.LoadFromFile"))
 			{

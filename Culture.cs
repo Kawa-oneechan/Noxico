@@ -15,9 +15,11 @@ namespace Noxico
 		}
 
 		private static XmlDocument xDoc;
-		public string ID, TownName;
-		public string[] Bodyplans;
-		public double Marriage = 0.25, Monogamous = 1;
+		public string ID { get; private set; }
+		public string TownName { get; private set; }
+		public string[] Bodyplans { get; private set; }
+		public double Marriage  { get; private set; }
+		public double Monogamous { get; private set; }
 
 		public static List<Deity> Deities;
 

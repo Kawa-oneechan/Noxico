@@ -117,7 +117,8 @@ namespace Noxico
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
-					containerList.Items = containerTexts;
+					containerList.Items.Clear();
+					containerList.Items.AddRange(containerTexts);
 					containerWindow.Height = 2 + height;
 					containerList.Height = height;
 				}
@@ -172,7 +173,8 @@ namespace Noxico
 					if (height2 > height)
 						height = height2;
 
-					playerList.Items = playerTexts;
+					playerList.Items.Clear();
+					playerList.Items.AddRange(playerTexts);
 					playerWindow.Height = 2 + height2;
 					playerList.Height = height2;
 				}

@@ -20,7 +20,7 @@ namespace Noxico
 
 
 		public Token tempToken { get; set; }
-		private static XmlDocument itemDoc, costumeDoc;
+		private static XmlDocument costumeDoc;
 
 		/*
 		public override string ToString()
@@ -139,18 +139,7 @@ namespace Noxico
 
 			var t = x.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault();
 			if (t != null)
-				ni.Tokens = Token.Tokenize(t.Value);
-#if DEBUG
-			else
-			{
-				ni.Tokens = Token.Tokenize(x);
-				Console.WriteLine("Item {0} conversion:", ni.ID);
-				Console.WriteLine("\t\t\t<![CDATA[");
-				Console.Write(ni.DumpTokens(ni.Tokens, 0));
-				Console.WriteLine("\t\t\t]]>");
-				Console.WriteLine();
-			}
-#endif
+				ni.Tokenize(t.Value);
 
 			ni.OnUse = null;
 			if (ni.ID == "catmorph")
@@ -569,10 +558,8 @@ namespace Noxico
 		public static List<Token> RollContainer(Character owner, string type)
 		{
 			if (costumeDoc == null)
-			{
 				costumeDoc = Mix.GetXMLDocument("costumes.xml");
-				itemDoc = Mix.GetXMLDocument("items.xml");
-			}
+
 			var ret = new List<Token>();
 			var gender = owner == null ? Gender.Random : owner.Name.Female ? Gender.Female : Gender.Male;
 			switch (type)
@@ -590,7 +577,7 @@ namespace Noxico
 						{
 							lives--;
 							x = costumes[Random.Next(costumes.Count)];
-							carrier.Tokens = Token.Tokenize(x.InnerText);
+							carrier.Tokenize(x.InnerText);
 							if (carrier.HasToken("rare") && Random.NextDouble() > 0.5)
 								continue;
 							if (gender == Gender.Male && carrier.HasToken("male"))
@@ -647,8 +634,8 @@ namespace Noxico
 
 		public object RunScript(Token item, string script, Character character, BoardChar boardchar, Action<string> running)
 		{
-			var js = Javascript.MainMachine;
-			Javascript.Ascertain(js);
+			var js = JavaScript.MainMachine;
+			JavaScript.Ascertain(js);
 			js.SetParameter("user", character);
 			js.SetFunction("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
 			js.SetFunction("print", new Action<string>(x =>
@@ -757,10 +744,26 @@ namespace Noxico
 		}
 	}
 
+	[Serializable]
 	public class ItemException : Exception
 	{
+		public ItemException()
+			: base()
+		{
+		}
+
 		public ItemException(string message)
 			: base(message)
+		{
+		}
+
+		public ItemException(string message, Exception exception)
+			: base(message, exception)
+		{
+		}
+
+		protected ItemException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+			: base(info, context)
 		{
 		}
 	}

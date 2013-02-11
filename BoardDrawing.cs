@@ -149,7 +149,7 @@ namespace Noxico
 		}
 
 		[ForJS(ForJSUsage.Only)]
-		public void MergeBitmap(string filename)
+		public void MergeBitmap(string fileName)
 		{
 			var floorStart = Color.FromArgb(123, 92, 65);
 			var floorEnd = Color.FromArgb(143, 114, 80);
@@ -158,7 +158,7 @@ namespace Noxico
 			var wall = Color.FromArgb(71, 50, 33);
 			var cornerJunctions = new List<Point>();
 
-			var bitmap = Mix.GetBitmap(filename);
+			var bitmap = Mix.GetBitmap(fileName);
 			for (var y = 0; y < 25; y++)
 			{
 				for (var x = 0; x < 80; x++)

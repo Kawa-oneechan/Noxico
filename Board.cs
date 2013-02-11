@@ -18,7 +18,10 @@ namespace Noxico
 	/// </summary>
 	public struct Rectangle
 	{
-		public int Left, Top, Right, Bottom;
+		public int Left { get; set; }
+		public int Top { get; set; }
+		public int Right { get; set; }
+		public int Bottom { get; set; }
 		public Location GetCenter()
 		{
 			return new Location(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
@@ -250,17 +253,17 @@ namespace Noxico
 		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
-		public List<Entity> Entities { get; set; }
-		public List<Warp> Warps { get; set; }
-		public List<Location> DirtySpots { get; set; }
-		public List<Entity> EntitiesToRemove { get; set; }
-		public List<Entity> EntitiesToAdd { get; set; }
+		public List<Entity> Entities { get; private set; }
+		public List<Warp> Warps { get; private set; }
+		public List<Location> DirtySpots { get; private set; }
+		public List<Entity> EntitiesToRemove { get; private set; }
+		public List<Entity> EntitiesToAdd { get; private set; }
 
 		public Tile[,] Tilemap = new Tile[80, 25];
 		public bool[,] Lightmap = new bool[25, 80];
 
-		public Dictionary<string, Rectangle> Sectors { get; set; }
-		public List<Location> ExitPossibilities { get; set; }
+		public Dictionary<string, Rectangle> Sectors { get; private set; }
+		public List<Location> ExitPossibilities { get; private set; }
 
 		public override string ToString()
 		{
@@ -269,7 +272,6 @@ namespace Noxico
 
 		public Board()
 		{
-			this.Tokens = new List<Token>();
 			foreach (var t in new[] { "name", "id", "music", "type", "biome", "encounters" })
 				this.AddToken(t);
 			foreach (var t in new[] { "north", "south", "east", "west" })
@@ -768,7 +770,7 @@ namespace Noxico
 		{
 			var newBoard = new Board();
 			newBoard.Clear(biomeID);
-			newBoard.Tokens = Token.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n");
+			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;

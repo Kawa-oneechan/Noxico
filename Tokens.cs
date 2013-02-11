@@ -11,7 +11,12 @@ namespace Noxico
 {
 	public class TokenCarrier
 	{
-		public List<Token> Tokens;
+		public List<Token> Tokens { get; private set; }
+
+		public TokenCarrier()
+		{
+			Tokens = new List<Token>();
+		}
 
 		public bool HasToken(string name)
 		{
@@ -124,78 +129,7 @@ namespace Noxico
 			return Tokens[i];
 		}
 
-#if DEBUG
-		public string DumpTokens(List<Token> list, int tabs)
-		{
-			var ret = new StringBuilder();
-			foreach (var item in list)
-			{
-				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
-				if (item.Value != 0 || !string.IsNullOrWhiteSpace(item.Text))
-				{
-					ret.Append(": ");
-					if (item.Value != 0)
-						ret.Append(item.Value);
-					else
-						ret.AppendFormat("\"{0}\"", item.Text);
-					ret.AppendLine();
-				}
-				else
-					ret.AppendLine();
-				if (item.Tokens.Count > 0)
-					ret.Append(DumpTokens(item.Tokens, tabs + 1));
-			}
-			return ret.ToString();
-		}
-#else
-		public string DumpTokens(List<Token> list, int tabs)
-		{
-			return string.Empty;
-		}
-#endif
-	}
-
-	public class Token : TokenCarrier
-	{
-		public string Name { get; set; }
-		public float Value { get; set; }
-		public string Text { get; set; }
-
-		public override string ToString()
-		{
-			return string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count);
-		}
-
-		public static List<Token> Tokenize(XmlElement e)
-		{
-			var t = new List<Token>();
-			foreach (var x in e.OfType<XmlElement>())
-			{
-				var nV = 0f;
-				string nT = null;
-				if (x.InnerText.Trim() != "")
-				{
-					if (x.HasAttribute("text"))
-					{
-						nT = x.InnerText.Trim();
-					}
-					else
-					{
-						float v;
-						var it = x.ChildNodes.OfType<XmlText>().Count() > 0 ? x.ChildNodes.OfType<XmlText>().First().InnerText : "0.0";
-						if (float.TryParse(it, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
-							nV = v;
-					}
-				}
-				var newToken = new Token() { Name = x.Name, Value = nV, Text = nT };
-				if (x.ChildNodes.OfType<XmlElement>().Count() > 0)
-					newToken.Tokens = Tokenize(x);
-				t.Add(newToken);
-			}
-			return t;
-		}
-
-		public static List<Token> Tokenize(string a)
+		public void Tokenize(string a)
 		{
 			var t = new List<Token>();
 			var lines = a.Split('\n');
@@ -308,12 +242,53 @@ namespace Noxico
 				}
 				prevTabs = tabs;
 			}
-			return t;
+			Tokens = t;
+		}
+
+#if DEBUG
+		public string DumpTokens(List<Token> list, int tabs)
+		{
+			var ret = new StringBuilder();
+			foreach (var item in list)
+			{
+				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
+				if (item.Value != 0 || !string.IsNullOrWhiteSpace(item.Text))
+				{
+					ret.Append(": ");
+					if (item.Value != 0)
+						ret.Append(item.Value);
+					else
+						ret.AppendFormat("\"{0}\"", item.Text);
+					ret.AppendLine();
+				}
+				else
+					ret.AppendLine();
+				if (item.Tokens.Count > 0)
+					ret.Append(DumpTokens(item.Tokens, tabs + 1));
+			}
+			return ret.ToString();
+		}
+#else
+		public string DumpTokens(List<Token> list, int tabs)
+		{
+			return string.Empty;
+		}
+#endif
+	}
+
+	public class Token : TokenCarrier
+	{
+		public string Name { get; set; }
+		public float Value { get; set; }
+		public string Text { get; set; }
+
+		public override string ToString()
+		{
+			return string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count);
 		}
 
 		public Token()
 		{
-			Tokens = new List<Token>();
 		}
 
 		public void SaveToFile(BinaryWriter stream)

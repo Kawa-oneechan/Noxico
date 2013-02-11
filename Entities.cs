@@ -191,7 +191,7 @@ namespace Noxico
 
 		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
-		public List<Point> Tabstops { get; set; }
+		public List<Point> Tabstops { get; private set; }
 		public int Tabstop { get; set; }
 
 		public Cursor()
@@ -354,7 +354,7 @@ namespace Noxico
 						}
 						else
 						{
-							((DroppedItem)PointingAt).PickUp(player.Character);
+							((DroppedItem)PointingAt).Take(player.Character);
 							NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", ((DroppedItem)PointingAt).ForegroundColor);
 							NoxicoGame.Sound.PlaySound("Get Item");
 							ParentBoard.Redraw();
@@ -534,7 +534,6 @@ namespace Noxico
 			ID = character.Name.ToID();
 			Character = character;
 			this.Blocking = true;
-			AdjustView();
 		}
 
 		public virtual void AdjustView()
@@ -1301,8 +1300,8 @@ namespace Noxico
 			if (string.IsNullOrWhiteSpace(script))
 				return true;
 			if (js == null)
-				js = Javascript.Create();
-			Javascript.Ascertain(js);
+				js = JavaScript.Create();
+			JavaScript.Ascertain(js);
 			js.SetParameter("this", this.Character);
 			js.SetParameter("target", ScriptPathID);
 			if (extraParm != "")
@@ -1331,7 +1330,7 @@ namespace Noxico
 		[ForJS(ForJSUsage.Only)]
 		public void MoveTo(int x, int y, string target)
 		{
-			Javascript.Assert();
+			JavaScript.Assert();
 
 			ScriptPathTarget = new Dijkstra();
 			ScriptPathTarget.Hotspots.Add(new Point(x, y));
@@ -1696,7 +1695,7 @@ namespace Noxico
     {
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
-		public TimeSpan PlayingTime;
+		public TimeSpan PlayingTime { get; set; }
 
         public Player()
         {
@@ -2174,7 +2173,7 @@ namespace Noxico
 				else
 				{
 					var item = (DroppedItem)itemsHere[0];
-					item.PickUp(this.Character);
+					item.Take(this.Character);
 					NoxicoGame.Sound.PlaySound("Get Item");
 					NoxicoGame.AddMessage("You pick up " + item.Item.ToString(item.Token, true) + ".", item.ForegroundColor);
 					return;
@@ -2263,7 +2262,7 @@ namespace Noxico
 							Character.Tokens.Add(new Token() { Name = "helpless" });
 							NoxicoGame.Mode = UserMode.Subscreen;
 							UnsortedSubscreens.UntilMorning = false;
-							NoxicoGame.Subscreen = UnsortedSubscreens.SleepAWhile;
+							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
 							Subscreens.FirstDraw = true;
 						}, null, true, "Bed");
 					}
@@ -2274,7 +2273,7 @@ namespace Noxico
 							Character.Tokens.Add(new Token() { Name = "helpless" });
 							NoxicoGame.Mode = UserMode.Subscreen;
 							UnsortedSubscreens.UntilMorning = true;
-							NoxicoGame.Subscreen = UnsortedSubscreens.SleepAWhile;
+							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
 							Subscreens.FirstDraw = true;
 						}, null, true, "Bed");
 					}
@@ -2681,7 +2680,7 @@ namespace Noxico
 			return newItem;
 		}
 
-		public void PickUp(Character taker)
+		public void Take(Character taker)
 		{
 			if (!taker.HasToken("items"))
 				taker.Tokens.Add(new Noxico.Token() { Name = "items" });

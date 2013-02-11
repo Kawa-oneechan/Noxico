@@ -2,7 +2,7 @@
 
 namespace Noxico
 {
-	class Vista
+	public static class Vista
 	{
 		[System.Runtime.InteropServices.DllImport("shell32.dll")]
 		private static extern int SHGetKnownFolderPath([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);

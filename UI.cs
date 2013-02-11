@@ -201,20 +201,20 @@ namespace Noxico
 
 	public class UIList : UIElement
 	{
-		public List<string> Items;
-		protected int index, scroll;
+		public List<string> Items { get; private set; }
+		private int _index, scroll;
 		public int Index
 		{
 			get
 			{
-				return index;
+				return _index;
 			}
 			set
 			{
 				if (Items == null || Items.Count == 0)
 					return;
-				index = value < Items.Count ? value : 0;
-				Text = Items[index];
+				_index = value < Items.Count ? value : 0;
+				Text = Items[_index];
 				EnsureVisible();
 				if (Change != null)
 					Change(this, null);
@@ -230,7 +230,7 @@ namespace Noxico
 		{
 			Text = "";
 			Items = new List<string>();
-			index = 0;
+			_index = 0;
 			Width = 32;
 			Foreground = Color.Black;
 			Background = Color.White;
@@ -258,8 +258,8 @@ namespace Noxico
 					NoxicoGame.HostForm.Write("???", Color.Black, Color.Black, l, t);
 				else
 					NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadRight(Width - 2) + ' ',
-						index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
-						index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
+						_index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
+						_index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
 						 l, t);
 
 		}
@@ -268,28 +268,28 @@ namespace Noxico
 		{
 			if (Items == null || Items.Count == 0)
 				return;
-			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
+			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
 		}
 
 		public override void DoUp()
 		{
 			if (Items.Count == 0)
 				return;
-			if (index == 0)
+			if (_index == 0)
 				return;
 			NoxicoGame.Sound.PlaySound("Cursor");
-			var pi = index;
-			index--;
-			if (index < scroll)
+			var pi = _index;
+			_index--;
+			if (_index < scroll)
 			{
 				scroll--;
 				NoxicoGame.HostForm.ScrollDown(Top, Top + Height, Left, Left + Width - 1);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
-			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
-			Text = Items[index];
+			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
+			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
 		}
@@ -298,20 +298,20 @@ namespace Noxico
 		{
 			if (Items.Count == 0)
 				return;
-			if (index == Items.Count - 1)
+			if (_index == Items.Count - 1)
 				return;
 			NoxicoGame.Sound.PlaySound("Cursor");
-			var pi = index;
-			index++;
-			if (index - scroll >= Height)
+			var pi = _index;
+			_index++;
+			if (_index - scroll >= Height)
 			{
 				scroll++;
 				NoxicoGame.HostForm.ScrollUp(Top - 1, Top + Height - 1, Left, Left + Width - 1);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
-			NoxicoGame.HostForm.Write(' ' + Items[index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + index - scroll);
-			Text = Items[index];
+			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
+				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
+			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
 		}
@@ -328,15 +328,16 @@ namespace Noxico
 				return;
 			var top = scroll;
 			var bottom = scroll + Height;
-			if (index > bottom)
-				scroll = index - Height + 1;
-			else if (index < top)
-				scroll = index;
+			if (_index > bottom)
+				scroll = _index - Height + 1;
+			else if (_index < top)
+				scroll = _index;
 		}
 	}
 
 	public class UITextBox : UIElement
 	{
+		public List<string> Items { get; private set; }
 		private int caret;
 
 		public override bool TabStop
@@ -393,6 +394,8 @@ namespace Noxico
 
 	public class UISingleList : UIList
 	{
+		private int _index;
+
 		public override bool TabStop
 		{
 			get { return true; }
@@ -405,7 +408,6 @@ namespace Noxico
 		public UISingleList(string text, EventHandler enter, IEnumerable<string> items, int index = 0)
 		{
 			Text = text;
-			Items = new List<string>();
 			Items.AddRange(items);
 			Index = index;
 			Width = 32;
@@ -432,8 +434,8 @@ namespace Noxico
 
 		public override void DoLeft()
 		{
-			if (index == 0)
-				index = Items.Count;
+			if (_index == 0)
+				_index = Items.Count;
 			NoxicoGame.Sound.PlaySound("Cursor");
 			Index--;
 			Draw();
@@ -443,8 +445,8 @@ namespace Noxico
 
 		public override void DoRight()
 		{
-			if (index == Items.Count - 1)
-				index = -1;
+			if (_index == Items.Count - 1)
+				_index = -1;
 			NoxicoGame.Sound.PlaySound("Cursor");
 			Index++;
 			Draw();
