@@ -651,6 +651,8 @@ namespace Noxico
 					var owner = item.Path("owner");
 					if (owner != null && owner.Text == myID)
 					{
+						if (!this.ParentBoard.HasToken("combat"))
+							this.ParentBoard.AddToken("combat");
 						SceneSystem.Engage(player.Character, this.Character, "(criminalscum)", true);
 					}
 				}
@@ -1196,6 +1198,7 @@ namespace Noxico
 				}
 				if (leaveCorpse)
 					LeaveCorpse(obituary);
+				this.ParentBoard.CheckCombatFinish();
 				return true;
 			}
 			Character.GetToken("health").Value -= damage;
@@ -1796,6 +1799,7 @@ namespace Noxico
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
+			ParentBoard.CheckCombatStart();
 			ParentBoard.UpdateLightmap(this, true);
 			ParentBoard.Redraw();
 			NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
@@ -1958,7 +1962,7 @@ namespace Noxico
 		public void QuickFire(Direction targetDirection)
 		{
 			NoxicoGame.Modifiers[0] = false;
-			if (this.ParentBoard.Type == BoardType.Town)
+			if (this.ParentBoard.Type == BoardType.Town && !this.ParentBoard.HasToken("combat"))
 				return;
 			var weapon = Character.CanShoot();
 			if (weapon == null)
@@ -2114,9 +2118,9 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) && !helpless)
 			{
 				NoxicoGame.ClearKeys();
-				if (this.ParentBoard.Type == BoardType.Town)
+				if (this.ParentBoard.Type == BoardType.Town && !this.ParentBoard.HasToken("combat"))
 				{
-					NoxicoGame.AddMessage("You cannot attack in a village.");
+					NoxicoGame.AddMessage("You cannot attack in a village without provocation.");
 					return;
 				}
 				var weapon = Character.CanShoot();
