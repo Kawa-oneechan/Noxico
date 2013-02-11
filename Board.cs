@@ -428,6 +428,7 @@ namespace Noxico
 					e.UpdateMapSolidity();
 
 				newBoard.UpdateLightmap(null, true);
+				newBoard.CheckCombatStart();
 
 				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
 			}
@@ -993,6 +994,44 @@ namespace Noxico
 					target.ToEast = this.BoardNum;
 					break;
 			}
+		}
+
+		public void CheckCombatFinish()
+		{
+			if (!this.HasToken("combat"))
+			{
+				if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
+					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed; 
+				return;
+			}
+			foreach (var x in Entities.OfType<BoardChar>())
+				if (x.Character.HasToken("hostile"))
+					return; //leave the combat rolling
+			this.RemoveToken("combat");
+			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
+				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
+		}
+
+		public void CheckCombatStart()
+		{
+			if (this.HasToken("combat"))
+			{
+				if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
+					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestCombatSpeed;
+				return;
+			}
+			foreach (var x in Entities.OfType<BoardChar>())
+			{
+				if (x.Character.HasToken("hostile"))
+				{
+					this.AddToken("combat");
+					if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
+						NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestCombatSpeed;
+					return;
+				}
+			}
+			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
+				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
 		}
 	}
 

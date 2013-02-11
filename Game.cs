@@ -35,6 +35,8 @@ namespace Noxico
 		public static bool ScrollWheeled { get; set; }
 		public static int AutoRestTimer { get; set; }
 		public static int AutoRestSpeed { get; set; }
+		public static int AutoRestExploreSpeed { get; set; }
+		public static int AutoRestCombatSpeed { get; set; }
 		public static bool Mono { get; set; }
 
 		public static Dictionary<KeyBinding, int> KeyBindings { get; set; }
@@ -150,9 +152,8 @@ namespace Noxico
 			KeyTrg = new bool[256];
 			KeyRepeat = new DateTime[256];
 			Modifiers = new bool[3];
-			AutoRestSpeed = IniFile.GetInt("misc", "autorest", 100); //100;
-			if (AutoRestSpeed < 5)
-				AutoRestSpeed = 5;
+			AutoRestExploreSpeed = IniFile.GetInt("misc", "autorest", 100); //100;
+			AutoRestCombatSpeed = IniFile.GetInt("misc", "combatrest", 0);
 			Cursor = new Cursor();
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
@@ -393,6 +394,7 @@ namespace Noxico
 				CurrentBoard = Boards[currentIndex];
 				CurrentBoard.Entities.Add(Player);
 				Player.ParentBoard = CurrentBoard;
+				CurrentBoard.CheckCombatStart();
 				CurrentBoard.UpdateLightmap(Player, true);
 				CurrentBoard.Redraw();
 				Sound.PlayMusic(CurrentBoard.Music);
@@ -535,12 +537,15 @@ namespace Noxico
 					if ((timeNow - lastUpdate).Milliseconds >= Speed)
 					{
 						lastUpdate = timeNow;
-						AutoRestTimer--;
-						if (AutoRestTimer <= 0)
+						if (AutoRestSpeed > 0)
 						{
-							Sound.PlaySound("Open Gate");
-							AutoRestTimer = AutoRestSpeed;
-							KeyMap[KeyBindings[KeyBinding.Rest]] = true;
+							AutoRestTimer--;
+							if (AutoRestTimer <= 0)
+							{
+								Sound.PlaySound("Open Gate");
+								AutoRestTimer = AutoRestSpeed;
+								KeyMap[KeyBindings[KeyBinding.Rest]] = true;
+							}
 						}
 						CurrentBoard.Update();
 
