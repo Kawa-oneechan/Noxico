@@ -39,22 +39,22 @@ namespace Noxico
 		public static int AutoRestCombatSpeed { get; set; }
 		public static bool Mono { get; set; }
 
-		public static Dictionary<KeyBinding, int> KeyBindings { get; set; }
+		public static Dictionary<KeyBinding, int> KeyBindings { get; private set; }
 
 		public static List<InventoryItem> KnownItems { get; private set; }
-		public List<Board> Boards { get; set; }
+		public List<Board> Boards { get; private set; }
 		public Board CurrentBoard { get; set; }
 		public static Board Ocean { get; set; }
 		public Player Player { get; set; }
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
-		public static List<StatusMessage> Messages { get; set; }
+		public static List<StatusMessage> Messages { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
-		public static Dictionary<string, char> Views { get; set; }
+		public static Dictionary<string, char> Views { get; private set; }
 		public static string[] TileDescriptions { get; private set; }
-		public static Dictionary<string, string> BodyplanLevs { get; set; }
+		public static Dictionary<string, string> BodyplanLevs { get; private set; }
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
 #if CONTEXT_SENSITIVE
@@ -84,7 +84,7 @@ namespace Noxico
 			return (NoxicoGame.KeyMap[(int)KeyBindings[binding]]);
 		}
 
-		public NoxicoGame(MainForm hostForm)
+		public void Initialize(MainForm hostForm)
 		{
 			Console.WriteLine("IT BEGINS...");
 
@@ -192,7 +192,7 @@ namespace Noxico
 						Views.Add(id, (char)c);
 					}
 				}
-				ohboy.Tokens = Token.Tokenize(plan);
+				ohboy.Tokenize(plan);
 				Toolkit.VerifyBodyplan(ohboy, id);
 				var lev = Toolkit.GetLevenshteinString(ohboy);
 				BodyplanLevs.Add(id, lev);
@@ -215,8 +215,7 @@ namespace Noxico
 			}
 
 			//ScriptVariables.Add("consumed", 0);
-			HostForm.Noxico = this;
-			Javascript.MainMachine = Javascript.Create();
+			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
 			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
@@ -546,7 +545,7 @@ namespace Noxico
 							AutoRestTimer--;
 							if (AutoRestTimer <= 0)
 							{
-								Sound.PlaySound("Open Gate");
+								//Sound.PlaySound("Open Gate");
 								AutoRestTimer = AutoRestSpeed;
 								KeyMap[KeyBindings[KeyBinding.Rest]] = true;
 							}
@@ -947,8 +946,8 @@ namespace Noxico
 				KnownTargets.Add(board.BoardNum);
 			});
 
-			var js = Javascript.Create();
-			Javascript.Ascertain(js);
+			var js = JavaScript.Create();
+			JavaScript.Ascertain(js);
 			js.SetParameter("BoardType", typeof(BoardType));
 			js.SetParameter("Character", typeof(Character));
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
@@ -1002,8 +1001,8 @@ namespace Noxico
 		public int Biome { get; set; }
 		public string Culture { get; set; }
 		public string BuildingSet { get; set; }
-		public List<string> Characters { get; set; }
-		public List<string> Species { get; set; }
+		public List<string> Characters { get; private set; }
+		public List<string> Species { get; private set; }
 		
 		public Expectation()
 		{

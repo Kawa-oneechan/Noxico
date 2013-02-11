@@ -39,7 +39,9 @@ namespace Noxico
 
     public class MainForm : Form
     {
-        private struct Cell
+		public NoxicoGame Noxico { get; private set; }
+
+		private struct Cell
         {
             public char Character;
             public Color Foreground;
@@ -49,15 +51,13 @@ namespace Noxico
         private Cell[,] previousImage = new Cell[80, 25];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
-        public NoxicoGame Noxico;
-        private ImageAttributes[] imageAttribs = new ImageAttributes[16 * 16];
 		private bool starting = true;
 
-        public bool Running = true;
-		public int CellWidth = 8;
-		public int CellHeight = 14;
-		public int GlyphAdjustX = -2, GlyphAdjustY = -1;
-		public bool ClearType = false;
+        public bool Running { get; set; }
+		private int CellWidth = 8;
+		private int CellHeight = 14;
+		private int GlyphAdjustX = -2, GlyphAdjustY = -1;
+		private bool ClearType = false;
 
 		public string IniPath { get; private set; }
 
@@ -201,7 +201,8 @@ namespace Noxico
 
 				backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
 				scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-				Noxico = new NoxicoGame(this);
+				Noxico = new NoxicoGame();
+				Noxico.Initialize(this);
 
 				MouseUp += new MouseEventHandler(MainForm_MouseUp);
 				MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
@@ -224,6 +225,7 @@ namespace Noxico
 
 				this.Controls.Clear();
 				starting = false;
+				Running = true;
 				while (Running)
 				{
 					Noxico.Update();

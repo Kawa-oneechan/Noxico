@@ -175,8 +175,8 @@ namespace Noxico
 					if (part.GetAttribute("type") == "text/javascript")
 					{
 						var buffer = new StringBuilder();
-						var js = Javascript.MainMachine;
-						Javascript.Ascertain(js);
+						var js = JavaScript.MainMachine;
+						JavaScript.Ascertain(js);
 
 						js.SetParameter("top", top);
 						js.SetParameter("bottom", bottom);
@@ -254,7 +254,8 @@ namespace Noxico
 				fValuePM = fValue[fValue.Length - 1];
 				fValue = fValue.Remove(fValue.Length - 1);
 			}
-			float.TryParse(fValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out fValueF);
+			var fValueIsFloat = float.TryParse(fValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out fValueF);
+			
 			switch (fType)
 			{
 				case "name":

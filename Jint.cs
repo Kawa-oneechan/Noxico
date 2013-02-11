@@ -6,7 +6,7 @@ using Jint;
 
 namespace Noxico
 {
-	public class Javascript
+	public class JavaScript
 	{
 		public static JintEngine MainMachine { get; set; }
 
@@ -51,9 +51,9 @@ namespace Noxico
 				}
 			}
 			if (isFromJint && !shouldBeFromJint)
-				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from Javascript, but is not allowed.");
+				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from JavaScript, but is not allowed.");
 			else if (!isFromJint && shouldBeFromJint)
-				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from hard code, but is only meant for Javascript use.");
+				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from hard code, but is only meant for JavaScript use.");
 		}
 	}
 
@@ -64,7 +64,7 @@ namespace Noxico
 		Either,
 	}
 
-	public class ForJSAttribute : Attribute
+	public sealed class ForJSAttribute : Attribute
 	{
 		public ForJSUsage Usage { get; private set; }
 		public ForJSAttribute()

@@ -29,7 +29,7 @@ namespace Noxico
 		//TODO: Refactor the below
 
 		public static bool UntilMorning;
-		public static void SleepAWhile()
+		public static void Sleep()
 		{
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			var pchar = player.Character;

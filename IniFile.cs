@@ -6,15 +6,15 @@ using System.IO;
 
 namespace Noxico
 {
-	class IniFile
+	public static class IniFile
 	{
 		private static Dictionary<string, Dictionary<string, string>> settings = new Dictionary<string,Dictionary<string,string>>();
 
-		public static void Load(string filename)
+		public static void Load(string fileName)
 		{
 			settings.Clear();
 			var thisSection = "";
-			var lines = File.ReadAllLines(filename);
+			var lines = File.ReadAllLines(fileName);
 			foreach (var line in lines)
 			{
 				var l = line;
@@ -44,9 +44,9 @@ namespace Noxico
 			}
 		}
 
-		public static void Save(string filename)
+		public static void Save(string fileName)
 		{
-			if (!File.Exists(filename))
+			if (!File.Exists(fileName))
 			{
 				var sb = new StringBuilder("");
 				foreach (var section in settings)
@@ -60,11 +60,11 @@ namespace Noxico
 					sb.AppendLine();
 					sb.AppendLine();
 				}
-				File.WriteAllText(filename, sb.ToString());
+				File.WriteAllText(fileName, sb.ToString());
 			}
 			else
 			{
-				var lines = File.ReadAllLines(filename).Select(l => l.Trim()).ToArray();
+				var lines = File.ReadAllLines(fileName).Select(l => l.Trim()).ToArray();
 				foreach (var section in settings)
 				{
 					for (var i = 0; i < lines.Length; i++)
@@ -99,7 +99,7 @@ namespace Noxico
 						}
 					}
 				}
-				File.WriteAllLines(filename, lines);
+				File.WriteAllLines(fileName, lines);
 			}
 		}
 

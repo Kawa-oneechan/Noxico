@@ -63,27 +63,27 @@ namespace Noxico
 			}
 		}
 
-		public static bool FileExists(string filename)
+		public static bool FileExists(string fileName)
 		{
-			if (File.Exists(Path.Combine("data", filename)))
+			if (File.Exists(Path.Combine("data", fileName)))
 				return true;
-			return (fileList.ContainsKey(filename));
+			return (fileList.ContainsKey(fileName));
 		}
 
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns a <see cref="MemoryStream"/> for it.
 		/// </summary>
-		/// <param name="filename">The file to find.</param>
+		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="MemoryStream"/> if found, <see cref="null"/> otherwise.</returns>
-		public static Stream GetStream(string filename)
+		public static Stream GetStream(string fileName)
 		{
-			Console.WriteLine("Mix.GetStream({0})", filename);
-			if (File.Exists(Path.Combine("data", filename)))
-				return new MemoryStream(File.ReadAllBytes(Path.Combine("data", filename)));
-			if (!fileList.ContainsKey(filename))
-				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
+			Console.WriteLine("Mix.GetStream({0})", fileName);
+			if (File.Exists(Path.Combine("data", fileName)))
+				return new MemoryStream(File.ReadAllBytes(Path.Combine("data", fileName)));
+			if (!fileList.ContainsKey(fileName))
+				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			MemoryStream ret;
-			var entry = fileList[filename];
+			var entry = fileList[fileName];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 			{
 				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
@@ -95,16 +95,16 @@ namespace Noxico
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="string"/>.
 		/// </summary>
-		/// <param name="filename">The file to find.</param>
+		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="string"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
-		public static string GetString(string filename)
+		public static string GetString(string fileName)
 		{
-			Console.WriteLine("Mix.GetString({0})", filename);
-			if (File.Exists(Path.Combine("data", filename)))
-				return File.ReadAllText(Path.Combine("data", filename));
-			if (!fileList.ContainsKey(filename))
-				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
-			var bytes = GetBytes(filename);
+			Console.WriteLine("Mix.GetString({0})", fileName);
+			if (File.Exists(Path.Combine("data", fileName)))
+				return File.ReadAllText(Path.Combine("data", fileName));
+			if (!fileList.ContainsKey(fileName))
+				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
+			var bytes = GetBytes(fileName);
 			var ret = Encoding.UTF8.GetString(bytes);
 			return ret;
 		}
@@ -112,34 +112,34 @@ namespace Noxico
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns its contents as an <see cref="XMLDocument"/>, merging in the nodes from same-named files in subdirectories to allow mod expansions.
 		/// </summary>
-		/// <param name="filename">The file to find. If this is in the root of the Mix system, mod expansions are merged in.</param>
+		/// <param name="fileName">The file to find. If this is in the root of the Mix system, mod expansions are merged in.</param>
 		/// <returns>Returns an <see cref="XMLDocument"/> with the file(s)'s contents if found, <see cref="null"/> otherwise.</returns>
-		public static XmlDocument GetXMLDocument(string filename, bool injectOnTop = false)
+		public static XmlDocument GetXMLDocument(string fileName, bool injectOnTop = false)
 		{
 			var x = new System.Xml.XmlDocument();
-			if (filename.Contains('\\'))
+			if (fileName.Contains('\\'))
 			{
-				var s = GetString(filename);
+				var s = GetString(fileName);
 				if (s == null)
-					throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
+					throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 				x.LoadXml(s);
 				return x;
 			}
 
-			var otherFiles = fileList.Keys.Where(e => e != filename && e.EndsWith(filename)).ToList();
+			var otherFiles = fileList.Keys.Where(e => e != fileName && e.EndsWith(fileName)).ToList();
 			if (Directory.Exists("data"))
 			{
-				var externalOtherFiles = Directory.GetFiles("data", "*.xml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != filename && e.EndsWith(filename));
+				var externalOtherFiles = Directory.GetFiles("data", "*.xml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != fileName && e.EndsWith(fileName));
 				otherFiles.AddRange(externalOtherFiles);
 			}
 			if (otherFiles.Count() == 0)
 			{
-				x.LoadXml(GetString(filename));
+				x.LoadXml(GetString(fileName));
 				return x;
 			}
 
-			Console.WriteLine("{0} has mod expansions!", filename);
-			x.LoadXml(GetString(filename));
+			Console.WriteLine("{0} has mod expansions!", fileName);
+			x.LoadXml(GetString(fileName));
 			foreach (var f in otherFiles)
 			{
 				Console.WriteLine("Splicing in {0}...", f);
@@ -170,18 +170,18 @@ namespace Noxico
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="Bitmap"/>.
 		/// </summary>
-		/// <param name="filename">The file to find.</param>
+		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="Bitmap"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
 		//TODO: cache the returns.
-		public static Bitmap GetBitmap(string filename)
+		public static Bitmap GetBitmap(string fileName)
 		{
-			Console.WriteLine("Mix.GetBytes({0})", filename);
-			if (File.Exists(Path.Combine("data", filename)))
-				return new Bitmap(Path.Combine("data", filename));
-			if (!fileList.ContainsKey(filename))
-				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
+			Console.WriteLine("Mix.GetBytes({0})", fileName);
+			if (File.Exists(Path.Combine("data", fileName)))
+				return new Bitmap(Path.Combine("data", fileName));
+			if (!fileList.ContainsKey(fileName))
+				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			Bitmap ret;
-			var entry = fileList[filename];
+			var entry = fileList[fileName];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 			{
 				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
@@ -196,17 +196,17 @@ namespace Noxico
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="byte[]"/>.
 		/// </summary>
-		/// <param name="filename">The file to find.</param>
+		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="byte[]"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
-		public static byte[] GetBytes(string filename)
+		public static byte[] GetBytes(string fileName)
 		{
-			Console.WriteLine("Mix.GetBytes({0})", filename);
-			if (File.Exists(Path.Combine("data", filename)))
-				return File.ReadAllBytes(Path.Combine("data", filename));
-			if (!fileList.ContainsKey(filename))
-				throw new FileNotFoundException("File " + filename + " was not found in the MIX files.");
+			Console.WriteLine("Mix.GetBytes({0})", fileName);
+			if (File.Exists(Path.Combine("data", fileName)))
+				return File.ReadAllBytes(Path.Combine("data", fileName));
+			if (!fileList.ContainsKey(fileName))
+				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			byte[] ret;
-			var entry = fileList[filename];
+			var entry = fileList[fileName];
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 			{
 				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
@@ -252,14 +252,14 @@ namespace Noxico
 			return ret.ToArray();
 		}
 		
-		public static void GetFileRange(string filename, out int offset, out int length, out string mixFile)
+		public static void GetFileRange(string fileName, out int offset, out int length, out string mixFile)
 		{
 			offset = -1;
 			length = -1;
 			mixFile = string.Empty;
-			if (!fileList.ContainsKey(filename))
+			if (!fileList.ContainsKey(fileName))
 				return;
-			var entry = fileList[filename];
+			var entry = fileList[fileName];
 			offset = entry.Offset;
 			length = entry.Length;
 			mixFile = entry.MixFile;

@@ -752,11 +752,11 @@ namespace Noxico
 				FoldCostumeVariables(child, vars);
 		}
 
-		public static string TranslateKey(KeyBinding binding, bool longHand = false)
+		public static string TranslateKey(KeyBinding binding, bool longhand = false)
 		{
-			return TranslateKey((System.Windows.Forms.Keys)NoxicoGame.KeyBindings[binding], longHand);
+			return TranslateKey((System.Windows.Forms.Keys)NoxicoGame.KeyBindings[binding], longhand);
 		}
-		public static string TranslateKey(System.Windows.Forms.Keys key, bool longHand = false)
+		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false)
 		{
 			var keyName = key.ToString();
 			var specials = new Dictionary<string, string>()
@@ -770,7 +770,7 @@ namespace Noxico
 				{ "Oemcomma", "," },
 				{ "Escape", "Esc." },
 			};
-			if (longHand)
+			if (longhand)
 			{
 				specials = new Dictionary<string, string>()
 				{
@@ -821,7 +821,7 @@ namespace Noxico
         {
 			var plan = new Token();
 			var name = bodyPlan.GetAttribute("id");
-			plan.Tokens = Token.Tokenize(bodyPlan.ChildNodes[0].Value);
+			plan.Tokenize(bodyPlan.ChildNodes[0].Value);
 			VerifyBodyplan(plan, name);
 		}
 

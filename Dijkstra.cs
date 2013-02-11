@@ -19,7 +19,7 @@ namespace Noxico
 		private int[,] map;
 		private bool[,] walls;
 
-		public List<Point> Hotspots { get; set; }
+		public List<Point> Hotspots { get; private set; }
 		public DijkstraIgnores Ignore { get; set; }
 		public Type IgnoreType { get; set; }
 		public Entity IgnoreObject { get; set; }

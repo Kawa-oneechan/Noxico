@@ -25,17 +25,20 @@ namespace GamerServices
 		public static bool IsValid { get; private set; }
 		public static long LastSave { get; private set; }
 		public static string Name { get; private set; }
-		public static List<string> Achievements { get; private set; }
-		public static Dictionary<string, string> Arbitraries { get; private set; }
-		public static Dictionary<string, Achievement> KnownAchievements { get; private set; }
 		public static Action<string> OnMessage { get; set; }
 		public static Action<Achievement> OnAchievement { get; set; }
 
+		private static Dictionary<string, string> arbitraries;
+		private static Dictionary<string, Achievement> knownAchievements;
+		private static List<string> unlockedAchievements;
+
 		static Profile()
 		{
-			Achievements = new List<string>();
-			Arbitraries = new Dictionary<string, string>();
-			KnownAchievements = new Dictionary<string, Achievement>();
+			GameName = "<ERROR>";
+
+			unlockedAchievements = new List<string>();
+			arbitraries = new Dictionary<string, string>();
+			knownAchievements = new Dictionary<string, Achievement>();
 			AskForOnline = false;
 			UseOnline = false;
 
@@ -69,19 +72,19 @@ namespace GamerServices
 				OnMessage("Profile created.");
 		}
 
-		public static bool Load(string filename = "")
+		public static bool Load(string fileName = "")
 		{
 			if (string.IsNullOrWhiteSpace(profilePath))
-				filename = "profile";
-			if (filename == "")
-				filename = Path.Combine(profilePath, GameName + "_profile");
-			if (!File.Exists(filename))
+				fileName = "profile";
+			if (fileName == "")
+				fileName = Path.Combine(profilePath, GameName + "_profile");
+			if (!File.Exists(fileName))
 			{
 				if (OnMessage != null)
 					OnMessage("Profile not found.");
 				return false;
 			}
-			using (var f = File.Open(filename, FileMode.Open))
+			using (var f = File.Open(fileName, FileMode.Open))
 			{
 				using (var stream = new BinaryReader(f))
 				{
@@ -96,21 +99,21 @@ namespace GamerServices
 						}
 						Name = stream.ReadString();
 						LastSave = stream.ReadInt64();
-						Achievements.Clear();
-						Arbitraries.Clear();
+						unlockedAchievements.Clear();
+						arbitraries.Clear();
 						try
 						{
 							var numAchievements = stream.ReadInt16();
 							for (var i = 0; i < numAchievements; i++)
-								Achievements.Add(stream.ReadString());
+								unlockedAchievements.Add(stream.ReadString());
 							var numArbitraries = stream.ReadInt16();
 							for (var i = 0; i < numArbitraries; i++)
-								Arbitraries.Add(stream.ReadString(), string.Empty);
-							var keys = Arbitraries.Keys.ToArray();
+								arbitraries.Add(stream.ReadString(), string.Empty);
+							var keys = arbitraries.Keys.ToArray();
 							foreach (var k in keys)
-								Arbitraries[k] = stream.ReadString();
+								arbitraries[k] = stream.ReadString();
 						}
-						catch (Exception x)
+						catch (Exception)
 						{
 							if (OnMessage != null)
 							{
@@ -118,7 +121,7 @@ namespace GamerServices
 								return false;
 							}
 							else
-								throw x;
+								throw;
 						}
 						IsValid = true;
 						return true;
@@ -127,29 +130,29 @@ namespace GamerServices
 			}
 		}
 
-		public static void Save(string filename = "")
+		public static void Save(string fileName = "")
 		{
 			if (!IsValid)
 				return;
-			if (string.IsNullOrWhiteSpace(profilePath) && filename == "")
-				filename = "profile";
-			if (filename == "")
-				filename = Path.Combine(profilePath, GameName + "_profile");
+			if (string.IsNullOrWhiteSpace(profilePath) && fileName == "")
+				fileName = "profile";
+			if (fileName == "")
+				fileName = Path.Combine(profilePath, GameName + "_profile");
 
 			LastSave = DateTime.Now.ToUniversalTime().ToBinary();
-			using (var f = File.Open(filename, FileMode.Create))
+			using (var f = File.Open(fileName, FileMode.Create))
 			{
 				using (var stream = new BinaryWriter(f))
 				{
 					stream.Write("Kafuka Gamer Profile".ToCharArray());
 					stream.Write(Name);
 					stream.Write(LastSave);
-					stream.Write((Int16)Achievements.Count);
-					Achievements.ForEach(x => stream.Write(x));
-					stream.Write((Int16)Arbitraries.Count);
-					foreach (var x in Arbitraries)
+					stream.Write((Int16)unlockedAchievements.Count);
+					unlockedAchievements.ForEach(x => stream.Write(x));
+					stream.Write((Int16)arbitraries.Count);
+					foreach (var x in arbitraries)
 						stream.Write(x.Key);
-					foreach (var x in Arbitraries)
+					foreach (var x in arbitraries)
 						stream.Write(x.Value);
 					stream.Close();
 				}
@@ -158,63 +161,64 @@ namespace GamerServices
 
 		public static void UnlockAchievement(string achievementID)
 		{
-			if (!KnownAchievements.ContainsKey(achievementID))
+			if (!knownAchievements.ContainsKey(achievementID))
 				//throw new Exception("Tried to unlock unregistered achievement.");
 				return;
 			if (!IsValid)
 				return;
-			if (Achievements.Contains(achievementID))
+			if (unlockedAchievements.Contains(achievementID))
 				return;
-			Achievements.Add(achievementID);
+			unlockedAchievements.Add(achievementID);
 			if (OnAchievement != null)
-				OnAchievement(KnownAchievements[achievementID]);
+				OnAchievement(knownAchievements[achievementID]);
 		}
 
 		public static void RegisterAchievement(string id, string name, string description, string iconRef = "")
 		{
-			if (KnownAchievements.ContainsKey(id))
+			if (knownAchievements.ContainsKey(id))
 				return;
-			KnownAchievements.Add(id, new Achievement() { Name = name, Description = description, IconRef = iconRef });
+			knownAchievements.Add(id, new Achievement() { Name = name, Description = description, IconRef = iconRef });
 		}
 
 		public static int GetArbitraryInt(string id)
 		{
 			if (!IsValid)
 				return 0;
-			if (!Arbitraries.ContainsKey(id))
+			if (!arbitraries.ContainsKey(id))
 				return 0;
 			int i = 0;
-			int.TryParse(Arbitraries[id], out i);
-			return i;
+			if (int.TryParse(arbitraries[id], out i))
+				return i;
+			return 0;
 		}
 
 		public static void SetArbitraryInt(string id, int value)
 		{
 			if (!IsValid)
 				return;
-			if (!Arbitraries.ContainsKey(id))
-				Arbitraries.Add(id, value.ToString());
+			if (!arbitraries.ContainsKey(id))
+				arbitraries.Add(id, value.ToString());
 			else
-				Arbitraries[id] = value.ToString();
+				arbitraries[id] = value.ToString();
 		}
 
 		public static string GetArbitraryString(string id)
 		{
 			if (!IsValid)
 				return string.Empty;
-			if (!Arbitraries.ContainsKey(id))
+			if (!arbitraries.ContainsKey(id))
 				return string.Empty;
-			return Arbitraries[id];
+			return arbitraries[id];
 		}
 
 		public static void SetArbitraryString(string id, string value)
 		{
 			if (!IsValid)
 				return;
-			if (!Arbitraries.ContainsKey(id))
-				Arbitraries.Add(id, value);
+			if (!arbitraries.ContainsKey(id))
+				arbitraries.Add(id, value);
 			else
-				Arbitraries[id] = value;
+				arbitraries[id] = value;
 		}
 
 		public static bool IsConnected()
