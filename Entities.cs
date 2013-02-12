@@ -121,19 +121,6 @@ namespace Noxico
 			//	RunCycle();
         }
 
-        public Direction Opposite(Direction current)
-        {
-            if (current == Direction.North)
-                return Direction.South;
-            else if (current == Direction.East)
-                return Direction.West;
-            else if (current == Direction.South)
-                return Direction.North;
-            else if (current == Direction.West)
-                return Direction.East;
-            return Direction.North;
-        }
-
 		public virtual void SaveToFile(BinaryWriter stream)
 		{
 			//Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
@@ -181,13 +168,13 @@ namespace Noxico
 		}
 	}
 
+	public enum CursorIntent { Look, Take, Chat, Fuck, Shoot };
 	public class Cursor : Entity
 	{
-		public enum Intents { Look, Take, Chat, Fuck, Shoot };
 
 		private static int blinkRate = 500;
 		public int Range { get; set; }
-		public Intents Intent { get; set; }
+		public CursorIntent Intent { get; set; }
 
 		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
@@ -200,7 +187,7 @@ namespace Noxico
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
 			this.Range = 0;
-			this.Intent = Intents.Look;
+			this.Intent = CursorIntent.Look;
 			this.Tabstops = new List<Point>();
 		}
 
@@ -244,7 +231,7 @@ namespace Noxico
 			PointingAt = null;
 			if (NoxicoGame.Messages.Count == 0)
 				NoxicoGame.AddMessage("<...>");
-			NoxicoGame.Messages.Last().Message = (Intent == Intents.Shoot ? "Aim" : "Point") + " at " + ((Intent == Intents.Look) ? "an object or character." : (Intent == Intents.Take) ? "an object." : "a character.");
+			NoxicoGame.Messages.Last().Message = (Intent == CursorIntent.Shoot ? "Aim" : "Point") + " at " + ((Intent == CursorIntent.Look) ? "an object or character." : (Intent == CursorIntent.Take) ? "an object." : "a character.");
 			NoxicoGame.Messages.Last().Color = Color.Gray;
 			foreach (var entity in this.ParentBoard.Entities)
 			{
@@ -269,7 +256,7 @@ namespace Noxico
 						}
 					}
 
-					if (entity is BoardChar && Intent != Intents.Take)
+					if (entity is BoardChar && Intent != CursorIntent.Take)
 					{
 						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.ToString(); 
@@ -280,14 +267,14 @@ namespace Noxico
 						//NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if ((entity is Clutter || entity is Container) && Intent == Intents.Look)
+					else if ((entity is Clutter || entity is Container) && Intent == CursorIntent.Look)
 					{
 						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name;
 						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if (entity is DroppedItem && (Intent == Intents.Look || Intent == Intents.Take))
+					else if (entity is DroppedItem && (Intent == CursorIntent.Look || Intent == CursorIntent.Take))
 					{
 						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = ((DroppedItem)PointingAt).Name;
@@ -341,16 +328,16 @@ namespace Noxico
 				if (PointingAt != null)
 				{
 					LastTarget = PointingAt;
-					if (PointingAt is DroppedItem && (Intent == Intents.Look || Intent == Intents.Take))
+					if (PointingAt is DroppedItem && (Intent == CursorIntent.Look || Intent == CursorIntent.Take))
 					{
 						var item = ((DroppedItem)PointingAt).Item;
 						var token = ((DroppedItem)PointingAt).Token;
-						if (Intent == Intents.Look)
+						if (Intent == CursorIntent.Look)
 						{
 							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString(token) + ".";
 							text = text.Trim();
 							var lines = text.Split('\n').Length;
-							MessageBox.Message(text, true);
+							MessageBox.Notice(text, true);
 						}
 						else
 						{
@@ -361,59 +348,59 @@ namespace Noxico
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 					}
-					else if (PointingAt is Clutter && Intent == Intents.Look && ((Clutter)PointingAt).Description != "")
+					else if (PointingAt is Clutter && Intent == CursorIntent.Look && ((Clutter)PointingAt).Description != "")
 					{
 						var text = ((Clutter)PointingAt).Description;
 						text = text.Trim();
 						//var lines = text.Split('\n').Length;
-						MessageBox.Message(text, true);
+						MessageBox.Notice(text, true);
 					}
 					else if (PointingAt is Player)
 					{
-						if (Intent == Intents.Look)
+						if (Intent == CursorIntent.Look)
 							TextScroller.LookAt((BoardChar)PointingAt);
-						else if (Intent == Intents.Chat)
+						else if (Intent == CursorIntent.Chat)
 						{
 							if (Culture.CheckSummoningDay())
 								return;
 							if (player.Character.Path("cunning").Value >= 10)
-								MessageBox.Message("Talking to yourself is the first sign of insanity.", true);
+								MessageBox.Notice("Talking to yourself is the first sign of insanity.", true);
 							else
-								MessageBox.Message("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
+								MessageBox.Notice("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
 						}
-						else if (Intent == Intents.Fuck)
+						else if (Intent == CursorIntent.Fuck)
 							SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
 					}
 					else if (PointingAt is BoardChar)
 					{
-						if (Intent == Intents.Look)
+						if (Intent == CursorIntent.Look)
 							TextScroller.LookAt((BoardChar)PointingAt);
-						else if (Intent == Intents.Chat && player.CanSee(PointingAt))
+						else if (Intent == CursorIntent.Chat && player.CanSee(PointingAt))
 						{
 							if (((BoardChar)PointingAt).Character.HasToken("beast"))
-								MessageBox.Message("The " + ((BoardChar)PointingAt).Character.Title + " cannot speak.", true);
+								MessageBox.Notice("The " + ((BoardChar)PointingAt).Character.Title + " cannot speak.", true);
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
-								MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
+								MessageBox.Notice((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetNameOrTitle() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
 							else
-								MessageBox.Ask("Strike up a conversation with " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
+								MessageBox.Ask("Strike up a conversation with " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
 						}
-						else if (Intent == Intents.Fuck && player.CanSee(PointingAt))
+						else if (Intent == CursorIntent.Fuck && player.CanSee(PointingAt))
 						{
 							if (((BoardChar)PointingAt).Character.HasToken("beast"))
-								MessageBox.Message("The " + ((BoardChar)PointingAt).Character.Title + " is not a sentient being.", true);
+								MessageBox.Notice("The " + ((BoardChar)PointingAt).Character.Title + " is not a sentient being.", true);
 							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
 							{
 								if (((BoardChar)PointingAt).Character.HasToken("helpless"))
-									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetName() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
+									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
 								else
-									MessageBox.Message((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetName() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
+									MessageBox.Notice((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetNameOrTitle() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
 							}
 							else
 							{
 								SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
 							}
 						}
-						else if (Intent == Intents.Shoot)
+						else if (Intent == CursorIntent.Shoot)
 						{
 							if (player.CanSee(PointingAt))
 								player.AimShot(PointingAt);
@@ -423,13 +410,13 @@ namespace Noxico
 					}
 					return;
 				}
-				else if (Intent == Intents.Look)
+				else if (Intent == CursorIntent.Look)
 				{
 					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
 					if (tSD.HasValue)
 					{
 						PointingAt = null;
-						MessageBox.Message(tSD.Value.Description, true); 
+						MessageBox.Notice(tSD.Value.Description, true); 
 						return;
 					}
 				}
@@ -442,7 +429,7 @@ namespace Noxico
 				if (PointingAt != null && PointingAt is BoardChar)
 				{
 					((BoardChar)PointingAt).Character.CreateInfoDump();
-					NoxicoGame.AddMessage("Info for " + ((BoardChar)PointingAt).Character.GetName() + " dumped.", Color.Red);
+					NoxicoGame.AddMessage("Info for " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + " dumped.", Color.Red);
 				}
 			}
 #endif
@@ -465,9 +452,9 @@ namespace Noxico
 			{
 				if (Range > 0 && e.DistanceFrom(player) > Range - 1)
 					continue;
-				if ((Intent == Intents.Chat || Intent == Intents.Fuck || Intent == Intents.Shoot) && !(e is BoardChar))
+				if ((Intent == CursorIntent.Chat || Intent == CursorIntent.Fuck || Intent == CursorIntent.Shoot) && !(e is BoardChar))
 					continue;
-				else if (Intent == Intents.Take && !(e is DroppedItem))
+				else if (Intent == CursorIntent.Take && !(e is DroppedItem))
 					continue;
 				Tabstops.Add(new Point(e.XPosition, e.YPosition));
 			}
@@ -479,7 +466,7 @@ namespace Noxico
 					LastTarget = null;
 				if (LastTarget != null)
 				{
-					if (Intent != Intents.Look && !player.CanSee(LastTarget))
+					if (Intent != CursorIntent.Look && !player.CanSee(LastTarget))
 						LastTarget = null;
 					else
 					{
@@ -541,7 +528,7 @@ namespace Noxico
 			var skinColor = Character.Path((Character.Path("skin/type").Text == "slime" ? "hair" : "skin") + "/color").Text;
 			ForegroundColor = Toolkit.GetColor(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
-			if (skinColor.Equals("black", StringComparison.InvariantCultureIgnoreCase))
+			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
 				ForegroundColor = Color.FromArgb(34, 34, 34);
 
 			if (Character.HasToken("ascii"))
@@ -750,7 +737,7 @@ namespace Noxico
 				if (ScriptPathing)
 				{
 					var dir = Direction.North;
-					ScriptPathTarget.Ignore = DijkstraIgnores.Type;
+					ScriptPathTarget.Ignore = DijkstraIgnore.Type;
 					ScriptPathTarget.IgnoreType = typeof(BoardChar);
 					if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
 						Move(dir);
@@ -945,7 +932,7 @@ namespace Noxico
 				Console.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 				var map = ScriptPathTarget;
 				var dir = Direction.North;
-				map.Ignore = DijkstraIgnores.Type;
+				map.Ignore = DijkstraIgnore.Type;
 				map.IgnoreType = typeof(BoardChar);
 				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
 					Move(dir);
@@ -985,7 +972,7 @@ namespace Noxico
 				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
 				var map = ScriptPathTarget; //target.DijkstraMap;
 				var dir = Direction.North;
-				map.Ignore = DijkstraIgnores.Type;
+				map.Ignore = DijkstraIgnore.Type;
 				map.IgnoreType = typeof(BoardChar);
 				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
 					Move(dir);
@@ -1220,8 +1207,8 @@ namespace Noxico
 			};
 			if (!Character.IsProperNamed)
 			{
-				corpse.Name = Character.GetTitle() + "'s remains";
-				corpse.Description = "These are the remains of " + Character.GetTitle() + ", who " + obituary + ".";
+				corpse.Name = Character.GetTheTitle() + "'s remains";
+				corpse.Description = "These are the remains of " + Character.GetTheTitle() + ", who " + obituary + ".";
 			}
 
 			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)
@@ -1314,7 +1301,7 @@ namespace Noxico
 				{
 					paused = false;
 				};
-				MessageBox.Message(x, true, this.Character.Name.ToString(true));
+				MessageBox.Notice(x, true, this.Character.Name.ToString(true));
 				while (paused)
 				{
 					NoxicoGame.HostForm.Noxico.Update();
@@ -1349,7 +1336,7 @@ namespace Noxico
 			var scripts = planSource.SelectNodes("script").OfType<System.Xml.XmlElement>();
 			foreach (var script in scripts)
 			{
-				var target = script.GetAttribute("target").ToLowerInvariant();
+				var target = script.GetAttribute("target");
 				switch (target)
 				{
 					case "tick":
@@ -1957,7 +1944,7 @@ namespace Noxico
 		public void QuickFire(Direction targetDirection)
 		{
 			NoxicoGame.Modifiers[0] = false;
-			if (this.ParentBoard.Type == BoardType.Town && !this.ParentBoard.HasToken("combat"))
+			if (this.ParentBoard.BoardType == BoardType.Town && !this.ParentBoard.HasToken("combat"))
 				return;
 			var weapon = Character.CanShoot();
 			if (weapon == null)
@@ -2060,7 +2047,7 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Travel) && this.ParentBoard.Type != BoardType.Dungeon)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Travel) && this.ParentBoard.BoardType != BoardType.Dungeon)
 			{
 				Travel.Open();
 				return;
@@ -2078,13 +2065,13 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Chat))
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.AddMessage("[Chat message]");
+				NoxicoGame.AddMessage("\uE080[Chat message]");
 				NoxicoGame.Mode = UserMode.LookAt;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 3;
-				NoxicoGame.Cursor.Intent = Cursor.Intents.Chat;
+				NoxicoGame.Cursor.Intent = CursorIntent.Chat;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
@@ -2098,13 +2085,13 @@ namespace Noxico
 					NoxicoGame.AddMessage("You are not nearly turned on enough to consider that.");
 					return;
 				}
-				NoxicoGame.AddMessage("[Fuck message]");
+				NoxicoGame.AddMessage("\uE080[Fuck message]");
 				NoxicoGame.Mode = UserMode.LookAt;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 2;
-				NoxicoGame.Cursor.Intent = Cursor.Intents.Fuck;
+				NoxicoGame.Cursor.Intent = CursorIntent.Fuck;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
@@ -2113,7 +2100,7 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) && !helpless)
 			{
 				NoxicoGame.ClearKeys();
-				if (this.ParentBoard.Type == BoardType.Town && !this.ParentBoard.HasToken("combat"))
+				if (this.ParentBoard.BoardType == BoardType.Town && !this.ParentBoard.HasToken("combat"))
 				{
 					NoxicoGame.AddMessage("You cannot attack in a village without provocation.");
 					return;
@@ -2124,13 +2111,13 @@ namespace Noxico
 					NoxicoGame.AddMessage("You are not wielding a throwing weapon or loaded firearm.");
 					return;
 				}
-				NoxicoGame.AddMessage("[Shoot message]");
+				NoxicoGame.AddMessage("\uE080[Shoot message]");
 				NoxicoGame.Mode = UserMode.LookAt;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = (int)weapon.Path("weapon/range").Value;
-				NoxicoGame.Cursor.Intent = Cursor.Intents.Shoot;
+				NoxicoGame.Cursor.Intent = CursorIntent.Shoot;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
@@ -2139,13 +2126,13 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Look) || NoxicoGame.IsKeyDown(KeyBinding.LookAlt))
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.AddMessage("[Lookat message]");
+				NoxicoGame.AddMessage("\uE080[Lookat message]");
 				NoxicoGame.Mode = UserMode.LookAt;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.Range = 0;
-				NoxicoGame.Cursor.Intent = Cursor.Intents.Look;
+				NoxicoGame.Cursor.Intent = CursorIntent.Look;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
@@ -2159,13 +2146,13 @@ namespace Noxico
 				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);
 				if (itemsHere.Count == 0)
 				{
-					NoxicoGame.AddMessage("[Pickup message]");
+					NoxicoGame.AddMessage("\uE080[Pickup message]");
 					NoxicoGame.Mode = UserMode.LookAt;
 					NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 					NoxicoGame.Cursor.XPosition = this.XPosition;
 					NoxicoGame.Cursor.YPosition = this.YPosition;
 					NoxicoGame.Cursor.Range = 2;
-					NoxicoGame.Cursor.Intent = Cursor.Intents.Take;
+					NoxicoGame.Cursor.Intent = CursorIntent.Take;
 					NoxicoGame.Cursor.PopulateTabstops();
 					NoxicoGame.Cursor.Point();
 					return;
@@ -2471,7 +2458,7 @@ namespace Noxico
 
 			if (target is Player)
 			{
-				MessageBox.Message("Dont shoot yourself in the foot!", true);
+				MessageBox.Notice("Dont shoot yourself in the foot!", true);
 				return;
 			}
 
@@ -2494,7 +2481,7 @@ namespace Noxico
 			}
 			else
 			{
-				MessageBox.Message("Can't throw yet, sorry.", true);
+				MessageBox.Notice("Can't throw yet, sorry.", true);
 				return;
 			}
 			var aimSuccess = true; //TODO: make this skill-relevant.
@@ -2529,9 +2516,9 @@ namespace Noxico
 			this.BackgroundColor = Color.Black;
 		}
 
-		public Clutter(char asciiChar, Color foreColor, Color backColor, bool blocking = false, string name = "thing", string description = "This is a thing.")
+		public Clutter(char character, Color foreColor, Color backColor, bool blocking = false, string name = "thing", string description = "This is a thing.")
 		{
-			this.AsciiChar = asciiChar;
+			this.AsciiChar = character;
 			this.ForegroundColor = foreColor;
 			this.BackgroundColor = backColor;
 			this.Blocking = blocking;

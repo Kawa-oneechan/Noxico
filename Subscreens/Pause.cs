@@ -82,7 +82,7 @@ has the same effect." },
 				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 3 };
 				UIManager.Elements.Add(list);
 				UIManager.Elements.Add(text);
-				list.Index = IniFile.GetBool("misc", "rememberpause", true) ? page : 0;
+				list.Index = IniFile.GetValue("misc", "rememberpause", true) ? page : 0;
 				UIManager.Highlight = list;
 
 				//Toolkit.DrawWindow(5, 4, 21, 1 + pages.Count, "PAUSED", Color.Maroon, Color.Black, Color.Red);
@@ -147,8 +147,8 @@ has the same effect." },
 				if (stat == "Health")
 					continue;
 				var bonus = "";
-				var statBonus = player.GetToken(stat.ToLower() + "bonus").Value;
-				var statBase = player.GetToken(stat.ToLower()).Value;
+				var statBonus = player.GetToken(stat.ToLowerInvariant() + "bonus").Value;
+				var statBase = player.GetToken(stat.ToLowerInvariant()).Value;
 				var total = statBase + statBonus;
 				if (statBonus > 0)
 					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
@@ -245,7 +245,7 @@ has the same effect." },
 			sb.AppendLine("Total set of tokens         " + tokens.ToString("G"));
 			pages["Memory stats"] = sb.ToString();
 
-			if (!IniFile.GetBool("misc", "rememberpause", true))
+			if (!IniFile.GetValue("misc", "rememberpause", true))
 				page = 0;
 
 			NoxicoGame.Subscreen = Handler;

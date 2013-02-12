@@ -248,7 +248,7 @@ namespace Noxico
 						}
 						else
 						{
-							MessageBox.Message(tryAttempt);
+							MessageBox.Notice(tryAttempt);
 						}
 					};
 				}
@@ -324,7 +324,7 @@ namespace Noxico
 								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)", true);
 							}
 							else
-								MessageBox.Message(tryAttempt);
+								MessageBox.Notice(tryAttempt);
 						}
 					};
 				}

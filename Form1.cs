@@ -153,8 +153,8 @@ namespace Noxico
 				}
 
 #if ALLOW_PNG_MODE
-				pngMode = IniFile.GetBool("misc", "pngmode", false);
-				pngFont = IniFile.GetString("misc", "pngfont", "fixedsex");
+				pngMode = IniFile.GetValue("misc", "pngmode", false);
+				pngFont = IniFile.GetValue("misc", "pngfont", "fixedsex");
 				pngFonts = new Dictionary<int, Bitmap>();
 				if (pngMode)
 				{
@@ -170,12 +170,12 @@ namespace Noxico
 				if (!pngMode)
 				{
 #endif
-					var family = IniFile.GetString("font", "family", "Consolas");
-					var emSize = IniFile.GetInt("font", "size", 11);
-					var style = IniFile.GetBool("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
-					GlyphAdjustX = IniFile.GetInt("font", "x-adjust", -2);
-					GlyphAdjustY = IniFile.GetInt("font", "y-adjust", -1);
-					ClearType = IniFile.GetBool("font", "cleartype", true);
+					var family = IniFile.GetValue("font", "family", "Consolas");
+					var emSize = IniFile.GetValue("font", "size", 11);
+					var style = IniFile.GetValue("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
+					GlyphAdjustX = IniFile.GetValue("font", "x-adjust", -2);
+					GlyphAdjustY = IniFile.GetValue("font", "y-adjust", -1);
+					ClearType = IniFile.GetValue("font", "cleartype", true);
 					Font = new Font(family, emSize, style);
 					if (Font.FontFamily.Name != family)
 						Font = new Font(FontFamily.GenericMonospace, emSize, style);
@@ -185,10 +185,10 @@ namespace Noxico
 						CellWidth = (int)Math.Ceiling(em.Width * 0.75);
 						CellHeight = (int)Math.Ceiling(em.Height * 0.85);
 					}
-					if (IniFile.GetInt("font", "cellwidth", 0) != 0)
-						CellWidth = IniFile.GetInt("font", "cellwidth", 0);
-					if (IniFile.GetInt("font", "cellheight", 0) != 0)
-						CellHeight = IniFile.GetInt("font", "cellheight", 0);
+					if (IniFile.GetValue("font", "cellwidth", 0) != 0)
+						CellWidth = IniFile.GetValue("font", "cellwidth", 0);
+					if (IniFile.GetValue("font", "cellheight", 0) != 0)
+						CellHeight = IniFile.GetValue("font", "cellheight", 0);
 
 #if ALLOW_PNG_MODE
 				}
@@ -219,8 +219,8 @@ namespace Noxico
 				Achievements.ProfilePath = "";
 				if (!portable)
 					GamerServices.Profile.Prepare();
-				GamerServices.Profile.AskForOnline = IniFile.GetBool("profile", "askforonline", true);
-				GamerServices.Profile.UseOnline = IniFile.GetBool("profile", "useonline", true);
+				GamerServices.Profile.AskForOnline = IniFile.GetValue("profile", "askforonline", true);
+				GamerServices.Profile.UseOnline = IniFile.GetValue("profile", "useonline", true);
 				Achievements.Setup();
 
 				this.Controls.Clear();
@@ -681,7 +681,7 @@ namespace Noxico
 
 			if (e.KeyCode == (Keys)NoxicoGame.KeyBindings[KeyBinding.Screenshot])
 			{
-				var shotDir = IniFile.GetString("misc", "shotpath", "screenshots");
+				var shotDir = IniFile.GetValue("misc", "shotpath", "screenshots");
 				if (shotDir.StartsWith("$"))
 					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + shotDir.Substring(1);
 
@@ -750,10 +750,10 @@ namespace Noxico
 					{
 						var text = ((Clutter)target).Description;
 						text = text.Trim();
-						if (text == "")
+						if (text.Length == 0)
 							return;
 						//var lines = text.Split('\n').Length;
-						MessageBox.Message(text, true);
+						MessageBox.Notice(text, true);
 					}
 				}
 			}

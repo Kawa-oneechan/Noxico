@@ -41,7 +41,7 @@ namespace Noxico
 				}
 				catch (ItemException x)
 				{
-					MessageBox.Message(x.Message);
+					MessageBox.Notice(x.Message);
 				}
 			if (!token.HasToken("equipped"))
 			{
@@ -50,7 +50,7 @@ namespace Noxico
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 				NoxicoGame.Sound.PlaySound("Put Item");
-				MessageBox.Message("Dropped " + chosen.ToString(token, true, true) + ".");
+				MessageBox.Notice("Dropped " + chosen.ToString(token, true, true) + ".");
 				/*
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.Mode = UserMode.Walkabout;
@@ -69,7 +69,7 @@ namespace Noxico
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{
-				MessageBox.Message("You are carrying nothing.", true);
+				MessageBox.Notice("You are carrying nothing.", true);
 				Subscreens.PreviousScreen.Clear();
 				Subscreens.FirstDraw = true;
 				return;
@@ -114,7 +114,7 @@ namespace Noxico
 							var cga = new[] { "Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "Purple", "Brown", "Silver", "Gray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White" };
 							color = cga[(int)carriedItem.GetToken("id").Value % cga.Length];
 						}
-						if (color.Equals("black", StringComparison.InvariantCultureIgnoreCase))
+						if (color.Equals("black", StringComparison.OrdinalIgnoreCase))
 							color = "Gray";
 						icon = "<c" + color + ">" + (char)item.Path("ascii/char").Value;
 					}

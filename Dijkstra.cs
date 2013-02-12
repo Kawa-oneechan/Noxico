@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Noxico
 {
-	public enum DijkstraIgnores
+	public enum DijkstraIgnore
 	{
 		WallsOnly,
 		Type,
@@ -20,7 +20,7 @@ namespace Noxico
 		private bool[,] walls;
 
 		public List<Point> Hotspots { get; private set; }
-		public DijkstraIgnores Ignore { get; set; }
+		public DijkstraIgnore Ignore { get; set; }
 		public Type IgnoreType { get; set; }
 		public Entity IgnoreObject { get; set; }
 
@@ -47,11 +47,11 @@ namespace Noxico
 
 			var board = NoxicoGame.HostForm.Noxico.CurrentBoard;
 			var ignored = new List<int?>();
-			if (Ignore == DijkstraIgnores.Instance && IgnoreObject != null)
+			if (Ignore == DijkstraIgnore.Instance && IgnoreObject != null)
 			{
 				ignored.Add((IgnoreObject.XPosition << 8) | IgnoreObject.YPosition);
 			}
-			else if (Ignore == DijkstraIgnores.Type && IgnoreType != null)
+			else if (Ignore == DijkstraIgnore.Type && IgnoreType != null)
 			{
 				foreach (var entity in board.Entities)
 				{

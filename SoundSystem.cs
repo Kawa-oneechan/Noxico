@@ -71,10 +71,10 @@ namespace Noxico
 			system = null;
 			Console.WriteLine("SoundSystem: _ctor");
 			//var is64Bit = System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)) == 8;
-			if (!IniFile.GetBool("audio", "enabled", true)) // || !is64Bit)
+			if (!IniFile.GetValue("audio", "enabled", true)) // || !is64Bit)
 				return;
-			musicVolume = (float)IniFile.GetInt("audio", "musicvolume", 100) / 100;
-			soundVolume = (float)IniFile.GetInt("audio", "soundvolume", 100) / 100;
+			musicVolume = (float)IniFile.GetValue("audio", "musicvolume", 100) / 100;
+			soundVolume = (float)IniFile.GetValue("audio", "soundvolume", 100) / 100;
 			if (musicVolume + soundVolume == 0)
 				return;
 
@@ -234,7 +234,7 @@ namespace Noxico
 			if (!string.IsNullOrEmpty(FadeTarget))
 				Fade();
 
-			if (!IniFile.GetBool("audio", "debug", false))
+			if (!IniFile.GetValue("audio", "debug", false))
 				return;
 			var musicchans = 0;
 			var type = FMOD.SOUND_TYPE.UNKNOWN;

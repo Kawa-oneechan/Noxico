@@ -31,7 +31,7 @@ namespace Noxico
 
 		public static void Setup()
 		{
-			if (!IniFile.GetBool("profile", "useonline", true) || !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && Profile.Server.Host != "localhost")
+			if (!IniFile.GetValue("profile", "useonline", true) || !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() && Profile.Server.Host != "localhost")
 				return;
 			Profile.GameName = "Noxico";
 
@@ -42,7 +42,7 @@ namespace Noxico
 			Profile.OnAchievement += new Action<Achievement>(a =>
 			{
 				NoxicoGame.AddMessage("Achievement Get: " + a.Name);
-				MessageBox.Message(a.Name, false, "Achievement Get!");
+				MessageBox.Notice(a.Name, false, "Achievement Get!");
 			});
 			Profile.OnMessage += new Action<string>(m =>
 			{
@@ -91,18 +91,18 @@ namespace Noxico
 		{
 			if ((DateTime.Now - Achievements.StartingTime).Duration().Minutes < 5)
 				Profile.UnlockAchievement("nethack");
-			var times = Profile.GetArbitraryInt("nethackcount");
+			var times = Profile.GetArbitraryInteger("nethackcount");
 			times++;
-			Profile.SetArbitraryInt("nethackcount", times);
+			Profile.SetArbitraryInteger("nethackcount", times);
 			if (times == 100)
 				Profile.UnlockAchievement("yasd");
 		}
 
 		public static void CheckCriminalScum()
 		{
-			var times = Profile.GetArbitraryInt("criminalscum");
+			var times = Profile.GetArbitraryInteger("criminalscum");
 			times++;
-			Profile.SetArbitraryInt("criminalscum", times);
+			Profile.SetArbitraryInteger("criminalscum", times);
 			if (times == 20)
 				Profile.UnlockAchievement("townkiller");
 		}

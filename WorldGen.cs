@@ -47,7 +47,7 @@ namespace Noxico
 				cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
 
 			thisMap.Clear(biomeID);
-			thisMap.Type = BoardType.Town;
+			thisMap.BoardType = BoardType.Town;
 			thisMap.Music = "set://Town";
 			thisMap.AddToken("culture", 0, cultureName);
 
@@ -92,7 +92,7 @@ namespace Noxico
 			foreach (var lol in new[] { northWest, north, northEast, east, southEast, south, southWest, west })
 			{
 				lol.Clear(biomeID);
-				lol.Type = BoardType.Wild;
+				lol.BoardType = BoardType.Wild;
 				lol.Music = "set://Town";
 				lol.BoardNum = boards.Count;
 				lol.Name = thisMap.Name + " Outskirts";
@@ -137,7 +137,7 @@ namespace Noxico
 				}
 				else if (Random.NextDouble() > 0.8)
 				{
-					lol.Type = BoardType.Town;
+					lol.BoardType = BoardType.Town;
 					lol.Name = thisMap.Name;
 					lol.ID = lol.Name.ToID() + lol.BoardNum;
 					townGen.Board = lol;
@@ -324,7 +324,7 @@ namespace Noxico
 						board.Name = string.Format("{0}, level {1}-{2}", name, i + 1, (char)('A' + j));
 					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
 					board.Music = "set://Dungeon";
-					board.Type = BoardType.Dungeon;
+					board.BoardType = BoardType.Dungeon;
 					var encounters = board.GetToken("encounters");
 					foreach (var e in biomeData.Encounters)
 						encounters.AddToken(e);

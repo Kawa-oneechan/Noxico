@@ -44,7 +44,7 @@ namespace Noxico
 			var openings = FindOpenings(name);
 			if (openings.Count == 0)
 			{
-				MessageBox.Message("Could not find a proper opening for scene name \"" + name + "\". Aborting.", true, "Uh-oh.");
+				MessageBox.Notice("Could not find a proper opening for scene name \"" + name + "\". Aborting.", true, "Uh-oh.");
 				return;
 			}
 			var scene = openings.FirstOrDefault(i => SceneFiltersOkay(i));
@@ -85,7 +85,7 @@ namespace Noxico
 			{
 				if (actions.Count == 0)
 				{
-					MessageBox.Message(message, true, bottom.Name.ToString(true));
+					MessageBox.Notice(message, true, bottom.Name.ToString(true));
 				}
 				else
 				{
@@ -100,7 +100,7 @@ namespace Noxico
 				letBottomChoose = false;
 				if (actions.Count == 0)
 				{
-					MessageBox.Message(message, !Dreaming, bottom.Name.ToString(true));
+					MessageBox.Notice(message, !Dreaming, bottom.Name.ToString(true));
 					if (Dreaming)
 						LeavingDream = true;
 					else if (wantToTrade)
@@ -259,7 +259,7 @@ namespace Noxico
 			switch (fType)
 			{
 				case "name":
-					if (!(fPrimary.Name.ToString(true).Trim().Equals(fName, StringComparison.InvariantCultureIgnoreCase)))
+					if (!(fPrimary.Name.ToString(true).Trim().Equals(fName, StringComparison.OrdinalIgnoreCase)))
 						return false;
 					break;
 				case "has":
@@ -409,7 +409,7 @@ namespace Noxico
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
 				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && s[2] != "" ? s[2] : s[1]); } },
-				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLowerInvariant(); } },
+				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLower(); } },
 				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
 				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
 				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
@@ -428,28 +428,28 @@ namespace Noxico
 				{ "does", (c, s) => { return tIP && c == top ? "do" : "does"; } },
 
 				{ "hair", (c, s) => { return Descriptions.Hair(c.Path("hair")); } },
-				{ "breasts", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Breasts(c.Path("breastrow[" + s[0] + "]")); } },
-				{ "nipple", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")); } },
-				{ "nipples", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")) + 's'; } },
+				{ "breasts", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Breasts(c.Path("breastrow[" + s[0] + "]")); } },
+				{ "nipple", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "nipples", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Nipples(c.Path("breastrow[" + s[0] + "]/nipples")) + 's'; } },
 				{ "waist", (c, s) => { return Descriptions.Waist(c.Path("waist")); } },
 				{ "hips", (c, s) => { return Descriptions.Hips(c.Path("hips")); } },
 				{ "ass", (c, s) => { return Descriptions.Butt(c.Path("ass")); } },
 				{ "tail", (c, s) => { return Descriptions.Tail(c.Path("tail")); } },
 				//{ "multicock", (c, s) => { return Descriptions.MultiCock(c); } },
 				{ "multicock", (c, s) => { return Descriptions.Cock(c.Path("penis[0]")); } },
-				{ "cock", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Cock(c.Path("penis[" + s[0] + "]")); } },
-				//{ "pussy", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Pussy(c.Path("vagina[" + s[0] + "]")); } },
+				{ "cock", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Cock(c.Path("penis[" + s[0] + "]")); } },
+				//{ "pussy", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Pussy(c.Path("vagina[" + s[0] + "]")); } },
 				{ "pussy", (c, s) => { return "pussy"; } },
 
 				#region PillowShout's additions
-				{ "cocktype", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
+				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
 				{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
 				{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
 				{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
 				{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
 				{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
 				{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
-				{ "pussywetness", (c, s) => { if (s[0] == "") s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")) ?? "moist"; } },
+				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")) ?? "moist"; } },
 				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")) ?? "average"; } },
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true) ?? "average"; } },
 				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },

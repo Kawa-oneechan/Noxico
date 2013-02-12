@@ -92,9 +92,9 @@ namespace Noxico
 				Tokens.Remove(t);
 		}
 
-		public Token Path(string path)
+		public Token Path(string pathSpec)
 		{
-			var parts = path.Split('/');
+			var parts = pathSpec.Split('/');
 			var point = this;
 			var final = parts.Last();
 			if (Regex.IsMatch(final, @"\[(?<index>[0-9]+)\]"))
@@ -106,16 +106,16 @@ namespace Noxico
 				{
 					var trueP = p.Remove(p.IndexOf('['));
 					var index = int.Parse(Regex.Match(p, @"\[(?<index>[0-9]+)\]").Groups["index"].ToString());
-					var targets = point.Tokens.FindAll(t => t.Name.Equals(trueP, StringComparison.InvariantCultureIgnoreCase));
+					var targets = point.Tokens.FindAll(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase));
 					if (targets == null || index >= targets.Count)
 						return null;
 					target = targets[index];
 				}
 				else
-					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.InvariantCultureIgnoreCase));
+					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.OrdinalIgnoreCase));
 				if (target == null)
 					return null;
-				if (target.Name.Equals(final, StringComparison.InvariantCultureIgnoreCase))
+				if (target.Name.Equals(final, StringComparison.OrdinalIgnoreCase))
 					return target;
 				point = target;
 			}
