@@ -99,11 +99,11 @@ namespace Noxico
 				{
 					var shipType = Random.NextDouble() < culture.Marriage ? "spouse" : "friend";
 					//if we chose spouse, handle the wife taking the surname of the husband.
-					var ship = new Token() { Name = c.ID };
-					ship.Tokens.Add(new Token() { Name = shipType });
+					var ship = new Token(c.ID);
+					ship.AddToken(shipType);
 					r[0].Path("ships").Tokens.Add(ship);
-					ship = new Token() { Name = r[0].ID };
-					ship.Tokens.Add(new Token() { Name = shipType });
+					ship = new Token(r[0].ID);
+					ship.AddToken(shipType);
 					c.Path("ships").Tokens.Add(ship);
 				}
 				r.Add(c);
