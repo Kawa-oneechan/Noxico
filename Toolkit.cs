@@ -225,13 +225,13 @@ namespace Noxico
 			var colorName = "";
 			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
 			{
-				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.InvariantCultureIgnoreCase))
+				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.OrdinalIgnoreCase))
 				{
 					colorName = colorEntry.GetAttribute("name");
 					break;
 				}
 			}
-			if (colorName == "")
+			if (colorName.Length == 0)
 				return color;
 			var ret = new StringBuilder();
 			foreach (var c in colorName)
@@ -256,7 +256,7 @@ namespace Noxico
 			var entries = colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>();
 			foreach (var e in entries)
 			{
-				if (e.GetAttribute("name").Equals(req, StringComparison.InvariantCultureIgnoreCase))
+				if (e.GetAttribute("name").Equals(req, StringComparison.OrdinalIgnoreCase))
 				{
 					entry = e;
 					break;
@@ -694,7 +694,7 @@ namespace Noxico
 		/// </summary>
 		public static string Possessive(this string subject)
 		{
-			if (!subject.Equals("it", StringComparison.InvariantCultureIgnoreCase))
+			if (!subject.Equals("it", StringComparison.OrdinalIgnoreCase))
 				return subject + "s";
 			else if (subject.EndsWith("s"))
 				return subject + "'";
@@ -809,6 +809,19 @@ namespace Noxico
 		public static string ToID(this string name)
 		{
 			return Regex.Replace(name.ToLower(), "(^[A-Z])", "");
+		}
+
+		public static Direction Opposite(Direction current)
+		{
+			if (current == Direction.North)
+				return Direction.South;
+			else if (current == Direction.East)
+				return Direction.West;
+			else if (current == Direction.South)
+				return Direction.North;
+			else if (current == Direction.West)
+				return Direction.East;
+			return Direction.North;
 		}
 
 		#region PillowShout's additions

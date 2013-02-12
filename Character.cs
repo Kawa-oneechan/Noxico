@@ -65,7 +65,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns the short name of the character, or the title.
 		/// </summary>
-		public string GetName()
+		public string GetNameOrTitle()
 		{
 			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
@@ -80,7 +80,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns the character's title.
 		/// </summary>
-		public string GetTitle()
+		public string GetTheTitle()
 		{
 			return string.Format("{0} {1}", A, Title);
 		}
@@ -578,7 +578,7 @@ namespace Noxico
 			}
 			if (toDelete.Count > 0)
 			{
-				Console.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetName(), string.Join(", ", toDelete));
+				Console.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetNameOrTitle(), string.Join(", ", toDelete));
 				GetToken("items").RemoveSet(toDelete);
 			}
 		}
@@ -619,7 +619,7 @@ namespace Noxico
 			return ret;
 		}
 
-		private void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
+		private static void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
 		{
 			var totalRows = Math.Max(col1.Count, col2.Count);
 			print(header1.PadRight(pad) + header2 + "\n");
@@ -1332,18 +1332,6 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return sb.ToString();
 		}
 
-		private Dictionary<string, string> LoadDictionary(string p)
-		{
-			var dict = Mix.GetString("lookat\\" + p + ".txt").Split('\n');
-			var ret = new Dictionary<string, string>();
-			foreach (var line in dict)
-			{
-				var parts = line.Split('\t');
-				ret.Add(parts[0], parts[1]);
-			}
-			return ret;
-		}
-
 		public void CreateInfoDump()
 		{
 			var dump = new StreamWriter(Name + " info.txt");
@@ -1497,7 +1485,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				{
 					paused = false;
 				};
-				MessageBox.Message(s, true);
+				MessageBox.Notice(s, true);
 				while (paused)
 				{
 					NoxicoGame.HostForm.Noxico.Update();
@@ -2367,7 +2355,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 
 					//Until then, we'll just message you.
 					if (this.HasToken("player"))
-						MessageBox.Message("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
+						MessageBox.Notice("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
 
 					this.RemoveToken("pregnancy");
 					return true;
@@ -2729,7 +2717,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// Traverses the token tree and looks for select tokens, then uses ResolveSelectToken to deal with them.
 		/// </summary>
 		/// <param name="parent"></param>
-		private void TraverseForSelectTokens(TokenCarrier parent)
+		private static void TraverseForSelectTokens(TokenCarrier parent)
 		{
 			while (parent.HasToken("select"))
 			{
@@ -2751,7 +2739,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// </summary>
 		/// <param name="select">The token tree headed by the select token and containing the set tokens.</param>
 		/// <param name="parent">The token tree of which select is an immediate child node.</param>
-		private void ResolveSelectToken(Token select, TokenCarrier parent)
+		private static void ResolveSelectToken(Token select, TokenCarrier parent)
 		{
 			var tokenSets = new List<Token>();
 			var probs = new List<float>();
@@ -2916,11 +2904,11 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			//return Math.Floor(cm).ToString() + "cm";
 		}
 
-		public static string Hair(Token hair)
+		public static string Hair(Token hairToken)
 		{
 			var hairDesc = "";
-			var hairLength = hair.HasToken("length") ? hair.GetToken("length").Value : 0f;
-			var hairColorToken = hair.GetToken("color");
+			var hairLength = hairToken.HasToken("length") ? hairToken.GetToken("length").Value : 0f;
+			var hairColorToken = hairToken.GetToken("color");
 			var hairColor = Toolkit.NameColor(hairColorToken.Text).ToLowerInvariant();
 			if (hairLength == 0)
 				return Toolkit.PickOne("bald", "shaved");
@@ -2947,12 +2935,12 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return hairDesc;
 		}
 
-		public static string Breasts(Token titrow, bool inCups = true)
+		public static string Breasts(Token breastRowToken, bool inCups = true)
 		{
-			if (titrow == null)
+			if (breastRowToken == null)
 				return "glitch";
 			var titDesc = "";
-			var size = titrow.HasToken("size") ? titrow.GetToken("size").Value : 0f;
+			var size = breastRowToken.HasToken("size") ? breastRowToken.GetToken("size").Value : 0f;
 			if (size == 0)
 				return "flat breasts";
 			else if (size < 0.5)
@@ -2997,13 +2985,13 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return titDesc;
 		}
 
-		public static string Nipples(Token nipples)
+		public static string Nipples(Token nipplesToken)
 		{
-			if (nipples == null)
+			if (nipplesToken == null)
 				return "glitch";
 			var nipDesc = "";
 			var adjective = false;
-			var size = nipples.HasToken("size") ? nipples.GetToken("size").Value : 0.25f;
+			var size = nipplesToken.HasToken("size") ? nipplesToken.GetToken("size").Value : 0.25f;
 			if (size < 0.25f)
 				nipDesc = "dainty";
 			else if (size < 1)
@@ -3014,13 +3002,13 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				nipDesc = "hefty";
 			else
 				nipDesc = "bulky";
-			if (nipples.HasToken("fuckable"))
+			if (nipplesToken.HasToken("fuckable"))
 			{
 				//involve lactation somehow
 				nipDesc += ", wet";
 				adjective = true;
 			}
-			else if (nipples.HasToken("canfuck"))
+			else if (nipplesToken.HasToken("canfuck"))
 			{
 				//involve lactation somehow
 				nipDesc += ", mutated";
@@ -3034,20 +3022,20 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			{
 				//involve lust somehow
 			}
-			if (nipples.HasToken("color"))
-				nipDesc += ", " + Toolkit.NameColor(nipples.GetToken("color").Tokens[0].Name);
-			if (nipples.HasToken("fuckable"))
+			if (nipplesToken.HasToken("color"))
+				nipDesc += ", " + Toolkit.NameColor(nipplesToken.GetToken("color").Tokens[0].Name);
+			if (nipplesToken.HasToken("fuckable"))
 				nipDesc += " nipple-hole";
-			else if (nipples.HasToken("canfuck"))
+			else if (nipplesToken.HasToken("canfuck"))
 				nipDesc += " nipplecock";
 			else
 				nipDesc += " nipple";
 			return nipDesc;
 		}
 
-		public static string Waist(Token waist)
+		public static string Waist(Token waistToken)
 		{
-			var size = waist != null ? waist.Value : 5;
+			var size = waistToken != null ? waistToken.Value : 5;
 			if (size < 1)
 				return Toolkit.PickOne("emaciated", "gaunt") + " physique";
 			else if (size < 4)
@@ -3067,9 +3055,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return Toolkit.PickOne("morbid", "immobilizing") + " physique";
 		}
 
-		public static string Hips(Token hips)
+		public static string Hips(Token hipsToken)
 		{
-			var size = hips != null ? hips.Value : 5;
+			var size = hipsToken != null ? hipsToken.Value : 5;
 			if (size < 1)
 				return Toolkit.PickOne("tiny", "boyish") + " hips";
 			else if (size < 4)
@@ -3085,9 +3073,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return Toolkit.PickOne("broodmother-sized", "cow-like", "inhumanly wide") + " hips";
 		}
 
-		public static string Butt(Token butt, bool extended = false)
+		public static string Butt(Token buttToken, bool extended = false)
 		{
-			var size = butt != null && butt.HasToken("size") ? butt.GetToken("size").Value : 5;
+			var size = buttToken != null && buttToken.HasToken("size") ? buttToken.GetToken("size").Value : 5;
 			var ret = "";
 			if (size < 1)
 				ret = Toolkit.PickOne("very small", "insignificant");
@@ -3108,8 +3096,8 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			else
 				ret = Toolkit.PickOne("ginormous", "colossal", "tremendous");
 			var looseness = "";
-			if (extended && butt != null && butt.HasToken("looseness") && butt.GetToken("looseness").Value != 2)
-				looseness = Looseness(butt.GetToken("looseness"), true);
+			if (extended && buttToken != null && buttToken.HasToken("looseness") && buttToken.GetToken("looseness").Value != 2)
+				looseness = Looseness(buttToken.GetToken("looseness"), true);
 			if (ret.EndsWith("ass"))
 				ret = looseness + " " + ret;
 			else
@@ -3121,64 +3109,64 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			return ret;
 		}
 
-		public static string Looseness(Token looseness, bool forButts = false)
+		public static string Looseness(Token loosenessToken, bool forButts = false)
 		{
-			if (looseness == null)
+			if (loosenessToken == null)
 				return null;
 			var rets = new[] { "virgin", "tight", null, "loose", "very loose", "gaping", "gaping wide", "cavernous" };
 			if (forButts)
 				rets = new[] { "virgin", "tight", null, "loose", "stretched", "distented", "gaping", "cavernous" };
-			var v = (int)Math.Floor(looseness.Value);
+			var v = (int)Math.Floor(loosenessToken.Value);
 			if (v >= rets.Length)
 				v = rets.Length - 1;
 			return rets[v];
 		}
 
-		public static string Wetness(Token wetness)
+		public static string Wetness(Token wetnessToken)
 		{
-			if (wetness == null)
+			if (wetnessToken == null)
 				return null;
 			var rets = new[] { "dry", null, "wet", "slick", "drooling", "slavering" };
-			var v = (int)Math.Floor(wetness.Value);
+			var v = (int)Math.Floor(wetnessToken.Value);
 			if (v >= rets.Length)
 				v = rets.Length - 1;
 			return rets[v];
 		}
 
-		public static string Cock(Token cock)
+		public static string Cock(Token cockToken)
 		{
-			if (cock == null)
+			if (cockToken == null)
 				return "glitch";
-			if (cock.HasToken("horse"))
+			if (cockToken.HasToken("horse"))
 				return "horse cock";
-			else if (cock.HasToken("dog"))
+			else if (cockToken.HasToken("dog"))
 				return "dog";
 			//TODO
 			return "cock";
 		}
 
-		public static string Tail(Token tail)
+		public static string Tail(Token tailToken)
 		{
-			if (tail == null)
+			if (tailToken == null)
 				return "glitch";
 			var tails = new Dictionary<string, string>()
 			{
 				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
 				{ "genbeast", Random.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
 			};
-			var tailName = tail.Text;
+			var tailName = tailToken.Text;
 			if (tails.ContainsKey(tailName))
 				return tails[tailName];
 			else
 				return tailName + " tail";
 		}
 
-		public static string Tentacle(Token tentacle, float stimulation)
+		public static string Tentacle(Token tentacleToken, float stimulation)
 		{
-			if (tentacle == null)
+			if (tentacleToken == null)
 				return "glitch";
 			var ret = "tapered tip";
-			if (tentacle.HasToken("penis"))
+			if (tentacleToken.HasToken("penis"))
 				ret = "thick penis head";
 			if (stimulation > 70)
 				ret += ", half its length coated in a slick layer of lubricant";
@@ -3193,25 +3181,25 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// <summary>
 		/// Returns a string describing the token 'cock's type.
 		/// </summary>
-		/// <param name="cock">The penis token to be evaluated.</param>
+		/// <param name="cockToken">The penis token to be evaluated.</param>
 		/// <returns>A string containing only the 'cock's type.</returns>
-		public static string CockType(Token cock)
+		public static string CockType(Token cockToken)
 		{
-			if (cock == null)
+			if (cockToken == null)
 				return "glitch";
-			if (cock.Text == "horse")
+			if (cockToken.Text == "horse")
 				return Toolkit.PickOne("equine", "horse-like", "flared");
-			else if (cock.Text == "dog")
+			else if (cockToken.Text == "dog")
 				return Toolkit.PickOne("canine", "dog-like", "pointed", "knotted");
-			else if (cock.Text == "bear")
+			else if (cockToken.Text == "bear")
 				return Toolkit.PickOne("ursine", "bear-like", "tapered");
-			else if (cock.Text == "lizard")
+			else if (cockToken.Text == "lizard")
 				return Toolkit.PickOne("reptilian", "lizard-like", "snake-like");
-			else if (cock.Text == "cat")
+			else if (cockToken.Text == "cat")
 				return Toolkit.PickOne("feline", "cat-like", "barbed");
-			else if (cock.Text == "studded")
+			else if (cockToken.Text == "studded")
 				return Toolkit.PickOne("studded", "bumpy", "stud covered");
-			else if (cock.Text == "human")
+			else if (cockToken.Text == "human")
 				return Toolkit.PickOne("human", "human-like", "knobby");
 			return Toolkit.PickOne("unusual", "indescribable", "oddly shaped");
 		}
@@ -3219,18 +3207,18 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// <summary>
 		/// Provides a description of a character's foot based on their leg type.
 		/// </summary>
-		/// <param name="leg">The leg token to be evaluated.</param>
+		/// <param name="legsToken">The leg token to be evaluated.</param>
 		/// <param name="plural">If set to true, the returned description will be for both feet.</param>
 		/// <returns>A string containing a description of the foot type.</returns>
-		public static string Foot(Token leg, bool plural = false)
+		public static string Foot(Token legsToken, bool plural = false)
 		{
-			if (leg == null)
+			if (legsToken == null)
 				return "glitch";
-			if (leg.Text == "horse")
+			if (legsToken.Text == "horse")
 				return plural ? "hooves" : "hoof";
-			else if (leg.Text == "dog" || leg.Text == "bear")
+			else if (legsToken.Text == "dog" || legsToken.Text == "bear")
 				return plural ? "paws" : "paw";
-			else if (leg.Text == "insect")
+			else if (legsToken.Text == "insect")
 				return plural ? "claws" : "claw";
 
 			return plural ? "feet" : "foot";
@@ -3297,17 +3285,17 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// <summary>
 		/// Returns a string describing a piece of equipment using its name, (optionally) color (if available), and (optionally) an appropriate article.
 		/// </summary>
-		/// <param name="item">An InventoryItem from <see cref="NoxicoGame.KnownItems"/>.</param>
+		/// <param name="knownItem">An InventoryItem from <see cref="NoxicoGame.KnownItems"/>.</param>
 		/// <param name="token">An item token from a <see cref="Character"/>'s inventory that matches the type of item in the first parameter.</param>
 		/// <param name="article">Adds either the definite article (if "the" is passed), the indefinite article (if "a" is passed), or no article (anything else is passed)
 		/// to the front of the descriptive string.</param>
 		/// <param name="withColor">If set to true, the returned string will also describe the color of the item if it has one.</param>
 		/// <returns>A string containing the description of the item as defined by the parameters. If 'item' is null, then null is returned instead.</returns>
-		public static string Item(InventoryItem item, Token token, string article = "", bool withColor = false)
+		public static string Item(InventoryItem knownItem, Token token, string article = "", bool withColor = false)
 		{
-			if (item == null)
+			if (knownItem == null)
 				return null;
-			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(item.UnknownName)) ? item.UnknownName : item.Name;
+			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(knownItem.UnknownName)) ? knownItem.UnknownName : knownItem.Name;
 			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
 			var reps = new Dictionary<string, string>()
 			{
@@ -3328,9 +3316,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			}
 
 			if (article == "the")
-				name = item.The + " " + name;
+				name = knownItem.The + " " + name;
 			else if (article == "a")
-				name = item.A + " " + name;
+				name = knownItem.A + " " + name;
 
 			return name;
 		}
@@ -3338,15 +3326,15 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// <summary>
 		/// Returns a string containing a description of the parameter 'tongue's type.
 		/// </summary>
-		/// <param name="tongue">A tongue token from a character.</param>
+		/// <param name="tongueToken">A tongue token from a character.</param>
 		/// <returns>A string containing the description of the tongue based on its type.</returns>
-		public static string TongueType(Token tongue)
+		public static string TongueType(Token tongueToken)
 		{
-			if (tongue == null)
+			if (tongueToken == null)
 				return "glitch";
 
 			var ret = "";
-			var text = tongue.Text;
+			var text = tongueToken.Text;
 			switch (text)
 			{
 				case "normal":
@@ -3376,15 +3364,15 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 		/// <summary>
 		/// Takes a tail type token from a character and returns a string describing that tail's type.
 		/// </summary>
-		/// <param name="tail">The tail token to be evaluated.</param>
+		/// <param name="tailToken">The tail token to be evaluated.</param>
 		/// <returns>A string containing a description of the tail's type. Return's 'glitch' if 'tail is null.</returns>
-		public static string TailType(Token tail)
+		public static string TailType(Token tailToken)
 		{
-			if (tail == null)
+			if (tailToken == null)
 				return "glitch";
 
 			var ret = "";
-			var text = tail.Text;
+			var text = tailToken.Text;
 			switch (text)
 			{
 				case "genbeast":

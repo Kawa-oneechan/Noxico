@@ -391,7 +391,7 @@ namespace Noxico
 					NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 
-					if (!IniFile.GetBool("misc", "skipintro", true))
+					if (!IniFile.GetValue("misc", "skipintro", true))
 					{
 						var dream = new Character();
 						dream.Name = new Name("Dream");

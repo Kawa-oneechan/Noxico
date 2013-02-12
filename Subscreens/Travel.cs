@@ -15,7 +15,7 @@ namespace Noxico
 			if (NoxicoGame.KnownTargets.Count < 2)
 			{
 				Subscreens.PreviousScreen.Clear();
-				MessageBox.Message("You don't know of any other place to go.", true);
+				MessageBox.Notice("You don't know of any other place to go.", true);
 				return;
 			}
 			Subscreens.FirstDraw = true;
@@ -82,7 +82,7 @@ namespace Noxico
 						{
 							NoxicoGame.KnownTargets.Remove(key);
 							NoxicoGame.TargetNames.Remove(key);
-							MessageBox.Message("Something went wrong internally.\n\nCould not find expectation #" + newBoard + ".", true, "Fuck!");
+							MessageBox.Notice("Something went wrong internally.\n\nCould not find expectation #" + newBoard + ".", true, "Fuck!");
 							return;
 						}
 						Board thisMap = null;
@@ -110,7 +110,7 @@ namespace Noxico
 
 					host.Noxico.Player.OpenBoard(newBoard);
 					var hereNow = host.Noxico.Player.ParentBoard;
-					if (hereNow.Type == BoardType.Dungeon)
+					if (hereNow.BoardType == BoardType.Dungeon)
 					{
 						//find the exit and place the player there
 						//TODO: something similar for towns

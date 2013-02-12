@@ -103,14 +103,14 @@ namespace Noxico
 			}
 		}
 
-		public static string GetString(string section, string key, string def)
+		public static string GetValue(string section, string key, string def)
 		{
 			if (settings.ContainsKey(section) && settings[section].ContainsKey(key))
 				return settings[section][key];
 			return def;
 		}
 
-		public static int GetInt(string section, string key, int def)
+		public static int GetValue(string section, string key, int def)
 		{
 			if (settings.ContainsKey(section) && settings[section].ContainsKey(key))
 			{
@@ -121,7 +121,7 @@ namespace Noxico
 			return def;
 		}
 
-		public static bool GetBool(string section, string key, bool def)
+		public static bool GetValue(string section, string key, bool def)
 		{
 			if (settings.ContainsKey(section) && settings[section].ContainsKey(key))
 			{

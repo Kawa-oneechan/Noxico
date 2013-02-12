@@ -4,8 +4,6 @@ namespace Noxico
 {
 	public static class Vista
 	{
-		[System.Runtime.InteropServices.DllImport("shell32.dll")]
-		private static extern int SHGetKnownFolderPath([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
 		public static readonly Guid SavedGames = new Guid("4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4");
 		//Add more GUIDs here whenever interesting.
 
@@ -16,12 +14,18 @@ namespace Noxico
 
 			string ret = null;
 			IntPtr pPath;
-			if (SHGetKnownFolderPath(SavedGames, 0, IntPtr.Zero, out pPath) == 0)
+			if (SafeNativeMethods.SHGetKnownFolderPath(SavedGames, 0, IntPtr.Zero, out pPath) == 0)
 			{
 				ret = System.Runtime.InteropServices.Marshal.PtrToStringUni(pPath);
 				System.Runtime.InteropServices.Marshal.FreeCoTaskMem(pPath);
 			}
 			return ret;
 		}
+	}
+
+	public static class SafeNativeMethods
+	{
+		[System.Runtime.InteropServices.DllImport("shell32.dll")]
+		public static extern int SHGetKnownFolderPath([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
 	}
 }

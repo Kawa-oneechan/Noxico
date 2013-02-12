@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace Noxico
 {
-	public class Subscreens
+	public static class Subscreens
 	{
 		public static Stack<SubscreenFunc> PreviousScreen = new Stack<SubscreenFunc>();
 
@@ -24,7 +24,7 @@ namespace Noxico
 		public static int MouseY = -1;
 	}
 
-	public class UnsortedSubscreens
+	public static class UnsortedSubscreens
 	{
 		//TODO: Refactor the below
 

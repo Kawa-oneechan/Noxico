@@ -28,7 +28,7 @@ namespace Noxico
 			Console.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
 			var mixfiles = new List<string>() { mainFile + ".mix" };
-			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.mix").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".mix", StringComparison.InvariantCultureIgnoreCase)));
+			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.mix").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".mix", StringComparison.OrdinalIgnoreCase)));
 			Console.WriteLine("Mixfiles enumerated. Indexing contents...");
 			foreach (var mixfile in mixfiles)
 			{
@@ -40,8 +40,10 @@ namespace Noxico
 				using (var mStream = new BinaryReader(File.Open(mixfile, FileMode.Open)))
 				{
 					var header = mStream.ReadChars(8);
+					if (!(new string(header).Equals("KawaPack", StringComparison.Ordinal)))
+						throw new FileLoadException(string.Format("MIX file '{0}' has an incorrect header.", mixfile));
 					var count = mStream.ReadInt32();
-					var dummy = mStream.ReadInt32();
+					mStream.ReadInt32();
 					for (var i = 0; i < count; i++)
 					{
 						var entry = new MixFileEntry();

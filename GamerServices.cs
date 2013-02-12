@@ -42,7 +42,7 @@ namespace GamerServices
 			AskForOnline = false;
 			UseOnline = false;
 
-			Server = new Uri(Noxico.IniFile.GetString("profile", "server", "http://helmet.kafuka.org/gamerservice.php"));
+			Server = new Uri(Noxico.IniFile.GetValue("profile", "server", "http://helmet.kafuka.org/gamerservice.php"));
 		}
 
 		public static void Prepare()
@@ -76,7 +76,7 @@ namespace GamerServices
 		{
 			if (string.IsNullOrWhiteSpace(profilePath))
 				fileName = "profile";
-			if (fileName == "")
+			if (fileName.Length == 0)
 				fileName = Path.Combine(profilePath, GameName + "_profile");
 			if (!File.Exists(fileName))
 			{
@@ -134,9 +134,9 @@ namespace GamerServices
 		{
 			if (!IsValid)
 				return;
-			if (string.IsNullOrWhiteSpace(profilePath) && fileName == "")
+			if (string.IsNullOrWhiteSpace(profilePath) && fileName.Length == 0)
 				fileName = "profile";
-			if (fileName == "")
+			if (fileName.Length == 0)
 				fileName = Path.Combine(profilePath, GameName + "_profile");
 
 			LastSave = DateTime.Now.ToUniversalTime().ToBinary();
@@ -180,7 +180,7 @@ namespace GamerServices
 			knownAchievements.Add(id, new Achievement() { Name = name, Description = description, IconRef = iconRef });
 		}
 
-		public static int GetArbitraryInt(string id)
+		public static int GetArbitraryInteger(string id)
 		{
 			if (!IsValid)
 				return 0;
@@ -192,7 +192,7 @@ namespace GamerServices
 			return 0;
 		}
 
-		public static void SetArbitraryInt(string id, int value)
+		public static void SetArbitraryInteger(string id, int value)
 		{
 			if (!IsValid)
 				return;

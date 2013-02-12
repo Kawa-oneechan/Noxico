@@ -41,7 +41,7 @@ namespace Noxico
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
 			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(UnknownName)) ? UnknownName : Name;
-			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
+			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : string.Empty;
 			var reps = new Dictionary<string, string>()
 			{
 				{ "[color]", color },
@@ -49,7 +49,7 @@ namespace Noxico
 				{ "[color ]", color + " " },
 				{ "[color, ]", color + ", " },
 			};
-			if (color == "")
+			if (color.Length == 0)
 			{
 				foreach (var key in reps.Keys)
 					name = name.Replace(key, "");
@@ -100,7 +100,7 @@ namespace Noxico
 			if (this.HasToken("description"))
 			{
 				var ret = GetToken("description").Text;
-				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
+				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : string.Empty;
 				var reps = new Dictionary<string, string>()
 				{
 					{ "[color]", color },
@@ -108,7 +108,7 @@ namespace Noxico
 					{ "[color ]", color + " " },
 					{ "[color, ]", color + ", " },
 				};
-				if (color == "")
+				if (color.Length == 0)
 				{
 					foreach (var key in reps.Keys)
 						ret = ret.Replace(key, "");
@@ -419,7 +419,7 @@ namespace Noxico
 							runningDesc += c.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							MessageBox.Message(runningDesc.Viewpoint(boardchar));
+							MessageBox.Notice(runningDesc.Viewpoint(boardchar));
 						return;
 					},
 						null);
@@ -430,7 +430,7 @@ namespace Noxico
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
 						runningDesc += "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
-						MessageBox.Message(runningDesc.Viewpoint(boardchar));
+						MessageBox.Notice(runningDesc.Viewpoint(boardchar));
 						return;
 					}
 					MessageBox.Ask("Unequip " + this.ToString(item, true) + "?", () =>
@@ -447,7 +447,7 @@ namespace Noxico
 							runningDesc += x.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							MessageBox.Message(runningDesc.Viewpoint(boardchar));
+							MessageBox.Notice(runningDesc.Viewpoint(boardchar));
 						return;
 					},
 						null);
@@ -458,7 +458,7 @@ namespace Noxico
 
 			if (this.HasToken("ammo"))
 			{
-				MessageBox.Message("This is ammo. To use it, fire the weapon that requires this kind of munition.");
+				MessageBox.Notice("This is ammo. To use it, fire the weapon that requires this kind of munition.");
 				return;
 			}
 
@@ -466,7 +466,7 @@ namespace Noxico
 			{
 				if (this.HasToken("description"))
 					runningDesc = this.GetToken("description").Text + "\n\n";
-				MessageBox.Message(runningDesc + "This item has no effect.");
+				MessageBox.Notice(runningDesc + "This item has no effect.");
 				return;
 			}
 
@@ -516,7 +516,7 @@ namespace Noxico
 				this.Consume(character, item);
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
-				MessageBox.Message(runningDesc.Viewpoint(boardchar));
+				MessageBox.Notice(runningDesc.Viewpoint(boardchar));
 		}
 
 		public void Consume(Character carrier, Token carriedItem)
@@ -645,7 +645,7 @@ namespace Noxico
 				{
 					paused = false;
 				};
-				MessageBox.Message(x);
+				MessageBox.Notice(x);
 				while (paused)
 				{
 					NoxicoGame.HostForm.Noxico.Update();

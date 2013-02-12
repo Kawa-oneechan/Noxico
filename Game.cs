@@ -90,8 +90,8 @@ namespace Noxico
 
 			Func<string, Keys, int> GetIniKey = (s, d) =>
 			{
-				var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToLowerInvariant());
-				var keyValue = IniFile.GetString("keymap", s, d.ToString()).ToLowerInvariant();
+				var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
+				var keyValue = IniFile.GetValue("keymap", s, d.ToString()).ToUpperInvariant();
 				if (keyNames.Contains(keyValue))
 					return (int)(Keys)Enum.Parse(typeof(Keys), keyValue, true);
 				keyValue = "oem" + keyValue; //try unfriendly name
@@ -130,11 +130,11 @@ namespace Noxico
 			};
 
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
-			if (IniFile.GetBool("misc", "vistasaves", true) && SavePath != null)
+			if (IniFile.GetValue("misc", "vistasaves", true) && SavePath != null)
 				SavePath = Path.Combine(SavePath, "Noxico"); //Add a Noxico directory to V/7's Saved Games
 			else
 			{
-				SavePath = IniFile.GetString("misc", "savepath", @"$/Noxico"); //"saves"; //Use <startup>\saves instead
+				SavePath = IniFile.GetValue("misc", "savepath", @"$/Noxico"); //"saves"; //Use <startup>\saves instead
 				if (SavePath.StartsWith("$"))
 					SavePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + SavePath.Substring(1);
 				SavePath = Path.GetFullPath(SavePath);
@@ -152,10 +152,10 @@ namespace Noxico
 			KeyTrg = new bool[256];
 			KeyRepeat = new DateTime[256];
 			Modifiers = new bool[3];
-			AutoRestExploreSpeed = IniFile.GetInt("misc", "autorest", 50);
+			AutoRestExploreSpeed = IniFile.GetValue("misc", "autorest", 50);
 			if (AutoRestExploreSpeed > 0 && AutoRestExploreSpeed < 5)
 				AutoRestExploreSpeed = 5;
-			AutoRestCombatSpeed = IniFile.GetInt("misc", "combatrest", 0);
+			AutoRestCombatSpeed = IniFile.GetValue("misc", "combatrest", 0);
 			if (AutoRestCombatSpeed > 0 && AutoRestCombatSpeed < 5)
 				AutoRestCombatSpeed = 5;
 			Cursor = new Cursor();
@@ -348,7 +348,7 @@ namespace Noxico
 			var header = bin.ReadBytes(6);
 			if (Encoding.UTF8.GetString(header) != "NOXiCO")
 			{
-				MessageBox.Message("Invalid world header.");
+				MessageBox.Notice("Invalid world header.");
 				return;
 			}
 			var crypt = new CryptStream(file);
@@ -494,9 +494,9 @@ namespace Noxico
 		public static void ShowMessageLog()
 		{
 			if (messageLog.Count == 0)
-				MessageBox.Message("There are no messages to display.", true);
+				MessageBox.Notice("There are no messages to display.", true);
 			else
-				TextScroller.Plain(string.Join("\n", messageLog));
+				TextScroller.Plain(string.Join("\n", messageLog.Select(m => !m.StartsWith("\uE080"))));
 		}
 
 		public static void HealthMessage()
@@ -836,7 +836,7 @@ namespace Noxico
 			SaveGame();
 		}
 
-		public string RollWorldName()
+		public static string RollWorldName()
 		{
 			//var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
 			//var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
@@ -852,7 +852,7 @@ namespace Noxico
 
 		public void RollPotions()
 		{
-			Potions = new string[256];
+			this.Potions = new string[256];
 			var colors = new[] { "black", "blue", "green", "red", "yellow", "mauve", "brown", "white", "silver", "purple", "chocolate", "orange", "gray" };
 			var mods = new[] { "", "bubbly ", "fizzy ", "viscious ", "translucent ", "smoky ", "smelly ", "fragrant ", "sparkly ", "tar-like " };
 			for (var i = 0; i < 128; i++)

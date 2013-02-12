@@ -114,7 +114,7 @@ namespace Noxico
 		/// Returns a TileDescription if this tile has one.
 		/// </summary>
 		/// <returns></returns>
-		public TileDescription? GetSpecialDescription()
+		public TileDescription? GetDescription()
 		{
 			if (SpecialDescription == 0)
 				return null;
@@ -248,7 +248,7 @@ namespace Noxico
 		public string Name { get { return GetToken("name").Text; } set { GetToken("name").Text = value; } }
 		public string ID { get { return GetToken("id").Text; } set { GetToken("id").Text = value; } }
 		public string Music { get { return GetToken("music").Text; } set { GetToken("music").Text = value; } }
-		public BoardType Type { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
+		public BoardType BoardType { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
 		public int ToNorth { get { return (int)GetToken("north").Value; } set { GetToken("north").Value = value; } }
 		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
@@ -372,7 +372,7 @@ namespace Noxico
 				newBoard.Name = newBoard.GetToken("name").Text;
 				newBoard.ID = newBoard.GetToken("id").Text;
 				newBoard.Music = newBoard.GetToken("music").Text;
-				newBoard.Type = (BoardType)newBoard.GetToken("type").Value;
+				newBoard.BoardType = (BoardType)newBoard.GetToken("type").Value;
 
 				Toolkit.ExpectFromFile(stream, "AMNT", "board part amounts");
 				var secCt = stream.ReadInt32();
@@ -484,7 +484,7 @@ namespace Noxico
 		{
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return null;
-			return Tilemap[col, row].GetSpecialDescription();
+			return Tilemap[col, row].GetDescription();
 		}
 
 		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool wall = false, bool burn = false, bool water = false, bool cliff = false)
@@ -600,7 +600,7 @@ namespace Noxico
 					if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("health").Value <= 0)
 						return;
 				}
-				if (!surrounding && Type != BoardType.Dungeon)
+				if (!surrounding && BoardType != BoardType.Dungeon)
 					UpdateSurroundings();
 				Burn(true);
 				return;
@@ -792,7 +792,7 @@ namespace Noxico
 			file.WriteLine("\tName: {0}<br />", Name);
 			file.WriteLine("\tID: {0}<br />", ID);
 			file.WriteLine("\tMusic: {0}<br />", Music);
-			file.WriteLine("\tType: {0}<br />", Type);
+			file.WriteLine("\tType: {0}<br />", BoardType);
 			file.WriteLine("\tBiome: {0}<br />", BiomeData.Biomes[(int)GetToken("biome").Value].Name);
 			file.WriteLine("\tCulture: {0}<br />", HasToken("culture") ? GetToken("culture").Text : "&lt;none&gt;");
 			file.WriteLine("</p>");
@@ -839,7 +839,7 @@ namespace Noxico
 			}
 			file.WriteLine("</table>");
 
-			if (Type == BoardType.Dungeon || Type == BoardType.Wild)
+			if (BoardType == BoardType.Dungeon || BoardType == BoardType.Wild)
 			{
 				file.WriteLine("<h2>Encounter set</h2>");
 				file.WriteLine("<ul>");
@@ -876,7 +876,7 @@ namespace Noxico
 
 		public void RespawnEncounters()
 		{
-			if (GetToken("encounters").Value == 0 || Type != BoardType.Dungeon && Type != BoardType.Wild)
+			if (GetToken("encounters").Value == 0 || BoardType != BoardType.Dungeon && BoardType != BoardType.Wild)
 				return;
 			var encData = GetToken("encounters");
 			var count = Entities.OfType<BoardChar>().Count();

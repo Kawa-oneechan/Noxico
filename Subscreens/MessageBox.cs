@@ -12,7 +12,7 @@ namespace Noxico
 {
 	public class MessageBox
 	{
-		private enum BoxType { Message, Question, List, Input };
+		private enum BoxType { Notice, Question, List, Input };
 		//private static string[] text = { };
 		private static string text;
 		private static BoxType type;
@@ -72,7 +72,7 @@ namespace Noxico
 					txt = new UITextBox((string)Answer) { Left = 7, Top = top + lines + 1, Width = 65, Height = 1, Background = Color.FromArgb(48, 48, 48), Foreground = Color.White };
 					UIManager.Elements.Add(txt);
 				}
-				if (type == BoxType.Message || type == BoxType.Input)
+				if (type == BoxType.Notice || type == BoxType.Input)
 					key = new UILabel("<g2561><cWhite><g2026><cGray><g255E>") { Top = top + height - 1, Left = 70 };
 				else if (type == BoxType.Question)
 					key = new UILabel("<g2561><cWhite> Y/N <cGray><g255E>") { Top = top + height - 1, Left = 66 };
@@ -136,7 +136,7 @@ namespace Noxico
 				}
 				else
 				{
-					type = BoxType.Message;
+					type = BoxType.Notice;
 					NoxicoGame.ClearKeys();
 				}
 				if (ScriptPauseHandler != null)
@@ -179,10 +179,10 @@ namespace Noxico
 			UIManager.Elements.Remove(key);
 		}
 
-		public static void List(string question, Dictionary<object, string> options, Action okay, bool allowEscape = false, bool dontPush = false, string title = "")
+		public static void List(string question, Dictionary<object, string> options, Action okay, bool allowEscape = false, bool doNotPush = false, string title = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
-			if (!dontPush)
+			if (!doNotPush)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.List;
@@ -196,10 +196,10 @@ namespace Noxico
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Ask(string question, Action yes, Action no, bool dontPush = false, string title = "")
+		public static void Ask(string question, Action yes, Action no, bool doNotPush = false, string title = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
-			if (!dontPush)
+			if (!doNotPush)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.Question;
@@ -211,23 +211,23 @@ namespace Noxico
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Message(string message, bool dontPush = false, string title = "")
+		public static void Notice(string message, bool doNotPush = false, string title = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
-			if (!dontPush)
+			if (!doNotPush)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
-			type = BoxType.Message;
+			type = BoxType.Notice;
 			text = Toolkit.Wordwrap(message.Trim(), 68); //.Split('\n');
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Input(string message, string defaultValue, Action okay, bool dontPush = false, string title = "")
+		public static void Input(string message, string defaultValue, Action okay, bool doNotPush = false, string title = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
-			if (!dontPush)
+			if (!doNotPush)
 				Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
