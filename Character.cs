@@ -235,7 +235,7 @@ namespace Noxico
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
-					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });
+					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
 			if (!newChar.HasToken("culture"))
 				newChar.AddToken("culture", 0, Culture.DefaultCulture.ID);
 			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
@@ -383,7 +383,7 @@ namespace Noxico
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
-					newChar.Tokens.Add(new Token() { Name = prefabTokens[i], Value = prefabTokenValues[i] });
+					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
 			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
 
 			newChar.ApplyCostume();
@@ -587,7 +587,7 @@ namespace Noxico
 		{
 			foreach (var toAdd in otherSet)
 			{
-				this.Tokens.Add(new Token() { Name = toAdd.Name, Text = toAdd.Text, Value = toAdd.Value });
+				this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
 				if (toAdd.Tokens.Count > 0)
 					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
@@ -597,7 +597,7 @@ namespace Noxico
 		{
 			var skills = GetToken("skills");
 			if (!skills.HasToken(skill))
-				skills.Tokens.Add(new Token() { Name = skill });
+				skills.AddToken(skill);
 
 			var s = skills.GetToken(skill);
 			var l = (int)s.Value;
@@ -1521,9 +1521,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 
 			//Remove it later if there's none.
 			if (!source.HasToken("tail"))
-				source.Tokens.Add(new Token() { Name = "tail" });
+				source.AddToken("tail");
 			if (!target.HasToken("tail"))
-				target.Tokens.Add(new Token() { Name = "tail" });
+				target.AddToken("tail");
 
 			//Change tail type?
 			if (target.GetToken("tail").Text != source.GetToken("tail").Text)
@@ -1601,7 +1601,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 					{
 						doReport((isPlayer ? "Your" : this.Name + "'s") + " lower body has become " + (lowerBody == "slimeblob" ? "a mass of goop." : "a long, scaly snake tail"));
 						RemoveToken("legs");
-						Tokens.Add(new Token() { Name = lowerBody });
+						AddToken(lowerBody);
 						CheckPants();
 						return;
 					}
@@ -1610,7 +1610,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				if (target.HasToken("legs"))
 				{
 					if (!source.HasToken("legs"))
-						source.Tokens.Add(new Token() { Name = "legs" });
+						source.AddToken("legs");
 					if (string.IsNullOrWhiteSpace(source.GetToken("legs").Text))
 						source.GetToken("legs").Text = "human";
 
@@ -1626,10 +1626,10 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				{
 					if (target.HasToken(taurQuad) && !source.HasToken(taurQuad))
 					{
-						Tokens.Add(new Token() { Name = taurQuad });
+						AddToken(taurQuad);
 						CheckPants();
 						if (target.HasToken("marshmallow") && !source.HasToken("marshmallow"))
-							source.Tokens.Add(new Token() { Name = "marshmallow" });
+							source.AddToken("marshmallow");
 						doReport((isPlayer ? "You are" : this.Name + " is") + " now a " + taurQuad + ".");
 						CheckPants();
 						finish();
@@ -1671,7 +1671,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				var originalSkin = Path("originalskins/" + origName);
 				if (originalSkin == null)
 				{
-					Tokens.Add(new Token() { Name = "originalskins" });
+					AddToken("originalskins");
 					originalSkin = GetToken("originalskins").AddToken(origName);
 				}
 				originalSkin.RemoveToken("color");
@@ -1701,7 +1701,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				if (memorized != null)
 				{
 					if (!thisSkin.HasToken("color"))
-						thisSkin.Tokens.Add(new Token() { Name = "color" });
+						thisSkin.AddToken("color");
 					Path("skin/color").Text = memorized.Text;
 				}
 				//Grab the hair too?
@@ -1773,9 +1773,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			var shipToken = this.Path("ships/" + target.ID);
 			if (shipToken == null)
 			{
-				shipToken = new Token() { Name = target.ID };
+				shipToken = new Token(target.ID);
 				this.Path("ships").Tokens.Add(shipToken);
-				shipToken.Tokens.Add(new Token() { Name = ship });
+				shipToken.AddToken(ship);
 			}
 			else
 				shipToken.Tokens[0].Name = ship;

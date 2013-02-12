@@ -327,7 +327,7 @@ namespace Noxico
 					board.Type = BoardType.Dungeon;
 					var encounters = board.GetToken("encounters");
 					foreach (var e in biomeData.Encounters)
-						encounters.Tokens.Add(new Token() { Name = e });
+						encounters.AddToken(e);
 					encounters.Value = biomeData.MaxEncounters;
 					board.RespawnEncounters();
 

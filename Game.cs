@@ -403,7 +403,7 @@ namespace Noxico
 				Sound.PlayMusic(CurrentBoard.Music);
 
 				if (!Player.Character.HasToken("player"))
-					Player.Character.Tokens.Add(new Token() { Name = "player", Value = (int)DateTime.Now.Ticks });
+					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
 				SaveGame();
@@ -716,10 +716,10 @@ namespace Noxico
 			if (pc.HasToken("eyes"))
 				pc.GetToken("eyes").Text = eyeColor;
 
-			pc.Tokens.Add(new Token() { Name = "player", Value = (int)DateTime.Now.Ticks });
+			pc.AddToken("player", (int)DateTime.Now.Ticks);
 
-			var playerShip = new Token() { Name = Environment.UserName };
-			playerShip.Tokens.Add(new Token() { Name = "player" });
+			var playerShip = new Token(Environment.UserName);
+			playerShip.AddToken("player");
 			pc.GetToken("ships").Tokens.Add(playerShip);
 
 			var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
@@ -1204,7 +1204,7 @@ namespace Noxico
 								t = character.GetToken(token);
 							else
 							{
-								t = new Token() { Name = token };
+								t = new Token(token);
 								character.AddToken(t);
 							}
 						}
@@ -1217,7 +1217,7 @@ namespace Noxico
 									o = o.GetToken(part);
 								else
 								{
-									t = new Token() { Name = part };
+									t = new Token(part);
 									o.AddToken(t);
 									o = t;
 								}

@@ -32,19 +32,19 @@ namespace Noxico
 
 		public Token AddToken(string name, float value, string text)
 		{
-			var t = new Token() { Name = name, Value = value, Text = text };
+			var t = new Token(name, value, text);
 			Tokens.Add(t);
 			return t;
 		}
 		public Token AddToken(string name, float value)
 		{
-			var t = new Token() { Name = name, Value = value };
+			var t = new Token(name, value);
 			Tokens.Add(t);
 			return t;
 		}
 		public Token AddToken(string name)
 		{
-			var t = new Token() { Name = name };
+			var t = new Token(name);
 			Tokens.Add(t);
 			return t;
 		}
@@ -291,6 +291,24 @@ namespace Noxico
 		{
 		}
 
+		public Token(string name)
+		{
+			Name = name;
+		}
+
+		public Token(string name, float value)
+		{
+			Name = name;
+			Value = value;
+		}
+
+		public Token(string name, float value, string text)
+		{
+			Name = name;
+			Value = value;
+			Text = text;
+		}
+
 		public void SaveToFile(BinaryWriter stream)
 		{
 			//No expectations here -- that'd be TOO damn much, unless we get to compress things.
@@ -343,7 +361,7 @@ namespace Noxico
 			/*
 			foreach (var toAdd in otherSet)
 			{
-				this.Tokens.Add(new Token() { Name = toAdd.Name, Text = toAdd.Text, Value = toAdd.Value });
+				this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
 				if (toAdd.Tokens.Count > 0)
 					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}

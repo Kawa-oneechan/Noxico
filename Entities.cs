@@ -2259,7 +2259,7 @@ namespace Noxico
 					{
 						MessageBox.Ask("Rest until healed?", () =>
 						{
-							Character.Tokens.Add(new Token() { Name = "helpless" });
+							Character.AddToken("helpless");
 							NoxicoGame.Mode = UserMode.Subscreen;
 							UnsortedSubscreens.UntilMorning = false;
 							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
@@ -2270,7 +2270,7 @@ namespace Noxico
 					{
 						MessageBox.Ask("Sleep until morning?", () =>
 						{
-							Character.Tokens.Add(new Token() { Name = "helpless" });
+							Character.AddToken("helpless");
 							NoxicoGame.Mode = UserMode.Subscreen;
 							UnsortedSubscreens.UntilMorning = true;
 							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
@@ -2415,10 +2415,10 @@ namespace Noxico
 					var relation = Character.Path("ships/" + aggressor.Character.ID);
 					if (relation == null)
 					{
-						relation = new Token() { Name = aggressor.Character.ID };
+						relation = new Token(aggressor.Character.ID);
 						Character.Path("ships").Tokens.Add(relation);
 					}
-					relation.Tokens.Add(new Token() { Name = "killer" });
+					relation.AddToken("killer");
 				}
 				Character.AddToken("gameover");
 
@@ -2612,7 +2612,7 @@ namespace Noxico
 		public DroppedItem(InventoryItem item, Token carriedItem)
 		{
 			Item = item;
-			Token = new Token() { Name = item.ID };
+			Token = new Token(item.ID);
 			if (carriedItem != null)
 				Token.AddSet(carriedItem.Tokens);
 
@@ -2709,7 +2709,7 @@ namespace Noxico
 		{
 			Token = new Token();
 			Token.Text = name;
-			var c = new Token() { Name = "contents" };
+			var c = new Token("contents");
 			if (contents != null)
 				c.AddSet(contents);
 			Token.Tokens.Add(c);
