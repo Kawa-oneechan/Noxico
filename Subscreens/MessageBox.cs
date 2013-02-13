@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace Noxico
 {
@@ -50,7 +44,7 @@ namespace Noxico
 				if (UIManager.Elements == null || fromWalkaround)
 					UIManager.Initialize();
 
-				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 5, Top = top, Width = 70, Height = height, Background = Color.Black, Foreground = Color.Gray };
+				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 5, Top = top, Width = 70, Height = height };
 				UIManager.Elements.Add(win);
 				lbl = new UILabel(text) { Left = 7, Top = top + 1, Width = 68, Height = lines };
 				UIManager.Elements.Add(lbl);
@@ -58,7 +52,7 @@ namespace Noxico
 				txt = null;
 				if (type == BoxType.List)
 				{
-					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 6, Top = top + lines + 1, Width = 67, Height = options.Count, Background = Color.Black, Foreground = Color.Gray };
+					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 7, Top = top + lines + 1, Width = 66, Height = options.Count };
 					lst.Change += (s, e) =>
 						{
 							option = lst.Index;
@@ -69,7 +63,7 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 7, Top = top + lines + 1, Width = 65, Height = 1, Background = Color.FromArgb(48, 48, 48), Foreground = Color.White };
+					txt = new UITextBox((string)Answer) { Left = 7, Top = top + lines + 1, Width = 65, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
 				if (type == BoxType.Notice || type == BoxType.Input)
@@ -88,7 +82,7 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Accept) || (type == BoxType.Question && (keys[(int)Keys.Y] || keys[(int)Keys.N])))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Accept))
 			{
 				if (type == BoxType.List && NoxicoGame.IsKeyDown(KeyBinding.Back))
 				{
@@ -107,13 +101,13 @@ namespace Noxico
 
 				if (type == BoxType.Question)
 				{
-					if ((NoxicoGame.IsKeyDown(KeyBinding.Accept) || keys[(int)Keys.Y]) && onYes != null)
+					if (NoxicoGame.IsKeyDown(KeyBinding.Accept) && onYes != null)
 					{
 						NoxicoGame.Sound.PlaySound("Get Item");
 						NoxicoGame.ClearKeys();
 						onYes();
 					}
-					else if ((NoxicoGame.IsKeyDown(KeyBinding.Back) || keys[(int)Keys.N]) && onNo != null)
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Back) && onNo != null)
 					{
 						NoxicoGame.Sound.PlaySound("Put Item");
 						NoxicoGame.ClearKeys();

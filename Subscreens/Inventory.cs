@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace Noxico
 {
@@ -184,14 +177,11 @@ namespace Noxico
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
-				//descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
-				//description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
-
-				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 78, Height = 2 + height, Background = Color.Black, Foreground = Color.Magenta });
-				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver });
-				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver };
-				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4, Foreground = Color.Silver, Background = Color.Black };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 58, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = selection };
+				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 78, Height = 2 + height });
+				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
+				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4 };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 58, Height = height, Index = selection };
 				itemList.Change = (s, e) =>
 				{
 					selection = itemList.Index;
@@ -232,12 +222,12 @@ namespace Noxico
 				{
 					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 				};
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22, Foreground = Color.Silver, Background = Color.Black };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
 				UIManager.Elements.Add(itemDesc);
 				UIManager.Elements.Add(capacity);
-				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 70, Top = 21, Width = 6, Height = 1 });
+				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 70, Top = 21 });
 				UIManager.Highlight = itemList;
 				itemList.Index = selection;
 

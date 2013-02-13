@@ -9,6 +9,22 @@ namespace Noxico
 {
 	//TODO: allow finer mouse control -- clicking individual list items, < > arrows...
 
+	public static class UIColors
+	{
+		public static Color WindowBackground { get { return Color.FromArgb(42, 42, 42); } }
+		public static Color WindowBorder { get { return Color.FromArgb(109, 109, 109); } }
+		public static Color RegularText { get { return Color.FromArgb(220, 220, 204); } }
+		public static Color HighlightText { get { return Color.FromArgb(153, 180, 209); } }
+		public static Color DarkBackground { get { return Color.FromArgb(22, 22, 22); } }
+		public static Color LightBackground { get { return Color.FromArgb(82, 82, 82); } }
+		public static Color SelectedBackground { get { return Color.FromArgb(61, 90, 85); } }
+		public static Color SelectedBackUnfocused { get { return Color.FromArgb(62, 70, 74); } }
+		public static Color SelectedText { get { return Color.FromArgb(204, 220, 144); } }
+		public static Color Unfocused { get { return Color.Gray; } }
+		public static Color StatusBackground { get { return Color.Black; } }
+		public static Color StatusForeground { get { return Color.Silver; } }
+	}
+
 	public abstract class UIElement
 	{
 		public abstract bool TabStop { get; }
@@ -115,6 +131,7 @@ namespace Noxico
 	public class UIWindow : UIElement
 	{
 		public Color Title { get; set; }
+		public bool Gradient { get; set; }
 
 		public override bool TabStop
 		{
@@ -124,8 +141,9 @@ namespace Noxico
 		public UIWindow(string text)
 		{
 			Text = text;
-			Foreground = Color.Black;
-			Background = Color.Silver;
+			Foreground = UIColors.WindowBorder;
+			Background = UIColors.WindowBackground;
+			Gradient = true;
 		}
 
 		public override void Draw()
@@ -133,24 +151,22 @@ namespace Noxico
 			var top = (char)0x2554 + new string((char)0x2550, Width - 2) + (char)0x2557;
 			var line = (char)0x2551 + new string(' ', Width - 2) + (char)0x2551;
 			var bottom = (char)0x255A + new string((char)0x2550, Width - 2) + (char)0x255D;
-			//var caption = (char)0x2561 + (Title != null ? " <c" + Title.Name + ">" : " ") + Text + (Title != null ? "<c" + Foreground.Name + "> " : " ") + (char)0x255E;
 			var caption = ' ' + (Text.Length > Width - 8 ? Text.Remove(Width - 8) + '\x2026' : Text) + "  ";
 
 			NoxicoGame.HostForm.Write(top, Foreground, Background, Left, Top);
 			if (!string.IsNullOrWhiteSpace(Text))
-			{
 				NoxicoGame.HostForm.Write(caption, Title.A > 0 ? Title : Foreground, Background, Left + (Width / 2) - (caption.Length / 2), Top);
-				NoxicoGame.HostForm.SetCell(Top, Left + (Width / 2) - (caption.Length / 2) - 1, '\x2561', Foreground, Background);
-				NoxicoGame.HostForm.SetCell(Top, Left + (int)Math.Floor((Width / 2.0) + (caption.Length / 2.0)), '\x255E', Foreground, Background);
-			}
-			for (var i = Top + 1; i < Top + Height; i++)
-				NoxicoGame.HostForm.Write(line, Foreground, Background, Left, i);
-			NoxicoGame.HostForm.Write(bottom, Foreground, Background, Left, Top + Height - 1);
 
-			//for (var i = Top + 1; i < Top + Height; i++)
-			//	NoxicoGame.HostForm.DarkenCell(i, Left + Width);
-			//for (var i = Left + 1; i <= Left + Width; i++)
-			//	NoxicoGame.HostForm.DarkenCell(Top + Height, i);
+			var bg = Background;
+			if (Gradient)
+				bg = bg.Darken(2 * Height);
+			for (var i = Top + 1; i < Top + Height; i++)
+			{
+				NoxicoGame.HostForm.Write(line, Foreground, bg, Left, i);
+				if (Gradient)
+					bg = bg.Darken(2 * Height);
+			}
+			NoxicoGame.HostForm.Write(bottom, Foreground, bg, Left, Top + Height - 1);
 		}
 	}
 
@@ -164,7 +180,7 @@ namespace Noxico
 		public UILabel(string text)
 		{
 			Text = text;
-			Foreground = Color.Gray;
+			Foreground = UIColors.RegularText;
 			Background = Color.Transparent;
 		}
 
@@ -232,8 +248,8 @@ namespace Noxico
 			Items = new List<string>();
 			_index = 0;
 			Width = 32;
-			Foreground = Color.Black;
-			Background = Color.White;
+			Foreground = UIColors.RegularText;
+			Background = UIColors.DarkBackground;
 			Enabled = true;
 		}
 
@@ -244,8 +260,8 @@ namespace Noxico
 			Items.AddRange(items);
 			Index = index;
 			Width = 32;
-			Foreground = Color.Black;
-			Background = Color.White;
+			Foreground = UIColors.RegularText;
+			Background = UIColors.DarkBackground;
 			Enabled = true;
 		}
 
@@ -258,8 +274,8 @@ namespace Noxico
 					NoxicoGame.HostForm.Write("???", Color.Black, Color.Black, l, t);
 				else
 					NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadRight(Width - 2) + ' ',
-						_index == i + scroll ? UIManager.Highlight == this ? Color.White : Color.White : Foreground,
-						_index == i + scroll ? UIManager.Highlight == this ? Color.Navy : Color.Gray : Background,
+						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText : Foreground,
+						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused : Background,
 						 l, t);
 
 		}
@@ -269,7 +285,9 @@ namespace Noxico
 			if (Items == null || Items.Count == 0)
 				return;
 			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
+				UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText,
+				UIManager.Highlight == this ? UIColors.WindowBackground : UIColors.SelectedBackUnfocused,
+				Left, Top + _index - scroll);
 		}
 
 		public override void DoUp()
@@ -284,11 +302,13 @@ namespace Noxico
 			if (_index < scroll)
 			{
 				scroll--;
-				NoxicoGame.HostForm.ScrollDown(Top, Top + Height, Left, Left + Width - 1);
+				NoxicoGame.HostForm.ScrollDown(Top, Top + Height, Left, Left + Width - 1, Background);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
 			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
+				UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText,
+				UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused,
+				Left, Top + _index - scroll);
 			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
@@ -306,11 +326,13 @@ namespace Noxico
 			if (_index - scroll >= Height)
 			{
 				scroll++;
-				NoxicoGame.HostForm.ScrollUp(Top - 1, Top + Height - 1, Left, Left + Width - 1);
+				NoxicoGame.HostForm.ScrollUp(Top - 1, Top + Height - 1, Left, Left + Width - 1, Background);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Left, Top + pi - scroll);
 			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
-				Color.White, UIManager.Highlight == this ? Color.Navy : Color.Gray, Left, Top + _index - scroll);
+								UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText,
+				UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused,
+				Left, Top + _index - scroll);
 			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
@@ -351,8 +373,8 @@ namespace Noxico
 			caret = text.Length;
 			Width = text.Length + 2;
 			Height = 1;
-			Foreground = Color.Black;
-			Background = Color.White;
+			Foreground = UIColors.HighlightText;
+			Background = UIColors.DarkBackground;
 			Enabled = true;
 		}
 
@@ -386,9 +408,9 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(Text.PadRight(Width), UIManager.Highlight == this ? Foreground : Color.Gray, Background, Left, Top);
+			NoxicoGame.HostForm.Write(Text.PadRight(Width), UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Left, Top);
 			if (UIManager.Highlight == this)
-				NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', Color.Gray, Color.Silver);
+				NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
 		}
 	}
 
@@ -412,14 +434,14 @@ namespace Noxico
 			Index = index;
 			Width = 32;
 			Height = 1;
-			Foreground = Color.Black;
-			Background = Color.White;
+			Foreground = UIColors.RegularText;
+			Background = UIColors.DarkBackground;
 			Enabled = true;
 		}
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(Text.PadRight(Width - 2) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : Color.Gray, Background, Left, Top);
+			NoxicoGame.HostForm.Write(Text.PadRight(Width - 2) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Left, Top);
 		}
 
 		public override void DoUp()
@@ -468,7 +490,7 @@ namespace Noxico
 		public override void Draw()
 		{
 			NoxicoGame.HostForm.Write("\u2588\u258C", Toolkit.GetColor(Text), Background, Left, Top);
-			NoxicoGame.HostForm.Write(Text.PadRight(Width - 4) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : Color.Gray, Background, Left + 2, Top);
+			NoxicoGame.HostForm.Write(Text.PadRight(Width - 4) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Left + 2, Top);
 		}
 	
 		public UIColorList() : base()
@@ -507,8 +529,8 @@ namespace Noxico
 		{
 			choices = new[] { a, b };
 			Height = 1;
-			Foreground = Color.Black;
-			Background = Color.Transparent;
+			Foreground = UIColors.HighlightText;
+			Background = UIColors.WindowBackground;
 			Enabled = true;
 		}
 

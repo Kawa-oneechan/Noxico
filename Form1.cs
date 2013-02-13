@@ -586,7 +586,7 @@ namespace Noxico
             this.Refresh();
         }
 
-		public void ScrollUp(int topRow, int bottomRow, int leftCol, int rightCol)
+		public void ScrollUp(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
 		{
 			var pixelT = CellHeight + (topRow * CellHeight);
 			var pixelB = (bottomRow * CellHeight);
@@ -601,7 +601,7 @@ namespace Noxico
 			using (var gfx = Graphics.FromImage(backBuffer))
 			{
 				gfx.DrawImage(scrollBuffer, pixelL, pixelT);
-				gfx.FillRectangle(Brushes.Black, new System.Drawing.Rectangle(pixelL, (bottomRow * CellHeight) - CellHeight, pixelR - pixelL, CellHeight));
+				gfx.FillRectangle(new SolidBrush(reveal), new System.Drawing.Rectangle(pixelL, (bottomRow * CellHeight) - CellHeight, pixelR - pixelL, CellHeight));
 			}
 			for (var row = topRow; row < bottomRow; row++)
 			{
@@ -615,7 +615,7 @@ namespace Noxico
 			Refresh();
 		}
 
-		public void ScrollDown(int topRow, int bottomRow, int leftCol, int rightCol)
+		public void ScrollDown(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
 		{
 			var pixelT = (topRow * CellHeight);
 			var pixelB = (bottomRow * CellHeight);
@@ -630,7 +630,7 @@ namespace Noxico
 			using (var gfx = Graphics.FromImage(backBuffer))
 			{
 				gfx.DrawImage(scrollBuffer, pixelL, pixelT + CellHeight);
-				gfx.FillRectangle(Brushes.Black, new System.Drawing.Rectangle(pixelL, topRow * CellHeight, pixelR - pixelL, CellHeight));
+				gfx.FillRectangle(new SolidBrush(reveal), new System.Drawing.Rectangle(pixelL, topRow * CellHeight, pixelR - pixelL, CellHeight));
 			}
 			for (var row = topRow + 1; row <= bottomRow; row++)
 			{

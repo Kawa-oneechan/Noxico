@@ -53,9 +53,9 @@ has the same effect." },
 			{
 				Subscreens.FirstDraw = false;
 				UIManager.Initialize();
-				UIManager.Elements.Add(new UIWindow("PAUSED") { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2, Background = Color.Black, Foreground = Color.Maroon });
-				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 2, Width = 44, Height = 18, Background = Color.Black, Foreground = Color.Blue });
-				list = new UIList() { Background = Color.Black, Foreground = Color.Silver, Width = 20, Height = pages.Count, Left = 6, Top = 5 };
+				UIManager.Elements.Add(new UIWindow("PAUSED") { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2 });
+				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 2, Width = 44, Height = 18 });
+				list = new UIList() { Width = 20, Height = pages.Count, Left = 6, Top = 5 };
 				list.Items.AddRange(pages.Keys);
 				list.Change += (s, e) =>
 				{
@@ -79,7 +79,7 @@ has the same effect." },
 						TextScroller.Plain(Mix.GetString("credits.txt"), "Credits", false);
 					}
 				};
-				text = new UILabel("...") { Background = Color.Black, Foreground = Color.Silver, Left = 30, Top = 3 };
+				text = new UILabel("...") { Left = 30, Top = 3 };
 				UIManager.Elements.Add(list);
 				UIManager.Elements.Add(text);
 				list.Index = IniFile.GetValue("misc", "rememberpause", true) ? page : 0;
