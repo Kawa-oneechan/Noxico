@@ -1,12 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
+//using System.Windows.Forms;
 
 namespace Noxico
 {
@@ -77,10 +70,10 @@ namespace Noxico
 				containerList = null;
 				var containerTexts = new List<string>();
 
-				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height, Background = Color.Black, Foreground = Color.CornflowerBlue };
-				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Background = Color.Black, Foreground = Color.Gray, Index = indexLeft };
+				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
+				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft };
 				UIManager.Elements.Add(containerWindow);
-				UIManager.Elements.Add(new UILabel(isVendor ? vendorChar.Name.ToString() + " has nothing." : "It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				UIManager.Elements.Add(new UILabel(isVendor ? vendorChar.Name.ToString() + " has nothing." : "It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(containerList);
 
 				if (other.Tokens.Count == 0)
@@ -128,10 +121,10 @@ namespace Noxico
 				playerList = null;
 				var playerTexts = new List<string>();
 
-				playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3, Background = Color.Black, Foreground = Color.Magenta };
-				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Background = Color.Black, Foreground = Color.Gray, Index = indexRight };
+				playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3 };
+				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight };
 				UIManager.Elements.Add(playerWindow);
-				UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1, Background = Color.Black, Foreground = Color.Gray });
+				UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(playerList);
 
 				if (player.Character.GetToken("items").Tokens.Count == 0)
@@ -179,10 +172,10 @@ namespace Noxico
 					playerList.Height = height2;
 				}
 
-				UIManager.Elements.Add(new UILabel((" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (isVendor ? "buy or sell" : "store or retrieve") + " the highlighted item.").PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = Color.Black, Foreground = Color.Silver });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6, Background = Color.Black, Foreground = Color.Navy, Title = Color.Silver };
-				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4, Foreground = Color.Silver, Background = Color.Black };
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22, Foreground = Color.Silver, Background = Color.Black };
+				UIManager.Elements.Add(new UILabel((" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (isVendor ? "buy or sell" : "store or retrieve") + " the highlighted item.").PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6 };
+				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4 };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
@@ -233,7 +226,7 @@ namespace Noxico
 							if (containerList.Items.Count == 0)
 							{
 								containerList.Hidden = true;
-								keys[(int)Keys.Right] = true;
+								keys[NoxicoGame.KeyBindings[KeyBinding.Right]] = true;
 							}
 							else
 								containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
@@ -298,7 +291,7 @@ namespace Noxico
 							if (playerList.Items.Count == 0)
 							{
 								playerList.Hidden = true;
-								keys[(int)Keys.Left] = true;
+								keys[NoxicoGame.KeyBindings[KeyBinding.Left]] = true;
 							}
 							else
 								playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
