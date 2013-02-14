@@ -83,7 +83,34 @@ namespace Noxico
 		public static Color Aqua { get { return new Color(0xFF00FFFF, "Aqua"); } }
 		public static Color Brown { get { return new Color(0xFF804000, "Brown"); } }
 		public static Color Orange { get { return new Color(0xFFFFA500, "Orange"); } }
-		//Add a CGA lookup?
+
+		public static Color FromCGA(int index)
+		{
+			if (index < 0 || index > 15)
+				throw new ArgumentOutOfRangeException("cgaIndex");
+			var r = (2.0 / 3 * (index & 4) / 4 + 1 / 3 * (index & 8)) * 255;
+			var g = (2.0 / 3 * (index & 2) / 2 + 1 / 3 * (index & 8)) * 255;
+			var b = (2.0 / 3 * (index & 1) / 1 + 1 / 3 * (index & 8)) * 255;
+			if (index == 6)
+				g /= 2;
+			return Color.FromArgb((int)r, (int)g, (int)b);
+		}
+
+		public static Color FromCSS(string hexCode)
+		{
+			if (string.IsNullOrWhiteSpace(hexCode))
+				throw new ArgumentNullException("hexCode");
+			if (hexCode[0] == '#')
+				hexCode = hexCode.Substring(1);
+			if (hexCode.Length != 6 && hexCode.Length != 3)
+				throw new ArgumentException("CSS hexcodes have only three or six digits.");
+			if (hexCode.Length == 3)
+				hexCode = string.Join("", new char[] { hexCode[0], hexCode[0], hexCode[1], hexCode[1], hexCode[2], hexCode[2] });
+			var r = int.Parse(hexCode.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+			var g = int.Parse(hexCode.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+			var b = int.Parse(hexCode.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+			return Color.FromArgb(r, g, b);
+		}
 
 		public static Color FromArgb(int argb)
 		{
