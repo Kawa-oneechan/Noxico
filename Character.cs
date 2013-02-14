@@ -171,32 +171,6 @@ namespace Noxico
 			return "it";
 		}
 
-		public bool HasNormalSkin()
-		{
-			//TODO: make these use the colors defined for the Human bodytype instead of hardcoding?
-			var regularColors = new[] { "light", "pale", "dark", "olive" };
-			if (Path("skin/type") == null || Path("skin/type").Text != "skin")
-				return false;
-			var color = Path("skin/color");
-			if (color == null)
-				return false;
-			if (regularColors.Contains(color.Text))
-				return true;
-			return false;
-		}
-
-		public bool HasGreenSkin()
-		{
-			var color = Path("skin/color");
-			if (color == null)
-				return false;
-			var raw = Toolkit.GetColor(color.Text);
-			var hue = raw.GetHue();
-			if (hue >= 98 && hue <= 148)
-				return true;
-			return false;
-		}
-
 		public float GetMaximumHealth()
 		{
 			return GetToken("strength").Value * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
@@ -679,7 +653,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				return NoxicoGame.KnownItems.Find(y => y.ID == x);
 			}
 			);
-			Func<string, string> nameColor = new Func<string, string>(x => Toolkit.NameColor(x));
+			Func<string, string> nameColor = new Func<string, string>(x => Color.NameColor(x));
 			Func<float, string> count = new Func<float, string>(x => Toolkit.Count(x));
 			var isPlayer = (pa != null && pa is Player);
 			#endregion
@@ -1536,22 +1510,22 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				switch (target.Path("skin/type").Text)
 				{
 					case "skin":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + " skin all over.");
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + " skin all over.");
 						break;
 					case "fur":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + " fur all over.");
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + " fur all over.");
 						break;
 					case "rubber":
-						report.Add((isPlayer ? "Your" : this.Name + "'s") + " skin has turned into " + Toolkit.NameColor(target.Path("skin/color").Text) + " rubber.");
+						report.Add((isPlayer ? "Your" : this.Name + "'s") + " skin has turned into " + Color.NameColor(target.Path("skin/color").Text) + " rubber.");
 						break;
 					case "scales":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown thick " + Toolkit.NameColor(target.Path("skin/color").Text) + " scales.");
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown thick " + Color.NameColor(target.Path("skin/color").Text) + " scales.");
 						break;
 					case "slime":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " turned to " + Toolkit.NameColor(target.Path("hair/color").Text) + " slime.");
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " turned to " + Color.NameColor(target.Path("hair/color").Text) + " slime.");
 						break;
 					default:
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Toolkit.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Text + '.');
+						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Text + '.');
 						break;
 				}
 			}
@@ -2909,7 +2883,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			var hairDesc = "";
 			var hairLength = hairToken.HasToken("length") ? hairToken.GetToken("length").Value : 0f;
 			var hairColorToken = hairToken.GetToken("color");
-			var hairColor = Toolkit.NameColor(hairColorToken.Text).ToLowerInvariant();
+			var hairColor = Color.NameColor(hairColorToken.Text).ToLowerInvariant();
 			if (hairLength == 0)
 				return Toolkit.PickOne("bald", "shaved");
 			else if (hairLength < 1)
@@ -3023,7 +2997,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 				//involve lust somehow
 			}
 			if (nipplesToken.HasToken("color"))
-				nipDesc += ", " + Toolkit.NameColor(nipplesToken.GetToken("color").Tokens[0].Name);
+				nipDesc += ", " + Color.NameColor(nipplesToken.GetToken("color").Tokens[0].Name);
 			if (nipplesToken.HasToken("fuckable"))
 				nipDesc += " nipple-hole";
 			else if (nipplesToken.HasToken("canfuck"))
@@ -3296,7 +3270,7 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			if (knownItem == null)
 				return null;
 			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(knownItem.UnknownName)) ? knownItem.UnknownName : knownItem.Name;
-			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : "";
+			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : "";
 			var reps = new Dictionary<string, string>()
 			{
 				{ "[color]", color },

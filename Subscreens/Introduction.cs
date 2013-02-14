@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
 using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Xml;
 
 namespace Noxico
 {
@@ -177,7 +174,7 @@ namespace Noxico
 						c = c.Substring(6);
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => hairs.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+						oneof.ForEach(x => hairs.Add(Color.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
@@ -194,7 +191,7 @@ namespace Noxico
 						c = c.Substring(6);
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => eyes.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+						oneof.ForEach(x => eyes.Add(Color.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
@@ -219,7 +216,7 @@ namespace Noxico
 						c = c.Substring(6);
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => skins.Add(Toolkit.NameColor(x.Trim()).Titlecase()));
+						oneof.ForEach(x => skins.Add(Color.NameColor(x.Trim()).Titlecase()));
 						//skinName = skin;
 						//break;
 					}

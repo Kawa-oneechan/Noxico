@@ -1,11 +1,8 @@
 using System;
-using System.Text;
-using System.Windows.Forms;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Globalization;
-using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Noxico
 {
@@ -246,7 +243,7 @@ namespace Noxico
 							{
 								//Entity has glowing eyes, but we don't let the player actually interact with them.
 								NoxicoGame.Messages.Last().Message = "Eyes in the darkness";
-								NoxicoGame.Messages.Last().Color = Toolkit.GetColor(((BoardChar)entity).Character.Path("eyes").Text);
+								NoxicoGame.Messages.Last().Color = Color.FromName(((BoardChar)entity).Character.Path("eyes").Text);
 							}
 							return;
 						}
@@ -526,7 +523,7 @@ namespace Noxico
 		public virtual void AdjustView()
 		{
 			var skinColor = Character.Path((Character.Path("skin/type").Text == "slime" ? "hair" : "skin") + "/color").Text;
-			ForegroundColor = Toolkit.GetColor(skinColor);
+			ForegroundColor = Color.FromName(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
 			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
 				ForegroundColor = Color.FromArgb(34, 34, 34);
@@ -537,9 +534,9 @@ namespace Noxico
 				if (a.HasToken("char"))
 					AsciiChar = (char)a.GetToken("char").Value;
 				if (a.HasToken("fore"))
-					ForegroundColor = Toolkit.GetColor(a.GetToken("fore").Text);
+					ForegroundColor = Color.FromName(a.GetToken("fore").Text);
 				if (a.HasToken("back"))
-					BackgroundColor = Toolkit.GetColor(a.GetToken("back").Text);
+					BackgroundColor = Color.FromName(a.GetToken("back").Text);
 			}
 		}
 
@@ -588,7 +585,7 @@ namespace Noxico
 				}
 			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Toolkit.GetColor(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
 		}
 
 		public override bool CanSee(Entity other)
@@ -1419,8 +1416,8 @@ namespace Noxico
 				var particle = new Clutter()
 				{
 					ParentBoard = this.ParentBoard,
-					ForegroundColor = Toolkit.GetColor(effect.GetToken("fore").Text),
-					BackgroundColor = Toolkit.GetColor(effect.GetToken("back").Text),
+					ForegroundColor = Color.FromName(effect.GetToken("fore").Text),
+					BackgroundColor = Color.FromName(effect.GetToken("back").Text),
 					AsciiChar = (char)effect.GetToken("char").Value,
 					Blocking = false,
 					XPosition = point.X,
@@ -1708,7 +1705,7 @@ namespace Noxico
 			if (Character.HasToken("flying"))
 			{
 				var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
-				NoxicoGame.HostForm.Write(flightTimer, Color.CornflowerBlue, Color.Black, 40 - (flightTimer.Length / 2), 0);
+				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
 			}
 		}
 
@@ -2618,14 +2615,14 @@ namespace Noxico
 				if (ascii.HasToken("char"))
 					this.AsciiChar = (char)ascii.GetToken("char").Value;
 				if (ascii.HasToken("fore"))
-					this.ForegroundColor = Toolkit.GetColor(ascii.GetToken("fore").Tokens[0]);
+					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Tokens[0]);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
 				{
-					var cga = new [] { Color.Black, Color.DarkBlue, Color.DarkGreen, Color.DarkCyan, Color.DarkRed, Color.Purple, Color.Brown, Color.Silver, Color.Gray, Color.Blue, Color.Green, Color.Cyan, Color.Red, Color.Magenta, Color.Yellow, Color.White };
-					this.ForegroundColor = cga[(int)Token.GetToken("id").Value % cga.Length]; //Toolkit.GetColor(cga[(int)Token.GetToken("id").Value % cga.Length]);
+					var cga = new [] { "Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "Purple", "Brown", "Silver", "Gray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White" };
+					this.ForegroundColor = Color.FromName(cga[(int)Token.GetToken("id").Value % cga.Length]);
 				}
 				if (ascii.HasToken("back"))
-					this.BackgroundColor = Toolkit.GetColor(ascii.GetToken("back").Tokens[0]);
+					this.BackgroundColor = Color.FromName(ascii.GetToken("back").Tokens[0]);
 				else
 					this.BackgroundColor = this.ForegroundColor.Darken();
 			}
@@ -2735,9 +2732,9 @@ namespace Noxico
 				if (ascii.HasToken("char"))
 					this.AsciiChar = (char)ascii.GetToken("char").Value;
 				if (ascii.HasToken("fore"))
-					this.ForegroundColor = Toolkit.GetColor(ascii.GetToken("fore").Tokens[0]);
+					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Tokens[0]);
 				if (ascii.HasToken("back"))
-					this.BackgroundColor = Toolkit.GetColor(ascii.GetToken("back").Tokens[0]);
+					this.BackgroundColor = Color.FromName(ascii.GetToken("back").Tokens[0]);
 				else
 					this.BackgroundColor = this.ForegroundColor.Darken();
 			}

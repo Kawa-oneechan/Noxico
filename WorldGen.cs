@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using System.Drawing;
 
 namespace Noxico
 {
@@ -464,7 +462,7 @@ namespace Noxico
 				AsciiChar = (char)0x00C6,
 				XPosition = treasureX,
 				YPosition = treasureY,
-				ForegroundColor = Color.SaddleBrown,
+				ForegroundColor = Color.FromName("SaddleBrown"),
 				BackgroundColor = Color.Black,
 				ParentBoard = goalBoard,
 				Blocking = false,
@@ -513,7 +511,7 @@ namespace Noxico
 		}
 
 		public string Name { get; private set; }
-		public System.Drawing.Color Color { get; private set; }
+		public Color Color { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
 		public string Music { get; private set; }
 		public bool IsWater { get; private set; }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Xml;
 
 namespace Noxico
@@ -369,8 +368,8 @@ namespace Noxico
 										}
 										else
 										{
-											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[0] == "wall" ? wall : Toolkit.GetColor(m.Params[0]);
-											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[1] == "wall" ? wall : Toolkit.GetColor(m.Params[1]);
+											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[0] == "wall" ? wall : Color.FromName(m.Params[0]);
+											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[1] == "wall" ? wall : Color.FromName(m.Params[1]);
 											chr = m.Params.Last()[0];
 											wal = m.Type != "floor";
 										}

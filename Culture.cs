@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using System.IO;
 
 namespace Noxico
 {
@@ -179,7 +177,7 @@ namespace Noxico
 	public class Deity
 	{
 		public string Name { get; private set; }
-		public System.Drawing.Color Color { get; private set; }
+		public Color Color { get; private set; }
 		public bool CanSummon { get; private set; }
 		public string DialogueHook { get; private set; }
 		public int SummonMonth { get; private set; }
@@ -187,7 +185,7 @@ namespace Noxico
 		public Deity(XmlElement x)
 		{
 			Name = x.GetAttribute("name");
-			Color = Toolkit.GetColor(x.GetAttribute("color"));
+			Color = Color.FromName(x.GetAttribute("color"));
 			CanSummon = false;
 			var summon = x.SelectSingleNode("date") as XmlElement;
 			if (summon != null)

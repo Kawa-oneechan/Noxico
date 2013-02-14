@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -450,7 +448,7 @@ namespace Noxico
 			{
 				var m = Messages.Count - 1 - i;
 				var c = Messages[m].Color;
-				if (c.GetBrightness() < 0.2)
+				if (c.Lightness < 0.2)
 					c = Toolkit.Lerp(c, Color.White, 0.5);
 				HostForm.Write(' ' + Messages[m].Message + ' ', c, Color.Black, 0, row);
 				row--;
@@ -911,7 +909,7 @@ namespace Noxico
 						item.UnknownName = rdesc;
 					}
 					//No matter if it's identified or not, we'll want to change the color.
-					var color = Toolkit.NameColor(rdesc.Remove(rdesc.IndexOf(' ')));
+					var color = Color.NameColor(rdesc.Remove(rdesc.IndexOf(' ')));
 					var fore = item.Path("ascii/fore");
 					if (fore == null)
 						fore = item.GetToken("ascii").AddToken("fore");
