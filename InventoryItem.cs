@@ -41,7 +41,7 @@ namespace Noxico
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
 			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(UnknownName)) ? UnknownName : Name;
-			var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : string.Empty;
+			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
 			var reps = new Dictionary<string, string>()
 			{
 				{ "[color]", color },
@@ -100,7 +100,7 @@ namespace Noxico
 			if (this.HasToken("description"))
 			{
 				var ret = GetToken("description").Text;
-				var color = (token != null && token.HasToken("color")) ? Toolkit.NameColor(token.GetToken("color").Text) : string.Empty;
+				var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
 				var reps = new Dictionary<string, string>()
 				{
 					{ "[color]", color },

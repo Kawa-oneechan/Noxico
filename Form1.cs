@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -44,7 +43,7 @@ namespace Noxico
 		private struct Cell
         {
             public char Character;
-            public Color Foreground;
+			public Color Foreground;
 			public Color Background;
         }
         private Cell[,] image = new Cell[80, 25];

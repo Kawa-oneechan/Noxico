@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-		private static XmlDocument colorTable = Mix.GetXMLDocument("knowncolors.xml");
+		//private static XmlDocument colorTable = Mix.GetXMLDocument("knowncolors.xml");
 
 		/// <summary>
 		/// Returns the amount of change between two strings.
@@ -214,91 +213,6 @@ namespace Noxico
 			if (i < words.Length)
 				return words[i];
 			return i.ToString();
-		}
-
-		/// <summary>
-		/// Returns the proper name for a color -- "darkslategray", "dark_slate_gray", or "DarkSlateGray" becomes "dark slate gray".
-		/// </summary>
-		public static string NameColor(string color)
-		{
-			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
-			var colorName = "";
-			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
-			{
-				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.OrdinalIgnoreCase))
-				{
-					colorName = colorEntry.GetAttribute("name");
-					break;
-				}
-			}
-			if (colorName.Length == 0)
-				return color;
-			var ret = new StringBuilder();
-			foreach (var c in colorName)
-			{
-				if (char.IsUpper(c))
-					ret.Append(' ');
-				ret.Append(c);
-			}
-			return ret.ToString().Trim().ToLowerInvariant();
-		}
-
-		/// <summary>
-		/// Returns a Color by name -- "DarkSlateGray" returns a Color with RGB values { 47, 79, 79 }.
-		/// </summary>
-		public static Color GetColor(string color)
-		{
-			if (string.IsNullOrEmpty(color))
-				return Color.Silver;
-			var req = color.ToLower().Replace("_", "").Replace(" ", "");
-			//var entry = colorTable.DocumentElement.SelectSingleNode("//color[@name=\"" + req + "\"]") as XmlElement;
-			XmlElement entry = null;
-			var entries = colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>();
-			foreach (var e in entries)
-			{
-				if (e.GetAttribute("name").Equals(req, StringComparison.OrdinalIgnoreCase))
-				{
-					entry = e;
-					break;
-				}
-			}
-			if (entry == null)
-				return Color.Silver;
-			if (String.IsNullOrEmpty(entry.GetAttribute("rgb")))
-				return Color.Silver;
-			var rgb = entry.GetAttribute("rgb").Split(',');
-			return Color.FromArgb(int.Parse(rgb[0]), int.Parse(rgb[1]), int.Parse(rgb[2]));
-		}
-		/// <summary>
-		/// Returns a Color by name -- "DarkSlateGray" returns a Color with RGB values { 47, 79, 79 }.
-		/// </summary>
-		public static Color GetColor(Token color)
-		{
-			if (color == null)
-				return Color.Silver;
-			return GetColor(color.Name);
-		}
-
-		/// <summary>
-		/// Darkens a color in some stupid way.
-		/// </summary>
-		public static Color Darken(this Color color, double divisor = 2)
-		{
-			if (divisor == 0)
-				divisor = 1;
-			var rD = color.R / divisor;
-			var gD = color.G / divisor;
-			var bD = color.B / divisor;
-			var r = color.R - rD;
-			var g = color.G - gD;
-			var b = color.B - bD;
-			if (r < 0)
-				r = 0;
-			if (g < 0)
-				g = 0;
-			if (b < 0)
-				b = 0;
-			return Color.FromArgb((int)r, (int)g, (int)b);
 		}
 
 		/// <summary>
@@ -546,7 +460,7 @@ namespace Noxico
 					}
 					else
 					{
-						var col = Toolkit.GetColor(match.Groups["fore"].ToString());
+						var col = Color.FromName(match.Groups["fore"].ToString());
 						s = s.Substring(0, match.Index) + "<span style=\"color: rgb(" + col.R + "," + col.G + "," + col.B + ");\">" + s.Substring(match.Index + match.Length);
 						colorClosers++;
 					}
@@ -597,6 +511,28 @@ namespace Noxico
 				}
 			}
 			return r;
+		}
+
+		/// <summary>
+		/// Darkens a color in some stupid way.
+		/// </summary>
+		public static Color Darken(this Color color, double divisor = 2)
+		{
+			if (divisor == 0)
+				divisor = 1;
+			var rD = color.R / divisor;
+			var gD = color.G / divisor;
+			var bD = color.B / divisor;
+			var r = color.R - rD;
+			var g = color.G - gD;
+			var b = color.B - bD;
+			if (r < 0)
+				r = 0;
+			if (g < 0)
+				g = 0;
+			if (b < 0)
+				b = 0;
+			return Color.FromArgb((int)r, (int)g, (int)b);
 		}
 
 		/// <summary>

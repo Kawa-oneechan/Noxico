@@ -1,13 +1,6 @@
 //This file holds UNSORTED subscreens that need to be filtered out into the /subscreens folder.
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace Noxico
 {

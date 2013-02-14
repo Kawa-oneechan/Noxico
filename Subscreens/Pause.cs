@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace Noxico
 {
@@ -212,7 +207,7 @@ has the same effect." },
 			sb.Clear();
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadRight(4) + " - Open this menu");
 #if DEBUG
-			sb.AppendLine(Toolkit.TranslateKey(Keys.F3).PadRight(4) + " - Dump board to HTML (debug only)");
+			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3).PadRight(4) + " - Dump board to HTML (debug only)");
 #endif
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadRight(4) + " - Take screenshot");
 			pages["Other keys"] = sb.ToString();

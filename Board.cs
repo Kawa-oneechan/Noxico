@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Xml;
 
 namespace Noxico
 {
@@ -123,7 +121,7 @@ namespace Noxico
 			var tsd = NoxicoGame.TileDescriptions[SpecialDescription];
 			var name = tsd.Substring(0, tsd.IndexOf(':'));
 			var desc = tsd.Substring(tsd.IndexOf(':') + 1).Trim();
-			return new TileDescription() { Name = name, Description = desc, Color = Foreground.GetBrightness() < 0.5 ? Background : Foreground  };
+			return new TileDescription() { Name = name, Description = desc, Color = Foreground.Lightness < 0.5 ? Background : Foreground  };
 		}
 
 		public void SaveToFile(BinaryWriter stream)

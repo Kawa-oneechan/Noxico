@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
+using Keys = System.Windows.Forms.Keys;
+using Bitmap = System.Drawing.Bitmap;
 
 namespace Noxico
 {
@@ -489,7 +488,7 @@ namespace Noxico
 	{
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write("\u2588\u258C", Toolkit.GetColor(Text), Background, Left, Top);
+			NoxicoGame.HostForm.Write("\u2588\u258C", Color.FromName(Text), Background, Left, Top);
 			NoxicoGame.HostForm.Write(Text.PadRight(Width - 4) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Left + 2, Top);
 		}
 	

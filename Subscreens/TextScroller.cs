@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 using System.Xml;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace Noxico
 {
@@ -65,7 +60,7 @@ namespace Noxico
 				}
 			}
 
-			if (keys[(int)Keys.S])
+			if (keys[(int)System.Windows.Forms.Keys.S])
 			{
 				File.WriteAllText("current.txt", string.Join("\n", text));
 				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
