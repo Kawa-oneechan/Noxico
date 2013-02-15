@@ -230,7 +230,7 @@ namespace Noxico
 			var host = NoxicoGame.HostForm;
 			var nox = host.Noxico;
 
-			//host.LoadBitmap(Mix.GetBitmap("makecave.png"));
+			new UIPNGBackground(Mix.GetBitmap("makecave.png")).Draw();
 			host.Write("Generating dungeon. Please wait.", Color.Silver, Color.Transparent, 1, 2);
 			host.Draw();
 

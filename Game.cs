@@ -12,8 +12,8 @@ namespace Noxico
 {
 	public enum KeyBinding
 	{
-		Left, Right, Up, Down, Rest, Activate, Items, Look, Aim, Chat, Fuck, Take, Drop, Fly, Travel,
-		Accept, Back, Pause, Screenshot, LookAlt, TakeAlt, BackAlt, TabFocus, ScrollUp, ScrollDown
+		Left, Right, Up, Down, Rest, Activate, Items, Interact, Fly, Travel,
+		Accept, Back, Pause, Screenshot, TabFocus, ScrollUp, ScrollDown
 	}
 
 	public class NoxicoGame
@@ -106,22 +106,14 @@ namespace Noxico
 				{ KeyBinding.Down, GetIniKey("down", Keys.Down) },
 				{ KeyBinding.Rest, GetIniKey("rest", Keys.OemPeriod) },
 				{ KeyBinding.Activate, GetIniKey("activate", Keys.Enter) },
-				{ KeyBinding.Items, GetIniKey("items", Keys.I) },
-				{ KeyBinding.Look, GetIniKey("look", Keys.L) },
-				{ KeyBinding.Aim, GetIniKey("aim", Keys.A) },
-				{ KeyBinding.Chat, GetIniKey("chat", Keys.C) },
-				{ KeyBinding.Fuck, GetIniKey("fuck", Keys.F) },
-				{ KeyBinding.Take, GetIniKey("take", Keys.P) },
-				{ KeyBinding.Drop, GetIniKey("drop", Keys.D) },
-				{ KeyBinding.Fly, GetIniKey("fly", Keys.Q) },
-				{ KeyBinding.Travel, GetIniKey("travel", Keys.T) },
+				{ KeyBinding.Items, GetIniKey("items", Keys.OemQuotes) },
+				{ KeyBinding.Interact, GetIniKey("aim", Keys.OemQuestion) },
+				{ KeyBinding.Fly, GetIniKey("fly", Keys.Oemcomma) },
+				{ KeyBinding.Travel, GetIniKey("travel", Keys.OemSemicolon) },
 				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
 				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },
 				{ KeyBinding.Pause, GetIniKey("pause", Keys.F1) },
 				{ KeyBinding.Screenshot, GetIniKey("screenshot", Keys.F12) },
-				{ KeyBinding.LookAlt, GetIniKey("lookalt", Keys.OemQuestion) },
-				{ KeyBinding.TakeAlt, GetIniKey("takealt", Keys.Oemcomma) },
-				{ KeyBinding.BackAlt, GetIniKey("backalt", Keys.Back) },
 				{ KeyBinding.TabFocus, GetIniKey("tabfocus", Keys.Tab) },
 				{ KeyBinding.ScrollUp, GetIniKey("scrollup", Keys.Up) },
 				{ KeyBinding.ScrollDown, GetIniKey("scrolldown", Keys.Down) },
@@ -566,7 +558,7 @@ namespace Noxico
 				CurrentBoard.Draw();
 				DrawMessages();
 
-				if (Mode == UserMode.LookAt)
+				if (Mode == UserMode.Aiming)
 				{
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;

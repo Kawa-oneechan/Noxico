@@ -362,7 +362,7 @@ namespace Noxico
 			{
 				var tile = boardChar.ParentBoard.Tilemap[x, y];
 				if (tile.Water || tile.Cliff)
-					NoxicoGame.AddMessage((boardChar is Player ? "You" : boardChar.Character.Name.ToString()) + " dropped " + this.ToString(item, true, false) + " in the " + (tile.Cliff ? "depths" : "water") + "!");
+					NoxicoGame.AddMessage((boardChar is Player ? "You" : boardChar.Character.GetNameOrTitle(false, true, true)) + " dropped " + this.ToString(item, true, false) + " in the " + (tile.Cliff ? "depths" : "water") + "!");
 				boardChar.Character.GetToken("items").Tokens.Remove(item);
 				boardChar.Character.CheckHasteSlow();
 				return;

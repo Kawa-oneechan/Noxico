@@ -25,7 +25,7 @@ namespace Noxico
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = " Press " + Toolkit.TranslateKey(KeyBinding.ScrollUp) + " and " + Toolkit.TranslateKey(KeyBinding.ScrollDown) + " to scroll, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to return ";
-				host.Write(help, UIColors.WindowBorder, Color.Transparent, 40 - (help.Length / 2), 21);
+				host.Write(help, UIColors.WindowBorder, Color.Transparent, 21, 40 - (help.Length / 2));
 				for (int i = scroll; i < text.Length && i - scroll < 17; i++)
 				{
 					if (i < 1)
@@ -66,7 +66,7 @@ namespace Noxico
 				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.BackAlt))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;

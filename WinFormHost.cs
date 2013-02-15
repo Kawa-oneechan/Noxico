@@ -703,39 +703,18 @@ namespace Noxico
 			var ty = y.Y / (CellHeight);
 			if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
 				return;
-			if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Left)
-				Noxico.Player.AutoTravelTo(tx, ty);
-			else if (NoxicoGame.Mode == UserMode.LookAt)
+			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
 				if (y.Button == System.Windows.Forms.MouseButtons.Left)
+					Noxico.Player.AutoTravelTo(tx, ty);
+				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
 				{
+					NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
 					NoxicoGame.Cursor.XPosition = tx;
 					NoxicoGame.Cursor.YPosition = ty;
 					NoxicoGame.Cursor.Point();
 					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-				}
-				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
-				{
-					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
-				}
-			}
-			else if (NoxicoGame.Mode == UserMode.Walkabout && y.Button == System.Windows.Forms.MouseButtons.Right)
-			{
-				var target = Noxico.CurrentBoard.Entities.Find(z => (z is BoardChar || z is Clutter) && z.XPosition == tx && z.YPosition == ty);
-				if (target != null)
-				{
-					Subscreens.UsingMouse = true;
-					if (target is BoardChar)
-						TextScroller.LookAt((BoardChar)target);
-					else if (target is Clutter)
-					{
-						var text = ((Clutter)target).Description;
-						text = text.Trim();
-						if (text.Length == 0)
-							return;
-						//var lines = text.Split('\n').Length;
-						MessageBox.Notice(text, true);
-					}
+					NoxicoGame.Cursor.Update();
 				}
 			}
 			else if (NoxicoGame.Mode == UserMode.Subscreen)

@@ -65,7 +65,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns the short name of the character, or the title.
 		/// </summary>
-		public string GetNameOrTitle()
+		public string GetNameOrTitle(bool fullName = false, bool the = false, bool initialCaps = false)
 		{
 			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
@@ -73,8 +73,8 @@ namespace Noxico
 				(g == "hermaphrodite " && HasToken("hermonly")))
 				g = "";
 			if (IsProperNamed)
-				return Name.ToString();
-			return string.Format("{0} {1}{2}", A, g, Species);
+				return Name.ToString(fullName);
+			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), g, Species);
 		}
 
 		/// <summary>

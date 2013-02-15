@@ -67,7 +67,7 @@ namespace Noxico
 	/// </summary>
 	public enum UserMode
 	{
-		Walkabout, LookAt, Subscreen
+		Walkabout, Aiming, Subscreen
 	}
 
 	public enum SolidityCheck

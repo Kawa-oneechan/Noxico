@@ -112,7 +112,7 @@ namespace Noxico
 
 			if (Dreaming)
 			{
-				//NoxicoGame.HostForm.LoadBitmap(Mix.GetBitmap("dream.png"));
+				new UIPNGBackground(Mix.GetBitmap("dream.png")).Draw();
 			}
 			else
 			{

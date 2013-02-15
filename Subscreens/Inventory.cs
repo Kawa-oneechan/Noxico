@@ -243,10 +243,10 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
-			else if (NoxicoGame.IsKeyDown(KeyBinding.Drop))
-			{
-				TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
-			}
+			//else if (NoxicoGame.IsKeyDown(KeyBinding.Drop))
+			//{
+			//	TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
+			//}
 			else
 				UIManager.CheckKeys();
 		}
