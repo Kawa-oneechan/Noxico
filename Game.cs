@@ -24,7 +24,7 @@ namespace Noxico
 		public static bool Immediate { get; set; }
 
 		public static string WorldName { get; set; }
-		public static MainForm HostForm { get; private set; }
+		public static IGameHost HostForm { get; private set; }
 		public static bool[] KeyMap { get; set; }
 		public static bool[] KeyTrg { get; set; }
 		public static bool[] Modifiers { get; set; }
@@ -82,7 +82,7 @@ namespace Noxico
 			return (NoxicoGame.KeyMap[(int)KeyBindings[binding]]);
 		}
 
-		public void Initialize(MainForm hostForm)
+		public void Initialize(IGameHost hostForm)
 		{
 			Console.WriteLine("IT BEGINS...");
 
@@ -430,7 +430,7 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 			{
 				hadContextMessage = true;
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 80 - ContextMessage.Length - 2, 0);
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length - 2);
 			}
 			else if (hadContextMessage)
 			{
@@ -450,7 +450,7 @@ namespace Noxico
 				var c = Messages[m].Color;
 				if (c.Lightness < 0.2)
 					c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(' ' + Messages[m].Message + ' ', c, Color.Black, 0, row);
+				HostForm.Write(' ' + Messages[m].Message + ' ', c, Color.Black, row, 0);
 				row--;
 			}
 		}

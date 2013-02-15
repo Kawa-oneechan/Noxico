@@ -57,7 +57,7 @@ namespace Noxico
 				else if (m == "Okay to go online?")
 				{
 					Profile.UseOnline = false;
-					if (WF.MessageBox.Show(NoxicoGame.HostForm, "Is it okay to go online to manage your profile?", "Gamer Services", WF.MessageBoxButtons.YesNo) == WF.DialogResult.Yes)
+					if (WF.MessageBox.Show("Is it okay to go online to manage your profile?", "Gamer Services", WF.MessageBoxButtons.YesNo) == WF.DialogResult.Yes)
 						Profile.UseOnline = true;
 				}
 				else

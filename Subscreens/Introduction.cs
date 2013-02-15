@@ -25,18 +25,18 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				host.LoadBitmap(Mix.GetBitmap("title.png"));
+				//host.LoadBitmap(Mix.GetBitmap("title.png"));
 
 				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
 				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };
 				var histories = "Histories of " + Toolkit.PickOne(i) + " and " + Toolkit.PickOne(j);
-				host.Write(histories, Color.Teal, Color.Transparent, 25 - histories.Length / 2, 10);
+				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length / 2);
 
-				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 9, 12);
+				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 12, 9);
 				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
 
 				if (GamerServices.Profile.IsValid)
-					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 80 - 2 - GamerServices.Profile.Name.Length, 24);
+					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 24, 80 - 2 - GamerServices.Profile.Name.Length);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse)
 			{

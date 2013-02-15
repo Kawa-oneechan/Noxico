@@ -12,7 +12,6 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-		//private static XmlDocument colorTable = Mix.GetXMLDocument("knowncolors.xml");
 
 		/// <summary>
 		/// Returns the amount of change between two strings.
@@ -319,40 +318,6 @@ namespace Noxico
 					ret.Append(ch);
 			}
 			return ret.ToString();
-		}
-
-		public static void DrawWindow(int left, int top, int width, int height, string title, Color fgColor, Color bgColor, Color titleColor, bool single = false)
-		{
-			var host = NoxicoGame.HostForm;
-			host.SetCell(top, left, (char)(single ? 0x250C : 0x2554), fgColor, bgColor);
-			host.SetCell(top, left + width, (char)(single ? 0x2510 : 0x2557), fgColor, bgColor);
-			host.SetCell(top + height, left, (char)(single ? 0x2514 : 0x255A), fgColor, bgColor);
-			host.SetCell(top + height, left + width, (char)(single ? 0x2518 : 0x255D), fgColor, bgColor);
-			for (int i = left + 1; i < left + width; i++)
-			{
-				host.SetCell(top, i, (char)(single ? 0x2500 : 0x2550), fgColor, bgColor);
-				host.SetCell(top + height, i, (char)(single ? 0x2500 : 0x2550), fgColor, bgColor);
-				for (int j = top + 1; j < top + height; j++)
-					host.SetCell(j, i, ' ', fgColor, bgColor);
-			}
-			for (int i = top + 1; i < top + height; i++)
-			{
-				host.SetCell(i, left, (char)(single ? 0x2502 : 0x2551), fgColor, bgColor);
-				host.SetCell(i, left + width, (char)(single ? 0x2502 : 0x2551), fgColor, bgColor);
-			}
-			if (!string.IsNullOrWhiteSpace(title))
-			{
-				var captionWidth = title.Length;
-				var captionPos = left + (int)Math.Ceiling(width / 2.0) - (int)Math.Ceiling(captionWidth / 2.0) - 1;
-				host.Write("<g" + (single ? "2524" : "2561") + "><c" + titleColor.Name + "> " + title + " <c" + fgColor.Name + "><g" + (single ? "251C" : "255E") + ">", fgColor, bgColor, captionPos - 1, top);
-				//host.SetCell(top, captionPos - 2, (char)(single ? 0xB4 : 0xB5), fgColor, bgColor);
-				//host.SetCell(top, captionPos + captionWidth, (char)(single ? 0xC3 : 0xC6), fgColor, bgColor);
-			}
-
-			//for (var i = top + 1; i <= top + height; i++)
-			//	NoxicoGame.HostForm.DarkenCell(i, left + width + 1);
-			//for (var i = left + 1; i <= left + width + 1; i++)
-			//	NoxicoGame.HostForm.DarkenCell(top + height + 1, i);
 		}
 
 		/// <summary>

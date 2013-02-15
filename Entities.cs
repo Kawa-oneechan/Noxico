@@ -1705,7 +1705,7 @@ namespace Noxico
 			if (Character.HasToken("flying"))
 			{
 				var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
-				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
+				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 0, 40 - (flightTimer.Length / 2));
 			}
 		}
 
