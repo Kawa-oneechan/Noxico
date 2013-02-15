@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -67,11 +67,11 @@ namespace Noxico
 					UIManager.Elements.Add(txt);
 				}
 				if (type == BoxType.Notice || type == BoxType.Input)
-					key = new UILabel("<g2561><cWhite><g2026><cGray><g255E>") { Top = top + height - 1, Left = 70 };
+					key = new UILabel("  \u2026  ") { Top = top + height - 1, Left = 66 };
 				else if (type == BoxType.Question)
-					key = new UILabel("<g2561><cWhite> Y/N <cGray><g255E>") { Top = top + height - 1, Left = 66 };
+					key = new UILabel(" " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ") { Top = top + height - 1, Left = 66 };
 				else if (type == BoxType.List)
-					key = new UILabel("<g2561><cWhite> <g2191>/<g2193> <cGray><g255E>") { Top = top + height - 1, Left = 66 };
+					key = new UILabel(" \u2191/\u2193 ") { Top = top + height - 1, Left = 66 };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;

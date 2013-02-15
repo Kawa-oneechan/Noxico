@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Noxico
@@ -44,7 +44,7 @@ namespace Noxico
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel("Travel Mode") { Left = 1, Top = 0, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(Toolkit.TranslateKey(KeyBinding.Up, true) + '/' + Toolkit.TranslateKey(KeyBinding.Down, true) + '/' + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to select, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to cancel.") { Left = 1, Top = 24, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel("Current location:\n <g2022><cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 34, Top = 2, Width = 30, Foreground = Color.Teal });
+				UIManager.Elements.Add(new UILabel("Current location:\n \u2022<cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 34, Top = 2, Width = 30, Foreground = Color.Teal });
 				UIManager.Elements.Add(new UILabel("You have not been here before.") { Left = 34, Top = 6, Tag = "expect", Foreground = Color.Teal, Hidden = true });
 				UIManager.Elements.Add(list);
 				
