@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,10 +173,10 @@ has the same effect." },
 			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
 			var renegadeDark = 18 - renegadeLight;
 			var paragonDark = 18 - paragonLight;
-			sb.Append("<g2660> ");
+			sb.Append("\u2660 ");
 			sb.Append("<cMaroon>" + new string('-', renegadeDark) + "<cRed>" + new string('=', renegadeLight));
 			sb.Append("<cBlue>" + new string('=', paragonLight) + "<cNavy>" + new string('-', paragonDark));
-			sb.AppendLine(" <cSilver><g2665>");
+			sb.AppendLine(" <cSilver>\u2665");
 	
 			pages["Character stats"] = sb.ToString();
 
