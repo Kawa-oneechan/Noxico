@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+
+#if DEBUG
+using Keys = System.Windows.Forms.Keys;
+#endif
 
 namespace Noxico
 {
@@ -165,13 +168,10 @@ namespace Noxico
 		}
 	}
 
-	public enum CursorIntent { Look, Take, Chat, Fuck, Shoot };
 	public class Cursor : Entity
 	{
 
 		private static int blinkRate = 500;
-		public int Range { get; set; }
-		public CursorIntent Intent { get; set; }
 
 		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
@@ -183,8 +183,6 @@ namespace Noxico
 			this.AsciiChar = '\u25CA';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
-			this.Range = 0;
-			this.Intent = CursorIntent.Look;
 			this.Tabstops = new List<Point>();
 		}
 
@@ -214,12 +212,6 @@ namespace Noxico
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
 			if (newX < 0 || newY < 0 || newX > 79 || newY > 24)
 				return false;
-			if (Range > 0)
-			{
-				var player = NoxicoGame.HostForm.Noxico.Player;
-				if (Toolkit.Distance(newX, newY, player.XPosition, player.YPosition) >= Range)
-					return false;
-			}
 			return null;
 		}
 
@@ -228,7 +220,7 @@ namespace Noxico
 			PointingAt = null;
 			if (NoxicoGame.Messages.Count == 0)
 				NoxicoGame.AddMessage("<...>");
-			NoxicoGame.Messages.Last().Message = (Intent == CursorIntent.Shoot ? "Aim" : "Point") + " at " + ((Intent == CursorIntent.Look) ? "an object or character." : (Intent == CursorIntent.Take) ? "an object." : "a character.");
+			NoxicoGame.Messages.Last().Message = "Point at an object or character.";
 			NoxicoGame.Messages.Last().Color = Color.Gray;
 			foreach (var entity in this.ParentBoard.Entities)
 			{
@@ -253,29 +245,21 @@ namespace Noxico
 						}
 					}
 
-					if (entity is BoardChar && Intent != CursorIntent.Take)
+					PointingAt = entity;
+					NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
+					if (entity is BoardChar)
 					{
-						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.ToString(); 
-						//if (((BoardChar)PointingAt).Character.IsProperNamed)
-						//	NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetName() + ", " + ((BoardChar)PointingAt).Character.GetTitle();
-						//else
-						//	NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.GetTitle();
-						//NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if ((entity is Clutter || entity is Container) && Intent == CursorIntent.Look)
+					else if (entity is Clutter || entity is Container)
 					{
-						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name;
-						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
-					else if (entity is DroppedItem && (Intent == CursorIntent.Look || Intent == CursorIntent.Take))
+					else if (entity is DroppedItem)
 					{
-						PointingAt = entity;
 						NoxicoGame.Messages.Last().Message = ((DroppedItem)PointingAt).Name;
-						NoxicoGame.Messages.Last().Color = PointingAt.ForegroundColor;
 						return;
 					}
 				}
@@ -292,21 +276,19 @@ namespace Noxico
 
 		public override void Update()
 		{
-			//TOTAL MESS. Suggest refactoring BIG TIME.
-
 			base.Update();
 			ParentBoard.Redraw();
 			NoxicoGame.Messages.Last().New = true;
 			NoxicoGame.UpdateMessages();
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back)) //(NoxicoGame.KeyMap[(int)Keys.Escape])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.Messages.Remove(NoxicoGame.Messages.Last());
 				ParentBoard.Redraw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus)) //(NoxicoGame.KeyMap[(int)Keys.Tab])
+			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus))
 			{
 				NoxicoGame.ClearKeys();
 				Tabstop++;
@@ -317,7 +299,7 @@ namespace Noxico
 				Point();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Accept)) //(NoxicoGame.KeyMap[(int)Keys.Enter])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Accept))
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
@@ -325,89 +307,142 @@ namespace Noxico
 				if (PointingAt != null)
 				{
 					LastTarget = PointingAt;
-					if (PointingAt is DroppedItem && (Intent == CursorIntent.Look || Intent == CursorIntent.Take))
+					var distance = player.DistanceFrom(PointingAt);
+					var canSee = player.CanSee(PointingAt);
+
+					var options = new Dictionary<object, string>();
+					var description = "something";
+
+					options["look"] = "Look at it";
+
+					if (PointingAt is Player)
 					{
-						var item = ((DroppedItem)PointingAt).Item;
-						var token = ((DroppedItem)PointingAt).Token;
-						if (Intent == CursorIntent.Look)
-						{
-							var text = item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString(token) + ".";
-							text = text.Trim();
-							var lines = text.Split('\n').Length;
-							MessageBox.Notice(text, true);
-						}
-						else
-						{
-							((DroppedItem)PointingAt).Take(player.Character);
-							NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", ((DroppedItem)PointingAt).ForegroundColor);
-							NoxicoGame.Sound.PlaySound("Get Item");
-							ParentBoard.Redraw();
-							NoxicoGame.Mode = UserMode.Walkabout;
-						}
-					}
-					else if (PointingAt is Clutter && Intent == CursorIntent.Look && ((Clutter)PointingAt).Description != "")
-					{
-						var text = ((Clutter)PointingAt).Description;
-						text = text.Trim();
-						//var lines = text.Split('\n').Length;
-						MessageBox.Notice(text, true);
-					}
-					else if (PointingAt is Player)
-					{
-						if (Intent == CursorIntent.Look)
-							TextScroller.LookAt((BoardChar)PointingAt);
-						else if (Intent == CursorIntent.Chat)
-						{
-							if (Culture.CheckSummoningDay())
-								return;
-							if (player.Character.Path("cunning").Value >= 10)
-								MessageBox.Notice("Talking to yourself is the first sign of insanity.", true);
-							else
-								MessageBox.Notice("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
-						}
-						else if (Intent == CursorIntent.Fuck)
-							SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
+						description = "you, " + player.Character.GetNameOrTitle();
+						options["look"] = "Check yourself";
+						if (player.Character.GetStat(Stat.Stimulation) >= 30)
+							options["fuck"] = "Masturbate";
 					}
 					else if (PointingAt is BoardChar)
 					{
-						if (Intent == CursorIntent.Look)
-							TextScroller.LookAt((BoardChar)PointingAt);
-						else if (Intent == CursorIntent.Chat && player.CanSee(PointingAt))
+						var boardChar = PointingAt as BoardChar;
+						description = boardChar.Character.GetNameOrTitle(true);
+						options["look"] = "Look at " + boardChar.Character.HimHerIt();
+
+						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast"))
 						{
-							if (((BoardChar)PointingAt).Character.HasToken("beast"))
-								MessageBox.Notice("The " + ((BoardChar)PointingAt).Character.Title + " cannot speak.", true);
-							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
-								MessageBox.Notice((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetNameOrTitle() : "the " + ((BoardChar)PointingAt).Character.Title) + " has nothing to say to you.", true);
-							else
-								MessageBox.Ask("Strike up a conversation with " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, true); }, null, true);
+							options["talk"] = "Talk to " + boardChar.Character.HimHerIt();
 						}
-						else if (Intent == CursorIntent.Fuck && player.CanSee(PointingAt))
+
+						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
 						{
-							if (((BoardChar)PointingAt).Character.HasToken("beast"))
-								MessageBox.Notice("The " + ((BoardChar)PointingAt).Character.Title + " is not a sentient being.", true);
-							else if (((BoardChar)PointingAt).Character.HasToken("hostile"))
+							if (!boardChar.Character.HasToken("beast"))
 							{
-								if (((BoardChar)PointingAt).Character.HasToken("helpless"))
-									MessageBox.Ask("Rape " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)"); }, null, true);
+								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
+									options["rape"] = "Rape " + boardChar.Character.HimHerIt();
 								else
-									MessageBox.Notice((((BoardChar)PointingAt).Character.IsProperNamed ? ((BoardChar)PointingAt).Character.GetNameOrTitle() : "the " + ((BoardChar)PointingAt).Character.Title) + " seems to have other things on " + ((BoardChar)PointingAt).Character.HisHerIts(true) + " mind.", true);
-							}
-							else
-							{
-								SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
+									options["fuck"] = "Fuck " + boardChar.Character.HimHerIt();
 							}
 						}
-						else if (Intent == CursorIntent.Shoot)
+
+						if (canSee && player.Character.CanShoot() != null && player.ParentBoard.HasToken("combat"))
 						{
-							if (player.CanSee(PointingAt))
-								player.AimShot(PointingAt);
-							else
-								NoxicoGame.AddMessage("You can't see your target.");
+							options["shoot"] = "Shoot at " + boardChar.Character.HimHerIt();
 						}
 					}
+					else if (PointingAt is DroppedItem)
+					{
+						var drop = PointingAt as DroppedItem;
+						var item = drop.Item;
+						var token = drop.Token;
+						description = item.ToString(token);
+						if (distance <= 1)
+							options["take"] = "Pick it up";
+					}
+
+					MessageBox.List("This is " + description + ". What would you do?", options,
+						() =>
+						{
+							if (MessageBox.Answer is int && (int)MessageBox.Answer == -1)
+								return;
+							switch (MessageBox.Answer as string)
+							{
+								case "look":
+									if (PointingAt is DroppedItem)
+									{
+										var drop = PointingAt as DroppedItem;
+										var item = drop.Item;
+										var token = drop.Token;
+										var text = (item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString(token) + ".").Trim();
+										MessageBox.Notice(text, true);
+									}
+									else if (PointingAt is Clutter && !string.IsNullOrWhiteSpace(((Clutter)PointingAt).Description))
+									{
+										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true);
+									}
+									else if (PointingAt is BoardChar)
+									{
+										TextScroller.LookAt((BoardChar)PointingAt);
+									}
+									break;
+
+								case "talk":
+									if (PointingAt is Player)
+									{
+										if (Culture.CheckSummoningDay())
+											return;
+										if (player.Character.Path("cunning").Value >= 10)
+											MessageBox.Notice("Talking to yourself is the first sign of insanity.", true);
+										else
+											MessageBox.Notice("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
+									}
+									else if (PointingAt is BoardChar)
+									{
+										var boardChar = PointingAt as BoardChar;
+										if (boardChar.Character.HasToken("hostile"))
+											MessageBox.Notice((boardChar.Character.IsProperNamed ? boardChar.Character.GetNameOrTitle() : "the " + boardChar.Character.Title) + " has nothing to say to you.", true);
+										else
+											SceneSystem.Engage(player.Character, boardChar.Character, true);
+											//MessageBox.Ask("Strike up a conversation with " + boardChar.Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, boardChar.Character, true); }, null, true);
+									}
+									break;
+
+								case "fuck":
+									if (PointingAt is Player)
+										SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
+									else if (PointingAt is BoardChar)
+										SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
+									break;
+
+								case "rape":
+									SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)");
+									break;
+
+								case "shoot":
+									player.AimShot(PointingAt);
+									break;
+
+								case "take":
+									if (PointingAt is DroppedItem)
+									{
+										var drop = PointingAt as DroppedItem;
+										var item = drop.Item;
+										var token = drop.Token;
+										drop.Take(player.Character);
+										NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", drop.ForegroundColor);
+										NoxicoGame.Sound.PlaySound("Get Item");
+										ParentBoard.Redraw();
+									}
+							break;
+
+								default:
+									MessageBox.Notice("Unknown action handler \"" + MessageBox.Answer.ToString() + "\".", true);
+									break;
+							}
+						},
+							true, true);
 					return;
 				}
-				else if (Intent == CursorIntent.Look)
+				else
 				{
 					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
 					if (tSD.HasValue)
@@ -446,15 +481,8 @@ namespace Noxico
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			Tabstops.Clear();
 			foreach (var e in ParentBoard.Entities)
-			{
-				if (Range > 0 && e.DistanceFrom(player) > Range - 1)
-					continue;
-				if ((Intent == CursorIntent.Chat || Intent == CursorIntent.Fuck || Intent == CursorIntent.Shoot) && !(e is BoardChar))
-					continue;
-				else if (Intent == CursorIntent.Take && !(e is DroppedItem))
-					continue;
 				Tabstops.Add(new Point(e.XPosition, e.YPosition));
-			}
+
 			//Tabstops.Sort();
 			if (LastTarget != null)
 			{
@@ -463,7 +491,7 @@ namespace Noxico
 					LastTarget = null;
 				if (LastTarget != null)
 				{
-					if (Intent != CursorIntent.Look && !player.CanSee(LastTarget))
+					if (!player.CanSee(LastTarget))
 						LastTarget = null;
 					else
 					{
@@ -670,7 +698,7 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.GetToken("health").Value += 2;
-					NoxicoGame.AddMessage((this is Player ? "You get" : Character.Name.ToString() + " gets") + " back up.");
+					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetNameOrTitle() + " gets") + " back up.");
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
 				}
@@ -1026,10 +1054,10 @@ namespace Noxico
 			var skill = "unarmed_combat";
 			var verb = "struck";
 			var obituary = "died from being struck down";
-			var attackerName = this.Character.IsProperNamed ? this.Character.Name.ToString() : "the " + this.Character.Title;
-			var attackerFullName = this.Character.IsProperNamed ? this.Character.Name.ToString(true) : "the " + this.Character.Title;
-			var targetName = target.Character.IsProperNamed ? target.Character.Name.ToString() : "the " + target.Character.Title;
-			var targetFullName = target.Character.IsProperNamed ? target.Character.Name.ToString(true) : "the " + target.Character.Title;
+			var attackerName = this.Character.GetNameOrTitle(false, true);
+			var attackerFullName = this.Character.GetNameOrTitle(true, true);
+			var targetName = target.Character.GetNameOrTitle(false, true);
+			var targetFullName = target.Character.GetNameOrTitle(true, true);
 			if (weaponData == null)
 			{
 				//Unarmed combat by default.
@@ -1164,7 +1192,7 @@ namespace Noxico
 				{
 					if (!Character.HasToken("helpless"))
 					{
-						NoxicoGame.AddMessage((this is Player ? "You are" : Character.Name.ToString() + " is") + " helpless!");
+						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetNameOrTitle() + " is") + " helpless!");
 						Character.Tokens.Add(new Token() { Name = "helpless" } );
 						return false;
 					}
@@ -1390,7 +1418,7 @@ namespace Noxico
 			}
 			else
 			{
-				Console.WriteLine("{0} tried to throw a weapon.", this.Character.Name.ToString());
+				Console.WriteLine("{0} tried to throw a weapon.", this.Character.GetNameOrTitle(false, true, true));
 				return;
 			}
 			var aimSuccess = true; //TODO: make this skill-relevant.
@@ -1401,7 +1429,7 @@ namespace Noxico
 				if (target is Player)
 				{
 					var hit = target as Player;
-					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.GetNameOrTitle(false, true, true), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
 					return;
 				}
@@ -1705,7 +1733,7 @@ namespace Noxico
 			if (Character.HasToken("flying"))
 			{
 				var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
-				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 0, 40 - (flightTimer.Length / 2));
+				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
 			}
 		}
 
@@ -1895,7 +1923,7 @@ namespace Noxico
 							return;
 						}
 						//Displace!
-						NoxicoGame.AddMessage("You displace " + bc.Character.Name.ToString() + ".");
+						NoxicoGame.AddMessage("You displace " + bc.Character.GetNameOrTitle(false, true) + ".");
 						bc.XPosition = this.XPosition;
 						bc.YPosition = this.YPosition;
 					}
@@ -1931,6 +1959,8 @@ namespace Noxico
 			NoxicoGame.ContextMessage = null;
 			if (OnWarp())
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " take exit";
+			else if (ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
+				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " pick up";
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " see contents";
 			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
@@ -1977,7 +2007,7 @@ namespace Noxico
 				if (hit != null)
 				{
 					FireLine(weapon.Path("effect"), x, y);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetNameOrTitle(false, true), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
@@ -2038,18 +2068,21 @@ namespace Noxico
 			}
 #endif
 
+			//START
 			if (NoxicoGame.IsKeyDown(KeyBinding.Pause))
 			{
 				Pause.Open();
 				return;
 			}
 
+			//RIGHT
 			if (NoxicoGame.IsKeyDown(KeyBinding.Travel) && this.ParentBoard.BoardType != BoardType.Dungeon)
 			{
 				Travel.Open();
 				return;
 			}
 
+			//LEFT
 			if (NoxicoGame.IsKeyDown(KeyBinding.Rest))
 			{
 				NoxicoGame.ClearKeys();
@@ -2059,111 +2092,21 @@ namespace Noxico
 				return;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Chat))
+			//GREEN
+			if (NoxicoGame.IsKeyDown(KeyBinding.Interact))
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.AddMessage("\uE080[Chat message]");
-				NoxicoGame.Mode = UserMode.LookAt;
+				NoxicoGame.AddMessage("\uE080[Aim message]");
+				NoxicoGame.Mode = UserMode.Aiming;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
 				NoxicoGame.Cursor.YPosition = this.YPosition;
-				NoxicoGame.Cursor.Range = 3;
-				NoxicoGame.Cursor.Intent = CursorIntent.Chat;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
 				return;
 			}
-
-			if (NoxicoGame.IsKeyDown(KeyBinding.Fuck) && !helpless && !flying)
-			{
-				NoxicoGame.ClearKeys();
-				if (Character.GetStat(Stat.Stimulation) < 30)
-				{
-					NoxicoGame.AddMessage("You are not nearly turned on enough to consider that.");
-					return;
-				}
-				NoxicoGame.AddMessage("\uE080[Fuck message]");
-				NoxicoGame.Mode = UserMode.LookAt;
-				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
-				NoxicoGame.Cursor.XPosition = this.XPosition;
-				NoxicoGame.Cursor.YPosition = this.YPosition;
-				NoxicoGame.Cursor.Range = 2;
-				NoxicoGame.Cursor.Intent = CursorIntent.Fuck;
-				NoxicoGame.Cursor.PopulateTabstops();
-				NoxicoGame.Cursor.Point();
-				return;
-			}
-	
-			if (NoxicoGame.IsKeyDown(KeyBinding.Aim) && !helpless)
-			{
-				NoxicoGame.ClearKeys();
-				if (this.ParentBoard.BoardType == BoardType.Town && !this.ParentBoard.HasToken("combat"))
-				{
-					NoxicoGame.AddMessage("You cannot attack in a village without provocation.");
-					return;
-				}
-				var weapon = Character.CanShoot();
-				if (weapon == null)
-				{
-					NoxicoGame.AddMessage("You are not wielding a throwing weapon or loaded firearm.");
-					return;
-				}
-				NoxicoGame.AddMessage("\uE080[Shoot message]");
-				NoxicoGame.Mode = UserMode.LookAt;
-				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
-				NoxicoGame.Cursor.XPosition = this.XPosition;
-				NoxicoGame.Cursor.YPosition = this.YPosition;
-				NoxicoGame.Cursor.Range = (int)weapon.Path("weapon/range").Value;
-				NoxicoGame.Cursor.Intent = CursorIntent.Shoot;
-				NoxicoGame.Cursor.PopulateTabstops();
-				NoxicoGame.Cursor.Point();
-				return;
-			}
-
-			if (NoxicoGame.IsKeyDown(KeyBinding.Look) || NoxicoGame.IsKeyDown(KeyBinding.LookAlt))
-			{
-				NoxicoGame.ClearKeys();
-				NoxicoGame.AddMessage("\uE080[Lookat message]");
-				NoxicoGame.Mode = UserMode.LookAt;
-				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
-				NoxicoGame.Cursor.XPosition = this.XPosition;
-				NoxicoGame.Cursor.YPosition = this.YPosition;
-				NoxicoGame.Cursor.Range = 0;
-				NoxicoGame.Cursor.Intent = CursorIntent.Look;
-				NoxicoGame.Cursor.PopulateTabstops();
-				NoxicoGame.Cursor.Point();
-				return;
-			}
-
-			if (NoxicoGame.IsKeyDown(KeyBinding.Take) || NoxicoGame.IsKeyDown(KeyBinding.TakeAlt))
-			{
-				if (helpless || flying)
-					return;
-				NoxicoGame.ClearKeys();
-				var itemsHere = ParentBoard.Entities.FindAll(e => e.XPosition == this.XPosition && e.YPosition == this.YPosition && e is DroppedItem);
-				if (itemsHere.Count == 0)
-				{
-					NoxicoGame.AddMessage("\uE080[Pickup message]");
-					NoxicoGame.Mode = UserMode.LookAt;
-					NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
-					NoxicoGame.Cursor.XPosition = this.XPosition;
-					NoxicoGame.Cursor.YPosition = this.YPosition;
-					NoxicoGame.Cursor.Range = 2;
-					NoxicoGame.Cursor.Intent = CursorIntent.Take;
-					NoxicoGame.Cursor.PopulateTabstops();
-					NoxicoGame.Cursor.Point();
-					return;
-				}
-				else
-				{
-					var item = (DroppedItem)itemsHere[0];
-					item.Take(this.Character);
-					NoxicoGame.Sound.PlaySound("Get Item");
-					NoxicoGame.AddMessage("You pick up " + item.Item.ToString(item.Token, true) + ".", item.ForegroundColor);
-					return;
-				}
-			}
-
+			
+			//BLUE
 			if (NoxicoGame.IsKeyDown(KeyBinding.Items))
 			{
 				NoxicoGame.ClearKeys();
@@ -2173,6 +2116,7 @@ namespace Noxico
 				return;
 			}
 
+			//YELLOW
 			if (NoxicoGame.IsKeyDown(KeyBinding.Fly) && !helpless)
 			{
 				NoxicoGame.ClearKeys();
@@ -2220,6 +2164,7 @@ namespace Noxico
 				return;
 			}
 
+			//RED
 			if (NoxicoGame.IsKeyDown(KeyBinding.Activate) && !helpless && !flying)
 			{
 				NoxicoGame.ClearKeys();
@@ -2232,6 +2177,17 @@ namespace Noxico
 				{
 					NoxicoGame.ClearKeys();
 					ContainerMan.Setup(container);
+					return;
+				}
+
+				//Find dropped items
+				var drop = ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition);
+				if (drop != null)
+				{
+					drop.Take(this.Character);
+					NoxicoGame.AddMessage("You pick up " + drop.Item.ToString(drop.Token, true) + ".", drop.ForegroundColor);
+					NoxicoGame.Sound.PlaySound("Get Item");
+					ParentBoard.Redraw();
 					return;
 				}
 
@@ -2488,7 +2444,7 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.Name.ToString(), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetNameOrTitle(false, true), damage, damage > 1 ? "s" : ""));
 					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
 				}
 				this.Character.IncreaseSkill(skill.Text);

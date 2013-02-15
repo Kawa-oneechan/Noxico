@@ -25,7 +25,7 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				//host.LoadBitmap(Mix.GetBitmap("title.png"));
+				new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
 				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
 				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };

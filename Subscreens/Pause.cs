@@ -192,15 +192,12 @@ has the same effect." },
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
 			sb.AppendLine(" - Move");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadRight(4) + " - Interact with something");
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadRight(4) + " - Use something");
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadRight(4) + " - Rest");
-			sb.AppendLine((Toolkit.TranslateKey(KeyBinding.Look) + ' ' + Toolkit.TranslateKey(KeyBinding.LookAlt)).PadRight(4) + " - Look");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadRight(4) + " - Fly/Land");
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadRight(4) + " - Inventory");
-			sb.AppendLine((Toolkit.TranslateKey(KeyBinding.Take) + ' ' + Toolkit.TranslateKey(KeyBinding.TakeAlt)).PadRight(4) + " - Pick up");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Chat).PadRight(4) + " - Chat with someone");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fuck).PadRight(4) + " - Attempt to have sex with someone");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Aim).PadRight(4) + " - Aim a shot or throw at someone");
-			sb.AppendLine();
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadRight(4) + " - Travel");
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadRight(4) + " - Accept");
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadRight(4) + " - Go back");
 			pages["Important keys"] = sb.ToString();

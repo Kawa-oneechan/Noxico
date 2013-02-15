@@ -659,6 +659,7 @@ namespace Noxico
 		}
 		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false)
 		{
+			//BUG: OemSemicolon and OemQuotes are mistranslated as 1 and 7.
 			var keyName = key.ToString();
 			var specials = new Dictionary<string, string>()
 			{

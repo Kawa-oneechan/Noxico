@@ -40,6 +40,8 @@ namespace Noxico
 					Top = 4,
 					Width = 28,
 					Height = 16,
+					Background = Color.White,
+					Foreground = Color.Black,
 				};
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel("Travel Mode") { Left = 1, Top = 0, Foreground = Color.Silver });
