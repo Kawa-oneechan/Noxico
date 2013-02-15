@@ -125,10 +125,11 @@
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
     <Compile Include="fmod\fmod_memoryinfo.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="WinFormHost.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Game.cs" />
+    <Compile Include="IGameHost.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="InventoryItem.cs" />
     <Compile Include="Jint.cs" />

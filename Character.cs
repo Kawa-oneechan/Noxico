@@ -1071,9 +1071,9 @@ Warning, Certainty 95, for AvoidExcessiveLocals
 			print("Equipment\n");
 			var mono = HasToken("monoceros") ? 1 : 0;
 			if (this.HasToken("noarms") && hands.Count > 1 + mono)
-				print("<b>NOTICE<b>: dual wielding with mouth.\n");
+				print("NOTICE: dual wielding with mouth.\n");
 			if (hands.Count > 2 + mono)
-				print("<b>NOTICE<b>: Shiva called.\n");
+				print("NOTICE: Shiva called.\n");
 			if (hands.Count + fingers.Count == 0)
 				print("| none\n");
 			else

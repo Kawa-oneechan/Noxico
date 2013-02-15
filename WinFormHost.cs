@@ -36,9 +36,9 @@ namespace Noxico
 		}
 	}
 
-    public class MainForm : Form
+    public class MainForm : Form, IGameHost
     {
-		public NoxicoGame Noxico { get; private set; }
+		public NoxicoGame Noxico { get; set; }
 
 		private struct Cell
         {
@@ -58,7 +58,7 @@ namespace Noxico
 		private int GlyphAdjustX = -2, GlyphAdjustY = -1;
 		private bool ClearType = false;
 
-		public string IniPath { get; private set; }
+		public string IniPath { get; set; }
 
 #if ALLOW_PNG_MODE
 		private bool pngMode = false;
@@ -292,14 +292,6 @@ namespace Noxico
 				previousImage[col, row].Character = (char)(character + 4);
         }
 
-		public void DarkenCell(int row, int col)
-		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
-				return;
-			image[col, row].Background = image[col, row].Background.Darken();
-			image[col, row].Foreground = image[col, row].Foreground.Darken();
-		}
-
 		public void Clear(char character, Color forecolor, Color backcolor)
 		{
 			for (int row = 0; row < 25; row++)
@@ -317,12 +309,12 @@ namespace Noxico
 			Clear(' ', Color.White, Color.Black);
 		}
 
-		public void Write(string text, Color forecolor, Color backcolor, int x = 0, int y = 0)
+		public void Write(string text, Color forecolor, Color backcolor, int row = 0, int col = 0)
 		{
 			if (!text.IsNormalized())
 				text = text.Normalize();
 
-			var rx = x;
+			var rx = col;
 			for (var i = 0; i < text.Length; i++)
 			{
 				var c = text[i];
@@ -330,13 +322,8 @@ namespace Noxico
 					continue;
 				if (c == '\n')
 				{
-					x = rx;
-					y++;
-					continue;
-				}
-				if (c == '\xFE')
-				{
-					//forecolor = (forecolor + 8) % 16;
+					col = rx;
+					row++;
 					continue;
 				}
 				if (c == '<')
@@ -357,11 +344,6 @@ namespace Noxico
 							//backcolor = match.Groups["back"].Value != "" ? int.Parse(match.Groups["back"].Value) : 0;
 							continue;
 						}
-						else if (tag[0] == 'b')
-						{
-							//forecolor ^= 8;
-							continue;
-						}
 						else if (tag[0] == 'g')
 						{
 							var match = Regex.Match(tag, @"g(?:(?:(?<chr>\w{1,4}))?)");
@@ -370,14 +352,14 @@ namespace Noxico
 						}
 					}
 				}
-				SetCell(y, x, c, forecolor, backcolor, true);
-				x++;
-				if (x >= 80)
+				SetCell(row, col, c, forecolor, backcolor, true);
+				col++;
+				if (col >= 80)
 				{
-					x = rx;
-					y++;
+					col = rx;
+					row++;
 				}
-				if (y >= 25)
+				if (row >= 25)
 					return;
 			}
 		}
@@ -611,7 +593,7 @@ namespace Noxico
 					previousImage[col, row].Background = image[col, row].Background = image[col, row + 1].Background;
 				}
 			}
-			Refresh();
+			//Refresh();
 		}
 
 		public void ScrollDown(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
@@ -640,7 +622,7 @@ namespace Noxico
 					previousImage[col, row].Background = image[col, row].Background = image[col, row - 1].Background;
 				}
 			}
-			Refresh();
+			//Refresh();
 		}
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -791,26 +773,6 @@ namespace Noxico
 					NoxicoGame.ScrollWheeled = true;
 				}
 			}
-		}
-
-		[Obsolete("Consider using UIPNGBackground instead.")]
-		public void LoadBitmap(Bitmap bitmap)
-		{
-			for (var row = 0; row < 25; row ++)
-			{
-				for (var col = 0; col < 80; col++)
-				{
-					var top = bitmap.GetPixel(col, row * 2);
-					var bot = bitmap.GetPixel(col, (row * 2)+ 1);
-					SetCell(row, col, top == bot ? (char)0x20 : (char)0x2580, top, bot);
-				}
-			}
-		}
-
-		[Obsolete("Consider using UIPNGBackground instead.")]
-		public void LoadBitmap(string file)
-		{
-			LoadBitmap((Bitmap)Bitmap.FromFile(file));
 		}
     }
 }
