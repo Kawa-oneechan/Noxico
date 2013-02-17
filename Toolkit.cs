@@ -653,8 +653,25 @@ namespace Noxico
 				FoldCostumeVariables(child, vars);
 		}
 
-		public static string TranslateKey(KeyBinding binding, bool longhand = false)
+		public static string TranslateKey(KeyBinding binding, bool longhand = false, bool withColors = true)
 		{
+			if (!Vista.GamepadAvailable)
+			{
+				if (binding == KeyBinding.Interact || binding == KeyBinding.Accept)
+					return withColors ? "<cGreen>A<c>" : "A";
+				if (binding == KeyBinding.Activate || binding == KeyBinding.Back)
+					return withColors ? "<cRed>B<c>" : "B";
+				if (binding == KeyBinding.Items)
+					return withColors ? "<cBlue>X<c>" : "X";
+				if (binding == KeyBinding.Fly)
+					return withColors ? "<cYellow>Y<c>" : "Y";
+				if (binding == KeyBinding.Rest)
+					return withColors ? "<cSilver>\u2310<c>" : "Left";
+				if (binding == KeyBinding.Travel || binding == KeyBinding.TabFocus)
+					return withColors ? "<cSilver>\u00AC<c>" : "Right";
+				if (binding == KeyBinding.Pause)
+					return "Start";
+			}
 			return TranslateKey((System.Windows.Forms.Keys)NoxicoGame.KeyBindings[binding], longhand);
 		}
 		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false)
@@ -669,7 +686,10 @@ namespace Noxico
 				{ "Down", "\u2193" },
 				{ "Return", "\u21B2" },
 				{ "OemQuestion", "/" },
+				{ "OemPeriod", "." },
 				{ "Oemcomma", "," },
+				{ "OemQuotes", "'" },
+				{ "OemSemicolon", ";" },
 				{ "Escape", "Esc." },
 			};
 			if (longhand)

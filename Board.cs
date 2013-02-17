@@ -917,6 +917,7 @@ namespace Noxico
 						w--;
 					}
 				}
+				newb.AdjustView();
 				this.Entities.Add(newb);
 			}
 		}

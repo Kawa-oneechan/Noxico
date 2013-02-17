@@ -55,10 +55,8 @@ namespace Noxico
 		public static Dictionary<string, string> BodyplanLevs { get; private set; }
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
-#if CONTEXT_SENSITIVE
 		public static string ContextMessage { get; set; }
 		private static bool hadContextMessage;
-#endif
 		private static string healthMessage;
 		private static Color healthColor;
 		private static int healthTimer;
@@ -418,7 +416,6 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-#if CONTEXT_SENSITIVE
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 			{
 				hadContextMessage = true;
@@ -429,7 +426,7 @@ namespace Noxico
 				HostForm.Noxico.CurrentBoard.Redraw();
 				hadContextMessage = false;
 			}
-#endif
+
 			if (healthTimer > 0)
 				HostForm.Write(healthMessage, healthColor, Color.Black, 0, 0);
 
@@ -589,6 +586,7 @@ namespace Noxico
 				KeyMap[KeyBindings[KeyBinding.ScrollDown]] = false;
 				ScrollWheeled = false;
 			}
+			Vista.UpdateGamepad();
 		}
 
 		public static void ClearKeys()
@@ -599,6 +597,7 @@ namespace Noxico
 				KeyTrg[i] = false;
 				KeyRepeat[i] = DateTime.Now;
 			}
+			Vista.ReleaseTriggers();
 		}
 
 		public void CreateRealm()
@@ -819,6 +818,7 @@ namespace Noxico
 
 			Player.Character.RecalculateStatBonuses();
 			Player.Character.CheckHasteSlow();
+			Player.AdjustView();
 
 			//Player.Character.GetToken("items").AddToken("catmorph");
 

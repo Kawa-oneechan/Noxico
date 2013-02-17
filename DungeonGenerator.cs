@@ -425,6 +425,7 @@ namespace Noxico
 						}
 						bc.Movement = Motor.WanderSector;
 						bc.ParentBoard = Board;
+						bc.AdjustView();
 						bc.Sector = string.Format("s{0}x{1}", row, col);
 						Board.Entities.Add(bc);
 					}

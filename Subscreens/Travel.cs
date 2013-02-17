@@ -133,7 +133,7 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;

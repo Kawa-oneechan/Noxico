@@ -47,18 +47,9 @@ namespace Noxico
 				Subscreens.Redraw = false;
 			}
 
-			if (Subscreens.Mouse)
-			{
-				Subscreens.Mouse = false;
-				Subscreens.UsingMouse = true;
-				if (Subscreens.MouseY == 24 && Subscreens.MouseX >= 71 && Subscreens.MouseX <= 77)
-				{
-					NoxicoGame.Immediate = true;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.Mode = UserMode.Walkabout;
-					Subscreens.FirstDraw = true;
-				}
-			}
+			//There was some old as balls shit here from before UIManager, when TextScroller was fullscreen, for handling the Close "button".
+			//It's gone now.
+			//I ate it.
 
 			if (keys[(int)System.Windows.Forms.Keys.S])
 			{
@@ -66,7 +57,7 @@ namespace Noxico
 				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
@@ -76,7 +67,7 @@ namespace Noxico
 				Subscreens.FirstDraw = true;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.ScrollUp) && (DateTime.Now - slow).Milliseconds >= 100)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.ScrollUp) || Vista.DPad == XInputButtons.Up) && (DateTime.Now - slow).Milliseconds >= 100)
 			{
 				slow = DateTime.Now;
 				scroll--;
@@ -90,7 +81,7 @@ namespace Noxico
 					Subscreens.Redraw = true;
 				}
 			}
-			if (NoxicoGame.IsKeyDown(KeyBinding.ScrollDown) && (DateTime.Now - slow).Milliseconds >= 100)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.ScrollDown) || Vista.DPad == XInputButtons.Down) && (DateTime.Now - slow).Milliseconds >= 100)
 			{
 				slow = DateTime.Now;
 				scroll++;

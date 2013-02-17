@@ -617,7 +617,39 @@ namespace Noxico
 							HighlightChanged(null, null);
 					}
 					item.DoMouse(Subscreens.MouseX - item.Left, Subscreens.MouseY - item.Top);
+					return;
 				}
+			}
+
+			if (Vista.Triggers != 0)
+			{
+				var triggers = Vista.Triggers;
+				Vista.ReleaseTriggers();
+				switch (triggers)
+				{
+					case XInputButtons.A:
+						ProcessKey(Keys.Enter);
+						break;
+					case XInputButtons.Up:
+						ProcessKey(Keys.Up);
+						break;
+					case XInputButtons.Down:
+						ProcessKey(Keys.Down);
+						break;
+					case XInputButtons.Left:
+						ProcessKey(Keys.Left);
+						break;
+					case XInputButtons.Right:
+						ProcessKey(Keys.Right);
+						break;
+					case XInputButtons.LeftShoulder:
+						ProcessKey(Keys.Tab, true);
+						break;
+					case XInputButtons.RightShoulder:
+						ProcessKey(Keys.Tab, false);
+						break;
+				}
+				return;
 			}
 
 			for (var i = 0; i < 255; i++)

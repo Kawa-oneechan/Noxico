@@ -82,32 +82,35 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Accept))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Accept) || Vista.Triggers == XInputButtons.A || Vista.Triggers == XInputButtons.B)
 			{
-				if (type == BoxType.List && NoxicoGame.IsKeyDown(KeyBinding.Back))
+				if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 				{
-					if (!allowEscape)
+					if (type == BoxType.List)
+					{
+						if (!allowEscape)
+							return;
+						else
+							option = -1;
+					}
+					else if (type == BoxType.Input)
+					{
+						UIManager.CheckKeys();
 						return;
-					else
-						option = -1;
-				}
-				if (type == BoxType.Input && NoxicoGame.IsKeyDown(KeyBinding.Back))
-				{
-					UIManager.CheckKeys();
-					return;
+					}
 				}
 
 				Enter(null, null);
 
 				if (type == BoxType.Question)
 				{
-					if (NoxicoGame.IsKeyDown(KeyBinding.Accept) && onYes != null)
+					if ((NoxicoGame.IsKeyDown(KeyBinding.Accept) || Vista.Triggers == XInputButtons.A) && onYes != null)
 					{
 						NoxicoGame.Sound.PlaySound("Get Item");
 						NoxicoGame.ClearKeys();
 						onYes();
 					}
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Back) && onNo != null)
+					else if ((NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B) && onNo != null)
 					{
 						NoxicoGame.Sound.PlaySound("Put Item");
 						NoxicoGame.ClearKeys();
@@ -117,7 +120,7 @@ namespace Noxico
 				else if (type == BoxType.List)
 				{
 					NoxicoGame.Sound.PlaySound(option == -1 ? "Put Item" : "Get Item");
-					Answer = options.ElementAt(option).Key;
+					Answer = option == -1 ? -1 : options.ElementAt(option).Key;
 					onYes();
 					NoxicoGame.ClearKeys();
 				}
