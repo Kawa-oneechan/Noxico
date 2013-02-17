@@ -56,9 +56,6 @@ namespace Noxico
 
 		public static void Handler()
 		{
-			var host = NoxicoGame.HostForm;
-			var keys = NoxicoGame.KeyMap;
-			var trig = NoxicoGame.KeyTrg;
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{

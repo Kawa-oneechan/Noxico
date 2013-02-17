@@ -1,5 +1,5 @@
 ﻿using System;
-using DllImport = System.Runtime.InteropServices.DllImportAttribute;
+using System.Runtime.InteropServices;
 
 namespace Noxico
 {
@@ -132,15 +132,15 @@ namespace Noxico
 		public XInputGamePad GamePad;
 	}
 
-	public static class SafeNativeMethods
+	internal static class SafeNativeMethods
 	{
 		[DllImport("shell32.dll")]
-		public static extern int SHGetKnownFolderPath([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
+		public static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
 
 		[DllImport("xinput1_3.dll")]
 		internal static extern XInputErrorCodes XInputGetState(int playerIndex, out XInputState pState);
 
 		[DllImport("xinput1_3.dll")]
-		internal static extern void XInputEnable(bool enable);
+		internal static extern void XInputEnable([MarshalAs(UnmanagedType.Bool)]bool enable);
 	}
 }

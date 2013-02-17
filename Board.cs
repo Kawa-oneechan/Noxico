@@ -628,7 +628,6 @@ namespace Noxico
 			var nox = NoxicoGame.HostForm.Noxico;
 			if (this != nox.CurrentBoard)
 				return;
-			var p = nox.Player;
 			if (this.ToNorth > -1)
 				nox.GetBoard(this.ToNorth).Update(true, true);
 			if (this.ToSouth > -1)

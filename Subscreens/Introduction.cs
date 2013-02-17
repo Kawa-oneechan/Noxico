@@ -20,7 +20,6 @@ namespace Noxico
 		public static void TitleHandler()
 		{
 			var host = NoxicoGame.HostForm;
-			var keys = NoxicoGame.KeyMap;
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
@@ -137,7 +136,6 @@ namespace Noxico
 
 		private static List<PlayableRace> CollectPlayables()
 		{
-			var ti = CultureInfo.InvariantCulture.TextInfo;
 			var ret = new List<PlayableRace>();
 			Console.WriteLine("Collecting playables...");
 			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
@@ -412,7 +410,7 @@ namespace Noxico
 				};
 				controls["name"].Change = (s, e) =>
 				{
-					controls["nameRandom"].Hidden = (controls["name"].Text != "");
+					controls["nameRandom"].Hidden = !string.IsNullOrEmpty(controls["name"].Text);
 					UIManager.Draw();
 				};
 				controls["gift"].Change = (s, e) =>

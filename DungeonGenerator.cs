@@ -399,8 +399,8 @@ namespace Noxico
 						//Find each inhabitant's bed so we can give them a starting place.
 						//Alternatively, place them anywhere there's a ' ' within their sector.
 						var bc = new BoardChar(inhabitant);
-						var bedID = building.BaseID + "_Bed_" + inhabitant.Name.FirstName;
-						var bed = Board.Entities.OfType<Clutter>().FirstOrDefault(b => b.ID == bedID);
+						//var bedID = building.BaseID + "_Bed_" + inhabitant.Name.FirstName;
+						//var bed = Board.Entities.OfType<Clutter>().FirstOrDefault(b => b.ID == bedID);
 						//if (bed != null)
 						//{
 						//	bc.XPosition = bed.XPosition;
@@ -492,13 +492,14 @@ namespace Noxico
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			var floorStart = Color.FromArgb(65, 66, 87);
-			var floorEnd = Color.FromArgb(88, 89, 122);
+			//FxCop: removed bunch of vars, unused since template system.
+			//var floorStart = Color.FromArgb(65, 66, 87);
+			//var floorEnd = Color.FromArgb(88, 89, 122);
 			var wallStart = Color.FromArgb(119, 120, 141);
 			var wallEnd = Color.FromArgb(144, 144, 158);
-			var wall = Color.FromArgb(71, 50, 33);
+			//var wall = Color.FromArgb(71, 50, 33);
 			var path = Color.FromArgb(32, 32, 32);
-			var floorCrud = new[] { ',', '\'', '`', '.', };
+			//var floorCrud = new[] { ',', '\'', '`', '.', };
 
 			//Base fill
 			for (var row = 0; row < 25; row++)

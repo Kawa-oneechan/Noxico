@@ -84,6 +84,8 @@ namespace Noxico
 		{
 			Console.WriteLine("IT BEGINS...");
 
+			Random.Reseed();
+
 			Func<string, Keys, int> GetIniKey = (s, d) =>
 			{
 				var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
@@ -231,8 +233,6 @@ namespace Noxico
 		{
 			if (!InGame && !force)
 				return;
-
-			var header = Encoding.UTF8.GetBytes("NOXiCO");
 
 			if (!noPlayer && !Player.Character.HasToken("gameover"))
 			{
@@ -604,21 +604,12 @@ namespace Noxico
 		{
 			var setStatus = new Action<string>(s =>
 			{
-				/*
-				var line = UIManager.Elements.Find(x => x.Tag == "worldGen");
-				if (line == null)
-					return;
-				line.Text = s.PadRight(70);
-				line.Draw();
-				*/
 				Console.WriteLine(s);
 			});
 
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 
-			var host = NoxicoGame.HostForm;
-			//this.Boards.Clear();
 			if (this.Boards.Count == 0)
 			{
 				setStatus("Creating player's starting town...");
@@ -1050,7 +1041,6 @@ namespace Noxico
 
 		public static Expectation ExpectTown(string name, int biomeID)
 		{
-			var boards = NoxicoGame.HostForm.Noxico.Boards;
 			if (biomeID < 0)
 				biomeID = Random.Next(2, 5);
 			var biome = BiomeData.Biomes[biomeID];
@@ -1161,9 +1151,9 @@ namespace Noxico
 
 					character = fullReplace ? Character.Generate(bodyplan, gender) : replacement.Character;
 
-					if (firstName != "")
+					if (!string.IsNullOrEmpty(firstName))
 						character.Name.FirstName = firstName;
-					if (surName != "")
+					if (!string.IsNullOrEmpty(surName))
 						character.Name.Surname = surName;
 
 					foreach (var tokenEntry in tokens)
@@ -1213,7 +1203,7 @@ namespace Noxico
 								}
 							}
 						}
-						if (tVal != "")
+						if (!string.IsNullOrEmpty(tVal))
 						{
 							var fVal = 0.0f;
 							var isNumeric = float.TryParse(tVal, out fVal);

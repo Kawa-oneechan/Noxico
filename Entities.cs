@@ -1333,7 +1333,7 @@ namespace Noxico
 			JavaScript.Ascertain(js);
 			js.SetParameter("this", this.Character);
 			js.SetParameter("target", ScriptPathID);
-			if (extraParm != "")
+			if (!string.IsNullOrEmpty(extraParm))
 				js.SetParameter(extraParm, extraVal);
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
 			js.SetFunction("print", new Action<string>(x =>

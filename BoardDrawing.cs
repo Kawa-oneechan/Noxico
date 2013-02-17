@@ -69,7 +69,6 @@ namespace Noxico
 		{
 			if (DrawJS == null)
 				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
-			var js = DrawJS;
 			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
 			{
 				this.Tilemap[point.Y, point.X] = noise ? brush.Noise() : brush;
@@ -152,8 +151,8 @@ namespace Noxico
 		{
 			var floorStart = Color.FromArgb(123, 92, 65);
 			var floorEnd = Color.FromArgb(143, 114, 80);
-			var caveStart = Color.FromArgb(65, 66, 87);
-			var caveEnd = Color.FromArgb(88, 89, 122);
+			//var caveStart = Color.FromArgb(65, 66, 87);
+			//var caveEnd = Color.FromArgb(88, 89, 122);
 			var wall = Color.FromArgb(71, 50, 33);
 			var cornerJunctions = new List<Point>();
 

@@ -21,6 +21,7 @@ namespace Noxico
 	{
 		//TODO: Refactor the below
 
+		//Also sleep needs an overhaul. Instead of sleeping until healed, or until morning, there should be a menu, and every hour or so gives back a bunch of HP.
 		public static bool UntilMorning;
 		public static void Sleep()
 		{
@@ -34,9 +35,6 @@ namespace Noxico
 			{
 				if (NoxicoGame.InGameTime.Hour > 20 || NoxicoGame.InGameTime.Hour < 6)
 				{
-					//for (var i = 0; i < 25; i++)
-					//	for (var j = 0; j < 80; j++)
-					//		NoxicoGame.HostForm.DarkenCell(i, j);
 					player.PlayingTime = player.PlayingTime.Add(sleep);
 					NoxicoGame.InGameTime.Add(sleep);
 
@@ -69,16 +67,10 @@ namespace Noxico
 				return;
 			}
 
-			var now = pchar.GetToken("health").Value;
 			if (pchar.GetToken("health").Value < max)
 			{
 				pchar.GetToken("health").Value += 0.2f;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update(true);
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				//for (var i = 0; i < 25; i++)
-				//	for (var j = 0; j < 80; j++)
-				//		NoxicoGame.HostForm.DarkenCell(i, j);
-
 				player.PlayingTime = player.PlayingTime.Add(heal);
 				NoxicoGame.InGameTime.Add(heal);
 			}
