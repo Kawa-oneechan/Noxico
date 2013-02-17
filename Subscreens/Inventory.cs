@@ -177,6 +177,7 @@ namespace Noxico
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
+				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Background = UIColors.StatusBackground });
 				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 78, Height = 2 + height });
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
@@ -234,7 +235,7 @@ namespace Noxico
 				UIManager.Draw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Items))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Items) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;

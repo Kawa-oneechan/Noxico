@@ -206,6 +206,11 @@ namespace Noxico
 				MouseUp += new MouseEventHandler(MainForm_MouseUp);
 				MouseWheel += new MouseEventHandler(MainForm_MouseWheel);
 
+				GotFocus += (s, e) => { Vista.GamepadFocused = true; };
+				LostFocus += (s, e) => { Vista.GamepadFocused = false; };
+
+				Vista.GamepadEnabled = IniFile.GetValue("misc", "xinput", true);
+
 				Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
 				Console.WriteLine(Environment.OSVersion);
 				if (Environment.OSVersion.Platform == PlatformID.Unix)
@@ -213,6 +218,7 @@ namespace Noxico
 					Console.WriteLine("*** You are running on a *nix system. ***");
 					Console.WriteLine("Key repeat delays exaggerated.");
 					NoxicoGame.Mono = true;
+					Vista.GamepadEnabled = false;
 				}
 
 				Achievements.ProfilePath = "";

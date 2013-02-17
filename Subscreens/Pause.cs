@@ -89,8 +89,9 @@ has the same effect." },
 				UIManager.Draw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
+				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);

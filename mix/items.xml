@@ -325,6 +325,23 @@ ascii
 			]]>
 	</item>
 
+	<item id="chairlegoftruth" name="Chair Leg of Truth" a="a" the="The">
+		<![CDATA[
+equipable
+	hand
+unique
+weight: medium
+weapon
+	damage: 100
+	skill: club
+	attacktype: crush
+ascii
+	char: U+0021
+	fore
+		darkgoldenrod
+		]]>
+	</item>
+
 	<category name="NetHack weapons">
 		<item id="spear" name="spear" a="a" the="the">
 			<![CDATA[

@@ -65,7 +65,8 @@ namespace Noxico
 					return;
 				if (door.Closed)
 				{
-					NoxicoGame.Sound.PlaySound("Open Gate");
+					if (this is Player)
+						NoxicoGame.Sound.PlaySound("Open Gate");
 					door.Closed = false;
 				}
 			}
@@ -262,6 +263,11 @@ namespace Noxico
 						NoxicoGame.Messages.Last().Message = ((DroppedItem)PointingAt).Name;
 						return;
 					}
+					else if (entity is Door)
+					{
+						NoxicoGame.Messages.Last().Message = "Door";
+						return;
+					}
 				}
 			}
 			var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
@@ -281,14 +287,14 @@ namespace Noxico
 			NoxicoGame.Messages.Last().New = true;
 			NoxicoGame.UpdateMessages();
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.Messages.Remove(NoxicoGame.Messages.Last());
 				ParentBoard.Redraw();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus))
+			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus) || Vista.Triggers == XInputButtons.RightShoulder)
 			{
 				NoxicoGame.ClearKeys();
 				Tabstop++;
@@ -299,13 +305,18 @@ namespace Noxico
 				Point();
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Accept))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Vista.Triggers == XInputButtons.A)
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
 				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (PointingAt != null)
 				{
+					if (PointingAt is Clutter || PointingAt is Door || PointingAt is Container)
+					{
+							return;
+					}
+
 					LastTarget = PointingAt;
 					var distance = player.DistanceFrom(PointingAt);
 					var canSee = player.CanSee(PointingAt);
@@ -466,13 +477,13 @@ namespace Noxico
 			}
 #endif
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Left)) //(NoxicoGame.KeyMap[(int)Keys.Left])
+			if (NoxicoGame.IsKeyDown(KeyBinding.Left) || Vista.DPad == XInputButtons.Left)
 				this.Move(Direction.West);
-			else if (NoxicoGame.IsKeyDown(KeyBinding.Right)) //(NoxicoGame.KeyMap[(int)Keys.Right])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Right) || Vista.DPad == XInputButtons.Right)
 				this.Move(Direction.East);
-			else if (NoxicoGame.IsKeyDown(KeyBinding.Up)) //(NoxicoGame.KeyMap[(int)Keys.Up])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Up) || Vista.DPad == XInputButtons.Up)
 				this.Move(Direction.North);
-			else if (NoxicoGame.IsKeyDown(KeyBinding.Down)) //(NoxicoGame.KeyMap[(int)Keys.Down])
+			else if (NoxicoGame.IsKeyDown(KeyBinding.Down) || Vista.DPad == XInputButtons.Down)
 				this.Move(Direction.South);
 		}
 
@@ -481,7 +492,13 @@ namespace Noxico
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			Tabstops.Clear();
 			foreach (var e in ParentBoard.Entities)
+			{
+				if (e is Door)
+					continue;
+				if (e is Clutter)
+					continue;
 				Tabstops.Add(new Point(e.XPosition, e.YPosition));
+			}
 
 			//Tabstops.Sort();
 			if (LastTarget != null)
@@ -1955,17 +1972,17 @@ namespace Noxico
 				NoxicoGame.AddMessage("* TEST: couldn't go any further. *");
 			}
 
-#if CONTEXT_SENSITIVE
 			NoxicoGame.ContextMessage = null;
 			if (OnWarp())
-				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " take exit";
+				NoxicoGame.ContextMessage = "take exit";
 			else if (ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " pick up";
+				NoxicoGame.ContextMessage = "pick up";
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " see contents";
+				NoxicoGame.ContextMessage = "see contents";
 			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
-				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate) + " sleep";
-#endif
+				NoxicoGame.ContextMessage = "sleep";
+			if (NoxicoGame.ContextMessage != null)
+				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
 		}
 
 		public void QuickFire(Direction targetDirection)
@@ -2069,21 +2086,23 @@ namespace Noxico
 #endif
 
 			//START
-			if (NoxicoGame.IsKeyDown(KeyBinding.Pause))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Pause) || Vista.Triggers == XInputButtons.Start)
 			{
+				NoxicoGame.ClearKeys();
 				Pause.Open();
 				return;
 			}
 
 			//RIGHT
-			if (NoxicoGame.IsKeyDown(KeyBinding.Travel) && this.ParentBoard.BoardType != BoardType.Dungeon)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder) && this.ParentBoard.BoardType != BoardType.Dungeon)
 			{
+				NoxicoGame.ClearKeys();
 				Travel.Open();
 				return;
 			}
 
 			//LEFT
-			if (NoxicoGame.IsKeyDown(KeyBinding.Rest))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Rest) || Vista.Triggers == XInputButtons.LeftShoulder)
 			{
 				NoxicoGame.ClearKeys();
 				if (this.Character.HasToken("haste"))
@@ -2093,7 +2112,7 @@ namespace Noxico
 			}
 
 			//GREEN
-			if (NoxicoGame.IsKeyDown(KeyBinding.Interact))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Interact) || Vista.Triggers == XInputButtons.A)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.AddMessage("\uE080[Aim message]");
@@ -2107,7 +2126,7 @@ namespace Noxico
 			}
 			
 			//BLUE
-			if (NoxicoGame.IsKeyDown(KeyBinding.Items))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Items) || Vista.Triggers == XInputButtons.X)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Mode = UserMode.Subscreen;
@@ -2117,7 +2136,7 @@ namespace Noxico
 			}
 
 			//YELLOW
-			if (NoxicoGame.IsKeyDown(KeyBinding.Fly) && !helpless)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.Fly) || Vista.Triggers == XInputButtons.Y) && !helpless)
 			{
 				NoxicoGame.ClearKeys();
 				if (Character.HasToken("flying"))
@@ -2165,7 +2184,7 @@ namespace Noxico
 			}
 
 			//RED
-			if (NoxicoGame.IsKeyDown(KeyBinding.Activate) && !helpless && !flying)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.Activate) || Vista.Triggers == XInputButtons.B) && !helpless && !flying)
 			{
 				NoxicoGame.ClearKeys();
 
@@ -2242,13 +2261,13 @@ namespace Noxico
 			{
 				if (!NoxicoGame.Modifiers[0])
 				{
-					if (NoxicoGame.IsKeyDown(KeyBinding.Left))
+					if (NoxicoGame.IsKeyDown(KeyBinding.Left) || Vista.DPad == XInputButtons.Left)
 						this.Move(Direction.West);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Right) || Vista.DPad == XInputButtons.Right)
 						this.Move(Direction.East);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Up))
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Up) || Vista.DPad == XInputButtons.Up)
 						this.Move(Direction.North);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Down))
+					else if (NoxicoGame.IsKeyDown(KeyBinding.Down) || Vista.DPad == XInputButtons.Down)
 						this.Move(Direction.South);
 				}
 				else if(NoxicoGame.Modifiers[0])

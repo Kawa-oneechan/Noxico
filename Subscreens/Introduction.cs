@@ -38,7 +38,7 @@ namespace Noxico
 				if (GamerServices.Profile.IsValid)
 					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 24, 80 - 2 - GamerServices.Profile.Name.Length);
 			}
-			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
 				if (Subscreens.Mouse)
 					Subscreens.UsingMouse = true;

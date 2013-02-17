@@ -172,7 +172,8 @@ namespace Noxico
 					playerList.Height = height2;
 				}
 
-				UIManager.Elements.Add(new UILabel((" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (isVendor ? "buy or sell" : "store or retrieve") + " the highlighted item.").PadRight(80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (isVendor ? "buy or sell" : "store or retrieve") + " the highlighted item.") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6 };
 				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4 };
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
@@ -329,7 +330,7 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 			}
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back))
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
