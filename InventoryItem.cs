@@ -22,14 +22,6 @@ namespace Noxico
 		public Token tempToken { get; set; }
 		private static XmlDocument costumeDoc;
 
-		/*
-		public override string ToString()
-		{
-			if (IsProperNamed)
-				return Name;
-			return string.Format("{0} {1}", A, Name);
-		}
-		*/
 		public override string ToString()
 		{
 			return ToString(null);
@@ -63,7 +55,7 @@ namespace Noxico
 			var proper = IsProperNamed && (token != null && !token.HasToken("unidentified"));
 			if (proper || !a)
 			{
-				if (the && The != "")
+				if (the && !string.IsNullOrEmpty(The))
 					return The + ' ' + name;
 				return name;
 			}
@@ -230,7 +222,7 @@ namespace Noxico
 			*/
 			var equip = this.GetToken("equipable");
 			var tempRemove = new Stack<Token>();
-			var items = character.GetToken("items");
+			//var items = character.GetToken("items");
 
 			//TODO: make full quadrupeds equip weapons in their mouth instead of the hands they don't have.
 			//This means they can carry only ONE weapon at a time, and maybe not be able to converse until unequipped.

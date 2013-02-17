@@ -285,28 +285,28 @@ namespace Noxico
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
 		}
 
-        public void SetCell(int row, int col, char character, Color forecolor, Color backcolor, bool force = false)
+        public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
         {
 			if (col >= 80 || row >= 25 || col < 0 || row < 0)
 				return;
 
             image[col, row].Character = character;
-            image[col, row].Foreground = forecolor;
-			if (backcolor != Color.Transparent)
-	            image[col, row].Background = backcolor;
-			if (force)
+            image[col, row].Foreground = foregroundColor;
+			if (backgroundColor != Color.Transparent)
+	            image[col, row].Background = backgroundColor;
+			if (forceRedraw)
 				previousImage[col, row].Character = (char)(character + 4);
         }
 
-		public void Clear(char character, Color forecolor, Color backcolor)
+		public void Clear(char character, Color foregroundColor, Color backgroundColor)
 		{
 			for (int row = 0; row < 25; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					image[col, row].Character = character;
-					image[col, row].Foreground = forecolor;
-					image[col, row].Background = backcolor;
+					image[col, row].Foreground = foregroundColor;
+					image[col, row].Background = backgroundColor;
 				}
 			}
 		}
@@ -315,7 +315,7 @@ namespace Noxico
 			Clear(' ', Color.White, Color.Black);
 		}
 
-		public void Write(string text, Color forecolor, Color backcolor, int row = 0, int col = 0)
+		public void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0)
 		{
 			if (!text.IsNormalized())
 				text = text.Normalize();
@@ -344,8 +344,8 @@ namespace Noxico
 						if (tag[0] == 'c')
 						{
 							var match = Regex.Match(tag, @"c(?:(?:(?<fore>\w+)(?:(?:,(?<back>\w+))?))?)");
-							forecolor = match.Groups["fore"].Value != "" ? Color.FromName(match.Groups["fore"].Value) : Color.Silver;
-							backcolor = match.Groups["back"].Value != "" ? Color.FromName(match.Groups["back"].Value) : Color.Transparent;
+							foregroundColor = !string.IsNullOrEmpty(match.Groups["fore"].Value) ? Color.FromName(match.Groups["fore"].Value) : Color.Silver;
+							backgroundColor = !string.IsNullOrEmpty(match.Groups["back"].Value) ? Color.FromName(match.Groups["back"].Value) : Color.Transparent;
 							//forecolor = match.Groups["fore"].Value != "" ? int.Parse(match.Groups["fore"].Value) : 7;
 							//backcolor = match.Groups["back"].Value != "" ? int.Parse(match.Groups["back"].Value) : 0;
 							continue;
@@ -358,7 +358,7 @@ namespace Noxico
 						}
 					}
 				}
-				SetCell(row, col, c, forecolor, backcolor, true);
+				SetCell(row, col, c, foregroundColor, backgroundColor, true);
 				col++;
 				if (col >= 80)
 				{

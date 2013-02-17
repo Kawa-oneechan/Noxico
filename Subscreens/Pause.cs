@@ -41,8 +41,6 @@ has the same effect." },
 		public static void Handler()
 		{
 			var host = NoxicoGame.HostForm;
-			var keys = NoxicoGame.KeyMap;
-			var trig = NoxicoGame.KeyTrg;
 
 			if (Subscreens.FirstDraw)
 			{

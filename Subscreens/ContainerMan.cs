@@ -54,9 +54,7 @@ namespace Noxico
 
 		public static void Handler()
 		{
-			var host = NoxicoGame.HostForm;
 			var keys = NoxicoGame.KeyMap;
-			var trig = NoxicoGame.KeyTrg;
 			var player = NoxicoGame.HostForm.Noxico.Player;
 
 			if (Subscreens.FirstDraw)

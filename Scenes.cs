@@ -254,7 +254,7 @@ namespace Noxico
 				fValuePM = fValue[fValue.Length - 1];
 				fValue = fValue.Remove(fValue.Length - 1);
 			}
-			var fValueIsFloat = float.TryParse(fValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out fValueF);
+			fValueF = float.Parse(fValue, System.Globalization.NumberStyles.Float);
 			
 			switch (fType)
 			{
@@ -284,7 +284,7 @@ namespace Noxico
 								return false;
 						}
 					}
-					else if (fValue != "")
+					else if (!string.IsNullOrEmpty(fValue))
 					{
 						//Added this to allow checking for a specific text value, such as long tongues:
 						//<filter target="bottom" type="has" name="tongue" value="long" />
@@ -408,7 +408,7 @@ namespace Noxico
 				{ "your", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
-				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && s[2] != "" ? s[2] : s[1]); } },
+				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
 				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLower(); } },
 				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
 				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
@@ -467,7 +467,6 @@ namespace Noxico
 			while (Regex.IsMatch(message, regex, ro))
 			{
 				var match = Regex.Match(message, regex, ro);
-				var replace = match.ToString();
 				var with = "";
 				var target = bottom;
 				var subcom = "";
@@ -502,7 +501,6 @@ namespace Noxico
 					with = subcoms[subcom](target, parms.ToArray());
 				//possibility: allow unknown tokens with no extra parameters to just "be as-is": "[b:clit]" -> just "clit", until further notice.
 
-				//message = message.Replace(replace, with);
 				var left = message.Substring(0, match.Groups[0].Index);
 				var right = message.Substring(match.Groups[0].Index + match.Groups[0].Length);
 				message = left + with + right;

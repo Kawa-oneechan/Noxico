@@ -28,7 +28,7 @@ namespace Noxico
 					settings.Add(key, new Dictionary<string, string>());
 					thisSection = key;
 				}
-				else if (l.Contains('=') && thisSection != "")
+				else if (l.Contains('=') && !string.IsNullOrEmpty(thisSection))
 				{
 					var sep = l.IndexOf('=');
 					var key = l.Substring(0, sep).Trim();

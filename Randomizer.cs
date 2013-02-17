@@ -22,18 +22,7 @@ namespace Noxico
 	public static class Random
 	{
 #if !USE_SYSTEM_RANDOM
-		private static int seed;
-		private static object myLock = new object();
-
-		static Random()
-		{
-			lock(myLock)
-			{
-				if (seed == 0)
-					Reseed();
-			}
-		}
-
+		private static int seed = 0;
 
 		/// <summary>
 		/// Initializes a new instance of the System.Random class, using a time-dependent

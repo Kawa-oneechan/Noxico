@@ -27,8 +27,6 @@ namespace Noxico
 
 		public static void Handler()
 		{
-			var host = NoxicoGame.HostForm;
-			var keys = NoxicoGame.KeyMap;
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
