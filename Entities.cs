@@ -1431,7 +1431,13 @@ namespace Noxico
 						return;
 					knownAmmo.Consume(Character, carriedAmmo);
 				}
-				FireLine(Character.CanShoot().Path("effect"), target);
+				else if (weapon.HasToken("charge"))
+				{
+					var carriedGun = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == weapon.ID && ci.HasToken("equipped"));
+					weapon.Consume(Character, carriedGun);
+				}
+				if (weapon != null)
+					FireLine(weapon.Path("effect"), target);
 			}
 			else
 			{
@@ -1456,6 +1462,8 @@ namespace Noxico
 
 		public void FireLine(Token effect, int x, int y)
 		{
+			if (effect == null)
+				return;
 			foreach (var point in Toolkit.Line(XPosition, YPosition, x, y))
 			{
 				var particle = new Clutter()
@@ -2006,6 +2014,14 @@ namespace Noxico
 					return;
 				knownAmmo.Consume(Character, carriedAmmo);
 			}
+			else if (weapon.HasToken("charge"))
+			{
+				var carriedGun = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == weapon.ID && ci.HasToken("equipped"));
+				weapon.Consume(Character, carriedGun);
+			}
+
+			if (weapon == null)
+				return false;
 
 			var x = this.XPosition;
 			var y = this.YPosition;
@@ -2434,7 +2450,8 @@ namespace Noxico
 				return;
 			}
 
-			var weap = Character.CanShoot().GetToken("weapon");
+			var weapon = Character.CanShoot();
+			var weap = weapon.GetToken("weapon");
 			var skill = weap.GetToken("skill");
 			if (new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(skill.Text))
 			{
@@ -2449,7 +2466,13 @@ namespace Noxico
 						return;
 					knownAmmo.Consume(Character, carriedAmmo);
 				}
-				FireLine(Character.CanShoot().Path("effect"), target);
+				else if (weapon.HasToken("charge"))
+				{
+					var carriedGun = this.Character.GetToken("items").Tokens.Find(ci => ci.Name == weapon.ID && ci.HasToken("equipped"));
+					weapon.Consume(Character, carriedGun);
+				}
+				if (weapon != null)
+					FireLine(weapon.Path("effect"), target);
 			}
 			else
 			{

@@ -516,6 +516,8 @@ namespace Noxico
 			if (this.HasToken("charge"))
 			{
 				var charge = carriedItem.Path("charge");
+				if (charge == null && carriedItem.Name == "charge")
+					charge = carriedItem;
 				if (charge == null || charge.Value == 1)
 				{
 					if (HasToken("revert"))
