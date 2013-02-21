@@ -655,7 +655,7 @@ namespace Noxico
 
 		public static string TranslateKey(KeyBinding binding, bool longhand = false, bool withColors = true)
 		{
-			if (!Vista.GamepadAvailable)
+			if (Vista.GamepadAvailable)
 			{
 				if (binding == KeyBinding.Interact || binding == KeyBinding.Accept)
 					return withColors ? "<cGreen>A<c>" : "A";
