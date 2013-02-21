@@ -144,20 +144,20 @@ namespace Noxico
 			}
 
 			var skill = book.SelectSingleNode("skill");
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
 			if (skill != null)
 			{
 				var skillName = ((XmlElement)skill).GetAttribute("token");
-				var player = NoxicoGame.HostForm.Noxico.Player.Character;
-				if (player.Path("books/book_" + bookNum) == null)
-				{
-					if (!player.HasToken("books"))
-						player.AddToken("books");
-					var bookToken = player.GetToken("books").AddToken("book_" + bookNum);
-					bookToken.Text = header;
 					player.IncreaseSkill(skillName);
 					var skillProper = skillName.Replace('_', ' ');
 					text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
-				}
+			}
+			if (player.Path("books/book_" + bookNum) == null)
+			{
+				if (!player.HasToken("books"))
+					player.AddToken("books");
+				var bookToken = player.GetToken("books").AddToken("book_" + bookNum);
+				bookToken.Text = header;
 			}
 
 			Plain(text, header);
