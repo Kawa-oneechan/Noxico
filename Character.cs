@@ -2915,20 +2915,39 @@ namespace Noxico
 	{
 		public static string Length(float cm)
 		{
-			if (cm >= 100)
+			if (!IniFile.GetValue("misc", "imperial", false))
 			{
-				var m = Math.Floor(cm / 100);
-				cm %= 100;
-				if (cm > 0)
-					return m + "." + cm + "m";
+				if (cm >= 100)
+				{
+					var m = Math.Floor(cm / 100);
+					cm %= 100;
+					if (cm > 0)
+						return m + "." + cm + "m";
+					else
+						return m + "m";
+				}
+				if (Math.Floor(cm) != cm)
+					return cm.ToString("F1") + "cm";
 				else
-					return m + "m";
+					return cm.ToString("F0") + "cm";
 			}
-			if (Math.Floor(cm) != cm)
-				return cm.ToString("F1") + "cm";
 			else
-				return cm.ToString("F0") + "cm";
-			//return Math.Floor(cm).ToString() + "cm";
+			{
+				var i = cm * 0.3937;
+				if (i > 12)
+				{
+					var f = Math.Floor(i / 12);
+					i %= 12;
+					if (i > 0)
+						return f + "\u2032" + i.ToString("F0") + "\u2033";
+					else
+						return f + "\u2032";
+				}
+				if (Math.Floor(i) != i)
+					return i.ToString("F1") + "\u2033";
+				else
+					return i.ToString("F0") + "\u2033";
+			}
 		}
 
 		public static string Hair(Token hairToken)
