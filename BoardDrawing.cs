@@ -34,6 +34,7 @@ namespace Noxico
 		public void Clear(int biomeID)
 		{
 			this.Entities.Clear();
+			this.GetToken("biome").Value = biomeID;
 
 			var biome = BiomeData.Biomes[biomeID];
 			for (int row = 0; row < 25; row++)
@@ -50,6 +51,12 @@ namespace Noxico
 					};
 				}
 			}
+		}
+
+		[ForJS(ForJSUsage.Either)]
+		public void Clear(string biomeName)
+		{
+			Clear(BiomeData.ByName(biomeName));
 		}
 
 		[ForJS(ForJSUsage.Only)]

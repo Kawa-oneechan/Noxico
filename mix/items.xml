@@ -335,6 +335,7 @@ weapon
 	damage: 100
 	skill: club
 	attacktype: crush
+description: "Do not question the Chair Leg of Truth, for it is wise and terrible."
 ascii
 	char: U+0021
 	fore

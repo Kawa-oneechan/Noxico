@@ -284,6 +284,7 @@ namespace Noxico
 				for (var j = 0; j < length; j++)
 				{
 					var board = new Board();
+					board.Clear(DungeonGeneratorBiome);
 					board.BoardNum = nox.Boards.Count;
 					if (i > 0)
 						board.AddToken("dark");
@@ -505,14 +506,17 @@ namespace Noxico
 		{
 			Biomes = new List<BiomeData>();
 			var x = Mix.GetXMLDocument("biomes.xml");
-			var realm = x.SelectSingleNode("//realm") as XmlElement;
-			foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-				Biomes.Add(BiomeData.FromXML(b));
+			foreach (var realm in x.SelectNodes("//realm").OfType<XmlElement>())
+			{
+				var realmID = realm.GetAttribute("id"); 
+				foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
+					Biomes.Add(BiomeData.FromXML(b, realmID));
+			}
 		}
 
+		public string RealmID { get; private set; }
 		public string Name { get; private set; }
 		public Color Color { get; private set; }
-		public System.Drawing.Rectangle Rect { get; private set; }
 		public string Music { get; private set; }
 		public bool IsWater { get; private set; }
 		public bool CanBurn { get; private set; }
@@ -523,14 +527,12 @@ namespace Noxico
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
 
-		public static BiomeData FromXML(XmlElement x)
+		public static BiomeData FromXML(XmlElement x, string realmID)
 		{
 			var n = new BiomeData();
+			n.RealmID = realmID;
 			n.Name = x.GetAttribute("name");
-			var cvars = x.GetAttribute("rect").Split(' ').Select(i => int.Parse(i)).ToArray();
-			n.Rect = new System.Drawing.Rectangle(cvars[0], cvars[1], cvars[2] - cvars[0], cvars[3] - cvars[1]);
-			cvars = x.GetAttribute("color").Split(' ').Select(i => int.Parse(i)).ToArray();
-			n.Color = System.Drawing.Color.FromArgb(cvars[0], cvars[1], cvars[2]);
+			n.Color = Color.FromName(x.GetAttribute("color"));
 			n.Music = x.GetAttribute("music");
 			n.IsWater = x.HasAttribute("isWater");
 			n.CanBurn = x.HasAttribute("canBurn");
@@ -572,6 +574,14 @@ namespace Noxico
 			}
 
 			return n;
+		}
+
+		public static int ByName(string name)
+		{
+			var b = BiomeData.Biomes.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+			if (b == null)
+				return 1;
+			return BiomeData.Biomes.IndexOf(b);
 		}
 	}
 }

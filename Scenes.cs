@@ -254,8 +254,14 @@ namespace Noxico
 				fValuePM = fValue[fValue.Length - 1];
 				fValue = fValue.Remove(fValue.Length - 1);
 			}
-			fValueF = float.Parse(fValue, System.Globalization.NumberStyles.Float);
-			
+			try
+			{
+				fValueF = float.Parse(fValue, System.Globalization.NumberStyles.Float);
+			}
+			catch (FormatException)
+			{
+			}
+
 			switch (fType)
 			{
 				case "name":

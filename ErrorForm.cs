@@ -109,6 +109,8 @@ namespace Noxico
 			}
 			else if (typeName == "ArgumentException" && textBox1.Text.Contains("System.Drawing.Bitmap..ctor"))
 				label3.Text = "The problem is a bitmap that is not actually a bitmap." + Environment.NewLine + Environment.NewLine + "Noxico only uses PNG files, but can load BMP, GIF, and JPEG as well. If an image is requested, but the file is not actually an image of one of those types, or not even an image at all, things break.";
+			else if (textBox1.Text.Contains("bodyplan is defined twice"))
+				label3.Text = "Probably, a mod tried to define its own version of the specified bodyplan, which is not allowed." + Environment.NewLine + Environment.NewLine + "Try to identify the offender and remove it, then contact the mod's author.";
 			else
 			{
 				tabControl1.TabPages.RemoveAt(1);

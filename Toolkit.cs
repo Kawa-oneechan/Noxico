@@ -461,7 +461,7 @@ namespace Noxico
 				{
 					var e = n as XmlElement;
 					if (e.Name == "b")
-						r += "<cWhite>";
+						r += " <cWhite>";
 
 					if (e.Name == "br")
 						r += "\n";

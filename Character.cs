@@ -577,18 +577,21 @@ namespace Noxico
 			s.Value += (float)i;
 		}
 
-		public float CumAmount()
+		public float CumAmount
 		{
-			var ret = 0.0f;
-			var size = HasToken("balls") && GetToken("balls").HasToken("size") ? GetToken("balls").GetToken("size").Value + 1 : 1.25f;
-			var amount = HasToken("balls") && GetToken("balls").HasToken("amount") ? GetToken("balls").GetToken("amount").Value : 2f;
-			var multiplier = HasToken("cummultiplier") ? GetToken("cummultiplier").Value : 1;
-			var hours = 1;
-			var stimulation = GetToken("stimulation").Value;
-			ret = (size * amount * multiplier * 2 * (stimulation + 50) / 10 * (hours + 10) / 24) / 10;
-			if (GetToken("perks").HasToken("messyorgasms"))
-				ret *= 1.5f;
-			return ret;
+			get
+			{
+				var ret = 0.0f;
+				var size = HasToken("balls") && GetToken("balls").HasToken("size") ? GetToken("balls").GetToken("size").Value + 1 : 1.25f;
+				var amount = HasToken("balls") && GetToken("balls").HasToken("amount") ? GetToken("balls").GetToken("amount").Value : 2f;
+				var multiplier = HasToken("cummultiplier") ? GetToken("cummultiplier").Value : 1;
+				var hours = 1;
+				var stimulation = GetToken("stimulation").Value;
+				ret = (size * amount * multiplier * 2 * (stimulation + 50) / 10 * (hours + 10) / 24) / 10;
+				if (GetToken("perks").HasToken("messyorgasms"))
+					ret *= 1.5f;
+				return ret;
+			}
 		}
 
 		private static void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
@@ -1203,33 +1206,9 @@ namespace Noxico
 			}
 			print("\n");
 		}
-		#endregion
 
-		public string LookAt(Entity pa)
+		private void LookAtClothing(Entity pa, Action<string> print, List<string> worn)
 		{
-			if (this.HasToken("beast"))
-				return this.GetToken("bestiary").Text;
-
-			var sb = new StringBuilder();
-
-			//Things not listed: pregnancy, horns and wings.
-			Action<string> print = new Action<string>(x => sb.Append(x));
-
-			//var stimulation = this.GetToken("stimulation").Value;
-
-			print(("Name: " + this.Name.ToString(true)).PadRight(34) + "Type: " + this.Title + ((pa != null && pa is Player) ? " (player)" : "") + "\n");
-			print("\n");
-
-			bool breastsVisible = false, crotchVisible = false;
-			var carried = new List<InventoryItem>();
-			var worn = new List<string>();
-			var hands = new List<InventoryItem>();
-			var fingers = new List<InventoryItem>();
-			LookAtEquipment1(pa, print, ref carried, ref worn, ref hands, ref fingers, ref breastsVisible, ref crotchVisible);
-
-			LookAtBodyFace(pa, print);
-			LookAtHairHips(pa, print);
-
 			print("Clothing\n");
 			if (worn.Count == 0)
 				print("| none\n");
@@ -1237,7 +1216,10 @@ namespace Noxico
 				for (var i = 0; i < worn.Count; i++)
 					print("| " + worn[i] + "\n");
 			print("\n");
+		}
 
+		private void LookAtEquipment2(Entity pa, Action<string> print, List<InventoryItem> hands, List<InventoryItem> fingers)
+		{
 			print("Equipment\n");
 			var mono = HasToken("monoceros") ? 1 : 0;
 			if (this.HasToken("noarms") && hands.Count > 1 + mono)
@@ -1254,14 +1236,42 @@ namespace Noxico
 					print("| " + fingers[i].ToLongString(fingers[i].tempToken) + "\n");
 			}
 			print("\n");
+		}
+		#endregion
 
+		public string LookAt(Entity pa, Action<string> print = null)
+		{
+			if (this.HasToken("beast"))
+				return this.GetToken("bestiary").Text;
+
+			var sb = new StringBuilder();
+
+			//Things not listed: pregnancy, horns and wings.
+			if (print == null)
+				print = new Action<string>(x => sb.Append(x));
+
+			//var stimulation = this.GetToken("stimulation").Value;
+
+			print(("Name: " + this.Name.ToString(true)).PadRight(34) + "Type: " + this.Title + ((pa != null && pa is Player) ? " (player)" : "") + "\n");
+			print("\n");
+
+			bool breastsVisible = false, crotchVisible = false;
+			var carried = new List<InventoryItem>();
+			var worn = new List<string>();
+			var hands = new List<InventoryItem>();
+			var fingers = new List<InventoryItem>();
+			LookAtEquipment1(pa, print, ref carried, ref worn, ref hands, ref fingers, ref breastsVisible, ref crotchVisible);
+			LookAtBodyFace(pa, print);
+			LookAtHairHips(pa, print);
+			LookAtClothing(pa, print, worn);
+			LookAtEquipment2(pa, print, hands, fingers);
 			LookAtSexual(pa, print, breastsVisible, crotchVisible);
 
 			#if DEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>-----\n");
 			print("<cGray>GetGender(): " + this.GetGender() + "\n");
-			print("<cGray>Cum amount: " + this.CumAmount() + "mLs.\n");
+			print("<cGray>Cum amount: " + this.CumAmount + "mLs.\n");
 			print("<cGray>Biggest breast row: #" + this.BiggestBreastrowNumber + " @ " + this.GetBreastRowSize(this.BiggestBreastrowNumber) + "'\n");
 			print("<cGray>Biggest penis (length only): #" + this.GetBiggestPenisNumber(false) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(false), false) + "cm\n");
 			print("<cGray>Biggest penis (l * t): #" + this.GetBiggestPenisNumber(true) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(true), true) + "cm\n");
@@ -1276,17 +1286,43 @@ namespace Noxico
 
 		public void CreateInfoDump()
 		{
-			var dump = new StreamWriter(Name + " info.txt");
+			var dump = new StreamWriter(Name + " info.html");
 			var list = new List<string>();
 
-			dump.WriteLine("DESCRIPTION");
-			dump.WriteLine("-----------");
-			dump.WriteLine(this.LookAt(null));
+			dump.WriteLine("<!DOCTYPE html>");
+			dump.WriteLine("<html>");
+			dump.WriteLine("<head>");
+			dump.WriteLine("<title>Noxico - Infodump for {0}</title>", this.Name.ToString(true));
+			dump.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; CHARSET=utf-8\" />");
+			dump.WriteLine("</head>");
+			dump.WriteLine("<body>");
+			dump.WriteLine("<h1>Noxico - Infodump for {0}</h1>", this.Name.ToString(true));
 
-			dump.WriteLine("ITEMS");
-			dump.WriteLine("-----");
+			dump.WriteLine("<h2>Screenshot</h2>");
+			NoxicoGame.HostForm.Noxico.CurrentBoard.CreateHTMLDump(dump, false);
+
+			foreach (var carriedItem in GetToken("items").Tokens)
+			{
+				carriedItem.RemoveToken("equipped");
+			}
+
+			dump.WriteLine("<h2>About You</h2>");
+			dump.WriteLine("<pre>");
+			Action<string> print = new Action<string>(x =>
+			{
+				if (x.Contains("| none\n") || x.Contains("Clothing\n") || x.Contains("Equipment\n"))
+					return;
+				dump.Write(x);
+			});
+			var lookAt = LookAt(null, print);
+			lookAt = lookAt.Replace("\n\n", "\n");
+			dump.WriteLine(lookAt);
+			dump.WriteLine("</pre>");
+
+			dump.WriteLine("<h2>All of your items</h2>");
+			dump.WriteLine("<ul>");
 			if (GetToken("items").Tokens.Count == 0)
-				dump.WriteLine("You were carrying nothing.");
+				dump.WriteLine("<li>You were carrying nothing.</li>");
 			else
 			{
 				list.Clear();
@@ -1300,14 +1336,17 @@ namespace Noxico
 					list.Add(find.ToString(carriedItem));
 				}
 				list.Sort();
-				list.ForEach(x => dump.WriteLine(x));
+				list.ForEach(x => dump.WriteLine("<li>{0}</li>", x));
 			}
-			dump.WriteLine();
+			dump.WriteLine("</ul>");
 
-			dump.WriteLine("RELATIONSHIPS");
-			dump.WriteLine("-------------");
+			dump.WriteLine("<h2>Relationships</h2>");
+			dump.WriteLine("<ul>");
+			var victims = 0;
+			var lovers = 0;
+			var deities = 0;
 			if (GetToken("ships").Tokens.Count == 0)
-				dump.WriteLine("You were in no relationships.");
+				dump.WriteLine("<li>You were in no relationships.</li>");
 			else
 			{
 				list.Clear();
@@ -1317,16 +1356,47 @@ namespace Noxico
 					if (reparsed.StartsWith("\xF4EF"))
 						reparsed = reparsed.Remove(reparsed.IndexOf('#')).Substring(1);
 					list.Add(reparsed + " (" + person.Name + ") -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+					if (person.HasToken("victim"))
+						victims++;
+					if (person.HasToken("lover"))
+						lovers++;
+					if (person.HasToken("prayer"))
+						deities++;
 				}
 				list.Sort();
-				list.ForEach(x => dump.WriteLine(x));
+				list.ForEach(x => dump.WriteLine("<li>{0}</li>", x));
 			}
+			dump.WriteLine("</ul>");
+
+			dump.WriteLine("<h2>Conduct</h2>");
+			dump.WriteLine("<ul>");
+			dump.WriteLine(HasToken("books") ? "<li>You were literate.</li>" : "<li>You were functionally illiterate.</li>");
+			dump.WriteLine(lovers > 0 ? "<li>You were someone's lover.</li>" : "<li>You had no love to give.</li>");
+			if (lovers == 1)
+				dump.WriteLine("<li>You were faithful.</li>");
+			if (victims > 0)
+				dump.WriteLine(victims == 1 ? "<li>You had raped someone.</li>" : "<li>You had raped several people.</li>");
+			if (deities == 0)
+				dump.WriteLine("<li>You were an atheist.</li>");
+			else
+				dump.WriteLine(deities == 1 ? "<li>You were monotheistic.</li>" : "<li>You were a polytheist.</li>");
+			dump.WriteLine("</ul>");
+
+			dump.WriteLine("<h2>Books you've read</h2>");
+			dump.WriteLine("<ul>");
+			if (HasToken("books"))
+			{
+				foreach (var book in GetToken("books").Tokens)
+					dump.WriteLine("<li>&ldquo;{0}&rdquo;</li>", book.Text);
+			}
+			else
+				dump.WriteLine("<li>You did not read any books.</li>");
+			dump.WriteLine("</ul>");
 
 			dump.Flush();
 			dump.Close();
 
-			File.WriteAllText("info.html", Toolkit.HTMLize(File.ReadAllText(Name + " info.txt")));
-			System.Diagnostics.Process.Start("info.html"); //Name + " info.txt");
+			System.Diagnostics.Process.Start(Name + " info.html");
 		}
 
 		public bool HasPenis()
@@ -2426,6 +2496,7 @@ namespace Noxico
 				points *= 2;
 			ChangeStat("renegade", points);
 			ChangeStat("carnality", Random.Next(5, 15));
+			
 			//TODO: more effects?
 		}
 
