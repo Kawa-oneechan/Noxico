@@ -145,6 +145,8 @@ namespace Noxico
 		{
 			if (string.IsNullOrEmpty(name))
 				return Color.Silver;
+			if (name[0] == '#')
+				return Color.FromCSS(name);
 			var request = name.ToLower().Replace("_", "").Replace(" ", "");
 			XmlElement entry = null;
 			var entries = colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>();
@@ -160,8 +162,9 @@ namespace Noxico
 				return Color.Silver;
 			if (String.IsNullOrEmpty(entry.GetAttribute("rgb")))
 				return Color.Silver;
-			var rgb = entry.GetAttribute("rgb").Split(',');
-			return new Color(MakeArgb(0xFF, byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2])), entry.GetAttribute("name"));
+			//var rgb = entry.GetAttribute("rgb").Split(',');
+			//return new Color(MakeArgb(0xFF, byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2])), entry.GetAttribute("name"));
+			return Color.FromCSS(entry.GetAttribute("rgb"));
 		}
 
 		private float Max(float r, float g, float b)

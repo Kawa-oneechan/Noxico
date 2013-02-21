@@ -757,9 +757,9 @@ beast
 hostile
 bestiary: "Usually domesticated, but not this one."
 terms
-	generic: "dog"
-	male: "dog"
-	female: "bitch"
+	generic: "wild dog"
+	male: "wild dog"
+	female: "wild bitch"
 normalgenders
 skin
 	type: fur

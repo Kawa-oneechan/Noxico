@@ -24,17 +24,20 @@ namespace Noxico
 		public Type IgnoreType { get; set; }
 		public Entity IgnoreObject { get; set; }
 
-		public Dijkstra()
+		public Dijkstra(Board board = null)
 		{
 			map = new int[mapRows, mapCols];
 			walls = new bool[mapRows, mapCols];
-			UpdateWalls();
+			UpdateWalls(board);
 			Hotspots = new List<Point>();
 		}
 
-		public void UpdateWalls()
+		public void UpdateWalls(Board board = null)
 		{
-			var board = NoxicoGame.HostForm.Noxico.CurrentBoard;
+			if (board == null)
+				board = NoxicoGame.HostForm.Noxico.CurrentBoard;
+			if (board == null)
+				return;
 			for (var row = 0; row < mapRows; row++)
 				for (var col = 0; col < mapCols; col++)
 					walls[row, col] = board.IsSolid(row, col);

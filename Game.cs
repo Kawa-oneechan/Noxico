@@ -42,7 +42,7 @@ namespace Noxico
 		public static List<InventoryItem> KnownItems { get; private set; }
 		public List<Board> Boards { get; private set; }
 		public Board CurrentBoard { get; set; }
-		public static Board Ocean { get; set; }
+		public static Board Limbo { get; private set; }
 		public Player Player { get; set; }
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
@@ -179,7 +179,14 @@ namespace Noxico
 						var part = ascii.Substring(ascii.IndexOf("U+") + 2);
 						part = part.Remove(part.IndexOf('\n'));
 						var c = int.Parse(part, System.Globalization.NumberStyles.HexNumber);
-						Views.Add(id, (char)c);
+						try
+						{
+							Views.Add(id, (char)c);
+						}
+						catch (ArgumentException ex)
+						{
+							throw new ArgumentException(string.Format("The '{0}' bodyplan is defined twice.", id), ex);
+						}
 					}
 				}
 				ohboy.Tokenize(plan);
@@ -208,21 +215,18 @@ namespace Noxico
 			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
-			Ocean = Board.CreateBasicOverworldBoard(0, "Ocean", "The Ocean", "set://ocean");
+			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "The Killscreen", "darkmere_deathtune.mod");
+			Limbo.BoardType = BoardType.Dungeon;
+			var encounters = Limbo.GetToken("encounters");
+			var biome = BiomeData.Biomes[BiomeData.ByName("nether")];
+			encounters.Value = 100;
+			encounters.AddToken("imp");
+			encounters.AddToken("imp");
+			encounters.AddToken("foocubus");
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
-
-			/*
-			//Genetics test
-			var mother = Character.Generate("human", Gender.Female);
-			var father = Character.Generate("felinoid", Gender.Male);
-			mother.Fertilize(father);
-			File.WriteAllText("mother.txt", mother.DumpTokens(mother.Tokens, 0));
-			File.WriteAllText("father.txt", father.DumpTokens(father.Tokens, 0));
-			File.WriteAllText("child.txt", mother.DumpTokens(mother.Path("pregnancy/child").Tokens, 0));
-			*/
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
@@ -403,7 +407,7 @@ namespace Noxico
 		public Board GetBoard(int index)
 		{
 			if (index == -1 || index >= Boards.Count)
-				return NoxicoGame.Ocean;
+				return NoxicoGame.Limbo;
 
 			if (Boards[index] == null)
 			{
@@ -1064,6 +1068,11 @@ namespace Noxico
 			NoxicoGame.TargetNames.Add(id, name);
 			NoxicoGame.KnownTargets.Add(id);
 			return NoxicoGame.Expectations[id];
+		}
+
+		public static Expectation ExpectTown(string name, string biomeName)
+		{
+			return ExpectTown(name, BiomeData.ByName(biomeName));
 		}
 
 		//TODO: probaby better to use while still creating the board, re spouses

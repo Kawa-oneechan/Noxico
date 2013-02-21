@@ -2,7 +2,7 @@
 <!DOCTYPE biomes [
 	<!ELEMENT biomes (realm+)>
 	<!ELEMENT realm (biome+)>
-	<!ELEMENT biome ANY>
+	<!ELEMENT biome (groundGlyphs?, encounters?, cultures?, darken?)>
 
 	<!ELEMENT groundGlyphs (#PCDATA)>
 	<!ELEMENT encounters (#PCDATA)>
@@ -11,11 +11,9 @@
 
 	<!ATTLIST realm
 		id ID #REQUIRED
-		waterLevel CDATA #REQUIRED
 	>
 	<!ATTLIST biome
 		name CDATA #REQUIRED
-		rect CDATA #REQUIRED
 		color CDATA #REQUIRED
 		music CDATA #IMPLIED
 		isWater CDATA #IMPLIED
@@ -33,24 +31,33 @@
 But I'm gonna allow a <groundGlyphs> element to overrule that. Why an element? Because that lets us use ".
 Other things that could be added are what kind of (fixed) clutter can be found here, and what kind of creatures. -->
 <biomes>
-	<realm id="Nox" waterLevel="64">
-		<biome name="Water" rect="0 0 0 0" color="0 0 127" isWater="true" />
-		<biome name="Tundra" rect="0 0 48 192" color="230 243 242" music="set://Snow">
+	<realm id="Nox">
+		<biome name="Water" color="#00007F" isWater="true" />
+
+		<biome name="Tundra" color="#E6F3F2" music="set://Snow">
 			<groundGlyphs>&#x2591;&#x201E; ~/</groundGlyphs>
 			<encounters max="10">imp, imp, wild_dog, imp</encounters>
 		</biome>
-		<biome name="Grass Desert" rect="48 0 160 64" color="146 182 131" music="set://Desert" canBurn="true">
+		<biome name="Grass Desert" color="#92B683" music="set://Desert" canBurn="true">
 			<encounters max="10">wild_dog, canine, canine, goblin, slime</encounters>
 		</biome>
-		<biome name="Desert" rect="160 0 256 64" color="210 203 152" music="set://Desert">
+		<biome name="Desert" color="#D2CB98" music="set://Desert">
 			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
 		</biome>
-		<biome name="Taiga" rect="48 64 96 192" color="183 208 196" music="set://Snow" />
-		<biome name="Woods" rect="96 64 176 128" color="52 106 40" music="set://Grassland" canBurn="true" />
-		<biome name="Savanna" rect="176 64 256 128" color="93 94 41" music="set://Grassland" canBurn="true" />
-		<biome name="Forest" rect="96 128 176 192" color="61 119 42" music="set://Grassland" canBurn="true" />
-		<biome name="Seasonal Forest" rect="176 128 256 192" color="83 133 46" music="set://Swamp" canBurn="true" />
-		<biome name="Swamp" rect="0 192 174 256" color="52 59 44" music="set://Swamp" />
-		<biome name="Rain Forest" rect="174 192 256 256" color="45 119 34" music="set://Swamp" canBurn="true" />
+		<biome name="Taiga" color="#B7D0C4" music="set://Snow" />
+		<biome name="Woods" color="#346A28" music="set://Grassland" canBurn="true" />
+		<biome name="Savanna" color="#5D5E29" music="set://Grassland" canBurn="true" />
+		<biome name="Forest" color="#3D772A" music="set://Grassland" canBurn="true" />
+		<biome name="Seasonal Forest" color="#53852E" music="set://Swamp" canBurn="true" />
+		<biome name="Swamp" color="#343B2C" music="set://Swamp" />
+		<biome name="Rain Forest" color="#2D7722" music="set://Swamp" canBurn="true" />
+	</realm>
+	<realm id="Seradevari">
+		<biome name="Nether" color="#3D1607" music="set://Dungeon">
+			<groundGlyphs>#x.-/~</groundGlyphs>
+			<encounters max="10">foocubus, imp</encounters>
+			<cultures>seradevar</cultures>
+			<darken div="1" plus="2"/>
+		</biome>
 	</realm>
 </biomes>

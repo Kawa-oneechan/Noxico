@@ -122,7 +122,7 @@ namespace Noxico
 
 		public static void ReadBook(int bookNum)
 		{
-			var xDoc = Mix.GetXMLDocument("books.xml"); //new XmlDocument();
+			var xDoc = Mix.GetXMLDocument("books.xml");
 			var books = xDoc.SelectNodes("//book");
 			XmlElement book = null;
 			foreach (var b in books.OfType<XmlElement>())
@@ -141,6 +141,23 @@ namespace Noxico
 			{
 				header = book.GetAttribute("title");
 				text = book.Noxicize();
+			}
+
+			var skill = book.SelectSingleNode("skill");
+			if (skill != null)
+			{
+				var skillName = ((XmlElement)skill).GetAttribute("token");
+				var player = NoxicoGame.HostForm.Noxico.Player.Character;
+				if (player.Path("books/book_" + bookNum) == null)
+				{
+					if (!player.HasToken("books"))
+						player.AddToken("books");
+					var bookToken = player.GetToken("books").AddToken("book_" + bookNum);
+					bookToken.Text = header;
+					player.IncreaseSkill(skillName);
+					var skillProper = skillName.Replace('_', ' ');
+					text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
+				}
 			}
 
 			Plain(text, header);

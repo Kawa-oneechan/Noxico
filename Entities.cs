@@ -1733,6 +1733,7 @@ namespace Noxico
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
 		public TimeSpan PlayingTime { get; set; }
+		public int CurrentRealm { get; private set; }
 
         public Player()
         {
@@ -1841,9 +1842,9 @@ namespace Noxico
 			NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
 			NoxicoGame.Immediate = true;
 
-			this.DijkstraMap.UpdateWalls();
+			this.DijkstraMap.UpdateWalls(ParentBoard);
 			this.DijkstraMap.Update();
-			this.AutoTravelMap.UpdateWalls();
+			this.AutoTravelMap.UpdateWalls(ParentBoard);
 		}
 
 		public override bool MeleeAttack(BoardChar target)
@@ -2021,7 +2022,7 @@ namespace Noxico
 			}
 
 			if (weapon == null)
-				return false;
+				return;
 
 			var x = this.XPosition;
 			var y = this.YPosition;
@@ -2422,6 +2423,7 @@ namespace Noxico
 			Toolkit.SaveExpectation(stream, "PLAY");
 			base.SaveToFile(stream);
 			stream.Write(PlayingTime.Ticks);
+			stream.Write(CurrentRealm);
 		}
 
 		public static new Player LoadFromFile(BinaryReader stream)
@@ -2435,6 +2437,7 @@ namespace Noxico
 				Character = e.Character,
 			};
 			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
+			newChar.CurrentRealm = stream.ReadInt32();
 			return newChar;
 		}
 

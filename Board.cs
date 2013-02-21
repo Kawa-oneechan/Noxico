@@ -797,44 +797,7 @@ namespace Noxico
 			file.WriteLine(DumpTokens(Tokens, 0));
 			file.WriteLine("</pre>");
 			file.WriteLine("<h2>Screendump</h2>");
-			file.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
-			for (int row = 0; row < 25; row++)
-			{
-				file.WriteLine("\t<tr>");
-				for (int col = 0; col < 80; col++)
-				{
-					var tile = Tilemap[col, row];
-					var back = string.Format("rgb({0},{1},{2})", tile.Background.R, tile.Background.G, tile.Background.B);
-					var fore = string.Format("rgb({0},{1},{2})", tile.Foreground.R, tile.Foreground.G, tile.Foreground.B);
-					var chr = string.Format("&#x{0:X};", (int)tile.Character);
-					var tag = "";
-					var link = "";
-
-					if (chr == "&#x20;")
-						chr = "&nbsp;";
-
-					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
-					if (ent != null)
-					{
-						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
-						fore = string.Format("rgb({0},{1},{2})", ent.ForegroundColor.R, ent.ForegroundColor.G, ent.ForegroundColor.B);
-						chr = string.Format("&#x{0:X};", (int)ent.AsciiChar);
-						tag = ent.ID;
-						if (ent is BoardChar)
-						{
-							tag = ((BoardChar)ent).Character.Name.ToString(true);
-							link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
-						}
-					}
-					if (!string.IsNullOrWhiteSpace(tag))
-						tag = " title=\"" + tag + "\"";
-
-					file.WriteLine("\t\t<td style=\"background: {0}; color: {1};\"{3}>{4}{2}{5}</td>", back, fore, chr, tag, link, string.IsNullOrWhiteSpace(link) ? "" : "</a>");
-					//DirtySpots.Add(new Location(col, row));
-				}
-				file.WriteLine("</tr>");
-			}
-			file.WriteLine("</table>");
+			CreateHTMLDump(file, true);
 
 			if (BoardType == BoardType.Dungeon || BoardType == BoardType.Wild)
 			{
@@ -1032,6 +995,49 @@ namespace Noxico
 			}
 			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
 				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
+		}
+
+		public void CreateHTMLDump(StreamWriter stream, bool linked)
+		{
+			stream.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
+			for (int row = 0; row < 25; row++)
+			{
+				stream.WriteLine("\t<tr>");
+				for (int col = 0; col < 80; col++)
+				{
+					var tile = Tilemap[col, row];
+					var back = string.Format("rgb({0},{1},{2})", tile.Background.R, tile.Background.G, tile.Background.B);
+					var fore = string.Format("rgb({0},{1},{2})", tile.Foreground.R, tile.Foreground.G, tile.Foreground.B);
+					var chr = string.Format("&#x{0:X};", (int)tile.Character);
+					var tag = "";
+					var link = "";
+
+					if (chr == "&#x20;")
+						chr = "&nbsp;";
+
+					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
+					if (ent != null)
+					{
+						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
+						fore = string.Format("rgb({0},{1},{2})", ent.ForegroundColor.R, ent.ForegroundColor.G, ent.ForegroundColor.B);
+						chr = string.Format("&#x{0:X};", (int)ent.AsciiChar);
+						tag = ent.ID;
+						if (ent is BoardChar)
+						{
+							tag = ((BoardChar)ent).Character.Name.ToString(true);
+							if (linked)
+								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+					}
+					if (!string.IsNullOrWhiteSpace(tag))
+						tag = " title=\"" + tag + "\"";
+
+					stream.WriteLine("\t\t<td style=\"background: {0}; color: {1};\"{3}>{4}{2}{5}</td>", back, fore, chr, tag, link, string.IsNullOrWhiteSpace(link) ? "" : "</a>");
+					//DirtySpots.Add(new Location(col, row));
+				}
+				stream.WriteLine("</tr>");
+			}
+			stream.WriteLine("</table>");
 		}
 	}
 
