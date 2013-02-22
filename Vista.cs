@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Noxico
@@ -37,7 +37,7 @@ namespace Noxico
 		private static int padPacket;
 		private static XInputButtons lastTrigs;
 
-		private static readonly XInputButtons triggerMask = (XInputButtons)0xFFF0;
+		//private static readonly XInputButtons triggerMask = (XInputButtons)0xFFF0;
 		private static readonly XInputButtons directionMask = (XInputButtons)0x000F;
 
 		public static XInputErrorCodes UpdateGamepad()

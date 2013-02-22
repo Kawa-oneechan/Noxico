@@ -399,8 +399,6 @@ namespace Noxico
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
 				SaveGame();
-
-				Achievements.StartingTime = DateTime.Now;
 			}
 		}
 

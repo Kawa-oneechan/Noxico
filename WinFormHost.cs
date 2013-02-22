@@ -221,13 +221,6 @@ namespace Noxico
 					Vista.GamepadEnabled = false;
 				}
 
-				Achievements.ProfilePath = "";
-				if (!portable)
-					GamerServices.Profile.Prepare();
-				GamerServices.Profile.AskForOnline = IniFile.GetValue("profile", "askforonline", true);
-				GamerServices.Profile.UseOnline = IniFile.GetValue("profile", "useonline", true);
-				Achievements.Setup();
-
 				this.Controls.Clear();
 				starting = false;
 				Running = true;
@@ -250,7 +243,6 @@ namespace Noxico
 			if (!fatal)
 			{
 				Noxico.SaveGame();
-				Achievements.SaveProfile(true);
 			}
 		}
 
