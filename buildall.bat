@@ -4,8 +4,6 @@ echo Building MIX files...
 MixMaster mix Noxico.mix
 MixMaster sounds Sounds.mix
 MixMaster music Music.mix
-MixMaster fonts\fixedsys "Fixedsys font.mix"
-MixMaster fonts\unifont "Unifont font.mix"
 echo -----------
 echo BUILD START
 echo -----------
@@ -23,12 +21,12 @@ echo BUILD COMPLETED
 echo ---------------
 echo Packing...
 cd bin\Release
-..\..\7za.exe a ..\noxico-0.1.14.7z fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.14.rar fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.15.7z fmodex64.dll Jint.dll Antlr3.Runtime.dll FSEX300.zip Noxico.mix Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.15.rar fmodex64.dll Jint.dll Antlr3.Runtime.dll FSEX300.zip Noxico.mix Noxico.exe > nul
 ..\..\Rar.exe u ..\noxico-music.rar Music.mix Sounds.mix > nul
 cd ..\Release32
-..\..\7za.exe a ..\noxico-0.1.14-32.7z fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.14-32.rar fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.15-32.7z fmodex.dll Jint.dll Antlr3.Runtime.dll FSEX300.zip Noxico.mix Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.15-32.rar fmodex.dll Jint.dll Antlr3.Runtime.dll FSEX300.zip Noxico.mix Noxico.exe > nul
 cd ..\..
 pause
 exit /b 0
