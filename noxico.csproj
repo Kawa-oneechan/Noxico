@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -52,7 +52,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>ALLOW_PNG_MODE  ALLOW_CANDYTRON CONTEXT_SENSITIVE NICE_ERRORS</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
@@ -164,55 +165,6 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\fixedsys\fixedsex_00.png" />
-    <Content Include="fonts\fixedsys\fixedsex_01.png" />
-    <Content Include="fonts\fixedsys\fixedsex_02.png" />
-    <Content Include="fonts\fixedsys\fixedsex_03.png" />
-    <Content Include="fonts\fixedsys\fixedsex_04.png" />
-    <Content Include="fonts\fixedsys\fixedsex_05.png" />
-    <Content Include="fonts\fixedsys\fixedsex_16.png" />
-    <Content Include="fonts\fixedsys\fixedsex_19.png" />
-    <Content Include="fonts\fixedsys\fixedsex_1D.png" />
-    <Content Include="fonts\fixedsys\fixedsex_1E.png" />
-    <Content Include="fonts\fixedsys\fixedsex_1F.png" />
-    <Content Include="fonts\fixedsys\fixedsex_20.png" />
-    <Content Include="fonts\fixedsys\fixedsex_21.png" />
-    <Content Include="fonts\fixedsys\fixedsex_22.png" />
-    <Content Include="fonts\fixedsys\fixedsex_23.png" />
-    <Content Include="fonts\fixedsys\fixedsex_24.png" />
-    <Content Include="fonts\fixedsys\fixedsex_25.png" />
-    <Content Include="fonts\fixedsys\fixedsex_26.png" />
-    <Content Include="fonts\fixedsys\fixedsex_28.png" />
-    <Content Include="fonts\fixedsys\fixedsex_2C.png" />
-    <Content Include="fonts\fixedsys\fixedsex_2D.png" />
-    <Content Include="fonts\fixedsys\fixedsex_4D.png" />
-    <Content Include="fonts\fixedsys\fixedsex_E2.png" />
-    <Content Include="fonts\fixedsys\fixedsex_F4.png" />
-    <Content Include="fonts\fixedsys\fixedsex_F5.png" />
-    <Content Include="fonts\fixedsys\fixedsex_F7.png" />
-    <Content Include="fonts\fixedsys\fixedsex_F8.png" />
-    <Content Include="fonts\fixedsys\fixedsex_FB.png" />
-    <Content Include="fonts\fixedsys\fixedsex_FE.png" />
-    <Content Include="fonts\fixedsys\fixedsex_FF.png" />
-    <Content Include="fonts\unifont\unifont_00.png" />
-    <Content Include="fonts\unifont\unifont_01.png" />
-    <Content Include="fonts\unifont\unifont_02.png" />
-    <Content Include="fonts\unifont\unifont_03.png" />
-    <Content Include="fonts\unifont\unifont_04.png" />
-    <Content Include="fonts\unifont\unifont_1D.png" />
-    <Content Include="fonts\unifont\unifont_1E.png" />
-    <Content Include="fonts\unifont\unifont_1F.png" />
-    <Content Include="fonts\unifont\unifont_20.png" />
-    <Content Include="fonts\unifont\unifont_21.png" />
-    <Content Include="fonts\unifont\unifont_22.png" />
-    <Content Include="fonts\unifont\unifont_23.png" />
-    <Content Include="fonts\unifont\unifont_24.png" />
-    <Content Include="fonts\unifont\unifont_25.png" />
-    <Content Include="fonts\unifont\unifont_26.png" />
-    <Content Include="fonts\unifont\unifont_28.png" />
-    <Content Include="fonts\unifont\unifont_2B.png" />
-    <Content Include="fonts\unifont\unifont_2E.png" />
-    <Content Include="fonts\unifont\unifont_FF.png" />
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
     <Content Include="mix\bodyplans.xml" />
@@ -250,9 +202,6 @@
     <Content Include="mix\uniques.xml" />
     <Content Include="music\music.xml" />
     <Content Include="Noxico.mix">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Fixedsys font.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Music.mix">
@@ -319,13 +268,13 @@
     <Content Include="music\_hh_vibes.mod" />
     <Content Include="music\_space_lovers_.xm" />
     <Content Include="music\_x_1.mod" />
+    <None Include="FSEX300.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Noxico.ico" />
     <Content Include="Sounds.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Unifont font.mix">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
