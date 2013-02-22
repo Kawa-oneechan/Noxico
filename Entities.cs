@@ -1220,7 +1220,6 @@ namespace Noxico
 				{
 					if (Character.HasToken("stolenfrom") && aggressor is Player)
 					{
-						Achievements.CheckCriminalScum();
 						aggressor.Character.GiveRenegadePoints(10);
 					}
 				}
@@ -2384,8 +2383,6 @@ namespace Noxico
 			NoxicoGame.HealthMessage();
 			if (dead)
 			{
-				Achievements.CheckYASD();
-
 				if (aggressor != null)
 				{
 					var relation = Character.Path("ships/" + aggressor.Character.ID);

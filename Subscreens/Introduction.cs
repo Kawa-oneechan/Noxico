@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -33,9 +33,6 @@ namespace Noxico
 
 				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 12, 9);
 				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
-
-				if (GamerServices.Profile.IsValid)
-					host.Write(GamerServices.Profile.Name, Color.White, Color.Transparent, 24, 80 - 2 - GamerServices.Profile.Name.Length);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -110,7 +107,6 @@ namespace Noxico
 								NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
 								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 								NoxicoGame.Mode = UserMode.Walkabout;
-								Achievements.StartingTime = DateTime.Now;
 							}
 						}
 					}
@@ -380,7 +376,6 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
-					Achievements.StartingTime = DateTime.Now;
 
 					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
 					NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");

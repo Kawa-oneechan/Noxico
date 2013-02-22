@@ -43,6 +43,8 @@ namespace Noxico
 			{
 				if (HasToken("player"))
 					return "\xF4EF" + Name.ToID() + "#" + GetToken("player").Value;
+				if (string.IsNullOrEmpty(Name.FirstName))
+					return Title.ToID();
 				return Name.ToID();
 			}
 		}
@@ -67,6 +69,8 @@ namespace Noxico
 		/// </summary>
 		public string GetNameOrTitle(bool fullName = false, bool the = false, bool initialCaps = false)
 		{
+			if (HasToken("beast"))
+				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
 				(g == "female " && (HasToken("femaleonly") || HasToken("femalename"))) ||
@@ -1355,7 +1359,7 @@ namespace Noxico
 					var reparsed = person.Name.Replace('_', ' ');
 					if (reparsed.StartsWith("\xF4EF"))
 						reparsed = reparsed.Remove(reparsed.IndexOf('#')).Substring(1);
-					list.Add(reparsed + " (" + person.Name + ") -- " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+					list.Add(reparsed + " &mdash; " + string.Join(", ", person.Tokens.Select(x => x.Name)));
 					if (person.HasToken("victim"))
 						victims++;
 					if (person.HasToken("lover"))
