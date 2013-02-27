@@ -682,7 +682,7 @@ ascii
 	char: U+2202
 			]]>
 	</item>
-	<item id="spandex_pants" name="[color ]spandex pants" a="a" the="the">
+	<item id="spandex_pants" name="[color ]spandex pants" a="" the="the">
 		<![CDATA[
 equipable
 	pants

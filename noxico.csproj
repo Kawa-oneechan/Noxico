@@ -125,6 +125,7 @@
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
     <Compile Include="fmod\fmod_memoryinfo.cs" />
+    <Compile Include="Subscreens\ActionList.cs" />
     <Compile Include="WinFormHost.cs">
       <SubType>Form</SubType>
     </Compile>

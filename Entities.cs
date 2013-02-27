@@ -253,14 +253,14 @@ namespace Noxico
 						NoxicoGame.Messages.Last().Message = ((BoardChar)PointingAt).Character.ToString(); 
 						return;
 					}
-					else if (entity is Clutter || entity is Container)
-					{
-						NoxicoGame.Messages.Last().Message = entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name;
-						return;
-					}
 					else if (entity is DroppedItem)
 					{
 						NoxicoGame.Messages.Last().Message = ((DroppedItem)PointingAt).Name;
+						return;
+					}
+					else if (entity is Clutter || entity is Container)
+					{
+						NoxicoGame.Messages.Last().Message = entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name;
 						return;
 					}
 					else if (entity is Door)
@@ -370,12 +370,13 @@ namespace Noxico
 							options["take"] = "Pick it up";
 					}
 
-					MessageBox.List("This is " + description + ". What would you do?", options,
+					//MessageBox.List("This is " + description + ". What would you do?", options,
+					ActionList.Show(description, PointingAt.XPosition, PointingAt.YPosition, options,
 						() =>
 						{
-							if (MessageBox.Answer is int && (int)MessageBox.Answer == -1)
+							if (ActionList.Answer is int && (int)ActionList.Answer == -1)
 								return;
-							switch (MessageBox.Answer as string)
+							switch (ActionList.Answer as string)
 							{
 								case "look":
 									if (PointingAt is DroppedItem)
@@ -413,7 +414,7 @@ namespace Noxico
 											MessageBox.Notice((boardChar.Character.IsProperNamed ? boardChar.Character.GetNameOrTitle() : "the " + boardChar.Character.Title) + " has nothing to say to you.", true);
 										else
 											SceneSystem.Engage(player.Character, boardChar.Character, true);
-											//MessageBox.Ask("Strike up a conversation with " + boardChar.Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, boardChar.Character, true); }, null, true);
+										//MessageBox.Ask("Strike up a conversation with " + boardChar.Character.GetNameOrTitle() + "?", () => { SceneSystem.Engage(player.Character, boardChar.Character, true); }, null, true);
 									}
 									break;
 
@@ -443,14 +444,14 @@ namespace Noxico
 										NoxicoGame.Sound.PlaySound("Get Item");
 										ParentBoard.Redraw();
 									}
-							break;
+									break;
 
 								default:
-									MessageBox.Notice("Unknown action handler \"" + MessageBox.Answer.ToString() + "\".", true);
+									MessageBox.Notice("Unknown action handler \"" + ActionList.Answer.ToString() + "\".", true);
 									break;
 							}
-						},
-							true, true);
+						}
+						); //	true, true);
 					return;
 				}
 				else
