@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE bodyparts[
+	<!ELEMENT bodyparts (head,upperbody,lowerbody,skins)>
+	<!ELEMENT head (ears,faces,hairs,teeth,tongues)>
+	<!ELEMENT upperbody (breasts,waist,wings)>
+	<!ELEMENT lowerbody (ass,hips,legs,sexorgans,tails)>
+
+  <!-- misc stuff -->
+  <!ELEMENT size (#PCDATA)>
+  <!ATTLIST size 
+		upto CDATA #REQUIRED
+	>
+	<!ELEMENT partdesc (#PCDATA)>
+	<!ATTLIST partdesc
+		name CDATA #REQUIRED
+	>
+  <!ELEMENT sizes (size*)>
+  <!ELEMENT types (partdesc*)>
+  <!ELEMENT nipplesizes (size*)>
+  <!ELEMENT cupsizes (size*)>
+  <!ELEMENT loosenesses (size*)>
+  <!ELEMENT wetnesses (size*)>
+  <!ELEMENT clitsizes (size*)>
+	
+	<!-- head stuff-->
+	<!ELEMENT ears (partdesc*)>
+	<!ELEMENT faces (partdesc*)>
+	<!ELEMENT hairs (hairstyle*,lengths)>
+	<!ELEMENT teeth (partdesc*)>
+	<!ELEMENT tongues (partdesc*)>
+	<!ELEMENT hairstyle EMPTY>
+	<!ATTLIST hairstyle
+		name ID #REQUIRED
+    minlen CDATA #REQUIRED
+    a CDATA #REQUIRED
+		adj CDATA #IMPLIED
+		noun CDATA #IMPLIED
+	>
+	
+	<!-- upper body stuff -->
+	<!ELEMENT breasts (cupsizes,sizes,nipplesizes)>
+	<!ELEMENT wings (partdesc*)>
+
+	<!-- lower body stuff -->
+	<!ELEMENT ass (sizes,loosenesses)>
+	<!ELEMENT hips (size*)>
+	<!ELEMENT legs (partdesc*)>
+	<!ELEMENT sexorgans (penises,vaginas,balls)>
+	<!ELEMENT tails (partdesc*)>
+	<!ELEMENT waist (size*)>
+  <!ELEMENT penises (lengths,widths,types)>
+  <!ELEMENT vaginas (loosenesses,wetnesses,clitsizes)>
+  <!ELEMENT balls (sizes)>
+]>
+
+<bodyparts>
+
+	<head>
+    <ears>
+      <partdesc name="human">human-like, humanoid, anthropoid</partdesc>
+      <partdesc name="elfin">elfin, elf-like</partdesc>
+      <partdesc name="pointed">pointed, pointy</partdesc>
+      <partdesc name="flat">nondescript, featureless</partdesc>
+      <partdesc name="cat">feline, cat-like</partdesc>
+      <partdesc name="dog">canine, dog-like</partdesc>
+      <partdesc name="fox">vulpine, fox-like</partdesc>
+      <partdesc name="horse">horse-like, equine</partdesc>
+      <partdesc name="bear">ursine, bear-like, bearish</partdesc>
+    </ears>
+
+    <faces>
+      <partdesc name="human">human-like, humanoid, anthropoid</partdesc>
+      <partdesc name="cat">feline, cat-like</partdesc>
+      <partdesc name="dog">canine, dog-like</partdesc>
+      <partdesc name="fox">canine, fox-like</partdesc>
+      <partdesc name="horse">horse-like, equine</partdesc>
+    </faces>
+
+    <hairs>
+      <hairstyle name="afro"      minlen="3"  a="an" noun="afro"/>
+      <hairstyle name="braided"   minlen="16" a="" adj="braided" noun="braids"/>
+      <hairstyle name="braided_ponytail" minlen="26" a="a" noun="braided ponytail"/>
+      <hairstyle name="bun"       minlen="16" a="a" noun="bun"/>
+      <hairstyle name="curly"     minlen="0"  a="" adj="curly"/>
+      <hairstyle name="emo"       minlen="10" a="" adj="emo"/>
+      <hairstyle name="mohawk"    minlen="10" a="a" noun="mohawk"/>
+      <hairstyle name="ponytail"  minlen="10" a="a" noun="ponytail"/>
+      <hairstyle name="pigtail"   minlen="16" a="a set of" noun="pigtails"/>
+      <hairstyle name="spiky"     minlen="6"  a="" adj="spiked"/>
+      <hairstyle name="straight"  minlen="0"  a="" adj="straight"/>
+      <hairstyle name="wavy"      minlen="0"  a="" adj="wavy"/>
+
+      <lengths>
+        <size upto="0">bald, shaved</size>
+        <size upto="1">trim, close-cropped</size>
+        <size upto="3">short</size>
+        <size upto="6">shaggy</size>
+        <size upto="10">moderately long</size>
+        <size upto="16">shoulder-length, long</size>
+        <size upto="26">back-length, very long</size>
+        <size upto="40">ass-length</size>
+        <size upto="10000">"obscenely long"</size>
+      </lengths>
+    </hairs>
+    
+    <teeth>
+      <partdesc name="normal">human-like, humanoid</partdesc>
+      <partdesc name="fangs">fanged</partdesc>
+      <partdesc name="osmond">fearsome</partdesc>
+      <partdesc name="sharp">predatory, sharp, carnivorous</partdesc>
+      <partdesc name="soft">gummy</partdesc>
+    </teeth>
+
+    <tongues>
+      <partdesc name="normal">smooth, nimble</partdesc>
+      <partdesc name="barbed">rough, barbed</partdesc>
+      <partdesc name="long">prehensile, flexible</partdesc>
+      <partdesc name="forked">forked, serpentine</partdesc>
+    </tongues>
+	</head>
+
+	<upperbody>
+    <breasts>
+      <cupsizes>
+        <size upto="0">flat</size>
+        <size upto="0.5">AA-cup</size>
+        <size upto="1">A-cup</size>
+        <size upto="2.5">B-cup</size>
+        <size upto="3.5">C-cup</size>
+        <size upto="4.5">D-cup</size>
+        <size upto="6">E-cup</size>
+        <size upto="7">F-cup</size>
+        <size upto="8">G-cup</size>
+        <size upto="9">H-cup</size>
+        <size upto="10">I-cup</size>
+        <size upto="12">J-cup</size>
+        <size upto="13">K-cup</size>
+        <size upto="14">L-cup</size>
+        <size upto="15">M-cup</size>
+        <size upto="1000">absurdly huge</size>
+      </cupsizes>
+      <sizes>
+        <size upto="0">flat</size>
+        <size upto="0.5">tiny</size>
+        <size upto="1">small</size>
+        <size upto="2.5">fair</size>
+        <size upto="3.5">appreciable</size>
+        <size upto="4.5">ample</size>
+        <size upto="6">pillowy</size>
+        <size upto="7">large</size>
+        <size upto="8">ridiculously large</size>
+        <size upto="9">huge</size>
+        <size upto="10">spacious</size>
+        <size upto="12">back-breaking</size>
+        <size upto="13">mountainous</size>
+        <size upto="14">ludicrous</size>
+        <size upto="15">exploding</size>
+        <size upto="1000">absurdly huge</size>
+      </sizes>
+      <nipplesizes>
+        <size upto="0.25">dainty</size>
+        <size upto="0.5">perky</size>
+        <size upto="1">prominent</size>
+        <size upto="2">fleshy</size>
+        <size upto="3.2">hefty</size>
+        <size upto="100">bulky</size>
+      </nipplesizes>
+    </breasts>
+    
+    <waist>
+      <size upto="1">emaciated, gaunt</size>
+      <size upto="4">thin, slender, scrawny</size>
+      <size upto="6">average, fit, normal</size>
+      <size upto="8">soft, spongy</size>
+      <size upto="11">chubby, husky</size>
+      <size upto="14">plump, meaty, portly</size>
+      <size upto="17">stout, tubby</size>
+      <size upto="20">obese, rotund</size>
+      <size upto="1000">morbid, corpulent</size>
+    </waist>
+    
+    <wings>
+      <partdesc name="bat">bat-like, chiropteran</partdesc>
+      <partdesc name="feather">feathered, bird-like</partdesc>
+      <partdesc name="insect">insectoid, insect-like</partdesc>
+    </wings>
+	</upperbody>
+	
+	<lowerbody>
+    <ass>
+      <sizes>
+        <size upto="1">very small, insignificant</size>
+        <size upto="4">tight, firm, compact</size>
+        <size upto="6">regular, unremarkable</size>
+        <size upto="8">full, shapely</size>
+        <size upto="10">squeezable, large, substantial</size>
+        <size upto="13">jiggling, spacious, heavy</size>
+        <size upto="16">expansive, generous, voluminous</size>
+        <size upto="20">huge, vast, massive</size>
+        <size upto="1000">ginormous, colossal, tremendous</size>
+      </sizes>
+      <loosenesses>
+        <size upto="0">virgin</size>
+        <size upto="1">tight</size>
+        <size upto="2">toned</size>
+        <size upto="3">loose, relaxed</size>
+        <size upto="4">stretched</size>
+        <size upto="5">distented</size>
+        <size upto="6">gaping</size>
+        <size upto="1000">cavernous</size>
+      </loosenesses>
+    </ass>
+
+    <hips>
+      <size upto="1">tiny, boyish</size>
+      <size upto="4">slender, narrow, thin</size>
+      <size upto="6">average, normal, plain</size>
+      <size upto="10">ample, noticeable, girly</size>
+      <size upto="15">flared, curvy, wide</size>
+      <size upto="20">fertile, child-bearing, voluptuous</size>
+      <size upto="1000">broodmother-sized, cow-like, inhumanly wide</size>
+    </hips>
+
+    <legs>
+      <partdesc name="human">humanoid, human-like</partdesc>
+      <partdesc name="dog">canine, dog-like</partdesc>
+      <partdesc name="horse">equine, horse-like</partdesc>
+      <partdesc name="insect">insectoid, chitinous</partdesc>
+      <partdesc name="claws">claw-footed</partdesc>
+      <partdesc name="stilleto">stilleto-heeled</partdesc>
+      <partdesc name="genbeast">digitigrade</partdesc>
+      <partdesc name="bear">ursine, bear-like</partdesc>
+    </legs>
+
+    <sexorgans>
+      <penises>
+        <types>
+          <partdesc name="human">human, human-like, knob-ended</partdesc>
+          <partdesc name="horse">equine, horse-like, flared</partdesc>
+          <partdesc name="dog">canine, dog-like, pointed, knotted</partdesc>
+          <partdesc name="bear">ursine, bear-like, tapered</partdesc>
+          <partdesc name="lizard">reptilian, lizard-like, snake-like</partdesc>
+          <partdesc name="cat">feline, cat-like, barbed</partdesc>
+          <partdesc name="studded">studded, bumpy, stud covered</partdesc>
+        </types>
+      </penises>
+      <vaginas>
+        <loosenesses>
+          <size upto="0">virgin</size>
+          <size upto="1">tight</size>
+          <size upto="2">toned</size>
+          <size upto="3">loose</size>
+          <size upto="4">very loose</size>
+          <size upto="5">gaping</size>
+          <size upto="6">gaping wide</size>
+          <size upto="1000">cavernous</size>
+        </loosenesses>
+        <wetnesses>
+          <size upto="0">dry</size>
+          <size upto="1">moist</size>
+          <size upto="2">wet</size>
+          <size upto="3">slick</size>
+          <size upto="4">drooling</size>
+          <size upto="1000">slavering</size>
+        </wetnesses>
+        <clitsizes>
+          
+        </clitsizes>
+      </vaginas>
+      <balls>
+        <sizes>
+          <size upto="0.5">diminutive, small</size>
+          <size upto="1">average, normal</size>
+          <size upto="2">large</size>
+          <size upto="3">baseball-sized</size>
+          <size upto="4">apple-sized</size>
+          <size upto="5">grapefruit-sized</size>
+          <size upto="7">cantaloupe-sized</size>
+          <size upto="9">soccer ball-sized</size>
+          <size upto="12">basketball-sized</size>
+          <size upto="15">watermelon-sized</size>
+          <size upto="18">beach ball-sized</size>
+          <size upto="1000">hideously swollen</size>
+        </sizes>
+      </balls>
+    </sexorgans>
+    
+    <tails>
+      <partdesc name="fox">vulpine, fluffy</partdesc>
+      <partdesc name="stinger">barbed, venomous, insectoid</partdesc>
+      <partdesc name="horse">long-haired, equine, horse-like</partdesc>
+      <partdesc name="dog">canine, dog-like, furry</partdesc>
+      <partdesc name="cat">feline, cat-like, sinuous</partdesc>
+    </tails>
+	</lowerbody>
+</bodyparts>

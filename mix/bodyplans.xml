@@ -155,17 +155,25 @@ breastrow
 	nipples: 1
 		size: 1.25
 vagina
-	wetness: 4
+	wetness: roll 1d3+2
 	looseness: 1
 	fuckable
 	clit: 1.0
+items
 select
 	set: 0.3
 		addict
+		overwrite: "vagina/looseness: roll 1d2+3"
+		overwrite: "ass/looseness: roll 1d2+2"
 		carnality: 70
 	set: 0.1
 		drugist
 		carnality: 50
+		addto: ass
+			virgin
+		overwrite: ass/looseness: 0
+		addto: items
+			gExtractor					
 	set: 0.6
 		carnality: 60
 		]]>
@@ -214,6 +222,7 @@ breastrow
 	amount: 2
 	size: roll 1d5+1
 	nipples: 1
+		size: 0.25
 vagina
 	wetness: 5
 	looseness: 3
@@ -368,8 +377,8 @@ face: cat
 teeth: fangs
 tongue: oneof barbed, normal
 ears: cat
-legs: oneof human, genbeast
-tail: genbeast
+legs: oneof human, cat
+tail: cat
 ass
 	virgin
 	looseness: 0
@@ -428,8 +437,8 @@ skin
 eyes: green
 tongue: normal
 teeth: fangs
-ears: genbeast
-face: genbeast
+ears: fox
+face: fox
 legs: dog
 tail: fox
 ass
@@ -491,7 +500,7 @@ skin
 face: horse
 eyes: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
 teeth
-tongue
+tongue: normal
 legs: horse
 quadruped
 -- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
@@ -688,8 +697,8 @@ skin
 	color: brown
 tallness: roll 1d20+170
 eyes: yellow
-ears: genbeast
-face: genbeast
+ears: dog
+face: dog
 teeth: sharp
 tongue: long
 legs: dog

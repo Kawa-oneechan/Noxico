@@ -66,7 +66,7 @@
 	</scene>
 	<scene id="Pillow_PlayerWinGeneric69Penis" name="player win generic 69 with penis" list="Go for a 69">
 		<filter target="top" type="has" name="penis" />
-		<filter target="top" type="value_gteq" name="carnality" value="66"/>
+		<filter target="top" type="value_gteq" name="carnality" value="101"/>
 		<p>
 			Blowjob scene... **WIP**
 		</p>
@@ -78,11 +78,16 @@
 		<filter target="top" type="has" name="vagina" />
 		<script type="text/javascript">
 			<![CDATA[
-				print("Your loins tingle in excitement from what you're about to do with the [b:title], and you feel your [pussyrand] flush in anticipation as you wonder how good [b:he] is with [b:his] mouth. ");
+				print("You feel yourself getting wetter at the thought of what you're about to do with the [b:title], and you hope that [b:he]'s better with [b:his] mouth than [b:he] was with [b:his] ");
+
+				if(bottom.HasItemInSlot("hand"))
+					print("[b:equipment:hand]. ");
+				else
+					print("fists. ");
 				
 				if(top.HasItemInSlot("pants") || top.HasItemInSlot("underpants"))
 				{
-					print("The [b:title], on the other hand, watches you ");
+					print("The [b:title] watches you ");
 					
 					var othercarn = bottom.GetToken("carnality").Value;
 					
@@ -156,7 +161,7 @@
 		</p>
 		<p/>
 		<p>
-			[b:He] stops for a moment before pushing back into your [pussyrand] and running [b:his] [tonguetype] tongue up your [pussyrand] from hole to clit. You gasp as [b:his] tongue slides over your [clitrand], and your <if target="top" type="has" name="legs">legs jerk inward</if>
+			[b:He] stops for a moment before pushing back into your [pussyrand] and running [b:his] [tonguetype] tongue between your [pussyrand] lips from hole to clit. You gasp as [b:his] tongue slides over your [clitrand], and your <if target="top" type="has" name="legs">legs jerk inward</if>
 			<else><if target="top" type="has" name="snaketail">tail flicks and twitches</if>
 				<else><if target="top" type="has" name="slimeblob">sluglike lower half quivers</if></else>
 			</else> as [b:he] rolls your [clitrand] under [b:his] tongue.
@@ -176,10 +181,6 @@
 			<else>[b:He] continues to lick and suck at your engorged [clitrand]</else>
 			, and in barely a few minutes, that inflamed tingle has grown into an urgent pressure as you draw closer to orgasm. Relief floods your body as you finally climax, and you pull away from [b:his] mouth to give your oversensitive [clitrand] a break.
 		</p>
-		<script type="text/javascript">
-			top.Orgasm();
-			top.ChangeStat("carnality", 1);
-		</script>
 		<action name="player win generic eaten out end"/>
 	</scene>
 	<scene id="Pillow_PlayerWinGenericFacesitLegs" name="player win generic facesit legs" list="Grind on [b:his] face">
@@ -251,10 +252,6 @@
 			</else> as you ride out the rest of your release. Once you've finally calmed down, you notice that your plaything seems to be almost as exhausted as you are, though if [b:his] <if target="bottom" type="has" name="penis">turgid erection</if> 
 			<else>juice cover [pussyrand]</else> is any indication, [b:he]'s not nearly as satisfied.
 		</p>
-		<script type="text/javascript">
-			top.Orgasm();
-			top.ChangeStat("carnality", 1);
-		</script>
 		<action name="player win generic eaten out end"/>
 	</scene>
 	<scene id="Pillow_PlayerWinGeneric69Vagina" name="player win generic 69 with vagina" list="Go for a sixty-nine">
@@ -269,6 +266,10 @@
 		<p>
 			After taking a moment to rest and catch your breath, you gather up your things and leave the [b:title] to take care of [b:him]self.
 		</p>
+		<script type="text/javascript">
+			top.Orgasm();
+			top.GiveRapistPoints(bottom);
+		</script>
 	</scene>
 	
 	

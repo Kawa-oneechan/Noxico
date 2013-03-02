@@ -81,16 +81,16 @@
 		<filter target="bottom" type="gender" value="female" />
 		<!-- Should check for top clothing, but there's no such check yet. -->
 		<p>
-			You reach for [b:his] [b:breasts] and proceed to softly stroke them.
+			You reach for [b:his] [b:breastsize] [breastsrand] and proceed to softly stroke them.
 		</p>
 		<script type="text/javascript">
 			<![CDATA[
 				var breasts = bottom.Path("breastrow[0]");
 				if (breasts.Path("size").Value > 4)
 					//E (Pillowy) or higher
-					print("It takes you a while to reach [b:his] [b:nipples] at that speed, but you get there and ");
+					print("It takes you a while to reach [b:his] [b:nipplesize] nipples at that speed, but you get there and ");
 				else
-					print("Shortly, you trace an ever smaller circle up to [b:his] [b:nipples] and");
+					print("Shortly, you trace an ever smaller circle up to [b:his] [b:nipplesize] nipples and");
 				if (breasts.Path("/nipples/size").Value > 2)
 					print("pull on");
 				else
@@ -115,14 +115,14 @@
 		<filter target="bottom" type="gender" value="female" />
 		<!-- Same deal as in GenericFriendlyFondleFemale, but for pants slot. -->
 		<p>
-			You slide your hands slowly down towards [b:name]'s [b:waist] and stroke [b:his] [b:hips], leaving [b:him] in expectation of what comes next.
+			You slide your hands slowly down towards [b:name]'s [b:waistsize] waist and stroke [b:his] [b:hipsize] hips, leaving [b:him] in expectation of what comes next.
 		</p>
 		<script type="text/javascript">
 			<![CDATA[
 				if (bottom.Path("vagina[0]/wetness").Value >= 2)
 					print("You easily");
 				else
-					print("You teasingly rub [b:his] [b:pussy] until it becomes slick with [b:his] feminine juices. At the right moment, you ");
+					print("You teasingly rub [b:his] [pussyrand] until it becomes slick with [b:his] feminine juices. At the right moment, you ");
 				print("slide a finger ");
 				if (bottom.Path("vagina[0]/looseness").Value >= 3)
 					print("or two ");
@@ -133,9 +133,9 @@
 			<![CDATA[
 				print("Moaning softly under your ministrations, [b:name] reaches for your crotch, ");
 				if (top.HasToken("penis"))
-					print("looking at your [t:cock]");
+					print("looking at your [cockrand]");
 				else if (top.HasToken("vagina"))
-					print("looking at your [t:pussy]");
+					print("looking at your [pussyrand]");
 				print("with an increasingly lustful gaze.");
 			]]>
 		</script>
@@ -192,7 +192,7 @@
 		<filter target="top" type="gender" value="male" />
 		<!-- Needs to be differentiated from the compromise handjob more. -->
 		<p>
-			[b:name] claps happily as you sit down. Your [b:cock] hangs in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [t:cock] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
+			[b:name] claps happily as you sit down. Your [b:cocktype] [cockrand] hangs in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [cockrand] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
 		</p>
 		<!-- Should check for baldness. -->
 		<p>
@@ -203,7 +203,7 @@
 	<scene id="GenericFriendlyCompromiseHandjob" name="compromise handjob" list="Accept generous compromise">
 		<filter target="top" type="gender" value="male" />
 		<p>
-			[b:He] immediately claps happily and you sit, your [t:l:penis/length] member hanging in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [t:cock] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
+			[b:He] immediately claps happily and you sit, your [t:l:penis/length] member hanging in the wind while [b:he] leans down, [b:his] slender hands enticing you by crossing a few times on your cheeks before 'exploring' your chest and finding themselves in your well-endowed nether regions, gripping your [cockrand] like a cowgirl throwing her rope and pulling around it, and you appreciate [b:his] horseplay.
 		</p>
 		<!-- Should check for baldness. -->
 		<p>
@@ -220,7 +220,7 @@
 		</p>
 		<!-- Again, check for baldness. -->
 		<p>
-			You see this as an opening to shift your hands from [b:his] glistening hair to [b:his] [b:breasts], cupping them and playing with them freely, [b:his] [b:nipples] becoming furiously erect from your erotic treatment while your "big boy" is engorged, and you can see your eventual climax forming on the horizon.
+			You see this as an opening to shift your hands from [b:his] glistening hair to [b:his] [b:breastsize] [breastsrand], cupping them and playing with them freely, [b:his] [b:nipplesize] nipples becoming furiously erect from your erotic treatment while your "big boy" is engorged, and you can see your eventual climax forming on the horizon.
 		</p>
 		<action name="finish handjob" />
 	</scene>
@@ -252,10 +252,10 @@
 		<!-- References being good at foreplay; skill check? -->
 		<!-- Should maybe have a version to prevent non-fitting dicks... -->
 		<p>
-			You look upon [b:him] with passive lust and snatch [b:him] up in a tender embrace after discarding your equipment. The moment is now yours and [b:g:his:hers]; you have to say it's a wonderful feeling just standing there and slowly fondling [b:his] [b:breasts], occasionally encircling her [b:nipples] playfully. You seem to be quite good at foreplay and [b:he] returns the gesture with a kiss on the cheek.
+			You look upon [b:him] with passive lust and snatch [b:him] up in a tender embrace after discarding your equipment. The moment is now yours and [b:g:his:hers]; you have to say it's a wonderful feeling just standing there and slowly fondling [b:his] [b:breastsize] [breastsrand], occasionally encircling [b:his] [b:nipplesize] nipples playfully. You seem to be quite good at foreplay and [b:he] returns the gesture with a kiss on the cheek.
 		</p>
 		<p>
-			It doesn't take very long before your more baser human instincts start to itch on the recesses of your mind and you happily give into them, turning your babe around and reeling [b:him] into your lap, [b:his] clit rubbing against your [t:cock], which immediately perks upward in a knee-jerk reaction while [b:he] pulls you into a tender kissing session on your lips, and you grunt with pleasure.
+			It doesn't take very long before your more baser human instincts start to itch on the recesses of your mind and you happily give into them, turning your babe around and reeling [b:him] into your lap, [b:his] clit rubbing against your [t:cocktype] [cockrand], which immediately perks upward in a knee-jerk reaction while [b:he] pulls you into a tender kissing session on your lips, and you grunt with pleasure.
 		</p>
 		<action name="come on put it in" />
 	</scene>
@@ -305,7 +305,7 @@
 	<scene id="EmiTest" name="(starting node)">
 		<filter target="bottom" type="name" name="Mitsuko Murakami" />
 		<p>
-			Your [t:cock] stirs as [b:name] looks deep in your &lt;c[t:T:eyes/color]>[t:t:eyes/color]&lt;c> eyes.
+			Your [cockrand] stirs as [b:name] looks deep in your &lt;c[t:T:eyes/color]>[t:t:eyes/color]&lt;c> eyes.
 		</p>
 	</scene>
 	<scene id="MulticockTest1" name="(starting node)">
