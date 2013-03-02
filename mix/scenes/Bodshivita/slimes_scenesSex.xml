@@ -67,7 +67,7 @@
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
-			A groan of desire escapes your throat as you saunter up to the [b:title], swaying your [t:hips] sensuously. Giving your lips a long slow lick, you part your steadily moistening pussy lips, letting [b:him] know in no uncertain terms what your plans are.
+			A groan of desire escapes your throat as you saunter up to the [b:title], swaying your [t:hipsize] hips sensuously. Giving your lips a long slow lick, you part your steadily moistening pussy lips, letting [b:him] know in no uncertain terms what your plans are.
 		</p>
 		<p/>
 		<p>
@@ -81,7 +81,7 @@
 	</scene>
 	<scene id="Bodshi_WinSlimeEatenOut2" name="player win slime eaten out 2">
 		<p>
-			As [b:name] spreads your moist lips apart with [b:his] flexible oral organ, a wave of gentle heat assails your [t:pussy], making it feel just so hot and juicy! Looking down, you see [b:name]'s eyes dart about innocently as it hums - the resulting vibrations making your box tingle in the most delightful way - before [b:he] forces [b:his] lovely oral muscle deeper, injecting you with another dose of that heavenly warmth. <!-- Opening to use vagina/wetness token here. -->
+			As [b:name] spreads your moist lips apart with [b:his] flexible oral organ, a wave of gentle heat assails your [pussyrand], making it feel just so hot and juicy! Looking down, you see [b:name]'s eyes dart about innocently as it hums - the resulting vibrations making your box tingle in the most delightful way - before [b:he] forces [b:his] lovely oral muscle deeper, injecting you with another dose of that heavenly warmth. <!-- Opening to use vagina/wetness token here. -->
 		</p>
 		<p/>
 		<p>
@@ -91,7 +91,7 @@
 	</scene>
 	<scene id="Bodshi_WinSlimeEatenOut3" name="player win slime eaten out 3">
 		<p>
-			Moaning like a whore, you bounce yourself off the [b:title]'s oral intruder again and again, rocking your [t:hips] slowly at the tip before bottoming out again. You impale yourself with glee as [b:his] tongue brushes gently against your cervix, sending that maddening heat into your womb. After several glorious minutes of rough face riding, a second smaller tongue branches off from the first and slowly circles your clit, giving it a sample of that tender heat. You stop your wild bronco ride in stiffened anticipation for what is about to transpire, and without warning, [b:name] attacks your love button mercilessly, driving you into an explosive orgasm.
+			Moaning like a whore, you bounce yourself off the [b:title]'s oral intruder again and again, rocking your [t:hipsize] hips slowly at the tip before bottoming out again. You impale yourself with glee as [b:his] tongue brushes gently against your cervix, sending that maddening heat into your womb. After several glorious minutes of rough face riding, a second smaller tongue branches off from the first and slowly circles your clit, giving it a sample of that tender heat. You stop your wild bronco ride in stiffened anticipation for what is about to transpire, and without warning, [b:name] attacks your love button mercilessly, driving you into an explosive orgasm.
 		</p>
 		<p/>
 		<p>
@@ -123,9 +123,9 @@
 				else if (top.HasItemInSlot("underpants"))
 					print("The [b:title]'s eyes widen in awe, as [b:he] watches you cup your [cockrand] through your [t:equipment:underpants]. Removing the offending garment, you");
 				else
-					print("The [b:title]'s eyes widen in awe, as [b:he] watches you cup your [t:cock]. You");
+					print("The [b:title]'s eyes widen in awe, as [b:he] watches you cup your [cockrand]. You");
 					
-				print(" let [b:name] bask in the sight of your [t:cock], savoring [b:his] expression as [b:his] eyes drink in the sheer amount of cock meat placed before [b:him].");
+				print(" let [b:name] bask in the sight of your [t:cocktype] [cockrand], savoring [b:his] expression as [b:his] eyes drink in the sheer amount of cock meat placed before [b:him].");
 			]]>
 		</script>
 		<p>
@@ -154,7 +154,7 @@
 		<filter target="top" type="has" name="penis" />
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<p>
-			Smiling deviously, you stride up to the [b:title], asking [b:him] if [b:he]'d like a tasty treat. Cut off mid-sentence, [b:name] lunges forward, far too eager to suck you off than you'd like. Casually evading the cum-hungry [b:g:bastard:slut], if [b:he] wants to have [b:his] throat speared by your [t:cock], that's just fine with you.
+			Smiling deviously, you stride up to the [b:title], asking [b:him] if [b:he]'d like a tasty treat. Cut off mid-sentence, [b:name] lunges forward, far too eager to suck you off than you'd like. Casually evading the cum-hungry [b:g:bastard:slut], if [b:he] wants to have [b:his] throat speared by your [cockrand], that's just fine with you.
 		</p>
 		<p/>
 		<p>
@@ -189,7 +189,7 @@
 	</scene>
 	<scene id="Bodshi_WinSlimeBlowjob3" name="player win slime blowjob 3">
 		<p>
-			Taking [b:name]'s head you place it on the tippy top of your cock, watching as it slides down your dick with several sexy gurgles and a long wistful moan, making your [t:cock] even more turgid. Ever so slowly, you thrust your [t:hips], bouncing the [b:title]'s head up and down drawing even naughtier sounds from the head being impaled on your cock repeatedly.
+			Taking [b:name]'s head you place it on the tippy top of your cock, watching as it slides down your dick with several sexy gurgles and a long wistful moan, making your [t:cocktype] [cockrand] even more turgid. Ever so slowly, you thrust your [t:hipsize] hips, bouncing the [b:title]'s head up and down drawing even naughtier sounds from the head being impaled on your cock repeatedly.
 		</p>
 		<p/>
 		<p>
@@ -235,11 +235,11 @@
 		<!-- Can probably inline-if this one. -->
 		<filter target="top" type="has" name="penis" />
 		<p>
-			Ever since you first saw this [b:title], the only things on your mind were the pair of [b:breasts] attached to that unnaturally [b:waist]. Now that you have her, all you want to do is slide your [t:cock] against those bouncy jello jugs until you paint her face and transparent tits in a thick layer of hot spooge.
+			Ever since you first saw this [b:title], the only things on your mind were the pair of [b:breastsize] [breastsrand] attached to that unnaturally [b:waistsize] waist. Now that you have her, all you want to do is slide your [cockrand] against those bouncy jello jugs until you paint her face and transparent tits in a thick layer of hot spooge.
 		</p>
 		<p/>
 		<p>
-			[b:He] follows your intense gaze down to her [b:breasts] and looks away in embarrassment before sinking into [b:his] lower mound, expanding the puddle of slimy goo until [b:his] gelatinous jugs are level with your crotch. Finished, [b:he] subtly puffs out [b:his] breast as if offering them to you on a silver platter, which is all the encouragement you need.
+			[b:He] follows your intense gaze down to her [breastsrand] and looks away in embarrassment before sinking into [b:his] lower mound, expanding the puddle of slimy goo until [b:his] gelatinous jugs are level with your crotch. Finished, [b:he] subtly puffs out [b:his] breast as if offering them to you on a silver platter, which is all the encouragement you need.
 		</p>
 		<p/>
 		<script type="text/javascript">
@@ -260,7 +260,7 @@
 				else
 					print("your huge prick with a very slack jawed expression, utterly astonished at the size of your massive member");
 				
-				print(" as you place your [t:cock] on [b:his] face and slide it down towards [b:his] bosom slowly. As it nears [b:his] lips [b:he] can't help but loll out [b:his] tongue and drag it sensually against your descending phallus, coating it in aphrodisiacs and saliva as your scepter nears the end of its journey to its throne.");
+				print(" as you place your [t:cocktype] [cockrand] on [b:his] face and slide it down towards [b:his] bosom slowly. As it nears [b:his] lips [b:he] can't help but loll out [b:his] tongue and drag it sensually against your descending phallus, coating it in aphrodisiacs and saliva as your scepter nears the end of its journey to its throne.");
 			]]>
 		</script>
 		<action name="player win slime titty fuck 2" />
@@ -301,7 +301,7 @@
 		<filter target="bottom" type="bodylev" name="slime" />
 		<filter target="bottom" type="has" name="vagina" />
 		<p>
-			You grin as you look on at the helpless goo [b:g:boy:girl] while [b:he] coos at the sight of your [t:cock], slipping [b:his] fingers into [b:his] [b:pussyrand] and jilling [b:his] sloshing hole, letting you hear the moist slicks of her box. Treated to the sight of the whore who was so aggressive just a moment ago, your [t:cock] stiffens as your ears are assaulted by the lewd sounds coming from that juicy snatch.
+			You grin as you look on at the helpless goo [b:g:boy:girl] while [b:he] coos at the sight of your [t:cocktype] [cockrand], slipping [b:his] fingers into [b:his] [pussyrand] and jilling [b:his] sloshing hole, letting you hear the moist slicks of her box. Treated to the sight of the whore who was so aggressive just a moment ago, your [cockrand] stiffens as your ears are assaulted by the lewd sounds coming from that juicy snatch.
 		</p>
 		<p/>
 		<p>

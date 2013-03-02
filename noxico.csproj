@@ -112,6 +112,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="CryptStream.cs" />
     <Compile Include="Culture.cs" />
+    <Compile Include="Descriptions.cs" />
     <Compile Include="Dijkstra.cs" />
     <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Entities.cs" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\boards.xml" />
+    <Content Include="mix\bodyparts.xml" />
     <Content Include="mix\bodyplans.xml" />
     <Content Include="mix\bonustraits.xml" />
     <Content Include="mix\books.xml" />

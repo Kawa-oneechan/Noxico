@@ -1600,4 +1600,19 @@ ascii
 			</script>
 		</item>
 	</category>
+	
+	<!-- PillowShout's stuff -->
+	<item id="gExtractor" name="goblin extractor" a="a" the="the">
+		<![CDATA[
+nouse
+price: 60
+description: "A strange device of goblin origin. It seems to be a thick, leather thong that's been modified with a complex assembly of bronze machinery and glass vials."
+weight
+	light
+ascii
+	char: U+0436
+	fore
+		goldenrod
+			]]>
+	</item>
 </items>

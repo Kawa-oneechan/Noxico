@@ -195,7 +195,7 @@
 
 				print("Less than a minute goes by before you feel [t:his] thrusts getting shorter and faster, and even your oxygen starved mind realizes that [t:he]'s probably getting close to orgasm. A few seconds later you feel [t:him] stop and tense up before [t:his] oily [cumrand] starts shooting into the back of your mouth.\n\nYou nearly gag at the taste and fight the urge to retch");
 					
-				var cum = top.CumAmount();
+				var cum = top.CumAmount;
 				if(cum < 15)
 					print(" as you feel the warm fluid pooling on the back of your tongue.");
 				else if (cum < 40)
@@ -206,7 +206,7 @@
 		
 		
 				top.Orgasm();
-				bottom.ChangeStat("carnality", 1);
+				bottom.GiveRapeVictimPoints();
 				bottom.IncreaseSkill("fellatio");
 			]]>
 		</script>
@@ -276,7 +276,7 @@
 		<script type="text/javascript">
 			<![CDATA[
 				top.Orgasm();
-				bottom.ChangeStat("carnality", 1);
+				bottom.GiveRapeVictimPoints();
 				bottom.IncreaseSkill("fellatio");
 			]]>
 		</script>
@@ -310,7 +310,7 @@
 					else
 						print("hand");
 						
-					print(" away from your neck.\n\nYou follow him with your eyes as [t:he] walks around to your backside and shudder anxiously as you then feel [t:him] take hold of your [b:hips] and lift your ass into the air. ");
+					print(" away from your neck.\n\nYou follow him with your eyes as [t:he] walks around to your backside and shudder anxiously as you then feel [t:him] take hold of your [b:hipsize] hips and lift your ass into the air. ");
 					
 					if(bottom.HasVagina())
 						print("A knot slowly forms in your stomach as you're forced to wait for [t:him] to make the next move.");
@@ -320,7 +320,7 @@
 				else if (carn < 66)
 				{
 					print("You keep your head down and looking forward as you hear [t:him] walk around to your backside. Those lusty tingles from earlier work their way up to butterflies in your stomach as you wait to see what [t:he] does.\n\n");
-					print("After a short while of not hearing anything from [t:him], you can't stand not knowing anymore and look over your shoulder. You see [t:him] eyeing your [b:ass] with ");
+					print("After a short while of not hearing anything from [t:him], you can't stand not knowing anymore and look over your shoulder. You see [t:him] eyeing your [b:buttsize] [buttrand] with ");
 					
 					var ass = bottom.Path("ass/size").Value;
 					if(ass < 6)
@@ -332,12 +332,12 @@
 					else
 						print("a gleeful grin");
 						
-					print(" on [t:his] face before [t:he] seems to decide that [t:he]'s seen enough and moves toward your rear. You continue to watch as [t:he] grabs you by your [b:hips] and lifts your ass into the air.");
+					print(" on [t:his] face before [t:he] seems to decide that [t:he]'s seen enough and moves toward your rear. You continue to watch as [t:he] grabs you by your [b:hipsize] hips and lifts your ass into the air.");
 				}
 				else
 				{
 					print("You continue to grin salaciously, and in anticipation of the [t:title]'s desires, you lift your ass into the air and give it a good shake. The growling chuckle that comes from behind you gives you a little thrill as the [t:title] seems to enjoy the show.\n\n");
-					print("You jump as you feel something hard strike your [b:ass] and look behind yourself to see the [t:title] holding [t:his] hand up momentarily before taking another swing. You shudder happily from the impact and rest your head on your ");
+					print("You jump as you feel something hard strike your [b:buttsize] [buttrand] and look behind yourself to see the [t:title] holding [t:his] hand up momentarily before taking another swing. You shudder happily from the impact and rest your head on your ");
 					
 					if(bottom.HasToken("quadruped"))
 						print("[b:feet]");
@@ -463,7 +463,7 @@
 			<![CDATA[
 				top.Orgasm();
 				
-				bottom.ChangeStat("carnality", 1);	// From the Imp's cum
+				bottom.GiveRapeVictimPoints();
 			]]>
 		</script>
 	</scene>
@@ -692,7 +692,7 @@
 					print("Your cheeks flush in shame and ");
 					
 					if(bottom.HasToken("tail"))
-						print("your [tailtype] tail clamps down between your legs");
+						print("your [b:tailtype] tail clamps down between your legs");
 					else
 						print("you squeeze your legs together");
 						
@@ -707,7 +707,7 @@
 				{
 					print("A smile cracks on your face, and you ");
 					if(bottom.HasToken("tail"))
-						print("lift your [tailtype] tail out of the way");
+						print("lift your [b:tailtype] tail out of the way");
 					else
 						print("move your legs apart and push out your ass");
 					print(" to give [t:him] unobstructed access to your rear. The [t:title] grunts in appreciation and you notice [t:his] eyes now seem to be fixed on your [pussyrand].");
@@ -818,7 +818,7 @@
 				top.Orgasm();
 				
 				bottom.Fertilize(top);
-				bottom.ChangeStat("carnality", 1);	// From the Imp's cum
+				bottom.GiveRapeVictimPoints();	// From the Imp's cum
 			]]>
 		</script>
 	</scene>
@@ -943,7 +943,7 @@
 				top.Orgasm();
 				
 				bottom.Fertilize(top);
-				bottom.ChangeStat("carnality", 1);	// From the Imp's cum
+				bottom.GiveRapeVictimPoints();
 			]]>
 		</script>
 	</scene>

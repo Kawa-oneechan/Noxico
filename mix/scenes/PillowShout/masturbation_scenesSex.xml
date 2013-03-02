@@ -101,7 +101,7 @@
 				if(breasts.HasToken("size"))
 					size = breasts.GetToken("size").Value;
 				if(size > 0.1)
-					print("over your [t:breasts] and ");
+					print("over your [t:breastsize] [breastsrand] and ");
 					
 				print("down your stomach, towards your groin.\n\n");
 
@@ -412,7 +412,7 @@
 				var hasBreasts = !(size > 0.1);
 				
 				if(hasBreasts)
-					print("cup of one of your [t:breasts] in one hand while the other finds its way to your groin.\n\n");
+					print("cup of one of your [t:breastsize] [breastsrand] in one hand while the other finds its way to your groin.\n\n");
 				else
 					print("run both of your hands down your stomach, towards your groin.\n\n");
 
@@ -424,14 +424,14 @@
 					if(stim < 50)
 					{
 						if(hasBreasts)
-							print("Your [t:cocktype] [cockrand] jerks as you run a hand along its length, and you can feel it hardening in your palm as you slowly stroke it. Using your other hand, you start to kneed and roll your [t:breasts], and after a few moments of sensually working both parts of your body, you start pumping your [cockrand] in earnest.");
+							print("Your [t:cocktype] [cockrand] jerks as you run a hand along its length, and you can feel it hardening in your palm as you slowly stroke it. Using your other hand, you start to kneed and roll your [t:breastsize] [breastsrand], and after a few moments of sensually working both parts of your body, you start pumping your [cockrand] in earnest.");
 						else
 							print("Your emerging [t:cocktype] [cockrand] jerks as you take hold of it near its base, and you feel it hardening between your fingers as you begin to slowly stroke it with your other hand. Once you feel that you're good and hard, you begin pumping your [cockrand] more vigorously.");
 					}
 					else if (stim < 80)
 					{
 						if(hasBreasts)
-							print("You massage your [breastrand] beneath your palm, rolling your [t:nipple] between your fingers while you run your other hand over your [t:cocktype] [cockrand]. ");
+							print("You massage your [breastrand] beneath your palm, rolling your [t:nipplesize] nipple between your fingers while you run your other hand over your [t:cocktype] [cockrand]. ");
 						else
 							print("Your turgid [t:cocktype] [cockrand] jerks as you take hold of it near its base, and you feel it pulsing between your fingers as you begin to slowly stroke it with your other hand. ");
 							
@@ -486,7 +486,7 @@
 					else if (stim < 80)
 					{
 						if(hasBreasts)
-							print("You massage your [breastrand] beneath your palm, rolling your [t:nipple] between your fingers while you run your other hand over your [pussyrand]. After dipping a finger inside of your slicked up [pussyrand], you take your now equally lubed up finger and begin to rub your fluids onto your [clitrand]. ");
+							print("You massage your [breastrand] beneath your palm, rolling your [t:nipplesize] nipple between your fingers while you run your other hand over your [pussyrand]. After dipping a finger inside of your slicked up [pussyrand], you take your now equally lubed up finger and begin to rub your fluids onto your [clitrand]. ");
 						else
 							print("You run your hands over your slit and find that your [pussyrand] is already wet with your juices. After dipping a finger inside of your slicked up [pussyrand], you take your now equally lubed up finger and begin to rub your fluids onto your [clitrand]. Using your other hand, you slide a pair of fingers inside of your well lubed [pussyrand] and start to slowly thrust them in and out.");
 					}
