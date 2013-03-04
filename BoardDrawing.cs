@@ -94,6 +94,10 @@ namespace Noxico
 				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
 			var js = DrawJS;
 
+#if DEBUG
+			js.SetDebugMode(false);
+#endif
+
 			var height = 25;
 			var width = 80;
 			for (var y = 0; y < height; y++)
@@ -105,6 +109,11 @@ namespace Noxico
 						this.Tilemap[x,y] = (Tile)js.Run(replacer);
 				}
 			}
+
+
+#if DEBUG
+			js.SetDebugMode(true);
+#endif
 		}
 
 		[ForJS(ForJSUsage.Only)]
@@ -113,6 +122,10 @@ namespace Noxico
 			if (DrawJS == null)
 				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
 			var js = DrawJS;
+
+#if DEBUG
+			js.SetDebugMode(false);
+#endif
 
 			var height = 25;
 			var width = 80;
@@ -146,6 +159,11 @@ namespace Noxico
 					}
 				}
 			}
+
+#if DEBUG
+			js.SetDebugMode(true);
+#endif
+
 		}
 		[ForJS(ForJSUsage.Only)]
 		public void Floodfill(int startX, int startY, string checker, string replacer)

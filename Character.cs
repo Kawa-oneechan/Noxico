@@ -54,6 +54,8 @@ namespace Noxico
 		/// </summary>
 		public override string ToString()
 		{
+			if (HasToken("title"))
+				return GetToken("title").Text;
 			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
 			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
@@ -69,6 +71,8 @@ namespace Noxico
 		/// </summary>
 		public string GetNameOrTitle(bool fullName = false, bool the = false, bool initialCaps = false)
 		{
+			if (HasToken("title"))
+				return GetToken("title").Text;
 			if (HasToken("beast"))
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
@@ -86,6 +90,8 @@ namespace Noxico
 		/// </summary>
 		public string GetTheTitle()
 		{
+			if (HasToken("title"))
+				return GetToken("title").Text;
 			return string.Format("{0} {1}", A, Title);
 		}
 

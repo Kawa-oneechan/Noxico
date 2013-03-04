@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE uniques [
+	<!ELEMENT uniques (character+)>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script
+		type CDATA #FIXED "text/javascript"
+		target (tick|load|bump|playerbump|hurt|path|pathfinish) "tick"
+	>
+	<!ELEMENT character (#PCDATA|script)*>
+	<!ATTLIST character
+		id ID #REQUIRED
+		name CDATA #IMPLIED
+		proper (true|false) "true"
+		a CDATA #IMPLIED
+	>
+]>
+<uniques>
+	<character id="demonportal_nox" name="Demon Portal" proper="true">
+		<![CDATA[
+terms
+	generic: "demon portal"
+ascii
+	char: U+002A
+	fore: fuchsia
+	back: magenta
+beast
+bestiary: "The Demon Portal, in all its chaotic splendor..."
+title: "Demon Portal"
+skin
+	type: skin
+	color: fuschia
+		]]>
+		<script type="text/javascript" target="tick">
+		<![CDATA[
+			thisEntity.XPosition = 35;
+			thisEntity.YPosition = 10;
+			var woah = Random.Next(0,128);
+			thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
+			thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
+			thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+			return false;
+		]]>
+		</script>
+		<script type="text/javascript" target="bump">
+		<![CDATA[
+			corner("WRRAAAAAAAGH~");
+			var target = FindTargetBoardByName("Demon Portal, Sera Side");
+			if (target == -1)
+			{
+				corner("Error! Target is " + target);
+				return false;
+			}
+			sound("Firebomb");
+
+			var targetBoard = GetBoard(target);
+
+			//First time we pass through, create a demon town directly to the south.
+			//This town will serve as the portal's travel target
+			if (targetBoard.ToSouth == -1)
+			{
+				//No connected town yet.
+				var town = CreateTown(GetBiomeByName("Nether"), null, null, true);
+				var upTown = GetBoard(town.ToNorth);
+				upTown.ToNorth = target;
+				targetBoard.ToSouth = upTown.BoardNum;
+				MakeBoardTarget(town);
+				MakeBoardKnown(town);
+			}
+
+			playerEntity.OpenBoard(target);
+		]]>
+		</script>
+	</character>
+
+	<character id="demonportal_sera" name="Demon Portal" proper="true">
+		<![CDATA[
+terms
+	generic: "demon portal"
+ascii
+	char: U+002A
+	fore: fuchsia
+	back: magenta
+beast
+bestiary: "The Demon Portal, in all its chaotic splendor..."
+title: "Demon Portal"
+skin
+	type: skin
+	color: fuschia
+		]]>
+		<script type="text/javascript" target="tick">
+		<![CDATA[
+			thisEntity.XPosition = 35;
+			thisEntity.YPosition = 10;
+			var woah = Random.Next(0,128);
+			thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
+			thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
+			thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+			return false;
+		]]>
+		</script>
+		<script type="text/javascript" target="bump">
+			<![CDATA[
+			corner("WRRAAAAAAAGH~");
+			var target = FindTargetBoardByName("Demon Portal, Nox Side");
+			if (target == -1)
+			{
+				corner("Error! Target is " + target);
+				return false;
+			}
+			sound("Firebomb");
+			//No need to fuck around with the travel list -- we CAME from a known location.
+			playerEntity.OpenBoard(target);
+		]]>
+		</script>
+	</character>
+	
+</uniques>

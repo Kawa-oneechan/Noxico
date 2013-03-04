@@ -176,7 +176,7 @@ namespace Noxico
 			var caveStart = Color.FromArgb(65, 66, 87);
 			var caveEnd = Color.FromArgb(88, 89, 122);
 			var wall = Color.FromArgb(71, 50, 33);
-			var water = BiomeData.Biomes[0];
+			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
 
 			var cornerJunctions = new List<Point>();
 			var doorCount = 0;

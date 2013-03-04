@@ -811,7 +811,7 @@ weight
 price: 200
 description: "Now with even less chain!"
 ascii
-	char: U+221E
+	char: U+0E3F
 	fore
 		silver
 			]]>
@@ -847,7 +847,7 @@ weight
 price: 20
 description: "Now with even less class!"
 ascii
-	char: U+221E
+	char: U+0E3F
 	fore
 		red
 			]]>
@@ -1009,7 +1009,7 @@ weight
 	feather
 price: 100
 ascii
-	char: U+221E
+	char: U+0E3F
 			]]>
 	</item>
 	<item id="pants" name="plain [color ]pants" a="a pair of" the="the">
@@ -1210,7 +1210,7 @@ weight
 	feather
 price: 30
 ascii
-	char: U+221E
+	char: U+0E3F
 			]]>
 	</item>
 	<item id="kinky_panties" name="kinky [color ]panties" a="a pair of" the="the">

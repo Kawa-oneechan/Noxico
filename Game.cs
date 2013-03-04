@@ -933,13 +933,16 @@ namespace Noxico
 			JavaScript.Ascertain(js);
 			js.SetParameter("BoardType", typeof(BoardType));
 			js.SetParameter("Character", typeof(Character));
+			js.SetParameter("BoardChar", typeof(BoardChar));
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
-			js.SetParameter("Color", typeof(System.Drawing.Color));
+			js.SetParameter("Color", typeof(Color));
 			js.SetFunction("AddBoard", addBoard);
 			js.SetFunction("MakeBoardTarget", makeBoardTarget);
 			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
+			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
+			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
 			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			js.SetParameter("Expectations", NoxicoGame.Expectations);
 			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
@@ -976,11 +979,21 @@ namespace Noxico
 				js.Run(jsCode);
 			}
 		}
+
+		public static void LearnUnknownLocation(string name)
+		{
+			if (!TargetNames.ContainsValue(name))
+				throw new Exception(string.Format("Tried to make board '{0}' known, but no such board is in the target list.", name));
+			var targetID = TargetNames.FirstOrDefault(x => x.Value == name).Key;
+			if (KnownTargets.Contains(targetID))
+				return; //Target already known, whatever.
+			KnownTargets.Add(targetID);
+		}
 	}
 
 	public class Expectation
 	{
-		public bool Dungeon { get; set; }
+		public BoardType Type { get; set; }
 		public int Biome { get; set; }
 		public string Culture { get; set; }
 		public string BuildingSet { get; set; }
@@ -989,7 +1002,7 @@ namespace Noxico
 		
 		public Expectation()
 		{
-			Dungeon = false;
+			Type = BoardType.Town;
 			Biome = -1;
 			Culture = string.Empty;
 			Characters = new List<string>();
@@ -1000,7 +1013,7 @@ namespace Noxico
 		{
 			Toolkit.ExpectFromFile(stream, "EXPT", "location expectation");
 			var exp = new Expectation();
-			exp.Dungeon = stream.ReadBoolean();
+			exp.Type = (BoardType)stream.ReadInt16();
 			exp.Biome = (int)stream.ReadInt16();
 			exp.Culture = stream.ReadString();
 			var numChars = stream.ReadInt16();
@@ -1015,7 +1028,7 @@ namespace Noxico
 		public void SaveToFile(BinaryWriter stream)
 		{
 			Toolkit.SaveExpectation(stream, "EXPT");
-			stream.Write(Dungeon);
+			stream.Write((Int16)Type);
 			stream.Write((Int16)Biome);
 			stream.Write(Culture ?? string.Empty);
 			stream.Write((Int16)Characters.Count);
@@ -1229,6 +1242,12 @@ namespace Noxico
 				replacement.ID = character.Name.ToID();
 				replacement.AdjustView();
 			}
+		}
+
+		public static Expectation FindUnknownExpectation(BoardType type)
+		{
+			var result = NoxicoGame.Expectations.Values.FirstOrDefault(e => e.Type == type);
+			return result;
 		}
 	}
 }

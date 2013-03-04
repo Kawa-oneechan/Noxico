@@ -5,7 +5,7 @@
 	<!ELEMENT template (map,markings?)>
 	<!ELEMENT map (#PCDATA)>
 	<!ELEMENT markings (marking+)>
-	<!ELEMENT marking EMPTY>
+	<!ELEMENT marking (#PCDATA)>
 	<!ATTLIST set id ID #REQUIRED>
 	<!ATTLIST template
 		name CDATA #REQUIRED

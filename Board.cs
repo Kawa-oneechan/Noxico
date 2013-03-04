@@ -251,6 +251,7 @@ namespace Noxico
 		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
+		public bool AllowTravel { get { return !HasToken("noTravel"); } set { RemoveToken("noTravel"); if (!value)  AddToken("noTravel"); } }
 		public List<Entity> Entities { get; private set; }
 		public List<Warp> Warps { get; private set; }
 		public List<Location> DirtySpots { get; private set; }

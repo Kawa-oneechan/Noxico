@@ -84,9 +84,9 @@ namespace Noxico
 						}
 						Board thisMap = null;
 						var expectation = NoxicoGame.Expectations[newBoard];
-						if (!expectation.Dungeon)
+						if (expectation.Type == BoardType.Town)
 							thisMap = WorldGen.CreateTown(expectation.Biome, expectation.Culture, NoxicoGame.TargetNames[key], true);
-						else
+						else if (expectation.Type == BoardType.Dungeon)
 							thisMap = WorldGen.CreateDungeon(expectation.Biome, expectation.Culture, NoxicoGame.TargetNames[key]);
 
 						Expectation.AddCharacters(thisMap, expectation.Characters);
