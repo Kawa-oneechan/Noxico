@@ -53,6 +53,8 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 		<biome name="Rain Forest" color="#2D7722" music="set://Swamp" canBurn="true" />
 	</realm>
 	<realm id="Seradevari">
+		<biome name="KoolAid" color="#B22222" isWater="true" />
+		
 		<biome name="Nether" color="#3D1607" music="set://Dungeon">
 			<groundGlyphs>#x.-/~</groundGlyphs>
 			<encounters max="10">foocubus, imp</encounters>

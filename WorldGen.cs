@@ -46,7 +46,7 @@ namespace Noxico
 
 			thisMap.Clear(biomeID);
 			thisMap.BoardType = BoardType.Town;
-			thisMap.Music = "set://Town";
+			thisMap.Music = biome.RealmID == "Nox" ? "set://Town" : "set://Dungeon";
 			thisMap.AddToken("culture", 0, cultureName);
 
 			townGen.Board = thisMap;
@@ -91,7 +91,7 @@ namespace Noxico
 			{
 				lol.Clear(biomeID);
 				lol.BoardType = BoardType.Wild;
-				lol.Music = "set://Town";
+				lol.Music = thisMap.Music;
 				lol.BoardNum = boards.Count;
 				lol.Name = thisMap.Name + " Outskirts";
 				lol.ID = lol.Name.ToID() + lol.BoardNum;
@@ -284,6 +284,7 @@ namespace Noxico
 				for (var j = 0; j < length; j++)
 				{
 					var board = new Board();
+					board.AllowTravel = false;
 					board.Clear(DungeonGeneratorBiome);
 					board.BoardNum = nox.Boards.Count;
 					if (i > 0)

@@ -185,6 +185,7 @@ namespace Noxico
 						js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 						js.SetParameter("Expectations", NoxicoGame.Expectations);
 						js.SetFunction("Trade", new Action<string>(x => wantToTrade = true));
+						js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
 						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();

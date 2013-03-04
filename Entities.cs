@@ -1330,11 +1330,34 @@ namespace Noxico
 				return true;
 			if (js == null)
 				js = JavaScript.Create();
+
+			var makeBoardTarget = new Action<Board>(board =>
+			{
+				if (string.IsNullOrWhiteSpace(board.Name))
+					throw new Exception("Board must have a name before it can be added to the target list.");
+				if (NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
+					return; //throw new Exception("Board is already a travel target.");
+				NoxicoGame.TargetNames.Add(board.BoardNum, board.Name);
+			});
+			var makeBoardKnown = new Action<Board>(board =>
+			{
+				if (!NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
+					throw new Exception("Board must be in the travel targets list before it can be known.");
+				if (NoxicoGame.KnownTargets.Contains(board.BoardNum))
+					return;
+				NoxicoGame.KnownTargets.Add(board.BoardNum);
+			});
+
 			JavaScript.Ascertain(js);
 			js.SetParameter("this", this.Character);
+			js.SetParameter("thisEntity", this);
+			js.SetParameter("playerEntity", NoxicoGame.HostForm.Noxico.Player);
 			js.SetParameter("target", ScriptPathID);
+			js.SetParameter("Random", typeof(Random));
+			js.SetParameter("Color", typeof(Color));
 			if (!string.IsNullOrEmpty(extraParm))
 				js.SetParameter(extraParm, extraVal);
+			js.SetFunction("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x)));
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
 			js.SetFunction("print", new Action<string>(x =>
 			{
@@ -1350,6 +1373,20 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
+			js.SetFunction("FindTargetBoardByName", new Func<string, int>(x =>
+			{
+				if (!NoxicoGame.TargetNames.ContainsValue(x))
+					return -1;
+				var i = NoxicoGame.TargetNames.First(b => b.Value == x);
+				return i.Key;
+			}));
+			js.SetFunction("MakeBoardTarget", makeBoardTarget);
+			js.SetFunction("MakeBoardKnown", makeBoardKnown);
+			js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
+			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
+			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
+			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
+			js.SetParameter("Expectations", NoxicoGame.Expectations);
 			var r = js.Run(script);
 			if (r is bool)
 				return (bool)r;
@@ -2111,7 +2148,7 @@ namespace Noxico
 			}
 
 			//RIGHT
-			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder) && this.ParentBoard.BoardType != BoardType.Dungeon)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder) && this.ParentBoard.AllowTravel)
 			{
 				NoxicoGame.ClearKeys();
 				Travel.Open();
