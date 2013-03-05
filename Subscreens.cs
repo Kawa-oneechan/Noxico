@@ -19,73 +19,7 @@ namespace Noxico
 
 	public static class UnsortedSubscreens
 	{
-		//TODO: Refactor the below
-
-		//Also sleep needs an overhaul. Instead of sleeping until healed, or until morning, there should be a menu, and every hour or so gives back a bunch of HP.
-		public static bool UntilMorning;
-		public static void Sleep()
-		{
-			var player = NoxicoGame.HostForm.Noxico.Player;
-			var pchar = player.Character;
-			var max = pchar.GetMaximumHealth();
-			var heal = new TimeSpan(0, 10, 0);
-			var sleep = new TimeSpan(0, 30, 0);
-
-			if (UntilMorning)
-			{
-				if (NoxicoGame.InGameTime.Hour > 20 || NoxicoGame.InGameTime.Hour < 6)
-				{
-					player.PlayingTime = player.PlayingTime.Add(sleep);
-					NoxicoGame.InGameTime.Add(sleep);
-
-					if (NoxicoGame.InGameTime.Hour == 0 && NoxicoGame.InGameTime.Minute < 30)
-					{
-						//To sleep, perchance, to dream...
-						var dlg = Mix.GetXMLDocument("scenesDlg.xml", true);
-						var dreams = dlg.SelectNodes("//scene[@name='(dream)']");
-						if (dreams.Count > 0)
-						{
-							var dream = new Character();
-							dream.Name = new Name("Dream");
-							dream.IsProperNamed = true;
-							SceneSystem.Dreaming = true;
-							SceneSystem.Engage(pchar, dream, "(dream)", true);
-						}
-					}
-				}
-				else
-				{
-					SceneSystem.Dreaming = false;
-					pchar.GetToken("health").Value = max;
-					pchar.GetToken("climax").Value = 0;
-					pchar.GetToken("stimulation").Value = 0;
-					NoxicoGame.Mode = UserMode.Walkabout;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					pchar.RemoveToken("helpless");
-				}
-				return;
-			}
-
-			if (pchar.GetToken("health").Value < max)
-			{
-				pchar.GetToken("health").Value += 0.2f;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Update(true);
-				player.PlayingTime = player.PlayingTime.Add(heal);
-				NoxicoGame.InGameTime.Add(heal);
-			}
-			else
-			{
-				pchar.GetToken("health").Value = max;
-				pchar.GetToken("climax").Value = 0;
-				pchar.GetToken("stimulation").Value = 0;
-				NoxicoGame.Mode = UserMode.Walkabout;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(player, true);
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				pchar.RemoveToken("helpless");
-			}
-		}
-
+		//HAHA
 	}
 
 }
