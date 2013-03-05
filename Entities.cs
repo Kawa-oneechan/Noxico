@@ -313,9 +313,7 @@ namespace Noxico
 				if (PointingAt != null)
 				{
 					if (PointingAt is Clutter || PointingAt is Door || PointingAt is Container)
-					{
-							return;
-					}
+						return;
 
 					LastTarget = PointingAt;
 					var distance = player.DistanceFrom(PointingAt);
@@ -2031,7 +2029,7 @@ namespace Noxico
 				NoxicoGame.ContextMessage = "pick up";
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
 				NoxicoGame.ContextMessage = "see contents";
-			else if (Character.GetToken("health").Value < Character.GetMaximumHealth() && ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
+			else if (/* Character.GetToken("health").Value < Character.GetMaximumHealth() && */ ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
 				NoxicoGame.ContextMessage = "sleep";
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
@@ -2123,6 +2121,21 @@ namespace Noxico
             //base.Update();
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
+
+			var sleeping = Character.Path("sleeping");
+			if (sleeping != null)
+			{
+				Character.GetToken("health").Value += 2;
+				sleeping.Value--;
+				if (sleeping.Value <= 0)
+				{
+					Character.RemoveToken("sleeping");
+					Character.RemoveToken("helpless");
+					NoxicoGame.AddMessage("You get back up.");
+				}
+				NoxicoGame.InGameTime.AddMinutes(5);
+				EndTurn();
+			}
 
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
@@ -2274,30 +2287,19 @@ namespace Noxico
 				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398');
 				if (bed != null)
 				{
-					if (Character.GetToken("health").Value < Character.GetMaximumHealth())
+					var prompt = "It's " + NoxicoGame.InGameTime.ToShortTimeString() + ", " + NoxicoGame.InGameTime.ToLongDateString() + ". Sleep for how long?";
+					var options = new Dictionary<object, string>();
+					foreach (var interval in new[] { 1, 2, 4, 8, 12 })
+						options[interval] = Toolkit.Count(interval).Titlecase() + (interval == 1 ? " hour" : " hours");
+					options[-1] = "Cancel";
+					MessageBox.List(prompt, options, () =>
 					{
-						MessageBox.Ask("Rest until healed?", () =>
+						if ((int)MessageBox.Answer != -1)
 						{
 							Character.AddToken("helpless");
-							NoxicoGame.Mode = UserMode.Subscreen;
-							UnsortedSubscreens.UntilMorning = false;
-							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
-							Subscreens.FirstDraw = true;
-						}, null, true, "Bed");
-					}
-					else if (NoxicoGame.InGameTime.Hour >= 21 || NoxicoGame.InGameTime.Hour < 5) //Allow going to bed until morning one hour in advance
-					{
-						MessageBox.Ask("Sleep until morning?", () =>
-						{
-							Character.AddToken("helpless");
-							NoxicoGame.Mode = UserMode.Subscreen;
-							UnsortedSubscreens.UntilMorning = true;
-							NoxicoGame.Subscreen = UnsortedSubscreens.Sleep;
-							Subscreens.FirstDraw = true;
-						}, null, true, "Bed");
-					}
-					else
-						NoxicoGame.AddMessage("There is no need to sleep now.");
+							Character.AddToken("sleeping").Value = (int)MessageBox.Answer * 12;
+						}
+					}, true, true, "Bed");
 				}
 				return;
 			}
