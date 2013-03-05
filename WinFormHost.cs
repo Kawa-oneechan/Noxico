@@ -50,7 +50,7 @@ namespace Noxico
         private Cell[,] previousImage = new Cell[80, 25];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
-		private bool starting = true;
+		private bool starting = true, fatal = false;
 
         public bool Running { get; set; }
 		private int CellWidth, CellHeight, GlyphAdjustX, GlyphAdjustY;
@@ -68,9 +68,10 @@ namespace Noxico
 				//{ Keys.Back, Keys.Escape },
 			};
 
+		private Timer timer;
+
 		public MainForm()
 		{
-			var fatal = false;
 #if !DEBUG
 			try
 #endif
@@ -194,11 +195,22 @@ namespace Noxico
 				this.Controls.Clear();
 				starting = false;
 				Running = true;
+
+#if GAMELOOP
 				while (Running)
 				{
 					Noxico.Update();
 					Application.DoEvents();
 				}
+#else
+				FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+				timer = new Timer()
+				{
+					Interval = 10,
+					Enabled = true,
+				};
+				timer.Tick += new EventHandler(timer_Tick);
+#endif
 			}
 #if !DEBUG
 			catch (Exception x)
@@ -214,6 +226,31 @@ namespace Noxico
 			{
 				Noxico.SaveGame();
 			}
+		}
+
+		void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (!fatal)
+				Noxico.SaveGame();
+		}
+
+		void timer_Tick(object sender, EventArgs e)
+		{
+#if !DEBUG
+			Noxico.Update();
+#else
+			try
+			{
+				Noxico.Update();
+			}
+			catch (Exception x)
+			{
+				new ErrorForm(x).ShowDialog(this);
+				System.Windows.Forms.MessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
+				Running = false;
+				fatal = true;
+			}
+#endif
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
