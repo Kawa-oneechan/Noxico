@@ -15,7 +15,7 @@ wall.Wall = true;
 function BuildPlatform(board, vague, stone, wall)
 {
 	board.MergeBitmap("missions\\portal\\platform.png");
-	board.Replace("return (tile.Character == 'X' && tile.Foreground.R == 64)", "return vague");
+	board.Replace("return (tile.Character == 'X' && tile.Foreground.R == 64)", "return vague.Noise()");
 	board.Replace("return (tile.Character == 'X' && tile.Foreground.R == 128)", "return stone.Noise()");
 	board.Replace("return (tile.Character == 'X' && tile.Foreground.R == 255)", "return wall.Noise()");
 }

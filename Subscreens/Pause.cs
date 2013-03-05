@@ -60,7 +60,6 @@ has the same effect." },
 				{
 					if (list.Index == list.Items.Count - 1) //can't use absolute index because Debug might be missing.
 					{
-						host.Noxico.SaveGame();
 						host.Close();
 					}
 					else if (list.Index == list.Items.Count - 2) //same
