@@ -2,4 +2,6 @@ Demon Portal
 Kawa
 mission.js
 uniques.xml
-platform.png
+platform1.png
+platform2.png
+road.png
