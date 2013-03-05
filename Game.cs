@@ -931,6 +931,7 @@ namespace Noxico
 
 			var js = JavaScript.Create();
 			JavaScript.Ascertain(js);
+			js.SetParameter("Random", typeof(Random));
 			js.SetParameter("BoardType", typeof(BoardType));
 			js.SetParameter("Character", typeof(Character));
 			js.SetParameter("BoardChar", typeof(BoardChar));

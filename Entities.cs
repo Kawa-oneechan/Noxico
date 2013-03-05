@@ -1354,6 +1354,11 @@ namespace Noxico
 			js.SetParameter("playerEntity", NoxicoGame.HostForm.Noxico.Player);
 			js.SetParameter("target", ScriptPathID);
 			js.SetParameter("Random", typeof(Random));
+			js.SetParameter("BoardType", typeof(BoardType));
+			js.SetParameter("Character", typeof(Character));
+			js.SetParameter("BoardChar", typeof(BoardChar));
+			js.SetParameter("InventoryItem", typeof(InventoryItem));
+			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(Color));
 			if (!string.IsNullOrEmpty(extraParm))
 				js.SetParameter(extraParm, extraVal);
@@ -1387,6 +1392,7 @@ namespace Noxico
 			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
 			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			js.SetParameter("Expectations", NoxicoGame.Expectations);
+			Board.DrawJS = js;
 			var r = js.Run(script);
 			if (r is bool)
 				return (bool)r;

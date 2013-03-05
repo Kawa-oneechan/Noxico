@@ -183,7 +183,9 @@
     <Content Include="mix\culture.xml" />
     <Content Include="mix\missions\portal\manifest.txt" />
     <Content Include="mix\missions\portal\mission.js" />
-    <Content Include="mix\missions\portal\platform.png" />
+    <Content Include="mix\missions\portal\platform1.png" />
+    <Content Include="mix\missions\portal\platform2.png" />
+    <Content Include="mix\missions\portal\road.png" />
     <Content Include="mix\missions\portal\uniques.xml">
       <SubType>Designer</SubType>
     </Content>

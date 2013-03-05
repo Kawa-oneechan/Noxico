@@ -62,6 +62,15 @@ skin
 				var town = CreateTown(GetBiomeByName("Nether"), null, null, true);
 				var upTown = GetBoard(town.ToNorth);
 				upTown.ToNorth = target;
+				
+				upTown.Clear("Nether");
+				upTown.MergeBitmap("missions\\portal\\road.png");
+				var stone = new Tile();
+				stone.Character = '\u253C';
+				stone.Foreground = Color.Black;
+				stone.Background = Color.FromCSS("#4B3027");
+				upTown.Replace("return (tile.Character == 'X' && tile.Foreground.R == 128)", "return stone.Noise()");
+				
 				targetBoard.ToSouth = upTown.BoardNum;
 				MakeBoardTarget(town);
 				MakeBoardKnown(town);
