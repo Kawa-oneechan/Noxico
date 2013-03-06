@@ -645,6 +645,12 @@ namespace Noxico
 
 		public void Excite()
 		{
+			if (this.Character.HasToken("beast"))
+				return;
+			var player = NoxicoGame.HostForm.Noxico.Player;
+			if (player.ParentBoard != this.ParentBoard)
+				player = null;
+			var ogled = false;
 			foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < 3))
 			{
 				if (other.Character.HasToken("beast"))
@@ -660,8 +666,56 @@ namespace Noxico
 						stim.Value += 2;
 					if (stim.Value > 100)
 						stim.Value = 100;
+					if (!ogled && this != player)
+					{
+						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
+						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
+						{
+							NoxicoGame.AddMessage(string.Format("{0} to {1}: {2}", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)), this.ForegroundColor);
+							if (!this.Character.HasToken("oglestim"))
+								this.Character.AddToken("oglestim");
+							this.Character.GetToken("oglestim").Value = stim.Value;
+							ogled = true;
+						}
+					}
 				}
 			}
+		}
+
+		public string Ogle(Character otherChar)
+		{
+			var stim = this.Character.GetStat(Stat.Stimulation);
+			var carn = this.Character.GetStat(Stat.Carnality);
+			var r = Random.Next(4);
+			if (r == 0)
+			{
+				if (otherChar.BiggestBreastrowNumber == -1 || otherChar.GetBreastRowSize(otherChar.BiggestBreastrowNumber) < 3.5)
+					r = Random.Next(1, 4);
+				else
+				{
+					var breastSize = otherChar.GetBreastRowSize(otherChar.BiggestBreastrowNumber);
+					if (breastSize < 5)
+						return "Nice " + Descriptions.BreastRandom(true) + ".";
+					else if (breastSize < 10)
+						return "Look at those " + Descriptions.BreastRandom(true) + "...";
+					else
+						return "Woah, momma.";
+				}
+			}
+			//TODO: add more reactions.
+			{
+				var cha = otherChar.GetStat(Stat.Charisma);
+				if (cha > 0)
+				{
+					if (cha < 30)
+						return "Well hello, " + (otherChar.GetGenderEnum() == Gender.Male ? "handsome." : "beautiful.");
+					else if (cha < 60)
+						return "Oh my.";
+					else
+						return "Woah.";
+				}
+			}
+			return "There are no words.";
 		}
 
 		public void CheckForCriminalScum()

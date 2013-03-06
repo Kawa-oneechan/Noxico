@@ -485,7 +485,7 @@ namespace Noxico
 			if (messageLog.Count == 0)
 				MessageBox.Notice("There are no messages to display.", true);
 			else
-				TextScroller.Plain(string.Join("\n", messageLog.Select(m => !m.StartsWith("\uE080"))));
+				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE080"))));
 		}
 
 		public static void HealthMessage()
