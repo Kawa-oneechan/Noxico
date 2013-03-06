@@ -490,7 +490,7 @@ namespace Noxico
 			nox.Player.XPosition = originalExit.XPosition;
 			nox.Player.YPosition = originalExit.YPosition;
 			entranceBoard.Redraw();
-			NoxicoGame.Sound.PlayMusic(entranceBoard.Music);
+			entranceBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
 			NoxicoGame.HostForm.Noxico.SaveGame();

@@ -392,7 +392,7 @@ namespace Noxico
 				CurrentBoard.CheckCombatStart();
 				CurrentBoard.UpdateLightmap(Player, true);
 				CurrentBoard.Redraw();
-				Sound.PlayMusic(CurrentBoard.Music);
+				CurrentBoard.PlayMusic();
 
 				if (!Player.Character.HasToken("player"))
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);

@@ -677,7 +677,7 @@ namespace Noxico
 			{
 				SceneSystem.LeavingDream = false;
 				SceneSystem.Dreaming = false;
-				NoxicoGame.Sound.PlayMusic(this.Music);
+				PlayMusic();
 			}
 
 			for (int row = 0; row < 25; row++)
@@ -965,15 +965,20 @@ namespace Noxico
 			if (!this.HasToken("combat"))
 			{
 				if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed; 
+					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
 				return;
 			}
 			foreach (var x in Entities.OfType<BoardChar>())
+			{
+				if (EntitiesToRemove.Contains(x))
+					continue;
 				if (x.Character.HasToken("hostile"))
 					return; //leave the combat rolling
+			}
 			this.RemoveToken("combat");
 			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
 				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
+			PlayMusic();
 		}
 
 		public void CheckCombatStart()
@@ -991,6 +996,7 @@ namespace Noxico
 					this.AddToken("combat");
 					if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
 						NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestCombatSpeed;
+					PlayMusic();
 					return;
 				}
 			}
@@ -1039,6 +1045,11 @@ namespace Noxico
 				stream.WriteLine("</tr>");
 			}
 			stream.WriteLine("</table>");
+		}
+
+		public void PlayMusic()
+		{
+			NoxicoGame.Sound.PlayMusic(this.Music);
 		}
 	}
 
