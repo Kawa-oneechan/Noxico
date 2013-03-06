@@ -36,7 +36,8 @@
 		adj CDATA #IMPLIED
 		noun CDATA #IMPLIED
 	>
-	
+	<!ELEMENT lengths (size+)>
+
 	<!-- upper body stuff -->
 	<!ELEMENT breasts (cupsizes,sizes,nipplesizes)>
 	<!ELEMENT wings (partdesc*)>
@@ -51,6 +52,10 @@
   <!ELEMENT penises (lengths,widths,types)>
   <!ELEMENT vaginas (loosenesses,wetnesses,clitsizes)>
   <!ELEMENT balls (sizes)>
+	<!ELEMENT widths (size+)>
+
+	<!-- TODO -->
+	<!ELEMENT skins EMPTY>
 ]>
 
 <bodyparts>
