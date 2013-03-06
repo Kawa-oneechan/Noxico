@@ -1913,7 +1913,7 @@ namespace Noxico
 				}
 				ParentBoard.UpdateLightmap(this, true);
 				ParentBoard.Redraw();
-				NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
+				ParentBoard.PlayMusic();
 				NoxicoGame.Immediate = true;
 
 				//Going from a dungeon to a wild board?
@@ -1932,9 +1932,10 @@ namespace Noxico
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
 			ParentBoard.CheckCombatStart();
+			ParentBoard.CheckCombatFinish();
 			ParentBoard.UpdateLightmap(this, true);
 			ParentBoard.Redraw();
-			NoxicoGame.Sound.PlayMusic(ParentBoard.Music);
+			ParentBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 
 			this.DijkstraMap.UpdateWalls(ParentBoard);
