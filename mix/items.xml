@@ -35,7 +35,7 @@ ascii
 		<script type="text/javascript" for="equip">
 			<![CDATA[
 				if (user.HasToken("penis"))
-				{
+				{	
 					print ("You're a man!");
 					return false;
 				}
