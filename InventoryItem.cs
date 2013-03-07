@@ -549,6 +549,7 @@ namespace Noxico
 			}
 		}
 
+		[Obsolete("Use WorldGen.GetLoot()", false)]
 		public static List<Token> RollContainer(Character owner, string type)
 		{
 			if (costumeDoc == null)

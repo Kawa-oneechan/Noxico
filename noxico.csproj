@@ -180,7 +180,12 @@
     <Content Include="mix\chargen.png" />
     <Content Include="mix\costumes.xml" />
     <Content Include="mix\credits.txt" />
-    <Content Include="mix\culture.xml" />
+    <Content Include="mix\culture.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="mix\loot.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\missions\portal\manifest.txt" />
     <Content Include="mix\missions\portal\mission.js" />
     <Content Include="mix\missions\portal\platform1.png" />
@@ -191,7 +196,9 @@
     </Content>
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\items.xml" />
+    <Content Include="mix\items.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\knowncolors.xml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
