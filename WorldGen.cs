@@ -246,6 +246,13 @@ namespace Noxico
 					eX = Random.Next(1, 79);
 					eY = Random.Next(1, 24);
 
+					//2013-03-07: prevent placing warps on same tile as clutter
+					if (b.Entities.FirstOrDefault(e => e.XPosition == eX && e.YPosition == eY) != null)
+					{
+						Console.WriteLine("Tried to place a warp below an entity -- rerolling...");
+						continue;
+					}
+					
 					var sides = 0;
 					if (b.IsSolid(eY - 1, eX))
 						sides++;
@@ -445,6 +452,16 @@ namespace Noxico
 			{
 				treasureX = Random.Next(1, 79);
 				treasureY = Random.Next(1, 24);
+
+				//2013-03-07: prevent treasure from spawning inside a wall
+				if (goalBoard.IsSolid(treasureY, treasureX))
+					continue;
+				//2013-03-07: prevent placing warps on same tile as clutter
+				if (goalBoard.Entities.FirstOrDefault(e => e.XPosition == treasureX && e.YPosition == treasureY) != null)
+				{
+					Console.WriteLine("Tried to place cave treasure below an entity -- rerolling...");
+					continue;
+				}
 
 				var sides = 0;
 				if (goalBoard.IsSolid(treasureY - 1, treasureX))
