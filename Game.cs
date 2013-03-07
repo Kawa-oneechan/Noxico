@@ -228,6 +228,12 @@ namespace Noxico
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
+			var testLoot = WorldGen.GetLoot("container", "dungeon_chest");
+			Console.WriteLine("--------------------------");
+			Console.WriteLine("Test loot:");
+			testLoot.ForEach(x => Console.WriteLine("* {0}", x));
+			Console.WriteLine("--------------------------");
+
 			CurrentBoard = new Board();
 			this.Player = new Player();
 				Introduction.Title();

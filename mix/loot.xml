@@ -10,7 +10,7 @@
 		type CDATA #REQUIRED
 	>
 	<!ATTLIST filter
-		type CDATA #REQUIRED
+		key CDATA #REQUIRED
 		value CDATA #REQUIRED
 	>
 	<!ATTLIST someof
@@ -25,6 +25,7 @@ for sets:
 * "@tokenA+tokenB" -> any random item with those tokens
 * "@tokenA-tokenB" -> any random item with tokenA but NOT tokenB
 * "@tokenA+tokenB-tokenC" -> any random item with tokenA and B but not C
+* "@-token" -> any random item AT ALL that does not have that token
 separate with "," result is trimmed.
 -->
 <loot>
@@ -41,8 +42,8 @@ separate with "," result is trimmed.
 		<someof min="10" max="10">@fruit</someof>
 	</lootset>
 	<lootset target="npc" type="arms">
-		<filter type="board" value="wild" />
-		<filter type="culture" value="seradevar" />
+		<filter key="board" value="wild" />
+		<filter key="culture" value="seradevar" />
 		<!-- either a small or large blade. -->
 		<oneof>@smallweapon+blade, @largeweapon+blade</oneof>
 	</lootset>

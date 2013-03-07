@@ -31,6 +31,7 @@ weight
 price: 100
 ascii
 	char: U+006E
+sextoy
 			]]>
 		<script type="text/javascript" for="equip">
 			<![CDATA[
@@ -61,7 +62,9 @@ ascii
 	fore
 		aquamarine
 randomized: 1
-			]]>
+potion
+transformer
+		]]>
 		<script type="text/javascript">
 			Consume();
 			user.Morph("littlepony");
@@ -106,6 +109,8 @@ ascii
 	char: U+0021
 	fore
 		darkgoldenrod
+largeweapon
+wood
 			]]>
 		</item>
 		<item id="foxite" name="Foxite" a="" the="the" proper="true">
@@ -116,6 +121,9 @@ ascii
 	char: U+00A1
 	fore
 		aquamarine
+randomized: 2
+potion
+transformer
 			]]>
 			<script type="text/javascript">
 				Consume();
@@ -130,6 +138,9 @@ ascii
 	char: U+00A1
 	fore
 		chartreuse
+randomized: 3
+potion
+transformer
 			]]>
 			<script type="text/javascript">
 				<![CDATA[
@@ -151,6 +162,8 @@ ascii
 	char: U+2190
 	fore
 		silver
+smallweapon
+blade
 			]]>
 		</item>
 		<item id="butter_knife" name="butter knife" a="a" the="the">
@@ -168,6 +181,8 @@ ascii
 	char: U+2190
 	fore
 		silver
+smallweapon
+blade
 			]]>
 		</item>
 		<item id="test_ring" name="test ring" a="a" the="the">
@@ -179,6 +194,7 @@ ascii
 	char: U+25CB
 	fore
 		firebrick
+randomized: 128
 			]]>
 		</item>
 		<item id="cheap_pos" name="cheap piece of shit" unknown="broken sword" a="a" the="the">
@@ -199,6 +215,8 @@ ascii
 	char: U+2193
 	fore
 		white
+largeweapon
+blade
 			]]>
 		</item>
 
@@ -322,6 +340,7 @@ ascii
 	char: U+0473
 	fore
 		white
+food
 			]]>
 	</item>
 
@@ -340,6 +359,8 @@ ascii
 	char: U+0021
 	fore
 		darkgoldenrod
+rareweapon
+wood
 		]]>
 	</item>
 
@@ -566,6 +587,7 @@ ascii
 	char: U+0455
 	fore
 		red
+rareweapon
 			]]>
 		</item>
 		<item id="wrinklefucker" name="wrinklefucker" unknown="appliance-headed warhammer" a="a" the="the">
@@ -585,6 +607,7 @@ ascii
 	char: U+0444
 	fore
 		lime
+rareweapon
 			]]>
 		</item>
 		<item id="zillyhoo" name="Warhammer of Zillyhoo&#x2122;" proper="true">
@@ -603,6 +626,7 @@ ascii
 	char: U+0444
 	fore
 		blue
+rareweapon
 			]]>
 		</item>
 		<item id="crosshairs" name="Ahab's Crosshairs&#x2122;" proper="true">
@@ -625,6 +649,7 @@ effect
 	char: U+002A
 	fore: blue
 	back: navy
+rareweapon
 			]]>
 		</item>
 		<item id="ragripper" name="Demonbane Ragripper&#x2122;" proper="true">
@@ -644,6 +669,7 @@ ascii
 	char: U+018C
 	fore
 		purple
+rareweapon
 			]]>
 		</item>
 		<!-- caledflwch, regisickle, quills of echidna, SORD..... -->
@@ -724,9 +750,10 @@ ascii
 	char: U+0063
 	fore
 		brown
+food
+baked
 			]]>
 	</item>
-
 	<item id="bagel" name="bagel" a="a" the="the">
 		<![CDATA[
 singleuse
@@ -738,9 +765,10 @@ ascii
 	char: U+2609
 	fore
 		brown
+food
+baked
 			]]>
 	</item>
-
 	<item id="bacon" name="bacon strip" a="a" the="the">
 		<![CDATA[
 singleuse
@@ -752,6 +780,8 @@ ascii
 	char: U+2016
 	fore
 		red
+food
+meat
 			]]>
 	</item>
 	<item id="sweetroll" name="sweet roll" a="a" the="the">
@@ -765,6 +795,8 @@ ascii
 	char: U+00F8
 	fore
 		yellow
+food
+baked
 			]]>
 	</item>
 

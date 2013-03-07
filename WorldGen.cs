@@ -475,7 +475,7 @@ namespace Noxico
 				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
 					break;
 			}
-			var treasure = InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasure = WorldGen.GetLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
 				AsciiChar = (char)0x00C6,
@@ -513,6 +513,112 @@ namespace Noxico
 			NoxicoGame.HostForm.Noxico.SaveGame();
 
 			return entranceBoard;
+		}
+
+		private static XmlDocument lootDoc;
+		public static List<Token> GetLoot(string target, string type, Dictionary<string, string> filters = null)
+		{
+			if (lootDoc == null)
+				lootDoc = Mix.GetXMLDocument("loot.xml");
+			var lootsets = new List<XmlElement>();
+			var loot = new List<Token>();
+			if (filters == null)
+				filters = new Dictionary<string, string>();
+			foreach (var potentialSet in lootDoc.SelectNodes("//lootset[@target=\"" + target + "\"]").OfType<XmlElement>())
+			{
+				if (potentialSet.GetAttribute("type") != type)
+					continue;
+				var setsFilters = potentialSet.SelectNodes("filter").OfType<XmlElement>().ToList();
+				if (setsFilters.Count > 0)
+				{
+					var isOkay = true;
+					foreach (var f in setsFilters)
+					{
+						var key = f.GetAttribute("key");
+						var value = f.GetAttribute("value");
+						if (filters.ContainsKey(key) && filters[key] != value)
+						{
+							isOkay = false;
+							break;
+						}
+					}
+					if (!isOkay)
+						continue;
+				}
+				lootsets.Add(potentialSet);
+			}
+			var lootset = lootsets[Random.Next(lootsets.Count)];
+			foreach (var of in lootset.ChildNodes.OfType<XmlElement>())
+			{
+				var options = new List<string>();
+				var min = 1;
+				var max = 1;
+				if (of.Name == "oneof")
+					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
+				else if (of.Name == "someof")
+				{
+					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
+					min = int.Parse(of.GetAttribute("min"));
+					max = int.Parse(of.GetAttribute("max"));
+				}
+				else
+					continue;
+				var amount = Random.Next(min, max);
+				while (amount > 0)
+				{
+					var option = options[Random.Next(options.Count)];
+					if (option[0] == '@')
+					{
+						option = option.Substring(1);
+						if (option[0] == '-')
+						{
+							//simple negatory token check
+							var items = NoxicoGame.KnownItems.Where(i => (!i.HasToken(option))).ToList();
+							if (items.Count > 0)
+								loot.Add(new Token(items[Random.Next(items.Count)].ID));
+						}
+						else if (option.Contains('-') || option.Contains('+'))
+						{
+							//complicated token check
+							var fuckery = option.Replace("+", ",").Replace("-", ",-").Split(',');
+							foreach (var knownItem in NoxicoGame.KnownItems)
+							{
+								var includeThis = false;
+								foreach (var fucking in fuckery)
+								{
+									if (fucking[0] != '-' && knownItem.HasToken(fucking))
+										includeThis = true;
+									else if (knownItem.HasToken(fucking))
+									{
+										includeThis = false;
+										break;
+									}
+								}
+
+								if (includeThis)
+									loot.Add(new Token(knownItem.ID));
+							}
+						}
+						else
+						{
+							//simple token check
+							var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
+							if (items.Count > 0)
+								loot.Add(new Token(items[Random.Next(items.Count)].ID));
+						}
+					}
+					else
+					{
+						//direct item ID
+						//ascertain existance first, and maybe add a color or BUC state.
+						var item = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == option);
+						if (item != null)
+							loot.Add(new Token(option));
+					}
+					amount--;
+				}
+			}
+			return loot;
 		}
 	}
 
