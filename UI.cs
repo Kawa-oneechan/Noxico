@@ -228,7 +228,7 @@ namespace Noxico
 			{
 				if (Items == null || Items.Count == 0)
 					return;
-				_index = value < Items.Count ? value : 0;
+				_index = value < Items.Count || value > -1 ? value : 0;
 				Text = Items[_index];
 				EnsureVisible();
 				if (Change != null)
