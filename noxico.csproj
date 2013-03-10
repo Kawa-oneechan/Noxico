@@ -186,6 +186,15 @@
     <Content Include="mix\loot.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="mix\missions\chelsie\lairhouse.png" />
+    <Content Include="mix\missions\chelsie\mission.js" />
+    <Content Include="mix\missions\chelsie\manifest.txt" />
+    <Content Include="mix\missions\chelsie\scenesSex.xml" />
+    <Content Include="mix\missions\chelsie\uniques.xml" />
+    <Content Include="mix\missions\pettancow\manifest.txt" />
+    <Content Include="mix\missions\pettancow\mission.js" />
+    <Content Include="mix\missions\pettancow\scenesDlg.xml" />
+    <Content Include="mix\missions\pettancow\uniques.xml" />
     <Content Include="mix\missions\portal\manifest.txt" />
     <Content Include="mix\missions\portal\mission.js" />
     <Content Include="mix\missions\portal\platform1.png" />
@@ -220,6 +229,8 @@
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
     <Content Include="mix\uniques.xml" />
+    <Content Include="mix\wip\changelings\bodyplans.xml" />
+    <Content Include="mix\wip\changelings\culture.xml" />
     <Content Include="music\music.xml" />
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

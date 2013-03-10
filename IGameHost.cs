@@ -92,7 +92,9 @@ namespace Noxico
 		/// Causes the host window to close.
 		/// </summary>
 		void Close();
-		
+
+		Point Cursor { get; set; }
+
 #if DEBUG
 		string Text { get; set; }
 #endif

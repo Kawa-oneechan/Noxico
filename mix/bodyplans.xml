@@ -606,7 +606,7 @@ terms
 	female: "ursavus"
 	herm: "ursus"
 ascii
-	char: U+0046
+	char: U+0055
 tallness: roll 1d150+150
 hair
 	length: roll 1d4+7

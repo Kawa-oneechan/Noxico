@@ -228,7 +228,7 @@ namespace Noxico
 			{
 				if (Items == null || Items.Count == 0)
 					return;
-				_index = value < Items.Count || value > -1 ? value : 0;
+				_index = value < Items.Count ? value < 0 ? Items.Count - 1 : value : 0;
 				Text = Items[_index];
 				EnsureVisible();
 				if (Change != null)
@@ -409,7 +409,10 @@ namespace Noxico
 		{
 			NoxicoGame.HostForm.Write(Text.PadRight(Width), UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left);
 			if (UIManager.Highlight == this)
-				NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
+				NoxicoGame.HostForm.Cursor = new Point(Left + caret, Top);
+			else
+				NoxicoGame.HostForm.Cursor = new Point(-1, -1);
+				//NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
 		}
 	}
 
@@ -597,6 +600,7 @@ namespace Noxico
 			Elements = new List<UIElement>();
 			HighlightChanged = null;
 			highlight = null;
+			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 		}
 
 		public static void CheckKeys()

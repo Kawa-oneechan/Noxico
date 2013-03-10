@@ -57,6 +57,8 @@ namespace Noxico
 		private bool ClearType;
 
 		public string IniPath { get; set; }
+		public new Point Cursor { get; set; }
+		private Point prevCursor;
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -376,7 +378,8 @@ namespace Noxico
 					{
 						if (image[col, row].Character != previousImage[col, row].Character ||
 							image[col, row].Foreground != previousImage[col, row].Foreground ||
-							image[col, row].Background != previousImage[col, row].Background)
+							image[col, row].Background != previousImage[col, row].Background ||
+							(col == prevCursor.X && row == prevCursor.Y))
 						{
 							DrawCell(gfx, row, col, image[col, row]);
 							previousImage[col, row].Character = image[col, row].Character;
@@ -385,7 +388,12 @@ namespace Noxico
 						}
 					}
 				}
-            }
+
+				if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
+					prevCursor = Cursor;
+				if (Cursor.X >= 0 && Cursor.X < 80 && Cursor.Y >= 0 && Cursor.Y < 25)
+					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, CellWidth - 1, CellHeight - 1);
+			}
             this.Refresh();
         }
 
