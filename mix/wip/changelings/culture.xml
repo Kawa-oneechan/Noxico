@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cultures>
+	<culture id="changelings">
+		<cultureinfo>
+			<bodyplans>
+				<plan name="changeling" />
+			</bodyplans>
+			<monogamous>0.20</monogamous>
+			<marriage>0.0</marriage>
+			<terms>
+				<term from="zeni" to="bit" />
+				<term from="the madman" to="Discord" />
+			</terms>
+		</cultureinfo>
+	</culture>
+	<namegen id="changeling">
+		<set id="theonlyone">Anther, Boloria, Canadensis, Captio, Cicada, Coleoptera, Coliadys, Danaus, Dekras, Dipte, Drosophila, Echo, Fritillary, Imago, Jewel, Kiu, Lampy, Lustro, Mantis, Mendacium, Mirror, Pupa, Rhynie, Scarab, Sctriches, Silky, Speculum, Styx, Thorax, Thysania, Tukor, Voluc, Wasp</set>
+		<male>
+			<rules>
+				<rule>
+					<set id="theonlyone" />
+				</rule>
+			</rules>
+		</male>
+		<female>
+			<rules>
+				<rule>
+					<set id="theonlyone" />
+				</rule>
+			</rules>
+		</female>
+		<surname>
+			<rules>
+				<rule>
+					<space />
+				</rule>
+			</rules>			
+		</surname>
+		<town copy="default" />
+	</namegen>
+</cultures>

@@ -29,6 +29,7 @@ title: "Demon Portal"
 skin
 	type: skin
 	color: fuschia
+seekrit
 		]]>
 		<script type="text/javascript" target="tick">
 		<![CDATA[
@@ -95,6 +96,7 @@ title: "Demon Portal"
 skin
 	type: skin
 	color: fuschia
+seekrit
 		]]>
 		<script type="text/javascript" target="tick">
 		<![CDATA[

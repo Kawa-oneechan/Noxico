@@ -189,8 +189,9 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			if (Environment.TickCount % blinkRate * 2 < blinkRate)
-				base.Draw();
+			//if (Environment.TickCount % blinkRate * 2 < blinkRate)
+			//	base.Draw();
+			NoxicoGame.HostForm.Cursor = new Point(XPosition, YPosition);
 		}
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
