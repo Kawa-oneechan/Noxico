@@ -2193,24 +2193,6 @@ namespace Noxico
 				EndTurn();
 			}
 
-			var lastSatiationChange = Character.Path("satiation/lastchange");
-			if (lastSatiationChange == null)
-			{
-				lastSatiationChange = Character.GetToken("satiation").AddToken("lastchange");
-				lastSatiationChange.Value = NoxicoGame.InGameTime.ToBinary();
-			}
-			var lastSatiationChangeTime = new NoxicanDate((long)lastSatiationChange.Value);
-			if (lastSatiationChangeTime.DayOfYear > NoxicoGame.InGameTime.DayOfYear)
-			{
-				var days = lastSatiationChangeTime.DayOfYear - NoxicoGame.InGameTime.DayOfYear;
-				Character.Hunger(days * 10);
-			}
-			if (lastSatiationChangeTime.Hour > NoxicoGame.InGameTime.Hour)
-			{
-				var hours = lastSatiationChangeTime.Hour - NoxicoGame.InGameTime.Hour;
-				Character.Hunger(hours * 2);
-			}
-
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{
@@ -2447,6 +2429,7 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
+			Hunger();
 			if (Character.UpdatePregnancy())
 				return;
 
@@ -2614,6 +2597,48 @@ namespace Noxico
 
 			NoxicoGame.Mode = UserMode.Walkabout;
 			EndTurn();
+		}
+
+		public void Hunger()
+		{
+			var lastSatiationChange = Character.Path("satiation/lastchange");
+			if (lastSatiationChange == null)
+			{
+				lastSatiationChange = Character.GetToken("satiation").AddToken("lastchange");
+				lastSatiationChange.AddToken("dayoftheyear", NoxicoGame.InGameTime.DayOfYear);
+				lastSatiationChange.AddToken("hour", NoxicoGame.InGameTime.Hour);
+				lastSatiationChange.AddToken("minute", NoxicoGame.InGameTime.Minute);
+			}
+			var lastSatiation = Character.GetToken("satiation").Value;
+			if (lastSatiationChange.GetToken("dayoftheyear").Value < NoxicoGame.InGameTime.DayOfYear)
+			{
+				var days = NoxicoGame.InGameTime.DayOfYear - (int)lastSatiationChange.GetToken("dayoftheyear").Value;
+				Character.Hunger(days * 20);
+			}
+			if (lastSatiationChange.GetToken("hour").Value < NoxicoGame.InGameTime.Hour)
+			{
+				var hours = NoxicoGame.InGameTime.Hour - (int)lastSatiationChange.GetToken("hour").Value;
+				Character.Hunger(hours * 10);
+			}
+			if (lastSatiationChange.GetToken("minute").Value < NoxicoGame.InGameTime.Minute)
+			{
+				var minutes = NoxicoGame.InGameTime.Minute - (int)lastSatiationChange.GetToken("minute").Value;
+				Character.Hunger(minutes);
+			}
+			lastSatiationChange.GetToken("dayoftheyear").Value = NoxicoGame.InGameTime.DayOfYear;
+			lastSatiationChange.GetToken("hour").Value = NoxicoGame.InGameTime.Hour;
+			lastSatiationChange.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
+			var newSatiation = Character.GetToken("satiation").Value;
+			if (lastSatiation >= 20 && newSatiation < 20)
+				NoxicoGame.AddMessage("You have become very hungry.");
+			else if (lastSatiation > 0 && newSatiation == 0)
+				NoxicoGame.AddMessage("You are starving.", Color.Red);
+			else if (lastSatiation > newSatiation && newSatiation < 0)
+			{
+				Character.GetToken("satiation").Value = -1;
+				//The hungry body turns against the stubborn mind...
+				Hurt(5, "starved to death", null, false, true);
+			}
 		}
 	}
 
