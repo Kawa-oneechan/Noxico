@@ -2193,6 +2193,24 @@ namespace Noxico
 				EndTurn();
 			}
 
+			var lastSatiationChange = Character.Path("satiation/lastchange");
+			if (lastSatiationChange == null)
+			{
+				lastSatiationChange = Character.GetToken("satiation").AddToken("lastchange");
+				lastSatiationChange.Value = NoxicoGame.InGameTime.ToBinary();
+			}
+			var lastSatiationChangeTime = new NoxicanDate((long)lastSatiationChange.Value);
+			if (lastSatiationChangeTime.DayOfYear > NoxicoGame.InGameTime.DayOfYear)
+			{
+				var days = lastSatiationChangeTime.DayOfYear - NoxicoGame.InGameTime.DayOfYear;
+				Character.Hunger(days * 10);
+			}
+			if (lastSatiationChangeTime.Hour > NoxicoGame.InGameTime.Hour)
+			{
+				var hours = lastSatiationChangeTime.Hour - NoxicoGame.InGameTime.Hour;
+				Character.Hunger(hours * 2);
+			}
+
 			var helpless = Character.HasToken("helpless");
 			if (helpless)
 			{

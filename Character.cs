@@ -208,14 +208,14 @@ namespace Noxico
 				"items", "health", "perks", "skills",
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade"
+				"money", "ships", "paragon", "renegade", "satiation",
 			};
 			var prefabTokenValues = new[]
 			{
 				0, 10, 0, 0,
 				10, 0, 10, 0,
 				10, 10, 10, 15,
-				100, 0, 0, 0,
+				100, 0, 0, 0, 50,
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
@@ -356,14 +356,14 @@ namespace Noxico
 				"items", "health", "perks", "skills",
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade"
+				"money", "ships", "paragon", "renegade", "satiation",
 			};
 			var prefabTokenValues = new[]
 			{
 				0, 10, 0, 0,
 				10, 0, 10, 0,
 				10, 10, 10, 15,
-				100, 0, 0, 0,
+				100, 0, 0, 0, 50,
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
@@ -468,6 +468,35 @@ namespace Noxico
 		public void ApplyCostume()
 		{
 			if (HasToken("costume"))
+				RemoveToken("costume");
+			if (HasToken("beast"))
+				return;
+			var filters = new Dictionary<string, string>();
+			filters["gender"] = GetGender();
+			filters["board"] = Board.HackishBoardTypeThing;
+			filters["culture"] = this.GetToken("culture").Text;
+			var inventory = this.GetToken("items");
+			var armedOne = false;
+			foreach (var item in WorldGen.GetRandomLoot("npc", "underwear", filters))
+				inventory.AddToken(item).AddToken("equipped");
+			foreach (var item in WorldGen.GetRandomLoot("npc", "clothing", filters))
+				inventory.AddToken(item).AddToken("equipped");
+			foreach (var item in WorldGen.GetRandomLoot("npc", "accessories", filters))
+				inventory.AddToken(item).AddToken("equipped");
+			foreach (var item in WorldGen.GetRandomLoot("npc", "arms", filters))
+			{
+				var arm = inventory.AddToken(item);
+				if (!armedOne)
+				{
+					armedOne = true;
+					arm.AddToken("equipped");
+				}
+			}
+			foreach (var item in WorldGen.GetRandomLoot("npc", "food", filters))
+				inventory.AddToken(item);
+
+			/*
+			if (HasToken("costume"))
 			{
 				if (itemsDocument == null)
 					itemsDocument = Mix.GetXMLDocument("costumes.xml");
@@ -545,6 +574,7 @@ namespace Noxico
 					foreach (var thing in toEquip.Where(x => x.Key.GetToken("equipable").HasToken(order) && !x.Value.HasToken("equipped")))
 						thing.Key.Equip(this, thing.Value);
 			}
+			*/
 		}
 
 		public void StripInvalidItems()
@@ -1947,6 +1977,9 @@ namespace Noxico
 					score++;
 			}
 
+			if (this.GetToken("satiation").Value < 20)
+				score--;
+
 			//apply
 			if (score < 0)
 				this.AddToken("slow");
@@ -2841,6 +2874,22 @@ namespace Noxico
 			}
 		}
 		#endregion
+
+		public void Hunger(int points)
+		{
+			this.GetToken("satiation").Value -= points;
+			CheckHasteSlow();
+		}
+		public void Eat(Token item)
+		{
+			var points = item.Value > 0 ? item.Value : 5;
+			this.GetToken("satiation").Value += points;
+			if (item.HasToken("fat"))
+			{
+				var hwa = Random.Flip() ? "hips" : Random.Flip() ? "waist" : "ass/size";
+				this.Path(hwa).Value += (float)(Random.NextDouble() * 0.2);
+			}
+		}
 	}
 
 	public class Name

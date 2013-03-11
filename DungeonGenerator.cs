@@ -329,7 +329,7 @@ namespace Noxico
 													//if (type == "cabinet")
 													type = "wardrobe";
 												}
-												var contents = WorldGen.GetLoot("container", type, new Dictionary<string, string>() { { "gender", owner.GetGender() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
+												var contents = WorldGen.GetRandomLoot("container", type, new Dictionary<string, string>() { { "gender", owner.GetGender() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
 													AsciiChar = m.Params.Last()[0],

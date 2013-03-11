@@ -238,7 +238,7 @@ namespace Noxico
 
 		void timer_Tick(object sender, EventArgs e)
 		{
-#if !DEBUG
+#if DEBUG
 			Noxico.Update();
 #else
 			try

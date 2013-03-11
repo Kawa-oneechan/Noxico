@@ -35,16 +35,76 @@ separate with "," result is trimmed.
 		<someof min="2" max="5">@food</someof>
 		<someof min="1" max="3">@potion</someof>
 	</lootset>
-	<lootset target="vendor" type="baker">
+	<lootset target="vendor" type="stock">
+		<filter key="vendorclass" value="baker" />
 		<someof min="10" max="10">@baked</someof>
 	</lootset>
-	<lootset target="vendor" type="greengrocer">
+	<lootset target="vendor" type="stock">
+		<filter key="vendorclass" value="greengrocer" />
 		<someof min="10" max="10">@fruit</someof>
 	</lootset>
+	
+	<lootset target="npc" type="food">
+		<someof min="2" max="8">@food</someof>
+	</lootset>
+
+	<!-- Armanents -->
 	<lootset target="npc" type="arms">
 		<filter key="board" value="wild" />
 		<filter key="culture" value="seradevar" />
 		<!-- either a small or large blade. -->
-		<oneof>@smallweapon+blade, @largeweapon+blade</oneof>
+		<oneof>@smallweapon+blade-rareweapon, @largeweapon+blade-rareweapon</oneof>
 	</lootset>
+	<lootset target="npc" type="arms">
+		<filter key="gender" value="!female" />
+		<oneof>@smallweapon+blade-rareweapon</oneof>
+	</lootset>
+	<lootset target="npc" type="arms">
+		<filter key="board" value="town" />
+		<filter key="gender" value="female" />
+		<oneof>combat_knife</oneof>
+	</lootset>
+	
+	<!-- Base costumes -->
+	<lootset target="npc" type="clothing">
+		<filter key="gender" value="female" />
+		<oneof>shirt, blouse</oneof>
+		<oneof>pants, skirt</oneof>
+	</lootset>
+	<lootset target="npc" type="clothing">
+		<filter key="gender" value="female" />
+		<oneof>elegant_dress, sundress</oneof>
+	</lootset>
+	<lootset target="npc" type="clothing">
+		<filter key="gender" value="female" />
+		<oneof>girls_uniform_top</oneof>
+		<oneof>pleated_skirt</oneof>
+	</lootset>
+	<lootset target="npc" type="clothing">
+		<filter key="gender" value="!female" />
+		<oneof>shirt, blouse</oneof>
+		<oneof>pants</oneof>
+	</lootset>
+	<lootset target="npc" type="clothing">
+		<filter key="gender" value="!female" />
+		<oneof>boys_uniform_top</oneof>
+		<oneof>pants</oneof>
+	</lootset>
+
+	<!-- Underwear -->
+	<lootset target="npc" type="underwear">
+		<filter key="gender" value="female" />
+		<oneof>plain_panties</oneof>
+		<oneof>plain_bra</oneof>
+	</lootset>
+	<lootset target="npc" type="underwear">
+		<filter key="gender" value="female" />
+		<oneof>lacy_panties</oneof>
+		<oneof>lacy_bra</oneof>
+	</lootset>
+	<lootset target="npc" type="underwear">
+		<filter key="gender" value="!female" />
+		<oneof>plain_briefs, plain_boxers</oneof>
+	</lootset>
+	
 </loot>

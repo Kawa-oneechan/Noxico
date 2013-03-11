@@ -228,7 +228,7 @@ namespace Noxico
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
-			var testLoot = WorldGen.GetLoot("container", "dungeon_chest");
+			var testLoot = WorldGen.GetRandomLoot("container", "dungeon_chest");
 			Console.WriteLine("--------------------------");
 			Console.WriteLine("Test loot:");
 			testLoot.ForEach(x => Console.WriteLine("* {0}", x));
@@ -672,6 +672,7 @@ namespace Noxico
 
 		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
 		{
+			Board.HackishBoardTypeThing = "wild";
 			var pc = Character.Generate(bodyplan, gender);
 			this.Player = new Player(pc);
 
@@ -1105,6 +1106,8 @@ namespace Noxico
 
 			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation")).ToList();
 			Character character = null;
+
+			Board.HackishBoardTypeThing = board.BoardType.ToString().ToLowerInvariant();
 
 			foreach (var expectedChar in characters)
 			{

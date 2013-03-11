@@ -239,6 +239,7 @@ namespace Noxico
 	public partial class Board : TokenCarrier
 	{
 		public static int GeneratorCount = 0;
+		public static string HackishBoardTypeThing = "wild";
 
 		public int BoardNum { get; set; }
 
@@ -844,6 +845,7 @@ namespace Noxico
 			var toAdd = encData.Value - count;
 			if (toAdd <= 0)
 				return;
+			Board.HackishBoardTypeThing = this.BoardType.ToString().ToLowerInvariant();
 			for (var i = 0; i < toAdd; i++)
 			{
 				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).ToArray()), Gender.Random))

@@ -21,7 +21,7 @@ myBoard.Line(0, 0, 10, 5, "return tree.Noise()"); //using evalstring
 myBoard.Line(0, 5, 10,10, tree); //using Tile
 myBoard.Line(0,10, 10,15, tree, false); //same, but without calling Noise.
 
-myBoard.MergeBitmap("missions/chelsie/lairhouse.png");
+myBoard.MergeBitmap("missions\\chelsie\\lairhouse.png");
 
 myBoard.Replace("return (tile.Character == 'X' && tile.Foreground.R == 128)", "return tree.Noise()");
 myBoard.Replace("return (tile.Character == 'X' && tile.Foreground.R == 64)", "return lawn.Noise()");
