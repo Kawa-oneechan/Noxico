@@ -502,6 +502,10 @@ namespace Noxico
 				}
 			}
 
+			var food = this.GetToken("food");
+			if (food != null)
+				character.Eat(food);
+
 			if (!string.IsNullOrWhiteSpace(this.OnUse))
 				RunScript(item, this.OnUse, character, boardchar, (x => runningDesc += x));
 			else

@@ -46,6 +46,7 @@ namespace Noxico
 
 			thisMap.Clear(biomeID);
 			thisMap.BoardType = BoardType.Town;
+			Board.HackishBoardTypeThing = "town";
 			thisMap.Music = biome.RealmID == "Nox" ? "set://Town" : "set://Dungeon";
 			thisMap.AddToken("culture", 0, cultureName);
 
@@ -91,6 +92,7 @@ namespace Noxico
 			{
 				lol.Clear(biomeID);
 				lol.BoardType = BoardType.Wild;
+				Board.HackishBoardTypeThing = "wild";
 				lol.Music = thisMap.Music;
 				lol.BoardNum = boards.Count;
 				lol.Name = thisMap.Name + " Outskirts";
@@ -136,6 +138,7 @@ namespace Noxico
 				else if (Random.NextDouble() > 0.8)
 				{
 					lol.BoardType = BoardType.Town;
+					Board.HackishBoardTypeThing = "town";
 					lol.Name = thisMap.Name;
 					lol.ID = lol.Name.ToID() + lol.BoardNum;
 					townGen.Board = lol;
@@ -475,7 +478,7 @@ namespace Noxico
 				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
 					break;
 			}
-			var treasure = WorldGen.GetLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasure = WorldGen.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
 				AsciiChar = (char)0x00C6,
@@ -516,12 +519,11 @@ namespace Noxico
 		}
 
 		private static XmlDocument lootDoc;
-		public static List<Token> GetLoot(string target, string type, Dictionary<string, string> filters = null)
+		public static List<XmlElement> GetLoots(string target, string type, Dictionary<string, string> filters = null)
 		{
 			if (lootDoc == null)
 				lootDoc = Mix.GetXMLDocument("loot.xml");
 			var lootsets = new List<XmlElement>();
-			var loot = new List<Token>();
 			if (filters == null)
 				filters = new Dictionary<string, string>();
 			foreach (var potentialSet in lootDoc.SelectNodes("//lootset[@target=\"" + target + "\"]").OfType<XmlElement>())
@@ -536,7 +538,7 @@ namespace Noxico
 					{
 						var key = f.GetAttribute("key");
 						var value = f.GetAttribute("value");
-						if (filters.ContainsKey(key) && filters[key] != value)
+						if (filters.ContainsKey(key) && ((value[0] != '!' && filters[key] != value) || (value[0] == '!' && filters[key] == value.Substring(1))))
 						{
 							isOkay = false;
 							break;
@@ -547,6 +549,14 @@ namespace Noxico
 				}
 				lootsets.Add(potentialSet);
 			}
+			return lootsets;
+		}
+		public static List<Token> GetRandomLoot(string target, string type, Dictionary<string, string> filters = null)
+		{
+			var loot = new List<Token>();
+			var lootsets = GetLoots(target, type, filters);
+			if (lootsets.Count == 0)
+				return loot;
 			var lootset = lootsets[Random.Next(lootsets.Count)];
 			foreach (var of in lootset.ChildNodes.OfType<XmlElement>())
 			{
@@ -569,13 +579,14 @@ namespace Noxico
 					var option = options[Random.Next(options.Count)];
 					if (option[0] == '@')
 					{
+						var possibilities = new List<Token>();
 						option = option.Substring(1);
 						if (option[0] == '-')
 						{
 							//simple negatory token check
 							var items = NoxicoGame.KnownItems.Where(i => (!i.HasToken(option))).ToList();
 							if (items.Count > 0)
-								loot.Add(new Token(items[Random.Next(items.Count)].ID));
+								possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
 						}
 						else if (option.Contains('-') || option.Contains('+'))
 						{
@@ -588,7 +599,7 @@ namespace Noxico
 								{
 									if (fucking[0] != '-' && knownItem.HasToken(fucking))
 										includeThis = true;
-									else if (knownItem.HasToken(fucking))
+									else if (knownItem.HasToken(fucking.Substring(1)))
 									{
 										includeThis = false;
 										break;
@@ -596,7 +607,7 @@ namespace Noxico
 								}
 
 								if (includeThis)
-									loot.Add(new Token(knownItem.ID));
+									possibilities.Add(new Token(knownItem.ID));
 							}
 						}
 						else
@@ -604,8 +615,10 @@ namespace Noxico
 							//simple token check
 							var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
 							if (items.Count > 0)
-								loot.Add(new Token(items[Random.Next(items.Count)].ID));
+								possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
 						}
+						if (possibilities.Count > 0)
+							loot.Add(possibilities[Random.Next(possibilities.Count)]);
 					}
 					else
 					{
