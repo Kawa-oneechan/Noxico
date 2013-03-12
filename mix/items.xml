@@ -335,6 +335,7 @@ ascii
 singleuse
 statbonus
 	health: 10
+price: 2
 weight: feather
 description: "Unfertilized and high in protein."
 ascii
@@ -745,6 +746,7 @@ ascii
 singleuse
 statbonus
 	health: 10
+price: 5
 weight: feather
 description: "Smaczne, ale nie bardzo nape<g0142>niania."
 ascii
@@ -761,6 +763,7 @@ singleuse
 statbonus
 	health: 12
 weight: feather
+price: 5
 description: "Vkusno, no ne ochen zapolneniyu."
 ascii
 	char: U+2609
@@ -776,6 +779,7 @@ singleuse
 statbonus
 	health: 5
 weight: feather
+price: 5
 description: "Can't go wrong with bacon."
 ascii
 	char: U+2016
@@ -791,6 +795,7 @@ meat
 singleuse
 statbonus
 	health: 10
+price: 10
 weight: feather
 description: "Let me guess."
 ascii

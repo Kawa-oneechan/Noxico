@@ -8,7 +8,8 @@ namespace Noxico
 	public static class WorldGen
 	{
 		private static TownGenerator townGen;
-		private static List<Func<InventoryItem, bool>> vendorTypeList;
+		//private static List<Func<InventoryItem, bool>> vendorTypeList;
+		private static List<string> vendorTypeList;
 
 		public static Board CreateTown(int biomeID, string cultureName, string name, bool withSurroundings)
 		{
@@ -23,6 +24,7 @@ namespace Noxico
 			var biome = BiomeData.Biomes[biomeID];
 
 			var vendorChance = 0.5;
+			/*
 			if (vendorTypeList == null)
 			{
 				vendorTypeList = new List<Func<InventoryItem, bool>>()
@@ -40,6 +42,20 @@ namespace Noxico
 				};
 			}
 			var vendorTypes = new List<Func<InventoryItem, bool>>();
+			*/
+			if (vendorTypeList == null)
+			{
+				vendorTypeList = new List<string>();
+				var lootData = Mix.GetXMLDocument("loot.xml");
+				var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
+				foreach (var filter in filters.OfType<XmlElement>())
+				{
+					var v = filter.GetAttribute("value");
+					if (!vendorTypeList.Contains(v))
+						vendorTypeList.Add(v);
+				}
+			}
+			var vendorTypes = new List<string>();
 
 			if (string.IsNullOrEmpty(cultureName))
 				cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
@@ -172,6 +188,7 @@ namespace Noxico
 			return CreateTown(-1, null, null, true);
 		}
 
+		/*
 		public static bool AddVendor(Board board, List<Func<InventoryItem, bool>> typeList)
 		{
 			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
@@ -210,7 +227,24 @@ namespace Noxico
 			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
 			return true;
 		}
-
+		*/
+		public static bool AddVendor(Board board, List<string> typeList)
+		{
+			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
+			if (unexpected.Count == 0)
+				return false;
+			var vendor = unexpected[0].Character;
+			var stock = vendor.GetToken("items");
+			if (typeList.Count == 0)
+				typeList.AddRange(vendorTypeList);
+			var type = typeList[Random.Next(typeList.Count)];
+			typeList.Remove(type);
+			vendor.RemoveAll("role");
+			vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, type);
+			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
+			Console.WriteLine("*** {0} is now a vendor and should restock. ***", vendor.Name.ToString(true));
+			return true;
+		}
 
 
 		public static int DungeonGeneratorEntranceBoardNum;

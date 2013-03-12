@@ -563,6 +563,7 @@ namespace Noxico
 			ID = character.Name.ToID();
 			Character = character;
 			this.Blocking = true;
+			RestockVendor();
 		}
 
 		public virtual void AdjustView()
@@ -1362,6 +1363,7 @@ namespace Noxico
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			newChar.ReassignScripts();
+			newChar.RestockVendor();
 			return newChar;
 		}
 
@@ -1822,6 +1824,31 @@ namespace Noxico
 			 */
 		}
 #endif
+
+		public void RestockVendor()
+		{
+			var vendor = Character.Path("role/vendor");
+			if (vendor == null)
+				return;
+			if (!vendor.HasToken("lastrestockday"))
+				vendor.AddToken("lastrestockday", NoxicoGame.InGameTime.DayOfYear - 1);
+			var lastRestockDay = vendor.GetToken("lastrestockday").Value;
+			var today = NoxicoGame.InGameTime.DayOfYear;
+			if (lastRestockDay >= today)
+				return;
+			Console.WriteLine("{0} ({1}) restocking...", Character.Name, vendor.GetToken("class").Text);
+			vendor.GetToken("lastrestockday").Value = today;
+			var items = Character.Path("items");
+			var filters = new Dictionary<string, string>();
+			filters["vendorclass"] = vendor.GetToken("class").Text;
+			while (items.Tokens.Count < 20)
+			{
+				var newstock = WorldGen.GetRandomLoot("vendor", "stock", filters);
+				if (newstock.Count == 0)
+					break;
+				items.AddSet(newstock);
+			}
+		}
 	}
 
     public class Player : BoardChar
