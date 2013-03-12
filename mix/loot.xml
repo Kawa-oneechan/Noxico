@@ -40,9 +40,15 @@ separate with "," result is trimmed.
 		<someof min="10" max="10">@baked</someof>
 	</lootset>
 	<lootset target="vendor" type="stock">
+		<filter key="vendorclass" value="butcher" />
+		<someof min="10" max="10">@meat</someof>
+	</lootset>
+	<!--
+	<lootset target="vendor" type="stock">
 		<filter key="vendorclass" value="greengrocer" />
 		<someof min="10" max="10">@fruit</someof>
 	</lootset>
+	-->
 	
 	<lootset target="npc" type="food">
 		<someof min="2" max="8">@food</someof>
