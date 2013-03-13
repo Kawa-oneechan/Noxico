@@ -106,6 +106,7 @@ namespace Noxico
 					c.Path("ships").Tokens.Add(ship);
 				}
 				r.Add(c);
+				Scheduler.AddSchedule("villager", c);
 			}
 			return r;
 		}

@@ -171,9 +171,6 @@ namespace Noxico
 
 	public class Cursor : Entity
 	{
-
-		private static int blinkRate = 500;
-
 		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
 		public List<Point> Tabstops { get; private set; }
@@ -545,6 +542,7 @@ namespace Noxico
 		public int ScriptPathTargetY { get; private set; }
 		public string ScriptPathID { get; set; }
 		private Jint.JintEngine js;
+		private Scheduler scheduler;
 
 		public BoardChar()
 		{
@@ -647,7 +645,7 @@ namespace Noxico
 
 		public void Excite()
 		{
-			if (this.Character.HasToken("beast"))
+			if (this.Character.HasToken("beast") || this.Character.HasToken("sleeping"))
 				return;
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (player.ParentBoard != this.ParentBoard)
@@ -686,6 +684,8 @@ namespace Noxico
 
 		public string Ogle(Character otherChar)
 		{
+			if (this.Character.HasToken("sleeping"))
+				return null;
 			var stim = this.Character.GetStat(Stat.Stimulation);
 			var carn = this.Character.GetStat(Stat.Carnality);
 			var r = Random.Next(4);
@@ -800,12 +800,6 @@ namespace Noxico
 
 			CheckForCriminalScum();
 
-			//Disabled for 0.1.14 release
-#if SCHEDULE
-			if ((this.ParentBoard.Type == BoardType.Town || this.ParentBoard.Type == BoardType.Special) && !this.Character.HasToken("hostile"))
-				RunSchedule();
-#endif
-
 			base.Update();
 			Excite();
 			Character.UpdatePregnancy();
@@ -813,6 +807,15 @@ namespace Noxico
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null))
 					return;
+
+			//Pillowshout added this.
+			if (!(this is Player) && !this.Character.HasToken("hostile") && this.ParentBoard.BoardType == BoardType.Town)
+			{
+				if (scheduler == null)
+					scheduler = new Scheduler(this);
+
+				scheduler.RunSchedule();
+			}
 
 			if (this.Character.HasToken("sleeping"))
 				return;
@@ -1334,11 +1337,6 @@ namespace Noxico
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
-#if SCHEDULE
-			stream.Write((byte)LastScheduleDay);
-			stream.Write((byte)LastScheduleHour);
-			stream.Write((byte)LastScheduleMinute);
-#endif
 			Character.SaveToFile(stream);
 		}
 
@@ -1355,11 +1353,6 @@ namespace Noxico
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
-#if SCHEDULE
-			newChar.LastScheduleDay = stream.ReadByte();
-			newChar.LastScheduleHour = stream.ReadByte();
-			newChar.LastScheduleMinute = stream.ReadByte();
-#endif
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			newChar.ReassignScripts();
@@ -1447,6 +1440,10 @@ namespace Noxico
 			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
 			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			js.SetParameter("Expectations", NoxicoGame.Expectations);
+			js.SetParameter("scheduler", this.scheduler);
+			js.SetParameter("Task", typeof(Task));
+			js.SetParameter("TaskType", typeof(TaskType));
+			js.SetParameter("Token", typeof(Token));
 			Board.DrawJS = js;
 			var r = js.Run(script);
 			if (r is bool)
@@ -1584,247 +1581,7 @@ namespace Noxico
 			if (effect != null)
 				FireLine(effect, target.XPosition, target.YPosition);
 		}
-
-#if SCHEDULE
-		private Dijkstra villagerAIMap;
-
-		private enum ScheduleActionType
-		{
-			Wait, Find, Perform, Add, Remove
-		}
-		private class ScheduleAction
-		{
-			public ScheduleActionType Type;
-			public int WaitHour, WaitMinute;
-			public string Param;
-		}
-
-		private List<ScheduleAction> schedule;
-		private int LastScheduleDay, LastScheduleHour, LastScheduleMinute;
-		private string LastTarget;
-		private int TargetTimeout;
-
-		public void RunSchedule()
-		{
-			var day = NoxicoGame.InGameTime.Day;
-			var hour = NoxicoGame.InGameTime.Hour;
-			var minute = NoxicoGame.InGameTime.Minute;
-
-			if (schedule == null)
-				schedule = new List<ScheduleAction>();
-
-			if (hour < LastScheduleHour)
-			{
-				Console.WriteLine("AI for {0} reset.", this.Character.Name);
-				schedule.Clear();
-
-				//typical villager AI, does not account for nudity taboos (in that the wardrobe steps could be removed)
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 6, WaitMinute = 0 });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Remove, Param = "sleeping" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "wardrobe" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "dressup" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "freeroam" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 21, WaitMinute = 0 });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "wardrobe" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Perform, Param = "disrobe" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Find, Param = "bed" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Add, Param = "sleeping" });
-				schedule.Add(new ScheduleAction() { Type = ScheduleActionType.Wait, WaitHour = 23 });
-
-				//catch up
-				while (schedule.Count > 0)
-				{
-					var entry = schedule[0];
-					if (entry.Type == ScheduleActionType.Wait
-						&& (entry.WaitHour > LastScheduleHour && entry.WaitMinute > LastScheduleMinute)
-						|| (entry.WaitHour >= hour && entry.WaitMinute >= minute))
-					{
-						break;
-					}
-					else if (entry.Type == ScheduleActionType.Find)
-					{
-						var idToFind = "_" + entry.Param + "_" + this.Character.Name.FirstName;
-						var target = this.ParentBoard.Entities.OfType<Entity>().FirstOrDefault(x => x.ID.EndsWith(idToFind, StringComparison.InvariantCultureIgnoreCase));
-						if (target == null)
-						{
-							Console.WriteLine("AI for {0} could not catch up to Finding {1}.", this.Character.Name, entry.Param);
-							return;
-						}
-						else
-						{
-							Console.WriteLine("AI for {0} cought up to finding {1} at {2}x{3}.", this.Character.Name, entry.Param, target.XPosition, target.YPosition);
-							this.XPosition = target.XPosition;
-							this.YPosition = target.YPosition;
-						}
-					}
-					else if (entry.Type == ScheduleActionType.Perform)
-					{
-						//lol
-					}
-					else
-					{
-						if (entry.Type == ScheduleActionType.Add)
-						{
-							Console.WriteLine("AI for {0} caught up to adding {1}.", this.Character.Name, entry.Param);
-							Character.AddToken(entry.Param);
-						}
-						else if (entry.Type == ScheduleActionType.Remove)
-						{
-							Console.WriteLine("AI for {0} caught up to removing {1}.", this.Character.Name, entry.Param);
-							Character.RemoveToken(entry.Param);
-						}
-					}
-					schedule.RemoveAt(0);
-				}
-
-				LastScheduleDay = day;
-				LastScheduleHour = hour;
-				LastScheduleMinute = minute;
-			}
-
-			if (schedule.Count == 0)
-				return;
-
-			//execute normally
-			var task = schedule[0];
-			if (task.Type == ScheduleActionType.Wait)
-			{
-				if (hour < task.WaitHour)
-					return;
-				schedule.RemoveAt(0);
-			}
-			else if (task.Type == ScheduleActionType.Find)
-			{
-				if (LastTarget != task.Param)
-				{
-					Console.WriteLine("AI for {0} has to Find {1}.", this.Character.Name, task.Param);
-
-					villagerAIMap = new Dijkstra();
-					villagerAIMap.UpdateWalls();
-					var idToFind = "_" + task.Param + "_" + this.Character.Name.FirstName;
-					var target = this.ParentBoard.Entities.OfType<Entity>().FirstOrDefault(x => x.ID.EndsWith(idToFind, StringComparison.InvariantCultureIgnoreCase));
-					if (target == null)
-					{
-						Console.WriteLine("AI for {0} could not Find {1}.", this.Character.Name, task.Param);
-						schedule.RemoveAt(0);
-						return;
-					}
-					else
-					{
-						Console.WriteLine("AI for {0} found {1} at {2}x{3}.", this.Character.Name, task.Param, target.XPosition, target.YPosition);
-						villagerAIMap.Hotspots.Add(new Point(target.XPosition, target.YPosition));
-					}
-					LastTarget = task.Param;
-					TargetTimeout = 0;
-				}
-
-				if (this.XPosition == villagerAIMap.Hotspots[0].X && this.YPosition == villagerAIMap.Hotspots[0].Y)
-				{
-					Console.WriteLine("AI for {0} reached {1}.", this.Character.Name, task.Param);
-					schedule.RemoveAt(0);
-					return;
-				}
-				else
-				{
-					//add timeout?
-					Console.WriteLine("AI for {0} pathing to {1}...", this.Character.Name, task.Param);
-					TargetTimeout++;
-					if (TargetTimeout == 20)
-					{
-						Console.WriteLine("AI for {0} didn't quite reach {1}.", this.Character.Name, task.Param);
-						this.XPosition = villagerAIMap.Hotspots[0].X;
-						this.YPosition = villagerAIMap.Hotspots[0].Y;
-						schedule.RemoveAt(0);
-						return;
-					}
-					var dir = Direction.North;
-					villagerAIMap.Ignore = DijkstraIgnores.Type;
-					villagerAIMap.IgnoreType = typeof(BoardChar);
-					if (villagerAIMap.RollDown(this.YPosition, this.XPosition, ref dir))
-						Move(dir);
-				}
-			}
-			else if (task.Type == ScheduleActionType.Perform)
-			{
-				//do it
-				schedule.RemoveAt(0);
-			}
-			else
-			{
-				if (task.Type == ScheduleActionType.Add)
-					Character.AddToken(task.Param);
-				else if (task.Type == ScheduleActionType.Remove)
-					Character.RemoveToken(task.Param);
-				schedule.RemoveAt(0);
-			}
-
-			/*
-			Typical villager routine:
-			* Get up
-			* Find wardrobe
-			* Get dressed
-			* Cut loose
-			* Find wardrobe
-			* Undress
-			* Find bed
-			* Sleep
-
-			Hardcoding all this lowers readability already, and is why the undress stage skips finding the wardrobe.
-			Suggestion is to have a list of actions and times.
-
-			1) Action lists are not saved, only the last known time is.
-			2) Every day, and every time a board is loaded, the list is rebuilt. At this point, minute variations can be introduced.
-			3) If a board is loaded, and an action is missed, fast-forward through the list, skipping the "find X" actions and executing the rest.
-			4) Use tokens to flavor the "cut loose" step. Probably straight-up parsing the child nodes of an [AISchedule] token.
-
-			There are three kinds of items in the list:
-			* Wait for XX:XX
-			* Find and go to Y
-			* Perform action Y
-
-			Wait actions aren't executed per se.
-			Find actions take time in that the schedule is suspended until it can be found. If it can't, because the BoardChar has been twitching between two tiles with no clue as to how to get there, teleport them to the target.
-
-			Specific actions could include:
-			* get dressed
-			* undress
-			* cut loose
-			* set token X
-			* remove token X
-			* run script with the AIStep variable set to X
-
-			Having no nudity taboo can be implemented in two ways:
-			1) in rebuilding the action list, skip the standard wardrobe steps.
-			2) in executing, detect and skip them.
-
-			Example:
-			Village is loaded at 12:00, because the game was just started. Villager lists are rebuilt. A typical list:
-			{ wait for 06:00, remove token [sleeping], find wardrobe, get dressed, cut loose,
-			  wait for 21:00, find wardrobe, undress, find bed, set token [sleeping] }
-			All actions are scanned through, looking for waits set after the last known one and at or after 12:00, and all the actions inbetween.
-			foreach action in list
-				if action is wait and time > last hit and time >= now
-					break
-				else
-					if action is find
-						either skip it entirely or TP the character there
-					else
-						perform the action
-			It's 12:00 so we do the following things:
-			* remove token [sleeping]
-			* get dressed
-			* cut loose
-			* mark 12:00 as the last time we caught up to.
-			The board is reloaded at 21:10. The wait for 06:00 is skipped, because we hit that one last time. The wait for 21:00 is hit, because it's later than the remembered 06:00 and earlier than the current time (by 10 minutes), so we do the following things:
-			* undress
-			* find bed
-			* set token [sleeping]
-			* mark 21:10 as the last time we caught up to.
-			Minding the 24-hour clock, remembering only the time would mean that if you arrive at the right moments, a character would never go to sleep or get redressed. This can be fixed by also remembering the day, and perhaps more of the date. In that case, only one missed day should probably be run.
-			 */
-		}
-#endif
-
+		
 		public void RestockVendor()
 		{
 			var vendor = Character.Path("role/vendor");
@@ -1839,6 +1596,9 @@ namespace Noxico
 			Console.WriteLine("{0} ({1}) restocking...", Character.Name, vendor.GetToken("class").Text);
 			vendor.GetToken("lastrestockday").Value = today;
 			var items = Character.Path("items");
+			var diff = 20 - items.Tokens.Count;
+			if (diff > 0)
+				Character.GetToken("money").Value += diff * 50; //?
 			var filters = new Dictionary<string, string>();
 			filters["vendorclass"] = vendor.GetToken("class").Text;
 			while (items.Tokens.Count < 20)
@@ -2215,6 +1975,8 @@ namespace Noxico
 					Character.RemoveToken("sleeping");
 					Character.RemoveToken("helpless");
 					NoxicoGame.AddMessage("You get back up.");
+					if (Character.GetToken("health").Value > Character.GetMaximumHealth())
+						Character.GetToken("health").Value = Character.GetMaximumHealth();
 				}
 				NoxicoGame.InGameTime.AddMinutes(5);
 				EndTurn();
@@ -2640,17 +2402,17 @@ namespace Noxico
 			if (lastSatiationChange.GetToken("dayoftheyear").Value < NoxicoGame.InGameTime.DayOfYear)
 			{
 				var days = NoxicoGame.InGameTime.DayOfYear - (int)lastSatiationChange.GetToken("dayoftheyear").Value;
-				Character.Hunger(days * 20);
+				Character.Hunger(days * 2);
 			}
 			if (lastSatiationChange.GetToken("hour").Value < NoxicoGame.InGameTime.Hour)
 			{
 				var hours = NoxicoGame.InGameTime.Hour - (int)lastSatiationChange.GetToken("hour").Value;
-				Character.Hunger(hours * 10);
+				Character.Hunger(hours * 0.5f);
 			}
 			if (lastSatiationChange.GetToken("minute").Value < NoxicoGame.InGameTime.Minute)
 			{
 				var minutes = NoxicoGame.InGameTime.Minute - (int)lastSatiationChange.GetToken("minute").Value;
-				Character.Hunger(minutes);
+				Character.Hunger(minutes * 0.1f);
 			}
 			lastSatiationChange.GetToken("dayoftheyear").Value = NoxicoGame.InGameTime.DayOfYear;
 			lastSatiationChange.GetToken("hour").Value = NoxicoGame.InGameTime.Hour;
@@ -2664,7 +2426,7 @@ namespace Noxico
 			{
 				Character.GetToken("satiation").Value = -1;
 				//The hungry body turns against the stubborn mind...
-				Hurt(5, "starved to death", null, false, true);
+				Hurt(2, "starved to death", null, false, true);
 			}
 		}
 	}
