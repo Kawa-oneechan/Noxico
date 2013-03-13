@@ -24,7 +24,7 @@ namespace Noxico
 
 	public class Character : TokenCarrier
 	{
-		private static XmlDocument bodyPlansDocument, uniquesDocument, itemsDocument;
+		private static XmlDocument bodyPlansDocument, uniquesDocument;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
@@ -2875,7 +2875,7 @@ namespace Noxico
 		}
 		#endregion
 
-		public void Hunger(int points)
+		public void Hunger(float points)
 		{
 			this.GetToken("satiation").Value -= points;
 			CheckHasteSlow();

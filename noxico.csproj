@@ -126,6 +126,7 @@
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
     <Compile Include="fmod\fmod_memoryinfo.cs" />
+    <Compile Include="Scheduler.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
     <Compile Include="WinFormHost.cs">
       <SubType>Form</SubType>
@@ -225,6 +226,7 @@
     <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
     <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
+    <Content Include="mix\schedule.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />

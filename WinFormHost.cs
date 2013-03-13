@@ -198,6 +198,8 @@ namespace Noxico
 				starting = false;
 				Running = true;
 
+				Cursor = new Point(-1, -1);
+
 #if GAMELOOP
 				while (Running)
 				{

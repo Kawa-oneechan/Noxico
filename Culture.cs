@@ -375,5 +375,30 @@ namespace Noxico
 		{
 			Hour = 13;
 		}
+
+		public static bool operator >=(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() >= right.ToBinary());
+		}
+		public static bool operator <=(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() <= right.ToBinary());
+		}
+		public static bool operator ==(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() == right.ToBinary());
+		}
+		public static bool operator !=(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() != right.ToBinary());
+		}
+		public static bool operator >(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() > right.ToBinary());
+		}
+		public static bool operator <(NoxicanDate left, NoxicanDate right)
+		{
+			return (left.ToBinary() < right.ToBinary());
+		}
 	}
 }

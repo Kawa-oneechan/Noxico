@@ -8,7 +8,6 @@ namespace Noxico
 	public static class WorldGen
 	{
 		private static TownGenerator townGen;
-		//private static List<Func<InventoryItem, bool>> vendorTypeList;
 		private static List<string> vendorTypeList;
 
 		public static Board CreateTown(int biomeID, string cultureName, string name, bool withSurroundings)
@@ -23,26 +22,7 @@ namespace Noxico
 			var thisMap = new Board();
 			var biome = BiomeData.Biomes[biomeID];
 
-			var vendorChance = 0.5;
-			/*
-			if (vendorTypeList == null)
-			{
-				vendorTypeList = new List<Func<InventoryItem, bool>>()
-				{
-					new Func<InventoryItem, bool>(x => x.Path("equipable/male") != null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //mens clothing
-					new Func<InventoryItem, bool>(x => x.Path("equipable/female") != null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //womens clothing
-					new Func<InventoryItem, bool>(x => x.Path("equipable/female") == null && !(x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //other clothing
-					new Func<InventoryItem, bool>(x => x.Path("equipable/male") != null && (x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //mens underwear
-					new Func<InventoryItem, bool>(x => x.Path("equipable/female") != null && (x.Path("equipable/underpants") != null || x.Path("equipable/undershirt") != null)), //lingerie
-					new Func<InventoryItem, bool>(x => x.Path("statbonus/health") != null && x.Path("singleuse") == null), //foodstuffs
-					new Func<InventoryItem, bool>(x => x.Path("weapon") != null && x.Path("weapon/range") == null), //short-range weapons
-
-					new Func<InventoryItem, bool>(x => x.Path("statbonus/health") != null && x.Path("singleuse") == null), //repeat for bias
-					new Func<InventoryItem, bool>(x => x.Path("weapon") != null && x.Path("weapon/range") == null),
-				};
-			}
-			var vendorTypes = new List<Func<InventoryItem, bool>>();
-			*/
+			var vendorChance = 0.75;
 			if (vendorTypeList == null)
 			{
 				vendorTypeList = new List<string>();
@@ -86,10 +66,8 @@ namespace Noxico
 				}
 			}
 			thisMap.Name = name;
-
 			thisMap.BoardNum = boards.Count;
 			thisMap.ID = thisMap.Name.ToID() + thisMap.BoardNum;
-
 			boards.Add(thisMap);
 
 			if (!withSurroundings)
@@ -188,46 +166,6 @@ namespace Noxico
 			return CreateTown(-1, null, null, true);
 		}
 
-		/*
-		public static bool AddVendor(Board board, List<Func<InventoryItem, bool>> typeList)
-		{
-			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
-			if (unexpected.Count == 0)
-				return false;
-			var vendor = unexpected[0].Character;
-			var stock = vendor.GetToken("items");
-			var count = Random.Next(10, 20);
-			if (typeList.Count == 0)
-				typeList.AddRange(vendorTypeList);
-			var criterion = typeList[Random.Next(typeList.Count)];
-			typeList.Remove(criterion);
-			var sellable = NoxicoGame.KnownItems.FindAll(x => x.HasToken("price") && criterion(x)).ToList();
-			while (sellable.Count == 0)
-			{
-				criterion = typeList[Random.Next(typeList.Count)];
-				typeList.Remove(criterion);
-				if (typeList.Count == 0)
-				{
-					Console.WriteLine("*** Gave up trying to make {0} a vendor ***", vendor.Name.ToString(true));
-					return false;
-				}
-			}
-			while (count > 0)
-			{
-				if (sellable.Count == 0)
-					break;
-				var item = sellable[Random.Next(sellable.Count)];
-				stock.AddToken(item.ID);
-				if (Random.NextDouble() < 0.8)
-					sellable.Remove(item);
-			}
-			vendor.RemoveAll("role");
-			vendor.AddToken("role").AddToken("vendor");
-			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
-			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
-			return true;
-		}
-		*/
 		public static bool AddVendor(Board board, List<string> typeList)
 		{
 			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
@@ -242,7 +180,8 @@ namespace Noxico
 			vendor.RemoveAll("role");
 			vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, type);
 			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
-			Console.WriteLine("*** {0} is now a vendor and should restock. ***", vendor.Name.ToString(true));
+			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
+			unexpected[0].RestockVendor();
 			return true;
 		}
 

@@ -32,7 +32,7 @@ namespace Noxico
 				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length / 2);
 
 				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 12, 9);
-				host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
+				//host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
