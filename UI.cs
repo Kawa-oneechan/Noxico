@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Keys = System.Windows.Forms.Keys;
@@ -228,7 +228,7 @@ namespace Noxico
 			{
 				if (Items == null || Items.Count == 0)
 					return;
-				_index = value < Items.Count ? value < 0 ? Items.Count - 1 : value : 0;
+				_index = (value < Items.Count ? (value < 0 ? Items.Count - 1 : value) : 0);
 				Text = Items[_index];
 				EnsureVisible();
 				if (Change != null)

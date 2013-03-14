@@ -224,13 +224,6 @@ namespace Noxico
 		}
 	}
 
-	public class StatusMessage
-	{
-		public string Message { get; set; }
-		public Color Color { get; set; }
-		public bool New { get; set; }
-	}
-
 	public enum BoardType
 	{
 		Wild, Town, Dungeon, Special
