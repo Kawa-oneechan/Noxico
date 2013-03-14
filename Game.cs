@@ -462,24 +462,24 @@ namespace Noxico
 
 			if (Messages.Count == 0)
 				return;
-			if (Messages[0].New)
-			{
-				Messages[0].New = false;
-				return;
-			}
-			Messages.RemoveAt(0);
+			var milliSecond = new TimeSpan(0, 0, 0, 0, 10);
+			Messages.ForEach(m => m.DisplayTimeLeft = m.DisplayTimeLeft.Subtract(milliSecond));
+			var deadMessage = Messages.FirstOrDefault(m => m.DisplayTimeLeft.Ticks <= 0);
+			if (deadMessage != null)
+				Messages.Remove(deadMessage);
 			HostForm.Noxico.CurrentBoard.Redraw();
 		}
 		public static void AddMessage(string message, Color color)
 		{
 			if (Messages.Count > 0 && Messages.Last().Message == message)
-				Messages.Last().New = true;
+				Messages.Last().Renew();
 			else
 			{
-				Messages.Add(new StatusMessage() { Message = message, Color = color, New = true });
+				Messages.Add(new StatusMessage() { Message = message, Color = color });
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}
+			HostForm.Noxico.CurrentBoard.Redraw();
 		}
 		public static void AddMessage(string message)
 		{
@@ -563,6 +563,7 @@ namespace Noxico
 					}
 				}
 				CurrentBoard.Draw();
+				UpdateMessages();
 				DrawMessages();
 
 				if (Mode == UserMode.Aiming)
@@ -998,6 +999,21 @@ namespace Noxico
 			if (KnownTargets.Contains(targetID))
 				return; //Target already known, whatever.
 			KnownTargets.Add(targetID);
+		}
+	}
+
+	public class StatusMessage
+	{
+		public string Message { get; set; }
+		public Color Color { get; set; }
+		public TimeSpan DisplayTimeLeft { get; set; }
+		public StatusMessage()
+		{
+			Renew();
+		}
+		public void Renew()
+		{
+			DisplayTimeLeft = new TimeSpan(0, 0, 2);
 		}
 	}
 

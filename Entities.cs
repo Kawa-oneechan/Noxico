@@ -282,7 +282,7 @@ namespace Noxico
 		{
 			base.Update();
 			ParentBoard.Redraw();
-			NoxicoGame.Messages.Last().New = true;
+			NoxicoGame.Messages.Last().Renew();
 			NoxicoGame.UpdateMessages();
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
@@ -2261,7 +2261,7 @@ namespace Noxico
 #if DEBUG
 			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}) @ {3} {4}", ParentBoard.Name, XPosition, YPosition, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
 #endif
-			NoxicoGame.UpdateMessages();
+			//NoxicoGame.UpdateMessages();
 		}
 
 		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
