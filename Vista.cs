@@ -45,27 +45,36 @@ namespace Noxico
 			if (!GamepadEnabled || !isVista)
 				return XInputErrorCodes.AccessDenied;
 
-			var ret = SafeNativeMethods.XInputGetState(0, out padState);
-			GamepadAvailable = (ret == XInputErrorCodes.Success);
-			if (ret == XInputErrorCodes.Success)
+			try
 			{
-				GamepadState = padState.GamePad;
-				GamepadHasInput = (padPacket != padState.PacketNumber);
-
-				if (GamepadHasInput)
+				var ret = SafeNativeMethods.XInputGetState(0, out padState);
+				GamepadAvailable = (ret == XInputErrorCodes.Success);
+				if (ret == XInputErrorCodes.Success)
 				{
-					var rawButtons = padState.GamePad.Buttons;
-					DPad = rawButtons & directionMask;
-					var newTrigs = rawButtons; // & triggerMask;
-					if (lastTrigs != newTrigs)
-						Triggers = lastTrigs = newTrigs;
-					else if (newTrigs == lastTrigs)
-						Triggers = lastTrigs = 0;
-				}
+					GamepadState = padState.GamePad;
+					GamepadHasInput = (padPacket != padState.PacketNumber);
 
-				padPacket = padState.PacketNumber;
+					if (GamepadHasInput)
+					{
+						var rawButtons = padState.GamePad.Buttons;
+						DPad = rawButtons & directionMask;
+						var newTrigs = rawButtons; // & triggerMask;
+						if (lastTrigs != newTrigs)
+							Triggers = lastTrigs = newTrigs;
+						else if (newTrigs == lastTrigs)
+							Triggers = lastTrigs = 0;
+					}
+
+					padPacket = padState.PacketNumber;
+				}
+				return ret;
 			}
-			return ret;
+			catch (DllNotFoundException)
+			{
+				//Thanks to Adamsk on #rgrd for bringing this to my attention.
+				GamepadEnabled = false;
+				return XInputErrorCodes.AccessDenied;
+			}
 		}
 
 		public static void ReleaseTriggers()
