@@ -303,19 +303,43 @@ namespace Noxico
 			return sb.ToString();
 		}
 
-		public static string SmartQuote(this string text)
+		public static string SmartQuote(this string text, Func<string, string> filter = null)
 		{
 			var ret = new StringBuilder();
 			var open = false;
+			var quoted = new StringBuilder();
 			foreach (var ch in text)
 			{
 				if (ch == '\"')
 				{
-					ret.Append(open ? '\u201D' : '\u201C');
-					open = !open;
+					//ret.Append(open ? '\u201D' : '\u201C');
+					if (!open)
+					{
+						quoted.Clear();
+						open = true;
+						ret.Append('\u201C');
+					}
+					else
+					{
+						var q = quoted.ToString();
+						if (q.StartsWith("<nofilter>"))
+							ret.Append(q.Substring(10));
+						else if (filter == null)
+							ret.Append(q);
+						else
+							ret.Append(filter(q));
+						quoted.Clear();
+						open = false;
+						ret.Append('\u201D');
+					}
 				}
 				else
-					ret.Append(ch);
+				{
+					if (open)
+						quoted.Append(ch);
+					else
+						ret.Append(ch);
+				}
 			}
 			return ret.ToString();
 		}

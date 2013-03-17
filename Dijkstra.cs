@@ -41,6 +41,8 @@ namespace Noxico
 			for (var row = 0; row < mapRows; row++)
 				for (var col = 0; col < mapCols; col++)
 					walls[row, col] = board.IsSolid(row, col);
+			foreach (var door in board.Entities.OfType<Door>().Where(d => !d.Locked))
+				walls[door.YPosition, door.XPosition] = false;
 		}
 
 		public bool RollDown(int row, int col, ref Direction dir)

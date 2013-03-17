@@ -14,7 +14,7 @@ if (spouse != null)
 }
 
 //Not sure if this works. Last time I tried the wardrobe was already empty.
-var spousesStuff = myBoard.GetEntitiesWith("wardrobe_" + spouse.Name, false);
+var spousesStuff = myBoard.GetEntitiesWith("wardrobe_" + spouse.Name.ToID(), false);
 for (var i = 0; i < spousesStuff.length; i++)
 	spousesStuff[i].GetToken("contents").Tokens.Clear();
 
