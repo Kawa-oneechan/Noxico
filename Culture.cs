@@ -18,6 +18,7 @@ namespace Noxico
 		public string[] Bodyplans { get; private set; }
 		public double Marriage  { get; private set; }
 		public double Monogamous { get; private set; }
+		public Dictionary<string, string> Terms { get; private set; }
 
 		public static List<Deity> Deities;
 
@@ -63,10 +64,17 @@ namespace Noxico
 			nc.Bodyplans = plans.ToArray();
 			var marriage = info.SelectSingleNode("marriage") as XmlElement;
 			var monogamous = info.SelectSingleNode("monogamous") as XmlElement;
+			var terms = info.SelectSingleNode("terms") as XmlElement;
 			if (marriage != null)
 				nc.Marriage = double.Parse(marriage.InnerText, System.Globalization.NumberStyles.Float);
 			if (monogamous != null)
 				nc.Monogamous = double.Parse(monogamous.InnerText, System.Globalization.NumberStyles.Float);
+			if (terms != null)
+			{
+				nc.Terms = new Dictionary<string, string>();
+				foreach (var term in terms.ChildNodes.OfType<XmlElement>())
+					nc.Terms[term.GetAttribute("from")] = term.GetAttribute("to");
+			}
 			return nc;
 		}
 
@@ -151,6 +159,27 @@ namespace Noxico
 			summon.IsProperNamed = true;
 			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook, true);
 			return true;
+		}
+
+		public static Func<string, string> GetSpeechFilterForCulture(Culture culture)
+		{
+			if (culture.Terms == null || culture.Terms.Count == 0)
+				return new Func<string, string>(x => x);
+			return new Func<string, string>(x =>
+			{
+				foreach (var term in culture.Terms)
+				{
+					x = x.Replace(term.Key, term.Value);
+				}
+				return x;
+			});
+		}
+
+		public static Func<string, string> GetSpeechFilterForCulture(string culture)
+		{
+			if (!Cultures.ContainsKey(culture))
+				return new Func<string, string>(x => x);
+			return GetSpeechFilterForCulture(Cultures[culture]);
 		}
 	}
 

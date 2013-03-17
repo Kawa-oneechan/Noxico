@@ -39,7 +39,7 @@
     <init>
       <script type="text/javascript">
         <![CDATA[
-			
+					
         ]]>
       </script>
     </init>
@@ -56,17 +56,17 @@
     <init>
       <script type="text/javascript">
         <![CDATA[
-			var token = new Token("sleeping");
+					var token = new Token("sleeping");
 		
-			if (!this.HasToken("sleeping"))
-				scheduler.AddTask(new Task(TaskType.AddToken, token));
+					if (!this.HasToken("sleeping"))
+						scheduler.AddTask(new Task(TaskType.AddToken, token));
         ]]>
       </script>
     </init>
     <end>
       <script type="text/javascript">
         <![CDATA[
-			scheduler.AddTask(new Task(TaskType.RemoveToken, "sleeping"));
+					scheduler.AddTask(new Task(TaskType.RemoveToken, "sleeping"));
         ]]>
       </script>
     </end>

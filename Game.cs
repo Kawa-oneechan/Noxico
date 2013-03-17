@@ -228,11 +228,9 @@ namespace Noxico
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
-			var testLoot = WorldGen.GetRandomLoot("container", "dungeon_chest");
-			Console.WriteLine("--------------------------");
-			Console.WriteLine("Test loot:");
-			testLoot.ForEach(x => Console.WriteLine("* {0}", x));
-			Console.WriteLine("--------------------------");
+			Console.WriteLine("SmartQuote with filters:");
+			Console.WriteLine("He turns to you and speaks. \"Don't mention the madman. Whatever you do, don't do that.\"".SmartQuote(Culture.GetSpeechFilterForCulture("equestrian")));
+			Console.WriteLine("Unfazed, you gaze at him. \"<nofilter>I'll mention anyone I want. Be it the madman, the temptress, or whoever else.\"".SmartQuote(Culture.GetSpeechFilterForCulture("equestrian")));
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
