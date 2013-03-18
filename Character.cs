@@ -259,7 +259,7 @@ namespace Noxico
 
 			newChar.RemoveMetaTokens();
 
-			Console.WriteLine("Retrieved unique character {0}.", newChar);
+			Program.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
 		}
 
@@ -409,7 +409,7 @@ namespace Noxico
 
 			newChar.RemoveMetaTokens();
 
-			//Console.WriteLine("Generated {0}.", newChar);
+			//Program.WriteLine("Generated {0}.", newChar);
 			return newChar;
 		}
 
@@ -590,7 +590,7 @@ namespace Noxico
 			}
 			if (toDelete.Count > 0)
 			{
-				Console.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetNameOrTitle(), string.Join(", ", toDelete));
+				Program.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetNameOrTitle(), string.Join(", ", toDelete));
 				GetToken("items").RemoveSet(toDelete);
 			}
 		}
@@ -2897,6 +2897,38 @@ namespace Noxico
 				}
 			}
 		}
+
+		public Func<string, string> GetSpeechFilter(Func<string, string> original = null)
+		{
+			if (original == null)
+				original = new Func<string, string>(x => x);
+			if (this.GetToken("face").Text == "reptile")
+				return new Func<string, string>(x => original(x.Replace("s", "sh").Replace("S", "Sh")));
+			var match = this.GetClosestBodyplanMatch();
+			if (match == "felinoid")
+				return new Func<string, string>(x => original(x.Replace("r", "rr")));
+			return original;
+		}
+
+		public string GetClosestBodyplanMatch()
+		{
+			var thisLev = Toolkit.GetLevenshteinString(this);
+			var ret = "";
+			var score = 999;
+			foreach (var lev in NoxicoGame.BodyplanLevs)
+			{
+				var distance = Toolkit.Levenshtein(thisLev, lev.Value);
+				if (distance < score)
+				{
+					score = distance;
+					ret = lev.Key;
+				}
+			}
+			if (score == 999)
+				return "human";
+			return ret;
+		}
+
 	}
 
 	public class Name

@@ -26,16 +26,16 @@ namespace Noxico
 		/// </summary>
 		public static void Initialize(string mainFile = "main")
 		{
-			Console.WriteLine("Mix.Initialize()");
+			Program.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
 			var mixfiles = new List<string>() { mainFile + ".mix" };
 			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.mix").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".mix", StringComparison.OrdinalIgnoreCase)));
-			Console.WriteLine("Mixfiles enumerated. Indexing contents...");
+			Program.WriteLine("Mixfiles enumerated. Indexing contents...");
 			foreach (var mixfile in mixfiles)
 			{
 				if (!File.Exists(mixfile))
 				{
-					Console.WriteLine("Mixfile \"{0}\" in list but nonexistant.", mixfile);
+					Program.WriteLine("Mixfile \"{0}\" in list but nonexistant.", mixfile);
 					continue;
 				}
 				using (var mStream = new BinaryReader(File.Open(mixfile, FileMode.Open)))
@@ -80,7 +80,7 @@ namespace Noxico
 		/// <returns>Returns a <see cref="MemoryStream"/> if found, <see cref="null"/> otherwise.</returns>
 		public static Stream GetStream(string fileName)
 		{
-			Console.WriteLine("Mix.GetStream({0})", fileName);
+			Program.WriteLine("Mix.GetStream({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return new MemoryStream(File.ReadAllBytes(Path.Combine("data", fileName)));
 			if (!fileList.ContainsKey(fileName))
@@ -102,7 +102,7 @@ namespace Noxico
 		/// <returns>Returns a <see cref="string"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
 		public static string GetString(string fileName)
 		{
-			Console.WriteLine("Mix.GetString({0})", fileName);
+			Program.WriteLine("Mix.GetString({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return File.ReadAllText(Path.Combine("data", fileName));
 			if (!fileList.ContainsKey(fileName))
@@ -141,11 +141,11 @@ namespace Noxico
 				return x;
 			}
 
-			Console.WriteLine("{0} has mod expansions!", fileName);
+			Program.WriteLine("{0} has mod expansions!", fileName);
 			x.LoadXml(GetString(fileName));
 			foreach (var f in otherFiles)
 			{
-				Console.WriteLine("Splicing in {0}...", f);
+				Program.WriteLine("Splicing in {0}...", f);
 				var otherX = new System.Xml.XmlDocument();
 				otherX.LoadXml(GetString(f));
 				x.DocumentElement.InnerXml = otherX.DocumentElement.InnerXml + x.DocumentElement.InnerXml;
@@ -178,7 +178,7 @@ namespace Noxico
 		//TODO: cache the returns.
 		public static Bitmap GetBitmap(string fileName)
 		{
-			Console.WriteLine("Mix.GetBytes({0})", fileName);
+			Program.WriteLine("Mix.GetBytes({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return new Bitmap(Path.Combine("data", fileName));
 			if (!fileList.ContainsKey(fileName))
@@ -203,7 +203,7 @@ namespace Noxico
 		/// <returns>Returns a <see cref="byte[]"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
 		public static byte[] GetBytes(string fileName)
 		{
-			Console.WriteLine("Mix.GetBytes({0})", fileName);
+			Program.WriteLine("Mix.GetBytes({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return File.ReadAllBytes(Path.Combine("data", fileName));
 			if (!fileList.ContainsKey(fileName))
@@ -270,14 +270,14 @@ namespace Noxico
 
 		public static void SpreadEm()
 		{
-			Console.WriteLine("Spreadin' em...");
+			Program.WriteLine("Spreadin' em...");
 			if (fileList == null || fileList.Count == 0)
 				Initialize();
 			foreach (var entry in fileList.Values)
 			{
 				if (entry.Length == 0)
 				{
-					Console.WriteLine("* Bogus entry with zero length: \"{0}\", offset {1}", entry.Filename, entry.Offset);
+					Program.WriteLine("* Bogus entry with zero length: \"{0}\", offset {1}", entry.Filename, entry.Offset);
 					continue;
 				}
 				var targetPath = Path.Combine("data", entry.MixFile.Remove(entry.MixFile.Length - 4), entry.Filename);
@@ -290,7 +290,7 @@ namespace Noxico
 					File.WriteAllBytes(targetPath, mStream.ReadBytes(entry.Length));
 				}
 			}
-			Console.WriteLine("All entries in mix files extracted. Happy Hacking.");
+			Program.WriteLine("All entries in mix files extracted. Happy Hacking.");
 		}
 	}
 }

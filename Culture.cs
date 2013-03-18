@@ -30,13 +30,13 @@ namespace Noxico
 
 		static Culture()
 		{
-			Console.WriteLine("Loading deities...");
+			Program.WriteLine("Loading deities...");
 			Deities = new List<Deity>();
 			xDoc = Mix.GetXMLDocument("deities.xml");
 			foreach (var d in xDoc.SelectNodes("//deity").OfType<XmlElement>())
 				Deities.Add(new Deity(d)); 
 			
-			Console.WriteLine("Loading cultures...");
+			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new List<string>();
 			xDoc = Mix.GetXMLDocument("culture.xml");
@@ -55,7 +55,7 @@ namespace Noxico
 			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
 			if (info == null)
 			{
-				Console.WriteLine("Culture \"{0}\" has no cultureinfo element.", nc.ID);
+				Program.WriteLine("Culture \"{0}\" has no cultureinfo element.", nc.ID);
 				return nc;
 			}
 			var plans = new List<string>();
@@ -161,25 +161,27 @@ namespace Noxico
 			return true;
 		}
 
-		public static Func<string, string> GetSpeechFilterForCulture(Culture culture)
+		public static Func<string, string> GetSpeechFilter(Culture culture, Func<string, string> original = null)
 		{
+			if (original == null)
+				original = new Func<string, string>(x => x);
 			if (culture.Terms == null || culture.Terms.Count == 0)
-				return new Func<string, string>(x => x);
+				return original;
 			return new Func<string, string>(x =>
 			{
 				foreach (var term in culture.Terms)
 				{
 					x = x.Replace(term.Key, term.Value);
 				}
-				return x;
+				return original(x);
 			});
 		}
 
-		public static Func<string, string> GetSpeechFilterForCulture(string culture)
+		public static Func<string, string> GetSpeechFilter(string culture, Func<string, string> original = null)
 		{
 			if (!Cultures.ContainsKey(culture))
 				return new Func<string, string>(x => x);
-			return GetSpeechFilterForCulture(Cultures[culture]);
+			return GetSpeechFilter(Cultures[culture], original);
 		}
 	}
 
@@ -194,7 +196,7 @@ namespace Noxico
 			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
 			if (info == null)
 			{
-				Console.WriteLine("Culture \"{0}\" has no cultureinfo element.", ng.ID);
+				Program.WriteLine("Culture \"{0}\" has no cultureinfo element.", ng.ID);
 				return ng;
 			}
 			return ng;

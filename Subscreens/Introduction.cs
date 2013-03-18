@@ -133,7 +133,7 @@ namespace Noxico
 		private static List<PlayableRace> CollectPlayables()
 		{
 			var ret = new List<PlayableRace>();
-			Console.WriteLine("Collecting playables...");
+			Program.WriteLine("Collecting playables...");
 			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
 			var bodyPlans = xDoc.SelectNodes("//bodyplan");
 			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
@@ -141,13 +141,13 @@ namespace Noxico
 				var id = bodyPlan.GetAttribute("id");
 				if (bodyPlan.ChildNodes[0].Value == null)
 				{
-					Console.WriteLine(" * Skipping {0} -- old format.", id);
+					Program.WriteLine(" * Skipping {0} -- old format.", id);
 					continue;
 				}
 				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
 				if (!plan.Contains("playable"))
 					continue;
-				Console.WriteLine(" * Parsing {0}...", id);
+				Program.WriteLine(" * Parsing {0}...", id);
 
 				var genlock = plan.Contains("only\n");
 

@@ -1,6 +1,7 @@
-Jint is © 2011 Sebastien Ros, MIT license.
-FMOD Sound System is © 1994-2012 Firelight Technologies Pty Ltd., FMOD Non-Commercial license.
-7-Zip compressor is © 1999-2010 Igor Pavlov, RAR is © 1993-2011 Alexander Roshal, included for use in build system only.
-Music from MODArchive, see http://helmet.kafuka.org/noxico/?music for acknowledgements.
+Jint is © 2011 Sebastien Ros, MIT license. http://jint.codeplex.com/
+Jint uses ANTLR3, © 2012 Terence Parr, BSD license. http://antlr3.org/
+FMOD Sound System is © 1994-2012 Firelight Technologies Pty Ltd., FMOD Non-Commercial license. http://fmod.org/
+7-Zip compressor is © 1999-2010 Igor Pavlov, RAR is © 1993-2011 Alexander Roshal, included for use in build system only. http://7-zip.org/ http://rarlab.com/
+Music from MODArchive, see http://helmet.kafuka.org/noxico/?music for acknowledgements. http://modarchive.org/
 
 Game source code license to be determined.

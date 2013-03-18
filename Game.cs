@@ -82,7 +82,7 @@ namespace Noxico
 
 		public void Initialize(IGameHost hostForm)
 		{
-			Console.WriteLine("IT BEGINS...");
+			Program.WriteLine("IT BEGINS...");
 
 			Random.Reseed();
 
@@ -152,15 +152,15 @@ namespace Noxico
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
 
-			Console.WriteLine("Loading items...");
+			Program.WriteLine("Loading items...");
 			var xDoc = Mix.GetXMLDocument("items.xml");
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
 				KnownItems.Add(InventoryItem.FromXML(item));
-			Console.WriteLine("Randomizing potions and rings...");
+			Program.WriteLine("Randomizing potions and rings...");
 			RollPotions();
 			ApplyRandomPotions();
-			Console.WriteLine("Loading bodyplans...");
+			Program.WriteLine("Loading bodyplans...");
 			xDoc = Mix.GetXMLDocument("bodyplans.xml");
 			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
@@ -168,7 +168,7 @@ namespace Noxico
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
 				var id = bodyPlan.GetAttribute("id");
-				Console.WriteLine("Loading {0}...", id);
+				Program.WriteLine("Loading {0}...", id);
 				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
 				var ascii = Toolkit.GrabToken(plan, "ascii");
 				if (ascii != null)
@@ -198,7 +198,7 @@ namespace Noxico
 			//Tile descriptions
 			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
 
-			Console.WriteLine("Loading books...");
+			Program.WriteLine("Loading books...");
 			BookTitles = new List<string>();
 			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
@@ -228,9 +228,10 @@ namespace Noxico
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
 
-			Console.WriteLine("SmartQuote with filters:");
-			Console.WriteLine("He turns to you and speaks. \"Don't mention the madman. Whatever you do, don't do that.\"".SmartQuote(Culture.GetSpeechFilterForCulture("equestrian")));
-			Console.WriteLine("Unfazed, you gaze at him. \"<nofilter>I'll mention anyone I want. Be it the madman, the temptress, or whoever else.\"".SmartQuote(Culture.GetSpeechFilterForCulture("equestrian")));
+			//var cat = Character.Generate("felinoid", Gender.Male);
+			//Program.WriteLine("SmartQuote with filters:");
+			//Program.WriteLine("He turns to you and speaks. \"Don't mention the madman. Whatever you do, don't do that.\"".SmartQuote(Culture.GetSpeechFilter("equestrian", cat.GetSpeechFilter())));
+			//Program.WriteLine("Unfazed, you gaze at him. \"<nofilter>I'll mention anyone I want. Be it the madman, the temptress, or whoever else.\"".SmartQuote(Culture.GetSpeechFilter("equestrian")));
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
@@ -244,7 +245,7 @@ namespace Noxico
 
 			if (!noPlayer && !Player.Character.HasToken("gameover"))
 			{
-				Console.WriteLine("Saving player...");
+				Program.WriteLine("Saving player...");
 				var pfile = File.Open(Path.Combine(SavePath, WorldName, "player.bin"), FileMode.Create);
 				var pbin = new BinaryWriter(pfile);
 				Player.SaveToFile(pbin);
@@ -253,28 +254,28 @@ namespace Noxico
 				pfile.Close();
 			}
 
-			Console.WriteLine("--------------------------");
-			Console.WriteLine("Saving globals...");
+			Program.WriteLine("--------------------------");
+			Program.WriteLine("Saving globals...");
 			var global = Path.Combine(SavePath, WorldName, "global.bin");
-			Console.WriteLine("Location will be {0}", global);
+			Program.WriteLine("Location will be {0}", global);
 			using (var f = File.Open(global, FileMode.Create))
 			{
 				var b = new BinaryWriter(f);
-				Console.WriteLine("Header...");
+				Program.WriteLine("Header...");
 				b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
-				Console.WriteLine("Potion check...");
+				Program.WriteLine("Potion check...");
 				if (Potions[0] == null)
 					RollPotions();
 				b = new BinaryWriter(new CryptStream(f));
-				Console.WriteLine("Player data...");
+				Program.WriteLine("Player data...");
 				Toolkit.SaveExpectation(b, "PLAY");
 				b.Write(CurrentBoard.BoardNum);
 				b.Write(Boards.Count);
-				Console.WriteLine("Potions...");
+				Program.WriteLine("Potions...");
 				Toolkit.SaveExpectation(b, "POTI");
 				for (var i = 0; i < 256; i++)
 					b.Write(Potions[i] ?? "...");
-				Console.WriteLine("Unique Items counter lol...");
+				Program.WriteLine("Unique Items counter lol...");
 				Toolkit.SaveExpectation(b, "UNIQ");
 				b.Write(0);
 				Toolkit.SaveExpectation(b, "TIME");
@@ -298,8 +299,8 @@ namespace Noxico
 				}
 			}
 
-			Console.WriteLine("--------------------------");
-			Console.WriteLine("Saving World...");
+			Program.WriteLine("--------------------------");
+			Program.WriteLine("Saving World...");
 
 			for (var i = 0; i < Boards.Count; i++)
 			{
@@ -314,8 +315,8 @@ namespace Noxico
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
 			File.WriteAllText(verCheck, "15");
-			Console.WriteLine("Done.");
-			Console.WriteLine("--------------------------");
+			Program.WriteLine("Done.");
+			Program.WriteLine("--------------------------");
 		}
 
 		public void LoadGame()
@@ -413,7 +414,7 @@ namespace Noxico
 
 			if (Boards[index] == null)
 			{
-				Console.WriteLine("Requested board #{0}. Loading...", index);
+				Program.WriteLine("Requested board #{0}. Loading...", index);
 				Boards[index] = Board.LoadFromFile(index);
 				Boards[index].BoardNum = index;
 			}
@@ -508,7 +509,7 @@ namespace Noxico
 
 		public void FlushDungeons()
 		{
-			Console.WriteLine("Flushing dungeons...");
+			Program.WriteLine("Flushing dungeons...");
 			for (var i = 0; i < Boards.Count; i++)
 			{
 				var board = Boards[i];
@@ -613,7 +614,7 @@ namespace Noxico
 		{
 			var setStatus = new Action<string>(s =>
 			{
-				Console.WriteLine(s);
+				Program.WriteLine(s);
 			});
 
 			var stopwatch = new System.Diagnostics.Stopwatch();
@@ -638,7 +639,7 @@ namespace Noxico
 				setStatus("Applying missions...");
 				ApplyMissions();
 
-				Console.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+				Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 			}
 
 			//TODO: give the player a proper home.
@@ -658,7 +659,7 @@ namespace Noxico
 					this.Boards[i] = null;
 			}
 			stopwatch.Stop();
-			Console.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
+			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 			SaveGame(true, true);
 
 
@@ -886,7 +887,7 @@ namespace Noxico
 
 					if (rdesc == null)
 					{
-						Console.WriteLine("Fuckup in applying to {0}.", item.ToString());
+						Program.WriteLine("Fuckup in applying to {0}.", item.ToString());
 						continue;
 					}
 					if (rdesc == "...")
@@ -954,12 +955,12 @@ namespace Noxico
 			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
 			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			js.SetParameter("Expectations", NoxicoGame.Expectations);
-			js.SetFunction("print", new Action<string>(x => Console.WriteLine(x)));
+			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
 			js.Step += (s, di) =>
 			{
-				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
 			};
 #endif
 			Board.DrawJS = js;
@@ -980,10 +981,10 @@ namespace Noxico
 				}
 				if (!okay)
 				{
-					Console.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
+					Program.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
 					continue;
 				}
-				Console.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
+				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
 				var jsCode = Mix.GetString(jsFile);
 				js.Run(jsCode);
 			}

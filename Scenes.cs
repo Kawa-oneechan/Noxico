@@ -490,7 +490,7 @@ namespace Noxico
 						subcom = match.Groups[2].Captures[0].Value;
 						foreach (Capture c in match.Groups[2].Captures)
 						{
-							Console.WriteLine(c);							
+							Program.WriteLine(c);							
 							parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
 						}
 						parms.RemoveAt(0);

@@ -124,7 +124,7 @@ namespace Noxico
 
 		public virtual void SaveToFile(BinaryWriter stream)
 		{
-			//Console.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
+			//Program.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
 			Toolkit.SaveExpectation(stream, "ENTT");
 			stream.Write(ID ?? "<Null>");
 			stream.Write(AsciiChar);
@@ -148,7 +148,7 @@ namespace Noxico
 			newEntity.YPosition = stream.ReadByte();
 			newEntity.Flow = (Direction)stream.ReadByte();
 			newEntity.Blocking = stream.ReadBoolean();
-			//Console.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
+			//Program.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
 			return newEntity;
 		}
 
@@ -893,7 +893,7 @@ namespace Noxico
 							NoxicoGame.AddMessage(Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"", this.ForegroundColor);
 						else
 							NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", this.ForegroundColor);
-						Console.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
+						Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
 					}
 				}
 			}
@@ -956,7 +956,7 @@ namespace Noxico
 							{
 								if (find.Equip(this.Character, carriedItem))
 								{
-									Console.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+									Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
 									return; //end turn
 								}
 							}
@@ -985,7 +985,7 @@ namespace Noxico
 							{
 								if (find.Equip(this.Character, carriedItem))
 								{
-									Console.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+									Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
 									return; //end turn
 								}
 							}
@@ -1029,7 +1029,7 @@ namespace Noxico
 					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
 					ScriptPathTarget.Update();
 				}
-				Console.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				Program.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 				var map = ScriptPathTarget;
 				var dir = Direction.North;
 				map.Ignore = DijkstraIgnore.Type;
@@ -1038,7 +1038,7 @@ namespace Noxico
 					Move(dir);
 				else
 				{
-					Console.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+					Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 					MoveSpeed = 2;
 					Movement = Motor.Wander;
 				}
@@ -1067,7 +1067,7 @@ namespace Noxico
 				ScriptPathTarget.Hotspots.Clear();
 				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
 				ScriptPathTarget.Update();
-				Console.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				Program.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 
 				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
 				var map = ScriptPathTarget; //target.DijkstraMap;
@@ -1104,7 +1104,7 @@ namespace Noxico
 			}
 			lastPos.GetToken("x").Value = target.XPosition;
 			lastPos.GetToken("y").Value = target.YPosition;
-			Console.WriteLine("{0} called to action.", this.Character.Name);
+			Program.WriteLine("{0} called to action.", this.Character.Name);
 		}
 
 		public virtual bool MeleeAttack(BoardChar target)
@@ -1372,29 +1372,9 @@ namespace Noxico
 			}
 		}
 
-		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
+		private void SetupJint()
 		{
-			if (string.IsNullOrWhiteSpace(script))
-				return true;
-			if (js == null)
-				js = JavaScript.Create();
-
-			var makeBoardTarget = new Action<Board>(board =>
-			{
-				if (string.IsNullOrWhiteSpace(board.Name))
-					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
-					return; //throw new Exception("Board is already a travel target.");
-				NoxicoGame.TargetNames.Add(board.BoardNum, board.Name);
-			});
-			var makeBoardKnown = new Action<Board>(board =>
-			{
-				if (!NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
-					throw new Exception("Board must be in the travel targets list before it can be known.");
-				if (NoxicoGame.KnownTargets.Contains(board.BoardNum))
-					return;
-				NoxicoGame.KnownTargets.Add(board.BoardNum);
-			});
+			js = JavaScript.Create();
 
 			JavaScript.Ascertain(js);
 			js.SetParameter("this", this.Character);
@@ -1408,8 +1388,6 @@ namespace Noxico
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(Color));
-			if (!string.IsNullOrEmpty(extraParm))
-				js.SetParameter(extraParm, extraVal);
 			js.SetFunction("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x)));
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
 			js.SetFunction("print", new Action<string>(x =>
@@ -1433,6 +1411,24 @@ namespace Noxico
 				var i = NoxicoGame.TargetNames.First(b => b.Value == x);
 				return i.Key;
 			}));
+
+			var makeBoardTarget = new Action<Board>(board =>
+			{
+				if (string.IsNullOrWhiteSpace(board.Name))
+					throw new Exception("Board must have a name before it can be added to the target list.");
+				if (NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
+					return; //throw new Exception("Board is already a travel target.");
+				NoxicoGame.TargetNames.Add(board.BoardNum, board.Name);
+			});
+			var makeBoardKnown = new Action<Board>(board =>
+			{
+				if (!NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
+					throw new Exception("Board must be in the travel targets list before it can be known.");
+				if (NoxicoGame.KnownTargets.Contains(board.BoardNum))
+					return;
+				NoxicoGame.KnownTargets.Add(board.BoardNum);
+			});
+
 			js.SetFunction("MakeBoardTarget", makeBoardTarget);
 			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
@@ -1444,7 +1440,18 @@ namespace Noxico
 			js.SetParameter("Task", typeof(Task));
 			js.SetParameter("TaskType", typeof(TaskType));
 			js.SetParameter("Token", typeof(Token));
+		}
+
+		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
+		{
+			if (string.IsNullOrWhiteSpace(script))
+				return true;
+			if (js == null)
+				SetupJint();
+
 			Board.DrawJS = js;
+			if (!string.IsNullOrEmpty(extraParm))
+				js.SetParameter(extraParm, extraVal);
 			var r = js.Run(script);
 			if (r is bool)
 				return (bool)r;
@@ -1536,7 +1543,7 @@ namespace Noxico
 			}
 			else
 			{
-				Console.WriteLine("{0} tried to throw a weapon.", this.Character.GetNameOrTitle(false, true, true));
+				Program.WriteLine("{0} tried to throw a weapon.", this.Character.GetNameOrTitle(false, true, true));
 				return;
 			}
 			var aimSuccess = true; //TODO: make this skill-relevant.
@@ -1593,7 +1600,7 @@ namespace Noxico
 			var today = NoxicoGame.InGameTime.DayOfYear;
 			if (lastRestockDay >= today)
 				return;
-			Console.WriteLine("{0} ({1}) restocking...", Character.Name, vendor.GetToken("class").Text);
+			Program.WriteLine("{0} ({1}) restocking...", Character.Name, vendor.GetToken("class").Text);
 			vendor.GetToken("lastrestockday").Value = today;
 			var items = Character.Path("items");
 			var diff = 20 - items.Tokens.Count;
@@ -2179,7 +2186,7 @@ namespace Noxico
 				}
 				else if(NoxicoGame.Modifiers[0])
 				{
-					//Console.WriteLine("shift");
+					//Program.WriteLine("shift");
 					if (NoxicoGame.IsKeyDown(KeyBinding.Left))
 						this.QuickFire(Direction.West);
 					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
@@ -2477,7 +2484,7 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			Console.WriteLine("Trying to move clutter.");
+			Program.WriteLine("Trying to move clutter.");
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
@@ -2569,7 +2576,7 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			Console.WriteLine("Trying to move dropped item.");
+			Program.WriteLine("Trying to move dropped item.");
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
