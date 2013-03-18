@@ -1451,7 +1451,7 @@ namespace Noxico
 			return true;
 		}
 
-		[ForJS(ForJSUsage.Only)]
+		[ForJS(ForJSUsage.Either)]
 		public void MoveTo(int x, int y, string target)
 		{
 			JavaScript.Assert();
@@ -2229,7 +2229,8 @@ namespace Noxico
 				var wasNight = Toolkit.IsNight();
 				NoxicoGame.InGameTime.Add(five);
 				ParentBoard.UpdateLightmap(this, true);
-				if (wasNight == !Toolkit.IsNight())
+				//stupid bug, using != instead of && caused Redraw to not be caled for too long.
+				if (wasNight && !Toolkit.IsNight())
 					ParentBoard.Redraw();
 			}
 

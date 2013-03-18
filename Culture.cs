@@ -429,5 +429,15 @@ namespace Noxico
 		{
 			return (left.ToBinary() < right.ToBinary());
 		}
+		public override bool Equals(object right)
+		{
+			if (!(right is NoxicanDate))
+				return false;
+			return (this.ToBinary() == (right as NoxicanDate).ToBinary());
+		}
+		public override int GetHashCode()
+		{
+			return (int)this.ToBinary();
+		}
 	}
 }

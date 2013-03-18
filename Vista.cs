@@ -17,12 +17,19 @@ namespace Noxico
 
 			string ret = null;
 			IntPtr pPath;
-			if (SafeNativeMethods.SHGetKnownFolderPath(SavedGames, 0, IntPtr.Zero, out pPath) == 0)
+			try
 			{
-				ret = System.Runtime.InteropServices.Marshal.PtrToStringUni(pPath);
-				System.Runtime.InteropServices.Marshal.FreeCoTaskMem(pPath);
+				if (SafeNativeMethods.SHGetKnownFolderPath(SavedGames, 0, IntPtr.Zero, out pPath) == 0)
+				{
+					ret = System.Runtime.InteropServices.Marshal.PtrToStringUni(pPath);
+					System.Runtime.InteropServices.Marshal.FreeCoTaskMem(pPath);
+				}
+				return ret;
 			}
-			return ret;
+			catch (DllNotFoundException)
+			{
+				return null;
+			}
 		}
 
 		public static bool GamepadEnabled { get; set; }
@@ -86,8 +93,18 @@ namespace Noxico
 		{
 			set
 			{
-				if (!isVista)
-					SafeNativeMethods.XInputEnable(value);
+				if (GamepadEnabled && isVista)
+				{
+					try
+					{
+
+						SafeNativeMethods.XInputEnable(value);
+					}
+					catch (DllNotFoundException)
+					{
+						GamepadEnabled = false;
+					}
+				}
 			}
 		}
 	}

@@ -2,7 +2,6 @@
 <bodyplans>
 	<bodyplan id="changeling">
 		<![CDATA[
-playable
 culture: changelings
 namegen: changeling
 neverneuter

@@ -207,5 +207,30 @@ namespace Noxico
 			} while (change);
 		}
 
+		#region PillowShout
+		/// <summary>
+		/// Checks if the location on the map is a local minimum. In this case, a local minimum is defined as a location where
+		/// the selected tile is surrounded by tiles that are either greater or equal in value.
+		/// </summary>
+		/// <param name="x">The x value of the location.</param>
+		/// <param name="y">The y value of the location.</param>
+		/// <returns>If the location is a local minimum, the function returns true.</returns>
+		public bool IsLocalMinimum(int x, int y)
+		{
+			var val = map[y, x];
+
+			//Tiles beyond the edge of the map are ignored for comparison.
+			if (x + 1 < mapCols && map[y, x + 1] < val)
+				return false;
+			if (x > 0 && map[y, x - 1] < val)
+				return false;
+			if (y + 1 < mapRows && map[y + 1, x] < val)
+				return false;
+			if (y > 0 && map[y - 1, x] < val)
+				return false;
+
+			return true;
+		}
+		#endregion
 	}
 }
