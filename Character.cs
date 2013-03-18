@@ -215,7 +215,7 @@ namespace Noxico
 				0, 10, 0, 0,
 				10, 0, 10, 0,
 				10, 10, 10, 15,
-				100, 0, 0, 0, 50,
+				100, 0, 0, 0, 150,
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
@@ -363,7 +363,7 @@ namespace Noxico
 				0, 10, 0, 0,
 				10, 0, 10, 0,
 				10, 10, 10, 15,
-				100, 0, 0, 0, 50,
+				100, 0, 0, 0, 150,
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
