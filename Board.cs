@@ -282,7 +282,7 @@ namespace Noxico
 
 		public void Flush()
 		{
-			Console.WriteLine("Flushing board {0}.", ID);
+			Program.WriteLine("Flushing board {0}.", ID);
 			var me = NoxicoGame.HostForm.Noxico.Boards.FindIndex(x => x == this);
 			CleanUpSlimeTrails();
 			SaveToFile(me);
@@ -294,7 +294,7 @@ namespace Noxico
 			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "boards");
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
-			//Console.WriteLine(" * Saving board {0}...", Name);
+			//Program.WriteLine(" * Saving board {0}...", Name);
 			using (var stream = new BinaryWriter(File.Open(System.IO.Path.Combine(realm, "Board" + index + ".brd"), FileMode.Create)))
 			{
 				Toolkit.SaveExpectation(stream, "BORD");
@@ -425,7 +425,7 @@ namespace Noxico
 				newBoard.UpdateLightmap(null, true);
 				newBoard.CheckCombatStart();
 
-				//Console.WriteLine(" * Loaded board {0}...", newBoard.Name);
+				//Program.WriteLine(" * Loaded board {0}...", newBoard.Name);
 			}
 			return newBoard;
 		}

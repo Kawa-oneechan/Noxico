@@ -34,6 +34,22 @@ namespace Noxico
 			{
 			}
 		}
+
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void WriteLine(string format, params object[] arg)
+		{
+			Console.WriteLine(format, arg);
+		}
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void Write(string format, params object[] arg)
+		{
+			Console.Write(format, arg);
+		}
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void WriteLine(object value)
+		{
+			Console.WriteLine(value.ToString());
+		}
 	}
 
     public class MainForm : Form, IGameHost
@@ -184,12 +200,12 @@ namespace Noxico
 
 				Vista.GamepadEnabled = IniFile.GetValue("misc", "xinput", true);
 
-				Console.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
-				Console.WriteLine(Environment.OSVersion);
+				Program.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
+				Program.WriteLine(Environment.OSVersion);
 				if (Environment.OSVersion.Platform == PlatformID.Unix)
 				{
-					Console.WriteLine("*** You are running on a *nix system. ***");
-					Console.WriteLine("Key repeat delays exaggerated.");
+					Program.WriteLine("*** You are running on a *nix system. ***");
+					Program.WriteLine("Key repeat delays exaggerated.");
 					NoxicoGame.Mono = true;
 					Vista.GamepadEnabled = false;
 				}
@@ -504,7 +520,7 @@ namespace Noxico
 				while (File.Exists(Path.Combine(shotDir, "screenshot" + i.ToString("000") + ".png")))
 					i++;
 				backBuffer.Save(Path.Combine(shotDir, "screenshot" + i.ToString("000") + ".png"), ImageFormat.Png);
-				Console.WriteLine("Screenshot saved.");
+				Program.WriteLine("Screenshot saved.");
 			}
 			if (e.KeyValue == 191)
 				NoxicoGame.KeyMap[(int)Keys.L] = false;

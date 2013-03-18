@@ -180,7 +180,7 @@ namespace Noxico
 			vendor.RemoveAll("role");
 			vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, type);
 			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
-			Console.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
+			Program.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
 			unexpected[0].RestockVendor();
 			return true;
 		}
@@ -225,7 +225,7 @@ namespace Noxico
 					//2013-03-07: prevent placing warps on same tile as clutter
 					if (b.Entities.FirstOrDefault(e => e.XPosition == eX && e.YPosition == eY) != null)
 					{
-						Console.WriteLine("Tried to place a warp below an entity -- rerolling...");
+						Program.WriteLine("Tried to place a warp below an entity -- rerolling...");
 						continue;
 					}
 					
@@ -371,7 +371,7 @@ namespace Noxico
 				boardHere.SetTile(here.YPosition, here.XPosition, up ? '<' : '>', Color.Gray, Color.Black);
 				boardThere.SetTile(there.YPosition, there.XPosition, !up ? '<' : '>', Color.Gray, Color.Black);
 
-				Console.WriteLine("Connected {0} || {1}.", boardHere.ID, boardThere.ID);
+				Program.WriteLine("Connected {0} || {1}.", boardHere.ID, boardThere.ID);
 
 				connected.Add(boardHere);
 				connected.Add(boardThere);
@@ -414,7 +414,7 @@ namespace Noxico
 					boardHere.SetTile(here.YPosition, here.XPosition, '\x2261', Color.Gray, Color.Black);
 					boardThere.SetTile(there.YPosition, there.XPosition, '\x2261', Color.Gray, Color.Black);
 
-					Console.WriteLine("Connected {0} -- {1}.", boardHere.ID, boardThere.ID);
+					Program.WriteLine("Connected {0} -- {1}.", boardHere.ID, boardThere.ID);
 
 					connected.Add(boardHere);
 					connected.Add(boardThere);
@@ -435,7 +435,7 @@ namespace Noxico
 				//2013-03-07: prevent placing warps on same tile as clutter
 				if (goalBoard.Entities.FirstOrDefault(e => e.XPosition == treasureX && e.YPosition == treasureY) != null)
 				{
-					Console.WriteLine("Tried to place cave treasure below an entity -- rerolling...");
+					Program.WriteLine("Tried to place cave treasure below an entity -- rerolling...");
 					continue;
 				}
 

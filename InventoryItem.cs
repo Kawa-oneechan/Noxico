@@ -692,7 +692,7 @@ namespace Noxico
 			js.SetDebugMode(true);
 			js.Step += (s, di) =>
 			{
-				Console.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
 			};
 #endif
 			var ret = js.Run(script);

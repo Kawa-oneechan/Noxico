@@ -69,7 +69,7 @@ namespace Noxico
 		public SoundSystem()
 		{
 			system = null;
-			Console.WriteLine("SoundSystem: _ctor");
+			Program.WriteLine("SoundSystem: _ctor");
 			//var is64Bit = System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)) == 8;
 			if (!IniFile.GetValue("audio", "enabled", true)) // || !is64Bit)
 				return;
@@ -80,22 +80,22 @@ namespace Noxico
 
 			var ret = FMOD.RESULT.OK;
 
-			Console.Write("SoundSystem: creating FMOD system... ");
+			Program.Write("SoundSystem: creating FMOD system... ");
 			try
 			{
 				ret = FMOD.Factory.System_Create(ref system);
-				Console.WriteLine(ret.ToString());
+				Program.WriteLine(ret.ToString());
 				if (ret != FMOD.RESULT.OK)
 					return;
 			}
 			catch (DllNotFoundException)
 			{
-				Console.WriteLine("FMOD not found, disabling sound.");
+				Program.WriteLine("FMOD not found, disabling sound.");
 				return;
 			}
-			Console.Write("SoundSystem: system.init... ");
+			Program.Write("SoundSystem: system.init... ");
 			ret = system.init(8, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
-			Console.WriteLine(ret.ToString());
+			Program.WriteLine(ret.ToString());
 			if (ret != FMOD.RESULT.OK)
 			{
 				system = null;
@@ -104,7 +104,7 @@ namespace Noxico
 			music = null;
 			musicChannel = null;
 
-			Console.WriteLine("SoundSystem: acquiring sounds...");
+			Program.WriteLine("SoundSystem: acquiring sounds...");
 			sounds = new Dictionary<string, Sound>();
 			foreach (var s in new[] { "Put Item", "Get Item", "Alert", "Firebomb", "Splorch", "Cursor", "Door Lock", "Open Gate", "Step" })
 			{
@@ -113,17 +113,17 @@ namespace Noxico
 					sounds.Add(s, new Sound(file, system));
 			}
 
-			Console.WriteLine("SoundSystem: loading library...");
+			Program.WriteLine("SoundSystem: loading library...");
 			library = Mix.GetXMLDocument("music.xml");
 
-			Console.WriteLine("SoundSystem: _ctor DONE");
-			Console.WriteLine("Null report:");
+			Program.WriteLine("SoundSystem: _ctor DONE");
+			Program.WriteLine("Null report:");
 			if (system == null)
-				Console.WriteLine(" * system");
+				Program.WriteLine(" * system");
 			if (music == null)
-				Console.WriteLine(" * music");
+				Program.WriteLine(" * music");
 			if (musicChannel == null)
-				Console.WriteLine(" * musicChannel");
+				Program.WriteLine(" * musicChannel");
 		}
 
 		public void PlayMusic(string name, bool fade = true)
@@ -195,10 +195,10 @@ namespace Noxico
 
 					var songName = new StringBuilder();
 					music.getName(songName, 256);
-					Console.WriteLine(songName);
+					Program.WriteLine(songName);
 				}
 				else
-					Console.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);
+					Program.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);
 			}
 		}
 
