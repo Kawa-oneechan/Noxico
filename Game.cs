@@ -64,6 +64,7 @@ namespace Noxico
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
 		public string[] Potions;
+		public static List<string> Identifications;
 		public static List<int> KnownTargets;
 		public static Dictionary<int, string> TargetNames;
 		public static NoxicanDate InGameTime;
@@ -153,6 +154,7 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 			Program.WriteLine("Loading items...");
+			Identifications = new List<string>();
 			var xDoc = Mix.GetXMLDocument("items.xml");
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
@@ -275,6 +277,10 @@ namespace Noxico
 				Toolkit.SaveExpectation(b, "POTI");
 				for (var i = 0; i < 256; i++)
 					b.Write(Potions[i] ?? "...");
+				Program.WriteLine("Item identification states...");
+				Toolkit.SaveExpectation(b, "ITID");
+				b.Write(Identifications.Count);
+				Identifications.ForEach(x => b.Write(x));
 				Program.WriteLine("Unique Items counter lol...");
 				Toolkit.SaveExpectation(b, "UNIQ");
 				b.Write(0);
@@ -357,6 +363,11 @@ namespace Noxico
 			Potions = new string[256];
 			for (var i = 0; i < 256; i++)
 				Potions[i] = bin.ReadString();
+			Toolkit.ExpectFromFile(bin, "ITID", "item identification");
+			var numIDs = bin.ReadInt32();
+			Identifications.Clear();
+			for (var i = 0; i < numIDs; i++)
+				Identifications.Add(bin.ReadString());
 			Toolkit.ExpectFromFile(bin, "UNIQ", "unique item tracking");
 			var numUniques = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");

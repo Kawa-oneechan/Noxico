@@ -2,17 +2,17 @@
 <?xml-stylesheet type="text/xsl" href="books.xsl" ?>
 <!DOCTYPE library [
 	<!ELEMENT library (book*)>
-	<!ELEMENT book (#PCDATA|p|skill)*>
+	<!ELEMENT book (#PCDATA|p|identify)*>
 	<!ELEMENT p (#PCDATA|br|b)*>
 	<!ELEMENT br EMPTY>
-	<!ELEMENT skill EMPTY>
+	<!ELEMENT identify EMPTY>
 	<!ELEMENT b (#PCDATA)>
 	<!ATTLIST book
 		id CDATA #REQUIRED
 		title CDATA #REQUIRED
 		author CDATA #IMPLIED
 	>
-	<!ATTLIST skill token CDATA #REQUIRED>
+	<!ATTLIST identify token CDATA #REQUIRED>
 ]>
 <library>
 	<book id="1" title="The Lusty Argonian Maid I" author="Crassius Curio">
@@ -873,7 +873,7 @@
 		</p>
 	</book>
 	<book id="19" title="On Legendary Bullshit">
-		<skill token="pop_culture" />
+		<identify token="pop_culture" />
 		<p>
 			The name of the kingdom is a well guarded secret, traded only by the cunning ninnywizards in hushed giggles. If you beheld this kingdom - if you even knew its name - you would understand stupidity no human ever has. For it is said that any mortal who listens to its melodious, perfectly absurd syllables will achieve instantaneous dumblightenment.
 		</p>
