@@ -32,7 +32,7 @@ namespace Noxico
 			if (ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
-			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(UnknownName)) ? UnknownName : Name;
+			var name = (token != null && (!string.IsNullOrWhiteSpace(UnknownName) && !NoxicoGame.Identifications.Contains(ID)) ? UnknownName : Name);
 			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
 			var reps = new Dictionary<string, string>()
 			{
@@ -74,7 +74,7 @@ namespace Noxico
 				}
 				return string.Format("{0} {1} ({2}/{3})", the ? The : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
 			}
-			return string.Format("{0} {1}", the ? The : (token != null && token.HasToken("unidentified") ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a") : A), name).Trim();
+			return string.Format("{0} {1}", the ? The : (!NoxicoGame.Identifications.Contains(ID) ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a") : A), name).Trim();
 		}
 
 		//Added for Jint's sake.
@@ -681,9 +681,9 @@ namespace Noxico
 				}
 
 				//Regular item identification
-				if (item.HasToken("unidentified"))// && !string.IsNullOrWhiteSpace(this.UnknownName))
+				if (!string.IsNullOrWhiteSpace(this.UnknownName) && !NoxicoGame.Identifications.Contains(this.ID))
 				{
-					item.RemoveToken("unidentified");
+					NoxicoGame.Identifications.Add(this.ID);
 					if (running != null)
 						running("You have identified this as " + this.ToString(item, true) + ".");
 				}

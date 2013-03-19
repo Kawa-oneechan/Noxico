@@ -143,14 +143,14 @@ namespace Noxico
 				text = book.Noxicize();
 			}
 
-			var skill = book.SelectSingleNode("skill");
+			var identification = book.SelectSingleNode("identify");
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
-			if (skill != null)
+			if (identification != null)
 			{
-				var skillName = ((XmlElement)skill).GetAttribute("token");
-					player.IncreaseSkill(skillName);
-					var skillProper = skillName.Replace('_', ' ');
-					text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
+				var id = ((XmlElement)identification).GetAttribute("token");
+				foreach (var item in NoxicoGame.KnownItems.Where(ki => ki.HasToken("identify") && ki.GetToken("identify").Text == id && !NoxicoGame.Identifications.Contains(ki.ID)))
+					NoxicoGame.Identifications.Add(item.ID);
+				//text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
 			}
 			if (player.Path("books/book_" + bookNum) == null)
 			{
