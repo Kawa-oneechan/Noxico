@@ -1025,7 +1025,7 @@ namespace Noxico
 				if (ScriptPathTarget == null)
 				{
 					var lastPos = Character.GetToken("targetlastpos");
-					ScriptPathTarget = new Dijkstra();
+					ScriptPathTarget = new Dijkstra(this.ParentBoard);
 					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
 					ScriptPathTarget.Update();
 				}
@@ -1062,7 +1062,7 @@ namespace Noxico
 				lastPos.GetToken("y").Value = target.YPosition;
 				if (ScriptPathTarget == null)
 				{
-					ScriptPathTarget = new Dijkstra();
+					ScriptPathTarget = new Dijkstra(this.ParentBoard);
 				}
 				ScriptPathTarget.Hotspots.Clear();
 				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
@@ -1463,7 +1463,7 @@ namespace Noxico
 		{
 			JavaScript.Assert();
 
-			ScriptPathTarget = new Dijkstra();
+			ScriptPathTarget = new Dijkstra(this.ParentBoard);
 			ScriptPathTarget.Hotspots.Add(new Point(x, y));
 			ScriptPathTarget.Update();
 			ScriptPathID = target;
