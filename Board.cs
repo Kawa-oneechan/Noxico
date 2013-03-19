@@ -619,14 +619,13 @@ namespace Noxico
 
 		public void UpdateSurroundings()
 		{
-			
 			var nox = NoxicoGame.HostForm.Noxico;
 			if (this != nox.CurrentBoard)
 				return;
 			if (this.ToNorth > -1)
 				nox.GetBoard(this.ToNorth).Update(true, true);
 			if (this.ToSouth > -1)
-				nox.GetBoard(this.ToNorth).Update(true, true);
+				nox.GetBoard(this.ToSouth).Update(true, true);
 			if (this.ToEast > -1)
 				nox.GetBoard(this.ToEast).Update(true, true);
 			if (this.ToWest > -1)
@@ -762,7 +761,7 @@ namespace Noxico
 		{
 			var newBoard = new Board();
 			newBoard.Clear(biomeID);
-			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n");
+			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
