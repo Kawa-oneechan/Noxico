@@ -197,7 +197,6 @@ namespace Noxico
 				BodyplanLevs.Add(id, lev);
 			}
 
-			//Tile descriptions
 			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
 
 			Program.WriteLine("Loading books...");
@@ -217,23 +216,12 @@ namespace Noxico
 			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
-			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "The Killscreen", "darkmere_deathtune.mod");
-			Limbo.BoardType = BoardType.Dungeon;
-			var encounters = Limbo.GetToken("encounters");
-			var biome = BiomeData.Biomes[BiomeData.ByName("nether")];
-			encounters.Value = 100;
-			encounters.AddToken("imp");
-			encounters.AddToken("imp");
-			encounters.AddToken("foocubus");
+			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
+			Limbo.BoardType = BoardType.Special;
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
-
-			//var cat = Character.Generate("felinoid", Gender.Male);
-			//Program.WriteLine("SmartQuote with filters:");
-			//Program.WriteLine("He turns to you and speaks. \"Don't mention the madman. Whatever you do, don't do that.\"".SmartQuote(Culture.GetSpeechFilter("equestrian", cat.GetSpeechFilter())));
-			//Program.WriteLine("Unfazed, you gaze at him. \"<nofilter>I'll mention anyone I want. Be it the madman, the temptress, or whoever else.\"".SmartQuote(Culture.GetSpeechFilter("equestrian")));
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
@@ -244,6 +232,10 @@ namespace Noxico
 		{
 			if (!InGame && !force)
 				return;
+
+			HostForm.Clear();
+			HostForm.Write(" -- Saving... -- ", Color.White, Color.Black);
+			HostForm.Draw();
 
 			if (!noPlayer && !Player.Character.HasToken("gameover"))
 			{
@@ -334,6 +326,10 @@ namespace Noxico
 			if (WorldVersion < 15)
 				throw new Exception("Tried to open an old worldsave.");
 
+			HostForm.Clear();
+			HostForm.Write(" -- Loading... -- ", Color.White, Color.Black);
+			HostForm.Draw();
+
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
 			if (File.Exists(playerFile))
 			{
@@ -343,7 +339,6 @@ namespace Noxico
 				Player.AdjustView();
 				pfile.Close();
 			}
-
 
 			var global = Path.Combine(SavePath, WorldName, "global.bin");
 			var file = File.Open(global, FileMode.Open);
@@ -404,6 +399,7 @@ namespace Noxico
 
 				CurrentBoard = Boards[currentIndex];
 				CurrentBoard.Entities.Add(Player);
+				CurrentBoard.UpdateSurroundings();
 				Player.ParentBoard = CurrentBoard;
 				CurrentBoard.CheckCombatStart();
 				CurrentBoard.UpdateLightmap(Player, true);
@@ -414,7 +410,6 @@ namespace Noxico
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
-				SaveGame();
 			}
 		}
 
@@ -623,14 +618,19 @@ namespace Noxico
 
 		public void CreateRealm()
 		{
+			var line = 0;
 			var setStatus = new Action<string>(s =>
 			{
 				Program.WriteLine(s);
+				HostForm.Write(s, Color.White, Color.Black, line, 0);
+				HostForm.Draw();
+				line++;
 			});
 
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 
+			HostForm.Clear();
 			if (this.Boards.Count == 0)
 			{
 				setStatus("Creating player's starting town...");
@@ -666,8 +666,8 @@ namespace Noxico
 				if (this.Boards[i] == null)
 					continue;
 				this.Boards[i].SaveToFile(i);
-				if (i > 0)
-					this.Boards[i] = null;
+				//if (i > 0)
+				//	this.Boards[i] = null;
 			}
 			stopwatch.Stop();
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());

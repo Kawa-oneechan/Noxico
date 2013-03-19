@@ -91,12 +91,7 @@ namespace Noxico
 		private BoardChar entity;
 		private string repeatScript, repeatScriptName;
 
-		public static XmlDocument ScheduleDoc;
-
-		static Scheduler()
-		{
-			ScheduleDoc = Mix.GetXMLDocument("schedule.xml");
-		}
+		public static XmlDocument ScheduleDoc = Mix.GetXMLDocument("schedule.xml");
 
 		public Scheduler(BoardChar entity)
 		{
