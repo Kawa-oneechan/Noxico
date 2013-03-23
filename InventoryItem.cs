@@ -32,7 +32,10 @@ namespace Noxico
 			if (ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
-			var name = (token != null && (!string.IsNullOrWhiteSpace(UnknownName) && !NoxicoGame.Identifications.Contains(ID)) ? UnknownName : Name);
+			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
+			var isIdentified = canBeIdentified ? !NoxicoGame.Identifications.Contains(ID) : true;
+
+			var name = isIdentified ? Name : UnknownName;
 			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
 			var reps = new Dictionary<string, string>()
 			{
@@ -52,7 +55,7 @@ namespace Noxico
 					name = name.Replace(item.Key, item.Value);
 			}
 
-			var proper = IsProperNamed && (token != null && !token.HasToken("unidentified"));
+			var proper = IsProperNamed && isIdentified;
 			if (proper || !a)
 			{
 				if (the && !string.IsNullOrEmpty(The))
@@ -74,7 +77,9 @@ namespace Noxico
 				}
 				return string.Format("{0} {1} ({2}/{3})", the ? The : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
 			}
-			return string.Format("{0} {1}", the ? The : (!NoxicoGame.Identifications.Contains(ID) ? (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a") : A), name).Trim();
+			if (isIdentified)
+				return string.Format("{0} {1}", the ? The : A, name).Trim();
+			return string.Format("{0} {1}", the ? The : (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a"), name).Trim();
 		}
 
 		//Added for Jint's sake.
