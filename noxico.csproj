@@ -107,11 +107,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardChar.cs" />
     <Compile Include="BoardDrawing.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="CryptStream.cs" />
     <Compile Include="Culture.cs" />
+    <Compile Include="Cursor.cs" />
     <Compile Include="Descriptions.cs" />
     <Compile Include="Dijkstra.cs" />
     <Compile Include="DungeonGenerator.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
     <Compile Include="fmod\fmod_memoryinfo.cs" />
+    <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
     <Compile Include="WinFormHost.cs">
