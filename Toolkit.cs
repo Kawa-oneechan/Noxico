@@ -347,7 +347,7 @@ namespace Noxico
 		/// <summary>
 		/// Use in a ForEach loop.
 		/// </summary>
-		public static IEnumerable<Point> Line(int x0, int y0, int x1, int y1)
+		public static IEnumerable<Point> Line(int x0, int y0, int x1, int y1, bool connectedDiagonals = false)
 		{
 			bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
 			if (steep)
@@ -375,8 +375,13 @@ namespace Noxico
 			int error = dx / 2;
 			int ystep = (y0 < y1) ? 1 : -1;
 			int y = y0;
+			int lastX = x0, lastY = y0;
 			for (int x = x0; x <= x1; x++)
 			{
+				if (connectedDiagonals)
+					yield return new Point((steep ? lastY : x), (steep ? x : lastY));
+				lastX = x;
+				lastY = y;
 				yield return new Point((steep ? y : x), (steep ? x : y));
 				error = error - dy;
 				if (error < 0)
