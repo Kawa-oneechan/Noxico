@@ -985,7 +985,19 @@ namespace Noxico
 			var character = player.Character;
 			HostForm.SetCell(1, 81, player.AsciiChar, player.ForegroundColor, player.BackgroundColor);
 			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 1, 83);
-			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(18), Color.White, Color.Transparent, 2, 81);
+			switch (character.GetGenderEnum())
+			{
+				case Gender.Male:
+					HostForm.SetCell(2, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
+					break;
+				case Gender.Female:
+					HostForm.SetCell(2, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
+					break;
+				case Gender.Herm:
+					HostForm.SetCell(2, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
+					break;
+			}
+			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(17), Color.White, Color.Transparent, 2, 82);
 
 			var hpNow = character.GetToken("health").Value;
 			var hpMax = character.GetMaximumHealth();
@@ -1016,8 +1028,7 @@ namespace Noxico
 				sb.Append("Haste ");
 			if (character.HasToken("slow"))
 				sb.Append("Slow ");
-			var mods = sb.ToString().Wordwrap(18);
-			HostForm.Write(mods, Color.Silver, Color.Transparent, statRow, 81);
+			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
 
 			var renegadeLight = (int)Math.Ceiling((character.GetToken("renegade").Value / 100) * 8);
 			var paragonLight = (int)Math.Ceiling((character.GetToken("paragon").Value / 100) * 8);
@@ -1029,6 +1040,44 @@ namespace Noxico
 			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + paragonDark);
 			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + 8);
 			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82 + 8 + renegadeLight);
+
+			if (Mode == UserMode.Aiming && Cursor.PointingAt is BoardChar && !(Cursor.PointingAt is Player))
+			{
+				var boardChar = Cursor.PointingAt as BoardChar;
+				character = boardChar.Character;
+				HostForm.SetCell(18, 81, player.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
+				HostForm.Write(character.GetNameOrTitle(), Color.White, Color.Transparent, 18, 83);
+
+				switch (character.GetGenderEnum())
+				{
+					case Gender.Male:
+						HostForm.SetCell(19, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
+						break;
+					case Gender.Female:
+						HostForm.SetCell(19, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
+						break;
+					case Gender.Herm:
+						HostForm.SetCell(19, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
+						break;
+				}
+
+				if (!character.HasToken("beast"))
+					HostForm.Write(character.Title, Color.Silver, Color.Transparent, 19, 83);
+
+				hpNow = character.GetToken("health").Value;
+				hpMax = character.GetMaximumHealth();
+				hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
+				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 20, 81);
+				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 20, 81);
+				sb.Clear();
+				if (character.Path("role/vendor") != null)
+					sb.Append(character.Path("role/vendor/class").Text.Titlecase() + ' ');
+				if (character.HasToken("hostile"))
+					sb.Append("Hostile");
+				if (character.HasToken("helpless"))
+					sb.Append("Helpless");
+				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 21, 81);
+			}
 
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length - 2);
