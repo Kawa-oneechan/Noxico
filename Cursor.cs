@@ -123,7 +123,6 @@ namespace Noxico
 			base.Update();
 			ParentBoard.Redraw();
 			NoxicoGame.Messages.Last().Renew();
-			NoxicoGame.UpdateMessages();
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
