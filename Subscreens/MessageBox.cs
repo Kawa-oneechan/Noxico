@@ -42,15 +42,15 @@ namespace Noxico
 				if (UIManager.Elements == null || fromWalkaround)
 					UIManager.Initialize();
 
-				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 5, Top = top, Width = 70, Height = height };
+				win = new UIWindow(type == BoxType.Question ? "Question" : title) { Left = 15, Top = top, Width = 70, Height = height };
 				UIManager.Elements.Add(win);
-				lbl = new UILabel(text) { Left = 7, Top = top + 1, Width = 68, Height = lines };
+				lbl = new UILabel(text) { Left = 17, Top = top + 1, Width = 68, Height = lines };
 				UIManager.Elements.Add(lbl);
 				lst = null;
 				txt = null;
 				if (type == BoxType.List)
 				{
-					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 7, Top = top + lines + 1, Width = 66, Height = options.Count };
+					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 17, Top = top + lines + 1, Width = 66, Height = options.Count };
 					lst.Change += (s, e) =>
 						{
 							option = lst.Index;
@@ -61,15 +61,15 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 7, Top = top + lines + 1, Width = 65, Height = 1 };
+					txt = new UITextBox((string)Answer) { Left = 17, Top = top + lines + 1, Width = 65, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
 				if (type == BoxType.Notice || type == BoxType.Input)
-					key = new UILabel("  \u2026  ") { Top = top + height - 1, Left = 66 };
+					key = new UILabel("  \u2026  ") { Top = top + height - 1, Left = 76 };
 				else if (type == BoxType.Question)
-					key = new UILabel(" " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ") { Top = top + height - 1, Left = 66 };
+					key = new UILabel(" " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ") { Top = top + height - 1, Left = 76 };
 				else if (type == BoxType.List)
-					key = new UILabel(" \u2191/\u2193 ") { Top = top + height - 1, Left = 66 };
+					key = new UILabel(" \u2191/\u2193 ") { Top = top + height - 1, Left = 76 };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;

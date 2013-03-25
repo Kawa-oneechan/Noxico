@@ -428,13 +428,14 @@ namespace Noxico
 			if (Messages.Count == 0)
 				return;
 			var row = 29;
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				var m = Messages.Count - 1 - i;
 				if (m < 0)
 				{
 					HostForm.Write(new string(' ', 80), Color.Silver, Color.Black, row, 0);
-					return;
+					row--;
+					continue;
 				}
 				var c = Messages[m].Color;
 				if (c.Lightness < 0.2)
@@ -974,10 +975,10 @@ namespace Noxico
 		public static void DrawSidebar()
 		{
 			var player = HostForm.Noxico.Player;
-			if (player == null)
+			if (player == null || player.Character == null)
 				return;
 
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < 30; row++)
 				for (var col = 80; col < 100; col++)
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
 

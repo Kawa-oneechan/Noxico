@@ -432,9 +432,9 @@ namespace Noxico
 			Marshal.Copy(lockData.Scan0, scan0, 0, size);
             using (var gfx = Graphics.FromImage(backBuffer))
             {
-				for (int row = 0; row < 25; row++)
+				for (int row = 0; row < 30; row++)
 				{
-					for (int col = 0; col < 80; col++)
+					for (int col = 0; col < 100; col++)
 					{
 						if (image[col, row].Character != previousImage[col, row].Character ||
 							image[col, row].Foreground != previousImage[col, row].Foreground ||
@@ -453,7 +453,7 @@ namespace Noxico
 
 			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
 				prevCursor = Cursor;
-			if (Cursor.X >= 0 && Cursor.X < 80 && Cursor.Y >= 0 && Cursor.Y < 25)
+			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
 			{
 				using (var gfx = Graphics.FromImage(backBuffer))
 				{
@@ -465,60 +465,28 @@ namespace Noxico
 
 		public void ScrollUp(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
 		{
-			var pixelT = CellHeight + (topRow * CellHeight);
-			var pixelB = (bottomRow * CellHeight);
-			var pixelL = leftCol * CellWidth;
-			var pixelR = rightCol * CellWidth;
-			var scrollSize = new Size(pixelR - pixelL, pixelB - pixelT - CellHeight);
-			var scrollPosFrom = new System.Drawing.Point(pixelL, pixelT + CellHeight);
-			using (var sGfx = Graphics.FromImage(scrollBuffer))
-			{
-				sGfx.DrawImage(backBuffer, 0, 0, new System.Drawing.Rectangle(scrollPosFrom, scrollSize), GraphicsUnit.Pixel);
-			}
-			using (var gfx = Graphics.FromImage(backBuffer))
-			{
-				gfx.DrawImage(scrollBuffer, pixelL, pixelT);
-				gfx.FillRectangle(new SolidBrush(reveal), new System.Drawing.Rectangle(pixelL, (bottomRow * CellHeight) - CellHeight, pixelR - pixelL, CellHeight));
-			}
 			for (var row = topRow; row < bottomRow; row++)
 			{
 				for (var col = leftCol; col < rightCol; col++)
 				{
-					previousImage[col, row].Character = image[col, row].Character = image[col, row + 1].Character;
-					previousImage[col, row].Foreground = image[col, row].Foreground = image[col, row + 1].Foreground;
-					previousImage[col, row].Background = image[col, row].Background = image[col, row + 1].Background;
+					image[col, row].Character = image[col, row + 1].Character;
+					image[col, row].Foreground = image[col, row + 1].Foreground;
+					image[col, row].Background = image[col, row + 1].Background;
 				}
 			}
-			//Refresh();
 		}
 
 		public void ScrollDown(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
 		{
-			var pixelT = (topRow * CellHeight);
-			var pixelB = (bottomRow * CellHeight);
-			var pixelL = leftCol * CellWidth;
-			var pixelR = rightCol * CellWidth;
-			var scrollSize = new Size(pixelR - pixelL, pixelB - pixelT - CellHeight);
-			var scrollPosFrom = new System.Drawing.Point(pixelL, pixelT);
-			using (var sGfx = Graphics.FromImage(scrollBuffer))
-			{
-				sGfx.DrawImage(backBuffer, 0, 0, new System.Drawing.Rectangle(scrollPosFrom, scrollSize), GraphicsUnit.Pixel);
-			}
-			using (var gfx = Graphics.FromImage(backBuffer))
-			{
-				gfx.DrawImage(scrollBuffer, pixelL, pixelT + CellHeight);
-				gfx.FillRectangle(new SolidBrush(reveal), new System.Drawing.Rectangle(pixelL, topRow * CellHeight, pixelR - pixelL, CellHeight));
-			}
-			for (var row = topRow + 1; row <= bottomRow; row++)
+			for (var row = bottomRow; row > topRow; row--)
 			{
 				for (var col = leftCol; col < rightCol; col++)
 				{
-					previousImage[col, row].Character = image[col, row].Character = image[col, row - 1].Character;
-					previousImage[col, row].Foreground = image[col, row].Foreground = image[col, row - 1].Foreground;
-					previousImage[col, row].Background = image[col, row].Background = image[col, row - 1].Background;
+					image[col, row].Character = image[col, row - 1].Character;
+					image[col, row].Foreground = image[col, row - 1].Foreground;
+					image[col, row].Background = image[col, row - 1].Background;
 				}
 			}
-			//Refresh();
 		}
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -576,8 +544,8 @@ namespace Noxico
 			if (e.KeyCode == Keys.R && e.Control)
 			{
 				NoxicoGame.KeyMap[(int)Keys.R] = false;
-				for (int row = 0; row < 25; row++)
-					for (int col = 0; col < 80; col++)
+				for (int row = 0; row < 30; row++)
+					for (int col = 0; col < 100; col++)
 						previousImage[col, row].Character = (char)0x500;
 			}
 		
@@ -597,7 +565,7 @@ namespace Noxico
 		{
 			var tx = y.X / (CellWidth);
 			var ty = y.Y / (CellHeight);
-			if (tx < 0 || ty < 0 || tx > 79 || ty > 24)
+			if (tx < 0 || ty < 0 || tx > 99 || ty > 29)
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
