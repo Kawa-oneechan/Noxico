@@ -76,6 +76,7 @@ namespace Noxico
 					{
 						if ((string)MessageBox.Answer == "~")
 						{
+							new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 							MessageBox.Input("Enter a name for the new world:", NoxicoGame.WorldName,
 								() =>
 								{
@@ -240,11 +241,6 @@ namespace Noxico
 		private static int page = 0;
 		private static Action<int> loadPage, loadColors;
 
-		private static void CreateNox()
-		{
-			NoxicoGame.HostForm.Noxico.CreateRealm();
-		}
-
 		public static void CharacterCreator()
 		{
 			if (Subscreens.FirstDraw)
@@ -274,34 +270,34 @@ namespace Noxico
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
-					{ "header", new UILabel("\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500") { Left = 44, Top = 4, Foreground = Color.Black } },
-					{ "back", new UIButton("< Back", null) { Left = 45, Top = 17, Width = 10 } },
-					{ "next", new UIButton("Next >", null) { Left = 59, Top = 17, Width = 10 } },
-					{ "play", new UIButton("PLAY >", null) { Left = 59, Top = 17, Width = 10 } },
+					{ "header", new UILabel("\u2500\u2500\u2500\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500\u2500\u2500\u2500\u2500") { Left = 56, Top = 4, Foreground = Color.Black } },
+					{ "back", new UIButton("< Back", null) { Left = 58, Top = 22, Width = 10 } },
+					{ "next", new UIButton("Next >", null) { Left = 78, Top = 22, Width = 10 } },
+					{ "play", new UIButton("PLAY >", null) { Left = 78, Top = 22, Width = 10 } },
 
-					{ "nameLabel", new UILabel("Name") { Left = 44, Top = 7, Foreground = Color.Gray } },
-					{ "name", new UITextBox(Environment.UserName) { Left = 45, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel("[random]") { Left = 60, Top = 7, Hidden = true, Foreground = Color.Gray } },
-					{ "speciesLabel", new UILabel("Species") { Left = 44, Top = 10, Foreground = Color.Gray } },
-					{ "species", new UISingleList() { Left = 45, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "sexLabel", new UILabel("Sex") { Left = 44, Top = 13, Foreground = Color.Gray } },
-					{ "sexNo", new UILabel("Not available") { Left = 50, Top = 14, Foreground = Color.Gray } },
-					{ "sex", new UIBinary("Male", "Female") { Left = 45, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameLabel", new UILabel("Name") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "name", new UITextBox(Environment.UserName) { Left = 58, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameRandom", new UILabel("[random]") { Left = 64, Top = 7, Hidden = true, Foreground = Color.Gray } },
+					{ "speciesLabel", new UILabel("Species") { Left = 56, Top = 10, Foreground = Color.Gray } },
+					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sexLabel", new UILabel("Sex") { Left = 56, Top = 13, Foreground = Color.Gray } },
+					{ "sexNo", new UILabel("Not available") { Left = 64, Top = 14, Foreground = Color.Gray } },
+					{ "sex", new UIBinary("Male", "Female") { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "hairLabel", new UILabel("Hair color") { Left = 44, Top = 7, Foreground = Color.Gray } },
-					{ "hair", new UIColorList() { Left = 45, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "bodyLabel", new UILabel("Body color") { Left = 44, Top = 10, Foreground = Color.Gray } },
-					{ "bodyNo", new UILabel("Not available") { Left = 45, Top = 11, Foreground = Color.Gray } },
-					{ "body", new UIColorList() { Left = 45, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "eyesLabel", new UILabel("Eye color") { Left = 44, Top = 13, Foreground = Color.Gray } },
-					{ "eyes", new UIColorList() { Left = 45, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "hairLabel", new UILabel("Hair color") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "hair", new UIColorList() { Left = 58, Top = 8, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "bodyLabel", new UILabel("Body color") { Left = 56, Top = 10, Foreground = Color.Gray } },
+					{ "bodyNo", new UILabel("Not available") { Left = 64, Top = 11, Foreground = Color.Gray } },
+					{ "body", new UIColorList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "eyesLabel", new UILabel("Eye color") { Left = 56, Top = 13, Foreground = Color.Gray } },
+					{ "eyes", new UIColorList() { Left = 58, Top = 14, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "giftLabel", new UILabel("Bonus gift") { Left = 44, Top = 7, Foreground = Color.Gray } },
-					{ "gift", new UIList("", null, traits) { Left = 45, Top = 8, Width = 24, Height = 8, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "giftLabel", new UILabel("Bonus gift") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "gift", new UIList("", null, traits) { Left = 58, Top = 8, Width = 30, Height = 8, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 40, Height = 4, Foreground = Color.White } },
+					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 50, Height = 4, Foreground = Color.White } },
 					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel(Toolkit.TranslateKey(KeyBinding.TabFocus) + " to switch controls, " + Toolkit.TranslateKey(KeyBinding.Up) + '/' + Toolkit.TranslateKey(KeyBinding.Down) + '/' + Toolkit.TranslateKey(KeyBinding.Left) + '/' + Toolkit.TranslateKey(KeyBinding.Right) + " and " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to choose. Or use a mouse.") { Left = 1, Top = 24, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel(Toolkit.TranslateKey(KeyBinding.TabFocus) + " to switch controls, " + Toolkit.TranslateKey(KeyBinding.Up) + '/' + Toolkit.TranslateKey(KeyBinding.Down) + '/' + Toolkit.TranslateKey(KeyBinding.Left) + '/' + Toolkit.TranslateKey(KeyBinding.Right) + " and " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to choose. Or use a mouse.") { Left = 1, Top = 29, Foreground = Color.Silver } },
 				};
 
 				pages = new List<UIElement>[]
@@ -411,7 +407,7 @@ namespace Noxico
 				controls["gift"].Change = (s, e) =>
 				{
 					var giftIndex = ((UIList)controls["gift"]).Index;
-					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(40);
+					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(50);
 					controls["controlHelp"].Top = controls["gift"].Top + giftIndex;
 					UIManager.Draw();
 				};
@@ -422,7 +418,7 @@ namespace Noxico
 					var c = controls.First(x => x.Value == UIManager.Highlight);
 					if (controlHelps.ContainsKey(c.Key))
 					{
-						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(40);
+						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(50);
 						controls["controlHelp"].Top = c.Value.Top;
 					}
 					else

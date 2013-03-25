@@ -21,35 +21,31 @@ namespace Noxico
 				scroll = 1;
 				Subscreens.FirstDraw = false;
 
-				window = new UIWindow(text[0]) { Left = 5, Top = 3, Width = 70, Height = 19 };
+				window = new UIWindow(text[0]) { Left = 5, Top = 1, Width = 90, Height = 26 };
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = " Press " + Toolkit.TranslateKey(KeyBinding.ScrollUp) + " and " + Toolkit.TranslateKey(KeyBinding.ScrollDown) + " to scroll, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to return ";
-				host.Write(help, UIColors.WindowBorder, Color.Transparent, 21, 40 - (help.Length / 2));
-				for (int i = scroll; i < text.Length && i - scroll < 17; i++)
+				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 50 - (help.Length / 2));
+				for (int i = scroll; i < text.Length && i - scroll < 24; i++)
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadRight(67), UIColors.RegularText, UIColors.DarkBackground, 3 + i, 6);
+					host.Write(' ' + text[i].PadRight(88), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
 				}
 				Subscreens.Redraw = true;
 			}
 			if (Subscreens.Redraw)
 			{
-				if (text.Length > 17)
+				if (text.Length > 24)
 				{
-					for (int i = 4; i < 21; i++)
-						host.SetCell(i, 74, (char)0x2551, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
-					float pct = (float)(scroll - 1) / (float)((text.Length - 16 < 0) ? 1 : text.Length - 16);
-					int tp = (int)(pct * 17) + 4;
-					host.SetCell(tp, 74, (char)0x2195, Color.Black, Color.Silver, true);
+					for (int i = 2; i < 26; i++)
+						host.SetCell(i, 94, (char)0x2551, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
+					float pct = (float)(scroll - 1) / (float)((text.Length - 23 < 0) ? 1 : text.Length - 23);
+					int tp = (int)(pct * 20) + 2;
+					host.SetCell(tp, 94, (char)0x2195, Color.Black, Color.Silver, true);
 				}
 				Subscreens.Redraw = false;
 			}
-
-			//There was some old as balls shit here from before UIManager, when TextScroller was fullscreen, for handling the Close "button".
-			//It's gone now.
-			//I ate it.
 
 			if (keys[(int)System.Windows.Forms.Keys.S])
 			{
@@ -75,9 +71,10 @@ namespace Noxico
 					scroll = 1;
 				else
 				{
-					host.ScrollDown(4, 21, 6, 73, UIColors.DarkBackground);
+					host.ScrollDown(2, 25, 6, 94, UIColors.DarkBackground);
 					var i = scroll;
-					host.Write(text[i].PadRight(67), UIColors.RegularText, UIColors.DarkBackground, 4, 7);
+					host.Write(new string(' ', 88), UIColors.RegularText, UIColors.DarkBackground, 2, 6);
+					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 7);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -85,18 +82,17 @@ namespace Noxico
 			{
 				slow = DateTime.Now;
 				scroll++;
-				if (scroll > text.Length - 17)
-					scroll = text.Length - 17;
+				if (scroll > text.Length - 24)
+					scroll = text.Length - 24;
 				else if (scroll < 1)
 					scroll = 1;
 				else
 				{
-					host.ScrollUp(3, 21, 6, 73, UIColors.DarkBackground);
-					var i = scroll + 16;
-					if (i >= text.Length)
-						host.Write(new string(' ', 67), UIColors.RegularText, UIColors.DarkBackground, 20, 4);
-					else
-						host.Write(' ' + text[i].PadRight(67), UIColors.RegularText, UIColors.DarkBackground, 20, 6);
+					host.ScrollUp(2, 25, 6, 94, UIColors.DarkBackground);
+					var i = scroll + 23;
+					host.Write(new string(' ', 88), UIColors.RegularText, UIColors.DarkBackground, 25, 6);
+					if (i < text.Length)
+						host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 25, 7);
 					Subscreens.Redraw = true;
 				}
 			}

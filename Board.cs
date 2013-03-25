@@ -676,6 +676,9 @@ namespace Noxico
 			for (int row = 0; row < 25; row++)
 				for (int col = 0; col < 80; col++)
 					DirtySpots.Add(new Location(col, row));
+
+			NoxicoGame.DrawSidebar();
+			NoxicoGame.DrawMessages();
 		}
 
 		public void Draw(bool force = false)
