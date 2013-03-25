@@ -147,6 +147,8 @@ namespace Noxico
 			{
 				if (other.Character.HasToken("beast"))
 					continue;
+				if (!CanSee(other))
+					continue;
 				if (other.Character.GetStat(Stat.Charisma) >= 10)
 				{
 					var stim = this.Character.GetToken("stimulation");

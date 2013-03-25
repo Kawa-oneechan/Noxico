@@ -428,7 +428,7 @@ namespace Noxico
 			if (Messages.Count == 0)
 				return;
 			var row = 29;
-			for (var i = 0; i < 6; i++)
+			for (var i = 0; i < 5; i++)
 			{
 				var m = Messages.Count - 1 - i;
 				if (m < 0)
