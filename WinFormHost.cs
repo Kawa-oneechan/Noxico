@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using SystemMessageBox = System.Windows.Forms.MessageBox;
+using Marshal = System.Runtime.InteropServices.Marshal;
 
 namespace Noxico
 {
@@ -69,8 +71,10 @@ namespace Noxico
 		private bool starting = true, fatal = false;
 
         public bool Running { get; set; }
-		private int CellWidth, CellHeight, GlyphAdjustX, GlyphAdjustY;
-		private bool ClearType;
+
+		private int CellWidth, CellHeight;
+		private string pngFont = "unifont";
+		private Dictionary<int, FontBlock> pngFonts;
 
 		public string IniPath { get; set; }
 		public new Point Cursor { get; set; }
@@ -97,11 +101,11 @@ namespace Noxico
 				this.Text = "Noxico";
 				this.BackColor = System.Drawing.Color.Black;
 				this.DoubleBuffered = true;
-				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-				this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-				this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-				this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
-				this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
+				this.FormBorderStyle = FormBorderStyle.FixedSingle;
+				this.FormClosing += new FormClosingEventHandler(this.Form1_FormClosing);
+				this.KeyDown += new KeyEventHandler(this.Form1_KeyDown);
+				this.KeyPress += new KeyPressEventHandler(this.Form1_KeyPress);
+				this.KeyUp += new KeyEventHandler(this.Form1_KeyUp);
 				this.Icon = global::Noxico.Properties.Resources.app;
 				this.ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
 				this.Controls.Add(new Label()
@@ -121,7 +125,7 @@ namespace Noxico
 				Mix.Initialize("Noxico");
 				if (!Mix.FileExists("noxico.xml"))
 				{
-					System.Windows.Forms.MessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					SystemMessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					Close();
 					return;
 				}
@@ -137,13 +141,13 @@ namespace Noxico
 					var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 					if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
 					{
-						var response = System.Windows.Forms.MessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-						if (response == System.Windows.Forms.DialogResult.Cancel)
+						var response = SystemMessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+						if (response == DialogResult.Cancel)
 						{
 							Close();
 							return;
 						}
-						else if (response == System.Windows.Forms.DialogResult.Yes)
+						else if (response == DialogResult.Yes)
 						{
 							IniPath = oldIniPath;
 							portable = false;
@@ -162,33 +166,40 @@ namespace Noxico
 					IniFile.SetValue("misc", "shotpath", "./screenshots");
 				}
 
-				var family = IniFile.GetValue("font", "family", "Fixedsys Excelsior 3.01");
-				var emSize = IniFile.GetValue("font", "size", 12);
-				var style = IniFile.GetValue("font", "bold", false) ? FontStyle.Bold : FontStyle.Regular;
-				GlyphAdjustX = IniFile.GetValue("font", "x-adjust", -3);
-				GlyphAdjustY = IniFile.GetValue("font", "y-adjust", -1);
-				ClearType = IniFile.GetValue("font", "cleartype", false);
-				Font = new Font(family, emSize, style);
-				if (Font.FontFamily.Name != family)
-					Font = new Font(FontFamily.GenericMonospace, emSize, style);
-				using (var gfx = Graphics.FromHwnd(this.Handle))
+				pngFont = IniFile.GetValue("misc", "font", "unifont");
+				pngFonts = new Dictionary<int, FontBlock>();
+				if (Mix.FileExists(pngFont + "_00.png"))
 				{
-					var em = gfx.MeasureString("M", this.Font);
-					CellWidth = (int)Math.Ceiling(em.Width * 0.75);
-					CellHeight = (int)Math.Ceiling(em.Height * 0.85);
+					var blockZero = Mix.GetBitmap(pngFont + "_00.png");
+					CellWidth = blockZero.Width / 16;
+					CellHeight = blockZero.Height / 16;
+					CachePNGFont('A');
 				}
-				if (IniFile.GetValue("font", "cellwidth", 8) != 0)
-					CellWidth = IniFile.GetValue("font", "cellwidth", 8);
-				if (IniFile.GetValue("font", "cellheight", 15) != 0)
-					CellHeight = IniFile.GetValue("font", "cellheight", 15);
+				else
+				{
+					pngFont = "font\\unifont";
+					if (Mix.FileExists(pngFont + "_00.png"))
+					{
+						var blockZero = Mix.GetBitmap(pngFont + "_00.png");
+						CellWidth = blockZero.Width / 16;
+						CellHeight = blockZero.Height / 16;
+						CachePNGFont('A');
+					}
+					else
+					{
+						SystemMessageBox.Show(this, "Could not find font bitmaps. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						Close();
+						return;
+					}
+				}
 
 				ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
 
 				Show();
 				Refresh();
 
-				backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight);
-				scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight);
+				backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
+				scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
 				Noxico = new NoxicoGame();
 				Noxico.Initialize(this);
 
@@ -236,7 +247,7 @@ namespace Noxico
 			catch (Exception x)
 			{
 				new ErrorForm(x).ShowDialog(this);
-				System.Windows.Forms.MessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
+				SystemMessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
 				Running = false;
 				fatal = true;
 				Application.ExitThread();
@@ -266,7 +277,7 @@ namespace Noxico
 			catch (Exception x)
 			{
 				new ErrorForm(x).ShowDialog(this);
-				System.Windows.Forms.MessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
+				SystemMessageBox.Show(this, x.ToString(), Application.ProductName, MessageBoxButtons.OK);
 				Running = false;
 				fatal = true;
 			}
@@ -283,6 +294,25 @@ namespace Noxico
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
 		}
 
+		private void CachePNGFont(char p)
+		{
+			var block = (p >> 8);
+			if (!pngFonts.ContainsKey(block))
+			{
+				var file = pngFont + "_" + block.ToString("X2") + ".png";
+				if (Mix.FileExists(file))
+				{
+					Program.WriteLine("Caching font block U+{0:X2}--...", block);
+					pngFonts.Add(block, new FontBlock(Mix.GetBitmap(file)));
+				}
+				else
+				{
+					Program.WriteLine("Warning: {0} does not exist!");
+					pngFonts.Add(block, new FontBlock(new Bitmap(128, 256)));
+				}
+			}
+		}
+		
         public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
         {
 			if (col >= 100 || row >= 30 || col < 0 || row < 0)
@@ -366,7 +396,7 @@ namespace Noxico
 			}
 		}
 
-        private void DrawCell(Graphics gfx, int row, int col, Cell cell)
+        private void DrawCell(byte[] scan0, int stride, int row, int col, Cell cell)
         {
 			var sTX = col * CellWidth;
             var sTY = row * CellHeight;
@@ -374,43 +404,61 @@ namespace Noxico
 			var f = cell.Foreground;
             var c = cell.Character;
 
-			gfx.TextContrast = 0;
-			gfx.TextRenderingHint = ClearType ? System.Drawing.Text.TextRenderingHint.ClearTypeGridFit : System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			using (var backBrush = new SolidBrush(b))
+			CachePNGFont(c);
+			var block = c >> 8;
+			var c2 = c & 0xFF;
+			var fontBlock = pngFonts[block];
+			var sSX = (c2 %	16) * CellWidth;
+			var sSY = (c2 / 16) * CellHeight;
+			for (var y = 0; y < CellHeight; y++)
 			{
-				gfx.FillRectangle(backBrush, sTX, sTY, CellWidth, CellHeight);
-				using (var foreBrush = new SolidBrush(f))
+				for (var x = 0; x < CellWidth; x++)
 				{
-					gfx.DrawString(c.ToString(), this.Font, foreBrush, sTX + GlyphAdjustX, sTY + GlyphAdjustY);
+					var d = fontBlock.Data[c2, (y * CellWidth) + x];
+					var color = (d == 0) ? b : f;
+					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
+					scan0[target + 0] = color.B;
+					scan0[target + 1] = color.G;
+					scan0[target + 2] = color.R;
 				}
 			}
         }
 
 		public void Draw()
         {
+			var lockData = backBuffer.LockBits(new System.Drawing.Rectangle(0, 0, backBuffer.Width, backBuffer.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+			var size = lockData.Stride * lockData.Height;
+			var scan0 = new byte[size];
+			Marshal.Copy(lockData.Scan0, scan0, 0, size);
             using (var gfx = Graphics.FromImage(backBuffer))
             {
-				for (int row = 0; row < 30; row++)
+				for (int row = 0; row < 25; row++)
 				{
-					for (int col = 0; col < 100; col++)
+					for (int col = 0; col < 80; col++)
 					{
 						if (image[col, row].Character != previousImage[col, row].Character ||
 							image[col, row].Foreground != previousImage[col, row].Foreground ||
-							image[col, row].Background != previousImage[col, row].Background ||
-							(col == prevCursor.X && row == prevCursor.Y))
+							image[col, row].Background != previousImage[col, row].Background)
 						{
-							DrawCell(gfx, row, col, image[col, row]);
+							DrawCell(scan0, lockData.Stride, row, col, image[col, row]);
 							previousImage[col, row].Character = image[col, row].Character;
 							previousImage[col, row].Foreground = image[col, row].Foreground;
 							previousImage[col, row].Background = image[col, row].Background;
 						}
 					}
 				}
+            }
+			Marshal.Copy(scan0, 0, lockData.Scan0, size);
+			backBuffer.UnlockBits(lockData);
 
-				if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
-					prevCursor = Cursor;
-				if (Cursor.X >= 0 && Cursor.X < 80 && Cursor.Y >= 0 && Cursor.Y < 25)
+			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
+				prevCursor = Cursor;
+			if (Cursor.X >= 0 && Cursor.X < 80 && Cursor.Y >= 0 && Cursor.Y < 25)
+			{
+				using (var gfx = Graphics.FromImage(backBuffer))
+				{
 					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, CellWidth - 1, CellHeight - 1);
+				}
 			}
             this.Refresh();
         }
@@ -553,9 +601,9 @@ namespace Noxico
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				if (y.Button == System.Windows.Forms.MouseButtons.Left)
+				if (y.Button == MouseButtons.Left)
 					Noxico.Player.AutoTravelTo(tx, ty);
-				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+				else if (y.Button == MouseButtons.Right)
 				{
 					NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
 					NoxicoGame.Cursor.XPosition = tx;
@@ -567,7 +615,7 @@ namespace Noxico
 			}
 			else if (NoxicoGame.Mode == UserMode.Subscreen)
 			{
-				if (y.Button == System.Windows.Forms.MouseButtons.Left)
+				if (y.Button == MouseButtons.Left)
 				{
 					if (NoxicoGame.Subscreen == MessageBox.Handler)
 					{
@@ -578,7 +626,7 @@ namespace Noxico
 					Subscreens.MouseY = ty;
 					Subscreens.Mouse = true;
 				}
-				else if (y.Button == System.Windows.Forms.MouseButtons.Right)
+				else if (y.Button == MouseButtons.Right)
 				{
 					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Back]] = true;
 				}
@@ -602,4 +650,29 @@ namespace Noxico
 			}
 		}
     }
+
+	public class FontBlock
+	{
+		public byte[,] Data;
+		public FontBlock(Bitmap source)
+		{
+			var cWidth = source.Width / 16;
+			var cHeight = source.Height / 16;
+			Data = new byte[255, cWidth * cHeight];
+			for (var ch = 0; ch < 255; ch++)
+			{
+				var i = 0;
+				var sX = (ch % 16) * cWidth;
+				var sY = (ch / 16) * cHeight;
+				for (var y = 0; y < cHeight; y++)
+				{
+					for (var x = 0; x < cWidth; x++)
+					{
+						Data[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R > 127 ? 1 : 0);
+						i++;
+					}
+				}
+			}
+		}
+	}
 }
