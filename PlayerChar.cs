@@ -366,7 +366,11 @@ namespace Noxico
 			var sleeping = Character.Path("sleeping");
 			if (sleeping != null)
 			{
-				Character.GetToken("health").Value += 2;
+				var hp = Character.GetToken("health");
+				var hpMax = Character.GetMaximumHealth();
+				hp.Value += 2;
+				if (hp.Value > hpMax)
+					hp.Value = hpMax;
 				sleeping.Value--;
 				if (sleeping.Value <= 0)
 				{

@@ -34,6 +34,7 @@ namespace Noxico
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
 			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.Draw(true);
 			if (CanMove(targetDirection, check) != null)
 				return;
 			var newX = 0;
@@ -121,7 +122,7 @@ namespace Noxico
 		public override void Update()
 		{
 			base.Update();
-			ParentBoard.Redraw();
+			//ParentBoard.Redraw();
 			NoxicoGame.Messages.Last().Renew();
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
