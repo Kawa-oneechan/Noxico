@@ -56,10 +56,6 @@ namespace Noxico
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
 		public static string ContextMessage { get; set; }
-		private static bool hadContextMessage;
-		private static string healthMessage;
-		private static Color healthColor;
-		private static int healthTimer;
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
@@ -429,50 +425,27 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			if (!string.IsNullOrWhiteSpace(ContextMessage))
-			{
-				hadContextMessage = true;
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length - 2);
-			}
-			else if (hadContextMessage)
-			{
-				HostForm.Noxico.CurrentBoard.Redraw();
-				hadContextMessage = false;
-			}
-
-			if (healthTimer > 0)
-				HostForm.Write(healthMessage, healthColor, Color.Black, 0, 0);
-
 			if (Messages.Count == 0)
 				return;
-			var row = 24;
-			for (var i = 0; i < 4 && i < Messages.Count; i++)
+			var row = 29;
+			for (var i = 0; i < 5; i++)
 			{
 				var m = Messages.Count - 1 - i;
+				if (m < 0)
+				{
+					HostForm.Write(new string(' ', 80), Color.Silver, Color.Black, row, 0);
+					return;
+				}
 				var c = Messages[m].Color;
 				if (c.Lightness < 0.2)
 					c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(' ' + Messages[m].Message + ' ', c, Color.Black, row, 0);
+				HostForm.Write((' ' + Messages[m].Message).PadRight(80), c, Color.Black, row, 0);
 				row--;
 			}
 		}
 		public static void ClearMessages()
 		{
 			Messages.Clear();
-		}
-		public static void UpdateMessages()
-		{
-			if (healthTimer > 0)
-				healthTimer--;
-
-			if (Messages.Count == 0)
-				return;
-			var milliSecond = new TimeSpan(0, 0, 0, 0, 10);
-			Messages.ForEach(m => m.DisplayTimeLeft = m.DisplayTimeLeft.Subtract(milliSecond));
-			var deadMessage = Messages.FirstOrDefault(m => m.DisplayTimeLeft.Ticks <= 0);
-			if (deadMessage != null)
-				Messages.Remove(deadMessage);
-			HostForm.Noxico.CurrentBoard.Redraw();
 		}
 		public static void AddMessage(string message, Color color)
 		{
@@ -497,20 +470,6 @@ namespace Noxico
 				MessageBox.Notice("There are no messages to display.", true);
 			else
 				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE080"))));
-		}
-
-		public static void HealthMessage()
-		{
-			healthTimer = 5;
-			var pc = HostForm.Noxico.Player.Character;
-			var hp = pc.GetStat(Stat.Health);
-			var max = pc.GetMaximumHealth();
-			healthColor = Color.Lime;
-			if (hp <= max / 4)
-				healthColor = Color.Red;
-			else if (hp <= max / 2)
-				healthColor = Color.Yellow;
-			healthMessage = string.Format("{0}/{1}", hp, max);
 		}
 
 		public void FlushDungeons()
@@ -568,8 +527,9 @@ namespace Noxico
 					}
 				}
 				CurrentBoard.Draw();
-				UpdateMessages();
+				//UpdateMessages();
 				DrawMessages();
+				DrawSidebar();
 
 				if (Mode == UserMode.Aiming)
 				{
@@ -1009,6 +969,68 @@ namespace Noxico
 			if (KnownTargets.Contains(targetID))
 				return; //Target already known, whatever.
 			KnownTargets.Add(targetID);
+		}
+
+		public static void DrawSidebar()
+		{
+			var player = HostForm.Noxico.Player;
+			if (player == null)
+				return;
+
+			for (var row = 0; row < 25; row++)
+				for (var col = 80; col < 100; col++)
+					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
+
+			var character = player.Character;
+			HostForm.SetCell(1, 81, player.AsciiChar, player.ForegroundColor, player.BackgroundColor);
+			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 1, 83);
+			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(18), Color.White, Color.Transparent, 2, 81);
+
+			var hpNow = character.GetToken("health").Value;
+			var hpMax = character.GetMaximumHealth();
+			var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
+			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 3, 81);
+			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 3, 81);
+			HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, 3, 81);
+
+			var statNames = Enum.GetNames(typeof(Stat));
+			var statRow = 5;
+			foreach (var stat in statNames)
+			{
+				if (stat == "Health")
+					continue;
+				var bonus = "";
+				var statBonus = character.GetToken(stat.ToLowerInvariant() + "bonus").Value;
+				var statBase = character.GetToken(stat.ToLowerInvariant()).Value;
+				var total = statBase + statBonus;
+				if (statBonus > 0)
+					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
+				else if (statBonus < 0)
+					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
+				HostForm.Write(stat.Substring(0, 3).ToUpperInvariant() + "  <cWhite>" + total + bonus, Color.Silver, Color.Transparent, statRow, 81);
+				statRow++;
+			}
+			var sb = new StringBuilder();
+			if (character.HasToken("haste"))
+				sb.Append("Haste ");
+			if (character.HasToken("slow"))
+				sb.Append("Slow ");
+			var mods = sb.ToString().Wordwrap(18);
+			HostForm.Write(mods, Color.Silver, Color.Transparent, statRow, 81);
+
+			var renegadeLight = (int)Math.Ceiling((character.GetToken("renegade").Value / 100) * 8);
+			var paragonLight = (int)Math.Ceiling((character.GetToken("paragon").Value / 100) * 8);
+			var renegadeDark = 8 - renegadeLight;
+			var paragonDark = 8 - paragonLight;
+			HostForm.SetCell(16, 81, '\u2665', Color.FromArgb(116, 48, 48), Color.Transparent);
+			HostForm.SetCell(16, 98, '\u2660', Color.FromArgb(128, 128, 128), Color.Transparent);
+			HostForm.Write(new string(' ', paragonDark), Color.Black, Color.FromArgb(38, 10, 10), 16, 82);
+			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + paragonDark);
+			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + 8);
+			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82 + 8 + renegadeLight);
+
+			if (!string.IsNullOrWhiteSpace(ContextMessage))
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length - 2);
 		}
 	}
 

@@ -62,8 +62,8 @@ namespace Noxico
 			public Color Foreground;
 			public Color Background;
         }
-        private Cell[,] image = new Cell[80, 25];
-        private Cell[,] previousImage = new Cell[80, 25];
+        private Cell[,] image = new Cell[100, 30];
+        private Cell[,] previousImage = new Cell[100, 30];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
 		private bool starting = true, fatal = false;
@@ -182,13 +182,13 @@ namespace Noxico
 				if (IniFile.GetValue("font", "cellheight", 15) != 0)
 					CellHeight = IniFile.GetValue("font", "cellheight", 15);
 
-				ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+				ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
 
 				Show();
 				Refresh();
 
-				backBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
-				scrollBuffer = new Bitmap(80 * CellWidth, 25 * CellHeight);
+				backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight);
+				scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight);
 				Noxico = new NoxicoGame();
 				Noxico.Initialize(this);
 
@@ -285,7 +285,7 @@ namespace Noxico
 
         public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
         {
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 100 || row >= 30 || col < 0 || row < 0)
 				return;
 
             image[col, row].Character = character;
@@ -298,9 +298,9 @@ namespace Noxico
 
 		public void Clear(char character, Color foregroundColor, Color backgroundColor)
 		{
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 30; row++)
 			{
-				for (int col = 0; col < 80; col++)
+				for (int col = 0; col < 100; col++)
 				{
 					image[col, row].Character = character;
 					image[col, row].Foreground = foregroundColor;
@@ -356,12 +356,12 @@ namespace Noxico
 				}
 				SetCell(row, col, c, foregroundColor, backgroundColor, true);
 				col++;
-				if (col >= 80)
+				if (col >= 100)
 				{
 					col = rx;
 					row++;
 				}
-				if (row >= 25)
+				if (row >= 30)
 					return;
 			}
 		}
@@ -390,9 +390,9 @@ namespace Noxico
         {
             using (var gfx = Graphics.FromImage(backBuffer))
             {
-				for (int row = 0; row < 25; row++)
+				for (int row = 0; row < 30; row++)
 				{
-					for (int col = 0; col < 80; col++)
+					for (int col = 0; col < 100; col++)
 					{
 						if (image[col, row].Character != previousImage[col, row].Character ||
 							image[col, row].Foreground != previousImage[col, row].Foreground ||
