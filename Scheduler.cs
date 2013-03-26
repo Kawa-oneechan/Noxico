@@ -178,6 +178,12 @@ namespace Noxico
 			var hourCprev = 0;
 			var minCprev = 0;
 
+			if (!entity.Character.HasToken("currentActivity"))
+			{
+				//shit what do?
+				return;
+			}
+
 			if (entity.Character.GetToken("currentActivity").Tokens.Count > 0)
 			{
 				ExtractCurrentActivity();

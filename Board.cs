@@ -768,6 +768,7 @@ namespace Noxico
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
+			newBoard.AddClutter();
 			return newBoard;
 		}
 

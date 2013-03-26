@@ -1204,6 +1204,7 @@ namespace Noxico
 			{
 				var replacement = unexpected[Random.Next(unexpected.Count)];
 				var fullReplace = true;
+				var schedule = "villager";
 
 				var bodyplan = Toolkit.PickOne(culture.Bodyplans);
 				var gender = Gender.Random;
@@ -1215,6 +1216,12 @@ namespace Noxico
 				{
 					var unique = expectedChar.Split('=')[1];
 					character = Character.GetUnique(unique);
+					if (character.HasToken("schedule"))
+					{
+						schedule = character.GetToken("schedule").Text;
+						character.RemoveToken("schedule");
+					}
+					Scheduler.AddSchedule(schedule, character);
 
 					//See if there's a character on the board with this gender
 					var cg = character.GetGender();
@@ -1250,6 +1257,9 @@ namespace Noxico
 								break;
 							case "token":
 								tokens.Add(stuff[1]);
+								break;
+							case "schedule":
+								schedule = stuff[1];
 								break;
 						}
 					}
@@ -1337,6 +1347,7 @@ namespace Noxico
 						}
 					}
 
+					Scheduler.AddSchedule(schedule, character);
 					character.AddToken("expectation");
 				}
 

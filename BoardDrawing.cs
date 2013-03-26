@@ -292,5 +292,40 @@ namespace Noxico
 				this.Tilemap[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
 		}
+
+		[ForJS(ForJSUsage.Either)]
+		public void AddClutter(int x1, int y1, int x2, int y2)
+		{
+			var biomeData = BiomeData.Biomes[(int)GetToken("biome").Value];
+			if (biomeData.Clutter == null)
+				return;
+			foreach (var clutter in biomeData.Clutter)
+			{
+				var tile = new Tile()
+				{
+					Character = clutter.Character,
+					Foreground = clutter.ForegroundColor,
+					CanBurn = clutter.CanBurn,
+					Wall = clutter.IsSolid,
+				};
+				for (var x = x1; x < x2; x++)
+				{
+					for (var y = y1; y < y2; y++)
+					{
+						var bg = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor;
+						if (Random.NextDouble() < clutter.Chance)
+						{
+							Tilemap[x, y] = clutter.Noisy ? tile.Noise() : tile;
+							Tilemap[x, y].Background = bg;
+						}
+					}
+				}
+			}
+		}
+		[ForJS(ForJSUsage.Either)]
+		public void AddClutter()
+		{
+			AddClutter(0, 0, 79, 24);
+		}
 	}
 }

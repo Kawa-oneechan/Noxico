@@ -186,7 +186,14 @@ namespace Noxico
 			{
 				for (var col = 0; col < 8; col++)
 				{
-					if (plots[col, row].BaseID == null || plots[col, row].BaseID == "<spillover>")
+					if (plots[col, row].BaseID == null)
+					{
+						//Can clutter this up!
+						Board.AddClutter(col * 10, row * 12, (col * 10) + 9, (row * 12) + 11);
+						continue;
+					}
+
+					if (plots[col, row].BaseID == "<spillover>")
 						continue;
 					var building = plots[col, row];
 					var template = building.Template;
