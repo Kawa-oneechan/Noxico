@@ -961,8 +961,6 @@ namespace Noxico
 		{
 			if (!this.HasToken("combat"))
 			{
-				if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
 				return;
 			}
 			foreach (var x in Entities.OfType<BoardChar>())
@@ -973,8 +971,6 @@ namespace Noxico
 					return; //leave the combat rolling
 			}
 			this.RemoveToken("combat");
-			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
 			PlayMusic();
 		}
 
@@ -982,8 +978,6 @@ namespace Noxico
 		{
 			if (this.HasToken("combat"))
 			{
-				if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-					NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestCombatSpeed;
 				return;
 			}
 			foreach (var x in Entities.OfType<BoardChar>())
@@ -991,14 +985,10 @@ namespace Noxico
 				if (x.Character.HasToken("hostile"))
 				{
 					this.AddToken("combat");
-					if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-						NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestCombatSpeed;
 					PlayMusic();
 					return;
 				}
 			}
-			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-				NoxicoGame.AutoRestSpeed = NoxicoGame.AutoRestExploreSpeed;
 		}
 
 		public void CreateHTMLDump(StreamWriter stream, bool linked)

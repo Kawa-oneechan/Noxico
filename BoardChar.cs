@@ -102,6 +102,7 @@ namespace Noxico
 			check = SolidityCheck.Walker;
 			if (Character.HasToken("flying"))
 				check = SolidityCheck.Flyer;
+			Energy -= 1000;
 			base.Move(targetDirection, check);
 		}
 
@@ -241,23 +242,16 @@ namespace Noxico
 			if (Character.GetToken("health").Value <= 0)
 				return;
 
-			if (NoxicoGame.HostForm.Noxico.Player.Character.HasToken("haste") && !(this is Player))
-			{
-				if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("haste").Value == 1)
-					return; //skip a turn
-			}
-			if (this.Character.HasToken("slow"))
-			{
-				var slow = this.Character.GetToken("slow");
-				slow.Value = (int)slow.Value ^ 1;
-				if (slow.Value == 1)
-					return; //skip a turn
-			}
-			if (this.Character.HasToken("justmeleed"))
-			{
-				this.Character.RemoveToken("justmeleed");
-				return; //guess what
-			}
+			var increase = 200 + (int)Character.GetStat(Stat.Speed);
+			if (Character.HasToken("haste"))
+				increase *= 2;
+			else if (Character.HasToken("slow"))
+				increase /= 2;
+			Energy += increase;
+			if (Energy < 5000)
+				return;
+			else
+				Energy = 5000;
 
 			if (Character.HasToken("helpless"))
 			{
@@ -616,6 +610,8 @@ namespace Noxico
 					break;
 				}
 			}
+
+			Energy -= 500;
 
 			var damage = 0.0f;
 			var baseDamage = 0.0f;
@@ -1053,7 +1049,7 @@ namespace Noxico
 					return;
 				}
 			}
-			NoxicoGame.Mode = UserMode.Walkabout;
+			Energy -= 500;
 		}
 
 		public void FireLine(Token effect, int x, int y)

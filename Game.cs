@@ -31,10 +31,6 @@ namespace Noxico
 		public static DateTime[] KeyRepeat { get; set; }
 		public static char LastPress { get; set; }
 		public static bool ScrollWheeled { get; set; }
-		public static int AutoRestTimer { get; set; }
-		public static int AutoRestSpeed { get; set; }
-		public static int AutoRestExploreSpeed { get; set; }
-		public static int AutoRestCombatSpeed { get; set; }
 		public static bool Mono { get; set; }
 
 		public static Dictionary<KeyBinding, int> KeyBindings { get; private set; }
@@ -64,6 +60,7 @@ namespace Noxico
 		public static List<int> KnownTargets;
 		public static Dictionary<int, string> TargetNames;
 		public static NoxicanDate InGameTime;
+		public static bool PlayerReady { get; set; }
 
 		private static List<string> messageLog = new List<string>();
 		public static int WorldVersion { get; private set; }
@@ -139,12 +136,6 @@ namespace Noxico
 			KeyTrg = new bool[256];
 			KeyRepeat = new DateTime[256];
 			Modifiers = new bool[3];
-			AutoRestExploreSpeed = IniFile.GetValue("misc", "autorest", 50);
-			if (AutoRestExploreSpeed > 0 && AutoRestExploreSpeed < 5)
-				AutoRestExploreSpeed = 5;
-			AutoRestCombatSpeed = IniFile.GetValue("misc", "combatrest", 0);
-			if (AutoRestCombatSpeed > 0 && AutoRestCombatSpeed < 5)
-				AutoRestCombatSpeed = 5;
 			Cursor = new Cursor();
 			Messages = new List<StatusMessage>();
 			Sound = new SoundSystem();
@@ -499,19 +490,9 @@ namespace Noxico
 						HostForm.Cursor = new Point(-1, -1);
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;
-					if ((timeNow - lastUpdate).Milliseconds >= Speed)
+					if ((timeNow - lastUpdate).Milliseconds >= 10)
 					{
 						lastUpdate = timeNow;
-						if (AutoRestSpeed > 0)
-						{
-							AutoRestTimer--;
-							if (AutoRestTimer <= 0)
-							{
-								//Sound.PlaySound("Open Gate");
-								AutoRestTimer = AutoRestSpeed;
-								KeyMap[KeyBindings[KeyBinding.Rest]] = true;
-							}
-						}
 						CurrentBoard.Update();
 
 						for (var i = 0; i < Boards.Count; i++)
@@ -1028,6 +1009,13 @@ namespace Noxico
 				sb.Append("Haste ");
 			if (character.HasToken("slow"))
 				sb.Append("Slow ");
+			var satiation = character.GetToken("satiation").Value;
+			if (satiation < 0)
+				sb.Append("Starving ");
+			else if (satiation < 50)
+				sb.Append("Hungry ");
+			else if (satiation > 100)
+				sb.Append("Satiated ");
 			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
 
 			var renegadeLight = (int)Math.Ceiling((character.GetToken("renegade").Value / 100) * 8);
@@ -1040,35 +1028,37 @@ namespace Noxico
 			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + paragonDark);
 			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + 8);
 			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82 + 8 + renegadeLight);
+			HostForm.Write(InGameTime.ToShortTimeString(), Color.Silver, Color.Transparent, 17, 81);
+			HostForm.Write(InGameTime.ToShortDateString(), Color.Silver, Color.Transparent, 18, 81);
 
 			if (Mode == UserMode.Aiming && Cursor.PointingAt is BoardChar && !(Cursor.PointingAt is Player))
 			{
 				var boardChar = Cursor.PointingAt as BoardChar;
 				character = boardChar.Character;
-				HostForm.SetCell(18, 81, player.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
-				HostForm.Write(character.GetNameOrTitle(), Color.White, Color.Transparent, 18, 83);
+				HostForm.SetCell(20, 81, player.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
+				HostForm.Write(character.GetNameOrTitle(), Color.White, Color.Transparent, 20, 83);
 
 				switch (character.GetGenderEnum())
 				{
 					case Gender.Male:
-						HostForm.SetCell(19, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
+						HostForm.SetCell(21, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
 						break;
 					case Gender.Female:
-						HostForm.SetCell(19, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
+						HostForm.SetCell(21, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
 						break;
 					case Gender.Herm:
-						HostForm.SetCell(19, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
+						HostForm.SetCell(21, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
 						break;
 				}
 
 				if (!character.HasToken("beast"))
-					HostForm.Write(character.Title, Color.Silver, Color.Transparent, 19, 83);
+					HostForm.Write(character.Title, Color.Silver, Color.Transparent, 21, 83);
 
 				hpNow = character.GetToken("health").Value;
 				hpMax = character.GetMaximumHealth();
 				hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
-				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 20, 81);
-				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 20, 81);
+				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 22, 39), 22, 81);
+				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 22, 81);
 				sb.Clear();
 				if (character.Path("role/vendor") != null)
 					sb.Append(character.Path("role/vendor/class").Text.Titlecase() + ' ');
@@ -1076,11 +1066,14 @@ namespace Noxico
 					sb.Append("Hostile");
 				if (character.HasToken("helpless"))
 					sb.Append("Helpless");
-				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 21, 81);
+				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
 
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length - 2);
+#if DEBUG
+			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
+#endif
 		}
 	}
 

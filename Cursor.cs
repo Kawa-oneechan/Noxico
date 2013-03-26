@@ -276,6 +276,7 @@ namespace Noxico
 										var item = drop.Item;
 										var token = drop.Token;
 										drop.Take(player.Character);
+										player.Energy -= 1000;
 										NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", drop.ForegroundColor);
 										NoxicoGame.Sound.PlaySound("Get Item");
 										ParentBoard.Redraw();
