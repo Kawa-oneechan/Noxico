@@ -41,10 +41,12 @@ namespace Noxico
         public Direction Flow { get; set; }
 		public bool Blocking { get; set; }
 		public bool Passive { get; set; }
+		public int Energy { get; set; }
 
 		public Entity()
 		{
 			ID = "[null]";
+			this.Energy = Random.Next(4000, 5000);
 		}
 
 		public virtual void Draw()
@@ -67,6 +69,7 @@ namespace Noxico
 				{
 					if (this is Player)
 						NoxicoGame.Sound.PlaySound("Open Gate");
+					Energy -= 500;
 					door.Closed = false;
 				}
 			}

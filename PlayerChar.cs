@@ -20,12 +20,14 @@ namespace Noxico
         {
 			this.AutoTravelMap = new Dijkstra();
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+			this.Energy = 5000;
 		}
 
 		public Player(Character character) : base(character)
 		{
 			this.AutoTravelMap = new Dijkstra();
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+			this.Energy = 5000;
 		}
 
 		public override void AdjustView()
@@ -131,33 +133,13 @@ namespace Noxico
 
 		public override bool MeleeAttack(BoardChar target)
 		{
-			var mySpeed = this.Character.GetStat(Stat.Speed);
-			var theirSpeed = target.Character.GetStat(Stat.Speed);
-			var meFirst = false;
-			
-			if (mySpeed > theirSpeed)
-				meFirst = true;
-			else if (mySpeed == theirSpeed)
-				meFirst = Random.NextDouble() > 0.5;
-
-			if (meFirst)
+			var killedThem = base.MeleeAttack(target);
+			if (!killedThem && !target.Character.HasToken("helpless"))
 			{
-				var killedThem = base.MeleeAttack(target);
-				if (!killedThem && !target.Character.HasToken("helpless"))
-				{
-					target.Character.AddToken("justmeleed");
-					target.MeleeAttack(this);
-				}
-				return killedThem;
-			}
-			else
-			{
-				var killedMe = target.MeleeAttack(this);
 				target.Character.AddToken("justmeleed");
-				if (!killedMe && !this.Character.HasToken("helpless"))
-					return base.MeleeAttack(target);
-				return false;
+				target.MeleeAttack(this);
 			}
+			return killedThem;
 		}
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
@@ -240,22 +222,14 @@ namespace Noxico
 			base.Move(targetDirection, check);
 
 			EndTurn();
-			if (this.Character.HasToken("slow"))
-				EndTurn();
-
-			if (this.Character.HasToken("haste"))
-			{
-				var haste = this.Character.GetToken("haste");
-				haste.Value = (int)haste.Value ^ 1;
-			}
-
+			
 			NoxicoGame.Sound.PlaySound(Character.HasToken("squishy") || Character.Path("skin/type/slime") != null ? "Splorch" : "Step");
 
 			if (lx != XPosition || ly != YPosition)
 			{
+				ParentBoard.UpdateLightmap(this, true);
 				this.DijkstraMap.Hotspots[0] = new Point(XPosition, YPosition);
 				this.DijkstraMap.Update();
-				//this.DijkstraMap.SaveToPNG();
 			}
 			else if (AutoTravelling)
 			{
@@ -305,6 +279,8 @@ namespace Noxico
 
 			if (weapon == null)
 				return;
+
+			Energy -= 500;
 
 			var x = this.XPosition;
 			var y = this.YPosition;
@@ -362,6 +338,30 @@ namespace Noxico
             //base.Update();
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
+
+			var increase = 200 + (int)Character.GetStat(Stat.Speed);
+			if (Character.HasToken("haste"))
+				increase *= 2;
+			else if (Character.HasToken("slow"))
+				increase /= 2;
+			Energy += increase;
+			if (Energy < 5000)
+			{
+				var wasNight = Toolkit.IsNight();
+				NoxicoGame.InGameTime.AddMilliseconds(increase);
+				if (wasNight && !Toolkit.IsNight())
+				{
+					ParentBoard.UpdateLightmap(this, true);
+					ParentBoard.Redraw();
+				}
+				EndTurn();
+				return;
+			}
+			else
+			{
+				NoxicoGame.PlayerReady = true;
+				Energy = 5000;
+			}
 
 			var sleeping = Character.Path("sleeping");
 			if (sleeping != null)
@@ -425,9 +425,8 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Rest) || Vista.Triggers == XInputButtons.LeftShoulder)
 			{
 				NoxicoGame.ClearKeys();
-				if (this.Character.HasToken("haste"))
-					this.Character.GetToken("haste").Value = 0;
-					EndTurn();
+				Energy -= 1000;
+				EndTurn();
 				return;
 			}
 
@@ -524,6 +523,7 @@ namespace Noxico
 				if (drop != null)
 				{
 					drop.Take(this.Character);
+					NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
 					NoxicoGame.AddMessage("You pick up " + drop.Item.ToString(drop.Token, true) + ".", drop.ForegroundColor);
 					NoxicoGame.Sound.PlaySound("Get Item");
 					ParentBoard.Redraw();
@@ -624,17 +624,7 @@ namespace Noxico
 			if (Character.UpdatePregnancy())
 				return;
 
-			var five = new TimeSpan(0,0,5);
-			PlayingTime = PlayingTime.Add(five);
-			if (!(this.Character.HasToken("haste") && this.Character.GetToken("haste").Value == 0))
-			{
-				var wasNight = Toolkit.IsNight();
-				NoxicoGame.InGameTime.Add(five);
-				ParentBoard.UpdateLightmap(this, true);
-				//stupid bug, using != instead of && caused Redraw to not be caled for too long.
-				if (wasNight && !Toolkit.IsNight())
-					ParentBoard.Redraw();
-			}
+			NoxicoGame.PlayerReady = false;
 
 			if (Character.HasToken("flying"))
 			{
@@ -649,8 +639,6 @@ namespace Noxico
 					NoxicoGame.KeyMap[(int)NoxicoGame.KeyBindings[KeyBinding.Fly]] = true; //force a landing
 			}
 
-
-			NoxicoGame.AutoRestTimer = NoxicoGame.AutoRestSpeed;
 			if (ParentBoard == null)
 			{
 				return;
@@ -659,12 +647,6 @@ namespace Noxico
 			if (ParentBoard.IsBurning(YPosition, XPosition))
 				Hurt(10, "burned to death", null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
-
-
-#if DEBUG
-			NoxicoGame.HostForm.Text = string.Format("Noxico - {0} ({1}x{2}) @ {3} {4}", ParentBoard.Name, XPosition, YPosition, NoxicoGame.InGameTime.ToLongDateString(), NoxicoGame.InGameTime.ToShortTimeString());
-#endif
-			//NoxicoGame.UpdateMessages();
 		}
 
 		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
@@ -787,6 +769,7 @@ namespace Noxico
 			}
 
 			NoxicoGame.Mode = UserMode.Walkabout;
+			Energy -= 500;
 			EndTurn();
 		}
 
@@ -820,7 +803,7 @@ namespace Noxico
 			lastSatiationChange.GetToken("hour").Value = NoxicoGame.InGameTime.Hour;
 			lastSatiationChange.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
 			var newSatiation = Character.GetToken("satiation").Value;
-			if (lastSatiation >= 20 && newSatiation < 20)
+			if (lastSatiation >= 50 && newSatiation < 50)
 				NoxicoGame.AddMessage("You have become very hungry.");
 			else if (lastSatiation > 0 && newSatiation == 0)
 				NoxicoGame.AddMessage("You are starving.", Color.Red);

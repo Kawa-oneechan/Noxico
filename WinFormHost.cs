@@ -307,7 +307,7 @@ namespace Noxico
 				}
 				else
 				{
-					Program.WriteLine("Warning: {0} does not exist!");
+					Program.WriteLine("Warning: {0} does not exist!", file);
 					pngFonts.Add(block, new FontBlock(new Bitmap(128, 256)));
 				}
 			}
