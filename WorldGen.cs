@@ -84,6 +84,7 @@ namespace Noxico
 			var southEast = new Board();
 			foreach (var lol in new[] { northWest, north, northEast, east, southEast, south, southWest, west })
 			{
+				lol.GetToken("biome").Value = biomeID;
 				lol.Clear(biomeID);
 				lol.BoardType = BoardType.Wild;
 				Board.HackishBoardTypeThing = "wild";
@@ -98,8 +99,10 @@ namespace Noxico
 					foreach (var e in biome.Encounters)
 						encounters.AddToken(e);
 
+					lol.AddClutter();
+
 					//Possibility of linked dungeons
-					if (Random.NextDouble() < 0.4)
+					if (Random.NextDouble() < 0.6)
 					{
 						var eX = Random.Next(2, 78);
 						var eY = Random.Next(1, 23);
@@ -608,6 +611,32 @@ namespace Noxico
 		}
 	}
 
+	public class ClutterDefinition
+	{
+		public Color ForegroundColor { get; private set; }
+		public Color BackgroundColor { get; private set; }
+		public char Character { get; private set; }
+		public int Description { get; private set; }
+		public bool CanBurn { get; private set; }
+		public bool IsSolid { get; private set; }
+		public bool Noisy { get; private set; }
+		public double Chance { get; private set; }
+
+		public static ClutterDefinition FromXml(XmlElement x)
+		{
+			var n = new ClutterDefinition();
+			n.Character = x.GetAttribute("char")[0];
+			n.ForegroundColor = Color.FromName(x.GetAttribute("color"));
+			n.BackgroundColor = x.HasAttribute("background") ? Color.FromName(x.GetAttribute("background")) : Color.Transparent;
+			n.Description = x.HasAttribute("description") ? int.Parse(x.GetAttribute("description")) : 0;
+			n.CanBurn = x.HasAttribute("canBurn");
+			n.IsSolid = x.HasAttribute("solid");
+			n.Noisy = true;
+			n.Chance = x.HasAttribute("chance") ? double.Parse(x.GetAttribute("chance")) : 0.02;
+			return n;
+		}
+	}
+
 	public class BiomeData
 	{
 		public static List<BiomeData> Biomes;
@@ -636,6 +665,7 @@ namespace Noxico
 		public int MaxEncounters { get; private set; }
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
+		public List<ClutterDefinition> Clutter { get; private set; }
 
 		public static BiomeData FromXML(XmlElement x, string realmID)
 		{
@@ -681,6 +711,14 @@ namespace Noxico
 			else
 			{
 				n.Cultures = cultures.InnerText.Split(',').Select(e => e.Trim()).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
+			}
+
+			var clutters = x.SelectSingleNode("clutterdefs");
+			if (clutters != null)
+			{
+				n.Clutter = new List<ClutterDefinition>();
+				foreach (var clutter in clutters.ChildNodes.OfType<XmlElement>().Where(c => c.Name == "clutter"))
+					n.Clutter.Add(ClutterDefinition.FromXml(clutter));
 			}
 
 			return n;

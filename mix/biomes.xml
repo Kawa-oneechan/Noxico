@@ -2,12 +2,14 @@
 <!DOCTYPE biomes [
 	<!ELEMENT biomes (realm+)>
 	<!ELEMENT realm (biome+)>
-	<!ELEMENT biome (groundGlyphs?, encounters?, cultures?, darken?)>
+	<!ELEMENT biome (groundGlyphs?, encounters?, cultures?, darken?, clutterdefs?)>
 
 	<!ELEMENT groundGlyphs (#PCDATA)>
 	<!ELEMENT encounters (#PCDATA)>
 	<!ELEMENT cultures (#PCDATA)>
 	<!ELEMENT darken EMPTY>
+	<!ELEMENT clutterdefs (clutter+)>
+	<!ELEMENT clutter EMPTY>
 
 	<!ATTLIST realm
 		id ID #REQUIRED
@@ -26,6 +28,15 @@
 		plus CDATA #REQUIRED
 		div CDATA #REQUIRED
 	>
+	<!ATTLIST clutter
+		char CDATA #REQUIRED
+		color CDATA #REQUIRED
+		background CDATA #IMPLIED
+		canBurn CDATA #IMPLIED
+		solid CDATA #IMPLIED
+		description CDATA #IMPLIED
+		chance CDATA #IMPLIED
+	>
 ]>
 <!-- Okay, here's the low-down on what I'm planning. By default, all of these will have {  , ' ` .  } as their "grass".
 But I'm gonna allow a <groundGlyphs> element to overrule that. Why an element? Because that lets us use ".
@@ -37,17 +48,44 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 		<biome name="Tundra" color="#E6F3F2" music="set://Snow">
 			<groundGlyphs>&#x2591;&#x201E; ~/</groundGlyphs>
 			<encounters max="10">imp, imp, wild_dog, imp</encounters>
+			<clutterdefs>
+				<clutter char="&#x2601;" color="gray" solid="true" description="4" chance="0.01" />
+			</clutterdefs>
 		</biome>
 		<biome name="Grass Desert" color="#92B683" music="set://Desert" canBurn="true">
 			<encounters max="10">wild_dog, canine, canine, goblin, slime</encounters>
 		</biome>
 		<biome name="Desert" color="#D2CB98" music="set://Desert">
 			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
+			<clutterdefs>
+				<clutter char="&#x2601;" color="gray" solid="true" description="4" chance="0.01" />
+				<clutter char="&#x0470;" color="#6CCC77" solid="true" description="5" />
+			</clutterdefs>
 		</biome>
-		<biome name="Taiga" color="#B7D0C4" music="set://Snow" />
-		<biome name="Woods" color="#346A28" music="set://Grassland" canBurn="true" />
-		<biome name="Savanna" color="#5D5E29" music="set://Grassland" canBurn="true" />
-		<biome name="Forest" color="#3D772A" music="set://Grassland" canBurn="true" />
+		<biome name="Taiga" color="#B7D0C4" music="set://Snow">
+			<clutterdefs>
+				<clutter char="&#x2601;" color="gray" solid="true" description="4" />
+			</clutterdefs>
+		</biome>
+		<biome name="Woods" color="#346A28" music="set://Grassland" canBurn="true">
+			<clutterdefs>
+				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="true" chance="0.12" description="3" />
+				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+			</clutterdefs>
+		</biome>
+		<biome name="Savanna" color="#5D5E29" music="set://Grassland" canBurn="true">
+			<clutterdefs>
+				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="true" description="3" />
+				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+			</clutterdefs>
+		</biome>
+		<biome name="Forest" color="#3D772A" music="set://Grassland" canBurn="true">
+			<clutterdefs>
+				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="true" description="3" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="true" description="3" />
+				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+			</clutterdefs>
+		</biome>
 		<biome name="Seasonal Forest" color="#53852E" music="set://Swamp" canBurn="true" />
 		<biome name="Swamp" color="#343B2C" music="set://Swamp" />
 		<biome name="Rain Forest" color="#2D7722" music="set://Swamp" canBurn="true" />
