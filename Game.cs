@@ -1150,7 +1150,7 @@ namespace Noxico
 		public static Expectation ExpectTown(string name, int biomeID)
 		{
 			if (biomeID < 0)
-				biomeID = Random.Next(2, 5);
+				biomeID = Random.Next(2, 8);
 			var biome = BiomeData.Biomes[biomeID];
 			var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
 			var culture = Noxico.Culture.Cultures[cultureName];

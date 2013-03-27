@@ -319,7 +319,6 @@ namespace Noxico
 						if (Random.NextDouble() < clutter.Chance)
 						{
 							Tilemap[x, y] = clutter.Noisy ? tile.Noise() : tile;
-							Console.WriteLine(Tilemap[x, y].Character + " " + Tilemap[x, y].SpecialDescription);
 							Tilemap[x, y].Background = bg;
 						}
 					}
