@@ -416,22 +416,20 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
+			for (var i = 25; i < 30; i++)
+				for (var col = 0; col < 80; col++)
+					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
+
 			if (Messages.Count == 0)
 				return;
 			var row = 29;
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 5 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
-				if (m < 0)
-				{
-					HostForm.Write(new string(' ', 80), Color.Silver, Color.Black, row, 0);
-					row--;
-					continue;
-				}
 				var c = Messages[m].Color;
 				if (c.Lightness < 0.2)
 					c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write((' ' + Messages[m].Message).PadRight(80), c, Color.Black, row, 0);
+				HostForm.Write(Messages[m].Message, c, Color.Black, row, 1);
 				row--;
 			}
 		}
@@ -441,15 +439,13 @@ namespace Noxico
 		}
 		public static void AddMessage(string message, Color color)
 		{
-			if (Messages.Count > 0 && Messages.Last().Message == message)
-				Messages.Last().Renew();
-			else
+			if ((Messages.Count > 0 && Messages.Last().Message != message) || Messages.Count == 0)
 			{
 				Messages.Add(new StatusMessage() { Message = message, Color = color });
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}
-			HostForm.Noxico.CurrentBoard.Redraw();
+			DrawMessages();
 		}
 		public static void AddMessage(string message)
 		{
@@ -1016,6 +1012,11 @@ namespace Noxico
 				sb.Append("Hungry ");
 			else if (satiation > 100)
 				sb.Append("Satiated ");
+			if (character.HasToken("flying"))
+				sb.AppendFormat("Flying ({0:00}%)", Math.Floor((character.GetToken("flying").Value / 100) * 100));
+			//var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
+			//NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
+
 			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
 
 			var renegadeLight = (int)Math.Ceiling((character.GetToken("renegade").Value / 100) * 8);
@@ -1081,15 +1082,6 @@ namespace Noxico
 	{
 		public string Message { get; set; }
 		public Color Color { get; set; }
-		public TimeSpan DisplayTimeLeft { get; set; }
-		public StatusMessage()
-		{
-			Renew();
-		}
-		public void Renew()
-		{
-			DisplayTimeLeft = new TimeSpan(0, 0, 2);
-		}
 	}
 
 	public class Expectation

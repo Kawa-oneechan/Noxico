@@ -28,6 +28,8 @@ namespace Noxico
 		{
 			//if (Environment.TickCount % blinkRate * 2 < blinkRate)
 			//	base.Draw();
+			if (NoxicoGame.Mode != UserMode.Aiming)
+				return;
 			NoxicoGame.HostForm.Cursor = new Point(XPosition, YPosition);
 		}
 
@@ -122,14 +124,14 @@ namespace Noxico
 		public override void Update()
 		{
 			base.Update();
-			//ParentBoard.Redraw();
-			NoxicoGame.Messages.Last().Renew();
+			this.ParentBoard.Draw(true);
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
 				NoxicoGame.Messages.Remove(NoxicoGame.Messages.Last());
-				ParentBoard.Redraw();
+				Hide();
+				return;
 			}
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.TabFocus) || Vista.Triggers == XInputButtons.RightShoulder)
@@ -147,6 +149,7 @@ namespace Noxico
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
+				NoxicoGame.Messages.Remove(NoxicoGame.Messages.Last());
 				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (PointingAt != null)
 				{
@@ -210,6 +213,7 @@ namespace Noxico
 					ActionList.Show(description, PointingAt.XPosition, PointingAt.YPosition, options,
 						() =>
 						{
+							Hide();
 							if (ActionList.Answer is int && (int)ActionList.Answer == -1)
 								return;
 							switch (ActionList.Answer as string)
@@ -296,8 +300,9 @@ namespace Noxico
 					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
 					if (tSD.HasValue)
 					{
+						Hide();
 						PointingAt = null;
-						MessageBox.Notice(tSD.Value.Description, true); 
+						MessageBox.Notice(tSD.Value.Description, true);
 						return;
 					}
 				}
@@ -356,6 +361,13 @@ namespace Noxico
 					}
 				}
 			}
+		}
+
+		public void Hide()
+		{
+			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
+			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.Draw(true);
 		}
 	}
 }

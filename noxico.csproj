@@ -181,7 +181,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="mix\chargen.png" />
-    <Content Include="mix\costumes.xml" />
     <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.xml">
       <SubType>Designer</SubType>

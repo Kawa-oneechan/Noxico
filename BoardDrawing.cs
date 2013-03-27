@@ -22,6 +22,7 @@ namespace Noxico
 				Fence = this.Fence,
 				Grate = this.Grate,
 				CanBurn = this.CanBurn,
+				SpecialDescription = this.SpecialDescription,
 			};
 		}
 	}
@@ -306,7 +307,9 @@ namespace Noxico
 					Character = clutter.Character,
 					Foreground = clutter.ForegroundColor,
 					CanBurn = clutter.CanBurn,
-					Wall = clutter.IsSolid,
+					Wall = clutter.Wall,
+					Fence = clutter.Fence,
+					SpecialDescription = clutter.Description,
 				};
 				for (var x = x1; x < x2; x++)
 				{
@@ -316,6 +319,7 @@ namespace Noxico
 						if (Random.NextDouble() < clutter.Chance)
 						{
 							Tilemap[x, y] = clutter.Noisy ? tile.Noise() : tile;
+							Console.WriteLine(Tilemap[x, y].Character + " " + Tilemap[x, y].SpecialDescription);
 							Tilemap[x, y].Background = bg;
 						}
 					}

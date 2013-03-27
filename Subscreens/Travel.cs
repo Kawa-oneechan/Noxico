@@ -36,16 +36,16 @@ namespace Noxico
 					//Items = NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList(),
 					Left = 4,
 					Top = 4,
-					Width = 28,
+					Width = 36,
 					Height = 16,
 					Background = Color.White,
 					Foreground = Color.Black,
 				};
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel("Travel Mode") { Left = 1, Top = 0, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(Toolkit.TranslateKey(KeyBinding.Up, true) + '/' + Toolkit.TranslateKey(KeyBinding.Down, true) + '/' + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to select, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to cancel.") { Left = 1, Top = 24, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel("Current location:\n \u2022<cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 34, Top = 2, Width = 30, Foreground = Color.Teal });
-				UIManager.Elements.Add(new UILabel("You have not been here before.") { Left = 34, Top = 6, Tag = "expect", Foreground = Color.Teal, Hidden = true });
+				UIManager.Elements.Add(new UILabel(Toolkit.TranslateKey(KeyBinding.Up, true) + '/' + Toolkit.TranslateKey(KeyBinding.Down, true) + '/' + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to select, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to cancel.") { Left = 1, Top = 29, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UILabel("Current location:\n \u2022<cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 44, Top = 3, Width = 60, Foreground = Color.Teal });
+				//UIManager.Elements.Add(new UILabel("You have not been here before.") { Left = 44, Top = 7, Tag = "expect", Foreground = Color.Teal, Hidden = true });
 				UIManager.Elements.Add(list);
 				
 				//NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList();
@@ -60,16 +60,16 @@ namespace Noxico
 				//list.Items = new List<string>();
 				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
 				expectationStart = list.Items.Count;
-				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt]));
+				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadRight(list.Width - 7) + "[NEW]"));
 
 				list.Change = (s, e) =>
 				{
-					UIManager.Elements.Find(x => x.Tag == "expect").Hidden = (list.Index < expectationStart);
-					UIManager.Draw();
+					//UIManager.Elements.Find(x => x.Tag == "expect").Hidden = (list.Index < expectationStart);
+					//UIManager.Draw();
 				};
 				list.Enter = (s, e) =>
 				{
-					var key = NoxicoGame.TargetNames.First(tn => tn.Value == list.Text).Key; //NoxicoGame.TargetNames.Keys.ToArray()[list.Index];
+					var key = NoxicoGame.TargetNames.First(tn => tn.Value == (list.Text.EndsWith("[NEW]") ? list.Text.Remove(list.Text.Length - 5).TrimEnd() : list.Text)).Key; //NoxicoGame.TargetNames.Keys.ToArray()[list.Index];
 					var newBoard = NoxicoGame.KnownTargets.Find(kt => kt == key);
 
 					if (newBoard < 0)
