@@ -618,7 +618,8 @@ namespace Noxico
 		public char Character { get; private set; }
 		public int Description { get; private set; }
 		public bool CanBurn { get; private set; }
-		public bool IsSolid { get; private set; }
+		public bool Fence { get; private set; }
+		public bool Wall { get; private set; }
 		public bool Noisy { get; private set; }
 		public double Chance { get; private set; }
 
@@ -630,7 +631,8 @@ namespace Noxico
 			n.BackgroundColor = x.HasAttribute("background") ? Color.FromName(x.GetAttribute("background")) : Color.Transparent;
 			n.Description = x.HasAttribute("description") ? int.Parse(x.GetAttribute("description")) : 0;
 			n.CanBurn = x.HasAttribute("canBurn");
-			n.IsSolid = x.HasAttribute("solid");
+			n.Fence = x.GetAttribute("solid") != "no";
+			n.Wall = x.GetAttribute("solid") == "wall";
 			n.Noisy = true;
 			n.Chance = x.HasAttribute("chance") ? double.Parse(x.GetAttribute("chance")) : 0.02;
 			return n;

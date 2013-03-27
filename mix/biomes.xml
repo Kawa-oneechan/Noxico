@@ -33,7 +33,7 @@
 		color CDATA #REQUIRED
 		background CDATA #IMPLIED
 		canBurn CDATA #IMPLIED
-		solid CDATA #IMPLIED
+		solid (no|yes|wall) "yes"
 		description CDATA #IMPLIED
 		chance CDATA #IMPLIED
 	>
@@ -49,7 +49,7 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 			<groundGlyphs>&#x2591;&#x201E; ~/</groundGlyphs>
 			<encounters max="10">imp, imp, wild_dog, imp</encounters>
 			<clutterdefs>
-				<clutter char="&#x2601;" color="gray" solid="true" description="4" chance="0.01" />
+				<clutter char="&#x2601;" color="gray" description="4" chance="0.01" />
 			</clutterdefs>
 		</biome>
 		<biome name="Grass Desert" color="#92B683" music="set://Desert" canBurn="true">
@@ -58,32 +58,32 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 		<biome name="Desert" color="#D2CB98" music="set://Desert">
 			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
 			<clutterdefs>
-				<clutter char="&#x2601;" color="gray" solid="true" description="4" chance="0.01" />
-				<clutter char="&#x0470;" color="#6CCC77" solid="true" description="5" />
+				<clutter char="&#x2601;" color="gray" description="4" chance="0.01" />
+				<clutter char="&#x0470;" color="#6CCC77" description="5" canBurn="true" />
 			</clutterdefs>
 		</biome>
 		<biome name="Taiga" color="#B7D0C4" music="set://Snow">
 			<clutterdefs>
-				<clutter char="&#x2601;" color="gray" solid="true" description="4" />
+				<clutter char="&#x2601;" color="gray" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Woods" color="#346A28" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="true" chance="0.12" description="3" />
-				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+				<clutter char="&#x2660;" color="#244428" canBurn="true" chance="0.12" description="3" />
+				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Savanna" color="#5D5E29" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="true" description="3" />
-				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" description="3" />
+				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Forest" color="#3D772A" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="true" description="3" />
-				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="true" description="3" />
-				<clutter char="&#x2601;" color="gray" solid="true" chance="0.016" description="4" />
+				<clutter char="&#x2660;" color="#244428" canBurn="true" description="3" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" description="3" />
+				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Seasonal Forest" color="#53852E" music="set://Swamp" canBurn="true" />

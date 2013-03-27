@@ -36,16 +36,6 @@ namespace Noxico
 			AsciiChar = '@';
 		}
 
-		public override void Draw()
-		{
-			base.Draw();
-			if (Character.HasToken("flying"))
-			{
-				var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
-				NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
-			}
-		}
-
 		public bool OnWarp()
 		{
 			var warp = ParentBoard.Warps.Find(w => w.XPosition == XPosition && w.YPosition == YPosition);
@@ -339,6 +329,14 @@ namespace Noxico
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
+			//START
+			if (NoxicoGame.IsKeyDown(KeyBinding.Pause) || Vista.Triggers == XInputButtons.Start)
+			{
+				NoxicoGame.ClearKeys();
+				Pause.Open();
+				return;
+			}
+
 			var increase = 200 + (int)Character.GetStat(Stat.Speed);
 			if (Character.HasToken("haste"))
 				increase *= 2;
@@ -404,14 +402,7 @@ namespace Noxico
 				NoxicoGame.InGameTime.AddMinutes(30);
 			}
 #endif
-
-			//START
-			if (NoxicoGame.IsKeyDown(KeyBinding.Pause) || Vista.Triggers == XInputButtons.Start)
-			{
-				NoxicoGame.ClearKeys();
-				Pause.Open();
-				return;
-			}
+			//Pause menu moved up so you can pause while <5000.
 
 			//RIGHT
 			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder) && this.ParentBoard.AllowTravel)
@@ -469,6 +460,18 @@ namespace Noxico
 						Hurt(9999, "dove into the water and drowned", null, false);
 					else if (tile.Cliff)
 						Hurt(9999, "dove into the depths", null, false, false);
+					else if (tile.Fence)
+					{
+						//I guess I'm still a little... on the fence.
+						/*
+						var tileDesc = tile.GetDescription();
+						if (!tileDesc.HasValue)
+							tileDesc = new TileDescription() { Color = Color.Silver, Name = "obstacle" };
+						NoxicoGame.AddMessage("You fall off the " + tileDesc.Value.Name + ".", tileDesc.Value.Color);
+						Hurt(5, "landed on " + (tileDesc.Value.Name.StartsWithVowel() ? "an" : "a") + ' ' + tileDesc.Value.Name, null, false, true);
+						*/
+						//YEEEEAAAAH!!!!!!!!
+					}
 				}
 				else
 				{

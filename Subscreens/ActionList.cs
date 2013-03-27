@@ -29,13 +29,13 @@ namespace Noxico
 					width = o.Length;
 			}
 			width += 4;
-			if (x + 1 + width >= 80)
+			if (x + 1 + width >= 100)
 				x = x - width;
 			else
 				x++;
 			var height = options.Count + 2;
-			if (y + height >= 25)
-				y = 25 - height;
+			if (y + height >= 30)
+				y = 30 - height;
 			if (x < 0)
 				x = 0;
 			if (y < 0)
