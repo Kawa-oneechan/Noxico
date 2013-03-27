@@ -69,24 +69,31 @@ Other things that could be added are what kind of (fixed) clutter can be found h
 		</biome>
 		<biome name="Woods" color="#346A28" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2660;" color="#244428" canBurn="true" chance="0.12" description="3" />
+				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="wall" chance="0.12" description="3" />
 				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Savanna" color="#5D5E29" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2663;" color="#244428" canBurn="true" description="3" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="wall" description="3" />
 				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
 		<biome name="Forest" color="#3D772A" music="set://Grassland" canBurn="true">
 			<clutterdefs>
-				<clutter char="&#x2660;" color="#244428" canBurn="true" description="3" />
-				<clutter char="&#x2663;" color="#244428" canBurn="true" description="3" />
+				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="wall" description="3" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="wall" description="3" />
 				<clutter char="&#x2601;" color="gray" chance="0.016" description="4" />
 			</clutterdefs>
 		</biome>
-		<biome name="Seasonal Forest" color="#53852E" music="set://Swamp" canBurn="true" />
+		<biome name="Seasonal Forest" color="#53852E" music="set://Swamp" canBurn="true">
+			<clutterdefs>
+				<clutter char="&#x2660;" color="#244428" canBurn="true" solid="wall" chance="0.018" description="3" />
+				<clutter char="&#x2663;" color="#244428" canBurn="true" solid="wall" chance="0.022" description="3" />
+				<clutter char="&#x2601;" color="gray" chance="0.01" description="4" />
+			</clutterdefs>
+		</biome>
+
 		<biome name="Swamp" color="#343B2C" music="set://Swamp" />
 		<biome name="Rain Forest" color="#2D7722" music="set://Swamp" canBurn="true" />
 	</realm>

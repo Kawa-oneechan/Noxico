@@ -255,13 +255,7 @@ namespace Noxico
 				fValuePM = fValue[fValue.Length - 1];
 				fValue = fValue.Remove(fValue.Length - 1);
 			}
-			try
-			{
-				fValueF = float.Parse(fValue, System.Globalization.NumberStyles.Float);
-			}
-			catch (FormatException)
-			{
-			}
+			var wasFloat = float.TryParse(fValue, System.Globalization.NumberStyles.Float, null, out fValueF);
 
 			switch (fType)
 			{
