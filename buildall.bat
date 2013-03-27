@@ -21,12 +21,12 @@ echo BUILD COMPLETED
 echo ---------------
 echo Packing...
 cd bin\Release
-..\..\7za.exe a ..\noxico-0.1.15.7z fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.15.rar fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.2.7z fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.2.rar fmodex64.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
 ..\..\Rar.exe u ..\noxico-music.rar Music.mix Sounds.mix > nul
 cd ..\Release32
-..\..\7za.exe a ..\noxico-0.1.15-32.7z fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
-..\..\Rar.exe u ..\noxico-0.1.15-32.rar fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\7za.exe a ..\noxico-0.1.2-32.7z fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
+..\..\Rar.exe u ..\noxico-0.1.2-32.rar fmodex.dll Jint.dll Antlr3.Runtime.dll Noxico.mix Noxico.exe > nul
 cd ..\..
 pause
 exit /b 0
