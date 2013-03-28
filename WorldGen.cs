@@ -22,7 +22,7 @@ namespace Noxico
 			var thisMap = new Board();
 			var biome = BiomeData.Biomes[biomeID];
 
-			var vendorChance = 0.75;
+			var vendorChance = 0.50;
 			if (vendorTypeList == null)
 			{
 				vendorTypeList = new List<string>();
@@ -54,7 +54,7 @@ namespace Noxico
 
 			if (Random.NextDouble() < vendorChance)
 				if (AddVendor(thisMap, vendorTypes))
-					vendorChance *= 0.75;
+					vendorChance *= 0.9;
 
 			if (string.IsNullOrEmpty(name))
 			{
@@ -529,6 +529,21 @@ namespace Noxico
 		}
 		public static List<Token> GetRandomLoot(string target, string type, Dictionary<string, string> filters = null)
 		{
+			Func<string, List<string>> getPal = new Func<string, List<string>>(c =>
+			{
+				var pal = new List<string>();
+				var colors = new List<string>();
+				for (var i = 0; i < 4; i++)
+				{
+					if (colors.Count == 0)
+						colors.AddRange(c.Split(',').Select(x => x.Trim()).ToList());
+					var color = colors[Random.Next(colors.Count)];
+					colors.Remove(color);
+					pal.Add(color);
+				}
+				return pal;
+			});
+
 			var loot = new List<Token>();
 			var lootsets = GetLoots(target, type, filters);
 			if (lootsets.Count == 0)
@@ -539,8 +554,15 @@ namespace Noxico
 				var options = new List<string>();
 				var min = 1;
 				var max = 1;
-				if (of.Name == "oneof")
+				var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
+				var color = 0;
+				if (of.Name == "colors")
+					colors = getPal(of.InnerText);
+				else if (of.Name == "oneof")
+				{
 					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
+					color = of.HasAttribute("color") ? int.Parse(of.GetAttribute("color")) - 1 : 0;
+				}
 				else if (of.Name == "someof")
 				{
 					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
@@ -583,7 +605,12 @@ namespace Noxico
 								}
 
 								if (includeThis)
-									possibilities.Add(new Token(knownItem.ID));
+								{
+									var newPoss = new Token(knownItem.ID);
+									if (knownItem.HasToken("colored"))
+										newPoss.AddToken("color", 0, colors[color]);
+									possibilities.Add(newPoss);
+								}
 							}
 						}
 						else
@@ -602,7 +629,12 @@ namespace Noxico
 						//ascertain existance first, and maybe add a color or BUC state.
 						var item = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == option);
 						if (item != null)
-							loot.Add(new Token(option));
+						{
+							var newPoss = new Token(option);
+							if (item.HasToken("colored"))
+								newPoss.AddToken("color", 0, colors[color]);
+							loot.Add(newPoss);
+						}
 					}
 					amount--;
 				}

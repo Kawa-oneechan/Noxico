@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -49,6 +49,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
@@ -171,7 +172,9 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mix\biomes.xml" />
+    <Content Include="mix\biomes.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\bodyparts.xml" />
     <Content Include="mix\bodyplans.xml" />
     <Content Include="mix\bonustraits.xml" />
@@ -218,7 +221,6 @@
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.xml" />
     <Content Include="mix\music.xml" />
-    <Content Include="mix\noxico.xml" />
     <Content Include="mix\scenesDlg.xml" />
     <Content Include="mix\scenesSex.xml" />
     <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml" />

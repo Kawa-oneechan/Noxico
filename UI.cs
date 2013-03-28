@@ -301,7 +301,7 @@ namespace Noxico
 			if (_index < scroll)
 			{
 				scroll--;
-				NoxicoGame.HostForm.ScrollDown(Top, Top + Height, Left, Left + Width - 1, Background);
+				NoxicoGame.HostForm.ScrollDown(Top + 1, Top + Height - 1, Left, Left + Width - 1, Background);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Top + pi - scroll, Left);
 			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',
@@ -325,7 +325,7 @@ namespace Noxico
 			if (_index - scroll >= Height)
 			{
 				scroll++;
-				NoxicoGame.HostForm.ScrollUp(Top - 1, Top + Height - 1, Left, Left + Width - 1, Background);
+				NoxicoGame.HostForm.ScrollUp(Top, Top + Height - 1, Left, Left + Width - 1, Background);
 			}
 			NoxicoGame.HostForm.Write(' ' + Items[pi].PadRight(Width - 2) + ' ', Foreground, Background, Top + pi - scroll, Left);
 			NoxicoGame.HostForm.Write(' ' + Items[_index].PadRight(Width - 2) + ' ',

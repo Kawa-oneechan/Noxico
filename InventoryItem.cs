@@ -20,7 +20,6 @@ namespace Noxico
 
 
 		public Token tempToken { get; set; }
-		private static XmlDocument costumeDoc;
 
 		public override string ToString()
 		{
@@ -121,7 +120,7 @@ namespace Noxico
 			{
 				a = Toolkit.StartsWithVowel(this.UnknownName) ? "an " : "a ";
 			}
-			return "This is " + a + this.ToString(token) + ".";
+			return "This is " + this.ToString(token) + ".";
 		}
 
 		public static InventoryItem FromXML(XmlElement x)
@@ -381,6 +380,14 @@ namespace Noxico
 			var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
 			var runningDesc = "";
 
+			Action<string> showDesc = new Action<string>(d =>
+			{
+				if (d.Contains('\n'))
+					MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+				else
+					NoxicoGame.AddMessage(runningDesc.Viewpoint(boardchar));
+			});
+
 			#region Books
 			if (this.ID == "book")
 			{
@@ -416,7 +423,7 @@ namespace Noxico
 							runningDesc += c.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+							showDesc(runningDesc);
 						return;
 					},
 						null);
@@ -427,7 +434,7 @@ namespace Noxico
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
 						runningDesc += "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
-						MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+						showDesc(runningDesc.Viewpoint(boardchar));
 						return;
 					}
 					MessageBox.Ask("Unequip " + this.ToString(item, true) + "?", () =>
@@ -444,7 +451,7 @@ namespace Noxico
 							runningDesc += x.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+							showDesc(runningDesc.Viewpoint(boardchar));
 						return;
 					},
 						null);
@@ -463,7 +470,7 @@ namespace Noxico
 			{
 				if (this.HasToken("description"))
 					runningDesc = this.GetToken("description").Text + "\n\n";
-				MessageBox.Notice(runningDesc + "This item has no effect.");
+				showDesc(runningDesc + "This item has no effect.");
 				return;
 			}
 
@@ -517,7 +524,7 @@ namespace Noxico
 				this.Consume(character, item);
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
-				MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+				showDesc(runningDesc.Viewpoint(boardchar));
 		}
 
 		public void Consume(Character carrier, Token carriedItem)

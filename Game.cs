@@ -486,7 +486,7 @@ namespace Noxico
 						HostForm.Cursor = new Point(-1, -1);
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;
-					if ((timeNow - lastUpdate).Milliseconds >= 10)
+					//if ((timeNow - lastUpdate).Milliseconds >= Speed)
 					{
 						lastUpdate = timeNow;
 						CurrentBoard.Update();
