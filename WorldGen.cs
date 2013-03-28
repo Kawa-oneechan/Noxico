@@ -498,7 +498,7 @@ namespace Noxico
 		public static List<XmlElement> GetLoots(string target, string type, Dictionary<string, string> filters = null)
 		{
 			if (lootDoc == null)
-				lootDoc = Mix.GetXMLDocument("loot.xml");
+				lootDoc = Mix.GetXMLDocument("loot.xml", true);
 			var lootsets = new List<XmlElement>();
 			if (filters == null)
 				filters = new Dictionary<string, string>();
@@ -524,6 +524,8 @@ namespace Noxico
 						continue;
 				}
 				lootsets.Add(potentialSet);
+				if (potentialSet.HasAttribute("final"))
+					break;
 			}
 			return lootsets;
 		}
@@ -532,13 +534,13 @@ namespace Noxico
 			Func<string, List<string>> getPal = new Func<string, List<string>>(c =>
 			{
 				var pal = new List<string>();
-				var colors = new List<string>();
+				var cols = new List<string>();
 				for (var i = 0; i < 4; i++)
 				{
-					if (colors.Count == 0)
-						colors.AddRange(c.Split(',').Select(x => x.Trim()).ToList());
-					var color = colors[Random.Next(colors.Count)];
-					colors.Remove(color);
+					if (cols.Count == 0)
+						cols.AddRange(c.Split(',').Select(x => x.Trim()).ToList());
+					var color = cols[Random.Next(cols.Count)];
+					cols.Remove(color);
 					pal.Add(color);
 				}
 				return pal;
@@ -549,15 +551,18 @@ namespace Noxico
 			if (lootsets.Count == 0)
 				return loot;
 			var lootset = lootsets[Random.Next(lootsets.Count)];
+			var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
 			foreach (var of in lootset.ChildNodes.OfType<XmlElement>())
 			{
 				var options = new List<string>();
 				var min = 1;
 				var max = 1;
-				var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
 				var color = 0;
 				if (of.Name == "colors")
+				{
 					colors = getPal(of.InnerText);
+					continue;
+				}
 				else if (of.Name == "oneof")
 				{
 					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();

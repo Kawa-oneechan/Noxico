@@ -1,0 +1,18 @@
+<loot>
+	<lootset target="npc" type="clothing" final="true">
+		<filter key="id" value="Urta" />
+		<colors>black</colors>
+		<oneof>sheer_top</oneof>
+		<oneof>short_skirt</oneof>
+		<oneof>fishnets</oneof>
+		<oneof>high_heels</oneof>
+	</lootset>
+	<lootset target="npc" type="underwear" final="true">
+		<filter key="id" value="Urta" />
+		<!-- EMPTY -->
+	</lootset>
+	<lootset target="npc" type="arms" final="true">
+		<filter key="id" value="Urta" />
+		<oneof>scimitar</oneof>
+	</lootset>
+</loot>

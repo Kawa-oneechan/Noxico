@@ -1,0 +1,8 @@
+Urta
+Kawa
+mission.js
+uniques.xml
+scenesDlg.xml
+scenesSex.xml
+loot.xml
+items.xml

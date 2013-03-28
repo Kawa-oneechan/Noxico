@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE uniques [
+	<!ELEMENT uniques (character+)>
+	<!ELEMENT script (#PCDATA)>
+	<!ATTLIST script language CDATA #FIXED "text/noxicobotic">
+	<!ELEMENT character (#PCDATA|script)*>
+	<!ATTLIST character
+		id ID #REQUIRED
+		name CDATA #IMPLIED
+		proper (true|false) "true"
+		a CDATA #IMPLIED
+	>
+]>
+<uniques>
+	<character id="urta" name="Urta" proper="true" a="a">
+		<![CDATA[
+seekrit
+invisiblegender
+terms
+	generic: "vulpinoid"
+	male: "foxboy"
+	female: "foxgirl"
+	herm: "foxherm"
+ascii
+	char: U+0056
+tallness: 179
+hair
+	length: 8
+	color: darkgray
+face: fox
+skin
+	type: fur
+	color: gray
+ears: fox
+legs: fox
+tail: fox
+waist: 7
+ass
+	size: 12
+	fuckable
+hips: 12
+fertility: 0
+breastrow
+	amount: 2
+	size: 5
+	nipples: 1
+		size: 1.7
+		color: black
+	milksource
+vagina
+	fuckable
+	wetness: 2
+	looseness: 2
+	clit: 0.5
+penis: horse
+	thickness: 7
+	length: 50
+	cumsource
+	canfuck
+balls
+	amount: 2
+	size: 1.4
+		]]>
+	</character>
+</uniques>

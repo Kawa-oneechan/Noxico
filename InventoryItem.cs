@@ -248,6 +248,8 @@ namespace Noxico
 					return false;
 				else if (t.Name == "jacket" && (!TempRemove(character, tempRemove, "cloak") || !TempRemove(character, tempRemove, "jacket")))
 					return false;
+				else if (t.Name == "socks" && (!TempRemove(character, tempRemove, "shoes") || !TempRemove(character, tempRemove, "socks")))
+					return false;
 			}
 
 			var succeed = true;
@@ -289,6 +291,8 @@ namespace Noxico
 					TempRemove(character, tempRemove, "jacket");
 				else if (t.Name == "jacket")
 					TempRemove(character, tempRemove, "cloak");
+				else if (t.Name == "socks")
+					TempRemove(character, tempRemove, "shoes");
 			}
 
 			if (item == null)

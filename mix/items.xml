@@ -1392,7 +1392,7 @@ sexy
 			<![CDATA[
 plural
 equipable
-	pants
+	socks
 	reach
 	translucent
 weight
@@ -1794,4 +1794,5 @@ ascii
 tool
 			]]>
 	</item>
+
 </items>

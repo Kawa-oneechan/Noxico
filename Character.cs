@@ -209,6 +209,8 @@ namespace Noxico
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
 				"money", "ships", "paragon", "renegade", "satiation",
+				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
+				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
 			};
 			var prefabTokenValues = new[]
 			{
@@ -216,6 +218,8 @@ namespace Noxico
 				10, 0, 10, 0,
 				10, 10, 10, 15,
 				100, 0, 0, 0, 150,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
 			};
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
@@ -357,6 +361,8 @@ namespace Noxico
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
 				"money", "ships", "paragon", "renegade", "satiation",
+				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
+				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
 			};
 			var prefabTokenValues = new[]
 			{
@@ -364,7 +370,10 @@ namespace Noxico
 				10, 0, 10, 0,
 				10, 10, 10, 15,
 				100, 0, 0, 0, 150,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
 			};
+
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
@@ -475,6 +484,8 @@ namespace Noxico
 			filters["gender"] = GetGender();
 			filters["board"] = Board.HackishBoardTypeThing;
 			filters["culture"] = this.GetToken("culture").Text;
+			filters["name"] = this.Name.ToString(true);
+			filters["id"] = this.Name.ToID();
 			var inventory = this.GetToken("items");
 			var armedOne = false;
 			foreach (var item in WorldGen.GetRandomLoot("npc", "underwear", filters))
@@ -577,6 +588,7 @@ namespace Noxico
 			InventoryItem undershirt = null;
 			InventoryItem shirt = null;
 			InventoryItem pants = null;
+			InventoryItem socks = null;
 			InventoryItem jacket = null;
 			InventoryItem cloak = null;
 			InventoryItem hat = null;
@@ -606,6 +618,11 @@ namespace Noxico
 					{
 						undershirt = foundItem;
 						undershirt.tempToken = carriedItem;
+					}
+					if (eq.HasToken("socks"))
+					{
+						socks = foundItem;
+						socks.tempToken = carriedItem;
 					}
 					if (eq.HasToken("pants"))
 					{
@@ -696,6 +713,8 @@ namespace Noxico
 				}
 				else
 					crotchVisible = (pants == null || pants.CanSeeThrough());
+				if (socks != null && (pants == null || pants.CanSeeThrough()))
+					worn.Add(socks.ToLongString(socks.tempToken));
 			}
 			else
 			{
@@ -703,6 +722,8 @@ namespace Noxico
 					worn.Add(undershirt.ToLongString(undershirt.tempToken));
 				if (underpants != null)
 					worn.Add(underpants.ToLongString(underpants.tempToken));
+				if (socks != null)
+					worn.Add(socks.ToLongString(socks.tempToken));
 				crotchVisible = breastsVisible = true;
 			}
 		}
@@ -857,91 +878,13 @@ namespace Noxico
 
 		private void LookAtHairHips(Entity pa, Action<string> print)
 		{
-			//Because Descriptions.Hair() returns length and color + "hair".
-			Func<float, string> hairLength = new Func<float, string>(i =>
-			{
-				if (i == 0)
-					return "bald";
-				if (i < 1)
-					return "trim";
-				if (i < 3)
-					return "short";
-				if (i < 6)
-					return "shaggy";
-				if (i < 10)
-					return "moderately long";
-				if (i < 16)
-					return "shoulder-length";
-				if (i < 26)
-					return "very long";
-				if (i < 40)
-					return "ass-length";
-				return "obscenely long";
-			});
-			//Same for these.
-			Func<float, string> hips = new Func<float, string>(i =>
-			{
-				if (i < 1)
-					return "tiny";
-				if (i < 4)
-					return "slender";
-				if (i < 6)
-					return "average";
-				if (i < 10)
-					return "ample";
-				if (i < 15)
-					return "curvy";
-				if (i < 20)
-					return "fertile";
-				return "cow-like";
-			});
-			Func<float, string> waist = new Func<float, string>(i =>
-			{
-				if (i < 1)
-					return "emaciated";
-				if (i < 4)
-					return "thin";
-				if (i < 6)
-					return "average";
-				if (i < 8)
-					return "soft";
-				if (i < 11)
-					return "chubby";
-				if (i < 14)
-					return "plump";
-				if (i < 17)
-					return "stout";
-				if (i < 20)
-					return "obese";
-				return "morbid";
-			});
-			Func<float, string> ass = new Func<float, string>(i =>
-			{
-				if (i < 1)
-					return "insignificant";
-				if (i < 4)
-					return "firm";
-				if (i < 6)
-					return "regular";
-				if (i < 8)
-					return "shapely";
-				if (i < 11)
-					return "large";
-				if (i < 13)
-					return "spacious";
-				if (i < 16)
-					return "voluminous";
-				if (i < 20)
-					return "huge";
-				return "colossal";
-			});
-
 			var hairThings = new List<string>();
 			var hipThings = new List<string>();
 			if (this.HasToken("hair") && this.Path("hair/length").Value > 0)
 			{
-				hairThings.Add(hairLength(this.Path("hair/length").Value));
-				hairThings.Add(Color.NameColor(this.Path("hair/color").Text));
+				var hair = this.GetToken("hair");
+				hairThings.Add(Descriptions.HairLength(hair));
+				hairThings.Add(Descriptions.HairColor(hair));
 				if (this.Path("hair/style") != null)
 					hairThings.Add(this.Path("hair/style").Text);
 				if (this.Path("skin/type").Text == "slime")
@@ -953,9 +896,9 @@ namespace Noxico
 			}
 			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
-				hipThings.Add(hips(this.GetToken("hips").Value) + " hips");
-				hipThings.Add(waist(this.GetToken("waist").Value) + " waist");
-				hipThings.Add(ass(this.Path("ass/size").Value) + " ass");
+				hipThings.Add(Toolkit.PickOne(Descriptions.GetSizeDescriptions(this.GetToken("hips").Value, "//lowerbody/hips").Split(',')).Trim() + " hips");
+				hipThings.Add(Descriptions.WaistSize(this.GetToken("waist")) + " waist");
+				hipThings.Add(Descriptions.ButtSize(this.Path("ass/size")) + " ass");
 			}
 			else
 			{
@@ -968,7 +911,7 @@ namespace Noxico
 		{
 			print("Sexual characteristics\n----------------------\n");
 			var cocks = new List<Token>(); var vaginas = new List<Token>(); var breastRows = new List<Token>();
-			Token nuts;
+			Token nuts = null;
 			var ballCount = 0;
 			var ballSize = 0.25f;
 			//var slit = this.HasToken("snaketail");
@@ -991,41 +934,6 @@ namespace Noxico
 				}
 			}
 
-			Func<float, string> breast = new Func<float, string>(i =>
-			{
-				if (i == 0)
-					return "flat";
-				if (i < 0.5)
-					return "tiny";
-				if (i < 1)
-					return "small";
-				if (i < 2.5)
-					return "fair";
-				if (i < 3.5)
-					return "appreciable";
-				if (i < 4.5)
-					return "ample";
-				if (i < 6)
-					return "pillowy";
-				if (i < 7)
-					return "large";
-				if (i < 8)
-					return "ridiculous";
-				if (i < 9)
-					return "huge";
-				if (i < 10)
-					return "spacious";
-				if (i < 12)
-					return "back-breaking";
-				if (i < 13)
-					return "mountainous";
-				if (i < 14)
-					return "ludicrous";
-				if (i < 15)
-					return "exploding";
-				return "absurdly huge";
-			});
-
 			print("Breasts: ");
 			if (breastRows.Count == 0)
 				print("none\n");
@@ -1035,7 +943,7 @@ namespace Noxico
 				for (var i = 0; i < breastRows.Count; i++)
 				{
 					var row = breastRows[i];
-					print("| " + Toolkit.Count(row.GetToken("amount").Value) + " " + breast(/* row.GetToken("size").Value */ GetBreastRowSize(i)) + " breast");
+					print("| " + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes") + " breast");
 					if (row.GetToken("amount").Value > 1)
 						print("s");
 					if (!breastsVisible)
@@ -1046,9 +954,9 @@ namespace Noxico
 					var nipSize = 0.5f;
 					if (row.Path("nipples/size") != null)
 						nipSize = row.Path("nipples/size").Value;
-					var nipType = Descriptions.Length(nipSize) + " " + "nipple";
+					var nipType = Descriptions.NippleSize(row.GetToken("nipples")) + " " + Descriptions.Length(nipSize);
 					if (row.Path("nipples/canfuck") != null)
-						nipType = Descriptions.Length(nipSize) + " " + "dicknipple";
+						nipType += " dicknipple";
 					else if (row.Path("nipples/fuckable") != null)
 					{
 						var loose = Descriptions.Looseness(row.Path("nipples/looseness"), false);
@@ -1057,8 +965,10 @@ namespace Noxico
 							wet = " and " + wet;
 						else if (wet == null && loose == null)
 							loose = "";
-						nipType = (loose + wet + " nipplecunt").Trim();
+						nipType += (loose + wet + " nipplecunt").Trim();
 					}
+					else
+						nipType += " nipple";
 					print(", " + Toolkit.Count(row.GetToken("nipples").Value) + " " + nipType);
 					if (row.GetToken("nipples").Value > 1)
 						print("s");
@@ -1105,32 +1015,6 @@ namespace Noxico
 			}
 			print("\n");
 
-
-			Func<float, string> balls = new Func<float, string>(i =>
-			{
-				if (i < 1)
-					return "";
-				if (i < 2)
-					return "large";
-				if (i < 3)
-					return "baseball-sized";
-				if (i < 4)
-					return "apple-sized";
-				if (i < 5)
-					return "grapefruit-sized";
-				if (i < 7)
-					return "cantaloupe-sized";
-				if (i < 9)
-					return "soccer ball-sized";
-				if (i < 12)
-					return "basketball-sized";
-				if (i < 15)
-					return "watermelon-sized";
-				if (i < 18)
-					return "beach ball-sized";
-				return "hideously swollen";
-			});
-
 			print("Cocks: ");
 			if (!crotchVisible)
 			{
@@ -1160,7 +1044,7 @@ namespace Noxico
 				}
 				if (ballCount > 0)
 				{
-					print("| " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : balls(ballSize) + " ") + "testicles\n");
+					print("| " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicles\n");
 				}
 			}
 			print("\n");

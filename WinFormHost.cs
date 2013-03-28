@@ -123,7 +123,7 @@ namespace Noxico
 						throw new FileNotFoundException("Required DLL " + reqDll + " is missing.");
 
 				Mix.Initialize("Noxico");
-				if (!Mix.FileExists("noxico.xml"))
+				if (!Mix.FileExists("credits.txt"))
 				{
 					SystemMessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					Close();
