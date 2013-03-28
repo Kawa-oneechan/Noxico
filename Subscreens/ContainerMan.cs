@@ -236,6 +236,7 @@ namespace Noxico
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (isVendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
+							containerList.Change(s, e);
 							UIManager.Draw();
 						}
 						else
@@ -301,6 +302,7 @@ namespace Noxico
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (isVendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
+							playerList.Change(s, e);
 							UIManager.Draw();
 						}
 						else

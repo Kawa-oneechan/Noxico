@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE loot [
 	<!ELEMENT loot (lootset+)>
-	<!ELEMENT lootset (filter|oneof|someof)+>
+	<!ELEMENT lootset (filter|colors|oneof|someof)+>
 	<!ELEMENT filter EMPTY>
+	<!ELEMENT colors (#PCDATA)>
 	<!ELEMENT oneof (#PCDATA)>
 	<!ELEMENT someof (#PCDATA)>
 	<!ATTLIST lootset
@@ -12,6 +13,9 @@
 	<!ATTLIST filter
 		key CDATA #REQUIRED
 		value CDATA #REQUIRED
+	>
+	<!ATTLIST oneof
+		color CDATA #IMPLIED
 	>
 	<!ATTLIST someof
 		min CDATA #REQUIRED
@@ -42,6 +46,14 @@ separate with "," result is trimmed.
 	<lootset target="vendor" type="stock">
 		<filter key="vendorclass" value="butcher" />
 		<someof min="10" max="10">@meat</someof>
+	</lootset>
+	<lootset target="vendor" type="stock">
+		<filter key="vendorclass" value="clothier" />
+		<someof min="10" max="10">@clothing-joke</someof>
+	</lootset>
+	<lootset target="vendor" type="stock">
+		<filter key="vendorclass" value="armorer" />
+		<someof min="10" max="10">@armor-joke</someof>
 	</lootset>
 	<!--
 	<lootset target="vendor" type="stock">
@@ -74,8 +86,8 @@ separate with "," result is trimmed.
 	<!-- Base costumes -->
 	<lootset target="npc" type="clothing">
 		<filter key="gender" value="female" />
-		<oneof>shirt, blouse</oneof>
-		<oneof>pants, skirt</oneof>
+		<oneof color="1">shirt, blouse</oneof>
+		<oneof color="2">pants, skirt</oneof>
 	</lootset>
 	<lootset target="npc" type="clothing">
 		<filter key="gender" value="female" />
@@ -88,8 +100,8 @@ separate with "," result is trimmed.
 	</lootset>
 	<lootset target="npc" type="clothing">
 		<filter key="gender" value="!female" />
-		<oneof>shirt, blouse</oneof>
-		<oneof>pants</oneof>
+		<oneof color="1">shirt, blouse</oneof>
+		<oneof color="2">pants</oneof>
 	</lootset>
 	<lootset target="npc" type="clothing">
 		<filter key="gender" value="!female" />
