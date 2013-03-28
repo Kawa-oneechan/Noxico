@@ -9,6 +9,7 @@
 	<!ATTLIST lootset
 		target CDATA #REQUIRED
 		type CDATA #REQUIRED
+		final CDATA #IMPLIED
 	>
 	<!ATTLIST filter
 		key CDATA #REQUIRED
@@ -124,5 +125,4 @@ separate with "," result is trimmed.
 		<filter key="gender" value="!female" />
 		<oneof>plain_briefs, plain_boxers</oneof>
 	</lootset>
-	
 </loot>

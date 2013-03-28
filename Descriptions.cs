@@ -70,7 +70,7 @@ namespace Noxico
 
 			var size = loosenessToken.Value;
 
-			var descriptions = forButts ? GetSizeDescriptions(size, "//lowerbody/ass/loosenesses") : GetSizeDescriptions(size, "//lowerbody/sexorgans/vaginas/loosenesses");
+			var descriptions = GetSizeDescriptions(size, forButts ?  "//lowerbody/ass/loosenesses" : "//lowerbody/sexorgans/vaginas/loosenesses");
 
 			return Toolkit.PickOne(descriptions.Split(',')).Trim();
 		}

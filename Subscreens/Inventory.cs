@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Noxico
@@ -140,6 +140,8 @@ namespace Noxico
 							sigils.Add("jacket");
 						if (eq.HasToken("cloak"))
 							sigils.Add("cloak");
+						if (eq.HasToken("socks"))
+							sigils.Add("socks");
 						if (carried.HasToken("equipped"))
 							sigils.Add("equipped");
 					}

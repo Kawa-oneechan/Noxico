@@ -1,0 +1,21 @@
+<items>
+	<item id="fishnets" name="silk [color ]fishnet stockings" a="a pair of" the="the">
+		<![CDATA[
+plural
+equipable
+	socks
+	reach
+	translucent
+weight
+	feather
+price: 100
+ascii
+	char: U+220F
+clothing
+legwear
+colored
+sexy
+kinky
+			]]>
+	</item>
+</items>
