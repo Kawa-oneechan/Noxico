@@ -56,14 +56,14 @@ namespace Noxico
 		{
 			if (HasToken("title"))
 				return GetToken("title").Text;
-			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
-			if ((g == "male " && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
-				(g == "female " && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
-				(g == "hermaphrodite " && HasToken("hermonly")))
-				g = "";
+			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
+				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
+				(g == Gender.Herm && HasToken("hermonly")))
+				g = Gender.Random;
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name.ToString(true), A, g, Title);
-			return string.Format("{0} {2}", A, g, Title);
+				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+			return string.Format("{0} {1}", A, Title);
 		}
 
 		/// <summary>
@@ -75,14 +75,14 @@ namespace Noxico
 				return GetToken("title").Text;
 			if (HasToken("beast"))
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
-			var g = HasToken("invisiblegender") ? "" : GetGender() + " ";
-			if ((g == "male " && (HasToken("maleonly") || HasToken("malename"))) ||
-				(g == "female " && (HasToken("femaleonly") || HasToken("femalename"))) ||
-				(g == "hermaphrodite " && HasToken("hermonly")))
-				g = "";
+			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
+				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
+				(g == Gender.Herm && HasToken("hermonly")))
+				g = Gender.Random;
 			if (IsProperNamed)
 				return Name.ToString(fullName);
-			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), g, Species);
+			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Species);
 		}
 
 		/// <summary>
@@ -95,34 +95,23 @@ namespace Noxico
 			return string.Format("{0} {1}", A, Title);
 		}
 
-		/// <summary>
-		/// Returns the character's gender -- male, female, herm, or gender-neutral.
-		/// </summary>
-		public string GetGender()
+		public Gender Gender
 		{
-			if (HasToken("penis") && HasToken("vagina"))
-				return "hermaphrodite";
-			else if (HasToken("penis"))
-				return "male";
-			else if (HasToken("vagina"))
-				return "female";
-			return "gender-neutral";
-		}
-
-		public Gender GetGenderEnum()
-		{
-			if (HasToken("penis") && HasToken("vagina"))
-				return Gender.Herm;
-			else if (HasToken("penis"))
-				return Gender.Male;
-			else if (HasToken("vagina"))
-				return Gender.Female;
-			return Gender.Neuter;
+			get
+			{
+				if (HasToken("penis") && HasToken("vagina"))
+					return Gender.Herm;
+				else if (HasToken("penis"))
+					return Gender.Male;
+				else if (HasToken("vagina"))
+					return Gender.Female;
+				return Gender.Neuter;
+			}
 		}
 
 		public void UpdateTitle()
 		{
-			var g = GetGender();
+			var g = Gender.ToString().ToLowerInvariant();
 			Title = GetToken("terms").GetToken("generic").Text;
 			if (HasToken("prefixes"))
 			{
@@ -181,9 +170,24 @@ namespace Noxico
 			return "it";
 		}
 
-		public float GetMaximumHealth()
+		public float MaximumHealth
 		{
-			return GetToken("strength").Value * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
+			get
+			{
+				return GetToken("strength").Value * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
+			}
+		}
+
+		public float Health
+		{
+			get
+			{
+				return GetToken("health").Value;
+			}
+			set
+			{
+				GetToken("health").Value = value;
+			}
 		}
 
 		public Character()
@@ -226,7 +230,7 @@ namespace Noxico
 					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
 			if (!newChar.HasToken("culture"))
 				newChar.AddToken("culture", 0, Culture.DefaultCulture.ID);
-			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
+			newChar.Health = newChar.MaximumHealth;
 
 			var gender = Gender.Neuter;
 			if (newChar.HasToken("penis") && !newChar.HasToken("vagina"))
@@ -377,7 +381,7 @@ namespace Noxico
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!newChar.HasToken(prefabTokens[i]))
 					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
-			newChar.GetToken("health").Value = newChar.GetMaximumHealth();
+			newChar.Health = newChar.MaximumHealth;
 
 			newChar.ApplyCostume();
 
@@ -481,7 +485,7 @@ namespace Noxico
 			if (HasToken("beast"))
 				return;
 			var filters = new Dictionary<string, string>();
-			filters["gender"] = GetGender();
+			filters["gender"] = Gender.ToString().ToLowerInvariant();
 			filters["board"] = Board.HackishBoardTypeThing;
 			filters["culture"] = this.GetToken("culture").Text;
 			filters["name"] = this.Name.ToString(true);
@@ -980,9 +984,9 @@ namespace Noxico
 			print("Vaginas: ");
 			if (!crotchVisible)
 			{
-				if (this.GetGender() == "male")
+				if (this.Gender == Gender.Male)
 					print("can't tell, none assumed\n");
-				else if (this.GetGender() == "female")
+				else if (this.Gender == Gender.Female)
 					print("can't tell, one assumed\n");
 				else
 					print("can't tell\n");
@@ -1018,9 +1022,9 @@ namespace Noxico
 			print("Cocks: ");
 			if (!crotchVisible)
 			{
-				if (this.GetGender() == "male")
+				if (this.Gender == Gender.Male)
 					print("can't tell, one assumed\n");
-				else if (this.GetGender() == "female")
+				else if (this.Gender == Gender.Female)
 					print("can't tell, none assumed\n");
 				else
 					print("can't tell\n");
@@ -1113,7 +1117,7 @@ namespace Noxico
 			#if DEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>-----\n");
-			print("<cGray>GetGender(): " + this.GetGender() + "\n");
+			print("<cGray>Gender: " + this.Gender.ToString() + "\n");
 			print("<cGray>Cum amount: " + this.CumAmount + "mLs.\n");
 			print("<cGray>Biggest breast row: #" + this.BiggestBreastrowNumber + " @ " + this.GetBreastRowSize(this.BiggestBreastrowNumber) + "'\n");
 			print("<cGray>Biggest penis (length only): #" + this.GetBiggestPenisNumber(false) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(false), false) + "cm\n");
@@ -2191,7 +2195,7 @@ namespace Noxico
 								childChar.Culture = Culture.Cultures[culture];
 						}
 
-						var gender = childChar.GetGenderEnum();
+						var gender = childChar.Gender;
 
 						var terms = childChar.GetToken("terms");
 						childChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
@@ -2212,7 +2216,7 @@ namespace Noxico
 								childChar.GetToken("tallness").Value -= Random.Next(1, 6);
 						}
 
-						childChar.GetToken("health").Value = childChar.GetMaximumHealth();
+						childChar.Health = childChar.MaximumHealth;
 					}
 
 					var ships = this.GetToken("ships");

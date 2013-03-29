@@ -234,7 +234,7 @@ namespace Noxico
 				NoxicoGame.ContextMessage = "pick up";
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
 				NoxicoGame.ContextMessage = "see contents";
-			else if (/* Character.GetToken("health").Value < Character.GetMaximumHealth() && */ ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
+			else if (/* Character.Health < Character.MaximumHealth && */ ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
 				NoxicoGame.ContextMessage = "sleep";
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
@@ -365,7 +365,7 @@ namespace Noxico
 			if (sleeping != null)
 			{
 				var hp = Character.GetToken("health");
-				var hpMax = Character.GetMaximumHealth();
+				var hpMax = Character.MaximumHealth;
 				hp.Value += 2;
 				if (hp.Value > hpMax)
 					hp.Value = hpMax;
@@ -375,8 +375,8 @@ namespace Noxico
 					Character.RemoveToken("sleeping");
 					Character.RemoveToken("helpless");
 					NoxicoGame.AddMessage("You get back up.");
-					if (Character.GetToken("health").Value > Character.GetMaximumHealth())
-						Character.GetToken("health").Value = Character.GetMaximumHealth();
+					if (Character.Health > Character.MaximumHealth)
+						Character.Health = Character.MaximumHealth;
 				}
 				NoxicoGame.InGameTime.AddMinutes(5);
 				EndTurn();
@@ -387,7 +387,7 @@ namespace Noxico
 			{
 				if (Random.NextDouble() < 0.05)
 				{
-					Character.GetToken("health").Value += 2;
+					Character.Health += 2;
 					NoxicoGame.AddMessage("You get back up.");
 					Character.RemoveToken("helpless");
 					helpless = false;
