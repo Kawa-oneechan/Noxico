@@ -205,7 +205,7 @@ namespace Noxico
 				if (cha > 0)
 				{
 					if (cha < 30)
-						return "Well hello, " + (otherChar.GetGenderEnum() == Gender.Male ? "handsome." : "beautiful.");
+						return "Well hello, " + (otherChar.Gender == Gender.Male ? "handsome." : "beautiful.");
 					else if (cha < 60)
 						return "Oh my.";
 					else
@@ -239,7 +239,7 @@ namespace Noxico
 
 		public override void Update()
 		{
-			if (Character.GetToken("health").Value <= 0)
+			if (Character.Health <= 0)
 				return;
 
 			var increase = 200 + (int)Character.GetStat(Stat.Speed);
@@ -257,7 +257,7 @@ namespace Noxico
 			{
 				if (Random.NextDouble() < 0.05)
 				{
-					Character.GetToken("health").Value += 2;
+					Character.Health += 2;
 					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetNameOrTitle() + " gets") + " back up.");
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
@@ -665,7 +665,7 @@ namespace Noxico
 
 			if (target.Character.HasToken("helpless"))
 			{
-				damage = target.Character.GetToken("health").Value + 1;
+				damage = target.Character.Health + 1;
 				dodged = false;
 			}
 
@@ -750,7 +750,7 @@ namespace Noxico
 		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			RunScript(OnHurt, "damage", damage);
-			var health = Character.GetToken("health").Value;
+			var health = Character.Health;
 			if (health - damage <= 0)
 			{
 				if (finishable && !Character.HasToken("beast"))
@@ -763,7 +763,7 @@ namespace Noxico
 					}
 				}
 				//Dead, but how?
-				Character.GetToken("health").Value = 0;
+				Character.Health = 0;
 				if (aggressor != null)
 				{
 					if (Character.HasToken("stolenfrom") && aggressor is Player)
@@ -776,7 +776,7 @@ namespace Noxico
 				this.ParentBoard.CheckCombatFinish();
 				return true;
 			}
-			Character.GetToken("health").Value -= damage;
+			Character.Health -= damage;
 			return false;
 		}
 

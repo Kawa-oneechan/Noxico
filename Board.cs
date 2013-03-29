@@ -590,7 +590,7 @@ namespace Noxico
 				{
 					entity.Update();
 
-					if (NoxicoGame.HostForm.Noxico.Player.Character.GetToken("health").Value <= 0)
+					if (NoxicoGame.HostForm.Noxico.Player.Character.Health <= 0)
 						return;
 				}
 				if (!surrounding && BoardType != BoardType.Dungeon)
@@ -859,7 +859,7 @@ namespace Noxico
 				}
 				if (lives == 0)
 					continue;
-				newb.Character.GetToken("health").Value = 12 * Random.Next(3);
+				newb.Character.Health = 12 * Random.Next(3);
 				newb.Character.AddToken("hostile");
 				//arm them
 				if (!newb.Character.HasToken("beast"))
@@ -896,12 +896,7 @@ namespace Noxico
 			if (gender != Gender.Random)
 				isOkay = (x) =>
 					{
-						var g = x.Character.GetGender();
-						if (g == "male" && gender == Gender.Male ||
-							g == "female" && gender == Gender.Female ||
-							g == "hermaphrodite" && gender == Gender.Herm)
-							return true;
-						return false;
+						return (x.Character.Gender == gender);
 					};
 			var options = this.Entities.OfType<BoardChar>().Where(e => !(e is Player) && isOkay(e)).ToList();
 			if (options.Count == 0)

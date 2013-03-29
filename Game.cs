@@ -962,7 +962,7 @@ namespace Noxico
 			var character = player.Character;
 			HostForm.SetCell(1, 81, player.AsciiChar, player.ForegroundColor, player.BackgroundColor);
 			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 1, 83);
-			switch (character.GetGenderEnum())
+			switch (character.Gender)
 			{
 				case Gender.Male:
 					HostForm.SetCell(2, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
@@ -976,8 +976,8 @@ namespace Noxico
 			}
 			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(17), Color.White, Color.Transparent, 2, 82);
 
-			var hpNow = character.GetToken("health").Value;
-			var hpMax = character.GetMaximumHealth();
+			var hpNow = character.Health;
+			var hpMax = character.MaximumHealth;
 			var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
 			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 3, 81);
 			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 3, 81);
@@ -1039,7 +1039,7 @@ namespace Noxico
 				HostForm.SetCell(20, 81, player.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
 				HostForm.Write(character.GetNameOrTitle(), Color.White, Color.Transparent, 20, 83);
 
-				switch (character.GetGenderEnum())
+				switch (character.Gender)
 				{
 					case Gender.Male:
 						HostForm.SetCell(21, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
@@ -1055,8 +1055,8 @@ namespace Noxico
 				if (!character.HasToken("beast"))
 					HostForm.Write(character.Title, Color.Silver, Color.Transparent, 21, 83);
 
-				hpNow = character.GetToken("health").Value;
-				hpMax = character.GetMaximumHealth();
+				hpNow = character.Health;
+				hpMax = character.MaximumHealth;
 				hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
 				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 22, 39), 22, 81);
 				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 22, 81);
@@ -1216,11 +1216,10 @@ namespace Noxico
 					Scheduler.AddSchedule(schedule, character);
 
 					//See if there's a character on the board with this gender
-					var cg = character.GetGender();
+					var cg = character.Gender;
 					foreach (var person in unexpected)
 					{
-						var pg = person.Character.GetGender();
-						if (cg == pg)
+						if (cg == person.Character.Gender)
 						{
 							replacement = person;
 							fullReplace = false;
@@ -1263,10 +1262,8 @@ namespace Noxico
 						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[bodyplan]);
 						if (distance == 0) //?
 						{
-							var pg = person.Character.GetGender();
-							if (gender == Gender.Male && pg != "male")
-								continue;
-							if (gender == Gender.Female && pg != "female")
+							var pg = person.Character.Gender;
+							if (gender != pg)
 								continue;
 							replacement = person;
 							fullReplace = false;

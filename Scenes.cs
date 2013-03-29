@@ -325,9 +325,9 @@ namespace Noxico
 					}
 					break;
 				case "gender":
-					if (fValue == "male" && fPrimary.GetGender() != "male")
+					if (fValue == "male" && fPrimary.Gender != Gender.Male)
 						return false;
-					else if (fValue == "female" && fPrimary.GetGender() != "female")
+					else if (fValue == "female" && fPrimary.Gender != Gender.Female)
 						return false;
 					break;
 				case "bodylev":
@@ -409,7 +409,7 @@ namespace Noxico
 				{ "your", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
-				{ "g", (c, s) => { var g = c.GetGender(); return g == "male" ? s[0] : (g == "hermaphrodite" && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
+				{ "g", (c, s) => { var g = c.Gender; return g == Gender.Male ? s[0] : (g == Gender.Herm && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
 				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLower(); } },
 				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
 				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
@@ -418,7 +418,7 @@ namespace Noxico
 				{ "name", (c, s) => { return c.Name.ToString(); } },
 				{ "fullname", (c, s) => { return c.Name.ToString(true); } },
 				{ "title", (c, s) => { return c.Title; } },
-				{ "gender", (c, s) => { return c.GetGender(); } },
+				{ "gender", (c, s) => { return c.Gender.ToString().ToLowerInvariant(); } },
 				{ "His", (c, s) => { return tIP && c == top ? "Your" : c.HisHerIts(); } },
 				{ "He", (c, s) => { return tIP && c == top ? "You" : c.HeSheIt(); } },
 				{ "his", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },

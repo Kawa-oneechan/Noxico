@@ -118,7 +118,7 @@ has the same effect." },
 			var player = nox.Player.Character;
 
 			var hpNow = player.GetToken("health").Value;
-			var hpMax = player.GetMaximumHealth();
+			var hpMax = player.MaximumHealth;
 			var health = hpNow + " / " + hpMax;
 			if (hpNow <= hpMax / 4)
 				health = "<cRed>" + health + "<cSilver>";

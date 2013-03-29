@@ -511,9 +511,9 @@ namespace Noxico
 				{
 					if (bonus.Name == "health")
 					{
-						character.GetToken("health").Value += bonus.Value;
-						if (character.GetToken("health").Value > character.GetMaximumHealth())
-							character.GetToken("health").Value = character.GetMaximumHealth();
+						character.Health += bonus.Value;
+						if (character.Health > character.MaximumHealth)
+							character.Health = character.MaximumHealth;
 					}
 				}
 			}
