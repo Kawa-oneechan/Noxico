@@ -147,10 +147,10 @@ has the same effect." },
 					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
 				else if (statBonus < 0)
 					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
-				sb.AppendLine(stat.PadRight(20) + total + bonus);
+				sb.AppendLine(stat.PadEffective(20) + total + bonus);
 			}
 
-			sb.Append("Modifiers".PadRight(20));
+			sb.Append("Modifiers".PadEffective(20));
 			var haveMods = false;
 			if (player.HasToken("haste"))
 			{
@@ -182,7 +182,7 @@ has the same effect." },
 			foreach (var skill in player.GetToken("skills").Tokens)
 			{
 				if ((int)skill.Value > 0)
-					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadRight(30) + ((int)skill.Value).ToString());
+					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadEffective(30) + ((int)skill.Value).ToString());
 			}
 			pages["Skill levels"] = sb.ToString();
 
@@ -190,21 +190,21 @@ has the same effect." },
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
 			sb.AppendLine(" - Move");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadRight(4) + " - Interact with something");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadRight(4) + " - Use something");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadRight(4) + " - Rest");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadRight(4) + " - Fly/Land");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadRight(4) + " - Inventory");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadRight(4) + " - Travel");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadRight(4) + " - Accept");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadRight(4) + " - Go back");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(4) + " - Interact with something");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(4) + " - Use something");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(4) + " - Rest");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(4) + " - Fly/Land");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(4) + " - Inventory");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(4) + " - Travel");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(4) + " - Accept");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(4) + " - Go back");
 			pages["Important keys"] = sb.ToString();
 			sb.Clear();
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadRight(4) + " - Open this menu");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadEffective(4) + " - Open this menu");
 #if DEBUG
-			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3).PadRight(4) + " - Dump board to HTML (debug only)");
+			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3).PadEffective(4) + " - Dump board to HTML (debug only)");
 #endif
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadRight(4) + " - Take screenshot");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadEffective(4) + " - Take screenshot");
 			pages["Other keys"] = sb.ToString();
 
 			var entities = 0;

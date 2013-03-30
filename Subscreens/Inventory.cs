@@ -167,7 +167,7 @@ namespace Noxico
 						itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
-					itemString = itemString.PadRight(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
+					itemString = itemString.PadEffective(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
 					itemTexts.Add(itemString);
 				}
 				var height = inventoryItems.Count;
@@ -212,7 +212,7 @@ namespace Noxico
 					else
 						r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to try and use.";
 
-					howTo.Text = (' ' + r).PadRight(80);
+					howTo.Text = (' ' + r).PadEffective(80);
 					itemDesc.Text = d;
 					//howTo.Draw();
 					//itemDesc.Draw();

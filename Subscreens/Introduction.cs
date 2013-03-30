@@ -29,9 +29,9 @@ namespace Noxico
 				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
 				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };
 				var histories = "Histories of " + Toolkit.PickOne(i) + " and " + Toolkit.PickOne(j);
-				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length / 2);
-
-				host.Write("\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500", Color.Gray, Color.Transparent, 12, 9);
+				var pressEnter = "\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500";
+				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length() / 2);
+				host.Write(pressEnter, Color.Gray, Color.Transparent, 25 - pressEnter.Length() / 2, 9);
 				//host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)

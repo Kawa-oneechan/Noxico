@@ -60,7 +60,7 @@ namespace Noxico
 				//list.Items = new List<string>();
 				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
 				expectationStart = list.Items.Count;
-				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadRight(list.Width - 7) + "[NEW]"));
+				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadEffective(list.Width - 7) + "[NEW]"));
 
 				list.Change = (s, e) =>
 				{

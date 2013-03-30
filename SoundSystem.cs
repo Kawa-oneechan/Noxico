@@ -254,8 +254,8 @@ namespace Noxico
 			music.getLength(ref patterns, FMOD.TIMEUNIT.MODPATTERN);
 			musicChannel.getVolume(ref volume);
 			var debug = string.Format("{0}ch {1}, row {2}/{3}, pattern {4}/{5}. Volume: {6:P0}", musicchans, type.ToString(), row, rows, pattern, patterns, volume);
-			NoxicoGame.HostForm.Write(musicPlaying.Remove(musicPlaying.LastIndexOf('.')).PadRight(80), Color.Gray, System.Drawing.Color.Transparent, 0, 0);
-			NoxicoGame.HostForm.Write(debug.PadRight(80), Color.Gray, Color.Transparent, 1, 0);
+			NoxicoGame.HostForm.Write(musicPlaying.Remove(musicPlaying.LastIndexOf('.')).PadEffective(80), Color.Gray, System.Drawing.Color.Transparent, 0, 0);
+			NoxicoGame.HostForm.Write(debug.PadEffective(80), Color.Gray, Color.Transparent, 1, 0);
 		}
 	}
 }

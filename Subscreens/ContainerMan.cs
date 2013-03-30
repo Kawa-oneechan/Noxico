@@ -95,7 +95,7 @@ namespace Noxico
 							itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
-						itemString = itemString.PadRight(33);
+						itemString = itemString.PadEffective(33);
 						if (isVendor && carriedItem.HasToken("equipped"))
 							itemString = itemString.Remove(32) + "W";
 						if (carriedItem.Path("cursed/known") != null)
@@ -146,7 +146,7 @@ namespace Noxico
 							itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
-						itemString = itemString.PadRight(33);
+						itemString = itemString.PadEffective(33);
 						if (carriedItem.HasToken("equipped"))
 							itemString = itemString.Remove(32) + "W";
 						if (carriedItem.Path("cursed/known") != null)

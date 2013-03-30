@@ -571,13 +571,13 @@ namespace Noxico
 		private static void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
 		{
 			var totalRows = Math.Max(col1.Count, col2.Count);
-			print(header1.PadRight(pad) + header2 + "\n");
+			print(header1.PadEffective(pad) + header2 + "\n");
 			for (var i = 0; i < totalRows; i++)
 			{
 				if (i < col1.Count)
-					print(("| " + col1[i]).PadRight(pad));
+					print(("| " + col1[i]).PadEffective(pad));
 				else
-					print("".PadRight(pad));
+					print("".PadEffective(pad));
 				if (i < col2.Count)
 					print("| " + col2[i]);
 				print("\n");
@@ -1099,7 +1099,7 @@ namespace Noxico
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
-			print(("Name: " + this.Name.ToString(true)).PadRight(34) + "Type: " + this.Title + ((pa != null && pa is Player) ? " (player)" : "") + "\n");
+			print(("Name: " + this.Name.ToString(true)).PadEffective(34) + "Type: " + this.Title + ((pa != null && pa is Player) ? " (player)" : "") + "\n");
 			print("\n");
 
 			bool breastsVisible = false, crotchVisible = false;
