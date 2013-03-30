@@ -22,11 +22,11 @@ namespace Noxico
 			onChoice = okay;
 			ActionList.options = options;
 
-			var width = title.Length + 4;
+			var width = title.Length() + 4;
 			foreach (var o in options.Values)
 			{
-				if (o.Length > width)
-					width = o.Length;
+				if (o.Length() > width)
+					width = o.Length();
 			}
 			width += 4;
 			if (x + 1 + width >= 100)

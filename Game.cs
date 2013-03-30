@@ -1071,7 +1071,7 @@ namespace Noxico
 			}
 
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length - 2);
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
 #if DEBUG
 			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif

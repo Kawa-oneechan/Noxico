@@ -25,12 +25,12 @@ namespace Noxico
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = " Press " + Toolkit.TranslateKey(KeyBinding.ScrollUp) + " and " + Toolkit.TranslateKey(KeyBinding.ScrollDown) + " to scroll, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to return ";
-				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 50 - (help.Length / 2));
+				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 50 - (help.Length() / 2));
 				for (int i = scroll; i < text.Length && i - scroll < 24; i++)
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadRight(88), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
+					host.Write(' ' + text[i].PadEffective(88), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
 				}
 				Subscreens.Redraw = true;
 			}
