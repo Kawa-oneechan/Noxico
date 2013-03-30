@@ -164,7 +164,8 @@ namespace Noxico
 				return Color.Silver;
 			//var rgb = entry.GetAttribute("rgb").Split(',');
 			//return new Color(MakeArgb(0xFF, byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2])), entry.GetAttribute("name"));
-			return Color.FromCSS(entry.GetAttribute("rgb"));
+			//return Color.FromCSS(entry.GetAttribute("rgb"));
+			return new Color(((long)0xFF << 24) | long.Parse(entry.GetAttribute("rgb").Substring(1), System.Globalization.NumberStyles.HexNumber), entry.GetAttribute("name"));
 		}
 
 		private float Max(float r, float g, float b)
@@ -368,6 +369,8 @@ namespace Noxico
 		{
 			if (color == null)
 				return Color.FromName("Silver");
+			if (color.Name == "color")
+				return Color.FromName(color.Text);
 			return Color.FromName(color.Name);
 		}
 	}

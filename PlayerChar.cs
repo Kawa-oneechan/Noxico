@@ -203,7 +203,7 @@ namespace Noxico
 							return;
 						}
 						//Displace!
-						NoxicoGame.AddMessage("You displace " + bc.Character.GetNameOrTitle(false, true) + ".");
+						NoxicoGame.AddMessage("You displace " + bc.Character.GetNameOrTitle(false, true) + ".", bc.GetEffectiveColor());
 						bc.XPosition = this.XPosition;
 						bc.YPosition = this.YPosition;
 					}
@@ -425,7 +425,7 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Interact) || Vista.Triggers == XInputButtons.A)
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.AddMessage("\uE080[Aim message]");
+				//NoxicoGame.AddMessage("\uE080[Aim message]");
 				NoxicoGame.Mode = UserMode.Aiming;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
@@ -527,7 +527,7 @@ namespace Noxico
 				{
 					drop.Take(this.Character);
 					NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
-					NoxicoGame.AddMessage("You pick up " + drop.Item.ToString(drop.Token, true) + ".", drop.ForegroundColor);
+					NoxicoGame.AddMessage("You pick up " + drop.Item.ToString(drop.Token, true) + ".");
 					NoxicoGame.Sound.PlaySound("Get Item");
 					ParentBoard.Redraw();
 					return;

@@ -167,7 +167,8 @@ namespace Noxico
 						itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
-					itemString = itemString.PadEffective(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
+					//itemString = itemString.PadEffective(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
+					//TODO: draw the icons and sigils separately.
 					itemTexts.Add(itemString);
 				}
 				var height = inventoryItems.Count;
@@ -181,7 +182,7 @@ namespace Noxico
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4 };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 58, Height = height, Index = selection };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
 				itemList.Change = (s, e) =>
 				{
 					selection = itemList.Index;

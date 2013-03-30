@@ -166,7 +166,7 @@ namespace Noxico
 						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
 						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
 						{
-							NoxicoGame.AddMessage(string.Format("{0} to {1}: {2}", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)), this.ForegroundColor);
+							NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 							if (!this.Character.HasToken("oglestim"))
 								this.Character.AddToken("oglestim");
 							this.Character.GetToken("oglestim").Value = stim.Value;
@@ -378,9 +378,9 @@ namespace Noxico
 					if (called > 0)
 					{
 						if (!Character.HasToken("beast"))
-							NoxicoGame.AddMessage(Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"", this.ForegroundColor);
+							NoxicoGame.AddMessage((Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 						else
-							NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", this.ForegroundColor);
+							NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor());
 						Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
 					}
 				}
@@ -671,13 +671,13 @@ namespace Noxico
 
 			if (dodged)
 			{
-				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.");
+				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.", target.GetEffectiveColor());
 				return false;
 			}
 
 			if (damage > 0)
 			{
-				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".");
+				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".", target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))
@@ -757,7 +757,7 @@ namespace Noxico
 				{
 					if (!Character.HasToken("helpless"))
 					{
-						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetNameOrTitle() + " is") + " helpless!");
+						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetNameOrTitle() + " is") + " helpless!", Color.FromName(this.Character.Path("skin/color")));
 						Character.Tokens.Add(new Token() { Name = "helpless" } );
 						return false;
 					}
@@ -1105,6 +1105,13 @@ namespace Noxico
 					break;
 				items.AddSet(newstock);
 			}
+		}
+
+		public Color GetEffectiveColor()
+		{
+			if (Character.Path("skin/type").Text == "slime")
+				return Color.FromName(Character.Path("hair/color"));
+			return Color.FromName(Character.Path("skin/color"));
 		}
 	}
 }
