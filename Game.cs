@@ -42,7 +42,7 @@ namespace Noxico
 		public Player Player { get; set; }
 		public static List<string> BookTitles { get; private set; }
 		public static List<string> BookAuthors { get; private set; }
-		public static List<StatusMessage> Messages { get; private set; }
+		public static List<string> Messages { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
@@ -63,6 +63,7 @@ namespace Noxico
 		public static bool PlayerReady { get; set; }
 
 		private static List<string> messageLog = new List<string>();
+		private static string lastMessage = "";
 		public static int WorldVersion { get; private set; }
 
 		public static Dictionary<int, Expectation> Expectations = new Dictionary<int, Expectation>();
@@ -137,7 +138,7 @@ namespace Noxico
 			KeyRepeat = new DateTime[256];
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
-			Messages = new List<StatusMessage>();
+			Messages = new List<string>(); //new List<StatusMessage>();
 			Sound = new SoundSystem();
 
 			Program.WriteLine("Loading items...");
@@ -426,10 +427,10 @@ namespace Noxico
 			for (var i = 0; i < 5 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
-				var c = Messages[m].Color;
-				if (c.Lightness < 0.2)
-					c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(Messages[m].Message, c, Color.Black, row, 1);
+				//var c = Messages[m].Color;
+				//if (c.Lightness < 0.2)
+				//	c = Toolkit.Lerp(c, Color.White, 0.5);
+				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
 				row--;
 			}
 		}
@@ -439,9 +440,24 @@ namespace Noxico
 		}
 		public static void AddMessage(string message, Color color)
 		{
-			if ((Messages.Count > 0 && Messages.Last().Message != message) || Messages.Count == 0)
+			if (lastMessage != message)
 			{
-				Messages.Add(new StatusMessage() { Message = message, Color = color });
+				lastMessage = message;
+				if (color.Lightness < 0.2)
+					color = Color.Gray;
+				var lastLine = Messages.LastOrDefault();
+				if (lastLine == null)
+					lastLine = "";
+				else
+					Messages.Remove(lastLine);
+				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap().Trim().Split('\n');
+				if (newLines.Length > 1)
+				{
+					for (var i = 1; i < newLines.Length; i++)
+						newLines[i] = "<c" + color.Name + ">" + newLines[i];
+				}
+				Messages.AddRange(newLines);
+				//Messages.Add(new StatusMessage() { Message = message, Color = color });
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}

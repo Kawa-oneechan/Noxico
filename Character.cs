@@ -2735,7 +2735,6 @@ namespace Noxico
 				return "human";
 			return ret;
 		}
-
 	}
 
 	public class Name
