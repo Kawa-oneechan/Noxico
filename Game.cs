@@ -324,7 +324,7 @@ namespace Noxico
 				var pfile = File.Open(playerFile, FileMode.Open);
 				var pbin = new BinaryReader(pfile);
 				Player = Player.LoadFromFile(pbin);
-				Player = new Player(Character.GetUnique("urta"));
+				//Player = new Player(Character.GetUnique("urta"));
 				Player.AdjustView();
 				pfile.Close();
 			}
