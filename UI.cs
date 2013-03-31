@@ -690,9 +690,6 @@ namespace Noxico
 					break;
 				case Keys.Tab:
 					ProcessTab(shift);
-#if DEBUG
-					NoxicoGame.HostForm.Text = highlight.ToString() + ":\"" + highlight.Text + "\"";
-#endif
 					break;
 				default:
 					if (highlight is UITextBox)

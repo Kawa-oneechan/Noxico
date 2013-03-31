@@ -31,6 +31,7 @@ face: fox
 skin
 	type: fur
 	color: gray
+eyes: forestgreen
 ears: fox
 legs: fox
 tail: fox
