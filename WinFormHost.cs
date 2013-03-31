@@ -110,10 +110,10 @@ namespace Noxico
 				this.ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
 				this.Controls.Add(new Label()
 				{
-					Text = "Please hold...",
+					Text = "Loading...",
 					AutoSize = true,
-					Font = new System.Drawing.Font("Garamond", 16, FontStyle.Bold | FontStyle.Italic),
-					ForeColor = System.Drawing.Color.Yellow,
+					Font = new System.Drawing.Font("Arial", 24, FontStyle.Bold | FontStyle.Italic),
+					ForeColor = System.Drawing.Color.White,
 					Visible = true,
 					Location = new System.Drawing.Point(16, 16)
 				});
