@@ -13,6 +13,8 @@ namespace Noxico
 		private static UIList itemList;
 		private static UILabel howTo, itemDesc;
 		private static UILabel capacity;
+		private static UILabel sigilView;
+		private static List<string> sigils;
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
 		{
@@ -54,6 +56,17 @@ namespace Noxico
 			}
 		}
 
+		private static void UpdateColumns()
+		{
+			sigilView.Text = "";
+			for (var row = 0; row < sigilView.Height; row++)
+			{
+				var index = row + itemList.Scroll;
+				sigilView.Text += sigils[index] + "\n";
+			}
+			sigilView.Text.TrimEnd();
+		}
+
 		public static void Handler()
 		{
 			var player = NoxicoGame.HostForm.Noxico.Player;
@@ -79,6 +92,7 @@ namespace Noxico
 				inventoryTokens.Clear();
 				inventoryItems.Clear();
 				var itemTexts = new List<string>();
+				Inventory.sigils = new List<string>();
 				foreach (var carriedItem in player.Character.GetToken("items").Tokens)
 				{
 					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
@@ -167,9 +181,8 @@ namespace Noxico
 						itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
-					//itemString = itemString.PadEffective(40) + "<cBlack> " + icon + "<cDarkSlateGray> " + string.Join(", ", sigils);
-					//TODO: draw the icons and sigils separately.
 					itemTexts.Add(itemString);
+					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils));
 				}
 				var height = inventoryItems.Count;
 				if (height > 13)
@@ -182,7 +195,8 @@ namespace Noxico
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4 };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
+				sigilView = new UILabel("") { Left = 43, Top = 2, Width = 60, Height = height };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 40, Height = height, Index = selection };
 				itemList.Change = (s, e) =>
 				{
 					selection = itemList.Index;
@@ -217,6 +231,7 @@ namespace Noxico
 					itemDesc.Text = d;
 					//howTo.Draw();
 					//itemDesc.Draw();
+					UpdateColumns();
 					UIManager.Draw();
 				};
 				itemList.Enter = (s, e) =>
@@ -226,6 +241,7 @@ namespace Noxico
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
+				UIManager.Elements.Add(sigilView);
 				UIManager.Elements.Add(itemDesc);
 				UIManager.Elements.Add(capacity);
 				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 70, Top = 21 });

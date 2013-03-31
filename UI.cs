@@ -235,6 +235,7 @@ namespace Noxico
 					Change(this, null);
 			}
 		}
+		public int Scroll { get { return scroll; } }
 
 		public override bool TabStop
 		{
