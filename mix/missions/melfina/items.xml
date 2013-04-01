@@ -1,0 +1,109 @@
+<items>
+	<!-- All of Melfina's items -->
+	<item id="melfina_leotard" name="paneled [color ]leotard" a="a" the="the">
+		<![CDATA[
+plural
+equipable
+	underpants
+	undershirt
+weight
+	light
+price: 100
+ascii
+	char: U+03C0
+clothing
+bodysuit
+colored
+sexy
+kinky
+			]]>
+	</item>
+	<item id="melfina_kneesocks" name="paneled [color ]kneesocks" a="a pair of" the="the">
+		<![CDATA[
+plural
+equipable
+	socks
+	reach
+weight
+	light
+price: 100
+ascii
+	char: U+220F
+clothing
+legwear
+colored
+sexy
+kinky
+			]]>
+	</item>
+	<item id="melfina_jacket" name="odd [color ]jacket" a="an" the="the">
+		<![CDATA[
+plural
+equipable
+	jacket
+weight
+	light
+price: 100
+ascii
+	char: U+041F
+clothing
+jacket
+colored
+sexy
+kinky
+			]]>
+	</item>
+	<item id="melfina_belt" name="[color ]leather belt" a="a" the="the">
+		<![CDATA[
+equipable
+	female
+	pants
+	translucent
+	reach
+weight
+	light
+price: 60
+ascii
+	char: U+002D
+clothing
+colored
+for_women
+kinky
+			]]>
+	</item>
+	<item id="melfina_boots" name="armored[, color] boots" a="a pair of" the="the">
+		<![CDATA[
+plural
+equipable
+	shoes
+weight
+	heavy
+price: 300
+ascii
+	char: U+221A
+clothing
+colored
+shoes
+			]]>
+	</item>
+
+	<item id="psidons_entente" name="&#x03A8;don's Entente" proper="true">
+		<![CDATA[
+fireproof
+unique
+equipable
+	hand
+weight: heavy
+weapon
+	damage: 250
+	skill: polearm
+	attacktype: pierce
+description: "Pronounced 'PSI-dun's ahn-TAHNT'."
+ascii
+	char: U+03A8
+	fore: goldenrod
+price: 1000
+rareweapon
+		]]>
+	</item>
+</items>

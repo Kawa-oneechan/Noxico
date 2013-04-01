@@ -595,6 +595,7 @@ namespace Noxico
 			InventoryItem socks = null;
 			InventoryItem jacket = null;
 			InventoryItem cloak = null;
+			InventoryItem shoes = null;
 			InventoryItem hat = null;
 			InventoryItem goggles = null;
 			InventoryItem mask = null;
@@ -648,6 +649,11 @@ namespace Noxico
 						cloak = foundItem;
 						cloak.tempToken = carriedItem;
 					}
+					if (eq.HasToken("shoes"))
+					{
+						shoes = foundItem;
+						shoes.tempToken = carriedItem;
+					} 
 					if (eq.HasToken("hat"))
 					{
 						hat = foundItem;
@@ -701,6 +707,8 @@ namespace Noxico
 				worn.Add(shirt.ToLongString(shirt.tempToken));
 			if (pants != null && pants != shirt)
 				worn.Add(pants.ToLongString(pants.tempToken));
+			if (shoes != null)
+				worn.Add(shoes.ToLongString(shoes.tempToken));
 			if (!(pa != null && pa is Player))
 			{
 				if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
@@ -710,7 +718,7 @@ namespace Noxico
 				}
 				else
 					breastsVisible = (shirt == null || shirt.CanSeeThrough());
-				if (underpants != null && (pants == null || pants.CanSeeThrough()))
+				if (underpants != null && underpants != undershirt && (pants == null || pants.CanSeeThrough()))
 				{
 					crotchVisible = underpants.CanSeeThrough();
 					worn.Add(underpants.ToLongString(underpants.tempToken));
@@ -724,7 +732,7 @@ namespace Noxico
 			{
 				if (undershirt != null)
 					worn.Add(undershirt.ToLongString(undershirt.tempToken));
-				if (underpants != null)
+				if (underpants != null && underpants != undershirt)
 					worn.Add(underpants.ToLongString(underpants.tempToken));
 				if (socks != null)
 					worn.Add(socks.ToLongString(socks.tempToken));

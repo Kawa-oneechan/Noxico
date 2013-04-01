@@ -1,0 +1,20 @@
+<loot>
+	<lootset target="npc" type="clothing" final="true">
+		<filter key="id" value="Melfina" />
+		<colors>black</colors>
+		<oneof>melfina_leotard</oneof>
+		<oneof>melfina_kneesocks</oneof>
+		<colors>maroon</colors>
+		<oneof>melfina_jacket</oneof>
+		<oneof>melfina_belt</oneof>
+		<oneof>melfina_boots</oneof>
+	</lootset>
+	<lootset target="npc" type="underwear" final="true">
+		<filter key="id" value="Melfina" />
+		<!-- EMPTY -->
+	</lootset>
+	<lootset target="npc" type="arms" final="true">
+		<filter key="id" value="Melfina" />
+		<oneof>psidons_entente</oneof>
+	</lootset>
+</loot>

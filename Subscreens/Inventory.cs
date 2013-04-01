@@ -110,7 +110,7 @@ namespace Noxico
 					{
 						var color = "Silver";
 						if (item.Path("ascii/fore") != null)
-							color = item.Path("ascii/fore").Tokens[0].Name;
+							color = item.Path("ascii/fore").Text;
 						if (carriedItem.HasToken("color"))
 							color = carriedItem.GetToken("color").Text;
 						if (item.ID == "book")
