@@ -966,6 +966,8 @@ namespace Noxico
 				if (x.Character.HasToken("hostile"))
 					return; //leave the combat rolling
 			}
+			if (this.HasToken("combat"))
+				this.AddToken("victorious");
 			this.RemoveToken("combat");
 			PlayMusic();
 		}
@@ -1032,7 +1034,15 @@ namespace Noxico
 
 		public void PlayMusic()
 		{
-			NoxicoGame.Sound.PlayMusic(this.Music);
+			if (this.HasToken("victorious"))
+			{
+				this.RemoveToken("victorious");
+				NoxicoGame.Sound.PlayMusic("set://Victory", false);
+			}
+			else if (this.HasToken("combat"))
+				NoxicoGame.Sound.PlayMusic("set://Combat");
+			else
+				NoxicoGame.Sound.PlayMusic(this.Music);
 		}
 	}
 
