@@ -60,8 +60,7 @@ test
 description: "This turns you into a little pony."
 ascii
 	char: U+00A1
-	fore
-		aquamarine
+	fore: aquamarine
 randomized: 1
 potion
 transformer
@@ -90,8 +89,7 @@ nouse
 price: 20
 ascii
 	char: U+00A7
-	fore
-		sienna
+	fore: sienna
 			]]>
 		</item>
 		<item id="baseballbat" name="baseball bat" a="a" the="the">
@@ -109,8 +107,7 @@ weapon
 	attacktype: crush
 ascii
 	char: U+0021
-	fore
-		darkgoldenrod
+	fore: darkgoldenrod
 price: 100
 largeweapon
 wood
@@ -122,8 +119,7 @@ test
 description: "This is Foxite. It turns you into a fox with repeated usages."
 ascii
 	char: U+00A1
-	fore
-		aquamarine
+	fore: aquamarine
 randomized: 2
 potion
 transformer
@@ -139,8 +135,7 @@ transformer
 test
 ascii
 	char: U+00A1
-	fore
-		chartreuse
+	fore: chartreuse
 randomized: 3
 potion
 transformer
@@ -163,8 +158,7 @@ weapon
 description: "A nice, sturdy combat knife."
 ascii
 	char: U+2190
-	fore
-		silver
+	fore: silver
 price: 50
 smallweapon
 blade
@@ -183,8 +177,7 @@ weapon
 description: "A nice, sturdy butter knife."
 ascii
 	char: U+2190
-	fore
-		silver
+	fore: silver
 price: 5
 smallweapon
 blade
@@ -197,8 +190,7 @@ equipable
 fireproof
 ascii
 	char: U+25CB
-	fore
-		firebrick
+	fore: firebrick
 randomized: 128
 			]]>
 		</item>
@@ -219,8 +211,7 @@ statbonus
 description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
 ascii
 	char: U+2193
-	fore
-		white
+	fore: white
 price: 500
 largeweapon
 blade
@@ -240,8 +231,7 @@ statbonus
 price: 20
 ascii
 	char: U+03A9
-	fore
-		darkmagenta
+	fore: darkmagenta
 clothing
 hats
 sexy
@@ -371,8 +361,7 @@ weight: feather
 description: "Unfertilized and high in protein."
 ascii
 	char: U+0473
-	fore
-		white
+	fore: white
 food: 10
 			]]>
 	</item>
@@ -390,8 +379,7 @@ weapon
 description: "Do not question the Chair Leg of Truth, for it is wise and terrible."
 ascii
 	char: U+0021
-	fore
-		darkgoldenrod
+	fore: darkgoldenrod
 rareweapon
 wood
 		]]>
@@ -410,8 +398,7 @@ weight: heavy
 description: "A long pole with a sharpened point of steel on one end."
 ascii
 	char: U+002F
-	fore
-		darkgoldenrod
+	fore: darkgoldenrod
 			]]>
 		</item>
 		<item id="javelin" name="javelin" a="a" the="the">
@@ -426,8 +413,7 @@ weight: heavy
 description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
 ascii
 	char: U+002F
-	fore
-		darkgoldenrod
+	fore: darkgoldenrod
 			]]>
 		</item>
 		<item id="dagger" name="dagger" a="a" the="the">
@@ -442,8 +428,7 @@ weapon
 description: "A classic-style rogue's dagger."
 ascii
 	char: U+2190
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="fireaxe" name="fire-axe" a="a" the="the">
@@ -458,8 +443,7 @@ weight: medium
 description: "An ordinary looking fire-axe."
 ascii
 	char: U+00A2
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="battleaxe" name="battle axe" a="a" the="the">
@@ -474,8 +458,7 @@ weight: heavy
 description: "An imposing battle axe. You could take someone's head off with this baby."
 ascii
 	char: U+00A2
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="shortsword" name="short sword" a="a" the="the">
@@ -490,8 +473,7 @@ weapon
 description: "A plain but servicable short sword."
 ascii
 	char: U+2193
-	fore
-		white
+	fore: white
 			]]>
 		</item>
 		<item id="scimitar" name="scimitar" unknown="curved sword" a="a" the="the">
@@ -507,8 +489,7 @@ identify: weapon_knowledge
 description: "An exotic looking sword with a curved blade."
 ascii
 	char: U+2202
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="broadsword" name="broadsword" a="a" the="the">
@@ -524,8 +505,7 @@ weapon
 description: "A large sword with an emphasis on the blade's width."
 ascii
 	char: U+2191
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="longsword" name="longsword" a="a" the="the">
@@ -541,8 +521,7 @@ weapon
 description: "A large sword with an emphasis on length."
 ascii
 	char: U+2191
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="zweihander" name="zweihander" unknown="two-handed sword" a="a" the="the">
@@ -560,8 +539,7 @@ identify: weapon_knowledge
 description: "A sword so large you need two hands to wield it."
 ascii
 	char: U+221A
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="katana" name="katana" unknown="samurai sword" a="a" the="the">
@@ -577,8 +555,7 @@ identify: weapon_knowledge
 description: "The common samurai sword."
 ascii
 	char: U+2193
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<item id="tsurugi" name="tsurugi" unknown="long samurai sword" a="a" the="the">
@@ -594,8 +571,7 @@ identify: weapon_knowledge
 description: "The common samurai sword, but longer."
 ascii
 	char: U+2193
-	fore
-		silver
+	fore: silver
 			]]>
 		</item>
 		<!-- lance, mace, warhammer, wooden club, rubber hose, quarterstaff -->
@@ -618,8 +594,7 @@ weapon
 description: "A smallish but ornate statue of a festive holiday character."
 ascii
 	char: U+0455
-	fore
-		red
+	fore: red
 rareweapon
 			]]>
 		</item>
@@ -638,8 +613,7 @@ weapon
 description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
 ascii
 	char: U+0444
-	fore
-		lime
+	fore: lime
 rareweapon
 			]]>
 		</item>
@@ -657,8 +631,7 @@ weapon
 description: "Behold the glory of Zillyhoo!"
 ascii
 	char: U+0444
-	fore
-		blue
+	fore: blue
 rareweapon
 			]]>
 		</item>
@@ -676,8 +649,7 @@ weapon
 description: "Plundered from some sunken galleon somewhere, this is no ordinary rifle -- it's a laser rifle!"
 ascii
 	char: U+0141
-	fore
-		blue
+	fore: blue
 effect
 	char: U+002A
 	fore: blue
@@ -700,8 +672,7 @@ weapon
 description: "Awesome. Demonic-looking. Not actually a tube of lipstick. This is a chainsaw to be reckoned with."
 ascii
 	char: U+018C
-	fore
-		purple
+	fore: purple
 rareweapon
 			]]>
 		</item>
@@ -723,8 +694,7 @@ price: 200
 description: "An ordinary but nevertheless slightly kinky whip."
 ascii
 	char: U+03B6
-	fore
-		brown
+	fore: brown
 weapon
 sexy
 			]]>
@@ -796,8 +766,7 @@ weight: feather
 description: "Smaczne, ale nie bardzo nape<g0142>niania."
 ascii
 	char: U+0063
-	fore
-		brown
+	fore: brown
 food: 10
 baked
 			]]>
@@ -812,8 +781,7 @@ price: 5
 description: "Vkusno, no ne ochen zapolneniyu."
 ascii
 	char: U+2609
-	fore
-		brown
+	fore: brown
 food: 10
 baked
 			]]>
@@ -828,8 +796,7 @@ price: 5
 description: "Can't go wrong with bacon."
 ascii
 	char: U+2016
-	fore
-		red
+	fore: red
 food: 20
 	fat
 meat
@@ -845,8 +812,7 @@ weight: feather
 description: "Let me guess."
 ascii
 	char: U+00F8
-	fore
-		yellow
+	fore: yellow
 food: 10
 baked
 			]]>
@@ -896,8 +862,7 @@ price: 200
 description: "Now with even less chain!"
 ascii
 	char: U+0E3F
-	fore
-		silver
+	fore: silver
 armor
 for_women
 			]]>
@@ -917,8 +882,7 @@ description: "Now with even less chain!"
 price: 200
 ascii
 	char: U+00AC
-	fore
-		silver
+	fore: silver
 armor
 for_women
 			]]>
@@ -936,8 +900,7 @@ price: 20
 description: "Now with even less class!"
 ascii
 	char: U+0E3F
-	fore
-		red
+	fore: red
 armor
 for_women
 joke
@@ -954,8 +917,7 @@ description: "Now with even less class!"
 price: 20
 ascii
 	char: U+00AC
-	fore
-		red
+	fore: red
 armor
 for_women
 joke
@@ -1431,8 +1393,7 @@ weight: feather
 description: "A blood-red ruby in the shape of a droplet."
 ascii
 	char: U+25CA
-	fore
-		crimson
+	fore: crimson
 			]]>
 		</item>
 	</category>
@@ -1443,8 +1404,7 @@ ascii
 wip
 ascii
 	char: U+00A1
-	fore
-		lightsalmon
+	fore: lightsalmon
 potion
 transformer
 			]]>
@@ -1547,8 +1507,7 @@ transformer
 wip
 ascii
 	char: U+00A1
-	fore
-		mistyrose
+	fore: mistyrose
 potion
 transformer
 			]]>
@@ -1630,8 +1589,7 @@ transformer
 wip
 ascii
 	char: U+00A1
-	fore
-		orangered
+	fore: orangered
 potion
 transformer
 			]]>
@@ -1709,8 +1667,7 @@ transformer
 wip
 ascii
 	char: U+00A1
-	fore
-		skyblue
+	fore: skyblue
 potion
 transformer
 			]]>
@@ -1789,8 +1746,7 @@ weight
 	light
 ascii
 	char: U+0436
-	fore
-		goldenrod
+	fore: goldenrod
 tool
 			]]>
 	</item>
