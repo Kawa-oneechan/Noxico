@@ -129,6 +129,7 @@
     <Compile Include="fmod\fmod_dsp.cs" />
     <Compile Include="fmod\fmod_errors.cs" />
     <Compile Include="fmod\fmod_memoryinfo.cs" />
+    <Compile Include="i18n.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
@@ -242,6 +243,7 @@
     </Content>
     <Content Include="mix\wip\changelings\bodyplans.xml" />
     <Content Include="mix\wip\changelings\culture.xml" />
+    <Content Include="mix\words.xml" />
     <Content Include="music\music.xml" />
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

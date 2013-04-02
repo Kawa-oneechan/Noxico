@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE words [
+	<!ELEMENT words (category*)>
+	<!ELEMENT category (category|word)*>
+	<!ELEMENT word (#PCDATA)>
+	<!ATTLIST category name CDATA #IMPLIED>
+	<!ATTLIST word id ID #REQUIRED>
+
+	<!-- Key bindings -->
+	<!ENTITY left "&#xE200;">
+	<!ENTITY right "&#xE201;">
+	<!ENTITY up "&#xE202;">
+	<!ENTITY down "&#xE203;">
+	<!ENTITY rest "&#xE204;">
+	<!ENTITY activate "&#xE205;">
+	<!ENTITY items "&#xE206;">
+	<!ENTITY interact "&#xE207;">
+	<!ENTITY fly "&#xE208;">
+	<!ENTITY travel "&#xE209;">
+	<!ENTITY accept "&#xE20A;">
+	<!ENTITY back "&#xE20B;">
+	<!ENTITY pause "&#xE20C;">
+	<!ENTITY screenshot "&#xE20D;">
+	<!ENTITY tabfocus "&#xE20E;">
+	<!ENTITY scrollup "&#xE20F;">
+	<!ENTITY scrolldown "&#xE210;">
+
+	<!-- Common dynamic terms -->
+	<!ENTITY player "&#xE220;">
+	
+	<!-- Color codes -->
+	<!ENTITY black   "&lt;cBlack&gt;">
+	<!ENTITY silver  "&lt;cSilver&gt;">
+	<!ENTITY gray    "&lt;cGray&gt;">
+	<!ENTITY white   "&lt;cWhite&gt;">
+	<!ENTITY maroon  "&lt;cMaroon&gt;">
+	<!ENTITY red     "&lt;cRed&gt;">
+	<!ENTITY purple  "&lt;cPurple&gt;">
+	<!ENTITY fuchsia "&lt;cFuschia&gt;">
+	<!ENTITY green   "&lt;cGreen&gt;">
+	<!ENTITY lime    "&lt;cLime&gt;">
+	<!ENTITY olive   "&lt;cOlive&gt;">
+	<!ENTITY yellow  "&lt;cYellow&gt;">
+	<!ENTITY navy    "&lt;cNavy&gt;">
+	<!ENTITY blue    "&lt;cBlue&gt;">
+	<!ENTITY teal    "&lt;cTeal&gt;">
+	<!ENTITY aqua    "&lt;cAqua&gt;">
+	<!ENTITY brown   "&lt;cBrown&gt;">
+	<!ENTITY orange  "&lt;cOrange&gt;">
+	<!ENTITY invert  "&lt;cBlack,Silver&gt;">
+	<!ENTITY revert  "&lt;cSilver,Transparent&gt;">
+]>
+<words>
+	<!-- i18n stuff goes here. mostly key/term pairs with String.Format placeholders, some are comma-separated lists -->
+
+	<category name="Introduction">
+		<category name="Title screen">
+			<word id="ts_historiesofxandy">Histories of {0} and {1}</word>
+			<word id="ts_historiesof_x">Debauchery, Wickedness, Sin, Depravity, Corruption, Decadence, Morality, Iniquity, Immorality, Shamelessness</word>
+			<word id="ts_historiesof_y">Insanity, Foolishness, Irrationality, Absurdity, Folly, Recklessness, Stupidity, Craziness, Madness, Lunacy</word>
+			<word id="ts_pressentertobegin">&teal;Press &aqua;&accept;&teal; to begin</word>
+			<word id="ts_welcometonoxico">Welcome to Noxico.</word>
+			<word id="ts_thereisasave">There is a saved game you can restore.</word>
+			<word id="ts_therearesaves">There are saved games you can restore.</word>
+			<word id="ts_loadgame">{0}, "{1}"</word>
+			<word id="ts_startoverinx">Start over in "{0}"...</word>
+			<word id="ts_startnewgame">Start new game...</word>
+			<word id="ts_enterworldname">Enter a name for the new world:</word>
+		</category>
+		<category name="Character Creator">
+			<category name="Labels">
+				<word id="cc_title">Character Creation</word>
+				<word id="cc_back">&lt; Back</word>
+				<word id="cc_next">Next &gt;</word>
+				<word id="cc_play">PLAY &gt;</word>
+				<word id="cc_name">Name</word>
+				<word id="cc_random">[random]</word>
+				<word id="cc_species">Species</word>
+				<word id="cc_sex">Sex</word>
+				<word id="cc_no">Not available</word>
+				<word id="cc_hair">Hair color</word>
+				<word id="cc_body">Body color</word>
+				<word id="cc_eyes">Eye color</word>
+				<word id="cc_gift">Bonus gift</word>
+			</category>
+			<category name="Help strings">
+				<word id="cchelp_back">Go back one page.</word>
+				<word id="cchelp_next">Go to the next page.</word>
+				<word id="cchelp_name">Enter the name for your character. Leave this blank to use a random name.</word>
+				<word id="cchelp_species">Select the (initial) species you'll play as.</word>
+				<word id="cchelp_sex">Are you a boy? Or are you a girl? Some species may not give you the choice.</word>
+				<word id="cchelp_hair">Select the color of your character's hair.</word>
+				<word id="cchelp_body">Select the color of your character's body. Some species may not give you a choice.</word>
+				<word id="cchelp_eyes">Select the color of your character's eyes. Again, you might not always have a choice.</word>
+			</category>
+			<word id="cc_header">Starting a New Game</word>
+			<word id="cc_footer">&tabfocus; to switch controls, &up;/&down;/&left;/&right; and &accept; to choose. Or use a mouse.</word>
+		</category>
+	</category>
+	<category name="Messages">
+		<word id="welcometonoxico">Welcome to Noxico, &player;.</word>
+		<word id="welcomeback">Welcome back, &player;.</word>
+		<word id="rememberhelp">Remember, press &invert; &pause; &revert; for help and options.</word>
+	</category>
+	<category name="Misc">
+		<word id="Male">Male</word>
+		<word id="Female">Female</word>
+	</category>
+</words>
