@@ -26,13 +26,12 @@ namespace Noxico
 				host.Clear();
 				new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
-				var i = new[] { "Debauchery", "Wickedness", "Sin", "Depravity", "Corruption", "Decadence", "Morality", "Iniquity", "Immorality", "Shamelessness" };
-				var j = new[] { "Insanity", "Foolishness", "Irrationality", "Absurdity", "Folly", "Recklessness", "Stupidity", "Craziness", "Madness", "Lunacy" };
-				var histories = "Histories of " + Toolkit.PickOne(i) + " and " + Toolkit.PickOne(j);
-				var pressEnter = "\u2500\u2500\u2500\u2500\u2524 <cTeal>Press <cAqua>ENTER <cTeal>to begin <cGray>\u251C\u2500\u2500\u2500\u2500";
+				var i = i18n.GetArray("ts_historiesof_x");
+				var j = i18n.GetArray("ts_historiesof_y");
+				var histories = i18n.Format("ts_historiesofxandy", Toolkit.PickOne(i), Toolkit.PickOne(j));
+				var pressEnter = "\u2500\u2500\u2500\u2500\u2524 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\u251C\u2500\u2500\u2500\u2500";
 				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length() / 2);
-				host.Write(pressEnter, Color.Gray, Color.Transparent, 25 - pressEnter.Length() / 2, 9);
-				//host.SetCell(3, 48, (char)0x2122, Color.Silver, Color.Transparent);
+				host.Write(pressEnter, Color.Gray, Color.Transparent, 12, 25 - pressEnter.Length() / 2);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -66,18 +65,18 @@ namespace Noxico
 							//p = f.ReadString();
 							p = Player.LoadFromFile(f).Character.Name.ToString(true);
 						}
-						return p + ", \"" + Path.GetFileName(s) + "\"";
+						return i18n.Format("ts_loadgame", p, Path.GetFileName(s));
 					}
-					return "Start over in \"" + Path.GetFileName(s) + "\"";
+					return i18n.Format("ts_startoverinx", Path.GetFileName(s));
 				}));
-				options.Add("~", "Start new game...");
-				MessageBox.List(saves.Count == 0 ? "Welcome to Noxico." : "There " + (saves.Count == 1 ? "is a saved game" : "are saved games") + " you can restore.", options,
+				options.Add("~", i18n.GetString("ts_startnewgame"));
+				MessageBox.List(saves.Count == 0 ? i18n.GetString("ts_welcometonoxico") : i18n.GetString(saves.Count == 1 ? "ts_thereisasave" : "ts_therearesaves"), options,
 					() =>
 					{
 						if ((string)MessageBox.Answer == "~")
 						{
 							new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
-							MessageBox.Input("Enter a name for the new world:", NoxicoGame.WorldName,
+							MessageBox.Input(i18n.GetString("ts_enterworldname"), NoxicoGame.WorldName,
 								() =>
 								{
 									NoxicoGame.WorldName = (string)MessageBox.Answer;
@@ -104,8 +103,8 @@ namespace Noxico
 								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 								Subscreens.FirstDraw = true;
 								NoxicoGame.Immediate = true;
-								NoxicoGame.AddMessage("Welcome back, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-								NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
+								NoxicoGame.AddMessage(i18n.GetString("welcomeback"), Color.Yellow);
+								NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 								//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 								NoxicoGame.Mode = UserMode.Walkabout;
 							}
@@ -212,14 +211,10 @@ namespace Noxico
 						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
 						oneof.ForEach(x => skins.Add(Color.NameColor(x.Trim()).Titlecase()));
-						//skinName = skin;
-						//break;
 					}
 					else
 					{
 						skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
-						//skinName = skin;
-						//break;
 					}
 				}
 
@@ -255,56 +250,59 @@ namespace Noxico
 				}
 				controlHelps = new Dictionary<string, string>()
 				{
-					{ "back", "Go back one page." },
-					{ "next", "Go to the next page." },
+					{ "back", i18n.GetString("cchelp_back") },
+					{ "next", i18n.GetString("cchelp_next") },
 					{ "play", Random.NextDouble() > 0.7 ? "FRUITY ANGELS MOLEST SHARKY" : "ENGAGE RIDLEY MOTHER FUCKER" },
-					{ "name", "Enter the name for your character. Leave this blank to use a random name." },
-					{ "species", "Select the (initial) species you'll play as." },
-					{ "sex", "Are you a boy? Or are you a girl? Some species may not give you the choice." },
-					{ "hair", "Select the color of your character's hair." },
-					{ "body", "Select the color of your character's body. Some species may not give you a choice." },
-					{ "eyes", "Select the color of your character's eyes. Again, you might not always have a choice." },
+					{ "name", i18n.GetString("cchelp_name") },
+					{ "species", i18n.GetString("cchelp_species") },
+					{ "sex", i18n.GetString("cchelp_sex") },
+					{ "hair", i18n.GetString("cchelp_hair") },
+					{ "body", i18n.GetString("cchelp_body") },
+					{ "eyes", i18n.GetString("cchelp_eyes") },
 					{ "gift", traitHelps[0] },
 				};
 
+				var title = "\u2524 " + i18n.GetString("cc_title") + " \u251C";
+				var bar = new string('\u2500', 33);
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
-					{ "header", new UILabel("\u2500\u2500\u2500\u2500\u2500\u2524 Character Creation \u251C\u2500\u2500\u2500\u2500\u2500\u2500") { Left = 56, Top = 4, Foreground = Color.Black } },
-					{ "back", new UIButton("< Back", null) { Left = 58, Top = 22, Width = 10 } },
-					{ "next", new UIButton("Next >", null) { Left = 78, Top = 22, Width = 10 } },
-					{ "play", new UIButton("PLAY >", null) { Left = 78, Top = 22, Width = 10 } },
+					{ "headerline", new UILabel(bar) { Left = 56, Top = 4, Foreground = Color.Black } },
+					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 4, Width = title.Length(), Foreground = Color.Black } },
+					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 22, Width = 10 } },
+					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 22, Width = 10 } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 22, Width = 10 } },
 
-					{ "nameLabel", new UILabel("Name") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "name", new UITextBox(Environment.UserName) { Left = 58, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel("[random]") { Left = 64, Top = 7, Hidden = true, Foreground = Color.Gray } },
-					{ "speciesLabel", new UILabel("Species") { Left = 56, Top = 10, Foreground = Color.Gray } },
+					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 7, Hidden = true, Foreground = Color.Gray } },
+					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "sexLabel", new UILabel("Sex") { Left = 56, Top = 13, Foreground = Color.Gray } },
-					{ "sexNo", new UILabel("Not available") { Left = 64, Top = 14, Foreground = Color.Gray } },
-					{ "sex", new UIBinary("Male", "Female") { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 13, Foreground = Color.Gray } },
+					{ "sexNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 14, Foreground = Color.Gray } },
+					{ "sex", new UIBinary(i18n.GetString("Male"), i18n.GetString("Female")) { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "hairLabel", new UILabel("Hair color") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 8, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "bodyLabel", new UILabel("Body color") { Left = 56, Top = 10, Foreground = Color.Gray } },
-					{ "bodyNo", new UILabel("Not available") { Left = 64, Top = 11, Foreground = Color.Gray } },
+					{ "bodyLabel", new UILabel(i18n.GetString("cc_body")) { Left = 56, Top = 10, Foreground = Color.Gray } },
+					{ "bodyNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 11, Foreground = Color.Gray } },
 					{ "body", new UIColorList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "eyesLabel", new UILabel("Eye color") { Left = 56, Top = 13, Foreground = Color.Gray } },
+					{ "eyesLabel", new UILabel(i18n.GetString("cc_eyes")) { Left = 56, Top = 13, Foreground = Color.Gray } },
 					{ "eyes", new UIColorList() { Left = 58, Top = 14, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "giftLabel", new UILabel("Bonus gift") { Left = 56, Top = 7, Foreground = Color.Gray } },
+					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "gift", new UIList("", null, traits) { Left = 58, Top = 8, Width = 30, Height = 8, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 50, Height = 4, Foreground = Color.White } },
-					{ "topHeader", new UILabel("Starting a New Game") { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel(Toolkit.TranslateKey(KeyBinding.TabFocus) + " to switch controls, " + Toolkit.TranslateKey(KeyBinding.Up) + '/' + Toolkit.TranslateKey(KeyBinding.Down) + '/' + Toolkit.TranslateKey(KeyBinding.Left) + '/' + Toolkit.TranslateKey(KeyBinding.Right) + " and " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to choose. Or use a mouse.") { Left = 1, Top = 29, Foreground = Color.Silver } },
+					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 29, Foreground = Color.Silver } },
 				};
 
 				pages = new List<UIElement>[]
 				{
 					new List<UIElement>()
 					{
-						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sexNo"], controls["sex"],
@@ -312,7 +310,7 @@ namespace Noxico
 					},
 					new List<UIElement>()
 					{
-						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["hairLabel"], controls["hair"],
 						controls["bodyLabel"], controls["bodyNo"], controls["body"],
 						controls["eyesLabel"], controls["eyes"],
@@ -320,7 +318,7 @@ namespace Noxico
 					},
 					new List<UIElement>()
 					{
-						controls["backdrop"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["giftLabel"], controls["gift"],
 						controls["controlHelp"], controls["back"], /* controls["playNo"], */ controls["play"],
 					},
@@ -373,8 +371,8 @@ namespace Noxico
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
 
-					NoxicoGame.AddMessage("Welcome to Noxico, " + NoxicoGame.HostForm.Noxico.Player.Character.Name + ".", Color.Yellow);
-					NoxicoGame.AddMessage("Remember, press <cBlack,Silver> " + Toolkit.TranslateKey(KeyBinding.Pause) + " <cSilver,Black> for help and options.");
+					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
+					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 
 					if (!IniFile.GetValue("misc", "skipintro", true))
