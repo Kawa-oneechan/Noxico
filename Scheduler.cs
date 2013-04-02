@@ -93,22 +93,34 @@ namespace Noxico
 
 		public static XmlDocument ScheduleDoc = Mix.GetXMLDocument("schedule.xml");
 
+        /// <summary>
+        /// Creates a new Scheduler instance.
+        /// </summary>
+        /// <param name="entity">The entity associated with the scheduler.</param>
 		public Scheduler(BoardChar entity)
 		{
 			this.entity = entity;
+            TaskList = new List<Task>();
 		}
 
+        /// <summary>
+        /// Creates a new Scheduler instance. This constructor also initializes the entity's schedule. To use this constuctor, the entity must have a non-null Character property.
+        /// </summary>
+        /// <param name="entity">The entity associated with the scheduler.</param>
+        /// <param name="type">The type of schedule to add to the entity.</param>
 		public Scheduler(BoardChar entity, string type)
 		{
 			this.entity = entity;
 			AddSchedule(type, entity.Character);
+            ScheduleToken = entity.Character.GetToken("schedule");
+            TaskList = new List<Task>();
 		}
 
+        /// <summary>
+        /// Should be called every time the associated entity updates.
+        /// </summary>
 		public void RunSchedule()
 		{
-			if (TaskList == null)
-				TaskList = new List<Task>();
-
 			if (ScheduleToken == null)
 				ScheduleToken = entity.Character.GetToken("schedule");
 
@@ -171,23 +183,11 @@ namespace Noxico
 		/// </summary>
 		private void InitSchedule()
 		{
-			var hour = NoxicoGame.InGameTime.Hour;
-			var minute = NoxicoGame.InGameTime.Minute;
-			var hourC = 0;
-			var minC = 0;
-			var hourCprev = 0;
-			var minCprev = 0;
+            if (entity.Character.HasToken("currentActivity") && entity.Character.GetToken("currentActivity").Tokens.Count > 0)
+                ExtractCurrentActivity();
 
-			if (!entity.Character.HasToken("currentActivity"))
+            if ((NextActivityTime as Object) != null && VerifyNextTime())
 			{
-				//shit what do?
-				return;
-			}
-
-			if (entity.Character.GetToken("currentActivity").Tokens.Count > 0)
-			{
-				ExtractCurrentActivity();
-
 				for (var i = 0; i < ScheduleToken.Tokens.Count; i++)
 				{
 					if (ScheduleToken.Tokens[i].Name == CurrentActivity.Name)
@@ -203,6 +203,13 @@ namespace Noxico
 			}
 			else
 			{
+                var hour = NoxicoGame.InGameTime.Hour;
+                var minute = NoxicoGame.InGameTime.Minute;
+                var hourC = 0;
+                var minC = 0;
+                var hourCprev = 0;
+                var minCprev = 0;
+
 				for (var i = 0; i < ScheduleToken.Tokens.Count; i++)
 				{
 					hourC = int.Parse(ScheduleToken.Tokens[i].Name.Substring(0, 2));
@@ -245,9 +252,20 @@ namespace Noxico
 			AddScheduledTasks(CurrentActivity.Text, "init");
 		}
 
+        /// <summary>
+        /// Checks if the next scheduled activity time is within the next 24 hours.
+        /// </summary>
+        /// <returns>True if the next activity is within the next 24 hours, false if not.</returns>
+        private bool VerifyNextTime()
+        {
+            var maxTime = NoxicanDate.FromBinary(NoxicoGame.InGameTime.ToBinary());
+            maxTime.AddDays(1);
+
+            return (NextActivityTime <= maxTime && NextActivityTime >= NoxicoGame.InGameTime);
+        }
+
 		/// <summary>
 		/// Checks the current time against NextActivityTime to see if the scheduler should change the current activity to the next one.
-		/// 
 		/// </summary>
 		private void UpdateSchedule()
 		{
