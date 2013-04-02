@@ -60,7 +60,7 @@ namespace Noxico
 		public void Point()
 		{
 			PointingAt = null;
-			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>Point at an object or character.";
+			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointatsomething");
 			foreach (var entity in this.ParentBoard.Entities)
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
@@ -73,7 +73,7 @@ namespace Noxico
 							if (entity is BoardChar && ((BoardChar)entity).Character.Path("eyes/glow") != null)
 							{
 								//Entity has glowing eyes, but we don't let the player actually interact with them.
-								NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">Eyes in the darkness";
+								NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + i18n.GetString("eyesinthedark");
 							}
 							return;
 						}
@@ -101,7 +101,7 @@ namespace Noxico
 					}
 					else if (entity is Door)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>Door";
+						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointingatdoor");
 						return;
 					}
 				}
@@ -155,24 +155,24 @@ namespace Noxico
 					var options = new Dictionary<object, string>();
 					var description = "something";
 
-					options["look"] = "Look at it";
+					options["look"] = i18n.GetString("action_lookatit");
 
 					if (PointingAt is Player)
 					{
-						description = "you, " + player.Character.GetNameOrTitle();
-						options["look"] = "Check yourself";
+						description = i18n.Format("action_descyou", player.Character.GetNameOrTitle());
+						options["look"] = i18n.Format("action_lookatyou");
 						if (player.Character.GetStat(Stat.Stimulation) >= 30)
-							options["fuck"] = "Masturbate";
+							options["fuck"] = i18n.Format("action_masturbate");
 					}
 					else if (PointingAt is BoardChar)
 					{
 						var boardChar = PointingAt as BoardChar;
 						description = boardChar.Character.GetNameOrTitle(true);
-						options["look"] = "Look at " + boardChar.Character.HimHerIt();
+						options["look"] = i18n.Format("action_lookathim", boardChar.Character.HimHerIt());
 
 						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast"))
 						{
-							options["talk"] = "Talk to " + boardChar.Character.HimHerIt();
+							options["talk"] = i18n.Format("action_talktohim", boardChar.Character.HimHerIt());
 						}
 
 						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
@@ -180,15 +180,15 @@ namespace Noxico
 							if (!boardChar.Character.HasToken("beast"))
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
-									options["rape"] = "Rape " + boardChar.Character.HimHerIt();
+									options["rape"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt());
 								else
-									options["fuck"] = "Fuck " + boardChar.Character.HimHerIt();
+									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt());
 							}
 						}
 
 						if (canSee && player.Character.CanShoot() != null && player.ParentBoard.HasToken("combat"))
 						{
-							options["shoot"] = "Shoot at " + boardChar.Character.HimHerIt();
+							options["shoot"] = i18n.Format("action_shoothim", boardChar.Character.HimHerIt());
 						}
 					}
 					else if (PointingAt is DroppedItem)
@@ -198,7 +198,7 @@ namespace Noxico
 						var token = drop.Token;
 						description = item.ToString(token);
 						if (distance <= 1)
-							options["take"] = "Pick it up";
+							options["take"] = i18n.GetString("action_pickup");
 					}
 
 					//MessageBox.List("This is " + description + ". What would you do?", options,
@@ -221,7 +221,7 @@ namespace Noxico
 										var drop = PointingAt as DroppedItem;
 										var item = drop.Item;
 										var token = drop.Token;
-										var text = (item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : "This is " + item.ToString(token) + ".").Trim();
+										var text = (item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : i18n.Format("thisis_x", item.ToString(token))).Trim();
 										MessageBox.Notice(text, true);
 									}
 									else if (PointingAt is Clutter && !string.IsNullOrWhiteSpace(((Clutter)PointingAt).Description))
@@ -240,15 +240,15 @@ namespace Noxico
 										if (Culture.CheckSummoningDay())
 											return;
 										if (player.Character.Path("cunning").Value >= 10)
-											MessageBox.Notice("Talking to yourself is the first sign of insanity.", true);
+											MessageBox.Notice(i18n.GetString("talkingotyourself"), true);
 										else
-											MessageBox.Notice("You spend a short while enjoying some pleasant but odd conversation with yourself.", true);
+											MessageBox.Notice(i18n.GetString("talkingtoyourself_nutso"), true);
 									}
 									else if (PointingAt is BoardChar)
 									{
 										var boardChar = PointingAt as BoardChar;
 										if (boardChar.Character.HasToken("hostile"))
-											MessageBox.Notice((boardChar.Character.IsProperNamed ? boardChar.Character.GetNameOrTitle() : "the " + boardChar.Character.Title) + " has nothing to say to you.", true);
+											MessageBox.Notice(i18n.Format(boardChar.Character.IsProperNamed ? "nothingtosay_it" : "nothingtosay_he", boardChar.Character.GetNameOrTitle()), true);
 										else
 											SceneSystem.Engage(player.Character, boardChar.Character, true);
 									}
@@ -277,7 +277,7 @@ namespace Noxico
 										var token = drop.Token;
 										drop.Take(player.Character);
 										player.Energy -= 1000;
-										NoxicoGame.AddMessage("You pick up " + item.ToString(token, true) + ".", drop.ForegroundColor);
+										NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
 										NoxicoGame.Sound.PlaySound("Get Item");
 										ParentBoard.Redraw();
 									}

@@ -22,12 +22,14 @@ namespace Noxico
 
 		public static string Entitize(string input)
 		{
+			var longhand = !input.Contains('\uE1FE');
 			for (var i = 0; i <= 0x10; i++)
-				input = input.Replace(((char)(0xE200 + i)).ToString(), Toolkit.TranslateKey((KeyBinding)i, true));
+				input = input.Replace(((char)(0xE200 + i)).ToString(), Toolkit.TranslateKey((KeyBinding)i, longhand));
 			if (NoxicoGame.HostForm.Noxico.Player != null && NoxicoGame.HostForm.Noxico.Player.Character != null)
 				input = input.Replace("\uE220", NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString());
 			else
 				input = input.Replace("\uE220", "????");
+			input = input.Replace("\uE1FE", "");
 			return input;
 		}
 

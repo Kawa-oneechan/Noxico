@@ -10,29 +10,17 @@ namespace Noxico
 		private static int page = 0;
 		private static Dictionary<string, string> pages = new Dictionary<string, string>()
 		{
-			{ "Character stats", "..." },
-			{ "Skill levels", "..." },
-			{ "Important keys", "..." },
-			{ "Other keys", "..." },
-			{ "Credits", "Press Enter to view full credits." },
-			{ "Memory stats", "..." },
+			{ i18n.GetString("pause_charstats"), "..." },
+			{ i18n.GetString("pause_skills"), "..." },
+			{ i18n.GetString("pause_keys1"), "..." },
+			{ i18n.GetString("pause_keys2"), "..." },
+			{ i18n.GetString("pause_credits"), i18n.GetString("pause_creditscontent") },
+			{ i18n.GetString("pause_memstats"), "..." },
 #if DEBUG
 			{ "Debug cheats", "..." },
 #endif
-			{ "Open settings",
-@"Press Enter to open noxico.ini.
-
-From there, you can change a bunch of
-things, including key mappings and how
-long you get until auto-rest triggers." },
-			{ "Save and exit",
-@"Press Enter to save.
-
-The game will automatically exit when
-done. Note that clicking the Close
-button or pressing Alt-F4 or whatever
-your operating system's methods are
-has the same effect." },
+			{ i18n.GetString("pause_opensettings"), i18n.GetString("pause_opensettingscontent") },
+			{ i18n.GetString("pause_saveandexit"), i18n.GetString("pause_saveandexitcontent") },
 
 		};
 		private static UIList list;
@@ -46,7 +34,7 @@ has the same effect." },
 			{
 				Subscreens.FirstDraw = false;
 				UIManager.Initialize();
-				UIManager.Elements.Add(new UIWindow("PAUSED") { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2 });
+				UIManager.Elements.Add(new UIWindow(i18n.GetString("pause_title")) { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2 });
 				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 2, Width = 44, Height = 18 });
 				list = new UIList() { Width = 20, Height = pages.Count, Left = 6, Top = 5 };
 				list.Items.AddRange(pages.Keys);
@@ -68,7 +56,7 @@ has the same effect." },
 					}
 					else if (list.Index == 4)
 					{
-						TextScroller.Plain(Mix.GetString("credits.txt"), "Credits", false);
+						TextScroller.Plain(Mix.GetString("credits.txt"), i18n.GetString("pause_credits"), false);
 					}
 				};
 				text = new UILabel("...") { Left = 30, Top = 3 };
@@ -77,7 +65,6 @@ has the same effect." },
 				list.Index = IniFile.GetValue("misc", "rememberpause", true) ? page : 0;
 				UIManager.Highlight = list;
 
-				//Toolkit.DrawWindow(5, 4, 21, 1 + pages.Count, "PAUSED", Color.Maroon, Color.Black, Color.Red);
 				Subscreens.Redraw = true;
 			}
 			if (Subscreens.Redraw)
@@ -175,8 +162,8 @@ has the same effect." },
 			sb.Append("<cMaroon>" + new string('-', renegadeDark) + "<cRed>" + new string('=', renegadeLight));
 			sb.Append("<cBlue>" + new string('=', paragonLight) + "<cNavy>" + new string('-', paragonDark));
 			sb.AppendLine(" <cSilver>\u2665");
-	
-			pages["Character stats"] = sb.ToString();
+
+			pages[i18n.GetString("pause_charstats")] = sb.ToString();
 
 			sb.Clear();
 			foreach (var skill in player.GetToken("skills").Tokens)
@@ -184,29 +171,29 @@ has the same effect." },
 				if ((int)skill.Value > 0)
 					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadEffective(30) + ((int)skill.Value).ToString());
 			}
-			pages["Skill levels"] = sb.ToString();
+			pages[i18n.GetString("pause_skills")] = sb.ToString();
 
 			sb.Clear();
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
 			sb.AppendLine(" - Move");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(4) + " - Interact with something");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(4) + " - Use something");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(4) + " - Rest");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(4) + " - Fly/Land");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(4) + " - Inventory");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(4) + " - Travel");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(4) + " - Accept");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(4) + " - Go back");
-			pages["Important keys"] = sb.ToString();
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(4) + " - " + i18n.GetString("pause_keyinteract"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(4) + " - " + i18n.GetString("pause_keyactivate"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(4) + " - " + i18n.GetString("pause_keyrest"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(4) + " - " + i18n.GetString("pause_keyfly"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(4) + " - " + i18n.GetString("pause_keyitems"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(4) + " - " + i18n.GetString("pause_keytravel"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(4) + " - " + i18n.GetString("pause_keyaccept"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(4) + " - " + i18n.GetString("pause_keyback"));
+			pages[i18n.GetString("pause_keys1")] = sb.ToString();
 			sb.Clear();
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadEffective(4) + " - Open this menu");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadEffective(4) + " - " + i18n.GetString("pause_keypause"));
 #if DEBUG
 			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3).PadEffective(4) + " - Dump board to HTML (debug only)");
 #endif
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadEffective(4) + " - Take screenshot");
-			pages["Other keys"] = sb.ToString();
-
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadEffective(4) + " - " + i18n.GetString("pause_keyscreenshot"));
+			pages[i18n.GetString("pause_keys2")] = sb.ToString();
+	
 			var entities = 0;
 			var tokens = 0;
 			foreach (var x in nox.Boards.Where(x => x != null))
@@ -227,13 +214,13 @@ has the same effect." },
 				foreach (var t in x.Tokens)
 					tokens += CountTokens(t);
 			});
-			sb.Clear();
-			sb.AppendLine("Number of boards            " + nox.Boards.Count.ToString("G"));
-			sb.AppendLine("   Active boards            " + nox.Boards.Where(b => b != null).Count().ToString("G"));
-			sb.AppendLine("Number of known items       " + NoxicoGame.KnownItems.Count.ToString("G"));
-			sb.AppendLine("Number of entities          " + entities.ToString("G"));
-			sb.AppendLine("Total set of tokens         " + tokens.ToString("G"));
-			pages["Memory stats"] = sb.ToString();
+
+			pages[i18n.GetString("pause_memstats")] = i18n.Format("pause_memstatscontent",
+				nox.Boards.Count.ToString("G"),
+				nox.Boards.Where(b => b != null).Count().ToString("G"),
+				NoxicoGame.KnownItems.Count.ToString("G"),
+				entities.ToString("G"),
+				tokens.ToString("G"));
 
 			if (!IniFile.GetValue("misc", "rememberpause", true))
 				page = 0;

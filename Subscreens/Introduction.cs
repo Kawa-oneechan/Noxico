@@ -416,7 +416,7 @@ namespace Noxico
 					var c = controls.First(x => x.Value == UIManager.Highlight);
 					if (controlHelps.ContainsKey(c.Key))
 					{
-						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(50);
+						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(controls["controlHelp"].Width);
 						controls["controlHelp"].Top = c.Value.Top;
 					}
 					else
@@ -426,6 +426,7 @@ namespace Noxico
 				loadPage(page);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
+				UIManager.HighlightChanged(null, null);
 
 				NoxicoGame.InGame = false;
 			}

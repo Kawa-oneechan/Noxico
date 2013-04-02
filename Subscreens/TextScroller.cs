@@ -24,7 +24,7 @@ namespace Noxico
 				window = new UIWindow(text[0]) { Left = 5, Top = 1, Width = 90, Height = 26 };
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
-				var help = " Press " + Toolkit.TranslateKey(KeyBinding.ScrollUp) + " and " + Toolkit.TranslateKey(KeyBinding.ScrollDown) + " to scroll, " + Toolkit.TranslateKey(KeyBinding.Back, true) + " to return ";
+				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 50 - (help.Length() / 2));
 				for (int i = scroll; i < text.Length && i - scroll < 24; i++)
 				{
@@ -132,7 +132,7 @@ namespace Noxico
 			var text = "";
 			var header = "";
 			if (book == null)
-				text = "Can't find the content for this book.";
+				text = i18n.GetString("textscroller_book404");
 			else
 			{
 				header = book.GetAttribute("title");
