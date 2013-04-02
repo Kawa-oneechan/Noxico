@@ -106,7 +106,7 @@
 				print("down your stomach, towards your groin.\n\n");
 
 				
-				var g = top.GetGender();
+				var g = top.Gender;
 				var stim = top.GetToken("stimulation").Value;
 				if(g == "male")
 				{
@@ -285,7 +285,7 @@
 			
 				print("spread your hind legs and reach a [t:foot] down over your stomach, towards your groin.\n\n");
 				
-				var g = top.GetGender();
+				var g = top.Gender;
 				var stim = top.GetToken("stimulation").Value;
 				if(g == "male")
 				{
@@ -417,7 +417,7 @@
 					print("run both of your hands down your stomach, towards your groin.\n\n");
 
 				
-				var g = top.GetGender();
+				var g = top.Gender;
 				var stim = top.GetToken("stimulation").Value;
 				if(g == "male")
 				{					

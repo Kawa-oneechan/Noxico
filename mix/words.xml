@@ -7,6 +7,7 @@
 	<!ATTLIST word id ID #REQUIRED>
 
 	<!-- Key bindings -->
+	<!ENTITY shorthand "&#xE1FE;">
 	<!ENTITY left "&#xE200;">
 	<!ENTITY right "&#xE201;">
 	<!ENTITY up "&#xE202;">
@@ -48,7 +49,7 @@
 	<!ENTITY brown   "&lt;cBrown&gt;">
 	<!ENTITY orange  "&lt;cOrange&gt;">
 	<!ENTITY invert  "&lt;cBlack,Silver&gt;">
-	<!ENTITY revert  "&lt;cSilver,Transparent&gt;">
+	<!ENTITY revert  "&lt;c&gt;">
 ]>
 <words>
 	<!-- i18n stuff goes here. mostly key/term pairs with String.Format placeholders, some are comma-separated lists -->
@@ -97,13 +98,118 @@
 			<word id="cc_footer">&tabfocus; to switch controls, &up;/&down;/&left;/&right; and &accept; to choose. Or use a mouse.</word>
 		</category>
 	</category>
+	<category name="Travel">
+		<word id="travel_header">Travel Mode</word>
+		<word id="travel_footer">&up;/&down;/&accept; to select, &back; to cancel.</word>
+		<word id="travel_nowhere">You don't know of any other place to go.</word>
+		<word id="travel_current">Current location:</word>
+		<word id="travel_new">[NEW]</word>
+	</category>
+	<category name="Pause">
+		<word id="pause_title">PAUSED</word>
+		<word id="pause_charstats">Character stats</word>
+		<word id="pause_skills">Skill levels</word>
+		<word id="pause_keys1">Important keys</word>
+		<word id="pause_keys2">Other keys</word>
+		<word id="pause_credits">Credits</word>
+		<word id="pause_memstats">Memory stats</word>
+		<word id="pause_opensettings">Open settings</word>
+		<word id="pause_saveandexit">Save and exit</word>
+		<word id="pause_keyinteract">Interact with something</word>
+		<word id="pause_keyactivate">Use something</word>
+		<word id="pause_keyrest">Rest</word>
+		<word id="pause_keyfly">Fly or land</word>
+		<word id="pause_keyitems">Inventory</word>
+		<word id="pause_keytravel">Travel</word>
+		<word id="pause_keyaccept">Accept</word>
+		<word id="pause_keyback">Go back</word>
+		<word id="pause_keypause">Open this menu</word>
+		<word id="pause_keyscreenshot">Take screenshot</word>
+		<word id="pause_creditscontent">Press &accept; to view full credits.</word>
+		<word id="pause_opensettingscontent">
+			<![CDATA[Press Enter to open noxico.ini.
+
+From there, you can change a bunch of
+things, including key mappings and how
+long you get until auto-rest triggers.]]>
+</word>
+		<word id="pause_saveandexitcontent">
+			<![CDATA[Press Enter to save.
+
+The game will automatically exit when
+done. Note that clicking the Close
+button or pressing Alt-F4 or whatever
+your operating system's methods are
+has the same effect.]]>
+</word>
+		<word id="pause_memstatscontent">
+			<![CDATA[
+     Number of boards       {0}
+        Active boards       {1}
+Number of known items       {2}
+   Number of entities       {3}
+  Total set of tokens       {4}]]>
+		</word>
+	</category>
+	<category name="Actions">
+		<word id="action_descyou">you, {0}</word>
+		<word id="action_lookatit">Look at it</word>
+		<word id="action_lookathim">Look at {0}</word>
+		<word id="action_lookatyou">Check yourself</word>
+		<word id="action_talktohim">Talk to {0}</word>
+		<word id="action_masturbate">Masturbate</word>
+		<word id="action_fuckhim">Fuck {0}</word>
+		<word id="action_rapehim">Rape {0}</word>
+		<word id="action_shoothim">Shoot at {0}</word>
+		<word id="action_pickup">Pick it up</word>
+	</category>
+	<category name="Sidebar">
+		<category name="Stat shorthands">
+			<word id="shortstat_Charisma">CHA</word>
+			<word id="shortstat_Climax">CLI</word>
+			<word id="shortstat_Cunning">CUN</word>
+			<word id="shortstat_Carnality">CAR</word>
+			<word id="shortstat_Stimulation">STI</word>
+			<word id="shortstat_Sensitivity">SEN</word>
+			<word id="shortstat_Speed">SPE</word>
+			<word id="shortstat_Strength">STR</word>
+		</category>
+		<category name="Mods">
+			<word id="mod_haste">Haste </word>
+			<word id="mod_slow">Slow </word>
+			<word id="mod_starving">Starving </word>
+			<word id="mod_hungry">Hungry </word>
+			<word id="mod_satiated">Satiated </word>
+			<word id="mod_flying">Flying ({0:00}%) </word>
+			<word id="mod_hostile">&red;Hostile &revert;</word>
+			<word id="mod_helpless">&yellow;Helpless &revert;</word>
+		</category>
+		<category name="Vendors">
+			<word id="vendor_baker">Baker</word>
+			<word id="vendor_butcher">Butcher</word>
+			<word id="vendor_clothier">Clothier</word>
+			<word id="vendor_armorer">Armorer</word>
+			<word id="vendor_greengrocer">Greengrocer</word>
+		</category>
+	</category>
 	<category name="Messages">
 		<word id="welcometonoxico">Welcome to Noxico, &player;.</word>
 		<word id="welcomeback">Welcome back, &player;.</word>
-		<word id="rememberhelp">Remember, press &invert; &pause; &revert; for help and options.</word>
+		<word id="rememberhelp">Remember, press &white;&pause;&revert; for help and options.</word>
+		<word id="pointatsomething">Point at an object or character.</word>
+		<word id="pointingatdoor">Door</word>
+		<word id="eyesinthedark">Eyes in the darkness</word>
+		<word id="youpickup_x">You pick up {0}.</word>
 	</category>
 	<category name="Misc">
+		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
+		<word id="textscroller_book404">Can't find the content for this book.</word>
 		<word id="Male">Male</word>
 		<word id="Female">Female</word>
+		<word id="thisis_x">This is {0}.</word>
+		<word id="talkingtoyourself">Talking to yourself is the first sign of insanity.</word>
+		<word id="talkingtoyourself_nutso">You spend a short while enjoying some pleasant but odd conversation with yourself.</word>
+		<word id="nothingtosay_it">The {0} has nothing to say to you.</word>
+		<word id="nothingtosay_he">{0} has nothing to say to you.</word>
 	</category>
 </words>

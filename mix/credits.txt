@@ -1,33 +1,25 @@
 
-
-<cCornflowerBlue>           <g2588><g2588><g2584>  <g2588><g2588> <g2584><g2588><g2580><g2580><g2588><g2584> <g2580><g2588>   <g2588><g2580> <g2580><g2588><g2588><g2580> <g2584><g2588><g2580><g2580><g2588><g2584> <g2584><g2588><g2580><g2580><g2580><g2588><g2584>
-<cCornflowerBlue>           <g2588><g2588><g2588><g2588><g2584><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2580><g2588><g2584><g2588><g2580>   <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>           <g2588><g2588><g2580><g2588><g2588><g2588><g2588> <g2588><g2588>  <g2588><g2588>   <g2584><g2588><g2584>    <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>           <g2588><g2588>  <g2580><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2588><g2580> <g2580><g2588>   <g2588><g2588>  <g2588><g2588>  <g2584><g2584> <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>           <g2588><g2588>   <g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2580>   <g2580><g2580> <g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2588><g2584>  <g2588><g2588>
-<cCornflowerBlue>           <g2580>  <g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>
+                                    NOXICO
+                                   --------
 
 
-         Programming and idea                      Kawa
 
-         Inspiration from:                       Fenoxo
-                                             Tarn Adams
-                                            Greg Janson
-                                       The NetHack team
+                 Programming and idea                      Kawa
+                 Assistant programming              PillowShout
+
+                 Inspiration from:                       Fenoxo
+                                                     Tarn Adams
+                                                    Greg Janson
+                                               The NetHack team
 
 
-                            Writers
-                           <g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500>
+                                    Writers
+                                   ---------
 
-TheDarkMaster
-NVos
-ScourgeScarfould
-DecidedlyDevious
-demidenizen
-Bodshivita
-Hassin
-noego
-morrogoth
+                TheDarkMaster      NVos          ScourgeScarfould
+                DecidedlyDevious   demidenizen   Bodshivita
+                Hassin             noego         morrogoth
+                PillowShout
 
 
              Check our website for music credits:
@@ -35,14 +27,14 @@ morrogoth
                http://helmet.kafuka.org/noxico
 
 
-                           Thanks to
-                          <g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500><g2500>
+                                   Thanks to
+                                  -----------
 
-Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and
-RogueBasin coolkids, all GameDev.StackExchange.com users...
+Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and RogueBasin
+coolkids, all GameDev.StackExchange.com users...
 
-                            and mom for not making a fuss over it.
- 
+                                            and mom for not making a fuss over it.
+
 
 
 

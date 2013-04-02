@@ -1014,25 +1014,23 @@ namespace Noxico
 					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
 				else if (statBonus < 0)
 					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
-				HostForm.Write(stat.Substring(0, 3).ToUpperInvariant() + "  <cWhite>" + total + bonus, Color.Silver, Color.Transparent, statRow, 81);
+				HostForm.Write(i18n.GetString("shortstat_" + stat) + "  <cWhite>" + total + bonus, Color.Silver, Color.Transparent, statRow, 81);
 				statRow++;
 			}
 			var sb = new StringBuilder();
 			if (character.HasToken("haste"))
-				sb.Append("Haste ");
+				sb.Append(i18n.GetString("mod_haste"));
 			if (character.HasToken("slow"))
-				sb.Append("Slow ");
+				sb.Append(i18n.GetString("mod_slow"));
 			var satiation = character.GetToken("satiation").Value;
 			if (satiation < 0)
-				sb.Append("Starving ");
+				sb.Append(i18n.GetString("mod_starving"));
 			else if (satiation < 50)
-				sb.Append("Hungry ");
+				sb.Append(i18n.GetString("mod_hungry"));
 			else if (satiation > 100)
-				sb.Append("Satiated ");
+				sb.Append(i18n.GetString("mod_satiated"));
 			if (character.HasToken("flying"))
-				sb.AppendFormat("Flying ({0:00}%)", Math.Floor((character.GetToken("flying").Value / 100) * 100));
-			//var flightTimer = string.Format(" - Flight: {0:00}% - ", Math.Floor((Character.GetToken("flying").Value / 100) * 100));
-			//NoxicoGame.HostForm.Write(flightTimer, Color.FromName("CornflowerBlue"), Color.Black, 40 - (flightTimer.Length / 2), 0);
+				sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
 
 			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
 
@@ -1079,11 +1077,11 @@ namespace Noxico
 				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 22, 81);
 				sb.Clear();
 				if (character.Path("role/vendor") != null)
-					sb.Append(character.Path("role/vendor/class").Text.Titlecase() + ' ');
+					sb.Append(i18n.GetString("vendor_" + character.Path("role/vendor/class").Text) + ' ');
 				if (character.HasToken("hostile"))
-					sb.Append("Hostile");
+					sb.Append(i18n.GetString("mod_hostile"));
 				if (character.HasToken("helpless"))
-					sb.Append("Helpless");
+					sb.Append(i18n.GetString("mod_helpless"));
 				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
 
