@@ -100,6 +100,11 @@ namespace Noxico
 					NoxicoGame.Mode = UserMode.Walkabout;
 					Subscreens.FirstDraw = true;
 
+					NoxicoGame.InGameTime.AddDays(1);
+					while (Toolkit.IsNight())
+						NoxicoGame.InGameTime.AddHours(Random.Next(1, 3));
+					NoxicoGame.InGameTime.AddMinutes(Random.Next(10, 50));
+
 					host.Noxico.Player.OpenBoard(newBoard);
 					var hereNow = host.Noxico.Player.ParentBoard;
 					if (hereNow.BoardType == BoardType.Dungeon)
@@ -113,6 +118,8 @@ namespace Noxico
 							host.Noxico.Player.YPosition = dngExit.YPosition;
 						}
 					}
+					else
+						host.Noxico.Player.Reposition();
 				};
 
 				//var thisBoard = NoxicoGame.KnownTargets.FirstOrDefault(kt => kt == host.Noxico.CurrentBoard.BoardNum);

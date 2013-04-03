@@ -825,5 +825,35 @@ namespace Noxico
 				Hurt(2, i18n.GetString("death_starvation"), null, false, true);
 			}
 		}
+
+		public void Reposition()
+		{
+			var range = 10;
+			var tries = 10;
+			while (true)
+			{
+				var x = Random.Next(40 - range, 40 + range);
+				var y = Random.Next(12 - (range / 2), 12 + (range / 2));
+				var tile = ParentBoard.Tilemap[x, y];
+				if (!(tile.SolidToWalker || tile.Ceiling))
+				{
+					XPosition = x;
+					YPosition = y;
+					break;
+				}
+				tries--;
+				if (tries == 0)
+				{
+					range += 5;
+					if (range >= 30)
+					{
+						Program.WriteLine("Player.Reposition() giving up.");
+						XPosition = 40;
+						YPosition = 12;
+						break;
+					}
+				}
+			}
+		}
 	}
 }
