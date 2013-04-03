@@ -610,10 +610,9 @@ namespace Noxico
 
 			//TODO: give the player a proper home.
 			this.CurrentBoard = GetBoard(KnownTargets[0]);
-			this.Player.XPosition = 40;
-			this.Player.YPosition = 12;
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
+			this.Player.Reposition();
 
 			setStatus("Saving chunks... (lol)");
 			for (var i = 0; i < this.Boards.Count; i++)
