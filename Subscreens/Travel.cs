@@ -60,7 +60,7 @@ namespace Noxico
 				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
 				expectationStart = list.Items.Count;
 				var newMarker = i18n.GetString("travel_new");
-				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadEffective(list.Width - newMarker.Length()) + newMarker));
+				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadEffective(list.Width - 2 - newMarker.Length()) + newMarker));
 
 				list.Enter = (s, e) =>
 				{

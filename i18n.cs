@@ -56,6 +56,16 @@ namespace Noxico
 			return GetString(key).Split(',').Select(x => x.Trim()).ToList();
 		}
 
+		public static string Pluralize(string singular, int amount)
+		{
+			if (words.ContainsKey(singular))
+				singular = words[singular];
+			if (amount == 1)
+				return singular;
+			//TODO: inflect right. THIS IS VERY NAIVE AND STUPID.
+			return singular + 's';
+		}
+
 		/// <summary>Gets the number of effective tiles needed to draw the current String.</summary>
 		public static int Length(this string input)
 		{
