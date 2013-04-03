@@ -36,31 +36,6 @@
 	>
 ]>
 <scenes>
-
-	<scene id="Trade" name="trade" list="Trade">
-		<filter target="bottom" type="has" name="role/vendor" />
-		<script type="text/javascript">
-			<![CDATA[
-			if (bottom.GetToken("items").Length > 10)
-				print ("\"Sure, I got all sorts of things.\"");
-			else
-				print ("\"Sure, I might have something left.\"");
-			]]>
-		</script>
-		<action name="(trade go)" />
-	</scene>
-	<scene id="Trade2" name="(trade go)" list="==>" priority="high">
-		<script type="text/javascript">
-			Trade();
-		</script>
-	</scene>
-
-	<scene id="test1c" name="(trade done)" priority="high">
-		<p>
-			"Pleasure doing business with you."
-		</p>
-	</scene>
-
 	<scene id="test2" name="invite to have sex" list="(DEBUG) Set willingness" priority="high">
 		<script type="text/javascript">
 			bottom.AddToken("willing");
@@ -86,20 +61,6 @@
 		<p>It worked.</p>
 	</scene>
 	
-	
-	<scene id="zzz1" name="(starting node)" priority="high">
-		<filter target="bottom" type="has" name="sleeping" />
-		<p>
-			[b:name] is sleeping and can't hear you.
-		</p>
-	</scene>
-	<scene id="zzz2" name="(starting node)" priority="high">
-		<filter target="bottom" type="has" name="goingtosleep" />
-		<p>
-			"Would you mind? I'd really rather go to sleep now. It's late."
-		</p>
-	</scene>
-
 	<scene id="ohboy" name="(criminalscum)">
 		<p>
 			"Stop right there, criminal scum!"

@@ -243,7 +243,9 @@
     </Content>
     <Content Include="mix\wip\changelings\bodyplans.xml" />
     <Content Include="mix\wip\changelings\culture.xml" />
-    <Content Include="mix\words.xml" />
+    <Content Include="mix\words.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="music\music.xml" />
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

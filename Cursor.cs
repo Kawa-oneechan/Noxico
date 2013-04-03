@@ -170,9 +170,11 @@ namespace Noxico
 						description = boardChar.Character.GetNameOrTitle(true);
 						options["look"] = i18n.Format("action_lookathim", boardChar.Character.HimHerIt());
 
-						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast"))
+						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast") && !boardChar.Character.HasToken("sleeping"))
 						{
 							options["talk"] = i18n.Format("action_talktohim", boardChar.Character.HimHerIt());
+							if (boardChar.Character.Path("role/vendor") != null)
+								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt());
 						}
 
 						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
@@ -252,6 +254,10 @@ namespace Noxico
 										else
 											SceneSystem.Engage(player.Character, boardChar.Character, true);
 									}
+									break;
+
+								case "trade":
+									ContainerMan.Setup(((BoardChar)PointingAt).Character);
 									break;
 
 								case "fuck":

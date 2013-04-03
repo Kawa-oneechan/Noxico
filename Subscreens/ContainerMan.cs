@@ -338,8 +338,6 @@ namespace Noxico
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
-				if (isVendor)
-					SceneSystem.Engage(player.Character, vendorChar, "(trade done)", true);
 			}
 			else if (NoxicoGame.IsKeyDown(KeyBinding.Left))
 			{
