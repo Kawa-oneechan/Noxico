@@ -102,6 +102,8 @@
 		<word id="travel_header">Travel Mode</word>
 		<word id="travel_footer">&up;/&down;/&accept; to select, &back; to cancel.</word>
 		<word id="travel_nowhere">You don't know of any other place to go.</word>
+		<word id="travel_notfromdungeon">You cannot travel from this location. Find the exit to leave.</word>
+		<word id="travel_notfromwilds">You cannot travel from this location. Go back to where you came in and try again there.</word>
 		<word id="travel_current">Current location:</word>
 		<word id="travel_new">[NEW]</word>
 	</category>
@@ -201,16 +203,49 @@ Number of known items       {2}
 		<word id="pointingatdoor">Door</word>
 		<word id="eyesinthedark">Eyes in the darkness</word>
 		<word id="youpickup_x">You pick up {0}.</word>
+		<word id="yougetup">You get back up.</word>
+		<word id="youfly">You take off.</word>
+		<word id="youland">You land.</word>
+		<word id="flyneedswings">You have no wings.</word>
+		<word id="wingsaretoosmall">Your wings are too small.</word>
+		<word id="hittheceiling">You hit your head on the ceiling.</word>
+		<word id="cantflyinside">You can't fly here - there's a ceiling in the way.</word>
+		<word id="autotravelstop">Autotravel interrupted.</word>
+		<word id="youhitxfory">You hit {0} for {1} {2}.</word>
+		<word id="youdisplacex">You displace {0}.</word>
+		<word id="losewings">&red;You lose your ability to fly!</word>
+		<word id="yougohungry">You have become very hungry.</word>
+		<word id="youarestarving">&red;You are starving.</word>
+	</category>
+	<category name="Causes of death">
+		<word id="death_doveinanddrowned">dove into the water and drowned</word>
+		<word id="death_doveintodepths">dove into the depths</word>
+		<word id="death_crackedagainstceiling">hit the ceiling when trying to fly</word>
+		<word id="death_shotbyx">being shot down by {0}</word>
+		<word id="death_burned">burned to death</word>
+		<word id="death_starvation">starved to death</word>
 	</category>
 	<category name="Misc">
 		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
 		<word id="textscroller_book404">Can't find the content for this book.</word>
 		<word id="Male">Male</word>
 		<word id="Female">Female</word>
+		<word id="Bed">Bed</word>
+		<word id="point">point</word>
 		<word id="thisis_x">This is {0}.</word>
 		<word id="talkingtoyourself">Talking to yourself is the first sign of insanity.</word>
 		<word id="talkingtoyourself_nutso">You spend a short while enjoying some pleasant but odd conversation with yourself.</word>
 		<word id="nothingtosay_it">The {0} has nothing to say to you.</word>
 		<word id="nothingtosay_he">{0} has nothing to say to you.</word>
+		<word id="gameover_title">GAME OVER</word>
+		<word id="youdied">
+			<![CDATA[You {0}.
+	
+Would you like an infodump on the way out?]]>
+		</word>
+		<word id="context_warp">take exit</word>
+		<word id="context_droppeditem">pick up</word>
+		<word id="context_container">see contents</word>
+		<word id="context_bed">sleep</word>
 	</category>
 </words>

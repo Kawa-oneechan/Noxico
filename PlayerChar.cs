@@ -203,7 +203,7 @@ namespace Noxico
 							return;
 						}
 						//Displace!
-						NoxicoGame.AddMessage("You displace " + bc.Character.GetNameOrTitle(false, true) + ".", bc.GetEffectiveColor());
+						NoxicoGame.AddMessage(i18n.Format("youdisplacex", bc.Character.GetNameOrTitle(false, true)), bc.GetEffectiveColor());
 						bc.XPosition = this.XPosition;
 						bc.YPosition = this.YPosition;
 					}
@@ -229,13 +229,13 @@ namespace Noxico
 
 			NoxicoGame.ContextMessage = null;
 			if (OnWarp())
-				NoxicoGame.ContextMessage = "take exit";
+				NoxicoGame.ContextMessage = i18n.GetString("context_warp");
 			else if (ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = "pick up";
+				NoxicoGame.ContextMessage = i18n.GetString("context_droppeditem");
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = "see contents";
-			else if (/* Character.Health < Character.MaximumHealth && */ ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
-				NoxicoGame.ContextMessage = "sleep";
+				NoxicoGame.ContextMessage = i18n.GetString("context_container");
+			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
+				NoxicoGame.ContextMessage = i18n.GetString("context_bed");
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
 		}
@@ -289,8 +289,8 @@ namespace Noxico
 				if (hit != null)
 				{
 					FireLine(weapon.Path("effect"), x, y);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetNameOrTitle(false, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetNameOrTitle(false, true), damage, i18n.Pluralize("point", damage)));
+					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.Name.ToString(true)), this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
 				}
@@ -374,7 +374,7 @@ namespace Noxico
 				{
 					Character.RemoveToken("sleeping");
 					Character.RemoveToken("helpless");
-					NoxicoGame.AddMessage("You get back up.");
+					NoxicoGame.AddMessage(i18n.GetString("message_yougetup"));
 					if (Character.Health > Character.MaximumHealth)
 						Character.Health = Character.MaximumHealth;
 				}
@@ -388,7 +388,7 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.Health += 2;
-					NoxicoGame.AddMessage("You get back up.");
+					NoxicoGame.AddMessage(i18n.GetString("message_yougetup"));
 					Character.RemoveToken("helpless");
 					helpless = false;
 				}
@@ -405,9 +405,17 @@ namespace Noxico
 			//Pause menu moved up so you can pause while <5000.
 
 			//RIGHT
-			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder) && this.ParentBoard.AllowTravel)
+			if ((NoxicoGame.IsKeyDown(KeyBinding.Travel) || Vista.Triggers == XInputButtons.RightShoulder))
 			{
 				NoxicoGame.ClearKeys();
+				if (!this.ParentBoard.AllowTravel)
+				{
+					if (this.ParentBoard.BoardType == BoardType.Dungeon)
+						NoxicoGame.AddMessage(i18n.GetString("travel_notfromdungeon"));
+					else
+						NoxicoGame.AddMessage(i18n.GetString("travel_notfromwilds"));
+					return;
+				}
 				Travel.Open();
 				return;
 			}
@@ -452,14 +460,14 @@ namespace Noxico
 				if (Character.HasToken("flying"))
 				{
 					//Land
-					NoxicoGame.AddMessage("You land.");
+					NoxicoGame.AddMessage(i18n.GetString("youland"));
 					Character.RemoveToken("flying");
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
 					if (tile.Water)
-						Hurt(9999, "dove into the water and drowned", null, false);
+						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
 					else if (tile.Cliff)
-						Hurt(9999, "dove into the depths", null, false, false);
+						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);
 					else if (tile.Fence)
 					{
 						//I guess I'm still a little... on the fence.
@@ -479,7 +487,7 @@ namespace Noxico
 					{
 						if (Character.GetToken("wings").HasToken("small"))
 						{
-							NoxicoGame.AddMessage("Your wings are too small.");
+							NoxicoGame.AddMessage(i18n.GetString("wingsaretoosmall"));
 							return;
 						}
 						var tile = ParentBoard.Tilemap[XPosition, YPosition];
@@ -488,19 +496,19 @@ namespace Noxico
 							if (Character.GetStat(Stat.Cunning) < 10 ||
 								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
 							{
-								Hurt(2, "hit the ceiling when trying to fly", null, false);
-								NoxicoGame.AddMessage("You hit your head on the ceiling.");
+								Hurt(2, i18n.GetString("death_crackedagainstceiling"), null, false);
+								NoxicoGame.AddMessage(i18n.GetString("hittheceiling"));
 							}
 							else
-								NoxicoGame.AddMessage("You can't fly here - there's a ceiling in the way.");
+								NoxicoGame.AddMessage(i18n.GetString("cantflyinside"));
 							return;
 						}
 						//Take off
 						Character.AddToken("flying").Value = 100;
-						NoxicoGame.AddMessage("You take off.");
+						NoxicoGame.AddMessage(i18n.GetString("youfly"));
 						return;
 					}
-					NoxicoGame.AddMessage("You have no wings.");
+					NoxicoGame.AddMessage(i18n.GetString("flyneedswings"));
 				}
 				return;
 			}
@@ -527,7 +535,7 @@ namespace Noxico
 				{
 					drop.Take(this.Character);
 					NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
-					NoxicoGame.AddMessage("You pick up " + drop.Item.ToString(drop.Token, true) + ".");
+					NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
 					NoxicoGame.Sound.PlaySound("Get Item");
 					ParentBoard.Redraw();
 					return;
@@ -549,7 +557,7 @@ namespace Noxico
 							Character.AddToken("helpless");
 							Character.AddToken("sleeping").Value = (int)MessageBox.Answer * 12;
 						}
-					}, true, true, "Bed");
+					}, true, true, i18n.GetString("Bed"));
 				}
 				return;
 			}
@@ -635,7 +643,7 @@ namespace Noxico
 				f.Value--;
 				if (!Character.HasToken("wings") || Character.GetToken("wings").HasToken("small"))
 				{
-					NoxicoGame.AddMessage("You lose your ability to fly!");
+					NoxicoGame.AddMessage(i18n.GetString("losewings"));
 					f.Value = -10;
 				}
 				if (f.Value <= 0)
@@ -648,7 +656,7 @@ namespace Noxico
 			}
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
-				Hurt(10, "burned to death", null, false, false);
+				Hurt(10, i18n.GetString("death_burned"), null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 		}
 
@@ -656,7 +664,7 @@ namespace Noxico
 		{
 			if (AutoTravelling)
 			{
-				NoxicoGame.AddMessage("Autotravel interrupted.");
+				NoxicoGame.AddMessage(i18n.Format("autotravelstop"));
 				AutoTravelling = false;
 			}
 			var dead = base.Hurt(damage, obituary, aggressor, finishable);
@@ -674,12 +682,12 @@ namespace Noxico
 				}
 				Character.AddToken("gameover");
 
-				NoxicoGame.AddMessage("GAME OVER", Color.Red);
+				NoxicoGame.AddMessage(i18n.GetString("gameover_title"), Color.Red);
 				var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 				File.Delete(playerFile);
 				NoxicoGame.Sound.PlayMusic("set://Death");
 				MessageBox.Ask(
-					"You " + obituary + ".\n\nWould you like an infodump on the way out?",
+					i18n.Format("youdied", obituary),
 					() =>
 					{
 						Character.CreateInfoDump();
@@ -807,14 +815,14 @@ namespace Noxico
 			lastSatiationChange.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
 			var newSatiation = Character.GetToken("satiation").Value;
 			if (lastSatiation >= 50 && newSatiation < 50)
-				NoxicoGame.AddMessage("You have become very hungry.");
+				NoxicoGame.AddMessage(i18n.GetString("yougohungry"));
 			else if (lastSatiation > 0 && newSatiation == 0)
-				NoxicoGame.AddMessage("You are starving.", Color.Red);
+				NoxicoGame.AddMessage(i18n.GetString("youarestarving"), Color.Red);
 			else if (lastSatiation > newSatiation && newSatiation < 0)
 			{
 				Character.GetToken("satiation").Value = -1;
 				//The hungry body turns against the stubborn mind...
-				Hurt(2, "starved to death", null, false, true);
+				Hurt(2, i18n.GetString("death_starvation"), null, false, true);
 			}
 		}
 	}
