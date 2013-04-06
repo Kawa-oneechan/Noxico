@@ -216,6 +216,9 @@ Number of known items       {2}
 		<word id="losewings">&red;You lose your ability to fly!</word>
 		<word id="yougohungry">You have become very hungry.</word>
 		<word id="youarestarving">&red;You are starving.</word>
+		<word id="yourhandsarefull">Your hands are already full.</word>
+		<word id="yourmouthisfull">Your mouth is already full.</word>
+		<word id="yourhornisfull">You have no more places to put it.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>

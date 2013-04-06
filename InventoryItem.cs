@@ -166,7 +166,7 @@ namespace Noxico
 			var max = slot == "ring" ? 8 : 2;
 			if (character.HasToken("monoceros"))
 				max = slot == "ring" ? 10 : 3;
-			if (character.HasToken("noarms"))
+			if (character.HasToken("quadruped"))
 			{
 				if (slot == "hand")
 					max = character.HasToken("monoceros") ? 2 : 1;
@@ -192,7 +192,24 @@ namespace Noxico
 					worn++;
 			}
 			if (worn >= max)
-				throw new ItemException("Your hands are already full.");
+			{
+				var error = "yourhandsarefull";
+				if (max == 1 && slot == "hand")
+					error = "yourmouthisfull";
+				else if (max == 2 && slot == "ring")
+					error = "yourhornisfull";
+				throw new ItemException(i18n.GetString(error));
+			}
+		}
+
+		public void CheckPants(Character character, Token item)
+		{
+			if (!(character.HasToken("taur") || (character.HasToken("quadruped"))))
+				return;
+			if ((item.HasToken("underpants") && item.HasToken("undershirt")) ||
+				(item.HasToken("pants") && item.HasToken("shirt")))
+				return; //allow bodysuits
+			throw new ItemException("Your body is not made for this sort of clothing.");
 		}
 
 		public bool CanSeeThrough()
@@ -237,6 +254,8 @@ namespace Noxico
 				CheckHands(character, "hand");
 			else if (equip.HasToken("ring"))
 				CheckHands(character, "ring");
+			if (equip.HasToken("pants") || equip.HasToken("underpants"))
+				CheckPants(character, equip);
 
 			foreach (var t in equip.Tokens)
 			{
