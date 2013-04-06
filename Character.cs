@@ -491,13 +491,33 @@ namespace Noxico
 			filters["name"] = this.Name.ToString(true);
 			filters["id"] = this.Name.ToID();
 			var inventory = this.GetToken("items");
+			var clothing = new List<Token>();
+			clothing.AddRange(WorldGen.GetRandomLoot("npc", "underwear", filters));
+			clothing.AddRange(WorldGen.GetRandomLoot("npc", "clothing", filters));
+			clothing.AddRange(WorldGen.GetRandomLoot("npc", "accessories", filters));
+			var check = new Func<Token, bool>(x =>
+			{
+				var ki = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == x.Name);
+				return ki != null;
+			});
+			if (HasToken("taur") || HasToken("quadruped"))
+				check = new Func<Token, bool>(x =>
+				{
+					var ki = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == x.Name);
+					if (ki == null)
+						return false;
+					if (ki.Path("equipable/underpants") != null)
+						return ki.Path("equipable/undershirt") != null;
+					if (ki.Path("equipable/pants") != null)
+						return ki.Path("equipable/shirt") != null;
+					return true;
+				});
+			foreach (var item in clothing)
+			{
+				if (check(item))
+					inventory.AddToken(item).AddToken("equipped");
+			}
 			var armedOne = false;
-			foreach (var item in WorldGen.GetRandomLoot("npc", "underwear", filters))
-				inventory.AddToken(item).AddToken("equipped");
-			foreach (var item in WorldGen.GetRandomLoot("npc", "clothing", filters))
-				inventory.AddToken(item).AddToken("equipped");
-			foreach (var item in WorldGen.GetRandomLoot("npc", "accessories", filters))
-				inventory.AddToken(item).AddToken("equipped");
 			foreach (var item in WorldGen.GetRandomLoot("npc", "arms", filters))
 			{
 				var arm = inventory.AddToken(item);
