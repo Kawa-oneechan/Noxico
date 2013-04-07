@@ -150,6 +150,8 @@ namespace Noxico
 					continue;
 				if (!CanSee(other))
 					continue;
+				if (!this.Character.Likes(other.Character))
+					return;
 				if (other.Character.GetStat(Stat.Charisma) >= 10)
 				{
 					var stim = this.Character.GetToken("stimulation");

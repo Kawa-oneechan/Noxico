@@ -374,12 +374,13 @@ namespace Noxico
 				{
 					Character.RemoveToken("sleeping");
 					Character.RemoveToken("helpless");
-					NoxicoGame.AddMessage(i18n.GetString("message_yougetup"));
+					NoxicoGame.AddMessage(i18n.GetString("yougetup"));
 					if (Character.Health > Character.MaximumHealth)
 						Character.Health = Character.MaximumHealth;
 				}
 				NoxicoGame.InGameTime.AddMinutes(5);
 				EndTurn();
+				return; //07-04-13 no more sleepwalking
 			}
 
 			var helpless = Character.HasToken("helpless");
@@ -388,7 +389,7 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.Health += 2;
-					NoxicoGame.AddMessage(i18n.GetString("message_yougetup"));
+					NoxicoGame.AddMessage(i18n.GetString("yougetup"));
 					Character.RemoveToken("helpless");
 					helpless = false;
 				}

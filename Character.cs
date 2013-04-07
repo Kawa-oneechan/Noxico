@@ -207,31 +207,6 @@ namespace Noxico
 			newChar.A = "a";
 			newChar.IsProperNamed = planSource.HasAttribute("proper");
 
-			var prefabTokens = new[]
-			{
-				"items", "health", "perks", "skills",
-				"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade", "satiation",
-				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
-				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
-			};
-			var prefabTokenValues = new[]
-			{
-				0, 10, 0, 0,
-				10, 0, 10, 0,
-				10, 10, 10, 15,
-				100, 0, 0, 0, 150,
-				0, 0, 0, 0,
-				0, 0, 0, 0,
-			};
-			for (var i = 0; i < prefabTokens.Length; i++)
-				if (!newChar.HasToken(prefabTokens[i]))
-					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
-			if (!newChar.HasToken("culture"))
-				newChar.AddToken("culture", 0, Culture.DefaultCulture.ID);
-			newChar.Health = newChar.MaximumHealth;
-
 			var gender = Gender.Neuter;
 			if (newChar.HasToken("penis") && !newChar.HasToken("vagina"))
 				gender = Gender.Male;
@@ -253,9 +228,10 @@ namespace Noxico
 			else if (gender == Gender.Herm && terms.HasToken("herm"))
 				newChar.Species = terms.GetToken("herm").Text;
 
-			newChar.ApplyCostume();
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
+			newChar.EnsureDefaultTokens();
+			newChar.ApplyCostume();
 
 			newChar.Culture = Culture.DefaultCulture;
 			if (newChar.HasToken("culture"))
@@ -264,8 +240,6 @@ namespace Noxico
 				if (Culture.Cultures.ContainsKey(culture))
 					newChar.Culture = Culture.Cultures[culture];
 			}
-
-			newChar.RemoveMetaTokens();
 
 			Program.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
@@ -358,31 +332,7 @@ namespace Noxico
 
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
-
-			var prefabTokens = new[]
-			{
-				"items", "health", "perks", "skills",
-				"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade", "satiation",
-				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
-				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
-			};
-			var prefabTokenValues = new[]
-			{
-				0, 10, 0, 0,
-				10, 0, 10, 0,
-				10, 10, 10, 15,
-				100, 0, 0, 0, 150,
-				0, 0, 0, 0,
-				0, 0, 0, 0,
-			};
-
-			for (var i = 0; i < prefabTokens.Length; i++)
-				if (!newChar.HasToken(prefabTokens[i]))
-					newChar.AddToken(prefabTokens[i], prefabTokenValues[i]);
-			newChar.Health = newChar.MaximumHealth;
-
+			newChar.EnsureDefaultTokens();
 			newChar.ApplyCostume();
 
 			newChar.Culture = Culture.DefaultCulture;
@@ -420,13 +370,11 @@ namespace Noxico
 				newChar.RemoveToken(either);
 			}
 
-			newChar.RemoveMetaTokens();
-
 			//Program.WriteLine("Generated {0}.", newChar);
 			return newChar;
 		}
 
-		private void RemoveMetaTokens()
+		private void EnsureDefaultTokens()
 		{
 			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
 			foreach (var t in metaTokens)
@@ -434,7 +382,6 @@ namespace Noxico
 			if (!this.HasToken("beast"))
 				this.RemoveAll("bestiary");
 
-			//While we're there, make sure asses have looseness and such.
 			if (this.HasToken("ass"))
 			{
 				if (this.Path("ass/looseness") == null)
@@ -442,6 +389,31 @@ namespace Noxico
 				if (this.Path("ass/wetness") == null)
 					this.GetToken("ass").AddToken("wetness");
 			}
+
+			var prefabTokens = new[]
+			{
+				"items", "health", "perks", "skills", "sexpreference",
+				"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",
+				"money", "ships", "paragon", "renegade", "satiation",
+				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
+				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
+			};
+			var prefabTokenValues = new[]
+			{
+				0, 10, 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
+				10, 0, 10, 0,
+				10, 10, 10, 15,
+				100, 0, 0, 0, 150,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+			};
+
+			for (var i = 0; i < prefabTokens.Length; i++)
+				if (!HasToken(prefabTokens[i]))
+					AddToken(prefabTokens[i], prefabTokenValues[i]);
+
+			Health = MaximumHealth;
 		}
 
 		public void SaveToFile(BinaryWriter stream)
@@ -2302,14 +2274,14 @@ namespace Noxico
 			};
 			var alwaysThere = new[]
 			{
-				"items", "health", "perks", "skills",
+				"items", "health", "perks", "skills", "sexpreference",
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
 				"money", "ships", "paragon", "renegade"
 			};
 			var alwaysThereVals = new[]
 			{
-				0, 10, 0, 0,
+				0, 10, 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
 				10, 0, 10, 0,
 				10, 10, 10, 15,
 				100, 0, 0, 0,
@@ -2762,6 +2734,36 @@ namespace Noxico
 			if (score == 999)
 				return "human";
 			return ret;
+		}
+
+		public bool LikesBoys
+		{
+			get
+			{
+				if (!HasToken("sexpreference"))
+					return true;
+				var pref = GetToken("sexpreference").Value;
+				return pref == 0 || pref == 2;
+			}
+		}
+
+		public bool LikesGirls
+		{
+			get
+			{
+				if (!HasToken("sexpreference"))
+					return true;
+				var pref = GetToken("sexpreference").Value;
+				return pref == 1 || pref == 2;
+			}
+		}
+
+		public bool Likes(Character other)
+		{
+			if (!HasToken("sexpreference"))
+				return true;
+			var pref = GetToken("sexpreference").Value;
+			return pref == ((int)other.Gender - 1)  || pref == 2;
 		}
 	}
 
