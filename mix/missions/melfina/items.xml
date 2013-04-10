@@ -98,7 +98,7 @@ weapon
 	damage: 250
 	skill: polearm
 	attacktype: pierce
-description: "Pronounced 'PSI-dun's ahn-TAHNT'."
+description: "Pronounced 'psa&#x026A;&#x02C8;do&#x02D0;ns &#x0251;n&#x02C8;t&#x0251;nt'."
 ascii
 	char: U+03A8
 	fore: goldenrod
