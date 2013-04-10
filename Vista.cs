@@ -5,7 +5,8 @@ namespace Noxico
 {
 	public static class Vista
 	{
-		private static bool isVista = (Environment.OSVersion.Platform == PlatformID.Win32NT || Environment.OSVersion.Version.Major > 6);
+		//That || should be an &&. I'm stupid and probably forgot to invert the logic from "is this NOT Vista".
+		private static bool isVista = (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major > 6);
 
 		public static readonly Guid SavedGames = new Guid("4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4");
 		//Add more GUIDs here whenever interesting.
