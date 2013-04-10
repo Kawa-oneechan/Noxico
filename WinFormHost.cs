@@ -235,9 +235,12 @@ namespace Noxico
 				}
 #else
 				FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+				var speed = IniFile.GetValue("misc", "speed", 15);
+				if (speed <= 0)
+					speed = 15;
 				timer = new Timer()
 				{
-					Interval = 10,
+					Interval = speed,
 					Enabled = true,
 				};
 				timer.Tick += new EventHandler(timer_Tick);
@@ -569,23 +572,49 @@ namespace Noxico
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				if (y.Button == MouseButtons.Left)
-					Noxico.Player.AutoTravelTo(tx, ty);
-				else if (y.Button == MouseButtons.Right)
+				if (tx < 80 && ty < 25)
 				{
-					NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
-					NoxicoGame.Cursor.XPosition = tx;
-					NoxicoGame.Cursor.YPosition = ty;
-					NoxicoGame.Cursor.Point();
-					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-					NoxicoGame.Cursor.Update();
+					if (y.Button == MouseButtons.Left)
+						Noxico.Player.AutoTravelTo(tx, ty);
+					else if (y.Button == MouseButtons.Right)
+					{
+						NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
+						NoxicoGame.Cursor.XPosition = tx;
+						NoxicoGame.Cursor.YPosition = ty;
+						NoxicoGame.Cursor.Point();
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
+						NoxicoGame.Cursor.Update();
+					}
+					else if (y.Button == System.Windows.Forms.MouseButtons.Middle)
+					{
+						if (ty < 8)
+						{
+							Noxico.Player.AutoTravelTo(tx, 0);
+							Noxico.Player.AutoTravelLeave = Direction.North;
+						}
+						else if (ty > 20)
+						{
+							Noxico.Player.AutoTravelTo(tx, 24);
+							Noxico.Player.AutoTravelLeave = Direction.South;
+						}
+						else if (tx < 4)
+						{
+							Noxico.Player.AutoTravelTo(0, ty);
+							Noxico.Player.AutoTravelLeave = Direction.West;
+						}
+						else if (tx > 72)
+						{
+							Noxico.Player.AutoTravelTo(79, ty);
+							Noxico.Player.AutoTravelLeave = Direction.East;
+						}
+					}
 				}
 			}
 			else if (NoxicoGame.Mode == UserMode.Subscreen)
 			{
 				if (y.Button == MouseButtons.Left)
 				{
-					if (NoxicoGame.Subscreen == MessageBox.Handler)
+					if (NoxicoGame.Subscreen == MessageBox.Handler || NoxicoGame.Subscreen == ActionList.Handler)
 					{
 						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
 						return;

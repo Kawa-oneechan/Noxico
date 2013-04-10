@@ -13,6 +13,7 @@ namespace Noxico
     {
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
+		public Direction AutoTravelLeave { get; set; }
 		public TimeSpan PlayingTime { get; set; }
 		public int CurrentRealm { get; private set; }
 
@@ -617,7 +618,11 @@ namespace Noxico
 				if (AutoTravelMap.RollDown(y, x, ref dir))
 					Move(dir);
 				else
+				{
 					AutoTravelling = false;
+					if ((int)AutoTravelLeave > -1)
+						this.Move(AutoTravelLeave);
+				}
 			}
         }
 
@@ -627,6 +632,7 @@ namespace Noxico
 			AutoTravelMap.UpdateWalls();
 			AutoTravelMap.Update();
 			AutoTravelling = true;
+			AutoTravelLeave = (Direction)(-1);
 		}
 
 		public void EndTurn()
