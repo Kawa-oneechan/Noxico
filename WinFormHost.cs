@@ -211,8 +211,8 @@ namespace Noxico
 
 				Vista.GamepadEnabled = IniFile.GetValue("misc", "xinput", true);
 
-				Program.WriteLine("MONO CHECK: {0}", Environment.OSVersion.Platform);
-				Program.WriteLine(Environment.OSVersion);
+				Program.WriteLine("Environment: {0} {1}", Environment.OSVersion.Platform, Environment.OSVersion);
+				Program.WriteLine("Application: {0}", Application.ProductVersion);
 				if (Environment.OSVersion.Platform == PlatformID.Unix)
 				{
 					Program.WriteLine("*** You are running on a *nix system. ***");
