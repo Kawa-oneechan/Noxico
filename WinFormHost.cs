@@ -58,14 +58,28 @@ namespace Noxico
     {
 		public NoxicoGame Noxico { get; set; }
 
+		[Flags]
+		private enum CellFlags : byte
+		{
+			Clear = 0,
+			Changed = 1,
+			Bold = 2,
+			Inverted = 4,
+		}
 		private struct Cell
         {
             public char Character;
 			public Color Foreground;
 			public Color Background;
+			public CellFlags Flags;
+#if DEBUG
+			public override string ToString()
+			{
+				return string.Format("U+{0:X4} '{1}', {2}", (int)Character, Character, Flags);
+			}
+#endif
         }
         private Cell[,] image = new Cell[100, 30];
-        private Cell[,] previousImage = new Cell[100, 30];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
 		private bool starting = true, fatal = false;
@@ -325,8 +339,7 @@ namespace Noxico
             image[col, row].Foreground = foregroundColor;
 			if (backgroundColor != Color.Transparent)
 	            image[col, row].Background = backgroundColor;
-			if (forceRedraw)
-				previousImage[col, row].Character = (char)(character + 4);
+			image[col, row].Flags |= CellFlags.Changed;
         }
 
 		public void Clear(char character, Color foregroundColor, Color backgroundColor)
@@ -338,6 +351,7 @@ namespace Noxico
 					image[col, row].Character = character;
 					image[col, row].Foreground = foregroundColor;
 					image[col, row].Background = backgroundColor;
+					image[col, row].Flags = CellFlags.Changed;
 				}
 			}
 		}
@@ -439,14 +453,10 @@ namespace Noxico
 				{
 					for (int col = 0; col < 100; col++)
 					{
-						if (image[col, row].Character != previousImage[col, row].Character ||
-							image[col, row].Foreground != previousImage[col, row].Foreground ||
-							image[col, row].Background != previousImage[col, row].Background)
+						if ((image[col, row].Flags & CellFlags.Changed) == CellFlags.Changed)
 						{
 							DrawCell(scan0, lockData.Stride, row, col, image[col, row]);
-							previousImage[col, row].Character = image[col, row].Character;
-							previousImage[col, row].Foreground = image[col, row].Foreground;
-							previousImage[col, row].Background = image[col, row].Background;
+							image[col, row].Flags &= ~CellFlags.Changed;
 						}
 					}
 				}
@@ -549,7 +559,7 @@ namespace Noxico
 				NoxicoGame.KeyMap[(int)Keys.R] = false;
 				for (int row = 0; row < 30; row++)
 					for (int col = 0; col < 100; col++)
-						previousImage[col, row].Character = (char)0x500;
+						image[col, row].Flags |= CellFlags.Changed;
 			}
 		
 			if (e.KeyCode == Keys.A && e.Control && NoxicoGame.Mode == UserMode.Walkabout)
