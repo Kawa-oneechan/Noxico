@@ -365,6 +365,7 @@ namespace Noxico
 			if (!text.IsNormalized())
 				text = text.Normalize();
 
+			var bold = false;
 			var rx = col;
 			for (var i = 0; i < text.Length; i++)
 			{
@@ -399,9 +400,16 @@ namespace Noxico
 							var chr = int.Parse(match.Groups["chr"].Value, System.Globalization.NumberStyles.HexNumber);
 							c = (char)chr;
 						}
+						else if (tag.StartsWith("b>"))
+						{
+							bold = !bold;
+							continue;
+						}
 					}
 				}
 				SetCell(row, col, c, foregroundColor, backgroundColor, true);
+				if (bold)
+					image[col, row].Flags |= CellFlags.Bold;
 				col++;
 				if (col >= 100)
 				{
@@ -421,6 +429,14 @@ namespace Noxico
 			var f = cell.Foreground;
             var c = cell.Character;
 
+			if ((cell.Flags & CellFlags.Inverted) == CellFlags.Inverted)
+			{
+				b = Color.FromArgb(255 - b.R, 255 - b.G, 255 - b.B);
+				f = Color.FromArgb(255 - f.R, 255 - f.G, 255 - f.B);
+			}
+			var bold = (cell.Flags & CellFlags.Bold) == CellFlags.Bold;
+			var lastOn = false;
+
 			CachePNGFont(c);
 			var block = c >> 8;
 			var c2 = c & 0xFF;
@@ -437,6 +453,13 @@ namespace Noxico
 					scan0[target + 0] = color.B;
 					scan0[target + 1] = color.G;
 					scan0[target + 2] = color.R;
+					if (bold && d == 0 && lastOn)
+					{
+						scan0[target + 0] = f.B;
+						scan0[target + 1] = f.G;
+						scan0[target + 2] = f.R;
+					}
+					lastOn = (d == 1);
 				}
 			}
         }

@@ -77,6 +77,8 @@ namespace Noxico
 					i = input.IndexOf('>', i + 1);
 				else if (i < input.Length - 8 && input.Substring(i, 8) == "<nowrap>") //skip nowrap tag
 					i += 8;
+				else if (i < input.Length - 3 && input.Substring(i, 3) == "<b>") //skip bold tag
+					i += 3;
 				else if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000)) //report double the length for Japanese
 					ret += 2;
 				else if (c >= 0xE000 && c < 0xF900) //skip private use

@@ -50,6 +50,7 @@
 	<!ENTITY orange  "&lt;cOrange&gt;">
 	<!ENTITY invert  "&lt;cBlack,Silver&gt;">
 	<!ENTITY revert  "&lt;c&gt;">
+	<!ENTITY bold    "&lt;b&gt;">
 ]>
 <words>
 	<!-- i18n stuff goes here. mostly key/term pairs with String.Format placeholders, some are comma-separated lists -->
