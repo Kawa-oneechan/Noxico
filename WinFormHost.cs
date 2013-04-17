@@ -448,7 +448,7 @@ namespace Noxico
 				for (var x = 0; x < CellWidth; x++)
 				{
 					var d = fontBlock.Data[c2, (y * CellWidth) + x];
-					var color = (d == 0) ? b : f;
+					var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
 					scan0[target + 0] = color.B;
 					scan0[target + 1] = color.G;
@@ -459,7 +459,7 @@ namespace Noxico
 						scan0[target + 1] = f.G;
 						scan0[target + 2] = f.R;
 					}
-					lastOn = (d == 1);
+					lastOn = (d == 255);
 				}
 			}
         }
@@ -698,7 +698,7 @@ namespace Noxico
 				{
 					for (var x = 0; x < cWidth; x++)
 					{
-						Data[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R > 127 ? 1 : 0);
+						Data[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R); // > 127 ? 1 : 0);
 						i++;
 					}
 				}
