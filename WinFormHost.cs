@@ -508,6 +508,7 @@ namespace Noxico
 					image[col, row].Character = image[col, row + 1].Character;
 					image[col, row].Foreground = image[col, row + 1].Foreground;
 					image[col, row].Background = image[col, row + 1].Background;
+					image[col, row].Flags = image[col, row + 1].Flags | CellFlags.Changed;
 				}
 			}
 		}
@@ -521,6 +522,7 @@ namespace Noxico
 					image[col, row].Character = image[col, row - 1].Character;
 					image[col, row].Foreground = image[col, row - 1].Foreground;
 					image[col, row].Background = image[col, row - 1].Background;
+					image[col, row].Flags = image[col, row - 1].Flags | CellFlags.Changed;
 				}
 			}
 		}
