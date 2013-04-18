@@ -322,6 +322,20 @@ namespace Noxico
 					Program.WriteLine("Caching font block U+{0:X2}--...", block);
 					pngFonts.Add(block, new FontBlock(Mix.GetBitmap(file)));
 				}
+				else if (pngFont != "font//unifont")
+				{
+					Program.WriteLine("Warning: {0} does not exist! Trying Unifont...", file);
+					file = "font\\unifont_" + block.ToString("X2") + ".png";
+					if (Mix.FileExists(file))
+					{
+						pngFonts.Add(block, new FontBlock(Mix.GetBitmap(file)));
+					}
+					else
+					{
+						Program.WriteLine("Warning: {0} does not exist either!", file);
+						pngFonts.Add(block, new FontBlock(new Bitmap(128, 256)));
+					}
+				}
 				else
 				{
 					Program.WriteLine("Warning: {0} does not exist!", file);
