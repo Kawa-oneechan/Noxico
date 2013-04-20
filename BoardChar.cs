@@ -74,39 +74,6 @@ namespace Noxico
 				if (a.HasToken("back"))
 					BackgroundColor = Color.FromName(a.GetToken("back").Text);
 			}
-
-			if (IniFile.GetValue("misc", "customglyphs", true))
-			{
-				if (Character.Path("ascii/custom") != null)
-					AsciiChar = (char)Character.Path("ascii/custom").Value;
-				else if (!Character.HasToken("beast"))
-				{
-					var c = 0xE000;
-					if (Character.HasToken("snaketail"))
-						c += 0x0010;
-					else if (Character.HasToken("taur"))
-						c += 0x0020;
-					else if (Character.HasToken("quadruped"))
-						c += 0x0030;
-					else if (Character.HasToken("slimeblob"))
-						c += 0x0040;
-					if (Character.HasToken("horns"))
-						c += 0x0003;
-					else if (Character.HasToken("ears"))
-					{
-						var ears = Character.GetToken("ears").Text;
-						if (ears != "elfin" && ears != "human")
-							c += 0x0002;
-						else
-							c += 0x0001;
-					}
-					else
-						c += 0x0001;
-					if (Character.HasToken("wings") && !Character.GetToken("wings").HasToken("small"))
-						c += 0x0004;
-					AsciiChar = (char)c;
-				}
-			}
 		}
 
 		public override object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
