@@ -991,7 +991,7 @@ namespace Noxico
 
 		public void CreateHTMLDump(StreamWriter stream, bool linked)
 		{
-			stream.WriteLine("<table style=\"font-family: monospace;\" cellspacing=0 cellpadding=0>");
+			stream.WriteLine("<table style=\"font-family: Unifont, monospace;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 25; row++)
 			{
 				stream.WriteLine("\t<tr>");

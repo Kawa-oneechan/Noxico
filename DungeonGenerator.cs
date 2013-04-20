@@ -172,11 +172,9 @@ namespace Noxico
 
 		public virtual void ToTilemap(ref Tile[,] map)
 		{
-			var floorStart = Color.FromArgb(123, 92, 65);
-			var floorEnd = Color.FromArgb(143, 114, 80); //Color.FromArgb(168, 141, 98);
-			var caveStart = Color.FromArgb(65, 66, 87);
-			var caveEnd = Color.FromArgb(88, 89, 122);
-			var wall = Color.FromArgb(71, 50, 33);
+			var woodFloor = Color.FromArgb(86, 63, 44);
+			var caveFloor = Color.FromArgb(65, 66, 87);
+			var wall = Color.FromArgb(20, 15, 12);
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
 
 			var cornerJunctions = new List<Point>();
@@ -189,7 +187,7 @@ namespace Noxico
 					if (plots[col, row].BaseID == null)
 					{
 						//Can clutter this up!
-						Board.AddClutter(col * 10, row * 12, (col * 10) + 9, (row * 12) + 11);
+						Board.AddClutter(col * 10, row * 12, (col * 10) + 10, (row * 12) + 12 + row);
 						continue;
 					}
 
@@ -226,13 +224,13 @@ namespace Noxico
 								case '\'':
 									continue;
 								case '.':
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									cei = true;
 									bur = true;
 									chr = ' ';
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									chr = '\xA0';
 									cei = true;
 									bur = true;
@@ -244,18 +242,19 @@ namespace Noxico
 										{
 											XPosition = sX + x,
 											YPosition = sY + y,
-											ForegroundColor = floorStart,
-											BackgroundColor = bgd.Darken(),
+											ForegroundColor = woodFloor,
+											BackgroundColor = woodFloor.Darken(),
 											ID = building.BaseID + "_Door" + doorCount,
 											ParentBoard = Board,
 											Closed = true,
+											AsciiChar = '+',
 										};
 										Board.Entities.Add(door);
 									}
 									break;
 								case '+':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									wal = true;
 									cei = true;
 									bur = true;
@@ -263,7 +262,7 @@ namespace Noxico
 									break;
 								case '-':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									chr = '\x2550';
 									wal = true;
 									cei = true;
@@ -271,7 +270,7 @@ namespace Noxico
 									break;
 								case '|':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									chr = '\x2551';
 									wal = true;
 									cei = true;
@@ -279,7 +278,7 @@ namespace Noxico
 									break;
 								case '~':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									chr = '\x2500';
 									wal = true;
 									cei = true;
@@ -287,17 +286,14 @@ namespace Noxico
 									break;
 								case ';':
 									fgd = wall;
-									bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = woodFloor;
 									chr = '\x2502';
 									wal = true;
 									cei = true;
 									bur = true;
 									break;
 								case '#':
-									if (allowCaveFloor)
-										bgd = Toolkit.Lerp(caveStart, caveEnd, Random.NextDouble());
-									else
-										bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+									bgd = allowCaveFloor ? caveFloor : woodFloor;
 									bur = !allowCaveFloor;
 									chr = ' ';
 									break;
@@ -309,7 +305,7 @@ namespace Noxico
 										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
-											bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+											bgd = woodFloor;
 											chr = ' ';
 											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											if (m.Type == "bed")
@@ -376,8 +372,8 @@ namespace Noxico
 										}
 										else
 										{
-											fgd = m.Params[0] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[0] == "wall" ? wall : Color.FromName(m.Params[0]);
-											bgd = m.Params[1] == "floor" ? Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) : m.Params[1] == "wall" ? wall : Color.FromName(m.Params[1]);
+											fgd = m.Params[0] == "floor" ? woodFloor : m.Params[0] == "wall" ? wall : Color.FromName(m.Params[0]);
+											bgd = m.Params[1] == "floor" ? woodFloor : m.Params[1] == "wall" ? wall : Color.FromName(m.Params[1]);
 											chr = m.Params.Last()[0];
 											wal = m.Type != "floor";
 										}
