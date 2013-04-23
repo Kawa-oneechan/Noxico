@@ -435,7 +435,7 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Interact) || Vista.Triggers == XInputButtons.A)
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.Messages.Add("\uE080[Aim message]");
+				NoxicoGame.Messages.Add("[Aim message]");
 				NoxicoGame.Mode = UserMode.Aiming;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;

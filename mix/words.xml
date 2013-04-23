@@ -7,7 +7,7 @@
 	<!ATTLIST word id ID #REQUIRED>
 
 	<!-- Key bindings -->
-	<!ENTITY shorthand "&#xE1FE;">
+	<!ENTITY shorthand "&#xE2FE;">
 	<!ENTITY left "&#xE200;">
 	<!ENTITY right "&#xE201;">
 	<!ENTITY up "&#xE202;">
@@ -146,8 +146,7 @@ your operating system's methods are
 has the same effect.]]>
 </word>
 		<word id="pause_memstatscontent">
-			<![CDATA[
-     Number of boards       {0}
+			<![CDATA[     Number of boards       {0}
         Active boards       {1}
 Number of known items       {2}
    Number of entities       {3}
@@ -225,7 +224,7 @@ Number of known items       {2}
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
 		<word id="death_doveintodepths">dove into the depths</word>
 		<word id="death_crackedagainstceiling">hit the ceiling when trying to fly</word>
-		<word id="death_shotbyx">being shot down by {0}</word>
+		<word id="death_shotbyx">was shot down by {0}</word>
 		<word id="death_burned">burned to death</word>
 		<word id="death_starvation">starved to death</word>
 	</category>

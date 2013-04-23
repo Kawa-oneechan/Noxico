@@ -1,4 +1,34 @@
-﻿using System;
+﻿/* Some rules on Private Use characters
+ * ------------------------------------
+ * U+E200 to U+E3FF are considered controllers.
+ * They do not represent printable characters.
+ * U+E400 to U+E4FF are wide.
+ * 
+ * U+E200	Left
+ * U+E201	Right
+ * U+E202	Up
+ * U+E203	Down
+ * U+E204	Rest
+ * U+E205	Activate
+ * U+E206	Items
+ * U+E207	Interact
+ * U+E208	Fly
+ * U+E209	Travel
+ * U+E20A	Accept
+ * U+E20B	Back
+ * U+E20C	Pause
+ * U+E20D	Screenshot
+ * U+E20E	Tab Focus
+ * U+E20F	Scroll Up
+ * U+E210	Scroll Down
+ * 
+ * U+E220	Player's name
+ * 
+ * U+E2FD	Hide message from backlog
+ * U+E2FE	Shorthand flag for key substitution
+ * U+E2FF	Wide character placeholder
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,14 +52,14 @@ namespace Noxico
 
 		public static string Entitize(string input)
 		{
-			var longhand = !input.Contains('\uE1FE');
+			var longhand = !input.Contains('\uE2FE');
 			for (var i = 0; i <= 0x10; i++)
 				input = input.Replace(((char)(0xE200 + i)).ToString(), Toolkit.TranslateKey((KeyBinding)i, longhand));
 			if (NoxicoGame.HostForm.Noxico.Player != null && NoxicoGame.HostForm.Noxico.Player.Character != null)
 				input = input.Replace("\uE220", NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString());
 			else
 				input = input.Replace("\uE220", "????");
-			input = input.Replace("\uE1FE", "");
+			input = input.Replace("\uE2FE", "");
 			return input;
 		}
 
@@ -79,9 +109,9 @@ namespace Noxico
 					i += 8;
 				else if (i < input.Length - 3 && input.Substring(i, 3) == "<b>") //skip bold tag
 					i += 3;
-				else if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000)) //report double the length for Japanese
+				else if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000) || (c >= 0xE400 && c < 0xE500)) //report double the length for Japanese
 					ret += 2;
-				else if (c >= 0xE000 && c < 0xF900) //skip private use
+				else if (c >= 0xE200 && c < 0xE400) //skip private use controllers
 					i++;
 				else
 					ret++;
@@ -92,6 +122,8 @@ namespace Noxico
 		public static string PadEffective(this string input, int length)
 		{
 			var lengthNow = input.Length();
+			if (length - lengthNow < 0)
+				return input;
 			return input + new string(' ', length - lengthNow);
 		}
 

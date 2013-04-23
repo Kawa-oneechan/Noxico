@@ -425,6 +425,11 @@ namespace Noxico
 				if (bold)
 					image[col, row].Flags |= CellFlags.Bold;
 				col++;
+				if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000) || (c >= 0xE400 && c < 0xE500))
+				{
+					SetCell(row, col, '\uE2FF', Color.Black, Color.Black);
+					col++;
+				}
 				if (col >= 100)
 				{
 					col = rx;
@@ -454,14 +459,16 @@ namespace Noxico
 			CachePNGFont(c);
 			var block = c >> 8;
 			var c2 = c & 0xFF;
+			var width = (block == 0x30 || (block >= 0x4E && block < 0xA0) || block == 0xE4) ? CellWidth * 2 : CellWidth;
+
 			var fontBlock = pngFonts[block];
 			var sSX = (c2 %	16) * CellWidth;
 			var sSY = (c2 / 16) * CellHeight;
 			for (var y = 0; y < CellHeight; y++)
 			{
-				for (var x = 0; x < CellWidth; x++)
+				for (var x = 0; x < width; x++)
 				{
-					var d = fontBlock.Data[c2, (y * CellWidth) + x];
+					var d = fontBlock.Data[c2, (y * width) + x];
 					var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
 					scan0[target + 0] = color.B;
@@ -490,10 +497,14 @@ namespace Noxico
 				{
 					for (int col = 0; col < 100; col++)
 					{
-						if ((image[col, row].Flags & CellFlags.Changed) == CellFlags.Changed)
+						var here = image[col, row];
+						if (here.Character == 0xE2FF) //Don't draw our special Wide Mode character.
+							continue;
+
+						if ((here.Flags & CellFlags.Changed) == CellFlags.Changed)
 						{
-							DrawCell(scan0, lockData.Stride, row, col, image[col, row]);
-							image[col, row].Flags &= ~CellFlags.Changed;
+							DrawCell(scan0, lockData.Stride, row, col, here);
+							here.Flags &= ~CellFlags.Changed;
 						}
 					}
 				}
@@ -505,9 +516,12 @@ namespace Noxico
 				prevCursor = Cursor;
 			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
 			{
+				var cSize = CellWidth;
+				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
+					cSize *= 2;
 				using (var gfx = Graphics.FromImage(backBuffer))
 				{
-					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, CellWidth - 1, CellHeight - 1);
+					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, cSize - 1, CellHeight - 1);
 				}
 			}
             this.Refresh();
