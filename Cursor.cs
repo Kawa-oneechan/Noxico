@@ -210,7 +210,7 @@ namespace Noxico
 							Hide();
 							if (ActionList.Answer is int && (int)ActionList.Answer == -1)
 							{
-								NoxicoGame.Messages.Add("\uE080[Aim message]");
+								NoxicoGame.Messages.Add("[Aim message]");
 								NoxicoGame.Mode = UserMode.Aiming;
 								Point();
 								return;
