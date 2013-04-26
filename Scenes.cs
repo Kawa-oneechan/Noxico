@@ -26,8 +26,8 @@ namespace Noxico
 		{
 			if (xSex == null)
 			{
-				xSex = Mix.GetXMLDocument("scenesSex.xml", true);
-				xDlg = Mix.GetXMLDocument("scenesDlg.xml", true);
+				xSex = UnfoldIfs(Mix.GetXMLDocument("scenesSex.xml", true));
+				xDlg = UnfoldIfs(Mix.GetXMLDocument("scenesDlg.xml", true));
 			}
 
 			if (Dreaming)
@@ -390,6 +390,70 @@ namespace Noxico
 					break;
 			}
 			return true;
+		}
+
+		private static XmlDocument UnfoldIfs(XmlDocument original)
+		{
+			foreach (var paragraph in original.SelectNodes("//p").OfType<XmlElement>())
+			{
+				var input = paragraph.InnerXml;
+				if (!input.Contains("{if"))
+					continue;
+
+				var output = new StringBuilder();
+				var thingsToEnd = new Stack<bool>();
+				for (var i = 0; i < input.Length; i++)
+				{
+					if (input[i] == '{')
+					{
+						//Found a tag. Filter out what it is.
+						var tag = string.Empty;
+						i += 1;
+						for (var j = i; j < input.Length; j++)
+						{
+							if (input[j + 1] == '}')
+							{
+								tag = input.Substring(i, j - i + 1).Trim();
+								i = j;
+								break;
+							}
+						}
+						var replacement = string.Empty;
+						if (tag.StartsWith("if "))
+						{
+							output.AppendLine();
+							//TODO
+							output.Append("<if query=\"" + tag.Substring(3) + "\">");
+							thingsToEnd.Push(false);
+						}
+						else if (tag == "else")
+						{
+							thingsToEnd.Pop();
+							output.AppendLine();
+							output.Append("</if>");
+							output.Append("<else>");
+							thingsToEnd.Push(true);
+						}
+						else if (tag == "endif")
+						{
+							output.AppendLine();
+							var wasElse = thingsToEnd.Pop();
+							if (wasElse)
+								output.Append("</else>");
+							else
+								output.Append("</if>");
+						}
+						i++;
+					}
+					else
+					{
+						output.Append(input[i]);
+					}
+				}
+				var final = output.ToString();
+				paragraph.InnerXml = final;
+			}
+			return original;
 		}
 
 		private static string ApplyTokens(string message)
