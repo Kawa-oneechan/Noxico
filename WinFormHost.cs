@@ -471,6 +471,8 @@ namespace Noxico
 					var d = fontBlock.Data[c2, (y * width) + x];
 					var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
+					if (target >= scan0.Length)
+						continue;
 					scan0[target + 0] = color.B;
 					scan0[target + 1] = color.G;
 					scan0[target + 2] = color.R;
@@ -718,7 +720,7 @@ namespace Noxico
 		{
 			var cWidth = source.Width / 16;
 			var cHeight = source.Height / 16;
-			Data = new byte[255, cWidth * cHeight];
+			Data = new byte[256, cWidth * cHeight];
 			for (var ch = 0; ch < 255; ch++)
 			{
 				var i = 0;
