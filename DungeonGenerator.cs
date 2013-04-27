@@ -180,6 +180,8 @@ namespace Noxico
 			var cornerJunctions = new List<Point>();
 			var doorCount = 0;
 
+			var safeZones = new List<Rectangle>();
+
 			for (var row = 0; row < 2; row++)
 			{
 				for (var col = 0; col < 8; col++)
@@ -188,6 +190,7 @@ namespace Noxico
 					{
 						//Can clutter this up!
 						Board.AddClutter(col * 10, row * 12, (col * 10) + 10, (row * 12) + 12 + row);
+						safeZones.Add(new Rectangle() { Left = col * 10, Top = row * 12, Right = (col * 10) + 10, Bottom = (row * 12) + 12 + row });
 						continue;
 					}
 
@@ -476,6 +479,9 @@ namespace Noxico
 
 				map[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
+
+			if (safeZones.Count > 0)
+				Board.AddWater(safeZones);
 		}
 
 		public virtual void ToSectorMap(Dictionary<string, Rectangle> sectors)

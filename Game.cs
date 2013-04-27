@@ -207,16 +207,22 @@ namespace Noxico
 			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
 			Limbo.BoardType = BoardType.Special;
 
-			//var biome = BiomeData.ByName("Swamp");
-			//var test = Board.CreateBasicOverworldBoard(biome, "test", "test", "test");
-			//test.Clear(biome);
-			//var gen = new TownGenerator();
-			//gen.Culture = Culture.Cultures["human"];
-			//gen.Board = test;
-			//gen.Create(BiomeData.Biomes[biome]);
-			//gen.ToTilemap(ref test.Tilemap);
-			//test.DumpToHTML();
-			//Application.Exit();
+			/*
+			Random.Reseed(0);
+			var biome = BiomeData.ByName("Taiga");
+			var test = Board.CreateBasicOverworldBoard(biome, "test", "test", "test");
+			test.Clear(biome);
+			///*
+			var gen = new TownGenerator();
+			gen.Culture = Culture.Cultures["human"];
+			gen.Board = test;
+			gen.Create(BiomeData.Biomes[biome]);
+			gen.ToTilemap(ref test.Tilemap);
+			///
+			test.AddWater();
+			test.DumpToHTML();
+			Application.Exit();
+			*/
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			KnownTargets = new List<int>();

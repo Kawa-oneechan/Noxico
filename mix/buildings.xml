@@ -97,6 +97,7 @@
 				<marking char="=" type="block,wall,floor,&#x2261;" />
 			</markings>
 		</template>
+		<!--
 		<template name="water!">
 			<map>
 				'''''''''''
@@ -127,6 +128,7 @@
 				<marking char="w" type="water,blue,navy,&#x007E;" />
 			</markings>
 		</template>
+		-->
 	</set>
 	<set id="dungeon">
 		<template name="simple dungeon cell">

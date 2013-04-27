@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -329,6 +329,87 @@ namespace Noxico
 		public void AddClutter()
 		{
 			AddClutter(0, 0, 79, 24);
+		}
+
+		[ForJS(ForJSUsage.Either)]
+		public void AddWater(List<Rectangle> safeZones)
+		{
+			var biome = BiomeData.Biomes[(int)this.GetToken("biome").Value];
+			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
+			var points = new List<Point>();
+			var pointsPerZone = 4;
+			var threshold = 0.63f;
+			if (safeZones.Count == 1 && safeZones[0].Left == 0 && safeZones[0].Right == 79)
+			{
+				safeZones.Clear();
+				pointsPerZone = 8;
+				var x = Random.Next(0, 40);
+				var y = Random.Next(0, 10);
+				safeZones.Add(new Rectangle() { Left = x, Top = y, Right = x + 30, Bottom = y + 14 });
+				threshold = 0.5f;
+			}
+			foreach (var zone in safeZones)
+			{
+				for (var i = 0; i < pointsPerZone; i++)
+				{
+					var x = Random.Next(zone.Left + 4, zone.Right - 4);
+					var y = Random.Next(zone.Top + 4, zone.Bottom - 4);
+					points.Add(new Point(x, y));
+				}
+			}
+
+			var bitmap = new float[25, 80];
+			var sum = 0.0;
+			var radius = 0.4;
+			#if DEBUG
+			var temp = new System.Drawing.Bitmap(80, 25);
+			var tempg = System.Drawing.Graphics.FromImage(temp);
+			tempg.Clear(System.Drawing.Color.Black);
+			#endif
+			for (var y = 0; y < 25; y++)
+			{
+				for (var x = 0; x < 80; x++)
+				{
+					sum = 0;
+					foreach (var point in points)
+					{
+						sum += radius / Math.Sqrt((x - point.X) * (x - point.X) + (y - point.Y) * (y - point.Y));
+					}
+					if (sum > 1.0)
+						sum = 1.0;
+					if (sum < 0.0)
+						sum = 0.0;
+					bitmap[y, x] = (float)sum;
+					#if DEBUG
+					var g = (byte)(sum * 255.0);
+					temp.SetPixel(x, y, System.Drawing.Color.FromArgb(g, g, g));
+					#endif
+				}
+			}
+			#if DEBUG
+			temp.Save("meta.png", System.Drawing.Imaging.ImageFormat.Png);
+			#endif
+
+			for (var y = 0; y < 25; y++)
+			{
+				for (var x = 0; x < 80; x++)
+				{
+					if (bitmap[y, x] < threshold)
+						continue;
+					Tilemap[x, y] = new Tile()
+					{
+						Character = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)],
+						Foreground = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
+						Background = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
+						Water = true,
+					};
+				}
+			}
+		}
+		[ForJS(ForJSUsage.Either)]
+		public void AddWater()
+		{
+			AddWater(new List<Rectangle>() { new Rectangle() { Left = 0, Top = 0, Right = 79, Bottom = 24 } });
 		}
 	}
 }
