@@ -54,7 +54,7 @@ namespace Noxico
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor, this.BackgroundColor);
 			else
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor.Darken(), this.BackgroundColor.Darken());
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor.Night(), this.BackgroundColor.Night());
 		}
 
 		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)

@@ -689,7 +689,7 @@ namespace Noxico
 				if (Lightmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
 				else
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground.Darken(), t.Background.Darken(), force);
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground.Night(), t.Background.Night(), force);
 			}
 			this.DirtySpots.Clear();
 
