@@ -530,6 +530,14 @@ namespace Noxico
 		}
 
 		/// <summary>
+		/// Darkens a color to produce a nighttime palette.
+		/// </summary>
+		public static Color Night(this Color color)
+		{
+			return Color.FromArgb(color.R / 3, color.G / 4, color.B / 2);
+		}
+
+		/// <summary>
 		/// Stolen from XNA. Linearly interpolates between two colors.
 		/// </summary>
 		public static Color Lerp(int sR, int sG, int sB, int dR, int dG, int dB, double amount)

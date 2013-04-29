@@ -122,7 +122,7 @@ namespace Noxico
 				}
 			}
 			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Darken(1.5));
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Night());
 		}
 
 		public override bool CanSee(Entity other)
