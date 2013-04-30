@@ -20,6 +20,52 @@
 ]>
 <items>
 
+	<item id="henshin_belt" name="transformation belt" a="a" the="the">
+		<![CDATA[
+test
+description: "A typical transformation belt. It has a team logo on the buckle, with a button on top. The button is [color]."
+price: 20000
+ascii
+	char: U+047B
+	fore: silver
+		]]>
+		<script type="text/javascript">
+			<![CDATA[
+				var inventory = user.GetToken("items");
+				var feedback = "";
+				if (!user.HasItemEquipped("sentai_suit"))
+				{
+					feedback += "\"HENSHIN!\"\n\n";
+					var memory = thisToken.AddToken("memory");
+					var slots = [ "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" ];
+					for (var i = 0; i < slots.length; i++)
+					{
+						var x = user.GetEquippedItemBySlot(slots[i]);
+						if (x != undefined)
+						{
+							memory.AddToken(x.tempToken);
+							inventory.RemoveToken(x.tempToken);
+						}
+					}
+					var suit = inventory.AddToken("sentai_suit");
+					var color = suit.AddToken("color");
+					color.Text = thisToken.HasToken("color") ? thisToken.GetToken("color").Text : "red";
+					suit.AddToken("equipped");
+					feedback += "\"Ecchi " + titlecase(color.Text) + "!\"";
+				}
+				else
+				{
+					feedback = "You unmorph.";
+					var memory = thisToken.GetToken("memory");
+					inventory.RemoveToken("sentai_suit");
+					inventory.AddSet(memory.Tokens);
+					thisToken.RemoveToken("memory");
+				}
+				print(feedback);
+			]]>
+		</script>
+	</item>
+
 	<item id="strapon" name="strapon" a="a" the="the">
 		<![CDATA[
 test
