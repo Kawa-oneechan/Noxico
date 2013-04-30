@@ -26,7 +26,6 @@ namespace Noxico
 
 		private static void TryDrop(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
-			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			itemList.Enabled = false;
 			if (token.HasToken("equipped"))
@@ -36,23 +35,17 @@ namespace Noxico
 				}
 				catch (ItemException x)
 				{
-					MessageBox.Notice(x.Message);
+					MessageBox.Notice(x.Message.Viewpoint(boardchar));
 				}
 			if (!token.HasToken("equipped"))
 			{
+				NoxicoGame.AddMessage("Dropped " + chosen.ToString(token, true, true) + ".");
 				chosen.Drop(boardchar, token);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 				NoxicoGame.Sound.PlaySound("Put Item");
-				MessageBox.Notice("Dropped " + chosen.ToString(token, true, true) + ".");
-				/*
-				Subscreens.PreviousScreen.Clear();
-				NoxicoGame.Mode = UserMode.Walkabout;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				Subscreens.FirstDraw = true;
-				NoxicoGame.AddMessage("Dropped " + chosen.ToString(token, true, true) + ".");
-				*/
+				NoxicoGame.Subscreen = Inventory.Handler;
+				Subscreens.Redraw = true;
 			}
 		}
 
@@ -171,9 +164,9 @@ namespace Noxico
 					}
 #if DEBUG
 					if (carried.HasToken("cursed"))
-						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : "cursed!");
+						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : carried.GetToken("cursed").HasToken("hidden") ? "(cursed)" : "cursed!");
 #else
-					if (carried.HasToken("cursed") && carried.GetToken("cursed").HasToken("known"))
+					if (carried.HasToken("cursed") && !carried.GetToken("cursed").HasToken("hidden") && carried.GetToken("cursed").HasToken("known"))
 						sigils.Add("cursed");
 #endif
 					var itemString = item.ToString(carried);
