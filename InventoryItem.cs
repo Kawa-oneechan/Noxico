@@ -515,7 +515,7 @@ namespace Noxico
 					if (this.HasToken("description"))
 					{
 						//No need to check for "worn" or "examined" here...
-						runningDesc = this.GetToken("description").Text + "\n\n";
+						runningDesc = this.GetDescription(item) + "\n\n"; //this.GetToken("description").Text + "\n\n";
 					}
 					runningDesc += "Do you want to use " + this.ToString(item, true) + "?";
 				}
@@ -593,6 +593,8 @@ namespace Noxico
 			var js = JavaScript.MainMachine;
 			JavaScript.Ascertain(js);
 			js.SetParameter("user", character);
+			js.SetParameter("thisItem", this);
+			js.SetParameter("thisToken", item);
 			js.SetFunction("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
 			js.SetFunction("print", new Action<string>(x =>
 			{

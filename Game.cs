@@ -68,6 +68,8 @@ namespace Noxico
 
 		public static Dictionary<int, Expectation> Expectations = new Dictionary<int, Expectation>();
 
+		public static int Updates = 0;
+
 		public static bool IsKeyDown(KeyBinding binding)
 		{
 			if (KeyBindings[binding] == 0)
@@ -416,6 +418,9 @@ namespace Noxico
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
+
+				//if (!Player.Character.HasItem("henshin_belt"))
+				//	Player.Character.GetToken("items").AddToken("henshin_belt").AddToken("color", 0, Toolkit.PickOne("red", "blue", "yellow", "pink", "black", "gold", "silver", "white"));
 			}
 		}
 
@@ -575,6 +580,7 @@ namespace Noxico
 				ScrollWheeled = false;
 			}
 			Vista.UpdateGamepad();
+			Updates++;
 		}
 
 		public static void ClearKeys()

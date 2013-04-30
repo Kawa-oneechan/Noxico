@@ -27,10 +27,12 @@ namespace Noxico
 			jint.SetParameter("Gender", typeof(Gender));
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
 			jint.SetParameter("Stat", typeof(Stat));
+			jint.SetFunction("titlecase", new Func<string, string>(x => x.Titlecase()));
 		}
 
 		public static void Assert()
 		{
+			/*
 			var stack = new System.Diagnostics.StackTrace().GetFrames();
 			var isFromJint = false;
 			var shouldBeFromJint = false;
@@ -54,6 +56,7 @@ namespace Noxico
 				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from JavaScript, but is not allowed.");
 			else if (!isFromJint && shouldBeFromJint)
 				throw new System.Security.SecurityException("Tried to call " + caller.Name + " from hard code, but is only meant for JavaScript use.");
+			*/
 		}
 	}
 

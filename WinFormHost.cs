@@ -106,6 +106,9 @@ namespace Noxico
 
 		private Timer timer;
 
+		public int Frames = 0;
+		private Timer fpsTimer;
+
 		public MainForm()
 		{
 #if !DEBUG
@@ -240,7 +243,17 @@ namespace Noxico
 				Running = true;
 
 				Cursor = new Point(-1, -1);
-
+				fpsTimer = new Timer()
+				{
+					Interval = 1000,
+					Enabled = true,
+				};
+				fpsTimer.Tick += (s, e) =>
+				{
+					this.Text = "Noxico - " + NoxicoGame.Updates + " updates, " + Frames + " frames";
+					NoxicoGame.Updates = 0;
+					Frames = 0;
+				};
 #if GAMELOOP
 				while (Running)
 				{
@@ -526,6 +539,7 @@ namespace Noxico
 					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, cSize - 1, CellHeight - 1);
 				}
 			}
+			Frames++;
             this.Refresh();
         }
 
