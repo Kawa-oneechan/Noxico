@@ -295,7 +295,7 @@ namespace Noxico
 			mark item as unequipped.
 			*/
 			if (item != null && item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
-				throw new ItemException("[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.");
+				throw new ItemException(!string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.");
 
 			var equip = this.GetToken("equipable");
 			var tempRemove = new Stack<Token>();
@@ -456,7 +456,7 @@ namespace Noxico
 					//Wearing/wielding it
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
-						runningDesc += "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
+						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
 						showDesc(runningDesc.Viewpoint(boardchar));
 						return;
 					}
