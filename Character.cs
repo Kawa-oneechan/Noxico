@@ -159,15 +159,15 @@ namespace Noxico
 			return lower ? "its" : "Its";
 		}
 
-		public string HimHerIt()
+		public string HimHerIt(bool lower = false)
 		{
 			if (HasToken("penis") && HasToken("vagina"))
-				return "hir";
+				return lower ? "hir" : "Hir";
 			else if (HasToken("penis"))
-				return "him";
+				return lower ? "him" : "Him";
 			else if (HasToken("vagina"))
-				return "her";
-			return "it";
+				return lower ? "her" : "Her"; ;
+			return lower ? "it" : "It";
 		}
 
 		public float MaximumHealth
@@ -1628,6 +1628,18 @@ namespace Noxico
 				shipToken.Tokens[0].Name = ship;
 			if (mutual)
 				target.SetRelation(this, ship, false);
+		}
+
+		public float ChangeLiking(Character target, float delta)
+		{
+			var shipToken = this.Path("ships/" + target.ID);
+			if (shipToken == null)
+			{
+				//Error?
+				return 0;
+			}
+			shipToken.Value += delta;
+			return shipToken.Value;
 		}
 
 		public void RecalculateStatBonuses()

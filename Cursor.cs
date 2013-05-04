@@ -168,13 +168,13 @@ namespace Noxico
 					{
 						var boardChar = PointingAt as BoardChar;
 						description = boardChar.Character.GetNameOrTitle(true);
-						options["look"] = i18n.Format("action_lookathim", boardChar.Character.HimHerIt());
+						options["look"] = i18n.Format("action_lookathim", boardChar.Character.HimHerIt(true));
 
 						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast") && !boardChar.Character.HasToken("sleeping"))
 						{
-							options["talk"] = i18n.Format("action_talktohim", boardChar.Character.HimHerIt());
+							options["talk"] = i18n.Format("action_talktohim", boardChar.Character.HimHerIt(true));
 							if (boardChar.Character.Path("role/vendor") != null)
-								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt());
+								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt(true));
 						}
 
 						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
@@ -182,15 +182,15 @@ namespace Noxico
 							if (!boardChar.Character.HasToken("beast"))
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
-									options["rape"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt());
+									options["rape"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
 								else
-									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt());
+									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
 							}
 						}
 
 						if (canSee && player.Character.CanShoot() != null && player.ParentBoard.HasToken("combat"))
 						{
-							options["shoot"] = i18n.Format("action_shoothim", boardChar.Character.HimHerIt());
+							options["shoot"] = i18n.Format("action_shoothim", boardChar.Character.HimHerIt(true));
 						}
 					}
 					else if (PointingAt is DroppedItem)
