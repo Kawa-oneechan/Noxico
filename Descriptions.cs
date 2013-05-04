@@ -552,5 +552,20 @@ namespace Noxico
 		#endregion
 
 		#endregion
+
+		/// <summary>
+		/// Provides a description of a character's hand based on their body type.
+		/// </summary>
+		/// <param name="character">The character to be evaluated.</param>
+		/// <param name="plural">If set to true, the returned description will be for both hands.</param>
+		/// <returns>A string containing a description of the hand type.</returns>
+		public static string Hand(Character character, bool plural = false)
+		{
+			if (character.HasToken("quadruped"))
+				return Foot(character.GetToken("legs"), plural);
+			//Clawed hands and such can go here.
+			return plural ? "hands" : "hand";
+		}
+
 	}
 }
