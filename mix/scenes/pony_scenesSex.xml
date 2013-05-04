@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+
+	<!ENTITY nofilter "&lt;nofilter&gt;">
+]>
+<scenes>
+	<scene id="PonyConStart" name="(starting node)">
+		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="has" name="willing" />
+		<p>
+			You reach your [t:hand] up to the side of the [b:title]'s face, staring fervently at [b:his] eyes.
+		</p>
+		<p>
+			[b:He] stares back into yours, reciprocating the lustful gaze.
+		</p>
+		<action name="Kiss" />
+		<action name="Pull away" listas="On second thought..." />
+	</scene>
+
+	<scene id="PonyConStartNonwilling" name="(starting node)">
+		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="hasnot" name="willing" />
+		<p>
+			You reach your [t:hand] up to the side of the [b:title]'s face, staring fervently at [b:his] eyes.
+		</p>
+		<p>
+			The [b:title] pushes you away with [b:his] hoof.
+		</p>
+		<p>
+			"Down, [t:g:boy:girl]. I'm not up for that," [b:name] growls.
+		</p>
+	</scene>
+
+	<scene id="PonyConStartKiss" name="Kiss" list="Kiss [b:him]">
+		<filter target="bottom" type="bodylev" name="littlepony" />
+		<p>
+			You lean closer, heart racing as you push your lips against [b:his].  The [b:t:skin/color] colored [b:title] melts, pressing [b:his] lips back against yours.
+		</p>
+		<!-- Could be longer for more buildup. -->
+		<action name="Give blowjob" />
+		<action name="Get blowjob" />
+		<action name="Lick pussy" />
+		<action name="Get licked" />
+		<action name="Give handjob" />
+		<action name="Get handjob" />
+	</scene>
+
+	<scene id="PonyConGiveBlowjob" name="Give blowjob" list="Give [b:him] a blowjob">
+		<filter target="bottom" type="bodylev" name="littlepony" />
+		<!-- <filter target="bottom" type="canfitdickinmouth" /> -->
+		<p>
+			Pulling your lips from [b:name]'s, you begin to pepper kisses down [b:his] neck, breathing in [b:his] [b:g:musk:perfume] through your nose. [b:He] squirms as you reach [b:his] abdomen and push [b:him] backwards onto [b:his] hindquarters. [b:His] semi-erect [cockrand] pulses and bounces in anticipation. You straighten [b:him] out with your [t:hand], making [b:him] release a quiet whinny. With a devious smile, you drag your tongue from [b:his] <if target="bottom" type="has" name="vagina">[pussyrand]</if><else><if target="bottom" type="has" name="balls">balls</if><else>taint</else></else> to the top of [b:his] [cockrand].
+		</p>
+		<p>
+			As [b:he] lets out an approving groan, you open your mouth, burying the [b:cocktype] [cockrand] as far as it can go without you choking on it. [b:name] lets out a sharp gasp, [b:his] [cockrand] starting to expand in your mouth. Without even the slightest forethought, you begin pumping [b:his] [cockrand] with your [t:hands], sucking on the head as you milk [b:his] pre-cum into your mouth.
+		</p>
+		<p>
+			You can hear [b:him] breathing, and the lust on [b:his] breath is enough to drive you wild.
+		</p>
+		<action name="Give blowjob cum inside" />
+		<action name="Give blowjob cum outside"/>
+		<action name="Ride vaginal" />
+	</scene>
+
+	<scene id="PonyConGiveBlowJobInside" name="Give blowjob cum inside" list="Drink [b:his] load">
+		<filter target="bottom" type="bodylev" name="littlepony" />
+		<p>
+			Deciding that the taste of your [b:title] lover is of the most importance, you begin to bob your head fervidly on the [b:cocktype] [cockrand]. [b:name] bites [b:his] lower lip, [b:his] hips bucking against your face as you drive [b:him] into your throat. It barely takes a moment for your [b:t:skin/color] lover to buckle forwards, wrapping [b:his] upper body around your head with a heated moan.
+		</p>
+		<p>
+			[b:his] front hooves lift up, resting on the back of your head and pushing your mouth further down [b:his] [cockrand]. With a groan, and a few more thrusts from [b:his] hips, the [b:title] climaxes. An onslaught of <if target="bottom" type="has" name="vagina">girl-cum</if><else>cum</else> pours into your mouth as [b:his] cock spasms. Each thick spurt further fills your mouth, and you have a difficult time swallowing every bit of it down.
+		</p>
+		<p>
+			When the pony finally releases [b:his] hooves from your head, you lift yourself up and drag your tongue across your lips.
+		</p>
+		<action name="Ride vaginal" />
+		<action name="Thanks" />
+	</scene>
+
+	<scene id="PonyConThanks" name="Thanks" list="Thank [b:him]">
+		<!-- <filter target="bottom" type="bodylev" name="littlepony" /> -->
+		<!-- Disabled the pony filter and removed the player's lines. -->
+		<p>
+			You whisper your thanks to the [b:title] and tell [b:him] you had fun. [b:name] looks at you with a satisfied grin.
+		</p>
+		<p>
+			"Me too," [b:he] whispers in return, "we should do it again some time."
+		</p>
+		<p>
+			You give [b:him] a short nod and part ways.
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				bottom.RemoveToken("willing");
+			]]>
+		</script>
+	</scene>
+
+	<scene id="PonyConNoThanks" name="Pull away" list="Pull away">
+		<!-- <filter target="bottom" type="bodylev" name="littlepony" /> -->
+		<!-- Disabled the pony filter and removed the player's lines. -->
+		<p>
+			You pull your [hand] away, averting your eyes. You stammer a quick "&nofilter;never mind", not sure what you want.
+		</p>
+		<p>
+			[b:name] looks at you dejectedly, [b:his] head bobbing in a sullen nod.
+		</p>
+	</scene>
+
+</scenes>

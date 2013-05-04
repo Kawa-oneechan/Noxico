@@ -387,6 +387,22 @@ namespace Noxico
 					if (!canFit)
 						return false;
 					break;
+				case "canfitdickinmouth":
+					dickSizes = fPrimary.GetPenisSizes(true);
+					if (dickSizes.Length == 0)
+						return false; //no dicks to fit.
+					canFit = false;
+					foreach (var dick in dickSizes)
+					{
+						if (dick < 40)
+						{
+							canFit = true;
+							break;
+						}
+					}
+					if (!canFit)
+						return false;
+					break;
 				case "isfather":
 					var pregnancy = fSecondary.Path("pregnancy");
 					if (pregnancy == null)
@@ -527,6 +543,9 @@ namespace Noxico
                 { "hairlength", (c, s) => {return Descriptions.HairLength(c.GetToken("hair")); } },
                 { "ballsize", (c, s) => {return Descriptions.BallSize(c.GetToken("balls")); } },
 				#endregion
+
+				{ "hand", (c, s) => {return Descriptions.Hand(c); } },
+				{ "hands", (c, s) => {return Descriptions.Hand(c, true); } },
 			};
 			#endregion
 			#region Parser
