@@ -233,6 +233,7 @@
     <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
     <Content Include="mix\scenes\PillowShout\masturbation_scenesSex.xml" />
+    <Content Include="mix\scenes\pony_scenesDlg.xml" />
     <Content Include="mix\scenes\tdm_scenesSex.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />

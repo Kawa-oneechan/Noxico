@@ -320,6 +320,15 @@ namespace Noxico
 							return false;
 					}
 					break;
+				case "liking":
+					var shipPath = "ships/" + fSecondary.ID;
+					if (fPrimary.Path(shipPath) == null)
+						return false;
+					if (fValuePM == '-' && fPrimary.Path(shipPath).Value > fValueF)
+						return false;
+					if (fPrimary.Path(shipPath).Value < fValueF)
+						return false;
+					break;
 				case "gender":
 					if (fValue == "male" && fPrimary.Gender != Gender.Male)
 						return false;
@@ -481,9 +490,10 @@ namespace Noxico
 				{ "gender", (c, s) => { return c.Gender.ToString().ToLowerInvariant(); } },
 				{ "His", (c, s) => { return tIP && c == top ? "Your" : c.HisHerIts(); } },
 				{ "He", (c, s) => { return tIP && c == top ? "You" : c.HeSheIt(); } },
+				{ "Him", (c, s) => { return tIP && c == top ? "Your" : c.HimHerIt(); } },
 				{ "his", (c, s) => { return tIP && c == top ? "your" : c.HisHerIts(true); } },
 				{ "he", (c, s) => { return tIP && c == top ? "you" : c.HeSheIt(true); } },
-				{ "him", (c, s) => { return tIP && c == top ? "you" : c.HimHerIt(); } },
+				{ "him", (c, s) => { return tIP && c == top ? "you" : c.HimHerIt(true); } },
 				{ "is", (c, s) => { return tIP && c == top ? "are" : "is"; } },
 				{ "has", (c, s) => { return tIP && c == top ? "have" : "has"; } },
 				{ "does", (c, s) => { return tIP && c == top ? "do" : "does"; } },
