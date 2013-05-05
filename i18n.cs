@@ -99,6 +99,8 @@ namespace Noxico
 		/// <summary>Gets the number of effective tiles needed to draw the current String.</summary>
 		public static int Length(this string input)
 		{
+			if (input.Length == 1 && input[0] == '<')
+				return 1;
 			var ret = 0;
 			for (var i = 0; i < input.Length; i++)
 			{
