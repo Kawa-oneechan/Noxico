@@ -327,7 +327,7 @@ namespace Noxico
 					var liking = fPrimary.Path(shipPath).Value;
 					if (fValuePM == '-' && liking >= fValueF)
 						return false;
-					else if (liking < fValueF)
+					else if (fValuePM != '-' && liking < fValueF)
 						return false;
 					break;
 				case "gender":
