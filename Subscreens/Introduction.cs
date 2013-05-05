@@ -47,7 +47,7 @@ namespace Noxico
 					if (!File.Exists(verCheck))
 						continue;
 					var version = int.Parse(File.ReadAllText(verCheck));
-					if (version < 15)
+					if (version < 16)
 						continue;
 					if (File.Exists(Path.Combine(s, "global.bin")))
 						saves.Add(s);
