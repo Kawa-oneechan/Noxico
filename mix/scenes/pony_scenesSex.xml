@@ -81,7 +81,7 @@
 
 	<scene id="PonyConGiveBlowjob" name="Give blowjob" list="Give [b:him] a blowjob">
 		<filter target="bottom" type="bodylev" name="littlepony" />
-		<!-- <filter target="bottom" type="canfitdickinmouth" /> -->
+		<filter target="bottom" type="canfitdickinmouth" />
 		<p>
 			Pulling your lips from [b:name]'s, you begin to pepper kisses down [b:his] neck, breathing in [b:his] [b:g:musk:perfume] through your nose. [b:He] squirms as you reach [b:his] abdomen and push [b:him] backwards onto [b:his] hindquarters. [b:His] semi-erect [cockrand] pulses and bounces in anticipation. You straighten [b:him] out with your [t:hand], making [b:him] release a quiet whinny. With a devious smile, you drag your tongue from [b:his] <if target="bottom" type="has" name="vagina">[pussyrand]</if><else><if target="bottom" type="has" name="balls">balls</if><else>taint</else></else> to the top of [b:his] [cockrand].
 		</p>

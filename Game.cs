@@ -319,7 +319,7 @@ namespace Noxico
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "15");
+			File.WriteAllText(verCheck, "16");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -330,7 +330,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 15)
+			if (WorldVersion < 16)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();

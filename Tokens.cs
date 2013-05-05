@@ -311,21 +311,46 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			//No expectations here -- that'd be TOO damn much, unless we get to compress things.
-			stream.Write(Name ?? "Blank");
-			stream.Write((Single)Value);
-			stream.Write(Text ?? "");
-			stream.Write(Tokens.Count);
-			Tokens.ForEach(x => x.SaveToFile(stream));
+			stream.Write(Name ?? string.Empty);
+			var isInt = (Value == (int)Value);
+			var flags = 0;
+			if (Value != 0)
+				flags |= 1;
+			if (isInt)
+				flags |= 2;
+			if (!string.IsNullOrWhiteSpace(Text))
+				flags |= 4;
+			flags |= Tokens.Count << 4;
+			stream.Write7BitEncodedInt(flags);
+			if (Value != 0)
+			{
+				if (isInt)
+					stream.Write7BitEncodedInt((int)Value);
+				else
+					stream.Write((Single)Value);
+			}
+			if (!string.IsNullOrWhiteSpace(Text))
+				stream.Write(Text);
+			if (Tokens.Count > 0)
+				Tokens.ForEach(x => x.SaveToFile(stream));
 		}
 
 		public static Token LoadFromFile(BinaryReader stream)
 		{
 			var newToken = new Token();
 			newToken.Name = stream.ReadString();
-			newToken.Value = (float)stream.ReadSingle();
-			newToken.Text = stream.ReadString();
-			var numTokens = stream.ReadInt32();
+			var flags = stream.Read7BitEncodedInt();
+			var numTokens = flags >> 4;
+			if ((flags & 1) == 1)
+			{
+				var isInt = ((flags & 2) == 2);
+				if (isInt)
+					newToken.Value = stream.Read7BitEncodedInt();
+				else
+					newToken.Value = stream.ReadSingle();
+			}
+			if ((flags & 4) == 4)
+				newToken.Text = stream.ReadString();
 			for (var i = 0; i < numTokens; i++)
 				newToken.Tokens.Add(Token.LoadFromFile(stream));
 			return newToken;

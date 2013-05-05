@@ -895,6 +895,34 @@ namespace Noxico
         }
 		#endregion
 
+		#region Stolen from MSCorLib
+		public static int Read7BitEncodedInt(this BinaryReader stream)
+		{
+			byte inputByte;
+			int finalValue = 0, shifts = 0;
+			do
+			{
+				if (shifts == 0x23)
+					throw new FormatException("Bad 7-bit encoded integer.");
+				inputByte = stream.ReadByte();
+				finalValue |= (inputByte & 0x7f) << shifts;
+				shifts += 7;
+			}
+			while ((inputByte & 0x80) != 0);
+			return finalValue;
+		}
+
+		public static void Write7BitEncodedInt(this BinaryWriter stream, int value)
+		{
+			uint work = (uint)value;
+			while (work >= 0x80)
+			{
+				stream.Write((byte)(work | 0x80));
+				work = work >> 7;
+			}
+			stream.Write((byte)work);
+		}
+		#endregion
 	}
 }
 
