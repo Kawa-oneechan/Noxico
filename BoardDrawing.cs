@@ -338,7 +338,7 @@ namespace Noxico
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
 			var points = new List<Point>();
 			var pointsPerZone = 4;
-			var threshold = 0.63f;
+			var threshold = 0.66f;
 			if (safeZones.Count == 1 && safeZones[0].Left == 0 && safeZones[0].Right == 79)
 			{
 				safeZones.Clear();

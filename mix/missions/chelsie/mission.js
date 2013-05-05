@@ -2,7 +2,7 @@ var myBoard = AddBoard("ChelsieLair");
 myBoard.Name = "Chelsie's Lair";
 MakeBoardTarget(myBoard);
 MakeBoardKnown(myBoard);
-myBoard.Clear(7);
+myBoard.Clear("Woods");
 
 var tree = new Tile();
 tree.Character = '\u2660';

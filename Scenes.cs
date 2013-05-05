@@ -324,9 +324,10 @@ namespace Noxico
 					var shipPath = "ships/" + fSecondary.ID;
 					if (fPrimary.Path(shipPath) == null)
 						return false;
-					if (fValuePM == '-' && fPrimary.Path(shipPath).Value > fValueF)
+					var liking = fPrimary.Path(shipPath).Value;
+					if (fValuePM == '-' && liking >= fValueF)
 						return false;
-					if (fPrimary.Path(shipPath).Value < fValueF)
+					else if (liking < fValueF)
 						return false;
 					break;
 				case "gender":
