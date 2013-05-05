@@ -119,6 +119,7 @@ namespace Noxico
 				this.BackColor = System.Drawing.Color.Black;
 				this.DoubleBuffered = true;
 				this.FormBorderStyle = FormBorderStyle.FixedSingle;
+				this.MaximizeBox = false; //it's about time, too!
 				this.FormClosing += new FormClosingEventHandler(this.Form1_FormClosing);
 				this.KeyDown += new KeyEventHandler(this.Form1_KeyDown);
 				this.KeyPress += new KeyPressEventHandler(this.Form1_KeyPress);
