@@ -95,6 +95,8 @@ namespace Noxico
 
 		Point Cursor { get; set; }
 
+		void RestartGraphics();
+
 #if DEBUG
 		string Text { get; set; }
 #endif

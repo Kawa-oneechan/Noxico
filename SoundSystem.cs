@@ -62,9 +62,50 @@ namespace Noxico
 		private float musicVolume, soundVolume;
 		private XmlDocument library;
 
+		public float MusicVolume
+		{
+			get
+			{
+				return musicVolume;
+			}
+			set
+			{
+				if (value < 0)
+					musicVolume = 0;
+				else if (value > 1)
+					musicVolume = 1;
+				else
+					musicVolume = value;
+			}
+		}
+		public float SoundVolume
+		{
+			get
+			{
+				return soundVolume;
+			}
+			set
+			{
+				if (value < 0)
+					soundVolume = 0;
+				else if (value > 1)
+					soundVolume = 1;
+				else
+					soundVolume = value;
+			}
+		}
+
 		public string FadeTarget { get; private set; }
 		private string targetSet;
 		private int fadeProcess;
+
+		public bool Enabled
+		{
+			get
+			{
+				return system != null;
+			}
+		}
 
 		public SoundSystem()
 		{
@@ -73,8 +114,8 @@ namespace Noxico
 			//var is64Bit = System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)) == 8;
 			if (!IniFile.GetValue("audio", "enabled", true)) // || !is64Bit)
 				return;
-			musicVolume = (float)IniFile.GetValue("audio", "musicvolume", 100) / 100;
-			soundVolume = (float)IniFile.GetValue("audio", "soundvolume", 100) / 100;
+			musicVolume = IniFile.GetValue("audio", "musicvolume", 100) / 100f;
+			soundVolume = IniFile.GetValue("audio", "soundvolume", 100) / 100f;
 			if (musicVolume + soundVolume == 0)
 				return;
 
@@ -128,7 +169,7 @@ namespace Noxico
 
 		public void PlayMusic(string name, bool fade = true)
 		{
-			if (system == null || musicVolume == 0)
+			if (!Enabled || musicVolume == 0)
 				return;
 
 			var set = targetSet;
@@ -204,7 +245,7 @@ namespace Noxico
 
 		public void PlaySound(string name)
 		{
-			if (system == null || soundVolume == 0)
+			if (!Enabled || soundVolume == 0)
 				return;
 			if (sounds.ContainsKey(name))
 			{
@@ -215,7 +256,7 @@ namespace Noxico
 
 		private void Fade()
 		{
-			if (system == null)
+			if (!Enabled)
 				return;
 			fadeProcess--;
 			if (fadeProcess < 0)
@@ -229,7 +270,7 @@ namespace Noxico
 
 		public void Update()
 		{
-			if (system == null)
+			if (!Enabled)
 				return;
 			if (!string.IsNullOrEmpty(FadeTarget))
 				Fade();
@@ -256,6 +297,26 @@ namespace Noxico
 			var debug = string.Format("{0}ch {1}, row {2}/{3}, pattern {4}/{5}. Volume: {6:P0}", musicchans, type.ToString(), row, rows, pattern, patterns, volume);
 			NoxicoGame.HostForm.Write(musicPlaying.Remove(musicPlaying.LastIndexOf('.')).PadEffective(80), Color.Gray, System.Drawing.Color.Transparent, 0, 0);
 			NoxicoGame.HostForm.Write(debug.PadEffective(80), Color.Gray, Color.Transparent, 1, 0);
+		}
+
+		public void ShutDown()
+		{
+			if (!Enabled)
+				return;
+			if (musicChannel != null)
+				musicChannel.stop();
+			if (music != null)
+				music.release();
+			if (sounds != null)
+			{
+				foreach (var s in sounds.Values)
+				{
+					s.Channel.stop();
+					s.InnerSound.release();
+				}
+			}
+			system.close();
+			system = null;
 		}
 	}
 }

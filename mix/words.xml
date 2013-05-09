@@ -130,11 +130,13 @@
 		<word id="pause_keyscreenshot">Take screenshot</word>
 		<word id="pause_creditscontent">Press &accept; to view full credits.</word>
 		<word id="pause_opensettingscontent">
-			<![CDATA[Press Enter to open noxico.ini.
+			<![CDATA[Press Enter to open the options screen.
 
 From there, you can change a bunch of
-things, including key mappings and how
-long you get until auto-rest triggers.]]>
+things, such as the display font (if
+any alternatives have been installed)
+or if lengths should be in metric or
+imperial.]]>
 </word>
 		<word id="pause_saveandexitcontent">
 			<![CDATA[Press Enter to save.
