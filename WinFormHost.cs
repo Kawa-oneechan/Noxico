@@ -184,40 +184,8 @@ namespace Noxico
 					IniFile.SetValue("misc", "shotpath", "./screenshots");
 				}
 
-				pngFont = IniFile.GetValue("misc", "font", "unifont");
-				pngFonts = new Dictionary<int, FontBlock>();
-				if (Mix.FileExists(pngFont + "_00.png"))
-				{
-					var blockZero = Mix.GetBitmap(pngFont + "_00.png");
-					CellWidth = blockZero.Width / 16;
-					CellHeight = blockZero.Height / 16;
-					CachePNGFont('A');
-				}
-				else
-				{
-					pngFont = "font\\unifont";
-					if (Mix.FileExists(pngFont + "_00.png"))
-					{
-						var blockZero = Mix.GetBitmap(pngFont + "_00.png");
-						CellWidth = blockZero.Width / 16;
-						CellHeight = blockZero.Height / 16;
-						CachePNGFont('A');
-					}
-					else
-					{
-						SystemMessageBox.Show(this, "Could not find font bitmaps. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-						Close();
-						return;
-					}
-				}
+				RestartGraphics();
 
-				ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
-
-				Show();
-				Refresh();
-
-				backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
-				scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
 				Noxico = new NoxicoGame();
 				Noxico.Initialize(this);
 
@@ -313,6 +281,44 @@ namespace Noxico
 				fatal = true;
 			}
 #endif
+		}
+
+		public void RestartGraphics()
+		{
+			pngFont = IniFile.GetValue("misc", "font", "unifont");
+			pngFonts = new Dictionary<int, FontBlock>();
+			if (Mix.FileExists(pngFont + "_00.png"))
+			{
+				var blockZero = Mix.GetBitmap(pngFont + "_00.png");
+				CellWidth = blockZero.Width / 16;
+				CellHeight = blockZero.Height / 16;
+				CachePNGFont('A');
+			}
+			else
+			{
+				pngFont = "font\\unifont";
+				if (Mix.FileExists(pngFont + "_00.png"))
+				{
+					var blockZero = Mix.GetBitmap(pngFont + "_00.png");
+					CellWidth = blockZero.Width / 16;
+					CellHeight = blockZero.Height / 16;
+					CachePNGFont('A');
+				}
+				else
+				{
+					SystemMessageBox.Show(this, "Could not find font bitmaps. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					Close();
+					return;
+				}
+			}
+
+			ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
+
+			Show();
+			Refresh();
+
+			backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
+			scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
