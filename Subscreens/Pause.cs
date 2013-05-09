@@ -52,7 +52,8 @@ namespace Noxico
 					}
 					else if (list.Index == list.Items.Count - 2) //same
 					{
-						System.Diagnostics.Process.Start(host.IniPath);
+						//System.Diagnostics.Process.Start(host.IniPath);
+						Options.Open();
 					}
 					else if (list.Index == 4)
 					{

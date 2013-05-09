@@ -9,6 +9,7 @@ namespace Noxico
 	public static class IniFile
 	{
 		private static Dictionary<string, Dictionary<string, string>> settings = new Dictionary<string,Dictionary<string,string>>();
+		private static string lastFileName;
 
 		public static void Load(string fileName)
 		{
@@ -42,10 +43,13 @@ namespace Noxico
 						settings[thisSection].Add(key, val);
 				}
 			}
+			lastFileName = fileName;
 		}
 
-		public static void Save(string fileName)
+		public static void Save(string fileName = "")
 		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				fileName = lastFileName;
 			if (!File.Exists(fileName))
 			{
 				var sb = new StringBuilder("");

@@ -133,6 +133,7 @@
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
+    <Compile Include="Subscreens\Options.cs" />
     <Compile Include="WinFormHost.cs">
       <SubType>Form</SubType>
     </Compile>

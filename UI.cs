@@ -44,7 +44,7 @@ namespace Noxico
 		public Color Background { get; set; }
 		public bool Enabled { get; set; }
 
-		public void DoEnter()
+		public virtual void DoEnter()
 		{
 			if (Enter != null)
 				Enter(this, null);
@@ -359,8 +359,8 @@ namespace Noxico
 
 	public class UITextBox : UIElement
 	{
-		public List<string> Items { get; private set; }
 		private int caret;
+		public bool Numeric = false;
 
 		public override bool TabStop
 		{
@@ -397,6 +397,11 @@ namespace Noxico
 			if (skippers.Contains(key))
 				return;
 			var c = NoxicoGame.LastPress;
+			if (Numeric && !char.IsDigit(c))
+			{
+				NoxicoGame.Sound.PlaySound("Splorch");
+				return;
+			}
 			if (Text.Length < Width - 1 && !char.IsControl(c))
 			{
 				Text = Text.Insert(caret++, c.ToString());
@@ -572,6 +577,66 @@ namespace Noxico
 				DoRight();
 		}
 	}
+
+	public class UIToggle : UIElement
+	{
+		private bool val;
+		public bool Checked
+		{
+			get
+			{
+				return val;
+			}
+			set
+			{
+				val = value;
+				Draw();
+				if (Change != null)
+					Change(this, null);
+			}
+		}
+
+		public void Toggle()
+		{
+			Checked = !Checked;
+		}
+
+		public UIToggle(string text)
+			: base()
+		{
+			Text = text;
+			Width = text.Length() + 3;
+			Height = 1;
+			Foreground = UIColors.RegularText;
+			Background = UIColors.DarkBackground;
+			Enabled = true;
+		}
+
+		public override bool TabStop
+		{
+			get { return true; }
+		}
+
+		public override void Draw()
+		{
+			var off = "\u2610";
+			var on = "\u2612";
+			var c = (val ? on : off) + ' ' + Text; 
+			NoxicoGame.HostForm.Write(c, UIManager.Highlight == this ? Foreground : Color.Gray, Background, Top, Left);
+		}
+
+		public override void DoEnter()
+		{
+			Toggle();
+			base.DoEnter();
+		}
+
+		public override void DoMouse(int left, int top)
+		{
+			Toggle();
+		}
+	}
+
 
 	static class UIManager
 	{

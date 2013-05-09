@@ -268,6 +268,20 @@ namespace Noxico
 			mixFile = entry.MixFile;
 		}
 
+		public static string[] GetFilesWithPattern(string pattern)
+		{
+			var ret = new List<string>();
+			var regex = new System.Text.RegularExpressions.Regex(pattern.Replace("*", "(.*)"));
+			foreach (var entry in fileList.Values.Where(x => regex.IsMatch(x.Filename)))
+				ret.Add(entry.Filename);
+			if (Directory.Exists("data"))
+			{
+				var getFiles = Directory.GetFiles("data", pattern, SearchOption.AllDirectories);
+				ret.AddRange(getFiles);
+			}
+			return ret.ToArray();
+		}
+
 		public static void SpreadEm()
 		{
 			Program.WriteLine("Spreadin' em...");
