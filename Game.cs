@@ -232,7 +232,8 @@ namespace Noxico
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
-				Introduction.Title();
+			Introduction.Title();
+			//Options.Open();
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false)
