@@ -301,7 +301,27 @@ namespace Noxico
 				using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 				{
 					mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
-					File.WriteAllBytes(targetPath, mStream.ReadBytes(entry.Length));
+					if (!entry.IsCompressed)
+					{
+						File.WriteAllBytes(targetPath, mStream.ReadBytes(entry.Length));
+					}
+					else
+					{
+						var cStream = new MemoryStream(mStream.ReadBytes(entry.Length));
+						var decompressor = new System.IO.Compression.GZipStream(cStream, System.IO.Compression.CompressionMode.Decompress);
+						var outStream = new MemoryStream();
+						var buffer = new byte[1024];
+						var recieved = 1;
+						while (recieved > 0)
+						{
+							recieved = decompressor.Read(buffer, 0, buffer.Length);
+							outStream.Write(buffer, 0, recieved);
+						}
+						var unpacked = new byte[outStream.Length];
+						outStream.Seek(0, SeekOrigin.Begin);
+						outStream.Read(unpacked, 0, unpacked.Length);
+						File.WriteAllBytes(targetPath, unpacked);
+					} 
 				}
 			}
 			Program.WriteLine("All entries in mix files extracted. Happy Hacking.");
