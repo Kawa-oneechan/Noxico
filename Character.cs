@@ -374,6 +374,79 @@ namespace Noxico
 			return newChar;
 		}
 
+		public static Character GenerateQuick(string bodyPlan, Gender gender)
+		{
+			if (bodyPlansDocument == null)
+				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+
+			var newChar = new Character();
+			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
+			//gToolkit.VerifyBodyplan(planSource); //by PillowShout
+			var plan = planSource.ChildNodes[0].Value;
+			newChar.Tokenize(plan);
+			newChar.HandleSelectTokens(); //by PillowShout
+
+			if (newChar.HasToken("femaleonly"))
+				gender = Gender.Female;
+			else if (newChar.HasToken("maleonly"))
+				gender = Gender.Male;
+			else if (newChar.HasToken("hermonly"))
+				gender = Gender.Herm;
+			else if (newChar.HasToken("neuteronly"))
+				gender = Gender.Neuter;
+
+			if (gender == Gender.Random)
+			{
+				var min = 1;
+				var max = 4;
+				if (newChar.HasToken("normalgenders"))
+					max = 2;
+				else if (newChar.HasToken("neverneuter"))
+					max = 3;
+				var g = Random.Next(min, max + 1);
+				gender = (Gender)g;
+			}
+
+			if (gender != Gender.Female && newChar.HasToken("femaleonly"))
+				throw new Exception(string.Format("Cannot generate a non-female {0}.", bodyPlan));
+			if (gender != Gender.Male && newChar.HasToken("maleonly"))
+				throw new Exception(string.Format("Cannot generate a non-male {0}.", bodyPlan));
+
+			if (gender == Gender.Male || gender == Gender.Neuter)
+			{
+				newChar.RemoveToken("fertility");
+				newChar.RemoveToken("milksource");
+				newChar.RemoveToken("vagina");
+				if (newChar.HasToken("breastrow"))
+					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
+			}
+			else if (gender == Gender.Female || gender == Gender.Neuter)
+			{
+				newChar.RemoveToken("penis");
+				newChar.RemoveToken("balls");
+			}
+
+			newChar.EnsureDefaultTokens();
+
+			if (newChar.HasToken("femalesmaller"))
+			{
+				if (gender == Gender.Female)
+					newChar.GetToken("tallness").Value -= Random.Next(5, 10);
+				else if (gender == Gender.Herm)
+					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
+			}
+
+			while (newChar.HasToken("either"))
+			{
+				var either = newChar.GetToken("either");
+				var eitherChoice = Random.Next(-1, either.Tokens.Count);
+				if (eitherChoice > -1)
+					newChar.AddToken(either.Tokens[eitherChoice]);
+				newChar.RemoveToken(either);
+			}
+			return newChar;
+		}
+
 		private void EnsureDefaultTokens()
 		{
 			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
@@ -2218,15 +2291,9 @@ namespace Noxico
 						else if (gender == Gender.Herm && terms.HasToken("herm"))
 							childChar.Species = terms.GetToken("herm").Text;
 
+						childChar.Name = childName;
+						childChar.IsProperNamed = true;
 						childChar.UpdateTitle();
-
-						if (childChar.HasToken("femalesmaller"))
-						{
-							if (gender == Gender.Female)
-								childChar.GetToken("tallness").Value -= Random.Next(5, 10);
-							else if (gender == Gender.Herm)
-								childChar.GetToken("tallness").Value -= Random.Next(1, 6);
-						}
 
 						childChar.Health = childChar.MaximumHealth;
 					}
@@ -2269,6 +2336,9 @@ namespace Noxico
 			var pregnancy = this.Path("pregnancy");
 			if (pregnancy == null)
 				pregnancy = this.AddToken("pregnancy");
+			pregnancy.AddToken("father", 0, father.Name.ToString());
+			var gestation = pregnancy.AddToken("gestation", 0);
+			gestation.AddToken("max", 1000);
 			var child = pregnancy.AddToken("child");
 			var mother = this; //for clarity
 
@@ -2300,17 +2370,21 @@ namespace Noxico
 			};
 
 			//TODO: make fromMothersPlan and fromEitherPlan use FRESHLY ROLLED data from the closest bodyplan matches.
+			var momsPlan = mother.GetClosestBodyplanMatch();
+			var dadsPlan = father.GetClosestBodyplanMatch();
+			var freshMom = Character.GenerateQuick(momsPlan, Noxico.Gender.Female);
+			var freshDad = Character.GenerateQuick(dadsPlan, Noxico.Gender.Male);
 
 			foreach (var item in fromMothersPlan)
 			{
-				if (mother.HasToken(item))
-					child.AddToken(item, mother.GetToken(item).Value, mother.GetToken(item).Text).AddSet(mother.GetToken(item).Tokens);
+				if (freshMom.HasToken(item))
+					child.AddToken(item, freshMom.GetToken(item).Value, freshMom.GetToken(item).Text).AddSet(freshMom.GetToken(item).Tokens);
 			}
 
 			foreach (var item in fromEitherPlan)
 			{
-				var source = Random.NextDouble() > 0.5 ? father : mother;
-				var other = source == father ? mother : father;
+				var source = Random.NextDouble() > 0.5 ? freshDad : freshMom;
+				var other = source == father ? freshMom : freshDad;
 				if (source.HasToken(item))
 					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
 				else if (other.HasToken(item))
@@ -2737,7 +2811,7 @@ namespace Noxico
 			foreach (var lev in NoxicoGame.BodyplanLevs)
 			{
 				var distance = Toolkit.Levenshtein(thisLev, lev.Value);
-				if (distance < score)
+				if (distance <= score)
 				{
 					score = distance;
 					ret = lev.Key;
