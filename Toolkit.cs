@@ -110,7 +110,7 @@ namespace Noxico
 				ret.Append(' ');
 			else
 			{
-				var earsToken = token.Path("face");
+				var earsToken = token.Path("ears");
 				if (earsToken == null)
 					ret.Append(' ');
 				else
@@ -168,6 +168,38 @@ namespace Noxico
 						ret.Append('t');
 				}
 			}
+
+			if (token.Path("wings") == null)
+				ret.Append(' ');
+			else
+			{
+				var wingsToken = token.Path("wings");
+				if (wingsToken == null)
+					ret.Append(' ');
+				else
+				{
+					var wingTypes = new Dictionary<string, char>()
+					{
+						{ "bat", 'b' },
+						{ "dragon", 'd' },
+						{ "feather", 'f' },
+					};
+					if (wingTypes.ContainsKey(wingsToken.Text))
+						ret.Append(wingsToken.HasToken("small") ? wingTypes[wingsToken.Text] : wingTypes[wingsToken.Text].ToString().ToUpperInvariant()[0]);
+					else
+						ret.Append(' ');
+				}
+			}
+
+			var tallness = token.Path("tallness");
+			if (tallness == null)
+				ret.Append(' ');
+			else if (tallness.Value < 140)
+				ret.Append('_');
+			else if (tallness.Value > 180)
+				ret.Append('!');
+			else
+				ret.Append(' ');
 
 			return ret.ToString();
 		}

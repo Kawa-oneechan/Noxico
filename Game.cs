@@ -160,7 +160,7 @@ namespace Noxico
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
 				var id = bodyPlan.GetAttribute("id");
-				Program.WriteLine("Loading {0}...", id);
+				//Program.WriteLine("Loading {0}...", id);
 				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
 				var ascii = Toolkit.GrabToken(plan, "ascii");
 				if (ascii != null)
@@ -183,8 +183,14 @@ namespace Noxico
 				}
 				ohboy.Tokenize(plan);
 				Toolkit.VerifyBodyplan(ohboy, id);
+				if (ohboy.HasToken("beast"))
+					continue;
 				var lev = Toolkit.GetLevenshteinString(ohboy);
 				BodyplanLevs.Add(id, lev);
+			}
+			foreach (var lev in BodyplanLevs)
+			{
+				Program.WriteLine("{0}{1}", lev.Key.PadRight(16), lev.Value);
 			}
 
 			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
