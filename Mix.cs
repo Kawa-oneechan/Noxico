@@ -148,7 +148,39 @@ namespace Noxico
 				Program.WriteLine("Splicing in {0}...", f);
 				var otherX = new System.Xml.XmlDocument();
 				otherX.LoadXml(GetString(f));
-				x.DocumentElement.InnerXml = otherX.DocumentElement.InnerXml + x.DocumentElement.InnerXml;
+				//x.DocumentElement.InnerXml = otherX.DocumentElement.InnerXml + x.DocumentElement.InnerXml;
+				var docElement = x.DocumentElement;
+				var newStuff = new StringBuilder();
+				foreach (var e in otherX.DocumentElement.ChildNodes.OfType<XmlNode>())
+				{
+					if (e is XmlElement)
+					{
+						var eX = e as XmlElement;
+						if (eX.HasAttribute("id"))
+						{
+							var xPath = "//" + eX.Name + "[@id=\"" + eX.GetAttribute("id") + "\"]";
+							var otherEX = docElement.SelectSingleNode(xPath);
+							if (otherEX != null)
+							{
+								otherEX.InnerXml = eX.InnerXml;
+								otherEX.Attributes.RemoveAll();
+								foreach (var attrib in eX.Attributes.OfType<XmlAttribute>())
+								{
+									var newAttrib = x.CreateAttribute(attrib.Name);
+									newAttrib.Value = attrib.Value;
+									otherEX.Attributes.Append(newAttrib);
+								}
+								//so we don't add it later on
+								continue;
+							}
+						}
+					}
+					newStuff.AppendLine(e.OuterXml);
+				}
+				if (injectOnTop)
+					docElement.InnerXml = newStuff.ToString() + docElement.InnerXml;
+				else
+					docElement.InnerXml += newStuff.ToString();
 				//foreach (var e in otherX.DocumentElement.ChildNodes.OfType<XmlNode>())
 				//	x.DocumentElement.InnerXml = (injectOnTop ? e.OuterXml + x.DocumentElement.InnerXml : x.DocumentElement.InnerXml + e.OuterXml);
 			}

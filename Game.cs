@@ -143,17 +143,8 @@ namespace Noxico
 			Messages = new List<string>(); //new List<StatusMessage>();
 			Sound = new SoundSystem();
 
-			Program.WriteLine("Loading items...");
-			Identifications = new List<string>();
-			var xDoc = Mix.GetXMLDocument("items.xml");
-			KnownItems = new List<InventoryItem>();
-			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
-				KnownItems.Add(InventoryItem.FromXML(item));
-			Program.WriteLine("Randomizing potions and rings...");
-			RollPotions();
-			ApplyRandomPotions();
 			Program.WriteLine("Loading bodyplans...");
-			xDoc = Mix.GetXMLDocument("bodyplans.xml");
+			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
 			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
@@ -177,6 +168,7 @@ namespace Noxico
 						}
 						catch (ArgumentException ex)
 						{
+							//With the new replacement merger in Mix.GetXMLDocument(), this should not be possible.
 							throw new ArgumentException(string.Format("The '{0}' bodyplan is defined twice.", id), ex);
 						}
 					}
@@ -188,10 +180,16 @@ namespace Noxico
 				var lev = Toolkit.GetLevenshteinString(ohboy);
 				BodyplanLevs.Add(id, lev);
 			}
-			foreach (var lev in BodyplanLevs)
-			{
-				Program.WriteLine("{0}{1}", lev.Key.PadRight(16), lev.Value);
-			}
+
+			Program.WriteLine("Loading items...");
+			Identifications = new List<string>();
+			xDoc = Mix.GetXMLDocument("items.xml");
+			KnownItems = new List<InventoryItem>();
+			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
+				KnownItems.Add(InventoryItem.FromXML(item));
+			Program.WriteLine("Randomizing potions and rings...");
+			RollPotions();
+			ApplyRandomPotions();
 
 			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
 
