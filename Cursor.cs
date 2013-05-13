@@ -86,7 +86,7 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + ((BoardChar)PointingAt).Character.ToString(); 
+						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.ToString(); 
 						return;
 					}
 					else if (entity is DroppedItem)
