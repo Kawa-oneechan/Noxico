@@ -230,7 +230,6 @@ namespace Noxico
 			Application.Exit();
 			*/
 
-
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			KnownTargets = new List<int>();
 			TargetNames = new Dictionary<int, string>();
