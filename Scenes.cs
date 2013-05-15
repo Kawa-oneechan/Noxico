@@ -449,7 +449,96 @@ namespace Noxico
 						{
 							output.AppendLine();
 							//TODO
-							output.Append("<if query=\"" + tag.Substring(3) + "\">");
+							var target = "top";
+							var type = string.Empty;
+							var value = string.Empty;
+							var name = string.Empty;
+							var keywords = tag.Substring(3).Split(' ').ToList();
+							if (keywords[0] == "top")
+							{
+								target = "top";
+								keywords.RemoveAt(0);
+							}
+							else if (keywords[1] == "bottom")
+							{
+								target = "bottom";
+								keywords.RemoveAt(0);
+							}
+							if (keywords[0] == "name")
+							{
+								type = "name";
+								name = keywords[1];
+							}
+							else if (keywords[0] == "has")
+							{
+								if (keywords[1] == "dildo")
+								{
+									type = "hasdildo";
+								}
+								else
+								{
+									type = "has";
+									name = keywords[1];
+									if (keywords.Count > 2)
+									{
+										value = keywords[2];
+									}
+								}
+							}
+							else if (keywords[0] == "hasnot")
+							{
+								type = "hasnot";
+								name = keywords[1];
+							}
+							else if (new[] { "=", "<", ">=" }.Contains(keywords[1]))
+							{
+								if (keywords[1] == "=")
+									type = "value_equal";
+								else if (keywords[1] == "<")
+									type = "value_lower";
+								else if (keywords[1] == ">=")
+									type = "value_gteq";
+								name = keywords[0];
+								value = keywords[2];
+							}
+							else if (keywords[0] == "relation")
+							{
+								type = "relation";
+								if (keywords[1] == "is")
+									keywords.RemoveAt(1);
+								value = keywords[1];
+							}
+							else if (keywords[0] == "isa")
+							{
+								if (new[] { "male", "female" }.Contains(keywords[1]))
+								{
+									type = "gender";
+									value = keywords[1];
+								}
+								else
+								{
+									type = "bodylev";
+									name = keywords[1];
+								}
+							}
+							else if (keywords[0] == "likes")
+							{
+								type = "liking";
+								value = keywords[1];
+							}
+							else if (new[] { "canfitdickinpussy", "canfitdickinmouth", "isfather" }.Contains(keywords[0]))
+							{
+								type = keywords[0];
+							}
+
+							output.Append("<if target=\"" + target + "\" type=\"" + type + "\"");
+							if (!string.IsNullOrWhiteSpace(name))
+								output.Append(" name=\"" + name + "\"");
+							if (!string.IsNullOrWhiteSpace(value))
+								output.Append(" name=\"" + value + "\"");
+							output.Append(">");
+
+							//output.Append("<if query=\"" + tag.Substring(3) + "\">");
 							thingsToEnd.Push(false);
 						}
 						else if (tag == "else")

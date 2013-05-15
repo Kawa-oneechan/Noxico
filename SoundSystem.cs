@@ -169,7 +169,7 @@ namespace Noxico
 
 		public void PlayMusic(string name, bool fade = true)
 		{
-			if (!Enabled || musicVolume == 0)
+			if (!Enabled || musicVolume == 0 || string.IsNullOrWhiteSpace(name))
 				return;
 
 			var set = targetSet;
