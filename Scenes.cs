@@ -453,7 +453,7 @@ namespace Noxico
 							var type = string.Empty;
 							var value = string.Empty;
 							var name = string.Empty;
-							var keywords = tag.Substring(3).Split(' ').ToList();
+							var keywords = tag.Substring(3).SplitQ().ToList();
 							if (keywords[0] == "top")
 							{
 								target = "top";

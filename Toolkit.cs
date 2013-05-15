@@ -955,6 +955,46 @@ namespace Noxico
 			stream.Write((byte)work);
 		}
 		#endregion
+
+		/// <summary>
+		/// Splits a string on spaces, but skips over doubled spaces and returns quoted strings as single items.
+		/// </summary>
+		/// <example>"a b \"c d\" e".Split() //returns { "a", "b", "c d", "e" }</example>
+		/// <param name="input">The string to split.</param>
+		/// <returns></returns>
+		public static string[] SplitQ(this string input)
+		{
+			var ret = new List<string>();
+			var item = new StringBuilder();
+			for (var i = 0; i < input.Length; i++)
+			{
+				if (input[i] == '\"')
+				{
+					for (var j = i + 1; j < input.Length; j++)
+					{
+						if (input[j] == '\"')
+						{
+							i = j;
+							break;
+						}
+						item.Append(input[j]);
+					}
+				}
+				else if (input[i] == ' ')
+				{
+					if (item.Length > 0)
+						ret.Add(item.ToString());
+					item.Clear();
+				}
+				else
+					item.Append(input[i]);
+			}
+
+			if (item.Length > 0)
+				ret.Add(item.ToString());
+
+			return ret.ToArray();
+		}
 	}
 }
 
