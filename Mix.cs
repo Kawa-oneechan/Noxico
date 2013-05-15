@@ -24,7 +24,7 @@ namespace Noxico
 		/// <summary>
 		/// Populates the Mix database for usage
 		/// </summary>
-		public static void Initialize(string mainFile = "main")
+		public static void Initialize(string mainFile = "Noxico")
 		{
 			Program.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
@@ -326,7 +326,7 @@ namespace Noxico
 					Program.WriteLine("* Bogus entry with zero length: \"{0}\", offset {1}", entry.Filename, entry.Offset);
 					continue;
 				}
-				var targetPath = Path.Combine("data", entry.MixFile.Remove(entry.MixFile.Length - 4), entry.Filename);
+				var targetPath = Path.Combine("data", /* entry.MixFile.Remove(entry.MixFile.Length - 4),*/ entry.Filename);
 				var targetDir = Path.GetDirectoryName(targetPath);
 				if (!Directory.Exists(targetDir))
 					Directory.CreateDirectory(targetDir);
