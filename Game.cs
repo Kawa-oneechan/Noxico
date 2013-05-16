@@ -426,6 +426,8 @@ namespace Noxico
 
 				//if (!Player.Character.HasItem("henshin_belt"))
 				//	Player.Character.GetToken("items").AddToken("henshin_belt").AddToken("color", 0, Toolkit.PickOne("red", "blue", "yellow", "pink", "black", "gold", "silver", "white"));
+				//if (!Player.Character.HasItem("timertest"))
+				//	Player.Character.GetToken("items").AddToken("timertest");
 			}
 		}
 

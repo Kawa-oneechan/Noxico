@@ -362,6 +362,8 @@ namespace Noxico
 				Energy = 5000;
 			}
 
+			CheckForTimedItems();
+
 			var sleeping = Character.Path("sleeping");
 			if (sleeping != null)
 			{

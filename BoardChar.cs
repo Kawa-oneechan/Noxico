@@ -239,6 +239,40 @@ namespace Noxico
 			}
 		}
 
+		public void CheckForTimedItems()
+		{
+			foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+			{
+				var timer = carriedItem.Path("timer");
+				if (timer == null)
+					continue;
+				if (string.IsNullOrWhiteSpace(timer.Text))
+					continue;
+				var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (knownItem == null)
+					continue;
+				if (knownItem.Path("timer/evenunequipped") == null && !carriedItem.HasToken("equipped"))
+					continue;
+				var time = new NoxicanDate(long.Parse(timer.Text));
+				if (NoxicoGame.InGameTime.Minute <= time.Minute)
+					continue;
+				timer.Value--;
+				if (timer.Value > 0)
+				{
+					timer.Text = NoxicoGame.InGameTime.ToBinary().ToString();
+					continue;
+				}
+				timer.Value = (knownItem.GetToken("timer").Value == 0) ? 60 : knownItem.GetToken("timer").Value;
+				if (string.IsNullOrWhiteSpace(knownItem.OnTimer))
+				{
+					Program.WriteLine("Warning: {0} has a timer, but no OnTimer script! Timer token removed.", carriedItem.Name);
+					carriedItem.RemoveToken("timer");
+					continue;
+				}
+				knownItem.RunScript(carriedItem, knownItem.OnTimer, this.Character, this, null);
+			}
+		}
+
 		public override void Update()
 		{
 			if (Character.Health <= 0)
@@ -287,6 +321,7 @@ namespace Noxico
 
 			if (!RunScript(OnTick))
 				return;
+			CheckForTimedItems();
 
 			CheckForCriminalScum();
 
