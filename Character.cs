@@ -1800,10 +1800,12 @@ namespace Noxico
 			this.RemoveToken("haste");
 
 			//inherent
+			/*
 			if (this.Path("inherent/slow") != null)
 				score--;
 			else if (this.Path("inherent/haste") != null)
 				score++;
+			*/
 
 			//item weight
 			var weightClasses = new Dictionary<string, float>()
@@ -1858,6 +1860,7 @@ namespace Noxico
 			//body weight
 
 			//equips
+			/*
 			foreach (var carriedItem in this.GetToken("items").Tokens.Where(ci => ci.HasToken("equipped")))
 			{
 				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
@@ -1868,6 +1871,7 @@ namespace Noxico
 				if (knownItem.Path("equipable/haste") != null)
 					score++;
 			}
+			*/
 
 			if (this.GetToken("satiation").Value < 20)
 				score--;

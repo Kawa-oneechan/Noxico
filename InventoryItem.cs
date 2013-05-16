@@ -17,7 +17,7 @@ namespace Noxico
 		public string OnUse { get; private set; }
 		public string OnEquip { get; private set; }
 		public string OnUnequip { get; private set; }
-
+		public string OnTimer { get; private set; }
 
 		public Token tempToken { get; set; }
 
@@ -153,6 +153,9 @@ namespace Noxico
 					case "unequip":
 						ni.OnUnequip = script.InnerText;
 						break;
+					case "timer":
+						ni.OnTimer = script.InnerText;
+						break;
 					default:
 						ni.OnUse = script.InnerText;
 						break;
@@ -277,6 +280,12 @@ namespace Noxico
 			if (succeed)
 				item.AddToken("equipped");
 
+			if (this.HasToken("timer") && !string.IsNullOrWhiteSpace(this.OnTimer) && !item.HasToken("timer"))
+			{
+				item.AddToken("timer").Value = (this.GetToken("timer").Value == 0) ? 60 : this.GetToken("timer").Value;
+				item.GetToken("timer").Text = NoxicoGame.InGameTime.ToBinary().ToString();
+			}
+
 			character.RecalculateStatBonuses();
 			character.CheckHasteSlow();
 
@@ -328,6 +337,9 @@ namespace Noxico
 				succeed = (bool)RunScript(item, this.OnUnequip, character, null, null);
 			if (succeed)
 				item.RemoveToken("equipped");
+
+			if (!string.IsNullOrWhiteSpace(this.OnTimer) && this.Path("timer/evenunequipped") == null)
+				item.RemoveToken("timer");
 
 			//Not sure about automatically putting pants back on after taking them off to take off underpants...
 			//while (tempRemove.Count > 0)
@@ -603,7 +615,7 @@ namespace Noxico
 				{
 					paused = false;
 				};
-				MessageBox.Notice(x);
+				MessageBox.Notice(x, true);
 				while (paused)
 				{
 					NoxicoGame.HostForm.Noxico.Update();

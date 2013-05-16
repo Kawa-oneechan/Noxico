@@ -28,6 +28,7 @@ namespace Noxico
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
 			jint.SetParameter("Stat", typeof(Stat));
 			jint.SetFunction("titlecase", new Func<string, string>(x => x.Titlecase()));
+			jint.SetFunction("message", new Action<string>(x => NoxicoGame.AddMessage(x)));
 		}
 
 		public static void Assert()

@@ -19,7 +19,30 @@
 	<!ATTLIST costume id ID #REQUIRED>
 ]>
 <items>
-
+	<item id="timertest" name="Timer Test">
+		<![CDATA[
+equipable
+	hat
+wip
+ascii
+	char: U+00A1
+	fore: lightsalmon
+timer: 2
+	evenunequipped
+		]]>
+		<script type="text/javascript" for="timer">
+			<![CDATA[
+					var car = user.GetToken("carnality");
+					if (car.Value < 100)
+					{
+						message("You feel your mind going...");
+						car.Value += 5;
+					}
+					
+			]]>
+		</script>
+	</item>
+	
 	<item id="henshin_belt" name="transformation belt" a="a" the="the">
 		<![CDATA[
 test
