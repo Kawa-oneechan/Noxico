@@ -37,7 +37,7 @@ portalE.AssignScripts("demonportal_nox");
 portalE.ReassignScripts();
 myBoard.Entities.Add(portalE);
 portalE.ParentBoard = myBoard;
-myBoard.DumpToHTML("portal1");
+myBoard.DumpToHtml("portal1");
 
 
 MakeBoardKnown(myBoard); //<-- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
@@ -68,4 +68,4 @@ portalE.AssignScripts("demonportal_sera");
 portalE.ReassignScripts();
 myBoard.Entities.Add(portalE);
 portalE.ParentBoard = myBoard;
-myBoard.DumpToHTML("portal2");
+myBoard.DumpToHtml("portal2");

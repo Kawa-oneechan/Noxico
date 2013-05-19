@@ -45,7 +45,7 @@ namespace Noxico
 			if (words != null)
 				return;
 			words = new Dictionary<string, string>();
-			var x = Mix.GetXMLDocument("words.xml");
+			var x = Mix.GetXmlDocument("words.xml");
 			foreach (var word in x.SelectNodes("//word").OfType<XmlElement>())
 				words.Add(word.GetAttribute("id"), word.InnerText);
 		}

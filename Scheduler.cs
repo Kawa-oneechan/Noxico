@@ -91,7 +91,7 @@ namespace Noxico
 		private BoardChar entity;
 		private string repeatScript, repeatScriptName;
 
-		public static XmlDocument ScheduleDoc = Mix.GetXMLDocument("schedule.xml");
+		public static XmlDocument ScheduleDoc = Mix.GetXmlDocument("schedule.xml");
 
         /// <summary>
         /// Creates a new Scheduler instance.

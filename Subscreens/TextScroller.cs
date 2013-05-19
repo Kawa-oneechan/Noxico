@@ -50,7 +50,7 @@ namespace Noxico
 			if (keys[(int)System.Windows.Forms.Keys.S])
 			{
 				File.WriteAllText("current.txt", string.Join("\n", text));
-				File.WriteAllText("current.html", Toolkit.HTMLize(string.Join("\n", text)));
+				File.WriteAllText("current.html", string.Join("\n", text).ToHtml());
 			}
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
@@ -118,7 +118,7 @@ namespace Noxico
 
 		public static void ReadBook(int bookNum)
 		{
-			var xDoc = Mix.GetXMLDocument("books.xml");
+			var xDoc = Mix.GetXmlDocument("books.xml");
 			var books = xDoc.SelectNodes("//book");
 			XmlElement book = null;
 			foreach (var b in books.OfType<XmlElement>())
@@ -136,7 +136,7 @@ namespace Noxico
 			else
 			{
 				header = book.GetAttribute("title");
-				text = book.Noxicize();
+				text = book.ToNoxML();
 			}
 
 			var identification = book.SelectSingleNode("identify");

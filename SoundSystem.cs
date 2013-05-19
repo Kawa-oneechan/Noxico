@@ -155,7 +155,7 @@ namespace Noxico
 			}
 
 			Program.WriteLine("SoundSystem: loading library...");
-			library = Mix.GetXMLDocument("music.xml");
+			library = Mix.GetXmlDocument("music.xml");
 
 			Program.WriteLine("SoundSystem: _ctor DONE");
 			Program.WriteLine("Null report:");
