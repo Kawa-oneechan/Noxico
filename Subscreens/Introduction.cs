@@ -134,7 +134,7 @@ namespace Noxico
 		{
 			var ret = new List<PlayableRace>();
 			Program.WriteLine("Collecting playables...");
-			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
+			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
 			var bodyPlans = xDoc.SelectNodes("//bodyplan");
 			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
 			{
@@ -240,7 +240,7 @@ namespace Noxico
 		{
 			if (Subscreens.FirstDraw)
 			{
-				var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
+				var traitsDoc = Mix.GetXmlDocument("bonustraits.xml");
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
 				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())

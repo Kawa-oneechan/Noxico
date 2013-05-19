@@ -23,7 +23,7 @@ terms
 	herm: "foxherm"
 ascii
 	char: U+0056
-tallness: 179
+tallness: 180
 hair
 	length: 8
 	color: darkgray
@@ -43,9 +43,9 @@ hips: 12
 fertility: 0
 breastrow
 	amount: 2
-	size: 5
+	size: 6
 	nipples: 1
-		size: 1.7
+		size: 0.75
 		color: black
 	milksource
 vagina

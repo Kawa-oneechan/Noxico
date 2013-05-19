@@ -670,6 +670,7 @@ namespace Noxico
 				//Armed combat, yeah!
 				skill = weaponData.GetToken("skill").Text;
 				baseDamage = weaponData.GetToken("damage").Value;
+				//TODO: if it's a crushing weapon, use strength stat.
 			}
 
 			var level = (this.Character.Path("skills/" + skill) == null) ? 0 : (int)this.Character.Path("skills/" + skill).Value;
@@ -1002,7 +1003,7 @@ namespace Noxico
 		[ForJS(ForJSUsage.Either)]
 		public void AssignScripts(string id)
 		{
-			var xml = Mix.GetXMLDocument("uniques.xml");
+			var xml = Mix.GetXmlDocument("uniques.xml");
 			var planSource = xml.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as System.Xml.XmlElement;
 			var scripts = planSource.SelectNodes("script").OfType<System.Xml.XmlElement>();
 			foreach (var script in scripts)

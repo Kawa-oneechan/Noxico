@@ -21,7 +21,7 @@ namespace Noxico
 
 		static Color()
 		{
-			colorTable = Mix.GetXMLDocument("knowncolors.xml");
+			colorTable = Mix.GetXmlDocument("knowncolors.xml");
 		}
 
 		/// <summary>

@@ -11,7 +11,7 @@ namespace Noxico
 
 		static Descriptions()
 		{
-			descTable = Mix.GetXMLDocument("bodyparts.xml");
+			descTable = Mix.GetXmlDocument("bodyparts.xml");
 		}
 
 		public static string Length(float cm)

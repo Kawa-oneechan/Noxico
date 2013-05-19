@@ -144,7 +144,7 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 			Program.WriteLine("Loading bodyplans...");
-			var xDoc = Mix.GetXMLDocument("bodyplans.xml");
+			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
 			Views = new Dictionary<string, char>();
 			var ohboy = new TokenCarrier();
 			BodyplanLevs = new Dictionary<string, string>();
@@ -168,7 +168,7 @@ namespace Noxico
 						}
 						catch (ArgumentException ex)
 						{
-							//With the new replacement merger in Mix.GetXMLDocument(), this should not be possible.
+							//With the new replacement merger in Mix.GetXmlDocument(), this should not be possible.
 							throw new ArgumentException(string.Format("The '{0}' bodyplan is defined twice.", id), ex);
 						}
 					}
@@ -183,10 +183,10 @@ namespace Noxico
 
 			Program.WriteLine("Loading items...");
 			Identifications = new List<string>();
-			xDoc = Mix.GetXMLDocument("items.xml");
+			xDoc = Mix.GetXmlDocument("items.xml");
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
-				KnownItems.Add(InventoryItem.FromXML(item));
+				KnownItems.Add(InventoryItem.FromXml(item));
 			Program.WriteLine("Randomizing potions and rings...");
 			RollPotions();
 			ApplyRandomPotions();
@@ -198,7 +198,7 @@ namespace Noxico
 			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
 			BookAuthors.Add("[null]");
-			xDoc = Mix.GetXMLDocument("books.xml");
+			xDoc = Mix.GetXmlDocument("books.xml");
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
 			{
@@ -226,7 +226,7 @@ namespace Noxico
 			gen.ToTilemap(ref test.Tilemap);
 			///
 			test.AddWater();
-			test.DumpToHTML();
+			test.DumpToHtml();
 			Application.Exit();
 			*/
 
@@ -409,13 +409,11 @@ namespace Noxico
 			if (File.Exists(playerFile))
 			{
 				GetBoard(currentIndex);
-
 				CurrentBoard = Boards[currentIndex];
 				CurrentBoard.Entities.Add(Player);
-				CurrentBoard.UpdateSurroundings();
 				Player.ParentBoard = CurrentBoard;
+				CurrentBoard.LoadSurroundings();
 				CurrentBoard.CheckCombatStart();
-				CurrentBoard.UpdateLightmap(Player, true);
 				CurrentBoard.Redraw();
 				CurrentBoard.PlayMusic();
 
@@ -708,7 +706,7 @@ namespace Noxico
 			playerShip.AddToken("player");
 			pc.GetToken("ships").Tokens.Add(playerShip);
 
-			var traitsDoc = Mix.GetXMLDocument("bonustraits.xml");
+			var traitsDoc = Mix.GetXmlDocument("bonustraits.xml");
 			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + bonusTrait + "\"]");
 			if (trait != null)
 			{

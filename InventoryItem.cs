@@ -123,7 +123,7 @@ namespace Noxico
 			return "This is " + this.ToString(token) + ".";
 		}
 
-		public static InventoryItem FromXML(XmlElement x)
+		public static InventoryItem FromXml(XmlElement x)
 		{
 			var ni = new InventoryItem();
 			ni.ID = x.GetAttribute("id");

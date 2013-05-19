@@ -103,7 +103,7 @@ namespace Noxico
 			else if (typeName == "XmlException")
 			{
 				if (textBox1.Text.Contains("start tag on line"))
-					label3.Text = "An XML file somewhere has a malformed structure." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetXMLDocument\", then look at the line directly below that one. That's where the XML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetXMLDocument\" is \"at Noxico.WorldGen.LoadBiomes\", the problem is in LoadBiomes, or rather biomes.xml, and that should be mentioned as the critical point.";
+					label3.Text = "An XML file somewhere has a malformed structure." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetXmlDocument\", then look at the line directly below that one. That's where the XML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetXmlDocument\" is \"at Noxico.WorldGen.LoadBiomes\", the problem is in LoadBiomes, or rather biomes.xml, and that should be mentioned as the critical point.";
 				else
 					label3.Text = "An XML file somewhere has gone wrong. This is one point where posting the exception data would be helpful.";
 			}

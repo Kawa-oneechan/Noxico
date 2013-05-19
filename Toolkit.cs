@@ -463,7 +463,7 @@ namespace Noxico
 		/// <summary>
 		/// Converts a NoxML string to HTML. Badly.
 		/// </summary>
-		public static string HTMLize(string text)
+		public static string ToHtml(this string text)
 		{
 			var html = new StringBuilder();
 			var lines = text.Split('\n');
@@ -511,7 +511,7 @@ namespace Noxico
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns></returns>
-		public static string Noxicize(this XmlElement element)
+		public static string ToNoxML(this XmlElement element)
 		{
 			var r = "";
 			foreach (var n in element.ChildNodes)
@@ -527,7 +527,7 @@ namespace Noxico
 					if (e.Name == "br")
 						r += "\n";
 
-					r += e.Noxicize();
+					r += e.ToNoxML();
 
 					if (e.Name == "b")
 						r += "<c>";

@@ -197,7 +197,7 @@ namespace Noxico
 		public static Character GetUnique(string id)
 		{
 			if (uniquesDocument == null)
-				uniquesDocument = Mix.GetXMLDocument("uniques.xml");
+				uniquesDocument = Mix.GetXmlDocument("uniques.xml");
 
 			var newChar = new Character();
 			var planSource = uniquesDocument.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
@@ -248,7 +248,7 @@ namespace Noxico
 		public static Character Generate(string bodyPlan, Gender gender)
 		{
 			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
 
 			var newChar = new Character();
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
@@ -377,7 +377,7 @@ namespace Noxico
 		public static Character GenerateQuick(string bodyPlan, Gender gender)
 		{
 			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
 
 			var newChar = new Character();
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
@@ -1219,7 +1219,7 @@ namespace Noxico
 			dump.WriteLine("<h1>Noxico - Infodump for {0}</h1>", this.Name.ToString(true));
 
 			dump.WriteLine("<h2>Screenshot</h2>");
-			NoxicoGame.HostForm.Noxico.CurrentBoard.CreateHTMLDump(dump, false);
+			NoxicoGame.HostForm.Noxico.CurrentBoard.CreateHtmlScreenshot(dump, false);
 
 			foreach (var carriedItem in GetToken("items").Tokens)
 			{
@@ -1389,7 +1389,7 @@ namespace Noxico
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
 			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXMLDocument("bodyplans.xml");
+				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
 

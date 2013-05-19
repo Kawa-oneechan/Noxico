@@ -13,6 +13,6 @@
 	</lootset>
 	<lootset target="npc" type="arms" final="true">
 		<filter key="id" value="Urta" />
-		<oneof>scimitar</oneof>
+		<oneof>halberd</oneof>
 	</lootset>
 </loot>

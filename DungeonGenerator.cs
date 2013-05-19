@@ -132,7 +132,7 @@ namespace Noxico
 			if (templates == null)
 			{
 				templates = new Dictionary<string, List<Template>>();
-				xDoc = Mix.GetXMLDocument("buildings.xml");
+				xDoc = Mix.GetXmlDocument("buildings.xml");
 				foreach (var s in xDoc.SelectNodes("//set").OfType<XmlElement>())
 				{
 					var thisSet = s.GetAttribute("id");

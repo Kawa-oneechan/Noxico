@@ -570,7 +570,7 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[(int)Keys.F3])
 			{
 				NoxicoGame.ClearKeys();
-				ParentBoard.DumpToHTML();
+				ParentBoard.DumpToHtml();
 				NoxicoGame.AddMessage("Board dumped.");
 				return;
 			}

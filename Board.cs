@@ -773,7 +773,7 @@ namespace Noxico
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
-		public void DumpToHTML(string suffix = "")
+		public void DumpToHtml(string suffix = "")
 		{
 			if (!string.IsNullOrWhiteSpace(suffix) && !suffix.StartsWith("_"))
 				suffix = "_" + suffix;
@@ -795,7 +795,7 @@ namespace Noxico
 			file.WriteLine(DumpTokens(Tokens, 0));
 			file.WriteLine("</pre>");
 			file.WriteLine("<h2>Screendump</h2>");
-			CreateHTMLDump(file, true);
+			CreateHtmlScreenshot(file, true);
 
 			if (BoardType == BoardType.Dungeon || BoardType == BoardType.Wild)
 			{
@@ -989,7 +989,7 @@ namespace Noxico
 			}
 		}
 
-		public void CreateHTMLDump(StreamWriter stream, bool linked)
+		public void CreateHtmlScreenshot(StreamWriter stream, bool linked)
 		{
 			stream.WriteLine("<table style=\"font-family: Unifont, monospace;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 25; row++)
@@ -1043,6 +1043,20 @@ namespace Noxico
 				NoxicoGame.Sound.PlayMusic("set://Combat");
 			else
 				NoxicoGame.Sound.PlayMusic(this.Music);
+		}
+
+		public void LoadSurroundings()
+		{
+			var nox = NoxicoGame.HostForm.Noxico;
+			UpdateLightmap(nox.Player, true);
+			if (this.ToNorth > -1 && nox.Boards[this.ToNorth] == null)
+				nox.GetBoard(this.ToNorth).LoadSurroundings();
+			if (this.ToSouth > -1 && nox.Boards[this.ToSouth] == null)
+				nox.GetBoard(this.ToSouth).LoadSurroundings();
+			if (this.ToEast > -1 && nox.Boards[this.ToEast] == null)
+				nox.GetBoard(this.ToEast).LoadSurroundings();
+			if (this.ToWest > -1 && nox.Boards[this.ToWest] == null)
+				nox.GetBoard(this.ToWest).LoadSurroundings();
 		}
 	}
 

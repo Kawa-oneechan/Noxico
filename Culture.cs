@@ -32,14 +32,14 @@ namespace Noxico
 		{
 			Program.WriteLine("Loading deities...");
 			Deities = new List<Deity>();
-			xDoc = Mix.GetXMLDocument("deities.xml");
+			xDoc = Mix.GetXmlDocument("deities.xml");
 			foreach (var d in xDoc.SelectNodes("//deity").OfType<XmlElement>())
 				Deities.Add(new Deity(d)); 
 			
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new List<string>();
-			xDoc = Mix.GetXMLDocument("culture.xml");
+			xDoc = Mix.GetXmlDocument("culture.xml");
 			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
 				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
 			DefaultCulture = Cultures.ElementAt(0).Value;

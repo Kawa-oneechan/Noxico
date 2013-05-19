@@ -26,7 +26,7 @@ namespace Noxico
 			if (vendorTypeList == null)
 			{
 				vendorTypeList = new List<string>();
-				var lootData = Mix.GetXMLDocument("loot.xml");
+				var lootData = Mix.GetXmlDocument("loot.xml");
 				var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
 				foreach (var filter in filters.OfType<XmlElement>())
 				{
@@ -498,7 +498,7 @@ namespace Noxico
 		public static List<XmlElement> GetLoots(string target, string type, Dictionary<string, string> filters = null)
 		{
 			if (lootDoc == null)
-				lootDoc = Mix.GetXMLDocument("loot.xml", true);
+				lootDoc = Mix.GetXmlDocument("loot.xml", true);
 			var lootsets = new List<XmlElement>();
 			if (filters == null)
 				filters = new Dictionary<string, string>();
@@ -683,12 +683,12 @@ namespace Noxico
 		public static void LoadBiomes()
 		{
 			Biomes = new List<BiomeData>();
-			var x = Mix.GetXMLDocument("biomes.xml");
+			var x = Mix.GetXmlDocument("biomes.xml");
 			foreach (var realm in x.SelectNodes("//realm").OfType<XmlElement>())
 			{
 				var realmID = realm.GetAttribute("id"); 
 				foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-					Biomes.Add(BiomeData.FromXML(b, realmID));
+					Biomes.Add(BiomeData.FromXml(b, realmID));
 			}
 		}
 
@@ -706,7 +706,7 @@ namespace Noxico
 		public string[] Cultures { get; private set; }
 		public List<ClutterDefinition> Clutter { get; private set; }
 
-		public static BiomeData FromXML(XmlElement x, string realmID)
+		public static BiomeData FromXml(XmlElement x, string realmID)
 		{
 			var n = new BiomeData();
 			n.RealmID = realmID;

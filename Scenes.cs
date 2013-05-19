@@ -26,8 +26,8 @@ namespace Noxico
 		{
 			if (xSex == null)
 			{
-				xSex = UnfoldIfs(Mix.GetXMLDocument("scenesSex.xml", true));
-				xDlg = UnfoldIfs(Mix.GetXMLDocument("scenesDlg.xml", true));
+				xSex = UnfoldIfs(Mix.GetXmlDocument("scenesSex.xml", true));
+				xDlg = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
 			}
 
 			if (Dreaming)
