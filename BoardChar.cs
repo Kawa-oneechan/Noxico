@@ -14,7 +14,6 @@ namespace Noxico
 	{
 		private static int blinkRate = 1000;
 
-		public Motor Movement { get; set; }
 		public string Sector { get; set; }
 		public string Pairing { get; set; }
 		private int MoveTimer;
@@ -35,6 +34,7 @@ namespace Noxico
 		public string ScriptPathID { get; set; }
 		private Jint.JintEngine js;
 		private Scheduler scheduler;
+		public Dijkstra GuardMap { get; private set; }
 
 		public BoardChar()
 		{
@@ -81,7 +81,7 @@ namespace Noxico
 			var canMove = base.CanMove(targetDirection, check);
 			if (canMove != null && canMove is bool && !(bool)canMove)
 				return canMove;
-			if (Movement == Motor.WanderSector && !ScriptPathing)
+			if (!ScriptPathing && (Character.HasToken("sectorlock") || Character.HasToken("sectoravoid")))
 			{
 				if (!ParentBoard.Sectors.ContainsKey(Sector))
 					return canMove;
@@ -89,8 +89,11 @@ namespace Noxico
 				var newX = this.XPosition;
 				var newY = this.YPosition;
 				Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
-				if (newX < sect.Left || newX > sect.Right || newY < sect.Top || newY > sect.Bottom)
-					canMove = false;
+				var inRect = (newX >= sect.Left && newX <= sect.Right && newY >= sect.Top && newY <= sect.Bottom);
+				if (Character.HasToken("sectorlock") && !inRect)
+					return false;
+				if (Character.HasToken("sectoravoid") && inRect)
+					return false;
 			}
 			return canMove;
 		}
@@ -373,57 +376,82 @@ namespace Noxico
 					}
 					return;
 				}
-
-				switch (Movement)
-				{
-					default:
-					case Motor.Stand:
-						//Do nothing
-						break;
-					case Motor.Wander:
-					case Motor.WanderSector:
-						this.Move((Direction)Random.Next(4));
-						break;
-					case Motor.Hunt:
-						Hunt();
-						break;
-				}
 			}
 
-			var hostile = Character.HasToken("hostile");
+			var ally = Character.HasToken("ally");
+			var hostile = ally ? Character.GetToken("ally") : Character.GetToken("hostile");
 			var player = NoxicoGame.HostForm.Noxico.Player;
-			if (ParentBoard == player.ParentBoard && hostile && Movement != Motor.Hunt)
+			if (ParentBoard == player.ParentBoard && hostile != null)
 			{
-				if (DistanceFrom(player) > 10) //TODO: determine better range
-					return;
-				if (!CanSee(player))
-					return;
-				NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MGS Alert -- would normally be done in Noxicobotic, I guess...
-				MoveSpeed = 0;
-				Movement = Motor.Hunt;
-				
-				//If we're gonna rape the target, we'd want them for ourself. Otherwise...
-				if (Character.GetStat(Stat.Stimulation) < 30)
+				var target = (BoardChar)player;
+				if (ally)
+					target = ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => !(x is Player) && x != this && x.Character.HasToken("hostile"));
+
+				if (hostile.Value == 0) //Not actively hunting, but on the lookout.
 				{
-					//...we call out to nearby hostiles
-					var called = 0;
-					foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(x => !(x is Player) && x != this && DistanceFrom(x) < 10))
+					if (target != null && DistanceFrom(target) < 10 && CanSee(target))
 					{
-						called++;
-						other.CallTo(player);
-					}
-					if (called > 0)
-					{
-						if (!Character.HasToken("beast"))
-							NoxicoGame.AddMessage((Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
-						else
-							NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor());
-						Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
+						NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MGS Alert -- would normally be done in Noxicobotic, I guess...
+						MoveSpeed = 0;
+						hostile.Value = 1; //Switch to active hunting.
+						Energy -= 500;
+
+						if (!ally)
+						{
+							//If we're gonna rape the target, we'd want them for ourself. Otherwise...
+							if (Character.GetStat(Stat.Stimulation) < 30)
+							{
+								//...we call out to nearby hostiles
+								var called = 0;
+								foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(x => !(x is Player) && x != this && DistanceFrom(x) < 10 && x.Character.HasToken("hostile")))
+								{
+									called++;
+									other.CallTo(player);
+								}
+								if (called > 0)
+								{
+									if (!Character.HasToken("beast"))
+										NoxicoGame.AddMessage((Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
+									else
+										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor());
+									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
+									Energy -= 2000;
+								}
+							}
+						}
+						return;
 					}
 				}
+				else if (hostile.Value == 1)
+				{
+					Hunt();
+					return;
+				}
 			}
-			if (Movement == Motor.Hunt && !hostile)
-				Movement = Motor.Wander;
+
+			if (Character.HasToken("guardspot"))
+			{
+				var guardX = this.XPosition;
+				var guardY = this.YPosition;
+				if (Character.GetToken("guardspot").Tokens.Count > 0)
+				{
+					if (this.GuardMap == null)
+					{
+						GuardMap = new Dijkstra(ParentBoard);
+						GuardMap.Hotspots.Add(new Point(guardX, guardY));
+						GuardMap.Update();
+						GuardMap.Ignore = DijkstraIgnore.Type;
+						GuardMap.IgnoreType = typeof(BoardChar);
+					}
+				}
+				var dir = Direction.North;
+				if (this.XPosition != guardX && this.YPosition != guardY)
+					if (GuardMap.RollDown(this.YPosition, this.XPosition, ref dir))
+						Move(dir);
+				return;
+			}
+			
+			
 		}
 
 		private void Hunt()
@@ -434,21 +462,23 @@ namespace Noxico
 			if (Character.HasToken("beast"))
 				Character.GetToken("stimulation").Value = 0;
 
+			var ally = Character.HasToken("ally");
+			var hostile = ally ? Character.GetToken("ally") : Character.GetToken("hostile");
+			if (hostile == null)
+				return;
+
 			BoardChar target = null;
 			//If no target is given, assume the player.
 			if (Character.HasToken("huntingtarget"))
 				target = ParentBoard.Entities.OfType<BoardChar>().First(x => x.ID == Character.GetToken("huntingtarget").Text);
-			else if (NoxicoGame.HostForm.Noxico.Player.ParentBoard == this.ParentBoard)
+			else if (!ally && NoxicoGame.HostForm.Noxico.Player.ParentBoard == this.ParentBoard)
 				target = NoxicoGame.HostForm.Noxico.Player;
 
 			if (target == null)
 			{
 				//Intended target isn't on the board. Break off the hunt?
 				MoveSpeed = 2;
-				Movement = Motor.Wander;
-				if (!string.IsNullOrWhiteSpace(Sector) && Sector != "<null>")
-					Movement = Motor.WanderSector;
-				//TODO: use pathfinder to go back to assigned sector.
+				hostile.Value = 0;
 				return;
 			}
 
@@ -482,6 +512,7 @@ namespace Noxico
 								if (find.Equip(this.Character, carriedItem))
 								{
 									Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+									Energy -= 1000;
 									return; //end turn
 								}
 							}
@@ -511,6 +542,7 @@ namespace Noxico
 								if (find.Equip(this.Character, carriedItem))
 								{
 									Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+									Energy -= 1000;
 									return; //end turn
 								}
 							}
@@ -565,7 +597,7 @@ namespace Noxico
 				{
 					Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 					MoveSpeed = 2;
-					Movement = Motor.Wander;
+					hostile.Value = 0; //Switch off hunting mode
 				}
 				if (CanSee(target))
 				{
@@ -618,8 +650,15 @@ namespace Noxico
 
 		public void CallTo(BoardChar target)
 		{
+			var hostile = Character.GetToken("hostile");
+			if (hostile == null)
+			{
+				Program.WriteLine("{0} called to action, but is nonhostile.", this.Character.Name);
+				return;
+			}
+			hostile.Value = 1; //engage hunt mode!
+			Energy -= 800; //surprised, so not 500.
 			MoveSpeed = 0;
-			Movement = Motor.Hunt;
 			var lastPos = Character.Path("targetlastpos");
 			if (lastPos == null)
 			{
@@ -861,7 +900,6 @@ namespace Noxico
 		{
 			Toolkit.SaveExpectation(stream, "BCHR");
 			base.SaveToFile(stream);
-			stream.Write((byte)Movement);
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
 			stream.Write((byte)MoveTimer);
@@ -877,7 +915,6 @@ namespace Noxico
 				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 			};
-			newChar.Movement = (Motor)stream.ReadByte();
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.MoveTimer = stream.ReadByte();
