@@ -368,7 +368,10 @@ namespace Noxico
 
 		private TaskStatus WanderInSector(Task task)
 		{
-			entity.Movement = Motor.WanderSector;
+			if (!entity.Character.HasToken("sectorlock"))
+				entity.Character.AddToken("sectorlock");
+			entity.Character.RemoveToken("sectoravoid");
+			//TODO: set the sector somehow.
 
 			if (task.timer != -1)
 			{
@@ -383,7 +386,8 @@ namespace Noxico
 
 		private TaskStatus WaitInPlace(Task task)
 		{
-			entity.Movement = Motor.Stand;
+			entity.Character.RemoveToken("sectorlock");
+			entity.Character.RemoveToken("sectoravoid");
 
 			if (task.timer != -1)
 			{

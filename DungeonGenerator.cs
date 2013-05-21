@@ -430,7 +430,7 @@ namespace Noxico
 							//bc.XPosition = (col * 10) + i;
 							//bc.YPosition = row * 12;
 						}
-						bc.Movement = Motor.WanderSector;
+						bc.Character.AddToken("sectorlock");
 						bc.ParentBoard = Board;
 						bc.AdjustView();
 						bc.Sector = string.Format("s{0}x{1}", row, col);
