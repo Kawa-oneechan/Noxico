@@ -115,6 +115,7 @@ namespace Noxico
 		public string IniPath { get; set; }
 		public new Point Cursor { get; set; }
 		private Point prevCursor;
+		private Pen[] cursorPens;
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -234,6 +235,11 @@ namespace Noxico
 				Running = true;
 
 				Cursor = new Point(-1, -1);
+				cursorPens = new Pen[16];
+				cursorPens[0] = Pens.Black;
+				for (var i = 1; i < 9; i++)
+					cursorPens[i] = cursorPens[16 - i] = new Pen(Color.FromArgb(0, (i * 32) - 1, 0));
+
 				fpsTimer = new Timer()
 				{
 					Interval = 1000,
@@ -351,6 +357,17 @@ namespace Noxico
 				return;
 			}
 			e.Graphics.DrawImage(backBuffer, ClientRectangle);
+			
+			//Moved here from Draw() to prevent mouse droppings. Bonus: this allows a slightly larger cursor.
+			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
+				prevCursor = Cursor;
+			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
+			{
+				var cSize = CellWidth;
+				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
+					cSize *= 2;
+				e.Graphics.DrawRectangle(cursorPens[Environment.TickCount % cursorPens.Length], (Cursor.X * CellWidth) - 1, (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
+			}
 		}
 
 		private void CachePNGFont(char p)
@@ -530,19 +547,6 @@ namespace Noxico
             }
 			Marshal.Copy(scan0, 0, lockData.Scan0, size);
 			backBuffer.UnlockBits(lockData);
-
-			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
-				prevCursor = Cursor;
-			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
-			{
-				var cSize = CellWidth;
-				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
-					cSize *= 2;
-				using (var gfx = Graphics.FromImage(backBuffer))
-				{
-					gfx.DrawRectangle(Environment.TickCount % 1000 < 500 ? Pens.Black : Pens.White /* new Pen(image[Cursor.X, Cursor.Y].Foreground) */, Cursor.X * CellWidth, Cursor.Y * CellHeight, cSize - 1, CellHeight - 1);
-				}
-			}
 			Frames++;
             this.Refresh();
         }
