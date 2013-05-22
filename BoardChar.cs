@@ -16,8 +16,6 @@ namespace Noxico
 
 		public string Sector { get; set; }
 		public string Pairing { get; set; }
-		private int MoveTimer;
-		public int MoveSpeed { get; set; }
 
 		public Dijkstra DijkstraMap { get; private set; }
 		public Character Character { get; set; }
@@ -42,7 +40,6 @@ namespace Noxico
 			this.ForegroundColor = Color.White;
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
-			this.MoveSpeed = 2;
 
 			this.DijkstraMap = new Dijkstra();
 			this.DijkstraMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
@@ -348,34 +345,24 @@ namespace Noxico
 			if (this.Character.HasToken("sleeping"))
 				return;
 
-			if (MoveTimer > MoveSpeed)
-				MoveTimer = 0;
-			else if (MoveSpeed > 0)
-				MoveTimer++;
-
 			ActuallyMove();
-			if (Character.HasToken("haste"))
-					ActuallyMove();
 		}
 
 		private void ActuallyMove()
 		{
-			if (MoveTimer == 0)
+			if (ScriptPathing)
 			{
-				if (ScriptPathing)
+				var dir = Direction.North;
+				ScriptPathTarget.Ignore = DijkstraIgnore.Type;
+				ScriptPathTarget.IgnoreType = typeof(BoardChar);
+				if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
+					Move(dir);
+				if (this.XPosition == ScriptPathTargetX && this.YPosition == ScriptPathTargetY)
 				{
-					var dir = Direction.North;
-					ScriptPathTarget.Ignore = DijkstraIgnore.Type;
-					ScriptPathTarget.IgnoreType = typeof(BoardChar);
-					if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
-						Move(dir);
-					if (this.XPosition == ScriptPathTargetX && this.YPosition == ScriptPathTargetY)
-					{
-						ScriptPathing = false;
-						RunScript(OnPathFinish);
-					}
-					return;
+					ScriptPathing = false;
+					RunScript(OnPathFinish);
 				}
+				return;
 			}
 
 			var ally = Character.HasToken("ally");
@@ -392,7 +379,6 @@ namespace Noxico
 					if (target != null && DistanceFrom(target) < 10 && CanSee(target))
 					{
 						NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MGS Alert -- would normally be done in Noxicobotic, I guess...
-						MoveSpeed = 0;
 						hostile.Value = 1; //Switch to active hunting.
 						Energy -= 500;
 
@@ -450,8 +436,9 @@ namespace Noxico
 						Move(dir);
 				return;
 			}
-			
-			
+
+			if (Random.Flip())
+				this.Move((Direction)Random.Next(4));
 		}
 
 		private void Hunt()
@@ -477,12 +464,9 @@ namespace Noxico
 			if (target == null)
 			{
 				//Intended target isn't on the board. Break off the hunt?
-				MoveSpeed = 2;
 				hostile.Value = 0;
 				return;
 			}
-
-			MoveSpeed = 0;
 
 			var distance = DistanceFrom(target);
 			//var weapon = Character.CanShoot();
@@ -596,7 +580,6 @@ namespace Noxico
 				else
 				{
 					Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
-					MoveSpeed = 2;
 					hostile.Value = 0; //Switch off hunting mode
 				}
 				if (CanSee(target))
@@ -658,7 +641,6 @@ namespace Noxico
 			}
 			hostile.Value = 1; //engage hunt mode!
 			Energy -= 800; //surprised, so not 500.
-			MoveSpeed = 0;
 			var lastPos = Character.Path("targetlastpos");
 			if (lastPos == null)
 			{
@@ -902,7 +884,6 @@ namespace Noxico
 			base.SaveToFile(stream);
 			stream.Write(Sector ?? "<null>");
 			stream.Write(Pairing ?? "<null>");
-			stream.Write((byte)MoveTimer);
 			Character.SaveToFile(stream);
 		}
 
@@ -917,7 +898,6 @@ namespace Noxico
 			};
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
-			newChar.MoveTimer = stream.ReadByte();
 			newChar.Character = Character.LoadFromFile(stream);
 			newChar.AdjustView();
 			newChar.ReassignScripts();
