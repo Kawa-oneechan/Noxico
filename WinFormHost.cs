@@ -26,6 +26,34 @@ namespace Noxico
 				return;
 			}
 
+			if (Program.CanWrite())
+			{
+				try
+				{
+					var server = "http://helmet.kafuka.org/noxico/files/";
+					var expectedVersion = Application.ProductVersion.Substring(0, 5);
+					using (var wc = new System.Net.WebClient())
+					{
+						var gotVersion = wc.DownloadString(server + "version.txt");
+						if (gotVersion.Contains(expectedVersion))
+							Program.WriteLine("No update required.");
+						else
+						{
+							var answer = SystemMessageBox.Show("A new version of the game is available. Would you like to download it now?" + Environment.NewLine + Environment.NewLine + "This could take a while.", Application.ProductName, MessageBoxButtons.YesNo);
+							if (answer == DialogResult.Yes)
+							{
+								Application.Run(new UpdateForm());
+								return;
+							}
+						}
+					}
+				}
+				catch (System.Net.WebException)
+				{
+					Program.WriteLine("Couldn't check for updates.");
+				}
+			}
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			try
@@ -51,6 +79,13 @@ namespace Noxico
 		public static void WriteLine(object value)
 		{
 			Console.WriteLine(value.ToString());
+		}
+
+		public static bool CanWrite()
+		{
+			var fi = new FileInfo(Application.ExecutablePath);
+			var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+			return !((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf));
 		}
 	}
 
@@ -178,9 +213,7 @@ namespace Noxico
 					portable = true;
 					var oldIniPath = IniPath;
 					IniPath = "noxico.ini";
-					var fi = new FileInfo(Application.ExecutablePath);
-					var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-					if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf))
+					if (!Program.CanWrite())
 					{
 						var response = SystemMessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
 						if (response == DialogResult.Cancel)
