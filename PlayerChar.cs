@@ -676,6 +676,23 @@ namespace Noxico
 				NoxicoGame.AddMessage(i18n.Format("autotravelstop"));
 				AutoTravelling = false;
 			}
+
+			if (Character.HasItemEquipped("eternitybrooch"))
+			{
+				var brooch = Character.GetEquippedItemBySlot("neck"); //can assume the neck slot has the brooch.
+				var today = NoxicoGame.InGameTime.DayOfYear;
+				if (!brooch.HasToken("lastTrigger"))
+					brooch.AddToken("lastTrigger", today - 2);
+				if (Math.Abs(brooch.GetToken("lastTrigger").Value - today) >= 2 && Character.Health - damage <= 0) 
+				{
+					brooch.GetToken("lastTrigger").Value = today;
+					NoxicoGame.AddMessage(i18n.GetString("eternitybrooched"));
+					Character.Health = Character.MaximumHealth;
+					Reposition();
+					return false;
+				}
+			}
+
 			var dead = base.Hurt(damage, obituary, aggressor, finishable);
 			if (dead)
 			{

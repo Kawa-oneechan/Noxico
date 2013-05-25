@@ -675,7 +675,7 @@ namespace Noxico
 			var baseDamage = 0.0f;
 			var dodged = false;
 			var skill = "unarmed_combat";
-			var verb = "struck";
+			var verb = "strikes";
 			var obituary = "died from being struck down";
 			var attackerName = this.Character.GetNameOrTitle(false, true);
 			var attackerFullName = this.Character.GetNameOrTitle(true, true);
@@ -730,7 +730,7 @@ namespace Noxico
 
 			if (dodged)
 			{
-				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodged " + (target is Player ? attackerName + "'s" : "your") + " attack.", target.GetEffectiveColor());
+				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodge " + (target is Player ? attackerName + "'s" : "your") + " attack.", target.GetEffectiveColor());
 				return false;
 			}
 
