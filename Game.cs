@@ -237,7 +237,6 @@ namespace Noxico
 			CurrentBoard = new Board();
 			this.Player = new Player();
 			Introduction.Title();
-			//Options.Open();
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false)
@@ -426,6 +425,8 @@ namespace Noxico
 				//	Player.Character.GetToken("items").AddToken("henshin_belt").AddToken("color", 0, Toolkit.PickOne("red", "blue", "yellow", "pink", "black", "gold", "silver", "white"));
 				//if (!Player.Character.HasItem("timertest"))
 				//	Player.Character.GetToken("items").AddToken("timertest");
+				if (!Player.Character.HasItem("eternitybrooch"))
+					Player.Character.GetToken("items").AddToken("eternitybrooch");
 			}
 		}
 

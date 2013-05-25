@@ -1831,4 +1831,19 @@ tool
 			]]>
 	</item>
 
+	<category name="Deity artifacts">
+		<!-- Eternity -->
+		<item id="eternitybrooch" name="Timeless Brooch" the="the" proper="true">
+			<![CDATA[
+equipable
+	neck
+unique
+price: 10000
+ascii
+	char: U+028A
+	color: white
+description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
+			]]>
+		</item>
+	</category>
 </items>

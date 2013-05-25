@@ -240,6 +240,7 @@ Number of known items       {2}
 		<word id="yourhandsarefull">Your hands are already full.</word>
 		<word id="yourmouthisfull">Your mouth is already full.</word>
 		<word id="yourhornisfull">You have no more places to put it.</word>
+		<word id="eternitybrooched">The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
