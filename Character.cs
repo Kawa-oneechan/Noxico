@@ -1011,6 +1011,7 @@ namespace Noxico
 				}
 			}
 
+
 			print("Breasts: ");
 			if (breastRows.Count == 0)
 				print("none\n");
@@ -1020,6 +1021,8 @@ namespace Noxico
 				for (var i = 0; i < breastRows.Count; i++)
 				{
 					var row = breastRows[i];
+					//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
+					//	continue;
 					print("| " + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes") + " breast");
 					if (row.GetToken("amount").Value > 1)
 						print("s");
@@ -1956,6 +1959,8 @@ namespace Noxico
 					}
 					sizes[i] = sizes[i - 1] * multiplier;
 				}
+				if (rows[i].HasToken("lactation"))
+					sizes[i] += 0.25f * rows[i].GetToken("lactation").Value;
 			}
 			return sizes;
 		}
