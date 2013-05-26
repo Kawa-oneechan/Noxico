@@ -37,7 +37,7 @@
 ]>
 <scenes>
 	<scene id="PonyConvoStartUnknown" name="(starting node)">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="relation" value="none" />
 		<p>
 			The [b:t:skin/color] [b:title] waves a [b:foot] at you.
@@ -57,7 +57,7 @@
 	</scene>
 
 	<scene id="PonyConvoStartKnown" name="(starting node)">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			The [b:t:skin/color] [b:title] smiles, waving a [b:foot] at you.
 		</p>
@@ -70,7 +70,7 @@
 	</scene>
 
 	<scene id="PonyConvoTalk" name="Talk" list="Talk">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"Sure. What would you like to talk about?"
 		</p>
@@ -80,7 +80,7 @@
 	</scene>
 
 	<scene id="PonyConvoTalkHimselfLiked" name="Talk about him" list="[b:Him]self">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="liking" value="20" />
 		<p>
 			The pony smiles up at you, before turning [b:his] face away.
@@ -98,7 +98,7 @@
 	</scene>
 
 	<scene id="PonyConvoTalkHimself" name="Talk about him" list="[b:Him]self">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="liking" value="20" />
 		<p>
 			The pony scratches [b:his] a hoof against the ground and smiles.
@@ -116,7 +116,7 @@
 	</scene>
 
 	<scene id="PonyConvoTalkOrigins" name="Talk about his origins" list="[b:His] origins">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			<if target="bottom" type="liking" value="20">
 				"I was born and raised around here. My kind came from the land of Equestria."
@@ -131,7 +131,7 @@
 	</scene>
 
 	<scene id="PonyConvoPressOriginsLiked" name="Press about his origins" list="Press about [b:his] origins">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="liking" value="20" />
 		<p>
 			"Really? I guess it wouldn't hurt."
@@ -147,7 +147,7 @@
 	</scene>
 
 	<scene id="PonyConvoPressOrigins" name="Press about his origins" list="Press about [b:his] origins">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"It's a boring story. You wouldn't be interested."
 		</p>
@@ -156,7 +156,7 @@
 	</scene>
 
 	<scene id="PonyConvoDoYouLikeIt" name="Ask if he likes it here" list="Do you like it here?">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"Like I said, I was born here. I'm used to this place. Still, it's hard not to think about where we come from."
 		</p>
@@ -171,7 +171,7 @@
 	</scene>
 
 	<scene id="PonyConvoFlirt" name="Flirt" list="You know...">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"Yes?"
 		</p>
@@ -181,7 +181,7 @@
 	</scene>
 
 	<scene id="PonyConvoFlirtHair" name="Flirt about hair" list="Flirt about hair">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			[b:He] blushes, turning [b:his] face away.
 		</p>
@@ -199,7 +199,7 @@
 	</scene>
 
 	<scene id="PonyConvoFlirtBodyLiked" name="Flirt about body" list="Flirt about body">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="liking" value="30" />
 		<p>
 			The [b:title] smiles, turning [b:his] face away slightly. [b:His] eyes remain fixed on you.
@@ -218,7 +218,7 @@
 	</scene>
 
 	<scene id="PonyConvoFlirtBody" name="Flirt about body" list="Flirt about body">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="liking" value="30-" />
 		<p>
 			"You should keep your eyes to yourself"
@@ -235,7 +235,7 @@
 	</scene>
 
 	<scene id="PonyConvoFlirtApologize" name="Sorry for flirting" list="Sorry!">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"Well, you didn't mean anything bad by it, so I suppose I can forgive you."
 		</p>
@@ -247,7 +247,7 @@
 	</scene>
 
 	<scene id="PonyConvoNeverMind" name="Never mind" list="Never mind, it's nothing.">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			"Alright, I guess."
 		</p>
@@ -257,7 +257,7 @@
 	</scene>
 
 	<scene id="PonyConvoGetGoing" name="Get going" list="I should get going.">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			<if target="bottom" type="liking" value="30">
 				"Already? Alright. I'll talk to you later!"

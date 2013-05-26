@@ -2809,16 +2809,16 @@ namespace Noxico
 
 		public string GetClosestBodyplanMatch()
 		{
-			var thisLev = Toolkit.GetLevenshteinString(this);
+			var thisHash = Toolkit.GetBodyComparisonHash(this);
 			var ret = "";
 			var score = 999;
-			foreach (var lev in NoxicoGame.BodyplanLevs)
+			foreach (var hash in NoxicoGame.BodyplanHashes)
 			{
-				var distance = Toolkit.Levenshtein(thisLev, lev.Value);
+				var distance = Toolkit.GetHammingDistance(thisHash, hash.Value);
 				if (distance <= score)
 				{
 					score = distance;
-					ret = lev.Key;
+					ret = hash.Key;
 				}
 			}
 			if (score == 999)

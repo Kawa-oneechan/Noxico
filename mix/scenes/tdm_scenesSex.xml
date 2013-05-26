@@ -40,7 +40,7 @@
 	
 	<!-- Player win rapes -->
 	<scene id="TDM_WinAgainstNaga" name="(rape start)">
-		<filter target="bottom" type="bodylev" name="naga" />
+		<filter target="bottom" type="bodyhash" name="naga" />
 		<p>
 			With less than savory plans for the defeated [b:title], you take stock of [b:name] and consider how you should take advantage.
 		</p>
@@ -198,7 +198,7 @@
 	
 	<!-- Player loss rapes -->
 	<scene id="TDM_LoseAgainstNaga" name="(loss rape start)">
-		<filter target="top" type="bodylev" name="naga" />
+		<filter target="top" type="bodyhash" name="naga" />
 		<p>
 			You look up exhausted to see the face of [t:name] looking down at you with a sick grin on [t:his] face..
 		</p>
