@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,9 +14,9 @@ namespace Noxico
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
 
 		/// <summary>
-		/// Returns the amount of change between two strings.
+		/// Returns the amount of change between two strings according to the Levenshtein method.
 		/// </summary>
-		public static int Levenshtein(string s, string t)
+		public static int GetLevenshteinDistance(string s, string t)
 		{
 			var n = s.Length;
 			var m = t.Length;
@@ -45,9 +45,19 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Creates an encoded textual description of a character's body to use in Levenshtein comparisons.
+		/// Returns the amount of change between two strings according to the Hamming method.
 		/// </summary>
-		public static string GetLevenshteinString(TokenCarrier token)
+		public static int GetHammingDistance(string s, string t)
+		{
+			if (s.Length != t.Length)
+				throw new ArgumentException("Subject strings in a Hamming distance calculation should be of equal length.");
+			return s.Zip(t, (c1, c2) => c1 == c2 ? 0 : 1).Sum();
+		}
+
+		/// <summary>
+		/// Creates an encoded textual description of a character's body to use in comparisons.
+		/// </summary>
+		public static string GetBodyComparisonHash(TokenCarrier token)
 		{
 			var ret = new StringBuilder();
 			if (token.Path("hair") != null)
@@ -160,7 +170,7 @@ namespace Noxico
 						{ "cow", 'c' },
 						{ "tentacle", '!' },
 						{ "stinger", 'v' },
-						{ "spider", 'S' },
+						{ "spider", 'A' },
 					};
 					if (tailTypes.ContainsKey(tailToken.Text))
 						ret.Append(tailTypes[tailToken.Text]);

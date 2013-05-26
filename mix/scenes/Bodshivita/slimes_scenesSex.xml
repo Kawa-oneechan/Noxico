@@ -40,7 +40,7 @@
 	<!-- Slime scenes by Bodshivita -->
 
 	<scene id="Bodshi_WinAgainstSlime" name="(rape start)">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<p>
 			Deciding to claim the "spoils" of your victory rather than [b:his] life, you gaze upon the defeated [b:title]'s semi-solid body with an aroused glint in your eyes. Simply thinking of the myriad pleasures your victim's malleable body could provide sends a shiver down your spine, getting you all bothered and hot.
@@ -63,7 +63,7 @@
 	
 	
 	<scene id="Bodshi_WinSlimeEatenOut" name="player win slime get eaten out" list="Get eaten out">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<filter target="top" type="has" name="vagina" />
 		<p>
@@ -107,7 +107,7 @@
 	
 	
 	<scene id="Bodshi_WinSlimeBlowjobLargeSized" name="player win slime get blowjob" list="Get a blowjob">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<filter target="top" type="has" name="penis" />
 		<filter target="top" type="value_gteq" name="penis/length" value="24" />
@@ -150,7 +150,7 @@
 	
 	
 	<scene id="Bodshi_WinSlimeBlowjobNormalSized" name="player win slime get blowjob" list="Get a blowjob">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="top" type="has" name="penis" />
 		<filter target="bottom" type="has" name="skin/type" value="slime" />
 		<p>
@@ -227,7 +227,7 @@
 	
 	
 	<scene id="Bodshi_WinSlimeTitfuck" name="player win slime titty fuck" list="Titty fuck?">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="bottom" type="has" name="breastrow" />
 		<filter target="bottom" type="value_gteq" name="breastrow/size" value="3"/>
 		<filter target="bottom" type="has" name="slimeblob" />
@@ -298,7 +298,7 @@
 
 	<scene id="Bodshi_WinSlimePussyFuck" name="player win slime fuck vagina" list="Fuck that slime's pussy!">
 		<filter target="top" type="has" name="penis" />
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<filter target="bottom" type="has" name="vagina" />
 		<p>
 			You grin as you look on at the helpless goo [b:g:boy:girl] while [b:he] coos at the sight of your [t:cocktype] [cockrand], slipping [b:his] fingers into [b:his] [pussyrand] and jilling [b:his] sloshing hole, letting you hear the moist slicks of her box. Treated to the sight of the whore who was so aggressive just a moment ago, your [cockrand] stiffens as your ears are assaulted by the lewd sounds coming from that juicy snatch.
@@ -319,7 +319,7 @@
 	</scene>
 
 	<scene id="Bodshi_WinSlimeDecline" name="leave the slime" list="Nah, never mind">
-		<filter target="bottom" type="bodylev" name="slime" />
+		<filter target="bottom" type="bodyhash" name="slime" />
 		<p>
 			You shrug and turn away, not wanting to fuck the shit out of your gelatinous captive at this particular moment. Perhaps you can subdue [b:him] later when you need a nice hot [t:g:screw:cumdump]?
 		</p>

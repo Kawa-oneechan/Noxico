@@ -336,9 +336,9 @@ namespace Noxico
 					else if (fValue == "female" && fPrimary.Gender != Gender.Female)
 						return false;
 					break;
-				case "bodylev":
-					var primaryLev = Toolkit.GetLevenshteinString(fPrimary);
-					var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[fName]);
+				case "bodyhash":
+					var primaryHash = Toolkit.GetBodyComparisonHash(fPrimary);
+					var distance = Toolkit.GetHammingDistance(primaryHash, NoxicoGame.BodyplanHashes[fName]);
 					if (distance > 0) //?
 						return false;
 					break;
@@ -517,7 +517,7 @@ namespace Noxico
 								}
 								else
 								{
-									type = "bodylev";
+									type = "bodyhash";
 									name = keywords[1];
 								}
 							}

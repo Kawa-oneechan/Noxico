@@ -41,7 +41,7 @@
 	
 	<!-- Player win rapes -->
 	<scene id="Pillow_PlayerWinImpRapeStart" name="(rape start)">
-	<filter target="bottom" type="bodylev" name="imp" />
+	<filter target="bottom" type="bodyhash" name="imp" />
 	<filter target="bottom" type="has" name="terms/generic" value="imp"/>
 		<p>
 			Seeing this as the perfect opportunity for some payback, you stand over the struggling [b:title] and smirk as [b:he] glares up at you. You hold [b:his] head between your <if target="top" type="has" name="quadruped">[t:feet]</if><else>hands</else>, force [b:him] to look you in the eyes and tell [b:him] in no uncertain terms that [b:he] is yours to do with as you please.
@@ -71,7 +71,7 @@
 	<!-- Player loss rapes -->
 	
 	<scene id="Pillow_PlayerLossImpRapeStart" name="(loss rape start)">
-		<filter target="top" type="bodylev" name="imp" />
+		<filter target="top" type="bodyhash" name="imp" />
 		<filter target="top" type="has" name="terms/generic" value="imp"/>
 		<p>
 			After taking a final hit from the [t:title], you grunt in pain and fall to the ground beaten and exhausted. You try to push yourself up, but a sudden pressure on the top of your head forces you back onto the ground. 

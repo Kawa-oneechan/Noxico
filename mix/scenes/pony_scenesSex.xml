@@ -39,7 +39,7 @@
 ]>
 <scenes>
 	<scene id="PonyConStart" name="(starting node)">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="has" name="willing" />
 		<p>
 			You reach your [t:hand] up to the side of the [b:title]'s face, staring fervently at [b:his] eyes.
@@ -52,7 +52,7 @@
 	</scene>
 
 	<scene id="PonyConStartNonwilling" name="(starting node)">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="hasnot" name="willing" />
 		<p>
 			You reach your [t:hand] up to the side of the [b:title]'s face, staring fervently at [b:his] eyes.
@@ -66,7 +66,7 @@
 	</scene>
 
 	<scene id="PonyConStartKiss" name="Kiss" list="Kiss [b:him]">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			You lean closer, heart racing as you push your lips against [b:his].  The [b:t:skin/color] colored [b:title] melts, pressing [b:his] lips back against yours.
 		</p>
@@ -80,7 +80,7 @@
 	</scene>
 
 	<scene id="PonyConGiveBlowjob" name="Give blowjob" list="Give [b:him] a blowjob">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<filter target="bottom" type="canfitdickinmouth" />
 		<p>
 			Pulling your lips from [b:name]'s, you begin to pepper kisses down [b:his] neck, breathing in [b:his] [b:g:musk:perfume] through your nose. [b:He] squirms as you reach [b:his] abdomen and push [b:him] backwards onto [b:his] hindquarters. [b:His] semi-erect [cockrand] pulses and bounces in anticipation. You straighten [b:him] out with your [t:hand], making [b:him] release a quiet whinny. With a devious smile, you drag your tongue from [b:his] <if target="bottom" type="has" name="vagina">[pussyrand]</if><else><if target="bottom" type="has" name="balls">balls</if><else>taint</else></else> to the top of [b:his] [cockrand].
@@ -97,7 +97,7 @@
 	</scene>
 
 	<scene id="PonyConGiveBlowJobInside" name="Give blowjob cum inside" list="Drink [b:his] load">
-		<filter target="bottom" type="bodylev" name="littlepony" />
+		<filter target="bottom" type="bodyhash" name="littlepony" />
 		<p>
 			Deciding that the taste of your [b:title] lover is of the most importance, you begin to bob your head fervidly on the [b:cocktype] [cockrand]. [b:name] bites [b:his] lower lip, [b:his] hips bucking against your face as you drive [b:him] into your throat. It barely takes a moment for your [b:t:skin/color] lover to buckle forwards, wrapping [b:his] upper body around your head with a heated moan.
 		</p>
@@ -112,7 +112,7 @@
 	</scene>
 
 	<scene id="PonyConThanks" name="Thanks" list="Thank [b:him]">
-		<!-- <filter target="bottom" type="bodylev" name="littlepony" /> -->
+		<!-- <filter target="bottom" type="bodyhash" name="littlepony" /> -->
 		<!-- Disabled the pony filter and removed the player's lines. -->
 		<p>
 			You whisper your thanks to the [b:title] and tell [b:him] you had fun. [b:name] looks at you with a satisfied grin.
@@ -131,7 +131,7 @@
 	</scene>
 
 	<scene id="PonyConNoThanks" name="Pull away" list="Pull away">
-		<!-- <filter target="bottom" type="bodylev" name="littlepony" /> -->
+		<!-- <filter target="bottom" type="bodyhash" name="littlepony" /> -->
 		<!-- Disabled the pony filter and removed the player's lines. -->
 		<p>
 			You pull your [hand] away, averting your eyes. You stammer a quick "&nofilter;never mind", not sure what you want.

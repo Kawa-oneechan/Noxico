@@ -48,7 +48,7 @@ namespace Noxico
 		public static SubscreenFunc Subscreen { get; set; }
 		public static Dictionary<string, char> Views { get; private set; }
 		public static string[] TileDescriptions { get; private set; }
-		public static Dictionary<string, string> BodyplanLevs { get; private set; }
+		public static Dictionary<string, string> BodyplanHashes { get; private set; }
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
 		public static string ContextMessage { get; set; }
@@ -146,8 +146,8 @@ namespace Noxico
 			Program.WriteLine("Loading bodyplans...");
 			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
 			Views = new Dictionary<string, char>();
-			var ohboy = new TokenCarrier();
-			BodyplanLevs = new Dictionary<string, string>();
+			var planTokens = new TokenCarrier();
+			BodyplanHashes = new Dictionary<string, string>();
 			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
 			{
 				var id = bodyPlan.GetAttribute("id");
@@ -173,12 +173,11 @@ namespace Noxico
 						}
 					}
 				}
-				ohboy.Tokenize(plan);
-				Toolkit.VerifyBodyplan(ohboy, id);
-				if (ohboy.HasToken("beast"))
+				planTokens.Tokenize(plan);
+				Toolkit.VerifyBodyplan(planTokens, id);
+				if (planTokens.HasToken("beast"))
 					continue;
-				var lev = Toolkit.GetLevenshteinString(ohboy);
-				BodyplanLevs.Add(id, lev);
+				BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(planTokens));
 			}
 
 			Program.WriteLine("Loading items...");
@@ -1301,8 +1300,8 @@ namespace Noxico
 					//See if there's a character on the board with this bodyplan and gender already
 					foreach (var person in unexpected)
 					{
-						var primaryLev = Toolkit.GetLevenshteinString(person.Character);
-						var distance = Toolkit.Levenshtein(primaryLev, NoxicoGame.BodyplanLevs[bodyplan]);
+						var primaryHash = Toolkit.GetBodyComparisonHash(person.Character);
+						var distance = Toolkit.GetHammingDistance(primaryHash, NoxicoGame.BodyplanHashes[bodyplan]);
 						if (distance == 0) //?
 						{
 							var pg = person.Character.Gender;
