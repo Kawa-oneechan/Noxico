@@ -160,9 +160,15 @@ namespace Noxico
 					if (PointingAt is Player)
 					{
 						description = i18n.Format("action_descyou", player.Character.GetNameOrTitle());
-						options["look"] = i18n.Format("action_lookatyou");
+						options["look"] = i18n.GetString("action_lookatyou");
 						if (player.Character.GetStat(Stat.Stimulation) >= 30)
-							options["fuck"] = i18n.Format("action_masturbate");
+							options["fuck"] = i18n.GetString("action_masturbate");
+
+						if (player.Character.HasToken("copier") && player.Character.GetToken("copier").Value == 1)
+						{
+							if (player.Character.Path("copier/backup") != null || player.Character.Path("copier/full") == null)
+								options["revert"] = i18n.GetString("action_revert");
+						}
 					}
 					else if (PointingAt is BoardChar)
 					{
@@ -186,6 +192,12 @@ namespace Noxico
 								else
 									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
 							}
+						}
+
+						if (canSee && !boardChar.Character.HasToken("beast") && player.Character.HasToken("copier") && player.Character.Path("copier/timeout") == null)
+						{
+							if (player.Character.UpdateCopier())
+								options["copy"] = i18n.Format("action_copyhim", boardChar.Character.HimHerIt(true));
 						}
 
 						if (canSee && player.Character.CanShoot() != null && player.ParentBoard.HasToken("combat"))
@@ -273,6 +285,20 @@ namespace Noxico
 
 								case "shoot":
 									player.AimShot(PointingAt);
+									break;
+
+								case "copy":
+									player.Character.Copy(((BoardChar)PointingAt).Character);
+									player.AdjustView();
+									NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "youbecome_x", ((BoardChar)PointingAt).Character.Name));
+									player.Energy -= 500;
+									break;
+
+								case "revert":
+									player.Character.Copy(null);
+									player.AdjustView();
+									NoxicoGame.AddMessage(i18n.GetString((player.Character.Path("copier/full") == null) ? "youmelt" : "yourevert"));
+									player.Energy -= 500;
 									break;
 
 								case "take":

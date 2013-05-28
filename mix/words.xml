@@ -186,6 +186,8 @@ Number of known items       {2}
 		<word id="action_rapehim">Rape {0}</word>
 		<word id="action_shoothim">Shoot at {0}</word>
 		<word id="action_pickup">Pick it up</word>
+		<word id="action_copyhim">Change into {0}</word>
+		<word id="action_revert">Release shape</word>
 	</category>
 	<category name="Sidebar">
 		<category name="Stat shorthands">
@@ -241,6 +243,13 @@ Number of known items       {2}
 		<word id="yourmouthisfull">Your mouth is already full.</word>
 		<word id="yourhornisfull">You have no more places to put it.</word>
 		<word id="eternitybrooched">The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...</word>
+		<word id="youmelt">Your sexual distinctions melt into your blob.</word>
+		<word id="yourevert">You revert to your true form.</word>
+		<word id="x_reverts">{0} reverts to {1} true form.</word>
+		<word id="youimitate_x">You copy {0}'s sexual distinctions.</word>
+		<word id="youbecome_x">You become the spitting image of {0}.</word>
+		<word id="x_imitatesyou">{0} copies your sexual distinctions.</word>
+		<word id="x_becomesyou">{0} becomes another you.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
