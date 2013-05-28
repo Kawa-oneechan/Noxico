@@ -823,10 +823,7 @@ namespace Noxico
 			if (this.HasToken("snaketail"))
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
 
-			if (this.Path("skin/type").Text == "slime")
-				bodyThings.Add(Color.NameColor(this.Path("hair/color").Text) + " slime");
-			else
-				bodyThings.Add(Color.NameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
+			bodyThings.Add(Color.NameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
 			if (this.Path("skin/pattern") != null)
 				bodyThings.Add(Color.NameColor(this.Path("skin/pattern/color").Text) + " " + this.Path("skin/pattern").Text);
 
@@ -961,7 +958,8 @@ namespace Noxico
 			{
 				var hair = this.GetToken("hair");
 				hairThings.Add(Descriptions.HairLength(hair));
-				hairThings.Add(Descriptions.HairColor(hair));
+				if (this.Path("skin/type").Text != "slime")
+					hairThings.Add(Descriptions.HairColor(hair));
 				if (this.Path("hair/style") != null)
 					hairThings.Add(this.Path("hair/style").Text);
 				if (this.Path("skin/type").Text == "slime")
@@ -2859,6 +2857,101 @@ namespace Noxico
 				return true;
 			var pref = GetToken("sexpreference").Value;
 			return pref == ((int)other.Gender - 1)  || pref == 2;
+		}
+
+		public void Copy(Character source)
+		{
+			var copier = GetToken("copier");
+			if (copier == null)
+				throw new InvalidOperationException("Tried to copy, but is not a copier.");
+			var full = copier.HasToken("full");
+			var toCopyForFull = new[]
+			{
+				/*
+				"copier", //ofcourse
+				"culture", "namegen",
+				"perks", "skills", "sexpreference",
+				"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",
+				"money", "ships", "paragon", "renegade", "satiation",
+				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
+				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
+				*/
+				"balls", "penis", "breastrow", "ass", "hips", "waist", "vagina",
+				"legs", "skin", "ascii", "tallness", "hair", "face", "eyes",
+				"teeth", "tongue", "legs", "quadruped", "monoceros", "horns",
+				"tail", "ears", "slimeblob", "snaketail",
+			};
+			var toCopyForSlimes = new[]
+			{
+				"balls", "penis", "breastrow", "vagina", /* "ass", "hips", "waist", */
+			};
+			if (source == null)
+			{
+				//Revert: For slimes, remove all sexual characteristics. For changelings, copy back original form from copier/backup.
+				if (full)
+				{
+					var backup = copier.GetToken("backup");
+					if (backup == null)
+						throw new InvalidOperationException("Tried to revert to true form, but true form is missing.");
+					foreach (var token in toCopyForFull)
+						RemoveAll(token);
+					foreach (var token in backup.Tokens)
+						AddToken(token);
+					copier.RemoveToken("backup");
+				}
+				else
+				{
+					foreach (var token in toCopyForSlimes)
+						RemoveAll(token);
+				}
+				copier.Value = 0;
+			}
+			else
+			{
+				if (full)
+				{
+					var backup = copier.AddToken("backup");
+					foreach (var token in this.Tokens.Where(x => toCopyForFull.Contains(x.Name)))
+						backup.AddToken(token);
+					foreach (var token in toCopyForFull)
+						RemoveAll(token);
+					foreach (var token in source.Tokens.Where(x => toCopyForFull.Contains(x.Name)))
+						AddToken(token);
+					//TODO: copy all stats but health at 75%.
+				}
+				else
+				{
+					foreach (var token in toCopyForSlimes)
+						RemoveAll(token);
+					foreach (var token in source.Tokens.Where(x => toCopyForSlimes.Contains(x.Name)))
+						AddToken(token);
+				}
+				copier.Value = 1;
+				copier.AddToken("timeout", 5 * (full ? 1 : 3), NoxicoGame.InGameTime.Minute.ToString());
+			}
+		}
+
+		public bool UpdateCopier()
+		{
+			if (!HasToken("copier"))
+				return false;
+			if (Path("copier/full") != null && GetToken("copier").Value == 0)
+			{
+				//Should be a Changeling. Distance should be < 2.
+				var myHash = Toolkit.GetBodyComparisonHash(this);
+				var changeling = NoxicoGame.BodyplanHashes["changeling"];
+				if (Toolkit.GetHammingDistance(myHash, changeling) >= 2)
+					return false;
+			}
+			else
+			{
+				//Should be a Slime, defined as simply having a slimeblob and slime skin.
+				if (Path("skin/type").Text != "slime" || !HasToken("slimeblob"))
+					return false;
+			}
+			//Regain copying power by TF scripts or Morph().
+			return true;
 		}
 	}
 

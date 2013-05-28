@@ -55,7 +55,7 @@ namespace Noxico
 
 		public virtual void AdjustView()
 		{
-			var skinColor = Character.Path((Character.Path("skin/type").Text == "slime" ? "hair" : "skin") + "/color").Text;
+			var skinColor = Character.Path("skin/color").Text;
 			ForegroundColor = Color.FromName(skinColor);
 			BackgroundColor = Toolkit.Darken(ForegroundColor);
 			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
@@ -70,6 +70,11 @@ namespace Noxico
 					ForegroundColor = Color.FromName(a.GetToken("fore").Text);
 				if (a.HasToken("back"))
 					BackgroundColor = Color.FromName(a.GetToken("back").Text);
+			}
+
+			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
+			{
+				AsciiChar = '@';
 			}
 		}
 
@@ -273,6 +278,32 @@ namespace Noxico
 			}
 		}
 
+		public void CheckForCopiers()
+		{
+			if (Character.HasToken("copier"))
+			{
+				var copier = Character.GetToken("copier");
+				var timeout = copier.GetToken("timeout");
+				if (timeout != null && timeout.Value > 0)
+				{
+					if (int.Parse(timeout.Text) == NoxicoGame.InGameTime.Minute)
+						return;
+					timeout.Text = NoxicoGame.InGameTime.Minute.ToString();
+					timeout.Value--;
+					if (timeout.Value == 0)
+					{
+						copier.RemoveToken(timeout);
+						if (copier.HasToken("full") && copier.HasToken("backup"))
+						{
+							Character.Copy(null); //force revert
+							AdjustView();
+							NoxicoGame.AddMessage(i18n.GetString("yourevert"));
+						}
+					}
+				}
+			}
+		}
+
 		public override void Update()
 		{
 			if (Character.Health <= 0)
@@ -321,9 +352,10 @@ namespace Noxico
 
 			if (!RunScript(OnTick))
 				return;
+			
 			CheckForTimedItems();
-
 			CheckForCriminalScum();
+			CheckForCopiers();
 
 			base.Update();
 			Excite();
@@ -1164,8 +1196,6 @@ namespace Noxico
 
 		public Color GetEffectiveColor()
 		{
-			if (Character.Path("skin/type").Text == "slime")
-				return Color.FromName(Character.Path("hair/color"));
 			return Color.FromName(Character.Path("skin/color"));
 		}
 	}

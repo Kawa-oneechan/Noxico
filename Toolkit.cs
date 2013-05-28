@@ -82,6 +82,7 @@ namespace Noxico
 						{ "slime", 'j' },
 						{ "rubber", 'r' },
 						{ "metal", 'm' },
+						{ "carapace", 'C' },
 					};
 					if (skinTypes.ContainsKey(skinTypeToken.Text))
 						ret.Append(skinTypes[skinTypeToken.Text]);

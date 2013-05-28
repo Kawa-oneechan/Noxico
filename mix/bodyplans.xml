@@ -549,19 +549,21 @@ culture: seradevar
 namegen: japanese
 neverneuter
 invisiblegender
+copier
 terms
 	generic: "slime"
-	male: "slimeboi"
-	female: "slimegirl"
+--	 male: "slimeboi"
+-- female: "slimegirl"
 ascii
 	char: U+004A
 bestiary: "I am gross and perverted. I'm obsessed and deranged."
 tallness: roll 1d50+100
 skin
 	type: slime
+	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
 hair
 	length: roll 1d8+10
-	color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
+	color: slime
 	style: straight
 slimeblob
 face: normal
@@ -738,6 +740,66 @@ penis: dog
 balls
 	amount: 2
 	size: 0.6
+		]]>
+	</bodyplan>
+
+	<bodyplan id="changeling">
+		<![CDATA[
+playable
+culture: changelings
+namegen: changeling
+neverneuter
+invisiblegender
+copier
+	full
+terms
+	generic: "changeling"
+ascii
+	char: U+0075
+bestiary: "This game is going to be perfect."
+tallness: 134
+hair
+	length: roll 1d3+3
+	color: oneof aquamarine, cadetblue, darkcyan, darkgreen, darkslategray
+skin
+	type: carapace
+	color: oneof black, ebony, darkslategray
+face: horse
+eyes: oneof darkturquoise, deepskyblue, dodgerblue, lightsteelblue
+	glow
+teeth: fangs
+tongue
+legs: hole-filled horse
+quadruped
+marshmallow
+wings: insect
+monoceros
+ears: horse
+tail: horse
+fertility: roll 1d10
+ass
+	size: 5
+	looseness: 0
+	fuckable
+vagina
+	fuckable
+	looseness: 1
+	wetness: 2
+	clit: 1.5
+penis: horse
+	thickness: 3
+	length: 16
+	cumsource
+	canfuck
+breastrow
+	amount: 2
+	size: 0
+	nipples: 1
+		size: 0.5
+	milksource
+balls
+	amount: 2
+	size: 3
 		]]>
 	</bodyplan>
 
