@@ -145,14 +145,31 @@ namespace Noxico
 					if (!ret.ContainsKey(key))
 						ret.Add(key, listAs);
 				}
-				/*
-				if (action.HasAttribute("listas"))
-					foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
-						ret.Add(s.GetAttribute("name") + '!' + ret.Count.ToString(), action.GetAttribute("listas"));
-				else
-					foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => !ret.ContainsKey(s.GetAttribute("name")) && s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
-						ret.Add(s.GetAttribute("name"), s.GetAttribute("list"));
-				*/
+			}
+			var defaultList = scene.SelectSingleNode("default") as XmlElement;
+			if (defaultList != null)
+			{
+				if (defaultList.GetAttribute("for") == "sex")
+				{
+					var defaultSexList = new[]
+					{
+						"french kiss", "fondle breasts", "suck nipples", "give handjob", "get blowjob", "give blowjob", "get blowjob", "fuck mouth", "give oral", "get oral",
+						"finger pussy", "finger ass", "fuck pussy", "fuck ass", "fuck tits", "fuck nipples", "fuck pussy with tail", "fuck ass with tail",
+						"fuck pussy with tentacle", "fuck ass with tentacle", "fuck mouth with tentacle", "fuck tits with tentacle", "fuck nipples with tentacle",
+					};
+					foreach (var x in defaultSexList)
+					{
+						foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == x && SceneFiltersOkay(s)))
+						{
+							var key = x;
+							var listAs = s.GetAttribute("list");
+							if (listAs.Contains('['))
+								listAs = ApplyTokens(listAs);
+							if (!ret.ContainsKey(key))
+								ret.Add(key, listAs);
+						}
+					}
+				}
 			}
 			return ret;
 		}

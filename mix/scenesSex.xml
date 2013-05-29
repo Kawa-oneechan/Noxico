@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE scenes [
 	<!ELEMENT scenes (scene+)>
-	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT scene (filter*,(p|script)*,default?,action*)>
 	<!ELEMENT filter EMPTY>
 	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT default EMPTY>
 	<!ELEMENT action EMPTY>
 	<!ATTLIST scene
 		id ID #REQUIRED
@@ -18,6 +19,7 @@
 		value CDATA #IMPLIED
 	>
 	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST default for (sex|gifts|giftpotions) "sex">
 	<!ATTLIST action name CDATA #REQUIRED>
 
 	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
@@ -74,7 +76,7 @@
 		<p>
 			As [b:he] stops to breathe and gaze into your eyes, you let your tongue invade [b:his] mouth and probe around. [b:He] moans into your mouth, urging you to continue your ministrations.
 		</p>
-		<action name="fondle breasts" />
+		<default for="sex" />
 	</scene>
 
 	<scene id="GenericFriendlyFondleFemale" name="fondle breasts" list="Fondle breasts">
@@ -152,7 +154,7 @@
 		<p>lol</p>
 	</scene>
 
-	<scene id="GenericFriendlyTooSmallToPutItIn" name="put it in" list="Put it in!">
+	<scene id="GenericFriendlyTooSmallToPutItIn" name="fuck pussy" list="Put it in!">
 		<filter target="top" type="gender" value="male" />
 		<filter target="bottom" type="gender" value="female" />
 		<!-- Need a way to use the area of the penis instead of just the length. -->
@@ -171,7 +173,7 @@
 		</script>
 		<!-- Dead end, stop the system. -->
 	</scene>
-	<scene id="GenericFriendlyTooBigToPutItIn" name="put it in" list="Jam it in!">
+	<scene id="GenericFriendlyTooBigToPutItIn" name="fuck pussy" list="Jam it in!">
 		<filter target="top" type="gender" value="male" />
 		<filter target="bottom" type="gender" value="female" />
 		<filter target="top" type="value_gteq" name="penis/length" value="24" />
@@ -188,7 +190,7 @@
 		<action name="compromise handjob" />
 	</scene>
 
-	<scene id="GenericFriendlyRegularHandjob" name="handjob" list="Get a handjob">
+	<scene id="GenericFriendlyRegularHandjob" name="get handjob" list="Get a handjob">
 		<filter target="top" type="gender" value="male" />
 		<!-- Needs to be differentiated from the compromise handjob more. -->
 		<p>
@@ -246,7 +248,7 @@
 		<!-- No actions. Dead end. -->
 	</scene>
 
-	<scene id="GenericFriendlyFuckings" name="put it in" list="J-J-JAM IT IN!">
+	<scene id="GenericFriendlyFuckings" name="fuck pussy" list="J-J-JAM IT IN!">
 		<filter target="top" type="gender" value="male" />
 		<filter target="bottom" type="gender" value="female" />
 		<!-- References being good at foreplay; skill check? -->
