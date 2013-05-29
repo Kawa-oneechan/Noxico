@@ -91,7 +91,7 @@ namespace Noxico
 					var randomAction = actions.Keys.ToArray()[Random.Next(actions.Count)];
 					actions.Clear();
 					actions.Add(randomAction, "==>");
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.Name.ToString(true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.GetKnownName(true, true));
 				}
 			}
 			else
@@ -99,12 +99,12 @@ namespace Noxico
 				letBottomChoose = false;
 				if (actions.Count == 0)
 				{
-					MessageBox.Notice(message, !Dreaming, bottom.Name.ToString(true));
+					MessageBox.Notice(message, !Dreaming, bottom.GetKnownName(true, true));
 					if (Dreaming)
 						LeavingDream = true;
 				}
 				else
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.Name.ToString(true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.GetKnownName(true, true));
 			}
 
 			if (Dreaming)

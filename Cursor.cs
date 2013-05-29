@@ -86,7 +86,7 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.ToString(); 
+						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
 						return;
 					}
 					else if (entity is DroppedItem)
@@ -159,7 +159,7 @@ namespace Noxico
 
 					if (PointingAt is Player)
 					{
-						description = i18n.Format("action_descyou", player.Character.GetNameOrTitle());
+						description = i18n.Format("action_descyou", player.Character.Name);
 						options["look"] = i18n.GetString("action_lookatyou");
 						if (player.Character.GetStat(Stat.Stimulation) >= 30)
 							options["fuck"] = i18n.GetString("action_masturbate");
@@ -173,7 +173,7 @@ namespace Noxico
 					else if (PointingAt is BoardChar)
 					{
 						var boardChar = PointingAt as BoardChar;
-						description = boardChar.Character.GetNameOrTitle(true);
+						description = boardChar.Character.GetKnownName(true);
 						options["look"] = i18n.Format("action_lookathim", boardChar.Character.HimHerIt(true));
 
 						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast") && !boardChar.Character.HasToken("sleeping"))
@@ -262,7 +262,7 @@ namespace Noxico
 									{
 										var boardChar = PointingAt as BoardChar;
 										if (boardChar.Character.HasToken("hostile"))
-											MessageBox.Notice(i18n.Format(boardChar.Character.IsProperNamed ? "nothingtosay_it" : "nothingtosay_he", boardChar.Character.GetNameOrTitle()), true);
+											MessageBox.Notice(i18n.Format("nothingtosay", boardChar.Character.GetKnownName(false, false, true, true)), true);
 										else
 											SceneSystem.Engage(player.Character, boardChar.Character, true);
 									}
@@ -290,7 +290,7 @@ namespace Noxico
 								case "copy":
 									player.Character.Copy(((BoardChar)PointingAt).Character);
 									player.AdjustView();
-									NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "youbecome_x", ((BoardChar)PointingAt).Character.Name));
+									NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "youbecome_x", ((BoardChar)PointingAt).Character.GetKnownName(false, false, true)));
 									player.Energy -= 2000;
 									break;
 
@@ -347,7 +347,7 @@ namespace Noxico
 				if (PointingAt != null && PointingAt is BoardChar)
 				{
 					((BoardChar)PointingAt).Character.CreateInfoDump();
-					NoxicoGame.AddMessage("Info for " + ((BoardChar)PointingAt).Character.GetNameOrTitle() + " dumped.", Color.Red);
+					NoxicoGame.AddMessage("Info for " + ((BoardChar)PointingAt).Character.GetKnownName(true, true, true) + " dumped.", Color.Red);
 				}
 			}
 #endif

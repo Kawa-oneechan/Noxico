@@ -47,7 +47,7 @@ namespace Noxico
 					if (!File.Exists(verCheck))
 						continue;
 					var version = int.Parse(File.ReadAllText(verCheck));
-					if (version < 16)
+					if (version < 17)
 						continue;
 					if (File.Exists(Path.Combine(s, "global.bin")))
 						saves.Add(s);
@@ -274,7 +274,7 @@ namespace Noxico
 					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 22, Width = 10 } },
 
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 7, Foreground = Color.Gray } },
-					{ "name", new UITextBox(Environment.UserName) { Left = 58, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 7, Hidden = true, Foreground = Color.Gray } },
 					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },

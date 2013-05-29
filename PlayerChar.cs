@@ -204,7 +204,7 @@ namespace Noxico
 							return;
 						}
 						//Displace!
-						NoxicoGame.AddMessage(i18n.Format("youdisplacex", bc.Character.GetNameOrTitle(false, true)), bc.GetEffectiveColor());
+						NoxicoGame.AddMessage(i18n.Format("youdisplacex", bc.Character.GetKnownName(false, false, true)), bc.GetEffectiveColor());
 						bc.XPosition = this.XPosition;
 						bc.YPosition = this.YPosition;
 					}
@@ -290,8 +290,8 @@ namespace Noxico
 				if (hit != null)
 				{
 					FireLine(weapon.Path("effect"), x, y);
-					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetNameOrTitle(false, true), damage, i18n.Pluralize("point", damage)));
-					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.Name.ToString(true)), this, false);
+					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", damage)));
+					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.GetKnownName(true, true)), this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
 				}
@@ -800,8 +800,8 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetNameOrTitle(false, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
+					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false);
 				}
 				this.Character.IncreaseSkill(skill.Text);
 			}
