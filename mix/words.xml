@@ -271,8 +271,7 @@ Number of known items       {2}
 		<word id="thisis_x">This is {0}.</word>
 		<word id="talkingtoyourself">Talking to yourself is the first sign of insanity.</word>
 		<word id="talkingtoyourself_nutso">You spend a short while enjoying some pleasant but odd conversation with yourself.</word>
-		<word id="nothingtosay_it">The {0} has nothing to say to you.</word>
-		<word id="nothingtosay_he">{0} has nothing to say to you.</word>
+		<word id="nothingtosay">{0} has nothing to say to you.</word>
 		<word id="gameover_title">GAME OVER</word>
 		<word id="youdied">
 			<![CDATA[You {0}.

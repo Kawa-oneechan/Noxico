@@ -322,7 +322,7 @@ namespace Noxico
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "16");
+			File.WriteAllText(verCheck, "17");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -333,7 +333,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 16)
+			if (WorldVersion < 17)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
@@ -792,23 +792,9 @@ namespace Noxico
 				}
 			}
 
-			//Moved to Game.CreateRealm()
-			/*
-			this.CurrentBoard = GetBoard(KnownTargets[0]);
-			this.Player = new Player(pc)
-			{
-				XPosition = 40,
-				YPosition = 12,
-				ParentBoard = this.CurrentBoard,
-			};
-			this.CurrentBoard.Entities.Add(Player);
-			*/
-
 			Player.Character.RecalculateStatBonuses();
 			Player.Character.CheckHasteSlow();
 			Player.AdjustView();
-
-			//Player.Character.GetToken("items").AddToken("catmorph");
 
 			InGame = true;
 			SaveGame();
@@ -1071,8 +1057,8 @@ namespace Noxico
 			{
 				var boardChar = Cursor.PointingAt as BoardChar;
 				character = boardChar.Character;
-				HostForm.SetCell(20, 81, player.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
-				HostForm.Write(character.GetNameOrTitle(), Color.White, Color.Transparent, 20, 83);
+				HostForm.SetCell(20, 81, boardChar.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
+				HostForm.Write(character.GetKnownName(), Color.White, Color.Transparent, 20, 83);
 
 				switch (character.Gender)
 				{

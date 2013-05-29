@@ -28,7 +28,7 @@ namespace Noxico
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
-		public string Species { get; set; }
+		//public string Species { get; set; }
 		public string Title { get; set; }
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
@@ -66,6 +66,7 @@ namespace Noxico
 			return string.Format("{0} {1}", A, Title);
 		}
 
+		/*
 		/// <summary>
 		/// Returns the short name of the character, or the title.
 		/// </summary>
@@ -83,6 +84,28 @@ namespace Noxico
 			if (IsProperNamed)
 				return Name.ToString(fullName);
 			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Species);
+		}
+		*/
+
+		public string GetKnownName(bool fullName = false, bool appendTitle = false, bool the = false, bool initialCaps = false)
+		{
+			if (HasToken("player") || HasToken("special"))
+				return Name.ToString(fullName);
+			if (HasToken("beast"))
+				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
+				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
+				(g == Gender.Herm && HasToken("hermonly")))
+				g = Gender.Random;
+			if (player.Path("ships/" + ID) != null)
+			{
+				if (appendTitle)
+					return string.Format("{0}, {1} {2}{3}", Name.ToString(fullName), (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+				return Name.ToString(fullName);
+			}
+			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
 		}
 
 		/// <summary>
@@ -219,6 +242,7 @@ namespace Noxico
 			else if (gender == Gender.Herm || gender == Gender.Neuter)
 				newChar.Name.Female = Random.NextDouble() > 0.5;
 
+			/*
 			var terms = newChar.GetToken("terms");
 			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
 			if (gender == Gender.Male && terms.HasToken("male"))
@@ -227,7 +251,7 @@ namespace Noxico
 				newChar.Species = terms.GetToken("female").Text;
 			else if (gender == Gender.Herm && terms.HasToken("herm"))
 				newChar.Species = terms.GetToken("herm").Text;
-
+			*/
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
 			newChar.EnsureDefaultTokens();
@@ -321,6 +345,7 @@ namespace Noxico
 				newChar.IsProperNamed = true;
 			}
 
+			/*
 			var terms = newChar.GetToken("terms");
 			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
 			if (gender == Gender.Male && terms.HasToken("male"))
@@ -329,7 +354,7 @@ namespace Noxico
 				newChar.Species = terms.GetToken("female").Text;
 			else if (gender == Gender.Herm && terms.HasToken("herm"))
 				newChar.Species = terms.GetToken("herm").Text;
-
+			*/
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
 			newChar.EnsureDefaultTokens();
@@ -493,8 +518,8 @@ namespace Noxico
 		{
 			Toolkit.SaveExpectation(stream, "CHAR");
 			Name.SaveToFile(stream);
-			stream.Write(Species ?? "");
-			stream.Write(Title ?? "");
+			//stream.Write(Species ?? "");
+			//stream.Write(Title ?? "");
 			stream.Write(IsProperNamed);
 			stream.Write(A ?? "a");
 			stream.Write(Culture.ID);
@@ -508,8 +533,8 @@ namespace Noxico
 			var newChar = new Character();
 			Toolkit.ExpectFromFile(stream, "CHAR", "character");
 			newChar.Name = Name.LoadFromFile(stream);
-			newChar.Species = stream.ReadString();
-			newChar.Title = stream.ReadString();
+			//newChar.Species = stream.ReadString();
+			//newChar.Title = stream.ReadString();
 			newChar.IsProperNamed = stream.ReadBoolean();
 			newChar.A = stream.ReadString();
 			var culture = stream.ReadString();
@@ -520,6 +545,7 @@ namespace Noxico
 			var numTokens = stream.ReadInt32();
 			for (var i = 0; i < numTokens; i++)
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
+			newChar.UpdateTitle();
 			return newChar;
 		}
 
@@ -589,7 +615,7 @@ namespace Noxico
 			}
 			if (toDelete.Count > 0)
 			{
-				Program.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, GetNameOrTitle(), string.Join(", ", toDelete));
+				Program.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, Name, string.Join(", ", toDelete));
 				GetToken("items").RemoveSet(toDelete);
 			}
 		}
@@ -2289,6 +2315,7 @@ namespace Noxico
 
 						var gender = childChar.Gender;
 
+						/*
 						var terms = childChar.GetToken("terms");
 						childChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
 						if (gender == Gender.Male && terms.HasToken("male"))
@@ -2297,7 +2324,7 @@ namespace Noxico
 							childChar.Species = terms.GetToken("female").Text;
 						else if (gender == Gender.Herm && terms.HasToken("herm"))
 							childChar.Species = terms.GetToken("herm").Text;
-
+						*/
 						childChar.Name = childName;
 						childChar.IsProperNamed = true;
 						childChar.UpdateTitle();

@@ -328,7 +328,7 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.Health += 2;
-					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetNameOrTitle() + " gets") + " back up.");
+					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetKnownName(false, false, true, true) + " gets") + " back up.");
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
 				}
@@ -427,9 +427,9 @@ namespace Noxico
 									Character.Copy(target.Character);
 									AdjustView();
 									if (target is Player)
-										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomesyou" : "x_imitatesyou", Character.Name));
+										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomesyou" : "x_imitatesyou", Character.GetKnownName(false, false, true, true)));
 									else
-										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y", Character.Name, target.Character.Name));
+										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y", Character.GetKnownName(false, false, true, true), target.Character.GetKnownName(false, false, true)));
 									Energy -= 2000;
 									return;
 								}
@@ -448,7 +448,7 @@ namespace Noxico
 								if (called > 0)
 								{
 									if (!Character.HasToken("beast"))
-										NoxicoGame.AddMessage((Character.Name.ToString(false) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
+										NoxicoGame.AddMessage((Character.GetKnownName(false, false, true, true) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 									else
 										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor());
 									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
@@ -728,10 +728,10 @@ namespace Noxico
 			var skill = "unarmed_combat";
 			var verb = "strikes";
 			var obituary = "died from being struck down";
-			var attackerName = this.Character.GetNameOrTitle(false, true);
-			var attackerFullName = this.Character.GetNameOrTitle(true, true);
-			var targetName = target.Character.GetNameOrTitle(false, true);
-			var targetFullName = target.Character.GetNameOrTitle(true, true);
+			var attackerName = this.Character.GetKnownName(false, false, true);
+			var attackerFullName = this.Character.GetKnownName(true, true, true);
+			var targetName = target.Character.GetKnownName(false, false, true);
+			var targetFullName = target.Character.GetKnownName(true, true, true);
 			if (weaponData == null)
 			{
 				//Unarmed combat by default.
@@ -867,7 +867,7 @@ namespace Noxico
 				{
 					if (!Character.HasToken("helpless"))
 					{
-						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetNameOrTitle() + " is") + " helpless!", Color.FromName(this.Character.Path("skin/color")));
+						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetKnownName(false, false, true, true) + " is") + " helpless!", Color.FromName(this.Character.Path("skin/color")));
 						Character.Tokens.Add(new Token() { Name = "helpless" } );
 						return false;
 					}
@@ -1139,7 +1139,7 @@ namespace Noxico
 			}
 			else
 			{
-				Program.WriteLine("{0} tried to throw a weapon.", this.Character.GetNameOrTitle(false, true, true));
+				Program.WriteLine("{0} tried to throw a weapon.", this.Character.Name);
 				return;
 			}
 			var aimSuccess = true; //TODO: make this skill-relevant.
@@ -1150,8 +1150,8 @@ namespace Noxico
 				if (target is Player)
 				{
 					var hit = target as Player;
-					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.GetNameOrTitle(false, true, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.Name.ToString(true), this, false);
+					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.GetKnownName(false, false, true, true), damage, damage > 1 ? "s" : ""));
+					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false);
 					return;
 				}
 			}
