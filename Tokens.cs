@@ -392,5 +392,14 @@ namespace Noxico
 			}
 			*/
 		}
+
+		public Token Clone(bool deep = true)
+		{
+			var t = new Token(Name, Value, Text);
+			foreach (var child in Tokens)
+				t.AddToken(deep ? child.Clone() : child);
+			return t;
+		}
+
 	}
 }

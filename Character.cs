@@ -2894,20 +2894,11 @@ namespace Noxico
 			var full = copier.HasToken("full");
 			var toCopyForFull = new[]
 			{
-				/*
-				"copier", //ofcourse
-				"culture", "namegen",
-				"perks", "skills", "sexpreference",
-				"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade", "satiation",
-				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
-				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
-				*/
 				"balls", "penis", "breastrow", "ass", "hips", "waist", "vagina",
 				"legs", "skin", "ascii", "tallness", "hair", "face", "eyes",
 				"teeth", "tongue", "legs", "quadruped", "monoceros", "horns",
 				"tail", "ears", "slimeblob", "snaketail",
+				"hostile", //lol that oughta be fun
 			};
 			var toCopyForSlimes = new[]
 			{
@@ -2925,6 +2916,14 @@ namespace Noxico
 						RemoveAll(token);
 					foreach (var token in backup.Tokens)
 						AddToken(token);
+					var items = this.GetToken("items");
+					var toRemove = new List<Token>(); //can't delete in a foreach
+					foreach (var token in items.Tokens.Where(x => x.HasToken("equipped")))
+						toRemove.Add(token);
+					foreach (var token in toRemove)
+						items.RemoveToken(token);
+					foreach (var token in backup.GetToken("items").Tokens)
+						items.AddToken(token);
 					copier.RemoveToken("backup");
 				}
 				else
@@ -2944,7 +2943,27 @@ namespace Noxico
 					foreach (var token in toCopyForFull)
 						RemoveAll(token);
 					foreach (var token in source.Tokens.Where(x => toCopyForFull.Contains(x.Name)))
-						AddToken(token);
+						AddToken(token.Clone());
+					var backupItems = backup.AddToken("items");
+					var items = this.GetToken("items");
+					var toRemove = new List<Token>();
+					foreach (var token in this.GetToken("items").Tokens.Where(x => x.HasToken("equipped")))
+					{
+						backupItems.AddToken(token);
+						toRemove.Add(token);
+					}
+					foreach (var token in toRemove)
+						items.RemoveToken(token);
+					foreach (var token in source.GetToken("items").Tokens.Where(x => x.HasToken("equipped")))
+					{
+						var newToken = items.AddToken(token.Clone());
+						var cursed = newToken.GetToken("cursed");
+						if (cursed == null)
+							cursed = newToken.AddToken("cursed");
+						cursed.Text = "This is part of your disguise.";
+						cursed.AddToken("hidden");
+						cursed.AddToken("known");
+					}
 					//TODO: copy all stats but health at 75%.
 				}
 				else
