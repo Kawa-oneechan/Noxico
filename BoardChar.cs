@@ -297,7 +297,10 @@ namespace Noxico
 						{
 							Character.Copy(null); //force revert
 							AdjustView();
-							NoxicoGame.AddMessage(i18n.GetString("yourevert"));
+							if (this is Player)
+								NoxicoGame.AddMessage(i18n.GetString("yourevert"));
+							else
+								NoxicoGame.AddMessage(i18n.Format("x_reverts", Character.Name, Character.HisHerIts(true)));
 						}
 					}
 				}
@@ -416,6 +419,22 @@ namespace Noxico
 
 						if (!ally)
 						{
+							if (Character.HasToken("copier"))
+							{
+								var copier = Character.GetToken("copier");
+								if (copier.Value == 0 && !copier.HasToken("timeout"))
+								{
+									Character.Copy(target.Character);
+									AdjustView();
+									if (target is Player)
+										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomesyou" : "x_imitatesyou", Character.Name));
+									else
+										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y", Character.Name, target.Character.Name));
+									Energy -= 2000;
+									return;
+								}
+							}
+
 							//If we're gonna rape the target, we'd want them for ourself. Otherwise...
 							if (Character.GetStat(Stat.Stimulation) < 30)
 							{

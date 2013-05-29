@@ -419,13 +419,6 @@ namespace Noxico
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
-
-				//if (!Player.Character.HasItem("henshin_belt"))
-				//	Player.Character.GetToken("items").AddToken("henshin_belt").AddToken("color", 0, Toolkit.PickOne("red", "blue", "yellow", "pink", "black", "gold", "silver", "white"));
-				//if (!Player.Character.HasItem("timertest"))
-				//	Player.Character.GetToken("items").AddToken("timertest");
-				//if (!Player.Character.HasItem("eternitybrooch"))
-				//	Player.Character.GetToken("items").AddToken("eternitybrooch");
 			}
 		}
 
@@ -1118,12 +1111,6 @@ namespace Noxico
 			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
 		}
-	}
-
-	public class StatusMessage
-	{
-		public string Message { get; set; }
-		public Color Color { get; set; }
 	}
 
 	public class Expectation
