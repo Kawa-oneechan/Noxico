@@ -892,6 +892,11 @@ namespace Noxico
 
 		private void LeaveCorpse(string obituary)
 		{
+			if (Character.HasToken("copier") && Character.GetToken("copier").Value > 0 && Character.GetToken("copier").HasToken("full"))
+			{
+				//Revert changelings to their true form first.
+				Character.Copy(null);
+			}
 			var corpse = new Clutter()
 			{
 				ParentBoard = ParentBoard,
@@ -906,8 +911,8 @@ namespace Noxico
 			};
 			if (!Character.IsProperNamed)
 			{
-				corpse.Name = Character.GetTheTitle() + "'s remains";
-				corpse.Description = "These are the remains of " + Character.GetTheTitle() + ", who " + obituary + ".";
+				corpse.Name = Character.GetKnownName(true, false, false, true) + "'s remains";
+				corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
 			}
 
 			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)

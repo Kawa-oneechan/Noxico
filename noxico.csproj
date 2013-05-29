@@ -234,7 +234,9 @@
     <Content Include="mix\missions\littleponies\uniques.xml" />
     <Content Include="mix\music.xml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenesSex.xml" />
+    <Content Include="mix\scenesSex.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\scenes\Bodshivita\slimes_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\genericRape_scenesSex.xml" />
     <Content Include="mix\scenes\PillowShout\imps_scenesSex.xml" />
