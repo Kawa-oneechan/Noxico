@@ -291,14 +291,14 @@ namespace Noxico
 									player.Character.Copy(((BoardChar)PointingAt).Character);
 									player.AdjustView();
 									NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "youbecome_x", ((BoardChar)PointingAt).Character.Name));
-									player.Energy -= 500;
+									player.Energy -= 2000;
 									break;
 
 								case "revert":
 									player.Character.Copy(null);
 									player.AdjustView();
 									NoxicoGame.AddMessage(i18n.GetString((player.Character.Path("copier/full") == null) ? "youmelt" : "yourevert"));
-									player.Energy -= 500;
+									player.Energy -= 1000;
 									break;
 
 								case "take":

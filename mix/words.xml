@@ -250,6 +250,8 @@ Number of known items       {2}
 		<word id="youbecome_x">You become the spitting image of {0}.</word>
 		<word id="x_imitatesyou">{0} copies your sexual distinctions.</word>
 		<word id="x_becomesyou">{0} becomes another you.</word>
+		<word id="x_imitates_y">{0} copies {1}'s sexual distinctions.</word>
+		<word id="x_becomes_y">{0} becomes another {1}.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
