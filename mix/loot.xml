@@ -111,6 +111,15 @@ separate with "," result is trimmed.
 	</lootset>
 
 	<!-- Underwear -->
+	<lootset target="npc" type="underwear" final="true">
+		<filter key="bodymatch" value="littlepony" />
+		<!-- Nothing! -->
+	</lootset>
+	<lootset target="npc" type="underwear" final="true">
+		<filter key="bodymatch" value="changeling" />
+		<!-- Nothing! -->
+	</lootset>
+
 	<lootset target="npc" type="underwear">
 		<filter key="gender" value="female" />
 		<oneof>plain_panties</oneof>

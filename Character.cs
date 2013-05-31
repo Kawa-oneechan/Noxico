@@ -561,6 +561,7 @@ namespace Noxico
 			filters["culture"] = this.GetToken("culture").Text;
 			filters["name"] = this.Name.ToString(true);
 			filters["id"] = this.Name.ToID();
+			filters["bodymatch"] = this.GetClosestBodyplanMatch();
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();
 			clothing.AddRange(WorldGen.GetRandomLoot("npc", "underwear", filters));
