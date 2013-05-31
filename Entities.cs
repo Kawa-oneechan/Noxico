@@ -293,7 +293,9 @@ namespace Noxico
 				var ascii = Item.GetToken("ascii");
 				if (ascii.HasToken("char"))
 					this.AsciiChar = (char)ascii.GetToken("char").Value;
-				if (ascii.HasToken("fore"))
+				if (Item.HasToken("colored"))
+					this.ForegroundColor = Color.FromName(Token.GetToken("color").Text);
+				else if (ascii.HasToken("fore"))
 					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Text);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
 				{

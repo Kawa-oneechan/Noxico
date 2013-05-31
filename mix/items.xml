@@ -919,30 +919,261 @@ baked
 
 	<!-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf -->
 
-	<!--	dilithium crystal		brownish white (listed as white in nethack)
-			diamond							white
-			ruby								red
-			jacinth							orange
-			sapphire						blue
-			black opal					black
-			emerald							green
-			turquoise						green
-			citrine							yellow
-			aquamarine					green
-			amber								yellowish brown
-			topaz								yellowish brown
-			jet									black
-			opal								white
-			chrysoberyl					yellow
-			garnet							red
-			amethyst						violet
-			jasper							red
-			fluorite						violet
-			obsidian						black
-			agate								orange
-			jade								jade
-			worthless piece of @ glass
--->
+	<category name="Gems and such">
+		<!-- Mostly-autoconverted from Nethack -->
+		<item id="gem_dilithium" name="dilithium crystal" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: tan
+weight: light
+price: 4500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_diamond" name="diamond" a="a" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: white
+weight: light
+price: 4000
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_ruby" name="ruby" a="a" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: red
+weight: light
+price: 3500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_jacinth" name="jacinth" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: orange
+weight: light
+price: 3250
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_sapphire" name="sapphire" a="a" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: blue
+weight: light
+price: 3000
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_black_opal" name="black opal" a="a" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: black
+weight: light
+price: 2500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_emerald" name="emerald" a="an" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: green
+weight: light
+price: 2500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_turquoise" name="turquoise" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: green
+weight: light
+price: 2000
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_citrine" name="citrine" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: yellow
+weight: light
+price: 1500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_aquamarine" name="aquamarine" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: green
+weight: light
+price: 1500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_amber" name="amber" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: peru
+weight: light
+price: 1000
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_topaz" name="topaz" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: pure
+weight: light
+price: 900
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_jet" name="jet" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: black
+weight: light
+price: 850
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_opal" name="opal" a="an" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: white
+weight: light
+price: 800
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_chrysoberyl" name="chrysoberyl" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: yellow
+weight: light
+price: 700
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_garnet" name="garnet" a="a" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: red
+weight: light
+price: 700
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_amethyst" name="amethyst" a="an" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: violet
+weight: light
+price: 600
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_jasper" name="jasper" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: red
+weight: light
+price: 500
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_fluorite" name="fluorite" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: violet
+weight: light
+price: 400
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_obsidian" name="obsidian" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: black
+weight: light
+price: 200
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_agate" name="agate" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: orange
+weight: light
+price: 200
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="gem_jade" name="jade" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+	fore: jade
+weight: light
+price: 300
+description: ""
+gemstone
+		]]>
+		</item>
+		<item id="glass" name="[color ]glass" a="a piece of" the="the">
+			<![CDATA[
+ascii
+	char: U+25C6
+weight: light
+price: 0
+description: ""
+colored
+		]]>
+		</item>
+	</category>
 
 	<!-- idea by LadyNistia -->
 	<item id="chainmail_bikini_top" name="chainmail bikini top" a="a" the="the">
@@ -1410,6 +1641,7 @@ ascii
 	char: U+222B
 clothing
 accesory
+colored
 			]]>
 		</item>
 	</category>
@@ -1478,6 +1710,7 @@ weight
 price: 30
 ascii
 	char: U+221A
+	fore: black
 clothing
 shoes
 sexy
