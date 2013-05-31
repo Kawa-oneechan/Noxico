@@ -123,12 +123,17 @@ namespace Noxico
 							sigils.Add("weapon");
 						//if (eq.HasToken("head"))
 						//	sigils.Add("head");
-						if (eq.HasToken("hat"))
-							sigils.Add("hat");
-						if (eq.HasToken("goggles"))
-							sigils.Add("goggles");
-						if (eq.HasToken("mask"))
-							sigils.Add("mask");
+						if (eq.HasToken("hat") && eq.HasToken("goggles") && eq.HasToken("mask"))
+							sigils.Add("full mask");
+						else
+						{
+							if (eq.HasToken("hat"))
+								sigils.Add("hat");
+							if (eq.HasToken("goggles"))
+								sigils.Add("goggles");
+							if (eq.HasToken("mask"))
+								sigils.Add("mask");
+						}
 						if (eq.HasToken("neck"))
 							sigils.Add("neck");
 						if (eq.HasToken("ring"))

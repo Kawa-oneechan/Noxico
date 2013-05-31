@@ -836,6 +836,25 @@ joke
 			]]>
 	</item>
 
+	<item id="horsemask" name="creepy horse mask" a="a" the="the">
+		<![CDATA[
+equipable
+	hat
+	mask
+	goggles
+weight
+	medium
+statbonus
+	charisma: 20
+price: 2490
+ascii
+	char: U+03A9
+	fore: chocolate
+joke
+description: It's not just a mask. It's a way of life.
+		]]>
+	</item>
+	
 	<item id="croissant" name="croissant" a="a" the="le">
 		<![CDATA[
 singleuse
