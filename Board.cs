@@ -246,6 +246,7 @@ namespace Noxico
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
 		public bool AllowTravel { get { return !HasToken("noTravel"); } set { RemoveToken("noTravel"); if (!value)  AddToken("noTravel"); } }
+		public int Stock { get { return (int)Path("encounters/stock").Value; } set { Path("encounters/stock").Value = value; } }
 		public List<Entity> Entities { get; private set; }
 		public List<Warp> Warps { get; private set; }
 		public List<Location> DirtySpots { get; private set; }
@@ -267,6 +268,7 @@ namespace Noxico
 		{
 			foreach (var t in new[] { "name", "id", "music", "type", "biome", "encounters" })
 				this.AddToken(t);
+			this.GetToken("encounters").AddToken("stock", 0);
 			foreach (var t in new[] { "north", "south", "east", "west" })
 				this.AddToken(t, -1, string.Empty);
 			this.Entities = new List<Entity>();
@@ -409,6 +411,10 @@ namespace Noxico
 				Toolkit.ExpectFromFile(stream, "WARP", "board warp");
 				for (int i = 0; i < wrpCt; i++)
 					newBoard.Warps.Add(Warp.LoadFromFile(stream));
+
+				//Quick hack, doesn't really warrant another version bump.
+				if (newBoard.Path("encounters/stock") == null)
+					newBoard.GetToken("encounters").AddToken("stock", newBoard.GetToken("encounters").Value * 2);
 
 				newBoard.RespawnEncounters();
 				newBoard.CleanUpSlimeTrails();
@@ -764,7 +770,7 @@ namespace Noxico
 		{
 			var newBoard = new Board();
 			newBoard.Clear(biomeID);
-			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
+			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
@@ -836,15 +842,19 @@ namespace Noxico
 		{
 			if (GetToken("encounters").Value == 0 || BoardType != BoardType.Dungeon && BoardType != BoardType.Wild)
 				return;
+			if (Stock == 0)
+				return;
 			var encData = GetToken("encounters");
 			var count = Entities.OfType<BoardChar>().Count();
-			var toAdd = encData.Value - count;
+			var toAdd = (int)encData.Value - count;
 			if (toAdd <= 0)
 				return;
+			if (toAdd > Stock)
+				toAdd = Stock;
 			Board.HackishBoardTypeThing = this.BoardType.ToString().ToLowerInvariant();
 			for (var i = 0; i < toAdd; i++)
 			{
-				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).ToArray()), Gender.Random))
+				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray()), Gender.Random))
 				{
 					ParentBoard = this,
 				};
@@ -881,6 +891,7 @@ namespace Noxico
 				newb.AdjustView();
 				this.Entities.Add(newb);
 			}
+			Stock -= toAdd;
 		}
 
 		private void CleanUpSlimeTrails()

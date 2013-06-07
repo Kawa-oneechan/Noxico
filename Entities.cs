@@ -293,7 +293,7 @@ namespace Noxico
 				var ascii = Item.GetToken("ascii");
 				if (ascii.HasToken("char"))
 					this.AsciiChar = (char)ascii.GetToken("char").Value;
-				if (Item.HasToken("colored"))
+				if (Item.HasToken("colored") && Token.HasToken("color"))
 					this.ForegroundColor = Color.FromName(Token.GetToken("color").Text);
 				else if (ascii.HasToken("fore"))
 					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Text);

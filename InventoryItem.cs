@@ -551,7 +551,7 @@ namespace Noxico
 
 			var food = this.GetToken("food");
 			if (food != null)
-				character.Eat(food);
+				Eat(character, food);
 
 			if (!string.IsNullOrWhiteSpace(this.OnUse))
 				RunScript(item, this.OnUse, character, boardchar, (x => runningDesc += x));
@@ -684,7 +684,7 @@ namespace Noxico
         }
 		#endregion
 
-		internal string ToLongString(Token token)
+		public string ToLongString(Token token)
 		{
 			var info = new List<string>();
 			if (HasToken("equipable"))
@@ -711,6 +711,24 @@ namespace Noxico
 			if (info.Count == 0)
 				return ToString(token);
 			return ToString(token) + " (" + string.Join(", ", info) + ")";
+		}
+
+		public void Eat(Character gourmand, Token item)
+		{
+			if (item.HasToken("fat"))
+			{
+				var hwa = Random.Flip() ? "hips" : Random.Flip() ? "waist" : "ass/size";
+				var change = Random.NextDouble() * 0.25;
+				if (change > 0)
+				{
+					gourmand.Path(hwa).Value += (float)change;
+					if (!gourmand.HasToken("player"))
+						return;
+					if (hwa.Equals("ass/size"))
+						hwa = Descriptions.ButtRandom();
+					NoxicoGame.AddMessage("That went right to your " + hwa + "!");
+				}
+			}
 		}
 	}
 

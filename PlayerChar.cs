@@ -641,7 +641,6 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
-			Hunger();
 			if (Character.UpdatePregnancy())
 				return;
 
@@ -809,48 +808,6 @@ namespace Noxico
 			NoxicoGame.Mode = UserMode.Walkabout;
 			Energy -= 500;
 			EndTurn();
-		}
-
-		public void Hunger()
-		{
-			var lastSatiationChange = Character.Path("satiation/lastchange");
-			if (lastSatiationChange == null)
-			{
-				lastSatiationChange = Character.GetToken("satiation").AddToken("lastchange");
-				lastSatiationChange.AddToken("dayoftheyear", NoxicoGame.InGameTime.DayOfYear);
-				lastSatiationChange.AddToken("hour", NoxicoGame.InGameTime.Hour);
-				lastSatiationChange.AddToken("minute", NoxicoGame.InGameTime.Minute);
-			}
-			var lastSatiation = Character.GetToken("satiation").Value;
-			if (lastSatiationChange.GetToken("dayoftheyear").Value < NoxicoGame.InGameTime.DayOfYear)
-			{
-				var days = NoxicoGame.InGameTime.DayOfYear - (int)lastSatiationChange.GetToken("dayoftheyear").Value;
-				Character.Hunger(days * 2);
-			}
-			if (lastSatiationChange.GetToken("hour").Value < NoxicoGame.InGameTime.Hour)
-			{
-				var hours = NoxicoGame.InGameTime.Hour - (int)lastSatiationChange.GetToken("hour").Value;
-				Character.Hunger(hours * 0.5f);
-			}
-			if (lastSatiationChange.GetToken("minute").Value < NoxicoGame.InGameTime.Minute)
-			{
-				var minutes = NoxicoGame.InGameTime.Minute - (int)lastSatiationChange.GetToken("minute").Value;
-				Character.Hunger(minutes * 0.1f);
-			}
-			lastSatiationChange.GetToken("dayoftheyear").Value = NoxicoGame.InGameTime.DayOfYear;
-			lastSatiationChange.GetToken("hour").Value = NoxicoGame.InGameTime.Hour;
-			lastSatiationChange.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
-			var newSatiation = Character.GetToken("satiation").Value;
-			if (lastSatiation >= 50 && newSatiation < 50)
-				NoxicoGame.AddMessage(i18n.GetString("yougohungry"));
-			else if (lastSatiation > 0 && newSatiation == 0)
-				NoxicoGame.AddMessage(i18n.GetString("youarestarving"), Color.Red);
-			else if (lastSatiation > newSatiation && newSatiation < 0)
-			{
-				Character.GetToken("satiation").Value = -1;
-				//The hungry body turns against the stubborn mind...
-				Hurt(2, i18n.GetString("death_starvation"), null, false, true);
-			}
 		}
 
 		public void Reposition()
