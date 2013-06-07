@@ -96,6 +96,7 @@ namespace Noxico
 				{
 					var encounters = lol.GetToken("encounters");
 					encounters.Value = biome.MaxEncounters;
+					encounters.GetToken("stock").Value = encounters.Value * Random.Next(3, 5);
 					foreach (var e in biome.Encounters)
 						encounters.AddToken(e);
 

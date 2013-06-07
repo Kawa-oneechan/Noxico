@@ -334,6 +334,8 @@ namespace Noxico
 		[ForJS(ForJSUsage.Either)]
 		public void AddWater(List<Rectangle> safeZones)
 		{
+			//TODO: Tweak some more to prevent... ahum... water damage.
+			
 			var biome = BiomeData.Biomes[(int)this.GetToken("biome").Value];
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
 			var points = new List<Point>();

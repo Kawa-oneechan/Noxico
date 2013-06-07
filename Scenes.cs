@@ -153,7 +153,7 @@ namespace Noxico
 				{
 					var defaultSexList = new[]
 					{
-						"french kiss", "fondle breasts", "suck nipples", "give handjob", "get blowjob", "give blowjob", "get blowjob", "fuck mouth", "give oral", "get oral",
+						"french kiss", "fondle breasts", "suck nipples", "give handjob", "get handjob", "give blowjob", "get blowjob", "fuck mouth", "give oral", "get oral",
 						"finger pussy", "finger ass", "fuck pussy", "fuck ass", "fuck tits", "fuck nipples", "fuck pussy with tail", "fuck ass with tail",
 						"fuck pussy with tentacle", "fuck ass with tentacle", "fuck mouth with tentacle", "fuck tits with tentacle", "fuck nipples with tentacle",
 					};

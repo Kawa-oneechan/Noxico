@@ -802,10 +802,6 @@ namespace Noxico
 
 		public static string RollWorldName()
 		{
-			//var x = new[] { "The Magnificent", "Under", "The Hungry", "The Realm of", "Over", "The Isle of", "The Kingdom of" };
-			//var y = new[] { "Boundary", "Earth", "Marrow", "Picking", "Farnsworth", Environment.UserName, "Kipperlings" };
-			//var ret = Toolkit.PickOne(x) + ' ' + Toolkit.PickOne(y);
-			//return ret;
 			var x = Mix.GetString("Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			var a = Toolkit.PickOne(x);
 			var b = Toolkit.PickOne(x);
@@ -1028,13 +1024,6 @@ namespace Noxico
 				sb.Append(i18n.GetString("mod_haste"));
 			if (character.HasToken("slow"))
 				sb.Append(i18n.GetString("mod_slow"));
-			var satiation = character.GetToken("satiation").Value;
-			if (satiation < 0)
-				sb.Append(i18n.GetString("mod_starving"));
-			else if (satiation < 50)
-				sb.Append(i18n.GetString("mod_hungry"));
-			else if (satiation > 100)
-				sb.Append(i18n.GetString("mod_satiated"));
 			if (character.HasToken("flying"))
 				sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
 

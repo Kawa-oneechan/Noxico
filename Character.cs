@@ -493,7 +493,7 @@ namespace Noxico
 				"items", "health", "perks", "skills", "sexpreference",
 				"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade", "satiation",
+				"money", "ships", "paragon", "renegade", 
 				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
 				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
 			};
@@ -502,7 +502,7 @@ namespace Noxico
 				0, 10, 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
 				10, 0, 10, 0,
 				10, 10, 10, 15,
-				100, 0, 0, 0, 150,
+				100, 0, 0, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0,
 			};
@@ -1901,9 +1901,6 @@ namespace Noxico
 			}
 			*/
 
-			if (this.GetToken("satiation").Value < 20)
-				score--;
-
 			//apply
 			if (score < 0)
 				this.AddToken("slow");
@@ -2802,29 +2799,6 @@ namespace Noxico
 			}
 		}
 		#endregion
-
-		public void Hunger(float points)
-		{
-			this.GetToken("satiation").Value -= points;
-			CheckHasteSlow();
-		}
-		public void Eat(Token item)
-		{
-			var points = item.Value > 0 ? item.Value : 5;
-			this.GetToken("satiation").Value += points;
-			if (item.HasToken("fat"))
-			{
-				var hwa = Random.Flip() ? "hips" : Random.Flip() ? "waist" : "ass/size";
-				var change = Random.NextDouble() * 0.25;
-				if (change > 0)
-				{
-					this.Path(hwa).Value += (float)change;
-					if (hwa.Equals("ass/size"))
-						hwa = Descriptions.ButtRandom();
-					NoxicoGame.AddMessage("That went right to your " + hwa + "!");
-				}
-			}
-		}
 
 		public Func<string, string> GetSpeechFilter(Func<string, string> original = null)
 		{

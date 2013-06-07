@@ -203,9 +203,6 @@ Number of known items       {2}
 		<category name="Mods">
 			<word id="mod_haste">Haste </word>
 			<word id="mod_slow">Slow </word>
-			<word id="mod_starving">Starving </word>
-			<word id="mod_hungry">Hungry </word>
-			<word id="mod_satiated">Satiated </word>
 			<word id="mod_flying">Flying ({0:00}%) </word>
 			<word id="mod_hostile">&red;Hostile &revert;</word>
 			<word id="mod_helpless">&yellow;Helpless &revert;</word>
@@ -237,8 +234,6 @@ Number of known items       {2}
 		<word id="youhitxfory">You hit {0} for {1} {2}.</word>
 		<word id="youdisplacex">You displace {0}.</word>
 		<word id="losewings">&red;You lose your ability to fly!</word>
-		<word id="yougohungry">You have become very hungry.</word>
-		<word id="youarestarving">&red;You are starving.</word>
 		<word id="yourhandsarefull">Your hands are already full.</word>
 		<word id="yourmouthisfull">Your mouth is already full.</word>
 		<word id="yourhornisfull">You have no more places to put it.</word>
@@ -259,7 +254,6 @@ Number of known items       {2}
 		<word id="death_crackedagainstceiling">hit the ceiling when trying to fly</word>
 		<word id="death_shotbyx">was shot down by {0}</word>
 		<word id="death_burned">burned to death</word>
-		<word id="death_starvation">starved to death</word>
 	</category>
 	<category name="Misc">
 		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
