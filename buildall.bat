@@ -26,9 +26,9 @@ copy Release\Jint.dll Noxico > nul
 copy Release\Antlr3.Runtime.dll Noxico > nul
 copy Release\Noxico.mix Noxico > nul
 copy Release\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.2.rar Noxico > nul
+..\Rar.exe u  noxico-0.1.2.1.rar Noxico > nul
 copy /y Release32\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.2-32.rar Noxico > nul
+..\Rar.exe u  noxico-0.1.2.1-32.rar Noxico > nul
 del /q Noxico\*.*
 copy /y Release/Music.mix Noxico > nul
 copy /y Release/Sound.mix Noxico > nul
