@@ -34,8 +34,6 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
-
-	<!ENTITY nofilter "&lt;nofilter&gt;">
 ]>
 <scenes>
 	<scene id="PonyConStart" name="(starting node)">
@@ -134,7 +132,7 @@
 		<!-- <filter target="bottom" type="bodyhash" name="littlepony" /> -->
 		<!-- Disabled the pony filter and removed the player's lines. -->
 		<p>
-			You pull your [hand] away, averting your eyes. You stammer a quick "&nofilter;never mind", not sure what you want.
+			You pull your [hand] away, averting your eyes. You stammer a quick 'never mind', not sure what you want.
 		</p>
 		<p>
 			[b:name] looks at you dejectedly, [b:his] head bobbing in a sullen nod.

@@ -26,6 +26,7 @@ namespace Noxico
 				return;
 			}
 
+			/*
 			if (Program.CanWrite())
 			{
 				try
@@ -53,6 +54,7 @@ namespace Noxico
 					Program.WriteLine("Couldn't check for updates.");
 				}
 			}
+			*/
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
