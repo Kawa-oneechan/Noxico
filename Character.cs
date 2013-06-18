@@ -1056,28 +1056,36 @@ namespace Noxico
 						print("\n");
 						continue;
 					}
-					var nipSize = 0.5f;
-					if (row.Path("nipples/size") != null)
-						nipSize = row.Path("nipples/size").Value;
-					var nipType = Descriptions.NippleSize(row.GetToken("nipples")) + " " + Descriptions.Length(nipSize);
-					if (row.Path("nipples/canfuck") != null)
-						nipType += " dicknipple";
-					else if (row.Path("nipples/fuckable") != null)
+
+					if (row.Path("nipples") == null || row.Path("nipples").Value == 0)
 					{
-						var loose = Descriptions.Looseness(row.Path("nipples/looseness"), false);
-						var wet = Descriptions.Wetness(row.Path("nipples/wetness"));
-						if (wet != null && loose != null)
-							wet = " and " + wet;
-						else if (wet == null && loose == null)
-							loose = "";
-						nipType += (loose + wet + " nipplecunt").Trim();
+						print(", no nipples\n");
 					}
 					else
-						nipType += " nipple";
-					print(", " + Toolkit.Count(row.GetToken("nipples").Value) + " " + nipType);
-					if (row.GetToken("nipples").Value > 1)
-						print("s");
-					print(" on each\n");
+					{
+						var nipSize = 0.5f;
+						if (row.Path("nipples/size") != null)
+							nipSize = row.Path("nipples/size").Value;
+						var nipType = Descriptions.NippleSize(row.GetToken("nipples")) + " " + Descriptions.Length(nipSize);
+						if (row.Path("nipples/canfuck") != null)
+							nipType += " dicknipple";
+						else if (row.Path("nipples/fuckable") != null)
+						{
+							var loose = Descriptions.Looseness(row.Path("nipples/looseness"), false);
+							var wet = Descriptions.Wetness(row.Path("nipples/wetness"));
+							if (wet != null && loose != null)
+								wet = " and " + wet;
+							else if (wet == null && loose == null)
+								loose = "";
+							nipType += (loose + wet + " nipplecunt").Trim();
+						}
+						else
+							nipType += " nipple";
+						print(", " + Toolkit.Count(row.GetToken("nipples").Value) + " " + nipType);
+						if (row.GetToken("nipples").Value > 1)
+							print("s");
+						print(" on each\n");
+					}
 				}
 			}
 			print("\n");
@@ -1827,14 +1835,6 @@ namespace Noxico
 			this.RemoveToken("slow");
 			this.RemoveToken("haste");
 
-			//inherent
-			/*
-			if (this.Path("inherent/slow") != null)
-				score--;
-			else if (this.Path("inherent/haste") != null)
-				score++;
-			*/
-
 			//item weight
 			var weightClasses = new Dictionary<string, float>()
 			{
@@ -1886,6 +1886,9 @@ namespace Noxico
 			//TODO: if (totalWeight > capacity) become immobile
 
 			//body weight
+			var gestation = this.Path("pregnancy/gestation");
+			if (gestation != null && gestation.Value == gestation.GetToken("max").Value / 2)
+				score--;
 
 			//equips
 			/*
@@ -2245,9 +2248,7 @@ namespace Noxico
 
 		public bool UpdatePregnancy()
 		{
-			if (!this.HasToken("vagina"))
-				return false;
-			if (this.HasToken("egglayer") && !this.HasToken("pregnancy"))
+			if (this.HasToken("egglayer") && this.HasToken("vagina") && !this.HasToken("pregnancy"))
 			{
 				var boardChar = this.GetBoardChar();
 				var eggToken = this.GetToken("egglayer");
@@ -2275,70 +2276,20 @@ namespace Noxico
 				gestation.Value++;
 				if (gestation.Value >= gestation.GetToken("max").Value)
 				{
-					var child = pregnancy.Path("child");
-					var location = this.Path("childlocation");
 					var childName = new Name();
-
-					Character childChar = null;
-
-					if ((child != null && location == null) || (child == null))
-					{
-						//Invalidated location or no child definition.
-						childName.Female = Random.NextDouble() > 0.5;
-						childName.NameGen = this.GetToken("namegen").Text;
-					}
-					else
-					{
-						childName.Female = child.HasToken("vagina");
-						childName.NameGen = child.GetToken("namegen").Text;
-					}
+					childName.Female = Random.NextDouble() > 0.5;
+					childName.NameGen = this.GetToken("namegen").Text;
 					childName.Regenerate();
 					if (childName.Surname.StartsWith("#patronym"))
 						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), this.Name);
-					
-					if (location != null)
-					{
-						childChar = new Character();
-						//childChar.Tokens = child.Tokens;
-						childChar.Tokens.Clear();
-						childChar.AddSet(child.Tokens);
-
-						childChar.Culture = Culture.DefaultCulture;
-						if (childChar.HasToken("culture"))
-						{
-							var culture = childChar.GetToken("culture").Text;
-							if (Culture.Cultures.ContainsKey(culture))
-								childChar.Culture = Culture.Cultures[culture];
-						}
-
-						var gender = childChar.Gender;
-
-						/*
-						var terms = childChar.GetToken("terms");
-						childChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
-						if (gender == Gender.Male && terms.HasToken("male"))
-							childChar.Species = terms.GetToken("male").Text;
-						else if (gender == Gender.Female && terms.HasToken("female"))
-							childChar.Species = terms.GetToken("female").Text;
-						else if (gender == Gender.Herm && terms.HasToken("herm"))
-							childChar.Species = terms.GetToken("herm").Text;
-						*/
-						childChar.Name = childName;
-						childChar.IsProperNamed = true;
-						childChar.UpdateTitle();
-
-						childChar.Health = childChar.MaximumHealth;
-					}
 
 					var ships = this.GetToken("ships");
 					ships.AddToken(childName.ToID()).AddToken("child");
-					if (childChar != null)
-					{
-						//also ship the child to the parent, can use SetRelation this time.
-						childChar.SetRelation(this, "mother");
-					}
 
-					//Midwife Daemon goes here, using the location token.
+					//Gotta grow a vagina if we don't have one right now.
+					//if (!this.HasToken("vagina"))
+
+					//Spawn the Midwife Daemon close to the player, play scene, have her pop out again.
 
 					//Until then, we'll just message you.
 					if (this.HasToken("player"))
@@ -2347,6 +2298,8 @@ namespace Noxico
 					this.RemoveToken("pregnancy");
 					return true;
 				}
+				else if (gestation.Value == gestation.GetToken("max").Value / 2)
+					CheckHasteSlow();
 			}
 			return false;
 		}
@@ -2360,99 +2313,7 @@ namespace Noxico
 			if (Random.Next() > fertility)
 				return false;
 
-			if (!this.HasToken("childlocation"))
-				return true; //abstract pregnancy -- no need to actually mix up a baby
-			
-			//Now, let's play God.
-
-			var pregnancy = this.Path("pregnancy");
-			if (pregnancy == null)
-				pregnancy = this.AddToken("pregnancy");
-			pregnancy.AddToken("father", 0, father.Name.ToString());
-			var gestation = pregnancy.AddToken("gestation", 0);
-			gestation.AddToken("max", 1000);
-			var child = pregnancy.AddToken("child");
-			var mother = this; //for clarity
-
-			var fromMothersPlan = new[]
-			{
-				"normalgenders", "explicitgenders", "invisiblegender", "terms", "ascii", "femalesmaller",
-			};
-			var fromEitherPlan = new[]
-			{
-				"ass", "hips", "waist", "fertility", "breastrow", "vagina", "penis", "balls", "either",
-			};
-			var inheritable = new[]
-			{
-				"hair", "skin", "eyes", "face", "tongue", "teeth", "ears", "legs", "taur", "quadruped", "snaketail", "slimeblob", "wings", "horn", "monoceros",
-			};
-			var alwaysThere = new[]
-			{
-				"items", "health", "perks", "skills", "sexpreference",
-				"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",
-				"money", "ships", "paragon", "renegade"
-			};
-			var alwaysThereVals = new[]
-			{
-				0, 10, 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
-				10, 0, 10, 0,
-				10, 10, 10, 15,
-				100, 0, 0, 0,
-			};
-
-			//TODO: make fromMothersPlan and fromEitherPlan use FRESHLY ROLLED data from the closest bodyplan matches.
-			var momsPlan = mother.GetClosestBodyplanMatch();
-			var dadsPlan = father.GetClosestBodyplanMatch();
-			var freshMom = Character.GenerateQuick(momsPlan, Noxico.Gender.Female);
-			var freshDad = Character.GenerateQuick(dadsPlan, Noxico.Gender.Male);
-
-			foreach (var item in fromMothersPlan)
-			{
-				if (freshMom.HasToken(item))
-					child.AddToken(item, freshMom.GetToken(item).Value, freshMom.GetToken(item).Text).AddSet(freshMom.GetToken(item).Tokens);
-			}
-
-			foreach (var item in fromEitherPlan)
-			{
-				var source = Random.NextDouble() > 0.5 ? freshDad : freshMom;
-				var other = source == father ? freshMom : freshDad;
-				if (source.HasToken(item))
-					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
-				else if (other.HasToken(item))
-					child.AddToken(item, other.GetToken(item).Value, other.GetToken(item).Text).AddSet(other.GetToken(item).Tokens);
-			}
-
-			foreach (var item in inheritable)
-			{
-				var source = Random.NextDouble() > 0.5 ? father : mother;
-				var other = source == father ? mother : father;
-				if (source.HasToken(item))
-					child.AddToken(item, source.GetToken(item).Value, source.GetToken(item).Text).AddSet(source.GetToken(item).Tokens);
-				else if (other.HasToken(item))
-					child.AddToken(item, other.GetToken(item).Value, other.GetToken(item).Text).AddSet(other.GetToken(item).Tokens);
-			}
-
-			for (var i = 0; i < alwaysThere.Length; i++)
-				child.AddToken(alwaysThere[i], alwaysThereVals[i]);
-
-			var gender = Random.NextDouble() > 0.5 ? Gender.Male : Gender.Female;
-
-			if (gender == Gender.Male)
-			{
-				child.RemoveToken("fertility");
-				child.RemoveToken("milksource");
-				child.RemoveToken("vagina");
-				if (child.HasToken("breastrow"))
-					child.GetToken("breastrow").GetToken("size").Value = 0f;
-			}
-			else if (gender == Gender.Female)
-			{
-				child.RemoveToken("penis");
-				child.RemoveToken("balls");
-			}
-
-			return true;
+			return true; //abstract pregnancy -- no need to actually mix up a baby			
 		}
 
 

@@ -97,7 +97,7 @@
 					print("pull on");
 				else
 					print("teasingly rub");
-				if (breasts.Path("lactation").Value > 2)
+				if (breasts.HasToken("lactation") && breasts.GetToken("lactation").Value > 2)
 					print("them, spraying a bit of milk on your fingers.");
 				else if (breasts.HasToken("fuckable"))
 					print("them, softly stroking the increasingly moist hole on top.");
