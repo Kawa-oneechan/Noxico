@@ -139,6 +139,8 @@ namespace Noxico
 			var ly = YPosition;
 
 			check = SolidityCheck.Walker;
+			if (Character.IsSlime)
+				check = SolidityCheck.DryWalker;
 			if (Character.HasToken("flying"))
 				check = SolidityCheck.Flyer;
 
@@ -469,7 +471,7 @@ namespace Noxico
 					Character.RemoveToken("flying");
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
-					if (tile.Water)
+					if (tile.Water && Character.IsSlime)
 						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
 					else if (tile.Cliff)
 						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);

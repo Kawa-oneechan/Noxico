@@ -2835,6 +2835,14 @@ namespace Noxico
 			//Regain copying power by TF scripts or Morph().
 			return true;
 		}
+
+		public bool IsSlime
+		{
+			get
+			{
+				return (Path("skin/type").Text == "slime");
+			}
+		}
 	}
 
 	public class Name

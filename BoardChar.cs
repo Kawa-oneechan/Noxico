@@ -104,10 +104,38 @@ namespace Noxico
 		{
 			if (Character.HasToken("slimeblob"))
 				ParentBoard.TrailSlime(YPosition, XPosition, ForegroundColor);
-			check = SolidityCheck.Walker;
-			if (Character.HasToken("flying"))
-				check = SolidityCheck.Flyer;
-			Energy -= 1000;
+			//check = SolidityCheck.Walker;
+			//if (Character.HasToken("flying"))
+			//{
+			//	check = SolidityCheck.Flyer;
+			//	Energy -= 1000;
+			//}
+			if (ParentBoard.IsWater(YPosition, XPosition))
+			{
+				if (Character.HasToken("aquatic"))
+				{
+					Energy -= 1250;
+					if (!Character.HasToken("swimming"))
+						Character.AddToken("swimming", -1);
+				}
+				else
+				{
+					var swimming = Character.GetToken("swimming");
+					if (swimming == null)
+						swimming = Character.AddToken("swimming", 20);
+					swimming.Value -= 1;
+					if (swimming.Value == 0)
+					{
+						Hurt(9999, i18n.GetString("death_drowned"), null, false);
+					}
+					Energy -= 1750;
+				}
+			}
+			else
+			{
+				Character.RemoveToken("swimming");
+				Energy -= 1000;
+			}
 			base.Move(targetDirection, check);
 		}
 
@@ -385,13 +413,19 @@ namespace Noxico
 
 		private void ActuallyMove()
 		{
+			var solidity = SolidityCheck.Walker;
+			if (Character.IsSlime)
+				solidity = SolidityCheck.DryWalker;
+			if (Character.HasToken("flying"))
+				solidity = SolidityCheck.Flyer;
+
 			if (ScriptPathing)
 			{
 				var dir = Direction.North;
 				ScriptPathTarget.Ignore = DijkstraIgnore.Type;
 				ScriptPathTarget.IgnoreType = typeof(BoardChar);
 				if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
-					Move(dir);
+					Move(dir, solidity);
 				if (this.XPosition == ScriptPathTargetX && this.YPosition == ScriptPathTargetY)
 				{
 					ScriptPathing = false;
@@ -484,12 +518,12 @@ namespace Noxico
 				var dir = Direction.North;
 				if (this.XPosition != guardX && this.YPosition != guardY)
 					if (GuardMap.RollDown(this.YPosition, this.XPosition, ref dir))
-						Move(dir);
+						Move(dir, solidity);
 				return;
 			}
 
 			if (Random.Flip())
-				this.Move((Direction)Random.Next(4));
+				this.Move((Direction)Random.Next(4), solidity);
 		}
 
 		private void Hunt()

@@ -204,6 +204,8 @@ Number of known items       {2}
 			<word id="mod_haste">Haste </word>
 			<word id="mod_slow">Slow </word>
 			<word id="mod_flying">Flying ({0:00}%) </word>
+			<word id="mod_swimming">Swimming ({0:00}%) </word>
+			<word id="mod_swimmingunl">Swimming </word>
 			<word id="mod_hostile">&red;Hostile &revert;</word>
 			<word id="mod_helpless">&yellow;Helpless &revert;</word>
 		</category>
@@ -254,6 +256,7 @@ Number of known items       {2}
 		<word id="death_crackedagainstceiling">hit the ceiling when trying to fly</word>
 		<word id="death_shotbyx">was shot down by {0}</word>
 		<word id="death_burned">burned to death</word>
+		<word id="death_drowned">drowned</word>
 	</category>
 	<category name="Misc">
 		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>

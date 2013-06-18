@@ -72,7 +72,7 @@ namespace Noxico
 
 	public enum SolidityCheck
 	{
-		Walker, Flyer, Projectile, Swimmer
+		Walker, DryWalker, Flyer, Projectile
 	}
 
 	/// <summary>
@@ -103,10 +103,10 @@ namespace Noxico
 		public int BurnTimer { get; set; }
 		public int SpecialDescription { get; set; }
 
-		public bool SolidToWalker { get { return Wall || Water || Fence || Cliff; } }
+		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
+		public bool SolidToDryWalker { get { return Wall || Water || Fence || Cliff; } }
 		public bool SolidToFlyer { get { return Ceiling || Wall; } }
 		public bool SolidToProjectile { get { return (Wall && !Grate); } }
-		public bool SolidToSwimmer { get { return Wall || Fence || Cliff; } }
 
 		/// <summary>
 		/// Returns a TileDescription if this tile has one.
@@ -449,11 +449,11 @@ namespace Noxico
 				return true;
 			if (check == SolidityCheck.Walker && Tilemap[col, row].SolidToWalker)
 				return true;
+			else if (check == SolidityCheck.DryWalker && Tilemap[col, row].SolidToDryWalker)
+				return true;
 			else if (check == SolidityCheck.Flyer && Tilemap[col, row].SolidToFlyer)
 				return true;
 			else if (check == SolidityCheck.Projectile && Tilemap[col, row].SolidToProjectile)
-				return true;
-			else if (check == SolidityCheck.Swimmer && Tilemap[col, row].SolidToSwimmer)
 				return true;
 			return Tilemap[col, row].Wall;
 		}
