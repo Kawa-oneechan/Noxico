@@ -1026,6 +1026,13 @@ namespace Noxico
 				sb.Append(i18n.GetString("mod_slow"));
 			if (character.HasToken("flying"))
 				sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
+			if (character.HasToken("swimming"))
+			{
+				if (character.GetToken("swimming").Value == -1)
+					sb.Append(i18n.GetString("mod_swimmingunl"));
+				else
+					sb.Append(i18n.Format("mod_swimming", Math.Floor((character.GetToken("swimming").Value / 20) * 100)));
+			}
 
 			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
 
