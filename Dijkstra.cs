@@ -24,15 +24,15 @@ namespace Noxico
 		public Type IgnoreType { get; set; }
 		public Entity IgnoreObject { get; set; }
 
-		public Dijkstra(Board board = null)
+		public Dijkstra(bool allowSwimming = true, Board board = null)
 		{
 			map = new int[mapRows, mapCols];
 			walls = new bool[mapRows, mapCols];
-			UpdateWalls(board);
+			UpdateWalls(allowSwimming, board);
 			Hotspots = new List<Point>();
 		}
 
-		public void UpdateWalls(Board board = null)
+		public void UpdateWalls(bool allowSwimming = true, Board board = null)
 		{
 			if (board == null)
 				board = NoxicoGame.HostForm.Noxico.CurrentBoard;
@@ -40,7 +40,7 @@ namespace Noxico
 				return;
 			for (var row = 0; row < mapRows; row++)
 				for (var col = 0; col < mapCols; col++)
-					walls[row, col] = board.IsSolid(row, col);
+					walls[row, col] = board.IsSolid(row, col, allowSwimming ? SolidityCheck.Walker : SolidityCheck.DryWalker);
 			foreach (var door in board.Entities.OfType<Door>().Where(d => !d.Locked))
 				walls[door.YPosition, door.XPosition] = false;
 		}

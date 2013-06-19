@@ -117,9 +117,9 @@ namespace Noxico
 			ParentBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 
-			this.DijkstraMap.UpdateWalls(ParentBoard);
+			this.DijkstraMap.UpdateWalls(!Character.IsSlime, ParentBoard);
 			this.DijkstraMap.Update();
-			this.AutoTravelMap.UpdateWalls(ParentBoard);
+			this.AutoTravelMap.UpdateWalls(!Character.IsSlime, ParentBoard);
 		}
 
 		public override bool MeleeAttack(BoardChar target)
@@ -634,7 +634,7 @@ namespace Noxico
 		public void AutoTravelTo(int x, int y)
 		{
 			AutoTravelMap.Hotspots[0] = new Point(x, y);
-			AutoTravelMap.UpdateWalls();
+			AutoTravelMap.UpdateWalls(!Character.IsSlime);
 			AutoTravelMap.Update();
 			AutoTravelling = true;
 			AutoTravelLeave = (Direction)(-1);
