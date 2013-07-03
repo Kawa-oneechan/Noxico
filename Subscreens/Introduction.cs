@@ -381,7 +381,7 @@ namespace Noxico
 						dream.Name = new Name("Dream");
 						dream.IsProperNamed = true;
 						SceneSystem.Dreaming = true;
-						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)", true);
+						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)");
 					}
 				};
 

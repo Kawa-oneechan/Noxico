@@ -157,7 +157,7 @@ namespace Noxico
 			var summon = new Character();
 			summon.Name = new Name(deity.Name);
 			summon.IsProperNamed = true;
-			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook, true);
+			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook);
 			return true;
 		}
 

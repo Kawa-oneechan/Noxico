@@ -315,7 +315,7 @@ namespace Noxico
 								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
 								NoxicoGame.Mode = UserMode.Walkabout;
 								Subscreens.FirstDraw = true;
-								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)", true);
+								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)");
 							}
 							else
 								MessageBox.Notice(tryAttempt);

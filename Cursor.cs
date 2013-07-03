@@ -264,7 +264,7 @@ namespace Noxico
 										if (boardChar.Character.HasToken("hostile"))
 											MessageBox.Notice(i18n.Format("nothingtosay", boardChar.Character.GetKnownName(false, false, true, true)), true);
 										else
-											SceneSystem.Engage(player.Character, boardChar.Character, true);
+											SceneSystem.Engage(player.Character, boardChar.Character);
 									}
 									break;
 
@@ -273,14 +273,15 @@ namespace Noxico
 									break;
 
 								case "fuck":
-									if (PointingAt is Player)
-										SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
-									else if (PointingAt is BoardChar)
-										SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
-									break;
+									//LETSDEVELOP
+									//if (PointingAt is Player)
+										//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
+									//else if (PointingAt is BoardChar)
+										//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
+									//break;
 
 								case "rape":
-									SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)");
+									//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)");
 									break;
 
 								case "shoot":
