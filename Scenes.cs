@@ -10,30 +10,24 @@ namespace Noxico
 {
 	class SceneSystem
 	{
-		private static XmlDocument xSex, xDlg;
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
 		public static bool Dreaming, LeavingDream;
 
 		private static bool letBottomChoose;
 
-		public static void Engage(Character top, Character bottom, bool inDialogue)
+		public static void Engage(Character top, Character bottom)
 		{
-			Engage(top, bottom, "(starting node)", inDialogue);
+			Engage(top, bottom, "(starting node)");
 		}
 
-		public static void Engage(Character top, Character bottom, string name = "(starting node)", bool inDialogue = false)
+		public static void Engage(Character top, Character bottom, string name = "(starting node)")
 		{
-			if (xSex == null)
-			{
-				xSex = UnfoldIfs(Mix.GetXmlDocument("scenesSex.xml", true));
-				xDlg = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
-			}
+			xDoc = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
 
 			if (Dreaming)
 				NoxicoGame.Sound.PlayMusic("robric993.xm");
 			
-			xDoc = inDialogue ? xDlg : xSex;
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
 
@@ -49,29 +43,6 @@ namespace Noxico
 			var scene = openings.FirstOrDefault(i => SceneFiltersOkay(i));
 			var message = ApplyTokens(ExtractParagraphsAndScripts(scene));
 			var actions = ExtractActions(scene);
-
-			if (!inDialogue)
-			{
-				if (top.GetToken("climax").Value >= 100 || bottom.GetToken("climax").Value >= 100)
-				{
-					actions.Clear();
-					if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value < 100)
-					{
-						actions.Add("(top climax)", "");
-						top.GetToken("climax").Value = 0;
-					}
-					else if (top.GetToken("climax").Value >= 100 && bottom.GetToken("climax").Value >= 100)
-					{
-						actions.Add("(both climax)", "");
-						top.GetToken("climax").Value = bottom.GetToken("climax").Value = 0;
-					}
-					else
-					{
-						actions.Add("(bottom climax)", "");
-						bottom.GetToken("climax").Value = 0;
-					}
-				}
-			}
 
 			if (actions.Count == 1)
 			{
@@ -91,7 +62,7 @@ namespace Noxico
 					var randomAction = actions.Keys.ToArray()[Random.Next(actions.Count)];
 					actions.Clear();
 					actions.Add(randomAction, "==>");
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, true, bottom.GetKnownName(true, true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, true, bottom.GetKnownName(true, true));
 				}
 			}
 			else
@@ -104,7 +75,7 @@ namespace Noxico
 						LeavingDream = true;
 				}
 				else
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer, inDialogue); }, false, !Dreaming, bottom.GetKnownName(true, true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, !Dreaming, bottom.GetKnownName(true, true));
 			}
 
 			if (Dreaming)
@@ -144,31 +115,6 @@ namespace Noxico
 						listAs = ApplyTokens(listAs);
 					if (!ret.ContainsKey(key))
 						ret.Add(key, listAs);
-				}
-			}
-			var defaultList = scene.SelectSingleNode("default") as XmlElement;
-			if (defaultList != null)
-			{
-				if (defaultList.GetAttribute("for") == "sex")
-				{
-					var defaultSexList = new[]
-					{
-						"french kiss", "fondle breasts", "suck nipples", "give handjob", "get handjob", "give blowjob", "get blowjob", "fuck mouth", "give oral", "get oral",
-						"finger pussy", "finger ass", "fuck pussy", "fuck ass", "fuck tits", "fuck nipples", "fuck pussy with tail", "fuck ass with tail",
-						"fuck pussy with tentacle", "fuck ass with tentacle", "fuck mouth with tentacle", "fuck tits with tentacle", "fuck nipples with tentacle",
-					};
-					foreach (var x in defaultSexList)
-					{
-						foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == x && SceneFiltersOkay(s)))
-						{
-							var key = x;
-							var listAs = s.GetAttribute("list");
-							if (listAs.Contains('['))
-								listAs = ApplyTokens(listAs);
-							if (!ret.ContainsKey(key))
-								ret.Add(key, listAs);
-						}
-					}
 				}
 			}
 			return ret;

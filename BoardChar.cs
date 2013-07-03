@@ -266,7 +266,7 @@ namespace Noxico
 					{
 						if (!this.ParentBoard.HasToken("combat"))
 							this.ParentBoard.AddToken("combat");
-						SceneSystem.Engage(player.Character, this.Character, "(criminalscum)", true);
+						SceneSystem.Engage(player.Character, this.Character, "(criminalscum)");
 					}
 				}
 			}
