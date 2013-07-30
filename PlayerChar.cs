@@ -366,6 +366,8 @@ namespace Noxico
 
 			CheckForTimedItems();
 			CheckForCopiers();
+			if (UpdateSex())
+				return;
 
 			var sleeping = Character.Path("sleeping");
 			if (sleeping != null)
