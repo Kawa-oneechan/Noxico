@@ -10,7 +10,7 @@ using Keys = System.Windows.Forms.Keys;
 namespace Noxico
 {
 
-	public class BoardChar : Entity
+	public partial class BoardChar : Entity
 	{
 		private static int blinkRate = 1000;
 
@@ -387,6 +387,8 @@ namespace Noxico
 			CheckForTimedItems();
 			CheckForCriminalScum();
 			CheckForCopiers();
+			if (UpdateSex())
+				return;
 
 			base.Update();
 			Excite();

@@ -132,6 +132,7 @@
     <Compile Include="i18n.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
+    <Compile Include="SexManager.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
     <Compile Include="Subscreens\Options.cs" />
     <Compile Include="UpdateForm.cs">

@@ -279,6 +279,9 @@ namespace Noxico
 									//else if (PointingAt is BoardChar)
 										//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
 									//break;
+									if (PointingAt is BoardChar)
+										SexManager.Engage(player, (BoardChar)PointingAt);
+									break;
 
 								case "rape":
 									//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)");
