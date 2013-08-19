@@ -253,6 +253,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="mix\schedule.xml" />
+    <Content Include="mix\sex.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />

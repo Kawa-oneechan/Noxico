@@ -166,6 +166,7 @@ namespace Noxico
 #endif
 
 		}
+		//HEADS UP: With the new Jint update we might not need this one -- allowDiagonals is assumed to be False, after all...
 		[ForJS(ForJSUsage.Only)]
 		public void Floodfill(int startX, int startY, string checker, string replacer)
 		{

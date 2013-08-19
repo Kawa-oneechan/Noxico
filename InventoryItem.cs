@@ -82,6 +82,7 @@ namespace Noxico
 		}
 
 		//Added for Jint's sake.
+		//HEADS UP: were it not for 'a' being true by default, we could remove this with the newest Jint update.
 		public string ToString(Token token)
 		{
 			return this.ToString(token, false, true);
