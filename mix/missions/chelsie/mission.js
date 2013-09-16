@@ -4,26 +4,20 @@ MakeBoardTarget(myBoard);
 MakeBoardKnown(myBoard);
 myBoard.Clear("Woods");
 
-var tree = new Tile();
-tree.Character = '\u2660';
-tree.Foreground = Color.FromArgb(36, 68, 40);
-tree.Background = Color.FromArgb(83, 133, 46);
-tree.CanBurn = true;
-tree.Wall = true;
-
-var lawn = new Tile();
-lawn.Character = ' ';
-lawn.Background = Color.FromArgb(146, 182, 131);
-lawn.CanBurn = true;
-lawn.Wall = false;
-
-myBoard.Line(0, 0, 10, 5, "return tree.Noise()"); //using evalstring
-myBoard.Line(0, 5, 10,10, tree); //using Tile
-myBoard.Line(0,10, 10,15, tree, false); //same, but without calling Noise.
+//Repeat for tighter packing.
+for (var i = 0; i < 8; i++) {
+	myBoard.AddClutter(25, 1,36, 8);
+	myBoard.AddClutter(34, 0,74, 4);
+	myBoard.AddClutter(36, 5,43, 6);
+	myBoard.AddClutter(67, 5,74,13);
+}
 
 myBoard.MergeBitmap("missions\\chelsie\\lairhouse.png");
 
-myBoard.Replace("return (tile.Character == 'X' && tile.Foreground.R == 128)", "return tree.Noise()");
-myBoard.Replace("return (tile.Character == 'X' && tile.Foreground.R == 64)", "return lawn.Noise()");
+var Chelsie = new BoardChar(Character.GetUnique("chelsie"));
+Chelsie.XPosition = 64;
+Chelsie.YPosition = 12;
+myBoard.Entities.Add(Chelsie);
+Chelsie.ParentBoard = myBoard;
 
 myBoard.DumpToHtml("chel");

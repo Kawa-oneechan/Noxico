@@ -207,14 +207,12 @@
     <Content Include="mix\missions\chelsie\lairhouse.png" />
     <Content Include="mix\missions\chelsie\mission.js" />
     <Content Include="mix\missions\chelsie\manifest.txt" />
-    <Content Include="mix\missions\chelsie\scenesSex.xml" />
     <Content Include="mix\missions\chelsie\uniques.xml" />
     <Content Include="mix\missions\melfina\items.xml" />
     <Content Include="mix\missions\melfina\loot.xml" />
     <Content Include="mix\missions\melfina\manifest.txt" />
     <Content Include="mix\missions\melfina\mission.js" />
     <Content Include="mix\missions\melfina\scenesDlg.xml" />
-    <Content Include="mix\missions\melfina\scenesSex.xml" />
     <Content Include="mix\missions\melfina\uniques.xml" />
     <Content Include="mix\missions\pettancow\manifest.txt" />
     <Content Include="mix\missions\pettancow\mission.js" />
@@ -233,7 +231,6 @@
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\missions\urta\mission.js" />
     <Content Include="mix\missions\urta\scenesDlg.xml" />
-    <Content Include="mix\missions\urta\scenesSex.xml" />
     <Content Include="mix\missions\urta\uniques.xml" />
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />

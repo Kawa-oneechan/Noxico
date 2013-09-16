@@ -176,12 +176,11 @@ namespace Noxico
 		[ForJS(ForJSUsage.Only)]
 		public void MergeBitmap(string fileName)
 		{
-			var floorStart = Color.FromArgb(123, 92, 65);
-			var floorEnd = Color.FromArgb(143, 114, 80);
-			//var caveStart = Color.FromArgb(65, 66, 87);
-			//var caveEnd = Color.FromArgb(88, 89, 122);
-			var wall = Color.FromArgb(71, 50, 33);
+			var woodFloor = Color.FromArgb(86, 63, 44);
+			var caveFloor = Color.FromArgb(65, 66, 87);
+			var wall = Color.FromArgb(20, 15, 12);
 			var cornerJunctions = new List<Point>();
+			var cornerJunctionsI = new List<Point>();
 
 			var bitmap = Mix.GetBitmap(fileName);
 			for (var y = 0; y < 25; y++)
@@ -213,14 +212,14 @@ namespace Noxico
 					switch (color.Name)
 					{
 						case "ff800080": //Purple, floor
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+							bgd = woodFloor;
 							chr = ' ';
 							cei = true;
 							bur = true;
 							break;
 						case "ffff0000": //Red, outer | wall
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+							bgd = woodFloor;
 							chr = '\x2551';
 							wal = true;
 							cei = true;
@@ -228,7 +227,7 @@ namespace Noxico
 							break;
 						case "ffff8080": //Light red, outer corner
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+							bgd = woodFloor;
 							wal = true;
 							cei = true;
 							bur = true;
@@ -236,11 +235,35 @@ namespace Noxico
 							break;
 						case "ff800000": //Dark red, outer -- wall
 							fgd = wall;
-							bgd = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble());
+							bgd = woodFloor;
 							chr = '\x2550';
 							wal = true;
 							cei = true;
 							bur = true;
+							break;
+						case "ffffff00": //Light yellow, inner | wall
+							fgd = wall;
+							bgd = woodFloor;
+							chr = '\x2502';
+							wal = true;
+							cei = true;
+							bur = true;
+							break;
+						case "ff808000": //Dark yellow, inner -- wall
+							fgd = wall;
+							bgd = woodFloor;
+							chr = '\x2500';
+							wal = true;
+							cei = true;
+							bur = true;
+							break;
+						case "ffffffc0": //Pale yellow, inner corner
+							fgd = wall;
+							bgd = woodFloor;
+							wal = true;
+							cei = true;
+							bur = true;
+							cornerJunctionsI.Add(new Point(x, y));
 							break;
 					}
 					this.Tilemap[x, y] = new Tile()
@@ -254,6 +277,12 @@ namespace Noxico
 			}
 
 			//Fix up corners and junctions
+			FixOuterJunctions(cornerJunctions);
+			FixInnerJunctions(cornerJunctionsI);
+		}
+
+		private void FixOuterJunctions(List<Point> junctions)
+		{
 			var cjResults = new[]
 			{
 				(int)'x', //0 - none
@@ -273,7 +302,7 @@ namespace Noxico
 				0x2566, //14 - left, right, and down
 				0x256C, //15 - all
 			};
-			foreach (var cj in cornerJunctions)
+			foreach (var cj in junctions)
 			{
 				var up = cj.Y > 0 ? this.Tilemap[cj.X, cj.Y - 1].Character : 'x';
 				var down = cj.Y < 24 ? this.Tilemap[cj.X, cj.Y + 1].Character : 'x';
@@ -287,6 +316,52 @@ namespace Noxico
 				if (left == 0x3F || left == 0xA0 || left == 0x2550 || left == 0x2500 || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
 					mask |= 4;
 				if (right == 0x3F || right == 0xA0 || right == 0x2550 || right == 0x2500 || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
+					mask |= 8;
+				if (mask == 0)
+					continue;
+
+				this.Tilemap[cj.X, cj.Y].Character = (char)cjResults[mask];
+			}
+		}
+		private void FixInnerJunctions(List<Point> junctions)
+		{
+			var cjResults = new[]
+			{
+				(int)'x', //0 - none
+				0x2502, //1 - only up
+				0x2502, //2 - only down
+				0x2502, //3 - up and down
+				0x2500, //4 - only left
+				0x2518, //5 - left and up
+				0x2510, //6 - left and down
+				0x2524, //7 - left, up, and down
+				0x2500, //8 - only right
+				0x2514, //9 - right and up
+				0x250C, //10 - right and down
+				0x251C, //11 - right, up, and down
+				0x2500, //12 - left and right
+				0x2534, //13 - left, right, and up
+				0x252C, //14 - left, right, and down
+				0x253C, //15 - all
+			};
+			var ups = new[] { 0x2502, 0x250C, 0x2510, 0x251C, 0x2524, 0x252C, 0x253C };
+			var downs = new[] { 0x2502, 0x2514, 0x2518, 0x251C, 0x2524, 0x2534, 0x253C };
+			var lefts = new[] { 0x2500, 0x250C, 0x2514, 0x251C, 0x252C, 0x2534, 0x253C };
+			var rights = new[] { 0x2500, 0x2510, 0x2518, 0x2524, 0x252C, 0x2534, 0x253C };
+			foreach (var cj in junctions)
+			{
+				var up = cj.Y > 0 ? this.Tilemap[cj.X, cj.Y - 1].Character : 'x';
+				var down = cj.Y < 24 ? this.Tilemap[cj.X, cj.Y + 1].Character : 'x';
+				var left = cj.X > 0 ? this.Tilemap[cj.X - 1, cj.Y].Character : 'x';
+				var right = cj.X < 79 ? this.Tilemap[cj.X + 1, cj.Y].Character : 'x';
+				var mask = 0;
+				if (ups.Contains(up) || (up >= 0x2551 && up <= 0x2557) || (up >= 0x255E && up <= 0x2556) || (up >= 0x256A && up <= 0x256c))
+					mask |= 1;
+				if (downs.Contains(down) || (down >= 0x2558 && down <= 0x255D) || (down >= 0x255E && down <= 0x2563) || (down >= 0x2567 && down <= 0x256C))
+					mask |= 2;
+				if (lefts.Contains(left) || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
+					mask |= 4;
+				if (rights.Contains(right) || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
 					mask |= 8;
 				if (mask == 0)
 					continue;
