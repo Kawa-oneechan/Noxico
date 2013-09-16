@@ -539,14 +539,23 @@ namespace Noxico
 				}
 
 				//Find dropped items
-				var drop = ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition);
-				if (drop != null)
+				var itemsHere = DroppedItem.GetItemsAt(ParentBoard, XPosition, YPosition);
+				if (itemsHere.Count == 1)
 				{
-					drop.Take(this.Character);
-					NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
-					NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
-					NoxicoGame.Sound.PlaySound("Get Item");
-					ParentBoard.Redraw();
+					var drop = itemsHere[0];
+					if (drop != null)
+					{
+						drop.Take(this.Character);
+						NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
+						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
+						NoxicoGame.Sound.PlaySound("Get Item");
+						ParentBoard.Redraw();
+						return;
+					}
+				}
+				else if (itemsHere.Count > 1)
+				{
+					DroppedItem.PickItemsFrom(itemsHere);
 					return;
 				}
 
