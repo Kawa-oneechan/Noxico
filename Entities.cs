@@ -353,6 +353,40 @@ namespace Noxico
 			ParentBoard.EntitiesToRemove.Add(this);
 			taker.CheckHasteSlow();
 		}
+
+		public static List<DroppedItem> GetItemsAt(Board board, int x, int y)
+		{
+			return new List<DroppedItem>(board.Entities.OfType<DroppedItem>().Where(drop => drop.XPosition == x && drop.YPosition == y));
+		}
+
+		public static void PickItemsFrom(List<DroppedItem> items)
+		{
+			var itemDict = new Dictionary<object, string>();
+			foreach (var item in items)
+			{
+				itemDict.Add(item, item.Name);
+			}
+			itemDict.Add(-1, "...nothing");
+			ActionList.Show("Pick up...", items[0].XPosition, items[0].YPosition, itemDict,
+				() =>
+				{
+					if (ActionList.Answer is int && (int)ActionList.Answer == -1)
+					{
+						//Cancelled.
+						return;
+					}
+					var drop = ActionList.Answer as DroppedItem;
+					var player = NoxicoGame.HostForm.Noxico.Player;
+					var item = drop.Item;
+					var token = drop.Token;
+					drop.Take(player.Character);
+					player.Energy -= 1000;
+					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
+					NoxicoGame.Sound.PlaySound("Get Item");
+					player.ParentBoard.Redraw();
+				}
+			);
+		}
 	}
 
 	public class Container : Entity
