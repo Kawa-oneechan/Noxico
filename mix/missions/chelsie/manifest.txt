@@ -1,6 +1,5 @@
 Chelsie the Cheetah
-Kawa, Bodshivita
+Kawa
 mission.js
 uniques.xml
-scenesSex.xml
 lairhouse.png
