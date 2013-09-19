@@ -135,9 +135,22 @@ namespace Noxico
 			var lines = a.Split('\n');
 			var nodes = new List<Token>();
 			var prevTabs = 0;
+			var cdata = false;
+			var cdataText = new StringBuilder();
 			foreach (var line in lines.Where(x => !string.IsNullOrWhiteSpace(x) && !x.TrimStart().StartsWith("--")))
 			{
 				var l = line.TrimEnd();
+				if (cdata)
+				{
+					if (l.EndsWith("]]>"))
+					{
+						nodes.Last().AddToken("#text", 0, cdataText.ToString());
+						cdata = false;
+						continue;
+					}
+					cdataText.AppendLine(l);
+					continue;
+				}
 				//count number of tabs in front
 				var tabs = 0;
 				for (; tabs < l.Length - 1; tabs++)
@@ -146,6 +159,13 @@ namespace Noxico
 				l = l.TrimStart();
 				var newOne = new Token();
 				var tokenName = l;
+				if (tokenName == "<[[")
+				{
+					//Start of a CDATA-style text block! Switch to CDATA mode, keep parsing until ]]> and place it in the last node as "#text". 
+					cdata = true;
+					cdataText.Clear();
+					continue;
+				}
 				if (tokenName.StartsWith("oneof "))
 				{
 					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
@@ -251,6 +271,16 @@ namespace Noxico
 			var ret = new StringBuilder();
 			foreach (var item in list)
 			{
+				if (item.Name == "#text")
+				{
+					ret.AppendFormat("{0}<[[", new string('\t', tabs));
+					ret.AppendLine();
+					ret.Append(item.Text);
+					ret.AppendFormat("{0}]]>", new string('\t', tabs));
+					ret.AppendLine();
+					continue;
+				}
+
 				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
 				if (item.Value != 0 || !string.IsNullOrWhiteSpace(item.Text))
 				{
