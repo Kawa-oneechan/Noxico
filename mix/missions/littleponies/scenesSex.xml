@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<scenes>
-	<scene id="StopGapForPonies" name="(starting node)">
-		<filter target="bottom" type="has" name="quadruped" />
-		<p>
-			PillowShout, you're up! :D
-		</p>
-	</scene>
-</scenes>

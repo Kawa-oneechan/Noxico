@@ -132,8 +132,62 @@ namespace Noxico
 			}
 		}
 
+		public Gender ActualGender
+		{
+			get
+			{
+				return Gender;
+			}
+		}
+
+		public Gender PercievedGender
+		{
+			get
+			{
+				//TODO: detect a relationship token and return the preferred gender if known?
+
+				var crotchVisible = false;
+				var pants = GetEquippedItemBySlot("pants");
+				var underpants = GetEquippedItemBySlot("underpants");
+				var pantsCT = (pants == null) ? true : pants.CanSeeThrough();
+				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough();
+				if (pantsCT && underpantsCT)
+					crotchVisible = true;
+				var biggestDick =  (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
+				if (biggestDick < 4 && !crotchVisible)
+					biggestDick = 0; //hide tiny dicks with clothing on.
+
+				var score = 0.5f;
+				score -= biggestDick * 0.02f;
+				if (BiggestBreastrowNumber != -1)
+					score += GetBreastRowSize(BiggestBreastrowNumber) * 0.1f;
+				if (HasToken("vagina") && crotchVisible)
+					score += 0.5f;
+				if (HasToken("hair"))
+					score += this.Path("hair/length").Value * 0.01f;
+				//TODO: apply femininity score
+
+				if (score < 0.4f)
+					return Noxico.Gender.Male;
+				else if (score > 0.6f)
+					return Noxico.Gender.Female;
+				return Noxico.Gender.Herm;
+			}
+		}
+
+		public Gender PreferredGender
+		{
+			get
+			{
+				if (HasToken("preferredgender"))
+					return (Gender)Enum.Parse(typeof(Gender), GetToken("preferredgender").Name, true);
+				return ActualGender; //stopgap
+			}
+		}
+
 		public void UpdateTitle()
 		{
+			//TODO: clean up
 			var g = Gender.ToString().ToLowerInvariant();
 			Title = GetToken("terms").GetToken("generic").Text;
 			if (HasToken("prefixes"))
@@ -162,35 +216,20 @@ namespace Noxico
 
 		public string HeSheIt(bool lower = false)
 		{
-			if (HasToken("penis") && HasToken("vagina"))
-				return lower ? "shi" : "Shi";
-			else if (HasToken("penis"))
-				return lower ? "he" : "He";
-			else if (HasToken("vagina"))
-				return lower ? "she" : "She";
-			return lower ? "it" : "It";
+			var rets = new[] { string.Empty, "He", "She", "Shi", "It" };
+			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
 		public string HisHerIts(bool lower = false)
 		{
-			if (HasToken("penis") && HasToken("vagina"))
-				return lower ? "hir" : "Hir";
-			else if (HasToken("penis"))
-				return lower ? "his" : "His";
-			else if (HasToken("vagina"))
-				return lower ? "her" : "Her";
-			return lower ? "its" : "Its";
+			var rets = new[] { string.Empty, "His", "Her", "Hir", "Its" };
+			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
 		public string HimHerIt(bool lower = false)
 		{
-			if (HasToken("penis") && HasToken("vagina"))
-				return lower ? "hir" : "Hir";
-			else if (HasToken("penis"))
-				return lower ? "him" : "Him";
-			else if (HasToken("vagina"))
-				return lower ? "her" : "Her"; ;
-			return lower ? "it" : "It";
+			var rets = new[] { string.Empty, "Him", "Her", "Hir", "It" };
+			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
 		public float MaximumHealth
@@ -1131,9 +1170,9 @@ namespace Noxico
 			print("Cocks: ");
 			if (!crotchVisible)
 			{
-				if (this.Gender == Gender.Male)
+				if (this.PercievedGender == Gender.Male)
 					print("can't tell, one assumed\n");
-				else if (this.Gender == Gender.Female)
+				else if (this.PercievedGender == Gender.Female)
 					print("can't tell, none assumed\n");
 				else
 					print("can't tell\n");
@@ -1226,7 +1265,9 @@ namespace Noxico
 			#if DEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>-----\n");
-			print("<cGray>Gender: " + this.Gender.ToString() + "\n");
+			print("<cGray>Percieved gender: " + this.PercievedGender.ToString() + "\n");
+			print("<cGray>Actual gender: " + this.ActualGender.ToString() + "\n");
+			print("<cGray>Self-preferred gender: " + this.PreferredGender.ToString() + "\n");
 			print("<cGray>Cum amount: " + this.CumAmount + "mLs.\n");
 			print("<cGray>Biggest breast row: #" + this.BiggestBreastrowNumber + " @ " + this.GetBreastRowSize(this.BiggestBreastrowNumber) + "'\n");
 			print("<cGray>Biggest penis (length only): #" + this.GetBiggestPenisNumber(false) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(false), false) + "cm\n");

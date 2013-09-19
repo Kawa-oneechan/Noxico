@@ -240,7 +240,7 @@ namespace Noxico
 				if (cha > 0)
 				{
 					if (cha < 30)
-						return "Well hello, " + (otherChar.Gender == Gender.Male ? "handsome." : "beautiful.");
+						return "Well hello, " + (otherChar.PercievedGender == Gender.Male ? "handsome." : "beautiful.");
 					else if (cha < 60)
 						return "Oh my.";
 					else
