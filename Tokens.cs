@@ -223,6 +223,16 @@ namespace Noxico
 							newOne.Text = value;
 					}
 					tokenName = tokenName.Remove(tokenName.IndexOf(':'));
+					if (!string.IsNullOrWhiteSpace(newOne.Text))
+					{
+						var entity = new Regex("&#x([A-Za-z0-9]{2,4});");
+						var matches = entity.Matches(newOne.Text);
+						foreach (Match match in matches)
+						{
+							var replacement = new string((char)int.Parse(match.Value.Substring(3, match.Value.Length - 4), NumberStyles.HexNumber), 1);
+							newOne.Text = newOne.Text.Replace(match.Value, replacement);
+						}
+					}
 #if DEBUG
 					if (tokenName.Contains(' '))
 						throw new Exception(string.Format("Found a token \"{0}\", probably a typo.", tokenName));
@@ -288,7 +298,7 @@ namespace Noxico
 					if (item.Value != 0)
 						ret.Append(item.Value);
 					else
-						ret.AppendFormat("\"{0}\"", item.Text);
+						ret.AppendFormat("\"{0}\"", item.Text.Replace("\"", "&#x22;"));
 					ret.AppendLine();
 				}
 				else
