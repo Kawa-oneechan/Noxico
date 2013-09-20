@@ -202,6 +202,81 @@ namespace Noxico
 			return x;
 		}
 
+		public static List<Token> GetTokenTree(string fileName)
+		{
+			var carrier = new TokenCarrier();
+			var tml = String.Empty;
+			//var tml = GetString(fileName);
+
+			var otherFiles = fileList.Keys.Where(e => e != fileName && e.EndsWith(fileName)).ToList();
+			if (Directory.Exists("data"))
+			{
+				var externalOtherFiles = Directory.GetFiles("data", "*.tml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != fileName && e.EndsWith(fileName));
+				otherFiles.AddRange(externalOtherFiles);
+			}
+			if (otherFiles.Count() == 0)
+			{
+				tml = GetString(fileName);
+			}
+			else
+			{
+				Program.WriteLine("{0} has mod expansions!", fileName);
+				tml = GetString(fileName);
+				var onTop = tml.Contains("-- #mergeontop");
+				foreach (var f in otherFiles)
+				{
+					Program.WriteLine("Splicing in {0}...", f);
+					if (onTop)
+					{
+						tml = "\n\n-- #log Splice: " + f + "\n\n" + tml;
+						tml = GetString(f) + tml;
+					}
+					else
+					{
+						tml += "\n\n-- #log Splice: " + f + "\n\n";
+						tml += GetString(f);
+					}
+				}
+			}
+
+			var replaceKeys = new List<string>();
+			while (tml.Contains("-- #replace"))
+			{
+				var replaceStart = tml.IndexOf("-- #replace");
+				var replaceEnd = tml.IndexOf('\n', replaceStart + 1);
+				var replaceKey = tml.Substring(replaceStart, replaceEnd - replaceStart).Trim().Split(' ')[2];
+				replaceKeys.Add(replaceKey);
+				tml = tml.Substring(0, replaceStart - 1) + tml.Substring(replaceEnd);
+			}
+			carrier.Tokenize(tml);
+
+			if (replaceKeys.Count > 0)
+			{
+				foreach (var key in replaceKeys)
+				{
+					for (var i = 0; i < carrier.Tokens.Count; i++)
+					{
+						if (carrier.Tokens[i].Name == key)
+						{
+							var firstKey = carrier.Tokens[i];
+							var value = firstKey.Text;
+							for (var j = i + 1; j < carrier.Tokens.Count; j++)
+							{
+								if (carrier.Tokens[j].Name == key && carrier.Tokens[j].Text == value)
+								{
+									firstKey.Tokens.Clear();
+									firstKey.Tokens.AddRange(carrier.Tokens[j].Tokens);
+									carrier.RemoveToken(j);
+									j--;
+								}
+							}
+						}
+					}
+				}
+			}
+			return carrier.Tokens;
+		}
+
 		/// <summary>
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="Bitmap"/>.
 		/// </summary>
