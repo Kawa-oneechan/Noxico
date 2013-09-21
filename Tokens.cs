@@ -97,19 +97,29 @@ namespace Noxico
 			var parts = pathSpec.Split('/');
 			var point = this;
 			var final = parts.Last();
-			if (Regex.IsMatch(final, @"\[(?<index>[0-9]+)\]"))
+			var indexRE = new Regex(@"\[(?<index>[0-9]+)\]");
+			var textRE = new Regex(@"\[=(?<text>\w+)\]");
+			if (indexRE.IsMatch(final))
+				final = final.Remove(final.IndexOf('['));
+			else if (textRE.IsMatch(final))
 				final = final.Remove(final.IndexOf('['));
 			foreach (var p in parts)
 			{
 				Token target = null;
-				if (Regex.IsMatch(p, @"\[(?<index>[0-9]+)\]"))
+				if (indexRE.IsMatch(p))
 				{
 					var trueP = p.Remove(p.IndexOf('['));
-					var index = int.Parse(Regex.Match(p, @"\[(?<index>[0-9]+)\]").Groups["index"].ToString());
+					var index = int.Parse(indexRE.Match(p).Groups["index"].ToString());
 					var targets = point.Tokens.FindAll(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase));
 					if (targets == null || index >= targets.Count)
 						return null;
 					target = targets[index];
+				}
+				else if (textRE.IsMatch(p))
+				{
+					var trueP = p.Remove(p.IndexOf('['));
+					var text = textRE.Match(p).Groups["text"].ToString();
+					target = point.Tokens.FirstOrDefault(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
 				}
 				else
 					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.OrdinalIgnoreCase));
