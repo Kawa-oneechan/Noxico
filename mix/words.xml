@@ -249,6 +249,16 @@ Number of known items       {2}
 		<word id="x_becomesyou">{0} becomes another you.</word>
 		<word id="x_imitates_y">{0} copies {1}'s sexual distinctions.</word>
 		<word id="x_becomes_y">{0} becomes another {1}.</word>
+		<word id="you_bear1stchild">
+			<![CDATA[You have given birth to little {0}.
+		
+Within moments, a matronly demoness appears before you and quickly introduces herself as a midwife. She picks up your child, giving you a thumbs-up and smile in return. In a large puff of smoke, she's gone again.
+
+Somehow, you feel like your child is perfectly safe with her.]]>
+		</word>
+		<word id="you_bearNthchild">You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.</word>
+		<word id="x_bearschild">{0} has given birth to little {1}.</word>
+		<word id="congrats_mom">Congratulations, mom</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
