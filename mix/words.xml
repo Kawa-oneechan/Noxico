@@ -289,5 +289,7 @@ Would you like an infodump on the way out?]]>
 		<word id="context_droppeditem">pick up</word>
 		<word id="context_container">see contents</word>
 		<word id="context_bed">sleep</word>
+		<!-- Month names cribbd from The Elder Scrolls -->
+		<word id="months">Morning Star, Sun's Dawn, First Seed, Rain's Hand, Second Seed, Midyear, Sun's Height, Last Seed, Hearthfire, Frostfall, Sun's Dusk, Evening Star</word>
 	</category>
 </words>
