@@ -675,7 +675,7 @@ namespace Noxico
 			{
 				pc.Name.NameGen = pc.GetToken("namegen").Text;
 				pc.Name.Regenerate();
-			
+
 				if (pc.Name.Surname.StartsWith("#patronym"))
 				{
 					var parentName = new Name() { NameGen = pc.Name.NameGen };
@@ -686,9 +686,8 @@ namespace Noxico
 				}
 			}
 
-			if (pc.Path("skin/type").Text != "slime")
-				pc.Path("skin/color").Text = bodyColor;
-			if (pc.Path("hair/color") != null)
+			pc.Path("skin/color").Text = bodyColor;
+			if (pc.Path("skin/type").Text != "slime" && pc.Path("hair/color") != null)
 				pc.Path("hair/color").Text = hairColor;
 			if (pc.HasToken("eyes"))
 				pc.GetToken("eyes").Text = eyeColor;
