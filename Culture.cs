@@ -235,9 +235,11 @@ namespace Noxico
 
 	public class NoxicanDate
 	{
-		//private readonly long thirtyDaysInTicks = 25920000000000;
-		//private readonly long oneYearInTicks = 316224000000000;
-		private string[] months = new[] { "Morning Star", "Sun's Dawn", "First Seed", "Rain's Hand", "Second Seed", "Midyear", "Sun's Height", "Last Seed", "Hearthfire", "Frostfall", "Sun's Dusk", "Evening Star" };
+		private static string[] months;
+		static NoxicanDate()
+		{
+			months = i18n.GetArray("months");
+		}
 
 		public int Day { get; private set; }
 		public int Month { get; private set; }
@@ -303,6 +305,8 @@ namespace Noxico
 
 		public void Add(TimeSpan time)
 		{
+			if (time == null)
+				return;
 			if (time.Days > 0) this.AddDays((int)time.Days);
 			if (time.Hours > 0) this.AddHours((int)time.Hours);
 			if (time.Minutes > 0) this.AddMinutes((int)time.Minutes);
@@ -409,26 +413,38 @@ namespace Noxico
 
 		public static bool operator >=(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() >= right.ToBinary());
 		}
 		public static bool operator <=(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() <= right.ToBinary());
 		}
 		public static bool operator ==(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() == right.ToBinary());
 		}
 		public static bool operator !=(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() != right.ToBinary());
 		}
 		public static bool operator >(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() > right.ToBinary());
 		}
 		public static bool operator <(NoxicanDate left, NoxicanDate right)
 		{
+			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+				return false;
 			return (left.ToBinary() < right.ToBinary());
 		}
 		public override bool Equals(object right)
