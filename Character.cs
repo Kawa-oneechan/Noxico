@@ -597,7 +597,7 @@ namespace Noxico
 			var filters = new Dictionary<string, string>();
 			filters["gender"] = Gender.ToString().ToLowerInvariant();
 			filters["board"] = Board.HackishBoardTypeThing;
-			filters["culture"] = this.GetToken("culture").Text;
+			filters["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "";
 			filters["name"] = this.Name.ToString(true);
 			filters["id"] = this.Name.ToID();
 			filters["bodymatch"] = this.GetClosestBodyplanMatch();
@@ -2289,9 +2289,9 @@ namespace Noxico
 
 		public bool UpdatePregnancy()
 		{
+			var boardChar = this.GetBoardChar();
 			if (this.HasToken("egglayer") && this.HasToken("vagina") && !this.HasToken("pregnancy"))
 			{
-				var boardChar = this.GetBoardChar();
 				var eggToken = this.GetToken("egglayer");
 				eggToken.Value++;
 				if (eggToken.Value == 500)
@@ -2330,11 +2330,26 @@ namespace Noxico
 					//Gotta grow a vagina if we don't have one right now.
 					//if (!this.HasToken("vagina"))
 
-					//Spawn the Midwife Daemon close to the player, play scene, have her pop out again.
-
-					//Until then, we'll just message you.
 					if (this.HasToken("player"))
-						MessageBox.Notice("You have given birth to little " + childName.FirstName + ".", true, "Congratulations, mom.");
+					{
+						var children = 0;
+						foreach (var ship in ships.Tokens)
+						{
+							if (ship.HasToken("child"))
+								children++;
+						}
+						if (children == 1)
+						{
+							//First time!
+							MessageBox.Notice(i18n.Format("you_bear1stchild", childName.FirstName), true, i18n.GetString("congrats_mom"));
+						}
+						else
+							MessageBox.Notice(i18n.Format("you_bearNthchild", childName.FirstName), true, i18n.GetString("congrats_mom"));
+					}
+					else if (pregnancy.GetToken("father").Text == NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString(true))
+					{
+						NoxicoGame.AddMessage(i18n.Format("x_bearschild", this.Name, childName.FirstName));
+					}
 
 					this.RemoveToken("pregnancy");
 					return true;
@@ -2354,7 +2369,10 @@ namespace Noxico
 			if (Random.Next() > fertility)
 				return false;
 
-			return true; //abstract pregnancy -- no need to actually mix up a baby			
+			var pregnancy = AddToken("pregnancy");
+			pregnancy.AddToken("gestation").AddToken("max", 1000); //TODO: tweak gestation time. Has to be high, though; gestation is in time, not turns!
+			pregnancy.AddToken("father", 0, father.Name.ToString(true));
+			return true;		
 		}
 
 
