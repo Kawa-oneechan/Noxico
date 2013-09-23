@@ -123,6 +123,8 @@ namespace Noxico
 		{
 			if (ScheduleToken == null)
 				ScheduleToken = entity.Character.GetToken("schedule");
+			if (ScheduleToken == null) //Still null? Should allow unscheduled characters without breaking...
+				return;
 
 			if (CurrentActivity == null)
 				InitSchedule();
