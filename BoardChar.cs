@@ -631,7 +631,8 @@ namespace Noxico
 				{
 					//WRONG KIND OF ATTACK! ABANDON SHIP!!
 					Character.AddToken("waitforplayer");
-					SceneSystem.Engage(this.Character, target.Character, "(loss rape start)");
+					//LETSDEVELOP
+					//SceneSystem.Engage(this.Character, target.Character, "(loss rape start)");
 					return;
 				}
 				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
