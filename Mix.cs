@@ -141,11 +141,11 @@ namespace Noxico
 				return x;
 			}
 
-			Program.WriteLine("{0} has mod expansions!", fileName);
+			//Program.WriteLine("{0} has mod expansions!", fileName);
 			x.LoadXml(GetString(fileName));
 			foreach (var f in otherFiles)
 			{
-				Program.WriteLine("Splicing in {0}...", f);
+				//Program.WriteLine("Splicing in {0}...", f);
 				var otherX = new System.Xml.XmlDocument();
 				otherX.LoadXml(GetString(f));
 				//x.DocumentElement.InnerXml = otherX.DocumentElement.InnerXml + x.DocumentElement.InnerXml;
