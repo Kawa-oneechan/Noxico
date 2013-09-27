@@ -656,20 +656,20 @@ namespace Noxico
 			//this.CurrentBoard.Redraw();
 		}
 
-		public void CreatePlayerCharacter(string name, Gender gender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
+		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
 		{
 			Board.HackishBoardTypeThing = "wild";
-			var pc = Character.Generate(bodyplan, gender);
+			var pc = Character.Generate(bodyplan, bioGender, idGender);
 			this.Player = new Player(pc);
 
 			pc.IsProperNamed = true;
 			if (!string.IsNullOrWhiteSpace(name))
 			{
 				pc.Name = new Name(name);
-				if (gender == Gender.Female)
+				if (idGender == Gender.Female)
 					pc.Name.Female = true;
-				else if (gender == Gender.Herm || gender == Gender.Neuter)
-					pc.Name.Female = Random.NextDouble() > 0.5;
+				//else if (bioGender == Gender.Herm || bioGender == Gender.Neuter)
+				//	pc.Name.Female = Random.NextDouble() > 0.5;
 			}
 			else
 			{
@@ -679,8 +679,6 @@ namespace Noxico
 				if (pc.Name.Surname.StartsWith("#patronym"))
 				{
 					var parentName = new Name() { NameGen = pc.Name.NameGen };
-					if (gender == Gender.Female)
-						pc.Name.Female = true;
 					parentName.Regenerate();
 					pc.Name.ResolvePatronym(parentName, parentName);
 				}
@@ -743,7 +741,7 @@ namespace Noxico
 							var ifhas = bonus.GetAttribute("ifhas");
 							if (!string.IsNullOrWhiteSpace(ifhas) && pc.Path(ifhas) == null)
 								continue;
-							if ((g == "female" && gender != Gender.Female) || (g == "male" && gender != Gender.Male))
+							if ((g == "female" && bioGender != Gender.Female) || (g == "male" && bioGender != Gender.Male))
 								continue;
 							var plus = false;
 							percent = false;
@@ -774,7 +772,7 @@ namespace Noxico
 							path = bonus.GetAttribute("id");
 							v = bonus.GetAttribute("value");
 							g = bonus.GetAttribute("gender");
-							if ((g == "female" && gender != Gender.Female) || (g == "male" && gender != Gender.Male))
+							if ((g == "female" && bioGender != Gender.Female) || (g == "male" && bioGender != Gender.Male))
 								continue;
 							var token = pc.Path(path);
 							if (token == null)
@@ -793,6 +791,7 @@ namespace Noxico
 
 			Player.Character.RecalculateStatBonuses();
 			Player.Character.CheckHasteSlow();
+			Player.Character.UpdateTitle();
 			Player.AdjustView();
 
 			InGame = true;

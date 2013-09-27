@@ -144,7 +144,9 @@ namespace Noxico
 		{
 			get
 			{
-				//TODO: detect a relationship token and return the preferred gender if known?
+				if (HasToken("player"))
+					return PreferredGender;
+				//TODO: detect a relationship token and return the preferred gender if known.
 
 				var crotchVisible = false;
 				var pants = GetEquippedItemBySlot("pants");
@@ -180,7 +182,7 @@ namespace Noxico
 			get
 			{
 				if (HasToken("preferredgender"))
-					return (Gender)Enum.Parse(typeof(Gender), GetToken("preferredgender").Name, true);
+					return (Gender)Enum.Parse(typeof(Gender), GetToken("preferredgender").Text, true);
 				return ActualGender; //stopgap
 			}
 		}
@@ -188,7 +190,7 @@ namespace Noxico
 		public void UpdateTitle()
 		{
 			//TODO: clean up
-			var g = Gender.ToString().ToLowerInvariant();
+			var g = PercievedGender.ToString().ToLowerInvariant();
 			Title = GetToken("terms").GetToken("generic").Text;
 			if (HasToken("prefixes"))
 			{
@@ -281,19 +283,9 @@ namespace Noxico
 			else if (gender == Gender.Herm || gender == Gender.Neuter)
 				newChar.Name.Female = Random.NextDouble() > 0.5;
 
-			/*
-			var terms = newChar.GetToken("terms");
-			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
-			if (gender == Gender.Male && terms.HasToken("male"))
-				newChar.Species = terms.GetToken("male").Text;
-			else if (gender == Gender.Female && terms.HasToken("female"))
-				newChar.Species = terms.GetToken("female").Text;
-			else if (gender == Gender.Herm && terms.HasToken("herm"))
-				newChar.Species = terms.GetToken("herm").Text;
-			*/
-			newChar.UpdateTitle();
-			newChar.StripInvalidItems();
 			newChar.EnsureDefaultTokens();
+			newChar.StripInvalidItems();
+			newChar.UpdateTitle();
 			newChar.ApplyCostume();
 
 			newChar.Culture = Culture.DefaultCulture;
@@ -308,10 +300,13 @@ namespace Noxico
 			return newChar;
 		}
 
-		public static Character Generate(string bodyPlan, Gender gender)
+		public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
 			if (bodyPlansDocument == null)
 				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
+
+			if (idGender == Gender.Random)
+				idGender = gender;
 
 			var newChar = new Character();
 			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
@@ -371,10 +366,8 @@ namespace Noxico
 					if (Culture.NameGens.Contains(namegen))
 						newChar.Name.NameGen = namegen;
 				}
-				if (gender == Gender.Female)
+				if (idGender == Gender.Female)
 					newChar.Name.Female = true;
-				else if (gender == Gender.Herm || gender == Gender.Neuter)
-					newChar.Name.Female = Random.NextDouble() > 0.5;
 				newChar.Name.Regenerate();
 				var patFather = new Name() { NameGen = newChar.Name.NameGen, Female = false };
 				var patMother = new Name() { NameGen = newChar.Name.NameGen, Female = true };
@@ -384,19 +377,11 @@ namespace Noxico
 				newChar.IsProperNamed = true;
 			}
 
-			/*
-			var terms = newChar.GetToken("terms");
-			newChar.Species = gender.ToString() + " " + terms.GetToken("generic").Text;
-			if (gender == Gender.Male && terms.HasToken("male"))
-				newChar.Species = terms.GetToken("male").Text;
-			else if (gender == Gender.Female && terms.HasToken("female"))
-				newChar.Species = terms.GetToken("female").Text;
-			else if (gender == Gender.Herm && terms.HasToken("herm"))
-				newChar.Species = terms.GetToken("herm").Text;
-			*/
+			newChar.AddToken("preferredgender", 0, idGender.ToString());
+
+			newChar.EnsureDefaultTokens();
 			newChar.UpdateTitle();
 			newChar.StripInvalidItems();
-			newChar.EnsureDefaultTokens();
 			newChar.ApplyCostume();
 
 			newChar.Culture = Culture.DefaultCulture;
@@ -595,7 +580,7 @@ namespace Noxico
 			if (HasToken("beast"))
 				return;
 			var filters = new Dictionary<string, string>();
-			filters["gender"] = Gender.ToString().ToLowerInvariant();
+			filters["gender"] = PreferredGender.ToString().ToLowerInvariant();
 			filters["board"] = Board.HackishBoardTypeThing;
 			filters["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "";
 			filters["name"] = this.Name.ToString(true);

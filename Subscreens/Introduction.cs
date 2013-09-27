@@ -256,6 +256,7 @@ namespace Noxico
 					{ "name", i18n.GetString("cchelp_name") },
 					{ "species", i18n.GetString("cchelp_species") },
 					{ "sex", i18n.GetString("cchelp_sex") },
+					{ "gid", i18n.GetString("cchelp_gid") },
 					{ "hair", i18n.GetString("cchelp_hair") },
 					{ "body", i18n.GetString("cchelp_body") },
 					{ "eyes", i18n.GetString("cchelp_eyes") },
@@ -281,6 +282,8 @@ namespace Noxico
 					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 13, Foreground = Color.Gray } },
 					{ "sexNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 14, Foreground = Color.Gray } },
 					{ "sex", new UIBinary(i18n.GetString("Male"), i18n.GetString("Female")) { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 16, Foreground = Color.Gray } },
+					{ "gid", new UIBinary(i18n.GetString("Male"), i18n.GetString("Female")) { Left = 58, Top = 17, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 8, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
@@ -305,7 +308,7 @@ namespace Noxico
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
-						controls["sexLabel"], controls["sexNo"], controls["sex"],
+						controls["sexLabel"], controls["sexNo"], controls["sex"], controls["gidLabel"], controls["gid"],
 						controls["controlHelp"], controls["next"],
 					},
 					new List<UIElement>()
@@ -354,12 +357,13 @@ namespace Noxico
 				{
 					var playerName = controls["name"].Text;
 					var sex = ((UIBinary)controls["sex"]).Value;
+					var gid = ((UIBinary)controls["gid"]).Value;
 					var species = ((UISingleList)controls["species"]).Index;
 					var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;
 					var eyes = ((UISingleList)controls["eyes"]).Text;
 					var bonus = ((UIList)controls["gift"]).Text;
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), playables[species].ID, hair, body, eyes, bonus);
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), (Gender)(gid + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
@@ -397,6 +401,13 @@ namespace Noxico
 					controls["sexNo"].Hidden = !playables[speciesIndex].GenderLocked;
 					UIManager.Draw();
 				};
+				/*
+				controls["sex"].Change = (s, e) =>
+				{
+					((UIBinary)controls["gid"]).Value = ((UIBinary)controls["sex"]).Value;
+					UIManager.Draw();
+				};
+				*/
 				controls["name"].Change = (s, e) =>
 				{
 					controls["nameRandom"].Hidden = !string.IsNullOrEmpty(controls["name"].Text);
