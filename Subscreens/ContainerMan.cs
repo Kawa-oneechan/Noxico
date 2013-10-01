@@ -5,6 +5,11 @@ namespace Noxico
 {
 	public class ContainerMan
 	{
+		private enum ContainerMode
+		{
+			Chest, Vendor, Corpse
+		}
+
 		private static List<Token> containerTokens = new List<Token>();
 		private static List<InventoryItem> containerItems = new List<InventoryItem>();
 
@@ -12,7 +17,7 @@ namespace Noxico
 		private static List<InventoryItem> playerItems = new List<InventoryItem>();
 
 		//private static Container container;
-		private static bool isVendor;
+		private static ContainerMode mode;
 		private static Token other;
 		private static string title;
 		private static Character vendorChar;
@@ -34,7 +39,7 @@ namespace Noxico
 
 			other = container.Token.GetToken("contents");
 			title = container.Name;
-			isVendor = false;
+			mode = container.Token.HasToken("corpse") ? ContainerMode.Corpse : ContainerMode.Chest;
 			vendorChar = null;
 			vendorCaughtYou = false;
 		}
@@ -47,7 +52,7 @@ namespace Noxico
 
 			other = vendor.GetToken("items");
 			title = vendor.Name.ToString(true);
-			isVendor = true;
+			mode = ContainerMode.Vendor;
 			vendorChar = vendor;
 			vendorCaughtYou = false;
 		}
@@ -71,7 +76,8 @@ namespace Noxico
 				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
 				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft };
 				UIManager.Elements.Add(containerWindow);
-				UIManager.Elements.Add(new UILabel(isVendor ? vendorChar.Name.ToString() + " has nothing." : "It's empty.") { Left = 3, Top = 2, Width = 36, Height = 1 });
+				var emptyMessage = mode == ContainerMode.Vendor ? vendorChar.Name.ToString() + " has nothing." : mode == ContainerMode.Corpse ? "Nothing left to loot." : "It's empty.";
+				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(containerList);
 
 				if (other.Tokens.Count == 0)
@@ -96,7 +102,7 @@ namespace Noxico
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
-						if (isVendor && carriedItem.HasToken("equipped"))
+						if (mode == ContainerMode.Vendor && carriedItem.HasToken("equipped"))
 							itemString = itemString.Remove(32) + "W";
 						if (carriedItem.Path("cursed/known") != null)
 							itemString = itemString.Remove(32) + "C";
@@ -171,14 +177,14 @@ namespace Noxico
 				}
 
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				UIManager.Elements.Add(new UILabel(" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (isVendor ? "buy or sell" : "store or retrieve") + " the highlighted item.") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (mode == ContainerMode.Vendor ? "buy or sell" : "store or retrieve") + " the highlighted item.") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6 };
 				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4 };
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
-				if (isVendor)
+				if (mode == ContainerMode.Vendor)
 					capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
 
 				if (containerList != null)
@@ -193,12 +199,12 @@ namespace Noxico
 						descriptionWindow.Text = i.ToString(t, false, false);
 						var desc = i.GetDescription(t);
 						price = 0; //reset price no matter the mode so we don't accidentally pay for free shit.
-						if (isVendor && i.HasToken("price"))
+						if (mode == ContainerMode.Vendor && i.HasToken("price"))
 						{
 							price = i.GetToken("price").Value;
 							desc += "\nIt costs " + price + " gold.";
 						}
-						if (isVendor && i.HasToken("equipable") && t.HasToken("equipped"))
+						if (mode == ContainerMode.Vendor && i.HasToken("equipable") && t.HasToken("equipped"))
 							desc += "\n" +vendorChar.Name.ToString() + " has this item equipped.";
 						description.Text = Toolkit.Wordwrap(desc, description.Width);
 						descriptionWindow.Draw();
@@ -234,7 +240,7 @@ namespace Noxico
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
-							if (isVendor)
+							if (mode == ContainerMode.Vendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
 							containerList.Change(s, e);
 							UIManager.Draw();
@@ -257,7 +263,7 @@ namespace Noxico
 						descriptionWindow.Text = i.ToString(t, false, false);
 						var desc = i.GetDescription(t);
 						price = 0;
-						if (isVendor && i.HasToken("price"))
+						if (mode == ContainerMode.Vendor && i.HasToken("price"))
 						{
 							price = i.GetToken("price").Value;
 							desc += "\nIt costs " + price + " gold.";
@@ -300,7 +306,7 @@ namespace Noxico
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
-							if (isVendor)
+							if (mode == ContainerMode.Vendor)
 								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
 							playerList.Change(s, e);
 							UIManager.Draw();
@@ -376,13 +382,16 @@ namespace Noxico
 			{
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
-				return isVendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this.";
+				return mode == ContainerMode.Vendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this.";
 			}
 			if (token.HasToken("equipped"))
 			{
-				return vendorChar.Name.ToString() + " is using this.";
+				if (mode == ContainerMode.Vendor)
+					return vendorChar.Name.ToString() + " is using this.";
+				else
+					token.RemoveToken("equipped");
 			}
-			if (isVendor && price != 0)
+			if (mode == ContainerMode.Vendor && price != 0)
 			{
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
@@ -415,12 +424,12 @@ namespace Noxico
 			{
 				return "You're using this. Unequip it first.";
 			}
-			if (isVendor && token.HasToken("owner") && token.GetToken("owner").Text == vendorChar.Name.ToID())
+			if (mode == ContainerMode.Vendor && token.HasToken("owner") && token.GetToken("owner").Text == vendorChar.Name.ToID())
 			{
 				vendorCaughtYou = true;
 				return vendorChar.Name.ToString() + " recognized it as " + vendorChar.HisHerIts(true) + " property!";
 			}
-			if (isVendor && price != 0)
+			if (mode == ContainerMode.Vendor && price != 0)
 			{
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
