@@ -934,24 +934,26 @@ namespace Noxico
 				//Revert changelings to their true form first.
 				Character.Copy(null);
 			}
-			var corpse = new Clutter()
+			var name = (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)) + "'s remains";
+			var corpse = new Container(name, new List<Token>())
 			{
 				ParentBoard = ParentBoard,
 				AsciiChar = AsciiChar,
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
-				Name = Character.Name.ToString(true) + "'s remains",
-				Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who " + obituary + ".",
+				//Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
 			if (!Character.IsProperNamed)
 			{
-				corpse.Name = Character.GetKnownName(true, false, false, true) + "'s remains";
-				corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
+				//corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
 			}
+			corpse.Token.AddToken("corpse");
+			corpse.Token.GetToken("contents").AddSet(Character.GetToken("items").Tokens);
 
+			/*
 			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)
 			var items = Character.GetToken("items");
 			if (items != null && items.Tokens.Count > 0 && !(this is Player))
@@ -966,6 +968,7 @@ namespace Noxico
 					knownItem.Drop(this, itemToken);
 				}
 			}
+			*/
 
 			ParentBoard.EntitiesToRemove.Add(this);
 			ParentBoard.EntitiesToAdd.Add(corpse);
