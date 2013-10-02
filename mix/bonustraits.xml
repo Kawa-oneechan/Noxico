@@ -13,7 +13,7 @@
 	<trait name="Fast Food">
 		<stat id="speed" />
 		<skill name="Swimming" />
-		Gives a 20% bonus on Speed, and a level in swimming (which is useless for now).
+		Gives a 20% bonus on Speed, and a level in swimming.
 	</trait>
 	<trait name="Olympian">
 		<stat id="strength" />
