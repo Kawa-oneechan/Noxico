@@ -316,34 +316,97 @@ namespace Noxico
 
 		public static string Wordwrap(this string text, int length = 80)
 		{
-			var lines = text.Replace("\r", "").Split('\n');
-			var sb = new System.Text.StringBuilder();
-			foreach (var line in lines)
-			{
-				var words = line.Split(new[] { ' ' });
-				var lineWidth = 0;
-				for (var i = 0; i < words.Length; i++)
-				{
-					sb.Append(words[i]);
-					var len = words[i].Length();
-					if (words[i].Contains('<'))
-					{
-						var newWord = Regex.Replace(words[i], @"\<(.*?)\>", "");
-						len = newWord.Length();
-					}
+			var words = new List<string>();
+			var lines = new List<string>();
 
-					lineWidth += len + 1;
-					if (i < words.Length - 1 && lineWidth + words[i + 1].Length > length - 2)
-					{
-						sb.AppendLine();
-						lineWidth = 0;
-					}
-					else
-						sb.Append(" ");
+			text = text.Normalize();
+
+			//TODO: make these rules part of words.xml?
+			var vccv = Tuple.Create(new Regex(@"[aeiou]([^aeiou]{2})[aeiou]"), 2);
+			var vQ = Tuple.Create(new Regex(@"[aeiou]q"), 2); //no test material yet.
+			var CK = Tuple.Create(new Regex(@"ck[aeiou]"), 2);
+			var vvLv = Tuple.Create(new Regex(@"([aeiou]{2})l[aeiou]"), 2);
+			var vGRAM = Tuple.Create(new Regex(@"[aeiou]gram"), 1);
+			var cEcv = Tuple.Create(new Regex(@"[^aeiou]e[^aeiou][aeiou]"), 2);
+			foreach (var regex in new[] { CK, cEcv, vvLv, vGRAM, vccv })
+			{
+				while (regex.Item1.IsMatch(text))
+				{
+					var match = regex.Item1.Match(text);
+					var replacement = '\u00AD';
+					if (match.ToString().Contains(' ') || match.ToString().Contains('\u00AD'))
+						replacement = '\uFFFE';
+					text = text.Substring(0, match.Index + regex.Item2) + replacement + text.Substring(match.Index + regex.Item2);
 				}
-				sb.Append("\n");
 			}
-			return sb.ToString();
+			text = text.Replace("\uFFFE", "");
+
+			var currentWord = new StringBuilder();
+			foreach (var ch in text)
+			{
+				var breakIt = false;
+				if (char.IsWhiteSpace(ch) && ch != '\u00A0')
+					breakIt = true;
+				else if (char.IsPunctuation(ch) && !(ch == '(' || ch == ')'))
+					breakIt = true;
+
+				currentWord.Append(ch);
+				if (breakIt)
+				{
+					words.Add(currentWord.ToString());
+					currentWord.Clear();
+				}
+			}
+			if (currentWord.ToString() != "")
+				words.Add(currentWord.ToString());
+
+			var line = new StringBuilder();
+			var spaceLeft = length;
+			for (var i = 0; i < words.Count; i++)
+			{
+				var word = words[i];
+				var next = (i < words.Count - 1) ? words[i + 1] : null;
+
+				//Check for words longer than length? Should not happen with autohyphenator.
+
+				if (word == "\n")
+				{
+					lines.Add(line.ToString().Trim());
+					line.Clear();
+					spaceLeft = length;
+					continue;
+				}
+				else if (word == "\u2029")
+				{
+					lines.Add(line.ToString().Trim());
+					lines.Add(string.Empty);
+					line.Clear();
+					spaceLeft = length;
+					continue;
+				}
+
+				if (word[word.Length - 1] == '\u00AD')
+				{
+					if (next != null && spaceLeft - (word.Length - 1) - next.TrimEnd().Length <= 0)
+						word = word.Remove(word.Length - 1) + '\u2010';
+					else
+						word = word.Remove(word.Length - 1);
+				}
+
+				line.Append(word);
+				spaceLeft -= word.Length;
+				if (next != null && spaceLeft - next.TrimEnd().Length <= 0)
+				{
+					if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
+						lines.Add(line.ToString().Trim());
+					line.Clear();
+					spaceLeft = length;
+				}
+			}
+			if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
+				lines.Add(line.ToString());
+
+			return string.Join("\n", lines.ToArray()) + '\n';
 		}
 
 		public static string SmartQuote(this string text, Func<string, string> filter = null)
