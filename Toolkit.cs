@@ -321,26 +321,6 @@ namespace Noxico
 
 			text = text.Normalize();
 
-			//TODO: make these rules part of words.xml?
-			var vccv = Tuple.Create(new Regex(@"[aeiou]([^aeiou]{2})[aeiou]"), 2);
-			var vQ = Tuple.Create(new Regex(@"[aeiou]q"), 2); //no test material yet.
-			var CK = Tuple.Create(new Regex(@"ck[aeiou]"), 2);
-			var vvLv = Tuple.Create(new Regex(@"([aeiou]{2})l[aeiou]"), 2);
-			var vGRAM = Tuple.Create(new Regex(@"[aeiou]gram"), 1);
-			var cEcv = Tuple.Create(new Regex(@"[^aeiou]e[^aeiou][aeiou]"), 2);
-			foreach (var regex in new[] { CK, cEcv, vvLv, vGRAM, vccv })
-			{
-				while (regex.Item1.IsMatch(text))
-				{
-					var match = regex.Item1.Match(text);
-					var replacement = '\u00AD';
-					if (match.ToString().Contains(' ') || match.ToString().Contains('\u00AD'))
-						replacement = '\uFFFE';
-					text = text.Substring(0, match.Index + regex.Item2) + replacement + text.Substring(match.Index + regex.Item2);
-				}
-			}
-			text = text.Replace("\uFFFE", "");
-
 			var currentWord = new StringBuilder();
 			foreach (var ch in text)
 			{
@@ -359,6 +339,46 @@ namespace Noxico
 			}
 			if (currentWord.ToString() != "")
 				words.Add(currentWord.ToString());
+
+			//TODO: make these rules part of words.xml?
+			for (var i = 0; i < words.Count; i++)
+			{
+				var word = words[i];
+				if (word.Length < 5)
+					continue;
+				if (word.IndexOf('\u00AD') > 0 || i > 1 && words[i - 1].IndexOf('\u00AD') > 0)
+					continue;
+
+				var vccv = Tuple.Create(new Regex(@"[aeiou]([^aeiou]{2})[aeiou]"), 2);
+				var vQ = Tuple.Create(new Regex(@"[aeiou]q"), 2); //no test material yet.
+				var CK = Tuple.Create(new Regex(@"ck[aeiou]"), 2);
+				var vvLv = Tuple.Create(new Regex(@"([aeiou]{2})l[aeiou]"), 2);
+				var vGRAM = Tuple.Create(new Regex(@"[aeiou]gram"), 1);
+				var cEcv = Tuple.Create(new Regex(@"[^aeiou]e[^aeiou][aeiou]"), 2);
+				var YPHv = Tuple.Create(new Regex(@"yph[aeiou]"), 1);
+				var vNv = Tuple.Create(new Regex(@"[aeiou][nrx][aeiou]"), 2);
+				var vMPLv = Tuple.Create(new Regex(@"[aeiou]mpl[aeiou]"), 2);
+				foreach (var regex in new[] { CK, YPHv, vNv, vMPLv, cEcv, vvLv, vGRAM, vccv })
+				{
+					while (regex.Item1.IsMatch(word))
+					{
+						var match = regex.Item1.Match(word);
+						var replacement = '\u00AD';
+						if (match.ToString().Contains(' ') || match.ToString().Contains('\u00AD'))
+							replacement = '\uFFFE'; //prevent this match from retriggering
+						word = word.Substring(0, match.Index + regex.Item2) + replacement + word.Substring(match.Index + regex.Item2);
+					}
+				}
+				word = word.Replace("\uFFFE", ""); //cleanup in aisle -2!
+				while (word.IndexOf('\u00AD') > 0 && word.IndexOf('\u00AD') < word.Length - 1)
+				{
+					var natch = word.Substring(0, word.IndexOf('\u00AD') + 1);
+					words.Insert(i, natch);
+					i++;
+					word = word.Substring(word.IndexOf('\u00AD') + 1);
+				}
+				words[i] = word;
+			}
 
 			var line = new StringBuilder();
 			var spaceLeft = length;
