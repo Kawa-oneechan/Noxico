@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE words [
-	<!ELEMENT words (category*)>
+	<!ELEMENT words (category*,hyphenation)>
 	<!ELEMENT category (category|word)*>
 	<!ELEMENT word (#PCDATA)>
+	<!ELEMENT hyphenation (rule*)>
+	<!ELEMENT rule (#PCDATA)>
 	<!ATTLIST category name CDATA #IMPLIED>
 	<!ATTLIST word id ID #REQUIRED>
+	<!ATTLIST rule cutoff CDATA #REQUIRED>
 
 	<!-- Key bindings -->
 	<!ENTITY shorthand "&#xE2FE;">
@@ -291,7 +294,25 @@ Would you like an infodump on the way out?]]>
 		<word id="context_droppeditem">pick up</word>
 		<word id="context_container">see contents</word>
 		<word id="context_bed">sleep</word>
+		<word id="a">a</word>
+		<word id="an">an</word>
+		<word id="the">the</word>
 		<!-- Month names cribbd from The Elder Scrolls -->
 		<word id="months">Morning Star, Sun's Dawn, First Seed, Rain's Hand, Second Seed, Midyear, Sun's Height, Last Seed, Hearthfire, Frostfall, Sun's Dusk, Evening Star</word>
 	</category>
+
+	<hyphenation>
+		<!-- Hyphenation rules are executed in order of appearance. -->
+		<rule cutoff="1">[aeiou]st</rule>
+		<rule cutoff="-1">[^aeiou][aeiou][^aeiou][aeiou][\W\.]</rule>
+		<rule cutoff="2">ck[aeiou]</rule>
+		<rule cutoff="1">yph[aeiou]</rule>
+		<rule cutoff="2">[aeiou][nrx][aeiou]</rule>
+		<rule cutoff="2">[aeiou]mpl[aeiou]</rule>
+		<rule cutoff="2">[^aeiou][aeiou][^aeiou][aeiou]</rule>
+		<rule cutoff="2">([aeiou]{2})l[aeiou]</rule>
+		<rule cutoff="1">[aeiou]gram</rule>
+		<rule cutoff="2">[aeiou]([^aeiou]{2})[aeiou]</rule>
+		<!-- <rule cutoff="2">[aeiou]q</rule> -->
+	</hyphenation>
 </words>

@@ -182,10 +182,12 @@ namespace Noxico
 
 			Program.WriteLine("Loading items...");
 			Identifications = new List<string>();
-			xDoc = Mix.GetXmlDocument("items.xml");
+
+			var items = Mix.GetTokenTree("items.tml");
 			KnownItems = new List<InventoryItem>();
-			foreach (var item in xDoc.SelectNodes("//item").OfType<XmlElement>())
-				KnownItems.Add(InventoryItem.FromXml(item));
+			foreach (var item in items.Where(t => t.Name == "item"))
+				KnownItems.Add(InventoryItem.FromToken(item));
+
 			Program.WriteLine("Randomizing potions and rings...");
 			RollPotions();
 			ApplyRandomPotions();

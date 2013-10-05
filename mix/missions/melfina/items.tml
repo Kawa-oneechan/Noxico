@@ -1,0 +1,80 @@
+-- #region Melfina
+item: melfina_leotard, paneled [color ]leotard
+	unique
+	equipable
+		underpants
+		undershirt
+	weight
+		light
+	price: 100
+	ascii
+		char: U+03C0
+	clothing
+	bodysuit
+	colored
+	sexy
+	kinky
+
+item: melfina_kneesocks, paneled [color ]kneesocks
+	unique
+	plural
+	equipable
+		socks
+		reach
+	weight
+		light
+	price: 100
+	ascii
+		char: U+220F
+	clothing
+	legwear
+	colored
+	sexy
+	kinky
+
+item: melfina_jacket, odd [color ]jacket
+	unique
+	equipable
+		jacket
+	weight
+		light
+	price: 100
+	ascii
+		char: U+041F
+	clothing
+	jacket
+	colored
+	sexy
+	kinky
+
+item: melfina_belt, [color ]leather belt
+	unique
+	equipable
+		female
+		pants
+		translucent
+		reach
+	weight
+		light
+	price: 60
+	ascii
+		char: U+002D
+	clothing
+	colored
+	for_women
+	kinky
+
+item: melfina_boots, armored[, color] boots
+	unique
+	plural
+	equipable
+		shoes
+	weight
+		heavy
+	price: 300
+	ascii
+		char: U+221A
+	clothing
+	colored
+	shoes
+-- #endregion

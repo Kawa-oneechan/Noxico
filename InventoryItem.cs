@@ -124,44 +124,51 @@ namespace Noxico
 			return "This is " + this.ToString(token) + ".";
 		}
 
-		public static InventoryItem FromXml(XmlElement x)
+		public static InventoryItem FromToken(Token item)
 		{
 			var ni = new InventoryItem();
-			ni.ID = x.GetAttribute("id");
-			ni.Name = x.GetAttribute("name");
-			ni.UnknownName = x.GetAttribute("unknown");
-			ni.A = x.GetAttribute("a");
-			ni.The = x.GetAttribute("the");
-			ni.IsProperNamed = x.GetAttribute("proper") == "true";
-
-			var t = x.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault();
-			if (t != null)
-				ni.Tokenize(t.Value);
-
+			var nameParts = item.Text.Split(',');
+			ni.ID = nameParts[0];
+			if (nameParts.Length > 1)
+				ni.Name = nameParts[1].Trim();
+			else
+				ni.Name = nameParts[0].Replace('_', ' ');
+			if (item.HasToken("_u"))
+				ni.UnknownName = item.GetToken("_u").Text;
+			if (item.HasToken("_a"))
+				ni.A = item.GetToken("_a").Text;
+			else
+				ni.A = ni.Name.StartsWithVowel() ? i18n.GetString("an") : i18n.GetString("a");
+			ni.IsProperNamed = char.IsUpper(ni.Name[0]);
+			if (item.HasToken("_t"))
+				ni.The = item.GetToken("_t").Text;
+			else
+				ni.The = i18n.GetString("the");
 			ni.OnUse = null;
-			if (ni.ID == "catmorph")
-				ni.ID = "catmorph";
-			var ses = x.SelectNodes("script").OfType<XmlElement>().ToList();
-			if (ses.Count == 0)
-				return ni;
-			foreach (var script in ses)
+			foreach (var script in item.Tokens.Where(t => t.Name == "script"))
 			{
-				switch (script.GetAttribute("for"))
+				switch (script.Text)
 				{
 					case "equip":
-						ni.OnEquip = script.InnerText;
+						ni.OnEquip = script.GetToken("#text").Text;
 						break;
 					case "unequip":
-						ni.OnUnequip = script.InnerText;
+						ni.OnEquip = script.GetToken("#text").Text;
 						break;
 					case "timer":
-						ni.OnTimer = script.InnerText;
+						ni.OnTimer = script.GetToken("#text").Text;
 						break;
 					default:
-						ni.OnUse = script.InnerText;
+						ni.OnUse = script.GetToken("#text").Text;
 						break;
 				}
 			}
+			ni.Tokens.Clear();
+			ni.Tokens.AddRange(item.Tokens);
+			ni.RemoveAll("_u");
+			ni.RemoveAll("_a");
+			ni.RemoveAll("_t");
+			ni.RemoveAll("script");
 			return ni;
 		}
 
