@@ -208,7 +208,6 @@
     <Content Include="mix\missions\chelsie\mission.js" />
     <Content Include="mix\missions\chelsie\manifest.txt" />
     <Content Include="mix\missions\chelsie\uniques.xml" />
-    <Content Include="mix\missions\melfina\items.xml" />
     <Content Include="mix\missions\melfina\loot.xml" />
     <Content Include="mix\missions\melfina\manifest.txt" />
     <Content Include="mix\missions\melfina\mission.js" />
@@ -226,7 +225,6 @@
     <Content Include="mix\missions\portal\uniques.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="mix\missions\urta\items.xml" />
     <Content Include="mix\missions\urta\loot.xml" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\missions\urta\mission.js" />
@@ -234,9 +232,6 @@
     <Content Include="mix\missions\urta\uniques.xml" />
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\items.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="mix\knowncolors.xml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
@@ -330,6 +325,9 @@
     <Content Include="music\_hh_vibes.mod" />
     <Content Include="music\_space_lovers_.xm" />
     <Content Include="music\_x_1.mod" />
+    <None Include="mix\items.tml" />
+    <None Include="mix\missions\melfina\items.tml" />
+    <None Include="mix\missions\urta\items.tml" />
     <None Include="Resources\Noxico.ico" />
     <Content Include="Sounds.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -12,6 +12,7 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
+		private static List<Tuple<Regex, int>> hyphenationRules;
 
 		/// <summary>
 		/// Returns the amount of change between two strings according to the Levenshtein method.
@@ -340,6 +341,18 @@ namespace Noxico
 			if (currentWord.ToString() != "")
 				words.Add(currentWord.ToString());
 
+			if (hyphenationRules == null)
+			{
+				var wordsXml = Mix.GetXmlDocument("words.xml");
+				var ruleNodes = wordsXml.SelectNodes("//hyphenation/rule").OfType<XmlElement>();
+				hyphenationRules = new List<Tuple<Regex, int>>();
+				foreach (var rule in ruleNodes)
+				{
+					var newTuple = Tuple.Create(new Regex(rule.InnerText.Trim()), int.Parse(rule.GetAttribute("cutoff")));
+					hyphenationRules.Add(newTuple);
+				}
+			}
+
 			//TODO: make these rules part of words.xml?
 			for (var i = 0; i < words.Count; i++)
 			{
@@ -349,24 +362,17 @@ namespace Noxico
 				if (word.IndexOf('\u00AD') > 0 || i > 1 && words[i - 1].IndexOf('\u00AD') > 0)
 					continue;
 
-				var vccv = Tuple.Create(new Regex(@"[aeiou]([^aeiou]{2})[aeiou]"), 2);
-				var vQ = Tuple.Create(new Regex(@"[aeiou]q"), 2); //no test material yet.
-				var CK = Tuple.Create(new Regex(@"ck[aeiou]"), 2);
-				var vvLv = Tuple.Create(new Regex(@"([aeiou]{2})l[aeiou]"), 2);
-				var vGRAM = Tuple.Create(new Regex(@"[aeiou]gram"), 1);
-				var cEcv = Tuple.Create(new Regex(@"[^aeiou]e[^aeiou][aeiou]"), 2);
-				var YPHv = Tuple.Create(new Regex(@"yph[aeiou]"), 1);
-				var vNv = Tuple.Create(new Regex(@"[aeiou][nrx][aeiou]"), 2);
-				var vMPLv = Tuple.Create(new Regex(@"[aeiou]mpl[aeiou]"), 2);
-				foreach (var regex in new[] { CK, YPHv, vNv, vMPLv, cEcv, vvLv, vGRAM, vccv })
+				foreach (var rule in hyphenationRules)
 				{
-					while (regex.Item1.IsMatch(word))
+					if (rule.Item2 == -1 && rule.Item1.IsMatch(word))
+						break;
+					while (rule.Item1.IsMatch(word))
 					{
-						var match = regex.Item1.Match(word);
+						var match = rule.Item1.Match(word);
 						var replacement = '\u00AD';
 						if (match.ToString().Contains(' ') || match.ToString().Contains('\u00AD'))
 							replacement = '\uFFFE'; //prevent this match from retriggering
-						word = word.Substring(0, match.Index + regex.Item2) + replacement + word.Substring(match.Index + regex.Item2);
+						word = word.Substring(0, match.Index + rule.Item2) + replacement + word.Substring(match.Index + rule.Item2);
 					}
 				}
 				word = word.Replace("\uFFFE", ""); //cleanup in aisle -2!

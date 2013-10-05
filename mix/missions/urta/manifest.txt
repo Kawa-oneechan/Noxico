@@ -4,4 +4,4 @@ mission.js
 uniques.xml
 scenesDlg.xml
 loot.xml
-items.xml
+items.tml
