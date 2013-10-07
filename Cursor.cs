@@ -60,6 +60,8 @@ namespace Noxico
 		public void Point()
 		{
 			PointingAt = null;
+			if (NoxicoGame.Messages.Count == 0) //fixes range error found while explaining controls
+				NoxicoGame.Messages.Add(string.Empty);
 			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointatsomething");
 			foreach (var entity in this.ParentBoard.Entities)
 			{
