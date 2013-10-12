@@ -14,7 +14,6 @@ namespace Noxico
 			NoxicoGame.Mode = UserMode.Subscreen;
 			NoxicoGame.Subscreen = Introduction.TitleHandler;
 			NoxicoGame.Immediate = true;
-			NoxicoGame.Sound.PlayMusic("set://Title");
 		}
 
 		public static void TitleHandler()
@@ -365,7 +364,6 @@ namespace Noxico
 					var bonus = ((UIList)controls["gift"]).Text;
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), (Gender)(gid + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.HostForm.Noxico.CreateRealm();
-					NoxicoGame.Sound.PlayMusic(NoxicoGame.HostForm.Noxico.CurrentBoard.Music);
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));

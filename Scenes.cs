@@ -25,9 +25,6 @@ namespace Noxico
 		{
 			xDoc = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
 
-			if (Dreaming)
-				NoxicoGame.Sound.PlayMusic("robric993.xm");
-			
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
 

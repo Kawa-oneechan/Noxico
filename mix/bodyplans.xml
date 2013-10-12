@@ -41,7 +41,6 @@ ass
 	virgin
 	looseness: 0
 	size: roll 1d4+4
-	fuckable
 waist: roll 1d4+1
 hips: roll 1d2+4
 -- The creature creator adjusts this part.
@@ -56,8 +55,8 @@ vagina
 	virgin
 	looseness: 0
 	wetness: 1
-	fuckable
 	clit: 0.25
+uterus
 penis: human
 	thickness: 2.5
 	length: roll 1d5+13
@@ -104,7 +103,6 @@ wings: bat
 ass
 	size: 4
 	looseness: 1
-	fuckable
 penis: human
 	thickness: 2.5
 	length: roll 1d2+17
@@ -148,7 +146,6 @@ fertility: 50
 ass
 	size: roll 1d3+6
 	looseness: 1
-	fuckable
 breastrow
 	amount: 2
 	size: roll 1d3+3
@@ -157,8 +154,8 @@ breastrow
 vagina
 	wetness: roll 1d3+2
 	looseness: 1
-	fuckable
 	clit: 1.0
+uterus
 items
 select
 	set: 0.3
@@ -217,7 +214,6 @@ fertility: 10
 ass: insect
 	size: 13
 	looseness: 4
-	fuckable
 breastrow
 	amount: 2
 	size: roll 1d5+1
@@ -226,8 +222,8 @@ breastrow
 vagina
 	wetness: 5
 	looseness: 3
-	fuckable
 	clit: 0.3
+uterus
 		]]>
 	</bodyplan>
 
@@ -262,7 +258,6 @@ fertility: 20
 ass
 	size: 6
 	looseness: 1
-	fuckable
 breastrow
 	amount: 2
 	size: roll 1d4+3
@@ -270,8 +265,8 @@ breastrow
 vagina
 	wetness: 2
 	looseness: 2
-	fuckable
 	clit: 0.25
+uterus
 penis: lizard
 	thickness: roll 1d2+1
 	length: roll 1d6+20
@@ -324,7 +319,6 @@ fertility: roll 1d20+30
 ass
 	size: 7
 	looseness: 2
-	fuckable
 breastrow
 	amount: 2
 	size: roll 1d5+4
@@ -334,6 +328,7 @@ vagina
 	wetness: 4
 	looseness: 1
 	clit: 1.6
+uterus
 penis: studded
 	thickness: roll 1d3+1
 	length: roll 1d6+17
@@ -383,7 +378,6 @@ ass
 	virgin
 	looseness: 0
 	size: 5
-	fuckable
 hips: roll 1d6
 waist: roll 1d4+1
 fertility: roll 1d25+5
@@ -397,8 +391,8 @@ vagina
 	virgin
 	looseness: 0
 	wetness: 1
-	fuckable
 	clit: 0.25
+uterus
 penis: cat
 	thickness: 3
 	length: roll 1d6+12
@@ -445,7 +439,6 @@ ass
 	virgin
 	size: 4
 	looseness: 0
-	fuckable
 hips: roll 1d2+1
 waist: 2
 fertility: roll 1d20+10
@@ -459,8 +452,8 @@ vagina
 	virgin
 	wetness: 1
 	looseness: 0
-	fuckable
 	clit: 0.25
+uterus
 penis: dog
 	thickness: 2
 	length: roll 1d7+14
@@ -513,15 +506,14 @@ tail: horse
 fertility: roll 1d25+10
 ass
 	size: 6
-	fuckable
 	looseness: 0
 	virgin
 vagina
 	virgin
 	wetness: 1
 	looseness: 0
-	fuckable
 	clit: 1.5
+uterus
 penis: horse
 	thickness: 3
 	length: 16
@@ -574,7 +566,6 @@ eyes: white
 ass
 	size: roll 1d4+4
 	looseness: 2
-	fuckable
 waist: roll 1d5+1
 hips: roll 1d3+4
 fertility: roll 1d15+5
@@ -585,10 +576,10 @@ breastrow
 		size: 0.75
 	milksource
 vagina
-	fuckable
 	looseness: 2
 	wetness: 2
 	clit: 0.5
+uterus
 penis: human
 	thickness: 2.5
 	length: roll 1d7+15
@@ -635,7 +626,6 @@ ass
 	virgin
 	looseness: 0
 	size: 7
-	fuckable
 hips: roll 1d14+2
 waist: roll 1d12+2
 fertility: roll 1d25+5
@@ -670,8 +660,8 @@ vagina
 	virgin
 	looseness: 0
 	wetness: 1
-	fuckable
 	clit: 0.5
+uterus
 penis: bear
 	thickness: 4
 	length: roll 1d10+12
@@ -715,7 +705,6 @@ ass
 	virgin
 	size: 4
 	looseness: 0
-	fuckable
 hips: roll 1d2+1
 waist: 2
 fertility: roll 1d20+10
@@ -729,8 +718,8 @@ vagina
 	virgin
 	looseness: 0
 	wetness: 1
-	fuckable
 	clit: 0.25
+uterus
 penis: dog
 	thickness: 2
 	length: roll 1d7+14
@@ -780,12 +769,11 @@ fertility: roll 1d10
 ass
 	size: 5
 	looseness: 0
-	fuckable
 vagina
-	fuckable
 	looseness: 1
 	wetness: 2
 	clit: 1.5
+uterus
 penis: horse
 	thickness: 3
 	length: 16

@@ -239,7 +239,6 @@ namespace Noxico
 		public int Lifetime { get; set; }
 		public string Name { get { return GetToken("name").Text; } set { GetToken("name").Text = value; } }
 		public string ID { get { return GetToken("id").Text; } set { GetToken("id").Text = value; } }
-		public string Music { get { return GetToken("music").Text; } set { GetToken("music").Text = value; } }
 		public BoardType BoardType { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
 		public int ToNorth { get { return (int)GetToken("north").Value; } set { GetToken("north").Value = value; } }
 		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
@@ -266,7 +265,7 @@ namespace Noxico
 
 		public Board()
 		{
-			foreach (var t in new[] { "name", "id", "music", "type", "biome", "encounters" })
+			foreach (var t in new[] { "name", "id", "type", "biome", "encounters" })
 				this.AddToken(t);
 			this.GetToken("encounters").AddToken("stock", 0);
 			foreach (var t in new[] { "north", "south", "east", "west" })
@@ -366,7 +365,6 @@ namespace Noxico
 					newBoard.Tokens.Add(Token.LoadFromFile(stream));
 				newBoard.Name = newBoard.GetToken("name").Text;
 				newBoard.ID = newBoard.GetToken("id").Text;
-				newBoard.Music = newBoard.GetToken("music").Text;
 				newBoard.BoardType = (BoardType)newBoard.GetToken("type").Value;
 
 				Toolkit.ExpectFromFile(stream, "AMNT", "board part amounts");
@@ -676,7 +674,6 @@ namespace Noxico
 			{
 				SceneSystem.LeavingDream = false;
 				SceneSystem.Dreaming = false;
-				PlayMusic();
 			}
 
 			for (int row = 0; row < 25; row++)
@@ -766,14 +763,13 @@ namespace Noxico
 			}
 		}
 
-		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music)
+		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name)
 		{
 			var newBoard = new Board();
 			newBoard.Clear(biomeID);
-			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\nmusic: \"" + music + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
+			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\ntype: 3\nbiome: " + biomeID + "\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
-			newBoard.Music = music;
 			newBoard.AddClutter();
 			return newBoard;
 		}
@@ -792,7 +788,6 @@ namespace Noxico
 			file.WriteLine("<p>");
 			file.WriteLine("\tName: {0}<br />", Name);
 			file.WriteLine("\tID: {0}<br />", ID);
-			file.WriteLine("\tMusic: {0}<br />", Music);
 			file.WriteLine("\tType: {0}<br />", BoardType);
 			file.WriteLine("\tBiome: {0}<br />", BiomeData.Biomes[(int)GetToken("biome").Value].Name);
 			file.WriteLine("\tCulture: {0}<br />", HasToken("culture") ? GetToken("culture").Text : "&lt;none&gt;");
@@ -980,7 +975,6 @@ namespace Noxico
 			if (this.HasToken("combat"))
 				this.AddToken("victorious");
 			this.RemoveToken("combat");
-			PlayMusic();
 		}
 
 		public void CheckCombatStart()
@@ -994,7 +988,6 @@ namespace Noxico
 				if (x.Character.HasToken("hostile"))
 				{
 					this.AddToken("combat");
-					PlayMusic();
 					return;
 				}
 			}
@@ -1041,19 +1034,6 @@ namespace Noxico
 				stream.WriteLine("</tr>");
 			}
 			stream.WriteLine("</table>");
-		}
-
-		public void PlayMusic()
-		{
-			if (this.HasToken("victorious"))
-			{
-				this.RemoveToken("victorious");
-				NoxicoGame.Sound.PlayMusic("set://Victory", false);
-			}
-			else if (this.HasToken("combat"))
-				NoxicoGame.Sound.PlayMusic("set://Combat");
-			else
-				NoxicoGame.Sound.PlayMusic(this.Music);
 		}
 
 		public void LoadSurroundings()

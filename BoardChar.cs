@@ -449,7 +449,6 @@ namespace Noxico
 				{
 					if (target != null && DistanceFrom(target) < 10 && CanSee(target))
 					{
-						NoxicoGame.Sound.PlaySound("Alert"); //Test things with an MGS Alert -- would normally be done in Noxicobotic, I guess...
 						hostile.Value = 1; //Switch to active hunting.
 						Energy -= 500;
 
@@ -1029,7 +1028,6 @@ namespace Noxico
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(Color));
-			js.SetFunction("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x)));
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
 			js.SetFunction("print", new Action<string>(x =>
 			{

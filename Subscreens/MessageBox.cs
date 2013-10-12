@@ -104,27 +104,23 @@ namespace Noxico
 				{
 					if ((NoxicoGame.IsKeyDown(KeyBinding.Accept) || Vista.Triggers == XInputButtons.A) && onYes != null)
 					{
-						NoxicoGame.Sound.PlaySound("Get Item");
 						NoxicoGame.ClearKeys();
 						onYes();
 					}
 					else if ((NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B) && onNo != null)
 					{
-						NoxicoGame.Sound.PlaySound("Put Item");
 						NoxicoGame.ClearKeys();
 						onNo();
 					}
 				}
 				else if (type == BoxType.List)
 				{
-					NoxicoGame.Sound.PlaySound(option == -1 ? "Put Item" : "Get Item");
 					Answer = option == -1 ? -1 : options.ElementAt(option).Key;
 					onYes();
 					NoxicoGame.ClearKeys();
 				}
 				else if (type == BoxType.Input)
 				{
-					NoxicoGame.Sound.PlaySound("Put Item");
 					Answer = txt.Text;
 					onYes();
 					NoxicoGame.ClearKeys();

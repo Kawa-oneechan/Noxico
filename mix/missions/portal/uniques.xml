@@ -51,7 +51,6 @@ seekrit
 				corner("Error! Target is " + target);
 				return false;
 			}
-			sound("Firebomb");
 
 			var targetBoard = GetBoard(target);
 
@@ -118,7 +117,6 @@ seekrit
 				corner("Error! Target is " + target);
 				return false;
 			}
-			sound("Firebomb");
 			//No need to fuck around with the travel list -- we CAME from a known location.
 			playerEntity.OpenBoard(target);
 		]]>

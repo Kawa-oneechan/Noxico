@@ -43,7 +43,6 @@ namespace Noxico
 				chosen.Drop(boardchar, token);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-				NoxicoGame.Sound.PlaySound("Put Item");
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.Redraw = true;
 			}

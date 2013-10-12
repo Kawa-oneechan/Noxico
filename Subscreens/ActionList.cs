@@ -78,7 +78,6 @@ namespace Noxico
 
 				Enter(null, null);
 
-				NoxicoGame.Sound.PlaySound(option == -1 ? "Put Item" : "Get Item");
 				ActionList.Answer = option == -1 ? -1 : options.ElementAt(option).Key;
 				onChoice();
 				NoxicoGame.ClearKeys();

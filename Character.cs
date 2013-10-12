@@ -347,7 +347,7 @@ namespace Noxico
 			if (gender == Gender.Male || gender == Gender.Neuter)
 			{
 				newChar.RemoveToken("fertility");
-				newChar.RemoveToken("milksource");
+				newChar.RemoveToken("uterus");
 				newChar.RemoveToken("vagina");
 				if (newChar.HasToken("breastrow"))
 					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
@@ -464,7 +464,7 @@ namespace Noxico
 			if (gender == Gender.Male || gender == Gender.Neuter)
 			{
 				newChar.RemoveToken("fertility");
-				newChar.RemoveToken("milksource");
+				newChar.RemoveToken("uterus");
 				newChar.RemoveToken("vagina");
 				if (newChar.HasToken("breastrow"))
 					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
@@ -2282,7 +2282,6 @@ namespace Noxico
 				if (eggToken.Value == 500)
 				{
 					eggToken.Value = 0;
-					NoxicoGame.Sound.PlaySound("Put Item");
 					var egg = new DroppedItem("egg")
 					{
 						XPosition = boardChar.XPosition,
@@ -2347,6 +2346,8 @@ namespace Noxico
 
 		public bool Fertilize(Character father)
 		{
+			if (!this.HasToken("uterus"))
+				return false;
 			var fertility = 0.0;
 			if (this.HasToken("fertility"))
 				fertility = this.GetToken("fertility").Value;

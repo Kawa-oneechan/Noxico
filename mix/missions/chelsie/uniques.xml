@@ -41,7 +41,6 @@ legs: genbeast
 tail: genbeast
 ass
 	size: 5
-	fuckable
 hips: 6
 waist: 3
 fertility: 0
@@ -52,8 +51,8 @@ breastrow
 		size: 1.2
 	milksource
 vagina
-	fuckable
 	clit: 0.3
+uterus
 		]]>
 	</character>
 

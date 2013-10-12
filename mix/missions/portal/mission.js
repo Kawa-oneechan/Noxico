@@ -24,7 +24,6 @@ function BuildPlatform(board, number, vague, stone, wall)
 
 var myBoard = AddBoard("Portal1");
 myBoard.Name = "Demon Portal, Nox Side";
-myBoard.Music = "set://Death";
 MakeBoardTarget(myBoard);
 myBoard.Clear("Desert");
 BuildPlatform(myBoard, 1, vague, stone, wall);
@@ -54,7 +53,6 @@ vague.Water = true;
 
 myBoard = AddBoard("Portal2");
 myBoard.Name = "Demon Portal, Sera Side";
-myBoard.Music = "set://Death";
 myBoard.AllowTravel = false;
 MakeBoardTarget(myBoard);
 myBoard.Clear("Nether");

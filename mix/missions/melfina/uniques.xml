@@ -43,7 +43,6 @@ fertility: 100
 ass
 	size: 8
 	looseness: 3
-	fuckable
 breastrow
 	amount: 2
 	size: 8
@@ -53,6 +52,7 @@ vagina
 	wetness: 4
 	looseness: 5
 	clit: 3
+uterus
 penis: studded
 	thickness: 5
 	length: 20

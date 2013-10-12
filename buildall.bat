@@ -2,8 +2,6 @@
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
 echo Building MIX files...
 MixMaster mix Noxico.mix
-MixMaster sounds Sounds.mix
-MixMaster music Music.mix
 echo -----------
 echo BUILD START
 echo -----------
@@ -32,9 +30,6 @@ copy /y Release32\Noxico.exe Noxico > nul
 del /q Noxico\*.*
 copy /y Release\Music.mix Noxico > nul
 copy /y Release\Sounds.mix Noxico > nul
-cd Noxico
-..\..\Rar.exe u ..\noxico-music.rar . > nul
-cd..
 rd Noxico /s /q
 cd ..
 pause
