@@ -299,7 +299,7 @@ namespace Noxico
 
 		public static string Titlecase(this string text)
 		{
-			return ti.ToTitleCase(text);
+			return ti.ToTitleCase(text.ToLowerInvariant());
 		}
 
 		public static string Disemvowel(this string text)
@@ -841,41 +841,44 @@ namespace Noxico
 				if (binding == KeyBinding.Pause)
 					return "Start";
 			}
-			return TranslateKey((System.Windows.Forms.Keys)NoxicoGame.KeyBindings[binding], longhand);
+			return TranslateKey(NoxicoGame.RawBindings[binding], longhand);
 		}
 		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false)
 		{
-			//BUG: OemSemicolon and OemQuotes are mistranslated as 1 and 7.
-			var keyName = key.ToString();
+			return TranslateKey(key.ToString());
+		}
+		public static string TranslateKey(string key, bool longhand = false)
+		{
+			key = key.ToUpperInvariant();
+			if (key.StartsWith("OEM"))
+				key = key.Substring(3);
 			var specials = new Dictionary<string, string>()
 			{
-				{ "Left", "\u2190" },
-				{ "Up", "\u2191" },
-				{ "Right", "\u2192" },
-				{ "Down", "\u2193" },
-				{ "Return", "\u21B2" },
-				{ "OemQuestion", "/" },
-				{ "OemPeriod", "." },
-				{ "Oemcomma", "," },
-				{ "OemQuotes", "'" },
-				{ "OemSemicolon", ";" },
-				{ "Escape", "Esc." },
+				{ "LEFT", "\u2190" },
+				{ "UP", "\u2191" },
+				{ "RIGHT", "\u2192" },
+				{ "DOWN", "\u2193" },
+				{ "RETURN", "\u21B2" },
+				{ "QUESTION", "/" },
+				{ "PERIOD", "." },
+				{ "COMMA", "," },
+				{ "QUOTES", "'" },
+				{ "SEMICOLON", ";" },
+				{ "ESCAPE", "Esc." },
 			};
 			if (longhand)
 			{
 				specials = new Dictionary<string, string>()
 				{
-					{ "Return", "Enter" },
-					{ "OemQuestion", "/" },
-					{ "Oemcomma", "," },
-					{ "Escape", "Escape" },
+					{ "QUESTION", "/" },
+					{ "COMMA", "," },
+					{ "QUOTES", "'" },
+					{ "SEMICOLON", ";" },
 				};
 			}
-			if (specials.ContainsKey(keyName))
-				return specials[keyName];
-			if (keyName.StartsWith("Oem"))
-				return keyName.Substring(3);
-			return keyName;
+			if (specials.ContainsKey(key))
+				return specials[key].Titlecase();
+			return key.Titlecase();
 		}
 
 		public static string InitialCase(this string text)

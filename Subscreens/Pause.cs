@@ -177,15 +177,15 @@ namespace Noxico
 			sb.Clear();
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
-			sb.AppendLine(" - Move");
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(4) + " - " + i18n.GetString("pause_keyinteract"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(4) + " - " + i18n.GetString("pause_keyactivate"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(4) + " - " + i18n.GetString("pause_keyrest"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(4) + " - " + i18n.GetString("pause_keyfly"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(4) + " - " + i18n.GetString("pause_keyitems"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(4) + " - " + i18n.GetString("pause_keytravel"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(4) + " - " + i18n.GetString("pause_keyaccept"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(4) + " - " + i18n.GetString("pause_keyback"));
+			sb.AppendLine("     - Move");
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(8) + " - " + i18n.GetString("pause_keyinteract"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(8) + " - " + i18n.GetString("pause_keyactivate"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(8) + " - " + i18n.GetString("pause_keyrest"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(8) + " - " + i18n.GetString("pause_keyfly"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(8) + " - " + i18n.GetString("pause_keyitems"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(8) + " - " + i18n.GetString("pause_keytravel"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(8) + " - " + i18n.GetString("pause_keyaccept"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(8) + " - " + i18n.GetString("pause_keyback"));
 			pages[i18n.GetString("pause_keys1")] = sb.ToString();
 			sb.Clear();
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadEffective(4) + " - " + i18n.GetString("pause_keypause"));

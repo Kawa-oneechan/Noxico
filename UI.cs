@@ -715,9 +715,9 @@ namespace Noxico
 
 			for (var i = 0; i < 255; i++)
 			{
-				if (NoxicoGame.KeyMap[i])
+				if (NoxicoGame.KeyMap[(Keys)i])
 				{
-					NoxicoGame.KeyMap[i] = false;
+					NoxicoGame.KeyMap[(Keys)i] = false;
 					UIManager.ProcessKey((Keys)i, NoxicoGame.Modifiers[0]);
 					break;
 				}

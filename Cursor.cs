@@ -346,7 +346,7 @@ namespace Noxico
 			}
 
 #if DEBUG
-			if (NoxicoGame.KeyMap[(int)Keys.D])
+			if (NoxicoGame.KeyMap[Keys.D])
 			{
 				NoxicoGame.ClearKeys();
 				if (PointingAt != null && PointingAt is BoardChar)

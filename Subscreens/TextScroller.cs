@@ -47,7 +47,7 @@ namespace Noxico
 				Subscreens.Redraw = false;
 			}
 
-			if (keys[(int)System.Windows.Forms.Keys.S])
+			if (keys[System.Windows.Forms.Keys.S])
 			{
 				File.WriteAllText("current.txt", string.Join("\n", text));
 				File.WriteAllText("current.html", string.Join("\n", text).ToHtml());
