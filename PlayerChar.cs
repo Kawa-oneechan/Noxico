@@ -401,7 +401,7 @@ namespace Noxico
 			var flying = Character.HasToken("flying");
 
 #if DEBUG
-			if (NoxicoGame.KeyMap[(int)Keys.Z])
+			if (NoxicoGame.KeyMap[Keys.Z])
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.InGameTime.AddMinutes(30);
@@ -576,7 +576,7 @@ namespace Noxico
 			}
 
 #if DEBUG
-			if (NoxicoGame.KeyMap[(int)Keys.F3])
+			if (NoxicoGame.KeyMap[Keys.F3])
 			{
 				NoxicoGame.ClearKeys();
 				ParentBoard.DumpToHtml();
@@ -664,7 +664,7 @@ namespace Noxico
 					f.Value = -10;
 				}
 				if (f.Value <= 0)
-					NoxicoGame.KeyMap[(int)NoxicoGame.KeyBindings[KeyBinding.Fly]] = true; //force a landing
+					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Fly]] = true; //force a landing
 			}
 
 			if (ParentBoard == null)

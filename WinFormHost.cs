@@ -617,28 +617,28 @@ namespace Noxico
         {
 			if (starting)
 				return;
-			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[(int)e.KeyCode]).Milliseconds < 100)
+			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[e.KeyCode]).Milliseconds < 100)
 				return;
 			if (e.Control && (e.KeyCode == Keys.R || e.KeyCode == Keys.A))
 				return;
-			NoxicoGame.KeyRepeat[(int)e.KeyCode] = DateTime.Now;
-			NoxicoGame.KeyMap[(int)e.KeyCode] = true;
+			NoxicoGame.KeyRepeat[e.KeyCode] = DateTime.Now;
+			NoxicoGame.KeyMap[e.KeyCode] = true;
 			if (numpad.ContainsKey(e.KeyCode))
-				NoxicoGame.KeyMap[(int)numpad[e.KeyCode]] = true;
+				NoxicoGame.KeyMap[numpad[e.KeyCode]] = true;
 			if (e.Modifiers == Keys.Shift)
 				NoxicoGame.Modifiers[0] = true;
 			if (e.KeyValue == 191 && NoxicoGame.Mode == UserMode.Walkabout)
-				NoxicoGame.KeyMap[(int)Keys.L] = true;
+				NoxicoGame.KeyMap[Keys.L] = true;
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            NoxicoGame.KeyMap[(int)e.KeyCode] = false;
-			NoxicoGame.KeyTrg[(int)e.KeyCode] = true;
+            NoxicoGame.KeyMap[e.KeyCode] = false;
+			NoxicoGame.KeyTrg[e.KeyCode] = true;
 			if (numpad.ContainsKey(e.KeyCode))
 			{
-				NoxicoGame.KeyMap[(int)numpad[e.KeyCode]] = false;
-				NoxicoGame.KeyTrg[(int)numpad[e.KeyCode]] = true;
+				NoxicoGame.KeyMap[numpad[e.KeyCode]] = false;
+				NoxicoGame.KeyTrg[numpad[e.KeyCode]] = true;
 			}
 			if (e.Modifiers == Keys.Shift)
 				NoxicoGame.Modifiers[0] = false;
@@ -658,11 +658,11 @@ namespace Noxico
 				Program.WriteLine("Screenshot saved.");
 			}
 			if (e.KeyValue == 191)
-				NoxicoGame.KeyMap[(int)Keys.L] = false;
+				NoxicoGame.KeyMap[Keys.L] = false;
 
 			if (e.KeyCode == Keys.R && e.Control)
 			{
-				NoxicoGame.KeyMap[(int)Keys.R] = false;
+				NoxicoGame.KeyMap[Keys.R] = false;
 				for (int row = 0; row < 30; row++)
 					for (int col = 0; col < 100; col++)
 						previousImage[col, row].Character = '\uFFFE';
@@ -670,7 +670,7 @@ namespace Noxico
 		
 			if (e.KeyCode == Keys.A && e.Control && NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				NoxicoGame.KeyMap[(int)Keys.A] = false;
+				NoxicoGame.KeyMap[Keys.A] = false;
 				NoxicoGame.ShowMessageLog();
 			}
 		}

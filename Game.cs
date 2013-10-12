@@ -23,15 +23,16 @@ namespace Noxico
 
 		public static string WorldName { get; set; }
 		public static IGameHost HostForm { get; private set; }
-		public static bool[] KeyMap { get; set; }
-		public static bool[] KeyTrg { get; set; }
+		public static Dictionary<Keys, bool> KeyMap { get; set; }
+		public static Dictionary<Keys, bool> KeyTrg { get; set; }
 		public static bool[] Modifiers { get; set; }
-		public static DateTime[] KeyRepeat { get; set; }
+		public static Dictionary<Keys, DateTime> KeyRepeat { get; set; }
 		public static char LastPress { get; set; }
 		public static bool ScrollWheeled { get; set; }
 		public static bool Mono { get; set; }
 
-		public static Dictionary<KeyBinding, int> KeyBindings { get; private set; }
+		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
+		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
 
 		public static List<InventoryItem> KnownItems { get; private set; }
 		public List<Board> Boards { get; private set; }
@@ -72,7 +73,7 @@ namespace Noxico
 		{
 			if (KeyBindings[binding] == 0)
 				return false;
-			return (NoxicoGame.KeyMap[(int)KeyBindings[binding]]);
+			return (NoxicoGame.KeyMap[KeyBindings[binding]]);
 		}
 
 		public void Initialize(IGameHost hostForm)
@@ -81,38 +82,41 @@ namespace Noxico
 
 			Random.Reseed();
 
-			Func<string, Keys, int> GetIniKey = (s, d) =>
+			KeyBindings = new Dictionary<KeyBinding, Keys>();
+			RawBindings = new Dictionary<KeyBinding,string>();
+			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
+			//Keep this array in synch with KeyBinding.
+			var defaults = new[]
 			{
-				var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
-				var keyValue = IniFile.GetValue("keymap", s, d.ToString()).ToUpperInvariant();
-				if (keyNames.Contains(keyValue))
-					return (int)(Keys)Enum.Parse(typeof(Keys), keyValue, true);
-				keyValue = "oem" + keyValue; //try unfriendly name
-				if (keyNames.Contains(keyValue))
-					return (int)(Keys)Enum.Parse(typeof(Keys), keyValue, true);
-				//give up and return default
-				return (int)d;
+				Keys.Left, Keys.Right, Keys.Up, Keys.Down,
+				Keys.OemPeriod, Keys.Enter, Keys.OemQuotes, Keys.OemQuestion,
+				Keys.Oemcomma, Keys.OemSemicolon, Keys.Enter, Keys.Escape,
+				Keys.F1, Keys.F12, Keys.Tab,
+				Keys.Up, Keys.Down
 			};
-			KeyBindings = new Dictionary<KeyBinding, int>()
+			for (var i = 0; i < defaults.Length; i++)
 			{
-				{ KeyBinding.Left, GetIniKey("left", Keys.Left) },
-				{ KeyBinding.Right, GetIniKey("right", Keys.Right) },
-				{ KeyBinding.Up, GetIniKey("up", Keys.Up) },
-				{ KeyBinding.Down, GetIniKey("down", Keys.Down) },
-				{ KeyBinding.Rest, GetIniKey("rest", Keys.OemPeriod) },
-				{ KeyBinding.Activate, GetIniKey("activate", Keys.Enter) },
-				{ KeyBinding.Items, GetIniKey("items", Keys.OemQuotes) },
-				{ KeyBinding.Interact, GetIniKey("aim", Keys.OemQuestion) },
-				{ KeyBinding.Fly, GetIniKey("fly", Keys.Oemcomma) },
-				{ KeyBinding.Travel, GetIniKey("travel", Keys.OemSemicolon) },
-				{ KeyBinding.Accept, GetIniKey("accept", Keys.Enter) },
-				{ KeyBinding.Back, GetIniKey("back", Keys.Escape) },
-				{ KeyBinding.Pause, GetIniKey("pause", Keys.F1) },
-				{ KeyBinding.Screenshot, GetIniKey("screenshot", Keys.F12) },
-				{ KeyBinding.TabFocus, GetIniKey("tabfocus", Keys.Tab) },
-				{ KeyBinding.ScrollUp, GetIniKey("scrollup", Keys.Up) },
-				{ KeyBinding.ScrollDown, GetIniKey("scrolldown", Keys.Down) },
-			};
+				var iniKey = ((KeyBinding)i).ToString().ToLowerInvariant();
+				var iniValue = IniFile.GetValue("keymap", iniKey, Enum.GetName(typeof(Keys), defaults[i])).ToUpperInvariant();
+				if (keyNames.Contains(iniValue))
+				{
+					KeyBindings[(KeyBinding)i] = (Keys)Enum.Parse(typeof(Keys), iniValue, true);
+				}
+				else
+				{
+					//Try unfriendly name
+					iniValue = "OEM" + iniValue;
+					if (keyNames.Contains(iniValue))
+						KeyBindings[(KeyBinding)i] = (Keys)Enum.Parse(typeof(Keys), iniValue, true);
+					else
+					{
+						//Give up, use default
+						KeyBindings[(KeyBinding)i] = defaults[i];
+						iniValue = defaults[i].ToString().ToUpperInvariant();
+					}
+				}
+				RawBindings[(KeyBinding)i] = iniValue;
+			}
 
 			SavePath = Vista.GetInterestingPath(Vista.SavedGames);
 			if (IniFile.GetValue("misc", "vistasaves", true) && SavePath != null)
@@ -133,9 +137,15 @@ namespace Noxico
 			Speed = 60;
 			this.Boards = new List<Board>();
 			HostForm = hostForm;
-			KeyMap = new bool[256];
-			KeyTrg = new bool[256];
-			KeyRepeat = new DateTime[256];
+			KeyMap = new Dictionary<Keys, bool>();
+			KeyTrg = new Dictionary<Keys, bool>();
+			KeyRepeat = new Dictionary<Keys,DateTime>();
+			for (var i = 0; i < 255; i++)
+			{
+				KeyMap.Add((Keys)i, false);
+				KeyTrg.Add((Keys)i, false);
+				KeyRepeat.Add((Keys)i, DateTime.Now);
+			}
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
 			Messages = new List<string>(); //new List<StatusMessage>();
@@ -566,8 +576,8 @@ namespace Noxico
 
 			HostForm.Draw();
 			Immediate = false;
-			for (int i = 0; i < KeyTrg.Length; i++)
-				KeyTrg[i] = false;
+			for (int i = 0; i < 255; i++)
+				KeyTrg[(Keys)i] = false;
 			if (ScrollWheeled)
 			{
 				KeyMap[KeyBindings[KeyBinding.ScrollUp]] = false;
@@ -582,9 +592,9 @@ namespace Noxico
 		{
 			for (var i = 0; i < 255; i++)
 			{
-				KeyMap[i] = false;
-				KeyTrg[i] = false;
-				KeyRepeat[i] = DateTime.Now;
+				KeyMap[(Keys)i] = false;
+				KeyTrg[(Keys)i] = false;
+				KeyRepeat[(Keys)i] = DateTime.Now;
 			}
 			Vista.ReleaseTriggers();
 		}
