@@ -43,7 +43,6 @@ namespace Noxico
 			thisMap.Clear(biomeID);
 			thisMap.BoardType = BoardType.Town;
 			Board.HackishBoardTypeThing = "town";
-			thisMap.Music = biome.RealmID == "Nox" ? "set://Town" : "set://Dungeon";
 			thisMap.AddToken("culture", 0, cultureName);
 
 			townGen.Board = thisMap;
@@ -88,7 +87,6 @@ namespace Noxico
 				lol.Clear(biomeID);
 				lol.BoardType = BoardType.Wild;
 				Board.HackishBoardTypeThing = "wild";
-				lol.Music = thisMap.Music;
 				lol.BoardNum = boards.Count;
 				lol.Name = thisMap.Name + " Outskirts";
 				lol.ID = lol.Name.ToID() + lol.BoardNum;
@@ -310,7 +308,6 @@ namespace Noxico
 					if (!string.IsNullOrWhiteSpace(name))
 						board.Name = string.Format("{0}, level {1}-{2}", name, i + 1, (char)('A' + j));
 					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
-					board.Music = "set://Dungeon";
 					board.BoardType = BoardType.Dungeon;
 					var encounters = board.GetToken("encounters");
 					foreach (var e in biomeData.Encounters)
@@ -487,7 +484,6 @@ namespace Noxico
 			nox.Player.XPosition = originalExit.XPosition;
 			nox.Player.YPosition = originalExit.YPosition;
 			entranceBoard.Redraw();
-			entranceBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
 			NoxicoGame.HostForm.Noxico.SaveGame();
@@ -696,7 +692,6 @@ namespace Noxico
 		public string RealmID { get; private set; }
 		public string Name { get; private set; }
 		public Color Color { get; private set; }
-		public string Music { get; private set; }
 		public bool IsWater { get; private set; }
 		public bool CanBurn { get; private set; }
 		public char[] GroundGlyphs { get; private set; }
@@ -713,7 +708,6 @@ namespace Noxico
 			n.RealmID = realmID;
 			n.Name = x.GetAttribute("name");
 			n.Color = Color.FromName(x.GetAttribute("color"));
-			n.Music = x.GetAttribute("music");
 			n.IsWater = x.HasAttribute("isWater");
 			n.CanBurn = x.HasAttribute("canBurn");
 

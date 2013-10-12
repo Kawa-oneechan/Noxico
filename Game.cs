@@ -18,8 +18,6 @@ namespace Noxico
 
 	public class NoxicoGame
 	{
-		public static SoundSystem Sound;
-
 		public int Speed { get; set; }
 		public static bool Immediate { get; set; }
 
@@ -141,7 +139,6 @@ namespace Noxico
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
 			Messages = new List<string>(); //new List<StatusMessage>();
-			Sound = new SoundSystem();
 
 			Program.WriteLine("Loading bodyplans...");
 			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
@@ -211,7 +208,7 @@ namespace Noxico
 			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
-			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
+			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo");
 			Limbo.BoardType = BoardType.Special;
 
 			/*
@@ -415,7 +412,6 @@ namespace Noxico
 				CurrentBoard.LoadSurroundings();
 				CurrentBoard.CheckCombatStart();
 				CurrentBoard.Redraw();
-				CurrentBoard.PlayMusic();
 
 				if (!Player.Character.HasToken("player"))
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
@@ -568,7 +564,6 @@ namespace Noxico
 					Mode = UserMode.Walkabout;
 			}
 
-			Sound.Update();
 			HostForm.Draw();
 			Immediate = false;
 			for (int i = 0; i < KeyTrg.Length; i++)
@@ -654,7 +649,6 @@ namespace Noxico
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			setStatus("The World is Ready.");
-			//Sound.PlayMusic(this.CurrentBoard.Music);
 			//this.CurrentBoard.Redraw();
 		}
 

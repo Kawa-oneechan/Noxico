@@ -37,7 +37,6 @@ tail: fox
 waist: 7
 ass
 	size: 12
-	fuckable
 hips: 12
 fertility: 0
 breastrow
@@ -48,10 +47,10 @@ breastrow
 		color: black
 	milksource
 vagina
-	fuckable
 	wetness: 2
 	looseness: 2
 	clit: 0.5
+uterus
 penis: horse
 	thickness: 7
 	length: 50

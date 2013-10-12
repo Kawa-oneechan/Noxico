@@ -164,10 +164,6 @@ Number of known items       {2}
 		<word id="opt_title">Options</word>
 		<word id="opt_speed">Speed (lower = faster)</word>
 		<word id="opt_font">Font</word>
-		<word id="opt_audio">Audio</word>
-		<word id="opt_enableaudio">Enable</word>
-		<word id="opt_musicvolume">Music volume (0-100)</word>
-		<word id="opt_soundvolume">Sound effect volume</word>
 		<word id="opt_misc">Various</word>
 		<word id="opt_skipintro">Skip dream on new game</word>
 		<word id="opt_rememberpause">Remember page in pause menu</word>

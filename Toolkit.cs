@@ -955,7 +955,7 @@ namespace Noxico
 
 			if (plan.HasToken("ass"))
 			{
-				foreach (var t in new[] { "ass/size", "ass/looseness" /* , "ass/fuckable" */ }) //not including ass/fuckable, that's a switch that may not even survive until 1.0.
+				foreach (var t in new[] { "ass/size", "ass/looseness" })
 					if (plan.Path(t) == null)
 						missing.Add(t);
 			}
@@ -972,7 +972,7 @@ namespace Noxico
 					var vaginas = plan.Tokens.FindAll(x => x.Name == "vagina");
 					foreach (var v in vaginas)
 					{
-						foreach (var t in new[] { "clit", "looseness", "wetness" /* , "fuckable" */ }) //as above re fuckable
+						foreach (var t in new[] { "clit", "looseness", "wetness" })
 							if (!v.HasToken(t))
 								missing.Add("vagina/" + t);
 					}

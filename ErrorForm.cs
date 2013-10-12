@@ -92,7 +92,7 @@ namespace Noxico
 			else if (typeName == "FileNotFoundException")
 			{
 				if (textBox1.Text.Contains("not found in the MIX"))
-					label3.Text = "The requested file was not found in the MIX archives, nor in the \\data override folder." + Environment.NewLine + Environment.NewLine + "If it was not music or sound, and you don't have any mods installed, it's probably a corrupted Noxico.mix file. Redownload it to try and fix it. If that doesn't help, contact Kawa.";
+					label3.Text = "The requested file was not found in the MIX archives, nor in the \\data override folder." + Environment.NewLine + Environment.NewLine + "If you don't have any mods installed, it's probably a corrupted Noxico.mix file. Redownload it to try and fix it. If that doesn't help, contact Kawa.";
 				else if (textBox1.Text.Contains("Required DLL"))
 					label3.Text = "The requested DLL file was found missing, and is required to properly run the game. Redownload the game to regain all the required DLL files." + Environment.NewLine + Environment.NewLine + "We checked for this at startup so things would remain graceful.";
 				else if (textBox1.Text.Contains("Board #"))

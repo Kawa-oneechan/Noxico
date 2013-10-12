@@ -296,7 +296,6 @@ namespace Noxico
 				return;
 			if (_index == 0)
 				return;
-			NoxicoGame.Sound.PlaySound("Cursor");
 			var pi = _index;
 			_index--;
 			if (_index < scroll)
@@ -320,7 +319,6 @@ namespace Noxico
 				return;
 			if (_index == Items.Count - 1)
 				return;
-			NoxicoGame.Sound.PlaySound("Cursor");
 			var pi = _index;
 			_index++;
 			if (_index - scroll >= Height)
@@ -389,8 +387,6 @@ namespace Noxico
 					if (Change != null)
 						Change(this, null);
 				}
-				else
-					NoxicoGame.Sound.PlaySound("Push");
 				return;
 			}
 			var skippers = new[] { Keys.ShiftKey, Keys.ControlKey, Keys.Alt };
@@ -399,7 +395,6 @@ namespace Noxico
 			var c = NoxicoGame.LastPress;
 			if (Numeric && !char.IsDigit(c))
 			{
-				NoxicoGame.Sound.PlaySound("Splorch");
 				return;
 			}
 			if (Text.Length < Width - 1 && !char.IsControl(c))
@@ -466,7 +461,6 @@ namespace Noxico
 		{
 			if (_index == 0)
 				_index = Items.Count;
-			NoxicoGame.Sound.PlaySound("Cursor");
 			Index--;
 			Draw();
 			if (Change != null)
@@ -477,7 +471,6 @@ namespace Noxico
 		{
 			if (_index == Items.Count - 1)
 				_index = -1;
-			NoxicoGame.Sound.PlaySound("Cursor");
 			Index++;
 			Draw();
 			if (Change != null)
@@ -560,13 +553,11 @@ namespace Noxico
 		public override void DoLeft()
 		{
 			Value = 0;
-			NoxicoGame.Sound.PlaySound("Cursor");
 		}
 
 		public override void DoRight()
 		{
 			Value = 1;
-			NoxicoGame.Sound.PlaySound("Cursor");
 		}
 
 		public override void DoMouse(int left, int top)
@@ -767,7 +758,6 @@ namespace Noxico
 		private static void ProcessTab(bool shift = false)
 		{
 			var hiIndex = Elements.IndexOf(highlight);
-			NoxicoGame.Sound.PlaySound("Cursor");
 			if (!shift)
 			{
 				for (var i = hiIndex + 1; i < Elements.Count; i++)

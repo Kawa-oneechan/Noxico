@@ -354,7 +354,6 @@ namespace Noxico
 				containerList.DrawQuick();
 				containerList.Change(null, null);
 				playerList.DrawQuick();
-				NoxicoGame.Sound.PlaySound("Cursor");
 				//UIManager.Draw();
 			}
 			else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
@@ -366,7 +365,6 @@ namespace Noxico
 				playerList.Change(null, null);
 				containerList.DrawQuick();
 				playerList.DrawQuick();
-				NoxicoGame.Sound.PlaySound("Cursor");
 				//UIManager.Draw();
 			}
 			else
@@ -406,7 +404,6 @@ namespace Noxico
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
-			NoxicoGame.Sound.PlaySound("Get Item");
 			return null;
 		}
 
@@ -445,7 +442,6 @@ namespace Noxico
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
-			NoxicoGame.Sound.PlaySound("Put Item");
 			return null;
 		}
 	}

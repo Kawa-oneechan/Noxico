@@ -8,9 +8,9 @@ namespace Noxico
 	public static class Options
 	{
 		private static UIButton saveButton, cancelButton, openButton;
-		private static UITextBox speed, musicVolume, soundVolume;
+		private static UITextBox speed;
 		private static UIList font;
-		private static UIToggle skipIntro, rememberPause, vistaSaves, xInput, imperial, enableAudio;
+		private static UIToggle skipIntro, rememberPause, vistaSaves, xInput, imperial;
 		private static string previousFont;
 
 		public static void Handler()
@@ -117,43 +117,6 @@ namespace Noxico
 					Background = Color.Transparent,
 				};
 
-				var audioWindow = new UIWindow(i18n.GetString("opt_audio"))
-				{
-					Left = 4,
-					Top = 16,
-					Width = 32,
-					Height = 8,
-				};
-
-				enableAudio = new UIToggle(i18n.GetString("opt_enableaudio"))
-				{
-					Left = 6,
-					Top = 17,
-					Checked = IniFile.GetValue("audio", "enabled", true),
-					Background = Color.Transparent,
-				};
-
-				var musicVolumeLabel = new UILabel(i18n.GetString("opt_musicvolume"))
-				{
-					Left = 6,
-					Top = 19
-				};
-				musicVolume = new UITextBox(IniFile.GetValue("audio", "musicvolume", "100"))
-				{
-					Left = 8,
-					Top = 20,
-				};
-				var soundVolumeLabel = new UILabel(i18n.GetString("opt_soundvolume"))
-				{
-					Left = 6,
-					Top = 21,
-				};
-				soundVolume = new UITextBox(IniFile.GetValue("audio", "soundvolume", "100"))
-				{
-					Left = 8,
-					Top = 22,
-				};
-
 				saveButton = new UIButton(i18n.GetString("opt_save"), (s, e) =>
 					{
 						var i = int.Parse(speed.Text);
@@ -168,31 +131,6 @@ namespace Noxico
 						IniFile.SetValue("misc", "vistasaves", vistaSaves.Checked);
 						IniFile.SetValue("misc", "xinput", xInput.Checked);
 						Vista.GamepadEnabled = xInput.Checked;
-						IniFile.SetValue("misc", "imperial", imperial.Checked);
-						IniFile.SetValue("audio", "enabled", enableAudio.Checked);
-						i = int.Parse(musicVolume.Text);
-						if (i < 0)
-							i = 0;
-						if (i > 100)
-							i = 100;
-						NoxicoGame.Sound.MusicVolume = i / 100f;
-						IniFile.SetValue("audio", "musicvolume", i);
-						i = int.Parse(soundVolume.Text);
-						if (i < 0)
-							i = 0;
-						if (i > 100)
-							i = 100;
-						NoxicoGame.Sound.SoundVolume = i / 100f;
-						IniFile.SetValue("audio", "soundvolume", i);
-
-						if (!enableAudio.Checked && NoxicoGame.Sound != null)
-							NoxicoGame.Sound.ShutDown();
-						else if (enableAudio.Checked && !NoxicoGame.Sound.Enabled)
-						{
-							NoxicoGame.Sound = new SoundSystem();
-							if (NoxicoGame.HostForm.Noxico.CurrentBoard != null)
-								NoxicoGame.HostForm.Noxico.CurrentBoard.PlayMusic();
-						}
 
 						if (previousFont != font.Text)
 							NoxicoGame.HostForm.RestartGraphics();
@@ -226,12 +164,6 @@ namespace Noxico
 				UIManager.Elements.Add(vistaSaves);
 				UIManager.Elements.Add(xInput);
 				UIManager.Elements.Add(imperial);
-				UIManager.Elements.Add(audioWindow);
-				UIManager.Elements.Add(enableAudio);
-				UIManager.Elements.Add(musicVolumeLabel);
-				UIManager.Elements.Add(musicVolume);
-				UIManager.Elements.Add(soundVolumeLabel);
-				UIManager.Elements.Add(soundVolume);
 				UIManager.Elements.Add(saveButton);
 				UIManager.Elements.Add(openButton);
 				UIManager.Elements.Add(cancelButton);
