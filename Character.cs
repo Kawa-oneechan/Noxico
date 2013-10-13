@@ -347,7 +347,7 @@ namespace Noxico
 			if (gender == Gender.Male || gender == Gender.Neuter)
 			{
 				newChar.RemoveToken("fertility");
-				newChar.RemoveToken("uterus");
+				newChar.RemoveToken("womb");
 				newChar.RemoveToken("vagina");
 				if (newChar.HasToken("breastrow"))
 					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
@@ -464,7 +464,7 @@ namespace Noxico
 			if (gender == Gender.Male || gender == Gender.Neuter)
 			{
 				newChar.RemoveToken("fertility");
-				newChar.RemoveToken("uterus");
+				newChar.RemoveToken("womb");
 				newChar.RemoveToken("vagina");
 				if (newChar.HasToken("breastrow"))
 					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
@@ -2346,7 +2346,7 @@ namespace Noxico
 
 		public bool Fertilize(Character father)
 		{
-			if (!this.HasToken("uterus"))
+			if (!this.HasToken("womb"))
 				return false;
 			var fertility = 0.0;
 			if (this.HasToken("fertility"))
