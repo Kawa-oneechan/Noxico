@@ -56,7 +56,7 @@ vagina
 	looseness: 0
 	wetness: 1
 	clit: 0.25
-uterus
+womb
 penis: human
 	thickness: 2.5
 	length: roll 1d5+13
@@ -155,7 +155,7 @@ vagina
 	wetness: roll 1d3+2
 	looseness: 1
 	clit: 1.0
-uterus
+womb
 items
 select
 	set: 0.3
@@ -223,7 +223,7 @@ vagina
 	wetness: 5
 	looseness: 3
 	clit: 0.3
-uterus
+womb
 		]]>
 	</bodyplan>
 
@@ -266,7 +266,7 @@ vagina
 	wetness: 2
 	looseness: 2
 	clit: 0.25
-uterus
+womb
 penis: lizard
 	thickness: roll 1d2+1
 	length: roll 1d6+20
@@ -328,7 +328,7 @@ vagina
 	wetness: 4
 	looseness: 1
 	clit: 1.6
-uterus
+womb
 penis: studded
 	thickness: roll 1d3+1
 	length: roll 1d6+17
@@ -392,7 +392,7 @@ vagina
 	looseness: 0
 	wetness: 1
 	clit: 0.25
-uterus
+womb
 penis: cat
 	thickness: 3
 	length: roll 1d6+12
@@ -453,7 +453,7 @@ vagina
 	wetness: 1
 	looseness: 0
 	clit: 0.25
-uterus
+womb
 penis: dog
 	thickness: 2
 	length: roll 1d7+14
@@ -513,7 +513,7 @@ vagina
 	wetness: 1
 	looseness: 0
 	clit: 1.5
-uterus
+womb
 penis: horse
 	thickness: 3
 	length: 16
@@ -579,7 +579,7 @@ vagina
 	looseness: 2
 	wetness: 2
 	clit: 0.5
-uterus
+womb
 penis: human
 	thickness: 2.5
 	length: roll 1d7+15
@@ -661,7 +661,7 @@ vagina
 	looseness: 0
 	wetness: 1
 	clit: 0.5
-uterus
+womb
 penis: bear
 	thickness: 4
 	length: roll 1d10+12
@@ -719,7 +719,7 @@ vagina
 	looseness: 0
 	wetness: 1
 	clit: 0.25
-uterus
+womb
 penis: dog
 	thickness: 2
 	length: roll 1d7+14
@@ -773,7 +773,7 @@ vagina
 	looseness: 1
 	wetness: 2
 	clit: 1.5
-uterus
+womb
 penis: horse
 	thickness: 3
 	length: 16
