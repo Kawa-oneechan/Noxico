@@ -151,40 +151,20 @@ namespace Noxico
 			Messages = new List<string>(); //new List<StatusMessage>();
 
 			Program.WriteLine("Loading bodyplans...");
-			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
 			Views = new Dictionary<string, char>();
-			var planTokens = new TokenCarrier();
 			BodyplanHashes = new Dictionary<string, string>();
-			foreach (var bodyPlan in xDoc.SelectNodes("//bodyplan").OfType<XmlElement>())
+			var plans = Mix.GetTokenTree("bodyplans.tml");
+			foreach (var bodyPlan in plans.Where(t => t.Name == "bodyplan"))
 			{
-				var id = bodyPlan.GetAttribute("id");
-				//Program.WriteLine("Loading {0}...", id);
-				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
-				var ascii = Toolkit.GrabToken(plan, "ascii");
-				if (ascii != null)
-				{
-					var ch = ascii.IndexOf("\tchar: ");
-					if (ch != -1)
-					{
-						var part = ascii.Substring(ascii.IndexOf("U+") + 2);
-						part = part.Remove(part.IndexOf('\n'));
-						var c = int.Parse(part, System.Globalization.NumberStyles.HexNumber);
-						try
-						{
-							Views.Add(id, (char)c);
-						}
-						catch (ArgumentException ex)
-						{
-							//With the new replacement merger in Mix.GetXmlDocument(), this should not be possible.
-							throw new ArgumentException(string.Format("The '{0}' bodyplan is defined twice.", id), ex);
-						}
-					}
-				}
-				planTokens.Tokenize(plan);
-				Toolkit.VerifyBodyplan(planTokens, id);
-				if (planTokens.HasToken("beast"))
+				var id = bodyPlan.Text;
+				var plan = bodyPlan.Tokens;
+				var ch = bodyPlan.Path("ascii/char");
+				if (ch != null)
+					Views.Add(id, (char)ch.Value);
+				Toolkit.VerifyBodyplan(bodyPlan, id);
+				if (bodyPlan.HasToken("beast"))
 					continue;
-				BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(planTokens));
+				BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(bodyPlan));
 			}
 
 			Program.WriteLine("Loading items...");
@@ -206,7 +186,7 @@ namespace Noxico
 			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
 			BookAuthors.Add("[null]");
-			xDoc = Mix.GetXmlDocument("books.xml");
+			var xDoc = Mix.GetXmlDocument("books.xml");
 			var books = xDoc.SelectNodes("//book");
 			foreach (var b in books.OfType<XmlElement>())
 			{

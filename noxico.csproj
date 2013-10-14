@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -182,7 +182,7 @@
     <Content Include="mix\bodyparts.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="mix\bodyplans.xml">
+    <Content Include="mix\bodyplans.tml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="mix\bonustraits.xml" />
@@ -202,29 +202,27 @@
     <Content Include="mix\missions\chelsie\lairhouse.png" />
     <Content Include="mix\missions\chelsie\mission.js" />
     <Content Include="mix\missions\chelsie\manifest.txt" />
-    <Content Include="mix\missions\chelsie\uniques.xml" />
+    <Content Include="mix\missions\chelsie\uniques.tml" />
     <Content Include="mix\missions\melfina\loot.xml" />
     <Content Include="mix\missions\melfina\manifest.txt" />
     <Content Include="mix\missions\melfina\mission.js" />
     <Content Include="mix\missions\melfina\scenesDlg.xml" />
-    <Content Include="mix\missions\melfina\uniques.xml" />
+    <Content Include="mix\missions\melfina\uniques.tml" />
     <Content Include="mix\missions\pettancow\manifest.txt" />
     <Content Include="mix\missions\pettancow\mission.js" />
     <Content Include="mix\missions\pettancow\scenesDlg.xml" />
-    <Content Include="mix\missions\pettancow\uniques.xml" />
+    <Content Include="mix\missions\pettancow\uniques.tml" />
     <Content Include="mix\missions\portal\manifest.txt" />
     <Content Include="mix\missions\portal\mission.js" />
     <Content Include="mix\missions\portal\platform1.png" />
     <Content Include="mix\missions\portal\platform2.png" />
     <Content Include="mix\missions\portal\road.png" />
-    <Content Include="mix\missions\portal\uniques.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\missions\portal\uniques.tml" />
     <Content Include="mix\missions\urta\loot.xml" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\missions\urta\mission.js" />
     <Content Include="mix\missions\urta\scenesDlg.xml" />
-    <Content Include="mix\missions\urta\uniques.xml" />
+    <Content Include="mix\missions\urta\uniques.tml" />
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
     <Content Include="mix\knowncolors.xml" />
@@ -233,7 +231,7 @@
     <Content Include="mix\missions\littleponies\buildings.xml" />
     <Content Include="mix\missions\littleponies\manifest.txt" />
     <Content Include="mix\missions\littleponies\mission.js" />
-    <Content Include="mix\missions\littleponies\uniques.xml" />
+    <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
     <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml">
       <SubType>Designer</SubType>
@@ -245,9 +243,7 @@
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
-    <Content Include="mix\uniques.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\uniques.tml" />
     <Content Include="mix\words.xml">
       <SubType>Designer</SubType>
     </Content>

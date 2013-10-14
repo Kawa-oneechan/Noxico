@@ -24,7 +24,7 @@ namespace Noxico
 
 	public class Character : TokenCarrier
 	{
-		private static XmlDocument bodyPlansDocument, uniquesDocument;
+		//private static XmlDocument bodyPlansDocument, uniquesDocument;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
@@ -260,16 +260,23 @@ namespace Noxico
 
 		public static Character GetUnique(string id)
 		{
-			if (uniquesDocument == null)
-				uniquesDocument = Mix.GetXmlDocument("uniques.xml");
+			var uniques = Mix.GetTokenTree("uniques.tml");
 
 			var newChar = new Character();
-			var planSource = uniquesDocument.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as XmlElement;
-			var plan = planSource.ChildNodes[0].Value;
-			newChar.Tokenize(plan);
-			newChar.Name = new Name(planSource.GetAttribute("name"));
-			newChar.A = "a";
-			newChar.IsProperNamed = planSource.HasAttribute("proper");
+			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && t.Text == id);
+			if (planSource == null)
+				throw new ArgumentOutOfRangeException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
+			newChar.AddSet(planSource.Tokens);
+			var nameParts = planSource.Text.Split(',');
+			if (nameParts.Length > 1)
+				newChar.Name = new Name(nameParts[1].Trim());
+			else
+				newChar.Name = new Name(nameParts[0].Replace('_', ' '));
+			if (planSource.HasToken("_a"))
+				newChar.A = planSource.GetToken("_a").Text;
+			else
+				newChar.A = newChar.Name.ToString().StartsWithVowel() ? i18n.GetString("an") : i18n.GetString("a");
+			newChar.IsProperNamed = char.IsUpper(newChar.Name.ToString()[0]);
 
 			var gender = Gender.Neuter;
 			if (newChar.HasToken("penis") && !newChar.HasToken("vagina"))
@@ -302,17 +309,14 @@ namespace Noxico
 
 		public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
-			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
-
-			if (idGender == Gender.Random)
-				idGender = gender;
+			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
 
 			var newChar = new Character();
-			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
-			//gToolkit.VerifyBodyplan(planSource); //by PillowShout
-			var plan = planSource.ChildNodes[0].Value;
-			newChar.Tokenize(plan);
+			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
+			if (planSource == null)
+				throw new ArgumentOutOfRangeException(string.Format("Could not find a bodyplan with id \"{0}\" to generate.", bodyPlan));
+
+			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
 			newChar.A = "a";
 
@@ -338,6 +342,9 @@ namespace Noxico
 				var g = Random.Next(min, max + 1);
 				gender = (Gender)g;
 			}
+
+			if (idGender == Gender.Random)
+				idGender = gender;
 
 			if (gender != Gender.Female && newChar.HasToken("femaleonly"))
 				throw new Exception(string.Format("Cannot generate a non-female {0}.", bodyPlan));
@@ -425,14 +432,14 @@ namespace Noxico
 
 		public static Character GenerateQuick(string bodyPlan, Gender gender)
 		{
-			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
+			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
 
 			var newChar = new Character();
-			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + bodyPlan + "\"]") as XmlElement;
-			//gToolkit.VerifyBodyplan(planSource); //by PillowShout
-			var plan = planSource.ChildNodes[0].Value;
-			newChar.Tokenize(plan);
+			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
+			if (planSource == null)
+				throw new ArgumentOutOfRangeException(string.Format("Could not find a bodyplan with id \"{0}\" to generate.", bodyPlan));
+
+			newChar.AddSet(planSource.Tokens);
 			newChar.HandleSelectTokens(); //by PillowShout
 
 			if (newChar.HasToken("femaleonly"))
@@ -1450,8 +1457,7 @@ namespace Noxico
 
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
-			if (bodyPlansDocument == null)
-				bodyPlansDocument = Mix.GetXmlDocument("bodyplans.xml");
+			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
 
@@ -1488,12 +1494,11 @@ namespace Noxico
 				Character.MorphBuffer.Clear();
 			};
 
-			var planSource = bodyPlansDocument.SelectSingleNode("//bodyplans/bodyplan[@id=\"" + targetPlan + "\"]") as XmlElement;
+			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == targetPlan);
 			if (planSource == null)
 				throw new Exception(string.Format("Unknown target bodyplan \"{0}\".", targetPlan));
-			var plan = planSource.ChildNodes[0].Value;
 			var target = new TokenCarrier();
-			target.Tokenize(plan);
+			target.Tokens.AddRange(planSource.Tokens);
 			var source = this;
 
 			var toChange = new List<Token>();
