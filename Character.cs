@@ -263,7 +263,7 @@ namespace Noxico
 			var uniques = Mix.GetTokenTree("uniques.tml");
 
 			var newChar = new Character();
-			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && t.Text == id);
+			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id || t.Text.StartsWith(id + ",")));
 			if (planSource == null)
 				throw new ArgumentOutOfRangeException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
 			newChar.AddSet(planSource.Tokens);

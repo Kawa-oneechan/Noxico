@@ -11,6 +11,7 @@ namespace Noxico
 {
 	public class TokenCarrier
 	{
+		public static bool NoRolls { private get; set; }
 		public List<Token> Tokens { get; private set; }
 
 		public TokenCarrier()
@@ -176,7 +177,7 @@ namespace Noxico
 					cdataText.Clear();
 					continue;
 				}
-				if (tokenName.StartsWith("oneof "))
+				if (!NoRolls && tokenName.StartsWith("oneof "))
 				{
 					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
 					var choice = options[Random.Next(options.Length)].Trim();
@@ -190,13 +191,13 @@ namespace Noxico
 						var text = l.Substring(l.IndexOf('\"') + 1);
 						newOne.Text = text.Remove(text.LastIndexOf('\"'));
 					}
-					else if (l.Contains(": oneof "))
+					else if (!NoRolls && l.Contains(": oneof "))
 					{
 						var options = l.Substring(l.IndexOf("of ") + 3).Split(',');
 						var choice = options[Random.Next(options.Length)].Trim();
 						newOne.Text = choice;
 					}
-					else if (l.Contains(": roll "))
+					else if (!NoRolls && l.Contains(": roll "))
 					{
 						var xDyPz = l.Substring(l.LastIndexOf(' ') + 1);
 						int y = 0, z = 0;
@@ -283,6 +284,7 @@ namespace Noxico
 				prevTabs = tabs;
 			}
 			Tokens = t;
+			NoRolls = false;
 		}
 
 #if DEBUG
