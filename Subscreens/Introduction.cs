@@ -133,87 +133,75 @@ namespace Noxico
 		{
 			var ret = new List<PlayableRace>();
 			Program.WriteLine("Collecting playables...");
-			var xDoc = Mix.GetXmlDocument("bodyplans.xml");
-			var bodyPlans = xDoc.SelectNodes("//bodyplan");
-			foreach (var bodyPlan in bodyPlans.OfType<XmlElement>())
+			TokenCarrier.NoRolls = true; //Bit of a hack, I know. It resets to false when Tokenize() is finished.
+			var plans = Mix.GetTokenTree("bodyplans.tml");
+			foreach (var bodyPlan in plans.Where(t => t.Name == "bodyplan"))
 			{
-				var id = bodyPlan.GetAttribute("id");
-				if (bodyPlan.ChildNodes[0].Value == null)
-				{
-					Program.WriteLine(" * Skipping {0} -- old format.", id);
-					continue;
-				}
-				var plan = bodyPlan.ChildNodes[0].Value.Replace("\r\n", "\n");
-				if (!plan.Contains("playable"))
+				var id = bodyPlan.Text;
+				var plan = bodyPlan.Tokens;
+				if (!bodyPlan.HasToken("playable"))
 					continue;
 				Program.WriteLine(" * Parsing {0}...", id);
 
-				var genlock = plan.Contains("only\n");
-
-				var name = id;
-
-				//TODO: write a support function that grabs everything for a specific token?
-				//That is, given "terms \n \t generic ... \n tallness" it'd grab everything up to but not including tallness.
-				//Use that to find subtokens like specific terms or colors.
+				var genlock = bodyPlan.HasToken("maleonly") || bodyPlan.HasToken("femaleonly") || bodyPlan.HasToken("hermonly") || bodyPlan.HasToken("neuteronly");
+				var name = id.Replace('_', ' ').Titlecase();
+				if (!string.IsNullOrWhiteSpace(bodyPlan.GetToken("playable").Text))
+					name = bodyPlan.GetToken("playable").Text;
 
 				var hairs = new List<string>() { "<None>" };
-				var hair = Toolkit.GrabToken(plan, "hair");
+				var hair = bodyPlan.GetToken("hair");
 				if (hair != null)
 				{
-					var c = hair.Substring(hair.IndexOf("color: ") + 7).Trim();
+					var c = hair.GetToken("color").Text;
 					if (c.StartsWith("oneof"))
 					{
 						hairs.Clear();
 						c = c.Substring(6);
-						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
 						oneof.ForEach(x => hairs.Add(Color.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
-						hairs[0] = c.Remove(c.IndexOf('\n')).Titlecase();
+						hairs[0] = c.Titlecase();
 					}
 				}
 
 				var eyes = new List<string>() { "Brown" };
 				{
-					var c = plan.Substring(plan.IndexOf("\neyes: ") + 7);
+					var c = bodyPlan.GetToken("eyes").Text;
 					if (c.StartsWith("oneof"))
 					{
 						eyes.Clear();
 						c = c.Substring(6);
-						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
 						oneof.ForEach(x => eyes.Add(Color.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
-						eyes[0] = c.Remove(c.IndexOf('\n')).Titlecase();
+						eyes[0] = c.Titlecase();
 					}
 				}
 
 				var skins = new List<string>();
 				var skinName = "skin";
-				var s = Toolkit.GrabToken(plan, "skin");
+				var s = bodyPlan.GetToken("skin");
 				if (s != null)
 				{
-					if (s.Contains("type"))
+					if (s.HasToken("type"))
 					{
-						skinName = s.Substring(s.IndexOf("type") + 5);
-						skinName = skinName.Remove(skinName.IndexOf('\n')).Trim();
+						skinName = s.GetToken("type").Text;
 					}
-					var c = s.Substring(s.IndexOf("color: ") + 7).Trim();
+					var c = s.GetToken("color").Text;
 					if (c.StartsWith("oneof"))
 					{
 						skins.Clear();
 						c = c.Substring(6);
-						c = c.Remove(c.IndexOf('\n'));
 						var oneof = c.Split(',').ToList();
 						oneof.ForEach(x => skins.Add(Color.NameColor(x.Trim()).Titlecase()));
 					}
 					else
 					{
-						skins.Add(c.Remove(c.IndexOf('\n')).Titlecase());
+						skins.Add(Color.NameColor(c).Titlecase());
 					}
 				}
 

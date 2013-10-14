@@ -440,7 +440,7 @@ bodyplan: fox
 
 
 bodyplan: littlepony
-	playable
+	playable: "Little Pony"
 	culture: equestrian
 	namegen: pony
 	normalgenders
