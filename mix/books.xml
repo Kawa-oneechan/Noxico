@@ -902,7 +902,7 @@
 	<book id="20" title="Bestiary I - Slimes">
 		<p>
 			<b>Racial traits</b><br />
-			Racially, slimes are extraordinarily distinct. Their most prolific feature is that their bodies, are composed entirely of a semi-translucent, viscous, gelatinous material. The exact viscosity and transparency vary from slime to slime. They have a thicker, leather-like membrane on the outside of their bodies that serves as a skin, which is smooth, warm and slightly humid to the touch. They have monochromatic skin, which comes in a wide variety of colors. They possess pupil-less eyes, that are usually a different shade of color from the rest of their bodies, but never a different color entirely. Slimes usually do not wear clothing, since they do not feel discomfort from heat or the cold. They only wear armor or clothing to differentiate themselves from one another and protect themself. There are slimes that possess less intelligence than others, thus they are regarded as uncivilized subspecies by other natives of Nox. All and all, they are an adaptable species that can survive in almost any environment, provided they have a ready supply of "food".
+			Racially, slimes are extraordinarily distinct. Their most prolific feature is that their bodies are composed entirely of a semi-translucent, viscous, gelatinous material. The exact viscosity and transparency vary from slime to slime. They have a thicker, leather-like membrane on the outside of their bodies that serves as a skin, which is smooth, warm and slightly humid to the touch. They have monochromatic skin, which comes in a wide variety of colors. They possess pupil-less eyes, that are usually a different shade of color from the rest of their bodies, but never a different color entirely. Slimes usually do not wear clothing, since they do not feel discomfort from heat or the cold. They only wear armor or clothing to differentiate themselves from one another and protect themself. There are slimes that possess less intelligence than others, thus they are regarded as uncivilized subspecies by other natives of Nox. All and all, they are an adaptable species that can survive in almost any environment, provided they have a ready supply of "food".
 		</p>
 		<p>
 			<b>Physical traits</b><br />
@@ -930,6 +930,29 @@
 		</p>
 		<p>
 			Young slimes take some time to learn how to properly control their body, remaining as small blobs. During this time they cannot reliably generate digestive tissue on their own, and are reliant on their parents. Female and herm slimes produce a thick, syrupy liquid concoction known as ambrosia designed specifically to feed their offspring. Ambrosia's flavor can only be associated with a slime's color and many decedent individuals endeavor to try them all. Slimes will generally store ambrosia in their breasts and engage in breast feeding as a sort of maternal instinct. By the time young slimes reach maturity, they can form their own digestive tissue reliably, learning how to form bodies, associate themselves with a gender by instinct, and most importantly, feed.
+		</p>
+	</book>
+	<book id="21" title="Font Test &#x03B1;">
+		<p style="hand">
+			"To be so stupid as to add font support to books instead of working on things that actually matter like the sex system is the mark of a dumbass."
+		</p>
+		<p style="invalid style">
+			This is an invalid style value. It should render in the regular font.
+		</p>
+		<p style="daedric">
+			OPEN THE GATES OF OBLIVION &lt;- daedric, woo
+		</p>
+		<p style="alternian">
+			EPORYP IZERET &lt;- alternian, reverse it yourself
+		</p>
+		<p style="keen">
+			BEHOLD THE MIGHTY POGO STICK &lt;- commander keen's standard galactic alphabet
+		</p>
+		<p>
+			Unstyled paragraph. As in, there is no style attribute at all.
+		</p>
+		<p>
+			Note that you can't really <p style="hand">&#2000;change style in the middle of a sentence</p> as the closing tag will cause a double line break.
 		</p>
 	</book>
 </library>

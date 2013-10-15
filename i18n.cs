@@ -27,6 +27,7 @@
  * U+E2FD	Hide message from backlog
  * U+E2FE	Shorthand flag for key substitution
  * U+E2FF	Wide character placeholder
+ * U+E000	Different styles
  */
 using System;
 using System.Collections.Generic;

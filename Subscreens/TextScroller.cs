@@ -30,7 +30,7 @@ namespace Noxico
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadEffective(88), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
+					host.Write(' ' + text[i].PadEffective(87), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
 				}
 				Subscreens.Redraw = true;
 			}
@@ -73,7 +73,7 @@ namespace Noxico
 				{
 					host.ScrollDown(2, 25, 6, 94, UIColors.DarkBackground);
 					var i = scroll;
-					host.Write(new string(' ', 88), UIColors.RegularText, UIColors.DarkBackground, 2, 6);
+					host.Write(new string(' ', 87), UIColors.RegularText, UIColors.DarkBackground, 2, 6);
 					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 7);
 					Subscreens.Redraw = true;
 				}
@@ -90,7 +90,7 @@ namespace Noxico
 				{
 					host.ScrollUp(2, 25, 6, 94, UIColors.DarkBackground);
 					var i = scroll + 23;
-					host.Write(new string(' ', 88), UIColors.RegularText, UIColors.DarkBackground, 25, 6);
+					host.Write(new string(' ', 87), UIColors.RegularText, UIColors.DarkBackground, 25, 6);
 					if (i < text.Length)
 						host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 25, 7);
 					Subscreens.Redraw = true;
@@ -101,7 +101,7 @@ namespace Noxico
 		public static void Plain(string message, string header = "", bool wrap = true)
 		{
 			if (wrap)
-				text = (header + '\n' + message.SmartQuote().Wordwrap(68)).Split('\n');
+				text = (header + '\n' + message.SmartQuote().Wordwrap(87)).Split('\n');
 			else
 				text = (header + '\n' + message).SmartQuote().Split('\n');
 			NoxicoGame.Subscreen = Handler;
@@ -148,6 +148,7 @@ namespace Noxico
 					NoxicoGame.Identifications.Add(item.ID);
 				//text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
 			}
+			/*
 			if (player.Path("books/book_" + bookNum) == null)
 			{
 				if (!player.HasToken("books"))
@@ -155,7 +156,7 @@ namespace Noxico
 				var bookToken = player.GetToken("books").AddToken("book_" + bookNum);
 				bookToken.Text = header;
 			}
-
+			*/
 			Plain(text, header);
 		}
 	}
