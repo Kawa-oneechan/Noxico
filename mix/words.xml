@@ -301,6 +301,7 @@ Would you like an infodump on the way out?]]>
 		<!-- Hyphenation rules are executed in order of appearance. -->
 		<rule cutoff="1">[aeiou]st</rule>
 		<rule cutoff="-1">[^aeiou][aeiou][^aeiou][aeiou][\W\.]</rule>
+		<rule cutoff="-1">cker</rule>
 		<rule cutoff="2">ck[aeiou]</rule>
 		<rule cutoff="1">yph[aeiou]</rule>
 		<rule cutoff="2">[aeiou][nrx][aeiou]</rule>

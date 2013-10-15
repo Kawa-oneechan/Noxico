@@ -409,6 +409,8 @@ namespace Noxico
 					spaceLeft = length;
 					continue;
 				}
+				//else if (string.IsNullOrWhiteSpace(word))
+				//	continue;
 
 				if (word[word.Length - 1] == '\u00AD')
 				{
@@ -420,7 +422,7 @@ namespace Noxico
 
 				line.Append(word);
 				spaceLeft -= word.Length;
-				if (next != null && spaceLeft - next.TrimEnd().Length <= 0)
+				if (word.EndsWith("\n") || (next != null && spaceLeft - next.TrimEnd().Length <= 0))
 				{
 					if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
 						lines.Add(line.ToString().Trim());
@@ -613,6 +615,57 @@ namespace Noxico
 		public static string ToNoxML(this XmlElement element)
 		{
 			var r = "";
+			foreach (var p in element.SelectNodes("p").OfType<XmlElement>())
+			{
+				if (p.GetAttribute("style") == "hand")
+				{
+					foreach (var n in p.ChildNodes)
+					{
+						if (n is XmlText)
+						{
+							var original = ((XmlText)n).Value;
+							var styled = new StringBuilder(original.Length);
+							foreach (var c in original)
+							{
+								if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+									styled.Append((char)((c - '@') + 0xE060));
+								else
+									styled.Append(c);
+							}
+							((XmlText)n).Value = styled.ToString();
+						}
+					}
+				}
+				else if (p.HasAttribute("style"))
+				{
+					var style = p.GetAttribute("style");
+					var styleOffset = 0;
+					if (style == "daedric")
+						styleOffset = 0xE000;
+					else if (style == "alternian")
+						styleOffset = 0xE020;
+					if (style == "keen")
+						styleOffset = 0xE040;
+					if (styleOffset == 0)
+						continue;
+					foreach (var n in p.ChildNodes)
+					{
+						if (n is XmlText)
+						{
+							var original = ((XmlText)n).Value;
+							var styled = new StringBuilder(original.Length);
+							foreach (var c in original)
+							{
+								if ((c >= 'A' && c <= 'Z'))
+									styled.Append((char)((c - '@') + styleOffset));
+								else
+									styled.Append(c);
+							}
+							((XmlText)n).Value = styled.ToString();
+						}
+					}
+				}
+			}
 			foreach (var n in element.ChildNodes)
 			{
 				if (n is XmlText)
