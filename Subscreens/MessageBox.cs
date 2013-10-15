@@ -64,12 +64,14 @@ namespace Noxico
 					txt = new UITextBox((string)Answer) { Left = 17, Top = top + lines + 1, Width = 65, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
+				var keys = string.Empty;
 				if (type == BoxType.Notice || type == BoxType.Input)
-					key = new UILabel("  \u2026  ") { Top = top + height - 1, Left = 76 };
+					keys = "  \u2026  ";
 				else if (type == BoxType.Question)
-					key = new UILabel(" " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ") { Top = top + height - 1, Left = 76 };
+					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
-					key = new UILabel(" \u2191/\u2193 ") { Top = top + height - 1, Left = 76 };
+					keys = " \u2191/\u2193 ";
+				key = new UILabel(keys) { Top = top + height - 1, Left = 82 - keys.Length() };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;
