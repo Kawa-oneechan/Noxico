@@ -121,7 +121,7 @@ namespace Noxico
 		protected BiomeData biome;
 		protected Building[,] plots;
 		protected static XmlDocument xDoc;
-		protected bool allowCaveFloor;
+		protected bool allowCaveFloor, includeWater;
 
 		public void Create(BiomeData biome, string templateSet)
 		{
@@ -189,8 +189,10 @@ namespace Noxico
 					if (plots[col, row].BaseID == null)
 					{
 						//Can clutter this up!
-						Board.AddClutter(col * 10, row * 12, (col * 10) + 10, (row * 12) + 12 + row);
-						safeZones.Add(new Rectangle() { Left = col * 10, Top = row * 12, Right = (col * 10) + 10, Bottom = (row * 12) + 12 + row });
+						if (Random.Flip())
+							Board.AddClutter(col * 10, row * 12, (col * 10) + 10, (row * 12) + 12 + row);
+						else
+							safeZones.Add(new Rectangle() { Left = col * 10, Top = row * 12, Right = (col * 10) + 10, Bottom = (row * 12) + 12 + row });
 						continue;
 					}
 
@@ -480,7 +482,7 @@ namespace Noxico
 				map[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
 
-			if (safeZones.Count > 0)
+			if (safeZones.Count > 0 && includeWater)
 				Board.AddWater(safeZones);
 		}
 
@@ -516,6 +518,7 @@ namespace Noxico
 				for (var col = 0; col < 80; col++)
 					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
 
+			includeWater = false;
 			base.ToTilemap(ref map);
 
 			//Connect plots
@@ -679,7 +682,13 @@ namespace Noxico
 		{
 			base.Create(biome, "town");
 		}
-		
+
+		public override void ToTilemap(ref Tile[,] map)
+		{
+			includeWater = true;
+			base.ToTilemap(ref map);
+		}
+
 		public override void ToSectorMap(Dictionary<string, Rectangle> sectors)
 		{
 			for (var row = 0; row < 2; row++)
