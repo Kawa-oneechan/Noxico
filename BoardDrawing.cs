@@ -472,7 +472,7 @@ namespace Noxico
 			{
 				for (var x = 0; x < 80; x++)
 				{
-					if (bitmap[y, x] < threshold)
+					if (bitmap[y, x] < threshold || Tilemap[x, y].SolidToWalker)
 						continue;
 					Tilemap[x, y] = new Tile()
 					{
