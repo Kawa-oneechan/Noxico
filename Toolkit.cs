@@ -353,7 +353,6 @@ namespace Noxico
 				}
 			}
 
-			//TODO: make these rules part of words.xml?
 			for (var i = 0; i < words.Count; i++)
 			{
 				var word = words[i];
