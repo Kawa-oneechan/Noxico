@@ -96,9 +96,10 @@ namespace Noxico
 						containerItems.Add(find);
 
 						var item = find;
-						var itemString = item.ToString(carriedItem);
-						if (itemString.Length > 33)
-							itemString = item.ToString(carriedItem, false, false);
+						//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
+						var itemString = item.ToString(carriedItem, false, false);
+						//if (itemString.Length > 33)
+						//	itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
@@ -147,9 +148,10 @@ namespace Noxico
 						playerItems.Add(find);
 
 						var item = find;
-						var itemString = item.ToString(carriedItem);
-						if (itemString.Length > 33)
-							itemString = item.ToString(carriedItem, false, false);
+						//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
+						var itemString = item.ToString(carriedItem, false, false);
+						//if (itemString.Length > 33)
+						//	itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);

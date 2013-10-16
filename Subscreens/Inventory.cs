@@ -173,9 +173,10 @@ namespace Noxico
 					if (carried.HasToken("cursed") && !carried.GetToken("cursed").HasToken("hidden") && carried.GetToken("cursed").HasToken("known"))
 						sigils.Add("cursed");
 #endif
-					var itemString = item.ToString(carried);
-					if (itemString.Length > 40)
-						itemString = item.ToString(carried, false, false);
+					//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
+					var itemString = item.ToString(carried, false, false);
+					//if (itemString.Length > 40)
+					//	itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);

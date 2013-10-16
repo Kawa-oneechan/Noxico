@@ -263,7 +263,6 @@ item: cheap_pos, cheap piece of shit
 	rareweapon
 
 item: catears, cat ear headband
-	plural
 	equipable
 		hat
 	weight
@@ -1527,6 +1526,7 @@ item: strapless_leather_bra, [color ]leather bra
 	sexy
 
 item: kinky_panties, kinky [color ]panties
+	_a: a pair of
 	plural
 	equipable
 		female
