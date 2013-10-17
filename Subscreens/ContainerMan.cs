@@ -104,9 +104,9 @@ namespace Noxico
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
 						if (mode == ContainerMode.Vendor && carriedItem.HasToken("equipped"))
-							itemString = itemString.Remove(32) + "W";
+							itemString = itemString.Remove(32) + i18n.GetString("sigil_short_worn");
 						if (carriedItem.Path("cursed/known") != null)
-							itemString = itemString.Remove(32) + "C";
+							itemString = itemString.Remove(32) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						containerTexts.Add(itemString);
 					}
 					height = containerItems.Count;
@@ -126,10 +126,10 @@ namespace Noxico
 				playerList = null;
 				var playerTexts = new List<string>();
 
-				playerWindow = new UIWindow("Your inventory") { Left = 42, Top = 1, Width = 37, Height = 3 };
+				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 42, Top = 1, Width = 37, Height = 3 };
 				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight };
 				UIManager.Elements.Add(playerWindow);
-				UIManager.Elements.Add(new UILabel("You are carrying nothing.") { Left = 44, Top = 2, Width = 36, Height = 1 });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = 44, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(playerList);
 
 				if (player.Character.GetToken("items").Tokens.Count == 0)
@@ -156,9 +156,9 @@ namespace Noxico
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
 						if (carriedItem.HasToken("equipped"))
-							itemString = itemString.Remove(32) + "W";
+							itemString = itemString.Remove(32) + i18n.GetString("sigil_short_worn");
 						if (carriedItem.Path("cursed/known") != null)
-							itemString = itemString.Remove(32) + "C";
+							itemString = itemString.Remove(32) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						playerTexts.Add(itemString); 
 					}
 					var height2 = playerItems.Count;
@@ -179,7 +179,7 @@ namespace Noxico
 				}
 
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				UIManager.Elements.Add(new UILabel(" Press " + Toolkit.TranslateKey(KeyBinding.Accept, true) + " to " + (mode == ContainerMode.Vendor ? "buy or sell" : "store or retrieve") + " the highlighted item.") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6 };
 				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4 };
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
@@ -187,7 +187,7 @@ namespace Noxico
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
 				if (mode == ContainerMode.Vendor)
-					capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
+					capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 
 				if (containerList != null)
 				{
@@ -204,10 +204,10 @@ namespace Noxico
 						if (mode == ContainerMode.Vendor && i.HasToken("price"))
 						{
 							price = i.GetToken("price").Value;
-							desc += "\nIt costs " + price + " gold.";
+							desc += "\n" + i18n.Format("inventory_itcosts", price);
 						}
 						if (mode == ContainerMode.Vendor && i.HasToken("equipable") && t.HasToken("equipped"))
-							desc += "\n" +vendorChar.Name.ToString() + " has this item equipped.";
+							desc += "\n" + i18n.Format("inventory_vendorusesthis", vendorChar.Name.ToString());
 						description.Text = Toolkit.Wordwrap(desc, description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
@@ -243,7 +243,7 @@ namespace Noxico
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (mode == ContainerMode.Vendor)
-								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
+								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							containerList.Change(s, e);
 							UIManager.Draw();
 						}
@@ -268,12 +268,12 @@ namespace Noxico
 						if (mode == ContainerMode.Vendor && i.HasToken("price"))
 						{
 							price = i.GetToken("price").Value;
-							desc += "\nIt costs " + price + " gold.";
+							desc += "\n" + i18n.Format("inventory_itcosts", price);
 						}
 						if (t.Path("cursed/path") != null)
-							desc += "\nThis item is cursed and can't be removed.";
+							desc += "\nThis item is cursed and can't be removed."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						else if (i.HasToken("equipable") && t.HasToken("equipped"))
-							desc += "\nThis item is currently equipped.";
+							desc += "\n" + i18n.GetString("inventory_youusethis");
 						description.Text = Toolkit.Wordwrap(desc, description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
@@ -309,7 +309,7 @@ namespace Noxico
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (mode == ContainerMode.Vendor)
-								capacity.Text = vendorChar.Name.ToString() + ": " + vendorChar.GetToken("money").Value + " -- You: " + player.Character.GetToken("money").Value;
+								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							playerList.Change(s, e);
 							UIManager.Draw();
 						}
@@ -382,12 +382,12 @@ namespace Noxico
 			{
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
-				return mode == ContainerMode.Vendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this.";
+				return mode == ContainerMode.Vendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 			}
 			if (token.HasToken("equipped"))
 			{
 				if (mode == ContainerMode.Vendor)
-					return vendorChar.Name.ToString() + " is using this.";
+					return i18n.Format("inventory_vendorusesthis", vendorChar.Name.ToString());
 				else
 					token.RemoveToken("equipped");
 			}
@@ -397,7 +397,7 @@ namespace Noxico
 				var vMoney = vendorChar.GetToken("money");
 				//TODO: add charisma and relationship bonuses -- look good for free food, or get a friends discount.
 				if (pMoney.Value - price < 0)
-					return "You can't afford this item.";
+					return i18n.GetString("inventory_youcantaffordthis");
 				vMoney.Value += price;
 				pMoney.Value -= price;
 			}
@@ -417,11 +417,11 @@ namespace Noxico
 			{
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
-				return "It's cursed! You can't unequip it.";
+				return "It's cursed! You can't unequip it."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 			}
 			if (token.HasToken("equipped"))
 			{
-				return "You're using this. Unequip it first.";
+				return i18n.GetString("inventory_youareusingthis");
 			}
 			if (mode == ContainerMode.Vendor && token.HasToken("owner") && token.GetToken("owner").Text == vendorChar.Name.ToID())
 			{
@@ -433,7 +433,7 @@ namespace Noxico
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
 				if (vMoney.Value - price < 0)
-					return vendorChar.Name.ToString() + " can't afford this item.";
+					return i18n.Format("inventory_vendorcantaffordthis", vendorChar.Name.ToString());
 				//TODO: add charisma and relationship bonuses -- I'll throw in another tenner cos you're awesome.
 				//notice that the bonus is determined AFTER the budget check so a vendor won't bug out on that.
 				pMoney.Value += price;

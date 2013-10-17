@@ -190,6 +190,7 @@ namespace Noxico
 		public void UpdateTitle()
 		{
 			//TODO: clean up
+			//TRANSLATE the lot of this. Could take rewrite cleanup to handle.
 			var g = PercievedGender.ToString().ToLowerInvariant();
 			Title = GetToken("terms").GetToken("generic").Text;
 			if (HasToken("prefixes"))
@@ -218,19 +219,19 @@ namespace Noxico
 
 		public string HeSheIt(bool lower = false)
 		{
-			var rets = new[] { string.Empty, "He", "She", "Shi", "It" };
+			var rets = i18n.GetArray("hesheshiit");
 			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
 		public string HisHerIts(bool lower = false)
 		{
-			var rets = new[] { string.Empty, "His", "Her", "Hir", "Its" };
+			var rets = i18n.GetArray("hisherhirits");
 			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
 		public string HimHerIt(bool lower = false)
 		{
-			var rets = new[] { string.Empty, "Him", "Her", "Hir", "It" };
+			var rets = i18n.GetArray("himherhirit");
 			return lower ? rets[(int)PercievedGender].ToLowerInvariant() : rets[(int)PercievedGender];
 		}
 
@@ -694,15 +695,15 @@ namespace Noxico
 		private static void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
 		{
 			var totalRows = Math.Max(col1.Count, col2.Count);
-			print(header1.PadEffective(pad) + header2 + "\n");
+			print(i18n.GetString(header1).PadEffective(pad) + i18n.GetString(header2) + "\n");
 			for (var i = 0; i < totalRows; i++)
 			{
 				if (i < col1.Count)
-					print(("| " + col1[i]).PadEffective(pad));
+					print("| " + i18n.GetString(col1[i], false).PadEffective(pad));
 				else
 					print("".PadEffective(pad));
 				if (i < col2.Count)
-					print("| " + col2[i]);
+					print("| " + i18n.GetString(col2[i], false));
 				print("\n");
 			}
 			print("\n");
@@ -730,7 +731,7 @@ namespace Noxico
 				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
 				if (foundItem == null)
 				{
-					print("Can't handle " + carriedItem.Name + ".\n");
+					print("Can't handle " + carriedItem.Name + ".\n"); //DO NOT TRANSLATE
 					continue;
 				}
 
@@ -865,7 +866,7 @@ namespace Noxico
 
 		private void LookAtBodyFace(Entity pa, Action<string> print)
 		{
-			print("General\n-------\n");
+			print(i18n.GetString("lookat_header_general"));
 
 			var bodyThings = new List<string>();
 			var headThings = new List<string>();
@@ -881,23 +882,15 @@ namespace Noxico
 			if (this.HasToken("snaketail"))
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
 
-			bodyThings.Add(Color.NameColor(this.Path("skin/color").Text) + " " + this.Path("skin/type").Text);
+			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), i18n.GetString(this.Path("skin/type").Text, false)));
 			if (this.Path("skin/pattern") != null)
-				bodyThings.Add(Color.NameColor(this.Path("skin/pattern/color").Text) + " " + this.Path("skin/pattern").Text);
+				bodyThings.Add(i18n.Format("x_pattern", Color.Translate(Color.NameColor(this.Path("skin/pattern/color").Text)), i18n.GetString(this.Path("skin/pattern").Text, false)));
 
 			if (this.HasToken("legs"))
 			{
 				var lt = this.GetToken("legs").Text;
 				var legs = string.IsNullOrWhiteSpace(lt) ? "human" : lt;
-				if (legs == "genbeast")
-					legs = "digitigrade";
-				else if (legs == "stiletto")
-					legs = "stiletto-heeled";
-				else if (legs == "claws")
-					legs = "clawed";
-				else if (legs == "insect")
-					legs = "downy insectoid";
-				bodyThings.Add(legs + " legs");
+				bodyThings.Add(i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
@@ -906,9 +899,9 @@ namespace Noxico
 
 			if (this.HasToken("wings"))
 			{
-				var wt = this.GetToken("wings").Text + " wings";
+				var wt = i18n.Format("x_wings", i18n.GetString("wingtype_" + this.GetToken("wings").Text));
 				if (this.Path("wings/small") != null)
-					wt = "small " + wt;
+					wt = i18n.Format("small_wings", wt);
 				bodyThings.Add(wt);
 			}
 
@@ -916,30 +909,28 @@ namespace Noxico
 			{
 				var tt = this.GetToken("tail").Text;
 				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
-				if (tail == "genbeast")
-					tail = "beastly";
-				if (tail == "demon")
-					tail = "spaded demon";
 				if (tail == "bunny")
-					bodyThings.Add("bunny poofball");
+					bodyThings.Add(i18n.GetString("tailtype_bunny"));
 				else if (tail == "tentacle")
 				{
 					var tentail = this.Path("tail/tip");
 					if (tentail == null || tentail.Text == "tapered")
-						bodyThings.Add("tapered tail tentacle");
+						bodyThings.Add(i18n.GetString("tailtype_tapered_tentacle"));
 					else if (tentail.Text == "penis")
-						bodyThings.Add("cock-headed tail tentacle");
+						bodyThings.Add(i18n.GetString("tailtype_cocktacle"));
 					else
-						bodyThings.Add("tail tentacle");
+						bodyThings.Add(i18n.GetString("tailtype_tentacle"));
 				}
 				else
-					bodyThings.Add(tail + " tail");
+					bodyThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype" + tail)));
 			}
 
 			//tone
 
 
 			var faceType = this.GetToken("face").Text;
+			if (new[] { "normal", "genbeast", "cow", "reptile" }.Contains(faceType))
+				faceType = i18n.GetString("facetype_" + faceType);
 			if (faceType == "normal")
 				faceType = "human";
 			else if (faceType == "genbeast")
@@ -949,18 +940,18 @@ namespace Noxico
 			else if (faceType == "reptile")
 				faceType = "reptilian";
 			else
-				faceType += "like";
-			headThings.Add(faceType);
+				faceType = i18n.Format("face_xlike", faceType);
+			headThings.Add(i18n.Format("x_face", faceType));
 
 			if (this.HasToken("eyes"))
 			{
-				var eyes = Color.NameColor(this.GetToken("eyes").Text) + " eyes";
+				var eyes = i18n.Format("color_eyes", Color.Translate(Color.NameColor(this.GetToken("eyes").Text)));
 				var eyesHidden = false;
 				if (goggles != null && !goggles.CanSeeThrough())
 					eyesHidden = true;
 				if (this.Path("eyes/glow") != null)
 				{
-					eyes = "glowing " + eyes;
+					eyes = i18n.Format("glowing_x", eyes);
 					eyesHidden = false;
 				}
 				if (!eyesHidden)
@@ -971,21 +962,14 @@ namespace Noxico
 			{
 				var teeth = this.Path("teeth");
 				if (teeth != null && !string.IsNullOrWhiteSpace(teeth.Text) && teeth.Text != "normal")
-				{
-					var teethStyle = "";
-					if (teeth.Text == "fangs")
-						teethStyle = "fangs";
-					else if (teeth.Text == "sharp")
-						teethStyle = "sharp teeth";
-					else if (teeth.Text == "osmond")
-						teethStyle = "fearsome teeth";
-					headThings.Add(teethStyle);
-				}
+					headThings.Add(i18n.GetString("teethtype_" + teeth.Text));
 				var tongue = this.Path("tongue");
+				//TRANSLATE
 				if (tongue != null && !string.IsNullOrWhiteSpace(tongue.Text) && tongue.Text != "normal")
 					headThings.Add(tongue.Text + " tongue");
 			}
 
+			//TRANSLATE - finish this block
 			var ears = "human";
 			if (this.HasToken("ears"))
 				ears = this.GetToken("ears").Text;
@@ -995,7 +979,7 @@ namespace Noxico
 			{
 				if (ears == "genbeast")
 					ears = "animal";
-				headThings.Add(ears + " ears");
+				headThings.Add(i18n.Format("x_ears",  ears));
 			}
 
 			if (this.HasToken("monoceros"))
@@ -1005,11 +989,12 @@ namespace Noxico
 
 
 			//Columnize it!
-			Columnize(print, 34, bodyThings, headThings, "Body", "Head");
+			Columnize(print, 34, bodyThings, headThings, "lookat_column_body", "lookat_column_head");
 		}
 
 		private void LookAtHairHips(Entity pa, Action<string> print)
 		{
+			//TRANSLATE
 			var hairThings = new List<string>();
 			var hipThings = new List<string>();
 			if (this.HasToken("hair") && this.Path("hair/length").Value > 0)
@@ -1037,12 +1022,13 @@ namespace Noxico
 			{
 				//hipThings.Add("quadruped");
 			}
-			Columnize(print, 34, hairThings, hipThings, "Hair", "Hips and Waist");
+			Columnize(print, 34, hairThings, hipThings, "lookat_column_hair", "lookat_column_hips");
 		}
 
 		private void LookAtSexual(Entity pa, Action<string> print, bool breastsVisible, bool crotchVisible)
 		{
-			print("Sexual characteristics\n----------------------\n");
+			print(i18n.GetString("lookat_header_sexual"));
+			//TRANSLATE
 			var cocks = new List<Token>(); var vaginas = new List<Token>(); var breastRows = new List<Token>();
 			Token nuts = null;
 			var ballCount = 0;
@@ -2295,7 +2281,7 @@ namespace Noxico
 					};
 					egg.Take(this);
 					if (boardChar is Player)
-						NoxicoGame.AddMessage("You have laid an egg.");
+						NoxicoGame.AddMessage(i18n.GetString("youareachicken"));
 					return false;
 				}
 			}
@@ -2713,6 +2699,8 @@ namespace Noxico
 
 		public Func<string, string> GetSpeechFilter(Func<string, string> original = null)
 		{
+			if (i18n.GetString("meta_nospeechfilters")[0] == '[')
+				return original;
 			if (original == null)
 				original = new Func<string, string>(x => x);
 			if (this.GetToken("face").Text == "reptile")

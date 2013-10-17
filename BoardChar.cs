@@ -201,6 +201,7 @@ namespace Noxico
 						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
 						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
 						{
+							//TRANSLATE - needs reworking to translate better.
 							NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 							if (!this.Character.HasToken("oglestim"))
 								this.Character.AddToken("oglestim");
@@ -214,6 +215,7 @@ namespace Noxico
 
 		public string Ogle(Character otherChar)
 		{
+			//TRANSLATE - all reactions should be in words.xml, and more should be added.
 			if (this.Character.HasToken("sleeping"))
 				return null;
 			var stim = this.Character.GetStat(Stat.Stimulation);
@@ -356,6 +358,7 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.Health += 2;
+					//TRANSLATE
 					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetKnownName(false, false, true, true) + " gets") + " back up.");
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
@@ -395,7 +398,7 @@ namespace Noxico
 			Character.UpdatePregnancy();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
-				if (Hurt(10, "burning to death", null))
+				if (Hurt(10, "burning to death", null)) //TRANSLATE
 					return;
 
 			//Pillowshout added this.
@@ -483,9 +486,9 @@ namespace Noxico
 								if (called > 0)
 								{
 									if (!Character.HasToken("beast"))
-										NoxicoGame.AddMessage((Character.GetKnownName(false, false, true, true) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
+										NoxicoGame.AddMessage((Character.GetKnownName(false, false, true, true) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor()); //TRANSLATE
 									else
-										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor());
+										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor()); //TRANSLATE
 									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
 									Energy -= 2000;
 								}
@@ -762,8 +765,8 @@ namespace Noxico
 			var baseDamage = 0.0f;
 			var dodged = false;
 			var skill = "unarmed_combat";
-			var verb = "strikes";
-			var obituary = "died from being struck down";
+			var verb = "strikes"; //TRANSLATE
+			var obituary = "died from being struck down"; //TRANSLATE
 			var attackerName = this.Character.GetKnownName(false, false, true);
 			var attackerFullName = this.Character.GetKnownName(true, true, true);
 			var targetName = target.Character.GetKnownName(false, false, true);
@@ -817,16 +820,18 @@ namespace Noxico
 
 			if (dodged)
 			{
+				//TRANSLATE - needs reworking for better translations
 				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodge " + (target is Player ? attackerName + "'s" : "your") + " attack.", target.GetEffectiveColor());
 				return false;
 			}
 
 			if (damage > 0)
 			{
+				//TRANSLATE - needs reworking for better translations
 				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".", target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true))
+			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true)) //TRANSLATE - may need reworking
 			{
 				//Gain a bonus from killing the target?
 				return true;
@@ -889,6 +894,7 @@ namespace Noxico
 
 			ret = factors[attackType, skinType];
 			//TODO: do something like the above for any armor or shield being carried by the defender
+			//TODO: involve +N modifiers on both weapon and armor/shield
 
 			return ret;
 		}
@@ -903,6 +909,7 @@ namespace Noxico
 				{
 					if (!Character.HasToken("helpless"))
 					{
+						//TRANSLATE - will need reworking.
 						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetKnownName(false, false, true, true) + " is") + " helpless!", Color.FromName(this.Character.Path("skin/color")));
 						Character.Tokens.Add(new Token() { Name = "helpless" } );
 						return false;
@@ -1193,8 +1200,9 @@ namespace Noxico
 				if (target is Player)
 				{
 					var hit = target as Player;
+					//TRANSLATE - will need reworking
 					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.GetKnownName(false, false, true, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false);
+					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false); //TRANSLATE
 					return;
 				}
 			}

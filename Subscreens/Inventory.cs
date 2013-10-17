@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Noxico
@@ -39,7 +40,7 @@ namespace Noxico
 				}
 			if (!token.HasToken("equipped"))
 			{
-				NoxicoGame.AddMessage("Dropped " + chosen.ToString(token, true, true) + ".");
+				NoxicoGame.AddMessage(i18n.Format("dropped_x", chosen.ToString(token, true, true)));
 				chosen.Drop(boardchar, token);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
@@ -64,7 +65,7 @@ namespace Noxico
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{
-				MessageBox.Notice("You are carrying nothing.", true);
+				MessageBox.Notice(i18n.GetString("inventory_youhavenothing"), true);
 				Subscreens.PreviousScreen.Clear();
 				Subscreens.FirstDraw = true;
 				return;
@@ -120,23 +121,17 @@ namespace Noxico
 						var eq = item.GetToken("equipable");
 						if (item.HasToken("weapon"))
 							sigils.Add("weapon");
-						//if (eq.HasToken("head"))
-						//	sigils.Add("head");
 						if (eq.HasToken("hat") && eq.HasToken("goggles") && eq.HasToken("mask"))
-							sigils.Add("full mask");
+							sigils.Add("fullmask");
 						else
 						{
-							if (eq.HasToken("hat"))
-								sigils.Add("hat");
-							if (eq.HasToken("goggles"))
-								sigils.Add("goggles");
-							if (eq.HasToken("mask"))
-								sigils.Add("mask");
+							foreach (var x in new[] { "hat", "goggles", "mask" })
+								if (eq.HasToken(x))
+									sigils.Add(x);
 						}
-						if (eq.HasToken("neck"))
-							sigils.Add("neck");
-						if (eq.HasToken("ring"))
-							sigils.Add("ring");
+						foreach (var x in new[] { "neck", "ring" })
+							if (eq.HasToken(x))
+								sigils.Add(x);
 						if (eq.HasToken("underpants") || eq.HasToken("undershirt"))
 							sigils.Add("undies");
 						if (eq.HasToken("shirt") && !eq.HasToken("pants"))
@@ -145,14 +140,9 @@ namespace Noxico
 							sigils.Add("pants");
 						if (eq.HasToken("shirt") && eq.HasToken("pants"))
 							sigils.Add("suit");
-						if (eq.HasToken("shoes"))
-							sigils.Add("shoes");
-						if (eq.HasToken("jacket"))
-							sigils.Add("jacket");
-						if (eq.HasToken("cloak"))
-							sigils.Add("cloak");
-						if (eq.HasToken("socks"))
-							sigils.Add("socks");
+						foreach (var x in new[] { "shoes", "jacket", "cloak", "socks" })
+							if (eq.HasToken(x))
+								sigils.Add(x);
 						if (carried.HasToken("equipped"))
 							sigils.Add("equipped");
 					}
@@ -180,7 +170,7 @@ namespace Noxico
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
-					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils));
+					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils.Select(s => i18n.GetString("sigil_" + s))));
 				}
 				var height = inventoryItems.Count;
 				if (height > 13)
@@ -189,7 +179,7 @@ namespace Noxico
 					selection = inventoryItems.Count - 1;
 
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Background = UIColors.StatusBackground });
-				UIManager.Elements.Add(new UIWindow("Your inventory") { Left = 1, Top = 1, Width = 78, Height = 2 + height });
+				UIManager.Elements.Add(new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height });
 				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
 				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4 };
@@ -207,23 +197,23 @@ namespace Noxico
 					d = Toolkit.Wordwrap(d, itemDesc.Width);
 
 					if (i.ID == "book")
-						r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to read.";
+						r = i18n.GetString("inventory_pressenter_book");
 					else if (i.HasToken("equipable"))
 					{
 						if (t.HasToken("equipped"))
 						{
 							if (t.Path("cursed/known") != null)
-								r = "Cannot unequip.";
+								r = i18n.GetString("inventory_cannotunequip");
 							else
-								r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to unequip.";
+								r = i18n.GetString("inventory_pressenter_unequip");
 						}
 						else
-							r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to equip.";
+							r = i18n.GetString("inventory_pressenter_equip");
 					}
 					else if (i.HasToken("quest"))
-						r = "This is a quest key item.";
+						r = i18n.GetString("inventory_questitem");
 					else
-						r = "Press " + Toolkit.TranslateKey(KeyBinding.Activate, true) + " to try and use.";
+						r = i18n.GetString("inventory_pressenter_use");
 
 					howTo.Text = (' ' + r).PadEffective(80);
 					itemDesc.Text = d;
@@ -242,7 +232,7 @@ namespace Noxico
 				UIManager.Elements.Add(sigilView);
 				UIManager.Elements.Add(itemDesc);
 				UIManager.Elements.Add(capacity);
-				UIManager.Elements.Add(new UIButton("Drop", (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 70, Top = 21 });
+				UIManager.Elements.Add(new UIButton(i18n.GetString("inventory_drop"), (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length(), Top = 21 });
 				UIManager.Highlight = itemList;
 				itemList.Index = selection;
 
