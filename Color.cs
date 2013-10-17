@@ -373,5 +373,20 @@ namespace Noxico
 				return Color.FromName(color.Text);
 			return Color.FromName(color.Name);
 		}
+
+		public static string Translate(string color)
+		{
+			var translated = i18n.GetString("color_" + color.Replace(" ", "").ToLowerInvariant());
+			if (translated[0] == '[')
+				return color; //Do NOT return "[color_red]"!
+			return translated;
+		}
+
+		public static string Translate(Color color)
+		{
+			if (color.IsNamedColor)
+				return Translate(color.Name);
+			return string.Empty;
+		}
 	}
 }

@@ -114,11 +114,11 @@ namespace Noxico
 				health = "<cYellow>" + health + "<cSilver>";
 
 			var sb = new StringBuilder();
-			sb.AppendLine("Name                " + player.Name);
-			sb.AppendLine("Health              " + health);
-			sb.AppendLine("Money               " + player.GetToken("money").Value.ToString("C"));
-			sb.AppendLine("Play time           " + nox.Player.PlayingTime.ToString());
-			sb.AppendLine("World time          " + NoxicoGame.InGameTime.ToString());
+			sb.AppendLine(i18n.GetString("pause_name").PadEffective(20) + player.Name);
+			sb.AppendLine(i18n.GetString("pause_health").PadEffective(20) + health);
+			sb.AppendLine(i18n.GetString("pause_money").PadEffective(20) + player.GetToken("money").Value.ToString("C"));
+			sb.AppendLine(i18n.GetString("pause_playtime").PadEffective(20) + nox.Player.PlayingTime.ToString());
+			sb.AppendLine(i18n.GetString("pause_worldtime").PadEffective(20) + NoxicoGame.InGameTime.ToString());
 
 			var statNames = Enum.GetNames(typeof(Stat));
 			player.RecalculateStatBonuses();
@@ -138,21 +138,6 @@ namespace Noxico
 				sb.AppendLine(stat.PadEffective(20) + total + bonus);
 			}
 
-			sb.Append("Modifiers".PadEffective(20));
-			var haveMods = false;
-			if (player.HasToken("haste"))
-			{
-				haveMods = true;
-				sb.Append("Haste ");
-			}
-			if (player.HasToken("slow"))
-			{
-				haveMods = true;
-				sb.Append("Slow  ");
-			}
-			if (!haveMods)
-				sb.Append("<cGray>None<cSilver>");
-			sb.AppendLine();
 
 			var paragadeLength = 18;
 			var renegadeLight = (int)Math.Ceiling((player.GetToken("renegade").Value / 100) * paragadeLength);
@@ -170,14 +155,19 @@ namespace Noxico
 			foreach (var skill in player.GetToken("skills").Tokens)
 			{
 				if ((int)skill.Value > 0)
-					sb.AppendLine(skill.Name.Replace('_', ' ').Titlecase().PadEffective(30) + ((int)skill.Value).ToString());
+				{
+					var skillName = i18n.GetString("skill_" + skill.Name);
+					if (skillName[0] == '[') //Ignore missing skill translations for now.
+						skillName = skillName.Substring(1, skillName.Length - 2);
+					sb.AppendLine(skillName.Replace('_', ' ').Titlecase().PadEffective(30) + ((int)skill.Value).ToString());
+				}
 			}
 			pages[i18n.GetString("pause_skills")] = sb.ToString();
 
 			sb.Clear();
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
-			sb.AppendLine("     - Move");
+			sb.AppendLine("     - " + i18n.GetString("pause_keymove"));
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(8) + " - " + i18n.GetString("pause_keyinteract"));
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(8) + " - " + i18n.GetString("pause_keyactivate"));
 			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(8) + " - " + i18n.GetString("pause_keyrest"));

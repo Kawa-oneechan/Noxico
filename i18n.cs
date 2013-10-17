@@ -64,12 +64,14 @@ namespace Noxico
 			return input;
 		}
 
-		public static string GetString(string key)
+		public static string GetString(string key, bool brackets = true)
 		{
 			Initialize();
 			if (words.ContainsKey(key))
 				return Entitize(words[key]);
-			return '[' + key + ']';
+			if (brackets)
+				return '[' + key + ']';
+			return key;
 		}
 
 		public static string Format(string key, params object[] arg)

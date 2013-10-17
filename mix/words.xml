@@ -123,6 +123,13 @@
 		<word id="pause_memstats">Memory stats</word>
 		<word id="pause_opensettings">Open settings</word>
 		<word id="pause_saveandexit">Save and exit</word>
+		<word id="pause_name">Name</word>
+		<word id="pause_health">Health</word>
+		<word id="pause_money">Money</word>
+		<word id="pause_playtime">Play time</word>
+		<word id="pause_worldtime">World time</word>
+		<word id="pause_"></word>
+		<word id="pause_keymove">Move</word>
 		<word id="pause_keyinteract">Interact with something</word>
 		<word id="pause_keyactivate">Use something</word>
 		<word id="pause_keyrest">Rest</word>
@@ -260,6 +267,8 @@ Somehow, you feel like your child is perfectly safe with her.]]>
 		<word id="you_bearNthchild">You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.</word>
 		<word id="x_bearschild">{0} has given birth to little {1}.</word>
 		<word id="congrats_mom">Congratulations, mom</word>
+		<word id="dropped_x">Dropped {0}.</word>
+		<word id="youareachicken">You have laid an egg.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
@@ -270,6 +279,7 @@ Somehow, you feel like your child is perfectly safe with her.]]>
 		<word id="death_drowned">drowned</word>
 	</category>
 	<category name="Misc">
+		<word id="msgbox_question">Question</word>
 		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
 		<word id="textscroller_book404">Can't find the content for this book.</word>
 		<word id="Male">Male</word>
@@ -295,6 +305,104 @@ Would you like an infodump on the way out?]]>
 		<word id="the">the</word>
 		<!-- Month names cribbd from The Elder Scrolls -->
 		<word id="months">Morning Star, Sun's Dawn, First Seed, Rain's Hand, Second Seed, Midyear, Sun's Height, Last Seed, Hearthfire, Frostfall, Sun's Dusk, Evening Star</word>
+		<!-- These are often lowercased! Notice also the "???" for Random. -->
+		<word id="hesheshiit">???, He, She, Shi, It</word>
+		<word id="hisherhirits">???, His, Her, Hir, Its</word>
+		<word id="himherhirit">???, Him, Her, Hir, It</word>
+	</category>
+	<category name="Inventory">
+		<word id="inventory_yours">Your inventory</word>
+		<word id="inventory_youhavenothing">You are carrying nothing.</word>
+		<word id="inventory_pressenter_container">Press &accept; to store or retrieve the highlighted item.</word>
+		<word id="inventory_pressenter_vendor">Press &accept; to buy or sell the highlighted item.</word>
+		<word id="inventory_money">{0}: {1} -- You: {2}</word>
+		<word id="inventory_itcosts">It costs &#x00A4;{0}.</word>
+		<word id="inventory_vendorusesthis">{0} is using this.</word>
+		<word id="inventory_youusethis">This item is currently equipped.</word>
+		<word id="inventory_youcantaffordthis">You can't afford this item.</word>
+		<word id="inventory_vendorcantaffordthis">You can't afford this item.</word>
+		<word id="inventory_youareusingthis">You're using this. Unequip it first.</word>
+		<word id="inventory_pressenter_book">Press &activate; to read.</word>
+		<word id="inventory_pressenter_equip">Press &activate; to equip.</word>
+		<word id="inventory_pressenter_unequip">Press &activate; to unequip.</word>
+		<word id="inventory_pressenter_use">Press &activate; to try and use.</word>
+		<word id="inventory_cannotunequip">Cannot unequip.</word>
+		<word id="inventory_questitem">This is a quest key item.</word>
+		<word id="inventory_drop">Drop</word>
+		<category name="Sigils">
+			<word id="sigil_weapon">weapon</word>
+			<word id="sigil_fullmask">full mask</word>
+			<word id="sigil_hat">hat</word>
+			<word id="sigil_goggles">goggles</word>
+			<word id="sigil_mask">mask</word>
+			<word id="sigil_neck">neck</word>
+			<word id="sigil_ring">ring</word>
+			<word id="sigil_undies">undies</word>
+			<word id="sigil_shirt">shirt</word>
+			<word id="sigil_pants">pants</word>
+			<word id="sigil_suit">suit</word>
+			<word id="sigil_shoes">shoes</word>
+			<word id="sigil_jacket">jacket</word>
+			<word id="sigil_cloak">cloak</word>
+			<word id="sigil_socks">socks</word>
+			<word id="sigil_equipped">equipped</word>
+			<word id="sigil_unidentified">unidentified</word>
+			<word id="sigil_short_worn">W</word>
+		</category>
+	</category>
+	<category name="Look At...">
+		<word id="color_eyes">{0} eyes</word>
+		<word id="glowing_eyes">glowing {0}</word>
+		<word id="x_ears">{0} ears</word>
+		<word id="x_skin">{0} {1}</word>
+		<word id="x_pattern">{0} {1}</word>
+		<word id="x_legs">{0} legs</word>
+		<word id="x_wings">{0} wings</word>
+		<word id="small_wings">small {0}</word>
+		<word id="x_tail">{0} tail</word>
+		<word id="x_face">{0} face</word>
+		<word id="face_xlike">{0}-like</word>
+		<category name="Leg types">
+			<word id="legtype_human">human</word>
+			<word id="legtype_genbeast">digitigrade</word>
+			<word id="legtype_stiletto">stilleto-heeled</word>
+			<word id="legtype_claws">clawed</word>
+			<word id="legtype_insect">downy insectoid</word>
+		</category>
+		<category name="Wing types">
+			<word id="wingtype_"></word>
+		</category>
+		<category name="Tail types">
+			<word id="tailtype_genbeast">beastly</word>
+			<word id="tailtype_demon">spaded demon</word>
+			<word id="tailtype_bunny">bunny poofball</word>
+			<word id="tailtype_tapered_tentacle">tapered tail tentacle</word>
+			<word id="tailtype_cocktacle">cock-headed tail tentacle</word>
+			<word id="tailtype_tentacle">tail tentacle</word>
+		</category>
+		<category name="Face types">
+			<word id="facetype_normal">human</word>
+			<word id="facetype_genbeast">beastly</word>
+			<word id="facetype_cow">bovine</word>
+			<word id="facetype_reptile">reptilian</word>
+		</category>
+		<category name="Teeth types">
+			<word id="teethtype_fangs">fangs</word>
+			<word id="teethtype_sharp">sharp teeth</word>
+			<word id="teethtype_osmond">fearsome teeth</word>
+		</category>
+		<word id="lookat_header_general"><![CDATA[General
+-------
+]]></word>
+		<word id="lookat_header_sexual">
+			<![CDATA[Sexual characteristics
+----------------------
+]]>
+		</word>
+		<word id="lookat_column_body">Body</word>
+		<word id="lookat_column_head">Head</word>
+		<word id="lookat_column_hair">Hair</word>
+		<word id="lookat_column_hips">Hips and Waist</word>
 	</category>
 
 	<hyphenation>
