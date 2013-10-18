@@ -27,6 +27,7 @@
  * U+E2FD	Hide message from backlog
  * U+E2FE	Shorthand flag for key substitution
  * U+E2FF	Wide character placeholder
+ * U+E300	Do not translate!
  * U+E000	Different styles
  */
 using System;
@@ -66,6 +67,8 @@ namespace Noxico
 
 		public static string GetString(string key, bool brackets = true)
 		{
+			if (key[0] == '\uE300')
+				return key.Substring(1);
 			Initialize();
 			if (words.ContainsKey(key))
 				return Entitize(words[key]);

@@ -248,6 +248,7 @@ namespace Noxico
 				replaceKeys.Add(replaceKey);
 				tml = tml.Substring(0, replaceStart - 1) + tml.Substring(replaceEnd);
 			}
+			var mergeDeep = tml.Contains("-- #mergedeep");
 			carrier.Tokenize(tml);
 
 			if (replaceKeys.Count > 0)
@@ -264,8 +265,25 @@ namespace Noxico
 							{
 								if (carrier.Tokens[j].Name == key && carrier.Tokens[j].Text == value)
 								{
-									firstKey.Tokens.Clear();
-									firstKey.Tokens.AddRange(carrier.Tokens[j].Tokens);
+									var newKey = carrier.Tokens[j];
+									if (mergeDeep)
+									{
+										foreach (var t in newKey.Tokens)
+										{
+											var ft = firstKey.GetToken(t.Name);
+											if (ft == null)
+												ft = firstKey.AddToken(t.Name);
+											ft.Text = t.Text;
+											ft.Value = t.Value;
+											ft.Tokens.Clear();
+											ft.Tokens.AddRange(t.Tokens);
+										}
+									}
+									else
+									{
+										firstKey.Tokens.Clear();
+										firstKey.Tokens.AddRange(newKey.Tokens);
+									}
 									carrier.RemoveToken(j);
 									j--;
 								}

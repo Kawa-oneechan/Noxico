@@ -252,9 +252,9 @@ namespace Noxico
 			}
 
 			if (article == "the")
-				name = knownItem.The + " " + name;
+				name = knownItem.Definite + " " + name;
 			else if (article == "a")
-				name = knownItem.A + " " + name;
+				name = knownItem.Indefinite + " " + name;
 
 			return name;
 		}
