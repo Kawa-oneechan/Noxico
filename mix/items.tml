@@ -15,7 +15,11 @@
 -- TODO: allow TokenCarrier.Path() to support search-by-text?
 -- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
 
-item: timertest, Timer Test
+-- #mergedeep
+-- #replace item
+
+item: timertest
+	_n: Timer Test
 	equipable
 		hat
 	test
@@ -34,7 +38,8 @@ item: timertest, Timer Test
 			}
 		]]>
 
-item: henshin_belt, transformation belt
+item: henshin_belt
+	_n: transformation belt
 	test
 	description: "A typical transformation belt. It has a team logo on the buckle, with a button on top. The button is [color]."
 	price: 20000
@@ -87,7 +92,8 @@ item: henshin_belt, transformation belt
 			print(feedback);
 		]]>
 
-item: strapon, strap-on dildo
+item: strapon
+	_n: strap-on dildo
 	test
 	plural
 	equipable
@@ -116,7 +122,8 @@ item: strapon, strap-on dildo
 			user.RemoveToken("penis", "strapon");
 		]]>
 
-item: ponifier, Element of Perversion
+item: ponifier
+	_n: Element of Perversion
 	test
 	description: "This turns you into a little pony."
 	ascii
@@ -148,7 +155,8 @@ item: rope
 		char: U+00A7
 		fore: sienna
 
-item: baseballbat, baseball bat
+item: baseballbat
+	_n: baseball bat
 	equipable
 		hand
 	canfuck
@@ -167,7 +175,8 @@ item: baseballbat, baseball bat
 	largeweapon
 	wood
 
-item: foxite, Foxite
+item: foxite
+	_n: Foxite
 	test
 	description: "This is Foxite. It turns you into a fox with repeated usages."
 	ascii
@@ -196,7 +205,8 @@ item: penificator
 			//TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
 		]]>
 
-item: knife, combat knife
+item: knife
+	_n: combat knife
 	_u: knife
 	equipable
 		hand
@@ -239,7 +249,8 @@ item: test_ring
 		fore: firebrick
 	randomized: 128
 
-item: cheap_pos, cheap piece of shit
+item: cheap_pos
+	_n: cheap piece of shit
 	_u: broken sword
 	test
 	unique
@@ -262,7 +273,8 @@ item: cheap_pos, cheap piece of shit
 	blade
 	rareweapon
 
-item: catears, cat ear headband
+item: catears
+	_n: cat ear headband
 	equipable
 		hat
 	weight
@@ -278,8 +290,9 @@ item: catears, cat ear headband
 	sexy
 	cute
 
-item: plain_briefs, briefs
-	_a: a pair of
+item: plain_briefs
+	_n: briefs
+	_ia: a pair of
 	plural
 	equipable
 		male
@@ -293,8 +306,9 @@ item: plain_briefs, briefs
 	underwear
 	for_men
 
-item: plain_boxers, boxer shorts
-	_a: a pair of
+item: plain_boxers
+	_n: boxer shorts
+	_ia: a pair of
 	plural
 	equipable
 		male
@@ -308,8 +322,9 @@ item: plain_boxers, boxer shorts
 	underwear
 	for_men
 
-item: plain_panties, panties
-	_a: a pair of
+item: plain_panties
+	_n: panties
+	_ia: a pair of
 	plural
 	equipable
 		female
@@ -324,7 +339,7 @@ item: plain_panties, panties
 	for_women
 
 item: lacy_panties
-	_a: a pair of
+	_ia: a pair of
 	plural
 	equipable
 		female
@@ -338,7 +353,8 @@ item: lacy_panties
 	underwear
 	for_women
 
-item: plain_bra, bra
+item: plain_bra
+	_n: bra
 	equipable
 		female
 		undershirt
@@ -392,7 +408,8 @@ item: egg
 		fore: white
 	food: 10
 
-item: chairlegoftruth, Chair Leg of Truth
+item: chairlegoftruth
+	_n: Chair Leg of Truth
 	equipable
 		hand
 	unique
@@ -450,7 +467,8 @@ item: dagger
 		char: U+2190
 		fore: silver
 
-item: fireaxe, fire-axe
+item: fireaxe
+	_n: fire-axe
 	equipable
 		hand
 	fireproof
@@ -463,7 +481,8 @@ item: fireaxe, fire-axe
 		char: U+00A2
 		fore: silver
 
-item: battleaxe, battle axe
+item: battleaxe
+	_n: battle axe
 	equipable
 		hand
 	fireproof
@@ -476,7 +495,8 @@ item: battleaxe, battle axe
 		char: U+00A2
 		fore: silver
 
-item: shortsword, short sword
+item: shortsword
+	_n: short sword
 	fireproof
 	equipable
 		hand
@@ -589,7 +609,8 @@ item: tsurugi
 -- #region Homestuck
 -- Notice: all but the fancy Santa are Proper Names. Most also require &#x; support...
 -- Dirk Strider
-item: fancysanta, fancy Santa
+item: fancysanta
+	_n: fancy Santa
 	fireproof
 	fearsome
 	equipable
@@ -625,7 +646,8 @@ item: wrinklefucker
 	rareweapon
 
 -- John Egbert
-item: zillyhoo, Warhammer of Zillyhoo&#x2122;
+item: zillyhoo
+	_n: Warhammer of Zillyhoo&#x2122;
 	fireproof
 	unique
 	equipable
@@ -642,7 +664,8 @@ item: zillyhoo, Warhammer of Zillyhoo&#x2122;
 	rareweapon
 
 -- Eridan Ampora
-item: crosshairs, Ahab's Crosshairs&#x2122;
+item: crosshairs
+	_n: Ahab's Crosshairs&#x2122;
 	fireproof
 	unique
 	equipable
@@ -663,7 +686,8 @@ item: crosshairs, Ahab's Crosshairs&#x2122;
 	rareweapon
 
 -- Kanaya Maryam
-item: ragripper, Demonbane Ragripper&#x2122;
+item: ragripper
+	_n: Demonbane Ragripper&#x2122;
 	fireproof
 	unique
 	fearsome
@@ -681,7 +705,8 @@ item: ragripper, Demonbane Ragripper&#x2122;
 	rareweapon
 
 -- Feferi Peixes
-item: entente, &#x03A8;don's Entente
+item: entente
+	_n: &#x03A8;don's Entente
 	_p
 	unique
 	fireproof
@@ -726,7 +751,8 @@ item: whip
 
 -- #region Spandex stuffs 
 -- Something I just noticed. The automatic a/an distinction may need to include [color] support. "a red" but "an alice blue" BUT "a spandex".
-item: spandex_suit, [color ]spandex bodysuit
+item: spandex_suit
+	_n: [color ]spandex bodysuit
 	equipable
 		shirt
 		pants
@@ -742,7 +768,8 @@ item: spandex_suit, [color ]spandex bodysuit
 	colored
 	sexy
 
-item: spandex_pants, [color ]spandex pants
+item: spandex_pants
+	_n: [color ]spandex pants
 	equipable
 		pants
 	weight: medium
@@ -756,8 +783,9 @@ item: spandex_pants, [color ]spandex pants
 	colored
 	sexy
 
-item: sentai_suit, [color ]super sentai costume
-	-- "True Fans would know it's really called Sentai." -- noone ever
+-- "True Fans would know it's really called Sentai." -- noone ever
+item: sentai_suit
+	_n: [color ]super sentai costume
 	_u: [color ]power ranger costume
 	equipable
 		shirt
@@ -780,7 +808,8 @@ item: sentai_suit, [color ]super sentai costume
 
 
 
-item: horsemask, creepy horse mask
+item: horsemask
+	_n: creepy horse mask
 	equipable
 		hat
 		mask
@@ -825,7 +854,8 @@ item: bagel
 	food: 10
 	baked
 
-item: bacon, bacon strip
+item: bacon
+	_n: bacon strip
 	singleuse
 	statbonus
 		health: 15
@@ -839,7 +869,8 @@ item: bacon, bacon strip
 		fat
 	meat
 
-item: sweetroll, sweet roll
+item: sweetroll
+	_n: sweet roll
 	singleuse
 	statbonus
 		health: 20
@@ -859,8 +890,9 @@ item: sweetroll, sweet roll
 
 -- #region Gems and stuff
 -- Mostly-autoconverted from Nethack
-item: gem_dilithium, dilithium crystal
-	_a: a piece of
+item: gem_dilithium
+	_n: dilithium crystal
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: tan
@@ -869,7 +901,8 @@ item: gem_dilithium, dilithium crystal
 	description: ""
 	gemstone
 
-item: gem_diamond, diamond
+item: gem_diamond
+	_n: diamond
 	ascii
 		char: U+25C6
 		fore: white
@@ -878,7 +911,8 @@ item: gem_diamond, diamond
 	description: ""
 	gemstone
 
-item: gem_ruby, ruby
+item: gem_ruby
+	_n: ruby
 	ascii
 		char: U+25C6
 		fore: red
@@ -887,8 +921,9 @@ item: gem_ruby, ruby
 	description: ""
 	gemstone
 
-item: gem_jacinth, jacinth
-	_a: a piece of
+item: gem_jacinth
+	_n: jacinth
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: orange
@@ -897,7 +932,8 @@ item: gem_jacinth, jacinth
 	description: ""
 	gemstone
 
-item: gem_sapphire, sapphire
+item: gem_sapphire
+	_n: sapphire
 	ascii
 		char: U+25C6
 		fore: blue
@@ -906,7 +942,8 @@ item: gem_sapphire, sapphire
 	description: ""
 	gemstone
 
-item: gem_black_opal, black opal
+item: gem_black_opal
+	_n: black opal
 	ascii
 		char: U+25C6
 		fore: black
@@ -915,7 +952,8 @@ item: gem_black_opal, black opal
 	description: ""
 	gemstone
 
-item: gem_emerald, emerald
+item: gem_emerald
+	_n: emerald
 	ascii
 		char: U+25C6
 		fore: green
@@ -924,8 +962,9 @@ item: gem_emerald, emerald
 	description: ""
 	gemstone
 
-item: gem_turquoise, turquoise
-	_a: a piece of
+item: gem_turquoise
+	_n: turquoise
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: green
@@ -934,8 +973,9 @@ item: gem_turquoise, turquoise
 	description: ""
 	gemstone
 
-item: gem_citrine, citrine
-	_a: a piece of
+item: gem_citrine
+	_n: citrine
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: yellow
@@ -944,8 +984,9 @@ item: gem_citrine, citrine
 	description: ""
 	gemstone
 
-item: gem_aquamarine, aquamarine
-	_a: a piece of
+item: gem_aquamarine
+	_n: aquamarine
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: green
@@ -954,8 +995,9 @@ item: gem_aquamarine, aquamarine
 	description: ""
 	gemstone
 
-item: gem_amber, amber
-	_a: a piece of
+item: gem_amber
+	_n: amber
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: peru
@@ -964,8 +1006,9 @@ item: gem_amber, amber
 	description: ""
 	gemstone
 
-item: gem_topaz, topaz
-	_a: a piece of
+item: gem_topaz
+	_n: topaz
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: pure
@@ -974,8 +1017,9 @@ item: gem_topaz, topaz
 	description: ""
 	gemstone
 
-item: gem_jet, jet
-	_a: a piece of
+item: gem_jet
+	_n: jet
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: black
@@ -984,8 +1028,9 @@ item: gem_jet, jet
 	description: ""
 	gemstone
 
-item: gem_opal, opal
-	_a: a piece of
+item: gem_opal
+	_n: opal
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: white
@@ -994,8 +1039,9 @@ item: gem_opal, opal
 	description: ""
 	gemstone
 
-item: gem_chrysoberyl, chrysoberyl
-	_a: a piece of
+item: gem_chrysoberyl
+	_n: chrysoberyl
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: yellow
@@ -1004,7 +1050,8 @@ item: gem_chrysoberyl, chrysoberyl
 	description: ""
 	gemstone
 
-item: gem_garnet, garnet
+item: gem_garnet
+	_n: garnet
 	ascii
 		char: U+25C6
 		fore: red
@@ -1013,7 +1060,8 @@ item: gem_garnet, garnet
 	description: ""
 	gemstone
 
-item: gem_amethyst, amethyst
+item: gem_amethyst
+	_n: amethyst
 	ascii
 		char: U+25C6
 		fore: violet
@@ -1022,8 +1070,9 @@ item: gem_amethyst, amethyst
 	description: ""
 	gemstone
 
-item: gem_jasper, jasper
-	_a: a piece of
+item: gem_jasper
+	_n: jasper
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: red
@@ -1032,8 +1081,9 @@ item: gem_jasper, jasper
 	description: ""
 	gemstone
 
-item: gem_fluorite, fluorite
-	_a: a piece of
+item: gem_fluorite
+	_n: fluorite
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: violet
@@ -1042,8 +1092,9 @@ item: gem_fluorite, fluorite
 	description: ""
 	gemstone
 
-item: gem_obsidian, obsidian
-	_a: a piece of
+item: gem_obsidian
+	_n: obsidian
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: black
@@ -1052,8 +1103,9 @@ item: gem_obsidian, obsidian
 	description: ""
 	gemstone
 
-item: gem_agate, agate
-	_a: a piece of
+item: gem_agate
+	_n: agate
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: orange
@@ -1062,8 +1114,9 @@ item: gem_agate, agate
 	description: ""
 	gemstone
 
-item: gem_jade, jade
-	_a: a piece of
+item: gem_jade
+	_n: jade
+	_ia: a piece of
 	ascii
 		char: U+25C6
 		fore: jade
@@ -1072,8 +1125,9 @@ item: gem_jade, jade
 	description: ""
 	gemstone
 
-item: gem_glass, [color ]glass
-	_a: a piece of
+item: gem_glass
+	_n: [color ]glass
+	_ia: a piece of
 	ascii
 		char: U+25C6
 	weight: light
@@ -1155,8 +1209,9 @@ item: bacon_bikini_bottom
 
 
 -- #region Clothes from jsNoxico
-item: tatteredshreds_shirt, tattered shreds
-	_a: ""
+item: tatteredshreds_shirt
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		shirt
@@ -1166,8 +1221,9 @@ item: tatteredshreds_shirt, tattered shreds
 	ascii
 		char: U+03C0
 
-item: tatteredshreds_undershirt, tattered shreds
-	_a: ""
+item: tatteredshreds_undershirt
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		undershirt
@@ -1177,8 +1233,9 @@ item: tatteredshreds_undershirt, tattered shreds
 	ascii
 		char: U+03C0
 
-item: tatteredshreds_pants, tattered shreds
-	_a: ""
+item: tatteredshreds_pants
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		pants
@@ -1188,8 +1245,9 @@ item: tatteredshreds_pants, tattered shreds
 	ascii
 		char: U+00B5
 
-item: tatteredshreds_underpants, tattered shreds
-	_a: ""
+item: tatteredshreds_underpants
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		underpants
@@ -1199,9 +1257,10 @@ item: tatteredshreds_underpants, tattered shreds
 	ascii
 		char: U+03C4
 
-item: tatteredshreds_under, tattered shreds
-	-- Should be used if a bodysuit is torn apart.
-	_a: ""
+-- Should be used if a bodysuit is torn apart.
+item: tatteredshreds_under
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		undershirt
@@ -1211,10 +1270,10 @@ item: tatteredshreds_under, tattered shreds
 		light
 	ascii
 		char: U+03C0
-
-item: tatteredshreds_over, tattered shreds
-	-- Should be used if a dress is torn apart.
-	_a: ""
+-- Should be used if a dress is torn apart.
+item: tatteredshreds_over
+	_n: tattered shreds
+	_ia: ""
 	plural
 	equipable
 		shirt
@@ -1225,7 +1284,8 @@ item: tatteredshreds_over, tattered shreds
 	ascii
 		char: U+03C0
 
-item: shirt, plain [color ]shirt
+item: shirt
+	_n: plain [color ]shirt
 	equipable
 		shirt
 	weight
@@ -1237,7 +1297,8 @@ item: shirt, plain [color ]shirt
 	overwear
 	colored
 
-item: blouse, [color ]blouse
+item: blouse
+	_n: [color ]blouse
 	equipable
 		shirt
 	weight
@@ -1253,7 +1314,8 @@ item: blouse, [color ]blouse
 	overwear
 	colored
 
-item: girls_uniform_top, schoolgirl uniform top
+item: girls_uniform_top
+	_n: schoolgirl uniform top
 	equipable
 		female
 		jacket
@@ -1267,7 +1329,8 @@ item: girls_uniform_top, schoolgirl uniform top
 	for_women
 	sexy
 
-item: boys_uniform_top, school uniform jacket
+item: boys_uniform_top
+	_n: school uniform jacket
 	equipable
 		male
 		jacket
@@ -1280,7 +1343,8 @@ item: boys_uniform_top, school uniform jacket
 	overwear
 	for_men
 
-item: bikini_top, [color ]bikini top
+item: bikini_top
+	_n: [color ]bikini top
 	equipable
 		female
 		undershirt
@@ -1299,7 +1363,8 @@ item: bikini_top, [color ]bikini top
 	for_women
 	sexy
 
-item: bikini_bottom, [color ]bikini bottom
+item: bikini_bottom
+	_n: [color ]bikini bottom
 	equipable
 		female
 		underpants
@@ -1319,8 +1384,9 @@ item: bikini_bottom, [color ]bikini bottom
 	sexy
 
 
-item: pants, plain [color ]pants
-	_a: a pair of
+item: pants
+	_n: plain [color ]pants
+	_ia: a pair of
 	plural
 	equipable
 		pants
@@ -1333,7 +1399,8 @@ item: pants, plain [color ]pants
 	legwear
 	colored
 
-item: skirt, plain [color ]skirt
+item: skirt
+	_n: plain [color ]skirt
 	equipable
 		female
 		pants
@@ -1350,7 +1417,8 @@ item: skirt, plain [color ]skirt
 	legwear
 	colored
 
-item: pleated_skirt, pleated [color ]skirt
+item: pleated_skirt
+	_n: pleated [color ]skirt
 	equipable
 		female
 		pants
@@ -1367,8 +1435,9 @@ item: pleated_skirt, pleated [color ]skirt
 	for_women
 	cute
 
-item: shorts, [color ]shorts
-	_a: a pair of
+item: shorts
+	_n: [color ]shorts
+	_ia: a pair of
 	plural
 	equipable
 		pants
@@ -1383,8 +1452,9 @@ item: shorts, [color ]shorts
 	clothing
 	colored
 
-item: short_shorts, [color ]short shorts
-	_a: a pair of
+item: short_shorts
+	_n: [color ]short shorts
+	_ia: a pair of
 	plural
 	equipable
 		pants
@@ -1402,7 +1472,8 @@ item: short_shorts, [color ]short shorts
 	colored
 	cute
 
-item: short_skirt, short [color ]skirt
+item: short_skirt
+	_n: short [color ]skirt
 	equipable
 		pants
 		reach
@@ -1416,7 +1487,8 @@ item: short_skirt, short [color ]skirt
 	ascii
 		char: U+006E
 
-item: sundress, [color ]sundress
+item: sundress
+	_n: [color ]sundress
 	equipable
 		shirt
 		pants
@@ -1437,7 +1509,8 @@ item: sundress, [color ]sundress
 	for_women
 	cute
 
-item: skimpy_dress, skimpy [color ]dress
+item: skimpy_dress
+	_n: skimpy [color ]dress
 	equipable
 		shirt
 		pants
@@ -1459,7 +1532,8 @@ item: skimpy_dress, skimpy [color ]dress
 	for_women
 	sexy
 
-item: elegant_dress, elegant [color ]dress
+item: elegant_dress
+	_n: elegant [color ]dress
 	equipable
 		shirt
 		pants
@@ -1477,7 +1551,8 @@ item: elegant_dress, elegant [color ]dress
 	colored
 	for_women
 
-item: latex_suit, [color ]latex suit
+item: latex_suit
+	_n: [color ]latex suit
 	equipable
 		undershirt
 		underpants
@@ -1495,7 +1570,8 @@ item: latex_suit, [color ]latex suit
 	colored
 	sexy
 
-item: stylish_cloak, stylish [color ]cloak
+item: stylish_cloak
+	_n: stylish [color ]cloak
 	equipable
 		coat
 	weight
@@ -1511,7 +1587,8 @@ item: stylish_cloak, stylish [color ]cloak
 
 
 -- #region Lena's costume, should be put in a mission or kept, recategorized as generic succubus wear.
-item: strapless_leather_bra, [color ]leather bra
+item: strapless_leather_bra
+	_n: [color ]leather bra
 	equipable
 		female
 		undershirt
@@ -1525,8 +1602,9 @@ item: strapless_leather_bra, [color ]leather bra
 	colored
 	sexy
 
-item: kinky_panties, kinky [color ]panties
-	_a: a pair of
+item: kinky_panties
+	_n: kinky [color ]panties
+	_ia: a pair of
 	plural
 	equipable
 		female
@@ -1542,8 +1620,9 @@ item: kinky_panties, kinky [color ]panties
 	colored
 	sexy
 
-item: knee_socks, silk [color ]knee socks
-	_a: a pair of
+item: knee_socks
+	_n: silk [color ]knee socks
+	_ia: a pair of
 	plural
 	equipable
 		socks
@@ -1561,7 +1640,7 @@ item: knee_socks, silk [color ]knee socks
 	kinky
 
 item: high_heels
-	_a: a pair of
+	_ia: a pair of
 	plural
 	equipable
 		shoes
@@ -1575,8 +1654,9 @@ item: high_heels
 	shoes
 	sexy
 
-item: lena_ruby, Lena's ruby pendant
-	-- Should be removed or generalized if recategorized as generic succubus wear.
+-- Should be removed or generalized if recategorized as generic succubus wear.
+item: lena_ruby
+	_n: Lena's ruby pendant
 	unique
 	equipable
 		neck
@@ -1591,7 +1671,8 @@ item: lena_ruby, Lena's ruby pendant
 
 -- #region TF items
 -- All of these use complicated Javascript to approximate Corruption of Champions. I wonder why, when we have Morph()...
-item: catmorph, cat morph potion
+item: catmorph
+	_n: cat morph potion
 	wip
 	ascii
 		char: U+00A1
@@ -1691,7 +1772,8 @@ item: catmorph, cat morph potion
 			print(ret);
 		]]>
 
-item: dogmorph, dog morph potion
+item: dogmorph
+	_n: dog morph potion
 	wip
 	ascii
 		char: U+00A1
@@ -1770,8 +1852,9 @@ item: dogmorph, dog morph potion
 			print(ret);
 		]]>
 
-item: foxmorph, fox morph potion
-	-- Not to be confused for Foxite up top.
+-- Not to be confused for Foxite up top.
+item: foxmorph
+	_n: fox morph potion
 	wip
 	ascii
 		char: U+00A1
@@ -1846,7 +1929,8 @@ item: foxmorph, fox morph potion
 			print(ret);
 		]]>
 
-item: bunnymorph, bunny morph potion
+item: bunnymorph
+	_n: bunny morph potion
 	wip
 	ascii
 		char: U+00A1
@@ -1919,7 +2003,8 @@ item: bunnymorph, bunny morph potion
 
 
 -- #region PillowShout's stuff
-item: gExtractor, goblin extractor
+item: gExtractor
+	_n: goblin extractor
 	nouse
 	price: 60
 	description: "A strange device of goblin origin. It seems to be a thick, leather thong that's been modified with a complex assembly of bronze machinery and glass vials."
@@ -1934,7 +2019,8 @@ item: gExtractor, goblin extractor
 
 
 -- #region Deity artifacts
-item: eternitybrooch, Timeless Brooch
+item: eternitybrooch
+	_n: Timeless Brooch
 	equipable
 		neck
 	unique

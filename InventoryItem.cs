@@ -12,8 +12,8 @@ namespace Noxico
 		public string Name { get; private set; }
 		public string UnknownName { get; set; }
 		public bool IsProperNamed { get; set; }
-		public string A { get; set; }
-		public string The { get; set; }
+		public string Indefinite { get; set; }
+		public string Definite { get; set; }
 		public string OnUse { get; private set; }
 		public string OnEquip { get; private set; }
 		public string OnUnequip { get; private set; }
@@ -57,8 +57,8 @@ namespace Noxico
 			var proper = IsProperNamed && isIdentified;
 			if (proper || !a)
 			{
-				if (the && !string.IsNullOrEmpty(The))
-					return The + ' ' + name;
+				if (the && !string.IsNullOrEmpty(Definite))
+					return Definite + ' ' + name;
 				return name;
 			}
 			if (HasToken("charge") && token != null)
@@ -74,11 +74,11 @@ namespace Noxico
 					if (collective != null)
 						name = collective.Text;
 				}
-				return string.Format("{0} {1} ({2}/{3})", the ? The : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
+				return string.Format("{0} {1} ({2}/{3})", the ? Definite : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
 			}
 			if (isIdentified)
-				return string.Format("{0} {1}", the ? The : A, name).Trim();
-			return string.Format("{0} {1}", the ? The : (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a"), name).Trim();
+				return string.Format("{0} {1}", the ? Definite : Indefinite, name).Trim();
+			return string.Format("{0} {1}", the ? Definite : (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a"), name).Trim();
 		}
 
 		//Added for Jint's sake.
@@ -127,23 +127,22 @@ namespace Noxico
 		public static InventoryItem FromToken(Token item)
 		{
 			var ni = new InventoryItem();
-			var nameParts = item.Text.Split(',');
-			ni.ID = nameParts[0];
-			if (nameParts.Length > 1)
-				ni.Name = nameParts[1].Trim();
+			ni.ID = item.Text.Trim();
+			if (item.HasToken("_n"))
+				ni.Name = item.GetToken("_n").Text;
 			else
-				ni.Name = nameParts[0].Replace('_', ' ');
+				ni.Name = ni.ID.Replace('_', ' ');
 			if (item.HasToken("_u"))
 				ni.UnknownName = item.GetToken("_u").Text;
-			if (item.HasToken("_a"))
-				ni.A = item.GetToken("_a").Text;
+			if (item.HasToken("_ia"))
+				ni.Indefinite = item.GetToken("_ia").Text;
 			else
-				ni.A = ni.Name.StartsWithVowel() ? i18n.GetString("an") : i18n.GetString("a");
+				ni.Indefinite = ni.Name.StartsWithVowel() ? i18n.GetString("an") : i18n.GetString("a");
 			ni.IsProperNamed = char.IsUpper(ni.Name[0]);
-			if (item.HasToken("_t"))
-				ni.The = item.GetToken("_t").Text;
+			if (item.HasToken("_da"))
+				ni.Definite = item.GetToken("_da").Text;
 			else
-				ni.The = i18n.GetString("the");
+				ni.Definite = i18n.GetString("the");
 			ni.OnUse = null;
 			foreach (var script in item.Tokens.Where(t => t.Name == "script"))
 			{
@@ -165,9 +164,10 @@ namespace Noxico
 			}
 			ni.Tokens.Clear();
 			ni.Tokens.AddRange(item.Tokens);
+			ni.RemoveAll("_n");
 			ni.RemoveAll("_u");
-			ni.RemoveAll("_a");
-			ni.RemoveAll("_t");
+			ni.RemoveAll("_ia");
+			ni.RemoveAll("_da");
 			ni.RemoveAll("script");
 			return ni;
 		}
@@ -522,9 +522,9 @@ namespace Noxico
 			{
 				var name = new StringBuilder();
 				if (this.IsProperNamed)
-					name.Append(string.IsNullOrWhiteSpace(this.The) ? "" : this.The + ' ');
+					name.Append(string.IsNullOrWhiteSpace(this.Definite) ? "" : this.Definite + ' ');
 				else
-					name.Append(string.IsNullOrWhiteSpace(this.A) ? "" : this.A + ' ');
+					name.Append(string.IsNullOrWhiteSpace(this.Indefinite) ? "" : this.Indefinite + ' ');
 				name.Append(this.Name);
 				if (item.HasToken("unidentified") && !string.IsNullOrWhiteSpace(this.UnknownName))
 				{

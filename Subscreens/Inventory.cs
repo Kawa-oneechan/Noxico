@@ -153,7 +153,7 @@ namespace Noxico
 						foreach (var bonus in item.GetToken("statbonus").Tokens)
 						{
 							if (bonus.Name == "health")
-								sigils.Add(bonus.Value + "HP");
+								sigils.Add("\uE300" + bonus.Value + "HP");
 						}
 					}
 #if DEBUG
@@ -170,7 +170,13 @@ namespace Noxico
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
-					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils.Select(s => i18n.GetString("sigil_" + s))));
+					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils.Select(s =>
+					{
+						if (s[0] == '\uE300')
+							return s.Substring(1);
+						else
+							return i18n.GetString("sigil_" + s);
+					})));
 				}
 				var height = inventoryItems.Count;
 				if (height > 13)
