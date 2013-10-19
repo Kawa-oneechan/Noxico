@@ -49,7 +49,7 @@ namespace Noxico
 			words = new Dictionary<string, string>();
 			var x = Mix.GetXmlDocument("words.xml");
 			foreach (var word in x.SelectNodes("//word").OfType<XmlElement>())
-				words.Add(word.GetAttribute("id"), word.InnerText);
+				words[word.GetAttribute("id")] = word.InnerText;
 		}
 
 		public static string Entitize(string input)
