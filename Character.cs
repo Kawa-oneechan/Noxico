@@ -931,7 +931,7 @@ namespace Noxico
 			var faceType = this.GetToken("face").Text;
 			if (new[] { "normal", "genbeast", "cow", "reptile" }.Contains(faceType))
 				faceType = i18n.GetString("facetype_" + faceType);
-			if (faceType == "normal")
+			else if (faceType == "normal")
 				faceType = "human";
 			else if (faceType == "genbeast")
 				faceType = "beastly";

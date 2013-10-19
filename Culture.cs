@@ -179,6 +179,8 @@ namespace Noxico
 
 		public static Func<string, string> GetSpeechFilter(string culture, Func<string, string> original = null)
 		{
+			if (i18n.GetString("meta_nospeechfilters")[0] == '[')
+				return original;
 			if (!Cultures.ContainsKey(culture))
 				return new Func<string, string>(x => x);
 			return GetSpeechFilter(Cultures[culture], original);

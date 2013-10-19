@@ -180,7 +180,6 @@ Number of known items       {2}
 		<word id="opt_save">OK</word>
 		<word id="opt_cancel">Cancel</word>
 		<word id="opt_open">Open INI</word>
-		<word id="opt_pleaserestart">Until the requisite functionality is added, please restart the game to let your changes take effect.</word>
 	</category>
 	<category name="Actions">
 		<word id="action_descyou">you, {0}</word>
@@ -320,7 +319,7 @@ Would you like an infodump on the way out?]]>
 		<word id="inventory_vendorusesthis">{0} is using this.</word>
 		<word id="inventory_youusethis">This item is currently equipped.</word>
 		<word id="inventory_youcantaffordthis">You can't afford this item.</word>
-		<word id="inventory_vendorcantaffordthis">You can't afford this item.</word>
+		<word id="inventory_vendorcantaffordthis">{0} can't afford this item.</word>
 		<word id="inventory_youareusingthis">You're using this. Unequip it first.</word>
 		<word id="inventory_pressenter_book">Press &activate; to read.</word>
 		<word id="inventory_pressenter_equip">Press &activate; to equip.</word>

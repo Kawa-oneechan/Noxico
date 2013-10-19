@@ -137,7 +137,6 @@ namespace Noxico
 
 						IniFile.Save();
 						cancelButton.DoEnter();
-						//MessageBox.Notice(i18n.GetString("opt_pleaserestart"), true);
 					}) { Left = 74, Top = 19, Width = 16 };
 				openButton = new UIButton(i18n.GetString("opt_open"), (s, e) =>
 					{

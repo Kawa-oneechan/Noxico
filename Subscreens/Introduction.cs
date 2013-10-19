@@ -263,7 +263,7 @@ namespace Noxico
 
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 8, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 7, Hidden = true, Foreground = Color.Gray } },
+					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 8, Foreground = Color.Gray } },
 					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 13, Foreground = Color.Gray } },
@@ -350,7 +350,7 @@ namespace Noxico
 					var body = ((UISingleList)controls["body"]).Text;
 					var eyes = ((UISingleList)controls["eyes"]).Text;
 					var bonus = ((UIList)controls["gift"]).Text;
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName, (Gender)(sex + 1), (Gender)(gid + 1), playables[species].ID, hair, body, eyes, bonus);
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), playables[species].ID, hair, body, eyes, bonus);
 					NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
@@ -396,7 +396,7 @@ namespace Noxico
 				*/
 				controls["name"].Change = (s, e) =>
 				{
-					controls["nameRandom"].Hidden = !string.IsNullOrEmpty(controls["name"].Text);
+					controls["nameRandom"].Hidden = !string.IsNullOrWhiteSpace(controls["name"].Text);
 					UIManager.Draw();
 				};
 				controls["gift"].Change = (s, e) =>

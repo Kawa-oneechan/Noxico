@@ -158,7 +158,7 @@ namespace Noxico
 				{
 					var skillName = i18n.GetString("skill_" + skill.Name);
 					if (skillName[0] == '[') //Ignore missing skill translations for now.
-						skillName = skillName.Substring(1, skillName.Length - 2);
+						skillName = skillName.Substring(7, skillName.Length - 8);
 					sb.AppendLine(skillName.Replace('_', ' ').Titlecase().PadEffective(30) + ((int)skill.Value).ToString());
 				}
 			}
