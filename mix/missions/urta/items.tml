@@ -1,5 +1,6 @@
 -- #region Urta
-item: fishnets, silk [color ]fishnet stockings
+item: fishnets
+	_n: silk [color ]fishnet stockings
 	_a: a pair of
 	plural
 	equipable

@@ -54,6 +54,9 @@ namespace Noxico
 					name = name.Replace(item.Key, item.Value);
 			}
 
+			if (token != null && token.HasToken("bonus"))
+				name = string.Format("{0} +{1}", name, token.GetToken("bonus").Value);
+
 			var proper = IsProperNamed && isIdentified;
 			if (proper || !a)
 			{
@@ -699,7 +702,10 @@ namespace Noxico
 			{
 				if (HasToken("weapon"))
 				{
-					info.Add(Path("weapon/damage").Value + " dmg");
+					var damage = Path("weapon/damage").Value;
+					if (token != null && token.HasToken("bonus"))
+						damage = (float)Math.Ceiling(damage * ((token.GetToken("bonus").Value + 1) * 0.75f));
+					info.Add(damage + " dmg");
 					if (new [] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(Path("weapon/skill").Text))
 						info.Add("ranged");
 					else
