@@ -747,6 +747,7 @@ namespace Noxico
 		{
 			//First we need to figure out if we're armed.
 			Token weaponData = null;
+			Token carriedWeapon = null;
 			foreach (var carriedItem in this.Character.GetToken("items").Tokens)
 			{
 				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
@@ -755,6 +756,7 @@ namespace Noxico
 				if (find.HasToken("equipable") && carriedItem.HasToken("equipped") && find.HasToken("weapon"))
 				{
 					weaponData = find.GetToken("weapon");
+					carriedWeapon = carriedItem;
 					break;
 				}
 			}
@@ -781,6 +783,8 @@ namespace Noxico
 				//Armed combat, yeah!
 				skill = weaponData.GetToken("skill").Text;
 				baseDamage = weaponData.GetToken("damage").Value;
+				if (carriedWeapon.HasToken("bonus"))
+					baseDamage = (float)Math.Ceiling(baseDamage * ((carriedWeapon.GetToken("bonus").Value + 1) * 0.75f));
 				//TODO: if it's a crushing weapon, use strength stat.
 			}
 

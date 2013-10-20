@@ -611,6 +611,7 @@ namespace Noxico
 									var newPoss = new Token(knownItem.ID);
 									if (knownItem.HasToken("colored"))
 										newPoss.AddToken("color", 0, colors[color]);
+									ApplyBonusMaybe(newPoss, knownItem);
 									possibilities.Add(newPoss);
 								}
 							}
@@ -642,6 +643,19 @@ namespace Noxico
 				}
 			}
 			return loot;
+		}
+
+		private static void ApplyBonusMaybe(Token possibleItem, InventoryItem knownItem)
+		{
+			if (knownItem.HasToken("unique"))
+				return;
+			if (Random.NextDouble() < 0.3)
+				return;
+			if (knownItem.HasToken("weapon"))
+			{
+				var bonus = Random.Next(1, 6);
+				possibleItem.AddToken("bonus", bonus);
+			}
 		}
 	}
 

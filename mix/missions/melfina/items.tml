@@ -1,5 +1,6 @@
 -- #region Melfina
-item: melfina_leotard, paneled [color ]leotard
+item: melfina_leotard
+	_n: paneled [color ]leotard
 	unique
 	equipable
 		underpants
@@ -15,7 +16,8 @@ item: melfina_leotard, paneled [color ]leotard
 	sexy
 	kinky
 
-item: melfina_kneesocks, paneled [color ]kneesocks
+item: melfina_kneesocks
+	_n: paneled [color ]kneesocks
 	unique
 	plural
 	equipable
@@ -32,7 +34,8 @@ item: melfina_kneesocks, paneled [color ]kneesocks
 	sexy
 	kinky
 
-item: melfina_jacket, odd [color ]jacket
+item: melfina_jacket
+	_n: odd [color ]jacket
 	unique
 	equipable
 		jacket
@@ -47,7 +50,8 @@ item: melfina_jacket, odd [color ]jacket
 	sexy
 	kinky
 
-item: melfina_belt, [color ]leather belt
+item: melfina_belt
+	_n: [color ]leather belt
 	unique
 	equipable
 		female
@@ -64,7 +68,8 @@ item: melfina_belt, [color ]leather belt
 	for_women
 	kinky
 
-item: melfina_boots, armored[, color] boots
+item: melfina_boots
+	_n: armored[, color] boots
 	unique
 	plural
 	equipable
