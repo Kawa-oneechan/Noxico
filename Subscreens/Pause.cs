@@ -19,7 +19,7 @@ namespace Noxico
 #if DEBUG
 			{ "Debug cheats", "..." },
 #endif
-			{ i18n.GetString("pause_opensettings"), i18n.GetString("pause_opensettingscontent") },
+			{ i18n.GetString("pause_opensettings"), Toolkit.Wordwrap(i18n.GetString("pause_opensettingscontent"), 40) },
 			{ i18n.GetString("pause_saveandexit"), i18n.GetString("pause_saveandexitcontent") },
 
 		};
