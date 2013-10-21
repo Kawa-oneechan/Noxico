@@ -317,30 +317,74 @@ namespace Noxico
 
 		public static string Wordwrap(this string text, int length = 80)
 		{
-			var words = new List<string>();
+			var words = new List<Word>();
 			var lines = new List<string>();
 
 			text = text.Normalize();
 
 			var currentWord = new StringBuilder();
-			foreach (var ch in text)
+			var breakIt = false;
+			var spaceAfter = false;
+			var mandatory = false;
+			var softHyphen = false;
+			for (var i = 0; i < text.Length; i++)
 			{
-				var breakIt = false;
-				if (char.IsWhiteSpace(ch) && ch != '\u00A0')
+				var ch = text[i];
+				var nextCh = (i < text.Length - 1) ? text[i + 1] : '\0';
+				if ((ch == '\r' && nextCh != '\n') || ch == '\n')
+				{
 					breakIt = true;
+					mandatory = true;
+				}
+				else if (char.IsWhiteSpace(ch) && ch != '\u00A0')
+				{
+					breakIt = true;
+					spaceAfter = true;
+				}
+				else if (ch == '\u00AD')
+				{
+					breakIt = true;
+					softHyphen = true;
+				}
 				else if (char.IsPunctuation(ch) && !(ch == '(' || ch == ')'))
+				{
+					currentWord.Append(ch);
 					breakIt = true;
+				}
+				else
+					currentWord.Append(ch);
 
-				currentWord.Append(ch);
+
 				if (breakIt)
 				{
-					words.Add(currentWord.ToString());
+					var newWord = new Word()
+					{
+						Content = currentWord.ToString().Trim(),
+						SpaceAfter = spaceAfter,
+						MandatoryBreak = mandatory,
+						SoftHyphen = softHyphen,
+					};
+					breakIt = false;
+					spaceAfter = false;
+					mandatory = false;
+					softHyphen = false;
+					words.Add(newWord);
 					currentWord.Clear();
 				}
 			}
 			if (currentWord.ToString() != "")
-				words.Add(currentWord.ToString());
+			{
+				var newWord = new Word()
+				{
+					Content = currentWord.ToString().Trim(),
+					SpaceAfter = currentWord.ToString().EndsWith(" "),
+					MandatoryBreak = false,
+				};
+				words.Add(newWord);
+			}
 
+			//Automatic hyphenation temporarily disabled.
+			/*
 			if (hyphenationRules == null)
 			{
 				var wordsXml = Mix.GetXmlDocument("words.xml");
@@ -384,6 +428,7 @@ namespace Noxico
 				}
 				words[i] = word;
 			}
+			*/
 
 			var line = new StringBuilder();
 			var spaceLeft = length;
@@ -394,14 +439,14 @@ namespace Noxico
 
 				//Check for words longer than length? Should not happen with autohyphenator.
 
-				if (word == "\n")
+				if (word.MandatoryBreak)
 				{
 					lines.Add(line.ToString().Trim());
 					line.Clear();
 					spaceLeft = length;
 					continue;
 				}
-				else if (word == "\u2029")
+				else if (word.Content == "\u2029")
 				{
 					lines.Add(line.ToString().Trim());
 					lines.Add(string.Empty);
@@ -409,25 +454,32 @@ namespace Noxico
 					spaceLeft = length;
 					continue;
 				}
-				//else if (string.IsNullOrWhiteSpace(word))
-				//	continue;
 
-				if (word[word.Length - 1] == '\u00AD')
+				if (word.SoftHyphen)
 				{
-					if (next != null && spaceLeft - (word.Length - 1) - next.TrimEnd().Length <= 0)
-						word = word.Remove(word.Length - 1) + '\u2010';
-					else
-						word = word.Remove(word.Length - 1);
+					if (next != null && spaceLeft - word.Length - next.Content.TrimEnd().Length <= 0)
+					{
+						word.Content += '\u2010'; //not an ASCII hyphen-minus but a proper hyphen!
+						word.SoftHyphen = false;
+					}
 				}
 
-				line.Append(word);
+				line.Append(word.Content);
 				spaceLeft -= word.Length;
-				if (word.EndsWith("\n") || (next != null && spaceLeft - next.TrimEnd().Length <= 0))
+				if (next != null && spaceLeft - next.Content.TrimEnd().Length <= 0)
 				{
 					if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
 						lines.Add(line.ToString().Trim());
 					line.Clear();
 					spaceLeft = length;
+				}
+				else
+				{
+					if (word.SpaceAfter)
+					{
+						line.Append(' ');
+						spaceLeft--;
+					}
 				}
 			}
 			if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
@@ -1149,6 +1201,20 @@ namespace Noxico
 				ret.Add(item.ToString());
 
 			return ret.ToArray();
+		}
+
+		//Used internally by Wordwrap.
+		private class Word
+		{
+			public string Content { get; set; }
+			public bool SpaceAfter { get; set; }
+			public bool SoftHyphen { get; set; }
+			public bool MandatoryBreak { get; set; }
+			public int Length { get { return Content.Length; } }
+			public override string ToString()
+			{
+				return string.Format("[\"{0}\", {1}, {2}]", Content, SpaceAfter, MandatoryBreak);
+			}
 		}
 	}
 }
