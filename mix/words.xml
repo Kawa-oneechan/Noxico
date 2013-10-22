@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE words [
 	<!ELEMENT words (category*,hyphenation)>
 	<!ELEMENT category (category|word)*>
@@ -60,9 +60,7 @@
 
 	<category name="Introduction">
 		<category name="Title screen">
-			<word id="ts_historiesofxandy">Histories of {0} and {1}</word>
-			<word id="ts_historiesof_x">Debauchery, Wickedness, Sin, Depravity, Corruption, Decadence, Morality, Iniquity, Immorality, Shamelessness</word>
-			<word id="ts_historiesof_y">Insanity, Foolishness, Irrationality, Absurdity, Folly, Recklessness, Stupidity, Craziness, Madness, Lunacy</word>
+			<word id="ts_subtitle">Erotic Roguelike Misadventures</word>
 			<word id="ts_pressentertobegin">&teal;Press &aqua;&accept;&teal; to begin</word>
 			<word id="ts_welcometonoxico">Welcome to Noxico.</word>
 			<word id="ts_thereisasave">There is a saved game you can restore.</word>

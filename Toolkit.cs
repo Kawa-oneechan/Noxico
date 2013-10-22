@@ -12,7 +12,7 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-		private static List<Tuple<Regex, int>> hyphenationRules;
+		//private static List<Tuple<Regex, int>> hyphenationRules;
 
 		/// <summary>
 		/// Returns the amount of change between two strings according to the Levenshtein method.

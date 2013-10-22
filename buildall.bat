@@ -27,9 +27,6 @@ copy Release\Noxico.exe Noxico > nul
 ..\Rar.exe u  noxico-0.1.2.1.rar Noxico > nul
 copy /y Release32\Noxico.exe Noxico > nul
 ..\Rar.exe u  noxico-0.1.2.1-32.rar Noxico > nul
-del /q Noxico\*.*
-copy /y Release\Music.mix Noxico > nul
-copy /y Release\Sounds.mix Noxico > nul
 rd Noxico /s /q
 cd ..
 pause
