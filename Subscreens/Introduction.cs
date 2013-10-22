@@ -25,11 +25,9 @@ namespace Noxico
 				host.Clear();
 				new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
-				var i = i18n.GetArray("ts_historiesof_x");
-				var j = i18n.GetArray("ts_historiesof_y");
-				var histories = i18n.Format("ts_historiesofxandy", Toolkit.PickOne(i), Toolkit.PickOne(j));
+				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\u2500\u2500\u2500\u2500\u2524 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\u251C\u2500\u2500\u2500\u2500";
-				host.Write(histories, Color.Teal, Color.Transparent, 10, 25 - histories.Length() / 2);
+				host.Write(subtitle, Color.Teal, Color.Transparent, 10, 25 - subtitle.Length() / 2);
 				host.Write(pressEnter, Color.Gray, Color.Transparent, 12, 25 - pressEnter.Length() / 2);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
