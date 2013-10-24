@@ -828,7 +828,7 @@ item: horsemask
 
 -- #region Foodstuffs
 item: croissant
-	_t: le
+	_da: le
 	singleuse
 	statbonus
 		health: 10

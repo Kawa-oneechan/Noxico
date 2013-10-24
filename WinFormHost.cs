@@ -87,7 +87,8 @@ namespace Noxico
 		{
 			var fi = new FileInfo(Application.ExecutablePath);
 			var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-			return !((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || Application.ExecutablePath.StartsWith(pf));
+			var isAdmin = UacHelper.IsProcessElevated;
+			return !((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || !isAdmin);
 		}
 	}
 
@@ -200,7 +201,31 @@ namespace Noxico
 					if (!File.Exists(reqDll))
 						throw new FileNotFoundException("Required DLL " + reqDll + " is missing.");
 
-				Mix.Initialize("Noxico");
+				try
+				{
+					Mix.Initialize("Noxico");
+				}
+				catch (UnauthorizedAccessException)
+				{
+					if (!UacHelper.IsProcessElevated)
+					{
+						var proc = new System.Diagnostics.ProcessStartInfo();
+						proc.UseShellExecute = true;
+						proc.WorkingDirectory = Environment.CurrentDirectory;
+						proc.FileName = Application.ExecutablePath;
+						proc.Verb = "runas";
+						try
+						{
+							System.Diagnostics.Process.Start(proc);
+						}
+						catch
+						{
+						}
+					}
+					Close();
+					return;
+				}
+
 				if (!Mix.FileExists("credits.txt"))
 				{
 					SystemMessageBox.Show(this, "Could not find game data. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
