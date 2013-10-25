@@ -332,42 +332,20 @@ namespace Noxico
 			{
 				var ch = text[i];
 				var nextCh = (i < text.Length - 1) ? text[i + 1] : '\0';
-				if (ch == '<')
+				if (ch == '<' && nextCh == 'c')
 				{
-					if (nextCh == 'c')
+					var colorToken = new StringBuilder();
+					for (var j = i + 2; j < text.Length; j++)
 					{
-						var colorToken = new StringBuilder();
-						for (var j = i + 2; j < text.Length; j++)
+						if (text[j] == '>')
 						{
-							if (text[j] == '>')
-							{
-								color = Color.FromName(colorToken.ToString());
-								i = j;
-								break;
-							}
-							colorToken.Append(text[j]);
+							color = Color.FromName(colorToken.ToString());
+							i = j;
+							break;
 						}
-						continue;
+						colorToken.Append(text[j]);
 					}
-					else if (nextCh == 'g')
-					{
-						var glyphToken = new StringBuilder();
-						for (var j = i + 2; j < text.Length; j++)
-						{
-							if (text[j] == '>')
-							{
-								ch = (char)int.Parse(glyphToken.ToString(), NumberStyles.HexNumber);
-								i = j;
-								break;
-							}
-							glyphToken.Append(text[j]);
-						}
-					}
-				}
-				if (ch == '&' && nextCh == '#' && text[i + 2] == 'x' && text[i + 7] == ';')
-				{
-					ch = (char)int.Parse(text.Substring(i + 3, 4), NumberStyles.HexNumber);
-					i += 7;
+					continue;
 				}
 
 				if ((ch == '\r' && nextCh != '\n') || ch == '\n')
@@ -579,6 +557,23 @@ namespace Noxico
 				}
 			}
 			return ret.ToString();
+		}
+
+		public static string FoldEntities(this string text)
+		{
+			var tag = new Regex(@"\<g(?<chr>\w{1,4})>");
+			var entity = new Regex(@"&#x(?<chr>\w{1,4});");
+			while (tag.IsMatch(text))
+			{
+				var match = tag.Match(text);
+				text = text.Replace(match.Value, ((char)int.Parse(match.Groups["chr"].Value, NumberStyles.HexNumber)).ToString());
+			}
+			while (entity.IsMatch(text))
+			{
+				var match = entity.Match(text);
+				text = text.Replace(match.Value, ((char)int.Parse(match.Groups["chr"].Value, NumberStyles.HexNumber)).ToString());
+			}
+			return text;
 		}
 
 		/// <summary>

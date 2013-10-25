@@ -495,6 +495,7 @@ namespace Noxico
 		{
 			if (!text.IsNormalized())
 				text = text.Normalize();
+			text = text.FoldEntities();
 
 			var rx = col;
 			for (var i = 0; i < text.Length; i++)
@@ -519,16 +520,10 @@ namespace Noxico
 							continue;
 						if (tag[0] == 'c')
 						{
-							var match = Regex.Match(tag, @"c(?:(?:(?<fore>\w+)(?:(?:,(?<back>\w+))?))?)");
+							var match = Regex.Match(tag, @"c(?<fore>\w+)(?:,(?<back>\w+))?");
 							foregroundColor = !string.IsNullOrEmpty(match.Groups["fore"].Value) ? Color.FromName(match.Groups["fore"].Value) : Color.Silver;
 							backgroundColor = !string.IsNullOrEmpty(match.Groups["back"].Value) ? Color.FromName(match.Groups["back"].Value) : Color.Transparent;
 							continue;
-						}
-						else if (tag[0] == 'g')
-						{
-							var match = Regex.Match(tag, @"g(?:(?:(?<chr>\w{1,4}))?)");
-							var chr = int.Parse(match.Groups["chr"].Value, System.Globalization.NumberStyles.HexNumber);
-							c = (char)chr;
 						}
 					}
 				}
