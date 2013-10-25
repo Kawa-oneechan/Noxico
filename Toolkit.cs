@@ -327,10 +327,49 @@ namespace Noxico
 			var spaceAfter = false;
 			var mandatory = false;
 			var softHyphen = false;
+			var color = Color.Transparent;
 			for (var i = 0; i < text.Length; i++)
 			{
 				var ch = text[i];
 				var nextCh = (i < text.Length - 1) ? text[i + 1] : '\0';
+				if (ch == '<')
+				{
+					if (nextCh == 'c')
+					{
+						var colorToken = new StringBuilder();
+						for (var j = i + 2; j < text.Length; j++)
+						{
+							if (text[j] == '>')
+							{
+								color = Color.FromName(colorToken.ToString());
+								i = j;
+								break;
+							}
+							colorToken.Append(text[j]);
+						}
+						continue;
+					}
+					else if (nextCh == 'g')
+					{
+						var glyphToken = new StringBuilder();
+						for (var j = i + 2; j < text.Length; j++)
+						{
+							if (text[j] == '>')
+							{
+								ch = (char)int.Parse(glyphToken.ToString(), NumberStyles.HexNumber);
+								i = j;
+								break;
+							}
+							glyphToken.Append(text[j]);
+						}
+					}
+				}
+				if (ch == '&' && nextCh == '#' && text[i + 2] == 'x' && text[i + 7] == ';')
+				{
+					ch = (char)int.Parse(text.Substring(i + 3, 4), NumberStyles.HexNumber);
+					i += 7;
+				}
+
 				if ((ch == '\r' && nextCh != '\n') || ch == '\n')
 				{
 					breakIt = true;
@@ -363,6 +402,7 @@ namespace Noxico
 						SpaceAfter = spaceAfter,
 						MandatoryBreak = mandatory,
 						SoftHyphen = softHyphen,
+						Color = color,
 					};
 					breakIt = false;
 					spaceAfter = false;
@@ -379,10 +419,13 @@ namespace Noxico
 					Content = currentWord.ToString().Trim(),
 					SpaceAfter = currentWord.ToString().EndsWith(" "),
 					MandatoryBreak = false,
+					SoftHyphen = softHyphen,
+					Color = color,
 				};
 				words.Add(newWord);
 			}
 
+			#region
 			//Automatic hyphenation temporarily disabled.
 			/*
 			if (hyphenationRules == null)
@@ -429,15 +472,24 @@ namespace Noxico
 				words[i] = word;
 			}
 			*/
+			#endregion
 
 			var line = new StringBuilder();
 			var spaceLeft = length;
+			color = Color.Transparent;
 			for (var i = 0; i < words.Count; i++)
 			{
 				var word = words[i];
 				var next = (i < words.Count - 1) ? words[i + 1] : null;
 
 				//Check for words longer than length? Should not happen with autohyphenator.
+
+				//Reinsert color change without changing line length.
+				if (word.Color != color)
+				{
+					color = word.Color;
+					line.AppendFormat("<c{0}>", color.Name);
+				}
 
 				if (word.MandatoryBreak)
 				{
@@ -1211,6 +1263,7 @@ namespace Noxico
 			public bool SoftHyphen { get; set; }
 			public bool MandatoryBreak { get; set; }
 			public int Length { get { return Content.Length; } }
+			public Color Color { get; set; }
 			public override string ToString()
 			{
 				return string.Format("[\"{0}\", {1}, {2}]", Content, SpaceAfter, MandatoryBreak);
