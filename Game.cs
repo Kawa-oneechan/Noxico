@@ -208,6 +208,17 @@ namespace Noxico
 			CurrentBoard = new Board();
 			this.Player = new Player();
 			Introduction.Title();
+
+			/*
+			var pervA = new BoardChar(Character.Generate("human", Gender.Male));
+			var pervB = new BoardChar(Character.Generate("goblin", Gender.Male));
+			SexManager.Engage(pervA, pervB);
+			var results = SexManager.GetPossibilities(pervA, pervB);
+			var result = SexManager.GetResult("pin_down", pervA, pervB);
+			SexManager.Apply(result, pervA, pervB, new Action<string>(x => Console.WriteLine("--> {0}", x)));
+			result = SexManager.GetResult("struggle", pervB, pervA);
+			SexManager.Apply(result, pervB, pervA, new Action<string>(x => Console.WriteLine("--> {0}", x)));
+			*/
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false)
