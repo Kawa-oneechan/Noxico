@@ -531,8 +531,12 @@ namespace Noxico
 			return original;
 		}
 
-		private static string ApplyTokens(string message)
+		public static string ApplyTokens(string message, Character top = null, Character bottom = null)
 		{
+			if (top == null)
+				top = SceneSystem.top;
+			if (bottom == null)
+				bottom = SceneSystem.bottom;
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
 			var tIP = player == top;
 			#region Definitions

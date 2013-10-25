@@ -8,7 +8,7 @@ namespace Noxico
 	public static class SexManager
 	{
 		//TODO: use XML file to create this.
-		private static List<SexChoice> choices = new List<SexChoice>()
+		/* private static List<SexChoice> choices = new List<SexChoice>()
 		{
 			new SexChoice()
 			{
@@ -104,7 +104,23 @@ namespace Noxico
 					"consentual",
 				},
 			},
-		};
+		}; */
+		private static List<Token> choices;
+		
+		private static void LoadChoices()
+		{
+			if (choices != null)
+				return;
+			choices = Mix.GetTokenTree("sex.tml");
+			foreach (var choice in choices.Where(t => t.Name == "choice"))
+			{
+				var n = choice.GetToken("_n") ?? choice.AddToken("_n");
+				if (string.IsNullOrWhiteSpace(n.Text))
+					n.Text = choice.Text.Replace('_', ' ').Titlecase();
+				if (!choice.HasToken("time"))
+					choice.AddToken("time", 1000);
+			}
+		}
 
 		/// <summary>
 		/// Returns a map of possible actions for a participant to pick from.
@@ -114,16 +130,66 @@ namespace Noxico
 		/// <returns>Possible actions by ID to pass to GetResult</returns>
 		public static Dictionary<object, string> GetPossibilities(BoardChar actor, BoardChar target)
 		{
+			if (choices == null)
+				LoadChoices();
 			var actors = new[] { actor, target };
-			var possibilities = choices.Where(c => c.LimitsOkay(actors));
+			var possibilities = new List<Token>();
+			foreach (var choice in choices.Where(c => c.Name == "choice"))
+			{
+				if (LimitsOkay(actors, choice))
+					possibilities.Add(choice);
+			}
+			//var possibilities = choices.(c => c.Name == "choice" && LimitsOkay(actors, c));
 			var result = new Dictionary<object, string>();
 			foreach (var possibility in possibilities)
 			{
-				if (result.ContainsKey(possibility.ID))
+				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.ID, string.IsNullOrWhiteSpace(possibility.ListAs) ? possibility.ID : possibility.ListAs);
+				result.Add(possibility.Text, possibility.GetToken("_n").Text);
 			}
 			return result;
+		}
+
+		private static bool LimitsOkay(BoardChar[] actors, Token c)
+		{
+			var limitations = c.GetToken("limitations");
+			if (limitations == null || limitations.Tokens.Count == 0)
+				return true; //assume so
+			foreach (var limit in limitations.Tokens)
+			{
+				if (limit.Name == "consentual")
+				{
+					//TODO
+				}
+				else if (limit.Name == "not")
+				{
+					var check = limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+					var target = int.Parse(check[0]);
+					var path = check[1];
+					if (actors[target].Character.Path(path) != null)
+						return false;
+				}
+				else if (limit.Name == "yes")
+				{
+					var check = limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+					var target = int.Parse(check[0]);
+					var path = check[1];
+					if (actors[target].Character.Path(path) == null)
+						return false;
+				}
+				else if (limit.Name == "hastits")
+				{
+					var target = int.Parse(limit.Text);
+					var tits = actors[target].Character.GetBreastSizes();
+					if (tits.Length == 0)
+						return false;
+					if (tits.Average() < 0.2)
+						return false;
+				}
+				//TODO: add capacity checks
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -133,22 +199,14 @@ namespace Noxico
 		/// <param name="actor">The participating actor</param>
 		/// <param name="target">The target of the participant's affection</param>
 		/// <returns>A SexResult object encoding the results of the action</returns>
-		public static SexResult GetResult(string id, BoardChar actor, BoardChar target)
+		public static Token GetResult(string id, BoardChar actor, BoardChar target)
 		{
 			var actors = new[] { actor, target };
-			var possibilities = choices.Where(c => c.ID == id && c.LimitsOkay(actors)).ToArray();
+			var possibilities = choices.FindAll(c => c.Text == id && LimitsOkay(actors, c)).ToArray();
 			if (possibilities.Length == 0)
-				throw new NullReferenceException(string.Format("Could not find a SexChoice named \"{0}\".", id));
+				throw new NullReferenceException(string.Format("Could not find a sex choice named \"{0}\".", id));
 			var choice = possibilities[Random.Next(possibilities.Length)];
-			var result = new SexResult()
-			{
-				ID = choice.ID,
-				Message = choice.Message,
-				Actors = actors,
-				Actions = choice.Actions,
-				Time = choice.Time == 0 ? 1000 : choice.Time,
-			};
-			return result;
+			return choice;
 		}
 
 		public static void Engage(BoardChar actor, BoardChar target)
@@ -163,6 +221,85 @@ namespace Noxico
 			target.Character.RemoveAll("havingsex");
 			actor.Character.AddToken("havingsex", 0, target.ID);
 			target.Character.AddToken("havingsex", 0, actor.ID);
+		}
+
+		public static void Apply(Token result, BoardChar actor, BoardChar target, Action<string> writer)
+		{
+			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
+			if (effects == null || effects.Tokens.Count == 0)
+				return;
+			var actors = new[] { actor, target };
+			foreach (var effect in effects.Tokens)
+			{
+				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] {} : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				if (effect.Name == "break")
+				{
+					foreach (var act in actors)
+						act.Character.RemoveAll("havingsex");
+					return;
+				}
+				else if (effect.Name == "add")
+				{
+					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
+					if (!t.HasToken(check[1]))
+						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
+					else if (check.Length > 2)
+						t.GetToken(check[1]).Value = float.Parse(check[2]);
+				}
+				else if (effect.Name == "remove")
+				{
+					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
+					if (t.HasToken(check[1]))
+						t.RemoveToken(check[1]);
+				}
+				else if (effect.Name == "add!")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					if (!t.HasToken(check[1]))
+						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
+					else if (check.Length > 2)
+						t.GetToken(check[1]).Value = float.Parse(check[2]);
+				}
+				else if (effect.Name == "remove!")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					if (t.HasToken(check[1]))
+						t.RemoveToken(check[1]);
+				}
+				else if (effect.Name == "message")
+				{
+					var source = effect.GetToken((actor is Player) ? "first" : (target is Player) ? "second" : "third");
+					if (source == null)
+						continue;
+					var message = source.Tokens[Random.Next(source.Tokens.Count)].Text;
+					message = SceneSystem.ApplyTokens(message, actor.Character, target.Character);
+					writer(message);
+				}
+				else if (effect.Name == "roll")
+				{
+					float a, b;
+					if (!float.TryParse(check[0], out a))
+					{
+						Stat stat;
+						if (Enum.TryParse<Stat>(check[0], true, out stat))
+							a = actors[0].Character.GetStat(stat);
+						else
+							a = actors[0].Character.GetSkillLevel(check[0]);
+					}
+					if (!float.TryParse(check[1], out b))
+					{
+						Stat stat;
+						if (Enum.TryParse<Stat>(check[1], true, out stat))
+							b = actors[1].Character.GetStat(stat);
+						else
+							b = actors[1].Character.GetSkillLevel(check[0]);
+					}
+					if (a >= b && effect.HasToken("win"))
+						Apply(effect.GetToken("win"), actor, target, writer);
+					else if (effect.HasToken("lose"))
+						Apply(effect.GetToken("lose"), actor, target, writer);
+				}
+			}
 		}
 	}
 
@@ -194,8 +331,8 @@ namespace Noxico
 						if (action == null)
 							action = "Wait";
 						var result = SexManager.GetResult(action, this, sexPartner);
-						result.Apply(new Action<string>(x => NoxicoGame.AddMessage(x)));
-						this.Energy -= result.Time;
+						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
+						this.Energy -= (int)result.GetToken("time").Value;
 					}
 				);
 			}
@@ -204,14 +341,15 @@ namespace Noxico
 				var keys = possibilities.Keys.Select(p => p as string).ToArray();
 				var choice = Toolkit.PickOne(keys);
 				var result = SexManager.GetResult(choice, this, sexPartner);
-				result.Apply(new Action<string>(x => NoxicoGame.AddMessage(x)));
-				this.Energy -= result.Time;
+				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
+				this.Energy -= (int)result.GetToken("time").Value;
 			}
 
 			return true;
 		}
 	}
 
+	/*
 	public class SexChoice
 	{
 		public string ID { get; set; }
@@ -253,7 +391,9 @@ namespace Noxico
 			return true;
 		}
 	}
+	 */
 
+	/*
 	public class SexResult
 	{
 		public string ID { get; set; }
@@ -425,4 +565,5 @@ namespace Noxico
 			return true;
 		}
 	}
+	*/
 }
