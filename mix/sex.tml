@@ -33,7 +33,7 @@ choice: cuddle
 				$: You rub your body against [b:name].
 			second
 				$: [t:name] cuddles up to you.
-				$: [t:name]	rubs [t:his] body against you.
+				$: [t:name] rubs [t:his] body against you.
 			third
 				$: [t:name] cuddles up to [b:name].
 
