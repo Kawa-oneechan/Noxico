@@ -159,6 +159,16 @@ namespace Noxico
 			{
 				if (limit.Name == "consentual")
 				{
+					if (!actors[1].Character.HasToken("helpless"))
+						return false;
+				}
+				else if (limit.Name == "masturbating")
+				{
+					if (actors[0] != actors[1])
+						return false;
+				}
+				else if (limit.Name == "item")
+				{
 					//TODO
 				}
 				else if (limit.Name == "not")
@@ -392,178 +402,4 @@ namespace Noxico
 		}
 	}
 	 */
-
-	/*
-	public class SexResult
-	{
-		public string ID { get; set; }
-		public string Message { get; set; }
-		public string[] FromHere { get; set; }
-		public BoardChar[] Actors { get; set; }
-		public SexAction[] Actions { get; set; }
-		public int Time { get; set; }
-		public bool Apply(Action<string> writer)
-		{
-			//writer(Message);
-			writer(ID);
-			if (Actions == null)
-				return true;
-			foreach (var action in Actions)
-			{
-				if (action is SexActionMessage)
-				{
-					((SexActionMessage)action).Apply(writer);
-					continue;
-				}
-				if (!action.Apply(Actors))
-				{
-					if (action is SexActionFailable)
-						writer(((SexActionFailable)action).Failure);
-					return true;
-				}
-			}
-			return true;
-		}
-	}
-
-	public class SexAction
-	{
-		public int ActorNum { get; set; }
-		public virtual bool Apply(BoardChar[] actors)
-		{
-			if (ActorNum >= actors.Length || ActorNum < 0)
-				throw new IndexOutOfRangeException(string.Format("Actor index on SexAction out of range -- {0} actors, {1} requested.", actors.Length, ActorNum));
-			return true;
-		}
-	}
-
-	public class SexActionMessage : SexAction
-	{
-		public string Message { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			throw new Exception("Kawa! Call the other one!");
-		}
-		public void Apply(Action<string> writer)
-		{
-			writer(Message);
-		}
-	}
-
-	public class SexActionBreak : SexAction
-	{
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			foreach (var actor in actors)
-				actor.Character.RemoveAll("havingsex");
-			return true;
-		}
-	}
-
-	public class SexActionFailable : SexAction
-	{
-		public string Failure { get; set; }
-	}
-
-	public class SexActionCompareAgainst : SexActionFailable
-	{
-		public int AgainstNum { get; set; }
-		public Stat Stat { get; set; }
-		public Stat AgainstStat { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			if (actors[ActorNum].Character.GetStat(Stat) > actors[AgainstNum].Character.GetStat(AgainstStat))
-				return true;			
-			return false;
-		}
-	}
-
-	public class SexActionTokenIncValue : SexAction
-	{
-		public string Path { get; set; }
-		public float Delta { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			var token = actors[ActorNum].Character.Path(Path);
-			if (token == null)
-				throw new Exception(string.Format("Tried to apply SexActionTokenIncValue but token {0} not found.", Path));
-			token.Value += Delta;
-			return true;
-		}
-	}
-
-	public class SexActionTokenSetValue : SexAction
-	{
-		public string Path { get; set; }
-		public float Value { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			var token = actors[ActorNum].Character.Path(Path);
-			if (token == null)
-				throw new Exception(string.Format("Tried to apply SexActionTokenSetValue but token {0} not found.", Path));
-			token.Value = Value;
-			return true;
-		}
-	}
-
-	public class SexActionTokenSetText : SexAction
-	{
-		public string Path { get; set; }
-		public string Text { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			var token = actors[ActorNum].Character.Path(Path);
-			if (token == null)
-				throw new Exception(string.Format("Tried to apply SexActionTokenSetText but token {0} not found.", Path));
-			token.Text = Text;
-			return true;
-		}
-	}
-
-	public class SexActionTokenAdd : SexAction
-	{
-		public string Path { get; set; }
-		public string Name { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			if (string.IsNullOrWhiteSpace(Path))
-				actors[ActorNum].Character.AddToken(Name);
-			else
-			{
-				var token = actors[ActorNum].Character.Path(Path);
-				if (token == null)
-					throw new Exception(string.Format("Tried to apply SexActionTokenAdd but token {0} not found.", Path));
-				if (!token.HasToken(Name))
-					token.AddToken(Name);
-			}
-			return true;
-		}
-	}
-
-	public class SexActionTokenRemove : SexAction
-	{
-		public string Path { get; set; }
-		public string Name { get; set; }
-		public override bool Apply(BoardChar[] actors)
-		{
-			base.Apply(actors);
-			if (string.IsNullOrWhiteSpace(Path))
-				actors[ActorNum].Character.RemoveToken(Name);
-			else
-			{
-				var token = actors[ActorNum].Character.Path(Path);
-				if (token == null)
-					throw new Exception(string.Format("Tried to apply SexActionTokenRemove but token {0} not found.", Path));
-				token.RemoveToken(Name);
-			}
-			return true;
-		}
-	}
-	*/
 }

@@ -190,7 +190,7 @@ namespace Noxico
 							if (!boardChar.Character.HasToken("beast"))
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
-									options["rape"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
+									options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
 								else
 									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
 							}
@@ -275,18 +275,8 @@ namespace Noxico
 									break;
 
 								case "fuck":
-									//LETSDEVELOP
-									//if (PointingAt is Player)
-										//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(masturbate)");
-									//else if (PointingAt is BoardChar)
-										//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character);
-									//break;
 									if (PointingAt is BoardChar)
 										SexManager.Engage(player, (BoardChar)PointingAt);
-									break;
-
-								case "rape":
-									//SceneSystem.Engage(player.Character, ((BoardChar)PointingAt).Character, "(rape start)");
 									break;
 
 								case "shoot":
