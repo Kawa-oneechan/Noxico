@@ -222,7 +222,7 @@
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" /
+		<Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\sex.tml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
