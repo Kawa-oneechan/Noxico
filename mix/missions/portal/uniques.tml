@@ -1,4 +1,5 @@
-character: demonportal_nox, Demon Portal
+character: demonportal_nox
+	_n: Demon Portal
 	terms
 		generic: "demon portal"
 	ascii
@@ -59,7 +60,8 @@ character: demonportal_nox, Demon Portal
 			playerEntity.OpenBoard(target);
 		]]>
 
-character: demonportal_sera, Demon Portal
+character: demonportal_sera
+	_n: Demon Portal
 	terms
 		generic: "demon portal"
 	ascii

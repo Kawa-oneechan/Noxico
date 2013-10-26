@@ -264,15 +264,16 @@ namespace Noxico
 			var uniques = Mix.GetTokenTree("uniques.tml");
 
 			var newChar = new Character();
-			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id || t.Text.StartsWith(id + ",")));
+			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
 			if (planSource == null)
 				throw new ArgumentOutOfRangeException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
 			newChar.AddSet(planSource.Tokens);
-			var nameParts = planSource.Text.Split(',');
-			if (nameParts.Length > 1)
-				newChar.Name = new Name(nameParts[1].Trim());
+			newChar.AddToken("lootset_id", 0, id);
+			if (newChar.HasToken("_n"))
+				newChar.Name = new Name(newChar.GetToken("_n").Text);
 			else
-				newChar.Name = new Name(nameParts[0].Replace('_', ' '));
+				newChar.Name = new Name(id.Replace('_', ' ').Titlecase());
+			newChar.RemoveToken("_n");
 			if (planSource.HasToken("_a"))
 				newChar.A = planSource.GetToken("_a").Text;
 			else
@@ -587,12 +588,14 @@ namespace Noxico
 				RemoveToken("costume");
 			if (HasToken("beast"))
 				return;
+			if (!HasToken("lootset_id"))
+				AddToken("lootset_id", 0, ID);
 			var filters = new Dictionary<string, string>();
 			filters["gender"] = PreferredGender.ToString().ToLowerInvariant();
 			filters["board"] = Board.HackishBoardTypeThing;
 			filters["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "";
 			filters["name"] = this.Name.ToString(true);
-			filters["id"] = this.Name.ToID();
+			filters["id"] = this.GetToken("lootset_id").Text;
 			filters["bodymatch"] = this.GetClosestBodyplanMatch();
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();
@@ -633,6 +636,8 @@ namespace Noxico
 			}
 			foreach (var item in WorldGen.GetRandomLoot("npc", "food", filters))
 				inventory.AddToken(item);
+
+			this.RemoveToken("lootset_id");
 		}
 
 		public void StripInvalidItems()
