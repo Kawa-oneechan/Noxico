@@ -65,15 +65,15 @@ item: henshin_belt
 					}
 				}
 				var suit = inventory.AddToken("sentai_suit");
+				var helmet = inventory.AddToken("sentai_helmet");
 				var color = suit.AddToken("color");
 				color.Text = thisToken.HasToken("color") ? thisToken.GetToken("color").Text : "red";
 				suit.AddToken("equipped");
+				helmet.AddToken("equipped");
 				thisToken.AddToken("equipped");
 				var curseLock = thisToken.AddToken("cursed");
-				curseLock.AddToken("known");
-				curseLock.AddToken("hidden");
-				curseLock.Text = "It's stuck on you. Try unmorphing instead.";
-				curseLock = suit.AddToken("cursed");
+				suit.AddToken(curseLock);
+				helmet.AddToken(curseLock);
 				curseLock.AddToken("known");
 				curseLock.AddToken("hidden");
 				curseLock.Text = "It's stuck on you. Try unmorphing instead.";
@@ -84,6 +84,7 @@ item: henshin_belt
 				feedback = "You unmorph.";
 				var memory = thisToken.GetToken("memory");
 				inventory.RemoveToken("sentai_suit");
+				inventory.RemoveToken("sentai_helmet");
 				inventory.AddSet(memory.Tokens);
 				thisToken.RemoveToken("memory");
 				thisToken.RemoveToken("equipped");
@@ -800,6 +801,27 @@ item: sentai_suit
 	price: 300
 	ascii
 		char: U+2202
+	clothing
+	bodysuit
+	colored
+	joke
+item: sentai_helmet
+	_n: [color ]super sentai helmet
+	_u: [color ]power ranger helmet
+	equipable
+		hat
+		goggles
+		mask
+	weight
+		medium
+	identify: pop_culture
+	statbonus
+		charisma: 16
+		strength: 16
+	description: "todo"
+	price: 300
+	ascii
+		char: U+2205
 	clothing
 	bodysuit
 	colored

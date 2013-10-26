@@ -1,7 +1,7 @@
 Melfina
 Kawa
 mission.js
-uniques.xml
+uniques.tml
 scenesDlg.xml
-loot.xml
+loot.tml
 items.tml

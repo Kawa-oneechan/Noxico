@@ -491,26 +491,25 @@ namespace Noxico
 			return entranceBoard;
 		}
 
-		private static XmlDocument lootDoc;
-		public static List<XmlElement> GetLoots(string target, string type, Dictionary<string, string> filters = null)
+		private static List<Token> lootDoc;
+		public static List<Token> GetLoots(string target, string type, Dictionary<string, string> filters = null)
 		{
 			if (lootDoc == null)
-				lootDoc = Mix.GetXmlDocument("loot.xml", true);
-			var lootsets = new List<XmlElement>();
+				lootDoc = Mix.GetTokenTree("loot.tml");
+			var lootsets = new List<Token>();
 			if (filters == null)
 				filters = new Dictionary<string, string>();
-			foreach (var potentialSet in lootDoc.SelectNodes("//lootset[@target=\"" + target + "\"]").OfType<XmlElement>())
+			foreach (var potentialSet in lootDoc.Where(t => t.Name == "lootset" && t.GetToken("target").Text == target && t.GetToken("type").Text == type))
 			{
-				if (potentialSet.GetAttribute("type") != type)
-					continue;
-				var setsFilters = potentialSet.SelectNodes("filter").OfType<XmlElement>().ToList();
-				if (setsFilters.Count > 0)
+				//var setsFilters = potentialSet.SelectNodes("filter").OfType<XmlElement>().ToList();
+				var setsFilters = potentialSet.GetToken("filter");
+				if (setsFilters != null && setsFilters.Tokens.Count > 0)
 				{
 					var isOkay = true;
-					foreach (var f in setsFilters)
+					foreach (var f in setsFilters.Tokens)
 					{
-						var key = f.GetAttribute("key");
-						var value = f.GetAttribute("value");
+						var key = f.Name;
+						var value = f.Text;
 						if (filters.ContainsKey(key) && ((value[0] != '!' && filters[key] != value) || (value[0] == '!' && filters[key] == value.Substring(1))))
 						{
 							isOkay = false;
@@ -521,7 +520,7 @@ namespace Noxico
 						continue;
 				}
 				lootsets.Add(potentialSet);
-				if (potentialSet.HasAttribute("final"))
+				if (potentialSet.HasToken("final"))
 					break;
 			}
 			return lootsets;
@@ -536,11 +535,81 @@ namespace Noxico
 				{
 					if (cols.Count == 0)
 						cols.AddRange(c.Split(',').Select(x => x.Trim()).ToList());
-					var color = cols[Random.Next(cols.Count)];
-					cols.Remove(color);
-					pal.Add(color);
+					var co = cols[Random.Next(cols.Count)];
+					cols.Remove(co);
+					pal.Add(co);
 				}
 				return pal;
+			});
+
+			var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
+			var color = 0;
+
+			Func<string, Token> parseOption = new Func<string, Token>(option =>
+			{
+				if (option[0] == '@')
+				{
+					var possibilities = new List<Token>();
+					option = option.Substring(1);
+					if (option[0] == '-')
+					{
+						//simple negatory token check
+						var items = NoxicoGame.KnownItems.Where(i => (!i.HasToken(option))).ToList();
+						if (items.Count > 0)
+							possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
+					}
+					else if (option.Contains('-') || option.Contains('+'))
+					{
+						//complicated token check
+						var fuckery = option.Replace("+", ",").Replace("-", ",-").Split(',');
+						foreach (var knownItem in NoxicoGame.KnownItems)
+						{
+							var includeThis = false;
+							foreach (var fucking in fuckery)
+							{
+								if (fucking[0] != '-' && knownItem.HasToken(fucking))
+									includeThis = true;
+								else if (knownItem.HasToken(fucking.Substring(1)))
+								{
+									includeThis = false;
+									break;
+								}
+							}
+
+							if (includeThis)
+							{
+								var newPoss = new Token(knownItem.ID);
+								if (knownItem.HasToken("colored"))
+									newPoss.AddToken("color", 0, colors[color]);
+								ApplyBonusMaybe(newPoss, knownItem);
+								possibilities.Add(newPoss);
+							}
+						}
+					}
+					else
+					{
+						//simple token check
+						var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
+						if (items.Count > 0)
+							possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
+					}
+					if (possibilities.Count > 0)
+						return possibilities[Random.Next(possibilities.Count)];
+				}
+				else
+				{
+					//direct item ID
+					//ascertain existance first, and maybe add a color or BUC state.
+					var item = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == option);
+					if (item != null)
+					{
+						var newPoss = new Token(option);
+						if (item.HasToken("colored"))
+							newPoss.AddToken("color", 0, colors[color]);
+						return newPoss;
+					}
+				}
+				return null;
 			});
 
 			var loot = new List<Token>();
@@ -548,28 +617,50 @@ namespace Noxico
 			if (lootsets.Count == 0)
 				return loot;
 			var lootset = lootsets[Random.Next(lootsets.Count)];
-			var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
-			foreach (var of in lootset.ChildNodes.OfType<XmlElement>())
+			if (!lootset.HasToken("someof") && !lootset.HasToken("oneof") && !lootset.HasToken("oneofeach"))
+				return loot;
+			foreach (var of in lootset.Tokens)
 			{
 				var options = new List<string>();
 				var min = 1;
 				var max = 1;
-				var color = 0;
+				color = 0;
 				if (of.Name == "colors")
 				{
-					colors = getPal(of.InnerText);
+					colors = getPal(string.Join(",", of.Tokens.Select(x => x.Name).ToList()));
 					continue;
 				}
 				else if (of.Name == "oneof")
 				{
-					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
-					color = of.HasAttribute("color") ? int.Parse(of.GetAttribute("color")) - 1 : 0;
+					options = of.Tokens.Select(x => x.Name).Where(x => x[0] != '$').ToList();
+					color = of.HasToken("$color") ? (int)of.GetToken("$color").Value - 1 : 0;
 				}
 				else if (of.Name == "someof")
 				{
-					options = of.InnerText.Split(',').Select(x => x.Trim()).ToList();
-					min = int.Parse(of.GetAttribute("min"));
-					max = int.Parse(of.GetAttribute("max"));
+					options = of.Tokens.Select(x => x.Name).Where(x => x[0] != '$').ToList();
+					if (of.Text.Contains('-'))
+					{
+						var minmax = of.Text.Split('-');
+						min = int.Parse(minmax[0]);
+						max = int.Parse(minmax[1]);
+					}
+					else
+						min = max = int.Parse(of.Text);
+				}
+				else if (of.Name == "oneofeach")
+				{
+					foreach (var item in of.Tokens)
+					{
+						if (item.Name == "$color")
+						{
+							color = (int)of.GetToken("$color").Value - 1;
+							continue;
+						}
+						var thing = parseOption(item.Name);
+						if (thing != null)
+							loot.Add(thing);
+					}
+					continue;
 				}
 				else
 					continue;
@@ -577,68 +668,9 @@ namespace Noxico
 				while (amount > 0)
 				{
 					var option = options[Random.Next(options.Count)];
-					if (option[0] == '@')
-					{
-						var possibilities = new List<Token>();
-						option = option.Substring(1);
-						if (option[0] == '-')
-						{
-							//simple negatory token check
-							var items = NoxicoGame.KnownItems.Where(i => (!i.HasToken(option))).ToList();
-							if (items.Count > 0)
-								possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
-						}
-						else if (option.Contains('-') || option.Contains('+'))
-						{
-							//complicated token check
-							var fuckery = option.Replace("+", ",").Replace("-", ",-").Split(',');
-							foreach (var knownItem in NoxicoGame.KnownItems)
-							{
-								var includeThis = false;
-								foreach (var fucking in fuckery)
-								{
-									if (fucking[0] != '-' && knownItem.HasToken(fucking))
-										includeThis = true;
-									else if (knownItem.HasToken(fucking.Substring(1)))
-									{
-										includeThis = false;
-										break;
-									}
-								}
-
-								if (includeThis)
-								{
-									var newPoss = new Token(knownItem.ID);
-									if (knownItem.HasToken("colored"))
-										newPoss.AddToken("color", 0, colors[color]);
-									ApplyBonusMaybe(newPoss, knownItem);
-									possibilities.Add(newPoss);
-								}
-							}
-						}
-						else
-						{
-							//simple token check
-							var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
-							if (items.Count > 0)
-								possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
-						}
-						if (possibilities.Count > 0)
-							loot.Add(possibilities[Random.Next(possibilities.Count)]);
-					}
-					else
-					{
-						//direct item ID
-						//ascertain existance first, and maybe add a color or BUC state.
-						var item = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == option);
-						if (item != null)
-						{
-							var newPoss = new Token(option);
-							if (item.HasToken("colored"))
-								newPoss.AddToken("color", 0, colors[color]);
-							loot.Add(newPoss);
-						}
-					}
+					var toAdd = parseOption(option);
+					if (toAdd != null)
+						loot.Add(toAdd);
 					amount--;
 				}
 			}

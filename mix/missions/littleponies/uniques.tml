@@ -1,4 +1,5 @@
-character: PonyLeader, Lofty Goal
+character: ponyleader
+	_n: Lofty Goal
 	culture: equestrian
 	invisiblegender
 	terms

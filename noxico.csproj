@@ -187,12 +187,15 @@
     <Content Include="mix\chargen.png" />
     <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.xml" />
-    <Content Include="mix\loot.xml" />
+    <Content Include="mix\loot.tml" />
     <Content Include="mix\missions\chelsie\lairhouse.png" />
     <Content Include="mix\missions\chelsie\mission.js" />
     <Content Include="mix\missions\chelsie\manifest.txt" />
     <Content Include="mix\missions\chelsie\uniques.tml" />
-    <Content Include="mix\missions\melfina\loot.xml" />
+    <Content Include="mix\missions\chelsie\loot.tml" />
+    <Content Include="mix\missions\chelsie\items.tml" />
+    <Content Include="mix\missions\melfina\loot.tml" />
+    <Content Include="mix\missions\melfina\items.tml" />
     <Content Include="mix\missions\melfina\manifest.txt" />
     <Content Include="mix\missions\melfina\mission.js" />
     <Content Include="mix\missions\melfina\scenesDlg.xml" />
@@ -207,7 +210,8 @@
     <Content Include="mix\missions\portal\platform2.png" />
     <Content Include="mix\missions\portal\road.png" />
     <Content Include="mix\missions\portal\uniques.tml" />
-    <Content Include="mix\missions\urta\loot.xml" />
+    <Content Include="mix\missions\urta\loot.tml" />
+    <Content Include="mix\missions\urta\items.tml" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\missions\urta\mission.js" />
     <Content Include="mix\missions\urta\scenesDlg.xml" />
@@ -222,7 +226,7 @@
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
-		<Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
+    <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\sex.tml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
@@ -234,6 +238,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="mix\items.tml" />
+    <None Include="mix\missions\chelsie\items.tml" />
+    <None Include="mix\missions\chelsie\loot.tml" />
     <None Include="mix\missions\melfina\items.tml" />
     <None Include="mix\missions\urta\items.tml" />
     <None Include="Resources\Noxico.ico" />
