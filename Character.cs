@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 namespace Noxico
 {
@@ -24,7 +23,6 @@ namespace Noxico
 
 	public class Character : TokenCarrier
 	{
-		//private static XmlDocument bodyPlansDocument, uniquesDocument;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
@@ -372,7 +370,7 @@ namespace Noxico
 				if (newChar.HasToken("namegen"))
 				{
 					var namegen = newChar.GetToken("namegen").Text;
-					if (Culture.NameGens.Contains(namegen))
+					if (Culture.NameGens.ContainsKey(namegen))
 						newChar.Name.NameGen = namegen;
 				}
 				if (idGender == Gender.Female)
@@ -2960,7 +2958,7 @@ namespace Noxico
 			newName.Surname = stream.ReadString();
 			newName.Title = stream.ReadString();
 			var namegen = stream.ReadString();
-			if (Culture.NameGens.Contains(namegen))
+			if (Culture.NameGens.ContainsKey(namegen))
 				newName.NameGen = namegen;
 			return newName;
 		}

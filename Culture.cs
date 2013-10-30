@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using System.Text;
 
 namespace Noxico
 {
@@ -12,7 +12,6 @@ namespace Noxico
 			Male, Female, Surname, Town, Location
 		}
 
-		private static XmlDocument xDoc;
 		public string ID { get; private set; }
 		public string TownName { get; private set; }
 		public string[] Bodyplans { get; private set; }
@@ -23,10 +22,10 @@ namespace Noxico
 		public static List<Deity> Deities;
 
 		public static Culture DefaultCulture;
-		public static string DefaultNameGen;
+		public static Token DefaultNameGen;
 
 		public static Dictionary<string, Culture> Cultures;
-		public static List<string> NameGens;
+		public static Dictionary<string, Token> NameGens;
 
 		static Culture()
 		{
@@ -38,111 +37,95 @@ namespace Noxico
 			
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
-			NameGens = new List<string>();
-			xDoc = Mix.GetXmlDocument("culture.xml");
-			foreach (var c in xDoc.SelectNodes("//culture").OfType<XmlElement>())
-				Cultures.Add(c.GetAttribute("id"), Culture.FromXml(c));
+			NameGens = new Dictionary<string, Token>();
+			var cultures = Mix.GetTokenTree("culture.tml");
+			foreach (var c in cultures.Where(t => t.Name == "culture"))
+				Cultures.Add(c.Text, Culture.FromToken(c));
 			DefaultCulture = Cultures.ElementAt(0).Value;
-			foreach (var c in xDoc.SelectNodes("//namegen").OfType<XmlElement>())
-				NameGens.Add(c.GetAttribute("id"));
-			DefaultNameGen = NameGens[0];
+			foreach (var c in cultures.Where(t => t.Name == "namegen"))
+				NameGens.Add(c.Text, c);
+			DefaultNameGen = NameGens.ElementAt(0).Value;
 		}
 
-		public static Culture FromXml(XmlElement x)
+		public static Culture FromToken(Token t)
 		{
 			var nc = new Culture();
-			nc.ID = x.GetAttribute("id");
-			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
-			if (info == null)
-			{
-				Program.WriteLine("Culture \"{0}\" has no cultureinfo element.", nc.ID);
-				return nc;
-			}
-			var plans = new List<string>();
-			foreach (var plan in info.SelectSingleNode("bodyplans").ChildNodes.OfType<XmlElement>())
-				plans.Add(plan.GetAttribute("name"));
-			nc.Bodyplans = plans.ToArray();
-			var marriage = info.SelectSingleNode("marriage") as XmlElement;
-			var monogamous = info.SelectSingleNode("monogamous") as XmlElement;
-			var terms = info.SelectSingleNode("terms") as XmlElement;
-			if (marriage != null)
-				nc.Marriage = double.Parse(marriage.InnerText, System.Globalization.NumberStyles.Float);
-			if (monogamous != null)
-				nc.Monogamous = double.Parse(monogamous.InnerText, System.Globalization.NumberStyles.Float);
-			if (terms != null)
+			nc.ID = t.Text;
+			nc.Bodyplans = t.GetToken("bodyplans").Tokens.Select(x => x.Name).ToArray();
+			nc.Marriage = t.HasToken("marriage") ? t.GetToken("marriage").Value : 0.0f;
+			nc.Monogamous = t.HasToken("monogamous") ? t.GetToken("monogamous").Value : 0.0f;
+			if (t.HasToken("terms"))
 			{
 				nc.Terms = new Dictionary<string, string>();
-				foreach (var term in terms.ChildNodes.OfType<XmlElement>())
-					nc.Terms[term.GetAttribute("from")] = term.GetAttribute("to");
+				foreach (var term in t.GetToken("terms").Tokens)
+					nc.Terms[term.Name.Replace('_', ' ')] = term.Text;
 			}
 			return nc;
 		}
 
-		private static string[] TrySelect(string name, XmlNode parent)
-		{
-			var n = parent.SelectSingleNode(name);
-			if (n == null)
-				return new string[0];
-			return n.InnerText.Trim().Split(',');
-		}
-
 		public static string GetName(string id, NameType type)
 		{
-			if (string.IsNullOrWhiteSpace(id))
-				id = DefaultNameGen;
-			var namegen = "//namegen[@id='" + id + "']";
+			Func<Token, string[]> split = new Func<Token, string[]>(toSplit =>
+			{
+				if (toSplit == null || string.IsNullOrWhiteSpace(toSplit.Text))
+					return new string[0];
+				else
+					return toSplit.Text.Split(',').Select(x => x.Trim()).ToArray();
+			});
+
+			var namegen = DefaultNameGen;
+			if (!string.IsNullOrWhiteSpace(id) && NameGens.ContainsKey(id))
+				namegen = NameGens[id];
 			var sets = new Dictionary<string, string[]>();
-			var x = xDoc.SelectNodes(namegen + "/set");
-			foreach (var set in x.OfType<XmlElement>())
-				sets.Add(set.GetAttribute("id"), set.InnerText.Trim().Split(','));
+			foreach (var set in namegen.GetToken("sets").Tokens)
+				sets.Add(set.Name, split(set));
 			var typeName = type.ToString().ToLowerInvariant();
-			var typeSet = xDoc.SelectSingleNode(namegen + "/" + typeName) as XmlElement;
-			if (typeSet.HasAttribute("copy"))
-				return GetName(typeSet.GetAttribute("copy"), type);
+			var typeSet = namegen.GetToken(typeName);
+			if (typeSet == null)
+				return GetName(DefaultNameGen.Name, type);
+			if (typeSet.HasToken("copy"))
+				return GetName(typeSet.GetToken("copy").Text, type);
 
 			if (type == NameType.Surname)
 			{
-				var patro = typeSet.SelectSingleNode("patronymic") as XmlElement;
+				var patro = typeSet.GetToken("patronymic");
 				if (patro != null)
-					return "#patronym/" + patro.GetAttribute("malesuffix") + "/" + patro.GetAttribute("femalesuffix");
+					return "#patronym/" + patro.GetToken("male").Text + "/" + patro.GetToken("female").Text;
 			}
 
-			var illegal = TrySelect("illegal", typeSet);
-			var rules = typeSet.SelectNodes("rules/rule");
+			var prohibit = split(typeSet.GetToken("prohibit"));
+			var rules = typeSet.Tokens.Where(x => x.Name == "rule").ToArray();
 			while (true)
 			{
-				var rule = rules[Random.Next(rules.Count)];
-				var name = "";
-				foreach (var part in rule.ChildNodes.OfType<XmlElement>())
+				var rule = rules[Random.Next(rules.Length)];
+				var name = new StringBuilder();
+				foreach (var part in rule.Tokens)
 				{
-					if (part.Name == "space")
+					if (part.Name == "_")
+						name.Append(' ');
+					else if (part.Name == "$")
+						name.Append(part.Text);
+					else if (sets.ContainsKey(part.Name))
 					{
-						name += ' ';
-						continue;
-					}
-					if (part.HasAttribute("chance"))
-					{
-						var chance = int.Parse(part.GetAttribute("chance"));
-						if (Random.Next(100) > chance)
+						if (part.Value > 0 && Random.Next(100) > part.Value)
 							continue;
+						var list = sets[part.Name];
+						var word = list[Random.Next(list.Length)];
+						name.Append(word);
 					}
-					if (!sets.ContainsKey(part.GetAttribute("id")))
-						continue;
-					var list = sets[part.GetAttribute("id")];
-					var word = list[Random.Next(list.Length)].Trim();
-					name += word;
 				}
 				var reject = false;
-				foreach (var i in illegal)
+				var lowerName = name.ToString().ToLowerInvariant();
+				foreach (var p in prohibit)
 				{
-					if (name.ToLowerInvariant().Contains(i.Trim()))
+					if (lowerName.Contains(p))
 					{
 						reject = true;
 						break;
 					}
 				}
 				if (!reject)
-					return name.Trim();
+					return name.ToString().Trim();
 			}
 		}
 
@@ -186,27 +169,7 @@ namespace Noxico
 			return GetSpeechFilter(Cultures[culture], original);
 		}
 	}
-
-	public class NameGenerator
-	{
-		public string ID;
-
-		public static NameGenerator FromXml(XmlElement x)
-		{
-			var ng = new NameGenerator();
-			ng.ID = x.GetAttribute("id");
-			var info = x.SelectSingleNode("cultureinfo") as XmlElement;
-			if (info == null)
-			{
-				Program.WriteLine("Culture \"{0}\" has no cultureinfo element.", ng.ID);
-				return ng;
-			}
-			return ng;
-		}
-
-
-	}
-
+	
 	public class Deity
 	{
 		public string Name { get; private set; }
@@ -215,18 +178,18 @@ namespace Noxico
 		public string DialogueHook { get; private set; }
 		public int SummonMonth { get; private set; }
 		public int SummonDay { get; private set; }
-		public Deity(Token x)
+		public Deity(Token t)
 		{
-			Name = x.HasToken("_n") ? x.GetToken("_n").Text : x.Text.Replace('_', ' ').Titlecase();
-			Color = Color.FromName(x.GetToken("color").Text);
+			Name = t.HasToken("_n") ? t.GetToken("_n").Text : t.Text.Replace('_', ' ').Titlecase();
+			Color = Color.FromName(t.GetToken("color").Text);
 			CanSummon = false;
-			var month = x.GetToken("month");
+			var month = t.GetToken("month");
 			if (month != null)
 			{
 				CanSummon = true;
 				SummonMonth = (int)month.Value - 1;
-				SummonDay = (int)x.GetToken("day").Value - 1;
-				DialogueHook = x.GetToken("dialogue").Text;
+				SummonDay = (int)t.GetToken("day").Value - 1;
+				DialogueHook = t.GetToken("dialogue").Text;
 			}
 		}
 		public override string ToString()

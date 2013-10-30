@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<deities>
-	<deity name="The Madman" color="navy">
-		<date month="6" day="26" />
-		<dialogue id="MadmanSummon" />
-	</deity>
-	<deity name="The Commander" color="green" />
-</deities>
