@@ -676,30 +676,32 @@ namespace Noxico
 			playerShip.AddToken("player");
 			pc.GetToken("ships").Tokens.Add(playerShip);
 
-			var traitsDoc = Mix.GetXmlDocument("bonustraits.xml");
-			var trait = traitsDoc.SelectSingleNode("//trait[@name=\"" + bonusTrait + "\"]");
+			var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
+			var trait = traitsDoc.FirstOrDefault(t => t.Name == "trait" && t.GetToken("display").Text == bonusTrait);
 			if (trait != null)
 			{
-				foreach (var bonus in trait.ChildNodes.OfType<XmlElement>())
+				foreach (var bonus in trait.Tokens)
 				{
+					if ((bonus.HasToken("men_only") && bioGender != Gender.Male) || (bonus.HasToken("women_only") && bioGender != Gender.Female))
+						continue;
+					if (bonus.HasToken("requires") && pc.Path(bonus.GetToken("requires").Text) == null)
+						continue;
+
 					switch (bonus.Name)
 					{
 						case "stat":
-							var increase = 20;
+							var increase = 20.0f;
 							var percent = true;
-							if (bonus.HasAttribute("value"))
+							if (bonus.HasToken("percent"))
 							{
-								var x = bonus.GetAttribute("value");
-								if (x.EndsWith("%"))
-								{
-									percent = true;
-									x = x.Remove(x.Length - 1);
-								}
-								else
-									percent = false;
-								increase = int.Parse(x);
+								increase = bonus.GetToken("percent").Value;
 							}
-							var stat = pc.GetToken(bonus.GetAttribute("id"));
+							else if (bonus.HasToken("increase"))
+							{
+								increase = bonus.GetToken("increase").Value;
+								percent = false;
+							}
+							var stat = pc.GetToken(bonus.Text);
 							var oldVal = stat.Value;
 							var newVal = oldVal + increase;
 							if (percent)
@@ -707,63 +709,45 @@ namespace Noxico
 							stat.Value = newVal;
 							break;
 						case "skill":
-							var skill = bonus.GetAttribute("name").Replace(' ', '_').ToLowerInvariant();
-							var by = bonus.HasAttribute("level") ? float.Parse(bonus.GetAttribute("level"), NumberStyles.Float) : 1.0f;
+							var skill = bonus.Text.Replace(' ', '_').ToLowerInvariant();
+							var by = bonus.HasToken("level") ? bonus.GetToken("level").Value : 1.0f;
 							var skillToken = pc.Path("skills/" + skill);
 							if (skillToken == null)
 								skillToken = pc.GetToken("skills").AddToken(skill);
 							skillToken.Value += by;
 							break;
 						case "rating":
-							var path = bonus.GetAttribute("id");
-							var v = bonus.GetAttribute("value");
-							var g = bonus.GetAttribute("gender");
-							var ifhas = bonus.GetAttribute("ifhas");
-							if (!string.IsNullOrWhiteSpace(ifhas) && pc.Path(ifhas) == null)
-								continue;
-							if ((g == "female" && bioGender != Gender.Female) || (g == "male" && bioGender != Gender.Male))
-								continue;
-							var plus = false;
-							percent = false;
-							if (v.EndsWith("%"))
-							{
-								percent = true;
-								v = v.Remove(v.Length - 1);
-							}
-							else if (v.StartsWith("+"))
-							{
-								plus = true;
-								v = v.Substring(1);
-							}
-							increase = int.Parse(v);
-							var aspect = pc.Path(path);
+							var aspect = pc.Path(bonus.Text);
 							if (aspect == null)
 								continue;
+							var valueToken = bonus.GetToken("value");
 							oldVal = aspect.Value;
-							if (plus)
-								newVal = oldVal + increase;
-							else if (percent)
-								newVal = oldVal + ((increase / 100.0f) * oldVal);
+							if (!string.IsNullOrWhiteSpace(valueToken.Text))
+							{
+								if (valueToken.Text.EndsWith("%"))
+								{
+									var percentage = int.Parse(valueToken.Text.Remove(valueToken.Text.Length - 1));
+									aspect.Value = (percentage / 100.0f) * oldVal;
+								}
+								else if (valueToken.Text.StartsWith("+"))
+								{
+									increase = int.Parse(valueToken.Text.Substring(1));
+									aspect.Value = oldVal + increase;
+								}
+							}
 							else
-								newVal = Math.Max(increase, oldVal);
-							aspect.Value = newVal;
+								aspect.Value = Math.Max(oldVal, valueToken.Value);
 							break;
 						case "token":
-							path = bonus.GetAttribute("id");
-							v = bonus.GetAttribute("value");
-							g = bonus.GetAttribute("gender");
-							if ((g == "female" && bioGender != Gender.Female) || (g == "male" && bioGender != Gender.Male))
-								continue;
-							var token = pc.Path(path);
-							if (token == null)
+							Token token;
+							if (bonus.Tokens.Count > 0)
 							{
-								if (path.Contains('/'))
-									continue;
-								token = pc.AddToken(path);
+								token = pc.Path(bonus.Tokens[0].Name);
+								if (token == null)
+									token = pc.AddToken(bonus.Tokens[0].Name);
+								token.Value = bonus.Tokens[0].Value;
+								token.Text = bonus.Tokens[0].Text;
 							}
-							var f = 0f;
-							if (float.TryParse(v, out f))
-								token.Value = f;
 							break;
 					}
 				}
