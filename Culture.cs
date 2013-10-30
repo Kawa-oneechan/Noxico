@@ -32,9 +32,9 @@ namespace Noxico
 		{
 			Program.WriteLine("Loading deities...");
 			Deities = new List<Deity>();
-			xDoc = Mix.GetXmlDocument("deities.xml");
-			foreach (var d in xDoc.SelectNodes("//deity").OfType<XmlElement>())
-				Deities.Add(new Deity(d)); 
+			var deities = Mix.GetTokenTree("deities.tml");
+			foreach (var deity in deities.Where(t => t.Name == "deity"))
+				Deities.Add(new Deity(deity));
 			
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
@@ -215,18 +215,18 @@ namespace Noxico
 		public string DialogueHook { get; private set; }
 		public int SummonMonth { get; private set; }
 		public int SummonDay { get; private set; }
-		public Deity(XmlElement x)
+		public Deity(Token x)
 		{
-			Name = x.GetAttribute("name");
-			Color = Color.FromName(x.GetAttribute("color"));
+			Name = x.HasToken("_n") ? x.GetToken("_n").Text : x.Text.Replace('_', ' ').Titlecase();
+			Color = Color.FromName(x.GetToken("color").Text);
 			CanSummon = false;
-			var summon = x.SelectSingleNode("date") as XmlElement;
-			if (summon != null)
+			var month = x.GetToken("month");
+			if (month != null)
 			{
 				CanSummon = true;
-				SummonMonth = int.Parse(summon.GetAttribute("month")) - 1;
-				SummonDay = int.Parse(summon.GetAttribute("day")) - 1;
-				DialogueHook = ((XmlElement)x.SelectSingleNode("dialogue")).GetAttribute("id");
+				SummonMonth = (int)month.Value - 1;
+				SummonDay = (int)x.GetToken("day").Value - 1;
+				DialogueHook = x.GetToken("dialogue").Text;
 			}
 		}
 		public override string ToString()
