@@ -1124,34 +1124,34 @@ namespace Noxico
 		[ForJS(ForJSUsage.Either)]
 		public void AssignScripts(string id)
 		{
-			var xml = Mix.GetXmlDocument("uniques.xml");
-			var planSource = xml.SelectSingleNode("//uniques/character[@id=\"" + id + "\"]") as System.Xml.XmlElement;
-			var scripts = planSource.SelectNodes("script").OfType<System.Xml.XmlElement>();
+			var uniques = Mix.GetTokenTree("uniques.tml");
+			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
+			var scripts = planSource.Tokens.Where(t => t.Name == "script");
 			foreach (var script in scripts)
 			{
-				var target = script.GetAttribute("target");
+				var target = script.Text;
 				switch (target)
 				{
 					case "tick":
-						OnTick = script.InnerText;
+						OnTick = script.GetToken("#text").Text;
 						break;
 					case "load":
-						OnLoad = script.InnerText;
+						OnLoad = script.GetToken("#text").Text;
 						break;
 					case "bump":
 					case "playerbump":
-						OnPlayerBump = script.InnerText;
+						OnPlayerBump = script.GetToken("#text").Text;
 						break;
 					case "hurt":
-						OnHurt = script.InnerText;
+						OnHurt = script.GetToken("#text").Text;
 						break;
 					case "path":
 					case "pathfinish":
-						OnPathFinish = script.InnerText;
+						OnPathFinish = script.GetToken("#text").Text;
 						break;
 				}
 			}
-			this.Character.RemoveToken("script");
+			this.Character.RemoveAll("script");
 			this.Character.AddToken("script", 0, id);
 		}
 		public void ReassignScripts()

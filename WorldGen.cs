@@ -26,11 +26,14 @@ namespace Noxico
 			if (vendorTypeList == null)
 			{
 				vendorTypeList = new List<string>();
-				var lootData = Mix.GetXmlDocument("loot.xml");
-				var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
-				foreach (var filter in filters.OfType<XmlElement>())
+				//var lootData = Mix.GetXmlDocument("loot.xml");
+				//var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
+				//foreach (var filter in filters.OfType<XmlElement>())
+				var lootData = Mix.GetTokenTree("loot.tml");
+				foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
 				{
-					var v = filter.GetAttribute("value");
+					//var v = filter.GetAttribute("value");
+					var v = filter.Text;
 					if (!vendorTypeList.Contains(v))
 						vendorTypeList.Add(v);
 				}
@@ -638,14 +641,14 @@ namespace Noxico
 				else if (of.Name == "someof")
 				{
 					options = of.Tokens.Select(x => x.Name).Where(x => x[0] != '$').ToList();
-					if (of.Text.Contains('-'))
+					if (of.Text != null && of.Text.Contains('-'))
 					{
 						var minmax = of.Text.Split('-');
 						min = int.Parse(minmax[0]);
 						max = int.Parse(minmax[1]);
 					}
 					else
-						min = max = int.Parse(of.Text);
+						min = max = (int)of.Value;
 				}
 				else if (of.Name == "oneofeach")
 				{
