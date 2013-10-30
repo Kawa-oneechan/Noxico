@@ -180,7 +180,7 @@
     <Content Include="mix\biomes.xml" />
     <Content Include="mix\bodyparts.xml" />
     <Content Include="mix\bodyplans.tml" />
-    <Content Include="mix\bonustraits.xml" />
+    <Content Include="mix\bonustraits.tml" />
     <Content Include="mix\books.xml" />
     <Content Include="mix\books.xsl" />
     <Content Include="mix\buildings.xml" />

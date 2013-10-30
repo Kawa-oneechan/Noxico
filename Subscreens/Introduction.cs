@@ -225,13 +225,13 @@ namespace Noxico
 		{
 			if (Subscreens.FirstDraw)
 			{
-				var traitsDoc = Mix.GetXmlDocument("bonustraits.xml");
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
-				foreach (var trait in traitsDoc.SelectNodes("//trait").OfType<XmlElement>())
+				var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
+				foreach (var trait in traitsDoc.Where(t => t.Name == "trait"))
 				{
-					traits.Add(trait.GetAttribute("name"));
-					traitHelps.Add(trait.InnerText.Trim());
+					traits.Add(trait.GetToken("display").Text);
+					traitHelps.Add(trait.GetToken("description").Text);
 				}
 				controlHelps = new Dictionary<string, string>()
 				{
