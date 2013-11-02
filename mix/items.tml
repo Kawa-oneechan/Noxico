@@ -1438,6 +1438,7 @@ item: skirt
 	clothing
 	legwear
 	colored
+	nolegs
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
@@ -1456,6 +1457,7 @@ item: pleated_skirt
 	colored
 	for_women
 	cute
+	nolegs
 
 item: shorts
 	_n: [color ]shorts
@@ -1508,6 +1510,11 @@ item: short_skirt
 	price: 70
 	ascii
 		char: U+006E
+	clothing
+	colored
+	for_women
+	sexy
+	nolegs
 
 item: sundress
 	_n: [color ]sundress
@@ -1530,6 +1537,7 @@ item: sundress
 	colored
 	for_women
 	cute
+	nolegs
 
 item: skimpy_dress
 	_n: skimpy [color ]dress
@@ -1553,6 +1561,7 @@ item: skimpy_dress
 	colored
 	for_women
 	sexy
+	nolegs
 
 item: elegant_dress
 	_n: elegant [color ]dress
@@ -1572,6 +1581,7 @@ item: elegant_dress
 	dress
 	colored
 	for_women
+	nolegs
 
 item: latex_suit
 	_n: [color ]latex suit

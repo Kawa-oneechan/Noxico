@@ -1082,7 +1082,7 @@ namespace Noxico
 			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
 			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
+			//js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
 			//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 			//js.SetParameter("Expectations", NoxicoGame.Expectations);
 			js.SetParameter("scheduler", this.scheduler);

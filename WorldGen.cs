@@ -7,6 +7,7 @@ namespace Noxico
 {
 	public static class WorldGen
 	{
+		/*
 		private static TownGenerator townGen;
 		private static List<string> vendorTypeList;
 
@@ -189,7 +190,7 @@ namespace Noxico
 			unexpected[0].RestockVendor();
 			return true;
 		}
-
+		*/
 
 		public static int DungeonGeneratorEntranceBoardNum;
 		public static string DungeonGeneratorEntranceWarpID;

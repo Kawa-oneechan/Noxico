@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -267,8 +267,10 @@ namespace Noxico
 				CheckHands(character, "hand");
 			else if (equip.HasToken("ring"))
 				CheckHands(character, "ring");
-			if (equip.HasToken("pants") || equip.HasToken("underpants"))
+			if (equip.HasToken("pants") || equip.HasToken("underpants") || equip.HasToken("shoes") || equip.HasToken("socks"))
 				CheckPants(character, equip);
+			if (character.HasToken("snaketail") && !HasToken("nolegs"))
+				throw new ItemException("Your body is not made for this sort of clothing."); //this clothing is not made for your body
 
 			foreach (var t in equip.Tokens)
 			{
