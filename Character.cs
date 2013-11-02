@@ -617,6 +617,18 @@ namespace Noxico
 						return ki.Path("equipable/shirt") != null;
 					return true;
 				});
+			if (HasToken("snaketail"))
+				check = new Func<Token, bool>(x =>
+				{
+					var ki = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == x.Name);
+					if (ki == null)
+						return false;
+					if (ki.Path("equipable/socks") != null || ki.Path("equipable/shoes") != null)
+						return false;
+					if ((ki.Path("equipable/pants") != null || ki.Path("equipable/underpants") != null) && !ki.HasToken("nolegs"))
+						return false;
+					return true;
+				});
 			foreach (var item in clothing)
 			{
 				if (check(item))
