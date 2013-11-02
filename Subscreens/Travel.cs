@@ -5,8 +5,6 @@ namespace Noxico
 {
 	class Travel
 	{
-		private static int expectationStart;
-
 		public static void Open()
 		{
 			if (NoxicoGame.KnownTargets.Count < 2)
@@ -58,42 +56,11 @@ namespace Noxico
 				moreTargets.Sort();
 				//list.Items = new List<string>();
 				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
-				expectationStart = list.Items.Count;
-				var newMarker = i18n.GetString("travel_new");
-				list.Items.AddRange(moreTargets.Select(kt => NoxicoGame.TargetNames[kt].PadEffective(list.Width - 2 - newMarker.Length()) + newMarker));
 
 				list.Enter = (s, e) =>
 				{
-					var key = NoxicoGame.TargetNames.First(tn => tn.Value == (list.Text.EndsWith(newMarker) ? list.Text.Remove(list.Text.Length - newMarker.Length).TrimEnd() : list.Text)).Key; //NoxicoGame.TargetNames.Keys.ToArray()[list.Index];
+					var key = NoxicoGame.TargetNames.First(tn => tn.Value == list.Text).Key;
 					var newBoard = NoxicoGame.KnownTargets.Find(kt => kt == key);
-
-					if (newBoard < 0)
-					{
-						//Expectation! Get the expectation index by abs(newBoard), then fullfill it.
-						if (!NoxicoGame.Expectations.ContainsKey(newBoard))
-						{
-							NoxicoGame.KnownTargets.Remove(key);
-							NoxicoGame.TargetNames.Remove(key);
-							MessageBox.Notice("Something went wrong internally.\n\nCould not find expectation #" + newBoard + ".", true, "Fuck!");
-							return;
-						}
-						Board thisMap = null;
-						var expectation = NoxicoGame.Expectations[newBoard];
-						if (expectation.Type == BoardType.Town)
-							thisMap = WorldGen.CreateTown(expectation.Biome, expectation.Culture, NoxicoGame.TargetNames[key], true);
-						else if (expectation.Type == BoardType.Dungeon)
-							thisMap = WorldGen.CreateDungeon(expectation.Biome, expectation.Culture, NoxicoGame.TargetNames[key]);
-
-						Expectation.AddCharacters(thisMap, expectation.Characters);
-
-						NoxicoGame.KnownTargets.Remove(key);
-						NoxicoGame.TargetNames.Remove(key);
-						NoxicoGame.KnownTargets.Add(thisMap.BoardNum);
-						NoxicoGame.TargetNames.Add(thisMap.BoardNum, thisMap.Name);
-
-						newBoard = thisMap.BoardNum;
-					}
-
 					if (host.Noxico.CurrentBoard.BoardNum == newBoard)
 						return;
 

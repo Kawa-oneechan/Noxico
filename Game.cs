@@ -65,8 +65,6 @@ namespace Noxico
 		private static string lastMessage = "";
 		public static int WorldVersion { get; private set; }
 
-		public static Dictionary<int, Expectation> Expectations = new Dictionary<int, Expectation>();
-
 		public static int Updates = 0;
 
 		public static bool IsKeyDown(KeyBinding binding)
@@ -221,12 +219,13 @@ namespace Noxico
 			*/
 		}
 
-		public void SaveGame(bool noPlayer = false, bool force = false)
+		public void SaveGame(bool noPlayer = false, bool force = false, bool clear = true)
 		{
 			if (!InGame && !force)
 				return;
 
-			HostForm.Clear();
+			if (clear)
+				HostForm.Clear();
 			HostForm.Write(" -- Saving... -- ", Color.White, Color.Black);
 			HostForm.Draw();
 
@@ -281,13 +280,13 @@ namespace Noxico
 					b.Write(target.Key);
 					b.Write(target.Value);
 				}
-				Toolkit.SaveExpectation(b, "EXPL");
-				b.Write(Expectations.Count);
-				foreach (var expectation in Expectations)
-				{
-					b.Write(expectation.Key);
-					expectation.Value.SaveToFile(b);
-				}
+				//Toolkit.SaveExpectation(b, "EXPL");
+				//b.Write(Expectations.Count);
+				//foreach (var expectation in Expectations)
+				//{
+				//	b.Write(expectation.Key);
+				//	expectation.Value.SaveToFile(b);
+				//}
 			}
 
 			Program.WriteLine("--------------------------");
@@ -305,7 +304,7 @@ namespace Noxico
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "17");
+			File.WriteAllText(verCheck, "18");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -316,7 +315,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 17)
+			if (WorldVersion < 18)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
@@ -371,11 +370,11 @@ namespace Noxico
 			TargetNames = new Dictionary<int, string>();
 			for (var i = 0; i < numTargets; i++)
 				TargetNames.Add(bin.ReadInt32(), bin.ReadString());
-			Toolkit.ExpectFromFile(bin, "EXPL", "expectation list");
-			var numExpectations = bin.ReadInt32();
-			Expectations = new Dictionary<int, Expectation>();
-			for (var i = 0; i < numExpectations; i++)
-				Expectations.Add(bin.ReadInt32(), Expectation.LoadFromFile(bin));
+			//Toolkit.ExpectFromFile(bin, "EXPL", "expectation list");
+			//var numExpectations = bin.ReadInt32();
+			//Expectations = new Dictionary<int, Expectation>();
+			//for (var i = 0; i < numExpectations; i++)
+			//	Expectations.Add(bin.ReadInt32(), Expectation.LoadFromFile(bin));
 			ApplyRandomPotions();
 			file.Close();
 
@@ -586,37 +585,143 @@ namespace Noxico
 
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
-
 			HostForm.Clear();
-			if (this.Boards.Count == 0)
+
+			var generator = new WorldMapGenerator();
+			generator.GenerateWorldMap("Nox", setStatus, "pandora");
+			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
-				setStatus("Creating player's starting town...");
-				var pcCulture = Player.Character.GetToken("culture").Text;
-				var thisMap = WorldGen.CreateTown(-1, pcCulture, null, true);
-				KnownTargets.Add(thisMap.BoardNum);
-				TargetNames.Add(thisMap.BoardNum, thisMap.Name);
-
-				setStatus("Generating handful of other towns...");
-				for (var i = 0; i < 2; i++)
+				for (var x = 0; x < generator.MapSizeX - 1; x++)
 				{
-					thisMap = WorldGen.CreateTown(-1, null, null, true);
-					KnownTargets.Add(thisMap.BoardNum);
-					TargetNames.Add(thisMap.BoardNum, thisMap.Name);
+					if (generator.RoughBiomeMap[y, x] == 0)
+						continue;
+					var newBoard = new Board();
+					newBoard.Coordinate = new Point(x, y);
+					newBoard.BoardNum = this.Boards.Count;
+					generator.BoardMap[y, x] = newBoard;
+					if (x > 0)
+						newBoard.Connect(Direction.West, generator.BoardMap[y, x - 1]);
+					if (x < generator.MapSizeX - 1)
+						newBoard.Connect(Direction.East, generator.BoardMap[y, x + 1]);
+					if (y > 0)
+						newBoard.Connect(Direction.North, generator.BoardMap[y - 1, x]);
+					if (y < generator.MapSizeY - 1)
+						newBoard.Connect(Direction.South, generator.BoardMap[y + 1, x]);
+					newBoard.ClearToWorld(generator);
+					this.Boards.Add(newBoard);
 				}
-
-				setStatus("Applying missions...");
-				ApplyMissions();
-
-				Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 			}
 
+			setStatus("Placing towns...");
+			var townBoards = new List<Board>();
+			for (var i = 0; i < 8; i++)
+			{
+				for (var y = 0; y < generator.MapSizeY - 1; y++)
+				{
+					for (var x = 0; x < generator.MapSizeX - 1; x++)
+					{
+						if (generator.TownMap[y, x] > 0)
+						{
+							var townGen = new TownGenerator();
+							var thisMap = generator.BoardMap[y, x];
+							if (thisMap.BoardType == BoardType.Town)
+								continue;
+							thisMap.BoardType = BoardType.Town;
+							townGen.Board = thisMap;
+							var biome = BiomeData.Biomes[(int)thisMap.GetToken("biome").Value];
+							var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
+							townGen.Culture = Culture.Cultures[cultureName];
+							townGen.Create(biome);
+							townGen.ToTilemap(ref thisMap.Tilemap);
+							townGen.ToSectorMap(thisMap.Sectors);
+							thisMap.AddToken("culture", 0, cultureName);
+							while (true)
+							{
+								var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+								if (Boards.Find(b => b != null && b.Name == newName) == null)
+								{
+									thisMap.Name = newName;
+									break;
+								}
+							}
+							//if (!townGen.Culture.Demonic)
+								townBoards.Add(thisMap);
+						}
+					}
+				}
+			}
+
+			setStatus("Scattering dungeon entrances...");
+			var dungeonEntrances = 0;
+			while (dungeonEntrances < 25)
+			{
+				for (var y = 0; y < generator.MapSizeY - 1; y++)
+				{
+					for (var x = 0; x < generator.MapSizeX - 1; x++)
+					{
+						if (generator.TownMap[y, x] > 0)
+							continue;
+
+						//Don't always place one, to prevent north-west clumping
+						if (Random.Flip())
+							continue;
+
+						//And don't place one where there already is one.
+						if (generator.TownMap[y, x] == -2)
+							continue;
+
+						var thisMap = generator.BoardMap[y, x];
+						if (thisMap == null)
+							continue;
+
+						var eX = Random.Next(2, 78);
+						var eY = Random.Next(1, 23);
+
+						if (thisMap.IsSolid(eY, eX))
+							continue;
+						var sides = 0;
+						if (thisMap.IsSolid(eY - 1, eX))
+							sides++;
+						if (thisMap.IsSolid(eY + 1, eX))
+							sides++;
+						if (thisMap.IsSolid(eY, eX - 1))
+							sides++;
+						if (thisMap.IsSolid(eY, eX + 1))
+							sides++;
+						if (sides > 3)
+							continue;
+						generator.TownMap[y, x] = -2;
+
+						var newWarp = new Warp()
+						{
+							TargetBoard = -1, //mark as ungenerated dungeon
+							ID = thisMap.ID + "_Dungeon",
+							XPosition = eX,
+							YPosition = eY,
+						};
+						thisMap.Warps.Add(newWarp);
+						thisMap.SetTile(eY, eX, '>', Color.Silver, Color.Black);
+
+						dungeonEntrances++;
+					}
+				}
+			}
+
+			//setStatus("Applying missions...");
+			//ApplyMissions(generator);
+
+			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+
 			//TODO: give the player a proper home.
-			this.CurrentBoard = GetBoard(KnownTargets[0]);
+			this.CurrentBoard = townBoards[Random.Next(townBoards.Count)]; //GetBoard(KnownTargets[0]);
+			KnownTargets.Add(this.CurrentBoard.BoardNum);
+			TargetNames.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();
 
-			setStatus("Saving chunks... (lol)");
+			setStatus("Saving overworld boards...");
+			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 			for (var i = 0; i < this.Boards.Count; i++)
 			{
 				if (this.Boards[i] == null)
@@ -626,13 +731,14 @@ namespace Noxico
 				//	this.Boards[i] = null;
 			}
 			stopwatch.Stop();
+			SaveGame(true, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
-			SaveGame(true, true);
 
 
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
 			setStatus("The World is Ready.");
+			InGame = true;
 			//this.CurrentBoard.Redraw();
 		}
 
@@ -758,8 +864,8 @@ namespace Noxico
 			Player.Character.UpdateTitle();
 			Player.AdjustView();
 
-			InGame = true;
-			SaveGame();
+			//InGame = true;
+			//SaveGame();
 		}
 
 		public static string RollWorldName()
@@ -843,7 +949,7 @@ namespace Noxico
 			}
 		}
 
-		public void ApplyMissions()
+		public void ApplyMissions(WorldMapGenerator generator)
 		{
 			var addBoard = new Func<string, Board>(id =>
 			{
@@ -883,8 +989,8 @@ namespace Noxico
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
 			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
 			js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
-			js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-			js.SetParameter("Expectations", NoxicoGame.Expectations);
+			//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
+			//js.SetParameter("Expectations", NoxicoGame.Expectations);
 			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
@@ -1057,6 +1163,7 @@ namespace Noxico
 		}
 	}
 
+	/*
 	public class Expectation
 	{
 		public BoardType Type { get; set; }
@@ -1326,4 +1433,5 @@ namespace Noxico
 			return result;
 		}
 	}
+	*/
 }

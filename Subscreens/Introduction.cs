@@ -77,7 +77,6 @@ namespace Noxico
 								() =>
 								{
 									NoxicoGame.WorldName = (string)MessageBox.Answer;
-									Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 									NoxicoGame.Mode = UserMode.Subscreen;
 									NoxicoGame.Subscreen = Introduction.CharacterCreator;
 									NoxicoGame.Immediate = true;

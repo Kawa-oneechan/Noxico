@@ -60,6 +60,37 @@ namespace Noxico
 			Clear(BiomeData.ByName(biomeName));
 		}
 
+		[ForJS(ForJSUsage.Either)]
+		public void ClearToWorld(WorldMapGenerator generator)
+		{
+			if (!this.HasToken("coordinate"))
+				return;
+			var coord = this.Coordinate;
+			var x = coord.X;
+			var y = coord.Y;
+			this.Entities.Clear();
+			var biomeID = generator.RoughBiomeMap[y, x];
+			this.GetToken("biome").Value = biomeID;
+			var worldMapX = x * 80;
+			var worldMapY = y * 25;
+			for (int row = 0; row < 25; row++)
+			{
+				for (int col = 0; col < 80; col++)
+				{
+					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
+					var biome = BiomeData.Biomes[b];
+					this.Tilemap[col, row] = new Tile()
+					{
+						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
+						Foreground = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Background = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						CanBurn = biome.CanBurn,
+						Water = biome.IsWater,
+					};
+				}
+			}
+		}
+
 		[ForJS(ForJSUsage.Only)]
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{
