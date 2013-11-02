@@ -280,13 +280,6 @@ namespace Noxico
 					b.Write(target.Key);
 					b.Write(target.Value);
 				}
-				//Toolkit.SaveExpectation(b, "EXPL");
-				//b.Write(Expectations.Count);
-				//foreach (var expectation in Expectations)
-				//{
-				//	b.Write(expectation.Key);
-				//	expectation.Value.SaveToFile(b);
-				//}
 			}
 
 			Program.WriteLine("--------------------------");
@@ -328,7 +321,6 @@ namespace Noxico
 				var pfile = File.Open(playerFile, FileMode.Open);
 				var pbin = new BinaryReader(pfile);
 				Player = Player.LoadFromFile(pbin);
-				//Player = new Player(Character.GetUnique("urta"));
 				Player.AdjustView();
 				pfile.Close();
 			}
@@ -370,11 +362,6 @@ namespace Noxico
 			TargetNames = new Dictionary<int, string>();
 			for (var i = 0; i < numTargets; i++)
 				TargetNames.Add(bin.ReadInt32(), bin.ReadString());
-			//Toolkit.ExpectFromFile(bin, "EXPL", "expectation list");
-			//var numExpectations = bin.ReadInt32();
-			//Expectations = new Dictionary<int, Expectation>();
-			//for (var i = 0; i < numExpectations; i++)
-			//	Expectations.Add(bin.ReadInt32(), Expectation.LoadFromFile(bin));
 			ApplyRandomPotions();
 			file.Close();
 

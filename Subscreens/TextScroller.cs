@@ -26,6 +26,9 @@ namespace Noxico
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 50 - (help.Length() / 2));
+				var empty = new string(' ', 88);
+				for (int i = 1; i < 25; i++)
+					host.Write(empty, UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
 				for (int i = scroll; i < text.Length && i - scroll < 24; i++)
 				{
 					if (i < 1)

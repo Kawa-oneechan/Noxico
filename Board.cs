@@ -1066,13 +1066,13 @@ namespace Noxico
 			var nox = NoxicoGame.HostForm.Noxico;
 			UpdateLightmap(nox.Player, true);
 			if (this.ToNorth > -1 && nox.Boards[this.ToNorth] == null)
-				nox.GetBoard(this.ToNorth).LoadSurroundings();
+				nox.GetBoard(this.ToNorth);
 			if (this.ToSouth > -1 && nox.Boards[this.ToSouth] == null)
-				nox.GetBoard(this.ToSouth).LoadSurroundings();
+				nox.GetBoard(this.ToSouth);
 			if (this.ToEast > -1 && nox.Boards[this.ToEast] == null)
-				nox.GetBoard(this.ToEast).LoadSurroundings();
+				nox.GetBoard(this.ToEast);
 			if (this.ToWest > -1 && nox.Boards[this.ToWest] == null)
-				nox.GetBoard(this.ToWest).LoadSurroundings();
+				nox.GetBoard(this.ToWest);
 		}
 	}
 

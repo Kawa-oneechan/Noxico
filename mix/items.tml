@@ -96,6 +96,7 @@ item: henshin_belt
 item: strapon
 	_n: strap-on dildo
 	test
+	description: "A leather belt with a hot pink dildo sticking prominently out the front."
 	plural
 	equipable
 		female
@@ -151,6 +152,7 @@ item: book
 -- #region
 item: rope
 	nouse
+	description: "A length of rope.  Useful for tying people up."
 	price: 20
 	ascii
 		char: U+00A7
@@ -158,6 +160,7 @@ item: rope
 
 item: baseballbat
 	_n: baseball bat
+	description: "A heavy wooden bat.  Would make a good weapon, but its phallic shape gives you other ideas...."
 	equipable
 		hand
 	canfuck
@@ -276,6 +279,7 @@ item: cheap_pos
 
 item: catears
 	_n: cat ear headband
+	description: "One of the felinoids' secret mind-control devices for their plot to take over the world.  Or possibly just a cute part of a costume."
 	equipable
 		hat
 	weight
@@ -294,6 +298,7 @@ item: catears
 item: plain_briefs
 	_n: briefs
 	_ia: a pair of
+	description: "An unremarkable pair of briefs.  They do show off one's assets fairly well, though."
 	plural
 	equipable
 		male
@@ -310,6 +315,7 @@ item: plain_briefs
 item: plain_boxers
 	_n: boxer shorts
 	_ia: a pair of
+	description: "A roomy pair of boxer shorts.  Should be able to fit whatever's in your crotch, no problem!"
 	plural
 	equipable
 		male
@@ -326,6 +332,7 @@ item: plain_boxers
 item: plain_panties
 	_n: panties
 	_ia: a pair of
+	description: "A plain pair of panties."
 	plural
 	equipable
 		female
@@ -341,6 +348,7 @@ item: plain_panties
 
 item: lacy_panties
 	_ia: a pair of
+	description: "The frilliest panties you've seen in your life.  You're not sure which holes are decorative loops and which ones are for putting your legs through."
 	plural
 	equipable
 		female
@@ -356,6 +364,7 @@ item: lacy_panties
 
 item: plain_bra
 	_n: bra
+	description: "An unflattering bra.  One-size-fits-none."
 	equipable
 		female
 		undershirt
@@ -369,6 +378,7 @@ item: plain_bra
 	for_women
 
 item: lacy_bra
+	description: "A bra adorned with tasteful amounts of lace.  Not immensely comfortable, though."
 	equipable
 		female
 		undershirt
@@ -382,6 +392,7 @@ item: lacy_bra
 	for_women
 
 item: sheer_top
+	description: "A compromise between modesty and nudity."
 	equipable
 		female
 		shirt
@@ -920,7 +931,7 @@ item: gem_dilithium
 		fore: tan
 	weight: light
 	price: 4500
-	description: ""
+	description: "You think this has some sciency properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
 	gemstone
 
 item: gem_diamond
@@ -930,7 +941,7 @@ item: gem_diamond
 		fore: white
 	weight: light
 	price: 4000
-	description: ""
+	description: "Shiny!"
 	gemstone
 
 item: gem_ruby
@@ -940,7 +951,7 @@ item: gem_ruby
 		fore: red
 	weight: light
 	price: 3500
-	description: ""
+	description: "Deep red and quite valuable."
 	gemstone
 
 item: gem_jacinth
@@ -951,7 +962,7 @@ item: gem_jacinth
 		fore: orange
 	weight: light
 	price: 3250
-	description: ""
+	description: "You've never heard of jacinth before, but it looks valuable."
 	gemstone
 
 item: gem_sapphire
@@ -961,7 +972,7 @@ item: gem_sapphire
 		fore: blue
 	weight: light
 	price: 3000
-	description: ""
+	description: "A deep blue brilliant-cut gem."
 	gemstone
 
 item: gem_black_opal
@@ -1234,6 +1245,7 @@ item: bacon_bikini_bottom
 item: tatteredshreds_shirt
 	_n: tattered shreds
 	_ia: ""
+	description: "You would feel more comfortable wearing this if you were a rockstar."
 	plural
 	equipable
 		shirt
@@ -1246,6 +1258,7 @@ item: tatteredshreds_shirt
 item: tatteredshreds_undershirt
 	_n: tattered shreds
 	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
 	plural
 	equipable
 		undershirt
@@ -1258,6 +1271,7 @@ item: tatteredshreds_undershirt
 item: tatteredshreds_pants
 	_n: tattered shreds
 	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
 	plural
 	equipable
 		pants
@@ -1270,6 +1284,7 @@ item: tatteredshreds_pants
 item: tatteredshreds_underpants
 	_n: tattered shreds
 	_ia: ""
+	description: "Underwear can only take so much.  This is what you get when you give them too much."
 	plural
 	equipable
 		underpants
@@ -1283,6 +1298,7 @@ item: tatteredshreds_underpants
 item: tatteredshreds_under
 	_n: tattered shreds
 	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
 	plural
 	equipable
 		undershirt
@@ -1296,6 +1312,7 @@ item: tatteredshreds_under
 item: tatteredshreds_over
 	_n: tattered shreds
 	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
 	plural
 	equipable
 		shirt
@@ -1308,6 +1325,7 @@ item: tatteredshreds_over
 
 item: shirt
 	_n: plain [color ]shirt
+	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt.  One size fits all."
 	equipable
 		shirt
 	weight
@@ -1321,6 +1339,7 @@ item: shirt
 
 item: blouse
 	_n: [color ]blouse
+	description: "An unflattering [color] blouse."
 	equipable
 		shirt
 	weight
@@ -1338,6 +1357,8 @@ item: blouse
 
 item: girls_uniform_top
 	_n: schoolgirl uniform top
+	description: "You've not seen any schools around here, but their uniforms seem to be everywhere.  Maybe they're just invisible."
+-- Unseen University reference confirmed.
 	equipable
 		female
 		jacket
@@ -1353,6 +1374,7 @@ item: girls_uniform_top
 
 item: boys_uniform_top
 	_n: school uniform jacket
+	description: "A black men's jacket, supposedly part of the uniform for a school somewhere."
 	equipable
 		male
 		jacket
@@ -1367,6 +1389,7 @@ item: boys_uniform_top
 
 item: bikini_top
 	_n: [color ]bikini top
+	description: "A [color] waterproof bra.  Provides no support or modesty whatsoever."
 	equipable
 		female
 		undershirt
@@ -1387,6 +1410,7 @@ item: bikini_top
 
 item: bikini_bottom
 	_n: [color ]bikini bottom
+	description: "A waterproof [color] pair of panties. Hides nothing."
 	equipable
 		female
 		underpants
@@ -1409,6 +1433,7 @@ item: bikini_bottom
 item: pants
 	_n: plain [color ]pants
 	_ia: a pair of
+	description: "A baggy pair of [color] pants.  They come with a free belt to hold them up!"
 	plural
 	equipable
 		pants
@@ -1423,6 +1448,7 @@ item: pants
 
 item: skirt
 	_n: plain [color ]skirt
+	description: "It's a dress, minus the top half."
 	equipable
 		female
 		pants
@@ -1442,6 +1468,7 @@ item: skirt
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
+	description: "For some reason, it's all ruffly.  Doesn't cover much."
 	equipable
 		female
 		pants
@@ -1462,6 +1489,7 @@ item: pleated_skirt
 item: shorts
 	_n: [color ]shorts
 	_ia: a pair of
+	description: "Pants that don't even come CLOSE to covering your ankles!  Scandalous!"
 	plural
 	equipable
 		pants
@@ -1479,6 +1507,7 @@ item: shorts
 item: short_shorts
 	_n: [color ]short shorts
 	_ia: a pair of
+	description: "Anywhere else, these would get you in jail for indecent exposure.  Luckily, this is Nox."
 	plural
 	equipable
 		pants
@@ -1498,6 +1527,7 @@ item: short_shorts
 
 item: short_skirt
 	_n: short [color ]skirt
+	description: "Barely more than a belt. Anywhere else, this would get you in jail for indecent exposure.  Luckily, this is Nox."
 	equipable
 		pants
 		reach
@@ -1518,6 +1548,7 @@ item: short_skirt
 
 item: sundress
 	_n: [color ]sundress
+	description: "A cute [color] dress."
 	equipable
 		shirt
 		pants
@@ -1541,6 +1572,7 @@ item: sundress
 
 item: skimpy_dress
 	_n: skimpy [color ]dress
+	description: "A [color] dress.  At least you think it's a dress.  It certainly doesn't function as one."
 	equipable
 		shirt
 		pants
@@ -1565,6 +1597,7 @@ item: skimpy_dress
 
 item: elegant_dress
 	_n: elegant [color ]dress
+	description: "This dress is designed for the fanciest of occasions, using only the fanciest silks in the fanciest designs.  It's remarkably fancy."
 	equipable
 		shirt
 		pants
@@ -1585,6 +1618,7 @@ item: elegant_dress
 
 item: latex_suit
 	_n: [color ]latex suit
+	description: "A full-body suit made of skintight latex.  Who cares about anachronisms, this thing's sexy!"
 	equipable
 		undershirt
 		underpants
@@ -1604,6 +1638,7 @@ item: latex_suit
 
 item: stylish_cloak
 	_n: stylish [color ]cloak
+	description: "A dashing cloak, enchanted so that it billows out behind you even without any wind."
 	equipable
 		coat
 	weight
@@ -1655,6 +1690,7 @@ item: kinky_panties
 item: knee_socks
 	_n: silk [color ]knee socks
 	_ia: a pair of
+	description: "Extra-long socks that cover all the way up to one's knees.  Made of extra-sheer fabric."
 	plural
 	equipable
 		socks
@@ -1673,6 +1709,7 @@ item: knee_socks
 
 item: high_heels
 	_ia: a pair of
+	description: "A pair of shoes with long, pointed heels.  They make you look taller, but they're relatively difficult to walk in."
 	plural
 	equipable
 		shoes
@@ -1706,6 +1743,7 @@ item: lena_ruby
 item: catmorph
 	_n: cat morph potion
 	wip
+	description: "A bottle filled with a thick liquid.  There's a picture of a felinoid on the label."
 	ascii
 		char: U+00A1
 		fore: lightsalmon
@@ -1807,6 +1845,7 @@ item: catmorph
 item: dogmorph
 	_n: dog morph potion
 	wip
+	description: "A bottle filled with a thick liquid.  There's a picture of a canid on the label."
 	ascii
 		char: U+00A1
 		fore: mistyrose
@@ -1888,6 +1927,7 @@ item: dogmorph
 item: foxmorph
 	_n: fox morph potion
 	wip
+	description: "A bottle filled with a thick liquid.  There's a picture of a fox on the label."
 	ascii
 		char: U+00A1
 		fore: orangered
@@ -1964,6 +2004,7 @@ item: foxmorph
 item: bunnymorph
 	_n: bunny morph potion
 	wip
+	description: "A bottle filled with a thick liquid.  There's a picture of a bunny on the front."
 	ascii
 		char: U+00A1
 		fore: skyblue
