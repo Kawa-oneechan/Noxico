@@ -82,7 +82,7 @@ namespace Noxico
 			var typeName = type.ToString().ToLowerInvariant();
 			var typeSet = namegen.GetToken(typeName);
 			if (typeSet == null)
-				return GetName(DefaultNameGen.Name, type);
+				return GetName(DefaultNameGen.Text, type);
 			if (typeSet.HasToken("copy"))
 				return GetName(typeSet.GetToken("copy").Text, type);
 

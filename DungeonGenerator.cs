@@ -420,11 +420,13 @@ namespace Noxico
 							var okay = false;
 							var x = 0;
 							var y = 0;
+							var lives = 100;
 							while (!okay)
 							{
+								lives--;
 								x = (col * 10) + Random.Next(10);
 								y = (row * 12) + Random.Next(12);
-								if (!map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
+								if (lives == 0 || !map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
 									okay = true;
 							}
 							bc.XPosition = x;
@@ -695,7 +697,8 @@ namespace Noxico
 			{
 				for (var col = 0; col < 8; col++)
 				{
-					sectors.Add(string.Format("s{0}x{1}", row, col), new Rectangle() { Left = col * 10, Right = (col * 10) + 10, Top = row * 12, Bottom = (row * 12) + 12 });
+					var key = string.Format("s{0}x{1}", row, col);
+					sectors.Add(key, new Rectangle() { Left = col * 10, Right = (col * 10) + 10, Top = row * 12, Bottom = (row * 12) + 12 });
 				}
 			}
 		}

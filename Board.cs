@@ -246,6 +246,29 @@ namespace Noxico
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
 		public bool AllowTravel { get { return !HasToken("noTravel"); } set { RemoveToken("noTravel"); if (!value)  AddToken("noTravel"); } }
 		public int Stock { get { return (int)Path("encounters/stock").Value; } set { Path("encounters/stock").Value = value; } }
+		public Point Coordinate
+		{
+			get
+			{
+				var coordinate = GetToken("coordinate");
+				if (coordinate != null)
+					return new Point((int)coordinate.GetToken("x").Value, (int)coordinate.GetToken("y").Value);
+				return default(Point);
+			}
+			set
+			{
+				var coordinate = GetToken("coordinate");
+				if (coordinate == null)
+				{
+					coordinate = AddToken("coordinate");
+					coordinate.AddToken("x", value.X);
+					coordinate.AddToken("y", value.Y);
+					return;
+				}
+				coordinate.GetToken("x").Value = value.X;
+				coordinate.GetToken("y").Value = value.Y;
+			}
+		}
 		public List<Entity> Entities { get; private set; }
 		public List<Warp> Warps { get; private set; }
 		public List<Location> DirtySpots { get; private set; }
@@ -938,6 +961,8 @@ namespace Noxico
 
 		public void Connect(Direction dir, Board target)
 		{
+			if (target == null)
+				return;
 			switch (dir)
 			{
 				case Direction.North:

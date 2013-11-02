@@ -29,7 +29,7 @@ namespace Noxico
 				//var lootData = Mix.GetXmlDocument("loot.xml");
 				//var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
 				//foreach (var filter in filters.OfType<XmlElement>())
-				var lootData = Mix.GetTokenTree("loot.tml");
+				var lootData = Mix.GetTokenTree("loot.tml", true);
 				foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
 				{
 					//var v = filter.GetAttribute("value");
@@ -725,14 +725,18 @@ namespace Noxico
 	public class BiomeData
 	{
 		public static List<BiomeData> Biomes;
+		public static Dictionary<string, int> WaterLevels;
 
 		public static void LoadBiomes()
 		{
 			Biomes = new List<BiomeData>();
+			WaterLevels = new Dictionary<string, int>();
 			var x = Mix.GetXmlDocument("biomes.xml");
 			foreach (var realm in x.SelectNodes("//realm").OfType<XmlElement>())
 			{
-				var realmID = realm.GetAttribute("id"); 
+				var realmID = realm.GetAttribute("id");
+				var waterLevel = int.Parse(realm.GetAttribute("waterLevel"));
+				WaterLevels[realmID] = waterLevel;
 				foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
 					Biomes.Add(BiomeData.FromXml(b, realmID));
 			}
@@ -750,6 +754,7 @@ namespace Noxico
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
 		public List<ClutterDefinition> Clutter { get; private set; }
+		public System.Drawing.Rectangle Rect { get; private set; }
 
 		public static BiomeData FromXml(XmlElement x, string realmID)
 		{
@@ -759,6 +764,9 @@ namespace Noxico
 			n.Color = Color.FromName(x.GetAttribute("color"));
 			n.IsWater = x.HasAttribute("isWater");
 			n.CanBurn = x.HasAttribute("canBurn");
+
+			var cvars = x.GetAttribute("rect").Split(' ').Select(i => int.Parse(i)).ToArray();
+			n.Rect = new System.Drawing.Rectangle(cvars[0], cvars[1], cvars[2] - cvars[0], cvars[3] - cvars[1]);
 
 			var groundGlyphs = x.SelectSingleNode("groundGlyphs");
 			if (groundGlyphs == null)
@@ -813,6 +821,349 @@ namespace Noxico
 			if (b == null)
 				return 1;
 			return BiomeData.Biomes.IndexOf(b);
+		}
+	}
+
+	//Stolen from... somewhere.
+	public class PerlinNoise
+	{
+		private int width = 256;
+		private int height = 256;
+		private float[,] noise;
+		private bool initialized = false;
+
+		public PerlinNoise(int width, int height)
+		{
+			this.width = width;
+			this.height = height;
+		}
+
+		public float GetRandomHeight(float x, float y, float maxHeight, float frequency, float amplitude, float persistance, int octaves)
+		{
+			GenerateNoise();
+			float FinalValue = 0.0f;
+			for (int i = 0; i < octaves; ++i)
+			{
+				FinalValue += GetSmoothNoise(x * frequency, y * frequency) * amplitude;
+				frequency *= 2.0f;
+				amplitude *= persistance;
+			}
+			if (FinalValue < -1.0f)
+			{
+				FinalValue = -1.0f;
+			}
+			else if (FinalValue > 1.0f)
+			{
+				FinalValue = 1.0f;
+			}
+			return FinalValue * maxHeight;
+		}
+
+		private float GetSmoothNoise(float x, float y)
+		{
+			float fracX = x - (int)x;
+			float fracY = y - (int)y;
+			int x1 = ((int)x + width) % width;
+			int y1 = ((int)y + height) % height;
+			//for cool art deco looking images, do +1 for X2 and Y2 instead of -1...
+			int x2 = ((int)x + width - 1) % width;
+			int y2 = ((int)y + height - 1) % height;
+			float FinalValue = 0.0f;
+			FinalValue += fracX * fracY * noise[x1, y1];
+			FinalValue += fracX * (1 - fracY) * noise[x1, y2];
+			FinalValue += (1 - fracX) * fracY * noise[x2, y1];
+			FinalValue += (1 - fracX) * (1 - fracY) * noise[x2, y2];
+			return FinalValue;
+		}
+
+		private void GenerateNoise()
+		{
+			if (initialized) 
+				return;
+			noise = new float[width, height];
+			for (int x = 0; x < width; ++x)
+				for (int y = 0; y < height; ++y)
+					noise[x, y] = ((float)(Random.NextDouble()) - 0.5f) * 2.0f;
+			initialized = true;
+		}
+	}
+
+	public class WorldMapGenerator
+	{
+		public int[,] RoughBiomeMap, TownMap, DetailedMap;
+		public Board[,] BoardMap;
+		public int MapSizeX, MapSizeY;
+		public string Realm;
+
+		private byte[,] CreateHeightMap(int reach)
+		{
+			var map = new byte[reach, reach];
+			var noise = new PerlinNoise(reach, reach);
+			var wDiv = 1 / (double)reach;
+			var hDiv = 1 / (double)reach;
+			var dist = reach / 3;
+			var distMod = 1 / (float)dist;
+
+			var pct = reach / 100f;
+
+			for (var row = 0; row < reach; row++)
+			{
+				for (var col = 0; col < reach; col++)
+				{
+					var overall = noise.GetRandomHeight(col, row, 1f, 0.02f, 0.65f, 0.4f, 4) + 0.3;
+					var rough = noise.GetRandomHeight(col, row, 1f, 0.05f, 0.65f, 0.5f, 8);
+					//var extra = noise.GetRandomHeight(col, row, 0.05f, 1f, 1f, 1f, 8);
+					//var rough = 0f;
+					var extra = 0f;
+					var v = (overall + (rough * 0.75) + extra) + 0.3; // + 0.5;
+					//var v = noise.GetRandomHeight(col, row, 1f, 0.01f, 0.45f, 0.4f, 4) + 0.5;
+
+					if (row < dist) v *= distMod * row;
+					if (col < dist) v *= distMod * col;
+					if (row > reach - dist) v *= distMod * (reach - row);
+					if (col > reach - dist) v *= distMod * (reach - col);
+
+					if (v < 0) v = 0;
+					if (v > 1) v = 1;
+					var b = (byte)(v * 255);
+
+					map[row, col] = b;
+				}
+			}
+			return map;
+		}
+
+		private byte[,] CreateClouds(int reach, float freq, double offset, bool poles = false)
+		{
+			var map = new byte[reach, reach];
+			var noise = new PerlinNoise(reach, reach);
+			var wDiv = 1 / (double)reach;
+			var hDiv = 1 / (double)reach;
+			var dist = reach / 5;
+			var distMod = 1 / (float)dist;
+
+			var pct = reach / 100f;
+
+			for (var row = 0; row < reach; row++)
+			{
+				for (var col = 0; col < reach; col++)
+				{
+					var overall = noise.GetRandomHeight(col, row, 1f, freq, 0.45f, 0.8f, 2) + offset;
+					var v = overall;
+
+					if (poles)
+ 					{
+						v += 0.04;
+						if (row < dist) v -= 2 - ((distMod * row) * 2);
+						if (row > reach - dist) v -= 2 - ((distMod * (reach - row)) * 2);
+ 					}
+ 
+					if (v < 0) v = 0;
+					if (v > 1) v = 1;
+					var b = (byte)(v * 255);
+ 
+					map[row, col] = b;
+				}
+			}
+			return map;
+		}
+
+		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
+		{
+			var waterLevel = BiomeData.WaterLevels[Realm];
+			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater));
+			var map = new byte[(reach / 2) + 25, reach + 80];
+			for (var row = 0; row < reach / 2; row++)
+			{
+				for (var col = 0; col < reach; col++)
+				{
+					var h = height[row * 2, col];
+					var p = precip[row * 2, col];
+					var t = temp[row * 2, col];
+					if (h < waterLevel)
+ 					{
+						map[row, col] = (byte)water;
+						continue;
+					}
+					for (var i = 0; i < BiomeData.Biomes.Count; i++)
+					{
+						var b = BiomeData.Biomes[i];
+						if (b.RealmID == Realm && t >= b.Rect.Left && t <= b.Rect.Right && p >= b.Rect.Top && p <= b.Rect.Bottom)
+						{
+							map[row, col] = (byte)i;
+							continue;
+						}
+ 					}
+ 				}
+ 			}
+			return map;
+		}
+
+		public void GenerateWorldMap(string realm, Action<string> setStatus, string randSeed = "")
+		{
+			Realm = realm;
+			var seed = 0xF00D;
+			var reach = 2000;
+			if (!string.IsNullOrWhiteSpace(randSeed))
+			{
+				if (randSeed.StartsWith("0x"))
+				{
+					randSeed = randSeed.Substring(2);
+					if (!int.TryParse(randSeed, System.Globalization.NumberStyles.HexNumber, null, out seed))
+					{
+						seed = randSeed.GetHashCode();
+						setStatus(string.Format("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed));
+					}
+					else
+						setStatus(string.Format("Using seed 0x{0:X}.", seed));
+				}
+				else
+				{
+					if (!int.TryParse(randSeed, out seed))
+					{
+						seed = randSeed.GetHashCode();
+						setStatus(string.Format("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed));
+					}
+					else
+						setStatus(string.Format("Using seed 0x{0:X}.", seed));
+				}
+			}
+
+			setStatus("Creating heightmap...");
+			var height = CreateHeightMap(reach);
+			setStatus("Creating precipitation map...");
+			var precip = CreateClouds(reach, 0.010f, 0.3, false);
+			setStatus("Creating temperature map...");
+			var temp = CreateClouds(reach, 0.005f, 0.5, true);
+			setStatus("Creating biome map...");
+			var biome = CreateBiomeMap(reach, height, precip, temp);
+
+			setStatus("Drawing board bitmap...");
+			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
+			var bmpHeight = reach / 2;
+			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
+			for (var row = 0; row < bmpHeight; row++)
+				for (var col = 0; col < bmpWidth; col++)
+					bmp[row, col] = biome[row, col];
+			DetailedMap = bmp;
+
+#if DEBUG
+			setStatus("Drawing actual bitmap...");
+			var png = new System.Drawing.Bitmap(bmpWidth, bmpHeight);
+			for (var row = 0; row < bmpHeight; row++)
+				for (var col = 0; col < bmpWidth; col++)
+					png.SetPixel(col, row, BiomeData.Biomes[biome[row, col]].Color);
+			png.Save("world.png");
+#endif
+
+			MapSizeX = reach / 80; //1000 -> 12
+			MapSizeY = (reach / 2) / 25; //1000 -> 20
+			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
+			var oceans = 0;
+			setStatus("Determining biomes...");
+			for (var bRow = 0; bRow < MapSizeY; bRow++)
+			{
+				for (var bCol = 0; bCol < MapSizeX; bCol++)
+				{
+					var counts = new int[255];
+					var oceanTreshold = 2000 - 4;
+					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
+					for (var pRow = 0; pRow < 25; pRow++)
+					{
+						for (var pCol = 0; pCol < 80; pCol++)
+						{
+							var b = biome[(bRow * 25) + pRow, (bCol * 80) + pCol];
+							counts[b]++;
+						}
+					}
+					//Special rule for Oceans
+					if (counts[0] >= oceanTreshold)
+					{
+						RoughBiomeMap[bRow, bCol] = 0;
+						oceans++;
+						continue;
+					}
+					//Determine most significant non-Ocean biome
+					var highestNumber = 0;
+					var biggestBiome = 0;
+					for (var i = 1; i < counts.Length; i++)
+					{
+						if (counts[i] > highestNumber)
+						{
+							highestNumber = counts[i];
+							biggestBiome = i;
+						}
+					}
+					RoughBiomeMap[bRow, bCol] = biggestBiome;
+				}
+			}
+
+			setStatus("Finding watering holes...");
+			var towns = 0;
+			var townBoards = 0;
+			var wateringHoles = 0;
+			TownMap = new int[MapSizeY, MapSizeX]; //0 - none, -1 - watering hole (town can go nearby), >0 - town
+			for (var bRow = 0; bRow < MapSizeY; bRow++)
+			{
+				for (var bCol = 0; bCol < MapSizeX; bCol++)
+				{
+					//Find a board with a reasonable amount of water
+					if (RoughBiomeMap[bRow, bCol] == 0)
+						continue;
+					var waterAmount = 0;
+					var waterMin = 128;
+					var waterMax = 256;
+					for (var pRow = 0; pRow < 25; pRow++)
+						for (var pCol = 0; pCol < 80; pCol++)
+							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == 0)
+								waterAmount++;
+					if (waterAmount >= waterMin && waterAmount <= waterMax)
+					{
+						//Randomly DON'T mark
+						if (Random.Flip())
+							continue;
+						//Seems like a nice place. Mark off.
+						TownMap[bRow, bCol] = -1;
+						wateringHoles++;
+					}
+				}
+			}
+
+			setStatus("Marking possible town locations...");
+			for (var bRow = 1; bRow < MapSizeY - 1; bRow++)
+			{
+				for (var bCol = 1; bCol < MapSizeX - 1; bCol++)
+				{
+					if (TownMap[bRow, bCol] == -1)
+					{
+						var added = 0;
+						for (var row = bRow - 1; row < bRow + 1; row++)
+						{
+							for (var col = bCol - 1; col < bCol + 1; col++)
+							{
+								if (TownMap[row, col] != 0)
+									continue;
+								var waterAmount = 0;
+								var waterMax = 128;
+								for (var pRow = 0; pRow < 25; pRow++)
+									for (var pCol = 0; pCol < 80; pCol++)
+										if (biome[(row * 25) + pRow, (col * 80) + pCol] == 0)
+											waterAmount++;
+								if (waterAmount < waterMax)
+								{
+									TownMap[row, col] = towns + 1;
+									townBoards++;
+									added++;
+								}
+							}
+						}
+						if (added > 0)
+							towns++;
+					}
+				}
+			}
+
+			BoardMap = new Board[MapSizeY, MapSizeX];
 		}
 	}
 }

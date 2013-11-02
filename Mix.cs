@@ -21,6 +21,8 @@ namespace Noxico
 
 		private static Dictionary<string, MixFileEntry> fileList;
 
+		private static Dictionary<string, string> stringCache;
+
 		/// <summary>
 		/// Populates the Mix database for usage
 		/// </summary>
@@ -28,6 +30,7 @@ namespace Noxico
 		{
 			Program.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
+			stringCache = new Dictionary<string, string>();
 			var mixfiles = new List<string>() { mainFile + ".mix" };
 			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.mix").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".mix", StringComparison.OrdinalIgnoreCase)));
 			Program.WriteLine("Mixfiles enumerated. Indexing contents...");
@@ -100,8 +103,10 @@ namespace Noxico
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="string"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
-		public static string GetString(string fileName)
+		public static string GetString(string fileName, bool cache = true)
 		{
+			if (cache && stringCache.ContainsKey(fileName))
+				return stringCache[fileName];
 			Program.WriteLine("Mix.GetString({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return File.ReadAllText(Path.Combine("data", fileName));
@@ -109,6 +114,8 @@ namespace Noxico
 				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			var bytes = GetBytes(fileName);
 			var ret = Encoding.UTF8.GetString(bytes);
+			if (cache)
+				stringCache[fileName] = ret;
 			return ret;
 		}
 
@@ -202,12 +209,11 @@ namespace Noxico
 			return x;
 		}
 
-		public static List<Token> GetTokenTree(string fileName)
+		public static List<Token> GetTokenTree(string fileName, bool cache = false)
 		{
 			var carrier = new TokenCarrier();
 			var tml = String.Empty;
-			//var tml = GetString(fileName);
-
+				
 			var otherFiles = fileList.Keys.Where(e => e != fileName && e.EndsWith(fileName)).ToList();
 			if (Directory.Exists("data"))
 			{
@@ -216,12 +222,12 @@ namespace Noxico
 			}
 			if (otherFiles.Count() == 0)
 			{
-				tml = GetString(fileName);
+				tml = GetString(fileName, cache);
 			}
 			else
 			{
 				Program.WriteLine("{0} has mod expansions!", fileName);
-				tml = GetString(fileName);
+				tml = GetString(fileName, cache);
 				var onTop = tml.Contains("-- #mergeontop");
 				foreach (var f in otherFiles)
 				{
@@ -229,12 +235,12 @@ namespace Noxico
 					if (onTop)
 					{
 						tml = "\n\n-- #log Splice: " + f + "\n\n" + tml;
-						tml = GetString(f) + tml;
+						tml = GetString(f, cache) + tml;
 					}
 					else
 					{
 						tml += "\n\n-- #log Splice: " + f + "\n\n";
-						tml += GetString(f);
+						tml += GetString(f, cache);
 					}
 				}
 			}

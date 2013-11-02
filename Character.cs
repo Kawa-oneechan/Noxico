@@ -309,7 +309,7 @@ namespace Noxico
 
 		public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
-			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
+			var bodyPlans = Mix.GetTokenTree("bodyplans.tml", true);
 
 			var newChar = new Character();
 			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
@@ -432,7 +432,7 @@ namespace Noxico
 
 		public static Character GenerateQuick(string bodyPlan, Gender gender)
 		{
-			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
+			var bodyPlans = Mix.GetTokenTree("bodyplans.tml", true);
 
 			var newChar = new Character();
 			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);

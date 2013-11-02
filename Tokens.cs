@@ -11,7 +11,7 @@ namespace Noxico
 {
 	public class TokenCarrier
 	{
-		public static bool NoRolls { private get; set; }
+		public static bool NoRolls { get; set; }
 		public List<Token> Tokens { get; private set; }
 
 		public TokenCarrier()

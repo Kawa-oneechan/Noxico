@@ -91,6 +91,8 @@ namegen: norse
 		patronymic
 			male: son
 			female: dottir
+	town
+		copy: default
 
 namegen: demonic
 	sets

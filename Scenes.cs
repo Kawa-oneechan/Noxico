@@ -139,8 +139,8 @@ namespace Noxico
 						js.SetParameter("bottom", bottom);
 						js.SetFunction("print", new Action<string>(x => buffer.Append(x)));
 						js.SetFunction("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
-						js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-						js.SetParameter("Expectations", NoxicoGame.Expectations);
+						//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
+						//js.SetParameter("Expectations", NoxicoGame.Expectations);
 						js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
 						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());

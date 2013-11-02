@@ -115,6 +115,18 @@ namespace Noxico
 			ParentBoard.Redraw();
 			NoxicoGame.Immediate = true;
 
+			if (ParentBoard.BoardType == BoardType.Town)
+			{
+				var boardName = ParentBoard.Name;
+				var known = NoxicoGame.TargetNames.ContainsValue(boardName);
+				if (!known)
+				{
+					NoxicoGame.TargetNames.Add(index, boardName);
+					NoxicoGame.KnownTargets.Add(index);
+					Program.WriteLine("Registered {0} as a fast-travel target.", boardName);
+				}
+			}
+
 			this.DijkstraMap.UpdateWalls(!Character.IsSlime, ParentBoard);
 			this.DijkstraMap.Update();
 			this.AutoTravelMap.UpdateWalls(!Character.IsSlime, ParentBoard);
