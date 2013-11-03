@@ -50,14 +50,6 @@ namespace Noxico
 			{
 				if (warp.TargetBoard == -1) //ungenerated dungeon
 				{
-					/*
-					NoxicoGame.Mode = UserMode.Subscreen;
-					NoxicoGame.Subscreen = UnsortedSubscreens.CreateDungeon;
-					UnsortedSubscreens.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
-					UnsortedSubscreens.DungeonGeneratorEntranceWarpID = warp.ID;
-					UnsortedSubscreens.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
-					Subscreens.FirstDraw = true;
-					*/
 					WorldGen.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
 					WorldGen.DungeonGeneratorEntranceWarpID = warp.ID;
 					WorldGen.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;

@@ -247,15 +247,26 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Returns the given number as a word in English, from "one" up to "twelve". 13 and higher are returned as-is.
+		/// Returns the given number as a word, from "one" up to "twelve". 13 and higher are returned as-is.
 		/// </summary>
 		public static string Count(this float num)
 		{
-			var words = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve" };
+			var words = i18n.GetArray("counts");
 			var i = (int)Math.Floor(num);
 			if (i < words.Length)
 				return words[i];
 			return i.ToString();
+		}
+		/// <summary>
+		/// Returns the given number as a word, from "first" up to "twelfth". 13 and higher are passed to Ordinal.
+		/// </summary>
+		public static string CountOrdinal(this float num)
+		{
+			var words = i18n.GetArray("countsordinal");
+			var i = (int)Math.Floor(num);
+			if (i < words.Length)
+				return words[i];
+			return Ordinal(num);
 		}
 
 		/// <summary>
@@ -1010,6 +1021,7 @@ namespace Noxico
 				{ "RIGHT", "\u2192" },
 				{ "DOWN", "\u2193" },
 				{ "RETURN", "\u21B2" },
+				{ "ENTER", "\u21B2" },
 				{ "QUESTION", "/" },
 				{ "PERIOD", "." },
 				{ "COMMA", "," },
