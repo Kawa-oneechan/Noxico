@@ -306,6 +306,8 @@ Would you like an infodump on the way out?]]>
 		<word id="hesheshiit">???, He, She, Shi, It</word>
 		<word id="hisherhirits">???, His, Her, Hir, Its</word>
 		<word id="himherhirit">???, Him, Her, Hir, It</word>
+		<word id="counts">zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve</word>
+		<word id="countsordinal">zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth</word>
 	</category>
 	<category name="Inventory">
 		<word id="inventory_yours">Your inventory</word>

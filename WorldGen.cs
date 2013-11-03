@@ -487,6 +487,7 @@ namespace Noxico
 			entranceBoard.Entities.Add(nox.Player);
 			nox.Player.XPosition = originalExit.XPosition;
 			nox.Player.YPosition = originalExit.YPosition;
+			entranceBoard.UpdateLightmap(nox.Player, true);
 			entranceBoard.Redraw();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;

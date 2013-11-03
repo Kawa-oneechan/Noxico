@@ -918,7 +918,6 @@ namespace Noxico
 				this.EntitiesToRemove.Add(c);
 		}
 	
-		[ForJS]
 		public BoardChar PickBoardChar(Gender gender)
 		{
 			Func<BoardChar, bool> isOkay = (x) => { return true; };
@@ -934,7 +933,6 @@ namespace Noxico
 			return choice;
 		}
 
-		[ForJS]
 		public List<Entity> GetEntitiesWith(string ending, bool includeBoardChars)
 		{
 			var ret = new List<Entity>();

@@ -1107,11 +1107,8 @@ namespace Noxico
 			return true;
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void MoveTo(int x, int y, string target)
 		{
-			JavaScript.Assert();
-
 			ScriptPathTarget = new Dijkstra(!Character.IsSlime, this.ParentBoard);
 			ScriptPathTarget.Hotspots.Add(new Point(x, y));
 			ScriptPathTarget.Update();
@@ -1121,7 +1118,6 @@ namespace Noxico
 			ScriptPathing = true;
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void AssignScripts(string id)
 		{
 			var uniques = Mix.GetTokenTree("uniques.tml");

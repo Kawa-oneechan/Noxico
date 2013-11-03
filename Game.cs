@@ -576,6 +576,7 @@ namespace Noxico
 
 			var generator = new WorldMapGenerator();
 			generator.GenerateWorldMap("Nox", setStatus, "pandora");
+			setStatus("Creating boards...");
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
@@ -595,6 +596,16 @@ namespace Noxico
 					if (y < generator.MapSizeY - 1)
 						newBoard.Connect(Direction.South, generator.BoardMap[y + 1, x]);
 					newBoard.ClearToWorld(generator);
+					newBoard.AddClutter();
+					var biome = BiomeData.Biomes[generator.RoughBiomeMap[y, x]];
+					if (biome.Encounters.Length > 0)
+					{
+						var encounters = newBoard.GetToken("encounters");
+						encounters.Value = biome.MaxEncounters;
+						encounters.GetToken("stock").Value = encounters.Value * Random.Next(3, 5);
+						foreach (var e in biome.Encounters)
+							encounters.AddToken(e);
+					}
 					this.Boards.Add(newBoard);
 				}
 			}
@@ -610,29 +621,32 @@ namespace Noxico
 						if (generator.TownMap[y, x] > 0)
 						{
 							var townGen = new TownGenerator();
-							var thisMap = generator.BoardMap[y, x];
-							if (thisMap.BoardType == BoardType.Town)
+							var thisBoard = generator.BoardMap[y, x];
+							if (thisBoard.BoardType == BoardType.Town)
 								continue;
-							thisMap.BoardType = BoardType.Town;
-							townGen.Board = thisMap;
-							var biome = BiomeData.Biomes[(int)thisMap.GetToken("biome").Value];
+							thisBoard.BoardType = BoardType.Town;
+							thisBoard.ClearToWorld(generator);
+							thisBoard.GetToken("encounters").Value = 0;
+							thisBoard.GetToken("encounters").Tokens.Clear();
+							townGen.Board = thisBoard;
+							var biome = BiomeData.Biomes[(int)thisBoard.GetToken("biome").Value];
 							var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
 							townGen.Culture = Culture.Cultures[cultureName];
 							townGen.Create(biome);
-							townGen.ToTilemap(ref thisMap.Tilemap);
-							townGen.ToSectorMap(thisMap.Sectors);
-							thisMap.AddToken("culture", 0, cultureName);
+							townGen.ToTilemap(ref thisBoard.Tilemap);
+							townGen.ToSectorMap(thisBoard.Sectors);
+							thisBoard.AddToken("culture", 0, cultureName);
 							while (true)
 							{
 								var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
 								if (Boards.Find(b => b != null && b.Name == newName) == null)
 								{
-									thisMap.Name = newName;
+									thisBoard.Name = newName;
 									break;
 								}
 							}
 							//if (!townGen.Culture.Demonic)
-								townBoards.Add(thisMap);
+								townBoards.Add(thisBoard);
 						}
 					}
 				}
@@ -657,23 +671,23 @@ namespace Noxico
 						if (generator.TownMap[y, x] == -2)
 							continue;
 
-						var thisMap = generator.BoardMap[y, x];
-						if (thisMap == null)
+						var thisBoard = generator.BoardMap[y, x];
+						if (thisBoard == null)
 							continue;
 
 						var eX = Random.Next(2, 78);
 						var eY = Random.Next(1, 23);
 
-						if (thisMap.IsSolid(eY, eX))
+						if (thisBoard.IsSolid(eY, eX))
 							continue;
 						var sides = 0;
-						if (thisMap.IsSolid(eY - 1, eX))
+						if (thisBoard.IsSolid(eY - 1, eX))
 							sides++;
-						if (thisMap.IsSolid(eY + 1, eX))
+						if (thisBoard.IsSolid(eY + 1, eX))
 							sides++;
-						if (thisMap.IsSolid(eY, eX - 1))
+						if (thisBoard.IsSolid(eY, eX - 1))
 							sides++;
-						if (thisMap.IsSolid(eY, eX + 1))
+						if (thisBoard.IsSolid(eY, eX + 1))
 							sides++;
 						if (sides > 3)
 							continue;
@@ -682,12 +696,12 @@ namespace Noxico
 						var newWarp = new Warp()
 						{
 							TargetBoard = -1, //mark as ungenerated dungeon
-							ID = thisMap.ID + "_Dungeon",
+							ID = thisBoard.ID + "_Dungeon",
 							XPosition = eX,
 							YPosition = eY,
 						};
-						thisMap.Warps.Add(newWarp);
-						thisMap.SetTile(eY, eX, '>', Color.Silver, Color.Black);
+						thisBoard.Warps.Add(newWarp);
+						thisBoard.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 
 						dungeonEntrances++;
 					}

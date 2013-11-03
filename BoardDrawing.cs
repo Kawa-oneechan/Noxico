@@ -7,7 +7,6 @@ namespace Noxico
 {
 	public partial class Tile
 	{
-		[ForJS(ForJSUsage.Either)]
 		public Tile Noise()
 		{
 			return new Tile()
@@ -31,7 +30,6 @@ namespace Noxico
 	{
 		public static Jint.JintEngine DrawJS;
 
-		[ForJS(ForJSUsage.Either)]
 		public void Clear(int biomeID)
 		{
 			this.Entities.Clear();
@@ -54,13 +52,11 @@ namespace Noxico
 			}
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void Clear(string biomeName)
 		{
 			Clear(BiomeData.ByName(biomeName));
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void ClearToWorld(WorldMapGenerator generator)
 		{
 			if (!this.HasToken("coordinate"))
@@ -73,12 +69,13 @@ namespace Noxico
 			this.GetToken("biome").Value = biomeID;
 			var worldMapX = x * 80;
 			var worldMapY = y * 25;
+			BiomeData biome;
 			for (int row = 0; row < 25; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
-					var biome = BiomeData.Biomes[b];
+					biome = BiomeData.Biomes[b];
 					this.Tilemap[col, row] = new Tile()
 					{
 						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
@@ -91,7 +88,6 @@ namespace Noxico
 			}
 		}
 
-		[ForJS(ForJSUsage.Only)]
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{
 			if (DrawJS == null)
@@ -103,7 +99,6 @@ namespace Noxico
 				this.Tilemap[point.Y, point.X] = (Tile)js.Run(brush);
 			}
 		}
-		[ForJS(ForJSUsage.Only)]
 		public void Line(int x1, int y1, int x2, int y2, Tile brush, bool noise)
 		{
 			if (DrawJS == null)
@@ -113,13 +108,11 @@ namespace Noxico
 				this.Tilemap[point.Y, point.X] = noise ? brush.Noise() : brush;
 			}
 		}
-		[ForJS(ForJSUsage.Only)]
 		public void Line(int x1, int y1, int x2, int y2, Tile brush)
 		{
 			Line(x1, y1, x2, y2, brush, true);
 		}
 
-		[ForJS(ForJSUsage.Only)]
 		public void Replace(string checker, string replacer)
 		{
 			if (DrawJS == null)
@@ -148,7 +141,6 @@ namespace Noxico
 #endif
 		}
 
-		[ForJS(ForJSUsage.Only)]
 		public void Floodfill(int startX, int startY, string checker, string replacer, bool allowDiagonals)
 		{
 			if (DrawJS == null)
@@ -198,13 +190,11 @@ namespace Noxico
 
 		}
 		//HEADS UP: With the new Jint update we might not need this one -- allowDiagonals is assumed to be False, after all...
-		[ForJS(ForJSUsage.Only)]
 		public void Floodfill(int startX, int startY, string checker, string replacer)
 		{
 			Floodfill(startX, startX, checker, replacer, false);
 		}
 
-		[ForJS(ForJSUsage.Only)]
 		public void MergeBitmap(string fileName)
 		{
 			var woodFloor = Color.FromArgb(86, 63, 44);
@@ -401,7 +391,6 @@ namespace Noxico
 			}
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
 			var biomeData = BiomeData.Biomes[(int)GetToken("biome").Value];
@@ -422,6 +411,8 @@ namespace Noxico
 				{
 					for (var y = y1; y < y2; y++)
 					{
+						if (Tilemap[x, y].Water) //add checks to allow clutter to appear in water and/or ground
+							continue;
 						var bg = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor;
 						if (Random.NextDouble() < clutter.Chance)
 						{
@@ -432,13 +423,11 @@ namespace Noxico
 				}
 			}
 		}
-		[ForJS(ForJSUsage.Either)]
 		public void AddClutter()
 		{
 			AddClutter(0, 0, 79, 24);
 		}
 
-		[ForJS(ForJSUsage.Either)]
 		public void AddWater(List<Rectangle> safeZones)
 		{
 			//TODO: Tweak some more to prevent... ahum... water damage.
@@ -515,7 +504,6 @@ namespace Noxico
 				}
 			}
 		}
-		[ForJS(ForJSUsage.Either)]
 		public void AddWater()
 		{
 			AddWater(new List<Rectangle>() { new Rectangle() { Left = 0, Top = 0, Right = 79, Bottom = 24 } });
