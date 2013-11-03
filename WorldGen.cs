@@ -894,7 +894,7 @@ namespace Noxico
 	{
 		public int[,] RoughBiomeMap, TownMap, DetailedMap;
 		public Board[,] BoardMap;
-		public int MapSizeX, MapSizeY;
+		public int MapSizeX, MapSizeY, TownMarkers, WaterBiome;
 		public string Realm;
 
 		private byte[,] CreateHeightMap(int reach)
@@ -973,15 +973,15 @@ namespace Noxico
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
 			var waterLevel = BiomeData.WaterLevels[Realm];
-			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater));
-			var map = new byte[(reach / 2) + 25, reach + 80];
-			for (var row = 0; row < reach / 2; row++)
+			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
+			var map = new byte[(reach / 1) + 25, reach + 80];
+			for (var row = 0; row < reach / 1; row++)
 			{
 				for (var col = 0; col < reach; col++)
 				{
-					var h = height[row * 2, col];
-					var p = precip[row * 2, col];
-					var t = temp[row * 2, col];
+					var h = height[row * 1, col];
+					var p = precip[row * 1, col];
+					var t = temp[row * 1, col];
 					if (h < waterLevel)
  					{
 						map[row, col] = (byte)water;
@@ -1003,9 +1003,14 @@ namespace Noxico
 
 		public void GenerateWorldMap(string realm, Action<string> setStatus, string randSeed = "")
 		{
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
+			//realm = "Seradevari";
+			var demon = realm == "Seradevari";
+
 			Realm = realm;
 			var seed = 0xF00D;
-			var reach = 2000;
+			var reach = 1000;
 			if (!string.IsNullOrWhiteSpace(randSeed))
 			{
 				if (randSeed.StartsWith("0x"))
@@ -1042,26 +1047,18 @@ namespace Noxico
 
 			setStatus("Drawing board bitmap...");
 			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
-			var bmpHeight = reach / 2;
+			var bmpHeight = reach / 1;
 			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
 			for (var row = 0; row < bmpHeight; row++)
 				for (var col = 0; col < bmpWidth; col++)
 					bmp[row, col] = biome[row, col];
 			DetailedMap = bmp;
 
-#if DEBUG
-			setStatus("Drawing actual bitmap...");
-			var png = new System.Drawing.Bitmap(bmpWidth, bmpHeight);
-			for (var row = 0; row < bmpHeight; row++)
-				for (var col = 0; col < bmpWidth; col++)
-					png.SetPixel(col, row, BiomeData.Biomes[biome[row, col]].Color);
-			png.Save("world.png");
-#endif
-
 			MapSizeX = reach / 80; //1000 -> 12
-			MapSizeY = (reach / 2) / 25; //1000 -> 20
+			MapSizeY = (reach / 1) / 25; //1000 -> 20
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
+			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
 			setStatus("Determining biomes...");
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
@@ -1079,9 +1076,9 @@ namespace Noxico
 						}
 					}
 					//Special rule for Oceans
-					if (counts[0] >= oceanTreshold)
+					if (counts[water] >= oceanTreshold)
 					{
-						RoughBiomeMap[bRow, bCol] = 0;
+						RoughBiomeMap[bRow, bCol] = water;
 						oceans++;
 						continue;
 					}
@@ -1117,7 +1114,7 @@ namespace Noxico
 					var waterMax = 256;
 					for (var pRow = 0; pRow < 25; pRow++)
 						for (var pCol = 0; pCol < 80; pCol++)
-							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == 0)
+							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == water)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -1149,7 +1146,7 @@ namespace Noxico
 								var waterMax = 128;
 								for (var pRow = 0; pRow < 25; pRow++)
 									for (var pCol = 0; pCol < 80; pCol++)
-										if (biome[(row * 25) + pRow, (col * 80) + pCol] == 0)
+										if (biome[(row * 25) + pRow, (col * 80) + pCol] == water)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -1165,6 +1162,33 @@ namespace Noxico
 				}
 			}
 
+			//Ensure there's at least one town marker
+			if (towns == 0)
+			{
+				var tx = MapSizeX / 2;
+				var ty = MapSizeY / 2;
+				if (TownMap[tx, ty] == -1 && RoughBiomeMap[tx, ty] != 0)
+					TownMap[tx, ty] = towns;
+				else
+				{
+					while (true)
+					{
+						tx = Random.Next(MapSizeX - 1);
+						ty = Random.Next(MapSizeY - 1);
+						if (TownMap[ty, tx] == -1 && RoughBiomeMap[ty, tx] != 0)
+						{
+							TownMap[ty, tx] = towns;
+							break;
+						}
+					}
+				}
+				for (var pRow = 0; pRow < 25; pRow++)
+					for (var pCol = 0; pCol < 80; pCol++)
+						DetailedMap[(ty * 25) + pRow, (tx * 80) + pCol] = RoughBiomeMap[ty, tx];
+			}
+
+			TownMarkers = towns;
+			WaterBiome = water;
 			BoardMap = new Board[MapSizeY, MapSizeX];
 		}
 	}

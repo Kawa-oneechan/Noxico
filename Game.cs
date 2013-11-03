@@ -581,7 +581,7 @@ namespace Noxico
 			{
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
 				{
-					if (generator.RoughBiomeMap[y, x] == 0)
+					if (generator.RoughBiomeMap[y, x] == generator.WaterBiome)
 						continue;
 					var newBoard = new Board();
 					newBoard.Coordinate = new Point(x, y);
@@ -710,6 +710,29 @@ namespace Noxico
 
 			//setStatus("Applying missions...");
 			//ApplyMissions(generator);
+
+#if DEBUG
+			setStatus("Drawing actual bitmap...");
+			var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 25);
+			for (var y = 0; y < generator.MapSizeY - 1; y++)
+			{
+				for (var x = 0; x < generator.MapSizeX - 1; x++)
+				{
+					var thisBoard = generator.BoardMap[y, x];
+					if (thisBoard == null)
+						continue; //draw empty spot?
+					for (var ty = 0; ty < 25; ty++)
+					{
+						for (var tx = 0; tx < 80; tx++)
+						{
+							var tile = thisBoard.Tilemap[tx, ty];
+							png.SetPixel((x * 80) + tx, (y * 25) + ty, tile.Background);
+						}
+					}
+				}
+			}
+			png.Save("world.png");
+#endif
 
 			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
