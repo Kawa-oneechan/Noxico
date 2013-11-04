@@ -2,8 +2,8 @@ choice: wait
 
 choice: walk_away
 	limitations
-		not: 0 restrained
-	actions
+		not: 0 havingsex/restrained
+	effects
 		message
 			first
 				$: You release [b:name] and get up.
@@ -25,8 +25,8 @@ choice: cuddle
 		not: 0 havingsex/restrained
 		not: 1 havingsex/restraining
 	effects
-		increase: 0 climax 1
-		increase: 1 climax 1
+		stat: 0 climax 1
+		stat: 1 climax 1
 		message
 			first
 				$: You cuddle up to [b:name].
@@ -44,6 +44,8 @@ choice: pin_down
 		release
 	limitations
 		not: 0 havingsex/restrained
+		not: 0 havingsex/restraining
+		not: 1 havingsex/restrained
 		not: 1 havingsex/restraining
 	effects
 		add: 0 restraining
@@ -61,8 +63,10 @@ choice: release
 		kiss
 		french_kiss
 		pin_down
-		take_off_top
-		take_off_bottom
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
 	limitations
 		yes: 0 havingsex/restraining
 		yes: 1 havingsex/restrained
@@ -80,8 +84,10 @@ choice: struggle
 		kiss
 		french_kiss
 		pin_down
-		take_off_top
-		take_off_bottom
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
 	limitations
 		yes: 0 havingsex/restrained
 		yes: 1 havingsex/restraining
@@ -109,13 +115,15 @@ choice: kiss
 		kiss
 		french_kiss
 		pin_down
-		take_off_top
-		take_off_bottom
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
 	limitations
 		consentual
 	effects
-		increase: 0 climax 2
-		increase: 1 climax 2
+		stat: 0 climax 2
+		stat: 1 climax 2
 		message
 			first
 				$: ~kissu~
@@ -127,16 +135,71 @@ choice: french_kiss
 		kiss
 		french_kiss
 		pin_down
-		take_off_top
-		take_off_bottom
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
 	limitations
 		consentual
 	effects
-		increase: 0 climax 3
-		increase: 1 climax 3
+		stat: 0 climax 3
+		stat: 1 climax 3
 		message
 			first
 				$: ~fkissu~
 			second
 				$: ~fkissu~
 
+choice: take_off_top_own
+	_n: Take off your [1]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 0 top
+	effects
+		disrobe: 0 top
+			success
+				message
+					first
+						$: You reach for your [1] and take it off.
+					second
+						$: [t:name] reaches for [t:his] [1] and takes it off.
+			failure
+				message
+					first
+						$: You reach for your [1] but can't take it off.
+					second
+						$: [t:name] reaches for [t:his] [1] but can't take it off.
+
+choice: take_off_top_theirs
+	_n: Take off [b:his] [1]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 1 top
+	effects
+		disrobe: 1 top
+			success
+				message
+					first
+						$: You reach for [b:name]'s [1] and take it off.
+					second
+						$: [t:name] reaches for your [1] and takes it off.
+			failure
+				message
+					first
+						$: You reach for [b:name]'s [1] but can't take it off.
+					second
+						$: [t:name] reaches for your [1] but can't take it off.

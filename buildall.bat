@@ -24,9 +24,9 @@ copy Release\Jint.dll Noxico > nul
 copy Release\Antlr3.Runtime.dll Noxico > nul
 copy Release\Noxico.mix Noxico > nul
 copy Release\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.2.1.rar Noxico > nul
+..\Rar.exe u  noxico-0.1.3.rar Noxico > nul
 copy /y Release32\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.2.1-32.rar Noxico > nul
+..\Rar.exe u  noxico-0.1.3-32.rar Noxico > nul
 rd Noxico /s /q
 cd ..
 pause
