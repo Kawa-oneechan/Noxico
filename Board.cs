@@ -879,7 +879,7 @@ namespace Noxico
 				newb.XPosition = Random.Next(2, 78);
 				newb.YPosition = Random.Next(2, 23);
 				var lives = 100;
-				while (IsSolid(newb.YPosition, newb.XPosition) && lives > 0)
+				while (IsSolid(newb.YPosition, newb.XPosition, SolidityCheck.DryWalker) && lives > 0)
 				{
 					lives--;
 					newb.XPosition = Random.Next(2, 78);

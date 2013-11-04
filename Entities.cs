@@ -75,7 +75,8 @@ namespace Noxico
             {
                 return;
             }
-            this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			if (XPosition >= 0 && YPosition >= 0 && XPosition < 80 && YPosition < 25)
+	            this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
 			var newX = 0;
 			var newY = 0;
 			Toolkit.PredictLocation(XPosition, YPosition, targetDirection, ref newX, ref newY);
