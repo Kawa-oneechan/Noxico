@@ -154,7 +154,7 @@ namespace Noxico
 				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
 				if (this.CanMove(otherBoard, lx, 24, check) != null)
 					return;
-				this.YPosition = 24;
+				this.YPosition = 25;
 				OpenBoard(this.ParentBoard.ToNorth);
 			}
 			else if (ly == 24 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
@@ -162,7 +162,7 @@ namespace Noxico
 				otherBoard = n.GetBoard(this.ParentBoard.ToSouth);
 				if (this.CanMove(otherBoard, lx, 0, check) != null)
 					return;
-				this.YPosition = 0;
+				this.YPosition = -1;
 				OpenBoard(this.ParentBoard.ToSouth);
 			}
 			else if (lx == 0 && targetDirection == Direction.West && this.ParentBoard.ToWest > -1)
@@ -170,7 +170,7 @@ namespace Noxico
 				otherBoard = n.GetBoard(this.ParentBoard.ToWest);
 				if (this.CanMove(otherBoard, 79, ly, check) != null)
 					return;
-				this.XPosition = 79;
+				this.XPosition = 80;
 				OpenBoard(this.ParentBoard.ToWest);
 			}
 			else if (lx == 79 && targetDirection == Direction.East && this.ParentBoard.ToEast > -1)
@@ -178,7 +178,7 @@ namespace Noxico
 				otherBoard = n.GetBoard(this.ParentBoard.ToEast);
 				if (this.CanMove(otherBoard, 0, ly, check) != null)
 					return;
-				this.XPosition = 0;
+				this.XPosition = -1;
 				OpenBoard(this.ParentBoard.ToEast);
 			}
 			#endregion
@@ -227,7 +227,9 @@ namespace Noxico
 			else if (AutoTravelling)
 			{
 				AutoTravelling = false;
+#if DEBUG
 				NoxicoGame.AddMessage("* TEST: couldn't go any further. *");
+#endif
 			}
 
 			NoxicoGame.ContextMessage = null;
