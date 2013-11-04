@@ -8,6 +8,7 @@ namespace Noxico
 	public static class SexManager
 	{
 		private static List<Token> choices;
+		private static string[] memory;
 		
 		private static void LoadChoices()
 		{
@@ -32,6 +33,7 @@ namespace Noxico
 		/// <returns>Possible actions by ID to pass to GetResult</returns>
 		public static Dictionary<object, string> GetPossibilities(BoardChar actor, BoardChar target)
 		{
+			memory = new string[10];
 			if (choices == null)
 				LoadChoices();
 			var actors = new[] { actor, target };
@@ -47,7 +49,7 @@ namespace Noxico
 			{
 				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.Text, possibility.GetToken("_n").Text);
+				result.Add(possibility.Text, ApplyMemory(SceneSystem.ApplyTokens(possibility.GetToken("_n").Text, actor.Character, target.Character)));
 			}
 			return result;
 		}
@@ -59,9 +61,11 @@ namespace Noxico
 				return true; //assume so
 			foreach (var limit in limitations.Tokens)
 			{
+				var check = string.IsNullOrWhiteSpace(limit.Text) ? new string[] {} : limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
 				if (limit.Name == "consentual")
 				{
-					if (!actors[1].Character.HasToken("helpless"))
+					if (actors[1].Character.HasToken("helpless"))
 						return false;
 				}
 				else if (limit.Name == "masturbating")
@@ -73,9 +77,53 @@ namespace Noxico
 				{
 					//TODO
 				}
+				else if (limit.Name == "clothing")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var clothClass = check[1];
+					InventoryItem cloth = null;
+					var haveSomething = false;
+					if (clothClass == "top")
+					{
+						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
+						{
+							var newCloth = t.GetEquippedItemBySlot(slot);
+							if (newCloth != null)
+							{
+								cloth = newCloth;
+								haveSomething = true;
+								break;
+							}
+						}
+						if (!haveSomething)
+							return false;
+					}
+					else if (clothClass == "bottom")
+					{
+						foreach (var slot in new[] { "pants", "underpants" })
+						{
+							var newCloth = t.GetEquippedItemBySlot(slot);
+							if (newCloth != null)
+							{
+								cloth = newCloth;
+								haveSomething = true;
+								break;
+							}
+						}
+					}
+					else
+					{
+						cloth = t.GetEquippedItemBySlot(clothClass);
+						if (cloth != null)
+							haveSomething = true;
+					}
+					if (haveSomething)
+						memory[1] = cloth.ToString(null, false, false);
+					else
+						return false;
+				}
 				else if (limit.Name == "not")
 				{
-					var check = limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 					var target = int.Parse(check[0]);
 					var path = check[1];
 					if (actors[target].Character.Path(path) != null)
@@ -83,7 +131,6 @@ namespace Noxico
 				}
 				else if (limit.Name == "yes")
 				{
-					var check = limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 					var target = int.Parse(check[0]);
 					var path = check[1];
 					if (actors[target].Character.Path(path) == null)
@@ -150,6 +197,24 @@ namespace Noxico
 						act.Character.RemoveAll("havingsex");
 					return;
 				}
+				else if (effect.Name == "stat")
+				{
+					actors[int.Parse(check[0])].Character.ChangeStat(check[1], float.Parse(check[2]));
+				}
+				else if (effect.Name == "increase")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var p = t.Path(check[1]);
+					if (p != null)
+						p.Value += float.Parse(check[2]);
+				}
+				else if (effect.Name == "decrease")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var p = t.Path(check[1]);
+					if (p != null)
+						p.Value -= float.Parse(check[2]);
+				}
 				else if (effect.Name == "add")
 				{
 					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
@@ -184,7 +249,7 @@ namespace Noxico
 					if (source == null)
 						continue;
 					var message = source.Tokens[Random.Next(source.Tokens.Count)].Text;
-					message = SceneSystem.ApplyTokens(message, actor.Character, target.Character);
+					message = ApplyMemory(SceneSystem.ApplyTokens(message, actor.Character, target.Character));
 					writer(message);
 				}
 				else if (effect.Name == "roll")
@@ -211,7 +276,50 @@ namespace Noxico
 					else if (effect.HasToken("lose"))
 						Apply(effect.GetToken("lose"), actor, target, writer);
 				}
+				else if (effect.Name == "disrobe")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var clothClass = check[1];
+					InventoryItem cloth = null;
+					if (clothClass == "top")
+					{
+						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
+						{
+							cloth = t.GetEquippedItemBySlot(slot);
+							if (cloth != null)
+								break;
+						}
+					}
+					else if (clothClass == "bottom")
+					{
+						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
+						{
+							cloth = t.GetEquippedItemBySlot(slot);
+							if (cloth != null)
+								break;
+						}
+					}
+					else
+					{
+						cloth = t.GetEquippedItemBySlot(clothClass);
+					}
+					if (cloth != null)
+					{
+						var success = cloth.Unequip(t, cloth.tempToken);
+						if (success && effect.HasToken("success"))
+							Apply(effect.GetToken("success"), actor, target, writer);
+						else if (effect.HasToken("failure"))
+							Apply(effect.GetToken("failure"), actor, target, writer);
+					}
+				}
 			}
+		}
+
+		private static string ApplyMemory(string text)
+		{
+			for (var i = 0; i < memory.Length; i++)
+				text = text.Replace("[" + i + "]", memory[i] ?? string.Empty);
+			return text;
 		}
 	}
 
