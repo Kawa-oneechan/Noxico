@@ -23,7 +23,8 @@ namespace Noxico
 
 		public static void Engage(Character top, Character bottom, string name = "(starting node)")
 		{
-			xDoc = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
+			if (xDoc == null)
+				xDoc = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
 
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
@@ -141,7 +142,7 @@ namespace Noxico
 						js.SetFunction("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
 						//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 						//js.SetParameter("Expectations", NoxicoGame.Expectations);
-						js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
+						//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
 						js.Run(part.InnerText);
 						ret.AppendLine(buffer.ToString());
 						ret.AppendLine();
@@ -155,6 +156,7 @@ namespace Noxico
 		{
 			var trimmers = new[] {'\t', '\n', '\r'};
 			var hadFalseIf = false;
+			var entityMap = Enum.GetNames(typeof(KeyBinding)).Select(x => x.ToLowerInvariant()).ToList();
 			foreach (var node in part.ChildNodes)
 			{
 				if (node is XmlText)
@@ -164,7 +166,14 @@ namespace Noxico
 						text = text.TrimStart();
 					if (trimmers.Contains(text[text.Length - 1]))
 						text = text.TrimEnd();
-					ret.Append(text);
+					ret.Append(text.SmartQuote());
+				}
+				else if (node is XmlEntityReference)
+				{
+					var entity = (XmlEntityReference)node;
+					var keyIndex = entityMap.IndexOf(entity.Name);
+					if (keyIndex > -1)
+						ret.Append(Toolkit.TranslateKey((KeyBinding)keyIndex));
 				}
 				else if (node is XmlElement)
 				{

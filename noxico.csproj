@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -226,7 +226,8 @@
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenes\PillowShout\intro_scenesDlg.xml" />
+    <Content Include="mix\scenes\intro_scenesDlg.xml" />
+    <Content Include="mix\scenes\pony_scenesDlg.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\sex.tml" />
     <Content Include="mix\TileSpecialDescriptions.txt" />

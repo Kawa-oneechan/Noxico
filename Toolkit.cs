@@ -374,7 +374,7 @@ namespace Noxico
 					breakIt = true;
 					softHyphen = true;
 				}
-				else if (char.IsPunctuation(ch) && !(ch == '(' || ch == ')'))
+				else if (char.IsPunctuation(ch) && !(ch == '(' || ch == ')' || ch == '\''))
 				{
 					currentWord.Append(ch);
 					breakIt = true;

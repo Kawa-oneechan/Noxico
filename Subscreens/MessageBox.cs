@@ -180,7 +180,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.List;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 68); //.Split('\n');
+			text = Toolkit.Wordwrap(question.Trim(), 66); //.Split('\n');
 			option = 0;
 			onYes = okay;
 			MessageBox.options = options;
@@ -197,7 +197,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.Question;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 68); //.Split('\n');
+			text = Toolkit.Wordwrap(question.Trim(), 66); //.Split('\n');
 			onYes = yes;
 			onNo = no;
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -212,7 +212,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Notice;
-			text = Toolkit.Wordwrap(message.Trim(), 68); //.Split('\n');
+			text = Toolkit.Wordwrap(message.Trim(), 66); //.Split('\n');
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
@@ -225,7 +225,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Input;
-			text = Toolkit.Wordwrap(message.Trim(), 68); //.Split('\n');
+			text = Toolkit.Wordwrap(message.Trim(), 66); //.Split('\n');
 			Answer = defaultValue;
 			onYes = okay;
 			NoxicoGame.Mode = UserMode.Subscreen;
