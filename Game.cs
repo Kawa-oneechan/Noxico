@@ -439,7 +439,7 @@ namespace Noxico
 					lastLine = "";
 				else
 					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap().Trim().Split('\n');
+				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(78).Trim().Split('\n');
 				if (newLines.Length > 1)
 				{
 					for (var i = 1; i < newLines.Length; i++)

@@ -34,6 +34,26 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
+
+	<!-- Key bindings for tutorial -->
+	<!ENTITY shorthand "&#xE2FE;">
+	<!ENTITY left "&#xE200;">
+	<!ENTITY right "&#xE201;">
+	<!ENTITY up "&#xE202;">
+	<!ENTITY down "&#xE203;">
+	<!ENTITY rest "&#xE204;">
+	<!ENTITY activate "&#xE205;">
+	<!ENTITY items "&#xE206;">
+	<!ENTITY interact "&#xE207;">
+	<!ENTITY fly "&#xE208;">
+	<!ENTITY travel "&#xE209;">
+	<!ENTITY accept "&#xE20A;">
+	<!ENTITY back "&#xE20B;">
+	<!ENTITY pause "&#xE20C;">
+	<!ENTITY screenshot "&#xE20D;">
+	<!ENTITY tabfocus "&#xE20E;">
+	<!ENTITY scrollup "&#xE20F;">
+	<!ENTITY scrolldown "&#xE210;">
 ]>
 <scenes>
 
@@ -53,27 +73,11 @@
 		<p>
 			Around you, the world quickly unfolds and builds itself from the dark into a verdant forest. Tall redwoods and broad leaved ferns surround the small, rocky clearing you stand in, and beneath your {if top has legs}uncovered [t:feet]{else}{if top has snaketail}serpentine lower body{else}{if top has slimeblob}translucent, sluglike lower half{endif}{endif}{endif}, you feel the pleasant softness of the carpet of moist lichen that covers the earth.
 		</p>
-		<!--
-		your <if target="top" type="has" name="legs">uncovered [t:feet]</if>
-		<else><if target="top" type="has" name="snaketail">serpentine lower body</if>
-		<else>
-			<if target="top" type="has" name="slimeblob">translucent, sluglike lower half</if>
-		</else>
-		</else>, you
-
-		<p>
-			Around you, the world quickly unfolds and builds itself from the dark into a verdant forest. Tall redwoods and broad leaved ferns surround the small, rocky clearing you stand in, and beneath your <if target="top" type="has" name="legs">uncovered [t:feet]</if>
-			<else><if target="top" type="has" name="snaketail">serpentine lower body</if>
-				<else>
-					<if target="top" type="has" name="slimeblob">translucent, sluglike lower half</if>
-				</else>
-			</else>, you feel the pleasant softness of the carpet of moist lichen that covers the earth.
-		</p>
-		-->
 		<p/>
 		<p>
 			As you stand there admiring the scenery, you hear the sound of quiet footsteps to your left and turn to find one of the most peculiar creatures you've ever seen standing barely an arm's length away.
 		</p>
+		<action name="new game placeholder tutorial" />
 		<action name="new game start 2"/>
 	</scene>
 	<scene id="NewGameIntro_Start2" name="new game start 2">
@@ -395,19 +399,19 @@
 		</p>
 		<p/>
 		<p>
-			Move using the arrow keys. Look at things with 'L', converse with NPC's using 'C', attempt sex with 'F', pick up objects with 'P', travel with 'T' and select with 'Enter'.
+			Move using the &left;, &right;, &up; and &down; keys. Rest in place with '&rest;'. Use beds, containers, and doorways by standing on them and pressing '&activate;'.
 		</p>
 		<p/>
 		<p>
-			To attack an enemy with a melee weapon, stand next to them and press the arrow key in their direction.
+			Switch to Interact Mode with '&interact;' -- you can look at things, converse with NPCs and try to have sex with them... You can check your inventory with '&items;' and open the travel screen with '&travel;'.
 		</p>
 		<p/>
 		<p>
-			To attack an enemy with a ranged weapon, press the 'A' key and move the targeting cursor over them, then press 'Enter'.
+			To attack an enemy with a melee weapon, stand next to them and move in their direction. To attack an enemy with a ranged weapon, press '&interact;' and move the targeting cursor over them, then press '&accept;'. Alternatively, to use a ranged weapon in one of the four cardinal directions, hold Shift and press a direction.
 		</p>
 		<p/>
 		<p>
-			To access the menu and see the full list of commands, press 'F1'.
+			To access the menu and see the full list of commands, press '&pause;'.
 		</p>
 		<p/>
 		<p>
