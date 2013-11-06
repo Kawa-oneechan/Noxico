@@ -45,7 +45,6 @@ namespace Noxico
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
-		public static Dictionary<string, char> Views { get; private set; }
 		public static string[] TileDescriptions { get; private set; }
 		public static Dictionary<string, string> BodyplanHashes { get; private set; }
 		public static string SavePath { get; private set; }
@@ -148,16 +147,12 @@ namespace Noxico
 			Messages = new List<string>(); //new List<StatusMessage>();
 
 			Program.WriteLine("Loading bodyplans...");
-			Views = new Dictionary<string, char>();
 			BodyplanHashes = new Dictionary<string, string>();
 			var plans = Mix.GetTokenTree("bodyplans.tml");
 			foreach (var bodyPlan in plans.Where(t => t.Name == "bodyplan"))
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;
-				var ch = bodyPlan.Path("ascii/char");
-				if (ch != null)
-					Views.Add(id, (char)ch.Value);
 				Toolkit.VerifyBodyplan(bodyPlan, id);
 				if (bodyPlan.HasToken("beast"))
 					continue;

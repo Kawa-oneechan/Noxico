@@ -331,7 +331,7 @@ namespace Noxico
 											{
 												var newBed = new Clutter()
 												{
-													AsciiChar = '\x104',
+													AsciiChar = '\x147',
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",

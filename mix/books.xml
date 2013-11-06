@@ -948,11 +948,11 @@
 		<p style="keen">
 			BEHOLD THE MIGHTY POGO STICK &lt;- commander keen's standard galactic alphabet
 		</p>
-		<p>
-			Unstyled paragraph. As in, there is no style attribute at all.
+		<p style="carve">
+			CARVED INTO THE LIVING ROCK ITSELF
 		</p>
 		<p>
-			Note that you can't really <p style="hand">&#2000;change style in the middle of a sentence</p> as the closing tag will cause a double line break.
+			Unstyled paragraph. As in, there is no style attribute at all.
 		</p>
 	</book>
 </library>

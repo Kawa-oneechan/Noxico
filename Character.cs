@@ -505,7 +505,7 @@ namespace Noxico
 
 		private void EnsureDefaultTokens()
 		{
-			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
+			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly", "bestiary" };
 			foreach (var t in metaTokens)
 				this.RemoveAll(t);
 			if (!this.HasToken("beast"))

@@ -52,7 +52,7 @@ namespace Noxico
 			var newX = this.XPosition;
 			var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
-			if (newX < 0 || newY < 0 || newX > 79 || newY > 24)
+			if (newX < 0 || newY < 0 || newX > 79 || newY > 49)
 				return false;
 			return null;
 		}
@@ -323,16 +323,19 @@ namespace Noxico
 									else if (PointingAt is BoardChar)
 										tc = ((BoardChar)PointingAt).Character;
 
-									var dump = tc.DumpTokens(tc.Tokens, 0);
+									NoxicoGame.HostForm.Write("TOKEN EDIT ENGAGED. Waiting for editor process to exit.", Color.Black, Color.White, 0, 0);
+									NoxicoGame.HostForm.Draw();
+									var dump = "-- WARNING! Many things may cause strange behavior or crashes. WATCH YOUR FUCKING STEP.\r\n" + tc.DumpTokens(tc.Tokens, 0);
 									var temp = Path.Combine(Path.GetTempPath(), DateTime.Now.Ticks.ToString() + ".txt");
 									File.WriteAllText(temp, dump);
 									var process = System.Diagnostics.Process.Start(temp);
 									process.WaitForExit();
 									var newDump = File.ReadAllText(temp);
+									File.Delete(temp);
+									ParentBoard.Redraw();
 									if (newDump == dump)
 										break;
 									tc.Tokenize(newDump);
-									File.Delete(temp);
 									break;
 #endif
 
