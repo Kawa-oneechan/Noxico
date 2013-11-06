@@ -520,22 +520,24 @@ namespace Noxico
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			//FxCop: removed bunch of vars, unused since template system.
-			//var floorStart = Color.FromArgb(65, 66, 87);
-			//var floorEnd = Color.FromArgb(88, 89, 122);
 			var wallStart = Color.FromArgb(119, 120, 141);
 			var wallEnd = Color.FromArgb(144, 144, 158);
-			//var wall = Color.FromArgb(71, 50, 33);
 			var path = Color.FromArgb(32, 32, 32);
-			//var floorCrud = new[] { ',', '\'', '`', '.', };
 
 			//Base fill
 			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
 					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
 
+			//Stopgap code
+			var floor = wallStart.Darken();
+			for (var row = 1; row < 49; row++)
+				for (var col = 1; col < 79; col++)
+					map[col, row] = new Tile() { Character = ' ', Wall = false, Background = floor };
+
+			#region Old shit
+			/*
 			includeWater = false;
-			includeClutter = false;
 			base.ToTilemap(ref map);
 
 			//Connect plots
@@ -549,8 +551,8 @@ namespace Noxico
 						continue; //I dunno, place a hub pathway or something?
 
 					var building = plots[col, row];
-					//var x = (col * 13) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
-					//var y = (row * 16) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
+					//var x = (col * 10) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
+					//var y = (row * 12) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
 					var x = (col * 13) + building.XShift + (building.Template.Width / 2);
 					var y = (row * 16) + building.YShift + (building.Template.Height / 2);
 					//map[x, y].Background = Color.Magenta;
@@ -689,6 +691,8 @@ namespace Noxico
 					}
 				}
 			}
+			*/
+			#endregion
 		}
 	}
 

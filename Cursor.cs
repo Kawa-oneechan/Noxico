@@ -217,6 +217,11 @@ namespace Noxico
 							options["take"] = i18n.GetString("action_pickup");
 					}
 
+#if DEBUG
+					if (PointingAt is DroppedItem || PointingAt is BoardChar)
+						options["edit"] = "Edit tokens";
+#endif
+
 					//MessageBox.List("This is " + description + ". What would you do?", options,
 					ActionList.Show(description, PointingAt.XPosition, PointingAt.YPosition, options,
 						() =>
@@ -309,6 +314,27 @@ namespace Noxico
 										ParentBoard.Redraw();
 									}
 									break;
+
+#if DEBUG
+								case "edit":
+									TokenCarrier tc = null;
+									if (PointingAt is DroppedItem)
+										tc = ((DroppedItem)PointingAt).Token;
+									else if (PointingAt is BoardChar)
+										tc = ((BoardChar)PointingAt).Character;
+
+									var dump = tc.DumpTokens(tc.Tokens, 0);
+									var temp = Path.Combine(Path.GetTempPath(), DateTime.Now.Ticks.ToString() + ".txt");
+									File.WriteAllText(temp, dump);
+									var process = System.Diagnostics.Process.Start(temp);
+									process.WaitForExit();
+									var newDump = File.ReadAllText(temp);
+									if (newDump == dump)
+										break;
+									tc.Tokenize(newDump);
+									File.Delete(temp);
+									break;
+#endif
 
 								default:
 									MessageBox.Notice("Unknown action handler \"" + ActionList.Answer.ToString() + "\".", true);
