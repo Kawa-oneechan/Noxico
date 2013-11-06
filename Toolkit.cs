@@ -480,14 +480,7 @@ namespace Noxico
 					line.AppendFormat("<c{0}>", color.Name);
 				}
 
-				if (word.MandatoryBreak)
-				{
-					lines.Add(line.ToString().Trim());
-					line.Clear();
-					spaceLeft = length;
-					continue;
-				}
-				else if (word.Content == "\u2029")
+				if (word.Content == "\u2029")
 				{
 					lines.Add(line.ToString().Trim());
 					lines.Add(string.Empty);
@@ -522,6 +515,15 @@ namespace Noxico
 						spaceLeft--;
 					}
 				}
+
+				if (word.MandatoryBreak)
+				{
+					lines.Add(line.ToString().Trim());
+					line.Clear();
+					spaceLeft = length;
+					continue;
+				}
+
 			}
 			if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
 				lines.Add(line.ToString());
@@ -722,56 +724,64 @@ namespace Noxico
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns></returns>
-		public static string ToNoxML(this XmlElement element)
+		public static string ToNoxML(this XmlElement element, bool skip = false)
 		{
 			var r = "";
-			foreach (var p in element.SelectNodes("p").OfType<XmlElement>())
+			if (!skip)
 			{
-				if (p.GetAttribute("style") == "hand")
+				foreach (var p in element.SelectNodes("p").OfType<XmlElement>())
 				{
-					foreach (var n in p.ChildNodes)
+					if (p.HasAttribute("style"))
 					{
-						if (n is XmlText)
+						var style = p.GetAttribute("style");
+						if (style == "hand")
 						{
-							var original = ((XmlText)n).Value;
-							var styled = new StringBuilder(original.Length);
-							foreach (var c in original)
+							foreach (var n in p.ChildNodes)
 							{
-								if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
-									styled.Append((char)((c - '@') + 0xE060));
-								else
-									styled.Append(c);
+								if (n is XmlText)
+								{
+									var original = ((XmlText)n).Value;
+									var styled = new StringBuilder(original.Length);
+									foreach (var c in original)
+									{
+										if (c >= 'A' && c <= 'Z')
+											styled.Append((char)((c - 'A') + 0x200));
+										else if (c >= 'a' && c <= 'z')
+											styled.Append((char)((c - 'a') + 0x21A));
+										else
+											styled.Append(c);
+									}
+									((XmlText)n).Value = styled.ToString();
+								}
 							}
-							((XmlText)n).Value = styled.ToString();
 						}
-					}
-				}
-				else if (p.HasAttribute("style"))
-				{
-					var style = p.GetAttribute("style");
-					var styleOffset = 0;
-					if (style == "daedric")
-						styleOffset = 0xE000;
-					else if (style == "alternian")
-						styleOffset = 0xE020;
-					if (style == "keen")
-						styleOffset = 0xE040;
-					if (styleOffset == 0)
-						continue;
-					foreach (var n in p.ChildNodes)
-					{
-						if (n is XmlText)
+						else
 						{
-							var original = ((XmlText)n).Value;
-							var styled = new StringBuilder(original.Length);
-							foreach (var c in original)
+							var offset = 0x41;
+							if (style == "carve")
+								offset = 0x234;
+							else if (style == "daedric")
+								offset = 0x24E;
+							else if (style == "alternian")
+								offset = 0x268;
+							else if (style == "keen")
+								offset = 0x282;
+							foreach (var n in p.ChildNodes)
 							{
-								if ((c >= 'A' && c <= 'Z'))
-									styled.Append((char)((c - '@') + styleOffset));
-								else
-									styled.Append(c);
+								if (n is XmlText)
+								{
+									var original = ((XmlText)n).Value;
+									var styled = new StringBuilder(original.Length);
+									foreach (var c in original)
+									{
+										if (c >= 'A' && c <= 'Z')
+											styled.Append((char)((c - 'A') + offset));
+										else
+											styled.Append(c);
+									}
+									((XmlText)n).Value = styled.ToString();
+								}
 							}
-							((XmlText)n).Value = styled.ToString();
 						}
 					}
 				}
@@ -789,7 +799,7 @@ namespace Noxico
 					if (e.Name == "br")
 						r += "\n";
 
-					r += e.ToNoxML();
+					r += e.ToNoxML(true);
 
 					if (e.Name == "b")
 						r += "<c>";

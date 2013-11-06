@@ -35,11 +35,11 @@
 			<markings>
 				<marking char="A" type="bed" owner="1" />
 				<marking char="a" type="bed" owner="2" />
-				<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
-				<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
-				<marking char="C" type="block,darkgreen,floor,&#x00A5;" />
-				<marking char="c" type="clutter,&#x2565;" name="Chair" />
-				<marking char="T" type="clutter,blocking,&#x2564;" name="Table">Solid fuckin' oak. No IKEA here bitches!</marking>
+				<marking char="B" type="container,clothes,&#x14B;" owner="1" />
+				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
+				<marking char="C" type="block,darkgreen,floor,&#x0F;" />
+				<marking char="c" type="clutter,&#x149;" name="Chair" />
+				<marking char="T" type="clutter,blocking,&#x148;" name="Table">Solid fuckin' oak. No IKEA here bitches!</marking>
 			</markings>
 		</template>
 		<template name="simple test 2" inhabitants="1">
@@ -54,8 +54,8 @@
 			<markings>
 				<marking char="A" type="bed" owner="1" />
 				<marking char="a" type="bed" owner="2" />
-				<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
-				<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+				<marking char="B" type="container,clothes,&#x14B;" owner="1" />
+				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
 			</markings>
 		</template>
 		<template name="simple test 3" inhabitants="2">
@@ -70,8 +70,8 @@
 			<markings>
 				<marking char="A" type="bed" owner="1" />
 				<marking char="a" type="bed" owner="2" />
-				<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
-				<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
+				<marking char="B" type="container,clothes,&#x14B;" owner="1" />
+				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
 			</markings>
 		</template>
 		<template name="wide test" inhabitants="2">
@@ -90,11 +90,11 @@
 			<markings>
 				<marking char="A" type="bed" owner="1" />
 				<marking char="a" type="bed" owner="2" />
-				<marking char="B" type="container,clothes,&#x00C6;" owner="1" />
-				<marking char="b" type="container,clothes,&#x00C6;" owner="2" />
-				<marking char="c" type="clutter,&#x2565;" name="Chair" />
-				<marking char="T" type="clutter,blocking,&#x2564;" name="Table" />
-				<marking char="=" type="block,wall,floor,&#x2261;" />
+				<marking char="B" type="container,clothes,&#x14B;" owner="1" />
+				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
+				<marking char="c" type="clutter,&#x149;" name="Chair" />
+				<marking char="T" type="clutter,blocking,&#x148;" name="Table" />
+				<marking char="=" type="block,wall,floor,&#xE0;" />
 			</markings>
 		</template>
 		<!--
@@ -144,7 +144,7 @@
 				'''''''''
 			</map>
 			<markings>
-				<marking char="c" type="clutter,&#x2565;" name="stuff" />
+				<marking char="c" type="clutter,&#x149;" name="stuff" />
 			</markings>
 		</template>
 		<template name="simple dungeon cell">
@@ -158,7 +158,7 @@
 				'''''''
 			</map>
 			<markings>
-				<marking char="c" type="clutter,&#x2565;" name="stuff" />
+				<marking char="c" type="clutter,&#x149;" name="stuff" />
 			</markings>
 		</template>
 		<template name="simple watery cell">
@@ -172,7 +172,7 @@
 				''''''''
 			</map>
 			<markings>
-				<marking char="w" type="floor,navy,floor,&#x007E;" />
+				<marking char="w" type="floor,navy,floor,&#x7E;" />
 			</markings>
 		</template>
 		<template name="simple dungeon cell">
@@ -208,7 +208,7 @@
 				'''''''
 			</map>
 			<markings>
-				<marking char="w" type="water,blue,navy,&#x007E;" />
+				<marking char="w" type="water,blue,navy,&#x7E;" />
 			</markings>
 		</template>
 	</set>

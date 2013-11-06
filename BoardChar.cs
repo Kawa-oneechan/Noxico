@@ -71,6 +71,25 @@ namespace Noxico
 				if (a.HasToken("back"))
 					BackgroundColor = Color.FromName(a.GetToken("back").Text);
 			}
+			else
+			{
+				var judgment = '\x160';
+				if (Character.HasToken("tallness") && Character.GetToken("tallness").Value < 140)
+					judgment = '\x165';
+				if (Character.HasToken("wings") && !Character.GetToken("wings").HasToken("small"))
+					judgment = '\x166';
+				else if (Character.HasToken("tail"))
+					judgment = '\x167';
+				if (Character.HasToken("snaketail"))
+					judgment = '\x161';
+				else if (Character.HasToken("slimeblob"))
+					judgment = '\x164';
+				else if (Character.HasToken("quadruped"))
+					judgment = '\x163';
+				else if (Character.HasToken("taur"))
+					judgment = '\x162';
+				AsciiChar = judgment;
+			}
 
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
 			{
