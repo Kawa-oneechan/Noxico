@@ -1055,9 +1055,9 @@ namespace Noxico
 			}));
 			js.SetFunction("FindTargetBoardByName", new Func<string, int>(x =>
 			{
-				if (!NoxicoGame.TargetNames.ContainsValue(x))
+				if (!NoxicoGame.TravelTargets.ContainsValue(x))
 					return -1;
-				var i = NoxicoGame.TargetNames.First(b => b.Value == x);
+				var i = NoxicoGame.TravelTargets.First(b => b.Value == x);
 				return i.Key;
 			}));
 
@@ -1065,26 +1065,14 @@ namespace Noxico
 			{
 				if (string.IsNullOrWhiteSpace(board.Name))
 					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
+				if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
 					return; //throw new Exception("Board is already a travel target.");
-				NoxicoGame.TargetNames.Add(board.BoardNum, board.Name);
-			});
-			var makeBoardKnown = new Action<Board>(board =>
-			{
-				if (!NoxicoGame.TargetNames.ContainsKey(board.BoardNum))
-					throw new Exception("Board must be in the travel targets list before it can be known.");
-				if (NoxicoGame.KnownTargets.Contains(board.BoardNum))
-					return;
-				NoxicoGame.KnownTargets.Add(board.BoardNum);
+				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
 			});
 
 			js.SetFunction("MakeBoardTarget", makeBoardTarget);
-			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
 			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			//js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
-			//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-			//js.SetParameter("Expectations", NoxicoGame.Expectations);
 			js.SetParameter("scheduler", this.scheduler);
 			js.SetParameter("Task", typeof(Task));
 			js.SetParameter("TaskType", typeof(TaskType));
@@ -1120,7 +1108,7 @@ namespace Noxico
 
 		public void AssignScripts(string id)
 		{
-			var uniques = Mix.GetTokenTree("uniques.tml");
+			var uniques = Mix.GetTokenTree("uniques.tml", true);
 			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
 			var scripts = planSource.Tokens.Where(t => t.Name == "script");
 			foreach (var script in scripts)

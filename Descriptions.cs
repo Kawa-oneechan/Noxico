@@ -40,14 +40,14 @@ namespace Noxico
 					var f = Math.Floor(i / 12);
 					i %= 12;
 					if (i > 0)
-						return f + "\u2032" + i.ToString("F0") + "\u2033";
+						return f + "\x15E" + i.ToString("F0") + "\x15F";
 					else
-						return f + "\u2032";
+						return f + "\x15E";
 				}
 				if (Math.Floor(i) != i)
-					return i.ToString("F1") + "\u2033";
+					return i.ToString("F1") + "\x15F";
 				else
-					return i.ToString("F0") + "\u2033";
+					return i.ToString("F0") + "\x15F";
 			}
 		}
 

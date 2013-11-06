@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,6 +54,7 @@ namespace Noxico
 			nc.Bodyplans = t.GetToken("bodyplans").Tokens.Select(x => x.Name).ToArray();
 			nc.Marriage = t.HasToken("marriage") ? t.GetToken("marriage").Value : 0.0f;
 			nc.Monogamous = t.HasToken("monogamous") ? t.GetToken("monogamous").Value : 0.0f;
+			nc.TownName = t.HasToken("townname") ? t.GetToken("townname").Text : null;
 			if (t.HasToken("terms"))
 			{
 				nc.Terms = new Dictionary<string, string>();

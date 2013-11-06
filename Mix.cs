@@ -402,11 +402,16 @@ namespace Noxico
 		public static string[] GetFilesWithPattern(string pattern)
 		{
 			var ret = new List<string>();
-			var regex = new System.Text.RegularExpressions.Regex(pattern.Replace("*", "(.*)"));
+			var regex = new System.Text.RegularExpressions.Regex(pattern.Replace("*", "(.*)").Replace("\\", "\\\\"));
 			foreach (var entry in fileList.Values.Where(x => regex.IsMatch(x.Filename)))
 				ret.Add(entry.Filename);
 			if (Directory.Exists("data"))
 			{
+				if (pattern.Contains('\\'))
+				{
+					if (!Directory.Exists(Path.Combine("data", Path.GetDirectoryName(pattern))))
+						return ret.ToArray();
+				}
 				var getFiles = Directory.GetFiles("data", pattern, SearchOption.AllDirectories);
 				ret.AddRange(getFiles);
 			}

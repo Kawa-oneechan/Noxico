@@ -259,7 +259,7 @@ namespace Noxico
 
 		public static Character GetUnique(string id)
 		{
-			var uniques = Mix.GetTokenTree("uniques.tml");
+			var uniques = Mix.GetTokenTree("uniques.tml", true);
 
 			var newChar = new Character();
 			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));

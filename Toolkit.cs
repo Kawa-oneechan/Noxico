@@ -500,7 +500,7 @@ namespace Noxico
 				{
 					if (next != null && spaceLeft - word.Length - next.Content.TrimEnd().Length <= 0)
 					{
-						word.Content += '\u2010'; //not an ASCII hyphen-minus but a proper hyphen!
+						word.Content += '-';
 						word.SoftHyphen = false;
 					}
 				}
@@ -538,12 +538,12 @@ namespace Noxico
 			{
 				if (ch == '\"')
 				{
-					//ret.Append(open ? '\u201D' : '\u201C');
+					//ret.Append(open ? '\x139' : '\x138');
 					if (!open)
 					{
 						quoted.Clear();
 						open = true;
-						ret.Append('\u201C');
+						ret.Append('\x138');
 					}
 					else
 					{
@@ -556,7 +556,7 @@ namespace Noxico
 							ret.Append(filter(q));
 						quoted.Clear();
 						open = false;
-						ret.Append('\u201D');
+						ret.Append('\x139');
 					}
 				}
 				else
@@ -997,9 +997,9 @@ namespace Noxico
 				if (binding == KeyBinding.Fly)
 					return withColors ? "<cYellow>Y<c>" : "Y";
 				if (binding == KeyBinding.Rest)
-					return withColors ? "<cSilver>\u2310<c>" : "Left";
+					return withColors ? "<cSilver>\xA9<c>" : "Left";
 				if (binding == KeyBinding.Travel || binding == KeyBinding.TabFocus)
-					return withColors ? "<cSilver>\u00AC<c>" : "Right";
+					return withColors ? "<cSilver>\xAB<c>" : "Right";
 				if (binding == KeyBinding.Pause)
 					return "Start";
 			}
@@ -1016,12 +1016,12 @@ namespace Noxico
 				key = key.Substring(3);
 			var specials = new Dictionary<string, string>()
 			{
-				{ "LEFT", "\u2190" },
-				{ "UP", "\u2191" },
-				{ "RIGHT", "\u2192" },
-				{ "DOWN", "\u2193" },
-				{ "RETURN", "\u21B2" },
-				{ "ENTER", "\u21B2" },
+				{ "LEFT", "\x1B" },
+				{ "UP", "\x18" },
+				{ "RIGHT", "\x1A" },
+				{ "DOWN", "\x19" },
+				{ "RETURN", "Ret." },
+				{ "ENTER", "Ret." },
 				{ "QUESTION", "/" },
 				{ "PERIOD", "." },
 				{ "COMMA", "," },

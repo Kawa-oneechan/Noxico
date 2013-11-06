@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -275,8 +275,8 @@ namespace Noxico
 		public List<Entity> EntitiesToRemove { get; private set; }
 		public List<Entity> EntitiesToAdd { get; private set; }
 
-		public Tile[,] Tilemap = new Tile[80, 25];
-		public bool[,] Lightmap = new bool[25, 80];
+		public Tile[,] Tilemap = new Tile[80, 50];
+		public bool[,] Lightmap = new bool[50, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; private set; }
 		public List<Location> ExitPossibilities { get; private set; }
@@ -290,6 +290,7 @@ namespace Noxico
 		{
 			foreach (var t in new[] { "name", "id", "type", "biome", "encounters" })
 				this.AddToken(t);
+			this.AddToken("culture", 0, "human");
 			this.GetToken("encounters").AddToken("stock", 0);
 			foreach (var t in new[] { "north", "south", "east", "west" })
 				this.AddToken(t, -1, string.Empty);
@@ -299,7 +300,7 @@ namespace Noxico
 			this.Warps = new List<Warp>();
 			this.Sectors = new Dictionary<string, Rectangle>();
 			this.DirtySpots = new List<Location>();
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
 					this.Tilemap[col, row] = new Tile();
 		}
@@ -336,7 +337,7 @@ namespace Noxico
 				stream.Write(Warps.Count);
 
 				Toolkit.SaveExpectation(stream, "TMAP");
-				for (int row = 0; row < 25; row++)
+				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						Tilemap[col, row].SaveToFile(stream);
 
@@ -401,7 +402,7 @@ namespace Noxico
 				var wrpCt = stream.ReadInt32();
 
 				Toolkit.ExpectFromFile(stream, "TMAP", "tile map");
-				for (int row = 0; row < 25; row++)
+				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
 
@@ -466,7 +467,7 @@ namespace Noxico
 
 		public bool IsSolid(int row, int col, SolidityCheck check = SolidityCheck.Walker)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return true;
 			if (check == SolidityCheck.Walker && Tilemap[col, row].SolidToWalker)
 				return true;
@@ -481,35 +482,35 @@ namespace Noxico
 
 		public bool IsBurning(int row, int col)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return false;
 			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
 		}
 
 		public bool IsWater(int row, int col)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return false;
 			return Tilemap[col, row].Water;
 		}
 
 		public bool IsLit(int row, int col)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return false;
 			return Lightmap[row, col];
 		}
 
 		public TileDescription? GetSpecialDescription(int row, int col)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return null;
 			return Tilemap[col, row].GetDescription();
 		}
 
 		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool wall = false, bool burn = false, bool water = false, bool cliff = false)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return;
 			var t = new Tile()
 			{
@@ -527,7 +528,7 @@ namespace Noxico
 
 		public void Immolate(int row, int col)
 		{
-			if (col >= 80 || row >= 25 || col < 0 || row < 0)
+			if (col >= 80 || row >= 50 || col < 0 || row < 0)
 				return;
 			var tile = Tilemap[col, row];
 			if (tile.CanBurn && !tile.Water)
@@ -567,7 +568,7 @@ namespace Noxico
 		public void Burn(bool spread)
 		{
 			//var flameColors = new[] { Color.Yellow, Color.Red, Color.Brown, Color.Maroon };
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
@@ -699,7 +700,7 @@ namespace Noxico
 				SceneSystem.Dreaming = false;
 			}
 
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
 					DirtySpots.Add(new Location(col, row));
 
@@ -735,14 +736,14 @@ namespace Noxico
 		{
 			if ((source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || (!HasToken("dark") && !Toolkit.IsNight()))
 			{
-				for (int row = 0; row < 25; row++)
+				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						Lightmap[row, col] = true;
 				return;
 			}
 
-			var previousMap = new bool[25, 80];
-			for (int row = 0; row < 25; row++)
+			var previousMap = new bool[50, 80];
+			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
@@ -753,14 +754,14 @@ namespace Noxico
 
 			Func<int, int, bool> f = (x1, y1) =>
 			{
-				if (y1 < 0 || y1 >= 25 | x1 < 0 || x1 >= 80)
+				if (y1 < 0 || y1 >= 50 | x1 < 0 || x1 >= 80)
 					return true;
 				return Tilemap[x1, y1].SolidToProjectile;
 				//return !Tilemap[x1, y1].IsWater && Tilemap[x1, y1].Solid;
 			};
 			Action<int, int> a = (x2, y2) =>
 			{
-				if (y2 < 0 || y2 >= 25 | x2 < 0 || x2 >= 80)
+				if (y2 < 0 || y2 >= 50 | x2 < 0 || x2 >= 80)
 					return;
 				Lightmap[y2, x2] = true;
 			};
@@ -776,7 +777,7 @@ namespace Noxico
 				}
 			}
 
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
@@ -1019,7 +1020,7 @@ namespace Noxico
 		public void CreateHtmlScreenshot(StreamWriter stream, bool linked)
 		{
 			stream.WriteLine("<table style=\"font-family: Unifont, monospace;\" cellspacing=0 cellpadding=0>");
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 			{
 				stream.WriteLine("\t<tr>");
 				for (int col = 0; col < 80; col++)

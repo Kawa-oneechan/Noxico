@@ -144,10 +144,10 @@ namespace Noxico
 			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
 			var renegadeDark = 18 - renegadeLight;
 			var paragonDark = 18 - paragonLight;
-			sb.Append("\u2660 ");
+			sb.Append("\x06 ");
 			sb.Append("<cMaroon>" + new string('-', renegadeDark) + "<cRed>" + new string('=', renegadeLight));
 			sb.Append("<cBlue>" + new string('=', paragonLight) + "<cNavy>" + new string('-', paragonDark));
-			sb.AppendLine(" <cSilver>\u2665");
+			sb.AppendLine(" <cSilver>\x03");
 
 			pages[i18n.GetString("pause_charstats")] = sb.ToString();
 

@@ -1,6 +1,6 @@
 Demon Portal
 Kawa
-mission.js
+mission.j
 uniques.tml
 platform1.png
 platform2.png

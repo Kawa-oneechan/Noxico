@@ -1,5 +1,5 @@
 /*
-var myBoard = PickBoard(BoardType.Town, -1);
+var myBoard = PickBoard(BoardType.Town, -1, -1);
 myBoard.DumpToHtml("PettancowPre");
 var myChar = myBoard.PickBoardChar(Gender.Female);
 

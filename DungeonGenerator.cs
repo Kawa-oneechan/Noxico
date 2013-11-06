@@ -31,8 +31,8 @@ namespace Noxico
 			MapScans = map.InnerText.Trim().Split('\n').Select(x => x.Trim()).ToArray();
 			Width = MapScans[0].Length;
 			Height = MapScans.Length;
-			PlotWidth = (int)Math.Ceiling(Width / 10.0);
-			PlotHeight = (int)Math.Ceiling(Height / 12.0);
+			PlotWidth = (int)Math.Ceiling(Width / 13.0);
+			PlotHeight = (int)Math.Ceiling(Height / 16.0);
 			Markings = new Dictionary<char, Marking>();
 			foreach (var marking in element.SelectNodes("markings/marking").OfType<XmlElement>())
 			{
@@ -126,8 +126,8 @@ namespace Noxico
 		public void Create(BiomeData biome, string templateSet)
 		{
 			this.biome = biome;
-			map = new int[80, 25];
-			plots = new Building[8, 2];
+			map = new int[80, 50];
+			plots = new Building[6, 3];
 
 			if (templates == null)
 			{
@@ -144,9 +144,9 @@ namespace Noxico
 
 			var spill = new Building("<spillover>", null, 0, 0, Culture.DefaultCulture);
 			//var justPlaced = false;
-			for (var row = 0; row < 2; row++)
+			for (var row = 0; row < 3; row++)
 			{
-				for (var col = 0; col < 8; col++)
+				for (var col = 0; col < 6; col++)
 				{
 					if (plots[col, row].BaseID == "<spillover>")
 						continue;
@@ -159,8 +159,22 @@ namespace Noxico
 					var newTemplate = templates[templateSet][Random.Next(templates[templateSet].Count)];
 					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
-					var sX = newTemplate.Width < 10 ? Random.Next(1, 10 - newTemplate.Width) : 0;
-					var sY = newTemplate.Height < 12 ? Random.Next(1, 12 - newTemplate.Height) : 0;
+					var sX = newTemplate.Width < 13 ? Random.Next(1, 13 - newTemplate.Width) : 0;
+					var sY = newTemplate.Height < 16 ? Random.Next(1, 16 - newTemplate.Height) : 0;
+					
+					//NEW: check for water in this plot.
+					var water = 0;
+					for (var y = 0; y < Math.Floor(newTemplate.Height / 16.0) * 16; y++)
+					{
+						for (var x = 0; x < Math.Floor(newTemplate.Width / 13.0) * 13; x++)
+						{
+							if (Board.Tilemap[(col * 13) + x, (row * 16) + y].Water)
+								water++;
+						}
+					}
+					if (water > 0)
+						continue;
+
 					//Later on, we might be able to wiggle them out of their assigned plot a bit.
 					//TODO: determine baseID from the first inhabitant's name.
 					var newBuilding = new Building(string.Format("house{0}x{1}", row, col), newTemplate, sX, sY, Culture);
@@ -182,17 +196,17 @@ namespace Noxico
 
 			var safeZones = new List<Rectangle>();
 
-			for (var row = 0; row < 2; row++)
+			for (var row = 0; row < 3; row++)
 			{
-				for (var col = 0; col < 8; col++)
+				for (var col = 0; col < 6; col++)
 				{
 					if (plots[col, row].BaseID == null)
 					{
 						//Can clutter this up!
 						if (includeClutter && Random.Flip())
-							Board.AddClutter(col * 10, row * 12, (col * 10) + 10, (row * 12) + 12 + row);
+							Board.AddClutter(col * 13, row * 16, (col * 13) + 13, (row * 16) + 16 + row);
 						else
-							safeZones.Add(new Rectangle() { Left = col * 10, Top = row * 12, Right = (col * 10) + 10, Bottom = (row * 12) + 12 + row });
+							safeZones.Add(new Rectangle() { Left = col * 13, Top = row * 16, Right = (col * 13) + 13, Bottom = (row * 16) + 16 + row });
 						continue;
 					}
 
@@ -200,8 +214,8 @@ namespace Noxico
 						continue;
 					var building = plots[col, row];
 					var template = building.Template;
-					var sX = (col * 10) + building.XShift;
-					var sY = (row * 12) + building.YShift;
+					var sX = (col * 13) + building.XShift;
+					var sY = (row * 16) + building.YShift;
 					for (var y = 0; y < template.Height; y++)
 					{
 						for (var x = 0; x < template.Width; x++)
@@ -236,7 +250,7 @@ namespace Noxico
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
 									bgd = woodFloor;
-									chr = '\xA0';
+									chr = '\xFF';
 									cei = true;
 									bur = true;
 
@@ -268,7 +282,7 @@ namespace Noxico
 								case '-':
 									fgd = wall;
 									bgd = woodFloor;
-									chr = '\x2550';
+									chr = '\x105';
 									wal = true;
 									cei = true;
 									bur = true;
@@ -276,7 +290,7 @@ namespace Noxico
 								case '|':
 									fgd = wall;
 									bgd = woodFloor;
-									chr = '\x2551';
+									chr = '\x104';
 									wal = true;
 									cei = true;
 									bur = true;
@@ -284,7 +298,7 @@ namespace Noxico
 								case '~':
 									fgd = wall;
 									bgd = woodFloor;
-									chr = '\x2500';
+									chr = '\x110';
 									wal = true;
 									cei = true;
 									bur = true;
@@ -292,7 +306,7 @@ namespace Noxico
 								case ';':
 									fgd = wall;
 									bgd = woodFloor;
-									chr = '\x2502';
+									chr = '\x10F';
 									wal = true;
 									cei = true;
 									bur = true;
@@ -317,7 +331,7 @@ namespace Noxico
 											{
 												var newBed = new Clutter()
 												{
-													AsciiChar = '\x0398',
+													AsciiChar = '\x104',
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",
@@ -332,7 +346,7 @@ namespace Noxico
 											if (m.Type == "container")
 											{
 												var c = m.Params.Last()[0];
-												var type = c == '\x006C' ? "cabinet" : c == '\x03C0' ? "chest" : "container";
+												var type = c == '\x14B' ? "cabinet" : c == '\x14A' ? "chest" : "container";
 												if (m.Params[0] == "clothes")
 												{
 													//if (type == "cabinet")
@@ -424,15 +438,15 @@ namespace Noxico
 							while (!okay)
 							{
 								lives--;
-								x = (col * 10) + Random.Next(10);
-								y = (row * 12) + Random.Next(12);
+								x = (col * 13) + Random.Next(13);
+								y = (row * 16) + Random.Next(16);
 								if (lives == 0 || !map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
 									okay = true;
 							}
 							bc.XPosition = x;
 							bc.YPosition = y;
-							//bc.XPosition = (col * 10) + i;
-							//bc.YPosition = row * 12;
+							//bc.XPosition = (col * 13) + i;
+							//bc.YPosition = row * 16;
 						}
 						bc.Character.AddToken("sectorlock");
 						bc.ParentBoard = Board;
@@ -447,36 +461,36 @@ namespace Noxico
 			var cjResults = new[]
 			{
 				(int)'x', //0 - none
-				0x2551, //1 - only up
-				0x2551, //2 - only down
-				0x2551, //3 - up and down
-				0x2550, //4 - only left
-				0x255D, //5 - left and up
-				0x2557, //6 - left and down
-				0x2563, //7 - left, up, and down
-				0x2550, //8 - only right
-				0x255A, //9 - right and up
-				0x2554, //10 - right and down
-				0x2560, //11 - right, up, and down
-				0x2550, //12 - left and right
-				0x2569, //13 - left, right, and up
-				0x2566, //14 - left, right, and down
-				0x256C, //15 - all
+				0x104, //1 - only up
+				0x104, //2 - only down
+				0x104, //3 - up and down
+				0x105, //4 - only left
+				0x103, //5 - left and up
+				0x101, //6 - left and down
+				0x10A, //7 - left, up, and down
+				0x105, //8 - only right
+				0x102, //9 - right and up
+				0x100, //10 - right and down
+				0x106, //11 - right, up, and down
+				0x105, //12 - left and right
+				0x109, //13 - left, right, and up
+				0x107, //14 - left, right, and down
+				0x108, //15 - all
 			};
 			foreach (var cj in cornerJunctions)
 			{
 				var up = cj.Y > 0 ? map[cj.X, cj.Y - 1].Character : 'x';
-				var down = cj.Y < 24 ? map[cj.X, cj.Y + 1].Character : 'x';
+				var down = cj.Y < 49 ? map[cj.X, cj.Y + 1].Character : 'x';
 				var left = cj.X > 0 ? map[cj.X - 1, cj.Y].Character : 'x';
 				var right = cj.X < 79 ? map[cj.X + 1, cj.Y].Character : 'x';
 				var mask = 0;
-				if (up == 0x3F || up == 0xA0 || up == 0x2551 || up == 0x2502 || (up >= 0x2551 && up <= 0x2557) || (up >= 0x255E && up <= 0x2566) || (up >= 0x256A && up <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
 					mask |= 1;
-				if (down == 0x3F || down == 0xA0 || down == 0x2551 || down == 0x2502 || (down >= 0x2558 && down <= 0x255D) || (down >= 0x255E && down <= 0x2563) || (down >= 0x2567 && down <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
 					mask |= 2;
-				if (left == 0x3F || left == 0xA0 || left == 0x2550 || left == 0x2500 || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
 					mask |= 4;
-				if (right == 0x3F || right == 0xA0 || right == 0x2550 || right == 0x2500 || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
 					mask |= 8;
 				if (mask == 0)
 					continue;
@@ -516,7 +530,7 @@ namespace Noxico
 			//var floorCrud = new[] { ',', '\'', '`', '.', };
 
 			//Base fill
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
 					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
 
@@ -527,18 +541,18 @@ namespace Noxico
 			//Connect plots
 			var colStart = 40;
 			var colEnd = 40;
-			for (var row = 0; row < 2; row++)
+			for (var row = 0; row < 3; row++)
 			{
-				for (var col = 0; col < 8; col++)
+				for (var col = 0; col < 6; col++)
 				{
 					if (plots[col, row].BaseID == null)
 						continue; //I dunno, place a hub pathway or something?
 
 					var building = plots[col, row];
-					//var x = (col * 10) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
-					//var y = (row * 12) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
-					var x = (col * 10) + building.XShift + (building.Template.Width / 2);
-					var y = (row * 12) + building.YShift + (building.Template.Height / 2);
+					//var x = (col * 13) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
+					//var y = (row * 16) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
+					var x = (col * 13) + building.XShift + (building.Template.Width / 2);
+					var y = (row * 16) + building.YShift + (building.Template.Height / 2);
 					//map[x, y].Background = Color.Magenta;
 
 					var direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : (Random.NextDouble() > 0.5 ? Direction.East : Direction.West);
@@ -584,7 +598,7 @@ namespace Noxico
 							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
 							y++;
 						}
-						while (y < Random.Next(12, 20))
+						while (y < Random.Next(24, 40))
 						{
 							if (map[x, y].Character == ' ')
 								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
@@ -632,19 +646,19 @@ namespace Noxico
 			var yShift = 0;
 			for (var x = colStart; x < colEnd; x++)
 			{
-				map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+				map[x, 16 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				if (x % 7 == 6)
 				{
 					yShift = Random.Next(-1, 1);
-					map[x, 12 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
+					map[x, 16 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				}
 			}
 
 			//Prepare to fade out the walls
-			var dijkstra = new int[80, 25];
+			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
 			{
-				for (var row = 0; row < 25; row++)
+				for (var row = 0; row < 50; row++)
 				{
 					if (map[col, row].SolidToProjectile)
 						continue;
@@ -656,7 +670,7 @@ namespace Noxico
 			Dijkstra.JustDoIt(ref dijkstra);
 
 			//Use it!
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < 50; row++)
 			{
 				for (var col = 0; col < 80; col++)
 				{
@@ -695,12 +709,12 @@ namespace Noxico
 
 		public override void ToSectorMap(Dictionary<string, Rectangle> sectors)
 		{
-			for (var row = 0; row < 2; row++)
+			for (var row = 0; row < 3; row++)
 			{
-				for (var col = 0; col < 8; col++)
+				for (var col = 0; col < 6; col++)
 				{
 					var key = string.Format("s{0}x{1}", row, col);
-					sectors.Add(key, new Rectangle() { Left = col * 10, Right = (col * 10) + 10, Top = row * 12, Bottom = (row * 12) + 12 });
+					sectors.Add(key, new Rectangle() { Left = col * 13, Right = (col * 13) + 13, Top = row * 16, Bottom = (row * 16) + 16 });
 				}
 			}
 		}
@@ -714,15 +728,15 @@ namespace Noxico
 			this.biome = biome;
 
 			//Do NOT use BaseDungeon.Create() -- we want a completely different method here.
-			map = new int[80, 25];
+			map = new int[80, 50];
 
 			//Draw a nice border for the passes to work within
 			for (var i = 0; i < 80; i++)
 			{
 				map[i, 0] = 1;
-				map[i, 24] = 1;
+				map[i, 49] = 1;
 			}
-			for (var i = 0; i < 25; i++)
+			for (var i = 0; i < 50; i++)
 			{
 				map[0, i] = 1;
 				map[1, i] = 1;
@@ -731,7 +745,7 @@ namespace Noxico
 			}
 
 			//Scatter some seed tiles
-			for (var i = 0; i < 25; i++)
+			for (var i = 0; i < 50; i++)
 				for (var j = 0; j < 80; j++)
 					if (Random.NextDouble() < 0.25)
 						map[j, i] = 1;
@@ -739,7 +753,7 @@ namespace Noxico
 			//Melt the cave layout with a cellular automata system.
 			for (var pass = 0; pass < 5; pass++)
 			{
-				for (var i = 1; i < 24; i++)
+				for (var i = 1; i < 49; i++)
 				{
 					for (var j = 1; j < 79; j++)
 					{
@@ -772,7 +786,7 @@ namespace Noxico
 			//5. If you counted only a few, it's a small enclosed space that ought to be filled in. Run the floodfill again, from the same spot, but on the actual map, setting all open spaces found to solid.
 			//6. Repeat until the checking map is fully colored.
 			//How to do step 6 in a fairly efficient way:
-			//When making the initial copy, count the amount of solid spaces as you go. Remember that value. While floodfilling, increase the count. When the count equals 80*25, you have them all.
+			//When making the initial copy, count the amount of solid spaces as you go. Remember that value. While floodfilling, increase the count. When the count equals 80*50, you have them all.
 		}
 
 		public override void ToTilemap(ref Tile[,] map)
@@ -784,7 +798,7 @@ namespace Noxico
 			var wallEnd = Color.FromArgb(144, 144, 158);
 			var floorCrud = new[] { ',', '\'', '`', '.', };
 
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < 50; row++)
 			{
 				for (var col = 0; col < 80; col++)
 				{
@@ -799,12 +813,12 @@ namespace Noxico
 				}
 			}
 
-			var dijkstra = new int[80, 25];
+			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
-				for (var row = 0; row < 25; row++)
+				for (var row = 0; row < 50; row++)
 					dijkstra[col, row] = this.map[col, row] == 0 ? 0 : 9000;
 			Dijkstra.JustDoIt(ref dijkstra, diagonals: false);
-			for (var row = 0; row < 25; row++)
+			for (var row = 0; row < 50; row++)
 			{
 				for (var col = 0; col < 80; col++)
 				{

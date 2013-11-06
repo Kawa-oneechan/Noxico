@@ -36,7 +36,7 @@ namespace Noxico
 					height += 1 + options.Count;
 				else if (type == BoxType.Input)
 					height += 2;
-				var top = 10 - (height / 2);
+				var top = 25 - (height / 2);
 				if (top < 0)
 					top = 0;
 				if (UIManager.Elements == null || fromWalkaround)
@@ -66,11 +66,11 @@ namespace Noxico
 				}
 				var keys = string.Empty;
 				if (type == BoxType.Notice || type == BoxType.Input)
-					keys = "  \u2026  ";
+					keys = "  \x137  ";
 				else if (type == BoxType.Question)
 					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
-					keys = " \u2191/\u2193 ";
+					keys = " \x18/\x19 ";
 				key = new UILabel(keys) { Top = top + height - 1, Left = 82 - keys.Length() };
 				UIManager.Elements.Add(key);
 				

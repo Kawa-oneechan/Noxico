@@ -75,7 +75,7 @@ namespace Noxico
             {
                 return;
             }
-			if (XPosition >= 0 && YPosition >= 0 && XPosition < 80 && YPosition < 25)
+			if (XPosition >= 0 && YPosition >= 0 && XPosition < 80 && YPosition < 50)
 	            this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
 			var newX = 0;
 			var newY = 0;
@@ -87,7 +87,7 @@ namespace Noxico
 
 		public virtual object CanMove(Board board, int x, int y, SolidityCheck check = SolidityCheck.Walker)
 		{
-			if (x < 0 || y < 0 || x > 79 || y > 24)
+			if (x < 0 || y < 0 || x > 79 || y > 49)
 				return false;
 
 			foreach (var entity in board.Entities)

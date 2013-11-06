@@ -226,7 +226,7 @@ namespace Noxico
 				while (true)
 				{
 					eX = Random.Next(1, 79);
-					eY = Random.Next(1, 24);
+					eY = Random.Next(1, 49);
 
 					//2013-03-07: prevent placing warps on same tile as clutter
 					if (b.Entities.FirstOrDefault(e => e.XPosition == eX && e.YPosition == eY) != null)
@@ -432,7 +432,7 @@ namespace Noxico
 			while (true)
 			{
 				treasureX = Random.Next(1, 79);
-				treasureY = Random.Next(1, 24);
+				treasureY = Random.Next(1, 49);
 
 				//2013-03-07: prevent treasure from spawning inside a wall
 				if (goalBoard.IsSolid(treasureY, treasureX))
@@ -974,10 +974,12 @@ namespace Noxico
 		{
 			var waterLevel = BiomeData.WaterLevels[Realm];
 			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
-			var map = new byte[(reach / 1) + 25, reach + 80];
-			for (var row = 0; row < reach / 1; row++)
+			var cols = (int)Math.Floor(reach / 80.0) * 80;
+			var rows = (int)Math.Floor(reach / 50.0) * 50;
+			var map = new byte[rows, cols];
+			for (var row = 0; row < rows; row++)
 			{
-				for (var col = 0; col < reach; col++)
+				for (var col = 0; col < cols; col++)
 				{
 					var h = height[row * 1, col];
 					var p = precip[row * 1, col];
@@ -1010,7 +1012,7 @@ namespace Noxico
 
 			Realm = realm;
 			var seed = 0xF00D;
-			var reach = 1000;
+			var reach = 1200;
 			if (!string.IsNullOrWhiteSpace(randSeed))
 			{
 				if (randSeed.StartsWith("0x"))
@@ -1035,6 +1037,7 @@ namespace Noxico
 						setStatus(string.Format("Using seed 0x{0:X}.", seed));
 				}
 			}
+			Random.Reseed(seed);
 
 			setStatus("Creating heightmap...");
 			var height = CreateHeightMap(reach);
@@ -1045,17 +1048,18 @@ namespace Noxico
 			setStatus("Creating biome map...");
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
+			MapSizeX = (int)Math.Floor(reach / 80.0);
+			MapSizeY = (int)Math.Floor(reach / 50.0);
+
 			setStatus("Drawing board bitmap...");
-			var bmpWidth = (int)Math.Floor(reach / 80.0) * 80;
-			var bmpHeight = reach / 1;
+			var bmpWidth = MapSizeX * 80;
+			var bmpHeight = MapSizeY * 50; //reach / 1;
 			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
 			for (var row = 0; row < bmpHeight; row++)
 				for (var col = 0; col < bmpWidth; col++)
 					bmp[row, col] = biome[row, col];
 			DetailedMap = bmp;
 
-			MapSizeX = reach / 80; //1000 -> 12
-			MapSizeY = (reach / 1) / 25; //1000 -> 20
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
 			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
@@ -1065,13 +1069,13 @@ namespace Noxico
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					var counts = new int[255];
-					var oceanTreshold = 2000 - 4;
+					var oceanTreshold = 4000 - 32;
 					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
-					for (var pRow = 0; pRow < 25; pRow++)
+					for (var pRow = 0; pRow < 50; pRow++)
 					{
 						for (var pCol = 0; pCol < 80; pCol++)
 						{
-							var b = biome[(bRow * 25) + pRow, (bCol * 80) + pCol];
+							var b = biome[(bRow * 50) + pRow, (bCol * 80) + pCol];
 							counts[b]++;
 						}
 					}
@@ -1110,11 +1114,11 @@ namespace Noxico
 					if (RoughBiomeMap[bRow, bCol] == 0)
 						continue;
 					var waterAmount = 0;
-					var waterMin = 128;
-					var waterMax = 256;
-					for (var pRow = 0; pRow < 25; pRow++)
+					var waterMin = 1500;
+					var waterMax = 2500;
+					for (var pRow = 0; pRow < 50; pRow++)
 						for (var pCol = 0; pCol < 80; pCol++)
-							if (biome[(bRow * 25) + pRow, (bCol * 80) + pCol] == water)
+							if (biome[(bRow * 50) + pRow, (bCol * 80) + pCol] == water)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -1133,7 +1137,7 @@ namespace Noxico
 			{
 				for (var bCol = 1; bCol < MapSizeX - 1; bCol++)
 				{
-					if (TownMap[bRow, bCol] == -1)
+					if (TownMap[bRow, bCol] != 0)
 					{
 						var added = 0;
 						for (var row = bRow - 1; row < bRow + 1; row++)
@@ -1143,10 +1147,10 @@ namespace Noxico
 								if (TownMap[row, col] != 0)
 									continue;
 								var waterAmount = 0;
-								var waterMax = 128;
-								for (var pRow = 0; pRow < 25; pRow++)
+								var waterMax = 500;
+								for (var pRow = 0; pRow < 50; pRow++)
 									for (var pCol = 0; pCol < 80; pCol++)
-										if (biome[(row * 25) + pRow, (col * 80) + pCol] == water)
+										if (biome[(row * 50) + pRow, (col * 80) + pCol] == water)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -1175,16 +1179,16 @@ namespace Noxico
 					{
 						tx = Random.Next(MapSizeX - 1);
 						ty = Random.Next(MapSizeY - 1);
-						if (TownMap[ty, tx] == -1 && RoughBiomeMap[ty, tx] != 0)
+						if (TownMap[ty, tx] == -1 && RoughBiomeMap[ty, tx] != water)
 						{
 							TownMap[ty, tx] = towns;
 							break;
 						}
 					}
 				}
-				for (var pRow = 0; pRow < 25; pRow++)
+				for (var pRow = 0; pRow < 50; pRow++)
 					for (var pCol = 0; pCol < 80; pCol++)
-						DetailedMap[(ty * 25) + pRow, (tx * 80) + pCol] = RoughBiomeMap[ty, tx];
+						DetailedMap[(ty * 50) + pRow, (tx * 80) + pCol] = RoughBiomeMap[ty, tx];
 			}
 
 			TownMarkers = towns;
