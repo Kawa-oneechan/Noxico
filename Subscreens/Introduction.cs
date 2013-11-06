@@ -26,9 +26,9 @@ namespace Noxico
 				new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
 				var subtitle = i18n.GetString("ts_subtitle");
-				var pressEnter = "\u2500\u2500\u2500\u2500\u2524 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\u251C\u2500\u2500\u2500\u2500";
-				host.Write(subtitle, Color.Teal, Color.Transparent, 10, 25 - subtitle.Length() / 2);
-				host.Write(pressEnter, Color.Gray, Color.Transparent, 12, 25 - pressEnter.Length() / 2);
+				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
+				host.Write(subtitle, Color.Teal, Color.Transparent, 20, 25 - subtitle.Length() / 2);
+				host.Write(pressEnter, Color.Gray, Color.Transparent, 22, 25 - pressEnter.Length() / 2);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -247,8 +247,8 @@ namespace Noxico
 					{ "gift", traitHelps[0] },
 				};
 
-				var title = "\u2524 " + i18n.GetString("cc_title") + " \u251C";
-				var bar = new string('\u2500', 33);
+				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC4";
+				var bar = new string('\xC4', 33);
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },

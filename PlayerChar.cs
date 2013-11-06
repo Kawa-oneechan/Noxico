@@ -110,11 +110,10 @@ namespace Noxico
 			if (ParentBoard.BoardType == BoardType.Town)
 			{
 				var boardName = ParentBoard.Name;
-				var known = NoxicoGame.TargetNames.ContainsValue(boardName);
+				var known = NoxicoGame.TravelTargets.ContainsValue(boardName);
 				if (!known)
 				{
-					NoxicoGame.TargetNames.Add(index, boardName);
-					NoxicoGame.KnownTargets.Add(index);
+					NoxicoGame.TravelTargets.Add(index, boardName);
 					Program.WriteLine("Registered {0} as a fast-travel target.", boardName);
 				}
 			}
@@ -152,12 +151,12 @@ namespace Noxico
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
-				if (this.CanMove(otherBoard, lx, 24, check) != null)
+				if (this.CanMove(otherBoard, lx, 49, check) != null)
 					return;
-				this.YPosition = 25;
+				this.YPosition = 50;
 				OpenBoard(this.ParentBoard.ToNorth);
 			}
-			else if (ly == 24 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
+			else if (ly == 49 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToSouth);
 				if (this.CanMove(otherBoard, lx, 0, check) != null)
@@ -239,7 +238,7 @@ namespace Noxico
 				NoxicoGame.ContextMessage = i18n.GetString("context_droppeditem");
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_container");
-			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398') != null)
+			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x147') != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_bed");
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
@@ -561,7 +560,7 @@ namespace Noxico
 				}
 
 				//Find bed
-				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x0398');
+				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x147');
 				if (bed != null)
 				{
 					var prompt = "It's " + NoxicoGame.InGameTime.ToShortTimeString() + ", " + NoxicoGame.InGameTime.ToLongDateString() + ". Sleep for how long?";

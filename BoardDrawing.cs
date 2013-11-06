@@ -36,25 +36,28 @@ namespace Noxico
 			this.GetToken("biome").Value = biomeID;
 
 			var biome = BiomeData.Biomes[biomeID];
-			for (int row = 0; row < 25; row++)
+			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					this.Tilemap[col, row] = new Tile()
 					{
 						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Foreground = biome.Color.Darken(), //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Background = biome.Color, //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
 					};
 				}
 			}
 		}
-
 		public void Clear(string biomeName)
 		{
 			Clear(BiomeData.ByName(biomeName));
+		}
+		public void Clear()
+		{
+			Clear((int)this.GetToken("biome").Value);
 		}
 
 		public void ClearToWorld(WorldMapGenerator generator)
@@ -68,19 +71,18 @@ namespace Noxico
 			var biomeID = generator.RoughBiomeMap[y, x];
 			this.GetToken("biome").Value = biomeID;
 			var worldMapX = x * 80;
-			var worldMapY = y * 25;
-			BiomeData biome;
-			for (int row = 0; row < 25; row++)
+			var worldMapY = y * 50;
+			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
-					biome = BiomeData.Biomes[b];
+					var biome = BiomeData.Biomes[b];
 					this.Tilemap[col, row] = new Tile()
 					{
 						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Foreground = biome.Color.Darken(), //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Background = biome.Color, //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
 					};
@@ -118,12 +120,10 @@ namespace Noxico
 			if (DrawJS == null)
 				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
 			var js = DrawJS;
-
 #if DEBUG
 			js.SetDebugMode(false);
 #endif
-
-			var height = 25;
+			var height = 50;
 			var width = 80;
 			for (var y = 0; y < height; y++)
 			{
@@ -134,11 +134,22 @@ namespace Noxico
 						this.Tilemap[x,y] = (Tile)js.Run(replacer);
 				}
 			}
-
-
 #if DEBUG
 			js.SetDebugMode(true);
 #endif
+		}
+		public void Replace(Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush)
+		{
+			var height = 50;
+			var width = 80;
+			for (var y = 0; y < height; y++)
+			{
+				for (var x = 0; x < width; x++)
+				{
+					if (judge(this.Tilemap[y, x], x, y))
+						this.Tilemap[x, y] = brush(this.Tilemap[y, x], x, y);
+				}
+			}
 		}
 
 		public void Floodfill(int startX, int startY, string checker, string replacer, bool allowDiagonals)
@@ -146,12 +157,10 @@ namespace Noxico
 			if (DrawJS == null)
 				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
 			var js = DrawJS;
-
 #if DEBUG
 			js.SetDebugMode(false);
 #endif
-
-			var height = 25;
+			var height = 50;
 			var width = 80;
 			var stack = new Stack<Point>();
 			stack.Push(new Point(startX, startY));
@@ -183,16 +192,50 @@ namespace Noxico
 					}
 				}
 			}
-
 #if DEBUG
 			js.SetDebugMode(true);
 #endif
+		}
+		public void Floodfill(int startX, int startY, Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush, bool allowDiagonals)
+		{
+			var height = 50;
+			var width = 80;
+			var stack = new Stack<Point>();
+			stack.Push(new Point(startX, startY));
+			while (stack.Count > 0)
+			{
+				var point = stack.Pop();
+				var x = point.X;
+				var y = point.Y;
+				if (x < 0 || y < 0 || x >= width || y >= height)
+					continue;
 
+				if (judge(this.Tilemap[y, x], x, y))
+				{
+					this.Tilemap[y, x] = brush(this.Tilemap[y, x], x, y);
+
+					stack.Push(new Point(x - 1, y));
+					stack.Push(new Point(x + 1, y));
+					stack.Push(new Point(x, y - 1));
+					stack.Push(new Point(x, y + 1));
+					if (allowDiagonals)
+					{
+						stack.Push(new Point(x - 1, y - 1));
+						stack.Push(new Point(x - 1, y + 1));
+						stack.Push(new Point(x + 1, y - 1));
+						stack.Push(new Point(x + 1, y + 1));
+					}
+				}
+			}
 		}
 		//HEADS UP: With the new Jint update we might not need this one -- allowDiagonals is assumed to be False, after all...
 		public void Floodfill(int startX, int startY, string checker, string replacer)
 		{
 			Floodfill(startX, startX, checker, replacer, false);
+		}
+		public void Floodfill(int startX, int startY, Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush)
+		{
+			Floodfill(startX, startX, judge, brush, false);
 		}
 
 		public void MergeBitmap(string fileName)
@@ -204,7 +247,7 @@ namespace Noxico
 			var cornerJunctionsI = new List<Point>();
 
 			var bitmap = Mix.GetBitmap(fileName);
-			for (var y = 0; y < 25; y++)
+			for (var y = 0; y < 50; y++)
 			{
 				for (var x = 0; x < 80; x++)
 				{
@@ -241,7 +284,7 @@ namespace Noxico
 						case "ffff0000": //Red, outer | wall
 							fgd = wall;
 							bgd = woodFloor;
-							chr = '\x2551';
+							chr = '\x104';
 							wal = true;
 							cei = true;
 							bur = true;
@@ -257,7 +300,7 @@ namespace Noxico
 						case "ff800000": //Dark red, outer -- wall
 							fgd = wall;
 							bgd = woodFloor;
-							chr = '\x2550';
+							chr = '\x105';
 							wal = true;
 							cei = true;
 							bur = true;
@@ -265,7 +308,7 @@ namespace Noxico
 						case "ffffff00": //Light yellow, inner | wall
 							fgd = wall;
 							bgd = woodFloor;
-							chr = '\x2502';
+							chr = '\x10F';
 							wal = true;
 							cei = true;
 							bur = true;
@@ -273,7 +316,7 @@ namespace Noxico
 						case "ff808000": //Dark yellow, inner -- wall
 							fgd = wall;
 							bgd = woodFloor;
-							chr = '\x2500';
+							chr = '\x110';
 							wal = true;
 							cei = true;
 							bur = true;
@@ -307,21 +350,21 @@ namespace Noxico
 			var cjResults = new[]
 			{
 				(int)'x', //0 - none
-				0x2551, //1 - only up
-				0x2551, //2 - only down
-				0x2551, //3 - up and down
-				0x2550, //4 - only left
-				0x255D, //5 - left and up
-				0x2557, //6 - left and down
-				0x2563, //7 - left, up, and down
-				0x2550, //8 - only right
-				0x255A, //9 - right and up
-				0x2554, //10 - right and down
-				0x2560, //11 - right, up, and down
-				0x2550, //12 - left and right
-				0x2569, //13 - left, right, and up
-				0x2566, //14 - left, right, and down
-				0x256C, //15 - all
+				0x104, //1 - only up
+				0x104, //2 - only down
+				0x104, //3 - up and down
+				0x105, //4 - only left
+				0x103, //5 - left and up
+				0x101, //6 - left and down
+				0x10A, //7 - left, up, and down
+				0x105, //8 - only right
+				0x102, //9 - right and up
+				0x100, //10 - right and down
+				0x106, //11 - right, up, and down
+				0x105, //12 - left and right
+				0x109, //13 - left, right, and up
+				0x107, //14 - left, right, and down
+				0x108, //15 - all
 			};
 			foreach (var cj in junctions)
 			{
@@ -330,13 +373,13 @@ namespace Noxico
 				var left = cj.X > 0 ? this.Tilemap[cj.X - 1, cj.Y].Character : 'x';
 				var right = cj.X < 79 ? this.Tilemap[cj.X + 1, cj.Y].Character : 'x';
 				var mask = 0;
-				if (up == 0x3F || up == 0xA0 || up == 0x2551 || up == 0x2502 || (up >= 0x2551 && up <= 0x2557) || (up >= 0x255E && up <= 0x2566) || (up >= 0x256A && up <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
 					mask |= 1;
-				if (down == 0x3F || down == 0xA0 || down == 0x2551 || down == 0x2502 || (down >= 0x2558 && down <= 0x255D) || (down >= 0x255E && down <= 0x2563) || (down >= 0x2567 && down <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
 					mask |= 2;
-				if (left == 0x3F || left == 0xA0 || left == 0x2550 || left == 0x2500 || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
 					mask |= 4;
-				if (right == 0x3F || right == 0xA0 || right == 0x2550 || right == 0x2500 || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
 					mask |= 8;
 				if (mask == 0)
 					continue;
@@ -349,26 +392,22 @@ namespace Noxico
 			var cjResults = new[]
 			{
 				(int)'x', //0 - none
-				0x2502, //1 - only up
-				0x2502, //2 - only down
-				0x2502, //3 - up and down
-				0x2500, //4 - only left
-				0x2518, //5 - left and up
-				0x2510, //6 - left and down
-				0x2524, //7 - left, up, and down
-				0x2500, //8 - only right
-				0x2514, //9 - right and up
-				0x250C, //10 - right and down
-				0x251C, //11 - right, up, and down
-				0x2500, //12 - left and right
-				0x2534, //13 - left, right, and up
-				0x252C, //14 - left, right, and down
-				0x253C, //15 - all
+				0x10F, //1 - only up
+				0x10F, //2 - only down
+				0x10F, //3 - up and down
+				0x110, //4 - only left
+				0x10E, //5 - left and up
+				0x10C, //6 - left and down
+				0x115, //7 - left, up, and down
+				0x110, //8 - only right
+				0x10D, //9 - right and up
+				0x10B, //10 - right and down
+				0x111, //11 - right, up, and down
+				0x110, //12 - left and right
+				0x114, //13 - left, right, and up
+				0x112, //14 - left, right, and down
+				0x113, //15 - all
 			};
-			var ups = new[] { 0x2502, 0x250C, 0x2510, 0x251C, 0x2524, 0x252C, 0x253C };
-			var downs = new[] { 0x2502, 0x2514, 0x2518, 0x251C, 0x2524, 0x2534, 0x253C };
-			var lefts = new[] { 0x2500, 0x250C, 0x2514, 0x251C, 0x252C, 0x2534, 0x253C };
-			var rights = new[] { 0x2500, 0x2510, 0x2518, 0x2524, 0x252C, 0x2534, 0x253C };
 			foreach (var cj in junctions)
 			{
 				var up = cj.Y > 0 ? this.Tilemap[cj.X, cj.Y - 1].Character : 'x';
@@ -376,13 +415,13 @@ namespace Noxico
 				var left = cj.X > 0 ? this.Tilemap[cj.X - 1, cj.Y].Character : 'x';
 				var right = cj.X < 79 ? this.Tilemap[cj.X + 1, cj.Y].Character : 'x';
 				var mask = 0;
-				if (ups.Contains(up) || (up >= 0x2551 && up <= 0x2557) || (up >= 0x255E && up <= 0x2556) || (up >= 0x256A && up <= 0x256c))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
 					mask |= 1;
-				if (downs.Contains(down) || (down >= 0x2558 && down <= 0x255D) || (down >= 0x255E && down <= 0x2563) || (down >= 0x2567 && down <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
 					mask |= 2;
-				if (lefts.Contains(left) || (left >= 0x2558 && left <= 0x255A) || (left >= 0x2552 && left <= 0x2554) || (left >= 0x255E && left <= 0x2560) || (left >= 0x2564 && left <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
 					mask |= 4;
-				if (rights.Contains(right) || (right >= 0x255B && right <= 0x255D) || (right >= 0x2561 && right <= 0x256C))
+				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
 					mask |= 8;
 				if (mask == 0)
 					continue;
@@ -407,16 +446,18 @@ namespace Noxico
 					Fence = clutter.Fence,
 					SpecialDescription = clutter.Description,
 				};
+				if (y2 >= 50)
+					y2 = 49;
 				for (var x = x1; x < x2; x++)
 				{
 					for (var y = y1; y < y2; y++)
 					{
-						if (Tilemap[x, y].Water) //add checks to allow clutter to appear in water and/or ground
+						if (Tilemap[x, y].SolidToDryWalker)
 							continue;
 						var bg = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor;
 						if (Random.NextDouble() < clutter.Chance)
 						{
-							Tilemap[x, y] = clutter.Noisy ? tile.Noise() : tile;
+							Tilemap[x, y] = tile; //clutter.Noisy ? tile.Noise() : tile;
 							Tilemap[x, y].Background = bg;
 						}
 					}
@@ -425,7 +466,7 @@ namespace Noxico
 		}
 		public void AddClutter()
 		{
-			AddClutter(0, 0, 79, 24);
+			AddClutter(0, 0, 79, 49);
 		}
 
 		public void AddWater(List<Rectangle> safeZones)
@@ -456,15 +497,10 @@ namespace Noxico
 				}
 			}
 
-			var bitmap = new float[25, 80];
+			var bitmap = new float[50, 80];
 			var sum = 0.0;
 			var radius = 0.4;
-			#if DEBUG
-			var temp = new System.Drawing.Bitmap(80, 25);
-			var tempg = System.Drawing.Graphics.FromImage(temp);
-			tempg.Clear(System.Drawing.Color.Black);
-			#endif
-			for (var y = 0; y < 25; y++)
+			for (var y = 0; y < 50; y++)
 			{
 				for (var x = 0; x < 80; x++)
 				{
@@ -478,17 +514,10 @@ namespace Noxico
 					if (sum < 0.0)
 						sum = 0.0;
 					bitmap[y, x] = (float)sum;
-					#if DEBUG
-					var g = (byte)(sum * 255.0);
-					temp.SetPixel(x, y, System.Drawing.Color.FromArgb(g, g, g));
-					#endif
 				}
 			}
-			#if DEBUG
-			temp.Save("meta.png", System.Drawing.Imaging.ImageFormat.Png);
-			#endif
 
-			for (var y = 0; y < 25; y++)
+			for (var y = 0; y < 50; y++)
 			{
 				for (var x = 0; x < 80; x++)
 				{
@@ -497,8 +526,8 @@ namespace Noxico
 					Tilemap[x, y] = new Tile()
 					{
 						Character = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)],
-						Foreground = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
-						Background = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
+						Foreground = water.Color.Darken(), //.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
+						Background = water.Color, //(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
 						Water = true,
 					};
 				}

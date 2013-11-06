@@ -18,7 +18,7 @@ namespace Noxico
 
 		public Cursor()
 		{
-			this.AsciiChar = '\u25CA';
+			this.AsciiChar = '\x7F';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
 			this.Tabstops = new List<Point>();

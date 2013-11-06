@@ -56,8 +56,7 @@ namespace Noxico
 		private DateTime lastUpdate;
 		public string[] Potions;
 		public static List<string> Identifications;
-		public static List<int> KnownTargets;
-		public static Dictionary<int, string> TargetNames;
+		public static Dictionary<int, string> TravelTargets;
 		public static NoxicanDate InGameTime;
 		public static bool PlayerReady { get; set; }
 
@@ -200,8 +199,7 @@ namespace Noxico
 			Limbo.BoardType = BoardType.Special;
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
-			KnownTargets = new List<int>();
-			TargetNames = new Dictionary<int, string>();
+			TravelTargets = new Dictionary<int, string>();
 
 			CurrentBoard = new Board();
 			this.Player = new Player();
@@ -271,11 +269,8 @@ namespace Noxico
 				Toolkit.SaveExpectation(b, "TIME");
 				b.Write(InGameTime.ToBinary());
 				Toolkit.SaveExpectation(b, "TARG");
-				b.Write(KnownTargets.Count);
-				KnownTargets.ForEach(x => b.Write(x));
-				Toolkit.SaveExpectation(b, "TARN");
-				b.Write(TargetNames.Count);
-				foreach (var target in TargetNames)
+				b.Write(TravelTargets.Count);
+				foreach (var target in TravelTargets)
 				{
 					b.Write(target.Key);
 					b.Write(target.Value);
@@ -354,14 +349,9 @@ namespace Noxico
 			InGameTime = new NoxicanDate(bin.ReadInt64());
 			Toolkit.ExpectFromFile(bin, "TARG", "known targets list");
 			var numTargets = bin.ReadInt32();
-			KnownTargets = new List<int>();
+			TravelTargets = new Dictionary<int, string>();
 			for (var i = 0; i < numTargets; i++)
-				KnownTargets.Add(bin.ReadInt32());
-			Toolkit.ExpectFromFile(bin, "TARN", "target names list");
-			numTargets = bin.ReadInt32();
-			TargetNames = new Dictionary<int, string>();
-			for (var i = 0; i < numTargets; i++)
-				TargetNames.Add(bin.ReadInt32(), bin.ReadString());
+				TravelTargets.Add(bin.ReadInt32(), bin.ReadString());
 			ApplyRandomPotions();
 			file.Close();
 
@@ -406,13 +396,13 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			for (var i = 25; i < 30; i++)
+			for (var i = 50; i < 60; i++)
 				for (var col = 0; col < 80; col++)
 					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
 
 			if (Messages.Count == 0)
 				return;
-			var row = 29;
+			var row = 59;
 			for (var i = 0; i < 5 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
@@ -708,8 +698,8 @@ namespace Noxico
 				}
 			}
 
-			//setStatus("Applying missions...");
-			//ApplyMissions(generator);
+			setStatus("Applying missions...");
+			ApplyMissions(generator);
 
 #if DEBUG
 			setStatus("Drawing actual bitmap...");
@@ -738,8 +728,7 @@ namespace Noxico
 
 			//TODO: give the player a proper home.
 			this.CurrentBoard = townBoards[Random.Next(townBoards.Count)]; //GetBoard(KnownTargets[0]);
-			KnownTargets.Add(this.CurrentBoard.BoardNum);
-			TargetNames.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+			TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();
@@ -755,7 +744,7 @@ namespace Noxico
 				//	this.Boards[i] = null;
 			}
 			stopwatch.Stop();
-			SaveGame(true, true, false);
+			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 
 
@@ -975,28 +964,71 @@ namespace Noxico
 
 		public void ApplyMissions(WorldMapGenerator generator)
 		{
-			var addBoard = new Func<string, Board>(id =>
-			{
-				var board = new Board();
-				board.BoardNum = Boards.Count;
-				board.ID = id.ToID();
-				Boards.Add(board);
-				return board;
-			});
 			var makeBoardTarget = new Action<Board>(board =>
 			{
 				if (string.IsNullOrWhiteSpace(board.Name))
 					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (TargetNames.ContainsKey(board.BoardNum))
-					throw new Exception("Board is already a travel target.");
-				TargetNames.Add(board.BoardNum, board.Name);
+				if (TravelTargets.ContainsKey(board.BoardNum))
+					TravelTargets[board.BoardNum] = board.Name;
+				else
+					TravelTargets.Add(board.BoardNum, board.Name);
 			});
-			var makeBoardKnown = new Action<Board>(board =>
+
+			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
 			{
-				if (!TargetNames.ContainsKey(board.BoardNum))
-					throw new Exception("Board must be in the travel targets list before it can be known.");
-				KnownTargets.Add(board.BoardNum);
-			});
+				var options = new List<Board>();
+				foreach (var board in Boards)
+				{
+					if (board == null)
+						continue;
+					if (board.BoardType != boardType)
+						continue;
+					if (biome > 0 && board.GetToken("biome").Value != biome)
+						continue;
+					if (maxWater != -1)
+					{
+						var water = 0;
+						for (var y = 0; y < 50; y++)
+							for (var x = 0; x < 80; x++)
+								if (board.Tilemap[x, y].Water)
+									water++;
+						if (water > maxWater)
+							continue;
+					}
+					options.Add(board);
+				}
+				if (options.Count == 0)
+					return null;
+				var choice = options[Random.Next(options.Count)];
+				return choice;
+			};
+
+			Func<Board, string, int> makeTown = (board, culture) =>
+			{
+				var townGen = new TownGenerator();
+				board.BoardType = BoardType.Town;
+				board.GetToken("encounters").Value = 0;
+				board.GetToken("encounters").Tokens.Clear();
+				board.Sectors.Clear();
+				townGen.Board = board;
+				var biome = BiomeData.Biomes[(int)board.GetToken("biome").Value];
+				var cultureName = string.IsNullOrWhiteSpace(culture) ? biome.Cultures[Random.Next(biome.Cultures.Length)] : culture;
+				townGen.Culture = Culture.Cultures[cultureName];
+				townGen.Create(biome);
+				townGen.ToTilemap(ref board.Tilemap);
+				townGen.ToSectorMap(board.Sectors);
+				board.GetToken("culture").Text = cultureName;
+				while (true)
+				{
+					var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+					if (Boards.Find(b => b != null && b.Name == newName) == null)
+					{
+						board.Name = newName;
+						break;
+					}
+				}
+				return 0;
+			};
 
 			var js = JavaScript.Create();
 			JavaScript.Ascertain(js);
@@ -1007,14 +1039,11 @@ namespace Noxico
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(Color));
-			js.SetFunction("AddBoard", addBoard);
 			js.SetFunction("MakeBoardTarget", makeBoardTarget);
-			js.SetFunction("MakeBoardKnown", makeBoardKnown);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
+			js.SetFunction("PickBoard", pickBoard);
 			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			//js.SetFunction("CreateTown", new Func<int, string, string, bool, Board>(WorldGen.CreateTown));
-			//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-			//js.SetParameter("Expectations", NoxicoGame.Expectations);
+			js.SetFunction("MakeTown", makeTown);
 			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
 #if DEBUG
 			js.SetDebugMode(true);
@@ -1050,23 +1079,13 @@ namespace Noxico
 			}
 		}
 
-		public static void LearnUnknownLocation(string name)
-		{
-			if (!TargetNames.ContainsValue(name))
-				throw new Exception(string.Format("Tried to make board '{0}' known, but no such board is in the target list.", name));
-			var targetID = TargetNames.FirstOrDefault(x => x.Value == name).Key;
-			if (KnownTargets.Contains(targetID))
-				return; //Target already known, whatever.
-			KnownTargets.Add(targetID);
-		}
-
 		public static void DrawSidebar()
 		{
 			var player = HostForm.Noxico.Player;
 			if (player == null || player.Character == null)
 				return;
 
-			for (var row = 0; row < 30; row++)
+			for (var row = 0; row < 60; row++)
 				for (var col = 80; col < 100; col++)
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
 
@@ -1076,13 +1095,13 @@ namespace Noxico
 			switch (character.Gender)
 			{
 				case Gender.Male:
-					HostForm.SetCell(2, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
+					HostForm.SetCell(2, 81, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
 					break;
 				case Gender.Female:
-					HostForm.SetCell(2, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
+					HostForm.SetCell(2, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
 					break;
 				case Gender.Herm:
-					HostForm.SetCell(2, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
+					HostForm.SetCell(2, 81, '\xF0', Color.FromArgb(84, 30, 90), Color.Transparent);
 					break;
 			}
 			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(17), Color.White, Color.Transparent, 2, 82);
@@ -1132,8 +1151,8 @@ namespace Noxico
 			var paragonLight = (int)Math.Ceiling((character.GetToken("paragon").Value / 100) * 8);
 			var renegadeDark = 8 - renegadeLight;
 			var paragonDark = 8 - paragonLight;
-			HostForm.SetCell(16, 81, '\u2665', Color.FromArgb(116, 48, 48), Color.Transparent);
-			HostForm.SetCell(16, 98, '\u2660', Color.FromArgb(128, 128, 128), Color.Transparent);
+			HostForm.SetCell(16, 81, '\x03', Color.FromArgb(116, 48, 48), Color.Transparent);
+			HostForm.SetCell(16, 98, '\x06', Color.FromArgb(128, 128, 128), Color.Transparent);
 			HostForm.Write(new string(' ', paragonDark), Color.Black, Color.FromArgb(38, 10, 10), 16, 82);
 			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + paragonDark);
 			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + 8);
@@ -1151,13 +1170,13 @@ namespace Noxico
 				switch (character.Gender)
 				{
 					case Gender.Male:
-						HostForm.SetCell(21, 81, '\u2642', Color.FromArgb(30, 54, 90), Color.Transparent);
+						HostForm.SetCell(21, 81, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
 						break;
 					case Gender.Female:
-						HostForm.SetCell(21, 81, '\u2640', Color.FromArgb(90, 30, 30), Color.Transparent);
+						HostForm.SetCell(21, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
 						break;
 					case Gender.Herm:
-						HostForm.SetCell(21, 81, '\u263F', Color.FromArgb(84, 30, 90), Color.Transparent);
+						HostForm.SetCell(21, 81, '\xF0', Color.FromArgb(84, 30, 90), Color.Transparent);
 						break;
 				}
 
@@ -1182,7 +1201,7 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
 #if DEBUG
-			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
+			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 49, 81);
 #endif
 		}
 	}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace Noxico
 
 	public class Dijkstra
 	{
-		private const int mapRows = 25, mapCols = 80, vhn = 9000;
+		private const int mapRows = 50, mapCols = 80, vhn = 9000;
 
 		private int[,] map;
 		private bool[,] walls;
@@ -160,7 +160,7 @@ namespace Noxico
 			
 		}
 
-		public static void JustDoIt(ref int[,] map, int mapRows = 25, int mapCols = 80, bool diagonals = true)
+		public static void JustDoIt(ref int[,] map, int mapRows = 50, int mapCols = 80, bool diagonals = true)
 		{
 			var vhn = 9000;
 

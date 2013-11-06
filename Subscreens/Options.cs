@@ -11,7 +11,7 @@ namespace Noxico
 		private static UITextBox speed;
 		private static UIList font;
 		private static UIToggle skipIntro, rememberPause, vistaSaves, xInput, imperial;
-		private static string previousFont;
+		//private static string previousFont;
 
 		public static void Handler()
 		{
@@ -42,8 +42,8 @@ namespace Noxico
 					Numeric = true
 				};
 
-				var fonts = Mix.GetFilesWithPattern("*_00.png").Select(x => System.IO.Path.GetFileName(x.Remove(x.LastIndexOf('_')))).Distinct().ToArray();
-				var currentFont = IniFile.GetValue("misc", "font", "unifont");
+				var fonts = Mix.GetFilesWithPattern("fonts\\*.png").Select(x => System.IO.Path.GetFileNameWithoutExtension(x)).ToArray();
+				var currentFont = IniFile.GetValue("misc", "font", "8x8-thin");
 				var currentFontIndex = 0;
 				if (fonts.Contains(currentFont))
 				{
@@ -53,7 +53,7 @@ namespace Noxico
 							break;
 					}
 				}
-				previousFont = fonts[currentFontIndex];
+				//previousFont = fonts[currentFontIndex];
 				var fontLabel = new UILabel(i18n.GetString("opt_font"))
 				{
 					Left = 4,
@@ -65,6 +65,13 @@ namespace Noxico
 					Top = 7,
 					Width = 16,
 					Height = 5,
+				};
+				font.Enter = (s, e) =>
+				{
+					var previousFont = font.Text;
+					IniFile.SetValue("misc", "font", font.Text);
+					NoxicoGame.HostForm.RestartGraphics();
+					IniFile.SetValue("misc", "font", previousFont);
 				};
 
 				var miscWindow = new UIWindow(i18n.GetString("opt_misc"))
@@ -130,10 +137,11 @@ namespace Noxico
 						IniFile.SetValue("misc", "rememberpause", rememberPause.Checked);
 						IniFile.SetValue("misc", "vistasaves", vistaSaves.Checked);
 						IniFile.SetValue("misc", "xinput", xInput.Checked);
+						IniFile.SetValue("misc", "imperial", imperial.Checked);
 						Vista.GamepadEnabled = xInput.Checked;
 
-						if (previousFont != font.Text)
-							NoxicoGame.HostForm.RestartGraphics();
+						//if (previousFont != font.Text)
+						NoxicoGame.HostForm.RestartGraphics();
 
 						IniFile.Save();
 						cancelButton.DoEnter();

@@ -92,13 +92,13 @@ namespace Noxico
 		}
 	}
 
-    public class MainForm : Form, IGameHost
-    {
+	public class MainForm : Form, IGameHost
+	{
 		public NoxicoGame Noxico { get; set; }
 
 		private struct Cell
-        {
-            public char Character;
+		{
+			public char Character;
 			public Color Foreground;
 			public Color Background;
 #if DEBUG
@@ -137,18 +137,18 @@ namespace Noxico
 				this.Foreground = source.Foreground;
 				this.Background = source.Background;
 			}
-        }
-        private Cell[,] image = new Cell[100, 30];
-		private Cell[,] previousImage = new Cell[100, 30];
+		}
+		private Cell[,] image = new Cell[100, 60];
+		private Cell[,] previousImage = new Cell[100, 60];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
 		private bool starting = true, fatal = false;
 
-        public bool Running { get; set; }
+		public bool Running { get; set; }
 
 		private int CellWidth, CellHeight;
-		private string pngFont = "unifont";
-		private Dictionary<int, FontBlock> pngFonts;
+		private string pngFont = "8x8-thin";
+		private byte[,] fontData;
 
 		public string IniPath { get; set; }
 		public new Point Cursor { get; set; }
@@ -169,6 +169,8 @@ namespace Noxico
 
 		public int Frames = 0;
 		private Timer fpsTimer;
+		private bool youtube = false;
+		private System.Drawing.Rectangle youtubeRect;
 
 		public MainForm()
 		{
@@ -373,40 +375,57 @@ namespace Noxico
 
 		public void RestartGraphics()
 		{
-			pngFont = IniFile.GetValue("misc", "font", "unifont");
-			pngFonts = new Dictionary<int, FontBlock>();
-			if (Mix.FileExists(pngFont + "_00.png"))
+			pngFont = IniFile.GetValue("misc", "font", "8x8-thin");
+			if (!Mix.FileExists("fonts\\" + pngFont + ".png"))
 			{
-				var blockZero = Mix.GetBitmap(pngFont + "_00.png");
-				CellWidth = blockZero.Width / 16;
-				CellHeight = blockZero.Height / 16;
-				CachePNGFont('A');
-			}
-			else
-			{
-				pngFont = "font\\unifont";
-				if (Mix.FileExists(pngFont + "_00.png"))
-				{
-					var blockZero = Mix.GetBitmap(pngFont + "_00.png");
-					CellWidth = blockZero.Width / 16;
-					CellHeight = blockZero.Height / 16;
-					CachePNGFont('A');
-				}
-				else
+				pngFont = "8x8-thin";
+				if (!Mix.FileExists("fonts\\" + pngFont + ".png"))
 				{
 					SystemMessageBox.Show(this, "Could not find font bitmaps. Please redownload the game.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					Close();
 					return;
 				}
 			}
+			var fontBitmap = Mix.GetBitmap("fonts\\" + pngFont + ".png");
+			CellWidth = fontBitmap.Width / 32;
+			CellHeight = fontBitmap.Height / 32;
+			CachePNGFont(fontBitmap);
 
-			ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
+			youtube = IniFile.GetValue("misc", "youtube", false);
+			ClientSize = new Size(100 * CellWidth, 60 * CellHeight);
+			if (youtube)
+			{
+				//Find nearest YT size
+				var eW = 100 * CellWidth;
+				var eH = 60 * CellHeight;
+				if (eW <= 854 || eH <= 480)
+					ClientSize = new Size(854, 480);
+				else if (eW <= 1280 || eH <= 720)
+					ClientSize = new Size(1280, 720);
+				else
+					ClientSize = new Size(1920, 1080);
+
+				var prime = Screen.PrimaryScreen.Bounds;
+				if (ClientSize.Width == prime.Width && ClientSize.Height == prime.Height)
+				{
+					FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+					Left = Top = 0;
+				}
+				else
+					FormBorderStyle = IniFile.GetValue("misc", "border", true) ? System.Windows.Forms.FormBorderStyle.FixedSingle : System.Windows.Forms.FormBorderStyle.None;
+				youtubeRect = new System.Drawing.Rectangle((ClientSize.Width / 2) - (eW / 2), (ClientSize.Height / 2) - (eH / 2), eW, eH);
+			}
+			else
+				FormBorderStyle = IniFile.GetValue("misc", "border", true) ? System.Windows.Forms.FormBorderStyle.FixedSingle : System.Windows.Forms.FormBorderStyle.None;
 
 			Show();
 			Refresh();
 
-			backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
-			scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
+			backBuffer = new Bitmap(100 * CellWidth, 60 * CellHeight, PixelFormat.Format24bppRgb);
+			scrollBuffer = new Bitmap(100 * CellWidth, 60 * CellHeight, PixelFormat.Format24bppRgb);
+			for (int row = 0; row < 60; row++)
+				for (int col = 0; col < 100; col++)
+					previousImage[col, row].Character = '\uFFFE';
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -416,67 +435,61 @@ namespace Noxico
 				base.OnPaint(e);
 				return;
 			}
-			e.Graphics.DrawImage(backBuffer, ClientRectangle);
-			
+
+			var rect = youtube ? youtubeRect : ClientRectangle;
+			var offX = rect.Left;
+			var offY = rect.Top;
+			e.Graphics.DrawImage(backBuffer, rect);
+
 			//Moved here from Draw() to prevent mouse droppings. Bonus: this allows a slightly larger cursor.
 			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
 				prevCursor = Cursor;
-			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
+			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 60)
 			{
 				var cSize = CellWidth;
 				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
-				e.Graphics.DrawRectangle(cursorPens[Environment.TickCount % cursorPens.Length], (Cursor.X * CellWidth) - 1, (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
+				e.Graphics.DrawRectangle(cursorPens[Environment.TickCount % cursorPens.Length], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
 			}
 		}
 
-		private void CachePNGFont(char p)
+		private void CachePNGFont(Bitmap source = null)
 		{
-			var block = (p >> 8);
-			if (!pngFonts.ContainsKey(block))
+			if (source == null)
+				source = Mix.GetBitmap("fonts\\" + pngFont + ".png");
+			var cWidth = source.Width / 32;
+			var cHeight = source.Height / 32;
+			fontData = new byte[512, cWidth * cHeight];
+			for (var ch = 0; ch < 512; ch++)
 			{
-				var file = pngFont + "_" + block.ToString("X2") + ".png";
-				if (Mix.FileExists(file))
+				var i = 0;
+				var sX = (ch % 32) * cWidth;
+				var sY = (ch / 32) * cHeight;
+				for (var y = 0; y < cHeight; y++)
 				{
-					Program.WriteLine("Caching font block U+{0:X2}--...", block);
-					pngFonts.Add(block, new FontBlock(Mix.GetBitmap(file)));
-				}
-				else if (pngFont != "font//unifont")
-				{
-					Program.WriteLine("Warning: {0} does not exist! Trying Unifont...", file);
-					file = "font\\unifont_" + block.ToString("X2") + ".png";
-					if (Mix.FileExists(file))
+					for (var x = 0; x < cWidth; x++)
 					{
-						pngFonts.Add(block, new FontBlock(Mix.GetBitmap(file)));
+						fontData[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R); // > 127 ? 1 : 0);
+						i++;
 					}
-					else
-					{
-						Program.WriteLine("Warning: {0} does not exist either!", file);
-						pngFonts.Add(block, new FontBlock(new Bitmap(128, 256)));
-					}
-				}
-				else
-				{
-					Program.WriteLine("Warning: {0} does not exist!", file);
-					pngFonts.Add(block, new FontBlock(new Bitmap(128, 256)));
 				}
 			}
 		}
-		
-        public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
-        {
-			if (col >= 100 || row >= 30 || col < 0 || row < 0)
+
+		public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
+		{
+			if (col >= 100 || row >= 60 || col < 0 || row < 0)
 				return;
 
-            image[col, row].Character = character;
-            image[col, row].Foreground = foregroundColor;
+			image[col, row].Character = character;
+			image[col, row].Foreground = foregroundColor;
 			if (backgroundColor != Color.Transparent)
-	            image[col, row].Background = backgroundColor;
-        }
+				image[col, row].Background = backgroundColor;
+		}
 
 		public void Clear(char character, Color foregroundColor, Color backgroundColor)
 		{
-			for (int row = 0; row < 30; row++)
+			for (int row = 0; row < 60; row++)
 			{
 				for (int col = 0; col < 100; col++)
 				{
@@ -539,32 +552,31 @@ namespace Noxico
 					col = rx;
 					row++;
 				}
-				if (row >= 30)
+				if (row >= 60)
 					return;
 			}
 		}
 
-        private void DrawCell(byte[] scan0, int stride, int row, int col, Cell cell)
-        {
+		private void DrawCell(byte[] scan0, int stride, int row, int col, Cell cell)
+		{
 			var sTX = col * CellWidth;
-            var sTY = row * CellHeight;
+			var sTY = row * CellHeight;
 			var b = cell.Background;
 			var f = cell.Foreground;
-            var c = cell.Character;
+			var c = cell.Character;
 
-			CachePNGFont(c);
-			var block = c >> 8;
-			var c2 = c & 0xFF;
-			var width = (block == 0x30 || (block >= 0x4E && block < 0xA0) || block == 0xE4) ? CellWidth * 2 : CellWidth;
+			if (c > 512)
+				c = '#';
 
-			var fontBlock = pngFonts[block];
-			var sSX = (c2 %	16) * CellWidth;
-			var sSY = (c2 / 16) * CellHeight;
+			var width = CellWidth;
+
+			var sSX = (c % 32) * CellWidth;
+			var sSY = (c / 32) * CellHeight;
 			for (var y = 0; y < CellHeight; y++)
 			{
 				for (var x = 0; x < width; x++)
 				{
-					var d = fontBlock.Data[c2, (y * width) + x];
+					var d = fontData[c, (y * width) + x];
 					var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
 					if (target >= scan0.Length)
@@ -574,24 +586,21 @@ namespace Noxico
 					scan0[target + 2] = color.R;
 				}
 			}
-        }
+		}
 
 		public void Draw()
-        {
+		{
 			var lockData = backBuffer.LockBits(new System.Drawing.Rectangle(0, 0, backBuffer.Width, backBuffer.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 			var size = lockData.Stride * lockData.Height;
 			var scan0 = new byte[size];
 			Marshal.Copy(lockData.Scan0, scan0, 0, size);
-            using (var gfx = Graphics.FromImage(backBuffer))
-            {
-				for (int row = 0; row < 30; row++)
+			using (var gfx = Graphics.FromImage(backBuffer))
+			{
+				for (int row = 0; row < 60; row++)
 				{
 					for (int col = 0; col < 100; col++)
 					{
 						var here = image[col, row];
-						if (here.Character == 0xE2FF) //Don't draw our special Wide Mode character.
-							continue;
-
 						if (here != previousImage[col, row])
 						{
 							DrawCell(scan0, lockData.Stride, row, col, here);
@@ -599,12 +608,12 @@ namespace Noxico
 						}
 					}
 				}
-            }
+			}
 			Marshal.Copy(scan0, 0, lockData.Scan0, size);
 			backBuffer.UnlockBits(lockData);
 			Frames++;
-            this.Refresh();
-        }
+			this.Refresh();
+		}
 
 		public void ScrollUp(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
 		{
@@ -628,13 +637,13 @@ namespace Noxico
 			}
 		}
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Running = false;
-        }
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Running = false;
+		}
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
+		private void Form1_KeyDown(object sender, KeyEventArgs e)
+		{
 			if (starting)
 				return;
 			if (NoxicoGame.Mono && (DateTime.Now - NoxicoGame.KeyRepeat[e.KeyCode]).Milliseconds < 100)
@@ -649,11 +658,11 @@ namespace Noxico
 				NoxicoGame.Modifiers[0] = true;
 			if (e.KeyValue == 191 && NoxicoGame.Mode == UserMode.Walkabout)
 				NoxicoGame.KeyMap[Keys.L] = true;
-        }
+		}
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            NoxicoGame.KeyMap[e.KeyCode] = false;
+		private void Form1_KeyUp(object sender, KeyEventArgs e)
+		{
+			NoxicoGame.KeyMap[e.KeyCode] = false;
 			NoxicoGame.KeyTrg[e.KeyCode] = true;
 			if (numpad.ContainsKey(e.KeyCode))
 			{
@@ -683,11 +692,11 @@ namespace Noxico
 			if (e.KeyCode == Keys.R && e.Control)
 			{
 				NoxicoGame.KeyMap[Keys.R] = false;
-				for (int row = 0; row < 30; row++)
+				for (int row = 0; row < 60; row++)
 					for (int col = 0; col < 100; col++)
 						previousImage[col, row].Character = '\uFFFE';
 			}
-		
+
 			if (e.KeyCode == Keys.A && e.Control && NoxicoGame.Mode == UserMode.Walkabout)
 			{
 				NoxicoGame.KeyMap[Keys.A] = false;
@@ -783,30 +792,6 @@ namespace Noxico
 				}
 			}
 		}
-    }
-
-	public class FontBlock
-	{
-		public byte[,] Data;
-		public FontBlock(Bitmap source)
-		{
-			var cWidth = source.Width / 16;
-			var cHeight = source.Height / 16;
-			Data = new byte[256, cWidth * cHeight];
-			for (var ch = 0; ch < 255; ch++)
-			{
-				var i = 0;
-				var sX = (ch % 16) * cWidth;
-				var sY = (ch / 16) * cHeight;
-				for (var y = 0; y < cHeight; y++)
-				{
-					for (var x = 0; x < cWidth; x++)
-					{
-						Data[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R); // > 127 ? 1 : 0);
-						i++;
-					}
-				}
-			}
-		}
 	}
+
 }

@@ -95,7 +95,7 @@ namespace Noxico
 		{
 			Bitmap = bitmap;
 			Width = bitmap.Width;
-			Height = bitmap.Height / 2;
+			Height = bitmap.Height;
 		}
 
 		public override void Draw()
@@ -104,9 +104,7 @@ namespace Noxico
 			{
 				for (var col = 0; col < Width; col++)
 				{
-					var top = Bitmap.GetPixel(col, row * 2);
-					var bot = Bitmap.GetPixel(col, (row * 2) + 1);
-					NoxicoGame.HostForm.SetCell(Top + row, Left + col, top == bot ? (char)0x20 : (char)0x2580, top, bot);
+					NoxicoGame.HostForm.SetCell(Top + row, Left + col, ' ', Color.White, Bitmap.GetPixel(col, row));
 				}
 			}
 		}
@@ -147,10 +145,10 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			var top = (char)0x2554 + new string((char)0x2550, Width - 2) + (char)0x2557;
-			var line = (char)0x2551 + new string(' ', Width - 2) + (char)0x2551;
-			var bottom = (char)0x255A + new string((char)0x2550, Width - 2) + (char)0x255D;
-			var caption = ' ' + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + '\x2026' : Text) + "  ";
+			var top = (char)0xC9 + new string((char)0xCD, Width - 2) + (char)0xBB;
+			var line = (char)0xBA + new string(' ', Width - 2) + (char)0xBA;
+			var bottom = (char)0xC8 + new string((char)0xCD, Width - 2) + (char)0xBC;
+			var caption = ' ' + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text) + "  ";
 
 			NoxicoGame.HostForm.Write(top, Foreground, Background, Top, Left);
 			if (!string.IsNullOrWhiteSpace(Text))
@@ -444,7 +442,7 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 2) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left);
+			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 2) + "<cBlack,Gray>\x11\x10", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left);
 		}
 
 		public override void DoUp()
@@ -490,8 +488,8 @@ namespace Noxico
 	{
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write("\u2588\u258C", Color.FromName(Text), Background, Top, Left);
-			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 4) + "<cBlack,Gray>\u25C4\u25BA", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left + 2);
+			NoxicoGame.HostForm.Write("\xDB\xDE", Color.FromName(Text), Background, Top, Left);
+			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 4) + "<cBlack,Gray>\x11\x10", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left + 2);
 		}
 	
 		public UIColorList() : base()
@@ -542,8 +540,8 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			var off = "\u25CC"; // ( )  or []
-			var on = "\u25CF"; // (*)  or [#
+			var off = "\x13C";
+			var on = "\x13D";
 			var a = (val == 0 ? on : off) + ' ' + choices[0];
 			var b = (val == 1 ? on : off) + ' ' + choices[1];
 			var c = a.PadEffective(Width / 2) + b.PadLeft(Width / 2);
@@ -610,8 +608,8 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			var off = "\u2610";
-			var on = "\u2612";
+			var off = "\x13C";
+			var on = "\x13D";
 			var c = (val ? on : off) + ' ' + Text; 
 			NoxicoGame.HostForm.Write(c, UIManager.Highlight == this ? Foreground : Color.Gray, Background, Top, Left);
 		}

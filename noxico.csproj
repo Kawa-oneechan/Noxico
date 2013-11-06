@@ -226,7 +226,9 @@
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenes\intro_scenesDlg.xml" />
+    <Content Include="mix\scenes\intro_scenesDlg.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\scenes\pony_scenesDlg.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\sex.tml" />

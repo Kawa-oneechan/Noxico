@@ -7,7 +7,7 @@ namespace Noxico
 	{
 		public static void Open()
 		{
-			if (NoxicoGame.KnownTargets.Count < 2)
+			if (NoxicoGame.TravelTargets.Count < 2)
 			{
 				Subscreens.PreviousScreen.Clear();
 				MessageBox.Notice(i18n.GetString("travel_nowhere"), true);
@@ -42,25 +42,18 @@ namespace Noxico
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_header")) { Left = 1, Top = 0, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = 29, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \u2022<cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 44, Top = 3, Width = 60, Foreground = Color.Teal });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + host.Noxico.CurrentBoard.Name) { Left = 44, Top = 3, Width = 60, Foreground = Color.Teal });
 				UIManager.Elements.Add(list);
 				
-				//NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList();
 				var targets = new List<int>();
-				foreach (var target in NoxicoGame.KnownTargets.Where(kt => kt > -1))
-					targets.Add(target);
-				var moreTargets = new List<int>();
-				foreach (var target in NoxicoGame.KnownTargets.Where(kt => kt < 0))
-					moreTargets.Add(target);
+				foreach (var target in NoxicoGame.TravelTargets)
+					targets.Add(target.Key);
 				targets.Sort();
-				moreTargets.Sort();
-				//list.Items = new List<string>();
-				list.Items.AddRange(targets.Select(kt => NoxicoGame.TargetNames[kt]));
+				list.Items.AddRange(targets.Select(x => NoxicoGame.TravelTargets[x]));
 
 				list.Enter = (s, e) =>
 				{
-					var key = NoxicoGame.TargetNames.First(tn => tn.Value == list.Text).Key;
-					var newBoard = NoxicoGame.KnownTargets.Find(kt => kt == key);
+					var newBoard = NoxicoGame.TravelTargets.First(tn => tn.Value == list.Text).Key;
 					if (host.Noxico.CurrentBoard.BoardNum == newBoard)
 						return;
 
@@ -91,7 +84,7 @@ namespace Noxico
 
 				//var thisBoard = NoxicoGame.KnownTargets.FirstOrDefault(kt => kt == host.Noxico.CurrentBoard.BoardNum);
 				//list.Index = NoxicoGame.TargetNames.First(tn => tn.Key == thisBoard).Key;
-				var thisBoard = NoxicoGame.TargetNames.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
+				var thisBoard = NoxicoGame.TravelTargets.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
 				list.Index = list.Items.FindIndex(i => thisBoard.Value.StartsWith(i));
 			}
 			if (Subscreens.Redraw)

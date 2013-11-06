@@ -710,7 +710,7 @@ namespace Noxico
 					if (new [] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(Path("weapon/skill").Text))
 						info.Add("ranged");
 					else
-						info.Add("m\u00EAl\u00E9e");
+						info.Add("m\x88" + '\x82' + 'e');
 				}
 				if (HasToken("statbonus"))
 				{
