@@ -16,8 +16,13 @@
 		<h2>
 			<xsl:value-of select="@id" />. <xsl:value-of select="@title" />
 		</h2>
+		<xsl:apply-templates select="identify" />
 		<xsl:apply-templates select="p" />
 	</xsl:template>
+
+	<xsl:template match="identify">
+		<p><code>[<xsl:value-of select="@token" />]</code></p>
+	</xsl:template>	
 
 	<xsl:template match="p">
 		<p>
