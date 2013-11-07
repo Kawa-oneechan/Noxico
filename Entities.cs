@@ -471,7 +471,7 @@ namespace Noxico
 
 		private void FindDirection()
 		{
-			horizontal = ParentBoard.IsSolid(YPosition - 1, XPosition) && ParentBoard.IsSolid(YPosition + 1, XPosition);
+			horizontal = ParentBoard.IsSolid(YPosition, XPosition - 1) && ParentBoard.IsSolid(YPosition, XPosition + 1);
 			dirInited = true;
 		}
 
@@ -480,9 +480,9 @@ namespace Noxico
 			if (!dirInited)
 				FindDirection();
 			if (closed)
-				AsciiChar = '+';
+				AsciiChar = horizontal ? '\x152' : '\x154';
 			else
-				AsciiChar = horizontal ? '|' : '-';
+				AsciiChar = horizontal ? '\x153' : '\x155';
 			base.Draw();
 		}
 

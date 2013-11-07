@@ -18,7 +18,7 @@ namespace Noxico
 		/// <param name="foregroundColor">A <seealso cref="Noxico.Color"/> specifying the foreground color of the new cell.</param>
 		/// <param name="backgroundColor">A <seealso cref="Noxico.Color"/> specifying the background color of the new cell.</param>
 		/// <param name="forceRedraw">If true, ensures that the new cell is drawn, even if nothing changed.</param>
-		void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false);
+		void SetCell(int row, int col, int character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false);
 		
 		/// <summary>
 		/// Clears the entire screen buffer to the given Unicode character and <seealso cref="Noxico.Color"/> values.

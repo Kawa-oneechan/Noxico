@@ -98,7 +98,7 @@ namespace Noxico
 
 		private struct Cell
 		{
-			public char Character;
+			public int Character;
 			public Color Foreground;
 			public Color Background;
 #if DEBUG
@@ -459,8 +459,8 @@ namespace Noxico
 				source = Mix.GetBitmap("fonts\\" + pngFont + ".png");
 			var cWidth = source.Width / 32;
 			var cHeight = source.Height / 32;
-			fontData = new byte[512, cWidth * cHeight];
-			for (var ch = 0; ch < 512; ch++)
+			fontData = new byte[1024, cWidth * cHeight];
+			for (var ch = 0; ch < 1024; ch++)
 			{
 				var i = 0;
 				var sX = (ch % 32) * cWidth;
@@ -476,7 +476,7 @@ namespace Noxico
 			}
 		}
 
-		public void SetCell(int row, int col, char character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
+		public void SetCell(int row, int col, int character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
 		{
 			if (col >= 100 || row >= 60 || col < 0 || row < 0)
 				return;
@@ -565,7 +565,7 @@ namespace Noxico
 			var f = cell.Foreground;
 			var c = cell.Character;
 
-			if (c > 512)
+			if (c > 0x400)
 				c = '#';
 
 			var width = CellWidth;
