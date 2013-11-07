@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using SysRectangle = System.Drawing.Rectangle;
 
 namespace Noxico
 {
@@ -508,32 +509,168 @@ namespace Noxico
 		}
 	}
 
+	public class Room
+	{
+		public RoomMaterials Material { get; set; }
+		public SysRectangle Bounds { get; set; }
+
+		public Room(SysRectangle bounds, RoomMaterials material)
+		{
+			this.Bounds = bounds;
+			this.Material = material;
+		}
+	}
+	public enum RoomMaterials
+	{
+		Stone, Wood
+	}
+
 	//Ye Olde Generic Dungeon
 	class StoneDungeonGenerator : BaseDungeonGenerator
 	{
+		private const int MAX_ROOMS = 30;
+		private const int ROOM_MAX_X = 10;
+		private const int ROOM_MIN_X = 5;
+		private const int ROOM_MAX_Y = 6;
+		private const int ROOM_MIN_Y = 3;
+
+		private const int DIM_X = 80;
+		private const int DIM_Y = 49;
+		
+		private static Point Center(Room rect)
+		{
+			return new Point((int)(rect.Bounds.X + 0.5 * rect.Bounds.Width), (int)(rect.Bounds.Y + 0.5 * rect.Bounds.Height));
+		}
+
+		private List<Room> rooms;
+		private List<Room> corridors;
+
 		public void Create(BiomeData biome)
 		{
-			allowCaveFloor = true;
-			base.Create(biome, "dungeon");
+			rooms = new List<Room>(MAX_ROOMS);
+			corridors = new List<Room>(2 * MAX_ROOMS);
+
+			for (var i = 0; i < MAX_ROOMS; i++)
+			{
+				var w = Random.Next(ROOM_MIN_X, ROOM_MAX_X - 2);
+				var h = Random.Next(ROOM_MIN_Y, ROOM_MAX_Y - 2);
+				var room = new Room(new SysRectangle(Random.Next(1, DIM_X - w), Random.Next(1, DIM_Y - h), w, h), (RoomMaterials)Random.Next(Enum.GetValues(typeof(RoomMaterials)).Length));
+				var pass = false;
+				if (i > 0)
+				{
+					for (var j = 0; j < rooms.Count; j++)
+						if (room.Bounds.IntersectsWith(rooms[j].Bounds))
+							pass = true;
+				}
+				if (pass)
+					continue;
+				rooms.Add(room);
+				if (i > 0)
+				{
+					var firstToLast = Center(rooms[rooms.Count - 1]);
+					var secondToLast = Center(rooms[rooms.Count - 2]);
+
+					if (Random.Flip())
+					{
+						corridors.Add(new Room(new SysRectangle(firstToLast.X, firstToLast.Y, secondToLast.X - firstToLast.X, 1), RoomMaterials.Stone));
+						corridors.Add(new Room(new SysRectangle(secondToLast.X, firstToLast.Y, 1, secondToLast.Y - firstToLast.Y), RoomMaterials.Stone));
+					}
+					else
+					{
+						corridors.Add(new Room(new SysRectangle(firstToLast.X, firstToLast.Y, 1, secondToLast.Y - firstToLast.Y), RoomMaterials.Stone));
+						corridors.Add(new Room(new SysRectangle(firstToLast.X, secondToLast.Y, secondToLast.X - firstToLast.X, 1), RoomMaterials.Stone));
+					}
+				}
+			}
+		}
+
+		private void MaybeSet(ref Tile[,] map, int x, int y, char c, Color floor, Color wall)
+		{
+			if (map[x, y].Wall && !map[x, y].CanBurn )
+				map[x, y] = new Tile() { CanBurn = true, Character = c, Wall = true, Background = floor, Foreground = wall };
 		}
 
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			var wallStart = Color.FromArgb(119, 120, 141);
-			var wallEnd = Color.FromArgb(144, 144, 158);
-			var path = Color.FromArgb(32, 32, 32);
+			var stoneStart = Color.FromArgb(119, 120, 141);
+			var stoneEnd = Color.FromArgb(144, 144, 158);
+			var stoneFloor = Color.FromArgb(65, 66, 87);
+			var woodFloor = Color.FromArgb(86, 63, 44);
+			var woodWall = Color.FromArgb(20, 15, 12);
+
+			var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor, CanBurn = false };
+			var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
 
 			//Base fill
 			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
-					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
+					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(stoneStart, stoneEnd, Random.NextDouble()) };
 
-			//Stopgap code
-			var floor = wallStart.Darken();
-			for (var row = 1; row < 49; row++)
-				for (var col = 1; col < 79; col++)
-					map[col, row] = new Tile() { Character = ' ', Wall = false, Background = floor };
+			//TODO: add clutter.
+			/* My idea: have a list of points. For each room, randomly scatter a few points around, and make sure there's a few around the edges.
+			 * When carving corridors, remove any points in your way. Then, when done with corridors, add the actual clutter and special tiles.
+			 */
+
+			foreach (var room in rooms)
+			{
+				var bounds = room.Bounds;
+				for (var row = bounds.Top; row <= bounds.Bottom; row++)
+					for (var col = bounds.Left; col <= bounds.Right; col++)
+						map[col, row] = woodTile;
+			}
+
+			foreach (var room in rooms)
+			{
+				var bounds = room.Bounds;
+				var inflated = new SysRectangle(bounds.Left - 1, bounds.Top - 1, bounds.Width + 2, bounds.Height + 2);
+				for (var row = inflated.Top + 1; row < inflated.Bottom; row++)
+				{
+					MaybeSet(ref map, inflated.Left, row, '\x10F', woodFloor, woodWall);
+					MaybeSet(ref map, inflated.Right, row, '\x10F', woodFloor, woodWall);
+				}
+				for (var col = inflated.Left + 1; col < inflated.Right; col++)
+				{
+					MaybeSet(ref map, col, inflated.Top, '\x110', woodFloor, woodWall);
+					MaybeSet(ref map, col, inflated.Bottom, '\x110', woodFloor, woodWall);
+				}
+				MaybeSet(ref map, inflated.Left, inflated.Top, '\x10B', woodFloor, woodWall);
+				MaybeSet(ref map, inflated.Right, inflated.Top, '\x10C', woodFloor, woodWall);
+				MaybeSet(ref map, inflated.Left, inflated.Bottom, '\x10D', woodFloor, woodWall);
+				MaybeSet(ref map, inflated.Right, inflated.Bottom, '\x10E', woodFloor, woodWall);
+			}
+
+			foreach (var corridor in corridors)
+			{
+				var bounds = corridor.Bounds;
+				var inRoom = false;
+				Tile there = null;
+				foreach (var point in Toolkit.Line(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom, true))
+				{
+					var here = map[point.X, point.Y];
+					if (there != null && there.Wall && there.CanBurn && here.Wall && !here.CanBurn)
+					{
+						there.Wall = false;
+						there.Character = ' ';
+						inRoom = false;
+					}
+					if (here.Wall)
+					{
+						if (!here.CanBurn)
+						{
+							map[point.X, point.Y] = stoneTile;
+							inRoom = false;
+						}
+						else if (!inRoom)
+						{
+							map[point.X, point.Y] = woodTile;
+							inRoom = true;
+						}	
+					}
+					there = here;
+				}
+			}
+
 
 			#region Old shit
 			/*
@@ -655,23 +792,23 @@ namespace Noxico
 					map[x, 16 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
 				}
 			}
+			*/
+			#endregion
 
-			//Prepare to fade out the walls
+			#region Fade out the walls
 			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
 			{
 				for (var row = 0; row < 50; row++)
 				{
-					if (map[col, row].SolidToProjectile)
+					if (!map[col, row].Wall)
 						continue;
-					dijkstra[col, row] = (map[col, row].Wall && !map[col, row].CanBurn) ? 9000 : 0;
+					dijkstra[col, row] = 9000; //(map[col, row].Wall && !map[col, row].CanBurn) ? 9000 : 0;
 				}
 			}
 
-			//Get the data
 			Dijkstra.JustDoIt(ref dijkstra);
 
-			//Use it!
 			for (var row = 0; row < 50; row++)
 			{
 				for (var col = 0; col < 80; col++)
@@ -691,7 +828,6 @@ namespace Noxico
 					}
 				}
 			}
-			*/
 			#endregion
 		}
 	}
