@@ -165,7 +165,11 @@ namespace Noxico
 				//{ Keys.Back, Keys.Escape },
 			};
 
+#if DEBUG
 		public Timer timer;
+#else
+		private Timer timer;
+#endif
 
 		public int Frames = 0;
 		private Timer fpsTimer;
@@ -188,7 +192,7 @@ namespace Noxico
 				this.KeyPress += new KeyPressEventHandler(this.Form1_KeyPress);
 				this.KeyUp += new KeyEventHandler(this.Form1_KeyUp);
 				this.Icon = global::Noxico.Properties.Resources.app;
-				this.ClientSize = new Size(80 * CellWidth, 25 * CellHeight);
+				this.ClientSize = new Size(80 * CellWidth, 50 * CellHeight);
 				this.Controls.Add(new Label()
 				{
 					Text = "Loading...",
@@ -713,11 +717,11 @@ namespace Noxico
 		{
 			var tx = y.X / (CellWidth);
 			var ty = y.Y / (CellHeight);
-			if (tx < 0 || ty < 0 || tx > 99 || ty > 29)
+			if (tx < 0 || ty < 0 || tx > 99 || ty > 59)
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				if (tx < 80 && ty < 25)
+				if (tx < 80 && ty < 50)
 				{
 					if (y.Button == MouseButtons.Left)
 						Noxico.Player.AutoTravelTo(tx, ty);
@@ -737,9 +741,9 @@ namespace Noxico
 							Noxico.Player.AutoTravelTo(tx, 0);
 							Noxico.Player.AutoTravelLeave = Direction.North;
 						}
-						else if (ty > 20)
+						else if (ty > 42)
 						{
-							Noxico.Player.AutoTravelTo(tx, 24);
+							Noxico.Player.AutoTravelTo(tx, 49);
 							Noxico.Player.AutoTravelLeave = Direction.South;
 						}
 						else if (tx < 4)
