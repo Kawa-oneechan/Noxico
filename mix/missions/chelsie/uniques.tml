@@ -1,0 +1,41 @@
+character: chelsie
+	culture: japanese
+	invisiblegender
+	femaleonly
+	bestiary: "One of the few cheetah people, very clingy."
+	terms
+		generic: "cheetah"
+		male: "cheetah man"
+		female: "cheetah girl"
+		herm: "cheetah herm"
+	ascii
+		char: U+010C
+	tallness: 182
+	hair
+		length: 7
+		color: brown
+	skin
+		type: fur
+		color: orange
+		pattern: spots
+			color: black
+	eyes: gold
+	face: cat
+	ears: cat
+	legs: genbeast
+	tail: genbeast
+	ass
+		size: 5
+		fuckable
+	hips: 6
+	waist: 3
+	fertility: 0
+	breastrow
+		amount: 2
+		size: 4.2
+		nipples: 1
+			size: 1.2
+		milksource
+	vagina
+		fuckable
+		clit: 0.3

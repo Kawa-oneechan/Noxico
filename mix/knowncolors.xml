@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE colortable[
+	<!ELEMENT colortable (color*)>
+	<!ELEMENT color EMPTY>
+	<!ATTLIST color
+		name ID #REQUIRED
+		rgb CDATA #REQUIRED
+		cga CDATA #IMPLIED
+	>
+]>
+<colortable>
+	<!-- Skintones -->
+	<color name="Light" rgb="#F6E1D6" cga="15" />
+	<color name="Dark" rgb="#854543" cga="6" />
+	<color name="Ebony" rgb="#170B0B" cga="0" />
+	<color name="Pale" rgb="#F6F5E0" cga="15" />
+
+	<!-- Hair colors -->
+	<color name="Blond" rgb="#C6A75E" cga="6" />
+	<color name="Auburn" rgb="#6F351A" cga="4" />
+	
+	<!-- System.Drawing.KnownColor -->
+	<color name="AliceBlue" rgb="#F0F8FF" cga="15" />
+	<color name="AntiqueWhite" rgb="#FAEBD7" cga="14" />
+	<color name="Aqua" rgb="#00FFFF" cga="11" />
+	<color name="Aquamarine" rgb="#7FFFD4" cga="11" />
+	<color name="Azure" rgb="#F0FFFF" cga="15" />
+	<color name="Beige" rgb="#F5F5DC" cga="14" />
+	<color name="Bisque" rgb="#FFE4C4" cga="14" />
+	<color name="Black" rgb="#000000" cga="0" />
+	<color name="BlanchedAlmond" rgb="#FFEBCD" cga="14" />
+	<color name="Blue" rgb="#0000FF" cga="9" />
+	<color name="BlueViolet" rgb="#8A2BE2" cga="13" />
+	<color name="Brown" rgb="#A52A2A" cga="4" />
+	<color name="BurlyWood" rgb="#DEB887" cga="14" />
+	<color name="CadetBlue" rgb="#5F9EA0" cga="3" />
+	<color name="Chartreuse" rgb="#7FFF00" cga="10" />
+	<color name="Chocolate" rgb="#D2691E" cga="12" />
+	<color name="Coral" rgb="#FF7F50" cga="14" />
+	<color name="CornflowerBlue" rgb="#6495ED" cga="9" />
+	<color name="Cornsilk" rgb="#FFF8DC" cga="14" />
+	<color name="Crimson" rgb="#DC143C" cga="12" />
+	<color name="Cyan" rgb="#00FFFF" cga="11" />
+	<color name="DarkBlue" rgb="#00008B" cga="1" />
+	<color name="DarkCyan" rgb="#008B8B" cga="3" />
+	<color name="DarkGoldenrod" rgb="#B8860B" cga="6" />
+	<color name="DarkGray" rgb="#A9A9A9" cga="7" />
+	<color name="DarkGreen" rgb="#006400" cga="2" />
+	<color name="DarkKhaki" rgb="#BDB76B" cga="14" />
+	<color name="DarkMagenta" rgb="#8B008B" cga="5" />
+	<color name="DarkOliveGreen" rgb="#556B2F" cga="2" />
+	<color name="DarkOrange" rgb="#FF8C00" cga="6" />
+	<color name="DarkOrchid" rgb="#9932CC" cga="5" />
+	<color name="DarkRed" rgb="#8B0000" cga="4" />
+	<color name="DarkSalmon" rgb="#E9967A" cga="12" />
+	<color name="DarkSeaGreen" rgb="#8FBC8B" cga="10" />
+	<color name="DarkSlateBlue" rgb="#483D8B" cga="1" />
+	<color name="DarkSlateGray" rgb="#2F4F4F" cga="8" />
+	<color name="DarkTurquoise" rgb="#00CED1" cga="3" />
+	<color name="DarkViolet" rgb="#9400D3" cga="5" />
+	<color name="DeepPink" rgb="#FF1493" cga="13" />
+	<color name="DeepSkyBlue" rgb="#00BFFF" cga="9" />
+	<color name="DimGray" rgb="#696969" cga="0" />
+	<color name="DodgerBlue" rgb="#1E90FF" cga="9" />
+	<color name="Firebrick" rgb="#B22222" cga="4" />
+	<color name="FloralWhite" rgb="#FFFAF0" cga="14" />
+	<color name="ForestGreen" rgb="#228B22" cga="2" />
+	<color name="Fuchsia" rgb="#FF00FF" cga="13" />
+	<color name="Gainsboro" rgb="#DCDCDC" cga="7" />
+	<color name="GhostWhite" rgb="#F8F8FF" cga="15" />
+	<color name="Gold" rgb="#FFD700" cga="14" />
+	<color name="Goldenrod" rgb="#DAA520" cga="6" />
+	<color name="Gray" rgb="#808080" cga="8" />
+	<color name="Green" rgb="#008000" cga="2" />
+	<color name="GreenYellow" rgb="#ADFF2F" cga="10" />
+	<color name="Honeydew" rgb="#F0FFF0" cga="10" />
+	<color name="HotPink" rgb="#FF69B4" cga="13" />
+	<color name="IndianRed" rgb="#CD5C5C" cga="12" />
+	<color name="Indigo" rgb="#4B0082" cga="5" />
+	<color name="Ivory" rgb="#FFFFF0" cga="14" />
+	<color name="Khaki" rgb="#F0E68C" cga="14" />
+	<color name="Lavender" rgb="#E6E6FA" cga="11" />
+	<color name="LavenderBlush" rgb="#FFF0F5" cga="15" />
+	<color name="LawnGreen" rgb="#7CFC00" cga="10" />
+	<color name="LemonChiffon" rgb="#FFFACD" cga="14" />
+	<color name="LightBlue" rgb="#ADD8E6" cga="11" />
+	<color name="LightCoral" rgb="#F08080" cga="12" />
+	<color name="LightCyan" rgb="#E0FFFF" cga="11" />
+	<color name="LightGoldenrodYellow" rgb="#FAFAD2" cga="14" />
+	<color name="LightGray" rgb="#D3D3D3" cga="7" />
+	<color name="LightGreen" rgb="#90EE90" cga="10" />
+	<color name="LightPink" rgb="#FFB6C1" cga="12" />
+	<color name="LightSalmon" rgb="#FFA07A" cga="12" />
+	<color name="LightSeaGreen" rgb="#20B2AA" cga="3" />
+	<color name="LightSkyBlue" rgb="#87CEFA" cga="9" />
+	<color name="LightSlateGray" rgb="#778899" cga="8" />
+	<color name="LightSteelBlue" rgb="#B0C4DE" cga="7" />
+	<color name="LightYellow" rgb="#FFFFE0" cga="14" />
+	<color name="Lime" rgb="#00FF00" cga="10" />
+	<color name="LimeGreen" rgb="#32CD32" cga="10" />
+	<color name="Linen" rgb="#FAF0E6" cga="14" />
+	<color name="Magenta" rgb="#FF00FF" cga="13" />
+	<color name="Maroon" rgb="#800000" cga="4" />
+	<color name="MediumAquamarine" rgb="#66CDAA" cga="11" />
+	<color name="MediumBlue" rgb="#0000CD" cga="1" />
+	<color name="MediumOrchid" rgb="#BA55D3" cga="13" />
+	<color name="MediumPurple" rgb="#9370DB" cga="5" />
+	<color name="MediumSeaGreen" rgb="#3CB371" cga="2" />
+	<color name="MediumSlateBlue" rgb="#7B68EE" cga="9" />
+	<color name="MediumSpringGreen" rgb="#00FA9A" cga="3" />
+	<color name="MediumTurquoise" rgb="#48D1CC" cga="11" />
+	<color name="MediumVioletRed" rgb="#C71585" cga="5" />
+	<color name="MidnightBlue" rgb="#191970" cga="1" />
+	<color name="MintCream" rgb="#F5FFFA" cga="15" />
+	<color name="MistyRose" rgb="#FFE4E1" cga="12" />
+	<color name="Moccasin" rgb="#FFE4B5" cga="14" />
+	<color name="NavajoWhite" rgb="#FFDEAD" cga="14" />
+	<color name="Navy" rgb="#000080" cga="1" />
+	<color name="OldLace" rgb="#FDF5E6" cga="14" />
+	<color name="Olive" rgb="#808000" cga="6" />
+	<color name="OliveDrab" rgb="#6B8E23" cga="2" />
+	<color name="Orange" rgb="#FFA500" cga="14" />
+	<color name="OrangeRed" rgb="#FF4500" cga="12" />
+	<color name="Orchid" rgb="#DA70D6" cga="13" />
+	<color name="PaleGoldenrod" rgb="#EEE8AA" cga="14" />
+	<color name="PaleGreen" rgb="#98FB98" cga="10" />
+	<color name="PaleTurquoise" rgb="#AFEEEE" cga="11" />
+	<color name="PaleVioletRed" rgb="#DB7093" cga="13" />
+	<color name="PapayaWhip" rgb="#FFEFD5" cga="14" />
+	<color name="PeachPuff" rgb="#FFDAB9" cga="14" />
+	<color name="Peru" rgb="#CD853F" cga="6" />
+	<color name="Pink" rgb="#FFC0CB" cga="13" />
+	<color name="Plum" rgb="#DDA0DD" cga="13" />
+	<color name="PowderBlue" rgb="#B0E0E6" cga="11" />
+	<color name="Purple" rgb="#800080" cga="5" />
+	<color name="Red" rgb="#FF0000" cga="12" />
+	<color name="RosyBrown" rgb="#BC8F8F" cga="8" />
+	<color name="RoyalBlue" rgb="#4169E1" cga="9" />
+	<color name="SaddleBrown" rgb="#8B4513" cga="6" />
+	<color name="Salmon" rgb="#FA8072" cga="12" />
+	<color name="SandyBrown" rgb="#F4A460" cga="14" />
+	<color name="SeaGreen" rgb="#2E8B57" cga="2" />
+	<color name="SeaShell" rgb="#FFF5EE" cga="15" />
+	<color name="Sienna" rgb="#A0522D" cga="6" />
+	<color name="Silver" rgb="#C0C0C0" cga="7" />
+	<color name="SkyBlue" rgb="#87CEEB" cga="11" />
+	<color name="SlateBlue" rgb="#6A5ACD" cga="9" />
+	<color name="SlateGray" rgb="#708090" cga="8" />
+	<color name="Snow" rgb="#FFFAFA" cga="15" />
+	<color name="SpringGreen" rgb="#00FF7F" cga="10" />
+	<color name="SteelBlue" rgb="#4682B4" cga="1" />
+	<color name="Tan" rgb="#D2B48C" cga="6" />
+	<color name="Teal" rgb="#008080" cga="3" />
+	<color name="Thistle" rgb="#D8BFD8" cga="7" />
+	<color name="Tomato" rgb="#FF6347" cga="12" />
+	<color name="Turquoise" rgb="#40E0D0" cga="11" />
+	<color name="Violet" rgb="#EE82EE" cga="13" />
+	<color name="Wheat" rgb="#F5DEB3" cga="14" />
+	<color name="White" rgb="#FFFFFF" cga="15" />
+	<color name="WhiteSmoke" rgb="#F5F5F5" cga="15" />
+	<color name="Yellow" rgb="#FFFF00" cga="14" />
+	<color name="YellowGreen" rgb="#9ACD32" cga="10" />
+</colortable>
