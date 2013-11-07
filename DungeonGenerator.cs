@@ -165,9 +165,9 @@ namespace Noxico
 					
 					//NEW: check for water in this plot.
 					var water = 0;
-					for (var y = 0; y < Math.Floor(newTemplate.Height / 16.0) * 16; y++)
+					for (var y = 0; y < newTemplate.Height; y++)
 					{
-						for (var x = 0; x < Math.Floor(newTemplate.Width / 13.0) * 13; x++)
+						for (var x = 0; x < newTemplate.Width; x++)
 						{
 							if (Board.Tilemap[(col * 13) + x, (row * 16) + y].Water)
 								water++;
