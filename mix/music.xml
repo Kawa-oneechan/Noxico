@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE music [
+	<!ELEMENT music (set+)>
+	<!ELEMENT set (song+)>
+	<!ELEMENT song EMPTY>
+	<!ATTLIST set name ID #REQUIRED>
+	<!ATTLIST song href CDATA #REQUIRED>
+]>
+<music>
+	<!-- Don't bother trying to play anything. If the requested set isn't found, "-" is played, aka Nothing. -->
+	<!-- Let Music.mix append set data, where it matters. -->
+</music>

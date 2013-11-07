@@ -1,0 +1,34 @@
+character: ponyleader
+	_n: Lofty Goal
+	culture: equestrian
+	invisiblegender
+	terms
+		generic: "little pony"
+		male: "stallion"
+		female: "mare"
+	ascii
+		char: U+0055
+	marshmallow
+	tallness: 140
+	hair
+		length: 16
+		color: hotpink
+	skin
+		type: fur
+		color: oneof blond
+	face: horse
+	eyes: forestgreen
+	legs: horse
+	quadruped
+	monoceros
+	ears: horse
+	tail: horse
+	ass
+		size: 6
+		fuckable
+		virgin
+	vagina
+		fuckable
+		clit: 1.5
+	tattoos
+		hip: "cutie mark"
