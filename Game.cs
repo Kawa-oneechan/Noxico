@@ -201,6 +201,16 @@ namespace Noxico
 			Introduction.Title();
 
 			/*
+			var dungen = new StoneDungeonGenerator();
+			var board = new Board();
+			dungen.Board = board;
+			dungen.Create(BiomeData.Biomes[2]);
+			dungen.ToTilemap(ref board.Tilemap);
+			board.DumpToHtml("lol");
+			Application.Exit();
+			*/
+
+			/*
 			var pervA = new BoardChar(Character.Generate("human", Gender.Male));
 			var pervB = new BoardChar(Character.Generate("goblin", Gender.Male));
 			SexManager.Engage(pervA, pervB);
