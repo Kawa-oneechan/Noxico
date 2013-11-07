@@ -1447,10 +1447,11 @@ namespace Noxico
 					}
 					else
 					{
-						if (this == NoxicoGame.HostForm.Noxico.Player.Character)
-							doReport("You slip out of your " + originalname + ".");
-						//else
-						//mention it for others? It's hardly as... "radical" as tearing it up.
+                        if (this == NoxicoGame.HostForm.Noxico.Player.Character)
+                            doReport("You slip out of your " + originalname + ".");
+                        //mention for others?  Less dramatic than tearing out
+                        //else
+                        //    doReport(this.Name.ToString() + " slips out of " + HisHerIts(true) + " " + originalname + ".");
 					}
 				}
 			}

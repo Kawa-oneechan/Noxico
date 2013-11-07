@@ -767,6 +767,7 @@ namespace Noxico
 			var dodged = false;
 			var skill = "unarmed_combat";
 			var verb = "strikes"; //TRANSLATE
+            var plverb = "strike";
 			var obituary = "died from being struck down"; //TRANSLATE
 			var attackerName = this.Character.GetKnownName(false, false, true);
 			var attackerFullName = this.Character.GetKnownName(true, true, true);
@@ -831,7 +832,7 @@ namespace Noxico
 			if (damage > 0)
 			{
 				//TRANSLATE - needs reworking for better translations
-				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + verb + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".", target.GetEffectiveColor());
+				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + (this is Player ? plverb : verb) + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".", target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true)) //TRANSLATE - may need reworking

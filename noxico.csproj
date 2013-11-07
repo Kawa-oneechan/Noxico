@@ -177,7 +177,9 @@
     <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mix\biomes.xml" />
+    <Content Include="mix\biomes.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\bodyparts.xml" />
     <Content Include="mix\bodyplans.tml" />
     <Content Include="mix\bonustraits.tml" />
@@ -240,6 +242,7 @@
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Xolroc%27s random ideas.txt" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
     <None Include="mix\missions\chelsie\items.tml" />
