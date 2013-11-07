@@ -325,6 +325,7 @@ namespace Noxico
 
 									NoxicoGame.HostForm.Write("TOKEN EDIT ENGAGED. Waiting for editor process to exit.", Color.Black, Color.White, 0, 0);
 									NoxicoGame.HostForm.Draw();
+									((MainForm)NoxicoGame.HostForm).timer.Enabled = false;
 									var dump = "-- WARNING! Many things may cause strange behavior or crashes. WATCH YOUR FUCKING STEP.\r\n" + tc.DumpTokens(tc.Tokens, 0);
 									var temp = Path.Combine(Path.GetTempPath(), DateTime.Now.Ticks.ToString() + ".txt");
 									File.WriteAllText(temp, dump);
@@ -332,6 +333,7 @@ namespace Noxico
 									process.WaitForExit();
 									var newDump = File.ReadAllText(temp);
 									File.Delete(temp);
+									((MainForm)NoxicoGame.HostForm).timer.Enabled = true;
 									ParentBoard.Redraw();
 									if (newDump == dump)
 										break;

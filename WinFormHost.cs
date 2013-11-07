@@ -165,7 +165,7 @@ namespace Noxico
 				//{ Keys.Back, Keys.Escape },
 			};
 
-		private Timer timer;
+		public Timer timer;
 
 		public int Frames = 0;
 		private Timer fpsTimer;
