@@ -52,7 +52,7 @@ namespace Noxico
 			var newX = this.XPosition;
 			var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
-			if (newX < 0 || newY < 0 || newX > 79 || newY > 24)
+			if (newX < 0 || newY < 0 || newX > 79 || newY > 49)
 				return false;
 			return null;
 		}
