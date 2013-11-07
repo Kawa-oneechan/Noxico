@@ -279,7 +279,7 @@ namespace Noxico
 				}
 				else
 				{
-					throw new Exception("Skipping a branch.");
+					throw new Exception(string.Format("Token tree contains a line that's indented too far. Line is \"{0}\", indenting {1} level(s), but the previous line is only {2} level(s).", l.Trim(), tabs, prevTabs));
 				}
 				prevTabs = tabs;
 			}

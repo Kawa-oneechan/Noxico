@@ -52,15 +52,7 @@ namespace Noxico
 
 			textBox1.Text = sb.ToString();
 
-			if (typeName == "SecurityException" && x.Message.Contains("Tried to call"))
-			{
-				label3.Text = "The problem is a script error." + Environment.NewLine + Environment.NewLine;
-				if (x.Message.Contains("not allowed."))
-					label3.Text += "If you are a mod developer and this is your work, you tried to call a method that is meant for internal usage only.";
-				else
-					label3.Text += "Kawa made a mistake somewhere and tried to call a method that he himself marked as \"for JavaScript use only\". What a dumbass. Call him out on it if you want, and it'll be fixed ASAP.";
-			}
-			else if (textBox1.Text.Contains("Player.LoadFromFile"))
+			if (textBox1.Text.Contains("Player.LoadFromFile"))
 			{
 				label3.Text = "The problem is a corrupted player state." + Environment.NewLine + Environment.NewLine + "It's too bad we can't tell which world's player data it is, so the best we can suggest is that you delete (or rename) each world's player.bin file until you can proceed. You'll need to start over, though.";
 			}
@@ -111,6 +103,8 @@ namespace Noxico
 				label3.Text = "The problem is a bitmap that is not actually a bitmap." + Environment.NewLine + Environment.NewLine + "Noxico only uses PNG files, but can load BMP, GIF, and JPEG as well. If an image is requested, but the file is not actually an image of one of those types, or not even an image at all, things break.";
 			else if (textBox1.Text.Contains("bodyplan is defined twice"))
 				label3.Text = "Probably, a mod tried to define its own version of the specified bodyplan, which is not allowed." + Environment.NewLine + Environment.NewLine + "Try to identify the offender and remove it, then contact the mod's author.";
+			else if (textBox1.Text.Contains("indented too far"))
+				label3.Text = "A TML file somewhere has a malformed structure, as described on the Data tab." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetTokenTree\", then look at the line directly below that one. That's where the TML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetTokenTree\" is \"at Noxico.Character.GetUnique\", the problem is in GetUnique, or rather uniques.tml, and that should be mentioned as the critical point.";
 			else
 			{
 				tabControl1.TabPages.RemoveAt(1);
