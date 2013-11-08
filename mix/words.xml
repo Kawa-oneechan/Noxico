@@ -329,6 +329,8 @@ Would you like an infodump on the way out?]]>
 		<word id="inventory_cannotunequip">Cannot unequip.</word>
 		<word id="inventory_questitem">This is a quest key item.</word>
 		<word id="inventory_drop">Drop</word>
+		<word id="inventory_weaponskill">Skill: {0}</word>
+		<word id="inventory_weapontype">Type: {0}</word>
 		<category name="Sigils">
 			<word id="sigil_weapon">weapon</word>
 			<word id="sigil_fullmask">full mask</word>
@@ -350,6 +352,15 @@ Would you like an infodump on the way out?]]>
 			<word id="sigil_short_worn">W</word>
 			<word id="sigil_ranged">ranged</word>
 			<word id="sigil_melee">m&#x88;l&#x82;e</word>
+		</category>
+		<category name="Weapon attack types">
+			<word id="attacktype_punch">punching</word>
+			<word id="attacktype_tear">tearing</word>
+			<word id="attacktype_strike">striking</word>
+			<word id="attacktype_kick">kicking</word>
+			<word id="attacktype_stab">stabbing</word>
+			<word id="attacktype_pierce">piercing</word>
+			<word id="attacktype_crush">crushing</word>
 		</category>
 	</category>
 	<category name="Look At...">
