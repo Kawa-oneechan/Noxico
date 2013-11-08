@@ -110,8 +110,8 @@ namespace Noxico
 						containerTexts.Add(itemString);
 					}
 					height = containerItems.Count;
-					if (height > 13)
-						height = 13;
+					if (height > 34)
+						height = 34;
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
@@ -164,8 +164,8 @@ namespace Noxico
 					var height2 = playerItems.Count;
 					if (height2 == 0)
 						height2 = 1;
-					if (height2 > 13)
-						height2 = 13;
+					if (height2 > 34)
+						height2 = 34;
 					if (indexRight >= playerItems.Count)
 						indexRight = playerItems.Count - 1;
 
@@ -178,11 +178,11 @@ namespace Noxico
 					playerList.Height = height2;
 				}
 
-				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 17, Width = 76, Height = 6 };
-				description = new UILabel("") { Left = 4, Top = 18, Width = 72, Height = 4 };
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
+				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8 };
+				description = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
@@ -236,9 +236,9 @@ namespace Noxico
 								keys[NoxicoGame.KeyBindings[KeyBinding.Right]] = true;
 							}
 							else
-								containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
+								containerList.Height = (containerList.Items.Count < 34) ? containerList.Items.Count : 34;
 							playerList.Hidden = false; //always the case.
-							playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
+							playerList.Height = (playerList.Items.Count < 34) ? playerList.Items.Count : 34;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
@@ -302,9 +302,9 @@ namespace Noxico
 								keys[NoxicoGame.KeyBindings[KeyBinding.Left]] = true;
 							}
 							else
-								playerList.Height = (playerList.Items.Count < 14) ? playerList.Items.Count : 13;
+								playerList.Height = (playerList.Items.Count < 34) ? playerList.Items.Count : 34;
 							containerList.Hidden = false; //always the case.
-							containerList.Height = (containerList.Items.Count < 14) ? containerList.Items.Count : 13;
+							containerList.Height = (containerList.Items.Count < 34) ? containerList.Items.Count : 34;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;

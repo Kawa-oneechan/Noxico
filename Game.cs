@@ -1106,7 +1106,7 @@ namespace Noxico
 					HostForm.SetCell(2, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
 					break;
 				case Gender.Herm:
-					HostForm.SetCell(2, 81, '\xF0', Color.FromArgb(84, 30, 90), Color.Transparent);
+					HostForm.SetCell(2, 81, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
 					break;
 			}
 			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(17), Color.White, Color.Transparent, 2, 82);
@@ -1181,7 +1181,7 @@ namespace Noxico
 						HostForm.SetCell(21, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
 						break;
 					case Gender.Herm:
-						HostForm.SetCell(21, 81, '\xF0', Color.FromArgb(84, 30, 90), Color.Transparent);
+						HostForm.SetCell(21, 81, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
 						break;
 				}
 

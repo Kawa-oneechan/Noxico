@@ -44,7 +44,7 @@ item: henshin_belt
 	description: "A typical transformation belt. It has a team logo on the buckle, with a button on top. The button is [color]."
 	price: 20000
 	ascii
-		char: U+047B
+		char: 0x181
 		fore: silver
 	script
 		<[[
@@ -105,7 +105,7 @@ item: strapon
 		light
 	price: 100
 	ascii
-		char: U+006E
+		char: 0x181
 	sextoy
 	script: equip
 		<[[
@@ -129,7 +129,7 @@ item: ponifier
 	test
 	description: "This turns you into a little pony."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: aquamarine
 	randomized: 1
 	potion
@@ -152,15 +152,15 @@ item: book
 -- #region
 item: rope
 	nouse
-	description: "A length of rope.  Useful for tying people up."
+	description: "A length of rope. Useful for tying people up."
 	price: 20
 	ascii
-		char: U+00A7
+		char: 0x185
 		fore: sienna
 
 item: baseballbat
 	_n: baseball bat
-	description: "A heavy wooden bat.  Would make a good weapon, but its phallic shape gives you other ideas...."
+	description: "A heavy wooden bat. Would make a good weapon, but its phallic shape gives you other ideas...."
 	equipable
 		hand
 	canfuck
@@ -173,7 +173,7 @@ item: baseballbat
 		skill: club
 		attacktype: crush
 	ascii
-		char: U+0021
+		char: 0x184
 		fore: darkgoldenrod
 	price: 100
 	largeweapon
@@ -184,7 +184,7 @@ item: foxite
 	test
 	description: "This is Foxite. It turns you into a fox with repeated usages."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: aquamarine
 	randomized: 2
 	potion
@@ -199,7 +199,7 @@ item: foxite
 item: penificator
 	test
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: chartreuse
 	randomized: 3
 	potion
@@ -221,7 +221,7 @@ item: knife
 		attacktype: stab
 	description: "A nice, sturdy combat knife."
 	ascii
-		char: U+2190
+		char: 0x196
 		fore: silver
 	price: 50
 	smallweapon
@@ -238,7 +238,7 @@ item: butter_knife
 		attacktype: stab
 	description: "A nice, sturdy butter knife."
 	ascii
-		char: U+2190
+		char: 0x196
 		fore: silver
 	price: 5
 	smallweapon
@@ -249,7 +249,7 @@ item: test_ring
 		ring
 	fireproof
 	ascii
-		char: U+25CB
+		char: 0x1A0
 		fore: firebrick
 	randomized: 128
 
@@ -270,7 +270,7 @@ item: cheap_pos
 		speed: 40
 	description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
 	ascii
-		char: U+2193
+		char: 0x197
 		fore: white
 	price: 500
 	largeweapon
@@ -278,8 +278,8 @@ item: cheap_pos
 	rareweapon
 
 item: catears
-	_n: cat ear headband
-	description: "One of the felinoids' secret mind-control devices for their plot to take over the world.  Or possibly just a cute part of a costume."
+	_n: [color ]cat ear headband
+	description: "One of the felinoids' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
 	equipable
 		hat
 	weight
@@ -288,9 +288,9 @@ item: catears
 		charisma: 10
 	price: 20
 	ascii
-		char: U+03A9
-		fore: darkmagenta
+		char: 0x1A5
 	clothing
+	colored
 	hats
 	sexy
 	cute
@@ -298,7 +298,7 @@ item: catears
 item: plain_briefs
 	_n: briefs
 	_ia: a pair of
-	description: "An unremarkable pair of briefs.  They do show off one's assets fairly well, though."
+	description: "An unremarkable pair of briefs. They do show off one's assets fairly well, though."
 	plural
 	equipable
 		male
@@ -307,7 +307,7 @@ item: plain_briefs
 		feather
 	price: 10
 	ascii
-		char: U+006E
+		char: 0x1A2
 	clothing
 	underwear
 	for_men
@@ -315,7 +315,7 @@ item: plain_briefs
 item: plain_boxers
 	_n: boxer shorts
 	_ia: a pair of
-	description: "A roomy pair of boxer shorts.  Should be able to fit whatever's in your crotch, no problem!"
+	description: "A roomy pair of boxer shorts. Should be able to fit whatever's in your crotch, no problem!"
 	plural
 	equipable
 		male
@@ -324,7 +324,7 @@ item: plain_boxers
 		feather
 	price: 10
 	ascii
-		char: U+006E
+		char: 0x1A2
 	clothing
 	underwear
 	for_men
@@ -341,14 +341,14 @@ item: plain_panties
 		feather
 	price: 10
 	ascii
-		char: U+006E
+		char: 0x19A
 	clothing
 	underwear
 	for_women
 
 item: lacy_panties
 	_ia: a pair of
-	description: "The frilliest panties you've seen in your life.  You're not sure which holes are decorative loops and which ones are for putting your legs through."
+	description: "The frilliest panties you've seen in your life. You're not sure which holes are decorative loops and which ones are for putting your legs through."
 	plural
 	equipable
 		female
@@ -357,14 +357,14 @@ item: lacy_panties
 		feather
 	price: 20
 	ascii
-		char: U+006E
+		char: 0x19A
 	clothing
 	underwear
 	for_women
 
 item: plain_bra
 	_n: bra
-	description: "An unflattering bra.  One-size-fits-none."
+	description: "An unflattering bra. One-size-fits-none."
 	equipable
 		female
 		undershirt
@@ -372,13 +372,13 @@ item: plain_bra
 		feather
 	price: 10
 	ascii
-		char: U+0077
+		char: 0x19B
 	clothing
 	underwear
 	for_women
 
 item: lacy_bra
-	description: "A bra adorned with tasteful amounts of lace.  Not immensely comfortable, though."
+	description: "A bra adorned with tasteful amounts of lace. Not immensely comfortable, though."
 	equipable
 		female
 		undershirt
@@ -386,7 +386,7 @@ item: lacy_bra
 		feather
 	price: 20
 	ascii
-		char: U+0077
+		char: 0x19B
 	clothing
 	underwear
 	for_women
@@ -401,7 +401,7 @@ item: sheer_top
 		feather
 	price: 100
 	ascii
-		char: U+0077
+		char: 0x198
 	clothing
 	for_women
 -- #endregion
@@ -416,7 +416,7 @@ item: egg
 	weight: feather
 	description: "Unfertilized and high in protein."
 	ascii
-		char: U+0473
+		char: 0x18A
 		fore: white
 	food: 10
 
@@ -432,7 +432,7 @@ item: chairlegoftruth
 		attacktype: crush
 	description: "Do not question the Chair Leg of Truth, for it is wise and terrible."
 	ascii
-		char: U+0021
+		char: 0x4C
 		fore: darkgoldenrod
 	rareweapon
 	wood
@@ -754,7 +754,7 @@ item: whip
 	price: 200
 	description: "An ordinary but nevertheless slightly kinky whip."
 	ascii
-		char: U+03B6
+		char: 0x185
 		fore: brown
 	weapon
 	sexy
@@ -774,7 +774,7 @@ item: spandex_suit
 	description: "A suit that shows off your hot shape when worn."
 	price: 200
 	ascii
-		char: U+2202
+		char: 0x19C
 	clothing
 	bodysuit
 	colored
@@ -790,7 +790,7 @@ item: spandex_pants
 	description: "Feels like David Bowie."
 	price: 100
 	ascii
-		char: U+220F
+		char: 0x199
 	clothing
 	colored
 	sexy
@@ -811,7 +811,7 @@ item: sentai_suit
 	description: "Shapes your cool body in a superhero style."
 	price: 300
 	ascii
-		char: U+2202
+		char: 0x19C
 	clothing
 	bodysuit
 	colored
@@ -832,7 +832,7 @@ item: sentai_helmet
 	description: "todo"
 	price: 300
 	ascii
-		char: U+2205
+		char: 0x19E
 	clothing
 	bodysuit
 	colored
@@ -853,7 +853,7 @@ item: horsemask
 		charisma: 20
 	price: 2490
 	ascii
-		char: U+03A9
+		char: 0x1A6
 		fore: chocolate
 	joke
 	description: It's not just a mask. It's a way of life.
@@ -869,7 +869,7 @@ item: croissant
 	weight: feather
 	description: "Smaczne, ale nie bardzo nape&#x142;niania."
 	ascii
-		char: U+0063
+		char: 0x186
 		fore: brown
 	food: 10
 	baked
@@ -882,7 +882,7 @@ item: bagel
 	price: 5
 	description: "Vkusno, no ne ochen zapolneniyu."
 	ascii
-		char: U+2609
+		char: 0x187
 		fore: brown
 	food: 10
 	baked
@@ -896,7 +896,7 @@ item: bacon
 	price: 5
 	description: "Can't go wrong with bacon."
 	ascii
-		char: U+2016
+		char: 0x18D
 		fore: red
 	food: 20
 		fat
@@ -911,7 +911,7 @@ item: sweetroll
 	weight: feather
 	description: "Let me guess."
 	ascii
-		char: U+00F8
+		char: 0x18B
 		fore: yellow
 	food: 10
 	baked
@@ -927,7 +927,7 @@ item: gem_dilithium
 	_n: dilithium crystal
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: tan
 	weight: light
 	price: 4500
@@ -937,7 +937,7 @@ item: gem_dilithium
 item: gem_diamond
 	_n: diamond
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: white
 	weight: light
 	price: 4000
@@ -947,7 +947,7 @@ item: gem_diamond
 item: gem_ruby
 	_n: ruby
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: red
 	weight: light
 	price: 3500
@@ -958,7 +958,7 @@ item: gem_jacinth
 	_n: jacinth
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: orange
 	weight: light
 	price: 3250
@@ -968,7 +968,7 @@ item: gem_jacinth
 item: gem_sapphire
 	_n: sapphire
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: blue
 	weight: light
 	price: 3000
@@ -978,7 +978,7 @@ item: gem_sapphire
 item: gem_black_opal
 	_n: black opal
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: black
 	weight: light
 	price: 2500
@@ -988,7 +988,7 @@ item: gem_black_opal
 item: gem_emerald
 	_n: emerald
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: green
 	weight: light
 	price: 2500
@@ -999,7 +999,7 @@ item: gem_turquoise
 	_n: turquoise
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: green
 	weight: light
 	price: 2000
@@ -1010,7 +1010,7 @@ item: gem_citrine
 	_n: citrine
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: yellow
 	weight: light
 	price: 1500
@@ -1021,7 +1021,7 @@ item: gem_aquamarine
 	_n: aquamarine
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: green
 	weight: light
 	price: 1500
@@ -1032,7 +1032,7 @@ item: gem_amber
 	_n: amber
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: peru
 	weight: light
 	price: 1000
@@ -1043,7 +1043,7 @@ item: gem_topaz
 	_n: topaz
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: pure
 	weight: light
 	price: 900
@@ -1054,7 +1054,7 @@ item: gem_jet
 	_n: jet
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: black
 	weight: light
 	price: 850
@@ -1065,7 +1065,7 @@ item: gem_opal
 	_n: opal
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: white
 	weight: light
 	price: 800
@@ -1076,7 +1076,7 @@ item: gem_chrysoberyl
 	_n: chrysoberyl
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: yellow
 	weight: light
 	price: 700
@@ -1086,7 +1086,7 @@ item: gem_chrysoberyl
 item: gem_garnet
 	_n: garnet
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: red
 	weight: light
 	price: 700
@@ -1096,7 +1096,7 @@ item: gem_garnet
 item: gem_amethyst
 	_n: amethyst
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: violet
 	weight: light
 	price: 600
@@ -1107,7 +1107,7 @@ item: gem_jasper
 	_n: jasper
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: red
 	weight: light
 	price: 500
@@ -1118,7 +1118,7 @@ item: gem_fluorite
 	_n: fluorite
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: violet
 	weight: light
 	price: 400
@@ -1129,7 +1129,7 @@ item: gem_obsidian
 	_n: obsidian
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: black
 	weight: light
 	price: 200
@@ -1140,7 +1140,7 @@ item: gem_agate
 	_n: agate
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: orange
 	weight: light
 	price: 200
@@ -1151,7 +1151,7 @@ item: gem_jade
 	_n: jade
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 		fore: jade
 	weight: light
 	price: 300
@@ -1162,7 +1162,7 @@ item: gem_glass
 	_n: [color ]glass
 	_ia: a piece of
 	ascii
-		char: U+25C6
+		char: 0x4
 	weight: light
 	price: 0
 	description: ""
@@ -1284,7 +1284,7 @@ item: tatteredshreds_pants
 item: tatteredshreds_underpants
 	_n: tattered shreds
 	_ia: ""
-	description: "Underwear can only take so much.  This is what you get when you give them too much."
+	description: "Underwear can only take so much. This is what you get when you give them too much."
 	plural
 	equipable
 		underpants
@@ -1325,7 +1325,7 @@ item: tatteredshreds_over
 
 item: shirt
 	_n: plain [color ]shirt
-	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt.  One size fits all."
+	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt. One size fits all."
 	equipable
 		shirt
 	weight
@@ -1357,7 +1357,7 @@ item: blouse
 
 item: girls_uniform_top
 	_n: schoolgirl uniform top
-	description: "You've not seen any schools around here, but their uniforms seem to be everywhere.  Maybe they're just invisible."
+	description: "You've not seen any schools around here, but their uniforms seem to be everywhere. Maybe they're just invisible."
 -- Unseen University reference confirmed.
 	equipable
 		female
@@ -1389,7 +1389,7 @@ item: boys_uniform_top
 
 item: bikini_top
 	_n: [color ]bikini top
-	description: "A [color] waterproof bra.  Provides no support or modesty whatsoever."
+	description: "A [color] waterproof bra. Provides no support or modesty whatsoever."
 	equipable
 		female
 		undershirt
@@ -1433,7 +1433,7 @@ item: bikini_bottom
 item: pants
 	_n: plain [color ]pants
 	_ia: a pair of
-	description: "A baggy pair of [color] pants.  They come with a free belt to hold them up!"
+	description: "A baggy pair of [color] pants. They come with a free belt to hold them up!"
 	plural
 	equipable
 		pants
@@ -1468,7 +1468,7 @@ item: skirt
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
-	description: "For some reason, it's all ruffly.  Doesn't cover much."
+	description: "For some reason, it's all ruffly. Doesn't cover much."
 	equipable
 		female
 		pants
@@ -1507,7 +1507,7 @@ item: shorts
 item: short_shorts
 	_n: [color ]short shorts
 	_ia: a pair of
-	description: "Anywhere else, these would get you in jail for indecent exposure.  Luckily, this is Nox."
+	description: "Anywhere else, these would get you in jail for indecent exposure. Luckily, this is Nox."
 	plural
 	equipable
 		pants
@@ -1527,7 +1527,7 @@ item: short_shorts
 
 item: short_skirt
 	_n: short [color ]skirt
-	description: "Barely more than a belt. Anywhere else, this would get you in jail for indecent exposure.  Luckily, this is Nox."
+	description: "Barely more than a belt. Anywhere else, this would get you in jail for indecent exposure. Luckily, this is Nox."
 	equipable
 		pants
 		reach
@@ -1572,7 +1572,7 @@ item: sundress
 
 item: skimpy_dress
 	_n: skimpy [color ]dress
-	description: "A [color] dress.  At least you think it's a dress.  It certainly doesn't function as one."
+	description: "A [color] dress. At least you think it's a dress. It certainly doesn't function as one."
 	equipable
 		shirt
 		pants
@@ -1597,7 +1597,7 @@ item: skimpy_dress
 
 item: elegant_dress
 	_n: elegant [color ]dress
-	description: "This dress is designed for the fanciest of occasions, using only the fanciest silks in the fanciest designs.  It's remarkably fancy."
+	description: "This dress is designed for the fanciest of occasions, using only the fanciest silks in the fanciest designs. It's remarkably fancy."
 	equipable
 		shirt
 		pants
@@ -1618,7 +1618,7 @@ item: elegant_dress
 
 item: latex_suit
 	_n: [color ]latex suit
-	description: "A full-body suit made of skintight latex.  Who cares about anachronisms, this thing's sexy!"
+	description: "A full-body suit made of skintight latex. Who cares about anachronisms, this thing's sexy!"
 	equipable
 		undershirt
 		underpants
@@ -1663,7 +1663,7 @@ item: strapless_leather_bra
 		feather
 	price: 30
 	ascii
-		char: U+0E3F
+		char: 0x19B
 	clothing
 	underwear
 	colored
@@ -1680,7 +1680,7 @@ item: kinky_panties
 		feather
 	price: 40
 	ascii
-		char: U+00AC
+		char: 0x19A
 	description: "These [color ]leather panties barely cover the crotch at all, giving an enticing minimum of so-called modesty."	
 	clothing
 	underwear
@@ -1690,7 +1690,7 @@ item: kinky_panties
 item: knee_socks
 	_n: silk [color ]knee socks
 	_ia: a pair of
-	description: "Extra-long socks that cover all the way up to one's knees.  Made of extra-sheer fabric."
+	description: "Extra-long socks that cover all the way up to one's knees. Made of extra-sheer fabric."
 	plural
 	equipable
 		socks
@@ -1700,7 +1700,7 @@ item: knee_socks
 		light
 	price: 40
 	ascii
-		char: U+220F
+		char: 0x1A9
 	clothing
 	legwear
 	colored
@@ -1709,7 +1709,7 @@ item: knee_socks
 
 item: high_heels
 	_ia: a pair of
-	description: "A pair of shoes with long, pointed heels.  They make you look taller, but they're relatively difficult to walk in."
+	description: "A pair of shoes with long, pointed heels. They make you look taller, but they're relatively difficult to walk in."
 	plural
 	equipable
 		shoes
@@ -1717,7 +1717,7 @@ item: high_heels
 		light
 	price: 30
 	ascii
-		char: U+221A
+		char: 0x1A3
 		fore: black
 	clothing
 	shoes
@@ -1732,7 +1732,7 @@ item: lena_ruby
 	weight: feather
 	description: "A blood-red ruby in the shape of a droplet."
 	ascii
-		char: U+25CA
+		char: 0x1A4
 		fore: crimson
 -- #endregion
 
@@ -1743,9 +1743,9 @@ item: lena_ruby
 item: catmorph
 	_n: cat morph potion
 	wip
-	description: "A bottle filled with a thick liquid.  There's a picture of a felinoid on the label."
+	description: "A bottle filled with a thick liquid. There's a picture of a felinoid on the label."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: lightsalmon
 	potion
 	transformer
@@ -1796,7 +1796,7 @@ item: catmorph
 			if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
 			{
 				//Should check the existing type first.
-				ret += "\n\nYou pause and tilt your head... something feels different.  Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+				ret += "\n\nYou pause and tilt your head... something feels different. Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
 
 				user.RemoveToken("tail");
 				user.AddToken("tail").Text = "genbeast";
@@ -1845,9 +1845,9 @@ item: catmorph
 item: dogmorph
 	_n: dog morph potion
 	wip
-	description: "A bottle filled with a thick liquid.  There's a picture of a canid on the label."
+	description: "A bottle filled with a thick liquid. There's a picture of a canid on the label."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: mistyrose
 	potion
 	transformer
@@ -1927,9 +1927,9 @@ item: dogmorph
 item: foxmorph
 	_n: fox morph potion
 	wip
-	description: "A bottle filled with a thick liquid.  There's a picture of a fox on the label."
+	description: "A bottle filled with a thick liquid. There's a picture of a fox on the label."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: orangered
 	potion
 	transformer
@@ -2004,9 +2004,9 @@ item: foxmorph
 item: bunnymorph
 	_n: bunny morph potion
 	wip
-	description: "A bottle filled with a thick liquid.  There's a picture of a bunny on the front."
+	description: "A bottle filled with a thick liquid. There's a picture of a bunny on the front."
 	ascii
-		char: U+00A1
+		char: 0x180
 		fore: skyblue
 	potion
 	transformer
@@ -2084,7 +2084,7 @@ item: gExtractor
 	weight
 		light
 	ascii
-		char: U+0436
+		char: 0xE8
 		fore: goldenrod
 	tool
 -- #endregion
@@ -2099,7 +2099,7 @@ item: eternitybrooch
 	unique
 	price: 10000
 	ascii
-		char: U+028A
+		char: 0x1A4
 		color: white
 	description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
 -- #endregion

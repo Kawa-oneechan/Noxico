@@ -295,7 +295,8 @@ Would you like an infodump on the way out?]]>
 		</word>
 		<word id="context_warp">take exit</word>
 		<word id="context_droppeditem">pick up</word>
-		<word id="context_container">see contents</word>
+		<word id="context_container">open</word>
+		<word id="context_corpse">loot</word>
 		<word id="context_bed">sleep</word>
 		<word id="a">a</word>
 		<word id="an">an</word>
@@ -347,6 +348,8 @@ Would you like an infodump on the way out?]]>
 			<word id="sigil_equipped">equipped</word>
 			<word id="sigil_unidentified">unidentified</word>
 			<word id="sigil_short_worn">W</word>
+			<word id="sigil_ranged">ranged</word>
+			<word id="sigil_melee">m&#x88;l&#x82;e</word>
 		</category>
 	</category>
 	<category name="Look At...">
