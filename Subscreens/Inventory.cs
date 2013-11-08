@@ -15,6 +15,7 @@ namespace Noxico
 		private static UILabel howTo, itemDesc;
 		private static UILabel capacity;
 		private static UILabel sigilView;
+		private static UIWindow descriptionWindow;
 		private static List<string> sigils;
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
@@ -172,7 +173,7 @@ namespace Noxico
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
-					Inventory.sigils.Add(icon + "<cDarkSlateGray> " + string.Join(", ", sigils.Select(s =>
+					Inventory.sigils.Add(icon + "<cGray> " + string.Join(", ", sigils.Select(s =>
 					{
 						if (s[0] == '\uE300')
 							return s.Substring(1);
@@ -188,7 +189,7 @@ namespace Noxico
 
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
 				UIManager.Elements.Add(new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height });
-				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 39, Width = 76, Height = 8 });
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
 				howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 				itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
 				sigilView = new UILabel("") { Left = 43, Top = 2, Width = 60, Height = height };
@@ -201,6 +202,15 @@ namespace Noxico
 					var i = inventoryItems[itemList.Index];
 					var r = string.Empty;
 					var d = i.GetDescription(t);
+
+					var weaponData = i.GetToken("weapon");
+					if (weaponData != null)
+					{
+						if (weaponData.HasToken("skill"))
+							d += "\n\n\n" + i18n.Format("inventory_weaponskill", weaponData.GetToken("skill").Text.Replace('_', ' ') + "    ");
+						if (weaponData.HasToken("attacktype"))
+							d += i18n.Format("inventory_weapontype", i18n.GetString("attacktype_" + weaponData.GetToken("attacktype").Text));
+					}
 
 					d = Toolkit.Wordwrap(d, itemDesc.Width);
 
@@ -225,6 +235,7 @@ namespace Noxico
 
 					howTo.Text = (' ' + r).PadEffective(80);
 					itemDesc.Text = d;
+					descriptionWindow.Text = i.ToString(t, false, false);
 					//howTo.Draw();
 					//itemDesc.Draw();
 					UpdateColumns();
@@ -235,6 +246,7 @@ namespace Noxico
 					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 				};
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
+				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
 				UIManager.Elements.Add(sigilView);
