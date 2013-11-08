@@ -245,10 +245,6 @@
     <Content Include="Xolroc%27s random ideas.txt" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
-    <None Include="mix\missions\chelsie\items.tml" />
-    <None Include="mix\missions\chelsie\loot.tml" />
-    <None Include="mix\missions\melfina\items.tml" />
-    <None Include="mix\missions\urta\items.tml" />
     <None Include="Resources\Noxico.ico" />
   </ItemGroup>
   <ItemGroup />

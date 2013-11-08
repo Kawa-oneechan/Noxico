@@ -94,7 +94,7 @@
 				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
 				<marking char="c" type="clutter,&#x149;" name="Chair" />
 				<marking char="T" type="clutter,blocking,&#x148;" name="Table" />
-				<marking char="=" type="block,wall,floor,&#xE0;" />
+				<marking char="=" type="block,wall,floor,&#xF0;" />
 			</markings>
 		</template>
 		<!--

@@ -119,8 +119,8 @@ namespace Noxico
 					if (item.HasToken("equipable"))
 					{
 						var eq = item.GetToken("equipable");
-						if (item.HasToken("weapon"))
-							sigils.Add("weapon");
+						//if (item.HasToken("weapon"))
+						//	sigils.Add("weapon");
 						if (eq.HasToken("hat") && eq.HasToken("goggles") && eq.HasToken("mask"))
 							sigils.Add("fullmask");
 						else
@@ -148,6 +148,7 @@ namespace Noxico
 					}
 					if (carried.HasToken("unidentified"))
 						sigils.Add("unidentified");
+					/*
 					if (item.HasToken("statbonus"))
 					{
 						foreach (var bonus in item.GetToken("statbonus").Tokens)
@@ -156,6 +157,10 @@ namespace Noxico
 								sigils.Add("\uE300" + bonus.Value + "HP");
 						}
 					}
+					*/
+					var info = item.GetModifiers(carriedItem);
+					sigils.AddRange(info.Select(x => "\uE300" + x));
+
 #if DEBUG
 					if (carried.HasToken("cursed"))
 						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : carried.GetToken("cursed").HasToken("hidden") ? "(cursed)" : "cursed!");
@@ -163,10 +168,7 @@ namespace Noxico
 					if (carried.HasToken("cursed") && !carried.GetToken("cursed").HasToken("hidden") && carried.GetToken("cursed").HasToken("known"))
 						sigils.Add("cursed");
 #endif
-					//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
 					var itemString = item.ToString(carried, false, false);
-					//if (itemString.Length > 40)
-					//	itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
@@ -179,16 +181,16 @@ namespace Noxico
 					})));
 				}
 				var height = inventoryItems.Count;
-				if (height > 13)
-					height = 13;
+				if (height > 34)
+					height = 34;
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
-				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 24, Background = UIColors.StatusBackground });
+				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
 				UIManager.Elements.Add(new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height });
-				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 17, Width = 76, Height = 6 });
-				howTo = new UILabel("") { Left = 0, Top = 24, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-				itemDesc = new UILabel("") { Left = 4, Top = 18, Width = 77, Height = 4 };
+				UIManager.Elements.Add(new UIWindow(string.Empty)  { Left = 2, Top = 39, Width = 76, Height = 8 });
+				howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+				itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
 				sigilView = new UILabel("") { Left = 43, Top = 2, Width = 60, Height = height };
 				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 40, Height = height, Index = selection };
 				itemList.Change = (s, e) =>
@@ -232,13 +234,13 @@ namespace Noxico
 				{
 					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 				};
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 22 };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
 				UIManager.Elements.Add(howTo);
 				UIManager.Elements.Add(itemList);
 				UIManager.Elements.Add(sigilView);
 				UIManager.Elements.Add(itemDesc);
 				UIManager.Elements.Add(capacity);
-				UIManager.Elements.Add(new UIButton(i18n.GetString("inventory_drop"), (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length(), Top = 21 });
+				UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 45 });
 				UIManager.Highlight = itemList;
 				itemList.Index = selection;
 

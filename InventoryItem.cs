@@ -272,6 +272,14 @@ namespace Noxico
 			if (character.HasToken("snaketail") && !HasToken("nolegs"))
 				throw new ItemException("Your body is not made for this sort of clothing."); //this clothing is not made for your body
 
+			//lol
+			if (equip.HasToken("socks"))
+			{
+				var currentSocks = character.GetEquippedItemBySlot("socks");
+				if (currentSocks != null)
+					currentSocks.Unequip(character, currentSocks.tempToken);
+			}
+
 			foreach (var t in equip.Tokens)
 			{
 				if (t.Name == "underpants" && (!TempRemove(character, tempRemove, "pants") || !TempRemove(character, tempRemove, "underpants")))
@@ -429,6 +437,7 @@ namespace Noxico
 
 			Action<string> showDesc = new Action<string>(d =>
 			{
+				NoxicoGame.DrawSidebar();
 				if (d.Contains('\n'))
 					MessageBox.Notice(runningDesc.Viewpoint(boardchar));
 				else
@@ -696,10 +705,10 @@ namespace Noxico
         }
 		#endregion
 
-		public string ToLongString(Token token)
+		public List<string> GetModifiers(Token token)
 		{
 			var info = new List<string>();
-			if (HasToken("equipable"))
+			//if (HasToken("equipable"))
 			{
 				if (HasToken("weapon"))
 				{
@@ -707,10 +716,10 @@ namespace Noxico
 					if (token != null && token.HasToken("bonus"))
 						damage = (float)Math.Ceiling(damage * ((token.GetToken("bonus").Value + 1) * 0.75f));
 					info.Add(damage + " dmg");
-					if (new [] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(Path("weapon/skill").Text))
-						info.Add("ranged");
+					if (new[] { "throwing", "small_firearm", "large_firearm", "huge_firearm" }.Contains(Path("weapon/skill").Text))
+						info.Add(i18n.GetString("sigil_ranged"));
 					else
-						info.Add("m\x88" + '\x82' + 'e');
+						info.Add(i18n.GetString("sigil_melee"));
 				}
 				if (HasToken("statbonus"))
 				{
@@ -719,10 +728,16 @@ namespace Noxico
 						if (bonus.Name == "health")
 							info.Add(bonus.Value + " HP");
 						else
-							info.Add(bonus.Value + " " + bonus.Name.Remove(3));
+							info.Add(bonus.Value + " " + bonus.Name.Remove(3).ToUpperInvariant());
 					}
 				}
 			}
+			return info;
+		}
+
+		public string ToLongString(Token token)
+		{
+			var info = GetModifiers(token);
 			if (info.Count == 0)
 				return ToString(token);
 			return ToString(token) + " (" + string.Join(", ", info) + ")";

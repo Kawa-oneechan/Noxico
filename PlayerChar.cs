@@ -237,7 +237,12 @@ namespace Noxico
 			else if (ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_droppeditem");
 			else if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition) != null)
-				NoxicoGame.ContextMessage = i18n.GetString("context_container");
+			{
+				if (ParentBoard.Entities.OfType<Container>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition).Token.HasToken("corpse"))
+					NoxicoGame.ContextMessage = i18n.GetString("context_corpse");
+				else
+					NoxicoGame.ContextMessage = i18n.GetString("context_container");
+			}
 			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == '\x147') != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_bed");
 			if (NoxicoGame.ContextMessage != null)

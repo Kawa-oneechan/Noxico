@@ -18,7 +18,9 @@ namespace Noxico
 		{
 			//Switch to Invariant so we get "¤1,000.50" instead of "€ 1.000,50" or "$1,000.50" by default.
 			//Can't do this in certain cases, which should be inapplicable to this program.
-			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+			var customCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+			customCulture.NumberFormat.CurrencySymbol = "\x13B";
+			System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
 			if (args.Contains("-spreadem"))
 			{
