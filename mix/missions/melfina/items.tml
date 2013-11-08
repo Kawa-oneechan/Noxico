@@ -9,7 +9,7 @@ item: melfina_leotard
 		light
 	price: 100
 	ascii
-		char: U+03C0
+		char: 0x19C
 	clothing
 	bodysuit
 	colored
@@ -17,7 +17,8 @@ item: melfina_leotard
 	kinky
 
 item: melfina_kneesocks
-	_n: paneled [color ]kneesocks
+	_n: paneled [color ]knee socks
+	_ia: a pair of
 	unique
 	plural
 	equipable
@@ -27,7 +28,7 @@ item: melfina_kneesocks
 		light
 	price: 100
 	ascii
-		char: U+220F
+		char: 0x1A9
 	clothing
 	legwear
 	colored
@@ -43,7 +44,7 @@ item: melfina_jacket
 		light
 	price: 100
 	ascii
-		char: U+041F
+		char: 0x198
 	clothing
 	jacket
 	colored
@@ -62,7 +63,7 @@ item: melfina_belt
 		light
 	price: 60
 	ascii
-		char: U+002D
+		char: 0x181
 	clothing
 	colored
 	for_women
@@ -70,6 +71,7 @@ item: melfina_belt
 
 item: melfina_boots
 	_n: armored[, color] boots
+	_ia: a pair of
 	unique
 	plural
 	equipable
@@ -78,7 +80,7 @@ item: melfina_boots
 		heavy
 	price: 300
 	ascii
-		char: U+221A
+		char: 0x19F
 	clothing
 	colored
 	shoes
