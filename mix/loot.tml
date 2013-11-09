@@ -139,55 +139,56 @@ lootset
 	type: clothing
 	filter
 		gender: female
-		oneof
-			$color: 1
-			shirt
-			blouse
-		oneof
-			$color: 2
-			pants
-			skirt
+	oneof
+		$color: 1
+		shirt
+		blouse
+	oneof
+		$color: 2
+		pants
+		skirt
 
 lootset
 	target: npc
 	type: clothing
 	filter
 		gender: female
-		oneof
-			elegant_dress
-			sundress
+	oneof
+		elegant_dress
+		sundress
 
 lootset
 	target: npc
 	type: clothing
 	filter
 		gender: female
-		oneof
-			girls_uniform_top
-		oneof
-			pleated_skirt
+	oneof
+		girls_uniform_top
+	oneof
+		pleated_skirt
 
 lootset
 	target: npc
 	type: clothing
 	filter
 		gender: !female
-		oneof
-			$color: 1
-			shirt
-			blouse
-		oneof
-			$color: 2
-			pants
+	oneof
+		$color: 1
+		shirt
+		blouse
+	oneof
+		$color: 2
+		pants
 
 lootset
 	target: npc
 	type: clothing
 	filter
 		gender: !female
-		oneof
-			boys_uniform_top
-			pants
+	oneof
+		boys_uniform_top
+	oneof
+		pants
 -- #endregion
 
 -- #region Underwear

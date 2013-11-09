@@ -361,6 +361,7 @@ item: lacy_panties
 	clothing
 	underwear
 	for_women
+	lacy
 
 item: plain_bra
 	_n: bra
@@ -375,6 +376,7 @@ item: plain_bra
 		char: 0x19B
 	clothing
 	underwear
+	bra
 	for_women
 
 item: lacy_bra
@@ -390,6 +392,8 @@ item: lacy_bra
 	clothing
 	underwear
 	for_women
+	bra
+	lacy
 
 item: sheer_top
 	description: "A compromise between modesty and nudity."
@@ -1462,9 +1466,8 @@ item: skirt
 	ascii
 		char: U+004D
 	clothing
-	legwear
+	skirt
 	colored
-	nolegs
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
@@ -1480,11 +1483,10 @@ item: pleated_skirt
 	ascii
 		char: U+004D
 	clothing
-	legwear
+	skirt
 	colored
 	for_women
 	cute
-	nolegs
 
 item: shorts
 	_n: [color ]shorts
@@ -1541,10 +1543,10 @@ item: short_skirt
 	ascii
 		char: U+006E
 	clothing
+	skirt
 	colored
 	for_women
 	sexy
-	nolegs
 
 item: sundress
 	_n: [color ]sundress
@@ -1568,7 +1570,6 @@ item: sundress
 	colored
 	for_women
 	cute
-	nolegs
 
 item: skimpy_dress
 	_n: skimpy [color ]dress
@@ -1593,7 +1594,6 @@ item: skimpy_dress
 	colored
 	for_women
 	sexy
-	nolegs
 
 item: elegant_dress
 	_n: elegant [color ]dress
@@ -1614,7 +1614,6 @@ item: elegant_dress
 	dress
 	colored
 	for_women
-	nolegs
 
 item: latex_suit
 	_n: [color ]latex suit
