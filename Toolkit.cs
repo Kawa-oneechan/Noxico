@@ -1180,7 +1180,7 @@ namespace Noxico
 					var penises = plan.Tokens.FindAll(x => x.Name == "penis");
 					foreach (var p in penises)
 					{
-						foreach (var t in new[] { "thickness", "length" /* , "canfuck", "cumsource" */ })
+						foreach (var t in new[] { "thickness", "length" })
 							if (!p.HasToken(t))
 								missing.Add("penis/" + t);
 					}

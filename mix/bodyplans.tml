@@ -39,7 +39,6 @@ bodyplan: human
 		size: roll 1d5+1
 		nipples: 1
 			size: 0.5
-		milksource
 	vagina
 		virgin
 		looseness: 0
@@ -49,8 +48,6 @@ bodyplan: human
 	penis: human
 		thickness: 2.5
 		length: roll 1d5+13
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: 0.6
@@ -91,8 +88,6 @@ bodyplan: imp
 	penis: human
 		thickness: 2.5
 		length: roll 1d2+17
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: 1
@@ -244,8 +239,6 @@ bodyplan: naga
 	penis: lizard
 		thickness: roll 1d2+1
 		length: roll 1d6+20
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: 0.7
@@ -303,8 +296,6 @@ bodyplan: foocubus
 	penis: studded
 		thickness: roll 1d3+1
 		length: roll 1d6+17
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: roll 1d2+1
@@ -354,7 +345,6 @@ bodyplan: felinoid
 		size: roll 1d4+1
 		nipples: 1
 			size: roll 1d2+1
-		milksource
 	vagina
 		virgin
 		looseness: 0
@@ -364,8 +354,6 @@ bodyplan: felinoid
 	penis: cat
 		thickness: 3
 		length: roll 1d6+12
-		cumsource
-		canfuck
 		sheath
 	balls
 		amount: 2
@@ -412,7 +400,6 @@ bodyplan: fox
 		size: roll 1d3+3
 		nipples: 1
 			size: roll 1d2+2
-		milksource
 	vagina
 		virgin
 		wetness: 1
@@ -422,8 +409,6 @@ bodyplan: fox
 	penis: dog
 		thickness: 2
 		length: roll 1d7+14
-		cumsource
-		canfuck
 		sheath
 	balls
 		amount: 2
@@ -479,8 +464,6 @@ bodyplan: littlepony
 	penis: horse
 		thickness: 3
 		length: 16
-		cumsource
-		canfuck
 		sheath
 	balls
 		amount: 2
@@ -490,7 +473,6 @@ bodyplan: littlepony
 		size: 0
 		nipples: 1
 			size: 0.5
-		milksource
 	tattoos
 		hip: "cutie mark"
 
@@ -533,7 +515,6 @@ bodyplan: slime
 		size: roll 1d7+4
 		nipples: 1
 			size: 0.75
-		milksource
 	vagina
 		looseness: 2
 		wetness: 2
@@ -542,8 +523,6 @@ bodyplan: slime
 	penis: human
 		thickness: 2.5
 		length: roll 1d7+15
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: 1.5
@@ -593,25 +572,21 @@ bodyplan: ursidae
 		divisor: 0.85
 		nipples: 1
 			size: roll 1d4+1
-		milksource
 	breastrow
 		amount: 2
 		size: roll 1d8+2
 		nipples: 1
 			size: roll 1d4+1
-		milksource
 	breastrow
 		amount: 2
 		size: roll 1d8+2
 		nipples: 1
 			size: roll 1d4+1
-		milksource
 	breastrow
 		amount: 2
 		size: roll 1d8+2
 		nipples: 1
 			size: roll 1d4+1
-		milksource
 	vagina
 		virgin
 		looseness: 0
@@ -621,8 +596,6 @@ bodyplan: ursidae
 	penis: bear
 		thickness: 4
 		length: roll 1d10+12
-		cumsource
-		canfuck
 	balls
 		amount: 2
 		size: 0.8
@@ -667,7 +640,6 @@ bodyplan: canine
 		size: roll 1d3+3
 		nipples: 1
 			size: roll 1d2+2
-		milksource
 	vagina
 		virgin
 		looseness: 0
@@ -677,8 +649,6 @@ bodyplan: canine
 	penis: dog
 		thickness: 2
 		length: roll 1d7+14
-		cumsource
-		canfuck
 		sheath
 	balls
 		amount: 2
@@ -730,14 +700,11 @@ bodyplan: changeling
 	penis: horse
 		thickness: 3
 		length: 16
-		cumsource
-		canfuck
 	breastrow
 		amount: 2
 		size: 0
 		nipples: 1
 			size: 0.5
-		milksource
 	balls
 		amount: 2
 		size: 3

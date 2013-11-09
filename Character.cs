@@ -307,7 +307,156 @@ namespace Noxico
 			return newChar;
 		}
 
-		public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
+        public void Mutate(int number, float intensity)
+        {
+            //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
+            for (int i = 0; i < number; i++)
+            {
+                switch (Random.Next(9))
+                {
+                    // for now, just adds a copy of the character's first breastrow, vagina, or dick, or adds to the number of breasts in a random row, or adds more balls.
+                    case 0:
+                        Token newboobs = new Token("breastrow");
+                        if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
+                        {
+                            if (this.HasToken("breastrow") && this.GetToken("breastrow").GetToken("size").Value == 0)
+                            {
+                                this.RemoveToken("breastrow");
+                            }
+                           
+                            newboobs.AddToken("amount", 2);
+                            if (this.HasToken("breastrow"))
+                                newboobs.AddToken("sizefromprevious", (float)Random.NextDouble() * intensity / 10 + 0.5f);
+                            else
+                                newboobs.AddToken("size", (float)Random.NextDouble() * intensity / 2);
+                            newboobs.AddToken("nipples", Random.Next(5));
+                            newboobs.GetToken("nipples").AddToken("size", (float)Random.NextDouble() * intensity / 4);
+
+                            switch (Random.Next(3))
+                            {
+                                case 0:
+                                    newboobs.GetToken("nipples").AddToken("canfuck");
+                                    newboobs.GetToken("nipples").AddToken("length", (float)Random.NextDouble() * intensity / 2);
+                                    newboobs.GetToken("nipples").AddToken("thickness", (float)Random.NextDouble() * intensity / 4);
+                                    break;
+                                case 1:
+                                    newboobs.GetToken("nipples").AddToken("fuckable");
+                                    newboobs.GetToken("nipples").AddToken("wetness", Random.Next((int)(intensity / 2)));
+                                    newboobs.GetToken("nipples").AddToken("looseness", Random.Next((int)(intensity / 2)));
+                                    break;
+                                case 2:
+                                    break;
+                            }
+                            this.AddToken(newboobs);
+                        }
+                        break;
+                    case 1:
+                        if (this.Tokens.Count(t => t.Name == "penis") < 8)
+                        {
+                            Token newdick = new Token("penis");
+                            newdick.AddToken("length", (float)Random.NextDouble() * intensity);
+                            newdick.AddToken("thickness", (float)Random.NextDouble() * intensity / 4);
+                            newdick.AddToken("cumsource");
+                            this.AddToken(newdick);
+                        }
+                        break;
+                    case 2:
+                        if (this.Tokens.Count(t => t.Name == "vagina") < 5)
+                        {
+                            Token newpussy;
+                            if (this.HasToken("vagina"))
+                            {
+                                newpussy = this.GetToken("vagina");
+                            }
+                            else
+                            {
+                                newpussy = new Token("vagina");
+                                newpussy.AddToken("wetness", Random.Next((int)(intensity / 2)));
+                                newpussy.AddToken("looseness", Random.Next((int)(intensity / 2)));
+                            }
+                            this.AddToken(newpussy);
+                        }
+                        break;
+                    case 3:
+                        var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" }; 
+                        if (funkyLegs.All(x => !HasToken(x))) 
+                        { 
+                            var choice = Random.Next(funkyLegs.Length); 
+                            if (choice < funkyLegs.Length - 1)
+                                if (this.GetClosestBodyplanMatch() != "human" || funkyLegs[choice] != "quadruped")
+                                    this.AddToken(funkyLegs[choice]);
+                            if (choice == 2 || choice == 3)
+                                this.RemoveToken("legs");
+                        }
+                        break;
+                    case 4:
+                        this.RemoveToken("taur");
+                        this.RemoveToken("quadruped");
+                        this.RemoveToken("snaketail");
+                        this.RemoveToken("slimeblob");
+                        if (!this.HasToken("legs"))
+                            this.AddToken("legs");
+                        if (!this.HasToken("hips"))
+                            this.AddToken("hips", (float)Random.NextDouble() * intensity / 4);
+                        if (!this.HasToken("waist"))
+                            this.AddToken("waist", (float)Random.NextDouble() * intensity / 4);
+                        if (!this.HasToken("butt"))
+                            this.AddToken("butt", (float)Random.NextDouble() * intensity / 4);
+                        break;
+                    case 5:
+                        if (this.HasToken("breastrow"))
+                        {
+                            List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+                            Token boob = allTits[Random.Next(allTits.Count)];
+                            if (boob.GetToken("amount").Value < 5)
+                                boob.GetToken("amount").Value++;
+                        }
+                        break;
+                    case 6:
+                        if (this.HasToken("breastrow"))
+                        {
+                            List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+                            int rand = Random.Next(allTits.Count);
+                            Token boob = allTits[rand];
+                            if (boob.GetToken("amount").Value > 1)
+                                boob.GetToken("amount").Value--;
+                            else
+                            {
+                                if (boob.HasToken("size") && allTits.Count - 1 > rand)
+                                {
+                                    allTits[rand + 1].AddToken("size", boob.GetToken("size").Value * allTits[rand + 1].GetToken("sizefromprevious").Value);
+                                    allTits[rand + 1].RemoveToken("sizefromprevious");
+                                }
+                                this.RemoveToken(boob);
+                            }
+                            if (!this.HasToken("breastrow"))
+                            {
+                                this.AddToken("breastrow").AddToken("size", 0);
+                                this.GetToken("breastrow").AddToken("amount", 2);
+                            }
+                        }
+                        break;
+                    case 7:
+                        var balls = GetToken("balls");
+                        if (balls != null)
+                        {
+                            balls.GetToken("amount").Value++;
+                        }
+                        else
+                        {
+                            this.AddToken("balls").AddToken("amount", Random.Next((int)(intensity / 4)));
+                            this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4);
+                        }
+                        break;
+                    case 8:
+                        if (this.HasToken("balls"))
+                            this.GetToken("balls").GetToken("amount").Value--;
+                        break;
+                }
+            }
+        }
+
+        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
 			var bodyPlans = Mix.GetTokenTree("bodyplans.tml", true);
 
@@ -425,6 +574,9 @@ namespace Noxico
 					newChar.AddToken(either.Tokens[eitherChoice]);
 				newChar.RemoveToken(either);
 			}
+
+            if (!newChar.HasToken("beast"))
+                newChar.Mutate(2, 20);
 
 			//Program.WriteLine("Generated {0}.", newChar);
 			return newChar;
@@ -2735,7 +2887,7 @@ namespace Noxico
 			foreach (var hash in NoxicoGame.BodyplanHashes)
 			{
 				var distance = Toolkit.GetHammingDistance(thisHash, hash.Value);
-				if (distance <= score)
+				if (distance < score)
 				{
 					score = distance;
 					ret = hash.Key;
