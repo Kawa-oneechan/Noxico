@@ -733,7 +733,8 @@ namespace Noxico
 
 			//TODO: give the player a proper home.
 			this.CurrentBoard = townBoards[Random.Next(townBoards.Count)]; //GetBoard(KnownTargets[0]);
-			TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+            if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
+			    TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();
