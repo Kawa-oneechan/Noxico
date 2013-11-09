@@ -1,4 +1,4 @@
-This is just a collection of random ideas Xolroc had while working on the project.
+﻿This is just a collection of random ideas Xolroc had while working on the project.
 Many of them will probably be immensely difficult to implement and/or too strange to not decimate the userbase.
 Do not consider this a to do list; it's just a collection of possibilities.
 Xolroc tends to just put whatever comes to mind on here; don't take anything too seriously.
