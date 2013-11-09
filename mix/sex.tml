@@ -1,0 +1,205 @@
+choice: wait
+
+choice: walk_away
+	limitations
+		not: 0 havingsex/restrained
+	effects
+		message
+			first
+				$: You release [b:name] and get up.
+			second
+				$: [t:name] lets go of you and gets up.
+			third
+				$: [t:name] lets go of [b:name] and gets up.
+		break
+
+choice: cuddle
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top
+		take_off_bottom
+	limitations
+		consentual
+		not: 0 havingsex/restrained
+		not: 1 havingsex/restraining
+	effects
+		stat: 0 climax 1
+		stat: 1 climax 1
+		message
+			first
+				$: You cuddle up to [b:name].
+				$: You rub your body against [b:name].
+			second
+				$: [t:name] cuddles up to you.
+				$: [t:name] rubs [t:his] body against you.
+			third
+				$: [t:name] cuddles up to [b:name].
+
+choice: pin_down
+	fromhere
+		kiss
+		french_kiss
+		release
+	limitations
+		not: 0 havingsex/restrained
+		not: 0 havingsex/restraining
+		not: 1 havingsex/restrained
+		not: 1 havingsex/restraining
+	effects
+		add: 0 restraining
+		add: 1 restrained
+		message
+			first
+				$: You grab [b:name]'s arms and hold them tightly in place.
+			second
+				$: [t:name] grabs your arms and holds tight.
+			third
+				$: [t:name] grabs [b:name]'s arms and holds tight.
+
+choice: release
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		yes: 0 havingsex/restraining
+		yes: 1 havingsex/restrained
+	effects
+		remove: 0 restraining
+		remove: 1 restrained
+		message
+			first
+				$: You let go of [b:name]'s arms.
+			second
+				$: [t:name] releases [t:his] grip.
+
+choice: struggle
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		yes: 0 havingsex/restrained
+		yes: 1 havingsex/restraining
+	effects
+		roll: strength strength
+			lose
+				message
+					first
+						$: You struggle against [b:name]'s hold, but fail to get free.
+					second
+						$: [t:name] struggles against your hold, but fails to get free.
+			win
+				remove: 0 restrained
+				remove: 1 restraining
+				message
+					first
+						$: You struggle against [b:name]'s hold and manage to get free.
+					second
+						$: [t:name] manages to struggle free from your hold.
+					third
+						$: [t:name] manages to struggle free from [b:name]'s grasp.
+
+choice: kiss
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		consentual
+	effects
+		stat: 0 climax 2
+		stat: 1 climax 2
+		message
+			first
+				$: ~kissu~
+			second
+				$: ~kissu~
+
+choice: french_kiss
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		consentual
+	effects
+		stat: 0 climax 3
+		stat: 1 climax 3
+		message
+			first
+				$: ~fkissu~
+			second
+				$: ~fkissu~
+
+choice: take_off_top_own
+	_n: Take off your [1]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 0 top
+	effects
+		disrobe: 0 top
+			success
+				message
+					first
+						$: You reach for your [1] and take it off.
+					second
+						$: [t:name] reaches for [t:his] [1] and takes it off.
+			failure
+				message
+					first
+						$: You reach for your [1] but can't take it off.
+					second
+						$: [t:name] reaches for [t:his] [1] but can't take it off.
+
+choice: take_off_top_theirs
+	_n: Take off [b:his] [1]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 1 top
+	effects
+		disrobe: 1 top
+			success
+				message
+					first
+						$: You reach for [b:name]'s [1] and take it off.
+					second
+						$: [t:name] reaches for your [1] and takes it off.
+			failure
+				message
+					first
+						$: You reach for [b:name]'s [1] but can't take it off.
+					second
+						$: [t:name] reaches for your [1] but can't take it off.

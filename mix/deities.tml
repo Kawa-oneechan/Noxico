@@ -1,0 +1,24 @@
+deity: eternity
+	_n: Eternity
+	color: silver
+deity: death
+	_n: Death
+	color: black
+deity: architect
+	_n: The Architect
+	color: purple
+deity: melfina
+	_n: The Temptress
+	color: red
+deity: madman
+	_n: The Madman
+	color: navy
+	month: 6
+	day: 26
+	dialogue: MadmanSummon
+deity: shepard
+	_n: The Commander
+	color: green
+	month: 11
+	day: 7
+	dialogue: ShepSummon
