@@ -534,7 +534,7 @@ namespace Noxico
 		private const int ROOM_MAX_Y = 6;
 		private const int ROOM_MIN_Y = 3;
 
-		private const int DIM_X = 80;
+		private const int DIM_X = 79;
 		private const int DIM_Y = 49;
 		
 		private static Point Center(Room rect)
