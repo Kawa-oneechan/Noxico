@@ -220,6 +220,8 @@ namespace Noxico
 #if DEBUG
 					if (PointingAt is DroppedItem || PointingAt is BoardChar)
 						options["edit"] = "Edit tokens";
+                    if (PointingAt is BoardChar)
+                        options["mutate"] = "Random mutate";
 #endif
 
 					//MessageBox.List("This is " + description + ". What would you do?", options,
@@ -339,6 +341,10 @@ namespace Noxico
 										break;
 									tc.Tokenize(newDump);
 									break;
+                                
+                                case "mutate":
+                                    ((BoardChar)PointingAt).Character.Mutate(1, 30);
+                                    break;
 #endif
 
 								default:
