@@ -1044,17 +1044,17 @@ namespace Noxico
 
 			if (this.HasToken("slimeblob"))
 			{
-				bodyThings.Add("An amorphous blob of slime instead of legs");
-				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value - legLength) + " tall");
+				bodyThings.Add("amorphous blob");
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value - (legLength * 0.75f)) + " tall");
+			}
+			else if (this.HasToken("snaketail"))
+			{
+				bodyThings.Add("snake tail");
+				//add legLength over again to increase length; nagas are longer than most!
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + (legLength * 2)) + " long");
 			}
 			else
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
-			if (this.HasToken("snaketail"))
-			{
-				bodyThings.Add("A long snakelike tail");
-				//add legLength over again to increase length; nagas are longer than most!
-				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
-			}
 
 			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), i18n.GetString(this.Path("skin/type").Text, false)));
 			if (this.Path("skin/pattern") != null)
