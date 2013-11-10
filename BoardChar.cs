@@ -33,6 +33,9 @@ namespace Noxico
 		private Jint.JintEngine js;
 		private Scheduler scheduler;
 		public Dijkstra GuardMap { get; private set; }
+		public int Eyes { get; private set; }
+		public int SightRadius { get; private set; }
+		public char GlowGlyph { get; private set; }
 
 		public BoardChar()
 		{
@@ -93,7 +96,30 @@ namespace Noxico
 
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
 			{
-				AsciiChar = '@';
+				AsciiChar = '@'; //not sure about this one, what if they copy someone who's not the player?
+			}
+
+			Eyes = 0;
+			SightRadius = 1;
+			GlowGlyph = ' ';
+			if (Character.HasToken("eyes"))
+			{
+				Eyes = 2;
+				SightRadius = 10;
+				GlowGlyph = '\"';
+				var eyeToken = Character.GetToken("eyes").GetToken("count");
+				if (eyeToken != null)
+					Eyes = (int)eyeToken.Value;
+				if (Eyes == 1)
+				{
+					SightRadius = 4;
+					GlowGlyph = '\'';
+				}
+				else if (Eyes > 2)
+				{
+					SightRadius = 4 + ((Eyes - 2) * 4);
+					GlowGlyph = '\xF8';
+				}
 			}
 		}
 
@@ -173,8 +199,8 @@ namespace Noxico
 						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '$', this.ForegroundColor, this.BackgroundColor);
 				}
 			}
-			else if (Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '\"', Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Night());
+			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Night());
 		}
 
 		public override bool CanSee(Entity other)
@@ -469,7 +495,7 @@ namespace Noxico
 
 				if (hostile.Value == 0) //Not actively hunting, but on the lookout.
 				{
-					if (target != null && DistanceFrom(target) < 10 && CanSee(target))
+					if (target != null && DistanceFrom(target) <= SightRadius && CanSee(target))
 					{
 						hostile.Value = 1; //Switch to active hunting.
 						Energy -= 500;
