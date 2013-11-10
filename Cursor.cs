@@ -340,6 +340,7 @@ namespace Noxico
 									if (newDump == dump)
 										break;
 									tc.Tokenize(newDump);
+									((BoardChar)PointingAt).AdjustView();
 									break;
                                 
                                 case "mutate":

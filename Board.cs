@@ -752,6 +752,8 @@ namespace Noxico
 				}
 			}
 
+			var radius = source != null ? ((BoardChar)source).SightRadius : 10;
+
 			Func<int, int, bool> f = (x1, y1) =>
 			{
 				if (y1 < 0 || y1 >= 50 | x1 < 0 || x1 >= 80)
@@ -767,7 +769,7 @@ namespace Noxico
 			};
 
 			if (source != null)
-				SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(source.XPosition, source.YPosition, 10, f, a);
+				SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(source.XPosition, source.YPosition, radius, f, a);
 
 			if (torches)
 			{
