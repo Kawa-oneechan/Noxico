@@ -309,6 +309,7 @@ Would you like an infodump on the way out?]]>
 		<word id="himherhirit">???, Him, Her, Hir, It</word>
 		<word id="counts">zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve</word>
 		<word id="countsordinal">zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth</word>
+    <word id="setbymeasure">no, a single, a pair of, a trio of, a quartet of, a quintet of, a sextet of, a septet of, an octet of, a nonet of, ten, eleven, a dozen</word>
 	</category>
 	<category name="Inventory">
 		<word id="inventory_yours">Your inventory</word>
@@ -364,8 +365,8 @@ Would you like an infodump on the way out?]]>
 		</category>
 	</category>
 	<category name="Look At...">
-		<word id="color_eyes">{0} eyes</word>
-		<word id="glowing_eyes">glowing {0}</word>
+		<word id="color_eyes">{0} {1}</word>
+		<word id="glowing_x">glowing {0}</word>
 		<word id="x_ears">{0} ears</word>
 		<word id="x_skin">{0} {1}</word>
 		<word id="x_pattern">{0} {1}</word>
@@ -381,9 +382,13 @@ Would you like an infodump on the way out?]]>
 			<word id="legtype_stiletto">stilleto-heeled</word>
 			<word id="legtype_claws">clawed</word>
 			<word id="legtype_insect">downy insectoid</word>
+      <word id="legtype_dog">digitigrade</word>
+      <word id="legtype_cat">agile feline</word>
 		</category>
 		<category name="Wing types">
-			<word id="wingtype_"></word>
+			<word id="wingtype_feather">feather-covered</word>
+      <word id="wingtype_bat">leathery</word>
+      <word id="wingtype_insect">thin, translucent</word>
 		</category>
 		<category name="Tail types">
 			<word id="tailtype_genbeast">beastly</word>
@@ -392,12 +397,16 @@ Would you like an infodump on the way out?]]>
 			<word id="tailtype_tapered_tentacle">tapered tail tentacle</word>
 			<word id="tailtype_cocktacle">cock-headed tail tentacle</word>
 			<word id="tailtype_tentacle">tail tentacle</word>
+      <word id="tailtype_fox">fluffy vulpine</word>
+      <word id="tailtype_dog">wagging canine</word>
+      <word id="tailtype_cat">feline</word>
 		</category>
 		<category name="Face types">
 			<word id="facetype_normal">human</word>
 			<word id="facetype_genbeast">beastly</word>
 			<word id="facetype_cow">bovine</word>
 			<word id="facetype_reptile">reptilian</word>
+      <word id="facetype_fox">vulpine</word>
 		</category>
 		<category name="Teeth types">
 			<word id="teethtype_fangs">fangs</word>
