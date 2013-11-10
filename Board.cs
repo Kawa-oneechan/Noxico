@@ -90,7 +90,7 @@ namespace Noxico
 	/// </summary>
 	public partial class Tile
 	{
-		public char Character { get; set; }
+		public int Character { get; set; }
 		public Color Foreground { get; set; }
 		public Color Background { get; set; }
 		public bool Wall { get; set; }
@@ -126,7 +126,7 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			stream.Write(Character);
+			stream.Write((char)Character);
 			Foreground.SaveToFile(stream);
 			Background.SaveToFile(stream);
 
@@ -181,6 +181,25 @@ namespace Noxico
 				BurnTimer = stream.ReadByte();
 			if (HasSpecialDescription)
 				SpecialDescription = stream.ReadInt16();
+		}
+
+		public Tile Clone()
+		{
+			return new Tile()
+			{
+				Character = this.Character,
+				Foreground = Color.FromArgb(this.Foreground.ArgbValue),
+				Background = Color.FromArgb(this.Background.ArgbValue),
+				Wall = this.Wall,
+				Water = this.Water,
+				Ceiling = this.Ceiling,
+				Cliff = this.Cliff,
+				Fence = this.Fence,
+				Grate = this.Grate,
+				CanBurn = this.CanBurn,
+				BurnTimer = this.BurnTimer,
+				SpecialDescription = this.SpecialDescription,
+			};
 		}
 	}
 

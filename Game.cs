@@ -732,9 +732,18 @@ namespace Noxico
 			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
 			//TODO: give the player a proper home.
-			this.CurrentBoard = townBoards[Random.Next(townBoards.Count)]; //GetBoard(KnownTargets[0]);
-            if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
-			    TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+			var homeBase = Boards.FirstOrDefault(b => b.ID == "home");
+			if (homeBase == null)
+			{
+				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
+				if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
+					TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+			}
+			else
+			{
+				this.CurrentBoard = homeBase;
+				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
+			}
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();

@@ -112,7 +112,7 @@ namespace Noxico
 			return Color.FromArgb(r, g, b);
 		}
 
-		public static Color FromArgb(int argb)
+		public static Color FromArgb(long argb)
 		{
 			return new Color(argb, null);
 		}

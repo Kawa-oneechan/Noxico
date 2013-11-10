@@ -90,6 +90,13 @@ namespace Noxico
 			}
 		}
 
+		public void SetTile(int x, int y, Tile tile)
+		{
+			if (x >= 80 || y >= 50 || x < 0 || y < 0)
+				return;
+			Tilemap[x, y] = tile.Clone();
+		}
+
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{
 			if (DrawJS == null)
@@ -103,16 +110,14 @@ namespace Noxico
 		}
 		public void Line(int x1, int y1, int x2, int y2, Tile brush, bool noise)
 		{
-			if (DrawJS == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
 			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
 			{
-				this.Tilemap[point.Y, point.X] = noise ? brush.Noise() : brush;
+				this.Tilemap[point.X, point.Y] = noise ? brush.Noise() : brush.Clone();
 			}
 		}
 		public void Line(int x1, int y1, int x2, int y2, Tile brush)
 		{
-			Line(x1, y1, x2, y2, brush, true);
+			Line(x1, y1, x2, y2, brush, false);
 		}
 
 		public void Replace(string checker, string replacer)

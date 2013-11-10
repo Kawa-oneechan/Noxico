@@ -208,6 +208,14 @@
     <Content Include="mix\missions\pettancow\mission.js" />
     <Content Include="mix\missions\pettancow\scenesDlg.xml" />
     <Content Include="mix\missions\pettancow\uniques.tml" />
+    <Content Include="mix\missions\playerbase\lv0.png" />
+    <Content Include="mix\missions\playerbase\lv1.png" />
+    <Content Include="mix\missions\playerbase\lv2.png" />
+    <Content Include="mix\missions\playerbase\lv3.png" />
+    <Content Include="mix\missions\playerbase\lv4.png" />
+    <Content Include="mix\missions\playerbase\manifest.txt" />
+    <Content Include="mix\missions\playerbase\mission.js" />
+    <Content Include="mix\missions\playerbase\toolshed.png" />
     <Content Include="mix\missions\portal\manifest.txt" />
     <Content Include="mix\missions\portal\mission.js" />
     <Content Include="mix\missions\portal\platform1.png" />
@@ -247,6 +255,7 @@
     <Content Include="Xolroc%27s random ideas.txt" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
+    <None Include="mix\missions\playerbase\floorplan.pspimage" />
     <None Include="Resources\Noxico.ico" />
   </ItemGroup>
   <ItemGroup />
