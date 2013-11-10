@@ -23,7 +23,7 @@ namespace Noxico
 					var m = Math.Floor(cm / 100);
 					cm %= 100;
 					if (cm > 0)
-						return m + "." + cm + "m";
+						return m + "." + Math.Floor(cm) + "m";
 					else
 						return m + "m";
 				}
