@@ -548,7 +548,7 @@ namespace Noxico
 			});
 
 			var colors = getPal("black,gray,white,red,blue,green,navy,maroon,pink,yellow");
-			var color = 0;
+			var color = -1;
 
 			Func<string, Token> parseOption = new Func<string, Token>(option =>
 			{
@@ -585,7 +585,7 @@ namespace Noxico
 							{
 								var newPoss = new Token(knownItem.ID);
 								if (knownItem.HasToken("colored"))
-									newPoss.AddToken("color", 0, colors[color]);
+									newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
 								ApplyBonusMaybe(newPoss, knownItem);
 								possibilities.Add(newPoss);
 							}
@@ -596,7 +596,13 @@ namespace Noxico
 						//simple token check
 						var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
 						if (items.Count > 0)
-							possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
+						{
+							var knownItem = items[Random.Next(items.Count)];
+							var newPoss = new Token(knownItem.ID);
+							if (knownItem.HasToken("colored"))
+								newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
+							possibilities.Add(newPoss);
+						}
 					}
 					if (possibilities.Count > 0)
 						return possibilities[Random.Next(possibilities.Count)];
@@ -610,7 +616,7 @@ namespace Noxico
 					{
 						var newPoss = new Token(option);
 						if (item.HasToken("colored"))
-							newPoss.AddToken("color", 0, colors[color]);
+							newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
 						return newPoss;
 					}
 				}
@@ -629,7 +635,7 @@ namespace Noxico
 				var options = new List<string>();
 				var min = 1;
 				var max = 1;
-				color = 0;
+				color = -1;
 				if (of.Name == "colors")
 				{
 					colors = getPal(string.Join(",", of.Tokens.Select(x => x.Name).ToList()));
@@ -638,11 +644,12 @@ namespace Noxico
 				else if (of.Name == "oneof")
 				{
 					options = of.Tokens.Select(x => x.Name).Where(x => x[0] != '$').ToList();
-					color = of.HasToken("$color") ? (int)of.GetToken("$color").Value - 1 : 0;
+					color = of.HasToken("$color") ? (int)of.GetToken("$color").Value - 1 : -1;
 				}
 				else if (of.Name == "someof")
 				{
 					options = of.Tokens.Select(x => x.Name).Where(x => x[0] != '$').ToList();
+					color = of.HasToken("$color") ? (int)of.GetToken("$color").Value - 1 : -1;
 					if (of.Text != null && of.Text.Contains('-'))
 					{
 						var minmax = of.Text.Split('-');

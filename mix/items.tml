@@ -2102,3 +2102,13 @@ item: eternitybrooch
 		color: white
 	description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
 -- #endregion
+
+-- #region Crafting ingredients that are otherwise useless
+item: dye
+	description: "A small vial of [color ]dye. You can use it to color your clothing."
+	charge
+	ascii
+		char: 0xE8
+	dye
+	colored
+-- #endregion
