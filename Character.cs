@@ -21,6 +21,11 @@ namespace Noxico
 		Health, Charisma, Climax, Cunning, Carnality, Stimulation, Sensitivity, Speed, Strength
 	}
 
+	public enum Mutations
+	{
+		Random = -1, addBreastRow, addPenis, addVagina, addOddLegs, removeOddLegs, addBreast, removeBreast, addTesticle, removeTesticle
+	}
+
 	public class Character : TokenCarrier
 	{
 		public static StringBuilder MorphBuffer = new StringBuilder();
@@ -307,15 +312,20 @@ namespace Noxico
 			return newChar;
 		}
 
-        public void Mutate(int number, float intensity)
+        public void Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
+			//TODO: return a summary of what was done, coded for i18n
+
             //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
+			if (mutation == Mutations.Random)
+				mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for randomize = -1
             for (int i = 0; i < number; i++)
             {
-                switch (Random.Next(9))
+                switch (mutation)
                 {
-                    // for now, just adds a copy of the character's first breastrow, vagina, or dick, or adds to the number of breasts in a random row, or adds more balls.
-                    case 0:
+					case Mutations.Random:
+						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Xolroc to fix it.");
+                    case Mutations.addBreastRow:
                         Token newboobs = new Token("breastrow");
                         if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
                         {
@@ -350,7 +360,7 @@ namespace Noxico
                             this.AddToken(newboobs);
                         }
                         break;
-                    case 1:
+                    case Mutations.addPenis:
                         if (this.Tokens.Count(t => t.Name == "penis") < 8)
                         {
                             Token newdick = new Token("penis");
@@ -360,7 +370,7 @@ namespace Noxico
                             this.AddToken(newdick);
                         }
                         break;
-                    case 2:
+                    case Mutations.addVagina:
                         if (this.Tokens.Count(t => t.Name == "vagina") < 5)
                         {
                             Token newpussy;
@@ -377,7 +387,7 @@ namespace Noxico
                             this.AddToken(newpussy);
                         }
                         break;
-                    case 3:
+                    case Mutations.addOddLegs:
                         var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" }; 
                         if (funkyLegs.All(x => !HasToken(x))) 
                         { 
@@ -385,11 +395,14 @@ namespace Noxico
                             if (choice < funkyLegs.Length - 1)
                                 if (this.GetClosestBodyplanMatch() != "human" || funkyLegs[choice] != "quadruped")
                                     this.AddToken(funkyLegs[choice]);
-                            if (choice == 2 || choice == 3)
-                                this.RemoveToken("legs");
-                        }
+							if (choice == 2 || choice == 3)
+							{
+								this.RemoveToken("legs");
+								this.RemoveToken("tail");
+							}
+						}
                         break;
-                    case 4:
+                    case Mutations.removeOddLegs:
                         this.RemoveToken("taur");
                         this.RemoveToken("quadruped");
                         this.RemoveToken("snaketail");
@@ -403,7 +416,7 @@ namespace Noxico
                         if (!this.HasToken("ass"))
                             this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
                         break;
-                    case 5:
+                    case Mutations.addBreast:
                         if (this.HasToken("breastrow"))
                         {
                             List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
@@ -412,7 +425,7 @@ namespace Noxico
                                 boob.GetToken("amount").Value++;
                         }
                         break;
-                    case 6:
+                    case Mutations.removeBreast:
                         if (this.HasToken("breastrow"))
                         {
                             List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
@@ -436,7 +449,7 @@ namespace Noxico
                             }
                         }
                         break;
-                    case 7:
+                    case Mutations.addTesticle:
                         var balls = GetToken("balls");
                         if (balls != null)
                         {
@@ -448,10 +461,14 @@ namespace Noxico
                             this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 3f);
                         }
                         break;
-                    case 8:
-                        if (this.HasToken("balls"))
-                            this.GetToken("balls").GetToken("amount").Value--;
-                        break;
+                    case Mutations.removeTesticle:
+						if (this.HasToken("balls"))
+						{
+							this.GetToken("balls").GetToken("amount").Value--;
+							if (this.GetToken("balls").GetToken("amount").Value == 0)
+								this.RemoveToken("balls");
+						}
+						break;
                 }
             }
         }
@@ -1049,6 +1066,7 @@ namespace Noxico
 			}
 			else if (this.HasToken("snaketail"))
 			{
+				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
 				bodyThings.Add("snake tail");
 				//add legLength over again to increase length; nagas are longer than most!
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + (legLength * 2)) + " long");
