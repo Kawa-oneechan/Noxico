@@ -328,16 +328,16 @@ namespace Noxico
                             if (this.HasToken("breastrow"))
                                 newboobs.AddToken("sizefromprevious", (float)Random.NextDouble() * intensity / 10 + 0.5f);
                             else
-                                newboobs.AddToken("size", (float)Random.NextDouble() * intensity / 2);
+                                newboobs.AddToken("size", (float)Random.NextDouble() * intensity / 2 + 4f);
                             newboobs.AddToken("nipples", Random.Next(5));
-                            newboobs.GetToken("nipples").AddToken("size", (float)Random.NextDouble() * intensity / 4);
+                            newboobs.GetToken("nipples").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 0.7f);
 
                             switch (Random.Next(3))
                             {
                                 case 0:
                                     newboobs.GetToken("nipples").AddToken("canfuck");
-                                    newboobs.GetToken("nipples").AddToken("length", (float)Random.NextDouble() * intensity / 2);
-                                    newboobs.GetToken("nipples").AddToken("thickness", (float)Random.NextDouble() * intensity / 4);
+                                    newboobs.GetToken("nipples").AddToken("length", (float)Random.NextDouble() * intensity / 2 + 5f);
+                                    newboobs.GetToken("nipples").AddToken("thickness", (float)Random.NextDouble() * intensity / 4 + 2f);
                                     break;
                                 case 1:
                                     newboobs.GetToken("nipples").AddToken("fuckable");
@@ -354,8 +354,8 @@ namespace Noxico
                         if (this.Tokens.Count(t => t.Name == "penis") < 8)
                         {
                             Token newdick = new Token("penis");
-                            newdick.AddToken("length", (float)Random.NextDouble() * intensity);
-                            newdick.AddToken("thickness", (float)Random.NextDouble() * intensity / 4);
+                            newdick.AddToken("length", (float)Random.NextDouble() * intensity + 12f);
+                            newdick.AddToken("thickness", (float)Random.NextDouble() * intensity / 4 + 4f);
                             newdick.AddToken("cumsource");
                             this.AddToken(newdick);
                         }
@@ -397,11 +397,11 @@ namespace Noxico
                         if (!this.HasToken("legs"))
                             this.AddToken("legs");
                         if (!this.HasToken("hips"))
-                            this.AddToken("hips", (float)Random.NextDouble() * intensity / 4);
+                            this.AddToken("hips", (float)Random.NextDouble() * intensity / 4 + 2f);
                         if (!this.HasToken("waist"))
-                            this.AddToken("waist", (float)Random.NextDouble() * intensity / 4);
-                        if (!this.HasToken("butt"))
-                            this.AddToken("butt", (float)Random.NextDouble() * intensity / 4);
+                            this.AddToken("waist", (float)Random.NextDouble() * intensity / 4 + 2f);
+                        if (!this.HasToken("ass"))
+                            this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
                         break;
                     case 5:
                         if (this.HasToken("breastrow"))
@@ -444,8 +444,8 @@ namespace Noxico
                         }
                         else
                         {
-                            this.AddToken("balls").AddToken("amount", Random.Next((int)(intensity / 4)));
-                            this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4);
+                            this.AddToken("balls").AddToken("amount", Random.Next((int)(intensity / 4) + 1));
+                            this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 3f);
                         }
                         break;
                     case 8:
@@ -533,12 +533,10 @@ namespace Noxico
 				newChar.IsProperNamed = true;
 			}
 
-			newChar.AddToken("preferredgender", 0, idGender.ToString());
-
-			newChar.EnsureDefaultTokens();
-			newChar.UpdateTitle();
-			newChar.StripInvalidItems();
-			newChar.ApplyCostume();
+            newChar.AddToken("preferredgender", 0, idGender.ToString());
+            newChar.EnsureDefaultTokens();
+            newChar.UpdateTitle();
+            newChar.ApplyCostume();
 
 			newChar.Culture = Culture.DefaultCulture;
 			if (newChar.HasToken("culture"))
@@ -573,7 +571,9 @@ namespace Noxico
 				if (eitherChoice > -1)
 					newChar.AddToken(either.Tokens[eitherChoice]);
 				newChar.RemoveToken(either);
-			}
+            }
+
+            newChar.StripInvalidItems();
 
             if (!newChar.HasToken("beast"))
                 newChar.Mutate(2, 20);
@@ -1043,11 +1043,18 @@ namespace Noxico
 			var mask = this.GetEquippedItemBySlot("mask");
 
 			if (this.HasToken("slimeblob"))
+			{
+				bodyThings.Add("An amorphous blob of slime instead of legs");
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value - legLength) + " tall");
+			}
 			else
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
 			if (this.HasToken("snaketail"))
+			{
+				bodyThings.Add("A long snakelike tail");
+				//add legLength over again to increase length; nagas are longer than most!
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value + legLength) + " long");
+			}
 
 			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), i18n.GetString(this.Path("skin/type").Text, false)));
 			if (this.Path("skin/pattern") != null)
@@ -2231,8 +2238,8 @@ namespace Noxico
 				var sizes = GetBreastSizes();
 				if (sizes.Length == 0)
 					return -1;
-				var smallest = 99999f;
-				var ret = -1;
+				var smallest = sizes[0];
+				var ret = 0;
 				for (var i = 0; i < sizes.Length; i++)
 				{
 					if (sizes[i] < smallest)
@@ -2303,8 +2310,8 @@ namespace Noxico
 			var sizes = GetPenisSizes(withThickness);
 			if (sizes.Length == 0)
 				return -1;
-			var smallest = 99999f;
-			var ret = -1;
+			var smallest = sizes[0];
+			var ret = 0;
 			for (var i = 0; i < sizes.Length; i++)
 			{
 				if (sizes[i] < smallest)
@@ -2416,8 +2423,8 @@ namespace Noxico
 				var caps = GetVaginaCapacities();
 				if (caps.Length == 0)
 					return -1;
-				var smallest = 99999f;
-				var ret = -1;
+				var smallest = caps[0];
+				var ret = 0;
 				for (var i = 0; i < caps.Length; i++)
 				{
 					if (caps[i] < smallest)

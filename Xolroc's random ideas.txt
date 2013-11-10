@@ -1,6 +1,6 @@
 ﻿This is just a collection of random ideas Xolroc had while working on the project.
 Many of them will probably be immensely difficult to implement and/or too strange to not decimate the userbase.
-Do not consider this a to do list; it's just a collection of possibilities.
+Do not consider this a to do list, or even a suggestion list; it's just a collection of possibilities.
 Xolroc tends to just put whatever comes to mind on here; don't take anything too seriously.
 THIS IS YOUR ONLY WARNING: there may be strange and disturbing things in this file.  I am not to be held accountable for any insanity that may result from overexposure.
 If there is any confusion over what some of these mean, ask me!
