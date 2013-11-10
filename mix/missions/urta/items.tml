@@ -1,0 +1,20 @@
+-- #region Urta
+item: fishnets
+	_n: silk [color ]fishnet stockings
+	_ia: a pair of
+	plural
+	equipable
+		socks
+		reach
+		translucent
+	weight
+		feather
+	price: 100
+	ascii
+		char: U+220F
+	clothing
+	legwear
+	colored
+	sexy
+	kinky
+-- #endregion

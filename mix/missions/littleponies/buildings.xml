@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE templates [
+	<!ELEMENT templates (set+)>
+	<!ELEMENT set (template+)>
+	<!ELEMENT template (map,markings?)>
+	<!ELEMENT map (#PCDATA)>
+	<!ELEMENT markings (marking+)>
+	<!ELEMENT marking EMPTY>
+	<!ATTLIST set id ID #REQUIRED>
+	<!ATTLIST template
+		name CDATA #REQUIRED
+		inhabitants CDATA #IMPLIED
+	>
+	<!ATTLIST marking
+		char CDATA #REQUIRED
+		type CDATA #REQUIRED
+		owner CDATA #IMPLIED
+		name CDATA #IMPLIED
+	>
+]>
+<templates>
+	<set id="ponyville">
+		<template name="loldummy">
+			<map>
+			</map>
+		</template>
+	</set>
+</templates>
