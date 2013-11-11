@@ -181,7 +181,7 @@ namespace Noxico
 						if (canSee && distance <= 2 && !boardChar.Character.HasToken("beast") && !boardChar.Character.HasToken("sleeping"))
 						{
 							options["talk"] = i18n.Format("action_talktohim", boardChar.Character.HimHerIt(true));
-							if (boardChar.Character.Path("role/vendor") != null)
+							if (boardChar.Character.Path("role/vendor") != null && boardChar.Character.Path("role/vendor/class").Text != "carpenter")
 								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt(true));
 						}
 
