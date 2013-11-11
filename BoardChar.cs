@@ -1272,7 +1272,7 @@ namespace Noxico
 		public void RestockVendor()
 		{
 			var vendor = Character.Path("role/vendor");
-			if (vendor == null)
+			if (vendor == null || vendor.Text == "carpenter")
 				return;
 			if (!vendor.HasToken("lastrestockday"))
 				vendor.AddToken("lastrestockday", NoxicoGame.InGameTime.DayOfYear - 1);
