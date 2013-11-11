@@ -1379,20 +1379,19 @@ namespace Noxico
 					var row = breastRows[i];
 					//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
 					//	continue;
-					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes") + " breast");
+					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes"));
+					if (breastsVisible && (row.Path("nipples") == null || row.Path("nipples").Value == 0))
+						print(" nippleless");
+					print(" breast");
 					if (row.GetToken("amount").Value > 1)
 						print("s");
-					if (!breastsVisible)
+					if (!breastsVisible || (row.Path("nipples") == null || row.Path("nipples").Value == 0))
 					{
 						print("\n");
 						continue;
 					}
 
-					if (row.Path("nipples") == null || row.Path("nipples").Value == 0)
-					{
-						print(", no nipples\n");
-					}
-					else
+					if (!(row.Path("nipples") == null) && !(row.Path("nipples").Value == 0))
 					{
 						var nipSize = 0.5f;
 						if (row.Path("nipples/size") != null)

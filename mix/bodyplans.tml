@@ -709,6 +709,61 @@ bodyplan: changeling
 		amount: 2
 		size: 3
 
+bodyplan: dragon
+	playable
+	culture: human
+	namegen: germanic
+	invisiblegender
+	neverneuter
+	terms
+		generic: "dragon"
+		male: "dragon"
+		female: "dragoness"
+		herm: "dragon"
+	bestiary: ""
+	char: 0x166
+	tallness: roll 1d30+200
+	skin
+		type: scales
+		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold, lightslategray
+	hair
+		length: 0
+		style: straight
+		color: white
+	face: lizard
+	eyes: oneof yellow, crimson, aqua, springgreen
+		count: roll 1d2+2
+	ears: flat
+	wings: bat
+	legs: claws
+	tongue: forked
+	teeth: oneof sharp, fangs
+	tail: dragon
+	fertility: roll 1d10+5
+	egglayer
+	breastrow
+		amount: 2
+		size: roll 1d4+2
+		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
+	ass
+		virgin
+		size: roll 1d3+2
+		looseness: 0
+	vagina
+		virgin
+		looseness: roll 1d2+1
+		wetness: roll 1d2+1
+		clit: 1
+	hips: roll 1d3+1
+	waist: roll 1d2+1
+	womb
+	penis: oneof lizard, human
+		length: roll 1d10+15
+		thickness: roll 1d3+2
+	balls
+		amount: 2
+		size: roll 1d3+2
+
 
 -- #region Beasties
 

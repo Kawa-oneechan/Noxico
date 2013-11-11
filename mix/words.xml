@@ -400,6 +400,7 @@ Would you like an infodump on the way out?]]>
       <word id="tailtype_fox">fluffy vulpine</word>
       <word id="tailtype_dog">wagging canine</word>
       <word id="tailtype_cat">feline</word>
+      <word id="tailtype_dragon">spined reptilian</word>
 		</category>
 		<category name="Face types">
 			<word id="facetype_normal">human</word>

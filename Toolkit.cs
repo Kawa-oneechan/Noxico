@@ -1161,7 +1161,7 @@ namespace Noxico
 					var breastrows = plan.Tokens.FindAll(x => x.Name == "breastrow");
 					foreach (var b in breastrows)
 					{
-						foreach (var t in new[] { "amount", "size", "nipples" })
+						foreach (var t in new[] { "amount", "size" })
 							if (!b.HasToken(t))
 								missing.Add("breastrow/" + t);
 					}
