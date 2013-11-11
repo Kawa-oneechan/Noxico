@@ -13,12 +13,19 @@ while(1)
 		continue;
 	myBoard = b;
 	MakeBoardTarget(t);
+	town = t;
 	break;
 }
 
 myBoard.Name = "Home";
 myBoard.ID = "home";
 MakeBoardTarget(myBoard);
+
+//Set up carpenter
+var carpenter = town.PickBoardChar(Gender.Male);
+while (carpenter.Character.HasToken("role"))
+	carpenter = town.PickBoardChar(Gender.Male);
+carpenter.Character.AddToken("role").AddToken("vendor", 0, "carpenter");
 
 myBoard.MergeBitmap("missions\\playerbase\\lv0.png");
 
@@ -42,5 +49,3 @@ for (var y = 13; y < 20; y++)
 	myBoard.Line(51, y, 59, y, dirt);
 
 //Add clutter here.
-
-myBoard.DumpToHtml("home");

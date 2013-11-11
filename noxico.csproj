@@ -126,6 +126,7 @@
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="i18n.cs" />
+    <Content Include="mix\missions\playerbase\scenesDlg.xml" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="SexManager.cs" />

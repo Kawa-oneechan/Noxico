@@ -708,7 +708,7 @@ namespace Noxico
 
 #if DEBUG
 			setStatus("Drawing actual bitmap...");
-			var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 25);
+			var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
@@ -716,12 +716,12 @@ namespace Noxico
 					var thisBoard = generator.BoardMap[y, x];
 					if (thisBoard == null)
 						continue; //draw empty spot?
-					for (var ty = 0; ty < 25; ty++)
+					for (var ty = 0; ty < 50; ty++)
 					{
 						for (var tx = 0; tx < 80; tx++)
 						{
 							var tile = thisBoard.Tilemap[tx, ty];
-							png.SetPixel((x * 80) + tx, (y * 25) + ty, tile.Background);
+							png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Background);
 						}
 					}
 				}
@@ -743,6 +743,7 @@ namespace Noxico
 			{
 				this.CurrentBoard = homeBase;
 				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
+				this.Player.Character.AddToken("homeboardlevel", 0);
 			}
 			this.Player.ParentBoard = this.CurrentBoard;
 			this.CurrentBoard.Entities.Add(Player);
