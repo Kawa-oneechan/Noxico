@@ -50,15 +50,63 @@ namespace Noxico
 							if (requirement.Name.StartsWith("@"))
 							{
 								var r = requirement.Name.Substring(1);
-								var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == i2ww.Name && ki.HasToken(r)) != null && !considerations.Contains(i2ww));
-								if (firstValidItem == null)
+								if (r[0] == '-')
 								{
-									craftOkay = false;
-									break;
+									//simple negatory token check
+									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == i2ww.Name && !ki.HasToken(r)) != null && !considerations.Contains(i2ww));
+									if (firstValidItem == null)
+									{
+										craftOkay = false;
+										break;
+									}
+									requirements.Add(firstValidItem);
+									considerations.Add(firstValidItem);
+									repeat = true;
 								}
-								requirements.Add(firstValidItem);
-								considerations.Add(firstValidItem);
-								repeat = true;
+								else if (r.Contains('-') || r.Contains('+'))
+								{
+									//complicated token check
+									var fuckery = r.Replace("+", ",").Replace("-", ",-").Split(',');
+									var checkedKnowns = new List<InventoryItem>();
+									foreach (var ki in NoxicoGame.KnownItems)
+									{
+										var includeThis = false;
+										foreach (var fucking in fuckery)
+										{
+											if (fucking[0] != '-' && ki.HasToken(fucking))
+												includeThis = true;
+											else if (ki.HasToken(fucking.Substring(1)))
+											{
+												includeThis = false;
+												break;
+											}
+										}
+										if (includeThis)
+											checkedKnowns.Add(ki);
+									}
+									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => checkedKnowns.FirstOrDefault(ki => ki.ID == i2ww.Name) != null && !considerations.Contains(i2ww));
+									if (firstValidItem == null)
+									{
+										craftOkay = false;
+										break;
+									}
+									requirements.Add(firstValidItem);
+									considerations.Add(firstValidItem);
+									repeat = true;
+								}
+								else
+								{
+									//simple token check
+									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == i2ww.Name && ki.HasToken(r)) != null && !considerations.Contains(i2ww));
+									if (firstValidItem == null)
+									{
+										craftOkay = false;
+										break;
+									}
+									requirements.Add(firstValidItem);
+									considerations.Add(firstValidItem);
+									repeat = true;
+								}
 							}
 							else
 							{
@@ -94,17 +142,20 @@ namespace Noxico
 								itemMade.Tokens.AddRange(action.Tokens);
 								recipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
 								knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
-								recipe.Display = string.Format("Create {0}", knownItem.ToString(itemMade)); //TRANSLATE
+								recipe.Display = i18n.Format("craft_produce_x", knownItem.ToString(itemMade));
 							}
 							else if (action.Name == "dye")
 							{
-								var color = NoxicoGame.KnownItems.Find(ki => ki.ID == requirements[0].Name).GetToken("color").Text;
+								//var color = NoxicoGame.KnownItems.Find(ki => ki.ID == requirements[0].Name).GetToken("color").Text;
+								var color = requirements[0].GetToken("color").Text;
 								knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == requirements[1].Name);
+								recipe.Display = i18n.Format("craft_dye_x_y", knownItem.ToString(requirements[1]), color);
 								if (!requirements[1].HasToken("color"))
 									recipe.Actions.Add(new CraftAddTokenAction() { Target = requirements[1], Add = new Token("color", 0, color) });
+								else if (requirements[1].GetToken("color").Text == color)
+									recipe.Display = null;
 								else
 									recipe.Actions.Add(new CraftChangeTokenAction() { Target = requirements[1].GetToken("color"), NewText = color, NewValue = requirements[1].Value });
-								recipe.Display = string.Format("Dye {0} {1}", knownItem.ToString(requirements[1]), color); //TRANSLATE
 							}
 						}
 						if (string.IsNullOrWhiteSpace(recipe.Display))
@@ -114,6 +165,80 @@ namespace Noxico
 				}
 			}
 			return results;
+		}
+
+		private static UIWindow recipeWindow;
+		private static UIList recipeList;
+		private static List<Recipe> recipes;
+
+		public static void Handler()
+		{
+			//TODO: add more things, such as a status bar and a window with the exact results.
+			if (Subscreens.FirstDraw)
+			{
+				UIManager.Initialize();
+				Subscreens.FirstDraw = false;
+				NoxicoGame.ClearKeys();
+				Subscreens.Redraw = true;
+			}
+			if (Subscreens.Redraw)
+			{
+				Subscreens.Redraw = false;
+				recipes = GetPossibilities(Carrier);
+				var h = recipes.Count < 40 ? recipes.Count : 40;
+				recipeWindow = new UIWindow(string.Empty) { Top = 2, Left = 2, Width = 76, Height = h + 2 };
+				recipeList = new UIList(string.Empty, null, recipes.Select(r => r.Display)) { Top = 3, Left = 3, Width = 74, Height = h };
+				recipeList.Enter = (s, e) =>
+				{
+					var i = recipeList.Index;
+					recipes[recipeList.Index].Apply();
+					recipes = GetPossibilities(Carrier);
+					if (recipes.Count > 0)
+					{
+						recipeList.Items = recipes.Select(r => r.Display).ToList();
+						if (i >= recipeList.Items.Count)
+							i = recipeList.Items.Count - 1;
+						recipeList.Index = i;
+						h = recipes.Count < 40 ? recipes.Count : 40;
+					}
+					else
+					{
+						h = 1;
+						recipeList.Hidden = true;
+					}
+					recipeWindow.Height = h + 2;
+					recipeList.Height = h;
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+					UIManager.Draw();
+				};
+				UIManager.Elements.Add(recipeWindow);
+				UIManager.Elements.Add(new UILabel(i18n.GetString("craft_nothing")) { Left = 3, Top = 3 });
+				UIManager.Elements.Add(recipeList);
+				UIManager.Highlight = recipeList;
+				UIManager.Draw();
+			}
+
+			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || NoxicoGame.IsKeyDown(KeyBinding.Items) || Vista.Triggers == XInputButtons.B)
+			{
+				NoxicoGame.ClearKeys();
+				NoxicoGame.Immediate = true;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Mode = UserMode.Walkabout;
+				Subscreens.FirstDraw = true;
+			}
+			else
+				UIManager.CheckKeys();
+		}
+
+		public static void Open(Character carrier)
+		{
+			Carrier = carrier;
+			NoxicoGame.Subscreen = Handler;
+			NoxicoGame.Mode = UserMode.Subscreen;
+			Subscreens.FirstDraw = true;
+			NoxicoGame.ClearKeys();
 		}
 	}
 

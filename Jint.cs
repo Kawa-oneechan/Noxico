@@ -27,6 +27,16 @@ namespace Noxico
 			jint.SetParameter("Gender", typeof(Gender));
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
 			jint.SetParameter("Stat", typeof(Stat));
+			jint.SetParameter("Random", typeof(Random));
+			jint.SetParameter("BoardType", typeof(BoardType));
+			jint.SetParameter("Character", typeof(Character));
+			jint.SetParameter("BoardChar", typeof(BoardChar));
+			jint.SetParameter("DroppedItem", typeof(DroppedItem));
+			jint.SetParameter("Clutter", typeof(Clutter));
+			jint.SetParameter("Door", typeof(Door));
+			jint.SetParameter("InventoryItem", typeof(InventoryItem));
+			jint.SetParameter("Tile", typeof(Tile));
+			jint.SetParameter("Color", typeof(Color));
 			jint.SetFunction("titlecase", new Func<string, string>(x => x.Titlecase()));
 			jint.SetFunction("message", new Action<string>(x => NoxicoGame.AddMessage(x)));
 		}

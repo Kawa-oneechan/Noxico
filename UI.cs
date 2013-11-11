@@ -214,7 +214,7 @@ namespace Noxico
 
 	public class UIList : UIElement
 	{
-		public List<string> Items { get; private set; }
+		public List<string> Items { get; set; }
 		private int _index, scroll;
 		public int Index
 		{

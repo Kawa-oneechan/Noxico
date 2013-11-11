@@ -249,11 +249,14 @@
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
     <Content Include="mix\uniques.tml" />
-    <Content Include="mix\words.xml" />
+    <Content Include="mix\words.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Noxico.mix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Xolroc%27s random ideas.txt" />
+    <None Include="mix\crafting.tml" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
     <None Include="mix\missions\playerbase\floorplan.pspimage" />

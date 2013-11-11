@@ -33,7 +33,7 @@ namespace Noxico
     {
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
-        public char AsciiChar { get; set; }
+        public int AsciiChar { get; set; }
         public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }
@@ -129,7 +129,7 @@ namespace Noxico
 			//Program.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
 			Toolkit.SaveExpectation(stream, "ENTT");
 			stream.Write(ID ?? "<Null>");
-			stream.Write(AsciiChar);
+			stream.Write((char)AsciiChar);
 			BackgroundColor.SaveToFile(stream);
 			ForegroundColor.SaveToFile(stream);
 			stream.Write((byte)XPosition);

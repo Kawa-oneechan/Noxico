@@ -89,22 +89,22 @@ namespace Noxico
 					if (entity is BoardChar)
 					{
 						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
-						return;
+						//return;
 					}
 					else if (entity is DroppedItem)
 					{
 						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + ((DroppedItem)PointingAt).Name;
-						return;
+						//return;
 					}
 					else if (entity is Clutter || entity is Container)
 					{
 						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + (entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name);
-						return;
+						//return;
 					}
 					else if (entity is Door)
 					{
 						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointingatdoor");
-						return;
+						//return;
 					}
 				}
 			}
@@ -147,9 +147,6 @@ namespace Noxico
 				var player = NoxicoGame.HostForm.Noxico.Player;
 				if (PointingAt != null)
 				{
-					if (PointingAt is Clutter || PointingAt is Door || PointingAt is Container)
-						return;
-
 					LastTarget = PointingAt;
 					var distance = player.DistanceFrom(PointingAt);
 					var canSee = player.CanSee(PointingAt);
@@ -216,6 +213,13 @@ namespace Noxico
 						if (distance <= 1)
 							options["take"] = i18n.GetString("action_pickup");
 					}
+					else if (PointingAt is Clutter && distance <= 1)
+					{
+						var clutter = PointingAt as Clutter;
+						description = clutter.Name ?? "something";
+						if (clutter.ID == "craftstation")
+							options["craft"] = i18n.GetString("action_craft");
+					}
 
 #if DEBUG
 					if (PointingAt is DroppedItem || PointingAt is BoardChar)
@@ -249,7 +253,7 @@ namespace Noxico
 									}
 									else if (PointingAt is Clutter && !string.IsNullOrWhiteSpace(((Clutter)PointingAt).Description))
 									{
-										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true);
+										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true, ((Clutter)PointingAt).Name ?? "something");
 									}
 									else if (PointingAt is BoardChar)
 									{
@@ -315,6 +319,10 @@ namespace Noxico
 										NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
 										ParentBoard.Redraw();
 									}
+									break;
+
+								case "craft":
+									Crafting.Open(player.Character);
 									break;
 
 #if DEBUG
