@@ -220,6 +220,7 @@ Number of known items       {2}
 			<word id="vendor_clothier">Clothier</word>
 			<word id="vendor_armorer">Armorer</word>
 			<word id="vendor_greengrocer">Greengrocer</word>
+			<word id="vendor_carpenter">Carpenter</word>
 		</category>
 	</category>
 	<category name="Messages">

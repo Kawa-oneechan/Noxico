@@ -25,7 +25,7 @@ MakeBoardTarget(myBoard);
 var carpenter = town.PickBoardChar(Gender.Male);
 while (carpenter.Character.HasToken("role"))
 	carpenter = town.PickBoardChar(Gender.Male);
-carpenter.Character.AddToken("role").AddToken("vendor", 0, "carpenter");
+carpenter.Character.AddToken("role").AddToken("vendor").AddToken("class", 0, "carpenter");
 
 myBoard.MergeBitmap("missions\\playerbase\\lv0.png");
 
