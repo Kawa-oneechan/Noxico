@@ -1,0 +1,15 @@
+﻿-- #region Chelsie
+item: chelsie_poncho
+	_n: tattered poncho
+	unique
+	equipable
+		cloak
+		reach
+		translucent
+	weight: medium
+	price: 20
+	ascii
+		char: U+2202
+		fore: saddlebrown
+	clothing
+-- #endregion
