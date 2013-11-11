@@ -193,6 +193,7 @@ Number of known items       {2}
 		<word id="action_pickup">Pick it up</word>
 		<word id="action_copyhim">Change into {0}</word>
 		<word id="action_revert">Release shape</word>
+		<word id="action_craft">Craft</word>
 	</category>
 	<category name="Sidebar">
 		<category name="Stat shorthands">
@@ -427,6 +428,13 @@ Would you like an infodump on the way out?]]>
 		<word id="lookat_column_head">Head</word>
 		<word id="lookat_column_hair">Hair</word>
 		<word id="lookat_column_hips">Hips and Waist</word>
+	</category>
+	<category name="Crafting">
+		<word id="craft_results">Results</word>
+		<word id="craft_nothing">You can do nothing.</word>
+		<word id="craft_produce_x">Create {0}</word>
+		<word id="craft_consume_x">Destroy {0}</word>
+		<word id="craft_dye_x_y">Dye {0} {1}</word>
 	</category>
 
 	<hyphenation>

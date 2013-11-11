@@ -1048,13 +1048,6 @@ namespace Noxico
 
 			var js = JavaScript.Create();
 			JavaScript.Ascertain(js);
-			js.SetParameter("Random", typeof(Random));
-			js.SetParameter("BoardType", typeof(BoardType));
-			js.SetParameter("Character", typeof(Character));
-			js.SetParameter("BoardChar", typeof(BoardChar));
-			js.SetParameter("InventoryItem", typeof(InventoryItem));
-			js.SetParameter("Tile", typeof(Tile));
-			js.SetParameter("Color", typeof(Color));
 			js.SetFunction("MakeBoardTarget", makeBoardTarget);
 			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
 			js.SetFunction("PickBoard", pickBoard);
