@@ -23,7 +23,8 @@ namespace Noxico
 
 	public enum Mutations
 	{
-		Random = -1, addBreastRow, addPenis, addVagina, addOddLegs, removeOddLegs, addBreast, removeBreast, addTesticle, removeTesticle
+		Random = -1, addBreastRow, addPenis, addVagina, addOddLegs, removeOddLegs, addBreast, removeBreast, addTesticle, removeTesticle, 
+		giveDicknipples, giveNipplecunts, addNipple, removeNipple, giveRegularNipples
 	}
 
 	public class Character : TokenCarrier
@@ -312,6 +313,12 @@ namespace Noxico
 			return newChar;
 		}
 
+		private Token PickATit()
+		{
+			List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+			return allTits[Random.Next(allTits.Count)];
+		}
+
         public void Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
 			//TODO: return a summary of what was done, coded for i18n
@@ -419,8 +426,7 @@ namespace Noxico
                     case Mutations.addBreast:
                         if (this.HasToken("breastrow"))
                         {
-                            List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
-                            Token boob = allTits[Random.Next(allTits.Count)];
+							Token boob = PickATit();
                             if (boob.GetToken("amount").Value < 5)
                                 boob.GetToken("amount").Value++;
                         }
@@ -467,6 +473,115 @@ namespace Noxico
 							this.GetToken("balls").GetToken("amount").Value--;
 							if (this.GetToken("balls").GetToken("amount").Value == 0)
 								this.RemoveToken("balls");
+						}
+						break;
+					case Mutations.giveDicknipples:
+						if (this.HasToken("breastrow"))
+						{
+							bool willthiswork = false;
+							for (int index = 0; index < this.GetBreastSizes().Length; index++)
+							{
+								//if the character has any breastrow that does not have dicknipples and that does have nipples, then this can be applied.
+								if (this.GetBreastRowByNumber(index).HasToken("nipples") && !this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("canfuck"))
+								{
+									willthiswork = true;
+									break;
+								}
+							}
+							if (willthiswork)
+							{
+								Token boob;
+								do
+								{
+									boob = PickATit();
+								} while (boob.GetToken("nipples").HasToken("canfuck"));
+								boob.GetToken("nipples").AddToken("canfuck");
+							}
+						}
+						break;
+					case Mutations.giveNipplecunts:
+						if (this.HasToken("breastrow"))
+						{
+							bool willthiswork = false;
+							for (int index = 0; index < this.GetBreastSizes().Length; index++)
+							{
+								//if the character has any breastrow that does not have nipplecunts and that does have nipples, then this can be applied.
+								if (this.GetBreastRowByNumber(index).HasToken("nipples") && !this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("fuckable"))
+								{
+									willthiswork = true;
+									break;
+								}
+							}
+							if (willthiswork)
+							{
+								Token boob;
+								do
+								{
+									boob = PickATit();
+								} while (boob.GetToken("nipples").HasToken("fuckable"));
+								boob.GetToken("nipples").AddToken("fuckable");
+							}
+						}
+						break;
+					case Mutations.addNipple:
+						if (this.HasToken("breastrow"))
+						{
+							Token boob = PickATit();
+							if (!boob.HasToken("nipples"))
+								boob.AddToken("nipples", 1);
+							else
+								boob.GetToken("nipples").Value++;
+						}
+						break;
+					case Mutations.removeNipple:
+						if (this.HasToken("breastrow"))
+						{
+							bool willthiswork = false;
+							for (int index = 0; index < this.GetBreastSizes().Length; index++)
+							{
+								//if the character has any breastrow that has nipples, then this can be applied.
+								if (this.GetBreastRowByNumber(index).HasToken("nipples"))
+								{
+									willthiswork = true;
+									break;
+								}
+							}
+							if (willthiswork)
+							{
+								Token boob = PickATit();
+								while (!boob.HasToken("nipples"))
+								{
+									boob = PickATit();
+								}
+								boob.GetToken("nipples").Value--;
+								if (boob.GetToken("nipples").Value == 0)
+									boob.RemoveToken("nipples");
+							}
+						}
+						break;
+					case Mutations.giveRegularNipples:
+						if (this.HasToken("breastrow"))
+						{
+							bool willthiswork = false;
+							for (int index = 0; index < this.GetBreastSizes().Length; index++)
+							{
+								//if the character has any breastrow that does not have nipplecunts and that does have nipples, then this can be applied.
+								if (this.GetBreastRowByNumber(index).HasToken("nipples") && this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("fuckable") || this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("canfuck"))
+								{
+									willthiswork = true;
+									break;
+								}
+							}
+							if (willthiswork)
+							{
+								Token boob;
+								do
+								{
+									boob = PickATit();
+								} while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"));
+								boob.GetToken("nipples").RemoveToken("fuckable");
+								boob.GetToken("nipples").RemoveToken("canfuck");
+							}
 						}
 						break;
                 }
@@ -1114,7 +1229,7 @@ namespace Noxico
 						bodyThings.Add(i18n.GetString("tailtype_tentacle"));
 				}
 				else
-					bodyThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype" + tail)));
+					bodyThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype_" + tail)));
 			}
 
 			//tone
@@ -1137,8 +1252,14 @@ namespace Noxico
 
 			if (this.HasToken("eyes"))
 			{
-				var eyes = i18n.Format("color_eyes", Color.Translate(Color.NameColor(this.GetToken("eyes").Text)));
+				var eyes = i18n.Format("color_eyes", Color.Translate(Color.NameColor(this.GetToken("eyes").Text)), "eyes");
 				var eyesHidden = false;
+				var count = 2;
+				if (this.Path("eyes/count") != null)
+				{
+					count = (int)this.GetToken("eyes").GetToken("count").Value;
+					eyes = i18n.Format("color_eyes", Color.Translate(Color.NameColor(this.GetToken("eyes").Text)), i18n.Pluralize("eye", count));
+				}
 				if (goggles != null && !goggles.CanSeeThrough())
 					eyesHidden = true;
 				if (this.Path("eyes/glow") != null)
@@ -1146,6 +1267,7 @@ namespace Noxico
 					eyes = i18n.Format("glowing_x", eyes);
 					eyesHidden = false;
 				}
+				eyes = i18n.GetArray("setbymeasure")[count] + " " + eyes;
 				if (!eyesHidden)
 					headThings.Add(eyes);
 			}
@@ -1286,7 +1408,7 @@ namespace Noxico
 								wet = " and " + wet;
 							else if (wet == null && loose == null)
 								loose = "";
-							nipType += (loose + wet + " nipplecunt").Trim();
+							nipType += (" " + loose + wet + " nipplecunt").Trim();
 						}
 						else
 							nipType += " nipple";
