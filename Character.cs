@@ -998,11 +998,11 @@ namespace Noxico
 			for (var i = 0; i < totalRows; i++)
 			{
 				if (i < col1.Count)
-					print("| " + i18n.GetString(col1[i], false).PadEffective(pad));
+					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + i18n.GetString(col1[i], false)).PadEffective(pad));
 				else
 					print("".PadEffective(pad));
 				if (i < col2.Count)
-					print("| " + i18n.GetString(col2[i], false));
+					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + i18n.GetString(col2[i], false));
 				print("\n");
 			}
 			print("\n");
@@ -1379,7 +1379,7 @@ namespace Noxico
 					var row = breastRows[i];
 					//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
 					//	continue;
-					print("| " + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes") + " breast");
+					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes") + " breast");
 					if (row.GetToken("amount").Value > 1)
 						print("s");
 					if (!breastsVisible)
@@ -1453,7 +1453,7 @@ namespace Noxico
 						var clitSize = 0.25f;
 						if (clit != null)
 							clitSize = clit.Value;
-						print("| " + loose + wet + ", with a " + Descriptions.Length(clitSize) + " clit\n");
+						print((i < vaginas.Count - 1 ? "\xC3 " : "\xC0 ") + loose + wet + ", with a " + Descriptions.Length(clitSize) + " clit\n");
 					}
 				}
 			}
@@ -1471,6 +1471,7 @@ namespace Noxico
 			}
 			else
 			{
+				var cocksAndBalls = cocks.Count + ballCount;
 				if (cocks.Count == 0)
 					print("none\n");
 				else
@@ -1482,13 +1483,13 @@ namespace Noxico
 						var cockType = cock.Text;
 						if (string.IsNullOrWhiteSpace(cockType))
 							cockType = "human-like";
-						print("| " + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
+						print((i < cocksAndBalls - 1 ? "\xC3 " : "\xC0 ") + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
 						print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
 					}
 				}
 				if (ballCount > 0)
 				{
-					print("| " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicles\n");
+					print("\xC0 " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicles\n");
 				}
 			}
 			print("\n");
@@ -1498,10 +1499,10 @@ namespace Noxico
 		{
 			print("Clothing\n");
 			if (worn.Count == 0)
-				print("| none\n");
+				print("\xC0 none\n");
 			else
 				for (var i = 0; i < worn.Count; i++)
-					print("| " + worn[i] + "\n");
+					print((i < worn.Count - 1 ? "\xC3 " : "\xC0 ") + worn[i] + "\n");
 			print("\n");
 		}
 
@@ -1514,13 +1515,14 @@ namespace Noxico
 			if (hands.Count > 2 + mono)
 				print("NOTICE: Shiva called.\n");
 			if (hands.Count + fingers.Count == 0)
-				print("| none\n");
+				print("\xC0 none\n");
 			else
 			{
-				for (var i = 0; i < hands.Count; i++)
-					print("| " + hands[i].ToLongString(hands[i].tempToken) + "\n");
-				for (var i = 0; i < fingers.Count; i++)
-					print("| " + fingers[i].ToLongString(fingers[i].tempToken) + "\n");
+				var handsAndFingers = new List<string>();
+				handsAndFingers.AddRange(hands.Select(x => x.ToLongString(x.tempToken)));
+				handsAndFingers.AddRange(fingers.Select(x => x.ToLongString(x.tempToken)));
+				for (var i = 0; i < handsAndFingers.Count; i++)
+					print((i < handsAndFingers.Count - 1 ? "\xC3 " : "\xC0 ") + handsAndFingers[i] + "\n");
 			}
 			print("\n");
 		}
