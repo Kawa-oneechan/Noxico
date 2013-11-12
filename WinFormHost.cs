@@ -574,6 +574,10 @@ namespace Noxico
 			if (c > 0x400)
 				c = '#';
 
+			if (c < 32)
+				c += 0x1E0;
+			c -= 32;
+
 			var width = CellWidth;
 
 			var sSX = (c % 32) * CellWidth;

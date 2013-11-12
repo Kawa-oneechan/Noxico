@@ -1297,7 +1297,7 @@ namespace Noxico
 			filters["vendorclass"] = vendor.GetToken("class").Text;
 			while (items.Tokens.Count < 20)
 			{
-				var newstock = WorldGen.GetRandomLoot("vendor", "stock", filters);
+				var newstock = DungeonGenerator.GetRandomLoot("vendor", "stock", filters);
 				if (newstock.Count == 0)
 					break;
 				items.AddSet(newstock);
