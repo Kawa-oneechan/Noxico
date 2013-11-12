@@ -56,6 +56,13 @@ namespace Noxico
 			RestockVendor();
 		}
 
+		public override string ToString()
+		{
+			if (Character == null)
+				return "[Characterless BoardChar]";
+			return Character.Name.ToString(true);
+		}
+
 		public virtual void AdjustView()
 		{
 			var skinColor = Character.Path("skin/color").Text;

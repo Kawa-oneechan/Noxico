@@ -319,7 +319,7 @@ Would you like an infodump on the way out?]]>
 		<word id="inventory_pressenter_container">Press &accept; to store or retrieve the highlighted item.</word>
 		<word id="inventory_pressenter_vendor">Press &accept; to buy or sell the highlighted item.</word>
 		<word id="inventory_money">{0}: {1} -- You: {2}</word>
-		<word id="inventory_itcosts">It costs &#x00A4;{0}.</word>
+		<word id="inventory_itcosts">It costs &#x13B;{0}.</word>
 		<word id="inventory_vendorusesthis">{0} is using this.</word>
 		<word id="inventory_youusethis">This item is currently equipped.</word>
 		<word id="inventory_youcantaffordthis">You can't afford this item.</word>
