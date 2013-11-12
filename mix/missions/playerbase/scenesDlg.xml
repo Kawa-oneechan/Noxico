@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+<scenes>
+	<scene id="CarpenterStart" name="(starting node)">
+		<filter target="bottom" type="has" name="role/vendor/class" value="carpenter" />
+		<p>
+			"Hello, what can I do for you?" [b:name] asks.
+		</p>
+		<action name="carpenter toolshed" />
+		<action name="carpenter upgrade" />
+		<action name="carpenter nothing" />
+	</scene>
+	<scene id="CarpenterNothing" name="carpenter nothing" list="Nothing">
+		<p>
+			"Well, it's not a problem. Come back any time!"
+		</p>
+	</scene>
+	<scene id="CarpenterToolshed" name="carpenter toolshed" list="Ask about tool sheds">
+		<filter target="top" type="hasnot" name="homeboardhasshed" />
+		<p>
+			"Well... if you want one, I can come over and build one for you."
+		</p>
+		<action name="carpenter toolshed okay" />
+		<action name="carpenter nothing" />
+	</scene>
+	<scene id="CarpenterToolshedOkay" name="carpenter toolshed okay" list="Pay &#x13B;10 for a toolshed">
+		<filter target="top" type="value_gteq" name="money" value="10" />
+		<p>
+			"Very well. It'll be there."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("money").Value -= 10;
+				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
+				homeBoard.MergeBitmap("missions\\playerbase\\toolshed.png");
+				top.AddToken("homeboardhasshed");
+				//TODO: add crafting table @ 27*25
+				var table = new Clutter();
+				table.ID = "craftstation";
+				table.AsciiChar = 0x148;
+				table.ForegroundColor = Color.Black;
+				table.BackgroundColor = Color.FromName("Auburn");
+				table.Blocking = true;
+				table.Name = "Crafting table";
+				table.Description = "You can use this to make stuff.";
+				table.ParentBoard = homeBoard;
+				table.XPosition = 27;
+				table.YPosition = 25;
+				homeBoard.EntitiesToAdd.Add(table);
+			]]>
+		</script>
+	</scene>
+	<scene id="CarpenterUpgrade" name="carpenter upgrade" list="Ask about extra rooms">
+		<filter target="top" type="value_lower" name="homeboardlevel" value="4" />
+		<p>
+			"You want extra room? It's yours, friend. As long as you have enough, mmm, zennies."
+		</p>
+		<action name="carpenter upgrade okay" />
+		<action name="carpenter nothing" />
+	</scene>
+	<scene id="CarpenterUpgradeNo" name="carpenter upgrade" list="Ask about extra rooms">
+		<filter target="top" type="value_equal" name="homeboardlevel" value="4" />
+		<p>
+			"You want extra room? I'm afraid not, friend."
+		</p>
+		<action name="carpenter nothing" />
+	</scene>
+	<scene id="CarpenterUpgradeOkay" name="carpenter upgrade okay" list="Pay &#x13B;20 for more bedrooms">
+		<filter target="top" type="value_gteq" name="money" value="10" />
+		<p>
+			"Very well. It'll be there."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("money").Value -= 20;
+				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
+				var level = top.GetToken("homeboardlevel").Value + 1;
+				top.GetToken("homeboardlevel").Value = level;
+				homeBoard.MergeBitmap("missions\\playerbase\\lv" + level + ".png");
+				//TODO: add furniture
+			]]>
+		</script>
+	</scene>
+</scenes>
