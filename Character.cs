@@ -324,10 +324,13 @@ namespace Noxico
 			//TODO: return a summary of what was done, coded for i18n
 
             //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
+			bool randomize = false;
 			if (mutation == Mutations.Random)
-				mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for randomize = -1
+				randomize = true;
             for (int i = 0; i < number; i++)
             {
+				if (randomize)
+					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for randomize = -1
                 switch (mutation)
                 {
 					case Mutations.Random:
@@ -1197,7 +1200,17 @@ namespace Noxico
 			{
 				var lt = this.GetToken("legs").Text;
 				var legs = string.IsNullOrWhiteSpace(lt) ? "human" : lt;
-				bodyThings.Add(i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
+				int count;
+				string number_or_pair = "counts";
+				if (this.GetToken("legs").GetToken("amount") != null)
+					count = (int)this.GetToken("legs").GetToken("amount").Value;
+				else
+					count = 2;
+				if (this.HasToken("quadruped") || this.HasToken("taur"))
+					count = 4;
+				if (count < 4)
+					number_or_pair = "setbymeasure";
+				bodyThings.Add(i18n.GetArray(number_or_pair)[count] + " " + i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
