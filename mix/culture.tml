@@ -1,0 +1,275 @@
+-- #region Cultures
+culture: human
+	bodyplans
+		human
+		felinoid
+		fox
+		human
+		human
+		felinoid
+		fox
+		naga
+		human
+		felinoid
+-- Low base chance of betraying their spouse. Character tokens affect this.
+	monogamous: 0.75
+
+culture: deviant
+	bodyplans
+		felinoid
+		imp
+	marriage: 0
+	monogamous: 0
+
+culture: seradevar
+	bodyplans
+		foocubus
+		imp
+		goblin
+		foocubus
+		goblin
+		slime
+		foocubus
+		imp
+		goblin
+		foocubus
+		goblin
+	marriage: 0
+	monogamous: 0.5
+
+culture: equestrian
+	bodyplans
+		littlepony
+	monogamous: 0.8
+	marriage: 0.6
+	terms
+		zeni: bit
+		the_madman: Discord
+
+culture: ursidous
+	bodyplans
+		ursidae
+	monogamous: 0.75
+
+culture: changelings
+	bodyplans
+		changeling
+	monogamous: 0.2
+	marriage: 0
+	terms
+		zeni: bit
+		the_madman: Discord
+
+-- #endregion
+
+-- #region Name generators
+namegen: norse
+	sets
+		start: Al, Ae, As, Bi, Fen, Ha, Hag, Ho, Hu, Iv, Jot, Ma, Mio, Mu, Nid, Ors, Ra, Sta, Svar, Tys, Vae, Van, Vol, Y, Ygg
+		middle: an, ar, ba, da, dra, gar, na, tal
+		male_end: ad, ald, agr, ar, ard, eyr, far, frost, heim, hogg, in, mir, nar, nir, or, osk, rir, sil, sir, ttir, urd
+		female_end: a, la, li, va
+	male
+		prohibit: yor, yar, yad, yin
+		rule
+			start
+			middle
+			male_end
+		rule
+			start
+			male_end
+	female
+		prohibit: raa, ya, aea, aea
+		rule
+			start
+			middle
+			female_end
+		rule
+			start
+			female_end
+	surname
+		patronymic
+			male: son
+			female: dottir
+	town
+		copy: default
+
+namegen: demonic
+	sets
+		vowels: a, e, i, o, u
+		start: Aam, Ab, Ad, Ahr, Alas, Al-A'w, All, Al-M, Ap, As, Ast, Az, Bal, Bal S, Bag, Balb, Ban, Bansh, Baph, Barb, Bath, Bazt, Be'L, Beel, Beelz, Bel, Belph, Ber, Bh, Bifr, Biul, Bush, Caac, Cagn, Caim, Chalk, Char, Chem, Coal, Dag, Dant, Decer, Demog, Dev, Dj, Dragh, Elig, Emp, Errt, Etr, Ett, Eur, Euryn, Gorg, Graph, Grig, Haag, Halph, Haur, Hoeth, Ifr, Inc, Ibl, Ith, Kabh, Kas, Kokb', Kray, Lab, Lam, Lech, Leg, Lil, Lioth, Lix, Luc, Mal, Malph, Mamm, March, Mast, Math, Meph, Merm, Mol, Murm, Naam, Naph, Nek, Neph, Neq, Nix, Noud, Onom, Onos, Orc, Orob, Oul, Paim, Phen, Pont, Proc, Rah, Rak, Raksh, Ram, Rang, Raum, Raz, Rimm, Rub, Rus, Sabn, Salps, Sam, Sat, Sc, Scarm, Seer, Sem, Set, Shait, Shax, Shed, Shez, Sidr, Sitr, Sth, Succ, Surg, Tann, Tart, Tch, Teer, Thamm, Thub, Tlal, Tsab, Val, Vap, Vass, Vep, Verr, Vin, Vol, Vual, Xaph, Xiph, Xitr, Zaeb, Zim, Ziz, Zaln
+		middle: b'ae, ba, be, chi, dra, du, ga, ghi, go, lia, ma, mba, mu, n'e, na, nti, nzu, phe, pho, r'e, rba, rgo, ssa, thi, tryu, ttu, tzi, v-e, vna, xra, ya
+		male_end: b'ael, bel, bub, bur, bus, ces, chus, dai, ddon, des, dhaka, el, fer, flas, gion, gon, gor, klet, kor, ksha, kuth, laas, lech, les, lion, lith, loch, lsu, mael, math, mejes, meus, mon, moth, mmut, mosh, nai, nar, neus, nex, nias, nnin, nomos, phas, r'el, raal, rept, res, rgon, riax, rith, rius, rous, rus, ruth, sias, stor, swath, tath, than, the, thra, tryus, tura, vart, ztuk
+		female_end: b'a, bel, bua, bure, buth, cess, chia, dai, ddea, dea, dhaka, el, fea, fla, gia, goa, gora, klath, kore, ksha, kua, laal, lexa, less, lia, lith, loth, lsa, mara, math, maja, mea, moa, moth, mmuth, mosh, na, nai, neuth, nex, nia, nnine, nomoa, pha, r'el, raala, repte, reshe, rgona, riaxe, rith, rish, rothe, rushe, ruth, sia, stora, swath, tath, thann, the, thra, trya, tura, varte, ztura
+	male
+		rule
+			start
+			vowels
+			middle: 35
+			male_end
+	female
+		rule
+			start
+			vowels
+			middle: 35
+			female_end
+	surname
+		patronymic
+			male: 'zan
+			female: 'kin
+
+-- Based on roots collected from BehindTheName, Ancient Germanic
+namegen: germanic
+	sets
+		a: Adal, Al, Alde, Alf, Amal, Ans, Arn, Bald, Bern, Ekke, Era, Ermen, Fardi, Fili, Folk, Fridu, Gau, Ger, Gil, Gild, Gisil, Gode, Guma, Hade, Helm, Her, Hild, Hrod, Hug, Hulde, Hun, Lam, Leo, Leub, Ric, Sig, Theo, Ulf, Wald, Wil
+		m: ais, aric, berich, bern, boin, elm, funs, gar, gard, hard, her, hnod, laic, leub, mar, meri, nanth, ric, ulf, wald, wig, win, wolf
+		f: a, ais, bern, berta, da, elma, funs, gar, gard, gund, hard, heidis, her, hilda, hnod, ia, ina, laic, mar, mera, ulf, wina, wolf
+	male
+		prohibit: Bernbern, Ulfulf, Ulfwolf
+		rule
+			a
+			m
+	female
+		prohibit: Bernbern, Ulfulf, Ulfwolf
+		rule
+			a
+			f
+	surname
+		copy: dorf
+
+-- Just straight up picking full names from behindthename.com and Wikipedia's list of most common surnames in Asia. I copied these by hand in order of appearance, which is why the given names are in alphabetical order and the surnames ordered by usage ranking. This includes references to Mount Fuji, which you might want to filter out, be it by editing the sets or declaring "fuji" illegal.
+namegen: japanese
+	sets
+		male: Akio, Akira, Aoi, Arata, Ayumu, Daichi, Daiki, Daisuke, Gorou, Hachirou, Haru, Haruki, Haruto, Hayate, Hayato, Hibiki, Hideaki, Hideki, Hideyoshi, Hikaru, Hinata, Hiraku, Hiroshi, Hiroto, Hotaka, Ichirou, Isamu, Itsuki, Jirou, Jurou, Kaede, Kaito, Kaoru, Katashi, Katsu, Katsuo, Katsurou, Kazuki, Kazuo, Ken, Kenichi, Kenji, Kenshin, Kenta, Kichirou, Kohaku, Kouki, Kouta, Kurou, Kyou, Makoto, Masaru, Michi, Minoru, Naoki, Noboru, Nobu, Noburu, Nobuyuki, Nori, Osamu, Ren, Riku, Rikuto, Rokurou, Ryou, Ryouga, Ryouichi, Ryouta, Ryuu, Ryuunosuke, Saburo, Shichirou, Shin, Shinobu, Shirou, Shou, Shouta, Shun, Sora, Souta, Susumu, Taichi, Taiki, Takahiro, Takashi, Takehiko, Takeshi, Takuma, Takumi, Tarou, Tsubasa, Yamato, Yasu, Yori, Yoshi, Yoshirou, Youta, Yuki, Yuu, Yuudai, Yuuki, Yuuma, Yuuta, Yuuto
+		female: Ai, Aiko, Aimi, Aina, Airi, Akane, Akemi, Aki, Akiko, Akira, Ami, Aoi, Asuka, Atsuko, Aya, Ayaka, Ayako, Ayame, Ayane, Ayano, Chika, Chikako, Chinatsu, Chiyo, Chiyoko, Chou, Chouko, Emi, Etsuko, Hana, Hanako, Haruka, Haruko, Haruna, Hikari, Hikaru, Hina, Hinata, Hiroko, Hitomi, Honoka, Hoshi, Hoshiko, Hotaru, Izumi, Junko, Kaede, Kanon, Kaori, Kaoru, Kasumi, Kazue, Kazuko, Keiko, Kiku, Kimiko, Kiyoko, Kohaku, Kokoro, Kotone, Kumiko, Kyou, Mai, Makoto, Mami, Manami, Mao, Mariko, Masami, Masuyo, Mayu, Megumi, Mei, Michi, Michiko, Midori, Mika, Miki, Miku, Minako, Mio, Misaki, Mitsuko, Miu, Miyako, Miyu, Mizuko, Moe, Momoka, Momoko, Moriko, Nana, Nanami, Naoko, Naomi, Natsuki, Natsuko, Natsumi, Noa, Noriko, Ran, Rei, Ren, Riko, Rin, Rina, Rio, Sachiko, Saki, Sakura, Sakurako, Satomi, Sayuri, Setsuko, Shinju, Shinobu, Shiori, Shizuka, Shun, Sumiko, Suzu, Suzume, Takako, Takara, Tamiko, Tomiko, Tomoko, Tomomi, Tsubaki, Tsubame, Tsubasa, Tsukiko, Ume, Umeko, Wakana, Yasu, Yoko, Yoshi, Yoshiko, Youko, Yua, Yui, Yuina, Yuki, Yukiko, Yuko, Yumi, Yumiko, Yuri, Yuu, Yuuka, Yuuki, Yuuko, Yuuna, Yuzuki
+		family: Satou, Suzuki, Takahashi, Tanake, Watanabe, Itou, Yamamoto, Nakamura, Kobayashi, Saitou, Katou, Yoshida, Yamada, Sasaki, Yamaguchi, Matsumoto, Inoue, Kimura, Hayashi, Shimizu, Yamazaki, Mori, Abe, Ikeda, Hashimoto, Yamashita, Ishikawa, Nakashima, Maeda, Fujita, Ogawa, Okada, Gotou, Hasegawa, Murakami, Kondou, Ishii, Sakamoto, Endou, Aoki, Fujii, Nishimura, Fukuda, Outa, Miura, Fujiwara, Okamoto, Matsuda, Nakagawa, Nakano, Harada
+	male
+		rule
+			male
+	female
+		rule
+			female
+	surname
+		rule
+			family
+
+namegen: dorf
+	sets
+		start: A, An, Ba, Bi, Bo, Bom, Da, Dar, De, Do, Du, Due, Duer, Dwa, Fa, Fal, Fi, Fre, Fun, Ga, Gar, Gim, Glo, Go, Gom, Gro, Gwar, Ib, Jor, Ka, Ki, Kil, Lo, Mar, Na, Nal, O, Ras, Ren, Ro, Ta, Tar, Tel, Thi, Tho, Thon, Thra, Tor, Von, We, Wer, Yen, Yur
+		male_end: bil, bin, bur, char, den, dir, dur, fri, fur, in, li, lin, mil, mur, ni, nur, ran, ri, ril, rimm, rin, thur, tri, ulf, un, ur, vi, vil, vim, vin, vri
+		female_end: al, ali, ba, bida, bra, da, deth, di, fra, gret, hild, iess, kala, la, laani, li, lona, ma, mae, mala, na, nuda, ra, ta, tala, tu, tuna, vada, vara, ya
+		sur_start: Black, Blood, Bronze, Fire, Firm, Grey, Hard, Ice, Iron, Moon, Oak, Onyx, Red, Steel, Stone, Storm, Strong, Thunder, White
+		sur_end: axe, beard, blade, brand, cheek, cloak, fist, foot, hair, hammer, hand, head, heart, pick, shield, spear, spike, sword
+	male
+		prohibit: rur, ueu
+		rule
+			start
+			male_end
+	female
+		prohibit: dueal, frefra, grogret
+		rule
+			start
+			female_end
+	surname
+		rule
+			sur_start
+			sur_end
+
+namegen: pony
+	sets
+		a: Acorn, Azure, Amethyst, Cotton, Flora, Kitty, Candy, Cherry, Bluebery, Carrot, Starlight, Flower, Lily, Rose, Lotus, Marmalade, Bonnie, Peachy, Raisin, Roxie, Ruby, Storm, Sunny, Cloud, Cappuccino, Cotton, Daisy, Firefly, Dizzy, Lightning, Medley, Rainbow, Tornado, Crescent, Lemon, Seafoam, Twilight, Twinkle
+		b: Twist, Star, Sparkle, Dash, Pie, Blossom, Cake, Coke, Stardust, Waters, Days, Daze, Kicker, Twister, Day, Hearts
+	female
+		rule
+			a
+			_
+			b
+		prohibit: Star Star, Twilight Sparkle, Rainbow Dash
+-- TODO: get a manlier set of names
+	male
+		rule
+			a
+			_
+			b
+		prohibit: Star Star, Twilight Sparkle, Rainbow Dash
+	surname
+		rule
+			_
+
+namegen: bears
+	sets
+		start_male: Earth, Air, Water, Fire, Bronze, Silver, Gold, Fleet, Ruby, Emerald, Crystal, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Stone, Rage, Hate, Vagina, Blood
+		start_female: Earth, Air, Water, Fire, Bronze, Silver, Gold, Fleet, Ruby, Emerald, Crystal, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Stone, Rage, Love, Penis, Blood, Lust
+		male_end: fist, foot, heart, smasher, hand, eye, ripper, lust
+		female_end: fist, foot, heart, smasher, hand, eye, ripper, breast
+		sur_start: Human, Demon, Fel, Vulp, Goblin, Cubi, Naga, Bee, Pony, Storm, World, Earth, Blood
+		sur_end: smasher, ripper, gutter, letter, coat
+	male
+		rule
+			start_male
+			male_end
+	female
+		rule
+			start_female
+			female_end
+	surname
+		rule
+			$: of
+			_
+			sur_start
+			sur_end
+
+namegen: spacemutiny
+	sets
+		a: Slab, Fridge, Punt, Butch, Bold, Splint, Flint, Bolt, Thick, Blast, Buff, Crunch, Fist, Stump, Smash, Punch, Buck, Stump, Dirk, Rip, Slate, Crud, Brick, Rip, Punch, Gristle, Slate, Buff, Bob, Blast, Crunch, Slab, Lump, Touch, Beef, Big, Smoke, Beat, Hack, Roll
+		b: Bulkhead, Largemeat, Speedchunk, Deadlift, Bigflank, Chesthair, Ironstag, Vanderhuge, McRunfast, Hardcheese, Drinklots, Slamchest, Rockbone, Beefknob, Lampjaw, Rockgroin, Plankchest, Junkman, Hardpec, Steakface, Slabrock, Bonemeal, Hardmeat, Slagcheek, Sideiron, McThornbody, Fistcrunch, Hardback, Johnson, Thickneck, Buttsteak, Squatthrust, Beefbroth, Rustrod, Blastbody, McLargehuge, Manmuscle, Punchmeat, Blowfist, Fizzlebeef
+	male
+		rule
+			a
+	female
+		rule
+			a
+	surname
+		rule
+			b
+
+namegen: changeling
+	sets
+		theonlyone: Anther, Barricade, Boloria, Canadensis, Captio, Cicada, Cloudhop, Coleoptera, Coliadys, Crucible, Damaged Goods, Danaus, Danganya, Darkwing, Dekras, Demure, Dipte, Drosophila, Echo, Fractured Mind, Fritillary, Grit, Hopper, Imago, Jewel, Kiu, Knockout, Lampy, Ligament, Lustro, Mantis, Mendacium, Mindwipe, Mirror, Pupa, Rampage, Ransack, Rhynie, Scarab, Scourge, Sctriches, Shatterstar, Shrapnel, Silky, Skywarp, Slipstream, Speculum, Spinster, Striche, Styx, Swindle, Thorax, Thysania, Troubled Water, Tukor, Voluc, Wasp
+	male
+		rule
+			theonlyone
+	female
+		rule
+			theonlyone
+	surname
+		rule
+			_
+
+-- Fallback namegen for towns
+namegen: default
+	sets
+		pre: East, Fort, Great, High, Lower, Middle, Mount, New, North, Old, Royal, Saint, South, Upper, West
+		start: Ael, Ash, Barrow, Bel, Black, Clear, Cold, Crystal, Deep, Edge, Falcon, Fair, Fall, Glass, Gold, Ice, Iron, Mill, Moon, Mor, Ray, Red, Rock, Rose, Shadow, Silver, Spell, Spring, Stone, Strong, Summer, Swyn, Wester, Winter
+		end: ash, burn, barrow, bridge, castle, cliff, coast, crest, dale, dell, dor, fall, field, ford, fort, gate, haven, hill, hold, hollow, iron, lake, marsh, mill, mist, mount, moor, pond, shade, shore, summer, town, wick
+		post: Annex, Barrens, Barrow, Corner, Cove, Crossing, Dell, Dales, Estates, Forest, Furnace, Grove, Haven, Heath, Hill, Junction, Landing, Meadow, Park, Plain, Point, Reserve, Retreat, Ridge, Springs, View, Village, Wells, Woods
+	surname
+		patronymic
+			male: son
+			female: daughter
+	town
+		rule
+			pre: 15
+			_
+			start
+			end
+		rule
+			start
+			end
+			_
+			post: 15
+
+-- #endregion
+
+-- #replace culture
+-- #replace namegen
