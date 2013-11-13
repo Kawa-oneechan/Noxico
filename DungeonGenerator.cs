@@ -353,7 +353,7 @@ namespace Noxico
 													//if (type == "cabinet")
 													type = "wardrobe";
 												}
-												var contents = WorldGen.GetRandomLoot("container", type, new Dictionary<string, string>() { { "gender", owner.PreferredGender.ToString().ToLowerInvariant() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
+												var contents = DungeonGenerator.GetRandomLoot("container", type, new Dictionary<string, string>() { { "gender", owner.PreferredGender.ToString().ToLowerInvariant() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
 													AsciiChar = m.Params.Last()[0],
@@ -386,8 +386,8 @@ namespace Noxico
 										else if (m.Type == "water")
 										{
 											chr = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)];
-											fgd = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv));
-											bgd = water.Color.Darken(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv));
+											fgd = water.Color.Darken();
+											bgd = water.Color;
 											wat = water.IsWater;
 										}
 										else
@@ -525,7 +525,7 @@ namespace Noxico
 		Stone, Wood
 	}
 
-	//Ye Olde Generic Dungeon
+	//Ye Olde Generic Dungeon -- mostly by Xolroc
 	class StoneDungeonGenerator : BaseDungeonGenerator
 	{
 		private const int MAX_ROOMS = 30;
@@ -586,7 +586,7 @@ namespace Noxico
 
 		private void MaybeSet(ref Tile[,] map, int x, int y, char c, Color floor, Color wall)
 		{
-			if (map[x, y].Wall && !map[x, y].CanBurn )
+			if (map[x, y].Wall && !map[x, y].CanBurn)
 				map[x, y] = new Tile() { CanBurn = true, Character = c, Wall = true, Background = floor, Foreground = wall };
 		}
 
@@ -599,7 +599,7 @@ namespace Noxico
 			var woodFloor = Color.FromArgb(86, 63, 44);
 			var woodWall = Color.FromArgb(20, 15, 12);
 
-			var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor, CanBurn = false };
+			var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken(), CanBurn = false };
 			var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
 
 			//Base fill
@@ -615,13 +615,31 @@ namespace Noxico
 			foreach (var room in rooms)
 			{
 				var bounds = room.Bounds;
-				for (var row = bounds.Top; row <= bounds.Bottom; row++)
-					for (var col = bounds.Left; col <= bounds.Right; col++)
-						map[col, row] = woodTile;
+				if (room.Material == RoomMaterials.Wood)
+				{
+					for (var row = bounds.Top; row <= bounds.Bottom; row++)
+						for (var col = bounds.Left; col <= bounds.Right; col++)
+							map[col, row] = woodTile;
+				}
+				else if (room.Material == RoomMaterials.Stone)
+				{
+					for (var row = bounds.Top; row <= bounds.Bottom; row++)
+					{
+						for (var col = bounds.Left; col <= bounds.Right; col++)
+						{
+							map[col, row] = stoneTile.Clone();
+							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
+								map[col, row].Character = 0x146;
+						}
+					}		
+				}
 			}
 
 			foreach (var room in rooms)
 			{
+				if (room.Material == RoomMaterials.Stone)
+					continue;
+
 				var bounds = room.Bounds;
 				var inflated = new SysRectangle(bounds.Left - 1, bounds.Top - 1, bounds.Width + 2, bounds.Height + 2);
 				for (var row = inflated.Top + 1; row < inflated.Bottom; row++)
@@ -658,7 +676,9 @@ namespace Noxico
 					{
 						if (!here.CanBurn)
 						{
-							map[point.X, point.Y] = stoneTile;
+							map[point.X, point.Y] = stoneTile.Clone();
+							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
+								map[point.X, point.Y].Character = 0x146;
 							inRoom = false;
 						}
 						else if (!inRoom)
@@ -670,130 +690,6 @@ namespace Noxico
 					there = here;
 				}
 			}
-
-
-			#region Old shit
-			/*
-			includeWater = false;
-			base.ToTilemap(ref map);
-
-			//Connect plots
-			var colStart = 40;
-			var colEnd = 40;
-			for (var row = 0; row < 3; row++)
-			{
-				for (var col = 0; col < 6; col++)
-				{
-					if (plots[col, row].BaseID == null)
-						continue; //I dunno, place a hub pathway or something?
-
-					var building = plots[col, row];
-					//var x = (col * 10) + building.XShift + 2 + Randomizer.Next(building.Template.Width - 4);
-					//var y = (row * 12) + building.YShift + 2 + Randomizer.Next(building.Template.Height - 4);
-					var x = (col * 13) + building.XShift + (building.Template.Width / 2);
-					var y = (row * 16) + building.YShift + (building.Template.Height / 2);
-					//map[x, y].Background = Color.Magenta;
-
-					var direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : (Random.NextDouble() > 0.5 ? Direction.East : Direction.West);
-					if (col == 0 && direction == Direction.West)
-						direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.East;
-					else if (col == 7 && direction == Direction.East)
-						direction = Random.NextDouble() > 0.3 ? (row == 0 ? Direction.South : Direction.North) : Direction.West;
-					if ((direction == Direction.East && plots[col + 1, row].Template == null) ||
-						(direction == Direction.West && plots[col - 1, row].Template == null))
-						direction = row == 0 ? Direction.South : Direction.North;
-
-					Toolkit.PredictLocation(x, y, direction, ref x, ref y);
-					while (!map[x, y].Wall)
-						Toolkit.PredictLocation(x, y, direction, ref x, ref y);
-
-					if (x < colStart)
-						colStart = x;
-					else if (x > colEnd)
-						colEnd = x + 1;
-
-					if (direction == Direction.North)
-					{
-						if (map[x, y].CanBurn) //means we started in a walled building
-						{
-							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
-							y--;
-						}
-						while (y > Random.Next(4, 8))
-						{
-							if (map[x, y].Character == ' ')
-								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-							else
-								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
-							y--;
-							if (!map[x, y].Wall)
-								break;
-						}
-					}
-					else if (direction == Direction.South)
-					{
-						if (map[x, y].CanBurn)
-						{
-							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
-							y++;
-						}
-						while (y < Random.Next(24, 40))
-						{
-							if (map[x, y].Character == ' ')
-								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-							else
-								map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
-							y++;
-							if (!map[x, y].Wall)
-								break;
-						}
-					}
-					else if (direction == Direction.West)
-					{
-						if (map[x, y].CanBurn) //means we started in a walled building
-						{
-							map[x, y] = new Tile() { Character = ' ', Background = map[x, y].Background };
-							x--;
-						}
-						while (x > 1 && map[x, y].Wall)
-						{
-							if (map[x, y].Character == ' ')
-								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-							else
-								map[x, y] = new Tile() { Character = ' ', Background = map[x,y].Background };
-							x--;
-						}
-					}
-					else if (direction == Direction.East)
-					{
-						if (map[x, y].CanBurn)
-						{
-							map[x, y] = new Tile() { Character = '!', Background = map[x, y].Background };
-							x++;
-						}
-						while (x < 79 && map[x, y].Wall)
-						{
-							if (map[x, y].Character == ' ')
-								map[x, y] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-							else
-								map[x, y] = new Tile() { Character = ' ', Background = map[x,y].Background };
-							x++;
-						}
-					}
-				}
-			}
-			var yShift = 0;
-			for (var x = colStart; x < colEnd; x++)
-			{
-				map[x, 16 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-				if (x % 7 == 6)
-				{
-					yShift = Random.Next(-1, 1);
-					map[x, 16 + yShift] = new Tile() { Character = '#', Background = Color.Black, Foreground = path };
-				}
-			}
-			*/
-			#endregion
 
 			#region Fade out the walls
 			var dijkstra = new int[80, 50];
@@ -932,11 +828,10 @@ namespace Noxico
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			var floorStart = Color.FromArgb(65, 66, 87);
-			var floorEnd = Color.FromArgb(88, 89, 122);
+			var stoneFloor = Color.FromArgb(65, 66, 87);
 			var wallStart = Color.FromArgb(119, 120, 141);
 			var wallEnd = Color.FromArgb(144, 144, 158);
-			var floorCrud = new[] { ',', '\'', '`', '.', };
+			var floorCrud = "       \x146".ToCharArray();
 
 			for (var row = 0; row < 50; row++)
 			{
@@ -948,7 +843,7 @@ namespace Noxico
 					}
 					else
 					{
-						map[col, row] = new Tile() { Character = floorCrud[Random.Next(floorCrud.Length)], Wall = false, Background = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()), Foreground = Toolkit.Lerp(floorStart, floorEnd, Random.NextDouble()) };
+						map[col, row] = new Tile() { Character = floorCrud[Random.Next(floorCrud.Length)], Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken() };
 					}
 				}
 			}

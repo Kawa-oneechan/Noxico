@@ -43,8 +43,8 @@ namespace Noxico
 					this.Tilemap[col, row] = new Tile()
 					{
 						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(), //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color, //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Foreground = biome.Color.Darken(),
+						Background = biome.Color,
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
 					};
@@ -81,8 +81,8 @@ namespace Noxico
 					this.Tilemap[col, row] = new Tile()
 					{
 						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(), //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
-						Background = biome.Color, //biome.Color.Darken(biome.DarkenPlus + (Random.NextDouble() / biome.DarkenDiv)),
+						Foreground = biome.Color.Darken(),
+						Background = biome.Color,
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
 					};
@@ -462,7 +462,7 @@ namespace Noxico
 						var bg = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor;
 						if (Random.NextDouble() < clutter.Chance)
 						{
-							Tilemap[x, y] = tile; //clutter.Noisy ? tile.Noise() : tile;
+							Tilemap[x, y] = tile.Clone();
 							Tilemap[x, y].Background = bg;
 						}
 					}
