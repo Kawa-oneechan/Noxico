@@ -49,7 +49,7 @@ namespace Noxico
 			{
 				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.Text, ApplyMemory(SceneSystem.ApplyTokens(possibility.GetToken("_n").Text, actor.Character, target.Character)));
+				result.Add(possibility.Text, ApplyMemory(i18n.Viewpoint(possibility.GetToken("_n").Text, actor.Character, target.Character)));
 			}
 			return result;
 		}
@@ -249,7 +249,7 @@ namespace Noxico
 					if (source == null)
 						continue;
 					var message = source.Tokens[Random.Next(source.Tokens.Count)].Text;
-					message = ApplyMemory(SceneSystem.ApplyTokens(message, actor.Character, target.Character));
+					message = ApplyMemory(i18n.Viewpoint(message, actor.Character, target.Character));
 					writer(message);
 				}
 				else if (effect.Name == "roll")
