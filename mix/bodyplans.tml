@@ -712,7 +712,7 @@ bodyplan: changeling
 bodyplan: dragon
 	playable
 	culture: human
-	namegen: germanic
+	namegen: welsh
 	invisiblegender
 	neverneuter
 	terms
@@ -721,7 +721,7 @@ bodyplan: dragon
 		female: "dragoness"
 		herm: "dragon"
 	bestiary: ""
-	char: 0x166
+		char: 0x166
 	tallness: roll 1d30+200
 	skin
 		type: scales

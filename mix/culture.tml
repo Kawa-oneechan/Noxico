@@ -246,6 +246,58 @@ namegen: changeling
 		rule
 			_
 
+
+-- From 200 random male and 200 random female names, this boils down to about 70 effective male names and 94 female.
+-- Names are mostly combinations, then wholes, and rarely mythical wholes.
+-- TODO: add surnames.
+namegen: welsh
+	sets
+		female_a: Ade, Ae, Afa, A, An, Aran, Bet, Bran, Bron, Blod, Ca, Cein, Cerrid, Del, Dil, Eil, Eir, Gla, Glen, Gwen, Heul, Mair, Mor, Rhon
+		female_b: ryn, ron, rona, ronwy, rys, nen, lys, wen, rhod, dys, nys, dolyn, llian, neth
+		female_whole: Megan, Gladys, Cadi, Catrin, Llewella, Luned, Morgan, Nerys, Seren, Siana, Tegan, Winifred
+		female_myth: Aeron, Angharad, Aranrhod, Branwen, Ceridwen, Elaine, Gwenhwyfar, Morgan, Nimue, Rhiannon
+		male_a: Ae, A, Ar, Bed, Bryn, Bled, Cad, Car, Col, Del, Em, Ga, Gwil, Gwynn, Hedd, Id, Mald, Mer, Wyn
+		male_b: ron, led, wyn, wyr, mor, dyn, fael, fan, ogan, adoc, hwch, lyn, rys, reth, vin
+		male_whole: Drystan, Dylan, Evan, Ianto, Iolo, Llewelyn, Owain, Reese, Urien
+		male_myth: Aeron, Arawn, Bedwyr, Beli, Bran, Culhwch, Dylan, Galahad, Gareth, Gawain, Goronwy, Govannon, Llyr, Mabon, Myrddin, Pryderi, Ywain
+	female
+		rule
+			female_a
+			female_b
+		rule
+			female_a
+			female_b
+		rule
+			female_a
+			female_b
+		rule
+			female_whole
+		rule
+			female_whole
+		rule
+			female_myth
+		prohibit: anna, odn, rr, ded, lll, lrh, dd
+	male
+		rule
+			male_a
+			male_b
+		rule
+			male_a
+			male_b
+		rule
+			male_a
+			male_b
+		rule
+			male_whole
+		rule
+			male_whole
+		rule
+			male_myth
+		prohibit: odn, rr, ded, lll, lhr, ynwy, ahwch
+	surname
+		rule
+			_
+
 -- Fallback namegen for towns
 namegen: default
 	sets
