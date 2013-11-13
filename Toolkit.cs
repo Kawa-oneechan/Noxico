@@ -272,6 +272,7 @@ namespace Noxico
 		/// <summary>
 		/// Applies [grammar replacement] from a given character's point of view.
 		/// </summary>
+		/*
 		public static string Viewpoint(this string text, BoardChar point)
 		{
 			if (point != null && point is Player)
@@ -297,6 +298,7 @@ namespace Noxico
 			}
 			return text;
 		}
+		*/
 
 		public static bool StartsWithVowel(this string text)
 		{

@@ -37,7 +37,7 @@ namespace Noxico
 				}
 				catch (ItemException x)
 				{
-					MessageBox.Notice(x.Message.Viewpoint(boardchar));
+					MessageBox.Notice(x.Message.Viewpoint(boardchar.Character));
 				}
 			if (!token.HasToken("equipped"))
 			{

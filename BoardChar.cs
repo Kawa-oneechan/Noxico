@@ -379,10 +379,7 @@ namespace Noxico
 						{
 							Character.Copy(null); //force revert
 							AdjustView();
-							if (this is Player)
-								NoxicoGame.AddMessage(i18n.GetString("yourevert"));
-							else
-								NoxicoGame.AddMessage(i18n.Format("x_reverts", Character.Name, Character.HisHerIts(true)));
+							NoxicoGame.AddMessage(i18n.GetString("x_reverts").Viewpoint(Character));
 						}
 					}
 				}
@@ -411,7 +408,7 @@ namespace Noxico
 				{
 					Character.Health += 2;
 					//TRANSLATE
-					NoxicoGame.AddMessage((this is Player ? "You get" : Character.GetKnownName(false, false, true, true) + " gets") + " back up.");
+					NoxicoGame.AddMessage(i18n.GetString("x_getsbackup").Viewpoint(Character));
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
 				}
@@ -516,10 +513,7 @@ namespace Noxico
 								{
 									Character.Copy(target.Character);
 									AdjustView();
-									if (target is Player)
-										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomesyou" : "x_imitatesyou", Character.GetKnownName(false, false, true, true)));
-									else
-										NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y", Character.GetKnownName(false, false, true, true), target.Character.GetKnownName(false, false, true)));
+									NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y").Viewpoint(Character, target.Character));
 									Energy -= 2000;
 									return;
 								}
@@ -818,9 +812,8 @@ namespace Noxico
 			var baseDamage = 0.0f;
 			var dodged = false;
 			var skill = "unarmed_combat";
-			var verb = "strikes"; //TRANSLATE
-            var plverb = "strike";
-			var obituary = "died from being struck down"; //TRANSLATE
+			var verb = "strike{s}"; //LOOKUP
+			var obituary = "died from being struck down"; //LOOKUP
 			var attackerName = this.Character.GetKnownName(false, false, true);
 			var attackerFullName = this.Character.GetKnownName(true, true, true);
 			var targetName = target.Character.GetKnownName(false, false, true);
@@ -876,15 +869,13 @@ namespace Noxico
 
 			if (dodged)
 			{
-				//TRANSLATE - needs reworking for better translations
-				NoxicoGame.AddMessage((target is Player ? targetName.InitialCase() : "You") + " dodge " + (target is Player ? attackerName + "'s" : "your") + " attack.", target.GetEffectiveColor());
+				NoxicoGame.AddMessage(i18n.Format("x_dodges_ys_attack").Viewpoint(this.Character, target.Character), target.GetEffectiveColor());
 				return false;
 			}
 
 			if (damage > 0)
 			{
-				//TRANSLATE - needs reworking for better translations
-				NoxicoGame.AddMessage((target is Player ? attackerName.InitialCase() : "You") + ' ' + (this is Player ? plverb : verb) + ' ' + (target is Player ? "you" : targetName) + " for " + damage + " point" + (damage > 1 ? "s" : "") + ".", target.GetEffectiveColor());
+				NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", verb, (int)damage).Viewpoint(this.Character, target.Character), target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
 			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true)) //TRANSLATE - may need reworking
@@ -965,8 +956,7 @@ namespace Noxico
 				{
 					if (!Character.HasToken("helpless"))
 					{
-						//TRANSLATE - will need reworking.
-						NoxicoGame.AddMessage((this is Player ? "You are" : Character.GetKnownName(false, false, true, true) + " is") + " helpless!", Color.FromName(this.Character.Path("skin/color")));
+						NoxicoGame.AddMessage(i18n.Format("x_is_helpless").Viewpoint(Character), this.GetEffectiveColor());
 						Character.Tokens.Add(new Token() { Name = "helpless" } );
 						return false;
 					}
@@ -1240,8 +1230,7 @@ namespace Noxico
 				if (target is Player)
 				{
 					var hit = target as Player;
-					//TRANSLATE - will need reworking
-					NoxicoGame.AddMessage(string.Format("{0} hit you for {1} point{2}.", this.Character.GetKnownName(false, false, true, true), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit").Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
 					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false); //TRANSLATE
 					return;
 				}
@@ -1287,7 +1276,6 @@ namespace Noxico
 			var today = NoxicoGame.InGameTime.DayOfYear;
 			if (lastRestockDay >= today)
 				return;
-			Program.WriteLine("{0} ({1}) restocking...", Character.Name, vendor.GetToken("class").Text);
 			vendor.GetToken("lastrestockday").Value = today;
 			var items = Character.Path("items");
 			var diff = 20 - items.Tokens.Count;
