@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Noxico
@@ -98,7 +99,7 @@ namespace Noxico
 				singular = words[singular];
 			if (amount == 1)
 				return singular;
-			//TODO: inflect right. THIS IS VERY NAIVE AND STUPID.
+			//TODO: inflect right. THIS IS VERY NAIVE AND STUPID. THERE IS A BETTER SYSTEM IN INFLECTOR.SLN.
 			return singular + 's';
 		}
 
@@ -139,6 +140,130 @@ namespace Noxico
 		{
 			var lengthNow = input.Length();
 			return new string(' ', length - lengthNow) + input;
+		}
+
+		public static string Viewpoint(string message, Character top, Character bottom)
+		{
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var tIP = player == top;
+			#region Definitions
+			var subcoms = new Dictionary<string, Func<Character, IList<string>, string>>()
+			{
+				{ "You", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
+				{ "Your", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
+				{ "you", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
+				{ "your", (c, s) => { return c == player ? "your" : c.HisHerIts(true); } },
+
+				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
+				{ "g", (c, s) => { var g = c.Gender; return g == Gender.Male ? s[0] : (g == Gender.Herm && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
+				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLower(); } },
+				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
+				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
+				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
+				{ "p", (c, s) => { return string.Format("{0} {1}", s[0], Pluralize(s[1], int.Parse(s[0]))); } },
+
+				{ "name", (c, s) => { return c.Name.ToString(); } },
+				{ "fullname", (c, s) => { return c.Name.ToString(true); } },
+				{ "title", (c, s) => { return c.Title; } },
+				{ "gender", (c, s) => { return c.Gender.ToString().ToLowerInvariant(); } },
+				{ "His", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
+				{ "He", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
+				{ "Him", (c, s) => { return c == player ? "Your" : c.HimHerIt(); } },
+				{ "his", (c, s) => { return c == player ? "your" : c.HisHerIts(true); } },
+				{ "he", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
+				{ "him", (c, s) => { return c == player ? "you" : c.HimHerIt(true); } },
+				{ "is", (c, s) => { return c == player ? "are" : "is"; } },
+				{ "has", (c, s) => { return c == player ? "have" : "has"; } },
+				{ "does", (c, s) => { return c == player ? "do" : "does"; } },
+
+				{ "breastsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]")); } },
+                { "breastcupsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]"), true); } },
+				{ "nipplesize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.NippleSize(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "waistsize", (c, s) => { return Descriptions.WaistSize(c.Path("waist")); } },
+				{ "buttsize", (c, s) => { return Descriptions.ButtSize(c.Path("ass")); } },
+
+				#region PillowShout's additions
+				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
+				{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
+				{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
+				{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
+				{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
+                { "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
+				{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
+				{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
+				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")); } },
+				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")); } },
+				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
+				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },
+				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
+				{ "cumrand", (c, s) => {return Descriptions.CumRandom(); } },
+				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
+				{ "tonguetype", (c, s) => {return Descriptions.TongueType(c.GetToken("tongue")); } },
+				{ "tailtype", (c, s) => {return Descriptions.TailType(c.GetToken("tail")); } },
+                { "hipsize", (c, s) => {return Descriptions.HipSize(c.GetToken("hips")); } },
+                { "haircolor", (c, s) => {return Descriptions.HairColor(c.GetToken("hair")); } },
+                { "hairlength", (c, s) => {return Descriptions.HairLength(c.GetToken("hair")); } },
+                { "ballsize", (c, s) => {return Descriptions.BallSize(c.GetToken("balls")); } },
+				#endregion
+
+				{ "hand", (c, s) => {return Descriptions.Hand(c); } },
+				{ "hands", (c, s) => {return Descriptions.Hand(c, true); } },
+			};
+			#endregion
+			#region [] Parser
+			var regex = new Regex(@"
+\[
+	(?:(?<target>\w):)?		#Optional target and :
+
+	(?:						#One or more subcommands
+		(?:\:?)				#Separating :, optional in case target already had one
+		(?<subcom>[\w_]+)	#Command
+	)*
+\]", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+			message = regex.Replace(message, (match =>
+			{
+				var target = bottom;
+				var subcom = string.Empty;
+				var parms = new List<string>();
+
+				if (!match.Groups["subcom"].Success)
+				{
+					subcom = match.Groups["target"].Value;
+				}
+				else
+				{
+					if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
+						target = (match.Groups["target"].Value[0] == 't' ? top : bottom);
+					subcom = match.Groups["subcom"].Value;
+
+					if (match.Groups["subcom"].Captures.Count > 1)
+					{
+						subcom = match.Groups["target"].Value;
+						foreach (Capture c in match.Groups[2].Captures)
+						{
+							Console.WriteLine(c);
+							parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
+						}
+					}
+				}
+
+				parms.Add(string.Empty);
+				parms.Add(string.Empty);
+				parms.Add(string.Empty);
+
+				if (subcoms.ContainsKey(subcom))
+					return subcoms[subcom](target, parms);
+				return string.Format("(?{0}?)", subcom);
+			}));
+			#endregion
+
+			regex = new Regex(@"{ (?<first>\w*)   (?: \| (?<second>\w*) )? }", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+			message = regex.Replace(message, (match =>
+			{
+				return top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value;
+			}));
+
+			return message;
 		}
 	}
 }
