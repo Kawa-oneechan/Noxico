@@ -249,13 +249,10 @@ Number of known items       {2}
 		<word id="eternitybrooched">The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...</word>
 		<word id="youmelt">Your sexual distinctions melt into your blob.</word>
 		<word id="yourevert">You revert to your true form.</word>
-		<word id="x_reverts">{0} reverts to {1} true form.</word>
-		<word id="youimitate_x">You copy {0}'s sexual distinctions.</word>
-		<word id="youbecome_x">You become the spitting image of {0}.</word>
-		<word id="x_imitatesyou">{0} copies your sexual distinctions.</word>
-		<word id="x_becomesyou">{0} becomes another you.</word>
-		<word id="x_imitates_y">{0} copies {1}'s sexual distinctions.</word>
-		<word id="x_becomes_y">{0} becomes another {1}.</word>
+		<word id="x_reverts">[Youorname] revert{{s}} to [b:his] true form.</word>
+		<word id="x_imitatesyou">[Youorname] {{copies|copy}} [b:his] sexual distinctions.</word>
+		<word id="x_imitates_y">[Youorname] {{copies|copy}} [b:name]'s sexual distinctions.</word>
+		<word id="x_becomes_y">[Youorname] become{{s}} another [b:youorname].</word>
 		<word id="you_bear1stchild">
 			<![CDATA[You have given birth to little {0}.
 		
@@ -267,7 +264,31 @@ Somehow, you feel like your child is perfectly safe with her.]]>
 		<word id="x_bearschild">{0} has given birth to little {1}.</word>
 		<word id="congrats_mom">Congratulations, mom</word>
 		<word id="dropped_x">Dropped {0}.</word>
-		<word id="youareachicken">You have laid an egg.</word>
+		<word id="youareachicken">[Youorname] {{has|have}} laid an egg.</word>
+		<word id="x_getsbackup">[Youorname] get{{s}} back up.</word>
+
+		<word id="thisisammo">This is ammo. To use it, fire the weapon that requires this kind of munition.</word>
+		<word id="noeffect">This item has no effect.</word>
+		<word id="unidentied_warning">
+	<![CDATA[You don't know what this does.
+
+Do you want to find out?]]>
+</word>
+		<word id="use_x_confirm">Do you want to use {0}?</word>
+		<word id="cannot_equip_no_hands">[Youorname] cannot put on {0} because [he] lack{{s}} hands.</word>
+		<word id="cannot_equip_no_legs">[Youorname] cannot put on {0} because [he] lack{{s}} legs.</word>
+		<word id="surprise_its_sticky">[Youorname] {{tries|try}} to unequip {0}, but find{{s}} [he] cannot!</word>
+		<word id="cannot_remove_sticky">[Youorname] cannot unequip {0} because of stickiness.</word>
+		<word id="book_description">This is "{0}", by {1}.</word>
+
+		<word id="x_verbs_y_for_z">[t:Youorname] {0} [b:name] for [p:{1}:point].</word>
+		<word id="x_dodges_ys_attack">[t:Youorname] dodge{{s}} [b:his] attack.</word>
+		<word id="x_is_helpless">[t:Youorname] [is] helpless!</word>
+		
+		<word id="x_equiped_y">[Youorname] equip{{s}} {0}.</word>
+		<word id="x_unequiped_y">[Youorname] unequip{{s}} {0}.</word>
+		<word id="x_dropped_y_inthewater">[Youorname] drop{{s}} {0} in the water!</word>
+		<word id="x_dropped_y_inthedepths">[Youorname] drop{{s}} {0} in the depths!</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>

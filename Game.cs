@@ -764,7 +764,7 @@ namespace Noxico
 			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
 			//TODO: give the player a proper home.
-			var homeBase = Boards.FirstOrDefault(b => b.ID == "home");
+			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
 			if (homeBase == null)
 			{
 				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
@@ -1208,7 +1208,7 @@ namespace Noxico
 				HostForm.SetCell(20, 81, boardChar.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
 				HostForm.Write(character.GetKnownName(), Color.White, Color.Transparent, 20, 83);
 
-				switch (character.Gender)
+				switch (character.PercievedGender)
 				{
 					case Gender.Male:
 						HostForm.SetCell(21, 81, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);

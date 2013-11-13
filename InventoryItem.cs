@@ -94,7 +94,7 @@ namespace Noxico
 		{
 			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
 			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
-				return string.Format("This is \"{0}\", by {1}.", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
+				return i18n.Format("book_description", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
 			var a = "";
 			if (this.HasToken("description"))
 			{
@@ -261,7 +261,7 @@ namespace Noxico
 			//TODO: make full quadrupeds equip weapons in their mouth instead of the hands they don't have.
 			//This means they can carry only ONE weapon at a time, and maybe not be able to converse until unequipped.
 			if ((equip.HasToken("hands") || equip.HasToken("ring")) && (character.HasToken("quadruped")))
-				throw new ItemException("[You] cannot put on the " + this.Name + " because [you] lack[s] hands.");
+				throw new ItemException(i18n.Format("cannot_equip_no_hands", this.ToString(item, true, false)));
 
 			if (equip.HasToken("hand"))
 				CheckHands(character, "hand");
@@ -269,8 +269,8 @@ namespace Noxico
 				CheckHands(character, "ring");
 			if (equip.HasToken("pants") || equip.HasToken("underpants") || equip.HasToken("shoes") || equip.HasToken("socks"))
 				CheckPants(character, equip);
-			if (character.HasToken("snaketail") && (HasToken("pants") || equip.HasToken("underpants")))
-				throw new ItemException("[You] cannot put on the " + this.Name + " because [you] need[s] legs.");
+			if (character.HasToken("snaketail") && (equip.HasToken("pants") || equip.HasToken("underpants")))
+				throw new ItemException(i18n.Format("cannot_equip_no_legs", this.ToString(item, true, false)));
 
 			//lol
 			if (equip.HasToken("socks"))
@@ -324,7 +324,7 @@ namespace Noxico
 			mark item as unequipped.
 			*/
 			if (item != null && item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
-				throw new ItemException(!string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.");
+				throw new ItemException(!string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : i18n.Format("cannot_remove_sticky", this.ToString(item, true)));
 
 			var equip = this.GetToken("equipable");
 			var tempRemove = new Stack<Token>();
@@ -349,7 +349,7 @@ namespace Noxico
 			if (item.HasToken("cursed"))
 			{
 				item.GetToken("cursed").Tokens.Add(new Token() { Name = "known" });
-				throw new ItemException("[You] tr[ies] to unequip " + this.ToString(item, true) + ", but find[s] " + (this.HasToken("plural") ? "them" : "it") + " stuck to [your] body!\n");
+				throw new ItemException(i18n.Format("surprise_its_sticky", this.ToString(item, true)));
 			}
 
 			var succeed = true;
@@ -413,7 +413,7 @@ namespace Noxico
 			{
 				var tile = boardChar.ParentBoard.Tilemap[x, y];
 				if (tile.Water || tile.Cliff)
-					NoxicoGame.AddMessage((boardChar is Player ? "You" : boardChar.Character.GetKnownName(false, false, true, true)) + " dropped " + this.ToString(item, true, false) + " in the " + (tile.Cliff ? "depths" : "water") + "!");
+					NoxicoGame.AddMessage(i18n.Format(tile.Cliff ? "x_dropped_y_inthedepths" : "x_dropped_y_inthewater", this.ToString(item, true, false)).Viewpoint(boardChar.Character));
 				boardChar.Character.GetToken("items").Tokens.Remove(item);
 				boardChar.Character.CheckHasteSlow();
 				return;
@@ -439,9 +439,9 @@ namespace Noxico
 			{
 				NoxicoGame.DrawSidebar();
 				if (d.Contains('\n'))
-					MessageBox.Notice(runningDesc.Viewpoint(boardchar));
+					MessageBox.Notice(runningDesc.Viewpoint(boardchar.Character, null));
 				else
-					NoxicoGame.AddMessage(runningDesc.Viewpoint(boardchar));
+					NoxicoGame.AddMessage(runningDesc.Viewpoint(boardchar.Character, null));
 			});
 
 			#region Books
@@ -471,7 +471,7 @@ namespace Noxico
 						{
 							if (this.Equip(character, item))
 							{
-								runningDesc += "[You] equip[s] " + this.ToString(item, true) + ".";
+								runningDesc += i18n.Format("x_equiped_y", this.ToString(item, true));
 							}
 						}
 						catch (ItemException c)
@@ -479,7 +479,7 @@ namespace Noxico
 							runningDesc += c.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							showDesc(runningDesc);
+							showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					},
 						null);
@@ -490,7 +490,7 @@ namespace Noxico
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
 						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
-						showDesc(runningDesc.Viewpoint(boardchar));
+						showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					}
 					MessageBox.Ask("Unequip " + this.ToString(item, true) + "?", () =>
@@ -499,7 +499,7 @@ namespace Noxico
 						{
 							if (this.Unequip(character, item))
 							{
-								runningDesc += "[You] unequip[s] " + this.ToString(item, true) + ".";
+								runningDesc += i18n.Format("x_unequiped_y", this.ToString(item, true));
 							}
 						}
 						catch (ItemException x)
@@ -507,7 +507,7 @@ namespace Noxico
 							runningDesc += x.Message;
 						}
 						if (!string.IsNullOrWhiteSpace(runningDesc))
-							showDesc(runningDesc.Viewpoint(boardchar));
+							showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					},
 						null);
@@ -518,7 +518,7 @@ namespace Noxico
 
 			if (this.HasToken("ammo"))
 			{
-				MessageBox.Notice("This is ammo. To use it, fire the weapon that requires this kind of munition.");
+				MessageBox.Notice(i18n.GetString("thisisammo"));
 				return;
 			}
 
@@ -526,7 +526,7 @@ namespace Noxico
 			{
 				if (this.HasToken("description"))
 					runningDesc = this.GetToken("description").Text + "\n\n";
-				showDesc(runningDesc + "This item has no effect.");
+				showDesc(runningDesc + i18n.GetString("noeffect"));
 				return;
 			}
 
@@ -541,7 +541,7 @@ namespace Noxico
 				name.Append(this.Name);
 				if (item.HasToken("unidentified") && !string.IsNullOrWhiteSpace(this.UnknownName))
 				{
-					runningDesc = "You don't know what this does.\n\nDo you want to find out?";
+					runningDesc = i18n.GetString("unidentified_warning");
 				}
 				else
 				{
@@ -550,7 +550,7 @@ namespace Noxico
 						//No need to check for "worn" or "examined" here...
 						runningDesc = this.GetDescription(item) + "\n\n"; //this.GetToken("description").Text + "\n\n";
 					}
-					runningDesc += "Do you want to use " + this.ToString(item, true) + "?";
+					runningDesc += i18n.Format("use_x_confirm", this.ToString(item, true));
 				}
 				MessageBox.Ask(runningDesc, () => { this.Use(character, item, true); }, null);
 				return;
@@ -580,7 +580,7 @@ namespace Noxico
 				this.Consume(character, item);
 
 			if (!string.IsNullOrWhiteSpace(runningDesc))
-				showDesc(runningDesc.Viewpoint(boardchar));
+				showDesc(runningDesc.Viewpoint(boardchar.Character));
 		}
 
 		public void Consume(Character carrier, Token carriedItem)
@@ -743,6 +743,7 @@ namespace Noxico
 			return ToString(token) + " (" + string.Join(", ", info) + ")";
 		}
 
+		//TRANSLATE
 		public void Eat(Character gourmand, Token item)
 		{
 			if (item.HasToken("fat"))

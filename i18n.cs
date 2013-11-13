@@ -142,10 +142,14 @@ namespace Noxico
 			return new string(' ', length - lengthNow) + input;
 		}
 
-		public static string Viewpoint(string message, Character top, Character bottom)
+		public static string Viewpoint(this string message, Character top, Character bottom = null)
 		{
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
-			var tIP = player == top;
+			if (top == null)
+				top = player;
+			if (bottom == null)
+				bottom = top;
+			//var tIP = player == top;
 			#region Definitions
 			var subcoms = new Dictionary<string, Func<Character, IList<string>, string>>()
 			{
@@ -153,6 +157,9 @@ namespace Noxico
 				{ "Your", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
 				{ "you", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
 				{ "your", (c, s) => { return c == player ? "your" : c.HisHerIts(true); } },
+
+				{ "Youorname", (c, s) => { return c == player ? "You" : c.GetKnownName(false, false, true, true); } },
+				{ "youorname", (c, s) => { return c == player ? "you" : c.GetKnownName(false, false, true); } },
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
 				{ "g", (c, s) => { var g = c.Gender; return g == Gender.Male ? s[0] : (g == Gender.Herm && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
@@ -162,8 +169,8 @@ namespace Noxico
 				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
 				{ "p", (c, s) => { return string.Format("{0} {1}", s[0], Pluralize(s[1], int.Parse(s[0]))); } },
 
-				{ "name", (c, s) => { return c.Name.ToString(); } },
-				{ "fullname", (c, s) => { return c.Name.ToString(true); } },
+				{ "name", (c, s) => { return c.GetKnownName(false, false, true); } },
+				{ "fullname", (c, s) => { return c.GetKnownName(true, false, true); } },
 				{ "title", (c, s) => { return c.Title; } },
 				{ "gender", (c, s) => { return c.Gender.ToString().ToLowerInvariant(); } },
 				{ "His", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
@@ -257,7 +264,7 @@ namespace Noxico
 			}));
 			#endregion
 
-			regex = new Regex(@"{ (?<first>\w*)   (?: \| (?<second>\w*) )? }", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			message = regex.Replace(message, (match =>
 			{
 				return top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value;
