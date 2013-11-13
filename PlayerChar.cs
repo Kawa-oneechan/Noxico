@@ -50,10 +50,10 @@ namespace Noxico
 			{
 				if (warp.TargetBoard == -1) //ungenerated dungeon
 				{
-					WorldGen.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
-					WorldGen.DungeonGeneratorEntranceWarpID = warp.ID;
-					WorldGen.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
-					WorldGen.CreateDungeon();
+					DungeonGenerator.DungeonGeneratorEntranceBoardNum = ParentBoard.BoardNum;
+					DungeonGenerator.DungeonGeneratorEntranceWarpID = warp.ID;
+					DungeonGenerator.DungeonGeneratorBiome = (int)ParentBoard.GetToken("biome").Value;
+					DungeonGenerator.CreateDungeon();
 					return;
 				}
 				else if (warp.TargetBoard == -2) //unconnected dungeon

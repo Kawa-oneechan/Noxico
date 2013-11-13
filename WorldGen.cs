@@ -5,193 +5,8 @@ using System.Xml;
 
 namespace Noxico
 {
-	public static class WorldGen
+	public static class DungeonGenerator
 	{
-		/*
-		private static TownGenerator townGen;
-		private static List<string> vendorTypeList;
-
-		public static Board CreateTown(int biomeID, string cultureName, string name, bool withSurroundings)
-		{
-			if (townGen == null)
-				townGen = new TownGenerator();
-
-			if (biomeID < 0)
-				biomeID = Random.Next(2, 5);
-
-			var boards = NoxicoGame.HostForm.Noxico.Boards;
-			var thisMap = new Board();
-			var biome = BiomeData.Biomes[biomeID];
-
-			var vendorChance = 0.50;
-			if (vendorTypeList == null)
-			{
-				vendorTypeList = new List<string>();
-				//var lootData = Mix.GetXmlDocument("loot.xml");
-				//var filters = lootData.SelectNodes("//filter[@key=\"vendorclass\"]");
-				//foreach (var filter in filters.OfType<XmlElement>())
-				var lootData = Mix.GetTokenTree("loot.tml", true);
-				foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
-				{
-					//var v = filter.GetAttribute("value");
-					var v = filter.Text;
-					if (!vendorTypeList.Contains(v))
-						vendorTypeList.Add(v);
-				}
-			}
-			var vendorTypes = new List<string>();
-
-			if (string.IsNullOrEmpty(cultureName))
-				cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
-
-			thisMap.Clear(biomeID);
-			thisMap.BoardType = BoardType.Town;
-			Board.HackishBoardTypeThing = "town";
-			thisMap.AddToken("culture", 0, cultureName);
-
-			townGen.Board = thisMap;
-			townGen.Culture = Culture.Cultures[cultureName];
-			townGen.Create(biome);
-			townGen.ToTilemap(ref thisMap.Tilemap);
-			townGen.ToSectorMap(thisMap.Sectors);
-
-			if (Random.NextDouble() < vendorChance)
-				if (AddVendor(thisMap, vendorTypes))
-					vendorChance *= 0.9;
-
-			if (string.IsNullOrEmpty(name))
-			{
-				while (true)
-				{
-					name = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
-					if (boards.Find(b => b != null && b.Name == name) == null)
-						break;
-				}
-			}
-			thisMap.Name = name;
-			thisMap.BoardNum = boards.Count;
-			thisMap.ID = thisMap.Name.ToID() + thisMap.BoardNum;
-			boards.Add(thisMap);
-
-			if (!withSurroundings)
-				return thisMap;
-
-			//Generate surroundings
-			var north = new Board();
-			var south = new Board();
-			var east = new Board();
-			var west = new Board();
-			var northWest = new Board();
-			var northEast = new Board();
-			var southWest = new Board();
-			var southEast = new Board();
-			foreach (var lol in new[] { northWest, north, northEast, east, southEast, south, southWest, west })
-			{
-				lol.GetToken("biome").Value = biomeID;
-				lol.Clear(biomeID);
-				lol.BoardType = BoardType.Wild;
-				Board.HackishBoardTypeThing = "wild";
-				lol.BoardNum = boards.Count;
-				lol.Name = thisMap.Name + " Outskirts";
-				lol.ID = lol.Name.ToID() + lol.BoardNum;
-				if (Random.NextDouble() > 0.5 && biome.Encounters.Length > 0)
-				{
-					var encounters = lol.GetToken("encounters");
-					encounters.Value = biome.MaxEncounters;
-					encounters.GetToken("stock").Value = encounters.Value * Random.Next(3, 5);
-					foreach (var e in biome.Encounters)
-						encounters.AddToken(e);
-
-					lol.AddClutter();
-
-					//Possibility of linked dungeons
-					if (Random.NextDouble() < 0.6)
-					{
-						var eX = Random.Next(2, 78);
-						var eY = Random.Next(1, 23);
-
-						if (lol.IsSolid(eY, eX))
-							continue;
-						var sides = 0;
-						if (lol.IsSolid(eY - 1, eX))
-							sides++;
-						if (lol.IsSolid(eY + 1, eX))
-							sides++;
-						if (lol.IsSolid(eY, eX - 1))
-							sides++;
-						if (lol.IsSolid(eY, eX + 1))
-							sides++;
-						if (sides > 3)
-							continue;
-
-						var newWarp = new Warp()
-						{
-							TargetBoard = -1, //mark as ungenerated dungeon
-							ID = lol.ID + "_Dungeon",
-							XPosition = eX,
-							YPosition = eY,
-						};
-						lol.Warps.Add(newWarp);
-						lol.SetTile(eY, eX, '>', Color.Silver, Color.Black);
-					}
-				}
-				else if (Random.NextDouble() > 0.8)
-				{
-					lol.BoardType = BoardType.Town;
-					Board.HackishBoardTypeThing = "town";
-					lol.Name = thisMap.Name;
-					lol.ID = lol.Name.ToID() + lol.BoardNum;
-					townGen.Board = lol;
-					townGen.Create(biome);
-					townGen.ToTilemap(ref lol.Tilemap);
-					townGen.ToSectorMap(lol.Sectors);
-					if (Random.NextDouble() < vendorChance)
-						if (AddVendor(lol, vendorTypes))
-							vendorChance *= 0.75;
-				}
-				boards.Add(lol);
-			}
-			thisMap.Connect(Direction.North, north);
-			thisMap.Connect(Direction.South, south);
-			thisMap.Connect(Direction.East, east);
-			thisMap.Connect(Direction.West, west);
-			north.Connect(Direction.West, northWest);
-			north.Connect(Direction.East, northEast);
-			south.Connect(Direction.West, southWest);
-			south.Connect(Direction.East, southEast);
-			east.Connect(Direction.North, northEast);
-			east.Connect(Direction.South, southEast);
-			west.Connect(Direction.North, northWest);
-			west.Connect(Direction.South, southWest);
-
-			return thisMap;
-		}
-
-		public static Board CreateTown()
-		{
-			return CreateTown(-1, null, null, true);
-		}
-
-		public static bool AddVendor(Board board, List<string> typeList)
-		{
-			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation") && e.Character.Path("role/vendor") == null).ToList();
-			if (unexpected.Count == 0)
-				return false;
-			var vendor = unexpected[0].Character;
-			var stock = vendor.GetToken("items");
-			if (typeList.Count == 0)
-				typeList.AddRange(vendorTypeList);
-			var type = typeList[Random.Next(typeList.Count)];
-			typeList.Remove(type);
-			vendor.RemoveAll("role");
-			vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, type);
-			vendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
-			Program.WriteLine("*** {0} is now a vendor ***", vendor.Name.ToString(true));
-			unexpected[0].RestockVendor();
-			return true;
-		}
-		*/
-
 		public static int DungeonGeneratorEntranceBoardNum;
 		public static string DungeonGeneratorEntranceWarpID;
 		public static int DungeonGeneratorBiome;
@@ -456,7 +271,7 @@ namespace Noxico
 				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
 					break;
 			}
-			var treasure = WorldGen.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasure = DungeonGenerator.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
 				AsciiChar = (char)0x00C6,
@@ -757,8 +572,6 @@ namespace Noxico
 		public bool IsWater { get; private set; }
 		public bool CanBurn { get; private set; }
 		public char[] GroundGlyphs { get; private set; }
-		public double DarkenPlus { get; private set; }
-		public double DarkenDiv { get; private set; }
 		public int MaxEncounters { get; private set; }
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
@@ -779,20 +592,12 @@ namespace Noxico
 
 			var groundGlyphs = x.SelectSingleNode("groundGlyphs");
 			if (groundGlyphs == null)
-				n.GroundGlyphs = new[] { ',', '\'', '`', '.', };
+				n.GroundGlyphs = new[] { '\x146' };
 			else
 				n.GroundGlyphs = ((XmlElement)groundGlyphs).InnerText.ToCharArray();
-			var darken = x.SelectSingleNode("darken");
-			if (darken == null)
-			{
-				n.DarkenPlus = 2;
-				n.DarkenDiv = 2;
-			}
-			else
-			{
-				n.DarkenPlus = double.Parse(((XmlElement)darken).GetAttribute("plus"), System.Globalization.CultureInfo.InvariantCulture);
-				n.DarkenDiv = double.Parse(((XmlElement)darken).GetAttribute("div"), System.Globalization.CultureInfo.InvariantCulture);
-			}
+			var glyphs = "      ".ToCharArray().ToList();
+			glyphs.AddRange(n.GroundGlyphs);
+			n.GroundGlyphs = glyphs.ToArray();
 
 			var encounters = x.SelectSingleNode("encounters");
 			if (encounters == null)

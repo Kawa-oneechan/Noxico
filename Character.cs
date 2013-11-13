@@ -884,9 +884,9 @@ namespace Noxico
 			filters["bodymatch"] = this.GetClosestBodyplanMatch();
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();
-			clothing.AddRange(WorldGen.GetRandomLoot("npc", "underwear", filters));
-			clothing.AddRange(WorldGen.GetRandomLoot("npc", "clothing", filters));
-			clothing.AddRange(WorldGen.GetRandomLoot("npc", "accessories", filters));
+			clothing.AddRange(DungeonGenerator.GetRandomLoot("npc", "underwear", filters));
+			clothing.AddRange(DungeonGenerator.GetRandomLoot("npc", "clothing", filters));
+			clothing.AddRange(DungeonGenerator.GetRandomLoot("npc", "accessories", filters));
 			var check = new Func<Token, bool>(x =>
 			{
 				var ki = NoxicoGame.KnownItems.FirstOrDefault(i => i.ID == x.Name);
@@ -922,7 +922,7 @@ namespace Noxico
 					inventory.AddToken(item).AddToken("equipped");
 			}
 			var armedOne = false;
-			foreach (var item in WorldGen.GetRandomLoot("npc", "arms", filters))
+			foreach (var item in DungeonGenerator.GetRandomLoot("npc", "arms", filters))
 			{
 				var arm = inventory.AddToken(item);
 				if (!armedOne)
@@ -931,7 +931,7 @@ namespace Noxico
 					arm.AddToken("equipped");
 				}
 			}
-			foreach (var item in WorldGen.GetRandomLoot("npc", "food", filters))
+			foreach (var item in DungeonGenerator.GetRandomLoot("npc", "food", filters))
 				inventory.AddToken(item);
 
 			this.RemoveToken("lootset_id");
