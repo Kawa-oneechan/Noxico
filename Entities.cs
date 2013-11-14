@@ -297,10 +297,7 @@ namespace Noxico
 				else if (ascii.HasToken("fore"))
 					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Text);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
-				{
-					var cga = new[] { "Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "Purple", "Brown", "Silver", "Gray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White" };
-					this.ForegroundColor = Color.FromName(cga[(int)Token.GetToken("id").Value % cga.Length]);
-				}
+					this.ForegroundColor = Color.FromCGA((int)Token.GetToken("id").Value % 16);
 				if (ascii.HasToken("back"))
 					this.BackgroundColor = Color.FromName(ascii.GetToken("back").Tokens[0]);
 				else
@@ -365,8 +362,8 @@ namespace Noxico
 			{
 				itemDict.Add(item, item.Name);
 			}
-			itemDict.Add(-1, "...nothing");
-			ActionList.Show("Pick up...", items[0].XPosition, items[0].YPosition, itemDict,
+			itemDict.Add(-1, i18n.GetString("action_pickup_cancel")); //"...nothing"
+			ActionList.Show(i18n.GetString("action_pickup_window") /* "Pick up..." */, items[0].XPosition, items[0].YPosition, itemDict,
 				() =>
 				{
 					if (ActionList.Answer is int && (int)ActionList.Answer == -1)

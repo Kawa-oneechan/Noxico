@@ -716,10 +716,10 @@ bodyplan: dragon
 	invisiblegender
 	neverneuter
 	terms
-		generic: "dragon"
-		male: "dragon"
-		female: "dragoness"
-		herm: "dragon"
+		generic: "draig"
+		male: "draign"
+		female: "draiga"
+		herm: "dragwn"
 	bestiary: ""
 		char: 0x166
 	tallness: roll 1d30+200

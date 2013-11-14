@@ -333,6 +333,11 @@ Would you like an infodump on the way out?]]>
 		<word id="counts">zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve</word>
 		<word id="countsordinal">zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth</word>
     <word id="setbymeasure">no, a single, a pair of, a trio of, a quartet of, a quintet of, a sextet of, a septet of, an octet of, a nonet of, ten, eleven, a dozen</word>
+		<word id="potion_colors">black, blue, green, red, yellow, mauve, brown, white, silver, purple, chocolate, orange, gray</word>
+		<word id="potion_mods">, bubbly , fizzy , viscious , translucent , smoky , smelly , fragrant , sparkly , tar-like </word>
+		<word id="potion_ringmods">, shiny , sparking , warm , cold , translucent , glistening </word>
+		<word id="potion_name">{0}{1} potion</word>
+		<word id="potion_ringname">{0}{1} ring</word>
 	</category>
 	<category name="Inventory">
 		<word id="inventory_yours">Your inventory</word>

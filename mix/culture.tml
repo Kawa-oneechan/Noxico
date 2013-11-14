@@ -276,7 +276,7 @@ namegen: welsh
 			female_whole
 		rule
 			female_myth
-		prohibit: anna, odn, rr, ded, lll, lrh, dd
+		prohibit: anna, odn, rr, ded, lll, lrh, dd, ronron, honron, wynron
 	male
 		rule
 			male_a
@@ -293,7 +293,7 @@ namegen: welsh
 			male_whole
 		rule
 			male_myth
-		prohibit: odn, rr, ded, lll, lhr, ynwy, ahwch
+		prohibit: odn, rr, ded, lll, lhr, ynwy, ahwch, ronron, honron, wynron
 	surname
 		rule
 			_
