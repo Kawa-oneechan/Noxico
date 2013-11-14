@@ -132,6 +132,7 @@ namespace Noxico
 					foreach (var e in biomeData.Encounters)
 						encounters.AddToken(e);
 					encounters.Value = biomeData.MaxEncounters;
+					encounters.GetToken("stock").Value = encounters.Value * Random.Next(3, 5);
 					board.RespawnEncounters();
 
 					//If this is the entrance board, add a warp back to the Overworld.

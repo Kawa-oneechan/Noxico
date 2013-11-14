@@ -320,7 +320,7 @@ namespace Noxico
 			}
 			else if (targetDirection == Direction.South)
 			{
-				for (y++; x < 80 && distance < range; y++, distance++)
+				for (y++; y < 50 && distance < range; y++, distance++)
 					if (gotHit(x, y))
 						break;
 			}
