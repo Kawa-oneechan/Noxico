@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Noxico
 {
+	/*
 	public partial class Tile
 	{
 		public Tile Noise()
@@ -25,6 +26,7 @@ namespace Noxico
 			};
 		}
 	}
+	*/
 
 	public partial class Board : TokenCarrier
 	{
@@ -108,16 +110,10 @@ namespace Noxico
 				this.Tilemap[point.Y, point.X] = (Tile)js.Run(brush);
 			}
 		}
-		public void Line(int x1, int y1, int x2, int y2, Tile brush, bool noise)
-		{
-			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
-			{
-				this.Tilemap[point.X, point.Y] = noise ? brush.Noise() : brush.Clone();
-			}
-		}
 		public void Line(int x1, int y1, int x2, int y2, Tile brush)
 		{
-			Line(x1, y1, x2, y2, brush, false);
+			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
+				this.Tilemap[point.X, point.Y] = brush.Clone();
 		}
 
 		public void Replace(string checker, string replacer)

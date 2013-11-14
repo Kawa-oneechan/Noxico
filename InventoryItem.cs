@@ -123,7 +123,7 @@ namespace Noxico
 			{
 				a = Toolkit.StartsWithVowel(this.UnknownName) ? "an " : "a ";
 			}
-			return "This is " + this.ToString(token) + ".";
+			return i18n.Format("inventory_thisis_x", this.ToString(token)); //"This is " + this.ToString(token) + ".";
 		}
 
 		public static InventoryItem FromToken(Token item)
@@ -222,7 +222,7 @@ namespace Noxico
 			if ((item.HasToken("underpants") && item.HasToken("undershirt")) ||
 				(item.HasToken("pants") && item.HasToken("shirt")))
 				return; //allow bodysuits
-			throw new ItemException("Your body is not made for this sort of clothing.");
+			throw new ItemException(i18n.GetString("cannot_equip_incompatible_body")); //"Your body is not made for this sort of clothing.");
 		}
 
 		public bool CanSeeThrough()

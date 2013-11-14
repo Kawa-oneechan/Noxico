@@ -229,7 +229,7 @@ namespace Noxico
 
 			if (clear)
 				HostForm.Clear();
-			HostForm.Write(" -- Saving... -- ", Color.White, Color.Black);
+			HostForm.Write(i18n.GetString("loadsave_saveheader") /* " -- Saving... -- " */, Color.White, Color.Black);
 			HostForm.Draw();
 
 			if (!noPlayer && !Player.Character.HasToken("gameover"))
@@ -312,7 +312,7 @@ namespace Noxico
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
-			HostForm.Write(" -- Loading... -- ", Color.White, Color.Black);
+			HostForm.Write(i18n.GetString("loadsave_loadheader") /* " -- Loading... -- " */, Color.White, Color.Black);
 			HostForm.Draw();
 
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
@@ -455,7 +455,7 @@ namespace Noxico
 		public static void ShowMessageLog()
 		{
 			if (messageLog.Count == 0)
-				MessageBox.Notice("There are no messages to display.", true);
+				MessageBox.Notice(i18n.GetString("nomoremessages"), true); //"There are no messages to display."
 			else
 				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE2FD"))));
 		}
@@ -571,7 +571,7 @@ namespace Noxico
 
 			var generator = new WorldMapGenerator();
 			generator.GenerateWorldMap("Nox", setStatus, "pandora");
-			setStatus("Creating boards...");
+			setStatus(i18n.GetString("worldgen_createboards")); //"Creating boards...");
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
@@ -605,7 +605,7 @@ namespace Noxico
 				}
 			}
 
-			setStatus("Placing towns...");
+			setStatus(i18n.GetString("worldgen_towns")); //"Placing towns...");
 			var townBoards = new List<Board>();
 
 			var vendorTypes = new List<string>();
@@ -679,7 +679,7 @@ namespace Noxico
 				}
 			}
 
-			setStatus("Scattering dungeon entrances...");
+			setStatus(i18n.GetString("worldgen_dungeons")); //"Scattering dungeon entrances...");
 			var dungeonEntrances = 0;
 			while (dungeonEntrances < 25)
 			{
@@ -735,7 +735,7 @@ namespace Noxico
 				}
 			}
 
-			setStatus("Applying missions...");
+			setStatus(i18n.GetString("worldgen_missions")); //"Applying missions...");
 			ApplyMissions(generator);
 
 #if DEBUG
@@ -781,6 +781,7 @@ namespace Noxico
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();
 
+			/*
 			setStatus("Saving overworld boards...");
 			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 			for (var i = 0; i < this.Boards.Count; i++)
@@ -791,6 +792,7 @@ namespace Noxico
 				//if (i > 0)
 				//	this.Boards[i] = null;
 			}
+			*/
 			stopwatch.Stop();
 			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
@@ -798,7 +800,7 @@ namespace Noxico
 
 			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
 			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
-			setStatus("The World is Ready.");
+			setStatus(i18n.GetString("worldgen_ready")); //"The World is Ready.");
 			InGame = true;
 			//this.CurrentBoard.Redraw();
 		}
@@ -942,8 +944,8 @@ namespace Noxico
 		public void RollPotions()
 		{
 			this.Potions = new string[256];
-			var colors = new[] { "black", "blue", "green", "red", "yellow", "mauve", "brown", "white", "silver", "purple", "chocolate", "orange", "gray" };
-			var mods = new[] { "", "bubbly ", "fizzy ", "viscious ", "translucent ", "smoky ", "smelly ", "fragrant ", "sparkly ", "tar-like " };
+			var colors = i18n.GetArray("potion_colors");
+			var mods = i18n.GetArray("potion_mods");
 			for (var i = 0; i < 128; i++)
 			{
 				string roll = null;
@@ -951,11 +953,11 @@ namespace Noxico
 				{
 					var color = colors[Random.Next(colors.Length)];
 					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
-					roll = mod + color + " potion";
+					roll = i18n.Format("potion_name", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
 			}
-			mods = new[] { "", "shiny ", "sparking ", "warm ", "cold ", "translucent ", "glistening " };
+			mods = i18n.GetArray("potion_ringmods");
 			for (var i = 128; i < 192; i++)
 			{
 				string roll = null;
@@ -963,12 +965,12 @@ namespace Noxico
 				{
 					var color = colors[Random.Next(colors.Length)];
 					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
-					roll = mod + color + " ring";
+					roll = i18n.Format("potion_ringname", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
 			}
 			for (var i = 192; i < 256; i++)
-				Potions[i] = "";
+				Potions[i] = string.Empty;
 		}
 
 		public void ApplyRandomPotions()
@@ -980,7 +982,7 @@ namespace Noxico
 					var rid = (int)item.GetToken("randomized").Value;
 					if (item.Path("equipable/ring") != null && rid < 128)
 						rid += 128;
-					var rdesc = Potions[rid];
+					var rdesc = Potions[rid].Remove(Potions[rid].IndexOf('\0'));
 
 					if (rdesc == null)
 					{
@@ -1000,12 +1002,11 @@ namespace Noxico
 						item.UnknownName = rdesc;
 					}
 					//No matter if it's identified or not, we'll want to change the color.
-					var color = Color.NameColor(rdesc.Remove(rdesc.IndexOf(' ')));
+					var color = Color.NameColor(Potions[rid].Substring(Potions[rid].IndexOf('\0') + 1));
 					var fore = item.Path("ascii/fore");
 					if (fore == null)
 						fore = item.GetToken("ascii").AddToken("fore");
-					fore.Tokens.Clear();
-					fore.AddToken(color);
+					fore.Text = color;
 				}
 			}
 		}
@@ -1246,276 +1247,4 @@ namespace Noxico
 #endif
 		}
 	}
-
-	/*
-	public class Expectation
-	{
-		public BoardType Type { get; set; }
-		public int Biome { get; set; }
-		public string Culture { get; set; }
-		public string BuildingSet { get; set; }
-		public List<string> Characters { get; private set; }
-		public List<string> Species { get; private set; }
-		
-		public Expectation()
-		{
-			Type = BoardType.Town;
-			Biome = -1;
-			Culture = string.Empty;
-			Characters = new List<string>();
-			Species = new List<string>();
-		}
-		
-		public static Expectation LoadFromFile(BinaryReader stream)
-		{
-			Toolkit.ExpectFromFile(stream, "EXPT", "location expectation");
-			var exp = new Expectation();
-			exp.Type = (BoardType)stream.ReadInt16();
-			exp.Biome = (int)stream.ReadInt16();
-			exp.Culture = stream.ReadString();
-			var numChars = stream.ReadInt16();
-			var numSpecies = stream.ReadInt16();
-			for (var i = 0; i < numChars; i++)
-				exp.Characters.Add(stream.ReadString());
-			for (var i = 0; i < numSpecies; i++)
-				exp.Species.Add(stream.ReadString());
-			return exp;
-		}
-		
-		public void SaveToFile(BinaryWriter stream)
-		{
-			Toolkit.SaveExpectation(stream, "EXPT");
-			stream.Write((Int16)Type);
-			stream.Write((Int16)Biome);
-			stream.Write(Culture ?? string.Empty);
-			stream.Write((Int16)Characters.Count);
-			stream.Write((Int16)Species.Count);
-			foreach (var character in Characters)
-				stream.Write(character);
-			foreach (var species in Species)
-				stream.Write(species);
-		}
-
-		public int ID
-		{
-			get
-			{
-				return NoxicoGame.Expectations.First(e => e.Value == this).Key;
-			}
-		}
-		public string Name
-		{
-			get
-			{
-				return NoxicoGame.TargetNames[ID];
-			}
-		}
-
-		public static Expectation ExpectTown(string name, int biomeID)
-		{
-			if (biomeID < 0)
-				biomeID = Random.Next(2, 8);
-			var biome = BiomeData.Biomes[biomeID];
-			var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
-			var culture = Noxico.Culture.Cultures[cultureName];
-
-			if (string.IsNullOrEmpty(name))
-			{
-				while (true)
-				{
-					name = Noxico.Culture.GetName(culture.TownName, Noxico.Culture.NameType.Town);
-					if (!NoxicoGame.TargetNames.ContainsValue(name))
-						break;
-				}
-			}
-			var id = -10;
-			if (NoxicoGame.Expectations.Count > 0)
-				id = NoxicoGame.Expectations.Last().Key;
-			id--;
-			NoxicoGame.Expectations.Add(id, new Expectation() { Biome = biomeID, Culture = cultureName, BuildingSet = "town" });
-			NoxicoGame.TargetNames.Add(id, name);
-			NoxicoGame.KnownTargets.Add(id);
-			return NoxicoGame.Expectations[id];
-		}
-
-		public static Expectation ExpectTown(string name, string biomeName)
-		{
-			return ExpectTown(name, BiomeData.ByName(biomeName));
-		}
-
-		//TODO: probaby better to use while still creating the board, re spouses
-		public static void AddCharacters(Board board, List<string> characters)
-		{
-			var culture = Noxico.Culture.DefaultCulture;
-			if (board.HasToken("culture") && !string.IsNullOrWhiteSpace(board.GetToken("culture").Text))
-				culture = Noxico.Culture.Cultures[board.GetToken("culture").Text];
-			var tokens = new List<string>();
-
-			var unexpected = board.Entities.OfType<BoardChar>().Where(e => !e.Character.HasToken("expectation")).ToList();
-			Character character = null;
-
-			Board.HackishBoardTypeThing = board.BoardType.ToString().ToLowerInvariant();
-
-			foreach (var expectedChar in characters)
-			{
-				var replacement = unexpected[Random.Next(unexpected.Count)];
-				var fullReplace = true;
-				var schedule = "villager";
-
-				var bodyplan = Toolkit.PickOne(culture.Bodyplans);
-				var gender = Gender.Random;
-				var firstName = "";
-				var surName = "";
-				tokens.Clear();
-
-				if (expectedChar.StartsWith("unique="))
-				{
-					var unique = expectedChar.Split('=')[1];
-					character = Character.GetUnique(unique);
-					if (character.HasToken("schedule"))
-					{
-						schedule = character.GetToken("schedule").Text;
-						character.RemoveToken("schedule");
-					}
-					Scheduler.AddSchedule(schedule, character);
-
-					//See if there's a character on the board with this gender
-					var cg = character.Gender;
-					foreach (var person in unexpected)
-					{
-						if (cg == person.Character.Gender)
-						{
-							replacement = person;
-							fullReplace = false;
-							break;
-						}
-					}
-				}
-				else
-				{
-					foreach (var item in expectedChar.Split(';'))
-					{
-						var stuff = item.Split('=');
-						switch (stuff[0])
-						{
-							case "bodyplan":
-								bodyplan = stuff[1];
-								break;
-							case "gender":
-								gender = (Gender)Enum.Parse(typeof(Gender), stuff[1], true);
-								break;
-							case "firstname":
-								firstName = stuff[1];
-								break;
-							case "surname":
-								surName = stuff[1];
-								break;
-							case "token":
-								tokens.Add(stuff[1]);
-								break;
-							case "schedule":
-								schedule = stuff[1];
-								break;
-						}
-					}
-
-					//See if there's a character on the board with this bodyplan and gender already
-					foreach (var person in unexpected)
-					{
-						var primaryHash = Toolkit.GetBodyComparisonHash(person.Character);
-						var distance = Toolkit.GetHammingDistance(primaryHash, NoxicoGame.BodyplanHashes[bodyplan]);
-						if (distance == 0) //?
-						{
-							var pg = person.Character.Gender;
-							if (gender != pg)
-								continue;
-							replacement = person;
-							fullReplace = false;
-							break;
-						}
-					}
-
-					character = fullReplace ? Character.Generate(bodyplan, gender) : replacement.Character;
-
-					if (!string.IsNullOrEmpty(firstName))
-						character.Name.FirstName = firstName;
-					if (!string.IsNullOrEmpty(surName))
-						character.Name.Surname = surName;
-
-					foreach (var tokenEntry in tokens)
-					{
-						var token = (tokenEntry + ' ').TrimEnd();
-						Token t = null;
-						var tVal = "";
-						if (token.StartsWith("!"))
-						{
-							token = token.Substring(1);
-							t = character.Path(token);
-							if (t != null)
-							{
-								token = token.Remove(token.LastIndexOf('/'));
-								character.Path(token).RemoveToken(t);
-							}
-							continue;
-						}
-						if (token.Contains('('))
-						{
-							tVal = token.Substring(token.IndexOf('(') + 1);
-							tVal = tVal.Remove(tVal.Length - 1);
-							token = token.Remove(token.IndexOf('('));
-						}
-						if (!token.Contains('/'))
-						{
-							if (character.HasToken(token))
-								t = character.GetToken(token);
-							else
-							{
-								t = new Token(token);
-								character.AddToken(t);
-							}
-						}
-						else
-						{
-							TokenCarrier o = character;
-							foreach (var part in token.Split('/'))
-							{
-								if (o.HasToken(part))
-									o = o.GetToken(part);
-								else
-								{
-									t = new Token(part);
-									o.AddToken(t);
-									o = t;
-								}
-							}
-						}
-						if (!string.IsNullOrEmpty(tVal))
-						{
-							var fVal = 0.0f;
-							var isNumeric = float.TryParse(tVal, out fVal);
-							if (isNumeric)
-								t.Value = fVal;
-							else
-								t.Text = tVal;
-						}
-					}
-
-					Scheduler.AddSchedule(schedule, character);
-					character.AddToken("expectation");
-				}
-
-				unexpected.Remove(replacement);
-				replacement.Character = character;
-				replacement.ID = character.Name.ToID();
-				replacement.AdjustView();
-			}
-		}
-
-		public static Expectation FindUnknownExpectation(BoardType type)
-		{
-			var result = NoxicoGame.Expectations.Values.FirstOrDefault(e => e.Type == type);
-			return result;
-		}
-	}
-	*/
 }

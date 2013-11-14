@@ -85,7 +85,7 @@ namespace Noxico
 
 		public static string[] GetArray(string key)
 		{
-			return GetString(key).Split(',').Select(x => x.Trim()).ToArray();
+			return GetString(key).Split(',').Select(x => x.TrimStart()).ToArray();
 		}
 
 		public static List<string> GetList(string key)
@@ -160,6 +160,7 @@ namespace Noxico
 
 				{ "Youorname", (c, s) => { return c == player ? "You" : c.GetKnownName(false, false, true, true); } },
 				{ "youorname", (c, s) => { return c == player ? "you" : c.GetKnownName(false, false, true); } },
+				{ "Yourornames", (c, s) => { return c == player ? "Your" : c.GetKnownName(false, false, true, true) + "'s" /* i18n.GetString("possessive") */; } },
 
 				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
 				{ "g", (c, s) => { var g = c.Gender; return g == Gender.Male ? s[0] : (g == Gender.Herm && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },

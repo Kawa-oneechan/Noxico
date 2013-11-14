@@ -70,27 +70,6 @@ namespace Noxico
 			return string.Format("{0} {1}", A, Title);
 		}
 
-		/*
-		/// <summary>
-		/// Returns the short name of the character, or the title.
-		/// </summary>
-		public string GetNameOrTitle(bool fullName = false, bool the = false, bool initialCaps = false)
-		{
-			if (HasToken("title"))
-				return GetToken("title").Text;
-			if (HasToken("beast"))
-				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
-			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
-			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
-				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
-				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Random;
-			if (IsProperNamed)
-				return Name.ToString(fullName);
-			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Species);
-		}
-		*/
-
 		public string GetKnownName(bool fullName = false, bool appendTitle = false, bool the = false, bool initialCaps = false)
 		{
 			if (HasToken("player") || HasToken("special"))
@@ -479,58 +458,26 @@ namespace Noxico
 						}
 						break;
 					case Mutations.giveDicknipples:
-						/*
-						if (this.HasToken("breastrow"))
-						{
-							bool willthiswork = false;
-							for (int index = 0; index < this.GetBreastSizes().Length; index++)
-							{
-								//if the character has any breastrow that does not have dicknipples and that does have nipples, then this can be applied.
-								if (this.GetBreastRowByNumber(index).HasToken("nipples") && !this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("canfuck"))
-								{
-									willthiswork = true;
-									break;
-								}
-							}
-							if (willthiswork)
-						*/
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
+						{
+							Token boob;
+							do
 							{
-								Token boob;
-								do
-								{
-									boob = PickATit();
-								} while (boob.GetToken("nipples").HasToken("canfuck"));
-								boob.GetToken("nipples").AddToken("canfuck");
-							}
-						//}
+								boob = PickATit();
+							} while (boob.GetToken("nipples").HasToken("canfuck"));
+							boob.GetToken("nipples").AddToken("canfuck");
+						}
 						break;
 					case Mutations.giveNipplecunts:
-						/*
-						if (this.HasToken("breastrow"))
-						{
-							bool willthiswork = false;
-							for (int index = 0; index < this.GetBreastSizes().Length; index++)
-							{
-								//if the character has any breastrow that does not have nipplecunts and that does have nipples, then this can be applied.
-								if (this.GetBreastRowByNumber(index).HasToken("nipples") && !this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("fuckable"))
-								{
-									willthiswork = true;
-									break;
-								}
-							}
-							if (willthiswork)
-						*/
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
 						{
-								Token boob;
-								do
-								{
-									boob = PickATit();
-								} while (boob.GetToken("nipples").HasToken("fuckable"));
-								boob.GetToken("nipples").AddToken("fuckable");
-							}
-						//}
+							Token boob;
+							do
+							{
+								boob = PickATit();
+							} while (boob.GetToken("nipples").HasToken("fuckable"));
+							boob.GetToken("nipples").AddToken("fuckable");
+						}
 						break;
 					case Mutations.addNipple:
 						if (this.HasToken("breastrow"))
@@ -543,22 +490,6 @@ namespace Noxico
 						}
 						break;
 					case Mutations.removeNipple:
-						/*
-						if (this.HasToken("breastrow"))
-						{
-							bool willthiswork = false;
-							for (int index = 0; index < this.GetBreastSizes().Length; index++)
-							{
-								//if the character has any breastrow that has nipples, then this can be applied.
-								if (this.GetBreastRowByNumber(index).HasToken("nipples"))
-								{
-									willthiswork = true;
-									break;
-								}
-							}
-							if (willthiswork)
-							{
-						*/
 						if (this.Path("breastrow/nipples") != null)
 						{
 							Token boob = PickATit();
@@ -570,24 +501,8 @@ namespace Noxico
 							if (boob.GetToken("nipples").Value == 0)
 								boob.RemoveToken("nipples");
 						}
-						//}
 						break;
 					case Mutations.giveRegularNipples:
-						/*
-						if (this.HasToken("breastrow"))
-						{
-							bool willthiswork = false;
-							for (int index = 0; index < this.GetBreastSizes().Length; index++)
-							{
-								//if the character has any breastrow that does not have nipplecunts and that does have nipples, then this can be applied.
-								if (this.GetBreastRowByNumber(index).HasToken("nipples") && this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("fuckable") || this.GetBreastRowByNumber(index).GetToken("nipples").HasToken("canfuck"))
-								{
-									willthiswork = true;
-									break;
-								}
-							}
-							if (willthiswork)
-						*/
 						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
 						{
 							Token boob;
@@ -598,7 +513,6 @@ namespace Noxico
 							boob.GetToken("nipples").RemoveToken("fuckable");
 							boob.GetToken("nipples").RemoveToken("canfuck");
 						}
-						//}
 						break;
                 }
             }
@@ -849,8 +763,6 @@ namespace Noxico
 		{
 			Toolkit.SaveExpectation(stream, "CHAR");
 			Name.SaveToFile(stream);
-			//stream.Write(Species ?? "");
-			//stream.Write(Title ?? "");
 			stream.Write(IsProperNamed);
 			stream.Write(A ?? "a");
 			stream.Write(Culture.ID);
@@ -864,8 +776,6 @@ namespace Noxico
 			var newChar = new Character();
 			Toolkit.ExpectFromFile(stream, "CHAR", "character");
 			newChar.Name = Name.LoadFromFile(stream);
-			//newChar.Species = stream.ReadString();
-			//newChar.Title = stream.ReadString();
 			newChar.IsProperNamed = stream.ReadBoolean();
 			newChar.A = stream.ReadString();
 			var culture = stream.ReadString();
@@ -1766,15 +1676,12 @@ namespace Noxico
 						carriedItem.Name = "tatteredshreds_" + slot;
 						carriedItem.Tokens.Clear();
 
-						if (this == NoxicoGame.HostForm.Noxico.Player.Character)
-							doReport("You have torn out of your " + originalname + "!");
-						else
-							doReport(this.Name.ToString() + " has torn out of " + HisHerIts(true) + " " + originalname + ".");
+						doReport(string.Format("[Youorname] [has] torn out of [his] {0}!", originalname).Viewpoint(this));
 					}
 					else
 					{
                         if (this == NoxicoGame.HostForm.Noxico.Player.Character)
-                            doReport("You slip out of your " + originalname + ".");
+                            doReport(string.Format("[Youorname] slip{{s}} out of [his] {0}.", originalname).Viewpoint(this));
                         //mention for others?  Less dramatic than tearing out
                         //else
                         //    doReport(this.Name.ToString() + " slips out of " + HisHerIts(true) + " " + originalname + ".");
@@ -1848,9 +1755,9 @@ namespace Noxico
 				doNext.Add(false);
 
 				if (string.IsNullOrWhiteSpace(source.Path("tail").Text))
-					report.Add((isPlayer ? "You have" : this.Name + " has") + " sprouted a " + Descriptions.Tail(target.Path("tail")) + ".");
+					report.Add(string.Format("[Youorname] [has] sprouted a {0}.", Descriptions.Tail(target.Path("tail"))).Viewpoint(this));
 				else
-					report.Add((isPlayer ? "Your" : this.Name + "'s") + " tail has become a " + Descriptions.Tail(target.Path("tail")) + ".");
+					report.Add(string.Format("[Yourornames] tail has become a {0}.", Descriptions.Tail(target.Path("tail"))).Viewpoint(this));
 			}
 
 			//Change entire skin type?
@@ -1860,25 +1767,30 @@ namespace Noxico
 				changeTo.Add(target.Path("skin/type"));
 				doNext.Add(false);
 
+				var skinColor = Color.NameColor(target.Path("skin/color").Text);
+				var hairColor = Color.NameColor(target.Path("hair/color").Text);
 				switch (target.Path("skin/type").Text)
 				{
 					case "skin":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + " skin all over.");
+						report.Add(string.Format("[Youorname] [has] grown {0} skin all over.", skinColor).Viewpoint(this));
 						break;
 					case "fur":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + " fur all over.");
+						report.Add(string.Format("[Youorname] [has] grown {0} fur all over.", skinColor).Viewpoint(this));
 						break;
 					case "rubber":
-						report.Add((isPlayer ? "Your" : this.Name + "'s") + " skin has turned into " + Color.NameColor(target.Path("skin/color").Text) + " rubber.");
+						report.Add(string.Format("[Yourornames] skin has turned to {0} rubber.", skinColor).Viewpoint(this));
 						break;
 					case "scales":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown thick " + Color.NameColor(target.Path("skin/color").Text) + " scales.");
+						report.Add(string.Format("[Youorname] [has] grown thick {0} scales.", skinColor).Viewpoint(this));
 						break;
 					case "slime":
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " turned to " + Color.NameColor(target.Path("hair/color").Text) + " slime.");
+						report.Add(string.Format("[Youorname] [has] turned to {0} slime.", skinColor).Viewpoint(this));	
+						break;
+					case "metal":
+						report.Add(string.Format("[Youorname] [has] turned to shiny {0} metal platelets.", skinColor).Viewpoint(this));
 						break;
 					default:
-						report.Add((isPlayer ? "You have" : this.Name + " has") + " grown " + Color.NameColor(target.Path("skin/color").Text) + ' ' + target.Path("skin/type").Text + '.');
+						report.Add(string.Format("[Youorname] [has] grown {0} {1}.", skinColor, target.Path("skin/type").Text).Viewpoint(this));
 						break;
 				}
 			}
@@ -1902,7 +1814,7 @@ namespace Noxico
 				doNext.Add(false);
 
 				var faceDescription = fooIneReports.ContainsKey(target.GetToken("face").Text) ? fooIneReports[target.GetToken("face").Text] : target.GetToken("face").Text;
-				report.Add((isPlayer ? "Your" : this.Name + "'s") + " face has rearranged to a more " + faceDescription + " form.");
+				report.Add(string.Format("[Yourornames] face has rearranged to a more {0} form.", faceDescription).Viewpoint(this));
 			}
 
 			//Nothing less drastic to change? Great.
@@ -1914,7 +1826,10 @@ namespace Noxico
 				{
 					if (target.HasToken(lowerBody) && !source.HasToken(lowerBody))
 					{
-						doReport((isPlayer ? "Your" : this.Name + "'s") + " lower body has become " + (lowerBody == "slimeblob" ? "a mass of goop." : "a long, scaly snake tail"));
+						if (lowerBody == "slimeblob")
+							doReport(string.Format("[Yourornames] lower body has become a mass of goop.").Viewpoint(this));
+						else
+							doReport(string.Format("[Yourornames] lower body has become a long, scaly snake tail.").Viewpoint(this));
 						RemoveToken("legs");
 						AddToken(lowerBody);
 						CheckPants();
@@ -1932,7 +1847,7 @@ namespace Noxico
 					if (source.GetToken("legs").Text != target.GetToken("legs").Text)
 					{
 						var legDescription = fooIneReports.ContainsKey(target.GetToken("legs").Text) ? fooIneReports[target.GetToken("legs").Text] : target.GetToken("legs").Text;
-						doReport((isPlayer ? "You have" : this.Name + " has") + " grown " + legDescription + " legs.");
+						doReport(string.Format("[Youorname] [has] grown {0} legs.", legDescription).Viewpoint(this));
 						source.GetToken("legs").Text  = target.GetToken("legs").Text;
 					}
 				}
@@ -1945,7 +1860,7 @@ namespace Noxico
 						CheckPants();
 						if (target.HasToken("marshmallow") && !source.HasToken("marshmallow"))
 							source.AddToken("marshmallow");
-						doReport((isPlayer ? "You are" : this.Name + " is") + " now a " + taurQuad + ".");
+						doReport(string.Format("[Youorname] [are] now a {0}.", taurQuad).Viewpoint(this));
 						CheckPants();
 						finish();
 						return;
@@ -2623,7 +2538,7 @@ namespace Noxico
 					};
 					egg.Take(this);
 					if (boardChar is Player)
-						NoxicoGame.AddMessage(i18n.GetString("youareachicken"));
+						NoxicoGame.AddMessage(i18n.GetString("youareachicken").Viewpoint(this));
 					return false;
 				}
 			}
@@ -3176,7 +3091,7 @@ namespace Noxico
 						var cursed = newToken.GetToken("cursed");
 						if (cursed == null)
 							cursed = newToken.AddToken("cursed");
-						cursed.Text = "This is part of your disguise.";
+						cursed.Text = i18n.GetString("item_changeling_disguise"); //"This is part of your disguise.";
 						cursed.AddToken("hidden");
 						cursed.AddToken("known");
 					}
