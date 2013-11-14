@@ -479,6 +479,7 @@ namespace Noxico
 						}
 						break;
 					case Mutations.giveDicknipples:
+						/*
 						if (this.HasToken("breastrow"))
 						{
 							bool willthiswork = false;
@@ -492,6 +493,8 @@ namespace Noxico
 								}
 							}
 							if (willthiswork)
+						*/
+						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
 							{
 								Token boob;
 								do
@@ -500,9 +503,10 @@ namespace Noxico
 								} while (boob.GetToken("nipples").HasToken("canfuck"));
 								boob.GetToken("nipples").AddToken("canfuck");
 							}
-						}
+						//}
 						break;
 					case Mutations.giveNipplecunts:
+						/*
 						if (this.HasToken("breastrow"))
 						{
 							bool willthiswork = false;
@@ -516,7 +520,9 @@ namespace Noxico
 								}
 							}
 							if (willthiswork)
-							{
+						*/
+						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
+						{
 								Token boob;
 								do
 								{
@@ -524,7 +530,7 @@ namespace Noxico
 								} while (boob.GetToken("nipples").HasToken("fuckable"));
 								boob.GetToken("nipples").AddToken("fuckable");
 							}
-						}
+						//}
 						break;
 					case Mutations.addNipple:
 						if (this.HasToken("breastrow"))
@@ -537,6 +543,7 @@ namespace Noxico
 						}
 						break;
 					case Mutations.removeNipple:
+						/*
 						if (this.HasToken("breastrow"))
 						{
 							bool willthiswork = false;
@@ -551,18 +558,22 @@ namespace Noxico
 							}
 							if (willthiswork)
 							{
-								Token boob = PickATit();
-								while (!boob.HasToken("nipples"))
-								{
-									boob = PickATit();
-								}
-								boob.GetToken("nipples").Value--;
-								if (boob.GetToken("nipples").Value == 0)
-									boob.RemoveToken("nipples");
+						*/
+						if (this.Path("breastrow/nipples") != null)
+						{
+							Token boob = PickATit();
+							while (!boob.HasToken("nipples"))
+							{
+								boob = PickATit();
 							}
+							boob.GetToken("nipples").Value--;
+							if (boob.GetToken("nipples").Value == 0)
+								boob.RemoveToken("nipples");
 						}
+						//}
 						break;
 					case Mutations.giveRegularNipples:
+						/*
 						if (this.HasToken("breastrow"))
 						{
 							bool willthiswork = false;
@@ -576,16 +587,18 @@ namespace Noxico
 								}
 							}
 							if (willthiswork)
+						*/
+						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
+						{
+							Token boob;
+							do
 							{
-								Token boob;
-								do
-								{
-									boob = PickATit();
-								} while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"));
-								boob.GetToken("nipples").RemoveToken("fuckable");
-								boob.GetToken("nipples").RemoveToken("canfuck");
-							}
+								boob = PickATit();
+							} while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"));
+							boob.GetToken("nipples").RemoveToken("fuckable");
+							boob.GetToken("nipples").RemoveToken("canfuck");
 						}
+						//}
 						break;
                 }
             }

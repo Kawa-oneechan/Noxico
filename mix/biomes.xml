@@ -72,6 +72,7 @@
 			</clutterdefs>
 		</biome>
 		<biome name="Woods" rect="96 64 256 192" color="#1F3B19" canBurn="true">
+			<encounters max="7">imp, imp, goblin, wild_dog, imp, imp, goblin, wild_dog, foocubus</encounters>
 			<clutterdefs>
 				<clutter char="&#x1E6;" color="#439838" canBurn="true" solid="wall" chance="0.018" description="3" />
 				<clutter char="&#x1E5;" color="#6CCC77" canBurn="true" solid="wall" chance="0.022" description="3" />
