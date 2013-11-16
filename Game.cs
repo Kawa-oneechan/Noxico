@@ -781,9 +781,9 @@ namespace Noxico
 			this.CurrentBoard.Entities.Add(Player);
 			this.Player.Reposition();
 
+			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 			/*
 			setStatus("Saving overworld boards...");
-			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 			for (var i = 0; i < this.Boards.Count; i++)
 			{
 				if (this.Boards[i] == null)
