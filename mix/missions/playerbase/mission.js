@@ -19,6 +19,8 @@ while(1)
 
 myBoard.Name = "Home";
 myBoard.ID = "home";
+myBoard.BoardType = BoardType.Special;
+myBoard.RemoveToken("encounters"); myBoard.AddToken("encounters").AddToken("stock");
 MakeBoardTarget(myBoard);
 
 //Set up carpenter
