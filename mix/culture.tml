@@ -298,6 +298,21 @@ namegen: welsh
 		rule
 			_
 
+namegen: arabic
+	sets
+		male: Abbas, Ahmad, Akram, Ali, Amal, Amin, Asad, Asim, Badr, Baqir, Barak, Basim, Duha, Fadi, Fahd, Fahim, Fakhri, Faruq, Ghalib, Ghufran, Gulzar, Hadi, Hakim, Hasan, Hasim, Haytham, Ikram, Imad, Imtiyaz, Iqbal, Irfan, Ismat, Jabir, Jafar, Jamal, Kamil, Karim, Khaleel, Khalil, Mahmud, Makram, Malik, Midhat, Miraj, Mukhtar, Murtada, Mustafa, Nadir, Najib, Nasir, Nur, Omar, Qadir, Rafiq, Rahim, Rashad, Ridha, Saddam, Said, Sakhr, Salim, Shad, Taj, Tariq, Tufayl, Usama, Wadud, Wafai, Wasim, Yasir, Zahir, Zain, Zaki, Zaman, Ziya
+		female: Aaliyah, Afra, Aisha, Aliyah, Almas, Alya, Amani, Badr, Basima, Dalal, Daniyah, Dima, Fadila, Fahima, Faiza, Farah, Fatimah, Fayruz, Ghadir, Ghaliya, Hadil, Hadiya, Hana, Hayfa, Huda, Ibtisam, Ilham, Inas, Izdihar, Jalila, Jamal, Janan, Jumana, Karima, Khalida, Lamia, Latifa, Layla, Lina, Lulu, Malika, Maram, Marwa, Midha, Mina, Munya, Nadiyya, Najwa, Nasim, Nima, Nura, Rafiqa, Raja, Rana, Raniya, Rasha, Rim, Ruwa, Sabah, Safiyyah, Salima, Salma, Samar, Sana, Shadiya, Shakira, Shama, Shantae, Shazi, Sultana, Thamina, Thurayya, Tuba, Wahida, Yasmin
+	male
+		rule
+			male	
+	female
+		rule
+			female
+	surname
+		rule
+			_
+
+
 -- Fallback namegen for towns
 namegen: default
 	sets

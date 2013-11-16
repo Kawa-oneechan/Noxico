@@ -152,7 +152,7 @@ bodyplan: goblin
 
 bodyplan: bee
 	culture: human
-	namegen: japanese
+	namegen: arabic
 	femaleonly
 	invisiblegender
 	terms
@@ -201,7 +201,7 @@ bodyplan: bee
 bodyplan: naga
 	playable
 	culture: human
-	namegen: japanese
+	namegen: arabic
 	normalgenders
 	terms
 		generic: "naga"
