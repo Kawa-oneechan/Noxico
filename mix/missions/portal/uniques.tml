@@ -16,7 +16,7 @@ character: demonportal_nox
 	script: tick
 		<[[
 			thisEntity.XPosition = 35;
-			thisEntity.YPosition = 10;
+			thisEntity.YPosition = 22;
 			var woah = Random.Next(0,128);
 			thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
 			thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
@@ -26,37 +26,12 @@ character: demonportal_nox
 	script: bump
 		<[[
 			corner("WRRAAAAAAAGH~");
-			var target = FindTargetBoardByName("Demon Portal, Sera Side");
-			if (target == -1)
+			var target = this.GetToken("otherSide").Value;
+			if (target == 0)
 			{
 				corner("Error! Target is " + target);
 				return false;
 			}
-
-			var targetBoard = GetBoard(target);
-
-			//First time we pass through, create a demon town directly to the south.
-			//This town will serve as the portal's travel target
-			if (targetBoard.ToSouth == -1)
-			{
-				//No connected town yet.
-				var town = CreateTown(GetBiomeByName("Nether"), null, null, true);
-				var upTown = GetBoard(town.ToNorth);
-				upTown.ToNorth = target;
-				
-				upTown.Clear("Nether");
-				upTown.MergeBitmap("missions\\portal\\road.png");
-				var stone = new Tile();
-				stone.Character = '\u253C';
-				stone.Foreground = Color.Black;
-				stone.Background = Color.FromCSS("#4B3027");
-				upTown.Replace("return (tile.Character == 'X' && tile.Foreground.R == 128)", "return stone.Noise()");
-				
-				targetBoard.ToSouth = upTown.BoardNum;
-				MakeBoardTarget(town);
-				MakeBoardKnown(town);
-			}
-
 			playerEntity.OpenBoard(target);
 		]]>
 
@@ -78,7 +53,7 @@ character: demonportal_sera
 	script: tick
 		<[[
 			thisEntity.XPosition = 35;
-			thisEntity.YPosition = 10;
+			thisEntity.YPosition = 22;
 			var woah = Random.Next(0,128);
 			thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
 			thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
@@ -88,13 +63,12 @@ character: demonportal_sera
 	script: bump
 		<[[
 			corner("WRRAAAAAAAGH~");
-			var target = FindTargetBoardByName("Demon Portal, Nox Side");
-			if (target == -1)
+			var target = this.GetToken("otherSide").Value;
+			if (target == 0)
 			{
 				corner("Error! Target is " + target);
 				return false;
 			}
-			//No need to fuck around with the travel list -- we CAME from a known location.
 			playerEntity.OpenBoard(target);
 		]]>
 

@@ -248,6 +248,11 @@ namespace Noxico
 		Wild, Town, Dungeon, Special
 	}
 
+	public enum Realms
+	{
+		Nox, Seradevari,
+	}
+
 	public partial class Board : TokenCarrier
 	{
 		public static int GeneratorCount = 0;
@@ -265,6 +270,7 @@ namespace Noxico
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
 		public bool AllowTravel { get { return !HasToken("noTravel"); } set { RemoveToken("noTravel"); if (!value)  AddToken("noTravel"); } }
 		public int Stock { get { return (int)Path("encounters/stock").Value; } set { Path("encounters/stock").Value = value; } }
+		public Realms Realm { get { return (Realms)GetToken("realm").Value; } set { GetToken("realm").Value = (float)value; } }
 		public Point Coordinate
 		{
 			get
@@ -307,7 +313,7 @@ namespace Noxico
 
 		public Board()
 		{
-			foreach (var t in new[] { "name", "id", "type", "biome", "encounters" })
+			foreach (var t in new[] { "name", "id", "type", "realm", "biome", "encounters" })
 				this.AddToken(t);
 			this.AddToken("culture", 0, "human");
 			this.GetToken("encounters").AddToken("stock", 0);
@@ -965,6 +971,11 @@ namespace Noxico
 				ret.Add(entity);
 			}
 			return ret;
+		}
+		public BoardChar GetFirstBoardCharWith(string ending)
+		{
+			var ret = this.Entities.FirstOrDefault(x => x is BoardChar && x.ID.EndsWith(ending));
+			return (BoardChar)ret;
 		}
 
 		public bool SectorContains(string sector, int x, int y)

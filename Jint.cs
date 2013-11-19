@@ -27,6 +27,7 @@ namespace Noxico
 			jint.SetParameter("Gender", typeof(Gender));
 			jint.SetParameter("MorphReport", typeof(MorphReportLevel));
 			jint.SetParameter("Stat", typeof(Stat));
+			jint.SetParameter("Realms", typeof(Realms));
 			jint.SetParameter("Random", typeof(Random));
 			jint.SetParameter("BoardType", typeof(BoardType));
 			jint.SetParameter("Character", typeof(Character));

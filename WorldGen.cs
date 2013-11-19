@@ -550,24 +550,25 @@ namespace Noxico
 	public class BiomeData
 	{
 		public static List<BiomeData> Biomes;
-		public static Dictionary<string, int> WaterLevels;
+		public static List<int> WaterLevels;
 
 		public static void LoadBiomes()
 		{
 			Biomes = new List<BiomeData>();
-			WaterLevels = new Dictionary<string, int>();
+			WaterLevels = new List<int>();
 			var x = Mix.GetXmlDocument("biomes.xml");
+			var i = 0;
 			foreach (var realm in x.SelectNodes("//realm").OfType<XmlElement>())
 			{
-				var realmID = realm.GetAttribute("id");
 				var waterLevel = int.Parse(realm.GetAttribute("waterLevel"));
-				WaterLevels[realmID] = waterLevel;
+				WaterLevels.Add(waterLevel);
 				foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-					Biomes.Add(BiomeData.FromXml(b, realmID));
+					Biomes.Add(BiomeData.FromXml(b, i));
+				i++;
 			}
 		}
 
-		public string RealmID { get; private set; }
+		public Realms Realm { get; private set; }
 		public string Name { get; private set; }
 		public Color Color { get; private set; }
 		public bool IsWater { get; private set; }
@@ -579,10 +580,10 @@ namespace Noxico
 		public List<ClutterDefinition> Clutter { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
 
-		public static BiomeData FromXml(XmlElement x, string realmID)
+		public static BiomeData FromXml(XmlElement x, int realmNum)
 		{
 			var n = new BiomeData();
-			n.RealmID = realmID;
+			n.Realm = (Realms)realmNum;
 			n.Name = x.GetAttribute("name");
 			n.Color = Color.FromName(x.GetAttribute("color"));
 			n.IsWater = x.HasAttribute("isWater");
@@ -708,7 +709,7 @@ namespace Noxico
 		public int[,] RoughBiomeMap, TownMap, DetailedMap;
 		public Board[,] BoardMap;
 		public int MapSizeX, MapSizeY, TownMarkers, WaterBiome;
-		public string Realm;
+		public Realms Realm;
 
 		private byte[,] CreateHeightMap(int reach)
 		{
@@ -785,8 +786,8 @@ namespace Noxico
 
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
-			var waterLevel = BiomeData.WaterLevels[Realm];
-			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
+			var waterLevel = BiomeData.WaterLevels[(int)Realm];
+			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
 			var cols = (int)Math.Floor(reach / 80.0) * 80;
 			var rows = (int)Math.Floor(reach / 50.0) * 50;
 			var map = new byte[rows, cols];
@@ -805,7 +806,7 @@ namespace Noxico
 					for (var i = 0; i < BiomeData.Biomes.Count; i++)
 					{
 						var b = BiomeData.Biomes[i];
-						if (b.RealmID == Realm && t >= b.Rect.Left && t <= b.Rect.Right && p >= b.Rect.Top && p <= b.Rect.Bottom)
+						if (b.Realm == Realm && t >= b.Rect.Left && t <= b.Rect.Right && p >= b.Rect.Top && p <= b.Rect.Bottom)
 						{
 							map[row, col] = (byte)i;
 							continue;
@@ -816,41 +817,14 @@ namespace Noxico
 			return map;
 		}
 
-		public void GenerateWorldMap(string realm, Action<string> setStatus, string randSeed = "")
+		public void GenerateWorldMap(Realms realm, Action<string> setStatus)
 		{
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
-			//realm = "Seradevari";
-			var demon = realm == "Seradevari";
+			var demon = realm == Realms.Seradevari;
 
 			Realm = realm;
-			var seed = 0xF00D;
 			var reach = 1200;
-			if (!string.IsNullOrWhiteSpace(randSeed))
-			{
-				if (randSeed.StartsWith("0x"))
-				{
-					randSeed = randSeed.Substring(2);
-					if (!int.TryParse(randSeed, System.Globalization.NumberStyles.HexNumber, null, out seed))
-					{
-						seed = randSeed.GetHashCode();
-						setStatus(string.Format("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed));
-					}
-					else
-						setStatus(string.Format("Using seed 0x{0:X}.", seed));
-				}
-				else
-				{
-					if (!int.TryParse(randSeed, out seed))
-					{
-						seed = randSeed.GetHashCode();
-						setStatus(string.Format("Using hash seed -- \"{0}\" -> 0x{1:X}", randSeed, seed));
-					}
-					else
-						setStatus(string.Format("Using seed 0x{0:X}.", seed));
-				}
-			}
-			Random.Reseed(seed);
 
 			setStatus("Creating heightmap...");
 			var height = CreateHeightMap(reach);
@@ -875,7 +849,7 @@ namespace Noxico
 
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
-			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.RealmID == Realm));
+			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
 			setStatus("Determining biomes...");
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{

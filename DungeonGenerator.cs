@@ -126,6 +126,7 @@ namespace Noxico
 
 		public void Create(BiomeData biome, string templateSet)
 		{
+			Culture = Culture.Cultures[Toolkit.PickOne(biome.Cultures)];
 			this.biome = biome;
 			map = new int[80, 50];
 			plots = new Building[6, 3];
@@ -190,7 +191,7 @@ namespace Noxico
 			var woodFloor = Color.FromArgb(86, 63, 44);
 			var caveFloor = Color.FromArgb(65, 66, 87);
 			var wall = Color.FromArgb(20, 15, 12);
-			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
+			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
 
 			var cornerJunctions = new List<Point>();
 			var doorCount = 0;
@@ -733,6 +734,7 @@ namespace Noxico
 	{
 		public void Create(BiomeData biome)
 		{
+			Culture = Culture.Cultures[Toolkit.PickOne(biome.Cultures)];
 			base.Create(biome, "town");
 		}
 
