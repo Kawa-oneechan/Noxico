@@ -1,3 +1,11 @@
+print("blah");
+if (realm != Realms.Nox)
+{
+	print("ack!");
+	return;
+}
+print("okay");
+
 var myBoard, town;
 while(1)
 {

@@ -475,7 +475,7 @@ namespace Noxico
 			//TODO: Tweak some more to prevent... ahum... water damage.
 			
 			var biome = BiomeData.Biomes[(int)this.GetToken("biome").Value];
-			var water = BiomeData.Biomes[BiomeData.ByName(biome.RealmID == "Nox" ? "Water" : "KoolAid")];
+			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
 			var points = new List<Point>();
 			var pointsPerZone = 4;
 			var threshold = 0.66f;

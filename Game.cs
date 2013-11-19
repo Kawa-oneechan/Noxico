@@ -570,7 +570,87 @@ namespace Noxico
 			HostForm.Clear();
 
 			var generator = new WorldMapGenerator();
-			generator.GenerateWorldMap("Nox", setStatus, "pandora");
+			var townBoards = new List<Board>();
+			for (var i = 0; i < Enum.GetValues(typeof(Realms)).Length; i++)
+			{
+				Random.Reseed("pandora".GetHashCode());
+				var realm = (Realms)i;
+				generator.GenerateWorldMap(realm, setStatus);
+				Boardificate(generator, setStatus);
+				PlaceTowns(generator, setStatus, ref townBoards);
+				PlaceDungeons(generator, setStatus);
+				ApplyMissions(generator, setStatus, realm);
+
+#if DEBUG
+				setStatus("Drawing actual bitmap...");
+				var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
+				for (var y = 0; y < generator.MapSizeY - 1; y++)
+				{
+					for (var x = 0; x < generator.MapSizeX - 1; x++)
+					{
+						var thisBoard = generator.BoardMap[y, x];
+						if (thisBoard == null)
+							continue; //draw empty spot?
+						for (var ty = 0; ty < 50; ty++)
+						{
+							for (var tx = 0; tx < 80; tx++)
+							{
+								var tile = thisBoard.Tilemap[tx, ty];
+								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Background);
+							}
+						}
+					}
+				}
+				png.Save("world_" + realm.ToString() + ".png");
+#endif
+			}
+
+			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
+
+			//TODO: give the player a proper home.
+			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
+			if (homeBase == null)
+			{
+				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
+				if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
+					TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+			}
+			else
+			{
+				this.CurrentBoard = homeBase;
+				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
+				this.Player.Character.AddToken("homeboardlevel", 0);
+			}
+			this.Player.ParentBoard = this.CurrentBoard;
+			this.CurrentBoard.Entities.Add(Player);
+			this.Player.Reposition();
+
+			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
+			/*
+			setStatus("Saving overworld boards...");
+			for (var i = 0; i < this.Boards.Count; i++)
+			{
+				if (this.Boards[i] == null)
+					continue;
+				this.Boards[i].SaveToFile(i);
+				//if (i > 0)
+				//	this.Boards[i] = null;
+			}
+			*/
+			stopwatch.Stop();
+			SaveGame(false, true, false);
+			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
+
+
+			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
+			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
+			setStatus(i18n.GetString("worldgen_ready")); //"The World is Ready.");
+			InGame = true;
+			//this.CurrentBoard.Redraw();
+		}
+
+		private void Boardificate(WorldMapGenerator generator, Action<string> setStatus)
+		{
 			setStatus(i18n.GetString("worldgen_createboards")); //"Creating boards...");
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
@@ -604,10 +684,11 @@ namespace Noxico
 					this.Boards.Add(newBoard);
 				}
 			}
-
+		}
+	
+		private void PlaceTowns(WorldMapGenerator generator, Action<string> setStatus, ref List<Board> townBoards)
+		{
 			setStatus(i18n.GetString("worldgen_towns")); //"Placing towns...");
-			var townBoards = new List<Board>();
-
 			var vendorTypes = new List<string>();
 			var lootData = Mix.GetTokenTree("loot.tml", true);
 			foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
@@ -671,14 +752,17 @@ namespace Noxico
 								Program.WriteLine("*** {0} of {2} is now a {1} ***", newVendor.Name.ToString(true), vendorType, thisBoard.Name);
 								chosenCitizen.RestockVendor();
 							}
-		
+
 							//if (!townGen.Culture.Demonic) 
 							townBoards.Add(thisBoard);
 						}
 					}
 				}
 			}
+		}
 
+		private void PlaceDungeons(WorldMapGenerator generator, Action<string> setStatus)
+		{
 			setStatus(i18n.GetString("worldgen_dungeons")); //"Scattering dungeon entrances...");
 			var dungeonEntrances = 0;
 			while (dungeonEntrances < 25)
@@ -734,75 +818,126 @@ namespace Noxico
 					}
 				}
 			}
+		}
 
+		public void ApplyMissions(WorldMapGenerator generator, Action<string> setStatus, Realms realm)
+		{
 			setStatus(i18n.GetString("worldgen_missions")); //"Applying missions...");
-			ApplyMissions(generator);
 
-#if DEBUG
-			setStatus("Drawing actual bitmap...");
-			var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
-			for (var y = 0; y < generator.MapSizeY - 1; y++)
+			var makeBoardTarget = new Action<Board>(board =>
 			{
-				for (var x = 0; x < generator.MapSizeX - 1; x++)
+				if (string.IsNullOrWhiteSpace(board.Name))
+					throw new Exception("Board must have a name before it can be added to the target list.");
+				if (TravelTargets.ContainsKey(board.BoardNum))
+					TravelTargets[board.BoardNum] = board.Name;
+				else
+					TravelTargets.Add(board.BoardNum, board.Name);
+			});
+
+			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
+			{
+				var options = new List<Board>();
+				foreach (var board in Boards)
 				{
-					var thisBoard = generator.BoardMap[y, x];
-					if (thisBoard == null)
-						continue; //draw empty spot?
-					for (var ty = 0; ty < 50; ty++)
+					if (board == null)
+						continue;
+					if (board.BoardType != boardType)
+						continue;
+					if (biome > 0 && board.GetToken("biome").Value != biome)
+						continue;
+					if (maxWater != -1)
 					{
-						for (var tx = 0; tx < 80; tx++)
-						{
-							var tile = thisBoard.Tilemap[tx, ty];
-							png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Background);
-						}
+						var water = 0;
+						for (var y = 0; y < 50; y++)
+							for (var x = 0; x < 80; x++)
+								if (board.Tilemap[x, y].Water)
+									water++;
+						if (water > maxWater)
+							continue;
+					}
+					options.Add(board);
+				}
+				if (options.Count == 0)
+					return null;
+				var choice = options[Random.Next(options.Count)];
+				return choice;
+			};
+
+			Func<string, Board> findBoardByID = (id) =>
+			{
+				var board = Boards.FirstOrDefault(b => b != null && b.ID == id);
+				return board;
+			};
+
+			Func<Board, string, int> makeTown = (board, culture) =>
+			{
+				var townGen = new TownGenerator();
+				board.BoardType = BoardType.Town;
+				board.GetToken("encounters").Value = 0;
+				board.GetToken("encounters").Tokens.Clear();
+				board.Sectors.Clear();
+				townGen.Board = board;
+				var biome = BiomeData.Biomes[(int)board.GetToken("biome").Value];
+				var cultureName = string.IsNullOrWhiteSpace(culture) ? biome.Cultures[Random.Next(biome.Cultures.Length)] : culture;
+				townGen.Culture = Culture.Cultures[cultureName];
+				townGen.Create(biome);
+				townGen.ToTilemap(ref board.Tilemap);
+				townGen.ToSectorMap(board.Sectors);
+				board.GetToken("culture").Text = cultureName;
+				while (true)
+				{
+					var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+					if (Boards.Find(b => b != null && b.Name == newName) == null)
+					{
+						board.Name = newName;
+						break;
 					}
 				}
-			}
-			png.Save("world.png");
+				return 0;
+			};
+
+			var js = JavaScript.Create();
+			JavaScript.Ascertain(js);
+			js.SetParameter("realm", realm);
+			js.SetFunction("MakeBoardTarget", makeBoardTarget);
+			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
+			js.SetFunction("PickBoard", pickBoard);
+			js.SetFunction("FindBoardByID", findBoardByID);
+			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
+			js.SetFunction("MakeTown", makeTown);
+			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
+#if DEBUG
+			js.SetDebugMode(true);
+			js.Step += (s, di) =>
+			{
+				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+			};
 #endif
+			Board.DrawJS = js;
 
-			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
-
-			//TODO: give the player a proper home.
-			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
-			if (homeBase == null)
+			var missionDirs = Mix.GetFilesInPath("missions");
+			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
 			{
-				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
-				if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
-					TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
-			}
-			else
-			{
-				this.CurrentBoard = homeBase;
-				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
-				this.Player.Character.AddToken("homeboardlevel", 0);
-			}
-			this.Player.ParentBoard = this.CurrentBoard;
-			this.CurrentBoard.Entities.Add(Player);
-			this.Player.Reposition();
-
-			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
-			/*
-			setStatus("Saving overworld boards...");
-			for (var i = 0; i < this.Boards.Count; i++)
-			{
-				if (this.Boards[i] == null)
+				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				var path = Path.GetDirectoryName(missionDir);
+				var jsFile = Path.Combine(path, "mission.js");
+				if (!Mix.FileExists(jsFile))
 					continue;
-				this.Boards[i].SaveToFile(i);
-				//if (i > 0)
-				//	this.Boards[i] = null;
+				var okay = true;
+				for (var i = 2; i < manifest.Length; i++)
+				{
+					if (!Mix.FileExists(Path.Combine(path, manifest[i])))
+						okay = false;
+				}
+				if (!okay)
+				{
+					Program.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
+					continue;
+				}
+				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
+				var jsCode = Mix.GetString(jsFile);
+				js.Run(jsCode);
 			}
-			*/
-			stopwatch.Stop();
-			SaveGame(false, true, false);
-			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
-
-
-			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
-			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
-			setStatus(i18n.GetString("worldgen_ready")); //"The World is Ready.");
-			InGame = true;
-			//this.CurrentBoard.Redraw();
 		}
 
 		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
@@ -1008,116 +1143,6 @@ namespace Noxico
 						fore = item.GetToken("ascii").AddToken("fore");
 					fore.Text = color;
 				}
-			}
-		}
-
-		public void ApplyMissions(WorldMapGenerator generator)
-		{
-			var makeBoardTarget = new Action<Board>(board =>
-			{
-				if (string.IsNullOrWhiteSpace(board.Name))
-					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (TravelTargets.ContainsKey(board.BoardNum))
-					TravelTargets[board.BoardNum] = board.Name;
-				else
-					TravelTargets.Add(board.BoardNum, board.Name);
-			});
-
-			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
-			{
-				var options = new List<Board>();
-				foreach (var board in Boards)
-				{
-					if (board == null)
-						continue;
-					if (board.BoardType != boardType)
-						continue;
-					if (biome > 0 && board.GetToken("biome").Value != biome)
-						continue;
-					if (maxWater != -1)
-					{
-						var water = 0;
-						for (var y = 0; y < 50; y++)
-							for (var x = 0; x < 80; x++)
-								if (board.Tilemap[x, y].Water)
-									water++;
-						if (water > maxWater)
-							continue;
-					}
-					options.Add(board);
-				}
-				if (options.Count == 0)
-					return null;
-				var choice = options[Random.Next(options.Count)];
-				return choice;
-			};
-
-			Func<Board, string, int> makeTown = (board, culture) =>
-			{
-				var townGen = new TownGenerator();
-				board.BoardType = BoardType.Town;
-				board.GetToken("encounters").Value = 0;
-				board.GetToken("encounters").Tokens.Clear();
-				board.Sectors.Clear();
-				townGen.Board = board;
-				var biome = BiomeData.Biomes[(int)board.GetToken("biome").Value];
-				var cultureName = string.IsNullOrWhiteSpace(culture) ? biome.Cultures[Random.Next(biome.Cultures.Length)] : culture;
-				townGen.Culture = Culture.Cultures[cultureName];
-				townGen.Create(biome);
-				townGen.ToTilemap(ref board.Tilemap);
-				townGen.ToSectorMap(board.Sectors);
-				board.GetToken("culture").Text = cultureName;
-				while (true)
-				{
-					var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
-					if (Boards.Find(b => b != null && b.Name == newName) == null)
-					{
-						board.Name = newName;
-						break;
-					}
-				}
-				return 0;
-			};
-
-			var js = JavaScript.Create();
-			JavaScript.Ascertain(js);
-			js.SetFunction("MakeBoardTarget", makeBoardTarget);
-			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
-			js.SetFunction("PickBoard", pickBoard);
-			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			js.SetFunction("MakeTown", makeTown);
-			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
-#if DEBUG
-			js.SetDebugMode(true);
-			js.Step += (s, di) =>
-			{
-				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-			};
-#endif
-			Board.DrawJS = js;
-
-			var missionDirs = Mix.GetFilesInPath("missions");
-			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
-			{
-				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-				var path = Path.GetDirectoryName(missionDir);
-				var jsFile = Path.Combine(path, "mission.js");
-				if (!Mix.FileExists(jsFile))
-					continue;
-				var okay = true;
-				for (var i = 2; i < manifest.Length; i++)
-				{
-					if (!Mix.FileExists(Path.Combine(path, manifest[i])))
-						okay = false;
-				}
-				if (!okay)
-				{
-					Program.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
-					continue;
-				}
-				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				var jsCode = Mix.GetString(jsFile);
-				js.Run(jsCode);
 			}
 		}
 
