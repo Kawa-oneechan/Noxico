@@ -6,6 +6,7 @@ diffs.txt
 *.suo
 *.cachefile
 *.mix
+*.nox
 *.user
 Japanese
 Dutch

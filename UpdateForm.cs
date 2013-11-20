@@ -37,11 +37,11 @@ namespace Noxico
 			{
 				didFirstFile = true;
 				label1.Text = "Downloading MIX file...";
-				wc.DownloadFileAsync(new Uri(server + "Noxico.mix"), "Noxico._ix");
+				wc.DownloadFileAsync(new Uri(server + "Noxico.nox"), "Noxico._ox");
 			}
 			else
 			{
-				File.WriteAllText("update.bat", "del Noxico.exe" + Environment.NewLine + "del Noxico.mix" + Environment.NewLine + "ren Noxico._xe Noxico.exe" + Environment.NewLine + "ren Noxico._ix Noxico.mix" + Environment.NewLine + "start Noxico.exe" + Environment.NewLine + "del update.bat");
+				File.WriteAllText("update.bat", "del Noxico.exe" + Environment.NewLine + "del Noxico.nox" + Environment.NewLine + "ren Noxico._xe Noxico.exe" + Environment.NewLine + "ren Noxico._ix Noxico.nox" + Environment.NewLine + "start Noxico.exe" + Environment.NewLine + "del update.bat");
 				System.Diagnostics.Process.Start("update.bat");
 				Application.Exit();
 			}

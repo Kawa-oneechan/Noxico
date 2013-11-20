@@ -31,8 +31,8 @@ namespace Noxico
 			Program.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
 			stringCache = new Dictionary<string, string>();
-			var mixfiles = new List<string>() { mainFile + ".mix" };
-			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.mix").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".mix", StringComparison.OrdinalIgnoreCase)));
+			var mixfiles = new List<string>() { mainFile + ".nox" };
+			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.nox").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".nox", StringComparison.OrdinalIgnoreCase)));
 			Program.WriteLine("Mixfiles enumerated. Indexing contents...");
 			foreach (var mixfile in mixfiles)
 			{
@@ -43,27 +43,40 @@ namespace Noxico
 				}
 				using (var mStream = new BinaryReader(File.Open(mixfile, FileMode.Open)))
 				{
-					var header = mStream.ReadChars(8);
-					if (!(new string(header).Equals("KawaPack", StringComparison.Ordinal)))
-						throw new FileLoadException(string.Format("MIX file '{0}' has an incorrect header.", mixfile));
-					var count = mStream.ReadInt32();
-					mStream.ReadInt32();
-					for (var i = 0; i < count; i++)
+					//This is not the "proper" way to do it. Fuck that.
+					while (true)
 					{
-						var entry = new MixFileEntry();
-						entry.Offset = mStream.ReadInt32();
-						entry.Length = mStream.ReadInt32();
-						var flags = mStream.ReadByte();
-						entry.NeedsPremultiply = ((flags & 1) == 1);
-						entry.IsCompressed = ((flags & 2) == 2);
-						var fileNameC = mStream.ReadChars(55);
-						var fileName = new string(fileNameC).Replace("\0", "");
-						entry.MixFile = mixfile;
-						entry.Filename = fileName;
-						if (fileList.ContainsKey(fileName))
-							fileList[fileName] = entry;
-						else
-							fileList.Add(fileName, entry);
+						var header = mStream.ReadBytes(4);
+						if (header[0] != 'P' || header[1] != 'K' || header[2] != 3 || header[3] != 4)
+						{
+							if (header[2] == 1 && header[3] == 2) //reached the Central Directory
+								break;
+							throw new FileLoadException(string.Format("MIX file '{0}' has an incorrect header.", mixfile));
+						}
+						mStream.BaseStream.Seek(4, SeekOrigin.Current);
+						var method = mStream.ReadInt16();
+						mStream.BaseStream.Seek(8, SeekOrigin.Current);
+						var moto = mStream.ReadBytes(4);
+						var compressedSize = (moto[3] << 24) | (moto[2] << 16) | (moto[1] << 8) | moto[0]; //0x000000F8
+						moto = mStream.ReadBytes(4);
+						var uncompressedSize = (moto[3] << 24) | (moto[2] << 16) | (moto[1] << 8) | moto[0]; //0x00000197
+						moto = mStream.ReadBytes(2);
+						var filenameLength = (moto[1] << 8) | moto[0];
+						mStream.BaseStream.Seek(2, SeekOrigin.Current);
+						var filename = new string(mStream.ReadChars(filenameLength)).Replace('/', '\\');
+						var offset = (int)mStream.BaseStream.Position;
+						mStream.BaseStream.Seek(compressedSize, SeekOrigin.Current);
+						if (filename.EndsWith("\\"))
+							continue;
+						var entry = new MixFileEntry()
+						{
+							Offset = offset,
+							Length = compressedSize,
+							IsCompressed = method == 8,
+							Filename = filename,
+							MixFile = mixfile,
+						};
+						fileList[filename] = entry;
 					}
 				}
 			}
@@ -351,7 +364,7 @@ namespace Noxico
 				else
 				{
 					var cStream = new MemoryStream(mStream.ReadBytes(entry.Length));
-					var decompressor = new System.IO.Compression.GZipStream(cStream, System.IO.Compression.CompressionMode.Decompress);
+					var decompressor = new System.IO.Compression.DeflateStream(cStream, System.IO.Compression.CompressionMode.Decompress);
 					var outStream = new MemoryStream();
 					var buffer = new byte[1024];
 					var recieved = 1;

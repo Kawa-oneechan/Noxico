@@ -1,7 +1,5 @@
 @echo off
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
-echo Building MIX files...
-MixMaster mix Noxico.mix
 echo -----------
 echo BUILD START
 echo -----------
@@ -22,11 +20,11 @@ cd bin
 md Noxico
 copy Release\Jint.dll Noxico > nul
 copy Release\Antlr3.Runtime.dll Noxico > nul
-copy Release\Noxico.mix Noxico > nul
+copy Release\Noxico.nox Noxico > nul
 copy Release\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.3.rar Noxico > nul
+..\7za.exe u noxico-0.1.3.7z Noxico > nul
 copy /y Release32\Noxico.exe Noxico > nul
-..\Rar.exe u  noxico-0.1.3-32.rar Noxico > nul
+..\7za.exe u  noxico-0.1.3-32.7z Noxico > nul
 rd Noxico /s /q
 cd ..
 pause
