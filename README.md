@@ -3,7 +3,7 @@
 
 ----
 ## Building from source
-* Shouldn't be anything difficult to it. First time around, build might fail because of missing .MIX files. Just try again.
+* Shouldn't be anything difficult to it. First time around, build might fail because of missing .NOX files. Just try again.
 
 ## Controls
 Keyboard controls can be changed by editing Noxico.ini.

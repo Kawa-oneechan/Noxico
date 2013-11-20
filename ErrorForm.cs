@@ -83,8 +83,8 @@ namespace Noxico
 			}
 			else if (typeName == "FileNotFoundException")
 			{
-				if (textBox1.Text.Contains("not found in the MIX"))
-					label3.Text = "The requested file was not found in the MIX archives, nor in the \\data override folder." + Environment.NewLine + Environment.NewLine + "If you don't have any mods installed, it's probably a corrupted Noxico.mix file. Redownload it to try and fix it. If that doesn't help, contact Kawa.";
+				if (textBox1.Text.Contains("not found in the NOX"))
+					label3.Text = "The requested file was not found in the NOX archives, nor in the \\data override folder." + Environment.NewLine + Environment.NewLine + "If you don't have any mods installed, it's probably a corrupted Noxico.nox file. Redownload it to try and fix it. If that doesn't help, contact Kawa.";
 				else if (textBox1.Text.Contains("Required DLL"))
 					label3.Text = "The requested DLL file was found missing, and is required to properly run the game. Redownload the game to regain all the required DLL files." + Environment.NewLine + Environment.NewLine + "We checked for this at startup so things would remain graceful.";
 				else if (textBox1.Text.Contains("Board #"))
@@ -105,6 +105,8 @@ namespace Noxico
 				label3.Text = "Probably, a mod tried to define its own version of the specified bodyplan, which is not allowed." + Environment.NewLine + Environment.NewLine + "Try to identify the offender and remove it, then contact the mod's author.";
 			else if (textBox1.Text.Contains("indented too far"))
 				label3.Text = "A TML file somewhere has a malformed structure, as described on the Data tab." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetTokenTree\", then look at the line directly below that one. That's where the TML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetTokenTree\" is \"at Noxico.Character.GetUnique\", the problem is in GetUnique, or rather uniques.tml, and that should be mentioned as the critical point.";
+			else if (textBox1.Text.Contains("has an incorrect header"))
+				label3.Text = "The NOX file mentioned is technically just a ZIP file. The system that parses this file is -very- picky and does not play nice with certain features that a ZIP file may support. For example, ZIP64 is not supported, nor are encryption, comments, or any storage method other than Deflate and Store. At any rate, something was encountered that the loader did not except.";
 			else
 			{
 				tabControl1.TabPages.RemoveAt(1);
