@@ -728,6 +728,62 @@ namespace Noxico
 		/// <returns></returns>
 		public static string ToNoxML(this XmlElement element, bool skip = false)
 		{
+			#region Apply style
+			var applyStyle = new Action<XmlElement>(p =>
+			{
+				var style = p.GetAttribute("style");
+				if (style == "hand")
+				{
+					foreach (var n in p.ChildNodes)
+					{
+						if (n is XmlText)
+						{
+							var original = ((XmlText)n).Value;
+							var styled = new StringBuilder(original.Length);
+							foreach (var c in original)
+							{
+								if (c >= 'A' && c <= 'Z')
+									styled.Append((char)((c - 'A') + 0x200));
+								else if (c >= 'a' && c <= 'z')
+									styled.Append((char)((c - 'a') + 0x21A));
+								else
+									styled.Append(c);
+							}
+							((XmlText)n).Value = styled.ToString();
+						}
+					}
+				}
+				else
+				{
+					var offset = 0x41;
+					if (style == "carve")
+						offset = 0x234;
+					else if (style == "daedric")
+						offset = 0x24E;
+					else if (style == "alternian")
+						offset = 0x268;
+					else if (style == "keen")
+						offset = 0x282;
+					foreach (var n in p.ChildNodes)
+					{
+						if (n is XmlText)
+						{
+							var original = ((XmlText)n).Value;
+							var styled = new StringBuilder(original.Length);
+							foreach (var c in original)
+							{
+								if (c >= 'A' && c <= 'Z')
+									styled.Append((char)((c - 'A') + offset));
+								else
+									styled.Append(c);
+							}
+							((XmlText)n).Value = styled.ToString();
+						}
+					}
+				}
+
+			});
+			#endregion
 			var r = "";
 			var spaceFolder = new Regex(@"(\s{2,}|[\t])");
 			if (!skip)
@@ -735,64 +791,15 @@ namespace Noxico
 				foreach (var p in element.SelectNodes("p").OfType<XmlElement>())
 				{
 					if (p.HasAttribute("style"))
-					{
-						var style = p.GetAttribute("style");
-						if (style == "hand")
-						{
-							foreach (var n in p.ChildNodes)
-							{
-								if (n is XmlText)
-								{
-									var original = ((XmlText)n).Value;
-									var styled = new StringBuilder(original.Length);
-									foreach (var c in original)
-									{
-										if (c >= 'A' && c <= 'Z')
-											styled.Append((char)((c - 'A') + 0x200));
-										else if (c >= 'a' && c <= 'z')
-											styled.Append((char)((c - 'a') + 0x21A));
-										else
-											styled.Append(c);
-									}
-									((XmlText)n).Value = styled.ToString();
-								}
-							}
-						}
-						else
-						{
-							var offset = 0x41;
-							if (style == "carve")
-								offset = 0x234;
-							else if (style == "daedric")
-								offset = 0x24E;
-							else if (style == "alternian")
-								offset = 0x268;
-							else if (style == "keen")
-								offset = 0x282;
-							foreach (var n in p.ChildNodes)
-							{
-								if (n is XmlText)
-								{
-									var original = ((XmlText)n).Value;
-									var styled = new StringBuilder(original.Length);
-									foreach (var c in original)
-									{
-										if (c >= 'A' && c <= 'Z')
-											styled.Append((char)((c - 'A') + offset));
-										else
-											styled.Append(c);
-									}
-									((XmlText)n).Value = styled.ToString();
-								}
-							}
-						}
-					}
+						applyStyle(p);
+					foreach (var f in p.SelectNodes("font").OfType<XmlElement>())
+						applyStyle(f);
 				}
 			}
 			foreach (var n in element.ChildNodes)
 			{
 				if (n is XmlText)
-					r += spaceFolder.Replace(((XmlText)n).Value.Trim(), " ");
+					r += spaceFolder.Replace(((XmlText)n).Value, " ");
 				else if (n is XmlElement)
 				{
 					var e = n as XmlElement;
