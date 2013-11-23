@@ -736,6 +736,8 @@ bodyplan: dragon
 	ears: flat
 	wings: bat
 	legs: claws
+	taur
+		_maybe
 	tongue: forked
 	teeth: oneof sharp, fangs
 	tail: dragon
@@ -754,12 +756,13 @@ bodyplan: dragon
 		looseness: roll 1d2+1
 		wetness: roll 1d2+1
 		clit: 1
-	hips: roll 1d3+1
-	waist: roll 1d2+1
+	hips: roll 1d4+4
+	waist: roll 1d8
 	womb
-	penis: oneof lizard, human
+	penis: dragon
 		length: roll 1d10+15
 		thickness: roll 1d3+2
+	_copy: penis
 	balls
 		amount: 2
 		size: roll 1d3+2

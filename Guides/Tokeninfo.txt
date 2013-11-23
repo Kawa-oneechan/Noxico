@@ -1,0 +1,21 @@
+﻿An overview of tokens in Noxico
+
+The goal of this guide is to provide a brief overview of how the token system works and to provide a list of valid tokens for reference.
+
+TODO: add overview of token system
+
+Valid tokens for race definitions:
+
+Token: bodyplan: <any string>
+	signifies the start of a new 'bodyplan', Noxico's term for a 'race'.  Bodyplans are just that; they say where parts go to form this particular body shape.
+	The value of the bodyplan is the race's name; this is what's used internally to refer to the bodyplan.
+
+	Token: playable
+		This token takes no value or subtokens and flags that the race is one of the ones that can be chosen for the player's race at the start of the game.
+
+	Token: culture <culturestring>
+		This indicates the default culture that characters generated from this bodyplan may have.  
+		Valid culturestrings:
+			human: The standard culture.  Has a high monogamy value--unlikely to betray a spouse.
+			deviant: 
+			seradevar: Demon culture.

@@ -126,6 +126,10 @@
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="i18n.cs" />
+    <Content Include="mix\fonts\16x16-wyse.png" />
+    <Content Include="mix\fonts\8x8-5140.png" />
+    <Content Include="mix\fonts\8x8-bold.png" />
+    <Content Include="mix\fonts\8x8-thin.png" />
     <Content Include="mix\missions\playerbase\scenesDlg.xml" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
@@ -245,6 +249,7 @@
     <Content Include="mix\scenes\pony_scenesDlg.xml" />
     <Content Include="mix\schedule.xml" />
     <Content Include="mix\sex.tml" />
+    <Content Include="Guides\Tokeninfo.txt" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />

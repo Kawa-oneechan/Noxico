@@ -309,7 +309,7 @@ namespace Noxico
             for (int i = 0; i < number; i++)
             {
 				if (randomize)
-					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for randomize = -1
+					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
                 switch (mutation)
                 {
 					case Mutations.Random:
@@ -634,6 +634,25 @@ namespace Noxico
 					newChar.AddToken(either.Tokens[eitherChoice]);
 				newChar.RemoveToken(either);
             }
+
+			foreach (Token token in newChar.Tokens)
+			{
+				if (token.HasToken("_maybe"))
+				{
+					float value = token.GetToken("_maybe").Value;
+					if (value == 0.0f)
+						value = 0.5f;
+					if (Random.NextDouble() >= value)
+						newChar.RemoveToken(token);
+					token.RemoveToken("_maybe");
+				}
+			}
+			while (newChar.HasToken("_copy"))
+			{
+				string path = newChar.GetToken("_copy").Text;
+				newChar.RemoveToken("_copy");
+				newChar.Path(path).Clone();
+			}
 
             newChar.StripInvalidItems();
 
