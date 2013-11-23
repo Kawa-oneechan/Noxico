@@ -635,6 +635,8 @@ namespace Noxico
 				newChar.RemoveToken(either);
             }
 
+			List<Token> removethese = new List<Token>();
+
 			foreach (Token token in newChar.Tokens)
 			{
 				if (token.HasToken("_maybe"))
@@ -643,10 +645,16 @@ namespace Noxico
 					if (value == 0.0f)
 						value = 0.5f;
 					if (Random.NextDouble() >= value)
-						newChar.RemoveToken(token);
+						removethese.Add(token);
 					token.RemoveToken("_maybe");
 				}
 			}
+
+			foreach (Token token in removethese)
+			{
+				newChar.RemoveToken(token);
+			}
+
 			while (newChar.HasToken("_copy"))
 			{
 				string path = newChar.GetToken("_copy").Text;
