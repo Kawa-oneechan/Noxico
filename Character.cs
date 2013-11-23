@@ -626,9 +626,9 @@ namespace Noxico
 					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
 
-			while (newChar.HasToken("either"))
+			while (newChar.HasToken("_either"))
 			{
-				var either = newChar.GetToken("either");
+				var either = newChar.GetToken("_either");
 				var eitherChoice = Random.Next(-1, either.Tokens.Count);
 				if (eitherChoice > -1)
 					newChar.AddToken(either.Tokens[eitherChoice]);
@@ -651,7 +651,10 @@ namespace Noxico
 			{
 				string path = newChar.GetToken("_copy").Text;
 				newChar.RemoveToken("_copy");
-				newChar.Path(path).Clone();
+				var source = newChar.Path(path);
+				if (source == null)
+					continue;
+				newChar.AddToken(source.Clone(true));
 			}
 
             newChar.StripInvalidItems();
@@ -725,14 +728,37 @@ namespace Noxico
 					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
 
-			while (newChar.HasToken("either"))
+			while (newChar.HasToken("_either"))
 			{
-				var either = newChar.GetToken("either");
+				var either = newChar.GetToken("_either");
 				var eitherChoice = Random.Next(-1, either.Tokens.Count);
 				if (eitherChoice > -1)
 					newChar.AddToken(either.Tokens[eitherChoice]);
 				newChar.RemoveToken(either);
 			}
+
+			foreach (Token token in newChar.Tokens)
+			{
+				if (token.HasToken("_maybe"))
+				{
+					float value = token.GetToken("_maybe").Value;
+					if (value == 0.0f)
+						value = 0.5f;
+					if (Random.NextDouble() >= value)
+						newChar.RemoveToken(token);
+					token.RemoveToken("_maybe");
+				}
+			}
+			while (newChar.HasToken("_copy"))
+			{
+				string path = newChar.GetToken("_copy").Text;
+				newChar.RemoveToken("_copy");
+				var source = newChar.Path(path);
+				if (source == null)
+					continue;
+				newChar.AddToken(source.Clone(true));
+			}
+
 			return newChar;
 		}
 

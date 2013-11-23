@@ -444,7 +444,7 @@ bodyplan: littlepony
 	legs: horse
 	quadruped
 	-- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
-	either
+	_either
 		wings: feather
 		monoceros
 	-- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
