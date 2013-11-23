@@ -322,22 +322,14 @@ namespace Noxico
 		//TODO: cache the returns.
 		public static Bitmap GetBitmap(string fileName)
 		{
-			Program.WriteLine("Mix.GetBytes({0})", fileName);
+			Program.WriteLine("Mix.GetBitmap({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return new Bitmap(Path.Combine("data", fileName));
-			if (!fileList.ContainsKey(fileName))
-				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
-			Bitmap ret;
-			var entry = fileList[fileName];
-			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
+			var raw = GetBytes(fileName);
+			using (var str = new MemoryStream(raw))
 			{
-				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
-				using (var str = new MemoryStream(mStream.ReadBytes(entry.Length)))
-				{
-					ret = (Bitmap)Bitmap.FromStream(str);
-				}
+				return (Bitmap)Bitmap.FromStream(str);
 			}
-			return ret;
 		}
 
 		/// <summary>
