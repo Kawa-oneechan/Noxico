@@ -124,7 +124,7 @@ namespace Noxico
 				}
 				else if (Eyes > 2)
 				{
-					SightRadius = 4 + ((Eyes - 2) * 4);
+					SightRadius = 4 + (int)(Math.Log(Eyes + 3) * 4);
 					GlowGlyph = '\xF8';
 				}
 			}
