@@ -404,14 +404,17 @@ Would you like an infodump on the way out?]]>
 		<word id="x_tail">{0} tail</word>
 		<word id="x_face">{0} face</word>
 		<word id="face_xlike">{0}-like</word>
+		<word id="single_taur">centaur-like</word>
+		<word id="multi_taur">multi-taur ({0} pairs)</word>
 		<category name="Leg types">
 			<word id="legtype_human">human</word>
 			<word id="legtype_genbeast">digitigrade</word>
 			<word id="legtype_stiletto">stilleto-heeled</word>
 			<word id="legtype_claws">clawed</word>
-			<word id="legtype_insect">downy insectoid</word>
+			<word id="legtype_insect">insectoid</word>
       <word id="legtype_dog">digitigrade</word>
-      <word id="legtype_cat">agile feline</word>
+      <word id="legtype_cat">feline</word>
+			<word id="legtype_horse">horse-like</word>
 		</category>
 		<category name="Wing types">
 			<word id="wingtype_feather">feather-covered</word>
@@ -441,6 +444,12 @@ Would you like an infodump on the way out?]]>
 			<word id="teethtype_fangs">fangs</word>
 			<word id="teethtype_sharp">sharp teeth</word>
 			<word id="teethtype_osmond">fearsome teeth</word>
+		</category>
+		<category name="Tattoo locations">
+			<word id="tat_x_on_y">{0} on {1}</word>
+			<word id="tatlocation_hip">hip</word>
+			<word id="tatlocation_smallofback">small of back</word>
+			<word id="tatlocation_buttcheek">butt cheek</word>
 		</category>
 		<word id="lookat_header_general"><![CDATA[General
 -------

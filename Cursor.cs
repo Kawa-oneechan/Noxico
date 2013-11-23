@@ -349,6 +349,8 @@ namespace Noxico
 										break;
 									tc.Tokenize(newDump);
 									((BoardChar)PointingAt).AdjustView();
+									((BoardChar)PointingAt).Character.RecalculateStatBonuses();
+									((BoardChar)PointingAt).Character.CheckHasteSlow();
 									break;
                                 
                                 case "mutate":

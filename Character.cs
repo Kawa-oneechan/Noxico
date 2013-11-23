@@ -23,8 +23,8 @@ namespace Noxico
 
 	public enum Mutations
 	{
-		Random = -1, addBreastRow, addPenis, addVagina, addOddLegs, removeOddLegs, addBreast, removeBreast, addTesticle, removeTesticle, 
-		giveDicknipples, giveNipplecunts, addNipple, removeNipple, giveRegularNipples
+		Random = -1, AddBreastRow, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
+		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples
 	}
 
 	public class Character : TokenCarrier
@@ -314,7 +314,7 @@ namespace Noxico
                 {
 					case Mutations.Random:
 						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Xolroc to fix it.");
-                    case Mutations.addBreastRow:
+                    case Mutations.AddBreastRow:
                         Token newboobs = new Token("breastrow");
                         if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
                         {
@@ -349,7 +349,7 @@ namespace Noxico
                             this.AddToken(newboobs);
                         }
                         break;
-                    case Mutations.addPenis:
+                    case Mutations.AddPenis:
                         if (this.Tokens.Count(t => t.Name == "penis") < 8)
                         {
                             Token newdick = new Token("penis");
@@ -359,7 +359,7 @@ namespace Noxico
                             this.AddToken(newdick);
                         }
                         break;
-                    case Mutations.addVagina:
+                    case Mutations.AddVagina:
                         if (this.Tokens.Count(t => t.Name == "vagina") < 5)
                         {
                             Token newpussy;
@@ -376,7 +376,7 @@ namespace Noxico
                             this.AddToken(newpussy);
                         }
                         break;
-                    case Mutations.addOddLegs:
+                    case Mutations.AddOddLegs:
                         var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" }; 
                         if (funkyLegs.All(x => !HasToken(x))) 
                         { 
@@ -391,7 +391,7 @@ namespace Noxico
 							}
 						}
                         break;
-                    case Mutations.removeOddLegs:
+                    case Mutations.RemoveOddLegs:
                         this.RemoveToken("taur");
                         this.RemoveToken("quadruped");
                         this.RemoveToken("snaketail");
@@ -405,7 +405,7 @@ namespace Noxico
                         if (!this.HasToken("ass"))
                             this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
                         break;
-                    case Mutations.addBreast:
+                    case Mutations.AddBreast:
                         if (this.HasToken("breastrow"))
                         {
 							Token boob = PickATit();
@@ -413,7 +413,7 @@ namespace Noxico
                                 boob.GetToken("amount").Value++;
                         }
                         break;
-                    case Mutations.removeBreast:
+                    case Mutations.RemoveBreast:
                         if (this.HasToken("breastrow"))
                         {
                             List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
@@ -437,7 +437,7 @@ namespace Noxico
                             }
                         }
                         break;
-                    case Mutations.addTesticle:
+                    case Mutations.AddTesticle:
                         var balls = GetToken("balls");
                         if (balls != null)
                         {
@@ -449,7 +449,7 @@ namespace Noxico
                             this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 3f);
                         }
                         break;
-                    case Mutations.removeTesticle:
+                    case Mutations.RemoveTesticle:
 						if (this.HasToken("balls"))
 						{
 							this.GetToken("balls").GetToken("amount").Value--;
@@ -457,7 +457,7 @@ namespace Noxico
 								this.RemoveToken("balls");
 						}
 						break;
-					case Mutations.giveDicknipples:
+					case Mutations.GiveDicknipples:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
 						{
 							Token boob;
@@ -468,7 +468,7 @@ namespace Noxico
 							boob.GetToken("nipples").AddToken("canfuck");
 						}
 						break;
-					case Mutations.giveNipplecunts:
+					case Mutations.GiveNipplecunts:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
 						{
 							Token boob;
@@ -479,7 +479,7 @@ namespace Noxico
 							boob.GetToken("nipples").AddToken("fuckable");
 						}
 						break;
-					case Mutations.addNipple:
+					case Mutations.AddNipple:
 						if (this.HasToken("breastrow"))
 						{
 							Token boob = PickATit();
@@ -489,7 +489,7 @@ namespace Noxico
 								boob.GetToken("nipples").Value++;
 						}
 						break;
-					case Mutations.removeNipple:
+					case Mutations.RemoveNipple:
 						if (this.Path("breastrow/nipples") != null)
 						{
 							Token boob = PickATit();
@@ -502,7 +502,7 @@ namespace Noxico
 								boob.RemoveToken("nipples");
 						}
 						break;
-					case Mutations.giveRegularNipples:
+					case Mutations.GiveRegularNipples:
 						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
 						{
 							Token boob;
@@ -1183,14 +1183,30 @@ namespace Noxico
 				else
 					count = 2;
 				if (this.HasToken("quadruped") || this.HasToken("taur"))
+				{
 					count = 4;
-				if (count < 4)
+					if (this.HasToken("taur"))
+					{
+						var taur = (int)this.GetToken("taur").Value;
+						if (taur == 0)
+							taur = 1;
+						else if (taur > 1)
+							count = 2 + (taur * 2);
+					}
+				}
+				if (count < 6)
 					number_or_pair = "setbymeasure";
 				bodyThings.Add(i18n.GetArray(number_or_pair)[count] + " " + i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
-					bodyThings.Add("taur");
+				{
+					var taur = (int)this.GetToken("taur").Value;
+					if (taur < 2)
+						bodyThings.Add(i18n.GetString("single_taur"));
+					else if (taur > 1)
+						bodyThings.Add(i18n.Format("multi_taur", taur + 1));
+				}
 			}
 
 			if (this.HasToken("wings"))
@@ -1199,26 +1215,6 @@ namespace Noxico
 				if (this.Path("wings/small") != null)
 					wt = i18n.Format("small_wings", wt);
 				bodyThings.Add(wt);
-			}
-
-			if (this.HasToken("tail"))
-			{
-				var tt = this.GetToken("tail").Text;
-				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
-				if (tail == "bunny")
-					bodyThings.Add(i18n.GetString("tailtype_bunny"));
-				else if (tail == "tentacle")
-				{
-					var tentail = this.Path("tail/tip");
-					if (tentail == null || tentail.Text == "tapered")
-						bodyThings.Add(i18n.GetString("tailtype_tapered_tentacle"));
-					else if (tentail.Text == "penis")
-						bodyThings.Add(i18n.GetString("tailtype_cocktacle"));
-					else
-						bodyThings.Add(i18n.GetString("tailtype_tentacle"));
-				}
-				else
-					bodyThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype_" + tail)));
 			}
 
 			//tone
@@ -1325,6 +1321,35 @@ namespace Noxico
 			{
 				//hipThings.Add("quadruped");
 			}
+
+			if (this.HasToken("tail"))
+			{
+				var tt = this.GetToken("tail").Text;
+				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
+				if (tail == "bunny")
+					hipThings.Add(i18n.GetString("tailtype_bunny"));
+				else if (tail == "tentacle")
+				{
+					var tentail = this.Path("tail/tip");
+					if (tentail == null || tentail.Text == "tapered")
+						hipThings.Add(i18n.GetString("tailtype_tapered_tentacle"));
+					else if (tentail.Text == "penis")
+						hipThings.Add(i18n.GetString("tailtype_cocktacle"));
+					else
+						hipThings.Add(i18n.GetString("tailtype_tentacle"));
+				}
+				else
+					hipThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype_" + tail)));
+			}
+
+			//cutie mark crusaders YAY!!!
+			foreach (var tat in new[] { "hip", "smallofback", "buttcheek" })
+			{
+				var tatTok = this.Path("tattoos/" + tat);
+				if (tatTok != null)
+					hipThings.Add(i18n.Format("tat_x_on_y", tatTok.Text, i18n.GetString("tatlocation_" + tat)));
+			}
+
 			Columnize(print, 34, hairThings, hipThings, "lookat_column_hair", "lookat_column_hips");
 		}
 
@@ -2182,13 +2207,23 @@ namespace Noxico
 				{ 100, 64 }, //Demigod
 			};
 			var strength = GetStat(Stat.Strength);
-			var capacity = 0;
+			var capacity = 0f;
 			foreach (var s2c in strengthToCapacity)
 			{
 				capacity = s2c.Value;
 				if (s2c.Key > strength)
 					break;
 			}
+
+			//Taurs and taurtrains get a bonus!
+			if (HasToken("taur"))
+			{
+				var taur = (int)GetToken("taur").Value;
+				if (taur == 0)
+					taur = 1;
+				capacity += taur * 0.5f * capacity;
+			}
+
 			Capacity = capacity;
 			var totalWeight = 0f;
 			foreach (var carriedItem in this.GetToken("items").Tokens)

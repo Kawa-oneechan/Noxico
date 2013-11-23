@@ -220,7 +220,6 @@ namespace Noxico
 			result = SexManager.GetResult("struggle", pervB, pervA);
 			SexManager.Apply(result, pervB, pervA, new Action<string>(x => Console.WriteLine("--> {0}", x)));
 			*/
-			TextScroller.ReadBook(21);
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false, bool clear = true)
