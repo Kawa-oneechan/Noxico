@@ -190,7 +190,9 @@
     </Content>
     <Content Include="mix\bodyplans.tml" />
     <Content Include="mix\bonustraits.tml" />
-    <Content Include="mix\books.xml" />
+    <Content Include="mix\books.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="mix\books.xsl" />
     <Content Include="mix\buildings.xml" />
     <Content Include="mix\chargen.png" />
