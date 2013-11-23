@@ -729,6 +729,7 @@ namespace Noxico
 		public static string ToNoxML(this XmlElement element, bool skip = false)
 		{
 			var r = "";
+			var spaceFolder = new Regex(@"(\s{2,}|[\t])");
 			if (!skip)
 			{
 				foreach (var p in element.SelectNodes("p").OfType<XmlElement>())
@@ -791,7 +792,7 @@ namespace Noxico
 			foreach (var n in element.ChildNodes)
 			{
 				if (n is XmlText)
-					r += ((XmlText)n).Value.Trim();
+					r += spaceFolder.Replace(((XmlText)n).Value.Trim(), " ");
 				else if (n is XmlElement)
 				{
 					var e = n as XmlElement;
