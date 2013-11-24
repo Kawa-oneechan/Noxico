@@ -585,6 +585,7 @@ namespace Noxico
 					Change(this, null);
 			}
 		}
+		public bool[] ItemsEnabled { get; set; }
 
 		public UIRadioList() : base()
 		{
@@ -596,6 +597,9 @@ namespace Noxico
 			Height = 1;
 			Foreground = UIColors.HighlightText;
 			Background = UIColors.WindowBackground;
+			ItemsEnabled = new bool[options.Length];
+			for (var i = 0; i < options.Length; i++)
+				ItemsEnabled[i] = true;
 			Enabled = true;
 		}
 
@@ -608,23 +612,36 @@ namespace Noxico
 		{
 			var off = "\x13C";
 			var on = "\x13D";
-			string todraw = "";
-			for (int i = 0; i < choices.GetLength(0); i++)
-			{
-				string j = (val == i ? on : off) + choices[i] + ' ';
-				todraw += j.PadEffective(Width / choices.GetLength(0));
-			}
-			NoxicoGame.HostForm.Write(todraw, UIManager.Highlight == this ? Foreground : Color.Gray, Background, Top, Left);
+			for (var i = 0; i < choices.Length; i++)
+				NoxicoGame.HostForm.Write((val == i ? on : off) + choices[i], UIManager.Highlight == this ? (ItemsEnabled[i] ? Foreground : Color.Gray) : (ItemsEnabled[i] ? Color.Gray : Color.Silver), Background, Top + i, Left);
 		}
 
-		public override void DoLeft()
+		public override void DoUp()
 		{
+			if (ItemsEnabled.Count(x => x == true) == 1)
+				return;
 			Value = Math.Max(0, Value - 1);
+			if (!ItemsEnabled[Value])
+			{
+				if (Value == 0)
+					DoDown();
+				else
+					DoUp();
+			}
 		}
 
-		public override void DoRight()
+		public override void DoDown()
 		{
-			Value = Math.Min(Value + 1, choices.GetLength(0) - 1);
+			if (ItemsEnabled.Count(x => x == true) == 1)
+				return;
+			Value = Math.Min(Value + 1, choices.Length - 1);
+			if (!ItemsEnabled[Value])
+			{
+				if (Value == choices.Length - 1)
+					DoUp();
+				else
+					DoDown();
+			}
 		}
 
 		public override void DoMouse(int left, int top)
