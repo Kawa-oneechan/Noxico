@@ -2223,6 +2223,9 @@ namespace Noxico
 					taur = 1;
 				capacity += taur * 0.5f * capacity;
 			}
+			else if (HasToken("quadruped"))
+				capacity += 0.5f * capacity;
+			//And so do quadrupeds, dammit!
 
 			Capacity = capacity;
 			var totalWeight = 0f;
