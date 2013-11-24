@@ -119,7 +119,7 @@ namespace Noxico
 			public List<string> HairColors { get; set; }
 			public List<string> SkinColors { get; set; }
 			public List<string> EyeColors { get; set; }
-			public bool GenderLocked { get; set; }
+			public bool[] SexLocks { get; set; }
 			public override string ToString()
 			{
 				return Name;
@@ -140,7 +140,23 @@ namespace Noxico
 					continue;
 				Program.WriteLine(" * Parsing {0}...", id);
 
+				var sexlocks = new[] { true, true, true, false };
+				if (bodyPlan.HasToken("normalgenders"))
+					sexlocks = new[] { true, true, false, false };
+				else if (bodyPlan.HasToken("maleonly"))
+					sexlocks = new[] { true, false, false, false };
+				else if (bodyPlan.HasToken("femaleonly"))
+					sexlocks = new[] { false, true, false, false };
+				else if (bodyPlan.HasToken("hermonly"))
+					sexlocks = new[] { false, false, true, false };
+				else if (bodyPlan.HasToken("neuteronly"))
+					sexlocks = new[] { false, false, false, true };
+				/*
+				var noneuter = bodyPlan.HasToken("normalgender") || bodyPlan.HasToken("neverneuter");
+				var noherm = bodyPlan.HasToken("normalgender");
+				var hermonly = bodyPlan.HasToken("hermonly");
 				var genlock = bodyPlan.HasToken("maleonly") || bodyPlan.HasToken("femaleonly") || bodyPlan.HasToken("hermonly") || bodyPlan.HasToken("neuteronly");
+				*/
 				var name = id.Replace('_', ' ').Titlecase();
 				if (!string.IsNullOrWhiteSpace(bodyPlan.GetToken("playable").Text))
 					name = bodyPlan.GetToken("playable").Text;
@@ -206,7 +222,7 @@ namespace Noxico
 					skins = skins.Distinct().ToList();
 				skins.Sort();
 
-				ret.Add(new PlayableRace() { ID = id, Name = name, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, GenderLocked = genlock });
+				ret.Add(new PlayableRace() { ID = id, Name = name, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, SexLocks = sexlocks });
 
 			}
 			return ret;
@@ -265,10 +281,9 @@ namespace Noxico
 					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 13, Foreground = Color.Gray } },
-					{ "sexNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 14, Foreground = Color.Gray } },
 					{ "sex", new UIRadioList(sexoptions) { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 16, Foreground = Color.Gray } },
-					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 17, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 24, Foreground = Color.Gray } },
+					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 25, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 8, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
@@ -293,7 +308,7 @@ namespace Noxico
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
-						controls["sexLabel"], controls["sexNo"], controls["sex"], controls["gidLabel"], controls["gid"],
+						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"],
 						controls["controlHelp"], controls["next"],
 					},
 					new List<UIElement>()
@@ -377,12 +392,27 @@ namespace Noxico
 				playables.ForEach(x => ((UISingleList)controls["species"]).Items.Add(x.Name.Titlecase()));
 				((UISingleList)controls["species"]).Index = 0;
 				loadColors(0);
+				((UIRadioList)controls["sex"]).ItemsEnabled = playables[0].SexLocks;
 				controls["species"].Change = (s, e) =>
 				{
 					var speciesIndex = ((UISingleList)controls["species"]).Index;
 					loadColors(speciesIndex);
-					controls["sex"].Hidden = playables[speciesIndex].GenderLocked;
-					controls["sexNo"].Hidden = !playables[speciesIndex].GenderLocked;
+					var playable = playables[speciesIndex];
+					var sexList = (UIRadioList)controls["sex"];
+					//controls["sex"].Hidden = playable.GenderLocked;
+					//controls["sexNo"].Hidden = !playable.GenderLocked;
+					sexList.ItemsEnabled = playable.SexLocks;
+					if (!sexList.ItemsEnabled[sexList.Value])
+					{
+						for (var i = 0; i < sexList.ItemsEnabled.Length; i++)
+						{
+							if (sexList.ItemsEnabled[i])
+							{
+								sexList.Value = i;
+								break;
+							}
+					}
+					}
 					UIManager.Draw();
 				};
 				/*
