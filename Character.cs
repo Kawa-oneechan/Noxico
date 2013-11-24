@@ -37,6 +37,7 @@ namespace Noxico
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }
 		public Culture Culture { get; set; }
+		public BoardChar BoardChar { get; set; }
 
 		public float Capacity { get; private set; }
 		public float Carried { get; private set; }
@@ -2150,18 +2151,6 @@ namespace Noxico
 			return (int)skillToken.Value;
 		}
 
-		public BoardChar GetBoardChar()
-		{
-			//Assume that our board is still in memory.
-			foreach (var board in NoxicoGame.HostForm.Noxico.Boards.Where(x => x != null))
-			{
-				var me = board.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character == this);
-				if (me != null)
-					return me;
-			}
-			return null;
-		}
-
 		public Character Spouse
 		{
 			get
@@ -2171,8 +2160,7 @@ namespace Noxico
 				{
 					if (ship.HasToken("spouse") || ship.HasToken("friend"))
 					{
-						var me = GetBoardChar();
-						var them = me.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character.ID == ship.Name);
+						var them = BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character.ID == ship.Name);
 						if (them != null)
 							return them.Character;
 					}
@@ -2613,7 +2601,9 @@ namespace Noxico
 
 		public bool UpdatePregnancy()
 		{
-			var boardChar = this.GetBoardChar();
+			if (BoardChar == null)
+				return false; //abandon pregnanship!
+
 			if (this.HasToken("egglayer") && this.HasToken("vagina") && !this.HasToken("pregnancy"))
 			{
 				var eggToken = this.GetToken("egglayer");
@@ -2623,12 +2613,12 @@ namespace Noxico
 					eggToken.Value = 0;
 					var egg = new DroppedItem("egg")
 					{
-						XPosition = boardChar.XPosition,
-						YPosition = boardChar.YPosition,
-						ParentBoard = boardChar.ParentBoard,
+						XPosition = BoardChar.XPosition,
+						YPosition = BoardChar.YPosition,
+						ParentBoard = BoardChar.ParentBoard,
 					};
 					egg.Take(this);
-					if (boardChar is Player)
+					if (BoardChar is Player)
 						NoxicoGame.AddMessage(i18n.GetString("youareachicken").Viewpoint(this));
 					return false;
 				}

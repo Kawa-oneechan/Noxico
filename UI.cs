@@ -488,7 +488,7 @@ namespace Noxico
 	{
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write("\xDB\xDE", Color.FromName(Text), Background, Top, Left);
+			NoxicoGame.HostForm.Write("\xDB\xDD", Color.FromName(Text), Background, Top, Left);
 			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 4) + "<cBlack,Gray>\x11\x10", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left + 2);
 		}
 	
