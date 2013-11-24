@@ -249,6 +249,7 @@ namespace Noxico
 
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC4";
 				var bar = new string('\xC4', 33);
+				string[] sexoptions = {i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Herm"), i18n.GetString("Neuter")};
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
@@ -265,9 +266,9 @@ namespace Noxico
 					{ "species", new UISingleList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 13, Foreground = Color.Gray } },
 					{ "sexNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 14, Foreground = Color.Gray } },
-					{ "sex", new UIBinary(i18n.GetString("Male"), i18n.GetString("Female")) { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sex", new UIRadioList(sexoptions) { Left = 58, Top = 14, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 16, Foreground = Color.Gray } },
-					{ "gid", new UIBinary(i18n.GetString("Male"), i18n.GetString("Female")) { Left = 58, Top = 17, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 17, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 7, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 8, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
@@ -340,8 +341,8 @@ namespace Noxico
 				controls["play"].Enter = (s, e) =>
 				{
 					var playerName = controls["name"].Text;
-					var sex = ((UIBinary)controls["sex"]).Value;
-					var gid = ((UIBinary)controls["gid"]).Value;
+					var sex = ((UIRadioList)controls["sex"]).Value;
+					var gid = ((UIRadioList)controls["gid"]).Value;
 					var species = ((UISingleList)controls["species"]).Index;
 					var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;

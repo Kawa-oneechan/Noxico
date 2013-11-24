@@ -567,6 +567,75 @@ namespace Noxico
 		}
 	}
 
+	public class UIRadioList : UIElement
+	{
+		private string[] choices;
+		private int val;
+		public int Value
+		{
+			get
+			{
+				return val;
+			}
+			set
+			{
+				val = value;
+				Draw();
+				if (Change != null)
+					Change(this, null);
+			}
+		}
+
+		public UIRadioList() : base()
+		{
+		}
+
+		public UIRadioList(string[] options)
+		{
+			choices = options;
+			Height = 1;
+			Foreground = UIColors.HighlightText;
+			Background = UIColors.WindowBackground;
+			Enabled = true;
+		}
+
+		public override bool TabStop
+		{
+			get { return true; }
+		}
+
+		public override void Draw()
+		{
+			var off = "\x13C";
+			var on = "\x13D";
+			string todraw = "";
+			for (int i = 0; i < choices.GetLength(0); i++)
+			{
+				string j = (val == i ? on : off) + choices[i] + ' ';
+				todraw += j.PadEffective(Width / choices.GetLength(0));
+			}
+			NoxicoGame.HostForm.Write(todraw, UIManager.Highlight == this ? Foreground : Color.Gray, Background, Top, Left);
+		}
+
+		public override void DoLeft()
+		{
+			Value = Math.Max(0, Value - 1);
+		}
+
+		public override void DoRight()
+		{
+			Value = Math.Min(Value + 1, choices.GetLength(0) - 1);
+		}
+
+		public override void DoMouse(int left, int top)
+		{
+			if (left < Width / 2)
+				DoLeft();
+			else
+				DoRight();
+		}
+	}
+
 	public class UIToggle : UIElement
 	{
 		private bool val;

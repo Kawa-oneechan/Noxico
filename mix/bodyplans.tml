@@ -202,7 +202,6 @@ bodyplan: naga
 	playable
 	culture: human
 	namegen: arabic
-	normalgenders
 	terms
 		generic: "naga"
 	tallness: roll 1d20+160
@@ -307,7 +306,6 @@ bodyplan: felinoid
 	playable
 	culture: human
 	namegen: japanese
-	normalgenders
 	invisiblegender
 	terms
 		generic: "felinoid"
@@ -364,7 +362,7 @@ bodyplan: fox
 	playable
 	culture: human
 	namegen: japanese
-	normalgenders
+	neverneuter
 	invisiblegender
 	terms
 		generic: "vulpinoid"
@@ -604,7 +602,7 @@ bodyplan: ursidae
 bodyplan: canine
 	culture: human
 	namegen: germanic
-	normalgenders
+	neverneuter
 	invisiblegender
 	terms
 		generic: "canine"
@@ -714,7 +712,6 @@ bodyplan: dragon
 	culture: human
 	namegen: welsh
 	invisiblegender
-	neverneuter
 	terms
 		generic: "draig"
 		male: "draign"
@@ -733,18 +730,21 @@ bodyplan: dragon
 	face: lizard
 	eyes: oneof yellow, crimson, aqua, springgreen
 		count: roll 1d2+2
-	ears: flat
+	ears: oneof flat, flat, flat, flat, elfin
+	horns: roll 1d3+1
+		_maybe: 0.75
 	wings: bat
 	legs: claws
-	taur
-		_maybe
+	_either
+		taur: roll 1d3
+		snaketail
 	tongue: forked
 	teeth: oneof sharp, fangs
 	tail: dragon
 	fertility: roll 1d10+5
 	egglayer
 	breastrow
-		amount: 2
+		amount: roll 1d2+2
 		size: roll 1d4+2
 		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
 	ass
@@ -764,7 +764,7 @@ bodyplan: dragon
 		thickness: roll 1d3+2
 	_copy: penis
 	balls
-		amount: 2
+		amount: roll 1d3+1
 		size: roll 1d3+2
 
 
