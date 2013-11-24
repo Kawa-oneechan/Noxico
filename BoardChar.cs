@@ -52,6 +52,7 @@ namespace Noxico
 		{
 			ID = character.Name.ToID();
 			Character = character;
+			Character.BoardChar = this;
 			this.Blocking = true;
 			RestockVendor();
 		}

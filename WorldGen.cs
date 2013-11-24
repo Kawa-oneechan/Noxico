@@ -817,7 +817,7 @@ namespace Noxico
 			return map;
 		}
 
-		public void GenerateWorldMap(Realms realm, Action<string> setStatus)
+		public void GenerateWorldMap(Realms realm, Action<string, int, int> setStatus)
 		{
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
@@ -826,33 +826,35 @@ namespace Noxico
 			Realm = realm;
 			var reach = 1200;
 
-			setStatus("Creating heightmap...");
+			setStatus(i18n.Format("worldgen_heightmap", realm), 0, 0); //"Creating heightmap..."
 			var height = CreateHeightMap(reach);
-			setStatus("Creating precipitation map...");
+			setStatus(i18n.Format("worldgen_rainmap", realm), 0, 0); //"Creating precipitation map..."
 			var precip = CreateClouds(reach, 0.010f, 0.3, false);
-			setStatus("Creating temperature map...");
+			setStatus(i18n.Format("worldgen_tempmap", realm), 0, 0); //"Creating temperature map..."
 			var temp = CreateClouds(reach, 0.005f, 0.5, true);
-			setStatus("Creating biome map...");
+			setStatus(i18n.Format("worldgen_biomemap", realm), 0, 0); //"Creating biome map..."
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
 			MapSizeX = (int)Math.Floor(reach / 80.0);
 			MapSizeY = (int)Math.Floor(reach / 50.0);
 
-			setStatus("Drawing board bitmap...");
 			var bmpWidth = MapSizeX * 80;
 			var bmpHeight = MapSizeY * 50; //reach / 1;
 			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
 			for (var row = 0; row < bmpHeight; row++)
+			{
+				setStatus(i18n.Format("worldgen_bitmap", realm), row, bmpHeight); //"Drawing board bitmap..."
 				for (var col = 0; col < bmpWidth; col++)
 					bmp[row, col] = biome[row, col];
+			}
 			DetailedMap = bmp;
 
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
 			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
-			setStatus("Determining biomes...");
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
+				setStatus(i18n.Format("worldgen_determinebiomes", realm), bRow, MapSizeY); //"Determining biomes..."
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					var counts = new int[255];
@@ -888,13 +890,13 @@ namespace Noxico
 				}
 			}
 
-			setStatus("Finding watering holes...");
 			var towns = 0;
 			var townBoards = 0;
 			var wateringHoles = 0;
 			TownMap = new int[MapSizeY, MapSizeX]; //0 - none, -1 - watering hole (town can go nearby), >0 - town
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
+				setStatus(i18n.Format("worldgen_wateringholes", realm), bRow, MapSizeY); //"Finding watering holes..."
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					//Find a board with a reasonable amount of water
@@ -919,9 +921,9 @@ namespace Noxico
 				}
 			}
 
-			setStatus("Marking possible town locations...");
 			for (var bRow = 1; bRow < MapSizeY - 1; bRow++)
 			{
+				setStatus(i18n.Format("worldgen_markingtowns", realm), bRow, MapSizeY); //"Marking possible town locations..."
 				for (var bCol = 1; bCol < MapSizeX - 1; bCol++)
 				{
 					if (TownMap[bRow, bCol] != 0)

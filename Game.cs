@@ -554,16 +554,35 @@ namespace Noxico
 			Vista.ReleaseTriggers();
 		}
 
+		private static void SetStatus(string text, int progress, int maxProgress)
+		{
+			var window = new UIWindow(string.Empty)
+			{
+				Left = 15,
+				Top = 24,
+				Width = 70,
+				Height = 7,
+			};
+			var label = new UILabel(text)
+			{
+				Left = 17,
+				Top = 26,
+			};
+			window.Draw();
+			label.Draw();
+			if (progress + maxProgress != 0)
+			{
+				var length = 66;
+				var filled = (int)Math.Floor(((float)progress / (float)maxProgress) * (float)length);
+				for (var i = 0; i < length; i++)
+					HostForm.SetCell(28, 17 + i, ' ', Color.White, i < filled ? UIColors.LightBackground : UIColors.DarkBackground);
+			}
+			HostForm.Draw();
+		}
+
 		public void CreateRealm()
 		{
-			var line = 0;
-			var setStatus = new Action<string>(s =>
-			{
-				Program.WriteLine(s);
-				HostForm.Write(s, Color.White, Color.Black, line, 0);
-				HostForm.Draw();
-				line++;
-			});
+			Action<string, int, int> setStatus = SetStatus;
 
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
@@ -582,10 +601,10 @@ namespace Noxico
 				ApplyMissions(generator, setStatus, realm);
 
 #if DEBUG
-				setStatus("Drawing actual bitmap...");
 				var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
 				{
+					setStatus("Drawing actual bitmap...", y, generator.MapSizeY);
 					for (var x = 0; x < generator.MapSizeX - 1; x++)
 					{
 						var thisBoard = generator.BoardMap[y, x];
@@ -629,34 +648,20 @@ namespace Noxico
 			}
 
 			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
-			/*
-			setStatus("Saving overworld boards...");
-			for (var i = 0; i < this.Boards.Count; i++)
-			{
-				if (this.Boards[i] == null)
-					continue;
-				this.Boards[i].SaveToFile(i);
-				//if (i > 0)
-				//	this.Boards[i] = null;
-			}
-			*/
 			stopwatch.Stop();
 			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 
-
-			//this.CurrentBoard = GetBoard(townID); //this.Boards[townID];
-			//NoxicoGame.HostForm.Write("The World is Ready...         ", Color.Silver, Color.Transparent, 50, 0);
-			setStatus(i18n.GetString("worldgen_ready")); //"The World is Ready.");
+			setStatus(i18n.GetString("worldgen_ready"), 0, 0);
 			InGame = true;
 			//this.CurrentBoard.Redraw();
 		}
 
-		private void Boardificate(WorldMapGenerator generator, Action<string> setStatus)
+		private void Boardificate(WorldMapGenerator generator, Action<string, int, int> setStatus)
 		{
-			setStatus(i18n.GetString("worldgen_createboards")); //"Creating boards...");
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
+				setStatus(i18n.GetString("worldgen_createboards"), y, generator.MapSizeY);
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
 				{
 					if (generator.RoughBiomeMap[y, x] == generator.WaterBiome)
@@ -688,10 +693,9 @@ namespace Noxico
 				}
 			}
 		}
-	
-		private void PlaceTowns(WorldMapGenerator generator, Action<string> setStatus, ref List<Board> townBoards)
+
+		private void PlaceTowns(WorldMapGenerator generator, Action<string, int, int> setStatus, ref List<Board> townBoards)
 		{
-			setStatus(i18n.GetString("worldgen_towns")); //"Placing towns...");
 			var vendorTypes = new List<string>();
 			var lootData = Mix.GetTokenTree("loot.tml", true);
 			foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
@@ -700,6 +704,7 @@ namespace Noxico
 
 			for (var i = 0; i < 8; i++)
 			{
+				setStatus(i18n.GetString("worldgen_towns"), i, 8);
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
 				{
 					for (var x = 0; x < generator.MapSizeX - 1; x++)
@@ -764,12 +769,12 @@ namespace Noxico
 			}
 		}
 
-		private void PlaceDungeons(WorldMapGenerator generator, Action<string> setStatus)
+		private void PlaceDungeons(WorldMapGenerator generator, Action<string, int, int> setStatus)
 		{
-			setStatus(i18n.GetString("worldgen_dungeons")); //"Scattering dungeon entrances...");
 			var dungeonEntrances = 0;
 			while (dungeonEntrances < 25)
 			{
+				setStatus(i18n.GetString("worldgen_dungeons"), dungeonEntrances, 25);
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
 				{
 					for (var x = 0; x < generator.MapSizeX - 1; x++)
@@ -823,9 +828,9 @@ namespace Noxico
 			}
 		}
 
-		public void ApplyMissions(WorldMapGenerator generator, Action<string> setStatus, Realms realm)
+		public void ApplyMissions(WorldMapGenerator generator, Action<string, int, int> setStatus, Realms realm)
 		{
-			setStatus(i18n.GetString("worldgen_missions")); //"Applying missions...");
+			setStatus(i18n.Format("worldgen_missions", realm), 0, 0);
 
 			var makeBoardTarget = new Action<Board>(board =>
 			{
