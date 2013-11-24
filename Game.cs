@@ -614,16 +614,19 @@ namespace Noxico
 				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
 				if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
 					TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
+				this.Player.ParentBoard = this.CurrentBoard;
+				this.CurrentBoard.Entities.Add(Player);
+				this.Player.Reposition();
 			}
 			else
 			{
 				this.CurrentBoard = homeBase;
 				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
 				this.Player.Character.AddToken("homeboardlevel", 0);
+				this.Player.Lives = 2;
+				this.Player.Character.Health = this.Player.Character.MaximumHealth;
+				this.Player.Respawn();
 			}
-			this.Player.ParentBoard = this.CurrentBoard;
-			this.CurrentBoard.Entities.Add(Player);
-			this.Player.Reposition();
 
 			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
 			/*

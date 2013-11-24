@@ -31,6 +31,33 @@ myBoard.BoardType = BoardType.Special;
 myBoard.RemoveToken("encounters"); myBoard.AddToken("encounters").AddToken("stock");
 MakeBoardTarget(myBoard);
 
+//Set up player's bedroom
+var bed = new Clutter();
+bed.AsciiChar = 0x147;
+bed.XPosition = 31;
+bed.YPosition = 16;
+bed.ForegroundColor = Color.Black;
+bed.BackgroundColor = Color.FromArgb(86, 63, 44);
+bed.ID = "Bed_playerRespawn";
+bed.Name = "Bed";
+bed.Description = "This is your bed. Position yourself over it and press Enter to use it.";
+bed.ParentBoard = myBoard;
+myBoard.Entities.Add(bed);
+//wardrobe?
+
+//Set up shrine
+var candle = new Clutter();
+candle.AsciiChar = 0xA1;
+candle.XPosition = 33;
+candle.YPosition = 19;
+candle.ForegroundColor = Color.White;
+candle.BackgroundColor = Color.FromArgb(86, 63, 44);
+candle.ID = "lifeCandle";
+candle.Name = "Life candle";
+candle.Description = "If you can read this, the candle wasn't reset.";
+candle.ParentBoard = myBoard;
+myBoard.Entities.Add(candle);
+
 //Set up carpenter
 var carpenter = town.PickBoardChar(Gender.Male);
 while (carpenter.Character.HasToken("role"))

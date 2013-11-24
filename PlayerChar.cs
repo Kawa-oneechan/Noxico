@@ -15,7 +15,20 @@ namespace Noxico
 		private Dijkstra AutoTravelMap;
 		public Direction AutoTravelLeave { get; set; }
 		public TimeSpan PlayingTime { get; set; }
-		public int CurrentRealm { get; private set; }
+		public int Lives
+		{
+			get
+			{
+				return Character.HasToken("lives") ? (int)Character.GetToken("lives").Value : 0;
+			}
+			set
+			{
+				var l = Character.Path("lives");
+				if (l == null)
+					l = Character.AddToken("lives");
+				l.Value = value;
+			}
+		}
 
         public Player()
         {
@@ -95,9 +108,12 @@ namespace Noxico
 
 		public void OpenBoard(int index)
 		{
+			if (this.ParentBoard != null)
+			{
+				this.ParentBoard.EntitiesToRemove.Add(this);
+				this.ParentBoard.SaveToFile(this.ParentBoard.BoardNum);
+			}
 			var n = NoxicoGame.HostForm.Noxico;
-			this.ParentBoard.EntitiesToRemove.Add(this);
-			this.ParentBoard.SaveToFile(this.ParentBoard.BoardNum);
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
@@ -724,23 +740,34 @@ namespace Noxico
 					}
 					relation.AddToken("killer");
 				}
-				Character.AddToken("gameover");
 
-				NoxicoGame.AddMessage(i18n.GetString("gameover_title"), Color.Red);
-				var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
-				File.Delete(playerFile);
-				MessageBox.Ask(
-					i18n.Format("youdied", obituary),
-					() =>
-					{
-						Character.CreateInfoDump();
-						NoxicoGame.HostForm.Close();
-					},
-					() =>
-					{
-						NoxicoGame.HostForm.Close();
-					}
-					);
+				if (Lives == 0)
+				{
+					Character.AddToken("gameover");
+					NoxicoGame.AddMessage(i18n.GetString("gameover_title"), Color.Red);
+					//var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
+					//File.Delete(playerFile);
+					var world = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
+					NoxicoGame.InGame = false;
+					MessageBox.Ask(
+						i18n.Format("youdied", obituary),
+						() =>
+						{
+							Character.CreateInfoDump();
+							Directory.Delete(world, true);
+							NoxicoGame.HostForm.Close();
+						},
+						() =>
+						{
+							Directory.Delete(world, true);
+							NoxicoGame.HostForm.Close();
+						}
+						);
+				}
+				else
+				{
+					Respawn();
+				}
 			}
 			return dead;
 		}
@@ -750,7 +777,6 @@ namespace Noxico
 			Toolkit.SaveExpectation(stream, "PLAY");
 			base.SaveToFile(stream);
 			stream.Write(PlayingTime.Ticks);
-			stream.Write(CurrentRealm);
 		}
 
 		public static new Player LoadFromFile(BinaryReader stream)
@@ -764,7 +790,6 @@ namespace Noxico
 				Character = e.Character,
 			};
 			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
-			newChar.CurrentRealm = stream.ReadInt32();
 			return newChar;
 		}
 
@@ -855,6 +880,41 @@ namespace Noxico
 					}
 				}
 			}
+		}
+
+		public void Respawn()
+		{
+			var game = NoxicoGame.HostForm.Noxico;
+			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
+			var bed = homeBoard.Entities.First(e => e is Clutter && e.ID == "Bed_playerRespawn");
+			if (ParentBoard != homeBoard)
+				OpenBoard(homeBoard.BoardNum);
+			XPosition = bed.XPosition;
+			YPosition = bed.YPosition;
+#if DEBUG
+			if (!Character.HasToken("wizard"))
+#endif
+				Lives--;
+			Character.Health = Character.MaximumHealth * 0.5f;
+			UpdateCandle();
+		}
+
+		public void UpdateCandle()
+		{
+			var game = NoxicoGame.HostForm.Noxico;
+			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
+			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
+			//TRANSLATE
+			if (Lives == 0)
+				candle.Description = "If this little stump of a candle is any indication, you're on your last legs. You should be careful.";
+			else if (Lives == 1)
+				candle.Description = "The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.";
+			else if (Lives < 4)
+				candle.Description = "The candle still has a ways to go, and so do you. Still, it's no good to tempt Death.";
+			else if (Lives < 7)
+				candle.Description = "The candle burns brightly.";
+			else
+				candle.Description = "The candle is positively ablaze with life.";
 		}
 	}
 }
