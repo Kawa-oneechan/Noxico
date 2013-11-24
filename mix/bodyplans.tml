@@ -251,7 +251,6 @@ bodyplan: foocubus
 	playable
 	culture: seradevar
 	namegen: demonic
-	neverneuter
 	invisiblegender
 	terms
 		generic: "cubi"
@@ -306,6 +305,7 @@ bodyplan: felinoid
 	playable
 	culture: human
 	namegen: japanese
+	normalgenders
 	invisiblegender
 	terms
 		generic: "felinoid"
@@ -362,7 +362,7 @@ bodyplan: fox
 	playable
 	culture: human
 	namegen: japanese
-	neverneuter
+	normalgenders
 	invisiblegender
 	terms
 		generic: "vulpinoid"
@@ -479,7 +479,7 @@ bodyplan: slime
 	playable
 	culture: seradevar
 	namegen: japanese
-	neverneuter
+	allowneuter
 	invisiblegender
 	copier
 	terms
@@ -602,7 +602,7 @@ bodyplan: ursidae
 bodyplan: canine
 	culture: human
 	namegen: germanic
-	neverneuter
+	normalgenders
 	invisiblegender
 	terms
 		generic: "canine"
@@ -657,7 +657,7 @@ bodyplan: changeling
 	playable
 	culture: changelings
 	namegen: changeling
-	neverneuter
+	normalgenders
 	invisiblegender
 	copier
 		full
@@ -711,6 +711,7 @@ bodyplan: dragon
 	playable
 	culture: human
 	namegen: welsh
+	allowneuter
 	invisiblegender
 	terms
 		generic: "draig"
