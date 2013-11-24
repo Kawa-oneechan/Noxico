@@ -151,6 +151,8 @@ namespace Noxico
 					sexlocks = new[] { false, false, true, false };
 				else if (bodyPlan.HasToken("neuteronly"))
 					sexlocks = new[] { false, false, false, true };
+				if (bodyPlan.HasToken("allowneuter"))
+					sexlocks[3] = true;
 				/*
 				var noneuter = bodyPlan.HasToken("normalgender") || bodyPlan.HasToken("neverneuter");
 				var noherm = bodyPlan.HasToken("normalgender");
