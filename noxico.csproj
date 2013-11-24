@@ -255,6 +255,7 @@
     <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
+    <Content Include="unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
     <Content Include="mix\words.xml">
       <SubType>Designer</SubType>

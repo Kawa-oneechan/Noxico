@@ -304,6 +304,8 @@ Do you want to find out?]]>
 		<word id="textscroller_book404">Can't find the content for this book.</word>
 		<word id="Male">Male</word>
 		<word id="Female">Female</word>
+    <word id="Herm">Herm</word>
+    <word id="Neuter">Neuter</word>
 		<word id="Bed">Bed</word>
 		<word id="point">point</word>
 		<word id="thisis_x">This is {0}.</word>
