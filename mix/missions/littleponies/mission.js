@@ -9,7 +9,7 @@ print("Picked " + myChar.Character.Name + " to replace with pony mayor.");
 var spouse = myChar.Character.Spouse;
 if (spouse != null) {
 	print("Character has a spouse to remove; " + spouse.Name + ".");
-	myBoard.Entities.Remove(spouse.GetBoardChar());
+	myBoard.Entities.Remove(spouse.BoardChar);
 }
 var spousesStuff = myBoard.GetEntitiesWith("wardrobe_" + spouse.Name.ToID(), false);
 for (var i = 0; i < spousesStuff.length; i++)

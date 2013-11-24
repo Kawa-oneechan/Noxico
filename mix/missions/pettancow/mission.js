@@ -10,7 +10,7 @@ var spouse = myChar.Character.GetSpouse();
 if (spouse != null)
 {
 	print("Character has a spouse to remove; " + spouse.Name + ".");
-	myBoard.Entities.Remove(spouse.GetBoardChar());
+	myBoard.Entities.Remove(spouse.BoardChar);
 }
 
 //Not sure if this works. Last time I tried the wardrobe was already empty.

@@ -1828,7 +1828,7 @@ item: catmorph
 					user.AddToken("invisiblegender");
 				}
 				user.UpdateTitle();
-				user.GetBoardChar().AdjustView();
+				user.BoardChar.AdjustView();
 
 				print(ret);
 				return;
@@ -1909,7 +1909,7 @@ item: dogmorph
 					user.AddToken("invisiblegender");
 				}
 				user.UpdateTitle();
-				user.GetBoardChar().AdjustView();
+				user.BoardChar.AdjustView();
 
 				print(ret);
 				return;
@@ -1989,7 +1989,7 @@ item: foxmorph
 					user.AddToken("invisiblegender");
 				}
 				user.UpdateTitle();
-				user.GetBoardChar().AdjustView();
+				user.BoardChar.AdjustView();
 
 				print(ret);
 				return;
@@ -2062,7 +2062,7 @@ item: bunnymorph
 					user.AddToken("invisiblegender");
 				}
 				user.UpdateTitle();
-				user.GetBoardChar().AdjustView();
+				user.BoardChar.AdjustView();
 
 				print(ret);
 				return;

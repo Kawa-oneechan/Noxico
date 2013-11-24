@@ -1047,6 +1047,7 @@ namespace Noxico
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
 			newChar.Character = Character.LoadFromFile(stream);
+			newChar.Character.BoardChar = newChar;
 			newChar.AdjustView();
 			newChar.ReassignScripts();
 			newChar.RestockVendor();

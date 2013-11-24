@@ -746,7 +746,7 @@ namespace Noxico
 								citizens.Remove(chosenCitizen);
 								var spouse = chosenCitizen.Character.Spouse;
 								if (spouse != null)
-									citizens.Remove(spouse.GetBoardChar());
+									citizens.Remove(spouse.BoardChar);
 								var newVendor = chosenCitizen.Character;
 								var vendorStock = newVendor.GetToken("items");
 								newVendor.RemoveAll("role");
