@@ -707,7 +707,7 @@ bodyplan: changeling
 		amount: 2
 		size: 3
 
-bodyplan: dragon
+bodyplan: draig
 	playable
 	culture: human
 	namegen: welsh
@@ -718,7 +718,7 @@ bodyplan: dragon
 		male: "draign"
 		female: "draiga"
 		herm: "dragwn"
-	bestiary: ""
+	bestiary: "A proud race from the far West, thought by some to be related somehow to the demons."
 		char: 0x166
 	tallness: roll 1d30+200
 	skin
