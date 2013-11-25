@@ -229,7 +229,7 @@ namespace Noxico
 			var player = NoxicoGame.HostForm.Noxico.Player;
 			if (player.ParentBoard != this.ParentBoard)
 				player = null;
-			var ogled = false;
+			//var ogled = false;
 			foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < 3))
 			{
 				if (other.Character.HasToken("beast"))
@@ -243,12 +243,13 @@ namespace Noxico
 					var stim = this.Character.GetToken("stimulation");
 					var otherChar = other.Character.GetStat(Stat.Charisma);
 					var distance = other.DistanceFrom(this);
-					var increase = (otherChar / 10) * (distance * 0.25);
+					var increase = (otherChar / 20) * (distance * 0.25);
 					stim.Value += (float)increase;
 					if (distance < 2)
-						stim.Value += 2;
+						stim.Value += 1;
 					if (stim.Value > 100)
 						stim.Value = 100;
+					/*
 					if (!ogled && this != player)
 					{
 						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
@@ -262,10 +263,12 @@ namespace Noxico
 							ogled = true;
 						}
 					}
+					*/
 				}
 			}
 		}
 
+		/*
 		public string Ogle(Character otherChar)
 		{
 			//TRANSLATE - all reactions should be in words.xml, and more should be added.
@@ -304,6 +307,7 @@ namespace Noxico
 			}
 			return "There are no words.";
 		}
+		*/
 
 		public void CheckForCriminalScum()
 		{

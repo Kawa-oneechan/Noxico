@@ -91,6 +91,7 @@ namespace Noxico
 					board.AllowTravel = false;
 					board.Clear(DungeonGeneratorBiome);
 					board.BoardNum = nox.Boards.Count;
+					board.Coordinate = nox.Player.ParentBoard.Coordinate;
 					if (i > 0)
 						board.AddToken("dark");
 					nox.Boards.Add(board);

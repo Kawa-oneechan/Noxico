@@ -63,6 +63,8 @@ namespace Noxico
 		private static string lastMessage = "";
 		public static int WorldVersion { get; private set; }
 
+		private static int[][,] miniMap;
+
 		public static int Updates = 0;
 
 		public static bool IsKeyDown(KeyBinding binding)
@@ -280,6 +282,17 @@ namespace Noxico
 					b.Write(target.Key);
 					b.Write(target.Value);
 				}
+				Program.WriteLine("Minimap...");
+				Toolkit.SaveExpectation(b, "MMAP");
+				b.Write((Int16)miniMap.Length);
+				for (var i = 0; i < miniMap.Length; i++)
+				{
+					b.Write((Int16)miniMap[i].GetLength(0));
+					b.Write((Int16)miniMap[i].GetLength(1));
+					for (var y = 0; y < miniMap[i].GetLength(0); y++)
+						for (var x = 0; x < miniMap[i].GetLength(1); x++)
+							b.Write((byte)miniMap[i][y, x]);
+				}
 			}
 
 			Program.WriteLine("--------------------------");
@@ -357,6 +370,16 @@ namespace Noxico
 			TravelTargets = new Dictionary<int, string>();
 			for (var i = 0; i < numTargets; i++)
 				TravelTargets.Add(bin.ReadInt32(), bin.ReadString());
+			Toolkit.ExpectFromFile(bin, "MMAP", "minimap");
+			miniMap = new int[bin.ReadInt16()][,];
+			for (var i = 0; i < miniMap.Length; i++)
+			{
+				miniMap[i] = new int[bin.ReadInt16(), bin.ReadInt16()];
+				for (var y = 0; y < miniMap[i].GetLength(0); y++)
+					for (var x = 0; x < miniMap[i].GetLength(1); x++)
+						miniMap[i][y, x] = bin.ReadByte();
+			}
+
 			ApplyRandomPotions();
 			file.Close();
 
@@ -590,15 +613,18 @@ namespace Noxico
 
 			var generator = new WorldMapGenerator();
 			var townBoards = new List<Board>();
+			miniMap = new int[2][,];
 			for (var i = 0; i < Enum.GetValues(typeof(Realms)).Length; i++)
 			{
 				Random.Reseed("pandora".GetHashCode());
 				var realm = (Realms)i;
 				generator.GenerateWorldMap(realm, setStatus);
-				Boardificate(generator, setStatus);
+				Boardificate(generator, setStatus, realm);
 				PlaceTowns(generator, setStatus, ref townBoards);
 				PlaceDungeons(generator, setStatus);
 				ApplyMissions(generator, setStatus, realm);
+
+				miniMap[i] = generator.RoughBiomeMap;
 
 #if DEBUG
 				var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
@@ -657,7 +683,7 @@ namespace Noxico
 			//this.CurrentBoard.Redraw();
 		}
 
-		private void Boardificate(WorldMapGenerator generator, Action<string, int, int> setStatus)
+		private void Boardificate(WorldMapGenerator generator, Action<string, int, int> setStatus, Realms realm)
 		{
 			for (var y = 0; y < generator.MapSizeY - 1; y++)
 			{
@@ -679,6 +705,7 @@ namespace Noxico
 					if (y < generator.MapSizeY - 1)
 						newBoard.Connect(Direction.South, generator.BoardMap[y + 1, x]);
 					newBoard.ClearToWorld(generator);
+					newBoard.Realm = realm;
 					newBoard.AddClutter();
 					var biome = BiomeData.Biomes[generator.RoughBiomeMap[y, x]];
 					if (biome.Encounters.Length > 0)
@@ -849,6 +876,8 @@ namespace Noxico
 				{
 					if (board == null)
 						continue;
+					if (board.Realm != realm)
+						continue;
 					if (board.BoardType != boardType)
 						continue;
 					if (biome > 0 && board.GetToken("biome").Value != biome)
@@ -913,7 +942,10 @@ namespace Noxico
 			js.SetFunction("FindBoardByID", findBoardByID);
 			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
 			js.SetFunction("MakeTown", makeTown);
-			js.SetFunction("print", new Action<string>(x => Program.WriteLine(x)));
+			js.SetFunction("print", new Action<string>(x =>
+			{
+				Program.WriteLine(x);
+			}));
 #if DEBUG
 			js.SetDebugMode(true);
 			js.Step += (s, di) =>
@@ -1199,9 +1231,9 @@ namespace Noxico
 				var statBase = character.GetToken(stat.ToLowerInvariant()).Value;
 				var total = statBase + statBonus;
 				if (statBonus > 0)
-					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
+					bonus = "<cGray> (" + Math.Ceiling(statBase) + "+" + Math.Ceiling(statBonus) + ")<cSilver>";
 				else if (statBonus < 0)
-					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
+					bonus = "<cMaroon> (" + Math.Ceiling(statBase) + "-" + Math.Ceiling(-statBonus) + ")<cSilver>";
 				HostForm.Write(i18n.GetString("shortstat_" + stat) + "  <cWhite>" + total + bonus, Color.Silver, Color.Transparent, statRow, 81);
 				statRow++;
 			}
@@ -1272,6 +1304,33 @@ namespace Noxico
 					sb.Append(i18n.GetString("mod_helpless"));
 				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
+
+			var coord = player.ParentBoard.Coordinate;
+			var realm = (int)player.ParentBoard.Realm;
+			var cx = coord.X;
+			var cy = coord.Y;
+			var extent = 13;
+			var center = 6;
+			for (var y = 0; y < extent; y++)
+			{
+				for (var x = 0; x < extent; x++)
+				{
+					var ey = cy - center + y;
+					var ex = cx - center + x;
+					if (ey < 0 || ey >= miniMap[realm].GetLength(0))
+						continue;
+					if (ex < 0 || ex >= miniMap[realm].GetLength(1))
+						continue;
+					var miniMapPart = miniMap[realm][ey, ex];
+					if (miniMapPart >= BiomeData.Biomes.Count)
+						continue;
+					var biomeColor = BiomeData.Biomes[miniMapPart].Color;
+					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
+				}
+			}
+			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
+			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
+				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
 
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
