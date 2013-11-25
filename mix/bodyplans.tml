@@ -1,0 +1,884 @@
+bodyplan: human
+	playable
+	culture: human
+	namegen: oneof norse, germanic
+	normalgenders
+	explicitgender
+	terms
+		generic: "human"
+		male: "man"
+		female: "woman"
+	bestiary: "A typical human of northern stock."
+		char: 0x160
+	tallness: roll 1d50+150
+	femalesmaller
+	hair
+		length: roll 1d4+5
+		color: oneof blond, brown, black,red, gray, white, auburn
+	-- repeating a few options to increase their chances 
+		style: oneof wavy, wavy, ponytail, straight, straight, straight, straight, curly, braided
+	skin
+		type: skin
+		color: oneof light, light, light, pale, pale, dark, dark, olive
+	eyes: oneof sienna, teal, slategray, olive, seagreen, darkslateblue, dimgray, forestgreen
+	face: normal
+	tongue: normal
+	teeth: normal
+	ears: human
+	legs: human
+	ass
+		virgin
+		looseness: 0
+		size: roll 1d4+4
+	waist: roll 1d4+1
+	hips: roll 1d2+4
+	-- The creature creator adjusts this part.
+	fertility: roll 1d15+5
+	breastrow
+		amount: 2
+		size: roll 1d5+1
+		nipples: 1
+			size: 0.5
+	vagina
+		virgin
+		looseness: 0
+		wetness: 1
+		clit: 0.25
+	womb
+	penis: human
+		thickness: 2.5
+		length: roll 1d5+13
+	balls
+		amount: 2
+		size: 0.6
+	costume
+		casual
+
+bodyplan: imp
+	culture: seradevar
+	namegen: demonic
+	maleonly
+	invisiblegender
+	terms
+		generic: "imp"
+	bestiary: "A disgusting little devil that rapes and destroys whatever tickles its fancy."
+		char: 0x165
+	tallness: roll 1d40+100
+	hair
+		length: 5
+		color: black
+		style: oneof mohawk, emo
+	skin
+		type: skin
+		color: oneof red, firebrick, darkred, brown
+	face: normal
+	tongue: oneof normal, normal, normal, forked
+	teeth: fangs
+	eyes: yellow
+		glow
+	ears: human
+	waist: roll 1d2+3
+	hips: roll 1d2+3
+	legs: human
+	wings: bat
+		small
+	ass
+		size: 4
+		looseness: 1
+	penis: human
+		thickness: 2.5
+		length: roll 1d2+17
+	balls
+		amount: 2
+		size: 1
+	carnality: 50
+
+bodyplan: goblin
+	culture: seradevar
+	namegen: demonic
+	femaleonly
+	invisiblegender
+	terms
+		generic: "goblin"
+	bestiary: "Originally great engineers, now fallen into an orgiasmic frenzy."
+		char: 0x165
+	tallness: roll 1d40+120
+	hair
+		length: 4
+		color: oneof purple, palevioletred, mediumorchid, hotpink, deeppink
+		style: oneof wavy, pigtail, mohawk, curly, spiky, emo
+	skin
+		type: skin
+		color: oneof olivedrab, darkslategray, darkolivegreen
+	face: normal
+	tongue: normal
+	teeth: fangs
+	eyes: oneof plum, mediumvioletred, mediumorchid, orchid
+	ears: elfin
+	legs: human
+	waist: roll 1d2+1
+	hips: roll 1d3+4
+	fertility: 50
+	ass
+		size: roll 1d3+6
+		looseness: 1
+	breastrow
+		amount: 2
+		size: roll 1d3+3
+		nipples: 1
+			size: 1.25
+	vagina
+		wetness: roll 1d3+2
+		looseness: 1
+		clit: 1.0
+	womb
+	items
+	select
+		set: 0.3
+			addict
+			overwrite: "vagina/looseness: roll 1d2+3"
+			overwrite: "ass/looseness: roll 1d2+2"
+			carnality: 70
+		set: 0.1
+			drugist
+			carnality: 50
+			addto: ass
+				virgin
+			overwrite: ass/looseness: 0
+			addto: items
+				gExtractor					
+		set: 0.6
+			carnality: 60
+
+bodyplan: bee
+	culture: human
+	namegen: arabic
+	femaleonly
+	invisiblegender
+	terms
+		generic: "bee"
+		male: "bee drone"
+		female: "bee girl"
+	bestiary: "A man-sized bee, basically."
+		char: 0x166
+	tallness: roll 1d20+140
+	hair
+		length: 6
+		color: black
+		style: oneof curly, wavy, afro, curly, wavy
+	skin
+		type: skin
+		color: oneof yellow, gold, goldenrod
+	face: normal
+	tongue: long
+	teeth: normal
+	eyes: black
+	ears: pointed
+	legs: insect
+	antennae
+	wings: insect
+	tail: stinger
+		venom: 100
+		recharge: 5
+	hips: 6
+	waist: 3
+	fertility: 10
+	ass: insect
+		size: 13
+		looseness: 4
+	breastrow
+		amount: 2
+		size: roll 1d5+1
+		nipples: 1
+			size: 0.25
+	vagina
+		wetness: 5
+		looseness: 3
+		clit: 0.3
+	womb
+
+
+bodyplan: naga
+	playable
+	culture: human
+	namegen: arabic
+	terms
+		generic: "naga"
+	tallness: roll 1d20+160
+	bestiary: "Half beautiful humanoid, half snake, all desert-y allure."
+		char: 0x161
+	hair
+		length: 14
+		color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
+		style: oneof straight, straight, wavy
+	skin
+		type: skin
+		color: oneof aqua, darkseagreen, cadetblue, darkslategray
+	face: normal
+	tongue: long
+	teeth: oneof fangs, sharp
+	eyes: yellow
+	ears: flat
+	snaketail
+	waist: 4
+	hips: 5
+	fertility: 20
+	ass
+		size: 6
+		looseness: 1
+	breastrow
+		amount: 2
+		size: roll 1d4+3
+		nipples: 2
+	vagina
+		wetness: 2
+		looseness: 2
+		clit: 0.25
+	womb
+	penis: lizard
+		thickness: roll 1d2+1
+		length: roll 1d6+20
+	balls
+		amount: 2
+		size: 0.7
+		hidden
+	costume
+		lacy_undies
+		bikini
+
+
+bodyplan: foocubus
+	playable
+	culture: seradevar
+	namegen: demonic
+	invisiblegender
+	terms
+		generic: "cubi"
+		male: "incubus"
+		female: "succubus"
+		herm: "omnibus"
+	fireproof
+	bestiary: "The children of the night -- the fun ones."
+		char: 0x160
+	tallness: roll 1d20+170
+	hair
+		length: roll 1d3+4
+		color: oneof red, black, blue, darkred, green
+		style: oneof straight, curly, straight, straight, bun
+	skin
+		type: skin
+		color: oneof pale, brown, purple
+	face: normal
+	teeth: oneof normal, normal, fangs, fangs, sharp, osmond
+	tongue: oneof normal, normal, forked, long
+	eyes: oneof red, yellow, aqua, white
+	ears: elfin
+	wings: bat
+	legs: oneof claws, stiletto, stiletto, human, human, human
+	waist: roll 1d3+2
+	hips: 6
+	fertility: roll 1d20+30
+	ass
+		size: 7
+		looseness: 2
+	breastrow
+		amount: 2
+		size: roll 1d5+4
+		nipples: 1
+			size: roll 1d2+1
+	vagina
+		wetness: 4
+		looseness: 1
+		clit: 1.6
+	womb
+	penis: studded
+		thickness: roll 1d3+1
+		length: roll 1d6+17
+	balls
+		amount: 2
+		size: roll 1d2+1
+	items
+		rope
+
+
+bodyplan: felinoid
+	playable
+	culture: human
+	namegen: japanese
+	normalgenders
+	invisiblegender
+	terms
+		generic: "felinoid"
+		male: "catboy"
+		female: "catgirl"
+		herm: "catherm"
+	bestiary: "Typical trading cat people."
+		char: 0x167
+	tallness: roll 1d40+150
+	femalesmaller
+	hair
+		length: roll 1d4+5
+		color: oneof blond, brown, black, red, orange, gray, white, auburn
+		style: oneof straight, wavy, ponytail, braided
+	skin
+		type: fur
+		color: oneof brown, orange, white, gray, black
+	eyes: oneof gold, yellow, lime
+		glow
+	face: cat
+	teeth: fangs
+	tongue: oneof barbed, normal
+	ears: cat
+	legs: oneof human, cat
+	tail: cat
+	ass
+		virgin
+		looseness: 0
+		size: 5
+	hips: roll 1d6
+	waist: roll 1d4+1
+	fertility: roll 1d25+5
+	breastrow
+		amount: 2
+		size: roll 1d4+1
+		nipples: 1
+			size: roll 1d2+1
+	vagina
+		virgin
+		looseness: 0
+		wetness: 1
+		clit: 0.25
+	womb
+	penis: cat
+		thickness: 3
+		length: roll 1d6+12
+		sheath
+	balls
+		amount: 2
+		size: 0.6
+
+
+bodyplan: fox
+	playable
+	culture: human
+	namegen: japanese
+	normalgenders
+	invisiblegender
+	terms
+		generic: "vulpinoid"
+		male: "foxboy"
+		female: "foxgirl"
+		herm: "foxherm"
+	bestiary: "Cunning tricksters and well-versed bards."
+		char: 0x167
+	tallness: roll 1d20+150
+	hair
+		length: roll 1d6+3
+		color: oneof blond, brown, black, red
+		style: oneof straight, wavy, ponytail, braided
+	skin
+		type: fur
+		color: sandybrown
+	eyes: green
+	tongue: normal
+	teeth: fangs
+	ears: fox
+	face: fox
+	legs: dog
+	tail: fox
+	ass
+		virgin
+		size: 4
+		looseness: 0
+	hips: roll 1d2+1
+	waist: 2
+	fertility: roll 1d20+10
+	breastrow
+		amount: 2
+		size: roll 1d3+3
+		nipples: 1
+			size: roll 1d2+2
+	vagina
+		virgin
+		wetness: 1
+		looseness: 0
+		clit: 0.25
+	womb
+	penis: dog
+		thickness: 2
+		length: roll 1d7+14
+		sheath
+	balls
+		amount: 2
+		size: 0.6
+	cunning: 20
+
+
+bodyplan: littlepony
+	playable: "Little Pony"
+	culture: equestrian
+	namegen: pony
+	normalgenders
+	invisiblegender
+	terms
+		generic: "little pony"
+		male: "stallion"
+		female: "mare"
+	bestiary: "I used to wonder what erotic adventure games could be."
+		char: 0x163
+	-- marshmallow adjusts the way hooves are described.
+	marshmallow
+	tallness: 140
+	hair
+		length: 16
+		color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+	skin
+		type: fur
+		color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+	face: horse
+	eyes: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+	teeth
+	tongue: normal
+	legs: horse
+	quadruped
+	-- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
+	_either
+		wings: feather
+		monoceros
+	-- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
+	ears: horse
+	tail: horse
+	fertility: roll 1d25+10
+	ass
+		size: 6
+		looseness: 0
+		virgin
+	vagina
+		virgin
+		wetness: 1
+		looseness: 0
+		clit: 1.5
+	womb
+	penis: horse
+		thickness: 3
+		length: 16
+		sheath
+	balls
+		amount: 2
+		size: 3
+	breastrow
+		amount: 2
+		size: 0
+		nipples: 1
+			size: 0.5
+	tattoos
+		hip: "cutie mark"
+
+
+bodyplan: slime
+	playable
+	culture: seradevar
+	namegen: japanese
+	allowneuter
+	invisiblegender
+	copier
+	terms
+		generic: "slime"
+	--	 male: "slimeboi"
+	-- female: "slimegirl"
+	bestiary: "I am gross and perverted. I'm obsessed and deranged."
+		char: 0x164
+	tallness: roll 1d50+100
+	skin
+		type: slime
+		color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
+	hair
+		length: roll 1d8+10
+		color: slime
+		style: straight
+	slimeblob
+	face: normal
+	teeth: soft
+	tongue: normal
+	ears: flat
+	eyes: white
+	ass
+		size: roll 1d4+4
+		looseness: 2
+	waist: roll 1d5+1
+	hips: roll 1d3+4
+	fertility: roll 1d15+5
+	breastrow
+		amount: 2
+		size: roll 1d7+4
+		nipples: 1
+			size: 0.75
+	vagina
+		looseness: 2
+		wetness: 2
+		clit: 0.5
+	womb
+	penis: human
+		thickness: 2.5
+		length: roll 1d7+15
+	balls
+		amount: 2
+		size: 1.5
+
+
+bodyplan: ursidae
+	playable
+	culture: ursidous
+	namegen: bears
+	normalgenders
+	invisiblegender
+	fearless
+	terms
+		generic: "ursidae"
+		male: "ursidae"
+		female: "ursavus"
+		herm: "ursus"
+	tallness: roll 1d150+150
+		char: 0x166
+	hair
+		length: roll 1d4+7
+		color: oneof brown, black, gray, white, auburn
+		style: oneof wavy, curly, braided, braided, braided ponytail, afro
+	skin
+		type: fur
+		color: oneof brown, black, white, gray, auburn
+	eyes: black
+	teeth: sharp
+	face: normal
+	ears: bear
+	-- short, round, and resting atop the head
+	tongue
+	legs: bear
+	-- heavily furred, with humanoid feet having fur only atop the foot, and a calloused underside
+	ass
+		virgin
+		looseness: 0
+		size: 7
+	hips: roll 1d14+2
+	waist: roll 1d12+2
+	fertility: roll 1d25+5
+	-- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
+	-- Requires only one roll and a divisor token. In fact, I could list it right now.
+	breastrow
+		amount: 2
+		size: roll 1d8+2
+		divisor: 0.85
+		nipples: 1
+			size: roll 1d4+1
+	breastrow
+		amount: 2
+		size: roll 1d8+2
+		nipples: 1
+			size: roll 1d4+1
+	breastrow
+		amount: 2
+		size: roll 1d8+2
+		nipples: 1
+			size: roll 1d4+1
+	breastrow
+		amount: 2
+		size: roll 1d8+2
+		nipples: 1
+			size: roll 1d4+1
+	vagina
+		virgin
+		looseness: 0
+		wetness: 1
+		clit: 0.5
+	womb
+	penis: bear
+		thickness: 4
+		length: roll 1d10+12
+	balls
+		amount: 2
+		size: 0.8
+
+
+bodyplan: canine
+	culture: human
+	namegen: germanic
+	normalgenders
+	invisiblegender
+	terms
+		generic: "canine"
+		male: "dogboy"
+		female: "doggirl"
+		herm: "dogherm"
+	hair
+		length: roll 1d6+3
+		color: oneof blond, brown, black, red
+		style: oneof straight, wavy, ponytail, braided
+	bestiary: ""
+		char: 0x167
+	skin
+		type: fur
+		color: brown
+	tallness: roll 1d20+170
+	eyes: yellow
+	ears: dog
+	face: dog
+	teeth: sharp
+	tongue: long
+	legs: dog
+	tail: dog
+	ass
+		virgin
+		size: 4
+		looseness: 0
+	hips: roll 1d2+1
+	waist: 2
+	fertility: roll 1d20+10
+	breastrow
+		amount: 2
+		size: roll 1d3+3
+		nipples: 1
+			size: roll 1d2+2
+	vagina
+		virgin
+		looseness: 0
+		wetness: 1
+		clit: 0.25
+	womb
+	penis: dog
+		thickness: 2
+		length: roll 1d7+14
+		sheath
+	balls
+		amount: 2
+		size: 0.6
+
+
+bodyplan: changeling
+	playable
+	culture: changelings
+	namegen: changeling
+	normalgenders
+	invisiblegender
+	copier
+		full
+	terms
+		generic: "changeling"
+	ascii
+		char: U+0075
+	bestiary: "This game is going to be perfect."
+		char: 0x163
+	tallness: 134
+	hair
+		length: roll 1d3+3
+		color: oneof aquamarine, cadetblue, darkcyan, darkgreen, darkslategray
+	skin
+		type: carapace
+		color: oneof black, ebony, darkslategray
+	face: horse
+	eyes: oneof darkturquoise, deepskyblue, dodgerblue, lightsteelblue
+		glow
+	teeth: fangs
+	tongue
+	legs: hole-filled horse
+	quadruped
+	marshmallow
+	wings: insect
+	monoceros
+	ears: horse
+	tail: horse
+	fertility: roll 1d10
+	ass
+		size: 5
+		looseness: 0
+	vagina
+		looseness: 1
+		wetness: 2
+		clit: 1.5
+	womb
+	penis: horse
+		thickness: 3
+		length: 16
+	breastrow
+		amount: 2
+		size: 0
+		nipples: 1
+			size: 0.5
+	balls
+		amount: 2
+		size: 3
+
+bodyplan: draig
+	playable
+	culture: human
+	namegen: welsh
+	allowneuter
+	invisiblegender
+	terms
+		generic: "draig"
+		male: "draign"
+		female: "draiga"
+		herm: "dragwn"
+	bestiary: "A proud race from the far West, thought by some to be related somehow to the demons."
+		char: 0x166
+	tallness: roll 1d30+200
+	skin
+		type: scales
+		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold, lightslategray
+	hair
+		length: 0
+		style: straight
+		color: white
+	face: lizard
+	eyes: oneof yellow, crimson, aqua, springgreen
+		count: roll 1d2+2
+	ears: oneof flat, flat, flat, flat, elfin
+	horns: roll 1d3+1
+		_maybe: 0.75
+	wings: bat
+	legs: claws
+	_either
+		taur: roll 1d3
+		snaketail
+	tongue: forked
+	teeth: oneof sharp, fangs
+	tail: dragon
+	fertility: roll 1d10+5
+	egglayer
+	breastrow
+		amount: roll 1d2+2
+		size: roll 1d4+2
+		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
+	ass
+		virgin
+		size: roll 1d3+2
+		looseness: 0
+	vagina
+		virgin
+		looseness: roll 1d2+1
+		wetness: roll 1d2+1
+		clit: 1
+	hips: roll 1d4+4
+	waist: roll 1d8
+	womb
+	penis: dragon
+		length: roll 1d10+15
+		thickness: roll 1d3+2
+	_copy: penis
+	balls
+		amount: roll 1d3+1
+		size: roll 1d3+2
+
+
+-- #region Beasties
+
+bodyplan: bear
+	beast
+		role
+			predator
+	fearless
+	namegen: bears
+	hostile
+	bestiary: "A ferocious wild animal that would tear apart anyone who dares enter its territory."
+		char: 0x171
+	terms
+		generic: "bear"
+	skin
+		type: fur
+		color: brown
+	speed: 30
+	strength: 40
+	ascii
+		char: 0x171
+
+
+bodyplan: wild_dog
+	beast
+		role
+			predator
+	hostile
+	bestiary: "Usually domesticated, but not this one."
+		char: 0x170
+	terms
+		generic: "wild dog"
+	skin
+		type: fur
+		color: brown
+	speed: 40
+	strength: 25
+	infectswith: canine
+	ascii
+		char: 0x170
+
+
+bodyplan: tame_dog
+-- Copy of wild_dog for the description's sake.
+	beast
+	hostile
+	bestiary: "Someone's pet dog. Cute."
+		char: 0x170
+	terms
+		generic: "dog"
+	skin
+		type: fur
+		color: brown
+	speed: 40
+	strength: 25
+	neverprefix
+	ascii
+		char: 0x170
+
+
+bodyplan: rat
+	beast
+		role
+			prey
+	hostile
+	bestiary: "Pesky little vermin."
+		char: 0x173
+	terms
+		generic: "rat"
+	skin
+		type: fur
+		color: brown
+	speed: 30
+	strength: 5
+	ascii
+		char: U+0072
+
+
+bodyplan: snake
+	beast
+		role
+			predator
+	bestiary: "Pesky little vermin."
+		char: 0x172
+	hostile
+	terms
+		generic: "snake"
+	skin
+		type: scales
+		color: oneof saddlebrown, olive, darkslategray
+	speed: 30
+	strength: 5
+	ascii
+		char: 0x172
+
+
+bodyplan: horse
+	beast
+	bestiary: "Large herd animal!"
+		char: 0x174
+	namegen: pony
+	terms
+		generic: "horse"
+	skin
+		type: fur
+		color: oneof brown, white, gray, black, saddlebrown
+	speed: 30
+	strength: 50
+	ascii
+		char: 0x174
+
+-- #endregion
+
+-- #replace bodyplan

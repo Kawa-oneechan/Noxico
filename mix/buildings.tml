@@ -1,0 +1,223 @@
+-- #region Town buildings
+set: town
+	template: simple test
+		inhabitants: 1
+		map
+			<[[
+				'''''''''
+				'+---+'''
+				'|Tc.|'''
+				'|c..\'''
+				'|~.~+-+'
+				'|A...C|'
+				'|B..ab|'
+				'+-----+'
+			]]>
+		markings
+			A: bed
+				owner: 1
+			a: bed
+				owner: 2
+			B: container
+				clothes
+				char: 0x14B
+				owner: 1
+			b: container
+				clothes
+				char: 0x14B
+				owner: 2
+			C: block
+				back: floor
+				fore: darkgreen
+				char: 0x0F
+			c: clutter
+				name: "Chair"
+				char: 0x149
+			T: clutter
+				name: "Table"
+				description: "Solid fuckin' oak. No IKEA here, bitches!"
+				blocking
+				char: 0x148
+	
+	template: simple test 2
+		inhabitants: 1
+		map
+			<[[
+				'''''''''
+				'+-\---+'
+				'|B...A|'
+				'|b..a++'
+				'+----+''
+				'''''''''
+			]]>
+		markings
+			A: bed
+				owner: 1
+			a: bed
+				owner: 2
+			B: container
+				clothes
+				char: 0x14B
+				owner: 1
+			b: container
+				clothes
+				char: 0x14B
+				owner: 2
+
+	template: simple test 3
+		inhabitants: 2
+		map
+			<[[
+				'''''''''
+				'+-----+'
+				'|BA...|'
+				'|ba...\'
+				'+-----+'
+				'''''''''
+			]]>
+		markings
+			A: bed
+				owner: 1
+			a: bed
+				owner: 2
+			B: container
+				clothes
+				char: 0x14B
+				owner: 1
+			b: container
+				clothes
+				char: 0x14B
+				owner: 2
+
+	template: wide test
+		inhabitants: 1
+		map
+			<[[
+				'''''''''''
+				'+---+---+'
+				'|A.B;b.a|'
+				'|...;...|'
+				'+~/~+~/~+'
+				'|c......|'
+				'|Tc+\+..|'
+				'+--+'|==|'
+				''''''+--+'
+				'''''''''''
+			]]>
+		markings
+			A: bed
+				owner: 1
+			a: bed
+				owner: 2
+			B: container
+				clothes
+				char: 0x14B
+				owner: 1
+			b: container
+				clothes
+				char: 0x14B
+				owner: 2
+			c: clutter
+				name: "Chair"
+				char: 0x149
+			T: clutter
+				name: "Table"
+				description: "Solid fuckin' oak. No IKEA here, bitches!"
+				blocking
+				char: 0x148
+			=: block
+				back: floor
+				fore: wall
+				char: 0xF0
+-- #endregion
+
+
+
+-- #region Dungeon rooms
+set: dungeon
+	template: simple dungeon cell 1
+		map
+			<[[
+				'''''''''
+				'+-----+'
+				'|....c|'
+				'|.....|'
+				'|c....|'
+				'|.c...|'
+				'|cc...|'
+				'+-----+'
+				'''''''''
+			]]>
+		markings
+			c: clutter
+				name: "Chair"
+				char: 0x149
+
+	template: simple dungeon cell 2
+		map
+			<[[
+				'''''''
+				'+---+'
+				'|..c|'
+				'|...|'
+				'|c..|'
+				'+---+'
+				'''''''
+			]]>
+		markings
+			c: clutter
+				name: "Chair"
+				char: 0x149
+	
+	template: simple watery cell 1
+		map
+			<[[
+				''''''''
+				'+----+'
+				'|.www|'
+				'|..ww|'
+				'|....|'
+				'+----+'
+				''''''''
+			]]>
+		markings
+			w: water
+
+	template: simple unwalled cell 1
+		map
+			<[[
+				'''''''
+				''###''
+				'#####'
+				'#####'
+				'####''
+				''##'''
+				'''''''
+			]]>
+
+	template: simple unwalled cell 2
+		map
+			<[[
+				''''''''''
+				''#####'''
+				'########'
+				'########'
+				'#######''
+				''######''
+				''''''''''
+			]]>
+
+	template: simple unwalled watery cell 1
+		map
+			<[[
+				''''##'
+				''www##
+				'#wwww#
+				'##www#
+				'######
+				''####'
+				'''''''
+			]]>
+		markings
+			w: water
+-- #endregion

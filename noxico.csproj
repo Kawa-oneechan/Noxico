@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{516F0265-C553-4D63-9AA4-6CBE12F30B5C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noxico</RootNamespace>
+    <AssemblyName>Noxico</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;FAKE_LINE_DRAWING</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Noxico.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Noxico.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug32</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ALLOW_PNG_MODE THIRTYTWO</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release32\</OutputPath>
+    <DefineConstants>ALLOW_PNG_MODE THIRTYTWO</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Jint">
+      <HintPath>.\Jint.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BoardChar.cs" />
+    <Compile Include="BoardDrawing.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="CryptStream.cs" />
+    <Compile Include="Culture.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="Descriptions.cs" />
+    <Compile Include="Dijkstra.cs" />
+    <Compile Include="DungeonGenerator.cs" />
+    <Compile Include="Entities.cs" />
+    <Compile Include="ErrorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorForm.Designer.cs">
+      <DependentUpon>ErrorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="i18n.cs" />
+    <Content Include="mix\fonts\16x16-wyse.png" />
+    <Content Include="mix\fonts\8x8-5140.png" />
+    <Content Include="mix\fonts\8x8-bold.png" />
+    <Content Include="mix\fonts\8x8-thin.png" />
+    <Content Include="mix\missions\playerbase\scenesDlg.xml" />
+    <Compile Include="PlayerChar.cs" />
+    <Compile Include="Scheduler.cs" />
+    <Compile Include="SexManager.cs" />
+    <Compile Include="Subscreens\ActionList.cs" />
+    <Compile Include="Subscreens\Crafting.cs" />
+    <Compile Include="Subscreens\Options.cs" />
+    <Compile Include="UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinFormHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game.cs" />
+    <Compile Include="IGameHost.cs" />
+    <Compile Include="IniFile.cs" />
+    <Compile Include="InventoryItem.cs" />
+    <Compile Include="Jint.cs" />
+    <Compile Include="Mix.cs" />
+    <Compile Include="Randomizer.cs" />
+    <Compile Include="Subscreens\Travel.cs" />
+    <Compile Include="Tokens.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes.cs" />
+    <Compile Include="ShadowCaster.cs" />
+    <Compile Include="Subscreens.cs" />
+    <Compile Include="Subscreens\ContainerMan.cs" />
+    <Compile Include="Subscreens\Introduction.cs" />
+    <Compile Include="Subscreens\Inventory.cs" />
+    <Compile Include="Subscreens\MessageBox.cs" />
+    <Compile Include="Subscreens\Pause.cs" />
+    <Compile Include="Subscreens\TextScroller.cs" />
+    <Compile Include="Toolkit.cs" />
+    <Compile Include="UI.cs" />
+    <Compile Include="Vista.cs" />
+    <Compile Include="WorldGen.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Board.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="mix\biomes.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="mix\bodyparts.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="mix\bodyplans.tml" />
+    <Content Include="mix\bonustraits.tml" />
+    <Content Include="mix\books.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="mix\books.xsl" />
+    <Content Include="mix\buildings.xml" />
+    <Content Include="mix\chargen.png" />
+    <Content Include="mix\credits.txt" />
+    <Content Include="mix\culture.tml" />
+    <Content Include="mix\loot.tml" />
+    <Content Include="mix\missions\chelsie\lairhouse.png" />
+    <Content Include="mix\missions\chelsie\mission.js" />
+    <Content Include="mix\missions\chelsie\manifest.txt" />
+    <Content Include="mix\missions\chelsie\uniques.tml" />
+    <Content Include="mix\missions\chelsie\loot.tml" />
+    <Content Include="mix\missions\chelsie\items.tml" />
+    <Content Include="mix\missions\melfina\loot.tml" />
+    <Content Include="mix\missions\melfina\items.tml" />
+    <Content Include="mix\missions\melfina\manifest.txt" />
+    <Content Include="mix\missions\melfina\mission.js" />
+    <Content Include="mix\missions\melfina\scenesDlg.xml" />
+    <Content Include="mix\missions\melfina\uniques.tml" />
+    <Content Include="mix\missions\pettancow\manifest.txt" />
+    <Content Include="mix\missions\pettancow\mission.js" />
+    <Content Include="mix\missions\pettancow\scenesDlg.xml" />
+    <Content Include="mix\missions\pettancow\uniques.tml" />
+    <Content Include="mix\missions\playerbase\lv0.png" />
+    <Content Include="mix\missions\playerbase\lv1.png" />
+    <Content Include="mix\missions\playerbase\lv2.png" />
+    <Content Include="mix\missions\playerbase\lv3.png" />
+    <Content Include="mix\missions\playerbase\lv4.png" />
+    <Content Include="mix\missions\playerbase\manifest.txt" />
+    <Content Include="mix\missions\playerbase\mission.js" />
+    <Content Include="mix\missions\playerbase\toolshed.png" />
+    <Content Include="mix\missions\portal\manifest.txt" />
+    <Content Include="mix\missions\portal\mission.js" />
+    <Content Include="mix\missions\portal\platform1.png" />
+    <Content Include="mix\missions\portal\platform2.png" />
+    <Content Include="mix\missions\portal\road.png" />
+    <Content Include="mix\missions\portal\uniques.tml" />
+    <Content Include="mix\missions\urta\loot.tml" />
+    <Content Include="mix\missions\urta\items.tml" />
+    <Content Include="mix\missions\urta\manifest.txt" />
+    <Content Include="mix\missions\urta\mission.js" />
+    <Content Include="mix\missions\urta\scenesDlg.xml" />
+    <Content Include="mix\missions\urta\uniques.tml" />
+    <Content Include="mix\noxico.ini" />
+    <Content Include="mix\Homestuck.txt" />
+    <Content Include="mix\knowncolors.xml" />
+    <Content Include="mix\makecave.png" />
+    <Content Include="mix\makedemonrealm.png" />
+    <Content Include="mix\missions\littleponies\buildings.xml" />
+    <Content Include="mix\missions\littleponies\manifest.txt" />
+    <Content Include="mix\missions\littleponies\mission.js" />
+    <Content Include="mix\missions\littleponies\uniques.tml" />
+    <Content Include="mix\scenesDlg.xml" />
+    <Content Include="mix\scenes\intro_scenesDlg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="mix\scenes\pony_scenesDlg.xml" />
+    <Content Include="mix\schedule.xml" />
+    <Content Include="mix\sex.tml" />
+    <Content Include="Guides\Tokeninfo.txt" />
+    <Content Include="mix\TileSpecialDescriptions.txt" />
+    <Content Include="mix\title.png" />
+    <Content Include="mix\travel.png" />
+    <Content Include="unformatted books.txt" />
+    <Content Include="mix\uniques.tml" />
+    <Content Include="mix\words.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Noxico.nox">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Xolroc%27s random ideas.txt" />
+    <None Include="mix\crafting.tml" />
+    <None Include="mix\deities.tml" />
+    <None Include="mix\items.tml" />
+    <None Include="mix\missions\playerbase\floorplan.pspimage" />
+    <None Include="Resources\Noxico.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>cd "$(ProjectDir)"
+mix</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

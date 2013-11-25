@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE biomes [
+	<!ELEMENT biomes (realm+)>
+	<!ELEMENT realm (biome+)>
+	<!ELEMENT biome (groundGlyphs?, encounters?, cultures?, clutterdefs?)>
+
+	<!ELEMENT groundGlyphs (#PCDATA)>
+	<!ELEMENT encounters (#PCDATA)>
+	<!ELEMENT cultures (#PCDATA)>
+	<!ELEMENT clutterdefs (clutter+)>
+	<!ELEMENT clutter EMPTY>
+
+	<!ATTLIST realm
+		id ID #REQUIRED
+		waterLevel CDATA #REQUIRED
+	>
+	<!ATTLIST biome
+		name CDATA #REQUIRED
+		color CDATA #REQUIRED
+		rect CDATA #REQUIRED
+		isWater CDATA #IMPLIED
+		canBurn CDATA #IMPLIED
+	>
+	<!ATTLIST encounters
+		max CDATA #IMPLIED
+	>
+	<!ATTLIST clutter
+		char CDATA #REQUIRED
+		color CDATA #REQUIRED
+		background CDATA #IMPLIED
+		canBurn CDATA #IMPLIED
+		solid (no|yes|wall) "yes"
+		description CDATA #IMPLIED
+		leaves (no|yes) "no"
+		chance CDATA #IMPLIED
+	>
+]>
+<biomes>
+	<realm id="Nox" waterLevel="64">
+		<biome name="Water" rect="0 0 0 0" color="#00007F" isWater="true">
+			<groundGlyphs>&#x157;&#x157;&#x157;</groundGlyphs>
+		</biome>
+
+		<biome name="Grassland" rect="48 0 184 96" color="#1D3612" canBurn="true">
+			<encounters max="10">wild_dog, canine, canine, goblin, slime</encounters>
+			<clutterdefs>
+				<clutter char="&#x1E5;" color="#5A9640" canBurn="true" solid="wall" description="3" />
+				<clutter char="&#x143;" color="gray" chance="0.016" description="4" />
+			</clutterdefs>
+		</biome>
+		<biome name="Tundra" rect="0 0 48 192" color="FFFFFF">
+			<groundGlyphs>&#x157;</groundGlyphs>
+			<encounters max="10">imp, imp, wild_dog, imp</encounters>
+			<clutterdefs>
+				<clutter char="&#x143;" color="gray" description="4" chance="0.01" />
+				<clutter char="&#x145;" color="#563F2C" description="3" canBurn="true" chance="0.01" />
+			</clutterdefs>
+		</biome>
+		<biome name="Desert" rect="184 0 256 96" color="#69602C">
+			<groundGlyphs>&#x157;</groundGlyphs>
+			<encounters max="10">snake, snake, naga, naga, naga, slime, imp</encounters>
+			<clutterdefs>
+				<clutter char="&#x143;" color="#A7A7A7" description="4" chance="0.01" />
+				<clutter char="&#x144;" color="#6CCC77" description="5" canBurn="true" />
+			</clutterdefs>
+		</biome>
+		<biome name="Taiga" rect="48 96 96 192" color="#9EC4AB">
+			<clutterdefs>
+				<clutter char="&#x145;" color="#563F2C" description="3" canBurn="true" chance="0.02" />
+				<clutter char="&#x143;" color="gray" description="4" />
+				<clutter char="&#x1E6;" color="#244428" canBurn="true" solid="wall" chance="0.02" description="3" />
+			</clutterdefs>
+		</biome>
+		<biome name="Woods" rect="96 64 256 192" color="#1F3B19" canBurn="true">
+			<encounters max="7">imp, imp, goblin, wild_dog, imp, imp, goblin, wild_dog, foocubus</encounters>
+			<clutterdefs>
+				<clutter char="&#x1E6;" color="#439838" canBurn="true" solid="wall" chance="0.018" description="3" />
+				<clutter char="&#x1E5;" color="#6CCC77" canBurn="true" solid="wall" chance="0.022" description="3" />
+				<clutter char="&#x143;" color="gray" chance="0.016" description="4" />
+			</clutterdefs>
+		</biome>
+
+		<biome name="Swamp" rect="0 192 174 256" color="#343B2C">
+			<clutterdefs>
+				<clutter char="&#x145;" color="black" description="3" canBurn="true" chance="0.04" />
+			</clutterdefs>
+		</biome>
+		<biome name="Rainforest" rect="174 192 256 256" color="#1D3612" canBurn="true">
+			<clutterdefs>
+				<clutter char="&#x1E6;" color="#439838" canBurn="true" solid="wall" chance="0.1" description="3" />
+				<clutter char="&#x1E6;" color="#57AA5A" canBurn="true" solid="wall" chance="0.3" description="3" />
+				<clutter char="&#x1E6;" color="#6CCC77" canBurn="true" solid="wall" chance="0.2" description="3" />
+			</clutterdefs>
+		</biome>
+	</realm>
+	<realm id="Seradevari" waterLevel="64">
+		<biome name="KoolAid" rect="0 0 0 0" color="#B22222" isWater="true" />
+		
+		<biome name="Nether" rect="0 0 256 256" color="#3D1607">
+			<groundGlyphs>&#x157;&#x146;</groundGlyphs>
+			<encounters max="10">foocubus, imp</encounters>
+			<cultures>seradevar</cultures>
+		</biome>
+	</realm>
+</biomes>

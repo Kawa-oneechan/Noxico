@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE words [
+	<!ELEMENT words (category*,hyphenation)>
+	<!ELEMENT category (category|word)*>
+	<!ELEMENT word (#PCDATA)>
+	<!ELEMENT hyphenation (rule*)>
+	<!ELEMENT rule (#PCDATA)>
+	<!ATTLIST category name CDATA #IMPLIED>
+	<!ATTLIST word id ID #REQUIRED>
+	<!ATTLIST rule cutoff CDATA #REQUIRED>
+
+	<!-- Key bindings -->
+	<!ENTITY shorthand "&#xE2FE;">
+	<!ENTITY left "&#xE200;">
+	<!ENTITY right "&#xE201;">
+	<!ENTITY up "&#xE202;">
+	<!ENTITY down "&#xE203;">
+	<!ENTITY rest "&#xE204;">
+	<!ENTITY activate "&#xE205;">
+	<!ENTITY items "&#xE206;">
+	<!ENTITY interact "&#xE207;">
+	<!ENTITY fly "&#xE208;">
+	<!ENTITY travel "&#xE209;">
+	<!ENTITY accept "&#xE20A;">
+	<!ENTITY back "&#xE20B;">
+	<!ENTITY pause "&#xE20C;">
+	<!ENTITY screenshot "&#xE20D;">
+	<!ENTITY tabfocus "&#xE20E;">
+	<!ENTITY scrollup "&#xE20F;">
+	<!ENTITY scrolldown "&#xE210;">
+
+	<!-- Common dynamic terms -->
+	<!ENTITY player "&#xE220;">
+	
+	<!-- Color codes -->
+	<!ENTITY black   "&lt;cBlack&gt;">
+	<!ENTITY silver  "&lt;cSilver&gt;">
+	<!ENTITY gray    "&lt;cGray&gt;">
+	<!ENTITY white   "&lt;cWhite&gt;">
+	<!ENTITY maroon  "&lt;cMaroon&gt;">
+	<!ENTITY red     "&lt;cRed&gt;">
+	<!ENTITY purple  "&lt;cPurple&gt;">
+	<!ENTITY fuchsia "&lt;cFuschia&gt;">
+	<!ENTITY green   "&lt;cGreen&gt;">
+	<!ENTITY lime    "&lt;cLime&gt;">
+	<!ENTITY olive   "&lt;cOlive&gt;">
+	<!ENTITY yellow  "&lt;cYellow&gt;">
+	<!ENTITY navy    "&lt;cNavy&gt;">
+	<!ENTITY blue    "&lt;cBlue&gt;">
+	<!ENTITY teal    "&lt;cTeal&gt;">
+	<!ENTITY aqua    "&lt;cAqua&gt;">
+	<!ENTITY brown   "&lt;cBrown&gt;">
+	<!ENTITY orange  "&lt;cOrange&gt;">
+	<!ENTITY invert  "&lt;cBlack,Silver&gt;">
+	<!ENTITY revert  "&lt;c&gt;">
+	<!ENTITY bold    "&lt;b&gt;">
+]>
+<words>
+	<!-- i18n stuff goes here. mostly key/term pairs with String.Format placeholders, some are comma-separated lists -->
+
+	<category name="Introduction">
+		<category name="Title screen">
+			<word id="ts_subtitle">Erotic Roguelike Misadventures</word>
+			<word id="ts_pressentertobegin">&teal;Press &aqua;&accept;&teal; to begin</word>
+			<word id="ts_welcometonoxico">Welcome to Noxico.</word>
+			<word id="ts_thereisasave">There is a saved game you can restore.</word>
+			<word id="ts_therearesaves">There are saved games you can restore.</word>
+			<word id="ts_loadgame">{0}, "{1}"</word>
+			<word id="ts_startoverinx">Start over in "{0}"...</word>
+			<word id="ts_startnewgame">Start new game...</word>
+			<word id="ts_enterworldname">Enter a name for the new world:</word>
+		</category>
+		<category name="Character Creator">
+			<category name="Labels">
+				<word id="cc_title">Character Creation</word>
+				<word id="cc_back">&lt; Back</word>
+				<word id="cc_next">Next &gt;</word>
+				<word id="cc_play">PLAY &gt;</word>
+				<word id="cc_name">Name</word>
+				<word id="cc_random">[random]</word>
+				<word id="cc_species">Species</word>
+				<word id="cc_sex">Biological sex</word>
+				<word id="cc_gid">Gender identity</word>
+				<word id="cc_no">Not available</word>
+				<word id="cc_hair">Hair color</word>
+				<word id="cc_body">Body color</word>
+				<word id="cc_eyes">Eye color</word>
+				<word id="cc_gift">Bonus gift</word>
+			</category>
+			<category name="Help strings">
+				<word id="cchelp_back">Go back one page.</word>
+				<word id="cchelp_next">Go to the next page.</word>
+				<word id="cchelp_name">Enter the name for your character. Leave this blank to use a random name.</word>
+				<word id="cchelp_species">Select the (initial) species you'll play as.</word>
+				<word id="cchelp_sex">Are you a boy? Or are you a girl? Some species may not give you the choice.</word>
+				<word id="cchelp_gid">What does your character self-identify as?</word>
+				<word id="cchelp_hair">Select the color of your character's hair.</word>
+				<word id="cchelp_body">Select the color of your character's body. Some species may not give you a choice.</word>
+				<word id="cchelp_eyes">Select the color of your character's eyes. Again, you might not always have a choice.</word>
+			</category>
+			<word id="cc_header">Starting a New Game</word>
+			<word id="cc_footer">&tabfocus; to switch controls, &up;/&down;/&left;/&right; and &accept; to choose. Or use a mouse.</word>
+		</category>
+	</category>
+	<category name="Travel">
+		<word id="travel_header">Travel Mode</word>
+		<word id="travel_footer">&up;/&down;/&accept; to select, &back; to cancel.</word>
+		<word id="travel_nowhere">You don't know of any other place to go.</word>
+		<word id="travel_notfromdungeon">You cannot travel from this location. Find the exit to leave.</word>
+		<word id="travel_notfromwilds">You cannot travel from this location. Go back to where you came in and try again there.</word>
+		<word id="travel_current">Current location:</word>
+		<word id="travel_new">[NEW]</word>
+	</category>
+	<category name="Pause">
+		<word id="pause_title">PAUSED</word>
+		<word id="pause_charstats">Character stats</word>
+		<word id="pause_skills">Skill levels</word>
+		<word id="pause_keys1">Important keys</word>
+		<word id="pause_keys2">Other keys</word>
+		<word id="pause_credits">Credits</word>
+		<word id="pause_memstats">Memory stats</word>
+		<word id="pause_opensettings">Open settings</word>
+		<word id="pause_saveandexit">Save and exit</word>
+		<word id="pause_name">Name</word>
+		<word id="pause_health">Health</word>
+		<word id="pause_money">Money</word>
+		<word id="pause_playtime">Play time</word>
+		<word id="pause_worldtime">World time</word>
+		<word id="pause_"></word>
+		<word id="pause_keymove">Move</word>
+		<word id="pause_keyinteract">Interact with something</word>
+		<word id="pause_keyactivate">Use something</word>
+		<word id="pause_keyrest">Rest</word>
+		<word id="pause_keyfly">Fly or land</word>
+		<word id="pause_keyitems">Inventory</word>
+		<word id="pause_keytravel">Travel</word>
+		<word id="pause_keyaccept">Accept</word>
+		<word id="pause_keyback">Go back</word>
+		<word id="pause_keypause">Open this menu</word>
+		<word id="pause_keyscreenshot">Take screenshot</word>
+		<word id="pause_creditscontent">Press &accept; to view full credits.</word>
+		<word id="pause_opensettingscontent">
+			<![CDATA[Press Enter to open the options screen.
+
+From there, you can change a bunch of
+things, such as the display font (if
+any alternatives have been installed)
+or if lengths should be in metric or
+imperial.]]>
+</word>
+		<word id="pause_saveandexitcontent">
+			<![CDATA[Press Enter to save.
+
+The game will automatically exit when
+done. Note that clicking the Close
+button or pressing Alt-F4 or whatever
+your operating system's methods are
+has the same effect.]]>
+</word>
+		<word id="pause_memstatscontent">
+			<![CDATA[     Number of boards       {0}
+        Active boards       {1}
+Number of known items       {2}
+   Number of entities       {3}
+  Total set of tokens       {4}]]>
+		</word>
+	</category>
+	<category name="Options">
+		<word id="opt_title">Options</word>
+		<word id="opt_speed">Speed (lower = faster)</word>
+		<word id="opt_font">Font</word>
+		<word id="opt_misc">Various</word>
+		<word id="opt_skipintro">Skip dream on new game</word>
+		<word id="opt_rememberpause">Remember page in pause menu</word>
+		<word id="opt_vistasaves">Use "Saved Games" folder when available</word>
+		<word id="opt_xinput">Use XInput gamepad when available</word>
+		<word id="opt_imperial">Use feet and inches instead of meters</word>
+		<word id="opt_save">OK</word>
+		<word id="opt_cancel">Cancel</word>
+		<word id="opt_open">Open INI</word>
+	</category>
+	<category name="Actions">
+		<word id="action_descyou">you, {0}</word>
+		<word id="action_lookatit">Look at it</word>
+		<word id="action_lookathim">Look at {0}</word>
+		<word id="action_lookatyou">Check yourself</word>
+		<word id="action_talktohim">Talk to {0}</word>
+		<word id="action_masturbate">Masturbate</word>
+		<word id="action_trade">Trade</word>
+		<word id="action_fuckhim">Fuck {0}</word>
+		<word id="action_rapehim">Rape {0}</word>
+		<word id="action_shoothim">Shoot at {0}</word>
+		<word id="action_pickup">Pick it up</word>
+		<word id="action_copyhim">Change into {0}</word>
+		<word id="action_revert">Release shape</word>
+		<word id="action_craft">Craft</word>
+	</category>
+	<category name="Sidebar">
+		<category name="Stat shorthands">
+			<word id="shortstat_Charisma">CHA</word>
+			<word id="shortstat_Climax">CLI</word>
+			<word id="shortstat_Cunning">CUN</word>
+			<word id="shortstat_Carnality">CAR</word>
+			<word id="shortstat_Stimulation">STI</word>
+			<word id="shortstat_Sensitivity">SEN</word>
+			<word id="shortstat_Speed">SPE</word>
+			<word id="shortstat_Strength">STR</word>
+		</category>
+		<category name="Mods">
+			<word id="mod_haste">Haste </word>
+			<word id="mod_slow">Slow </word>
+			<word id="mod_flying">Flying ({0:00}%) </word>
+			<word id="mod_swimming">Swimming ({0:00}%) </word>
+			<word id="mod_swimmingunl">Swimming </word>
+			<word id="mod_hostile">&red;Hostile &revert;</word>
+			<word id="mod_helpless">&yellow;Helpless &revert;</word>
+		</category>
+		<category name="Vendors">
+			<word id="vendor_baker">Baker</word>
+			<word id="vendor_butcher">Butcher</word>
+			<word id="vendor_clothier">Clothier</word>
+			<word id="vendor_armorer">Armorer</word>
+			<word id="vendor_greengrocer">Greengrocer</word>
+			<word id="vendor_carpenter">Carpenter</word>
+		</category>
+	</category>
+	<category name="Messages">
+		<word id="welcometonoxico">Welcome to Noxico, &player;.</word>
+		<word id="welcomeback">Welcome back, &player;.</word>
+		<word id="rememberhelp">Remember, press &white;&pause;&revert; for help and options.</word>
+		<word id="pointatsomething">Point at an object or character.</word>
+		<word id="pointingatdoor">Door</word>
+		<word id="eyesinthedark">Eyes in the darkness</word>
+		<word id="youpickup_x">You pick up {0}.</word>
+		<word id="yougetup">You get back up.</word>
+		<word id="youfly">You take off.</word>
+		<word id="youland">You land.</word>
+		<word id="flyneedswings">You have no wings.</word>
+		<word id="wingsaretoosmall">Your wings are too small.</word>
+		<word id="hittheceiling">You hit your head on the ceiling.</word>
+		<word id="cantflyinside">You can't fly here - there's a ceiling in the way.</word>
+		<word id="autotravelstop">Autotravel interrupted.</word>
+		<word id="youhitxfory">You hit {0} for {1} {2}.</word>
+		<word id="youdisplacex">You displace {0}.</word>
+		<word id="losewings">&red;You lose your ability to fly!</word>
+		<word id="yourhandsarefull">Your hands are already full.</word>
+		<word id="yourmouthisfull">Your mouth is already full.</word>
+		<word id="yourhornisfull">You have no more places to put it.</word>
+		<word id="eternitybrooched">The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...</word>
+		<word id="youmelt">Your sexual distinctions melt into your blob.</word>
+		<word id="yourevert">You revert to your true form.</word>
+		<word id="x_reverts">[Youorname] revert{{s}} to [b:his] true form.</word>
+		<word id="x_imitatesyou">[Youorname] {{copies|copy}} [b:his] sexual distinctions.</word>
+		<word id="x_imitates_y">[Youorname] {{copies|copy}} [b:name]'s sexual distinctions.</word>
+		<word id="x_becomes_y">[Youorname] become{{s}} another [b:youorname].</word>
+		<word id="you_bear1stchild">
+			<![CDATA[You have given birth to little {0}.
+		
+Within moments, a matronly demoness appears before you and quickly introduces herself as a midwife. She picks up your child, giving you a thumbs-up and smile in return. In a large puff of smoke, she's gone again.
+
+Somehow, you feel like your child is perfectly safe with her.]]>
+		</word>
+		<word id="you_bearNthchild">You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.</word>
+		<word id="x_bearschild">{0} has given birth to little {1}.</word>
+		<word id="congrats_mom">Congratulations, mom</word>
+		<word id="dropped_x">Dropped {0}.</word>
+		<word id="youareachicken">[Youorname] {{has|have}} laid an egg.</word>
+		<word id="x_getsbackup">[Youorname] get{{s}} back up.</word>
+
+		<word id="thisisammo">This is ammo. To use it, fire the weapon that requires this kind of munition.</word>
+		<word id="noeffect">This item has no effect.</word>
+		<word id="unidentied_warning">
+	<![CDATA[You don't know what this does.
+
+Do you want to find out?]]>
+</word>
+		<word id="use_x_confirm">Do you want to use {0}?</word>
+		<word id="cannot_equip_no_hands">[Youorname] cannot put on {0} because [he] lack{{s}} hands.</word>
+		<word id="cannot_equip_no_legs">[Youorname] cannot put on {0} because [he] lack{{s}} legs.</word>
+		<word id="surprise_its_sticky">[Youorname] {{tries|try}} to unequip {0}, but find{{s}} [he] cannot!</word>
+		<word id="cannot_remove_sticky">[Youorname] cannot unequip {0} because of stickiness.</word>
+		<word id="book_description">This is "{0}", by {1}.</word>
+
+		<word id="x_verbs_y_for_z">[t:Youorname] {0} [b:name] for [p:{1}:point].</word>
+		<word id="x_dodges_ys_attack">[t:Youorname] dodge{{s}} [b:his] attack.</word>
+		<word id="x_is_helpless">[t:Youorname] [is] helpless!</word>
+		
+		<word id="x_equiped_y">[Youorname] equip{{s}} {0}.</word>
+		<word id="x_unequiped_y">[Youorname] unequip{{s}} {0}.</word>
+		<word id="x_dropped_y_inthewater">[Youorname] drop{{s}} {0} in the water!</word>
+		<word id="x_dropped_y_inthedepths">[Youorname] drop{{s}} {0} in the depths!</word>
+	</category>
+	<category name="Causes of death">
+		<word id="death_doveinanddrowned">dove into the water and drowned</word>
+		<word id="death_doveintodepths">dove into the depths</word>
+		<word id="death_crackedagainstceiling">hit the ceiling when trying to fly</word>
+		<word id="death_shotbyx">was shot down by {0}</word>
+		<word id="death_burned">burned to death</word>
+		<word id="death_drowned">drowned</word>
+	</category>
+	<category name="Misc">
+		<word id="msgbox_question">Question</word>
+		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
+		<word id="textscroller_book404">Can't find the content for this book.</word>
+		<word id="Male">Male</word>
+		<word id="Female">Female</word>
+    <word id="Herm">Herm</word>
+    <word id="Neuter">Neuter</word>
+		<word id="Bed">Bed</word>
+		<word id="point">point</word>
+		<word id="thisis_x">This is {0}.</word>
+		<word id="talkingtoyourself">Talking to yourself is the first sign of insanity.</word>
+		<word id="talkingtoyourself_nutso">You spend a short while enjoying some pleasant but odd conversation with yourself.</word>
+		<word id="nothingtosay">{0} has nothing to say to you.</word>
+		<word id="gameover_title">GAME OVER</word>
+		<word id="youdied">
+			<![CDATA[You {0}.
+	
+Would you like an infodump on the way out?]]>
+		</word>
+		<word id="context_warp">take exit</word>
+		<word id="context_droppeditem">pick up</word>
+		<word id="context_container">open</word>
+		<word id="context_corpse">loot</word>
+		<word id="context_bed">sleep</word>
+		<word id="a">a</word>
+		<word id="an">an</word>
+		<word id="the">the</word>
+		<!-- Month names cribbd from The Elder Scrolls -->
+		<word id="months">Morning Star, Sun's Dawn, First Seed, Rain's Hand, Second Seed, Midyear, Sun's Height, Last Seed, Hearthfire, Frostfall, Sun's Dusk, Evening Star</word>
+		<!-- These are often lowercased! Notice also the "???" for Random. -->
+		<word id="hesheshiit">???, He, She, Shi, It</word>
+		<word id="hisherhirits">???, His, Her, Hir, Its</word>
+		<word id="himherhirit">???, Him, Her, Hir, It</word>
+		<word id="counts">zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve</word>
+		<word id="countsordinal">zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth</word>
+    <word id="setbymeasure">no, a single, a pair of, a trio of, a quartet of, a quintet of, a sextet of, a septet of, an octet of, a nonet of, ten, eleven, a dozen</word>
+		<word id="potion_colors">black, blue, green, red, yellow, mauve, brown, white, silver, purple, chocolate, orange, gray</word>
+		<word id="potion_mods">, bubbly , fizzy , viscious , translucent , smoky , smelly , fragrant , sparkly , tar-like </word>
+		<word id="potion_ringmods">, shiny , sparking , warm , cold , translucent , glistening </word>
+		<word id="potion_name">{0}{1} potion</word>
+		<word id="potion_ringname">{0}{1} ring</word>
+	</category>
+	<category name="Inventory">
+		<word id="inventory_yours">Your inventory</word>
+		<word id="inventory_youhavenothing">You are carrying nothing.</word>
+		<word id="inventory_pressenter_container">Press &accept; to store or retrieve the highlighted item.</word>
+		<word id="inventory_pressenter_vendor">Press &accept; to buy or sell the highlighted item.</word>
+		<word id="inventory_money">{0}: {1} -- You: {2}</word>
+		<word id="inventory_itcosts">It costs &#x13B;{0}.</word>
+		<word id="inventory_vendorusesthis">{0} is using this.</word>
+		<word id="inventory_youusethis">This item is currently equipped.</word>
+		<word id="inventory_youcantaffordthis">You can't afford this item.</word>
+		<word id="inventory_vendorcantaffordthis">{0} can't afford this item.</word>
+		<word id="inventory_youareusingthis">You're using this. Unequip it first.</word>
+		<word id="inventory_pressenter_book">Press &activate; to read.</word>
+		<word id="inventory_pressenter_equip">Press &activate; to equip.</word>
+		<word id="inventory_pressenter_unequip">Press &activate; to unequip.</word>
+		<word id="inventory_pressenter_use">Press &activate; to try and use.</word>
+		<word id="inventory_cannotunequip">Cannot unequip.</word>
+		<word id="inventory_questitem">This is a quest key item.</word>
+		<word id="inventory_drop">Drop</word>
+		<word id="inventory_weaponskill">Skill: {0}</word>
+		<word id="inventory_weapontype">Type: {0}</word>
+		<category name="Sigils">
+			<word id="sigil_weapon">weapon</word>
+			<word id="sigil_fullmask">full mask</word>
+			<word id="sigil_hat">hat</word>
+			<word id="sigil_goggles">goggles</word>
+			<word id="sigil_mask">mask</word>
+			<word id="sigil_neck">neck</word>
+			<word id="sigil_ring">ring</word>
+			<word id="sigil_undies">undies</word>
+			<word id="sigil_shirt">shirt</word>
+			<word id="sigil_pants">pants</word>
+			<word id="sigil_suit">suit</word>
+			<word id="sigil_shoes">shoes</word>
+			<word id="sigil_jacket">jacket</word>
+			<word id="sigil_cloak">cloak</word>
+			<word id="sigil_socks">socks</word>
+			<word id="sigil_equipped">equipped</word>
+			<word id="sigil_unidentified">unidentified</word>
+			<word id="sigil_short_worn">W</word>
+			<word id="sigil_ranged">ranged</word>
+			<word id="sigil_melee">m&#x88;l&#x82;e</word>
+		</category>
+		<category name="Weapon attack types">
+			<word id="attacktype_punch">punching</word>
+			<word id="attacktype_tear">tearing</word>
+			<word id="attacktype_strike">striking</word>
+			<word id="attacktype_kick">kicking</word>
+			<word id="attacktype_stab">stabbing</word>
+			<word id="attacktype_pierce">piercing</word>
+			<word id="attacktype_crush">crushing</word>
+		</category>
+	</category>
+	<category name="Look At...">
+		<word id="color_eyes">{0} {1}</word>
+		<word id="glowing_x">glowing {0}</word>
+		<word id="x_ears">{0} ears</word>
+		<word id="x_skin">{0} {1}</word>
+		<word id="x_pattern">{0} {1}</word>
+		<word id="x_legs">{0} legs</word>
+		<word id="x_wings">{0} wings</word>
+		<word id="small_wings">small {0}</word>
+		<word id="x_tail">{0} tail</word>
+		<word id="x_face">{0} face</word>
+		<word id="face_xlike">{0}-like</word>
+		<word id="single_taur">centaur-like</word>
+		<word id="multi_taur">multi-taur ({0} pairs)</word>
+		<category name="Leg types">
+			<word id="legtype_human">human</word>
+			<word id="legtype_genbeast">digitigrade</word>
+			<word id="legtype_stiletto">stilleto-heeled</word>
+			<word id="legtype_claws">clawed</word>
+			<word id="legtype_insect">insectoid</word>
+      <word id="legtype_dog">digitigrade</word>
+      <word id="legtype_cat">feline</word>
+			<word id="legtype_horse">horse-like</word>
+		</category>
+		<category name="Wing types">
+			<word id="wingtype_feather">feather-covered</word>
+      <word id="wingtype_bat">leathery</word>
+      <word id="wingtype_insect">thin, translucent</word>
+		</category>
+		<category name="Tail types">
+			<word id="tailtype_genbeast">beastly</word>
+			<word id="tailtype_demon">spaded demon</word>
+			<word id="tailtype_bunny">bunny poofball</word>
+			<word id="tailtype_tapered_tentacle">tapered tail tentacle</word>
+			<word id="tailtype_cocktacle">cock-headed tail tentacle</word>
+			<word id="tailtype_tentacle">tail tentacle</word>
+      <word id="tailtype_fox">fluffy vulpine</word>
+      <word id="tailtype_dog">wagging canine</word>
+      <word id="tailtype_cat">feline</word>
+      <word id="tailtype_dragon">spined reptilian</word>
+		</category>
+		<category name="Face types">
+			<word id="facetype_normal">human</word>
+			<word id="facetype_genbeast">beastly</word>
+			<word id="facetype_cow">bovine</word>
+			<word id="facetype_reptile">reptilian</word>
+      <word id="facetype_fox">vulpine</word>
+		</category>
+		<category name="Teeth types">
+			<word id="teethtype_fangs">fangs</word>
+			<word id="teethtype_sharp">sharp teeth</word>
+			<word id="teethtype_osmond">fearsome teeth</word>
+		</category>
+		<category name="Tattoo locations">
+			<word id="tat_x_on_y">{0} on {1}</word>
+			<word id="tatlocation_hip">hip</word>
+			<word id="tatlocation_smallofback">small of back</word>
+			<word id="tatlocation_buttcheek">butt cheek</word>
+		</category>
+		<word id="lookat_header_general"><![CDATA[General
+-------
+]]></word>
+		<word id="lookat_header_sexual">
+			<![CDATA[Sexual characteristics
+----------------------
+]]>
+		</word>
+		<word id="lookat_column_body">Body</word>
+		<word id="lookat_column_head">Head</word>
+		<word id="lookat_column_hair">Hair</word>
+		<word id="lookat_column_hips">Hips and Waist</word>
+	</category>
+	<category name="Crafting">
+		<word id="craft_results">Results</word>
+		<word id="craft_nothing">You can do nothing.</word>
+		<word id="craft_produce_x">Create {0}</word>
+		<word id="craft_consume_x">Destroy {0}</word>
+		<word id="craft_dye_x_y">Dye {0} {1}</word>
+	</category>
+
+	<hyphenation>
+		<!-- Hyphenation rules are executed in order of appearance. -->
+		<rule cutoff="1">[aeiou]st</rule>
+		<rule cutoff="-1">[^aeiou][aeiou][^aeiou][aeiou][\W\.]</rule>
+		<rule cutoff="-1">cker</rule>
+		<rule cutoff="2">ck[aeiou]</rule>
+		<rule cutoff="1">yph[aeiou]</rule>
+		<rule cutoff="2">[aeiou][nrx][aeiou]</rule>
+		<rule cutoff="2">[aeiou]mpl[aeiou]</rule>
+		<rule cutoff="2">[^aeiou][aeiou][^aeiou][aeiou]</rule>
+		<rule cutoff="2">([aeiou]{2})l[aeiou]</rule>
+		<rule cutoff="1">[aeiou]gram</rule>
+		<rule cutoff="2">[aeiou]([^aeiou]{2})[aeiou]</rule>
+		<!-- <rule cutoff="2">[aeiou]q</rule> -->
+	</hyphenation>
+</words>
