@@ -295,7 +295,7 @@ namespace Noxico
 
 		private Token PickATit()
 		{
-			List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+			var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
 			return allTits[Random.Next(allTits.Count)];
 		}
 
@@ -304,10 +304,10 @@ namespace Noxico
 			//TODO: return a summary of what was done, coded for i18n
 
             //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
-			bool randomize = false;
+			var randomize = false;
 			if (mutation == Mutations.Random)
 				randomize = true;
-            for (int i = 0; i < number; i++)
+			for (var i = 0; i < number; i++)
             {
 				if (randomize)
 					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
@@ -316,13 +316,11 @@ namespace Noxico
 					case Mutations.Random:
 						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Xolroc to fix it.");
                     case Mutations.AddBreastRow:
-                        Token newboobs = new Token("breastrow");
+						var newboobs = new Token("breastrow");
                         if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
                         {
                             if (this.HasToken("breastrow") && this.GetToken("breastrow").GetToken("size").Value == 0)
-                            {
                                 this.RemoveToken("breastrow");
-                            }
                            
                             newboobs.AddToken("amount", 2);
                             if (this.HasToken("breastrow"))
@@ -353,7 +351,7 @@ namespace Noxico
                     case Mutations.AddPenis:
                         if (this.Tokens.Count(t => t.Name == "penis") < 8)
                         {
-                            Token newdick = new Token("penis");
+							var newdick = new Token("penis");
                             newdick.AddToken("length", (float)Random.NextDouble() * intensity + 12f);
                             newdick.AddToken("thickness", (float)Random.NextDouble() * intensity / 4 + 4f);
                             newdick.AddToken("cumsource");
@@ -409,7 +407,7 @@ namespace Noxico
                     case Mutations.AddBreast:
                         if (this.HasToken("breastrow"))
                         {
-							Token boob = PickATit();
+							var boob = PickATit();
                             if (boob.GetToken("amount").Value < 5)
                                 boob.GetToken("amount").Value++;
                         }
@@ -417,9 +415,9 @@ namespace Noxico
                     case Mutations.RemoveBreast:
                         if (this.HasToken("breastrow"))
                         {
-                            List<Token> allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
-                            int rand = Random.Next(allTits.Count);
-                            Token boob = allTits[rand];
+                            var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+                            var rand = Random.Next(allTits.Count);
+							var boob = allTits[rand];
                             if (boob.GetToken("amount").Value > 1)
                                 boob.GetToken("amount").Value--;
                             else
@@ -461,29 +459,25 @@ namespace Noxico
 					case Mutations.GiveDicknipples:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
 						{
-							Token boob;
-							do
-							{
+							var boob = PickATit();
+							while (boob.GetToken("nipples").HasToken("canfuck"))
 								boob = PickATit();
-							} while (boob.GetToken("nipples").HasToken("canfuck"));
 							boob.GetToken("nipples").AddToken("canfuck");
 						}
 						break;
 					case Mutations.GiveNipplecunts:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
 						{
-							Token boob;
-							do
-							{
+							var boob = PickATit();
+							while (boob.GetToken("nipples").HasToken("fuckable"))
 								boob = PickATit();
-							} while (boob.GetToken("nipples").HasToken("fuckable"));
 							boob.GetToken("nipples").AddToken("fuckable");
 						}
 						break;
 					case Mutations.AddNipple:
 						if (this.HasToken("breastrow"))
 						{
-							Token boob = PickATit();
+							var boob = PickATit();
 							if (!boob.HasToken("nipples"))
 								boob.AddToken("nipples", 1);
 							else
@@ -493,11 +487,9 @@ namespace Noxico
 					case Mutations.RemoveNipple:
 						if (this.Path("breastrow/nipples") != null)
 						{
-							Token boob = PickATit();
+							var boob = PickATit();
 							while (!boob.HasToken("nipples"))
-							{
 								boob = PickATit();
-							}
 							boob.GetToken("nipples").Value--;
 							if (boob.GetToken("nipples").Value == 0)
 								boob.RemoveToken("nipples");
@@ -506,11 +498,9 @@ namespace Noxico
 					case Mutations.GiveRegularNipples:
 						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
 						{
-							Token boob;
-							do
-							{
+							var boob = PickATit();
+							while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"))
 								boob = PickATit();
-							} while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"));
 							boob.GetToken("nipples").RemoveToken("fuckable");
 							boob.GetToken("nipples").RemoveToken("canfuck");
 						}
@@ -569,9 +559,8 @@ namespace Noxico
 				newChar.RemoveToken("womb");
 				while (newChar.HasToken("vagina"))
 					newChar.RemoveToken("vagina");
-				if (newChar.HasToken("breastrow"))
-					while (newChar.GetBreastRowByNumber(newChar.BiggestBreastrowNumber).GetToken("size").Value != 0f)
-						newChar.GetBreastRowByNumber(newChar.BiggestBreastrowNumber).GetToken("size").Value = 0f;
+				foreach (var breastRow in newChar.Tokens.Where(t => t.Name == "breastrow" && t.HasToken("size")))
+					breastRow.GetToken("size").Value = 0;
 			}
 			if (gender == Gender.Female || gender == Gender.Neuter)
 			{
@@ -724,8 +713,8 @@ namespace Noxico
 				newChar.RemoveToken("fertility");
 				newChar.RemoveToken("womb");
 				newChar.RemoveToken("vagina");
-				if (newChar.HasToken("breastrow"))
-					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
+				foreach (var breastRow in newChar.Tokens.Where(t => t.Name == "breastrow" && t.HasToken("size")))
+					breastRow.GetToken("size").Value = 0;
 			}
 			else if (gender == Gender.Female || gender == Gender.Neuter)
 			{
@@ -2342,6 +2331,8 @@ namespace Noxico
 							multiplier = 1f;
 					}
 					sizes[i] = sizes[i - 1] * multiplier;
+					if (sizes[i] < 0) //just to be sure.
+						sizes[i] = 0;
 				}
 				if (rows[i].HasToken("lactation"))
 					sizes[i] += 0.25f * rows[i].GetToken("lactation").Value;
