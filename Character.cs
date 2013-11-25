@@ -567,15 +567,21 @@ namespace Noxico
 			{
 				newChar.RemoveToken("fertility");
 				newChar.RemoveToken("womb");
-				newChar.RemoveToken("vagina");
+				while (newChar.HasToken("vagina"))
+					newChar.RemoveToken("vagina");
 				if (newChar.HasToken("breastrow"))
-					newChar.GetToken("breastrow").GetToken("size").Value = 0f;
+					while (newChar.GetBreastRowByNumber(newChar.BiggestBreastrowNumber).GetToken("size").Value != 0f)
+						newChar.GetBreastRowByNumber(newChar.BiggestBreastrowNumber).GetToken("size").Value = 0f;
 			}
-			else if (gender == Gender.Female || gender == Gender.Neuter)
+			if (gender == Gender.Female || gender == Gender.Neuter)
 			{
-				newChar.RemoveToken("penis");
+				while (newChar.HasToken("penis"))
+					newChar.RemoveToken("penis");
 				newChar.RemoveToken("balls");
 			}
+
+			if (newChar.HasToken("snaketail") && newChar.HasToken("legs"))
+				newChar.RemoveToken("legs");
 
 			if (!newChar.HasToken("beast"))
 			{
