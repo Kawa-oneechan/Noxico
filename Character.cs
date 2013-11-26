@@ -1307,6 +1307,12 @@ namespace Noxico
 				if (this.Path("skin/type").Text == "metal")
 					hairThings.Add("cord-like");
 			}
+
+			if (this.HasToken("monoceros"))
+				hairThings.Add(i18n.GetString("horntype_monoceros"));
+			if (this.HasToken("horns"))
+				hairThings.Add(i18n.Format("x_horntype_small_straight", this.GetToken("horns").Value).Viewpoint(this));
+
 			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
 				hipThings.Add(Toolkit.PickOne(Descriptions.GetSizeDescriptions(this.GetToken("hips").Value, "//lowerbody/hips").Split(',')).Trim() + " hips");
