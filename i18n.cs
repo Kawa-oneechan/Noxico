@@ -169,6 +169,7 @@ namespace Noxico
 				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
 				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
 				{ "p", (c, s) => { return string.Format("{0} {1}", s[0], Pluralize(s[1], int.Parse(s[0]))); } },
+				{ "P", (c, s) => { return Pluralize(s[1], int.Parse(s[0])); } },
 
 				{ "name", (c, s) => { return c.GetKnownName(false, false, true); } },
 				{ "fullname", (c, s) => { return c.GetKnownName(true, false, true); } },
