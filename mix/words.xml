@@ -101,6 +101,21 @@
 			<word id="cc_header">Starting a New Game</word>
 			<word id="cc_footer">&tabfocus; to switch controls, &up;/&down;/&left;/&right; and &accept; to choose. Or use a mouse.</word>
 		</category>
+    <category name="worldgen">
+      <word id="worldgen_heightmap">Creating heightmap....</word>
+      <word id="worldgen_rainmap">Creating precipitation map....</word>
+      <word id="worldgen_tempmap">Creating temperature map....</word>
+      <word id="worldgen_biomemap">Creating biome map....</word>
+      <word id="worldgen_bitmap">Drawing board bitmap....</word>
+      <word id="worldgen_determinebiome">Determining biomes....</word>
+      <word id="worldgen_wateringholes">Finding watering holes....</word>
+      <word id="worldgen_markingtowns">Marking possible town locations....</word>
+      <word id="worldgen_createboards">Creating boards....</word>
+      <word id="worldgen_towns">Generating towns....</word>
+      <word id="worldgen_dungeons">Placing dungeon entrances....</word>
+      <word id="worldgen_missions">Applying missions....</word>
+      <word id="worldgen_ready">The world is ready.</word>
+    </category>
 	</category>
 	<category name="Travel">
 		<word id="travel_header">Travel Mode</word>
@@ -453,6 +468,13 @@ Would you like an infodump on the way out?]]>
 			<word id="tatlocation_smallofback">small of back</word>
 			<word id="tatlocation_buttcheek">butt cheek</word>
 		</category>
+    <category name="Horns">
+      <word id="x_horntype_small_curled">{0} [P:{0}:pair] of curled horns</word>
+      <word id="x_horntype_small_straight">{0} small [P:{0}:pair] of horns</word>
+      <word id="x_horntype_big_curled">{0} [P:{0}:pair] of ram-like horns</word>
+      <word id="x_horntype_big_straight">{0} [P:{0}:pair] of long horns</word>
+      <word id="horntype_monoceros">A single horn on [t:his] forehead</word>
+    </category>
 		<word id="lookat_header_general"><![CDATA[General
 -------
 ]]></word>
