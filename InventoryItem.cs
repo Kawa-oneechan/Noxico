@@ -31,7 +31,7 @@ namespace Noxico
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
 
 			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
-			var isIdentified = canBeIdentified ? !NoxicoGame.Identifications.Contains(ID) : true;
+			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
 
 			var name = isIdentified ? Name : UnknownName;
 			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
@@ -93,6 +93,11 @@ namespace Noxico
 		public string GetDescription(Token token)
 		{
 			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
+			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
+			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
+			if (!isIdentified)
+				return i18n.Format("inventory_thisis_x", this.ToString(token));
+
 			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return i18n.Format("book_description", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
 			var a = "";

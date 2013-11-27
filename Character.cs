@@ -1772,6 +1772,7 @@ namespace Noxico
 
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
+			TokenCarrier.NoRolls = true;
 			var bodyPlans = Mix.GetTokenTree("bodyplans.tml");
 
 			var isPlayer = this == NoxicoGame.HostForm.Noxico.Player.Character;
@@ -1841,11 +1842,22 @@ namespace Noxico
 			}
 
 			//Change entire skin type?
-			if (target.Path("skin/type").Text != source.Path("skin/type").Text)
+			var skinOptions = new List<string>() { target.Path("skin/type").Text };
+			if (skinOptions[0].StartsWith("oneof "))
+				skinOptions = skinOptions[0].Substring(6).Split(',').Select(x => x.Trim()).ToList();
+			//if (target.Path("skin/type").Text != source.Path("skin/type").Text)
+			if (!skinOptions.Contains(source.Path("skin/type").Text))
 			{
 				toChange.Add(source.Path("skin/type"));
 				changeTo.Add(target.Path("skin/type"));
 				doNext.Add(false);
+
+				var skinColors = new List<string>() { target.Path("skin/color").Text };
+				if (skinColors[0].StartsWith("oneof "))
+					skinColors = skinColors[0].Substring(6).Split(',').Select(x => x.Trim()).ToList();
+				var hairColors = new List<string>() { target.Path("hair/color").Text };
+				if (hairColors[0].StartsWith("oneof "))
+					hairColors = hairColors[0].Substring(6).Split(',').Select(x => x.Trim()).ToList();
 
 				var skinColor = Color.NameColor(target.Path("skin/color").Text);
 				var hairColor = Color.NameColor(target.Path("hair/color").Text);
@@ -1924,11 +1936,16 @@ namespace Noxico
 					if (string.IsNullOrWhiteSpace(source.GetToken("legs").Text))
 						source.GetToken("legs").Text = "human";
 
-					if (source.GetToken("legs").Text != target.GetToken("legs").Text)
+					var legOptions = new List<string>() { target.GetToken("legs").Text };
+					if (legOptions[0].StartsWith("oneof "))
+						legOptions = legOptions[0].Substring(6).Split(',').Select(x => x.Trim()).ToList();						
+
+					//if (source.GetToken("legs").Text != target.GetToken("legs").Text)
+					if (!legOptions.Contains(source.GetToken("legs").Text))
 					{
 						var legDescription = fooIneReports.ContainsKey(target.GetToken("legs").Text) ? fooIneReports[target.GetToken("legs").Text] : target.GetToken("legs").Text;
 						doReport(string.Format("[Youorname] [has] grown {0} legs.", legDescription).Viewpoint(this));
-						source.GetToken("legs").Text  = target.GetToken("legs").Text;
+						source.GetToken("legs").Text = target.GetToken("legs").Text;
 					}
 				}
 

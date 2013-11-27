@@ -30,6 +30,7 @@ namespace Noxico
 			jint.SetParameter("Realms", typeof(Realms));
 			jint.SetParameter("Random", typeof(Random));
 			jint.SetParameter("BoardType", typeof(BoardType));
+			jint.SetParameter("Mutations", typeof(Mutations));
 			jint.SetParameter("Character", typeof(Character));
 			jint.SetParameter("BoardChar", typeof(BoardChar));
 			jint.SetParameter("DroppedItem", typeof(DroppedItem));
