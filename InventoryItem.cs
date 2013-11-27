@@ -92,18 +92,16 @@ namespace Noxico
 
 		public string GetDescription(Token token)
 		{
-			// i.HasToken("description") && !t.HasToken("unidentified") ? i.GetToken("description").Text : "This is " + i.ToString() + ".";
 			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
 			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
-			if (!isIdentified)
-				return i18n.Format("inventory_thisis_x", this.ToString(token));
 
 			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
 				return i18n.Format("book_description", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
 			var a = "";
-			if (this.HasToken("description"))
+			var description = isIdentified ? "description" : "unknown";
+			if (this.HasToken(description))
 			{
-				var ret = GetToken("description").Text;
+				var ret = GetToken(description).Text;
 				var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : string.Empty;
 				var reps = new Dictionary<string, string>()
 				{

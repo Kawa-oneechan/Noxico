@@ -2146,7 +2146,8 @@ item: enhanced_chaos_potion
 		]]>
 
 item: demonite_potion
-	description: "A [color ]bottle with a stylized but recognizable demon on the label."
+	description: "A [color ]bottle with a stylized but recognizable demon on the label. Very indicative of what it turns the user into."
+	unknown: "A [color ]bottle with a stylized but recognizable demon on the label."
 	ascii
 		char: 0x180
 	randomized: 12
@@ -2264,7 +2265,8 @@ item: demonite_potion
 		]]>
 
 item: tentacle_potion
-	description: "A [color ]bottle with what seems to be a vine on the label."
+	description: "A [color ]bottle with some sort of tentacle on the label. It seems to give you a tentacle cock."
+	unknown: "A [color ]bottle with what seems to be a vine on the label."
 	ascii
 		char: 0x180
 	randomized: 13
@@ -2327,7 +2329,8 @@ item: tentacle_potion
 		]]>
 
 item: cock_potion
-	description: "A [color ]bottle with what seems to be an erect penis on the label."
+	description: "A [color ]bottle with what seems to be an erect penis on the label. It causes the user to grow a cock."
+	unknown: "A [color ]bottle with what seems to be an erect penis on the label."
 	ascii
 		char: 0x180
 	randomized: 14
@@ -2378,7 +2381,8 @@ item: cock_potion
 		]]>
 
 item: corrupted_cock_potion
-	description: "A [color ]bottle with what seems to be a turgid penis on the label."
+	description: "A [color ]bottle with what seems to be a turgid penis on the label, that rather aggressively grows you a cock."
+	unknown: "A [color ]bottle with what seems to be a turgid penis on the label."
 	ascii
 		char: 0x180
 	randomized: 15
@@ -2416,7 +2420,7 @@ item: corrupted_cock_potion
 				else
 					ret += "  Plus, you've grown one extra!";
 			}
-			if (Random.Flip() && Random.Flip())
+			if (Random.Flip())
 			{
 				if (user.HasToken("vagina"))
 				{
@@ -2432,7 +2436,8 @@ item: corrupted_cock_potion
 		]]>
 
 item: neutralizer_potion
-	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
+	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label. It removes your genitalia. If it were a cream you might've be able to choose which."
+	unknown: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
 	ascii
 		char: 0x180
 	randomized: 16
@@ -2502,6 +2507,97 @@ item: neutralizer_potion
 			print(ret);
 			Identify();
 		]]>
+
+item: regen_ring
+	description: "A [color ]ring that heals the wearer a little every few seconds."
+	unknown: "You have no idea what this shiny [color ]ring does."
+	equipable
+		ring
+	randomized: 130
+	ascii
+		char: U+00A1
+	timer: 5
+	script: timer
+		<[[
+			user.Health += 5;
+			Identify();
+		]]>
+
+item: chaotic_regen_ring
+	description: "A ring that heals the wearer a little every few seconds, but it's tainted..."
+	equipable
+		ring
+	randomized: 131
+	ascii
+		char: U+00A1
+	timer: 5
+	script: timer
+		<[[
+			user.Health += 5;
+			if (Random.NextDouble() > 0.3)
+			{
+				user.Mutate(1, 30, Mutations.Random);
+				message("OH SHIT!");
+			}
+			Identify();
+		]]>
+
+item: orgasm_denial_ring
+	_n: Ring of Orgasm Denial
+	description: "A ring that prevents the wearer from reaching a climax. How it works, noone cares."
+	equipable
+		ring
+	randomized: 132
+	ascii
+		char: U+00A1
+	timer: 5
+	script: equip
+		<[[
+			if (!user.HasToken("orgasm_denial"))
+				user.AddToken("orgasm_denial");
+			print("You feel constricted, even though the ring seems averagely loose-fitting.");
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("orgasm_denial");
+			print("You feel less constricted.");
+		]]>
+
+item: restoration_potion
+	ascii
+		char: 0x180
+	randomized: 17
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var missing = user.MaximumHealth - user.Health;
+			var half = Math.ceil(missing * 0.5);
+			user.Health += half;
+
+			var car = user.GetToken("carnality");
+			if (car.Value < 100)
+				car.Value += 5;
+			Identify();
+		]]>	
+
+item: greater_restoration_potion
+	ascii
+		char: 0x180
+	randomized: 18
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			user.Health = user.MaximumHealth;
+
+			var car = user.GetToken("carnality");
+			if (car.Value < 100)
+				car.Value += 20;
+			Identify();
+		]]>	
 
 -- #endregion
 

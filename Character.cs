@@ -235,7 +235,7 @@ namespace Noxico
 			}
 			set
 			{
-				GetToken("health").Value = value;
+				GetToken("health").Value = Math.Min(MaximumHealth, value);
 			}
 		}
 
@@ -1497,7 +1497,7 @@ namespace Noxico
 						var cock = cocks[i];
 						var cockType = cock.Text;
 						if (string.IsNullOrWhiteSpace(cockType))
-							cockType = "human-like";
+							cockType = "human";
 						print((i < cocksAndBalls - 1 ? "\xC3 " : "\xC0 ") + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
 						print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
 					}
