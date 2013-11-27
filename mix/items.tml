@@ -2112,3 +2112,396 @@ item: dye
 	dye
 	colored
 -- #endregion
+
+-- #region Potions from tf_items.txt, don't forget to shuffle later.
+item: chaos_potion
+	description: "Chaos in a bottle."
+	ascii
+		char: 0x180
+	randomized: 10
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			user.Mutate(1, 10, Mutations.Random);
+			Identify();
+		]]>
+
+item: enhanced_chaos_potion
+	description: "Concentrated chaos in a bottle."
+	ascii
+		char: 0x180
+	randomized: 11
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			if (Random.Flip())
+				user.Mutate(1, 30, Mutations.Random);
+			else
+				user.Mutate(2, 15, Mutations.Random);
+			Identify();
+		]]>
+
+item: demonite_potion
+	description: "A [color ]bottle with a stylized but recognizable demon on the label."
+	ascii
+		char: 0x180
+	randomized: 12
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var score = 0;
+			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
+				score++;
+			if (user.Path("ears[=elfin]") != null)
+				score++;
+			if (user.Path("wings[=bat]") != null)
+				score++;
+			if (user.Path("penis[=studded]") != null)
+				score++;
+			if (user.Path("tail[=demon]") != null)
+				score++;
+			if (score >= 3 && Random.Flip())
+				user.Mutate(2, 10, Mutations.Random);
+			else
+			{
+				//user.Morph("foocubus");
+				var ret = "";
+				var carnality = user.GetToken("carnality");
+				if (carnality.Value < 80)
+				{
+					carnality.Value += 4;
+					ret += "You feel hornier.  ";
+				}
+
+				if (user.HasToken("penis"))
+				{
+					var triggered = false;
+					var dicks = 0;
+					for (var i = 0; i < user.Count(); i++)
+					{
+						if (user.Item(i).Name == "penis")
+						{
+							dicks++;
+							var thisDick = user.Item(i);
+							if (thisDick.Text == "studded")
+								continue;
+							if (thisDick.Text == "tentacle")
+								continue;
+							if (!triggered)
+								thisDick.Text = "studded";
+							triggered = true;
+						}
+					}
+					if (triggered)
+					{
+						if (dicks == 1)
+							ret += "Your dick shifts into a studded affront to the nature of dicks everywhere.";
+						else
+							ret += "One of your dicks shifts into a studded affront to the nature of dicks everywhere.";
+						print(ret);
+						return;
+					}
+				}
+
+				if (user.Path("tail[=demon]") == null)
+				{
+					if (user.HasToken("tail"))
+						ret += "You feel your tail shifting, turning into a slick, thin deal with a spade at the end.";
+					else
+						ret += "You feel a slick tail growing from your backside, with a spade at the end.";
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "demon";
+
+					print(ret);
+					return;
+				}
+
+				if (user.Path("wings[=bat]") == null)
+				{
+					if (user.HasToken("wings"))
+					{
+						ret += "Your wings become leathery.";
+						user.GetToken("wings").Text = "bat";
+					}
+					else
+					{
+						ret += "You sprout leathery bat wings from your back.";
+						user.AddToken("wings").Text = "bat";
+					}
+
+					print(ret);
+					return;
+				}
+
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "metal")
+					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple");
+				if (skinType.Text == "fur")
+				{
+					ret += "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin.";
+					skinType.Text = "skin";
+				}
+
+				user.SetTerms("cubi", "incubus", "succubus", "omnibus");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+
+				Identify();
+			}
+		]]>
+
+item: tentacle_potion
+	description: "A [color ]bottle with what seems to be a vine on the label."
+	ascii
+		char: 0x180
+	randomized: 13
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var ret = "";
+			if (user.HasToken("penis"))
+			{
+				var result = 0;
+				var dicks = 0;
+				for (var i = 0; i < user.Count(); i++)
+				{
+					if (user.Item(i).Name == "penis")
+					{
+						dicks++;
+						var thisDick = user.Item(i);
+						if (thisDick.Text == "tentacle")
+						{
+							thisDick.GetToken("length").Value += 3 + Random.Next(5);
+							result = 1;
+						}
+						else
+						{
+							thisDick.Text = "tentacle";
+							result = result == 1 ? 3 : 2;
+						}
+					}
+				}
+				if (result == 1)
+				{
+					if (dicks == 1)
+						ret += "Your tentacle dick has grown longer!";
+					else
+						ret += "Your tentacle dicks have grown longer!";
+				}
+				else if (result == 2)
+				{
+					if (dicks == 1)
+						ret += "Your dick has turned into a flexible tentacle!";
+					else
+						ret += "One of your dicks has turned into a flexible tentacle!";
+				}
+				else if (result == 3)
+				{
+					ret += "Your dicks have grown longer and became tentacles!";
+				}
+			}
+			else
+			{
+				var penis = user.AddToken("penis").Text = "tentacle";
+				penis.AddToken("thickness", 2 + Random.Next(2));
+				penis.AddToken("length", 15 + Random.Next(4));
+				ret = "You've grown a wiggly tentacle dick!";
+			}
+			print(ret);
+			Identify();
+		]]>
+
+item: cock_potion
+	description: "A [color ]bottle with what seems to be an erect penis on the label."
+	ascii
+		char: 0x180
+	randomized: 14
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var ret = "";
+			var dicks = 0;
+			if (user.HasToken("penis"))
+			{
+				for (var i = 0; i < user.Count(); i++)
+				{
+					if (user.Item(i).Name == "penis")
+					{
+						dicks++;
+						var thisDick = user.Item(i);
+						thisDick.GetToken("length").Value += 3 + Random.Next(5);
+					}
+				}
+				if (dicks == 1)
+					ret += "Your dick has grown longer!";
+				else
+					ret += "One of your dicks has grown longer!";
+			}
+			else
+			{
+				var penis = user.AddToken("penis");
+				penis.Text = "human";
+				penis.AddToken("thickness", 2 + Random.Next(2));
+				penis.AddToken("length", 15 + Random.Next(4));
+				ret = "You've grown a cock!";
+			}
+			if (Random.Flip() && Random.Flip() && Random.Flip())
+			{
+				if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret += " But it seems you also lost one of your vaginas."
+					else
+						ret += " But it seems you also lost your vagina."
+				}
+			}
+			print(ret);
+			Identify();
+		]]>
+
+item: corrupted_cock_potion
+	description: "A [color ]bottle with what seems to be a turgid penis on the label."
+	ascii
+		char: 0x180
+	randomized: 15
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var ret = "";
+			var dicks = 0;
+			if (user.HasToken("penis"))
+			{
+				for (var i = 0; i < user.Count(); i++)
+				{
+					if (user.Item(i).Name == "penis")
+					{
+						dicks++;
+						var thisDick = user.Item(i);
+						thisDick.GetToken("length").Value += 3 + Random.Next(5);
+					}
+				}
+				if (dicks == 1)
+					ret += "Your dick has grown longer!";
+				else
+					ret += "One of your dicks has grown longer!";
+			}
+			if (Random.Flip() && Random.Flip())
+			{
+				var penis = user.AddToken("penis");
+				penis.Text = "human";
+				penis.AddToken("thickness", 2 + Random.Next(2));
+				penis.AddToken("length", 15 + Random.Next(4));
+				if (dicks == 0)
+					ret = "You've grown an extra cock!";
+				else
+					ret += "  Plus, you've grown one extra!";
+			}
+			if (Random.Flip() && Random.Flip())
+			{
+				if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret += " But it seems you also lost one of your vaginas."
+					else
+						ret += " But it seems you also lost your vagina."
+				}
+			}
+			print(ret);
+			Identify();
+		]]>
+
+item: neutralizer_potion
+	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
+	ascii
+		char: 0x180
+	randomized: 16
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			var ret = "";
+			if (Random.Flip())
+			{
+				if (user.HasToken("penis"))
+				{
+					user.RemoveToken("penis");
+					if (user.HasToken("penis"))
+						ret = "One of your cocks disappears!";
+					else
+						ret = "Your cock's gone!";
+				}
+				else if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret = "One of your pussies disappears!";
+					else
+						ret = "Your pussy's gone!"
+				}
+			}
+			else
+			{
+				if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret = "One of your pussies disappears!";
+					else
+						ret = "Your pussy's gone!"
+				}
+				else if (user.HasToken("penis"))
+				{
+					user.RemoveToken("penis");
+					if (user.HasToken("penis"))
+						ret = "One of your cocks disappears!";
+					else
+						ret = "Your cock's gone!";
+				}
+			}
+			for (var i = 0; i < user.Count(); i++)
+			{
+				if (user.Item(i).Name == "breastrow")
+				{
+					var breastrow = user.Item(i);
+					if (breastrow.Path("nipples/canfuck"))
+					{
+						breastrow.GetToken("nipples").RemoveToken("canfuck");
+						ret += "  The cocks on your breasts shrink back into regular nipples.";
+						break;
+					}
+					else if (breastrow.Path("nipples/fuckable"))
+					{
+						breastrow.GetToken("nipples").RemoveToken("fuckable");
+						ret += "  The pussies on your breasts shrink back into regular nipples.";
+						break;
+					}
+				}
+			}
+			print(ret);
+			Identify();
+		]]>
+
+-- #endregion
+

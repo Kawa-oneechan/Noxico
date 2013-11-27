@@ -120,7 +120,9 @@ namespace Noxico
 				{
 					var trueP = p.Remove(p.IndexOf('['));
 					var text = textRE.Match(p).Groups["text"].ToString();
-					target = point.Tokens.FirstOrDefault(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
+					var possibilities = point.Tokens.Where(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase));
+					target = possibilities.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Text) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
+					//target = point.Tokens.FirstOrDefault(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(t.Text) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
 				}
 				else
 					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.OrdinalIgnoreCase));
@@ -138,6 +140,11 @@ namespace Noxico
 			if (i < 0 || i >= Tokens.Count)
 				throw new ArgumentOutOfRangeException("i");
 			return Tokens[i];
+		}
+
+		public int Count()
+		{
+			return Tokens.Count;
 		}
 
 		public void Tokenize(string a)
