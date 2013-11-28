@@ -42,6 +42,8 @@ namespace Noxico
 	public static class i18n
 	{
 		private static Dictionary<string, string> words;
+		private static XmlElement pluralizerData;
+		private static string of;
 
 		private static void Initialize()
 		{
@@ -51,6 +53,18 @@ namespace Noxico
 			var x = Mix.GetXmlDocument("words.xml");
 			foreach (var word in x.SelectNodes("//word").OfType<XmlElement>())
 				words[word.GetAttribute("id")] = word.InnerText;
+			
+			pluralizerData = (XmlElement)x.SelectSingleNode("//pluralizer");
+			of = pluralizerData.SelectSingleNode("of").InnerText;
+			//Sanity check!
+			if (pluralizerData.SelectSingleNode("sanitycheck") != null)
+			{
+				var testInput = pluralizerData.SelectSingleNode("sanitycheck/input").InnerText;
+				var expectedOutput = pluralizerData.SelectSingleNode("sanitycheck/output").InnerText;
+				var result = Pluralize(testInput, 2);
+				if (result != expectedOutput)
+					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", expectedOutput, result));
+			}
 		}
 
 		public static string Entitize(string input)
@@ -92,7 +106,8 @@ namespace Noxico
 		{
 			return GetString(key).Split(',').Select(x => x.Trim()).ToList();
 		}
-
+		
+		/*
 		public static string Pluralize(string singular, int amount)
 		{
 			if (words.ContainsKey(singular))
@@ -102,6 +117,71 @@ namespace Noxico
 			//TODO: inflect right. THIS IS VERY NAIVE AND STUPID. THERE IS A BETTER SYSTEM IN INFLECTOR.SLN.
 			return singular + 's';
 		}
+		*/
+		public static string Pluralize(this string singular)
+		{
+			if (words.ContainsKey(singular))
+				singular = words[singular];
+
+			if (singular.Contains(of))
+			{
+				var ofPos = singular.IndexOf(of);
+				var key = singular.Substring(0, ofPos);
+				var ofWhat = singular.Substring(ofPos);
+				return Pluralize(key) + ofWhat;
+			}
+			foreach (var uncountable in pluralizerData.SelectNodes("//uncountable_word").OfType<XmlElement>())
+				if (singular.EndsWith(uncountable.InnerText, StringComparison.InvariantCultureIgnoreCase))
+					return singular;
+			foreach (var irregular in pluralizerData.SelectNodes("//irregular_plural").OfType<XmlElement>())
+			{
+				if (irregular.GetAttribute("fullword") == "yes")
+				{
+					if (singular.Equals(irregular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
+						return irregular.Attributes["to"].Value;
+				}
+				else
+					if (singular.EndsWith(irregular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
+						return singular.Remove(singular.LastIndexOf(irregular.Attributes["from"].Value)) + irregular.Attributes["to"].Value;
+			}
+			foreach (var regular in pluralizerData.SelectNodes("//regular_plural").OfType<XmlElement>())
+				if (singular.EndsWith(regular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
+					return singular.Remove(singular.LastIndexOf(regular.Attributes["from"].Value)) + regular.Attributes["to"].Value;
+
+			return singular + 's';
+		}
+
+		public static string Pluralize(this string singular, int count)
+		{
+			if (count == 1)
+				return singular;
+			return Pluralize(singular);
+		}
+
+		public static string Singularize(this string plural)
+		{
+			if (plural.Contains(" of "))
+			{
+				var ofPos = plural.IndexOf(" of ");
+				var key = plural.Substring(0, ofPos);
+				var ofWhat = plural.Substring(ofPos);
+				return Singularize(key) + ofWhat;
+			}
+			foreach (var uncountable in pluralizerData.SelectNodes("//uncountable_word").OfType<XmlElement>())
+				if (plural.EndsWith(uncountable.InnerText, StringComparison.InvariantCultureIgnoreCase))
+					return plural;
+			foreach (var irregular in pluralizerData.SelectNodes("//irregular_plural").OfType<XmlElement>())
+				if (plural.EndsWith(irregular.Attributes["to"].Value, StringComparison.InvariantCultureIgnoreCase))
+					return plural.Remove(plural.LastIndexOf(irregular.Attributes["to"].Value)) + irregular.Attributes["from"].Value;
+			foreach (var regular in pluralizerData.SelectNodes("//regular_plural").OfType<XmlElement>())
+				if (plural.EndsWith(regular.Attributes["to"].Value, StringComparison.InvariantCultureIgnoreCase))
+					return plural.Remove(plural.LastIndexOf(regular.Attributes["to"].Value)) + regular.Attributes["from"].Value;
+
+			if (plural.EndsWith("s"))
+				return plural.Remove(plural.Length - 1);
+			return plural;
+		}
+
 
 		/// <summary>Gets the number of effective tiles needed to draw the current String.</summary>
 		public static int Length(this string input)
