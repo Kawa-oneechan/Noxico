@@ -511,4 +511,81 @@ Would you like an infodump on the way out?]]>
 		<rule cutoff="2">[aeiou]([^aeiou]{2})[aeiou]</rule>
 		<!-- <rule cutoff="2">[aeiou]q</rule> -->
 	</hyphenation>
+
+	<pluralizer>
+		<of><![CDATA[ of ]]></of>
+		<sanitycheck>
+			<input>cheap piece of shit</input>
+			<output>cheap pieces of shit</output>
+		</sanitycheck>
+		<uncountable_words>
+			<uncountable_word>money</uncountable_word>
+			<uncountable_word>information</uncountable_word>
+			<uncountable_word>fish</uncountable_word>
+			<uncountable_word>deer</uncountable_word>
+			<uncountable_word>tuna</uncountable_word>
+			<uncountable_word>crosshairs</uncountable_word>
+			<!-- Japanese -->
+			<uncountable_word>yaki</uncountable_word>
+			<uncountable_word>sheep</uncountable_word>
+			<uncountable_word>ninja</uncountable_word>
+			<uncountable_word>ronin</uncountable_word>
+			<uncountable_word>shito</uncountable_word>
+			<uncountable_word>shuriken</uncountable_word>
+			<uncountable_word>tengu</uncountable_word>
+			<uncountable_word>sentai</uncountable_word>
+			<uncountable_word>ki-rin</uncountable_word>
+			<uncountable_word>yoki</uncountable_word>
+		</uncountable_words>
+		<irregular_plurals>
+			<irregular_plural from="ox" to="oxen" fullword="yes" />
+			<irregular_plural from="VAX" to="vaxen" fullword="yes" />
+			<irregular_plural from="octopus" to="octopuses" />
+			<irregular_plural from="person" to="people" />
+			<irregular_plural from="pegasus" to="pegasori" />
+			<irregular_plural from="stylus" to="styli" />
+			<irregular_plural from="goose" to="geese" />
+			<irregular_plural from="mouse" to="mice" />
+			<irregular_plural from="louse" to="lice" />
+			<irregular_plural from="human" to="humans" />
+			<irregular_plural from="man" to="men" />
+			<irregular_plural from="die" to="dice" />
+			<irregular_plural from="staff" to="staves" />
+			<irregular_plural from="foot" to="feet" />
+			<irregular_plural from="coccus" to="cocci" />
+			<irregular_plural from="convolvulus" to="convolvuli" />
+			<irregular_plural from="arsis" to="arses" />
+			<irregular_plural from="alula" to="alul&#xE6;" />
+			<irregular_plural from="alga" to="alg&#xE6;" />
+			<irregular_plural from="larva" to="larv&#xE6;" />
+			<irregular_plural from="naga" to="nag&#xE6;" />
+			<irregular_plural from="ida" to="id&#xE6;" />
+			<irregular_plural from="fungus" to="fungi" />
+			<irregular_plural from="djinni" to="djinn" />
+			<irregular_plural from="mumak" to="mumakil" />
+			<irregular_plural from="nemesis" to="nemeses" />
+			<irregular_plural from="child" to="children" />
+			<!-- Tolkien-specific -->
+			<irregular_plural from="elf" to="elves" />
+			<irregular_plural from="dwarf" to="dwarves" />
+			<!-- <irregular_plural from="hobbit" to="hobbitses" /> -->
+		</irregular_plurals>
+		<regular_plurals>
+			<regular_plural from="rtex" to="rtices" />
+			<regular_plural from="cubus" to="cubi" />
+			<regular_plural from="ooth" to="eeth" />
+			<regular_plural from="fe" to="ves" />
+			<!-- Specify sus and lus instead of just us because house -> houses -> hous -->
+			<regular_plural from="sus" to="suses" />
+			<regular_plural from="lus" to="luses" />
+			<regular_plural from="bus" to="buses" />
+			<regular_plural from="cus" to="ci" />
+			<regular_plural from="se" to="ses" />
+			<regular_plural from="ch" to="ches" />
+			<regular_plural from="oy" to="oys" />
+			<regular_plural from="x" to="xes" />
+			<regular_plural from="y" to="ies" />
+			<!-- <regular_plural from="" to="s" /> -->
+		</regular_plurals>
+	</pluralizer>
 </words>
