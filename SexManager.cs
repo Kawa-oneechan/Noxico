@@ -40,6 +40,11 @@ namespace Noxico
 			var possibilities = new List<Token>();
 			foreach (var choice in choices.Where(c => c.Name == "choice"))
 			{
+				if (choice.HasToken("meta"))
+					continue;
+				if (!(actor is Player) && choice.HasToken("ai_unlikely"))
+					if (Random.NextDouble() < 0.75)
+						continue;
 				if (LimitsOkay(actors, choice))
 					possibilities.Add(choice);
 			}
@@ -49,7 +54,7 @@ namespace Noxico
 			{
 				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.Text, ApplyMemory(i18n.Viewpoint(possibility.GetToken("_n").Text, actor.Character, target.Character)));
+				result.Add(possibility.Text, i18n.Viewpoint(ApplyMemory(possibility.GetToken("_n").Text), actor.Character, target.Character));
 			}
 			return result;
 		}
@@ -118,7 +123,7 @@ namespace Noxico
 							haveSomething = true;
 					}
 					if (haveSomething)
-						memory[1] = cloth.ToString(null, false, false);
+						memory[int.Parse(check[2])] = cloth.ToString(null, false, false);
 					else
 						return false;
 				}
@@ -249,7 +254,7 @@ namespace Noxico
 					if (source == null)
 						continue;
 					var message = source.Tokens[Random.Next(source.Tokens.Count)].Text;
-					message = ApplyMemory(i18n.Viewpoint(message, actor.Character, target.Character));
+					message = i18n.Viewpoint(ApplyMemory(message), actor.Character, target.Character);
 					writer(message);
 				}
 				else if (effect.Name == "roll")
@@ -292,7 +297,7 @@ namespace Noxico
 					}
 					else if (clothClass == "bottom")
 					{
-						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
+						foreach (var slot in new[] { "pants", "underpants" })
 						{
 							cloth = t.GetEquippedItemBySlot(slot);
 							if (cloth != null)
@@ -332,13 +337,28 @@ namespace Noxico
 			if (!this.Character.HasToken("havingsex"))
 				return false;
 			var havingSex = this.Character.GetToken("havingsex");
+			if (sexPartner != null && havingSex.Text != sexPartner.ID)
+			{
+				Program.WriteLine("SEX: {0} confuses {1} for {2}. What a slut.", this.ID, havingSex.Text, sexPartner.Character);
+				sexPartner = null;
+			}
 			if (sexPartner == null)
 				sexPartner = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.ID == havingSex.Text);
 			if (sexPartner == null || sexPartner.DistanceFrom(this) > 1)
 			{
-				Program.WriteLine("SEX: {0} is supposed to be having sex with {1} but that character isn't here.", this.ID, havingSex.Text);
+				Program.WriteLine("SEX: {0} is supposed to be having sex with {1} but that character isn't here.", this.ID, sexPartner.Character.Name);
 				this.Character.RemoveToken("havingsex");
 				return false;
+			}
+
+			if (this.Character.GetStat(Stat.Climax) >= 100)
+			{
+				var result = SexManager.GetResult("climax", this, sexPartner);
+				if (this.Character.HasItemEquipped("orgasm_denial_ring"))
+					result = SexManager.GetResult("orgasm_denial_ring", this, sexPartner);
+				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
+				this.Energy -= (int)result.GetToken("time").Value;
+				return true;
 			}
 
 			var possibilities = SexManager.GetPossibilities(this, sexPartner);
@@ -349,7 +369,7 @@ namespace Noxico
 					{
 						var action = ActionList.Answer as string;
 						if (action == null)
-							action = "Wait";
+							action = "wait";
 						var result = SexManager.GetResult(action, this, sexPartner);
 						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 						this.Energy -= (int)result.GetToken("time").Value;
@@ -368,48 +388,4 @@ namespace Noxico
 			return true;
 		}
 	}
-
-	/*
-	public class SexChoice
-	{
-		public string ID { get; set; }
-		public string ListAs { get; set; }
-		public string Message { get; set; }
-		public string[] FromHere { get; set; }
-		public SexAction[] Actions { get; set; }
-		public string[] Limitations { get; set; }
-		public int Time { get; set; }
-		public bool LimitsOkay(BoardChar[] actors)
-		{
-			if (Limitations == null || Limitations.Length == 0)
-				return true;
-
-			if (Limitations.Contains("noRestrained") && actors[0].Character.Path("havingsex/restrained") != null)
-				return false;
-			if (Limitations.Contains("noRestraining") && actors[0].Character.Path("havingsex/restraining") != null)
-				return false;
-			if (Limitations.Contains("restrained") && actors[0].Character.Path("havingsex/restrained") == null)
-				return false;
-			if (Limitations.Contains("restraining") && actors[0].Character.Path("havingsex/restraining") == null)
-				return false;
-
-			if (Limitations.Contains("actorNeedsDick") && actors[0].Character.Path("penis") != null)
-				return false; //TODO: check for -fitting- dick?
-			if (Limitations.Contains("targetNeedsDick") && actors[1].Character.Path("penis") != null)
-				return false;
-
-			if (Limitations.Contains("actorNeedsPussy") && actors[0].Character.Path("vagina") != null)
-				return false;
-			if (Limitations.Contains("targetNeedsPussy") && actors[1].Character.Path("vagina") != null)
-				return false;
-
-			if (Limitations.Contains("actorNeedsTits") && actors[0].Character.Path("breastrow") != null)
-				return false; //TODO: check for actually non-zero sized breast row!
-			if (Limitations.Contains("targetNeedsTits") && actors[1].Character.Path("breastrow") != null)
-				return false;
-
-			return true;
-		}
-	}
-	 */
 }
