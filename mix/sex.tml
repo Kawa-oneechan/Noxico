@@ -1,6 +1,55 @@
 choice: wait
 
+-- Male variant
+choice: climax
+	meta
+	limitations
+		yes: 0 penis
+		not: 0 vagina
+	effects
+		stat: 0 climax -100
+		message
+			first
+				$: You cry out as you come all over [b:name].
+			second
+				$: [t:Youorname] cries out as [t:he] comes all over you.
+			third
+				$: [t:Youorname] cries out as [t:he] comes all over [b:him].
+
+-- Female variant
+choice: climax
+	meta
+	limitations
+		yes: 0 vagina
+		not: 0 penis
+	effects
+		stat: 0 climax -100
+		message
+			first
+				$: femcome 1
+			second
+				$: femcome 2
+			third
+				$: femcome 3
+
+-- Herm variant
+choice: climax
+	meta
+	limitations
+		yes: 0 vagina
+		yes: 0 penis
+	effects
+		stat: 0 climax -100
+		message
+			first
+				$: hermcome 1
+			second
+				$: hermcome 2
+			third
+				$: hermcome 3
+
 choice: walk_away
+	ai_unlikely
 	limitations
 		not: 0 havingsex/restrained
 	effects
@@ -8,9 +57,9 @@ choice: walk_away
 			first
 				$: You release [b:name] and get up.
 			second
-				$: [t:name] lets go of you and gets up.
+				$: [t:Youorname] lets go of you and gets up.
 			third
-				$: [t:name] lets go of [b:name] and gets up.
+				$: [t:Youorname] lets go of [b:name] and gets up.
 		break
 
 choice: cuddle
@@ -32,10 +81,10 @@ choice: cuddle
 				$: You cuddle up to [b:name].
 				$: You rub your body against [b:name].
 			second
-				$: [t:name] cuddles up to you.
-				$: [t:name] rubs [t:his] body against you.
+				$: [t:Youorname] cuddles up to you.
+				$: [t:Youorname] rubs [t:his] body against you.
 			third
-				$: [t:name] cuddles up to [b:name].
+				$: [t:Youorname] cuddles up to [b:name].
 
 choice: pin_down
 	fromhere
@@ -54,9 +103,9 @@ choice: pin_down
 			first
 				$: You grab [b:name]'s arms and hold them tightly in place.
 			second
-				$: [t:name] grabs your arms and holds tight.
+				$: [t:Youorname] grabs your arms and holds tight.
 			third
-				$: [t:name] grabs [b:name]'s arms and holds tight.
+				$: [t:Youorname] grabs [b:name]'s arms and holds tight.
 
 choice: release
 	fromhere
@@ -77,7 +126,7 @@ choice: release
 			first
 				$: You let go of [b:name]'s arms.
 			second
-				$: [t:name] releases [t:his] grip.
+				$: [t:Youorname] releases [t:his] grip.
 
 choice: struggle
 	fromhere
@@ -98,7 +147,7 @@ choice: struggle
 					first
 						$: You struggle against [b:name]'s hold, but fail to get free.
 					second
-						$: [t:name] struggles against your hold, but fails to get free.
+						$: [t:Youorname] struggles against your hold, but fails to get free.
 			win
 				remove: 0 restrained
 				remove: 1 restraining
@@ -106,9 +155,9 @@ choice: struggle
 					first
 						$: You struggle against [b:name]'s hold and manage to get free.
 					second
-						$: [t:name] manages to struggle free from your hold.
+						$: [t:Youorname] manages to struggle free from your hold.
 					third
-						$: [t:name] manages to struggle free from [b:name]'s grasp.
+						$: [t:Youorname] manages to struggle free from [b:name]'s grasp.
 
 choice: kiss
 	fromhere
@@ -151,7 +200,7 @@ choice: french_kiss
 				$: ~fkissu~
 
 choice: take_off_top_own
-	_n: Take off your [1]
+	_n: Take off your [0]
 	fromhere
 		kiss
 		french_kiss
@@ -161,21 +210,22 @@ choice: take_off_top_own
 		take_off_bottom_own
 		take_off_bottom_theirs
 	limitations
-		clothing: 0 top
+		clothing: 0 top 0
+		not: 0 havingsex/restrained
 	effects
 		disrobe: 0 top
 			success
 				message
 					first
-						$: You reach for your [1] and take it off.
+						$: You reach for your [0] and take it off.
 					second
-						$: [t:name] reaches for [t:his] [1] and takes it off.
+						$: [t:Youorname] reaches for [t:his] [0] and takes it off.
 			failure
 				message
 					first
-						$: You reach for your [1] but can't take it off.
+						$: You reach for your [0] but can't take it off.
 					second
-						$: [t:name] reaches for [t:his] [1] but can't take it off.
+						$: [t:Youorname] reaches for [t:his] [0] but can't take it off.
 
 choice: take_off_top_theirs
 	_n: Take off [b:his] [1]
@@ -188,7 +238,8 @@ choice: take_off_top_theirs
 		take_off_bottom_own
 		take_off_bottom_theirs
 	limitations
-		clothing: 1 top
+		clothing: 1 top 1
+		not: 0 havingsex/restrained
 	effects
 		disrobe: 1 top
 			success
@@ -196,10 +247,66 @@ choice: take_off_top_theirs
 					first
 						$: You reach for [b:name]'s [1] and take it off.
 					second
-						$: [t:name] reaches for your [1] and takes it off.
+						$: [t:Youorname] reaches for your [1] and takes it off.
 			failure
 				message
 					first
 						$: You reach for [b:name]'s [1] but can't take it off.
 					second
-						$: [t:name] reaches for your [1] but can't take it off.
+						$: [t:Youorname] reaches for your [1] but can't take it off.
+
+choice: take_off_bottom_own
+	_n: Take off your [2]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 0 bottom 2
+		not: 0 havingsex/restrained
+	effects
+		disrobe: 0 bottom
+			success
+				message
+					first
+						$: You reach for your [2] and take it off.
+					second
+						$: [t:Youorname] reaches for [t:his] [2] and takes it off.
+			failure
+				message
+					first
+						$: You reach for your [2] but can't take it off.
+					second
+						$: [t:Youorname] reaches for [t:his] [2] but can't take it off.
+
+choice: take_off_bottom_theirs
+	_n: Take off [b:his] [3]
+	fromhere
+		kiss
+		french_kiss
+		pin_down
+		take_off_top_own
+		take_off_top_theirs
+		take_off_bottom_own
+		take_off_bottom_theirs
+	limitations
+		clothing: 1 bottom 3
+		not: 0 havingsex/restrained
+	effects
+		disrobe: 1 bottom
+			success
+				message
+					first
+						$: You reach for [b:name]'s [3] and take it off.
+					second
+						$: [t:Youorname] reaches for your [3] and takes it off.
+			failure
+				message
+					first
+						$: You reach for [b:name]'s [3] but can't take it off.
+					second
+						$: [t:Youorname] reaches for your [3] but can't take it off.
