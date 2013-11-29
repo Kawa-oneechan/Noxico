@@ -24,6 +24,7 @@
  * 
  * U+E220	Player's name
  * 
+ * U+E2FC	Indicates failure (for use with Character.Mutate() reporting)
  * U+E2FD	Hide message from backlog
  * U+E2FE	Shorthand flag for key substitution
  * U+E2FF	Wide character placeholder

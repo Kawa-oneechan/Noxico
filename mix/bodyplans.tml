@@ -723,13 +723,13 @@ bodyplan: draig
 	tallness: roll 1d30+200
 	skin
 		type: scales
-		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold, lightslategray
+		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold
 	hair
 		length: 0
 		style: straight
 		color: white
 	face: lizard
-	eyes: oneof yellow, crimson, aqua, springgreen
+	eyes: oneof yellow, crimson, lightblue, green
 		count: roll 1d2+2
 	ears: oneof flat, flat, flat, flat, elfin
 	horns: roll 1d3+1
