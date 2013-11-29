@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE words [
-	<!ELEMENT words (category*,hyphenation)>
+	<!ELEMENT words (category*,hyphenation,pluralizer)>
 	<!ELEMENT category (category|word)*>
 	<!ELEMENT word (#PCDATA)>
 	<!ELEMENT hyphenation (rule*)>
 	<!ELEMENT rule (#PCDATA)>
+	<!ELEMENT pluralizer (of,sanitycheck,uncountable_words,irregular_plurals,regular_plurals)>
+	<!ELEMENT sanitycheck (input,output)>
+	<!ELEMENT uncountable_words (uncountable_word+)>
 	<!ATTLIST category name CDATA #IMPLIED>
 	<!ATTLIST word id ID #REQUIRED>
 	<!ATTLIST rule cutoff CDATA #REQUIRED>

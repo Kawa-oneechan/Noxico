@@ -2124,7 +2124,7 @@ item: chaos_potion
 	script
 		<[[
 			Consume();
-			user.Mutate(1, 10, Mutations.Random);
+			reportset(user.Mutate(1, 10, Mutations.Random));
 			Identify();
 		]]>
 

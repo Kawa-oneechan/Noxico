@@ -268,6 +268,16 @@ namespace Noxico
 				return words[i];
 			return Ordinal(num);
 		}
+		/// <summary>
+		/// Returns the given number as a word, from "first" up to "twelfth". 13 and higher are passed to Ordinal.
+		/// </summary>
+		public static string CountOrdinal(this int num)
+		{
+			var words = i18n.GetArray("countsordinal");
+			if (num < words.Length)
+				return words[num];
+			return Ordinal(num);
+		}
 
 		/// <summary>
 		/// Applies [grammar replacement] from a given character's point of view.
