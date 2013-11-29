@@ -646,6 +646,12 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
+			js.SetFunction("reportset", new Action<List<string>>(x =>
+			{
+				foreach (var result in x)
+					if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
+						NoxicoGame.AddMessage(result.Viewpoint(character));
+			}));
 			js.SetFunction("Identify", new Action<string>(x =>
 			{
 				if (character.GetToken("cunning").Value < 10)

@@ -375,8 +375,8 @@ namespace Noxico
                                     newboobs.GetToken("nipples").AddToken("length", dickniplength);
                                     newboobs.GetToken("nipples").AddToken("thickness", dicknipthick);
 									
-									report += i18n.GetArray("setbymeasure")[nipnum] + Descriptions.Length(dickniplength) + " [p:dicknipple:" + 
-												nipnum.ToString() + "].";
+									report += i18n.GetArray("setbymeasure")[nipnum] + Descriptions.Length(dickniplength) + " [p:" + 
+												nipnum.ToString() + ":dicknipple].";
                                     
 									break;
                                 case 1:
@@ -388,11 +388,11 @@ namespace Noxico
 
 									report += i18n.GetString("counts")[nipnum] + " " + Descriptions.GetSizeDescriptions(nipcuntloose,
 												"//lowerbody/sexorgans/vaginas/loosenesses") + " and " + Descriptions.GetSizeDescriptions(nipcuntwet,
-												"//lowerbody/sexorgans/vaginas/wetnesses") + " [p:nipplecunt:" + nipnum.ToString() + "].";
+												"//lowerbody/sexorgans/vaginas/wetnesses") + " [p:" + nipnum.ToString() + ":nipplecunt].";
 
                                     break;
                                 case 2:
-									report += i18n.GetArray("counts")[nipnum] + " " + Descriptions.Length(nipsize) + " [p:nipple:" + nipnum.ToString() + "].";
+									report += i18n.GetArray("counts")[nipnum] + " " + Descriptions.Length(nipsize) + " [p:" + nipnum.ToString() + ":nipple].";
                                     break;
                             }
 
@@ -447,12 +447,12 @@ namespace Noxico
 							}
 							else
 								report += choice == 0 ? "[Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear." 
-													  : "[Youorname] falls down on all fours as [his] body rearranges itself to a quadrupedal form.";
+													  : "[Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form.";
 						}
 						else if (this.HasToken("taur"))
 						{
 							this.GetToken("taur").Value = Math.Max(2, this.GetToken("taur").Value + 1);
-							report += "Another taurbody extends out behind [yourornames] " + Descriptions.ButtRandom() + " as [he] grows another pair of legs."
+							report += "Another taurbody extends out behind [yourornames] [buttrand] as [he] grow{s} another pair of legs.";
 						}
 						else
 							report += "\uE2FC";
@@ -490,7 +490,7 @@ namespace Noxico
 						else if (this.HasToken("taur") && this.GetToken("taur").Value >= 2)
 						{
 							this.GetToken("taur").Value--;
-							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] " + Descriptions.ButtRandom() + ".";
+							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [buttrand].";
 						}
 						else
 							report += "\uE2FC";
@@ -502,8 +502,8 @@ namespace Noxico
                             if (this.GetBreastRowByNumber(boob).GetToken("amount").Value < 5)
                                 this.GetBreastRowByNumber(boob).GetToken("amount").Value++;
 							if (this.Tokens.Count(t => t.Name == "breastrow") > 1)
-								report += "[Youorname] [has] gained a " + i18n.GetArray("countsordinal")[(int)this.GetBreastRowByNumber(boob).GetToken("amount").Value] +
-										  " " + Descriptions.BreastRandom() + " in [his] " + i18n.GetArray("countsordinal")[boob] + " row.";
+								report += "[Youorname] [has] gained a " + this.GetBreastRowByNumber(boob).GetToken("amount").Value.CountOrdinal() +
+										  " [breastrand] in [his] " + (boob + 1).CountOrdinal() + " row.";
                         }
 						else
 							report += "\uE2FC";
@@ -517,7 +517,7 @@ namespace Noxico
                             if (boob.GetToken("amount").Value > 1)
 							{
                                 boob.GetToken("amount").Value--;
-								report += "[Youorname] [has] lost a " + Descriptions.BreastRandom() + " from [his] " + i18n.GetArray("countsordinal")[rand] + " row.";
+								report += "[Youorname] [has] lost a [breastrand] from [his] " + (rand + 1).CountOrdinal() + " row.";
                             }
 							else
                             {
@@ -527,7 +527,7 @@ namespace Noxico
                                     allTits[rand + 1].RemoveToken("sizefromprevious");
                                 }
                                 this.RemoveToken(boob);
-								report += "[Youorname] [has] lost a row of " + Descriptions.BreastRandom(true) + ".";
+								report += "[Youorname] [has] lost a row of [breastsrand].";
                             }
                             if (!this.HasToken("breastrow"))
                             {
@@ -553,7 +553,7 @@ namespace Noxico
                             this.GetToken("balls").AddToken("size", size);
 							report += num > 1 ? "[Youorname] [has] gained a set of " + i18n.GetArray("counts")[num] + " " + Descriptions.BallSize(this.GetToken("balls")) +
 												" balls." 
-											  : "[Youorname] has grown a single testicle.";
+											  : "[Youorname] [has] grown a single testicle.";
                         }
                         break;
                     case Mutations.RemoveTesticle:
@@ -567,7 +567,7 @@ namespace Noxico
 							}
 							else
 								report += "[Youorname] [has] lost one of [his] balls, bringing [him] down to only " + 
-										  i18n.GetArray("count")[(int)this.GetToken("balls").GetToken("amount").Value];
+										  this.GetToken("balls").GetToken("amount").Value.Count() + ".";
 						}
 						else
 							report += "\uE2FC";
@@ -579,7 +579,7 @@ namespace Noxico
 							while (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
 								boob = PickATitNum();
 							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("canfuck");
-							report += "The nipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+							report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
 									  " have grown out and become phallic.";
 						}
 						else
@@ -593,8 +593,8 @@ namespace Noxico
 								boob = PickATitNum();
 							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("fuckable");
 							//TODO: add wetness/looseness attributes.
-							report += "The nipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
-									  " have inverted and taken on a distinctly vaginal appearance."
+							report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
+									  " have inverted and taken on a distinctly vaginal appearance.";
 						}
 						else
 							report += "\uE2FC";
@@ -607,9 +607,9 @@ namespace Noxico
 								this.GetBreastRowByNumber(boob).AddToken("nipples", 1);
 							else
 								this.GetBreastRowByNumber(boob).GetToken("nipples").Value++;
-							report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+							report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
 								" have each gained another " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
-								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "") + ".";
 						}
 						else
 							report += "\uE2FC";
@@ -621,17 +621,17 @@ namespace Noxico
 							while (!this.GetBreastRowByNumber(boob).HasToken("nipples"))
 								boob = PickATitNum();
 							this.GetBreastRowByNumber(boob).GetToken("nipples").Value--;
+							var nippleName = (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
+								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
 							if (this.GetBreastRowByNumber(boob).GetToken("nipples").Value == 0)
 							{
 								this.GetBreastRowByNumber(boob).RemoveToken("nipples");
-								report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
-										  " have lost their " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
-										  "nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunts" : "s");
+								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
+										  " have lost their " + nippleName.Pluralize() + ".";
 							}
 							else
-								report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
-										  " have each lost a " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
-										  "nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
+										  " have each lost a " + nippleName + ".";
 						}
 						else
 							report += "\uE2FC";
@@ -646,13 +646,13 @@ namespace Noxico
 							if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
 							{
 								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("fuckable");
-								report += "The nipplecunts on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+								report += "The nipplecunts on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
 										  " have become normal nipples.";
 							}
 							else
 							{
 								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("canfuck");
-								report += "The dicknipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+								report += "The dicknipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
 										  " have become normal nipples.";
 							}
 						}
