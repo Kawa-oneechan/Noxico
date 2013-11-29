@@ -299,7 +299,13 @@ namespace Noxico
 			return allTits[Random.Next(allTits.Count)];
 		}
 
-        public void Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
+		private int PickATitNum()
+		{
+			var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
+			return Random.Next(allTits.Count);
+		}
+
+        public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
 			//TODO: return a summary of what was done, coded for i18n
 
@@ -307,8 +313,10 @@ namespace Noxico
 			var randomize = false;
 			if (mutation == Mutations.Random)
 				randomize = true;
+			List<string> reports = new List<string>();
 			for (var i = 0; i < number; i++)
             {
+				string report = "";
 				if (randomize)
 					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
                 switch (mutation)
@@ -319,98 +327,186 @@ namespace Noxico
 						var newboobs = new Token("breastrow");
                         if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
                         {
-                            if (this.HasToken("breastrow") && this.GetToken("breastrow").GetToken("size").Value == 0)
-                                this.RemoveToken("breastrow");
+							if (this.HasToken("breastrow") && this.GetToken("breastrow").GetToken("size").Value == 0)
+								this.RemoveToken("breastrow");
+							
+							var amount = 2;
+                            newboobs.AddToken("amount", amount);
+
+							report += "[Youorname] grow{s} " + i18n.GetArray("setbymeasure")[amount] + " ";
+
+							var size = 0f;
+							var fromprevious = false;
                            
-                            newboobs.AddToken("amount", 2);
-                            if (this.HasToken("breastrow"))
-                                newboobs.AddToken("sizefromprevious", (float)Random.NextDouble() * intensity / 10 + 0.5f);
-                            else
-                                newboobs.AddToken("size", (float)Random.NextDouble() * intensity / 2 + 4f);
-                            newboobs.AddToken("nipples", Random.Next(5));
-                            newboobs.GetToken("nipples").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 0.7f);
+							if (this.HasToken("breastrow"))
+							{
+								size = (float)Random.NextDouble() * intensity / 10 + 0.5f;
+								newboobs.AddToken("sizefromprevious", size);
+								fromprevious = true;
+							}
+							else
+							{
+								size = (float)Random.NextDouble() * intensity / 2 + 4f;
+								newboobs.AddToken("size", size);
+							}
+
+							report += fromprevious ? " " + i18n.Pluralize("breast", amount) + Math.Round((double)size * 100).ToString() + "% the size of the " + 
+													i18n.Pluralize("one", (int)this.GetBreastRowByNumber(this.Tokens.Count(t => t.Name == "breastrow") - 1).
+													GetToken("amount").Value) + " above " + (amount == 1 ? "it, with " : "them, each with")
+												   : " " + Descriptions.GetSizeDescriptions(size, "//upperbody/breasts/sizes") + i18n.Pluralize("breast", amount) + 
+												    (amount == 1 ? ", with " : ", each with ");
+
+							var nipnum = Random.Next(5);
+							var nipsize = (float)Random.NextDouble() * intensity / 4 + 0.7f;
+							newboobs.AddToken("nipples", nipnum);
+                            newboobs.GetToken("nipples").AddToken("size", nipsize);
+
+							var dickniplength = -1f;
+							var dicknipthick = -1f;
+							var nipcuntwet = -1;
+							var nipcuntloose = -1;
 
                             switch (Random.Next(3))
                             {
                                 case 0:
                                     newboobs.GetToken("nipples").AddToken("canfuck");
-                                    newboobs.GetToken("nipples").AddToken("length", (float)Random.NextDouble() * intensity / 2 + 5f);
-                                    newboobs.GetToken("nipples").AddToken("thickness", (float)Random.NextDouble() * intensity / 4 + 2f);
-                                    break;
+									dickniplength = (float)Random.NextDouble() * intensity / 2 + 5f;
+									dicknipthick = (float)Random.NextDouble() * intensity / 4 + 2f;
+                                    newboobs.GetToken("nipples").AddToken("length", dickniplength);
+                                    newboobs.GetToken("nipples").AddToken("thickness", dicknipthick);
+									
+									report += i18n.GetArray("setbymeasure")[nipnum] + Descriptions.Length(dickniplength) + " [p:dicknipple:" + 
+												nipnum.ToString() + "].";
+                                    
+									break;
                                 case 1:
                                     newboobs.GetToken("nipples").AddToken("fuckable");
-                                    newboobs.GetToken("nipples").AddToken("wetness", Random.Next((int)(intensity / 2)));
-                                    newboobs.GetToken("nipples").AddToken("looseness", Random.Next((int)(intensity / 2)));
+									nipcuntwet = Random.Next((int)(intensity / 2));
+									nipcuntloose = Random.Next((int)(intensity / 2));
+                                    newboobs.GetToken("nipples").AddToken("wetness", nipcuntwet);
+                                    newboobs.GetToken("nipples").AddToken("looseness", nipcuntloose);
+
+									report += i18n.GetString("counts")[nipnum] + " " + Descriptions.GetSizeDescriptions(nipcuntloose,
+												"//lowerbody/sexorgans/vaginas/loosenesses") + " and " + Descriptions.GetSizeDescriptions(nipcuntwet,
+												"//lowerbody/sexorgans/vaginas/wetnesses") + " [p:nipplecunt:" + nipnum.ToString() + "].";
+
                                     break;
                                 case 2:
+									report += i18n.GetArray("counts")[nipnum] + " " + Descriptions.Length(nipsize) + " [p:nipple:" + nipnum.ToString() + "].";
                                     break;
                             }
+
                             this.AddToken(newboobs);
                         }
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.AddPenis:
-                        if (this.Tokens.Count(t => t.Name == "penis") < 8)
-                        {
-							var newdick = new Token("penis");
-                            newdick.AddToken("length", (float)Random.NextDouble() * intensity + 12f);
-                            newdick.AddToken("thickness", (float)Random.NextDouble() * intensity / 4 + 4f);
-                            newdick.AddToken("cumsource");
-                            this.AddToken(newdick);
-                        }
+						if (this.Tokens.Count(t => t.Name == "penis") < 8)
+						{
+							string[] dicktypes = { "human", "horse", "dragon", "cat", "dog", "bear", "lizard", "studded" };
+							var type = dicktypes[Random.Next(dicktypes.Length)];
+							var newdick = new Token("penis", 0f, type);
+							var length = (float)Random.NextDouble() * intensity + 12f;
+							var thick = (float)Random.NextDouble() * intensity / 4 + 4f;
+							newdick.AddToken("length", length);
+							newdick.AddToken("thickness", thick);
+							newdick.AddToken("cumsource");
+							report += "[Youorname] [has] grown a new " + Descriptions.Length(length) + " long, " + Descriptions.Length(thick)
+										+ " thick " + type + " " + Descriptions.CockRandom();
+							this.AddToken(newdick);
+						}
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.AddVagina:
-                        if (this.Tokens.Count(t => t.Name == "vagina") < 5)
-                        {
-                            Token newpussy;
-                            if (this.HasToken("vagina"))
-                            {
-                                newpussy = this.GetToken("vagina");
-                            }
-                            else
-                            {
-                                newpussy = new Token("vagina");
-                                newpussy.AddToken("wetness", Random.Next((int)(intensity / 2)));
-                                newpussy.AddToken("looseness", Random.Next((int)(intensity / 2)));
-                            }
-                            this.AddToken(newpussy);
-                        }
+						if (this.Tokens.Count(t => t.Name == "vagina") < 5)
+						{
+							Token newpussy = new Token("vagina");
+							newpussy.AddToken("wetness", Random.Next((int)(intensity / 2)));
+							newpussy.AddToken("looseness", Random.Next((int)(intensity / 2)));
+							this.AddToken(newpussy);
+						}
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.AddOddLegs:
-                        var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" }; 
-                        if (funkyLegs.All(x => !HasToken(x))) 
-                        { 
-                            var choice = Random.Next(funkyLegs.Length); 
-                            if (choice < funkyLegs.Length - 1)
-                                if (this.GetClosestBodyplanMatch() != "human" || funkyLegs[choice] != "quadruped")
-                                    this.AddToken(funkyLegs[choice]);
+                        var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
+						if (funkyLegs.All(x => !HasToken(x)))
+						{
+							var choice = Random.Next(funkyLegs.Length);
+							if (choice < funkyLegs.Length - 1)
+								if (this.GetClosestBodyplanMatch() != "human" || funkyLegs[choice] != "quadruped")
+									this.AddToken(funkyLegs[choice]);
 							if (choice == 2 || choice == 3)
 							{
 								this.RemoveToken("legs");
 								this.RemoveToken("tail");
+								report += choice == 2 ? "[Youorname] [has] lost [his] legs and gained a long, serpentine tail."
+													  : "[Youorname] become{s} a slime, and [his] legs melt into a blob of goo.";
 							}
+							else
+								report += choice == 0 ? "[Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear." 
+													  : "[Youorname] falls down on all fours as [his] body rearranges itself to a quadrupedal form.";
 						}
+						else if (this.HasToken("taur"))
+						{
+							this.GetToken("taur").Value = Math.Max(2, this.GetToken("taur").Value + 1);
+							report += "Another taurbody extends out behind [yourornames] " + Descriptions.ButtRandom() + " as [he] grows another pair of legs."
+						}
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.RemoveOddLegs:
-                        this.RemoveToken("taur");
-                        this.RemoveToken("quadruped");
-                        this.RemoveToken("snaketail");
-                        this.RemoveToken("slimeblob");
-                        if (!this.HasToken("legs"))
-                            this.AddToken("legs");
-                        if (!this.HasToken("hips"))
-                            this.AddToken("hips", (float)Random.NextDouble() * intensity / 4 + 2f);
-                        if (!this.HasToken("waist"))
-                            this.AddToken("waist", (float)Random.NextDouble() * intensity / 4 + 2f);
-                        if (!this.HasToken("ass"))
-                            this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
+						if ((this.HasToken("taur") && this.GetToken("taur").Value < 2) || this.HasToken("quadruped") 
+							|| this.HasToken("snaketail") || this.HasToken("slimeblob"))
+						{
+							//left out stiletto and insect, as those are meant for particular characters/species only and would look off on the wrong body
+							var legtypes = new[] { "human", "horse", "claws", "genbeast", "bear", "dog" };
+							var legnames = new[] { "human", "equine", "clawed", "digitigrade", "ursine", "digitigrade" };
+							var type = Random.Next(legtypes.Length);
+							this.RemoveToken("taur");
+							this.RemoveToken("quadruped");
+							if (!this.HasToken("legs"))
+							{
+								this.AddToken("legs", 0f, legtypes[type]);
+								if (!this.HasToken("hips"))
+									this.AddToken("hips", (float)Random.NextDouble() * intensity / 4 + 2f);
+								if (!this.HasToken("waist"))
+									this.AddToken("waist", (float)Random.NextDouble() * intensity / 4 + 2f);
+								if (!this.HasToken("ass"))
+									this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
+								if (this.HasToken("snaketail"))
+									report += "[Youorname] [has] lost [his] snaketail ";
+								else if (this.HasToken("slimeblob"))
+									report += "[Youorname] [has] solidified ";
+								report += "and gained a pair of " + legnames[type] + " legs.";
+							}
+							else
+								report += "[Yourornames] body has returned to a normal bipedal shape.";
+							this.RemoveToken("snaketail");
+							this.RemoveToken("slimeblob");
+						}
+						else if (this.HasToken("taur") && this.GetToken("taur").Value >= 2)
+						{
+							this.GetToken("taur").Value--;
+							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] " + Descriptions.ButtRandom() + ".";
+						}
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.AddBreast:
                         if (this.HasToken("breastrow"))
                         {
-							var boob = PickATit();
-                            if (boob.GetToken("amount").Value < 5)
-                                boob.GetToken("amount").Value++;
+							var boob = PickATitNum();
+                            if (this.GetBreastRowByNumber(boob).GetToken("amount").Value < 5)
+                                this.GetBreastRowByNumber(boob).GetToken("amount").Value++;
+							if (this.Tokens.Count(t => t.Name == "breastrow") > 1)
+								report += "[Youorname] [has] gained a " + i18n.GetArray("countsordinal")[(int)this.GetBreastRowByNumber(boob).GetToken("amount").Value] +
+										  " " + Descriptions.BreastRandom() + " in [his] " + i18n.GetArray("countsordinal")[boob] + " row.";
                         }
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.RemoveBreast:
                         if (this.HasToken("breastrow"))
@@ -419,8 +515,11 @@ namespace Noxico
                             var rand = Random.Next(allTits.Count);
 							var boob = allTits[rand];
                             if (boob.GetToken("amount").Value > 1)
+							{
                                 boob.GetToken("amount").Value--;
-                            else
+								report += "[Youorname] [has] lost a " + Descriptions.BreastRandom() + " from [his] " + i18n.GetArray("countsordinal")[rand] + " row.";
+                            }
+							else
                             {
                                 if (boob.HasToken("size") && allTits.Count - 1 > rand)
                                 {
@@ -428,6 +527,7 @@ namespace Noxico
                                     allTits[rand + 1].RemoveToken("sizefromprevious");
                                 }
                                 this.RemoveToken(boob);
+								report += "[Youorname] [has] lost a row of " + Descriptions.BreastRandom(true) + ".";
                             }
                             if (!this.HasToken("breastrow"))
                             {
@@ -435,17 +535,25 @@ namespace Noxico
                                 this.GetToken("breastrow").AddToken("amount", 2);
                             }
                         }
+						else
+							report += "\uE2FC";
                         break;
                     case Mutations.AddTesticle:
                         var balls = GetToken("balls");
                         if (balls != null)
                         {
                             balls.GetToken("amount").Value++;
+							report += "[Youorname] [has] gained another testicle.";
                         }
                         else
                         {
-                            this.AddToken("balls").AddToken("amount", Random.Next((int)(intensity / 4) + 1));
-                            this.GetToken("balls").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 3f);
+							var num = Random.Next((int)(intensity / 4) + 1);
+							var size = (float)Random.NextDouble() * intensity / 4 + 3f;
+                            this.AddToken("balls").AddToken("amount", num);
+                            this.GetToken("balls").AddToken("size", size);
+							report += num > 1 ? "[Youorname] [has] gained a set of " + i18n.GetArray("counts")[num] + " " + Descriptions.BallSize(this.GetToken("balls")) +
+												" balls." 
+											  : "[Youorname] has grown a single testicle.";
                         }
                         break;
                     case Mutations.RemoveTesticle:
@@ -453,60 +561,108 @@ namespace Noxico
 						{
 							this.GetToken("balls").GetToken("amount").Value--;
 							if (this.GetToken("balls").GetToken("amount").Value == 0)
+							{
 								this.RemoveToken("balls");
+								report += "[Youorname] [has] lost [his] last remaining testicle.";
+							}
+							else
+								report += "[Youorname] [has] lost one of [his] balls, bringing [him] down to only " + 
+										  i18n.GetArray("count")[(int)this.GetToken("balls").GetToken("amount").Value];
 						}
+						else
+							report += "\uE2FC";
 						break;
 					case Mutations.GiveDicknipples:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
 						{
-							var boob = PickATit();
-							while (boob.GetToken("nipples").HasToken("canfuck"))
-								boob = PickATit();
-							boob.GetToken("nipples").AddToken("canfuck");
+							var boob = PickATitNum();
+							while (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+								boob = PickATitNum();
+							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("canfuck");
+							report += "The nipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+									  " have grown out and become phallic.";
 						}
+						else
+							report += "\uE2FC";
 						break;
 					case Mutations.GiveNipplecunts:
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
 						{
-							var boob = PickATit();
-							while (boob.GetToken("nipples").HasToken("fuckable"))
-								boob = PickATit();
-							boob.GetToken("nipples").AddToken("fuckable");
+							var boob = PickATitNum();
+							while (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
+								boob = PickATitNum();
+							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("fuckable");
+							//TODO: add wetness/looseness attributes.
+							report += "The nipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+									  " have inverted and taken on a distinctly vaginal appearance."
 						}
+						else
+							report += "\uE2FC";
 						break;
 					case Mutations.AddNipple:
 						if (this.HasToken("breastrow"))
 						{
-							var boob = PickATit();
-							if (!boob.HasToken("nipples"))
-								boob.AddToken("nipples", 1);
+							var boob = PickATitNum();
+							if (!this.GetBreastRowByNumber(boob).HasToken("nipples"))
+								this.GetBreastRowByNumber(boob).AddToken("nipples", 1);
 							else
-								boob.GetToken("nipples").Value++;
+								this.GetBreastRowByNumber(boob).GetToken("nipples").Value++;
+							report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+								" have each gained another " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
+								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
 						}
+						else
+							report += "\uE2FC";
 						break;
 					case Mutations.RemoveNipple:
 						if (this.Path("breastrow/nipples") != null)
 						{
-							var boob = PickATit();
-							while (!boob.HasToken("nipples"))
-								boob = PickATit();
-							boob.GetToken("nipples").Value--;
-							if (boob.GetToken("nipples").Value == 0)
-								boob.RemoveToken("nipples");
+							var boob = PickATitNum();
+							while (!this.GetBreastRowByNumber(boob).HasToken("nipples"))
+								boob = PickATitNum();
+							this.GetBreastRowByNumber(boob).GetToken("nipples").Value--;
+							if (this.GetBreastRowByNumber(boob).GetToken("nipples").Value == 0)
+							{
+								this.GetBreastRowByNumber(boob).RemoveToken("nipples");
+								report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+										  " have lost their " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
+										  "nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunts" : "s");
+							}
+							else
+								report += "[Yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+										  " have each lost a " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
+										  "nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
 						}
+						else
+							report += "\uE2FC";
 						break;
 					case Mutations.GiveRegularNipples:
 						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
 						{
-							var boob = PickATit();
-							while (!boob.GetToken("nipples").HasToken("fuckable") && !boob.GetToken("nipples").HasToken("canfuck"))
-								boob = PickATit();
-							boob.GetToken("nipples").RemoveToken("fuckable");
-							boob.GetToken("nipples").RemoveToken("canfuck");
+							var boob = PickATitNum();
+							while (!this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") && 
+									!this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+								boob = PickATitNum();
+							if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
+							{
+								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("fuckable");
+								report += "The nipplecunts on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+										  " have become normal nipples.";
+							}
+							else
+							{
+								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("canfuck");
+								report += "The dicknipples on [yourornames] " + i18n.GetArray("countsordinal")[boob] + " row of " + Descriptions.BreastRandom(true) +
+										  " have become normal nipples.";
+							}
 						}
+						else
+							report += "\uE2FC";
 						break;
                 }
+				reports.Add(report);
             }
+			return reports;
         }
 
         public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
