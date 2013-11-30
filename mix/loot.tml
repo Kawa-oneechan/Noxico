@@ -12,7 +12,7 @@
 lootset
 	target: container
 	type: dungeon_chest
--- Contains: ONE small weapon, large weapon, or rare weapon, TWO to FIVE food items, and ONE to THREE potions, NO to TWO dyes, all random.
+-- Contains: ONE small weapon, large weapon, or rare weapon, TWO to FIVE food items, and ONE to THREE potions, NO to TWO dyes, MAYBE ONE book, all random.
 	oneof: 
 		@smallweapon
 		@largeweapon
@@ -23,6 +23,8 @@ lootset
 		@potion
 	someof: 0-2
 		dye
+	someof: 0-1
+		book
 
 -- #region Wardrobes
 lootset

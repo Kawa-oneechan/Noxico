@@ -192,6 +192,7 @@ namespace Noxico
 			var caveFloor = Color.FromArgb(65, 66, 87);
 			var wall = Color.FromArgb(20, 15, 12);
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
+			allowCaveFloor = false;
 
 			var cornerJunctions = new List<Point>();
 			var doorCount = 0;
@@ -333,7 +334,7 @@ namespace Noxico
 											{
 												var newBed = new Clutter()
 												{
-													AsciiChar = '\x147',
+													AsciiChar = 0x147,
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",
