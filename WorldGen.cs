@@ -276,7 +276,7 @@ namespace Noxico
 			var treasure = DungeonGenerator.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
-				AsciiChar = (char)0x00C6,
+				AsciiChar = 0x14A,
 				XPosition = treasureX,
 				YPosition = treasureY,
 				ForegroundColor = Color.FromName("SaddleBrown"),
@@ -418,6 +418,8 @@ namespace Noxico
 							var newPoss = new Token(knownItem.ID);
 							if (knownItem.HasToken("colored"))
 								newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
+							if (knownItem.ID == "book")
+								newPoss.AddToken("id", Random.Next(NoxicoGame.BookTitles.Count));
 							possibilities.Add(newPoss);
 						}
 					}

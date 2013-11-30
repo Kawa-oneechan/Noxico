@@ -15,7 +15,7 @@ namespace Noxico
 		{
 			public string MixFile, Filename;
 			public int Offset, Length;
-			public bool NeedsPremultiply;
+			//public bool NeedsPremultiply;
 			public bool IsCompressed;
 		}
 

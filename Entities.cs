@@ -477,9 +477,9 @@ namespace Noxico
 			if (!dirInited)
 				FindDirection();
 			if (closed)
-				AsciiChar = horizontal ? '\x152' : '\x154';
+				AsciiChar = horizontal ? 0x152 : 0x154;
 			else
-				AsciiChar = horizontal ? '\x153' : '\x155';
+				AsciiChar = horizontal ? 0x153 : 0x155;
 			base.Draw();
 		}
 
