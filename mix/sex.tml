@@ -8,13 +8,24 @@ choice: climax
 		not: 0 vagina
 	effects
 		stat: 0 climax -100
-		message
-			first
-				$: You cry out as you come all over [b:name].
-			second
-				$: [t:Youorname] cries out as [t:he] comes all over you.
-			third
-				$: [t:Youorname] cries out as [t:he] comes all over [b:him].
+		has: 0 havingsex/givingvaginal
+			true
+				message
+					first
+						$: You cry out as you come deep inside [b:name]'s [pussyrand].
+					second
+						$: [t:Youorname] cries out as [t:he] comes deep inside your [pussyrand].
+					third
+						$: [t:Youorname] cries out as [t:he] comes deep inside [b:yourornames] [pussyrand].
+				fertilize: 1
+			false
+				message
+					first
+						$: You cry out as you come all over [b:name].
+					second
+						$: [t:Youorname] cries out as [t:he] comes all over you.
+					third
+						$: [t:Youorname] cries out as [t:he] comes all over [b:him].
 
 -- Female variant
 choice: climax
@@ -310,3 +321,52 @@ choice: take_off_bottom_theirs
 						$: You reach for [b:name]'s [3] but can't take it off.
 					second
 						$: [t:Youorname] reaches for your [3] but can't take it off.
+
+choice: jam_it_in
+	_n: J-J-J-JAM IT IN!!
+	fromhere
+		continue_fucking
+		french_kiss
+	limitations
+		canreach: 0 crotch
+		canreach: 1 crotch
+		yes: 0 penis
+		yes: 1 vagina
+		not: 0 havingsex/givingvaginal
+		not: 1 havingsex/receivingvaginal
+	effects
+		add: 0 givingvaginal
+		add: 1 receivingvaginal
+		stat: 0 climax 10
+		stat: 1 climax 10
+		has: 1 vagina/virgin
+			true
+				message
+					first
+						$: Virginity taken here.
+		message
+			first
+				$: You insert your tab A into [b:yourornames] slot B.
+			second:
+				$: [t:Youorname] inserts [t:his] tab A into [t:yourornames] slot B.
+
+choice: continue_fucking
+	_n: unf
+	fromhere
+		continue_fucking
+		french_kiss
+	limitations
+		canreach: 0 crotch
+		canreach: 1 crotch
+		yes: 0 penis
+		yes: 1 vagina
+		yes: 0 havingsex/givingvaginal
+		yes: 1 havingsex/receivingvaginal
+	effects
+		stat: 0 climax 5
+		stat: 1 climax 5
+		message
+			first
+				$: You continue pumping.
+			second:
+				$: [t:Youorname] continues pumping.

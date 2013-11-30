@@ -150,6 +150,15 @@ namespace Noxico
 					if (tits.Average() < 0.2)
 						return false;
 				}
+				else if (limit.Name == "canreach")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var item = check[1];
+					if (item == "breasts" && !t.CanReachBreasts())
+						return false;
+					if (item == "crotch" && !t.CanReachCrotch())
+						return false;
+				}
 				//TODO: add capacity checks
 			}
 
@@ -257,6 +266,14 @@ namespace Noxico
 					message = i18n.Viewpoint(ApplyMemory(message), actor.Character, target.Character);
 					writer(message);
 				}
+				else if (effect.Name == "has")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					if (t.Path(check[1]) != null)
+						Apply(effect.GetToken("true"), actor, target, writer);
+					else if (effect.HasToken("false"))
+						Apply(effect.GetToken("false"), actor, target, writer);
+				}
 				else if (effect.Name == "roll")
 				{
 					float a, b;
@@ -316,6 +333,10 @@ namespace Noxico
 						else if (effect.HasToken("failure"))
 							Apply(effect.GetToken("failure"), actor, target, writer);
 					}
+				}
+				else
+				{
+					Program.WriteLine("** Unknown sex effect {0}.", effect.Name);
 				}
 			}
 		}
