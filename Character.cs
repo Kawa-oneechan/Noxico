@@ -3306,7 +3306,7 @@ namespace Noxico
 						AddToken(token);
 					var items = this.GetToken("items");
 					var toRemove = new List<Token>(); //can't delete in a foreach
-					foreach (var token in items.Tokens.Where(x => x.HasToken("equipped")))
+					foreach (var token in items.Tokens.Where(x => x.HasToken("disguise")))
 						toRemove.Add(token);
 					foreach (var token in toRemove)
 						items.RemoveToken(token);
@@ -3345,6 +3345,7 @@ namespace Noxico
 					foreach (var token in source.GetToken("items").Tokens.Where(x => x.HasToken("equipped")))
 					{
 						var newToken = items.AddToken(token.Clone());
+						newToken.AddToken("disguise");
 						var cursed = newToken.GetToken("cursed");
 						if (cursed == null)
 							cursed = newToken.AddToken("cursed");
@@ -3362,7 +3363,7 @@ namespace Noxico
 						AddToken(token);
 				}
 				copier.Value = 1;
-				copier.AddToken("timeout", 5 * (full ? 1 : 3), NoxicoGame.InGameTime.Minute.ToString());
+				copier.AddToken("timeout", 5 * (full ? 1 : 3)).AddToken("minute", NoxicoGame.InGameTime.Minute);
 			}
 		}
 

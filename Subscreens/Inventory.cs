@@ -162,6 +162,7 @@ namespace Noxico
 					var info = item.GetModifiers(carriedItem);
 					sigils.AddRange(info.Select(x => "\uE300" + x));
 
+					/* Removed -- should be replaced with less cursy words.
 #if DEBUG
 					if (carried.HasToken("cursed"))
 						sigils.Add(carried.GetToken("cursed").HasToken("known") ? "cursed" : carried.GetToken("cursed").HasToken("hidden") ? "(cursed)" : "cursed!");
@@ -169,6 +170,8 @@ namespace Noxico
 					if (carried.HasToken("cursed") && !carried.GetToken("cursed").HasToken("hidden") && carried.GetToken("cursed").HasToken("known"))
 						sigils.Add("cursed");
 #endif
+					*/
+
 					var itemString = item.ToString(carried, false, false);
 					if (itemString.Length > 40)
 						itemString = itemString.Disemvowel();

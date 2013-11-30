@@ -267,10 +267,10 @@ Number of known items       {2}
 		<word id="eternitybrooched">The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...</word>
 		<word id="youmelt">Your sexual distinctions melt into your blob.</word>
 		<word id="yourevert">You revert to your true form.</word>
-		<word id="x_reverts">[Youorname] revert{{s}} to [b:his] true form.</word>
-		<word id="x_imitatesyou">[Youorname] {{copies|copy}} [b:his] sexual distinctions.</word>
-		<word id="x_imitates_y">[Youorname] {{copies|copy}} [b:name]'s sexual distinctions.</word>
-		<word id="x_becomes_y">[Youorname] become{{s}} another [b:youorname].</word>
+		<word id="x_reverts">[t:Youorname] revert{{s}} to [b:yourornames] true form.</word>
+		<word id="x_imitatesyou">[t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.</word>
+		<word id="x_imitates_y">[t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.</word>
+		<word id="x_becomes_y">[t:Youorname] become{{s}} another [b:youorname].</word>
 		<word id="you_bear1stchild">
 			<![CDATA[You have given birth to little {0}.
 		
@@ -307,6 +307,8 @@ Do you want to find out?]]>
 		<word id="x_unequiped_y">[Youorname] unequip{{s}} {0}.</word>
 		<word id="x_dropped_y_inthewater">[Youorname] drop{{s}} {0} in the water!</word>
 		<word id="x_dropped_y_inthedepths">[Youorname] drop{{s}} {0} in the depths!</word>
+
+		<word id="item_changeling_disguise">This is part of your changeling disguise.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
