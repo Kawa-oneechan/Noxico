@@ -3395,6 +3395,28 @@ namespace Noxico
 				return (Path("skin/type").Text == "slime");
 			}
 		}
+
+		public bool CanReachBreasts()
+		{
+			var undershirt = GetEquippedItemBySlot("undershirt");
+			var shirt = GetEquippedItemBySlot("shirt");
+			var jacket = GetEquippedItemBySlot("jacket");
+			var cloak = GetEquippedItemBySlot("cloak");
+			return ((cloak == null || cloak.CanReachThrough()) &&
+				(jacket == null || jacket.CanReachThrough()) &&
+				(shirt == null || shirt.CanReachThrough()) &&
+				(undershirt == null || undershirt.CanReachThrough()));
+		}
+
+		public bool CanReachCrotch()
+		{
+			var underpants = GetEquippedItemBySlot("underpants");
+			var pants = GetEquippedItemBySlot("pants");
+			var socks = GetEquippedItemBySlot("socks");
+			return ((pants == null || pants.CanReachThrough()) &&
+				(underpants == null || underpants.CanReachThrough()) &&
+				(socks == null || socks.CanReachThrough()));
+		}
 	}
 
 	public class Name
