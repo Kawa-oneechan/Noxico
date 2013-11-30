@@ -297,7 +297,8 @@ namespace Noxico
 								case "copy":
 									player.Character.Copy(((BoardChar)PointingAt).Character);
 									player.AdjustView();
-									NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "youbecome_x", ((BoardChar)PointingAt).Character.GetKnownName(false, false, true)));
+									//NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "become_x", ((BoardChar)PointingAt).Character.GetKnownName(false, false, true)));
+									NoxicoGame.AddMessage(i18n.Format(player.Character.Path("copier/full") != null ? "x_becomes_y" : "x_imitates_y").Viewpoint(player.Character, ((BoardChar)PointingAt).Character));
 									player.Energy -= 2000;
 									break;
 

@@ -373,9 +373,11 @@ namespace Noxico
 				var timeout = copier.GetToken("timeout");
 				if (timeout != null && timeout.Value > 0)
 				{
-					if (int.Parse(timeout.Text) == NoxicoGame.InGameTime.Minute)
+					if (!timeout.HasToken("minute"))
+						timeout.AddToken("minute", NoxicoGame.InGameTime.Minute);
+					if (timeout.GetToken("minute").Value == NoxicoGame.InGameTime.Minute)
 						return;
-					timeout.Text = NoxicoGame.InGameTime.Minute.ToString();
+					timeout.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
 					timeout.Value--;
 					if (timeout.Value == 0)
 					{
