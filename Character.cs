@@ -547,7 +547,7 @@ namespace Noxico
                         }
                         else
                         {
-							var num = Random.Next((int)(intensity / 4) + 1);
+							var num = Random.Next((int)(intensity / 4)) + 1;
 							var size = (float)Random.NextDouble() * intensity / 4 + 3f;
                             this.AddToken("balls").AddToken("amount", num);
                             this.GetToken("balls").AddToken("size", size);
@@ -560,7 +560,7 @@ namespace Noxico
 						if (this.HasToken("balls"))
 						{
 							this.GetToken("balls").GetToken("amount").Value--;
-							if (this.GetToken("balls").GetToken("amount").Value == 0)
+							if (this.GetToken("balls").GetToken("amount").Value <= 0)
 							{
 								this.RemoveToken("balls");
 								report += "[Youorname] [has] lost [his] last remaining testicle.";
