@@ -276,11 +276,14 @@ namespace Noxico
 				throw new ItemException(i18n.Format("cannot_equip_no_legs", this.ToString(item, true, false)));
 
 			//lol
-			if (equip.HasToken("socks"))
+			foreach (var nonLayeredSlot in new[] { "socks", "hat", "mask", "goggles", "neck" })
 			{
-				var currentSocks = character.GetEquippedItemBySlot("socks");
-				if (currentSocks != null)
-					currentSocks.Unequip(character, currentSocks.tempToken);
+				if (equip.HasToken(nonLayeredSlot))
+				{
+					var currentNonLayeredItem = character.GetEquippedItemBySlot(nonLayeredSlot);
+					if (currentNonLayeredItem != null)
+						currentNonLayeredItem.Unequip(character, currentNonLayeredItem.tempToken);
+				}
 			}
 
 			foreach (var t in equip.Tokens)

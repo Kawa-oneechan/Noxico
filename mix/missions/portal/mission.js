@@ -38,7 +38,7 @@ if (realm == Realms.Nox)
 	portalE.ParentBoard = myBoard;
 	myBoard.DumpToHtml("portal1");
 	
-	MakeBoardTarget(myBoard); //<-- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
+	//MakeBoardTarget(myBoard); //<-- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
 }
 else
 {
@@ -67,7 +67,7 @@ else
 	otherPortalC.AddToken("otherSide", myBoard.BoardNum);
 	portalC.AddToken("otherSide", otherBoard.BoardNum);
 
-	MakeBoardTarget(myBoard); //<-- ALSO DEBUG!
+	//MakeBoardTarget(myBoard); //<-- ALSO DEBUG!
 }
 
 /*
