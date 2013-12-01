@@ -356,6 +356,11 @@ namespace Noxico
 													type = "wardrobe";
 												}
 												var contents = DungeonGenerator.GetRandomLoot("container", type, new Dictionary<string, string>() { { "gender", owner.PreferredGender.ToString().ToLowerInvariant() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
+												if (owner != null)
+												{
+													foreach (var content in contents)
+														content.AddToken("owner", 0, owner.ID);
+												}	
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
 													AsciiChar = m.Params.Last()[0],

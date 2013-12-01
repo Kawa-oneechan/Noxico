@@ -739,6 +739,21 @@ namespace Noxico
 						Character.Path("ships").Tokens.Add(relation);
 					}
 					relation.AddToken("killer");
+					if (aggressor.Character.HasToken("stolenfrom"))
+					{
+						var myItems = Character.GetToken("items").Tokens;
+						var hisItems = aggressor.Character.GetToken("items").Tokens;
+						var stolenGoods = myItems.Where(t => t.HasToken("owner") && t.GetToken("owner").Text == aggressor.Character.ID).ToList();
+						foreach (var item in stolenGoods)
+						{
+							hisItems.Add(item);
+							myItems.Remove(item);
+						}
+						aggressor.Character.RemoveToken("stolenfrom");
+						aggressor.Character.RemoveToken("hostile");
+						if (!aggressor.Character.HasToken("wasstolenfrom"))
+							aggressor.Character.AddToken("wasstolenfrom");
+					}
 				}
 
 				if (Lives == 0)
