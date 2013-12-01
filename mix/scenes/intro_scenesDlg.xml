@@ -77,7 +77,6 @@
 		<p>
 			As you stand there admiring the scenery, you hear the sound of quiet footsteps to your left and turn to find one of the most peculiar creatures you've ever seen standing barely an arm's length away.
 		</p>
-		<action name="new game placeholder tutorial" />
 		<action name="new game start 2"/>
 	</scene>
 	<scene id="NewGameIntro_Start2" name="new game start 2">
