@@ -280,6 +280,8 @@ namespace Noxico
 			newChar.StripInvalidItems();
 			newChar.UpdateTitle();
 			newChar.ApplyCostume();
+			foreach (var item in newChar.GetToken("items").Tokens)
+				item.AddToken("owner", 0, newChar.ID);
 
 			newChar.Culture = Culture.DefaultCulture;
 			if (newChar.HasToken("culture"))
@@ -751,6 +753,8 @@ namespace Noxico
             newChar.EnsureDefaultTokens();
             newChar.UpdateTitle();
             newChar.ApplyCostume();
+			foreach (var item in newChar.GetToken("items").Tokens)
+				item.AddToken("owner", 0, newChar.ID);
 
 			newChar.Culture = Culture.DefaultCulture;
 			if (newChar.HasToken("culture"))
@@ -787,7 +791,7 @@ namespace Noxico
 				newChar.RemoveToken(either);
             }
 
-			List<Token> removethese = new List<Token>();
+			var removeThese = new List<Token>();
 
 			foreach (Token token in newChar.Tokens)
 			{
@@ -797,15 +801,13 @@ namespace Noxico
 					if (value == 0.0f)
 						value = 0.5f;
 					if (Random.NextDouble() >= value)
-						removethese.Add(token);
+						removeThese.Add(token);
 					token.RemoveToken("_maybe");
 				}
 			}
 
-			foreach (Token token in removethese)
-			{
+			foreach (Token token in removeThese)
 				newChar.RemoveToken(token);
-			}
 
 			while (newChar.HasToken("_copy"))
 			{
@@ -897,6 +899,8 @@ namespace Noxico
 				newChar.RemoveToken(either);
 			}
 
+			var removeThese = new List<Token>();
+
 			foreach (Token token in newChar.Tokens)
 			{
 				if (token.HasToken("_maybe"))
@@ -905,10 +909,14 @@ namespace Noxico
 					if (value == 0.0f)
 						value = 0.5f;
 					if (Random.NextDouble() >= value)
-						newChar.RemoveToken(token);
+						removeThese.Add(token);
 					token.RemoveToken("_maybe");
 				}
 			}
+
+			foreach (Token token in removeThese)
+				newChar.RemoveToken(token);
+
 			while (newChar.HasToken("_copy"))
 			{
 				string path = newChar.GetToken("_copy").Text;

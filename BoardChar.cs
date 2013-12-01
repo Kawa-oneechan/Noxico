@@ -136,7 +136,7 @@ namespace Noxico
 			var canMove = base.CanMove(targetDirection, check);
 			if (canMove != null && canMove is bool && !(bool)canMove)
 				return canMove;
-			if (!ScriptPathing && (Character.HasToken("sectorlock") || Character.HasToken("sectoravoid")))
+			if (!Character.HasToken("hostile") && !ScriptPathing && (Character.HasToken("sectorlock") || Character.HasToken("sectoravoid")))
 			{
 				if (!ParentBoard.Sectors.ContainsKey(Sector))
 					return canMove;
@@ -475,7 +475,7 @@ namespace Noxico
 		private void ActuallyMove()
 		{
 			var solidity = SolidityCheck.Walker;
-			if (Character.IsSlime)
+			//if (Character.IsSlime)
 				solidity = SolidityCheck.DryWalker;
 			if (Character.HasToken("flying"))
 				solidity = SolidityCheck.Flyer;
@@ -596,12 +596,19 @@ namespace Noxico
 			if (hostile == null)
 				return;
 
-			BoardChar target = null;
+			Entity target = null;
 			//If no target is given, assume the player.
 			if (Character.HasToken("huntingtarget"))
 				target = ParentBoard.Entities.OfType<BoardChar>().First(x => x.ID == Character.GetToken("huntingtarget").Text);
 			else if (!ally && NoxicoGame.HostForm.Noxico.Player.ParentBoard == this.ParentBoard)
 				target = NoxicoGame.HostForm.Noxico.Player;
+
+			if (Character.HasToken("stolenfrom"))
+			{
+				var newTarget = ParentBoard.Entities.OfType<DroppedItem>().FirstOrDefault(x => x.Token.HasToken("owner") && x.Token.GetToken("owner").Text == Character.ID);
+				if (newTarget != null)
+					target = newTarget;
+			}
 
 			if (target == null)
 			{
@@ -611,6 +618,10 @@ namespace Noxico
 			}
 
 			var distance = DistanceFrom(target);
+
+			if (target is BoardChar)
+			{
+
 			//var weapon = Character.CanShoot();
 			var weapon = this.Character.GetEquippedItemBySlot("hand");
 			if (weapon != null && !weapon.HasToken("weapon"))
@@ -679,27 +690,42 @@ namespace Noxico
 				}
 			}
 
-			if (distance <= range && CanSee(target))
+				var bcTarget = target as BoardChar;
+				if (distance <= range && CanSee(bcTarget))
+				{
+					//Within attacking range.
+					if (bcTarget.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && distance == 1)
+					{
+						//WRONG KIND OF ATTACK! ABANDON SHIP!!
+						Character.AddToken("waitforplayer");
+						SexManager.Engage(this, bcTarget);
+						return;
+					}
+					if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
+					{
+						//Melee attacks can only be orthogonal.
+						MeleeAttack(bcTarget);
+						if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
+							bcTarget.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
+						return;
+					}
+					else if (weapon != null)
+					{
+						AimShot(target);
+					}
+				}
+			}
+			else if (target is DroppedItem)
 			{
-				//Within attacking range.
-				if (target.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && distance == 1)
+				var diTarget = target as DroppedItem;
+				if (distance <= 1 && CanSee(diTarget))
 				{
-					//WRONG KIND OF ATTACK! ABANDON SHIP!!
-					Character.AddToken("waitforplayer");
-					SexManager.Engage(this, target);
+					diTarget.Take(this.Character);
+					this.Character.GetToken("stolenfrom").Name = "wasstolenfrom";
+					this.Character.RemoveToken("hostile");
+					this.Energy -= 1000;
+					ParentBoard.Redraw();
 					return;
-				}
-				if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
-				{
-					//Melee attacks can only be orthogonal.
-					MeleeAttack(target);
-					if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
-						target.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
-					return;
-				}
-				else if (weapon != null)
-				{
-					AimShot(target);
 				}
 			}
 
@@ -1010,24 +1036,12 @@ namespace Noxico
 				//corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
 			}
 			corpse.Token.AddToken("corpse");
-			corpse.Token.GetToken("contents").AddSet(Character.GetToken("items").Tokens);
-
-			/*
-			//Scatter belongings, if any -- BUT NOT FOR THE PLAYER so the infodump'll have items to list (thanks jAvel!)
-			var items = Character.GetToken("items");
-			if (items != null && items.Tokens.Count > 0 && !(this is Player))
+			if (!(this is Player))
 			{
-				while (items.Tokens.Count > 0)
-				{
-					var itemToken = items.Tokens[0];
-					var knownItem = NoxicoGame.KnownItems.First(i => i.ID == itemToken.Name);
-					if (knownItem == null)
-						continue;
-					itemToken.RemoveToken("equipped");
-					knownItem.Drop(this, itemToken);
-				}
+				foreach (var item in Character.GetToken("items").Tokens)
+					item.RemoveToken("owner");
+				corpse.Token.GetToken("contents").AddSet(Character.GetToken("items").Tokens);
 			}
-			*/
 
 			ParentBoard.EntitiesToRemove.Add(this);
 			ParentBoard.EntitiesToAdd.Add(corpse);

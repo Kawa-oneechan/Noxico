@@ -749,10 +749,8 @@ namespace Noxico
 							hisItems.Add(item);
 							myItems.Remove(item);
 						}
-						aggressor.Character.RemoveToken("stolenfrom");
+						aggressor.Character.GetToken("stolenfrom").Name = "wasstolenfrom";
 						aggressor.Character.RemoveToken("hostile");
-						if (!aggressor.Character.HasToken("wasstolenfrom"))
-							aggressor.Character.AddToken("wasstolenfrom");
 					}
 				}
 
