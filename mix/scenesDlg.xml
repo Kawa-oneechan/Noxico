@@ -66,8 +66,12 @@
 			"Stop right there, criminal scum!"
 		</p>
 		<script type="text/javascript">
-			bottom.AddToken("stolenfrom");
-			bottom.AddToken("hostile");
+		<![CDATA[
+			if (!bottom.HasToken("stolenfrom"))
+				bottom.AddToken("stolenfrom");
+			if (!bottom.HasToken("hostile"))
+				bottom.AddToken("hostile");
+		]]>
 		</script>
 	</scene>
 

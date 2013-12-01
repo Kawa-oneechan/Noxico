@@ -669,8 +669,8 @@ namespace Noxico
 				this.Player.Character.AddToken("homeboard", homeBase.BoardNum);
 				this.Player.Character.AddToken("homeboardlevel", 0);
 				this.Player.Lives = 2;
-				this.Player.Character.Health = this.Player.Character.MaximumHealth;
 				this.Player.Respawn();
+				this.Player.Character.Health = this.Player.Character.MaximumHealth;
 			}
 
 			Directory.CreateDirectory(Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName));
@@ -985,6 +985,9 @@ namespace Noxico
 			Board.HackishBoardTypeThing = "wild";
 			var pc = Character.Generate(bodyplan, bioGender, idGender);
 			this.Player = new Player(pc);
+
+			foreach (var item in pc.GetToken("items").Tokens)
+				item.RemoveToken("owner");
 
 			pc.IsProperNamed = true;
 			if (!string.IsNullOrWhiteSpace(name))
