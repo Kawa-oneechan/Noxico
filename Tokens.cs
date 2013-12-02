@@ -361,6 +361,12 @@ namespace Noxico
 			Value = value;
 		}
 
+		public Token(string name, string text)
+		{
+			Name = name;
+			Text = text;
+		}
+
 		public Token(string name, float value, string text)
 		{
 			Name = name;
@@ -460,5 +466,21 @@ namespace Noxico
 			return t;
 		}
 
+		public bool Equals(Token t, bool deep = true)
+		{
+			if (t.Name == this.Name && t.Value == this.Value && t.Text == this.Text)
+			{
+				if (deep)
+				{
+					if (t.Tokens.Count != this.Tokens.Count)
+						return false; //quick cut-off!
+					for (var i = 0; i < this.Tokens.Count; i++)
+						if (!this.Tokens[i].Equals(t.Tokens[i]))
+							return false; //at least one of the child tokens doesn't match.
+				}
+				return true;
+			}
+			return false;
+		}
 	}
 }
