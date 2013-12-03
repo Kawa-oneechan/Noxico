@@ -264,10 +264,7 @@ namespace Noxico
 				}
 				else if (effect.Name == "message")
 				{
-					var source = effect.GetToken((actor is Player) ? "first" : (target is Player) ? "second" : "third");
-					if (source == null)
-						continue;
-					var message = source.Tokens[Random.Next(source.Tokens.Count)].Text;
+					var message = effect.Tokens[Random.Next(effect.Tokens.Count)].Text;
 					message = i18n.Viewpoint(ApplyMemory(message), actor.Character, target.Character);
 					writer(message);
 				}
@@ -356,6 +353,8 @@ namespace Noxico
 
 		private static string ApplyMemory(string text)
 		{
+			if (string.IsNullOrWhiteSpace(text))
+				return string.Empty;
 			for (var i = 0; i < memory.Length; i++)
 				text = text.Replace("[" + i + "]", memory[i] ?? string.Empty);
 			return text;

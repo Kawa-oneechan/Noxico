@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public class Change : TokenCarrier
 	{
-		public List<bool> apply(Character target)
+		public List<bool> Apply(Character target)
 		{
 			List<bool> returns = new List<bool>();
 			foreach (Token change in this.Tokens)
