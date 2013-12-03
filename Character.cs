@@ -243,6 +243,15 @@ namespace Noxico
 		{
 		}
 
+		public void fixBoobs()
+		{
+			if (this.Tokens.Count(t => t.Name == "breastrow") == 0)
+			{
+				this.AddToken("breastrow").AddToken("amount", 2);
+				this.GetToken("breastrow").AddToken("size", 0);
+			}
+		}
+
 		public static Character GetUnique(string id)
 		{
 			var uniques = Mix.GetTokenTree("uniques.tml", true);
