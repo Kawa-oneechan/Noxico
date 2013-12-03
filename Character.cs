@@ -243,12 +243,13 @@ namespace Noxico
 		{
 		}
 
-		public void fixBoobs()
+		public void FixBoobs()
 		{
-			if (this.Tokens.Count(t => t.Name == "breastrow") == 0)
+			if (!this.HasToken("breastrow"))
 			{
-				this.AddToken("breastrow").AddToken("amount", 2);
-				this.GetToken("breastrow").AddToken("size", 0);
+				var breastRow = this.AddToken("breastrow");
+				breastRow.AddToken("amount", 2);
+				breastRow.AddToken("size", 0);
 			}
 		}
 
