@@ -1917,19 +1917,7 @@ namespace Noxico
 					var originalname = find.ToString(carriedItem, false, false);
 					if (HasToken("quadruped") || HasToken("taur"))
 					{
-						//Rip it apart!
-						var slot = "pants";
-						if (equip.HasToken("pants") && equip.HasToken("shirt"))
-							slot = "over";
-						else if (equip.HasToken("underpants"))
-						{
-							slot = "underpants";
-							if (equip.HasToken("undershirt"))
-								slot = "under";
-						}
-						carriedItem.Name = "tatteredshreds_" + slot;
-						carriedItem.Tokens.Clear();
-
+						InventoryItem.TearApart(find, carriedItem);
 						doReport(string.Format("[Youorname] [has] torn out of [his] {0}!", originalname).Viewpoint(this));
 					}
 					else

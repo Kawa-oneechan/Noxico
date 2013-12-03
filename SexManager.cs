@@ -73,6 +73,11 @@ namespace Noxico
 					if (actors[1].Character.HasToken("helpless"))
 						return false;
 				}
+				else if (limit.Name == "nonconsentual")
+				{
+					if (!actors[1].Character.HasToken("helpless"))
+						return false;
+				}
 				else if (limit.Name == "masturbating")
 				{
 					if (actors[0] != actors[1])
@@ -327,11 +332,19 @@ namespace Noxico
 					}
 					if (cloth != null)
 					{
-						var success = cloth.Unequip(t, cloth.tempToken);
-						if (success && effect.HasToken("success"))
+						if (check.Length > 2 && check[2] == "tear")
+						{
+							InventoryItem.TearApart(cloth, t.GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
 							Apply(effect.GetToken("success"), actor, target, writer);
-						else if (effect.HasToken("failure"))
-							Apply(effect.GetToken("failure"), actor, target, writer);
+						}
+						else
+						{
+							var success = cloth.Unequip(t, cloth.tempToken);
+							if (success && effect.HasToken("success"))
+								Apply(effect.GetToken("success"), actor, target, writer);
+							else if (effect.HasToken("failure"))
+								Apply(effect.GetToken("failure"), actor, target, writer);
+						}
 					}
 				}
 				else

@@ -74,12 +74,6 @@ choice: walk_away
 		break
 
 choice: cuddle
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top
-		take_off_bottom
 	limitations
 		consentual
 		not: 0 havingsex/restrained
@@ -98,35 +92,62 @@ choice: cuddle
 				$: [t:Youorname] cuddles up to [b:name].
 
 choice: pin_down
-	fromhere
-		kiss
-		french_kiss
-		release
 	limitations
 		not: 0 havingsex/restrained
 		not: 0 havingsex/restraining
 		not: 1 havingsex/restrained
 		not: 1 havingsex/restraining
+		not: 0 snaketail
 	effects
-		add: 0 restraining
-		add: 1 restrained
-		message
-			first
-				$: You grab [b:name]'s arms and hold them tightly in place.
-			second
-				$: [t:Youorname] grabs your arms and holds tight.
-			third
-				$: [t:Youorname] grabs [b:name]'s arms and holds tight.
+		has: 1 skin/type[=slime]
+			true
+				message
+					first
+						$: You try to grab [b:name]'s arms, but can't get a good grip on [b:him].
+					second
+						$: [t:Youorname] {tries|try} to grab you, but can't get a good grip on your slimy body.
+					third:
+						$: [t:Youorname] {tries|try} to grab [b:youorname], but can't get a grip on [b:your] slimy body.
+			false
+				add: 0 restraining
+				add: 1 restrained
+				message
+					first
+						$: You grab [b:name]'s arms and hold them tightly in place.
+					second
+						$: [t:Youorname] grabs your arms and holds tight.
+					third
+						$: [t:Youorname] grabs [b:name]'s arms and holds tight.
+
+choice: wrap_up
+	limitations
+		not: 0 havingsex/restrained
+		not: 0 havingsex/restraining
+		not: 1 havingsex/restrained
+		not: 1 havingsex/restraining
+		yes: 0 snaketail
+	effects
+		has: 1 skin/type[=slime]
+			true
+				message
+					first
+						$: You try to coil your tail around [b:name], [b:he] easily slips through.
+					second
+						$: [t:Youorname] {tries|try} to coil [t:his] tail around you, but your slimy body easily squishes through.
+					third:
+						$: [t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.
+			false
+				add: 0 restraining
+				add: 1 restrained
+				message
+					first
+						$: You coil your tail around [b:name]'s body and hold [b:him] tightly in place.
+					second
+						$: [t:Youorname] coils [t:his] tail tightly around your body.
+					third
+						$: [t:Youorname] coils around [b:name]'s body and holds [b:him] tight.
 
 choice: release
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		yes: 0 havingsex/restraining
 		yes: 1 havingsex/restrained
@@ -140,14 +161,6 @@ choice: release
 				$: [t:Youorname] releases [t:his] grip.
 
 choice: struggle
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		yes: 0 havingsex/restrained
 		yes: 1 havingsex/restraining
@@ -171,14 +184,6 @@ choice: struggle
 						$: [t:Youorname] manages to struggle free from [b:name]'s grasp.
 
 choice: kiss
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		consentual
 	effects
@@ -191,14 +196,6 @@ choice: kiss
 				$: ~kissu~
 
 choice: french_kiss
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		consentual
 	effects
@@ -212,14 +209,6 @@ choice: french_kiss
 
 choice: take_off_top_own
 	_n: Take off your [0]
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		clothing: 0 top 0
 		not: 0 havingsex/restrained
@@ -240,14 +229,6 @@ choice: take_off_top_own
 
 choice: take_off_top_theirs
 	_n: Take off [b:his] [1]
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		clothing: 1 top 1
 		not: 0 havingsex/restrained
@@ -268,14 +249,6 @@ choice: take_off_top_theirs
 
 choice: take_off_bottom_own
 	_n: Take off your [2]
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		clothing: 0 bottom 2
 		not: 0 havingsex/restrained
@@ -296,14 +269,6 @@ choice: take_off_bottom_own
 
 choice: take_off_bottom_theirs
 	_n: Take off [b:his] [3]
-	fromhere
-		kiss
-		french_kiss
-		pin_down
-		take_off_top_own
-		take_off_top_theirs
-		take_off_bottom_own
-		take_off_bottom_theirs
 	limitations
 		clothing: 1 bottom 3
 		not: 0 havingsex/restrained
@@ -322,11 +287,29 @@ choice: take_off_bottom_theirs
 					second
 						$: [t:Youorname] reaches for your [3] but can't take it off.
 
+choice: tear_off_bottom_theirs
+	_n: Tear off [b:his] [3]
+	limitations
+		nonconsentual
+		clothing: 1 bottom 3
+		not: 0 havingsex/restrained
+	effects
+		disrobe: 1 bottom tear
+			success
+				message
+					first
+						$: You reach for [b:name]'s [3] and take it off.
+					second
+						$: [t:Youorname] reaches for your [3] and takes it off.
+			failure
+				message
+					first
+						$: You reach for [b:name]'s [3] but can't take it off.
+					second
+						$: [t:Youorname] reaches for your [3] but can't take it off.
+
 choice: jam_it_in
 	_n: J-J-J-JAM IT IN!!
-	fromhere
-		continue_fucking
-		french_kiss
 	limitations
 		canreach: 0 crotch
 		canreach: 1 crotch
@@ -352,9 +335,6 @@ choice: jam_it_in
 
 choice: continue_fucking
 	_n: unf
-	fromhere
-		continue_fucking
-		french_kiss
 	limitations
 		canreach: 0 crotch
 		canreach: 1 crotch

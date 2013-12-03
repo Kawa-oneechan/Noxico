@@ -773,6 +773,22 @@ namespace Noxico
 				}
 			}
 		}
+
+		//YOU ARE TEARING ME APAAAAHT LISA!!!
+		public static void TearApart(InventoryItem equip, Token carriedItem)
+		{
+			var slot = "pants";
+			if (equip.HasToken("pants") && equip.HasToken("shirt"))
+				slot = "over";
+			else if (equip.HasToken("underpants"))
+			{
+				slot = "underpants";
+				if (equip.HasToken("undershirt"))
+					slot = "under";
+			}
+			carriedItem.Name = "tatteredshreds_" + slot;
+			carriedItem.Tokens.Clear();
+		}
 	}
 
 	[Serializable]
