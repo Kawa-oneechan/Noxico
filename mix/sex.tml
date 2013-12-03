@@ -65,12 +65,8 @@ choice: walk_away
 		not: 0 havingsex/restrained
 	effects
 		message
-			first
-				$: You release [b:name] and get up.
-			second
-				$: [t:Youorname] lets go of you and gets up.
-			third
-				$: [t:Youorname] lets go of [b:name] and gets up.
+			$: [t:Youorname] let{s} go of [b:youorname] and get{s} up.
+			$: [t:Youorname] release{s} [b:youorname] and get{s} up.
 		break
 
 choice: cuddle
@@ -82,14 +78,8 @@ choice: cuddle
 		stat: 0 climax 1
 		stat: 1 climax 1
 		message
-			first
-				$: You cuddle up to [b:name].
-				$: You rub your body against [b:name].
-			second
-				$: [t:Youorname] cuddles up to you.
-				$: [t:Youorname] rubs [t:his] body against you.
-			third
-				$: [t:Youorname] cuddles up to [b:name].
+			$: [t:Youorname] cuddle{s} up to [b:youorname].
+			$: [t:Youorname] rub{s} [t:his] body against [b:youorname].
 
 choice: pin_down
 	limitations
@@ -102,22 +92,13 @@ choice: pin_down
 		has: 1 skin/type[=slime]
 			true
 				message
-					first
-						$: You try to grab [b:name]'s arms, but can't get a good grip on [b:him].
-					second
-						$: [t:Youorname] {tries|try} to grab you, but can't get a good grip on your slimy body.
-					third:
-						$: [t:Youorname] {tries|try} to grab [b:youorname], but can't get a grip on [b:your] slimy body.
+					$: You try to grab [b:name]'s arms, but can't get a good grip on [b:yourornames] slimy body.
 			false
 				add: 0 restraining
 				add: 1 restrained
 				message
-					first
-						$: You grab [b:name]'s arms and hold them tightly in place.
-					second
-						$: [t:Youorname] grabs your arms and holds tight.
-					third
-						$: [t:Youorname] grabs [b:name]'s arms and holds tight.
+					$: [t:Youorname] grab{s} [b:yourornames] arms and hold{s} them tightly in place.
+					$: [t:Youorname] grab{s} [b:yourornames] arms and hold{s} tight.
 
 choice: wrap_up
 	limitations
@@ -130,22 +111,13 @@ choice: wrap_up
 		has: 1 skin/type[=slime]
 			true
 				message
-					first
-						$: You try to coil your tail around [b:name], [b:he] easily slips through.
-					second
-						$: [t:Youorname] {tries|try} to coil [t:his] tail around you, but your slimy body easily squishes through.
-					third:
-						$: [t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.
+					$: [t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.
 			false
 				add: 0 restraining
 				add: 1 restrained
 				message
-					first
-						$: You coil your tail around [b:name]'s body and hold [b:him] tightly in place.
-					second
-						$: [t:Youorname] coils [t:his] tail tightly around your body.
-					third
-						$: [t:Youorname] coils around [b:name]'s body and holds [b:him] tight.
+					$: [t:Youorname] coil{s} [t:his] tail tightly around [b:yourornames] body.
+					$: [t:Youorname] coil{s} around [b:yourornames] body and hold{s} [b:him] tight.
 
 choice: release
 	limitations
@@ -155,10 +127,8 @@ choice: release
 		remove: 0 restraining
 		remove: 1 restrained
 		message
-			first
-				$: You let go of [b:name]'s arms.
-			second
-				$: [t:Youorname] releases [t:his] grip.
+			$: [t:Youorname] let{s} go of [b:yourornames] arms.
+			$: [t:Youorname] release{s} [t:his] grip.
 
 choice: struggle
 	limitations
@@ -168,20 +138,14 @@ choice: struggle
 		roll: strength strength
 			lose
 				message
-					first
-						$: You struggle against [b:name]'s hold, but fail to get free.
-					second
-						$: [t:Youorname] struggles against your hold, but fails to get free.
+					$: [t:Youorname] struggles against [b:yourornames] hold, but fails to get free.
 			win
 				remove: 0 restrained
 				remove: 1 restraining
 				message
-					first
-						$: You struggle against [b:name]'s hold and manage to get free.
-					second
-						$: [t:Youorname] manages to struggle free from your hold.
-					third
-						$: [t:Youorname] manages to struggle free from [b:name]'s grasp.
+					$: [t:Youorname] struggle{s} against [b:yourornames] hold and manage{s} to get free.
+					$: [t:Youorname] manage{s} to struggle free from [b:yourornames] hold.
+					$: [t:Youorname] struggle{s} out of [b:yourornames] grasp.
 
 choice: kiss
 	limitations
@@ -190,10 +154,7 @@ choice: kiss
 		stat: 0 climax 2
 		stat: 1 climax 2
 		message
-			first
-				$: ~kissu~
-			second
-				$: ~kissu~
+			$: ~kissu~
 
 choice: french_kiss
 	limitations
@@ -202,10 +163,7 @@ choice: french_kiss
 		stat: 0 climax 3
 		stat: 1 climax 3
 		message
-			first
-				$: ~fkissu~
-			second
-				$: ~fkissu~
+			$: ~fkissu~
 
 choice: take_off_top_own
 	_n: Take off your [0]
@@ -216,16 +174,10 @@ choice: take_off_top_own
 		disrobe: 0 top
 			success
 				message
-					first
-						$: You reach for your [0] and take it off.
-					second
-						$: [t:Youorname] reaches for [t:his] [0] and takes it off.
+					$: [t:Youorname] reach{es} for [t:his] [0] and take{s} it off.
 			failure
 				message
-					first
-						$: You reach for your [0] but can't take it off.
-					second
-						$: [t:Youorname] reaches for [t:his] [0] but can't take it off.
+					$: [t:Youorname] reach{es} for [t:his] [0] but can't take it off.
 
 choice: take_off_top_theirs
 	_n: Take off [b:his] [1]
@@ -236,16 +188,10 @@ choice: take_off_top_theirs
 		disrobe: 1 top
 			success
 				message
-					first
-						$: You reach for [b:name]'s [1] and take it off.
-					second
-						$: [t:Youorname] reaches for your [1] and takes it off.
+					$: [t:Youorname] reach{es} for [b:yourornames] [1] and take{s} it off.
 			failure
 				message
-					first
-						$: You reach for [b:name]'s [1] but can't take it off.
-					second
-						$: [t:Youorname] reaches for your [1] but can't take it off.
+					$: [t:Youorname] reach{es} for [b:yourornames] [1] but can't take it off.
 
 choice: take_off_bottom_own
 	_n: Take off your [2]
@@ -256,16 +202,10 @@ choice: take_off_bottom_own
 		disrobe: 0 bottom
 			success
 				message
-					first
-						$: You reach for your [2] and take it off.
-					second
-						$: [t:Youorname] reaches for [t:his] [2] and takes it off.
+					$: [t:Youorname] reach{es} for [t:his] [2] and take{s} it off.
 			failure
 				message
-					first
-						$: You reach for your [2] but can't take it off.
-					second
-						$: [t:Youorname] reaches for [t:his] [2] but can't take it off.
+					$: [t:Youorname] reach{es} for [t:his] [2] but can't take it off.
 
 choice: take_off_bottom_theirs
 	_n: Take off [b:his] [3]
@@ -276,16 +216,10 @@ choice: take_off_bottom_theirs
 		disrobe: 1 bottom
 			success
 				message
-					first
-						$: You reach for [b:name]'s [3] and take it off.
-					second
-						$: [t:Youorname] reaches for your [3] and takes it off.
+					$: [t:Youorname] reach{es} for [b:yourornames] [0] and take{s} it off.
 			failure
 				message
-					first
-						$: You reach for [b:name]'s [3] but can't take it off.
-					second
-						$: [t:Youorname] reaches for your [3] but can't take it off.
+					$: [t:Youorname] reach{es} for [b:yourornames] [0] but can't take it off.
 
 choice: tear_off_bottom_theirs
 	_n: Tear off [b:his] [3]
@@ -297,16 +231,12 @@ choice: tear_off_bottom_theirs
 		disrobe: 1 bottom tear
 			success
 				message
-					first
-						$: You reach for [b:name]'s [3] and take it off.
-					second
-						$: [t:Youorname] reaches for your [3] and takes it off.
+					$: [t:Youorname] grab{s} [b:yourornames] [3] and tears it to pieces.
+					$: [t:Youorname] grab{s} [b:yourornames] [3] and tears apart.
+					$: [t:Youorname] grab{s} [b:yourornames] [3] and violently rips it off.
 			failure
 				message
-					first
-						$: You reach for [b:name]'s [3] but can't take it off.
-					second
-						$: [t:Youorname] reaches for your [3] but can't take it off.
+					$: [t:Youorname] grab{s} [b:yourornames] [3] but can't budge it.
 
 choice: jam_it_in
 	_n: J-J-J-JAM IT IN!!
@@ -325,13 +255,9 @@ choice: jam_it_in
 		has: 1 vagina/virgin
 			true
 				message
-					first
-						$: Virginity taken here.
+					$: Virginity taken here.
 		message
-			first
-				$: You insert your tab A into [b:yourornames] slot B.
-			second:
-				$: [t:Youorname] inserts [t:his] tab A into [t:yourornames] slot B.
+			$: [t:Youorname] insert{s} [t:his] tab A into [t:yourornames] slot B.
 
 choice: continue_fucking
 	_n: unf
@@ -346,7 +272,4 @@ choice: continue_fucking
 		stat: 0 climax 5
 		stat: 1 climax 5
 		message
-			first
-				$: You continue pumping.
-			second:
-				$: [t:Youorname] continues pumping.
+			$: [t:Youorname] continue{s} pumping.

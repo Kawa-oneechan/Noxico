@@ -87,7 +87,8 @@ namespace Noxico
 				if (host.Noxico.CurrentBoard.Name != null)
 				{
 					var thisBoard = NoxicoGame.TravelTargets.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
-					list.Index = list.Items.FindIndex(i => thisBoard.Value.StartsWith(i));
+					if (thisBoard.Value != null)
+						list.Index = list.Items.FindIndex(i => thisBoard.Value.StartsWith(i));
 				}
 			}
 			if (Subscreens.Redraw)

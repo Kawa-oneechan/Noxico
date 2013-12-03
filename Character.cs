@@ -259,6 +259,9 @@ namespace Noxico
 					this.GetToken("oldlegs").Name = "legs";
 				else
 					//TODO: Make this determine the proper sort of legs for the character to have and add them.
+					/* KAWA SEZ: how 'bout a small lookup mapping faces to legs? If the current face is
+					 * not in the list, do the same with skintypes. If that fails, use human legs.
+					 */
 					throw new NotImplementedException();
 			}
 			else if ((this.HasToken("snaketail") || this.HasToken("slimeblob")) && this.HasToken("legs"))
@@ -274,6 +277,7 @@ namespace Noxico
 						this.GetToken("oldhips").Name = "hips";
 					else
 						//TODO: Make this add reasonably-sized hips.
+						//KAWA SEZ: I have nothing to say about this at this time.
 						throw new NotImplementedException();
 				}
 				if (!this.HasToken("waist"))
