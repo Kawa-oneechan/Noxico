@@ -243,13 +243,55 @@ namespace Noxico
 		{
 		}
 
-		public void FixBoobs()
+		public void FixBroken()
 		{
+			//Fix boobs
 			if (!this.HasToken("breastrow"))
 			{
 				var breastRow = this.AddToken("breastrow");
 				breastRow.AddToken("amount", 2);
 				breastRow.AddToken("size", 0);
+			}
+			//Fix legs
+			if (!this.HasToken("legs") && !this.HasToken("snaketail") && !this.HasToken("slimeblob"))
+			{
+				if (this.HasToken("oldlegs"))
+					this.GetToken("oldlegs").Name = "legs";
+				else
+					//TODO: Make this determine the proper sort of legs for the character to have and add them.
+					throw new NotImplementedException();
+			}
+			else if ((this.HasToken("snaketail") || this.HasToken("slimeblob")) && this.HasToken("legs"))
+			{
+				this.GetToken("legs").Name = "oldlegs";
+			}
+			//Fix hips and waist
+			if (!this.HasToken("taur") && !this.HasToken("quadruped"))
+			{
+				if (!this.HasToken("hips"))
+				{
+					if (this.HasToken("oldhips"))
+						this.GetToken("oldhips").Name = "hips";
+					else
+						//TODO: Make this add reasonably-sized hips.
+						throw new NotImplementedException();
+				}
+				if (!this.HasToken("waist"))
+				{
+					if (this.HasToken("oldwaist"))
+						this.GetToken("oldwaist").Name = "waist";
+					else
+						//TODO: see above.
+						throw new NotImplementedException();
+				}
+			}
+			else
+			{
+				//character does have "taur" or "quadruped" token
+				if (this.HasToken("hips"))
+					this.GetToken("hips").Name = "oldhips";
+				if (this.HasToken("waist"))
+					this.GetToken("waist").Name = "oldwaist";
 			}
 		}
 

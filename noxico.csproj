@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="BoardChar.cs" />
     <Compile Include="BoardDrawing.cs" />
+    <Compile Include="Change.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="CryptStream.cs" />
@@ -126,6 +127,7 @@
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="i18n.cs" />
+    <Content Include="Guides\ref.png" />
     <Content Include="mix\fonts\16x16-wyse.png" />
     <Content Include="mix\fonts\8x8-5140.png" />
     <Content Include="mix\fonts\8x8-bold.png" />
