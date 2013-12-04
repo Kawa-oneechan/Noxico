@@ -243,15 +243,19 @@ namespace Noxico
 		{
 		}
 
-		public void FixBroken()
+		public void FixBoobs()
 		{
-			//Fix boobs
+			//moved from FixBroken() since FixBoobs() may need to be called from within FixBroken() and it's best to avoid an infinite loop.
 			if (!this.HasToken("breastrow"))
 			{
 				var breastRow = this.AddToken("breastrow");
 				breastRow.AddToken("amount", 2);
 				breastRow.AddToken("size", 0);
 			}
+		}
+
+		public void FixBroken()
+		{
 			//Fix legs
 			if (!this.HasToken("legs") && !this.HasToken("snaketail") && !this.HasToken("slimeblob"))
 			{
@@ -297,6 +301,22 @@ namespace Noxico
 				if (this.HasToken("waist"))
 					this.GetToken("waist").Name = "oldwaist";
 			}
+
+			//fix negative-sized or negative-valued tokens
+			List<Token> toRemove = new List<Token>();
+			foreach (Token toFix in this.Tokens)
+			{
+				if ((toFix.HasToken("count") && toFix.GetToken("count").Value <= 0) ||
+					(toFix.HasToken("amount") && toFix.GetToken("amount").Value <= 0) ||
+					(toFix.HasToken("size") && toFix.GetToken("size").Value < 0) ||
+					(toFix.HasToken("sizefromprevious") && toFix.GetToken("sizefromprevious").Value < 0))
+						toRemove.Add(toFix);
+			}
+			foreach (Token removeMe in toRemove)
+			{
+				this.Tokens.Remove(removeMe);
+			}
+			this.FixBoobs();
 		}
 
 		public static Character GetUnique(string id)

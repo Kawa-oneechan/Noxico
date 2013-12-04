@@ -32,6 +32,7 @@ namespace Noxico
 					{
 						case "deltaBreastSize":
 							target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("size").Value += change.GetToken("size").Value;
+							target.FixBoobs();
 							returns.Add(true);
 							break;
 						case "deltaBreastNum":
@@ -39,7 +40,7 @@ namespace Noxico
 							boob.GetToken("amount").Value += change.GetToken("amount").Value;
 							if (boob.GetToken("amount").Value == 0)
 								target.RemoveToken(boob);
-							target.FixBroken();
+							target.FixBoobs();
 							returns.Add(true);
 							break;
 						case "dicknipples":
@@ -190,6 +191,50 @@ namespace Noxico
 								target.RemoveToken("slimeblob");
 								target.FixBroken();
 								returns.Add(true);
+							}
+							else
+								returns.Add(false);
+							break;
+						case "deltaBalls":
+							if (target.HasToken("balls"))
+							{
+								target.GetToken("balls").GetToken("amount").Value += change.GetToken("amount").Value;
+								returns.Add(true);
+							}
+							else
+							{
+								if (change.GetToken("amount").Value > 0)
+								{
+									target.AddToken("balls").AddToken("amount", (int)change.GetToken("amount").Value);
+									returns.Add(true);
+								}
+								else
+									returns.Add(false);
+							}
+							target.FixBroken();
+							break;
+						case "deltaBallSize":
+							if (target.HasToken("balls"))
+							{
+								target.GetToken("balls").GetToken("size").Value += change.GetToken("size").Value;
+								target.FixBroken();
+								returns.Add(true);
+							}
+							else
+								returns.Add(false);
+							break;
+						case "deltaEyes":
+							target.GetToken("eyes").GetToken("count").Value += (int)change.GetToken("count").Value;
+							returns.Add(true);
+							break;
+						case "legs":
+							if (target.HasToken("legs"))
+							{
+								if (target.GetToken("legs").Text == change.Text)
+									returns.Add(false);
+								else
+									returns.Add(true);
+								target.GetToken("legs").Text = change.Text;
 							}
 							else
 								returns.Add(false);
