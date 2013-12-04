@@ -10,18 +10,18 @@ namespace Noxico
 
 	public static class UIColors
 	{
-		public static Color WindowBackground { get { return Color.FromArgb(42, 42, 42); } }
-		public static Color WindowBorder { get { return Color.FromArgb(109, 109, 109); } }
-		public static Color RegularText { get { return Color.FromArgb(220, 220, 204); } }
-		public static Color HighlightText { get { return Color.FromArgb(153, 180, 209); } }
-		public static Color DarkBackground { get { return Color.FromArgb(22, 22, 22); } }
-		public static Color LightBackground { get { return Color.FromArgb(82, 82, 82); } }
-		public static Color SelectedBackground { get { return Color.FromArgb(61, 90, 85); } }
-		public static Color SelectedBackUnfocused { get { return Color.FromArgb(62, 70, 74); } }
-		public static Color SelectedText { get { return Color.FromArgb(204, 220, 144); } }
-		public static Color Unfocused { get { return Color.Gray; } }
-		public static Color StatusBackground { get { return Color.Black; } }
-		public static Color StatusForeground { get { return Color.Silver; } }
+		public static Color WindowBackground { get { return Color.FromArgb(0x282424); } }
+		public static Color WindowBorder { get { return Color.FromArgb(0x8A8A8A); } }
+		public static Color RegularText { get { return Color.FromArgb(0xDADCDA); } }
+		public static Color HighlightText { get { return Color.FromArgb(0xA6A6FA); } }
+		public static Color DarkBackground { get { return Color.FromArgb(0x131111); } }
+		public static Color LightBackground { get { return Color.FromArgb(0x3C3737); } }
+		public static Color SelectedBackground { get { return Color.FromArgb(0x3C3737); } }
+		public static Color SelectedBackUnfocused { get { return Color.FromArgb(0x342E2E); } }
+		public static Color SelectedText { get { return Color.FromArgb(0xC3C448); } }
+		public static Color Unfocused { get { return Color.FromArgb(0xB29967); } }
+		public static Color StatusBackground { get { return Color.FromArgb(0x131111); } }
+		public static Color StatusForeground { get { return Color.FromArgb(0x6463D8); } }
 	}
 
 	public abstract class UIElement
@@ -200,15 +200,15 @@ namespace Noxico
 			Enter = enter;
 			Width = text.Length();
 			Height = 1;
-			Foreground = Color.Black;
-			Background = Color.Gray;
+			Foreground = UIColors.SelectedText;
+			Background = UIColors.SelectedBackUnfocused;
 			Enabled = true;
 		}
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(new string(' ', Width), Foreground, UIManager.Highlight == this ? Color.Silver : Color.Gray, Top, Left);
-			NoxicoGame.HostForm.Write(Text, Foreground, UIManager.Highlight == this ? Color.Silver : Color.Gray, Top, Left + (Width / 2) - (Text.Length / 2));
+			NoxicoGame.HostForm.Write(new string(' ', Width), Foreground, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top, Left);
+			NoxicoGame.HostForm.Write(Text, UIManager.Highlight == this ? UIColors.SelectedText : UIColors.Unfocused, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top, Left + (Width / 2) - (Text.Length / 2));
 		}
 	}
 
@@ -272,7 +272,7 @@ namespace Noxico
 					NoxicoGame.HostForm.Write("???", Color.Black, Color.Black, t, l);
 				else
 					NoxicoGame.HostForm.Write(' ' + Items[i + scroll].PadEffective(Width - 2) + ' ',
-						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText : Foreground,
+						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedText : UIColors.Unfocused : Foreground,
 						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused : Background,
 						 t, l);
 
