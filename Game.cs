@@ -631,7 +631,7 @@ namespace Noxico
 			miniMap = new int[2][,];
 			for (var i = 0; i < Enum.GetValues(typeof(Realms)).Length; i++)
 			{
-				Random.Reseed("pandora".GetHashCode());
+				//Random.Reseed("pandora".GetHashCode());
 				var realm = (Realms)i;
 				generator.GenerateWorldMap(realm, setStatus);
 				Boardificate(generator, setStatus, realm);
