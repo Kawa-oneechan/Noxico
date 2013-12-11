@@ -11,13 +11,14 @@ while(1)
 {
 	var t = PickBoard(BoardType.Town, -1, -1);
 	var b = GetBoard(t.ToEast);
-	if (b == null || b.BoardType == BoardType.Town)
+	print("b.GetToken('Biome').Value == " + b.GetToken("biome").Value);
+	if (b == null || b.BoardType == BoardType.Town || b.GetToken("biome").Value == 0)
 		b = GetBoard(t.ToWest);
-	if (b == null || b.BoardType == BoardType.Town)
+	if (b == null || b.BoardType == BoardType.Town || b.GetToken("biome").Value == 0)
 		b = GetBoard(t.ToNorth);
-	if (b == null || b.BoardType == BoardType.Town)
+	if (b == null || b.BoardType == BoardType.Town || b.GetToken("biome").Value == 0)
 		b = GetBoard(t.ToSouth);
-	if (b == null || b.BoardType == BoardType.Town)
+	if (b == null || b.BoardType == BoardType.Town || b.GetToken("biome").Value == 0)
 		continue;
 	myBoard = b;
 	MakeBoardTarget(t);
