@@ -210,10 +210,14 @@ namespace Noxico
 			foreach (var effect in effects.Tokens)
 			{
 				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] {} : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-				if (effect.Name == "break")
+				if (effect.Name == "breakitoff")
 				{
 					foreach (var act in actors)
 						act.Character.RemoveAll("havingsex");
+					return;
+				}
+				else if (effect.Name == "end")
+				{
 					return;
 				}
 				else if (effect.Name == "stat")
@@ -344,6 +348,22 @@ namespace Noxico
 						}
 					}
 				}
+				else if (effect.Name == "takevirginity")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var vagina = t.Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
+					if (vagina != null)
+					{
+						vagina.RemoveToken("virgin");
+						Apply(effect.GetToken("success"), actor, target, writer);
+					}
+				}
+				else if (effect.Name == "fertilize")
+				{
+					var t = actors[int.Parse(check[0])].Character;
+					var t2 = actors[int.Parse(check[1])].Character;
+					t.Fertilize(t2);
+				}
 				else
 				{
 					Program.WriteLine("** Unknown sex effect {0}.", effect.Name);
@@ -397,7 +417,7 @@ namespace Noxico
 			var possibilities = SexManager.GetPossibilities(this, sexPartner);
 			if (this is Player)
 			{
-				ActionList.Show("bow chicka bow wow", this.XPosition, this.YPosition, possibilities,
+				ActionList.Show(string.Empty, this.XPosition, this.YPosition, possibilities,
 					() =>
 					{
 						var action = ActionList.Answer as string;
