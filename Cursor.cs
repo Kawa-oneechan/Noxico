@@ -354,12 +354,14 @@ namespace Noxico
 									((BoardChar)PointingAt).Character.CheckHasteSlow();
 									break;
                                 
+#if MUTAMORPH
                                 case "mutate":
                                     var results = ((BoardChar)PointingAt).Character.Mutate(1, 30);
 									foreach (var result in results)
 										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
                                     break;
+#endif
 #endif
 
 								default:

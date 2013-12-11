@@ -424,20 +424,35 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			for (var i = 50; i < 60; i++)
-				for (var col = 0; col < 80; col++)
+			for (var i = 51; i < 59; i++)
+			{
+				HostForm.SetCell(i, 0, 0xBA, Color.DarkGray, Color.Black);
+				HostForm.SetCell(i, 79, 0xBA, Color.DarkGray, Color.Black);
+			}
+			for (var col = 1; col < 79; col++)
+			{
+				HostForm.SetCell(50, col, 0xCD, Color.DarkGray, Color.Black);
+				HostForm.SetCell(59, col, 0xCD, Color.DarkGray, Color.Black);
+			}
+			HostForm.SetCell(50, 0, 0xC9, Color.DarkGray, Color.Black);
+			HostForm.SetCell(50, 79, 0xBB, Color.DarkGray, Color.Black);
+			HostForm.SetCell(59, 0, 0xC8, Color.DarkGray, Color.Black);
+			HostForm.SetCell(59, 79, 0xBC, Color.DarkGray, Color.Black);
+
+			for (var i = 51; i < 59; i++)
+				for (var col = 1; col < 79; col++)
 					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
 
 			if (Messages.Count == 0)
 				return;
-			var row = 59;
-			for (var i = 0; i < 5 && i < Messages.Count; i++)
+			var row = 57;
+			for (var i = 0; i < 6 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
 				//var c = Messages[m].Color;
 				//if (c.Lightness < 0.2)
 				//	c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
+				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 2);
 				row--;
 			}
 		}
@@ -457,7 +472,7 @@ namespace Noxico
 					lastLine = "";
 				else
 					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(78).Trim().Split('\n');
+				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(76).Trim().Split('\n');
 				if (newLines.Length > 1)
 				{
 					for (var i = 1; i < newLines.Length; i++)

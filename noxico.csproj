@@ -229,7 +229,6 @@
     <Content Include="mix\missions\portal\mission.js" />
     <Content Include="mix\missions\portal\platform1.png" />
     <Content Include="mix\missions\portal\platform2.png" />
-    <Content Include="mix\missions\portal\road.png" />
     <Content Include="mix\missions\portal\uniques.tml" />
     <Content Include="mix\missions\urta\loot.tml" />
     <Content Include="mix\missions\urta\items.tml" />

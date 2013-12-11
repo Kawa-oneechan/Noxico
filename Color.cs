@@ -83,6 +83,7 @@ namespace Noxico
 		public static Color Aqua { get { return new Color(0xFF00FFFF, "Aqua"); } }
 		public static Color Brown { get { return new Color(0xFF804000, "Brown"); } }
 		public static Color Orange { get { return new Color(0xFFFFA500, "Orange"); } }
+		public static Color DarkGray { get { return new Color(0xFF404040, "DarkGray"); } }
 
 		public static Color FromCGA(int index)
 		{
