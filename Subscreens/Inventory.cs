@@ -173,7 +173,7 @@ namespace Noxico
 					*/
 
 					var itemString = item.ToString(carried, false, false);
-					if (itemString.Length > 40)
+					if (itemString.Length > 33)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
 					Inventory.sigils.Add(icon + "<cGray> " + string.Join(", ", sigils.Select(s =>
@@ -195,8 +195,8 @@ namespace Noxico
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
 				howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 				itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
-				sigilView = new UILabel("") { Left = 43, Top = 2, Width = 60, Height = height };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 40, Height = height, Index = selection };
+				sigilView = new UILabel("") { Left = 35, Top = 2, Width = 60, Height = height };
+				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
 				itemList.Change = (s, e) =>
 				{
 					selection = itemList.Index;
