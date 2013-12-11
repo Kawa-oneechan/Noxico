@@ -255,9 +255,9 @@ namespace Noxico
 					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
 					{ "headerline", new UILabel(bar) { Left = 56, Top = 8, Foreground = Color.Black } },
 					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 8, Width = title.Length(), Foreground = Color.Black } },
-					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 47, Width = 10 } },
-					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 47, Width = 10 } },
-					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 47, Width = 10 } },
+					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 46, Width = 10, Height = 3 } },
+					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 
 					{ "worldLabel", new UILabel(i18n.GetString("cc_world")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "world", new UITextBox(NoxicoGame.RollWorldName()) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },

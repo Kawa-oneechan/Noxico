@@ -16,7 +16,7 @@ namespace Noxico
 		public static Color HighlightText { get { return Color.FromArgb(0xA6A6FA); } }
 		public static Color DarkBackground { get { return Color.FromArgb(0x131111); } }
 		public static Color LightBackground { get { return Color.FromArgb(0x3C3737); } }
-		public static Color SelectedBackground { get { return Color.FromArgb(0x3C3737); } }
+		public static Color SelectedBackground { get { return Color.FromArgb(0x4C4747); } }
 		public static Color SelectedBackUnfocused { get { return Color.FromArgb(0x342E2E); } }
 		public static Color SelectedText { get { return Color.FromArgb(0xC3C448); } }
 		public static Color Unfocused { get { return Color.FromArgb(0xB29967); } }
@@ -207,8 +207,9 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(new string(' ', Width), Foreground, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top, Left);
-			NoxicoGame.HostForm.Write(Text, UIManager.Highlight == this ? UIColors.SelectedText : UIColors.Unfocused, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top, Left + (Width / 2) - (Text.Length / 2));
+			for (var i = 0; i < Height; i++)
+				NoxicoGame.HostForm.Write(new string(' ', Width), Foreground, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top + i, Left);
+			NoxicoGame.HostForm.Write(Text, UIManager.Highlight == this ? UIColors.SelectedText : UIColors.Unfocused, UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused, Top + (Height / 2), Left + (Width / 2) - (Text.Length / 2));
 		}
 	}
 
@@ -409,7 +410,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Write(Text.PadEffective(Width), UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left);
 			if (UIManager.Highlight == this)
 				NoxicoGame.HostForm.Cursor = new Point(Left + caret, Top);
-			else
+			else if (!(UIManager.Highlight is UITextBox))
 				NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 				//NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
 		}

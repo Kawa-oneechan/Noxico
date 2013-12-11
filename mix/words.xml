@@ -76,9 +76,9 @@
 		<category name="Character Creator">
 			<category name="Labels">
 				<word id="cc_title">Character Creation</word>
-				<word id="cc_back">&lt; Back</word>
-				<word id="cc_next">Next &gt;</word>
-				<word id="cc_play">PLAY &gt;</word>
+				<word id="cc_back">&#x1FB; BACK</word>
+				<word id="cc_next">NEXT &#x1FA;</word>
+				<word id="cc_play">PLAY &#x1FA;</word>
 				<word id="cc_name">Name</word>
 				<word id="cc_random">[random]</word>
 				<word id="cc_species">Species</word>
