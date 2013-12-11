@@ -384,7 +384,7 @@ namespace Noxico
 					{
 						//complicated token check
 						var fuckery = option.Replace("+", ",").Replace("-", ",-").Split(',');
-						foreach (var knownItem in NoxicoGame.KnownItems)
+						foreach (var knownItem in NoxicoGame.KnownItems.Where(i => !i.HasToken("unique")))
 						{
 							var includeThis = false;
 							foreach (var fucking in fuckery)
@@ -411,7 +411,7 @@ namespace Noxico
 					else
 					{
 						//simple token check
-						var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option)).ToList();
+						var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option) && !i.HasToken("unique")).ToList();
 						if (items.Count > 0)
 						{
 							var knownItem = items[Random.Next(items.Count)];
@@ -500,7 +500,7 @@ namespace Noxico
 				{
 					var option = options[Random.Next(options.Count)];
 					var toAdd = parseOption(option);
-					if (toAdd != null)
+					if (toAdd != null && !toAdd.HasToken("disabled"))
 						loot.Add(toAdd);
 					amount--;
 				}

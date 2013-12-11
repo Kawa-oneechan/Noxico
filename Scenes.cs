@@ -225,6 +225,14 @@ namespace Noxico
 
 			switch (fType)
 			{
+				case "debug":
+#if DEBUG
+					//Allow this scene in debug builds...
+					break;
+#else
+					//..but not in releases.
+					return false;
+#endif
 				case "name":
 					if (!(fPrimary.Name.ToString(true).Trim().Equals(fName, StringComparison.OrdinalIgnoreCase)))
 						return false;

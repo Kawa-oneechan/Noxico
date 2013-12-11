@@ -705,8 +705,10 @@ namespace Noxico
 					{
 						//Melee attacks can only be orthogonal.
 						MeleeAttack(bcTarget);
+#if MUTAMORPH
 						if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
 							bcTarget.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
+#endif
 						return;
 					}
 					else if (weapon != null)

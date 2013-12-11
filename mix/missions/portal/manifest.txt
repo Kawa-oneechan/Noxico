@@ -4,4 +4,3 @@ mission.js
 uniques.tml
 platform1.png
 platform2.png
-road.png

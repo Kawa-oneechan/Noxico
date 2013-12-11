@@ -37,18 +37,21 @@
 ]>
 <scenes>
 	<scene id="test2" name="invite to have sex" list="(DEBUG) Set willingness" priority="high">
+		<filter target="top" type="debug" />
 		<script type="text/javascript">
 			bottom.AddToken("willing");
 			print("[b:name] is now willing. Cheater.");
 		</script>
 	</scene>
 	<scene id="test2a" name="tell about location a" list="(DEBUG) Tell about random location again" priority="high">
+		<filter target="top" type="debug" />
 		<filter target="bottom" type="has" name="gavenewtown"/>
 		<p>
 			"I told you, you should visit [b:T:gavenewtown]."
 		</p>
 	</scene>
 	<scene id="test2b" name="tell about location a" list="(DEBUG) Tell about random location" priority="high">
+		<filter target="top" type="debug" />
 		<script type="text/javascript">
 			<![CDATA[
 				var newExpectation = ExpectTown(null, -1);
@@ -58,6 +61,7 @@
 		</script>
 	</scene>
 	<scene id="test3" name="token replacement test" list="Let [b:him] help you test in-list replacement tokens" priority="high">
+		<filter target="top" type="debug" />
 		<p>It worked.</p>
 	</scene>
 	
@@ -76,12 +80,14 @@
 	</scene>
 
 	<scene id="DreamTest" name="(dream)">
+		<filter target="top" type="debug" />
 		<p>
 			To sleep, perchance, to dream...
 		</p>
 		<action name="dreamtest" />
 	</scene>
 	<scene id="DreamTest2" name="dreamtest">
+		<filter target="top" type="debug" />
 		<p>
 			What is it worth anyway?
 		</p>

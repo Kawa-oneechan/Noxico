@@ -137,7 +137,7 @@ item: ponifier
 	script
 		<[[
 			Consume();
-			user.Morph("littlepony");
+			//user.Morph("littlepony");
 			Identify();
 		]]>
 
@@ -192,7 +192,7 @@ item: foxite
 	script
 		<[[
 			Consume();
-			user.Morph("fox");
+			//user.Morph("fox");
 			Identify();
 		]]>
 
@@ -2120,6 +2120,7 @@ item: chaos_potion
 		char: 0x180
 	randomized: 10
 	potion
+	disabled
 	transformer
 	script
 		<[[
@@ -2134,6 +2135,7 @@ item: enhanced_chaos_potion
 		char: 0x180
 	randomized: 11
 	potion
+	disabled
 	transformer
 	script
 		<[[
@@ -2152,6 +2154,7 @@ item: demonite_potion
 		char: 0x180
 	randomized: 12
 	potion
+	disabled
 	transformer
 	script
 		<[[
@@ -2528,6 +2531,7 @@ item: chaotic_regen_ring
 	equipable
 		ring
 	randomized: 131
+	disabled
 	ascii
 		char: U+00A1
 	timer: 5

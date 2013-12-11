@@ -383,6 +383,7 @@ namespace Noxico
 			return Random.Next(allTits.Count);
 		}
 
+#if MUTAMORPH
         public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
 			//TODO: return a summary of what was done, coded for i18n
@@ -742,6 +743,12 @@ namespace Noxico
             }
 			return reports;
         }
+#else
+		public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
+		{
+			throw new InvalidOperationException("Mutate() has been disabled in this build.");
+		}
+#endif
 
         public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
@@ -897,8 +904,10 @@ namespace Noxico
 
             newChar.StripInvalidItems();
 
+#if MUTAMORPH
             if (!newChar.HasToken("beast"))
                 newChar.Mutate(2, 20);
+#endif
 
 			//Program.WriteLine("Generated {0}.", newChar);
 			return newChar;
@@ -1998,6 +2007,7 @@ namespace Noxico
 			}
 		}
 
+#if MUTAMORPH
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
 			TokenCarrier.NoRolls = true;
@@ -2276,6 +2286,12 @@ namespace Noxico
 
 			finish();
 		}
+#else
+		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
+		{
+			throw new InvalidOperationException("Morph() has been disabled in this build.");
+		}
+#endif
 		public void Morph(string targetPlan)
 		{
 			Morph(targetPlan, MorphReportLevel.PlayerOnly, false, 0);
