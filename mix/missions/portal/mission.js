@@ -24,7 +24,8 @@ if (realm == Realms.Nox)
 {
 	print ("Creating portal on Nox side...");
 
-	var myBoard = PickBoard(BoardType.Wild, -1, -1);
+	var myBoard = PickBoard(BoardType.Wild, -1, 200);
+	myBoard.Drain();
 	myBoard.Name = "Demon Portal, Nox Side";
 	myBoard.ID = "demonportal_nox";
 	BuildPlatform(myBoard, 1, vague, stone, wall);
@@ -44,7 +45,8 @@ else
 {
 	print ("Creating portal on Seradevari side...");
 
-	myBoard = PickBoard(BoardType.Wild, -1, -1);
+	myBoard = PickBoard(BoardType.Wild, -1, 200);
+	myBoard.Drain();
 	myBoard.Name = "Demon Portal, Sera Side";
 	myBoard.ID = "demonportal_sera";
 	myBoard.AllowTravel = false;

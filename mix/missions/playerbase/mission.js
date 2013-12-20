@@ -26,6 +26,7 @@ while(1)
 	break;
 }
 
+myBoard.Drain();
 myBoard.Name = "Home";
 myBoard.ID = "home";
 myBoard.BoardType = BoardType.Special;

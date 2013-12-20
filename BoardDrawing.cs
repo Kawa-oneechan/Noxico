@@ -49,6 +49,7 @@ namespace Noxico
 						Background = biome.Color,
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
+						Biome = biomeID,
 					};
 				}
 			}
@@ -87,6 +88,7 @@ namespace Noxico
 						Background = biome.Color,
 						CanBurn = biome.CanBurn,
 						Water = biome.IsWater,
+						Biome = b,
 					};
 				}
 			}
@@ -433,33 +435,31 @@ namespace Noxico
 
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
-			var biomeData = BiomeData.Biomes[(int)GetToken("biome").Value];
-			if (biomeData.Clutter == null)
-				return;
-			foreach (var clutter in biomeData.Clutter)
+			if (y2 >= 50)
+				y2 = 49;
+			for (var x = x1; x < x2; x++)
 			{
-				var tile = new Tile()
+				for (var y = y1; y < y2; y++)
 				{
-					Character = clutter.Character,
-					Foreground = clutter.ForegroundColor,
-					CanBurn = clutter.CanBurn,
-					Wall = clutter.Wall,
-					Fence = clutter.Fence,
-					SpecialDescription = clutter.Description,
-				};
-				if (y2 >= 50)
-					y2 = 49;
-				for (var x = x1; x < x2; x++)
-				{
-					for (var y = y1; y < y2; y++)
+					var biomeData = BiomeData.Biomes[Tilemap[x, y].Biome];
+					if (biomeData.Clutter == null)
+						continue;
+					foreach (var clutter in biomeData.Clutter)
 					{
-						if (Tilemap[x, y].SolidToDryWalker)
-							continue;
-						var bg = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor;
 						if (Random.NextDouble() < clutter.Chance)
 						{
-							Tilemap[x, y] = tile.Clone();
-							Tilemap[x, y].Background = bg;
+							if (Tilemap[x, y].SolidToDryWalker) //TODO: add a bool appearsInWater to clutter.
+								continue;
+							Tilemap[x, y] = new Tile()
+							{
+								Character = clutter.Character,
+								Foreground = clutter.ForegroundColor,
+								Background = clutter.BackgroundColor == Color.Transparent ? Tilemap[x, y].Background : clutter.BackgroundColor,
+								CanBurn = clutter.CanBurn,
+								Wall = clutter.Wall,
+								Fence = clutter.Fence,
+								SpecialDescription = clutter.Description,
+							};
 						}
 					}
 				}
@@ -537,6 +537,31 @@ namespace Noxico
 		public void AddWater()
 		{
 			AddWater(new List<Rectangle>() { new Rectangle() { Left = 0, Top = 0, Right = 79, Bottom = 24 } });
+		}
+
+		public void Drain()
+		{
+			var b = (int)GetToken("biome").Value;
+			var biome = BiomeData.Biomes[b];
+			var tile = new Tile()
+			{
+				Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
+				Foreground = biome.Color.Darken(),
+				Background = biome.Color,
+				CanBurn = biome.CanBurn,
+				Biome = b,
+			};
+
+			for (var y = 0; y < 50; y++)
+			{
+				for (var x = 0; x < 80; x++)
+				{
+					if (Tilemap[x, y].Water)
+					{
+						Tilemap[x, y] = tile.Clone();
+					}
+				}
+			}
 		}
 	}
 }
