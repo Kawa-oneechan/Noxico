@@ -102,6 +102,7 @@ namespace Noxico
 		public bool CanBurn { get; set; }
 		public int BurnTimer { get; set; }
 		public int SpecialDescription { get; set; }
+		public int Biome { get; set; }
 
 		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
 		public bool SolidToDryWalker { get { return Wall || Water || Fence || Cliff; } }
@@ -129,6 +130,7 @@ namespace Noxico
 			stream.Write((char)Character);
 			Foreground.SaveToFile(stream);
 			Background.SaveToFile(stream);
+			stream.Write7BitEncodedInt(Biome);
 
 			var bits = new BitVector32();
 			bits[1] = CanBurn;
@@ -159,6 +161,7 @@ namespace Noxico
 			Character = stream.ReadChar();
 			Foreground = Toolkit.LoadColorFromFile(stream);
 			Background = Toolkit.LoadColorFromFile(stream);
+			Biome = stream.Read7BitEncodedInt();
 
 			var set = stream.ReadByte();
 			var bits = new BitVector32(set);

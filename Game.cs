@@ -310,7 +310,7 @@ namespace Noxico
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "18");
+			File.WriteAllText(verCheck, "19");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -321,7 +321,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 18)
+			if (WorldVersion < 19)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
@@ -631,7 +631,9 @@ namespace Noxico
 			miniMap = new int[2][,];
 			for (var i = 0; i < Enum.GetValues(typeof(Realms)).Length; i++)
 			{
-				//Random.Reseed("pandora".GetHashCode());
+#if DEBUG
+				Random.Reseed("pandora".GetHashCode());
+#endif
 				var realm = (Realms)i;
 				generator.GenerateWorldMap(realm, setStatus);
 				Boardificate(generator, setStatus, realm);
@@ -642,7 +644,9 @@ namespace Noxico
 				miniMap[i] = generator.RoughBiomeMap;
 
 #if DEBUG
-				var png = new System.Drawing.Bitmap(generator.MapSizeX * 80, generator.MapSizeY * 50);
+				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * 80, (generator.MapSizeY - 1) * 50);
+				var gfx = System.Drawing.Graphics.FromImage(png);
+				var font = new System.Drawing.Font("Silkscreen", 7);
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
 				{
 					setStatus("Drawing actual bitmap...", y, generator.MapSizeY);
@@ -659,6 +663,7 @@ namespace Noxico
 								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Background);
 							}
 						}
+						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.White, (x * 80) + 1, (y * 50) + 1);
 					}
 				}
 				png.Save("world_" + realm.ToString() + ".png");
@@ -887,6 +892,7 @@ namespace Noxico
 			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
 			{
 				var options = new List<Board>();
+				tryAgain:
 				foreach (var board in Boards)
 				{
 					if (board == null)
@@ -896,6 +902,8 @@ namespace Noxico
 					if (board.BoardType != boardType)
 						continue;
 					if (biome > 0 && board.GetToken("biome").Value != biome)
+						continue;
+					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 8)
 						continue;
 					if (maxWater != -1)
 					{
@@ -910,7 +918,16 @@ namespace Noxico
 					options.Add(board);
 				}
 				if (options.Count == 0)
-					return null;
+				{
+					//return null;
+					if (maxWater < 2000)
+					{
+						maxWater *= 2;
+						goto tryAgain;
+					}
+					else
+						return null;
+				}
 				var choice = options[Random.Next(options.Count)];
 				return choice;
 			};
