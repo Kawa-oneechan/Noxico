@@ -37,7 +37,6 @@ if (realm == Realms.Nox)
 	portalE.ReassignScripts();
 	myBoard.Entities.Add(portalE);
 	portalE.ParentBoard = myBoard;
-	myBoard.DumpToHtml("portal1");
 	
 	//MakeBoardTarget(myBoard); //<-- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
 }
@@ -60,7 +59,6 @@ else
 	portalE.ReassignScripts();
 	myBoard.Entities.Add(portalE);
 	portalE.ParentBoard = myBoard;
-	myBoard.DumpToHtml("portal2");
 
 	print ("Connecting portals...");
 	var otherBoard = FindBoardByID("demonportal_nox");

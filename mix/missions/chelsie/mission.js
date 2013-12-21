@@ -27,5 +27,3 @@ Chelsie.XPosition = 50;
 Chelsie.YPosition = 22;
 myBoard.Entities.Add(Chelsie);
 Chelsie.ParentBoard = myBoard;
-
-myBoard.DumpToHtml("chel");

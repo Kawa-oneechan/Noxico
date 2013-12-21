@@ -1,6 +1,5 @@
 /*
 var myBoard = PickBoard(BoardType.Town, -1, -1);
-myBoard.DumpToHtml("PettancowPre");
 var myChar = myBoard.PickBoardChar(Gender.Female);
 
 print("Picked " + myChar.Character.Name + " to replace.");
@@ -27,7 +26,6 @@ myChar.ReassignStuff(oldName);
 
 myBoard.Type = BoardType.Special;
 print("Placed Pettancow on board " + myBoard.ID + ".");
-myBoard.DumpToHtml("PettancowPost");
 */
 
 /* Should probably ensure there's a boob growth item
