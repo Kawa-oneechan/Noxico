@@ -1,5 +1,4 @@
 var myBoard = PickBoard(BoardType.Town, -1, -1);
-myBoard.DumpToHtml("ponyville_pre");
 myBoard.Clear();
 myBoard.ID = "Ponyville";
 MakeTown(myBoard, "equestrian");
@@ -21,4 +20,3 @@ myChar.ID = myChar.Character.Name.ToID();
 myChar.ReassignStuff(oldName);
 myBoard.Type = BoardType.Special;
 print("Turned " + myBoard.ID + " into pony village.");
-myBoard.DumpToHtml("ponyville_post");

@@ -1688,9 +1688,9 @@ namespace Noxico
 			print("Vaginas: ");
 			if (!crotchVisible)
 			{
-				if (this.Gender == Gender.Male)
+				if (this.PercievedGender == Gender.Male)
 					print("can't tell, none assumed\n");
-				else if (this.Gender == Gender.Female)
+				else if (this.PercievedGender == Gender.Female)
 					print("can't tell, one assumed\n");
 				else
 					print("can't tell\n");
@@ -3359,7 +3359,7 @@ namespace Noxico
 			if (!HasToken("sexpreference"))
 				return true;
 			var pref = GetToken("sexpreference").Value;
-			return pref == ((int)other.Gender - 1)  || pref == 2;
+			return pref == ((int)other.PercievedGender - 1) || pref == 2;
 		}
 
 		public void Copy(Character source)
