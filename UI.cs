@@ -595,7 +595,7 @@ namespace Noxico
 		public UIRadioList(string[] options)
 		{
 			choices = options;
-			Height = 1;
+			Height = options.Length;
 			Foreground = UIColors.HighlightText;
 			Background = UIColors.WindowBackground;
 			ItemsEnabled = new bool[options.Length];
@@ -647,10 +647,8 @@ namespace Noxico
 
 		public override void DoMouse(int left, int top)
 		{
-			if (left < Width / 2)
-				DoLeft();
-			else
-				DoRight();
+			Value = top;
+			Draw();
 		}
 	}
 

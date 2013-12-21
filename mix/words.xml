@@ -79,11 +79,13 @@
 				<word id="cc_back">&#x1FB; BACK</word>
 				<word id="cc_next">NEXT &#x1FA;</word>
 				<word id="cc_play">PLAY &#x1FA;</word>
+				<word id="cc_world">World</word>
 				<word id="cc_name">Name</word>
 				<word id="cc_random">[random]</word>
 				<word id="cc_species">Species</word>
 				<word id="cc_sex">Biological sex</word>
 				<word id="cc_gid">Gender identity</word>
+				<word id="cc_pref">Preference</word>
 				<word id="cc_no">Not available</word>
 				<word id="cc_hair">Hair color</word>
 				<word id="cc_body">Body color</word>
@@ -97,6 +99,7 @@
 				<word id="cchelp_species">Select the (initial) species you'll play as.</word>
 				<word id="cchelp_sex">Are you a boy? Or are you a girl? Some species may not give you the choice.</word>
 				<word id="cchelp_gid">What does your character self-identify as?</word>
+				<word id="cchelp_pref">What does your character prefer as partners?</word>
 				<word id="cchelp_hair">Select the color of your character's hair.</word>
 				<word id="cchelp_body">Select the color of your character's body. Some species may not give you a choice.</word>
 				<word id="cchelp_eyes">Select the color of your character's eyes. Again, you might not always have a choice.</word>
@@ -110,7 +113,7 @@
       <word id="worldgen_tempmap">Creating temperature map...</word>
       <word id="worldgen_biomemap">Creating biome map...</word>
       <word id="worldgen_bitmap">Drawing board bitmap...</word>
-      <word id="worldgen_determinebiome">Determining biomes...</word>
+      <word id="worldgen_determinebiomes">Determining biomes...</word>
       <word id="worldgen_wateringholes">Finding watering holes...</word>
       <word id="worldgen_markingtowns">Marking possible town locations...</word>
       <word id="worldgen_createboards">Creating boards...</word>
@@ -328,6 +331,7 @@ Do you want to find out?]]>
 		<word id="Female">Female</word>
     <word id="Herm">Herm</word>
     <word id="Neuter">Neuter</word>
+		<word id="Either">Either</word>
 		<word id="Bed">Bed</word>
 		<word id="point">point</word>
 		<word id="thisis_x">This is {0}.</word>
