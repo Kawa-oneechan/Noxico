@@ -45,6 +45,8 @@ namespace Noxico
 		private static XmlElement pluralizerData;
 		private static string of;
 
+		private static List<string> notFound = new List<string>();
+
 		private static void Initialize()
 		{
 			if (words != null)
@@ -88,7 +90,11 @@ namespace Noxico
 			if (words.ContainsKey(key))
 				return Entitize(words[key]);
 			if (brackets)
+			{
+				if (!notFound.Contains(key))
+					notFound.Add(key);
 				return '[' + key + ']';
+			}
 			return key;
 		}
 

@@ -1012,10 +1012,14 @@ namespace Noxico
 			}
 		}
 
-		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
+		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, int preference, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
 		{
 			Board.HackishBoardTypeThing = "wild";
 			var pc = Character.Generate(bodyplan, bioGender, idGender);
+			var pref = pc.GetToken("sexpreference");
+			if (pref == null)
+				pref = pc.AddToken("sexpreference");
+			pref.Value = preference;
 			this.Player = new Player(pc);
 
 			foreach (var item in pc.GetToken("items").Tokens)

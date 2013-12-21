@@ -3359,7 +3359,11 @@ namespace Noxico
 			if (!HasToken("sexpreference"))
 				return true;
 			var pref = GetToken("sexpreference").Value;
-			return pref == ((int)other.PercievedGender - 1) || pref == 2;
+			if (other.PercievedGender == Noxico.Gender.Herm)
+				return true;
+			if (other.PercievedGender == Noxico.Gender.Neuter)
+				return false;
+			return pref == 2 || pref == ((int)other.PercievedGender - 1);
 		}
 
 		public void Copy(Character source)
