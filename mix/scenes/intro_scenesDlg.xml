@@ -67,15 +67,15 @@
 		</script>
 	
 		<p>
-			You know this is a dream. You shouldn't as you can't see or hear anything, and yet you know it all the same. You try to understand how, but you can only remember the feeling of being told by someone, though not who by or when. 
+			You know this is a dream; you shouldn't, as you can't see or hear anything, but you know it all the same. You try to understand how, but you can only remember the feeling of being told by someone, though not who by or when.
 		</p>
 		<p/>
 		<p>
-			Around you, the world quickly unfolds and builds itself from the dark into a verdant forest. Tall redwoods and broad leaved ferns surround the small, rocky clearing you stand in, and beneath your {if top has legs}uncovered [t:feet]{else}{if top has snaketail}serpentine lower body{else}{if top has slimeblob}translucent, sluglike lower half{endif}{endif}{endif}, you feel the pleasant softness of the carpet of moist lichen that covers the earth.
+			Around you, the world quickly unfolds and builds itself, from the dark, into a verdant forest. Tall redwoods and broad-leaved ferns surround the small, rocky clearing that you stand in. Beneath your {if top has legs} uncovered [t:feet]{else}{if top has snaketail} serpentine lower body{else}{if top has slimeblob} translucent, sluglike lower half{endif}{endif}{endif}, you feel the pleasant softness of the carpet of moist lichen that covers the earth.
 		</p>
 		<p/>
 		<p>
-			As you stand there admiring the scenery, you hear the sound of quiet footsteps to your left and turn to find one of the most peculiar creatures you've ever seen standing barely an arm's length away.
+			As you stand there, admiring the scenery, you hear the sound of quiet footsteps to your left. You turn and find one of the most peculiar creatures that you've ever seen standing barely an arm's length away.
 		</p>
 		<action name="new game start 2"/>
 	</scene>
