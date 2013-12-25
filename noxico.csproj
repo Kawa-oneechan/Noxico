@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -176,27 +176,20 @@
     <Compile Include="UI.cs" />
     <Compile Include="Vista.cs" />
     <Compile Include="WorldGen.cs" />
+    <Compile Include="Board.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Board.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mix\biomes.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="mix\bodyparts.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\biomes.tml" />
+    <Content Include="mix\bodyparts.tml" />
     <Content Include="mix\bodyplans.tml" />
     <Content Include="mix\bonustraits.tml" />
-    <Content Include="mix\books.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="mix\books.xsl" />
-    <Content Include="mix\buildings.xml" />
+    <Content Include="mix\books.txt" />
+    <Content Include="mix\buildings.tml" />
     <Content Include="mix\chargen.png" />
     <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.tml" />
@@ -238,19 +231,17 @@
     <Content Include="mix\missions\urta\uniques.tml" />
     <Content Include="mix\noxico.ini" />
     <Content Include="mix\Homestuck.txt" />
-    <Content Include="mix\knowncolors.xml" />
+    <Content Include="mix\knowncolors.tml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />
-    <Content Include="mix\missions\littleponies\buildings.xml" />
+    <Content Include="mix\missions\littleponies\buildings.tml" />
     <Content Include="mix\missions\littleponies\manifest.txt" />
     <Content Include="mix\missions\littleponies\mission.js" />
     <Content Include="mix\missions\littleponies\uniques.tml" />
     <Content Include="mix\scenesDlg.xml" />
-    <Content Include="mix\scenes\intro_scenesDlg.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\scenes\intro_scenesDlg.xml" />
     <Content Include="mix\scenes\pony_scenesDlg.xml" />
-    <Content Include="mix\schedule.xml" />
+    <Content Include="mix\schedule.tml" />
     <Content Include="mix\sex.tml" />
     <Content Include="Guides\Tokeninfo.txt" />
     <Content Include="mix\TileSpecialDescriptions.txt" />
@@ -258,9 +249,7 @@
     <Content Include="mix\travel.png" />
     <Content Include="unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
-    <Content Include="mix\words.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="mix\words.xml" />
     <Content Include="Noxico.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

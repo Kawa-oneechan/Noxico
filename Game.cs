@@ -180,12 +180,18 @@ namespace Noxico
 			BookAuthors = new List<string>();
 			BookTitles.Add("[null]");
 			BookAuthors.Add("[null]");
-			var xDoc = Mix.GetXmlDocument("books.xml");
-			var books = xDoc.SelectNodes("//book");
-			foreach (var b in books.OfType<XmlElement>())
+			var bookData = Mix.GetString("books.txt").Split('\n').Select(x => x.Trim()).ToArray();
+			for (var i = 0; i < bookData.Length; i++)
 			{
-				BookTitles.Add(b.GetAttribute("title"));
-				BookAuthors.Add(b.HasAttribute("author") ? b.GetAttribute("author") : "an unknown author");
+				if (bookData[i].StartsWith("## "))
+				{
+					BookTitles.Add(bookData[i].Substring(3));
+					if (bookData[i + 1].StartsWith("## "))
+						BookAuthors.Add(bookData[i + 1].Substring(3));
+					else
+						BookAuthors.Add(i18n.GetString("an unknown author"));
+					i += 3;
+				}
 			}
 
 			//ScriptVariables.Add("consumed", 0);

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Noxico
 {
@@ -121,46 +123,100 @@ namespace Noxico
 
 		public static void ReadBook(int bookNum)
 		{
-			var xDoc = Mix.GetXmlDocument("books.xml");
-			var books = xDoc.SelectNodes("//book");
-			XmlElement book = null;
-			foreach (var b in books.OfType<XmlElement>())
+			var num = 1;
+			var bookData = Mix.GetString("books.txt").Split('\n').Select(x => x.Trim()).ToArray();
+			var text = new StringBuilder();
+			var header = string.Empty;
+			var identification = string.Empty;
+			var fonts = new Dictionary<string, int>()
 			{
-				if (b.GetAttribute("id") == bookNum.ToString())
+				{ "Hand", 0x200 },
+				{ "Carve", 0x234 },
+				{ "Daedric", 0x24E },
+				{ "Alternian", 0x268 },
+				{ "Keen", 0x282 },
+			};
+			for (var i = 0; i < bookData.Length; i++)
+			{
+				if (bookData[i].StartsWith("##"))
 				{
-					book = b;
-					break;
+					if (num == bookNum)
+					{
+						header = bookData[i].Substring(3);
+						i++;
+						if (bookData[i].StartsWith("##"))
+							i++; //skip author
+						if (bookData[i].StartsWith("##"))
+						{
+							identification = bookData[i].Substring(3);
+							i++;
+						}
+
+						var fontOffset = 0;
+						var fontHasLower = false;
+						for (; i < bookData.Length; i++)
+						{
+							var line = bookData[i];
+							if (line.StartsWith("## "))
+								break;
+							for (int j = 0; j < line.Length; j++)
+							{
+								if (j < line.Length - 2 && line.Substring(j, 3) == "<b>")
+								{
+									text.Append("<cYellow>");
+									j += 2;
+								}
+								else if (j < line.Length - 3 && line.Substring(j, 4) == "</b>")
+								{
+									text.Append(" <c>");
+									j += 3;
+								}
+								else if (j < line.Length - 2 && line.Substring(j, 2) == "<f")
+								{
+									var fontName = line.Substring(j + 2);
+									fontName = fontName.Remove(fontName.IndexOf('>'));
+									j = j + fontName.Length + 2;
+									fontOffset = fonts.ContainsKey(fontName) ? fonts[fontName] : 0;
+									fontHasLower = fontName == "Hand";
+								}
+								else
+								{
+									if (fontOffset == 0)
+										text.Append(line[j]);
+									else
+									{
+										if (line[j] >= 'A' && line[j] <= 'Z')
+										{
+											text.Append((char)((line[j] - 'A') + fontOffset));
+										}
+										else if (fontHasLower && line[j] >= 'a' && line[j] <= 'z')
+										{
+											text.Append((char)((line[j] - 'a') + fontOffset + 0x1A));
+										}
+										else
+										{
+											text.Append(line[j]);
+										}
+									}
+								}
+							}
+							//text.Append(bookData[i]);
+							text.AppendLine();
+						}
+						break;
+					}
+					i += 4;
+					num++;
 				}
 			}
-			var text = "";
-			var header = "";
-			if (book == null)
-				text = i18n.GetString("textscroller_book404");
-			else
-			{
-				header = book.GetAttribute("title");
-				text = book.ToNoxML();
-			}
-
-			var identification = book.SelectSingleNode("identify");
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
-			if (identification != null)
+			if (!string.IsNullOrWhiteSpace(identification))
 			{
-				var id = ((XmlElement)identification).GetAttribute("token");
-				foreach (var item in NoxicoGame.KnownItems.Where(ki => ki.HasToken("identify") && ki.GetToken("identify").Text == id && !NoxicoGame.Identifications.Contains(ki.ID)))
+				foreach (var item in NoxicoGame.KnownItems.Where(ki => ki.HasToken("identify") && ki.GetToken("identify").Text == identification && !NoxicoGame.Identifications.Contains(ki.ID)))
 					NoxicoGame.Identifications.Add(item.ID);
 				//text += "<cLime>(Your " + skillProper + " knowledge has gone up.)";
 			}
-			/*
-			if (player.Path("books/book_" + bookNum) == null)
-			{
-				if (!player.HasToken("books"))
-					player.AddToken("books");
-				var bookToken = player.GetToken("books").AddToken("book_" + bookNum);
-				bookToken.Text = header;
-			}
-			*/
-			Plain(text, header);
+			Plain(text.ToString(), header);
 		}
 	}
 
