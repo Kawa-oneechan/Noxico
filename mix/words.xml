@@ -95,6 +95,7 @@
 			<category name="Help strings">
 				<word id="cchelp_back">Go back one page.</word>
 				<word id="cchelp_next">Go to the next page.</word>
+				<word id="cchelp_world">Enter the name for this world. It's what the directory will be called too, and as such can't be left blank.</word>
 				<word id="cchelp_name">Enter the name for your character. Leave this blank to use a random name.</word>
 				<word id="cchelp_species">Select the (initial) species you'll play as.</word>
 				<word id="cchelp_sex">Are you a boy? Or are you a girl? Some species may not give you the choice.</word>

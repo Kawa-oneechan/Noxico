@@ -6,22 +6,22 @@
 using System;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using System.IO;
+using System.Collections.Generic;
 using SysColor = System.Drawing.Color;
 
 namespace Noxico
 {
 	public struct Color
 	{
-		private static XmlDocument colorTable;
+		private static List<Token> colorTable;
 
 		public long ArgbValue { get; set; }
 		public string Name { get; set; }
 
 		static Color()
 		{
-			colorTable = Mix.GetXmlDocument("knowncolors.xml");
+			colorTable = Mix.GetTokenTree("knowncolors.tml", true);
 		}
 
 		/// <summary>
@@ -149,24 +149,10 @@ namespace Noxico
 			if (name[0] == '#')
 				return Color.FromCSS(name);
 			var request = name.ToLower().Replace("_", "").Replace(" ", "");
-			XmlElement entry = null;
-			var entries = colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>();
-			foreach (var e in entries)
-			{
-				if (e.GetAttribute("name").Equals(request, StringComparison.OrdinalIgnoreCase))
-				{
-					entry = e;
-					break;
-				}
-			}
+			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(request, StringComparison.OrdinalIgnoreCase));
 			if (entry == null)
 				return Color.Silver;
-			if (String.IsNullOrEmpty(entry.GetAttribute("rgb")))
-				return Color.Silver;
-			//var rgb = entry.GetAttribute("rgb").Split(',');
-			//return new Color(MakeArgb(0xFF, byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2])), entry.GetAttribute("name"));
-			//return Color.FromCSS(entry.GetAttribute("rgb"));
-			return new Color(((long)0xFF << 24) | long.Parse(entry.GetAttribute("rgb").Substring(1), System.Globalization.NumberStyles.HexNumber), entry.GetAttribute("name"));
+			return new Color((long)entry.Value, entry.Name);
 		}
 
 		private float Max(float r, float g, float b)
@@ -346,15 +332,10 @@ namespace Noxico
 		{
 			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
 			var colorName = "";
-			foreach (var colorEntry in colorTable.DocumentElement.SelectNodes("//color").OfType<XmlElement>())
-			{
-				if (colorEntry.GetAttribute("name").Equals(req, StringComparison.OrdinalIgnoreCase))
-				{
-					colorName = colorEntry.GetAttribute("name");
-					break;
-				}
-			}
-			if (colorName.Length == 0)
+			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(color, StringComparison.OrdinalIgnoreCase));
+			if (entry != null)
+				colorName = entry.Name;
+			else
 				return color;
 			var ret = new StringBuilder();
 			foreach (var c in colorName)
