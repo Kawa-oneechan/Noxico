@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace Noxico
 {
@@ -531,21 +530,19 @@ namespace Noxico
 		public bool CanBurn { get; private set; }
 		public bool Fence { get; private set; }
 		public bool Wall { get; private set; }
-		public bool Noisy { get; private set; }
 		public double Chance { get; private set; }
 
-		public static ClutterDefinition FromXml(XmlElement x)
+		public static ClutterDefinition FromToken(Token t)
 		{
 			var n = new ClutterDefinition();
-			n.Character = x.GetAttribute("char")[0];
-			n.ForegroundColor = Color.FromName(x.GetAttribute("color"));
-			n.BackgroundColor = x.HasAttribute("background") ? Color.FromName(x.GetAttribute("background")) : Color.Transparent;
-			n.Description = x.HasAttribute("description") ? int.Parse(x.GetAttribute("description")) : 0;
-			n.CanBurn = x.HasAttribute("canBurn");
-			n.Fence = x.GetAttribute("solid") != "no";
-			n.Wall = x.GetAttribute("solid") == "wall";
-			n.Noisy = true;
-			n.Chance = x.HasAttribute("chance") ? double.Parse(x.GetAttribute("chance")) : 0.02;
+			n.Character = (char)t.GetToken("char").Value;
+			n.ForegroundColor = Color.FromName(t.GetToken("color").Text);
+			n.BackgroundColor = t.HasToken("background") ? Color.FromName(t.GetToken("background").Text) : Color.Transparent;
+			n.Description = t.HasToken("description") ? (int)t.GetToken("description").Value : 0;
+			n.CanBurn = t.HasToken("canburn");
+			n.Fence = t.HasToken("fence");
+			n.Wall = t.HasToken("wall");
+			n.Chance = t.HasToken("chance") ? t.GetToken("chance").Value : 0.02;
 			return n;
 		}
 	}
@@ -559,14 +556,14 @@ namespace Noxico
 		{
 			Biomes = new List<BiomeData>();
 			WaterLevels = new List<int>();
-			var x = Mix.GetXmlDocument("biomes.xml");
+			var biomeData = Mix.GetTokenTree("biomes.tml");
 			var i = 0;
-			foreach (var realm in x.SelectNodes("//realm").OfType<XmlElement>())
+			foreach (var realm in biomeData.Where(x => x.Name == "realm"))
 			{
-				var waterLevel = int.Parse(realm.GetAttribute("waterLevel"));
+				var waterLevel = (int)realm.GetToken("waterlevel").Value;
 				WaterLevels.Add(waterLevel);
-				foreach (var b in realm.SelectNodes("biome").OfType<XmlElement>())
-					Biomes.Add(BiomeData.FromXml(b, i));
+				foreach (var biome in realm.Tokens.Where(x => x.Name == "biome"))
+					Biomes.Add(BiomeData.FromToken(biome, i));
 				i++;
 			}
 		}
@@ -583,52 +580,52 @@ namespace Noxico
 		public List<ClutterDefinition> Clutter { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
 
-		public static BiomeData FromXml(XmlElement x, int realmNum)
+		public static BiomeData FromToken(Token t, int realmNum)
 		{
 			var n = new BiomeData();
 			n.Realm = (Realms)realmNum;
-			n.Name = x.GetAttribute("name");
-			n.Color = Color.FromName(x.GetAttribute("color"));
-			n.IsWater = x.HasAttribute("isWater");
-			n.CanBurn = x.HasAttribute("canBurn");
+			n.Name = t.Text;
+			n.Color = Color.FromName(t.GetToken("color").Text);
+			n.IsWater = t.HasToken("iswater");
+			n.CanBurn = t.HasToken("canburn");
 
-			var cvars = x.GetAttribute("rect").Split(' ').Select(i => int.Parse(i)).ToArray();
+			var cvars = t.GetToken("rect").Text.Split(' ').Select(i => int.Parse(i)).ToArray();
 			n.Rect = new System.Drawing.Rectangle(cvars[0], cvars[1], cvars[2] - cvars[0], cvars[3] - cvars[1]);
 
-			var groundGlyphs = x.SelectSingleNode("groundGlyphs");
+			var groundGlyphs = t.GetToken("ground");
 			if (groundGlyphs == null)
 				n.GroundGlyphs = new[] { '\x146' };
 			else
-				n.GroundGlyphs = ((XmlElement)groundGlyphs).InnerText.ToCharArray();
+				n.GroundGlyphs = groundGlyphs.Text.ToCharArray();
 			var glyphs = "      ".ToCharArray().ToList();
 			glyphs.AddRange(n.GroundGlyphs);
 			n.GroundGlyphs = glyphs.ToArray();
 
-			var encounters = x.SelectSingleNode("encounters");
+			var encounters = t.GetToken("encounters");
 			if (encounters == null)
 				n.Encounters = new string[0];
 			else
 			{
 				n.MaxEncounters = 10;
-				if (((XmlElement)encounters).HasAttribute("max"))
-					n.MaxEncounters = int.Parse(((XmlElement)encounters).GetAttribute("max"));
-				n.Encounters = encounters.InnerText.Split(',').Select(e => e.Trim()).ToArray();
+				if (encounters.Value > 0)
+					n.MaxEncounters = (int)encounters.Value;
+				n.Encounters = encounters.Tokens.Select(x => x.Name).ToArray();
 			}
 
-			var cultures = x.SelectSingleNode("cultures");
+			var cultures = t.GetToken("cultures");
 			if (cultures == null)
 				n.Cultures = new[] { "human" };
 			else
 			{
-				n.Cultures = cultures.InnerText.Split(',').Select(e => e.Trim()).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
+				n.Cultures = cultures.Tokens.Select(x => x.Name).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
 			}
 
-			var clutters = x.SelectSingleNode("clutterdefs");
+			var clutters = t.GetToken("clutters");
 			if (clutters != null)
 			{
 				n.Clutter = new List<ClutterDefinition>();
-				foreach (var clutter in clutters.ChildNodes.OfType<XmlElement>().Where(c => c.Name == "clutter"))
-					n.Clutter.Add(ClutterDefinition.FromXml(clutter));
+				foreach (var clutter in clutters.Tokens.Where(c => c.Name == "clutter"))
+					n.Clutter.Add(ClutterDefinition.FromToken(clutter));
 			}
 
 			return n;
