@@ -166,7 +166,7 @@ namespace Noxico
 
 			var items = Mix.GetTokenTree("items.tml");
 			KnownItems = new List<InventoryItem>();
-			foreach (var item in items.Where(t => t.Name == "item"))
+			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				KnownItems.Add(InventoryItem.FromToken(item));
 
 			Program.WriteLine("Randomizing potions and rings...");
@@ -853,13 +853,13 @@ namespace Noxico
 						if (thisBoard.IsSolid(eY, eX))
 							continue;
 						var sides = 0;
-						if (thisBoard.IsSolid(eY - 1, eX))
+						if (thisBoard.IsSolid(eY - 1, eX, SolidityCheck.DryWalker))
 							sides++;
-						if (thisBoard.IsSolid(eY + 1, eX))
+						if (thisBoard.IsSolid(eY + 1, eX, SolidityCheck.DryWalker))
 							sides++;
-						if (thisBoard.IsSolid(eY, eX - 1))
+						if (thisBoard.IsSolid(eY, eX - 1, SolidityCheck.DryWalker))
 							sides++;
-						if (thisBoard.IsSolid(eY, eX + 1))
+						if (thisBoard.IsSolid(eY, eX + 1, SolidityCheck.DryWalker))
 							sides++;
 						if (sides > 3)
 							continue;
@@ -909,7 +909,7 @@ namespace Noxico
 						continue;
 					if (biome > 0 && board.GetToken("biome").Value != biome)
 						continue;
-					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 8)
+					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
 						continue;
 					if (maxWater != -1)
 					{

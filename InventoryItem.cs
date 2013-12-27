@@ -761,6 +761,8 @@ namespace Noxico
 			if (item.HasToken("fat"))
 			{
 				var hwa = Random.Flip() ? "hips" : Random.Flip() ? "waist" : "ass/size";
+				if (gourmand.Path("hwa") == null)
+					return;
 				var change = Random.NextDouble() * 0.25;
 				if (change > 0)
 				{
