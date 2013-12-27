@@ -278,6 +278,12 @@ namespace Noxico
 
 					switch (color.Name)
 					{
+						case "ffff00ff": //Magenta, biome floor, removes obstacles
+							bgd = this.Tilemap[x, y].Background;
+							fgd = this.Tilemap[x, y].Foreground;
+							bur = this.Tilemap[x, y].CanBurn;
+							chr = ' ';
+							break;
 						case "ff800080": //Purple, floor
 							bgd = woodFloor;
 							chr = ' ';

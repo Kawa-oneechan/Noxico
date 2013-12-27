@@ -499,7 +499,7 @@ namespace Noxico
 				{
 					var option = options[Random.Next(options.Count)];
 					var toAdd = parseOption(option);
-					if (toAdd != null && !toAdd.HasToken("disabled"))
+					if (toAdd != null)
 						loot.Add(toAdd);
 					amount--;
 				}

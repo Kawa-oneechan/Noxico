@@ -495,8 +495,14 @@ namespace Noxico
 
 		public bool IsSolid(int row, int col, SolidityCheck check = SolidityCheck.Walker)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return true;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			if (check == SolidityCheck.Walker && Tilemap[col, row].SolidToWalker)
 				return true;
 			else if (check == SolidityCheck.DryWalker && Tilemap[col, row].SolidToDryWalker)
@@ -510,36 +516,66 @@ namespace Noxico
 
 		public bool IsBurning(int row, int col)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return false;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
 		}
 
 		public bool IsWater(int row, int col)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return false;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			return Tilemap[col, row].Water;
 		}
 
 		public bool IsLit(int row, int col)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return false;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			return Lightmap[row, col];
 		}
 
 		public TileDescription? GetSpecialDescription(int row, int col)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return null;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			return Tilemap[col, row].GetDescription();
 		}
 
 		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool wall = false, bool burn = false, bool water = false, bool cliff = false)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			var t = new Tile()
 			{
 				Character = tile,
@@ -556,8 +592,14 @@ namespace Noxico
 
 		public void Immolate(int row, int col)
 		{
-			if (col >= 80 || row >= 50 || col < 0 || row < 0)
-				return;
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
 			var tile = Tilemap[col, row];
 			if (tile.CanBurn && !tile.Water)
 			{
