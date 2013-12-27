@@ -782,6 +782,8 @@ namespace Noxico
 		{
 			foreach (var l in this.DirtySpots)
 			{
+				if (l.X >= 80 || l.Y >= 50 || l.X < 0 || l.Y < 0)
+					continue;
 				var t = this.Tilemap[l.X, l.Y];
 				if (Lightmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
