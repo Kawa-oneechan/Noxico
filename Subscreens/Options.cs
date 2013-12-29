@@ -127,8 +127,8 @@ namespace Noxico
 				saveButton = new UIButton(i18n.GetString("opt_save"), (s, e) =>
 					{
 						var i = int.Parse(speed.Text);
-						if (i < 10)
-							i = 10;
+						if (i < 1)
+							i = 1;
 						if (i > 200)
 							i = 200;
 						IniFile.SetValue("misc", "speed", i);
