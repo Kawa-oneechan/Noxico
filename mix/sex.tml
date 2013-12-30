@@ -240,7 +240,7 @@ choice: insert_cock_vaginal
 				takevirginity: 1 0
 					success
 						message
-							$: [b:Youorname] [has] lost [b:his] virginity!
+							$: [b:Youorname] lost [b:his] virginity!
 -- Cause a single HP of damage?
 		message
 			$: [t:Youorname] push{es} [t:his] [t:cocktype] [cockrand] inside of [b:yourornames] [b:pussywetness] [pussyrand].
@@ -265,7 +265,7 @@ choice: insert_cock_vaginal_rape
 				takevirginity: 1 0
 					success
 						message
-							$: [b:Youorname] [has] lost [b:his] virginity!
+							$: [b:Youorname] lost [b:his] virginity!
 		message
 			$: [t:Youorname] shove{es} [t:his] [t:cocktype] [cockrand] deep inside of [b:yourornames] [b:pussywetness] [pussyrand].
 
@@ -289,7 +289,7 @@ choice: insert_cock_vaginal_female
 				takevirginity: 0
 					success
 						message
-							$: [t:Youorname] [has] lost [t:his] virginity!
+							$: [t:Youorname] lost [t:his] virginity!
 		message
 			$: [t:Youorname] line{s} [t:his] [pussyrand] up with [b:yourornames] [b:cocktype] [cockrand] and slam{s} it inside.
 
