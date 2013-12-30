@@ -475,3 +475,11 @@ tail
 		feline
 		cat-like
 		sinuous
+feet
+	horse: hoof
+	cow: hoof
+	dog: paw
+	bear: paw
+	cat: paw
+	insect: claw
+	default: foot

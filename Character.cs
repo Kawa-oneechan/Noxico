@@ -1564,7 +1564,7 @@ namespace Noxico
 
 			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
-				hipThings.Add(Toolkit.PickOne(Descriptions.GetSizeDescriptions(this.GetToken("hips").Value, "//lowerbody/hips").Split(',')).Trim() + " hips");
+				hipThings.Add(Descriptions.HipSize(this.GetToken("hips")) + " hips");
 				hipThings.Add(Descriptions.WaistSize(this.GetToken("waist")) + " waist");
 				hipThings.Add(Descriptions.ButtSize(this.Path("ass/size")) + " ass");
 			}
@@ -1644,7 +1644,7 @@ namespace Noxico
 					var row = breastRows[i];
 					//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
 					//	continue;
-					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescriptions(GetBreastRowSize(i), "//upperbody/breasts/sizes"));
+					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastRowSize(i)));
 					if (breastsVisible && (row.Path("nipples") == null || row.Path("nipples").Value == 0))
 						print(" nippleless");
 					print(" breast");
