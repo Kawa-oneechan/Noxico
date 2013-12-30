@@ -209,7 +209,7 @@ namespace Noxico
 			var actors = new[] { actor, target };
 			foreach (var effect in effects.Tokens)
 			{
-				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] {} : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] { effect.Value.ToString() } : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 				if (effect.Name == "breakitoff")
 				{
 					foreach (var act in actors)
