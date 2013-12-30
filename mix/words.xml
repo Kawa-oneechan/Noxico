@@ -367,6 +367,14 @@ Would you like an infodump on the way out?]]>
 		<word id="potion_ringmods">, shiny , sparking , warm , cold , translucent , glistening </word>
 		<word id="potion_name">{0}{1} potion</word>
 		<word id="potion_ringname">{0}{1} ring</word>
+		<word id="cockrandom">penis, cock, dick, pecker, prick, rod, shaft, dong</word>
+		<word id="pussyrandom">vagina, pussy, cunt, cooter, cooch, cunny, quim, twat</word>
+		<word id="anusrandom">anus, asshole, butthole, rosebud, pucker</word>
+		<word id="buttrandom">butt, ass, rear, backside, behind, bum</word>
+		<word id="clitrandom">clitoris, clit, fun button, clitty, love button</word>
+		<word id="breastsrandom">breasts, boobs, tits, knockers, mounds, titties</word>
+		<word id="breastrandom">breast, boob, tit, knocker, mound</word>
+		<word id="cumrandom">semen, cum, jizz, spunk, seed</word>
 	</category>
 	<category name="Inventory">
 		<word id="inventory_yours">Your inventory</word>
@@ -527,8 +535,12 @@ Would you like an infodump on the way out?]]>
 	<pluralizer>
 		<of><![CDATA[ of ]]></of>
 		<sanitycheck>
+			<input>hoof</input>
+			<output>hooves</output>
+			<!--
 			<input>cheap piece of shit</input>
 			<output>cheap pieces of shit</output>
+			-->
 		</sanitycheck>
 		<uncountable_words>
 			<uncountable_word>money</uncountable_word>
@@ -586,6 +598,7 @@ Would you like an infodump on the way out?]]>
 			<regular_plural from="rtex" to="rtices" />
 			<regular_plural from="cubus" to="cubi" />
 			<regular_plural from="ooth" to="eeth" />
+			<regular_plural from="oof" to="ooves" />
 			<regular_plural from="fe" to="ves" />
 			<!-- Specify sus and lus instead of just us because house -> houses -> hous -->
 			<regular_plural from="sus" to="suses" />

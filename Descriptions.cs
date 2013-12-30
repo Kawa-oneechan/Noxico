@@ -7,11 +7,12 @@ namespace Noxico
 {
 	public static class Descriptions
 	{
-		public static XmlDocument descTable;
+		public static TokenCarrier descTable;
 
 		static Descriptions()
 		{
-			descTable = Mix.GetXmlDocument("bodyparts.xml");
+			descTable = new TokenCarrier();
+			descTable.Tokens.AddRange(Mix.GetTokenTree("bodyparts.tml"));
 		}
 
 		public static string Length(float cm)
@@ -51,40 +52,57 @@ namespace Noxico
 			}
 		}
 
+		public static string GetSizeDescription(string path, float upTo)
+		{
+			var set = descTable.Path(path);
+			if (set == null)
+				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
+			var ret = string.Empty;
+			foreach (var item in set.Tokens)
+			{
+				if (item.Value <= upTo)
+					ret = item.Tokens[Random.Next(item.Tokens.Count)].Name;
+				else
+					return ret;
+			}
+			return ret;
+		}
+
+		public static string GetPartDescription(string path)
+		{
+			var set = descTable.Path(path);
+			if (set == null)
+				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
+			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
+		}
+		public static string GetPartDescription(string path, params string[] alternatives)
+		{
+			var set = descTable.Path(path);
+			if (set == null)
+				return Toolkit.PickOne(alternatives);
+			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
+		}
+
 		public static string BreastSize(Token breastRowToken, bool inCups = false)
 		{
 			if (breastRowToken == null)
 				return "glitch";
-
 			var size = breastRowToken.HasToken("size") ? breastRowToken.GetToken("size").Value : 0f;
-
-			var descriptions = inCups ? GetSizeDescriptions(size, "//upperbody/breasts/cupsizes") : GetSizeDescriptions(size, "//upperbody/breasts/sizes");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription(inCups ? "breasts/cupsize" : "breasts/size", size);
 		}
 
 		public static string Looseness(Token loosenessToken, bool forButts = false)
 		{
 			if (loosenessToken == null)
 				return null;
-
-			var size = loosenessToken.Value;
-
-			var descriptions = GetSizeDescriptions(size, forButts ?  "//lowerbody/ass/loosenesses" : "//lowerbody/sexorgans/vaginas/loosenesses");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription(forButts ? "ass/size" : "vagina/looseness", loosenessToken.Value);
 		}
 
 		public static string Wetness(Token wetnessToken)
 		{
 			if (wetnessToken == null)
 				return null;
-
-			var wetness = wetnessToken.Value;
-
-			var descriptions = GetSizeDescriptions(wetness, "//lowerbody/sexorgans/vaginas/wetnesses");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("vagina/wetness", wetnessToken.Value);
 		}
 
 		public static string Tail(Token tailToken)
@@ -103,52 +121,6 @@ namespace Noxico
 				return tailName + " tail";
 		}
 
-		#region PillowShout's additions
-
-		/// <summary>
-		/// Returns a set of descriptions based on the name of the desired bodypart type and the path to that set of part descriptions.
-		/// </summary>
-		/// <param name="name">The name of the descriptive element to return.</param>
-		/// <param name="Xpath">The XML path to the desired set of description elements.</param>
-		/// <returns>Returns the set of comma delimited descriptions as a string.</returns>
-		public static string GetPartDescriptions(string name, string Xpath)
-		{
-			var text = "";
-
-			foreach (var descEntry in descTable.DocumentElement.SelectNodes(Xpath + "/partdesc").OfType<XmlElement>())
-			{
-				if (descEntry.GetAttribute("name").Equals(name, StringComparison.OrdinalIgnoreCase))
-				{
-					text = descEntry.InnerText;
-					break;
-				}
-			}
-
-			return text;
-		}
-
-		/// <summary>
-		/// Returns a set of descriptions based on the size of the desired bodypart type and the path to that set of part descriptions.
-		/// </summary>
-		/// <param name="name">The size of the descriptive element to return.</param>
-		/// <param name="Xpath">The XML path to the desired set of description elements.</param>
-		/// <returns>Returns the set of comma delimited descriptions as a string.</returns>
-		public static string GetSizeDescriptions(float size, string Xpath)
-		{
-			var text = "";
-
-			foreach (var descEntry in descTable.DocumentElement.SelectNodes(Xpath + "/size").OfType<XmlElement>())
-			{
-				if (size <= float.Parse(descEntry.GetAttribute("upto")))
-				{
-					text = descEntry.InnerText;
-					break;
-				}
-			}
-
-			return text;
-		}
-
 		#region Random descriptions
 		/// <summary>
 		/// Chooses a random euphemism for penis and returns it as a string.
@@ -156,7 +128,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for penis.</returns>
 		public static string CockRandom()
 		{
-			return Toolkit.PickOne("penis", "cock", "dick", "pecker", "prick", "rod", "shaft", "dong");
+			return Toolkit.PickOne(i18n.GetArray("cockrandom"));
 		}
 
 		/// <summary>
@@ -165,7 +137,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for vagina.</returns>
 		public static string PussyRandom()
 		{
-			return Toolkit.PickOne("vagina", "pussy", "cunt", "cooter", "cooch", "cunny", "quim", "twat");
+			return Toolkit.PickOne(i18n.GetArray("pussyrandom"));
 		}
 
 		/// <summary>
@@ -174,7 +146,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for anus.</returns>
 		public static string AnusRandom()
 		{
-			return Toolkit.PickOne("anus", "asshole", "butthole", "rosebud", "pucker");
+			return Toolkit.PickOne(i18n.GetArray("anusrandom"));
 		}
 
 		/// <summary>
@@ -183,7 +155,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for ass.</returns>
 		public static string ButtRandom()
 		{
-			return Toolkit.PickOne("butt", "ass", "rear", "backside", "behind", "bum");
+			return Toolkit.PickOne(i18n.GetArray("buttrandom"));
 		}
 
 		/// <summary>
@@ -192,7 +164,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for clitoris.</returns>
 		public static string ClitRandom()
 		{
-			return Toolkit.PickOne("clitoris", "clit", "fun button", "clitty", "love button");
+			return Toolkit.PickOne(i18n.GetArray("clitrandom"));
 		}
 
 		/// <summary>
@@ -203,9 +175,9 @@ namespace Noxico
 		public static string BreastRandom(bool plural = false)
 		{
 			if (plural)
-				return Toolkit.PickOne("breasts", "boobs", "tits", "knockers", "mounds", "titties");
+				return Toolkit.PickOne(i18n.GetArray("breastsrandom"));
 			else
-				return Toolkit.PickOne("breast", "boob", "tit", "knocker", "mound");
+				return Toolkit.PickOne(i18n.GetArray("breastrandom"));
 		}
 
 		/// <summary>
@@ -214,7 +186,7 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for semen.</returns>
 		public static string CumRandom()
 		{
-			return Toolkit.PickOne("semen", "cum", "jizz", "spunk", "seed");
+			return Toolkit.PickOne(i18n.GetArray("cumrandom"));
 		}
 		#endregion
 
@@ -270,15 +242,7 @@ namespace Noxico
 		{
 			if (earToken == null)
 				return "glitch";
-
-			var type = earToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//head/ears");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetPartDescription("ears/" + earToken.Text, "indescribable", "unusual");
 		}
 
 		/// <summary>
@@ -290,26 +254,17 @@ namespace Noxico
 		{
 			if (faceToken == null)
 				return "glitch";
-
-			var type = faceToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//head/faces");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "strange");
+			return GetPartDescription("face/" + faceToken.Text, "indescribable", "strange");
 		}
 
 		/// <summary>
 		/// Returns a string describing the color of the passed hair token.
 		/// </summary>
 		/// <param name="hairToken">A character's 'hair' token.</param>
-		/// <returns>A string that describes the hair's color. Result is lower case.</returns>
+		/// <returns>A string that describes the hair's color.</returns>
 		public static string HairColor(Token hairToken)
 		{
-			var hairColorToken = hairToken.GetToken("color");
-			return Color.NameColor(hairColorToken.Text).ToLowerInvariant();
+			return Color.NameColor(hairToken.GetToken("color").Text);
 		}
 
 		/// <summary>
@@ -321,12 +276,7 @@ namespace Noxico
 		{
 			if (hairToken == null)
 				return "glitch";
-
-			var hairLength = hairToken.HasToken("length") ? hairToken.GetToken("length").Value : 0f;
-
-			var descriptions = GetSizeDescriptions(hairLength, "//head/hairs/lengths");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("hair/length", hairToken.HasToken("length") ? hairToken.GetToken("length").Value : 0f);
 		}
 
 		public static string Hair(Token hairToken)
@@ -345,15 +295,7 @@ namespace Noxico
 		{
 			if (teethToken == null)
 				return "glitch";
-
-			var type = teethToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//head/teeth");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetPartDescription("teeth/" + teethToken.Text, "indescribable", "unusual");
 		}
 
 		/// <summary>
@@ -365,15 +307,7 @@ namespace Noxico
 		{
 			if (tongueToken == null)
 				return "glitch";
-
-			var type = tongueToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//head/tongues");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetPartDescription("tongue/" + tongueToken.Text, "indescribable", "unusual");
 		}
 
 		#endregion
@@ -381,7 +315,7 @@ namespace Noxico
 		#region Upperbody descriptions
 
 		/// <summary>
-		/// Returns a string containing a description of the passed 'nipple' token's size. Returned values are determined from "bodyparts.xml".
+		/// Returns a string containing a description of the passed 'nipple' token's size.
 		/// </summary>
 		/// <param name="ballsToken">The 'nipple' token of a character.</param>
 		/// <returns>A string containging the description of the 'nipple' token's size.</returns>
@@ -389,46 +323,29 @@ namespace Noxico
 		{
 			if (nipplesToken == null)
 				return "glitch";
-
-			var size = nipplesToken.HasToken("size") ? nipplesToken.GetToken("size").Value : 0.25f;
-
-			var descriptions = GetSizeDescriptions(size, "//upperbody/breasts/nipplesizes");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("breasts/nipples", nipplesToken.HasToken("size") ? nipplesToken.GetToken("size").Value : 0.25f);
 		}
 
 		/// <summary>
-		/// Returns a string containing a description of the passed 'waist' token's size. Returned values are determined from "bodyparts.xml".
+		/// Returns a string containing a description of the passed 'waist' token's size.
 		/// </summary>
-		/// <param name="ballsToken">The 'waist' token of a character.</param>
+		/// <param name="waistToken">The 'waist' token of a character.</param>
 		/// <returns>A string containging the description of the 'waist' token's size.</returns>
 		public static string WaistSize(Token waistToken)
 		{
-			var size = waistToken != null ? waistToken.Value : 5;
-
-			var descriptions = GetSizeDescriptions(size, "//upperbody/waist");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("waist", waistToken != null ? waistToken.Value : 5);
 		}
 
 		/// <summary>
 		/// Takes a wing type token from a character and returns a string describing that wing's type.
 		/// </summary>
-		/// <param name="tailToken">The 'wings' token to be evaluated.</param>
+		/// <param name="wingToken">The 'wings' token to be evaluated.</param>
 		/// <returns>A string containing a description of the wings' type. Return's 'glitch' if 'tail is null.</returns>
 		public static string WingType(Token wingToken)
 		{
 			if (wingToken == null)
 				return "glitch";
-
-			var type = wingToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//upperbody/wings");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetPartDescription("wings/" + wingToken.Text, "indescribable", "unusual");
 		}
 
 		#endregion
@@ -444,19 +361,11 @@ namespace Noxico
 		{
 			if (cockToken == null)
 				return "glitch";
-
-			var type = cockToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//lowerbody/sexorgans/penises/types");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("unusual", "indescribable", "oddly shaped");
+			return GetPartDescription("penis/" + cockToken.Text, "indescribable", "unusual", "oddly shaped");
 		}
 
 		/// <summary>
-		/// Returns a string containing a description of the passed 'balls' token size. Returned values are determined from "bodyparts.xml".
+		/// Returns a string containing a description of the passed 'balls' token size.
 		/// </summary>
 		/// <param name="ballsToken">The 'balls' token of a character.</param>
 		/// <returns>A string containging the description of the 'balls' token's size.</returns>
@@ -464,16 +373,11 @@ namespace Noxico
 		{
 			if (ballsToken == null)
 				return "glitch";
-
-			var size = ballsToken.HasToken("size") ? ballsToken.GetToken("size").Value : 1f;
-
-			var descriptions = GetSizeDescriptions(size, "//lowerbody/sexorgans/balls/sizes");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("balls", ballsToken.HasToken("size") ? ballsToken.GetToken("size").Value : 1f);
 		}
 
 		/// <summary>
-		/// Returns a string containing a description of the passed 'ass' token size. Returned values are determined from "bodyparts.xml".
+		/// Returns a string containing a description of the passed 'ass' token size.
 		/// </summary>
 		/// <param name="ballsToken">The 'ass' token of a character.</param>
 		/// <returns>A string containging the description of the 'ass' token's size.</returns>
@@ -481,12 +385,7 @@ namespace Noxico
 		{
 			if (buttToken == null)
 				return "glitch";
-
-			var size = buttToken.HasToken("size") ? buttToken.GetToken("size").Value : 5;
-
-			var descriptions = GetSizeDescriptions(size, "//lowerbody/ass/sizes");
-
-			return Toolkit.PickOne(descriptions.Split(',')).Trim();
+			return GetSizeDescription("ass/size", buttToken.HasToken("size") ? buttToken.GetToken("size").Value : 5);
 		}
 
 		/// <summary>
@@ -497,20 +396,12 @@ namespace Noxico
 		/// <returns>A string containing a description of the foot type.</returns>
 		public static string Foot(Token legsToken, bool plural = false)
 		{
-			if (legsToken == null)
-				return "glitch";
-			if (legsToken.Text == "horse")
-				return plural ? "hooves" : "hoof";
-			else if (legsToken.Text == "dog" || legsToken.Text == "bear")
-				return plural ? "paws" : "paw";
-			else if (legsToken.Text == "insect")
-				return plural ? "claws" : "claw";
-
-			return plural ? "feet" : "foot";
+			var request = descTable.Path("feet/" + (legsToken == null ? "default" : legsToken.Text)) ?? descTable.Path("feet/default");
+			return request.Text.Pluralize(plural ? 2 : 1);
 		}
 
 		/// <summary>
-		/// Returns a string containing a description of the passed 'hips' token size. Returned values are determined from "bodyparts.xml".
+		/// Returns a string containing a description of the passed 'hips' token size.
 		/// </summary>
 		/// <param name="hipToken">The 'hips' token of a character.</param>
 		/// <returns>A string containging a description based on the hipToken's value.</returns>
@@ -518,15 +409,7 @@ namespace Noxico
 		{
 			if (hipToken == null)
 				return "glitch";
-
-			var hipSize = hipToken.Value;
-
-			var descriptions = GetSizeDescriptions(hipSize, "//lowerbody/hips");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetSizeDescription("hips", hipToken.Value);
 		}
 
 		/// <summary>
@@ -538,18 +421,8 @@ namespace Noxico
 		{
 			if (tailToken == null)
 				return "glitch";
-
-			var type = tailToken.Text;
-
-			var descriptions = GetPartDescriptions(type, "//lowerbody/tails");
-
-			if (!string.IsNullOrWhiteSpace(descriptions))
-				return Toolkit.PickOne(descriptions.Split(',')).Trim();
-			else
-				return Toolkit.PickOne("indescribable", "unusual");
+			return GetPartDescription("tail", tailToken.Text, "indescribable", "unusual");
 		}
-
-		#endregion
 
 		#endregion
 
@@ -561,10 +434,11 @@ namespace Noxico
 		/// <returns>A string containing a description of the hand type.</returns>
 		public static string Hand(Character character, bool plural = false)
 		{
+			//TRANSLATE
 			if (character.HasToken("quadruped"))
 				return Foot(character.GetToken("legs"), plural);
 			//Clawed hands and such can go here.
-			return plural ? "hands" : "hand";
+			return "hand".Pluralize(plural ? 2 : 1);
 		}
 
 	}
