@@ -376,14 +376,7 @@ namespace Noxico
 				Toolkit.SaveExpectation(stream, "SEEN");
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
-						temp.Add(Seenmap[row, col]);
-
-				var temp2 = new BitArray(temp.ToArray());
-
-				var ToWrite = new byte[50*80];
-				temp2.CopyTo(ToWrite, 0);
-				
-				stream.Write(ToWrite);
+						stream.Write(Seenmap[row, col]);
 
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
@@ -451,12 +444,9 @@ namespace Noxico
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
 
 				Toolkit.ExpectFromFile(stream, "SEEN", "seen map");
-				var temp = new BitArray(stream.ReadBytes(80 * 50));
-				var temp2 = new bool[80 * 50];
-				temp.CopyTo(temp2, 0);
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
-						newBoard.Seenmap[row, col] = temp2[row * 80 + col];
+						newBoard.Seenmap[row, col] = stream.ReadBoolean();
 
 				Toolkit.ExpectFromFile(stream, "SECT", "sector");
 				for (int i = 0; i < secCt; i++)
@@ -811,8 +801,10 @@ namespace Noxico
 				var t = this.Tilemap[l.X, l.Y];
 				if (Lightmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
-				else
+				else if (Seenmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground.Night(), t.Background.Night(), force);
+				else
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, ' ', Color.Black, Color.Black, force);
 			}
 			this.DirtySpots.Clear();
 
