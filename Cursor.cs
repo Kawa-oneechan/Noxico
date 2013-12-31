@@ -184,6 +184,11 @@ namespace Noxico
 
 						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
 						{
+							if (!IniFile.GetValue("misc", "allowrape", false) && boardChar.Character.HasToken("hostile"))
+							{
+								//Eat the option, because rape is bad m'kay?
+							}
+							else
 							if (!boardChar.Character.HasToken("beast"))
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))

@@ -694,7 +694,7 @@ namespace Noxico
 				if (distance <= range && CanSee(bcTarget))
 				{
 					//Within attacking range.
-					if (distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && Character.Likes(bcTarget.Character))
+					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && Character.Likes(bcTarget.Character))
 					{
 						//WRONG KIND OF ATTACK! ABANDON SHIP!!
 						Character.AddToken("waitforplayer");
