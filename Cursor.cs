@@ -63,6 +63,11 @@ namespace Noxico
 			if (NoxicoGame.Messages.Count == 0) //fixes range error found while explaining controls
 				NoxicoGame.Messages.Add(string.Empty);
 			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointatsomething");
+			if (!this.ParentBoard.IsSeen(YPosition, XPosition))
+			{
+				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cGray>Unexplored";
+				return;
+			}
 			foreach (var entity in this.ParentBoard.Entities)
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)

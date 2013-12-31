@@ -567,6 +567,19 @@ namespace Noxico
 			return Lightmap[row, col];
 		}
 
+		public bool IsSeen(int row, int col)
+		{
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
+			return Seenmap[row, col];
+		}
+
 		public TileDescription? GetSpecialDescription(int row, int col)
 		{
 			if (col >= 80)
@@ -826,10 +839,10 @@ namespace Noxico
 			{
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
-						Lightmap[row, col] = true;
+						Lightmap[row, col] = Seenmap[row, col] = true;
 				return;
 			}
-
+			
 			var previousMap = new bool[50, 80];
 			for (int row = 0; row < 50; row++)
 			{
@@ -841,13 +854,14 @@ namespace Noxico
 			}
 
 			var radius = source != null ? ((BoardChar)source).SightRadius : 10;
-
+			var doingTorches = false;
 			Func<int, int, bool> f = (x1, y1) =>
 			{
 				if (y1 < 0 || y1 >= 50 | x1 < 0 || x1 >= 80)
 					return true;
+				if (!doingTorches)
+					Seenmap[y1, x1] = true;
 				return Tilemap[x1, y1].SolidToProjectile;
-				//return !Tilemap[x1, y1].IsWater && Tilemap[x1, y1].Solid;
 			};
 			Action<int, int> a = (x2, y2) =>
 			{
@@ -858,9 +872,9 @@ namespace Noxico
 
 			if (source != null)
 				SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(source.XPosition, source.YPosition, radius, f, a);
-
 			if (torches)
 			{
+				doingTorches = true;
 				foreach (var light in Entities.OfType<Clutter>().Where(x => x.ID.Contains("Torch")))
 				{
 					SilverlightShadowCasting.ShadowCaster.ComputeFieldOfViewWithShadowCasting(light.XPosition, light.YPosition, 5, f, a);
