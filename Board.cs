@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -305,6 +306,7 @@ namespace Noxico
 
 		public Tile[,] Tilemap = new Tile[80, 50];
 		public bool[,] Lightmap = new bool[50, 80];
+		public bool[,] Seenmap = new bool[50, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; private set; }
 		public List<Location> ExitPossibilities { get; private set; }
@@ -368,6 +370,20 @@ namespace Noxico
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						Tilemap[col, row].SaveToFile(stream);
+
+				var temp = new List<bool>();
+
+				Toolkit.SaveExpectation(stream, "SEEN");
+				for (int row = 0; row < 50; row++)
+					for (int col = 0; col < 80; col++)
+						temp.Add(Seenmap[row, col]);
+
+				var temp2 = new BitArray(temp.ToArray());
+
+				var ToWrite = new byte[50*80];
+				temp2.CopyTo(ToWrite, 0);
+				
+				stream.Write(ToWrite);
 
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
@@ -433,6 +449,14 @@ namespace Noxico
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
+
+				Toolkit.ExpectFromFile(stream, "SEEN", "seen map");
+				var temp = new BitArray(stream.ReadBytes(80 * 50));
+				var temp2 = new bool[80 * 50];
+				temp.CopyTo(temp2, 0);
+				for (int row = 0; row < 50; row++)
+					for (int col = 0; col < 80; col++)
+						newBoard.Seenmap[row, col] = temp2[row * 80 + col];
 
 				Toolkit.ExpectFromFile(stream, "SECT", "sector");
 				for (int i = 0; i < secCt; i++)
