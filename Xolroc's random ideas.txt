@@ -14,15 +14,19 @@ A 'pain to pleasure' curse, which makes it so that any pain is instead felt as s
 	tell how injured he/she/shi/it is.  This may also mean that characters who get too aroused while under this curse will actually mutilate themselves without realizing 
 	that it's damaging.  I am, apparently, evil.
 Support breasts on the back instead of just the front -- balance that back pain!
-Taur trains--more than one taurbody! (and that's not my name for it, it's the predominant name in the furry community; I agree it's a kinda stupid name)
+!IMPLEMENTED Taur trains--more than one taurbody! (and that's not my name for it, it's the predominant name in the furry community; I agree it's a kinda stupid name)
 Add more races!  Dragons would be nice.  As would generic reptilians.  Avians!
 If a cock is large enough, allow for urethral fucking
 Add a way to get multi balls!
-Add herm options to character generation (at least as gender identity) and/or to npc generation
+!IMPLEMENTED Add herm options to character generation (at least as gender identity) and/or to npc generation
 nipplemouths!  Lipples?
 Eye-nipples are a neat idea
 Make it possible to remove parts too; if left with 0 eyes you're blind, if 0 mouths you can't eat and eventually starve to death, etc
 Crotchhead!  Should make for very interesting sex scenes
-multi-eyes would be nice
+!IMPLEMENTED multi-eyes would be nice
 buyable/sellable body parts
+An item that lets you steal someone else's penis and attach it to yourself, leaving the other person dickless and you with one more
+	On that note, an item that lets you swap traits or swap entire bodies with someone else
 for taurs: genitals between each pair of legs, rather than just the one
+add viscosity value for slimes (what use?)
+Hue-to-flavor mapping for slimes (possibly random flavor from a set)

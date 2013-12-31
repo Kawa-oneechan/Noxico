@@ -262,5 +262,9 @@ namespace Noxico
 		{
 			this.Tokens.Add(t);
 		}
+
+		public Change()
+		{
+		}
 	}
 }
