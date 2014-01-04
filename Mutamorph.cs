@@ -282,7 +282,70 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Wings
+			#region Wings
+			{
+				var wingsNow = this.GetToken("wings");
+				var wingsThen = target.GetToken("wings");
+				if (wingsThen != null && wingsThen.Text.StartsWith("oneof"))
+				{
+					var options = wingsThen.Text.Substring(wingsThen.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+					if (!options.Contains(wingsNow.Text))
+						wingsThen.Text = Toolkit.PickOne(options);
+					else
+						wingsThen.Text = wingsNow.Text;
+				}
+				if (wingsNow == null && wingsThen != null)
+				{
+					var change = new Token("wings", wingsThen.Text);
+					if (wingsThen.HasToken("small"))
+					{
+						change.AddToken("_addto/wings", "small");
+						change.AddToken("$", "[view] grow{s} a pair of small " + wingsThen.Text + " wings");
+					}
+					else
+						change.AddToken("$", "[view] grow{s} a pair of " + wingsThen.Text + " wings");
+					possibleChanges.Add(change);
+				}
+				else if (wingsNow != null && wingsThen == null)
+				{
+					if (wingsNow.HasToken("small"))
+					{
+						var change = new Token("_remove", "wings");
+						change.AddToken("$", "[view] lose{s} [his] wings");
+						possibleChanges.Add(change);
+					}
+					else
+					{
+						var change = new Token("_addTo/wings", "small");
+						change.AddToken("$", "[views] wings shrink");
+						possibleChanges.Add(change);
+					}
+				}
+				else if (wingsNow != null && wingsThen != null)
+				{
+					if (wingsNow.Text != wingsThen.Text)
+					{
+						var change = new Token("wings", wingsThen.Text);
+						change.AddToken("$", "[views] wings become " + wingsThen.Text + "-like");
+						possibleChanges.Add(change);
+					}
+					else if (wingsNow.HasToken("small") && !wingsThen.HasToken("small"))
+					{
+						var change = new Token("_remove", "wings/small");
+						change.AddToken("$", "[views] wings grow larger");
+						possibleChanges.Add(change);
+					}
+					else if (!wingsNow.HasToken("small") && wingsThen.HasToken("small"))
+					{
+						var change = new Token("_addto/wings", "small");
+						change.AddToken("$", "[views] wings shrink");
+						possibleChanges.Add(change);
+					}
+				}
+			}
+			#endregion
+
+			//TODO: Special lower bodies -- quads, taurs, snakes...
 
 			//TODO: Breastrows
 
@@ -360,6 +423,13 @@ namespace Noxico
 				if (change.Name == "_remove")
 				{
 					this.RemoveToken(change.Text);
+					continue;
+				}
+				if (change.Name.StartsWith("_addto/"))
+				{
+					var path = this.Path(change.Name.Substring(7));
+					if (path != null)
+						path.AddToken(change.Text);
 					continue;
 				}
 				var token = this.Path(change.Name) ?? this.AddToken(change.Name);
