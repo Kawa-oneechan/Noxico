@@ -211,6 +211,8 @@ namespace Noxico
 			Random.Reseed("medusacascade");
 			var guinea = Character.Generate("human", Gender.Male);
 			guinea.Morph("fox");
+			guinea.Morph("fox");
+			guinea.Morph("fox");
 			var tokens = guinea.DumpTokens(guinea.Tokens, 0);
 
 			/*
