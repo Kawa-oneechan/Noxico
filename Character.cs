@@ -83,7 +83,7 @@ namespace Noxico
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
 				g = Gender.Random;
-			if (player.Path("ships/" + ID) != null)
+			if (player != null && player.Path("ships/" + ID) != null)
 			{
 				if (appendTitle)
 					return string.Format("{0}, {1} {2}{3}", Name.ToString(fullName), (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
