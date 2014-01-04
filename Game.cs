@@ -208,6 +208,11 @@ namespace Noxico
 			this.Player = new Player();
 			Introduction.Title();
 
+			Random.Reseed("medusacascade");
+			var guinea = Character.Generate("human", Gender.Male);
+			guinea.Morph("fox");
+			var tokens = guinea.DumpTokens(guinea.Tokens, 0);
+
 			/*
 			var dungen = new StoneDungeonGenerator();
 			var board = new Board();
