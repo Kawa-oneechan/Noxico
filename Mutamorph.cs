@@ -65,20 +65,20 @@ namespace Noxico
 				if (growOrShrink == 0)
 					continue;
 
-				var description = "[Yourornames] " + trivialSize + (growOrShrink > 0 ? " increases" : " decreases");
+				var description = "[views] " + trivialSize + (growOrShrink > 0 ? " increases" : " decreases");
 				//TODO: replace with a better i18n-based way to work.
 				//Perhaps a key like "morph_tallness_1" or "morph_hips_-1".
 				//For now, these'll do.
 				switch (trivialSize)
 				{
 					case "tallness":
-						description = "[Youorname] grow a bit " + (growOrShrink > 0 ? "taller" : "shorter");
+						description = "[view] grow{s} a bit " + (growOrShrink > 0 ? "taller" : "shorter");
 						break;
 					case "hips":
-						description = "[Yourornames] hips " + (growOrShrink > 0 ? "flare out some more" : "become smaller");
+						description = "[views] hips " + (growOrShrink > 0 ? "flare out some more" : "become smaller");
 						break;
 					case "waist":
-						description = "[Yourornames] waist grows " + (growOrShrink > 0 ? "a bit wider" : "a bit less wide");
+						description = "[views] waist grows " + (growOrShrink > 0 ? "a bit wider" : "a bit less wide");
 						break;
 				}
 
@@ -108,7 +108,7 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeKind))
 					continue;
 
-				var description = "[Yourornames] " + trivialKind + " turns " + changeKind;
+				var description = "[views] " + trivialKind + " turns " + changeKind;
 				//TODO: similar as trivialSize above.
 
 				var change = new Token(trivialKind, changeKind);
@@ -138,7 +138,7 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeColor))
 					continue;
 
-				var description = "[Yourornames] " + trivialColor + " turns " + changeColor;
+				var description = "[views] " + trivialColor + " turns " + changeColor;
 				//TODO: similar as trivialSize above.
 
 				var change = new Token(trivialColor, changeColor);
@@ -174,7 +174,7 @@ namespace Noxico
 				}
 				if (skinTypeNow != skinTypeThen)
 				{
-					var description = "[Yourornames] body turns to " + skinColorThen + " " + skinTypeThen;
+					var description = "[views] body turns to " + skinColorThen + " " + skinTypeThen;
 					var change = new Token("skin/type", skinTypeThen);
 					change.AddToken("$", 0, description);
 					change.AddToken("skin/color", skinColorThen);
@@ -190,20 +190,20 @@ namespace Noxico
 							var options = legsThen.Substring(legsThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 							legsThen = Toolkit.PickOne(options);
 						}
-						var newChange = change.AddToken("$", "[Yourorhis] lower body reforms into a pair of " + legsThen + " legs.");
+						var newChange = change.AddToken("$", "[views] lower body reforms into a pair of " + legsThen + " legs.");
 						newChange.AddToken("legs", legsThen);
 					}
 					else if (skinTypeThen == "slime")
 					{
 						var newChange = new Token("_add", "slimeblob");
-						newChange.AddToken("$", 0, "[Yourorhis] legs dissolve into a puddle of goop.");
+						newChange.AddToken("$", 0, "[views] legs dissolve into a puddle of goop.");
 						newChange.AddToken("_remove", "legs");
 						change.AddToken(newChange);
 					}
 				}
 				else if (skinColorNow != skinColorThen)
 				{
-					var description = "[Yourornames] body turns " + skinColorThen;
+					var description = "[views] body turns " + skinColorThen;
 					var change = new Token("skin/color", skinColorThen);
 					change.AddToken("$", description);
 					possibleChanges.Add(change);
@@ -231,7 +231,7 @@ namespace Noxico
 					}
 					if (hairColorNow != hairColorThen)
 					{
-						var description = "[Yourornames] hair turns " + hairColorThen;
+						var description = "[views] hair turns " + hairColorThen;
 						var change = new Token("hair/color", hairColorThen);
 						change.AddToken("$", 0, description);
 						possibleChanges.Add(change);
@@ -257,7 +257,7 @@ namespace Noxico
 					//Change tails
 					if (tailThen.Text != tailNow.Text)
 					{
-						var description = "[Yourornames] tail becomes " + tailThen.Text + "-like";
+						var description = "[views] tail becomes " + tailThen.Text + "-like";
 						var change = new Token("tail", tailThen.Text);
 						change.AddToken("$", description);
 						possibleChanges.Add(change);
@@ -266,7 +266,7 @@ namespace Noxico
 				else if (tailNow == null && tailThen != null)
 				{
 					//Grow a tail
-					var description = "[Youorname] grows a " + tailThen.Text + "-like tail";
+					var description = "[view] grows a " + tailThen.Text + "-like tail";
 					var change = new Token("tail", tailThen.Text);
 					change.AddToken("$", description);
 					possibleChanges.Add(change);
@@ -274,7 +274,7 @@ namespace Noxico
 				else if (tailNow != null && tailThen == null)
 				{
 					//Lose a tail
-					var description = "[Yourornames] tail disappears";
+					var description = "[views] tail disappears";
 					var change = new Token("_remove", "tail");
 					change.AddToken("$", description);
 					possibleChanges.Add(change);
@@ -295,31 +295,86 @@ namespace Noxico
 			return possibleChanges;
 		}
 
-		public void ApplyMutamorphDelta(Token change)
+		public void ApplyMutamorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
 		{
-			if (change.Text == "_remove")
+			var numChanges = Math.Min(4, possibilities.Count);
+			var changes = new List<Token>();
+			var feedbacks = new List<string>();
+			for (var i = 0; i < numChanges; i++)
 			{
-				this.RemoveToken(change.Text);
-				return;
+				var possibility = possibilities[Random.Next(possibilities.Count)];
+				possibilities.Remove(possibility);
+				changes.Add(possibility);
+				foreach (var subChange in possibility.Tokens)
+				{
+					if (subChange.Name == "$")
+					{
+						feedbacks.Add(subChange.Text);
+						continue;
+					}
+					changes.Add(subChange);
+				}
 			}
-			var token = this.Path(change.Name) ?? this.AddToken(change.Name);
-			if (!string.IsNullOrWhiteSpace(change.Text))
-				token.Text = change.Text;
-			else
-				token.Value = change.Value;
-			foreach (var t in change.Tokens)
+
+			var feedbackBuilder = new StringBuilder();
+			if (feedbacks.Count == 1)
 			{
-				if (t.Name == "$")
+				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
+				feedbackBuilder.Append(".");
+			}
+			else if (feedbacks.Count == 2)
+			{
+				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
+				feedbackBuilder.Append(" and ");
+				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				feedbackBuilder.Append(".");
+			}
+			else if (feedbacks.Count == 3)
+			{
+				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
+				feedbackBuilder.Append(", ");
+				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				feedbackBuilder.Append(", and ");
+				feedbackBuilder.Append(feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				feedbackBuilder.Append(".");
+			}
+			else
+			{
+				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
+				feedbackBuilder.Append(". ");
+				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]"));
+				for (var i = 2; i < feedbacks.Count - 1; i++)
+				{
+					feedbackBuilder.Append(", ");
+					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				}
+				feedbackBuilder.Append(", and ");
+				feedbackBuilder.Append(feedbacks[feedbacks.Count - 1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				feedbackBuilder.Append(".");
+			}
+			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
+			feedback = feedbackBuilder.ToString().Viewpoint(this);
+
+			foreach (var change in changes)
+			{
+				if (change.Name == "_remove")
+				{
+					this.RemoveToken(change.Text);
 					continue;
-				ApplyMutamorphDelta(t);
+				}
+				var token = this.Path(change.Name) ?? this.AddToken(change.Name);
+				if (!string.IsNullOrWhiteSpace(change.Text))
+					token.Text = change.Text;
+				else
+					token.Value = change.Value;
 			}
 		}
 
 		public void Morph(string targetPlan)
 		{
-			//TODO: don't just apply ALL of these possible changes.
-			var changes = GetMorphDeltas(targetPlan);
-			changes.ForEach(c => ApplyMutamorphDelta(c));
+			var possibilities = GetMorphDeltas(targetPlan);
+			var feedback = string.Empty;
+			ApplyMutamorphDeltas(possibilities, 4, out feedback);
 		}
 	}
 }
