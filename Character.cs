@@ -2289,7 +2289,221 @@ namespace Noxico
 #else
 		public void Morph(string targetPlan, MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false, int continueChance = 0)
 		{
-			throw new InvalidOperationException("Morph() has been disabled in this build.");
+			//throw new InvalidOperationException("Morph() has been disabled in this build.");
+
+			Token.NoRolls = true;
+			var rawPlans = Mix.GetTokenTree("bodyplans.tml");
+			var target = rawPlans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
+			if (target == null)
+				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
+
+			var meta = new[] { "playable", "culture", "namegen", "bestiary", "femalesmaller", "costume", "_either", "items" };
+			var simpleTraits = new[] { "fireproof", "aquatic" };
+			var trivialSizes = new[]
+			{
+				"tallness", "hips", "waist", "fertility",
+				"charisma", "cunning", "carnality", "sensitivity", "speed", "strength"
+			};
+			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };
+			var trivialColors = new[] { "eyes" };
+			var possibleChanges = new List<Token>();
+
+			//Trivial changes are on the root level only. That makes them fairly easy to handle.
+
+			#region Trivial size and rating changes
+			foreach (var trivialSize in trivialSizes)
+			{
+				if (!this.HasToken(trivialSize) || !target.HasToken(trivialSize))
+					continue;
+				var now = this.GetToken(trivialSize).Value;
+				var thenToken = target.GetToken(trivialSize);
+				var growOrShrink = 0;
+				if (!string.IsNullOrWhiteSpace(thenToken.Text))
+				{
+					if (thenToken.Text.StartsWith("roll"))
+					{
+						var xDyPz = thenToken.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = range + plus;
+						if (now < min)
+							growOrShrink = 1; //Need to grow.
+						else if (now > max)
+							growOrShrink = -1; //Need to shrink.
+					}
+				}
+				else
+				{
+					var then = thenToken.Value;
+					if (now < then)
+						growOrShrink = 1; //Need to grow.
+					else if (now > then)
+						growOrShrink = -1; //Need to shrink.
+				}
+
+				if (growOrShrink == 0)
+					continue;
+
+				var description = "[Yourornames] " + trivialSize + (growOrShrink > 0 ? " increases" : " decreases");
+				//TODO: replace with a better i18n-based way to work.
+				//Perhaps a key like "morph_tallness_1" or "morph_hips_-1".
+				//For now, these'll do.
+				switch (trivialSize)
+				{
+					case "tallness":
+						description = "[Youorname] grow a bit " + (growOrShrink > 0 ? "taller" : "shorter");
+						break;
+					case "hips":
+						description = "[Yourornames] hips " + (growOrShrink > 0 ? "flare out some more" : "become smaller");
+						break;
+					case "waist":
+						description = "[Yourornames] waist grows " + (growOrShrink > 0 ? "a bit wider" : "a bit less wide");
+						break;
+				}
+
+				var change = new Token(trivialSize, now + (growOrShrink * Random.Next(2, 8)));
+				change.AddToken("$", 0, description);
+				possibleChanges.Add(change);
+			}
+			#endregion
+
+			#region Trivial kind changes
+			foreach (var trivialKind in trivialKinds)
+			{
+				if (!this.HasToken(trivialKind) || !target.HasToken(trivialKind))
+					continue;
+				var now = this.GetToken(trivialKind).Text;
+				var thenToken = target.GetToken(trivialKind);
+				var changeKind = string.Empty;
+				if (thenToken.Text.StartsWith("oneof"))
+				{
+					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+					if (!options.Contains(now))
+						changeKind = Toolkit.PickOne(options);
+				}
+				else if (thenToken.Text != now)
+					changeKind = thenToken.Text;
+
+				if (string.IsNullOrWhiteSpace(changeKind))
+					continue;
+
+				var description = "[Yourornames] " + trivialKind + " turns " + changeKind;
+				//TODO: similar as trivialSize above.
+
+				var change = new Token(trivialKind, changeKind);
+				change.AddToken("$", 0, description);
+				possibleChanges.Add(change);
+			}
+			#endregion
+
+			#region Trivial color changes
+			//Yes, almost the same as trivialKinds.
+			foreach (var trivialColor in trivialColors)
+			{
+				if (!this.HasToken(trivialColor) || !target.HasToken(trivialColor))
+					continue;
+				var now = this.GetToken(trivialColor).Text;
+				var thenToken = target.GetToken(trivialColor);
+				var changeColor = string.Empty;
+				if (thenToken.Text.StartsWith("oneof"))
+				{
+					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+					if (!options.Contains(now))
+						changeColor = Toolkit.PickOne(options);
+				}
+				else if (thenToken.Text != now)
+					changeColor = thenToken.Text;
+
+				if (string.IsNullOrWhiteSpace(changeColor))
+					continue;
+
+				var description = "[Yourornames] " + trivialColor + " turns " + changeColor;
+				//TODO: similar as trivialSize above.
+
+				var change = new Token(trivialColor, changeColor);
+				change.AddToken("$", 0, description);
+				possibleChanges.Add(change);
+			}
+			#endregion
+
+			#region Skin
+			//TODO: RULE: a slime does NOT NEED to have a slimeblob, but a nonslime MAY NEVER have one.
+			var skinNow = this.GetToken("skin");
+			var skinThen = target.GetToken("skin");
+			var skinTypeNow = skinNow.GetToken("type").Text;
+			var skinColorNow = skinNow.GetToken("color").Text;
+			var skinTypeThen = skinThen.GetToken("type").Text;
+			var skinColorThen = skinThen.GetToken("color").Text;
+			if (skinTypeThen.StartsWith("oneof"))
+			{
+				var options = skinTypeThen.Substring(skinTypeThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+				if (!options.Contains(skinTypeNow))
+					skinTypeThen = Toolkit.PickOne(options);
+				else
+					skinTypeThen = skinTypeNow;
+			}
+			if (skinColorThen.StartsWith("oneof"))
+			{
+				var options = skinColorThen.Substring(skinColorThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+				if (!options.Contains(skinColorNow))
+					skinColorThen = Toolkit.PickOne(options);
+				else
+					skinColorThen = skinColorNow;
+			}
+			if (skinTypeNow != skinTypeThen)
+			{
+				var description = "[Yourornames] body turns to " + skinColorThen + " " + skinTypeThen;
+				var change = new Token("skin/type", skinTypeThen);
+				change.AddToken("$", 0, description);
+				change.AddToken("skin/color", 0, skinColorThen);
+				possibleChanges.Add(change);
+
+				if (skinTypeThen != "slime")
+				{
+					change = new Token("_remove", 0, "slimeblob");
+					//Force a leg change
+					var legsThen = target.HasToken("legs") ? target.GetToken("legs").Text : "human";
+					if (legsThen.StartsWith("oneof"))
+					{
+						var options = legsThen.Substring(legsThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+						legsThen = Toolkit.PickOne(options);
+					}
+					var newChange = change.AddToken("$", 0, "[Yourorhis] lower body reforms into a pair of " + legsThen + " legs.");
+					newChange.AddToken("legs", 0, legsThen);
+				}
+				else if (skinTypeThen == "slime")
+				{
+					var newChange = new Token("_add", 0, "slimeblob");
+					newChange.AddToken("$", 0, "[Yourorhis] legs dissolve into a puddle of goop.");
+					newChange.AddToken("_remove", 0, "legs");
+					change.AddToken(newChange);
+				}
+			}
+			else if (skinColorNow != skinColorThen)
+			{
+				var description = "[Yourornames] body turns " + skinColorThen;
+				var change = new Token("skin/color", skinColorThen);
+				change.AddToken("$", 0, description);
+				possibleChanges.Add(change);
+			}
+			#endregion
+
+			//TODO: Hair
+
+			//TODO: Wings
+
+			//TODO: Ass
+
+			//TODO: Breastrows
+
+			//TODO: Vaginas
+
+			//TODO: Penises
+
+			//TODO: Balls
 		}
 #endif
 		public void Morph(string targetPlan)

@@ -100,6 +100,10 @@ namespace Noxico
 				return;
 			Tilemap[x, y] = tile.Clone();
 		}
+		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor)
+		{
+			SetTile(row, col, tile, foreColor, backColor, false, false, false, false);
+		}
 
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{

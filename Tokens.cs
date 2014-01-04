@@ -208,16 +208,7 @@ namespace Noxico
 					{
 						var xDyPz = l.Substring(l.LastIndexOf(' ') + 1);
 						int y = 0, z = 0;
-						var m = Regex.Match(xDyPz, @"1d(\d+)\+(\d+)");
-						if (!m.Success)
-						{
-							m = Regex.Match(xDyPz, @"1d(\d+)");
-							if (!m.Success)
-								throw new Exception(string.Format("Roll() can't parse \"{0}\".", xDyPz));
-						}
-						y = int.Parse(m.Groups[1].Value);
-						if (m.Groups.Count == 3)
-							z = int.Parse(m.Groups[2].Value);
+						ParseRoll(xDyPz, out y, out z);
 						var roll = Random.Next(y) + z;
 						newOne.Value = roll;
 					}
@@ -333,6 +324,30 @@ namespace Noxico
 			return string.Empty;
 		}
 #endif
+
+		/// <summary>
+		/// Given a string of the format "1dX" or "1dX+Y", returns X and Y.
+		/// </summary>
+		/// <param name="text">A dice roll</param>
+		/// <param name="range">The total amount of dots on the die</param>
+		/// <param name="plus">The amount to be added to the die roll</param>
+		/// <returns>True if the string could be parsed, false otherwise.</returns>
+		public bool ParseRoll(string text, out int range, out int plus)
+		{
+			range = 0;
+			plus = 0;
+			var m = Regex.Match(text, @"1d(\d+)\+(\d+)");
+			if (!m.Success)
+			{
+				m = Regex.Match(text, @"1d(\d+)");
+				if (!m.Success)
+					return false;
+			}
+			range = int.Parse(m.Groups[1].Value);
+			if (m.Groups.Count == 3)
+				plus = int.Parse(m.Groups[2].Value);
+			return true;
+		}
 	}
 
 	public class Token : TokenCarrier
@@ -343,7 +358,9 @@ namespace Noxico
 
 		public override string ToString()
 		{
-			return string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count);
+			if (string.IsNullOrWhiteSpace(Text))
+				return string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count);
+			return string.Format("{0} ({1}, \"{2}\", {3})", Name, Value, Text, Tokens.Count);
 		}
 
 		public Token()

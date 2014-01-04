@@ -33,6 +33,8 @@ myBoard.BoardType = BoardType.Special;
 myBoard.RemoveToken("encounters"); myBoard.AddToken("encounters").AddToken("stock");
 MakeBoardTarget(myBoard);
 
+myBoard.MergeBitmap("missions\\playerbase\\lv0.png");
+
 //Set up player's bedroom
 var bed = new Clutter();
 bed.AsciiChar = 0x147;
@@ -60,14 +62,6 @@ candle.Description = "If you can read this, the candle wasn't reset.";
 candle.ParentBoard = myBoard;
 myBoard.Entities.Add(candle);
 
-//Set up carpenter
-var carpenter = town.PickBoardChar(Gender.Male);
-while (carpenter.Character.HasToken("role"))
-	carpenter = town.PickBoardChar(Gender.Male);
-carpenter.Character.AddToken("role").AddToken("vendor").AddToken("class", 0, "carpenter");
-
-myBoard.MergeBitmap("missions\\playerbase\\lv0.png");
-
 var fence = new Tile();
 fence.Foreground = Color.FromName("DarkGoldenrod");
 fence.Background = Color.FromName("Auburn");
@@ -86,5 +80,21 @@ dirt.Foreground = Color.Black;
 dirt.Character = 0x157;
 for (var y = 13; y < 20; y++)
 	myBoard.Line(51, y, 59, y, dirt);
+
+/*
+var testDungeon = new Warp();
+testDungeon.TargetBoard = -1;
+testDungeon.ID = myBoard.ID + "_Dungeon";
+testDungeon.XPosition = 40;
+testDungeon.YPosition = 20;
+myBoard.Warps.Add(testDungeon);
+myBoard.SetTile(20, 40, '>', Color.Silver, Color.Black);
+*/
+
+//Set up carpenter
+var carpenter = town.PickBoardChar(Gender.Male);
+while (carpenter.Character.HasToken("role"))
+	carpenter = town.PickBoardChar(Gender.Male);
+carpenter.Character.AddToken("role").AddToken("vendor").AddToken("class", 0, "carpenter");
 
 //Add clutter here.

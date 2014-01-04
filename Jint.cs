@@ -37,6 +37,7 @@ namespace Noxico
 			jint.SetParameter("Clutter", typeof(Clutter));
 			jint.SetParameter("Door", typeof(Door));
 			jint.SetParameter("InventoryItem", typeof(InventoryItem));
+			jint.SetParameter("Warp", typeof(Warp));
 			jint.SetParameter("Tile", typeof(Tile));
 			jint.SetParameter("Color", typeof(Color));
 			jint.SetFunction("titlecase", new Func<string, string>(x => x.Titlecase()));
