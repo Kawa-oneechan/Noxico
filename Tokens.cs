@@ -37,6 +37,12 @@ namespace Noxico
 			Tokens.Add(t);
 			return t;
 		}
+		public Token AddToken(string name, string text)
+		{
+			var t = new Token(name, text);
+			Tokens.Add(t);
+			return t;
+		}
 		public Token AddToken(string name, float value)
 		{
 			var t = new Token(name, value);
