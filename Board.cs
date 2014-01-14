@@ -97,6 +97,8 @@ namespace Noxico
 		public bool CanBurn { get; private set; }
 		public string FriendlyName { get; private set; }
 		public string Description { get; private set; }
+		public Token Variants { get; private set; }
+		public bool IsVariableWall { get; private set; }
 
 		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
 		public bool SolidToFlyer { get { return Ceiling || Wall; } }
@@ -126,6 +128,8 @@ namespace Noxico
 					CanBurn = tile.HasToken("canburn"),
 					FriendlyName = tile.HasToken("_n") ? tile.GetToken("_n").Text : null,
 					Description = tile.HasToken("description") ? tile.GetToken("description").Text : null,
+					Variants = tile.HasToken("variants") ? tile.GetToken("variants") : new Token("variants"),
+					IsVariableWall = tile.HasToken("varwall"),
 				};
 				defs.Add(i, def);
 			}
@@ -133,14 +137,29 @@ namespace Noxico
 
 		public static TileDefinition Find(string tileName)
 		{
-			var tile = defs.FirstOrDefault(t => t.Value.Name.Equals(tileName, StringComparison.InvariantCultureIgnoreCase));
-			return tile.Value;
+			var def = defs.FirstOrDefault(t => t.Value.Name.Equals(tileName, StringComparison.InvariantCultureIgnoreCase)).Value;
+			if (def.Variants.Tokens.Count > 0)
+			{
+				var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
+				if (Random.NextDouble() > iant.Value)
+					def = TileDefinition.Find(iant.Name);
+			}
+			return def;
 		}
 	
 		public static TileDefinition Find(int index)
 		{
 			if (defs.ContainsKey(index))
-				return defs[index];
+			{
+				var def = defs[index];
+				if (def.Variants.Tokens.Count > 0)
+				{
+					var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
+					if (Random.NextDouble() > iant.Value)
+						def = TileDefinition.Find(iant.Name);
+				}
+				return def;
+			}
 			else
 				return null;
 		}
@@ -608,14 +627,20 @@ namespace Noxico
 			return Tilemap[col, row].Definition.Name;
 		}
 
+		public void SetTile(int row, int col, TileDefinition def)
+		{
+			if (def == null)
+				return;
+			Tilemap[col, row].Definition = def;
+			DirtySpots.Add(new Location(col, row));
+		}
 		public void SetTile(int row, int col, int index)
 		{
-			Tilemap[col, row].Index = index;
+			SetTile(row, col, TileDefinition.Find(index));
 		}
 		public void SetTile(int row, int col, string tileName)
 		{
 			SetTile(row, col, TileDefinition.Find(tileName).Index);
-			DirtySpots.Add(new Location(col, row));
 		}
 
 		public void Immolate(int row, int col)
@@ -793,13 +818,6 @@ namespace Noxico
 
 		public void Redraw()
 		{
-			//HACK!
-			if (SceneSystem.LeavingDream)
-			{
-				SceneSystem.LeavingDream = false;
-				SceneSystem.Dreaming = false;
-			}
-
 			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
 					DirtySpots.Add(new Location(col, row));
@@ -1186,6 +1204,33 @@ namespace Noxico
 				nox.GetBoard(this.ToEast);
 			if (this.ToWest > -1 && nox.Boards[this.ToWest] == null)
 				nox.GetBoard(this.ToWest);
+		}
+
+		public void ResolveVariableWalls()
+		{
+			var newTile = new System.Text.StringBuilder();
+			for (int row = 0; row < 50; row++)
+			{
+				for (int col = 0; col < 80; col++)
+				{
+					var def = Tilemap[col, row].Definition;
+					if (def.IsVariableWall)
+					{
+						var baseName = def.Name.Replace("Top", "").Replace("Bottom", "").Replace("Left", "").Replace("Right", "").Replace("Joiner", "");
+						newTile.Clear();
+						newTile.Append(baseName);
+						if (row > 0 && Tilemap[col, row - 1].Definition.Name.StartsWith(baseName))
+							newTile.Append("Top");
+						if (row < 50 && Tilemap[col, row + 1].Definition.Name.StartsWith(baseName))
+							newTile.Append("Bottom");
+						if (col > 0 && Tilemap[col - 1, row].Definition.Name.StartsWith(baseName))
+							newTile.Append("Left");
+						if (col < 80 && Tilemap[col + 1, row].Definition.Name.StartsWith(baseName))
+							newTile.Append("Right");
+						SetTile(row, col, newTile.ToString());
+					}
+				}
+			}
 		}
 	}
 

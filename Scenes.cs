@@ -12,7 +12,7 @@ namespace Noxico
 	{
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
-		public static bool Dreaming, LeavingDream;
+		public static bool Dreaming;
 
 		private static bool letBottomChoose;
 
@@ -67,11 +67,7 @@ namespace Noxico
 			{
 				letBottomChoose = false;
 				if (actions.Count == 0)
-				{
 					MessageBox.Notice(message, !Dreaming, bottom.GetKnownName(true, true));
-					if (Dreaming)
-						LeavingDream = true;
-				}
 				else
 					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, !Dreaming, bottom.GetKnownName(true, true));
 			}

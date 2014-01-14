@@ -619,7 +619,7 @@ namespace Noxico
 			//var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
 
 			//Base fill
-			var baseFill = TileDefinition.Find("dungeonWall").Index;
+			var baseFill = TileDefinition.Find("stoneWall").Index;
 			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
 					map[col, row].Index = baseFill;
@@ -645,8 +645,6 @@ namespace Noxico
 						for (var col = bounds.Left; col <= bounds.Right; col++)
 						{
 							map[col, row].Definition = TileDefinition.Find("stoneFloor");
-							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
-								map[col, row].Definition = TileDefinition.Find("stoneVariant");
 						}
 					}		
 				}
@@ -659,6 +657,8 @@ namespace Noxico
 
 				var bounds = room.Bounds;
 				var inflated = new SysRectangle(bounds.Left - 1, bounds.Top - 1, bounds.Width + 2, bounds.Height + 2);
+				/*
+				//Leave this to the brute force wall fixer we haven't written yet? YES.
 				for (var row = inflated.Top + 1; row < inflated.Bottom; row++)
 				{
 					MaybeSet(ref map, inflated.Left, row, "innerWoodWallVertical");
@@ -673,6 +673,17 @@ namespace Noxico
 				MaybeSet(ref map, inflated.Right, inflated.Top, "innerWoodWallTopRight");
 				MaybeSet(ref map, inflated.Left, inflated.Bottom, "innerWoodWallBottomLeft");
 				MaybeSet(ref map, inflated.Right, inflated.Bottom, "innerWoodWallBottomRight");
+				*/
+				for (var row = inflated.Top; row <= inflated.Bottom; row++)
+				{
+					MaybeSet(ref map, inflated.Left, row, "innerWoodWall");
+					MaybeSet(ref map, inflated.Right, row, "innerWoodWall");
+				}
+				for (var col = inflated.Left; col <= inflated.Right; col++)
+				{
+					MaybeSet(ref map, col, inflated.Top, "innerWoodWall");
+					MaybeSet(ref map, col, inflated.Bottom, "innerWoodWall");
+				}
 			}
 
 			foreach (var corridor in corridors)
@@ -693,8 +704,6 @@ namespace Noxico
 						if (!here.Definition.CanBurn)
 						{
 							map[point.X, point.Y].Definition = TileDefinition.Find("stoneFloor");
-							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
-								map[point.X, point.Y].Definition = TileDefinition.Find("stoneVariant");
 							inRoom = false;
 						}
 						else if (!inRoom)
