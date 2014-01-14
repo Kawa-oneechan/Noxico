@@ -33,8 +33,9 @@ namespace Noxico
     {
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
-        public int AsciiChar { get; set; }
-        public Color ForegroundColor { get; set; }
+        public int Glyph { get; set; }
+		public int UnicodeCharacter { get; set; }
+		public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }
         public int YPosition { get; set; }
@@ -52,9 +53,9 @@ namespace Noxico
 		public virtual void Draw()
 		{
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor, this.BackgroundColor);
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.Glyph, this.ForegroundColor, this.BackgroundColor);
 			else
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.AsciiChar, this.ForegroundColor.Night(), this.BackgroundColor.Night());
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.Glyph, this.ForegroundColor.Night(), this.BackgroundColor.Night());
 		}
 
 		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
@@ -129,7 +130,7 @@ namespace Noxico
 			//Program.WriteLine("   * Saving {0} {1}...", this.GetType(), ID ?? "????");
 			Toolkit.SaveExpectation(stream, "ENTT");
 			stream.Write(ID ?? "<Null>");
-			stream.Write((char)AsciiChar);
+			stream.Write((char)Glyph);
 			BackgroundColor.SaveToFile(stream);
 			ForegroundColor.SaveToFile(stream);
 			stream.Write((byte)XPosition);
@@ -143,7 +144,7 @@ namespace Noxico
 			Toolkit.ExpectFromFile(stream, "ENTT", "entity");
 			var newEntity = new Entity();
 			newEntity.ID = stream.ReadString();
-			newEntity.AsciiChar = stream.ReadChar();
+			newEntity.Glyph = stream.ReadChar();
 			newEntity.BackgroundColor = Toolkit.LoadColorFromFile(stream);
 			newEntity.ForegroundColor = Toolkit.LoadColorFromFile(stream);
 			newEntity.XPosition = stream.ReadByte();
@@ -180,14 +181,14 @@ namespace Noxico
 
 		public Clutter()
 		{
-			this.AsciiChar = '?';
+			this.Glyph = '?';
 			this.ForegroundColor = Color.Silver;
 			this.BackgroundColor = Color.Black;
 		}
 
 		public Clutter(char character, Color foreColor, Color backColor, bool blocking = false, string name = "thing", string description = "This is a thing.")
 		{
-			this.AsciiChar = character;
+			this.Glyph = character;
 			this.ForegroundColor = foreColor;
 			this.BackgroundColor = backColor;
 			this.Blocking = blocking;
@@ -236,7 +237,7 @@ namespace Noxico
 			var newDress = new Clutter()
 			{
 				ID = e.ID,
-				AsciiChar = e.AsciiChar,
+				Glyph = e.Glyph,
 				ForegroundColor = e.ForegroundColor,
 				BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition,
@@ -278,7 +279,7 @@ namespace Noxico
 			if (carriedItem != null)
 				Token.AddSet(carriedItem.Tokens);
 
-			this.AsciiChar = '?';
+			this.Glyph = '?';
 			this.ForegroundColor = Color.Silver;
 			this.BackgroundColor = Color.Black;
 			this.Blocking = false;
@@ -291,7 +292,7 @@ namespace Noxico
 			{
 				var ascii = Item.GetToken("ascii");
 				if (ascii.HasToken("char"))
-					this.AsciiChar = (char)ascii.GetToken("char").Value;
+					this.Glyph = (char)ascii.GetToken("char").Value;
 				if (Item.HasToken("colored") && Token.HasToken("color"))
 					this.ForegroundColor = Color.FromName(Token.GetToken("color").Text);
 				else if (ascii.HasToken("fore"))
@@ -331,7 +332,7 @@ namespace Noxico
 			var newItem = new DroppedItem(stream.ReadString())
 			{
 				ID = e.ID,
-				AsciiChar = e.AsciiChar,
+				Glyph = e.Glyph,
 				ForegroundColor = e.ForegroundColor,
 				BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition,
@@ -426,7 +427,7 @@ namespace Noxico
 			var newContainer = new Container("", null)
 			{
 				ID = e.ID,
-				AsciiChar = e.AsciiChar,
+				Glyph = e.Glyph,
 				ForegroundColor = e.ForegroundColor,
 				BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition,
@@ -442,7 +443,7 @@ namespace Noxico
 			{
 				var ascii = Token.GetToken("ascii");
 				if (ascii.HasToken("char"))
-					this.AsciiChar = (char)ascii.GetToken("char").Value;
+					this.Glyph = (char)ascii.GetToken("char").Value;
 				if (ascii.HasToken("fore"))
 					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Tokens[0]);
 				if (ascii.HasToken("back"))
@@ -479,9 +480,9 @@ namespace Noxico
 			if (!dirInited)
 				FindDirection();
 			if (closed)
-				AsciiChar = horizontal ? 0x152 : 0x154;
+				Glyph = horizontal ? 0x152 : 0x154;
 			else
-				AsciiChar = horizontal ? 0x153 : 0x155;
+				Glyph = horizontal ? 0x153 : 0x155;
 			base.Draw();
 		}
 
@@ -489,7 +490,7 @@ namespace Noxico
 		{
 			if (ParentBoard == null)
 				return;
-			ParentBoard.Tilemap[XPosition, YPosition].Wall = closed;
+			ParentBoard.Tilemap[XPosition, YPosition].Definition = TileDefinition.Find(closed ? "doorwayClosed" : "doorwayOpened");
 		}
 
 		public override void Update()
@@ -521,7 +522,7 @@ namespace Noxico
 			var newDoor = new Door()
 			{
 				ID = e.ID,
-				AsciiChar = e.AsciiChar,
+				Glyph = e.Glyph,
 				ForegroundColor = e.ForegroundColor,
 				BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition,

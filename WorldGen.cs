@@ -142,7 +142,7 @@ namespace Noxico
 						originalExit = exit;
 						exit.ID = "Dng_" + DungeonGeneratorEntranceBoardNum + "_Exit";
 						board.Warps.Add(exit);
-						board.SetTile(exit.YPosition, exit.XPosition, '<', Color.Silver, Color.Black);
+						board.SetTile(exit.YPosition, exit.XPosition, "dungeonExit"); //board.SetTile(exit.YPosition, exit.XPosition, '<', Color.Silver, Color.Black);
 					}
 				}
 			}
@@ -189,8 +189,8 @@ namespace Noxico
 				there.TargetBoard = boardHere.BoardNum;
 				here.TargetWarpID = there.ID;
 				there.TargetWarpID = here.ID;
-				boardHere.SetTile(here.YPosition, here.XPosition, up ? '<' : '>', Color.Gray, Color.Black);
-				boardThere.SetTile(there.YPosition, there.XPosition, !up ? '<' : '>', Color.Gray, Color.Black);
+				boardHere.SetTile(here.YPosition, here.XPosition, up ? "dungeonUpstairs" : "dungeonDownstairs"); //boardHere.SetTile(here.YPosition, here.XPosition, up ? '<' : '>', Color.Gray, Color.Black);
+				boardThere.SetTile(there.YPosition, there.XPosition, up ? "dungeonDownstairs" : "dungeonUpstairs"); //boardThere.SetTile(there.YPosition, there.XPosition, !up ? '<' : '>', Color.Gray, Color.Black);
 
 				Program.WriteLine("Connected {0} || {1}.", boardHere.ID, boardThere.ID);
 
@@ -232,8 +232,8 @@ namespace Noxico
 					there.TargetBoard = boardHere.BoardNum;
 					here.TargetWarpID = there.ID;
 					there.TargetWarpID = here.ID;
-					boardHere.SetTile(here.YPosition, here.XPosition, '\x2261', Color.Gray, Color.Black);
-					boardThere.SetTile(there.YPosition, there.XPosition, '\x2261', Color.Gray, Color.Black);
+					boardHere.SetTile(here.YPosition, here.XPosition, "dungeonSideexit"); //boardHere.SetTile(here.YPosition, here.XPosition, '\x2261', Color.Gray, Color.Black);
+					boardThere.SetTile(there.YPosition, there.XPosition, "dungeonSideexit"); //boardThere.SetTile(there.YPosition, there.XPosition, '\x2261', Color.Gray, Color.Black);
 
 					Program.WriteLine("Connected {0} -- {1}.", boardHere.ID, boardThere.ID);
 
@@ -275,7 +275,7 @@ namespace Noxico
 			var treasure = DungeonGenerator.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
-				AsciiChar = 0x14A,
+				Glyph = 0x14A,
 				XPosition = treasureX,
 				YPosition = treasureY,
 				ForegroundColor = Color.FromName("SaddleBrown"),
@@ -570,10 +570,11 @@ namespace Noxico
 
 		public Realms Realm { get; private set; }
 		public string Name { get; private set; }
-		public Color Color { get; private set; }
-		public bool IsWater { get; private set; }
-		public bool CanBurn { get; private set; }
-		public char[] GroundGlyphs { get; private set; }
+		//public Color Color { get; private set; }
+		//public bool IsWater { get; private set; }
+		//public bool CanBurn { get; private set; }
+		//public char[] GroundGlyphs { get; private set; }
+		public int GroundTile { get; private set; }
 		public int MaxEncounters { get; private set; }
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
@@ -585,12 +586,17 @@ namespace Noxico
 			var n = new BiomeData();
 			n.Realm = (Realms)realmNum;
 			n.Name = t.Text;
-			n.Color = Color.FromName(t.GetToken("color").Text);
-			n.IsWater = t.HasToken("iswater");
-			n.CanBurn = t.HasToken("canburn");
 
 			var cvars = t.GetToken("rect").Text.Split(' ').Select(i => int.Parse(i)).ToArray();
 			n.Rect = new System.Drawing.Rectangle(cvars[0], cvars[1], cvars[2] - cvars[0], cvars[3] - cvars[1]);
+
+			n.GroundTile = (int)t.GetToken("ground").Value;
+			if (n.GroundTile == 0)
+				n.GroundTile = TileDefinition.Find(t.GetToken("ground").Text).Index;
+			/*
+			n.Color = Color.FromName(t.GetToken("color").Text);
+			n.IsWater = t.HasToken("iswater");
+			n.CanBurn = t.HasToken("canburn");
 
 			var groundGlyphs = t.GetToken("ground");
 			if (groundGlyphs == null)
@@ -600,6 +606,7 @@ namespace Noxico
 			var glyphs = "      ".ToCharArray().ToList();
 			glyphs.AddRange(n.GroundGlyphs);
 			n.GroundGlyphs = glyphs.ToArray();
+			*/
 
 			var encounters = t.GetToken("encounters");
 			if (encounters == null)
@@ -787,7 +794,7 @@ namespace Noxico
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
 			var waterLevel = BiomeData.WaterLevels[(int)Realm];
-			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
+			//var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
 			var cols = (int)Math.Floor(reach / 80.0) * 80;
 			var rows = (int)Math.Floor(reach / 50.0) * 50;
 			var map = new byte[rows, cols];
@@ -798,11 +805,6 @@ namespace Noxico
 					var h = height[row * 1, col];
 					var p = precip[row * 1, col];
 					var t = temp[row * 1, col];
-					if (h < waterLevel)
- 					{
-						map[row, col] = (byte)water;
-						continue;
-					}
 					for (var i = 0; i < BiomeData.Biomes.Count; i++)
 					{
 						var b = BiomeData.Biomes[i];
@@ -812,6 +814,8 @@ namespace Noxico
 							continue;
 						}
  					}
+					if (h < waterLevel)
+						map[row, col] |= 0x80;
  				}
  			}
 			return map;
@@ -851,7 +855,7 @@ namespace Noxico
 
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
-			var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
+			//var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
 			for (var bRow = 0; bRow < MapSizeY; bRow++)
 			{
 				setStatus(i18n.Format("worldgen_determinebiomes", realm), bRow, MapSizeY); //"Determining biomes..."
@@ -865,15 +869,19 @@ namespace Noxico
 						for (var pCol = 0; pCol < 80; pCol++)
 						{
 							var b = biome[(bRow * 50) + pRow, (bCol * 80) + pCol];
+							if ((b | 0x80) == 0x80)
+							{
+								counts[255]++;
+								b = (byte)(b & 0x7F); 
+							}
 							counts[b]++;
 						}
 					}
 					//Special rule for Oceans
-					if (counts[water] >= oceanTreshold)
+					if (counts[255] >= oceanTreshold)
 					{
-						RoughBiomeMap[bRow, bCol] = water;
+						RoughBiomeMap[bRow, bCol] = 255;
 						oceans++;
-						continue;
 					}
 					//Determine most significant non-Ocean biome
 					var highestNumber = 0;
@@ -907,7 +915,7 @@ namespace Noxico
 					var waterMax = 2500;
 					for (var pRow = 0; pRow < 50; pRow++)
 						for (var pCol = 0; pCol < 80; pCol++)
-							if (biome[(bRow * 50) + pRow, (bCol * 80) + pCol] == water)
+							if ((biome[(bRow * 50) + pRow, (bCol * 80) + pCol] | 0x80) == 0x80)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -939,7 +947,7 @@ namespace Noxico
 								var waterMax = 500;
 								for (var pRow = 0; pRow < 50; pRow++)
 									for (var pCol = 0; pCol < 80; pCol++)
-										if (biome[(row * 50) + pRow, (col * 80) + pCol] == water)
+										if ((biome[(row * 50) + pRow, (col * 80) + pCol] | 0x80) == 0x80)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -968,7 +976,7 @@ namespace Noxico
 					{
 						tx = Random.Next(MapSizeX - 1);
 						ty = Random.Next(MapSizeY - 1);
-						if (TownMap[ty, tx] == -1 && RoughBiomeMap[ty, tx] != water)
+						if (TownMap[ty, tx] == -1 && RoughBiomeMap[ty, tx] < 255)
 						{
 							TownMap[ty, tx] = towns;
 							break;
@@ -981,7 +989,7 @@ namespace Noxico
 			}
 
 			TownMarkers = towns;
-			WaterBiome = water;
+			//WaterBiome = water;
 			BoardMap = new Board[MapSizeY, MapSizeX];
 		}
 	}

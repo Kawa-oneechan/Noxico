@@ -76,133 +76,146 @@ namespace Noxico
 		Walker, DryWalker, Flyer, Projectile
 	}
 
-	/// <summary>
-	/// A special description for board tiles.
-	/// </summary>
-	public struct TileDescription
+	public enum Fluids
 	{
-		public string Name;
-		public Color Color;
-		public string Description;
+		Dry, Water, KoolAid, Slime, Blood, Sperm, Reserved1, Reserved2
+	}
+
+	public class TileDefinition
+	{
+		public string Name { get; private set; }
+		public int Index { get; private set; }
+		public int Glyph { get; private set; }
+		public char UnicodeCharacter { get; private set; }
+		public Color Foreground { get; private set; }
+		public Color Background { get; private set; }
+		public bool Wall { get; private set; }
+		public bool Ceiling { get; private set; }
+		public bool Cliff { get; private set; }
+		public bool Fence { get; private set; }
+		public bool Grate { get; private set; }
+		public bool CanBurn { get; private set; }
+		public string FriendlyName { get; private set; }
+		public string Description { get; private set; }
+
+		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
+		public bool SolidToFlyer { get { return Ceiling || Wall; } }
+		public bool SolidToProjectile { get { return (Wall && !Grate); } }
+
+		private static Dictionary<int, TileDefinition> defs;
+		static TileDefinition()
+		{
+			defs = new Dictionary<int, TileDefinition>();
+			var tml = Mix.GetTokenTree("tiles.tml", true);
+			foreach (var tile in tml.Where(t => t.Name == "tile"))
+			{
+				var i = (int)tile.Value;
+				var def = new TileDefinition()
+				{
+					Index = i,
+					Name = tile.GetToken("id").Text,
+					Glyph = (int)tile.GetToken("glyph").Value,
+					UnicodeCharacter = tile.HasToken("unicode") ? (char)tile.GetToken("unicode").Value : (char)tile.GetToken("glyph").Value,
+					Background = Color.FromName(tile.GetToken("back")),
+					Foreground = tile.HasToken("fore") ? Color.FromName(tile.GetToken("fore")) : Color.FromName(tile.GetToken("back")).Darken(),
+					Wall = tile.HasToken("wall"),
+					Ceiling = tile.HasToken("ceiling"),
+					Cliff = tile.HasToken("cliff"),
+					Fence = tile.HasToken("fence"),
+					Grate = tile.HasToken("grate"),
+					CanBurn = tile.HasToken("canburn"),
+					FriendlyName = tile.HasToken("_n") ? tile.GetToken("_n").Text : null,
+					Description = tile.HasToken("description") ? tile.GetToken("description").Text : null,
+				};
+				defs.Add(i, def);
+			}
+		}
+
+		public static TileDefinition Find(string tileName)
+		{
+			var tile = defs.FirstOrDefault(t => t.Value.Name.Equals(tileName, StringComparison.InvariantCultureIgnoreCase));
+			return tile.Value;
+		}
+	
+		public static TileDefinition Find(int index)
+		{
+			if (defs.ContainsKey(index))
+				return defs[index];
+			else
+				return null;
+		}
 	}
 
 	/// <summary>
 	/// A single tile on a board.
 	/// </summary>
-	public partial class Tile
+	public class Tile
 	{
-		public int Character { get; set; }
-		public Color Foreground { get; set; }
-		public Color Background { get; set; }
-		public bool Wall { get; set; }
-		public bool Water { get; set; }
-		public bool Ceiling { get; set; }
-		public bool Cliff { get; set; }
-		public bool Fence { get; set; }
-		public bool Grate { get; set; }
-		public bool CanBurn { get; set; }
+		public int Index { get; set; }
+
+		public Fluids Fluid { get; set; }
+		public bool Shallow { get; set; }
 		public int BurnTimer { get; set; }
-		public int SpecialDescription { get; set; }
-		public int Biome { get; set; }
+		public bool Seen { get; set; }
+		public Color SlimeColor { get; set; }
 
-		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
-		public bool SolidToDryWalker { get { return Wall || Water || Fence || Cliff; } }
-		public bool SolidToFlyer { get { return Ceiling || Wall; } }
-		public bool SolidToProjectile { get { return (Wall && !Grate); } }
+		public bool SolidToWalker { get { return Definition.SolidToWalker; } }
+		public bool SolidToDryWalker { get { return Definition.SolidToWalker || (Fluid != Fluids.Dry && !Shallow); } }
+		public bool SolidToFlyer { get { return Definition.SolidToFlyer; } }
+		public bool SolidToProjectile { get { return Definition.SolidToProjectile; } }
 
-		/// <summary>
-		/// Returns a TileDescription if this tile has one.
-		/// </summary>
-		/// <returns></returns>
-		public TileDescription? GetDescription()
+		public TileDefinition Definition
 		{
-			if (SpecialDescription == 0)
-				return null;
-			if (SpecialDescription > NoxicoGame.TileDescriptions.Length)
-				return null;
-			var tsd = NoxicoGame.TileDescriptions[SpecialDescription];
-			var name = tsd.Substring(0, tsd.IndexOf(':'));
-			var desc = tsd.Substring(tsd.IndexOf(':') + 1).Trim();
-			return new TileDescription() { Name = name, Description = desc, Color = Foreground.Lightness < 0.5 ? Background : Foreground  };
+			get
+			{
+				return TileDefinition.Find(Index);
+			}
+			set
+			{
+				Index = Definition.Index; 
+			}
 		}
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			stream.Write((char)Character);
-			Foreground.SaveToFile(stream);
-			Background.SaveToFile(stream);
-			stream.Write7BitEncodedInt(Biome);
+			stream.Write7BitEncodedInt(Index);
 
 			var bits = new BitVector32();
-			bits[1] = CanBurn;
-			bits[2] = Wall;
-			bits[4] = Water;
-			bits[8] = Ceiling;
-			bits[16] = Cliff;
-			bits[32] = (BurnTimer > 0);
-			bits[64] = (SpecialDescription > 0);
-			bits[128] = (Fence || Grate); //Has more settings
-			stream.Write((byte)bits.Data);
-			if (bits[128])
-			{
-				bits = new BitVector32();
-				bits[1] = Fence;
-				bits[2] = Grate;
-				//rest reserved.
-				stream.Write((byte)bits.Data);
-			}
+			bits[32] = Shallow;
+			bits[64] = (BurnTimer > 0);
+			bits[128] = Seen;
+			stream.Write((byte)bits.Data | (byte)Fluid);
 			if (BurnTimer > 0)
 				stream.Write((byte)BurnTimer);
-			if (SpecialDescription > 0)
-				stream.Write((Int16)SpecialDescription);
+			if (Fluid == Fluids.Slime)
+				SlimeColor.SaveToFile(stream);
 		}
 
 		public void LoadFromFile(BinaryReader stream)
 		{
-			Character = stream.ReadChar();
-			Foreground = Toolkit.LoadColorFromFile(stream);
-			Background = Toolkit.LoadColorFromFile(stream);
-			Biome = stream.Read7BitEncodedInt();
+			Index = stream.Read7BitEncodedInt();
 
 			var set = stream.ReadByte();
 			var bits = new BitVector32(set);
-			CanBurn = bits[1];
-			Wall = bits[2];
-			Water = bits[4];
-			Ceiling = bits[8];
-			Cliff = bits[16];
-			var HasBurn = bits[32];
-			var HasSpecialDescription = bits[64];
-			var HasMoreSettings = bits[128];
-			if (HasMoreSettings)
-			{
-				set = stream.ReadByte();
-				bits = new BitVector32(set);
-				Fence = bits[1];
-				Grate = bits[2];
-			}
-			if (HasBurn)
+			Shallow = bits[32];
+			Seen = bits[128];
+			if (bits[64])
 				BurnTimer = stream.ReadByte();
-			if (HasSpecialDescription)
-				SpecialDescription = stream.ReadInt16();
+			Fluid = (Fluids)(set & 8);
+			if (Fluid == Fluids.Slime)
+				SlimeColor = Toolkit.LoadColorFromFile(stream);
 		}
 
 		public Tile Clone()
 		{
 			return new Tile()
 			{
-				Character = this.Character,
-				Foreground = Color.FromArgb(this.Foreground.ArgbValue),
-				Background = Color.FromArgb(this.Background.ArgbValue),
-				Wall = this.Wall,
-				Water = this.Water,
-				Ceiling = this.Ceiling,
-				Cliff = this.Cliff,
-				Fence = this.Fence,
-				Grate = this.Grate,
-				CanBurn = this.CanBurn,
+				Index = this.Index,
+				Fluid = this.Fluid,
+				Shallow = this.Shallow,
 				BurnTimer = this.BurnTimer,
-				SpecialDescription = this.SpecialDescription,
+				Seen = this.Seen,
+				SlimeColor = this.SlimeColor
 			};
 		}
 	}
@@ -306,7 +319,6 @@ namespace Noxico
 
 		public Tile[,] Tilemap = new Tile[80, 50];
 		public bool[,] Lightmap = new bool[50, 80];
-		public bool[,] Seenmap = new bool[50, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; private set; }
 		public List<Location> ExitPossibilities { get; private set; }
@@ -373,11 +385,6 @@ namespace Noxico
 
 				var temp = new List<bool>();
 
-				Toolkit.SaveExpectation(stream, "SEEN");
-				for (int row = 0; row < 50; row++)
-					for (int col = 0; col < 80; col++)
-						stream.Write(Seenmap[row, col]);
-
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
 				{
@@ -442,11 +449,6 @@ namespace Noxico
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
-
-				Toolkit.ExpectFromFile(stream, "SEEN", "seen map");
-				for (int row = 0; row < 50; row++)
-					for (int col = 0; col < 80; col++)
-						newBoard.Seenmap[row, col] = stream.ReadBoolean();
 
 				Toolkit.ExpectFromFile(stream, "SECT", "sector");
 				for (int i = 0; i < secCt; i++)
@@ -525,7 +527,7 @@ namespace Noxico
 				return true;
 			else if (check == SolidityCheck.Projectile && Tilemap[col, row].SolidToProjectile)
 				return true;
-			return Tilemap[col, row].Wall;
+			return Tilemap[col, row].Definition.Wall;
 		}
 
 		public bool IsBurning(int row, int col)
@@ -538,7 +540,7 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].CanBurn;
+			return Tilemap[col,row].Fluid == Fluids.Dry && Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].Definition.CanBurn;
 		}
 
 		public bool IsWater(int row, int col)
@@ -551,7 +553,7 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Tilemap[col, row].Water;
+			return Tilemap[col, row].Fluid != Fluids.Dry;
 		}
 
 		public bool IsLit(int row, int col)
@@ -577,10 +579,10 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Seenmap[row, col];
+			return Tilemap[col, row].Seen;
 		}
 
-		public TileDescription? GetSpecialDescription(int row, int col)
+		public string GetDescription(int row, int col)
 		{
 			if (col >= 80)
 				col = 79;
@@ -590,10 +592,10 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Tilemap[col, row].GetDescription();
+			return Tilemap[col, row].Definition.Description;
 		}
 
-		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor, bool wall = false, bool burn = false, bool water = false, bool cliff = false)
+		public string GetName(int row, int col)
 		{
 			if (col >= 80)
 				col = 79;
@@ -603,17 +605,16 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			var t = new Tile()
-			{
-				Character = tile,
-				Foreground = foreColor,
-				Background = backColor,
-				Wall = wall,
-				Water = water,
-				Cliff = cliff,
-				CanBurn = burn,
-			};
-			Tilemap[col, row] = t;
+			return Tilemap[col, row].Definition.Name;
+		}
+
+		public void SetTile(int row, int col, int index)
+		{
+			Tilemap[col, row].Index = index;
+		}
+		public void SetTile(int row, int col, string tileName)
+		{
+			SetTile(row, col, TileDefinition.Find(tileName).Index);
 			DirtySpots.Add(new Location(col, row));
 		}
 
@@ -628,32 +629,30 @@ namespace Noxico
 			if (row < 0)
 				row = 0;
 			var tile = Tilemap[col, row];
-			if (tile.CanBurn && !tile.Water)
+			if (tile.Definition.CanBurn && tile.Fluid == Fluids.Dry)
 			{
 				tile.BurnTimer = Random.Next(20, 23);
-				tile.Character = (char)0xB1; //(char)0x15;
-				tile.Background = Color.Red;
-				tile.Foreground = Color.Yellow;
 				DirtySpots.Add(new Location(col, row));
 			}
 		}
 
 		public void TrailSlime(int row, int col, Color color)
 		{
-			var slime = new Clutter()
+			if (col >= 80)
+				col = 79;
+			if (col < 0)
+				col = 0;
+			if (row >= 50)
+				row = 49;
+			if (row < 0)
+				row = 0;
+			var tile = Tilemap[col, row];
+			if (tile.Fluid == Fluids.Dry)
 			{
-				ParentBoard = this,
-				ForegroundColor = color.Darken(2 + Random.NextDouble()).Darken(),
-				BackgroundColor = color.Darken(1.4),
-				AsciiChar = (char)Random.Next(0xB0, 0xB3),
-				Blocking = false,
-				XPosition = col,
-				YPosition = row,
-				Life = 5 + Random.Next(10),
-				Description = string.Format("This is a slime trail."),
-				Name = "slime trail",
-			};
-			this.EntitiesToAdd.Add(slime);
+				tile.Fluid = Fluids.Slime;
+				tile.SlimeColor = color.Darken(1.4);
+				tile.Shallow = true;
+			}
 		}
 
 		public void BindEntities()
@@ -671,34 +670,38 @@ namespace Noxico
 				{
 					if (Tilemap[col, row].BurnTimer > 0)
 					{
-						Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
-						Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0);//flameColors[Randomizer.Next(flameColors.Length)];
-						DirtySpots.Add(new Location(col, row));
-						if (!spread)
-							continue;
-						Tilemap[col, row].BurnTimer--;
-						if (Tilemap[col, row].BurnTimer == 0)
+						if (Tilemap[col, row].Fluid == Fluids.Dry)
 						{
-							Tilemap[col, row] = new Tile()
+							//Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
+							//Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
+							DirtySpots.Add(new Location(col, row));
+							if (!spread)
+								continue;
+							Tilemap[col, row].BurnTimer--;
+							if (Tilemap[col, row].BurnTimer == 0)
 							{
-								Character = (char)0xB0,
-								Background = Color.Black,
-								Foreground = Color.FromArgb(20,20,20),
-							};
-						}
-						else if (Tilemap[col, row].BurnTimer == 10)
-						{
-							Immolate(row - 1, col);
-							Immolate(row, col - 1);
-							Immolate(row + 1, col);
-							Immolate(row, col + 1);
-							if (Random.Next(100) > 50)
-							{
-								Immolate(row - 1, col - 1);
-								Immolate(row - 1, col + 1);
-								Immolate(row + 1, col - 1);
-								Immolate(row + 1, col + 1);
+								Tilemap[col, row].Definition = TileDefinition.Find("ash");
 							}
+							else if (Tilemap[col, row].BurnTimer == 10)
+							{
+								Immolate(row - 1, col);
+								Immolate(row, col - 1);
+								Immolate(row + 1, col);
+								Immolate(row, col + 1);
+								if (Random.Next(100) > 50)
+								{
+									Immolate(row - 1, col - 1);
+									Immolate(row - 1, col + 1);
+									Immolate(row + 1, col - 1);
+									Immolate(row + 1, col + 1);
+								}
+							}
+						}
+						else if (Tilemap[col, row].Fluid == Fluids.Slime && Tilemap[col, row].Shallow)
+						{
+							Tilemap[col, row].BurnTimer--;
+							if (Tilemap[col, row].BurnTimer == 0)
+								Tilemap[col, row].Fluid = Fluids.Dry;
 						}
 					}
 				}
@@ -812,10 +815,11 @@ namespace Noxico
 				if (l.X >= 80 || l.Y >= 50 || l.X < 0 || l.Y < 0)
 					continue;
 				var t = this.Tilemap[l.X, l.Y];
+				var def = t.Definition;
 				if (Lightmap[l.Y, l.X])
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground, t.Background, force);
-				else if (Seenmap[l.Y, l.X])
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, t.Character, t.Foreground.Night(), t.Background.Night(), force);
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, def.Glyph, def.Foreground, def.Background, force);
+				else if (t.Seen)
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, def.Glyph, def.Foreground.Night(), def.Background.Night(), force);
 				else
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, ' ', Color.Black, Color.Black, force);
 			}
@@ -839,7 +843,7 @@ namespace Noxico
 			{
 				for (int row = 0; row < 50; row++)
 					for (int col = 0; col < 80; col++)
-						Lightmap[row, col] = Seenmap[row, col] = true;
+						Lightmap[row, col] = Tilemap[col, row].Seen = true;
 				return;
 			}
 			
@@ -860,7 +864,7 @@ namespace Noxico
 				if (y1 < 0 || y1 >= 50 | x1 < 0 || x1 >= 80)
 					return true;
 				if (!doingTorches)
-					Seenmap[y1, x1] = true;
+					Tilemap[x1, y1].Seen = true;
 				return Tilemap[x1, y1].SolidToProjectile;
 			};
 			Action<int, int> a = (x2, y2) =>
@@ -1135,9 +1139,10 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					var tile = Tilemap[col, row];
-					var back = string.Format("rgb({0},{1},{2})", tile.Background.R, tile.Background.G, tile.Background.B);
-					var fore = string.Format("rgb({0},{1},{2})", tile.Foreground.R, tile.Foreground.G, tile.Foreground.B);
-					var chr = string.Format("&#x{0:X};", (int)tile.Character);
+					var def = tile.Definition;
+					var back = string.Format("rgb({0},{1},{2})", def.Background.R, def.Background.G, def.Background.B);
+					var fore = string.Format("rgb({0},{1},{2})", def.Foreground.R, def.Foreground.G, def.Foreground.B);
+					var chr = string.Format("&#x{0:X};", (int)def.UnicodeCharacter);
 					var tag = "";
 					var link = "";
 
@@ -1149,7 +1154,7 @@ namespace Noxico
 					{
 						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
 						fore = string.Format("rgb({0},{1},{2})", ent.ForegroundColor.R, ent.ForegroundColor.G, ent.ForegroundColor.B);
-						chr = string.Format("&#x{0:X};", (int)ent.AsciiChar);
+						chr = string.Format("&#x{0:X};", (int)ent.UnicodeCharacter);
 						tag = ent.ID;
 						if (ent is BoardChar)
 						{

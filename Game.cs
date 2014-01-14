@@ -208,12 +208,20 @@ namespace Noxico
 			this.Player = new Player();
 			Introduction.Title();
 
+			/*
 			Random.Reseed("medusacascade");
 			var guinea = Character.Generate("human", Gender.Male);
-			guinea.Morph("foocubus");
-			guinea.Morph("foocubus");
-			guinea.Morph("foocubus");
+			var fb = new StringBuilder();
+			for (var i = 0; i < 50; i++)
+			{
+				var feedback = guinea.Morph("foocubus", Gender.Male);
+				if (string.IsNullOrWhiteSpace(feedback))
+					break;
+				fb.AppendLine(feedback);
+			}
+			Console.WriteLine(fb.ToString());
 			var tokens = guinea.DumpTokens(guinea.Tokens, 0);
+			*/
 
 			/*
 			var dungen = new StoneDungeonGenerator();
@@ -323,7 +331,7 @@ namespace Noxico
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "19");
+			File.WriteAllText(verCheck, "20");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -334,7 +342,7 @@ namespace Noxico
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 19)
+			if (WorldVersion < 20)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
@@ -673,7 +681,7 @@ namespace Noxico
 							for (var tx = 0; tx < 80; tx++)
 							{
 								var tile = thisBoard.Tilemap[tx, ty];
-								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Background);
+								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Definition.Background);
 							}
 						}
 						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.White, (x * 80) + 1, (y * 50) + 1);
@@ -880,7 +888,8 @@ namespace Noxico
 							YPosition = eY,
 						};
 						thisBoard.Warps.Add(newWarp);
-						thisBoard.SetTile(eY, eX, '>', Color.Silver, Color.Black);
+						thisBoard.SetTile(eY, eX, "dungeonEntrance");
+						//thisBoard.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 
 						dungeonEntrances++;
 					}
@@ -923,7 +932,7 @@ namespace Noxico
 						var water = 0;
 						for (var y = 0; y < 50; y++)
 							for (var x = 0; x < 80; x++)
-								if (board.Tilemap[x, y].Water)
+								if (board.Tilemap[x, y].Fluid != Fluids.Dry)
 									water++;
 						if (water > maxWater)
 							continue;
@@ -1249,7 +1258,7 @@ namespace Noxico
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
 
 			var character = player.Character;
-			HostForm.SetCell(1, 81, player.AsciiChar, player.ForegroundColor, player.BackgroundColor);
+			HostForm.SetCell(1, 81, player.Glyph, player.ForegroundColor, player.BackgroundColor);
 			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 1, 83);
 			switch (character.Gender)
 			{
@@ -1323,7 +1332,7 @@ namespace Noxico
 			{
 				var boardChar = Cursor.PointingAt as BoardChar;
 				character = boardChar.Character;
-				HostForm.SetCell(20, 81, boardChar.AsciiChar, boardChar.ForegroundColor, boardChar.BackgroundColor);
+				HostForm.SetCell(20, 81, boardChar.Glyph, boardChar.ForegroundColor, boardChar.BackgroundColor);
 				HostForm.Write(character.GetKnownName(), Color.White, Color.Transparent, 20, 83);
 
 				switch (character.PercievedGender)
@@ -1376,7 +1385,7 @@ namespace Noxico
 					var miniMapPart = miniMap[realm][ey, ex];
 					if (miniMapPart >= BiomeData.Biomes.Count)
 						continue;
-					var biomeColor = BiomeData.Biomes[miniMapPart].Color;
+					var biomeColor = TileDefinition.Find(BiomeData.Biomes[miniMapPart].GroundTile).Background;
 					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
 				}
 			}

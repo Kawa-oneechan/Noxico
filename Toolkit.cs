@@ -844,7 +844,7 @@ namespace Noxico
 		{
 			var i = number;
 			var dd = i % 10;
-			return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
+			return i.ToString() + ((dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd");
 		}
 		public static string Ordinal(this float number)
 		{

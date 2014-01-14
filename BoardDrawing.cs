@@ -5,29 +5,6 @@ using System.Text;
 
 namespace Noxico
 {
-	/*
-	public partial class Tile
-	{
-		public Tile Noise()
-		{
-			return new Tile()
-			{
-				Character = this.Character,
-				Foreground = this.Foreground.Darken(2 + (Random.NextDouble() / 2)),
-				Background = this.Background.Darken(2 + (Random.NextDouble() / 2)),
-				Wall = this.Wall,
-				Water = this.Water,
-				Ceiling = this.Ceiling,
-				Cliff = this.Cliff,
-				Fence = this.Fence,
-				Grate = this.Grate,
-				CanBurn = this.CanBurn,
-				SpecialDescription = this.SpecialDescription,
-			};
-		}
-	}
-	*/
-
 	public partial class Board : TokenCarrier
 	{
 		public static Jint.JintEngine DrawJS;
@@ -37,20 +14,13 @@ namespace Noxico
 			this.Entities.Clear();
 			this.GetToken("biome").Value = biomeID;
 
-			var biome = BiomeData.Biomes[biomeID];
+			var ground = BiomeData.Biomes[biomeID].GroundTile;
+
 			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
-					this.Tilemap[col, row] = new Tile()
-					{
-						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(),
-						Background = biome.Color,
-						CanBurn = biome.CanBurn,
-						Water = biome.IsWater,
-						Biome = biomeID,
-					};
+					SetTile(row, col, ground);
 				}
 			}
 		}
@@ -80,29 +50,9 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
-					var biome = BiomeData.Biomes[b];
-					this.Tilemap[col, row] = new Tile()
-					{
-						Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-						Foreground = biome.Color.Darken(),
-						Background = biome.Color,
-						CanBurn = biome.CanBurn,
-						Water = biome.IsWater,
-						Biome = b,
-					};
+					this.SetTile(row, col, BiomeData.Biomes[b].GroundTile);
 				}
 			}
-		}
-
-		public void SetTile(int x, int y, Tile tile)
-		{
-			if (x >= 80 || y >= 50 || x < 0 || y < 0)
-				return;
-			Tilemap[x, y] = tile.Clone();
-		}
-		public void SetTile(int row, int col, char tile, Color foreColor, Color backColor)
-		{
-			SetTile(row, col, tile, foreColor, backColor, false, false, false, false);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2, string brush)
@@ -245,6 +195,7 @@ namespace Noxico
 			Floodfill(startX, startX, judge, brush, false);
 		}
 
+		/*
 		public void MergeBitmap(string fileName)
 		{
 			var woodFloor = Color.FromArgb(86, 63, 44);
@@ -442,9 +393,11 @@ namespace Noxico
 				this.Tilemap[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
 		}
+		*/
 
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
+			/*
 			if (y2 >= 50)
 				y2 = 49;
 			for (var x = x1; x < x2; x++)
@@ -474,6 +427,7 @@ namespace Noxico
 					}
 				}
 			}
+			*/
 		}
 		public void AddClutter()
 		{
@@ -534,6 +488,8 @@ namespace Noxico
 				{
 					if (bitmap[y, x] < threshold || Tilemap[x, y].SolidToWalker)
 						continue;
+					Tilemap[x, y].Fluid = Realm == Realms.Nox ? Fluids.Water : Fluids.KoolAid;
+					/*
 					Tilemap[x, y] = new Tile()
 					{
 						Character = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)],
@@ -541,6 +497,7 @@ namespace Noxico
 						Background = water.Color, //(water.DarkenPlus + (Random.NextDouble() / water.DarkenDiv)),
 						Water = true,
 					};
+					*/
 				}
 			}
 		}
@@ -551,27 +508,9 @@ namespace Noxico
 
 		public void Drain()
 		{
-			var b = (int)GetToken("biome").Value;
-			var biome = BiomeData.Biomes[b];
-			var tile = new Tile()
-			{
-				Character = biome.GroundGlyphs[Random.Next(biome.GroundGlyphs.Length)],
-				Foreground = biome.Color.Darken(),
-				Background = biome.Color,
-				CanBurn = biome.CanBurn,
-				Biome = b,
-			};
-
 			for (var y = 0; y < 50; y++)
-			{
 				for (var x = 0; x < 80; x++)
-				{
-					if (Tilemap[x, y].Water)
-					{
-						Tilemap[x, y] = tile.Clone();
-					}
-				}
-			}
+					Tilemap[x, y].Fluid = Fluids.Dry;
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace Noxico
 
 		public Cursor()
 		{
-			this.AsciiChar = '\x7F';
+			this.Glyph = '\x7F';
 			this.BackgroundColor = Color.Black;
 			this.ForegroundColor = Color.White;
 			this.Tabstops = new List<Point>();
@@ -113,11 +113,11 @@ namespace Noxico
 					}
 				}
 			}
-			var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
-			if (tSD.HasValue)
+			var tSD = this.ParentBoard.GetName(YPosition, XPosition);
+			if (!string.IsNullOrWhiteSpace(tSD))
 			{
 				PointingAt = null;
-				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + tSD.Value.Color.Name + ">" + tSD.Value.Name;
+				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = tSD;
 				return;
 			}
 		}
@@ -384,8 +384,8 @@ namespace Noxico
 				}
 				else
 				{
-					var tSD = this.ParentBoard.GetSpecialDescription(YPosition, XPosition);
-					if (tSD.HasValue)
+					var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
+					if (!string.IsNullOrWhiteSpace(tSD))
 					{
 						PointingAt = null;
 						MessageBox.ScriptPauseHandler = () =>
@@ -393,7 +393,7 @@ namespace Noxico
 							NoxicoGame.Mode = UserMode.Aiming;
 							Point();
 						};
-						MessageBox.Notice(tSD.Value.Description, true);
+						MessageBox.Notice(tSD, true);
 						return;
 					}
 				}

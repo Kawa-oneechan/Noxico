@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public partial class Character
 	{
-		public List<Token> GetMorphDeltas(string targetPlan)
+		public List<Token> GetMorphDeltas(string targetPlan, Gender targetGender)
 		{
 			Token.NoRolls = true;
 			var rawPlans = Mix.GetTokenTree("bodyplans.tml");
@@ -351,7 +351,160 @@ namespace Noxico
 
 			//TODO: Vaginas
 
-			//TODO: Penises
+			#region Penis
+			{
+				if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
+				{
+					//Grow at least one dick or change one
+					var targetDicks = target.Tokens.Where(t => t.Name == "penis").ToList();
+					var sourceDicks = this.Tokens.Where(t => t.Name == "penis").ToList();
+					if (sourceDicks.Count < targetDicks.Count)
+					{
+						//Not enough dicks right now.
+						var change = new Token("_add", "penis");
+						var targetDick = targetDicks[sourceDicks.Count];
+						change.AddToken("penis[" + sourceDicks.Count + "]", targetDick.Text);
+						change.AddToken("_addto/penis[" + sourceDicks.Count + "]", "thickness");
+						var targetThickness = targetDick.GetToken("thickness");
+						if (targetThickness.Text.StartsWith("roll"))
+						{
+							var xDyPz = targetThickness.Text;
+							var range = 0;
+							var plus = 0;
+							xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+							ParseRoll(xDyPz, out range, out plus);
+							var min = plus;
+							targetThickness.Value = min;
+						}
+						change.AddToken("penis[" + sourceDicks.Count + "]/thickness", targetThickness.Value);
+						var targetLength = targetDick.GetToken("length");
+						if (targetLength.Text.StartsWith("roll"))
+						{
+							var xDyPz = targetLength.Text;
+							var range = 0;
+							var plus = 0;
+							xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+							ParseRoll(xDyPz, out range, out plus);
+							var min = plus;
+							targetLength.Value = min;
+						}
+						change.AddToken("_addto/penis[" + sourceDicks.Count + "]", "length");
+						change.AddToken("penis[" + sourceDicks.Count + "]/length", targetLength.Value / 2);
+						change.AddToken("$", "[view] grow{s} a " + targetDick.Text + " penis");
+						possibleChanges.Add(change);
+					}
+					//else
+					{
+						//Compare sizes
+						for (var i = 0; i < sourceDicks.Count; i++)
+						{
+							var sourceDick = sourceDicks[i];
+							var targetDick = targetDicks[i < targetDicks.Count ? i : targetDicks.Count - 1];
+							var targetLength = targetDick.GetToken("length");
+							var targetThickness = targetDick.GetToken("thickness");
+							var growOrShrink = 0;
+							var thickOrThin = 0;
+							var now = sourceDick.GetToken("length").Value;
+							if (targetLength.Text.StartsWith("roll"))
+							{
+								var xDyPz = targetLength.Text;
+								var range = 0;
+								var plus = 0;
+								xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+								ParseRoll(xDyPz, out range, out plus);
+								var min = plus;
+								var max = min + range;
+								if (now < min)
+									growOrShrink = 1;
+								else if (now > max)
+									growOrShrink = -1;
+							}
+							else
+							{
+								var then = targetLength.Value;
+								if (now < then)
+									growOrShrink = 1;
+								else if (now > then)
+									growOrShrink = -1;
+							}
+							now = sourceDick.GetToken("thickness").Value;
+							if (targetThickness.Text.StartsWith("roll"))
+							{
+								var xDyPz = targetThickness.Text;
+								var range = 0;
+								var plus = 0;
+								xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+								ParseRoll(xDyPz, out range, out plus);
+								var min = plus;
+								var max = min + range;
+								if (now < min)
+									thickOrThin = 1;
+								else if (now > max)
+									thickOrThin = -1;
+							}
+							else
+							{
+								var then = targetThickness.Value;
+								if (now < then)
+									thickOrThin = 1;
+								else if (now > then)
+									thickOrThin = -1;
+							}
+
+							Token change = null;
+							if (growOrShrink == 1 && thickOrThin == 0)
+								change = new Token("penis[" + i + "]/length", sourceDick.GetToken("length").Value + growOrShrink);
+							else if (growOrShrink == 1 && thickOrThin == 1)
+							{
+								change = new Token("penis[" + i + "]/length", sourceDick.GetToken("length").Value + growOrShrink);
+								change.AddToken("penis[" + i + "]/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
+							}
+							else if (growOrShrink == 0 && thickOrThin == 1)
+								change = new Token("penis[" + i + "]/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
+
+							if (change != null)
+							{
+								if (sourceDicks.Count > 1)
+								{
+									if (growOrShrink == 1 && thickOrThin == 0)
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
+									else if (growOrShrink == 1 && thickOrThin == 1)
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
+									else if (growOrShrink == 0 && thickOrThin == 1)
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
+								}
+								else
+								{
+									if (growOrShrink == 1 && thickOrThin == 0)
+										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
+									else if (growOrShrink == 1 && thickOrThin == 1)
+										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
+									else if (growOrShrink == 0 && thickOrThin == 1)
+										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
+								}
+								possibleChanges.Add(change);
+							}
+
+							//TODO: allow oneof
+							if (sourceDick.Text != targetDick.Text)
+							{
+								change = new Token("penis[" + i + "]", targetDick.Text);
+								if (sourceDicks.Count > 1)
+									change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] becomes " + targetDick.Text);
+								else
+									change.AddToken("$", "[views] [cockrand] becomes " + targetDick.Text);
+								possibleChanges.Add(change);
+							}
+						}
+					}
+				}
+				else if (target.HasToken("femaleonly") || targetGender == Gender.Female)
+				{
+					//Shrink/remove dicks
+
+				}
+			}
+			#endregion
 
 			//TODO: Balls
 
@@ -378,6 +531,11 @@ namespace Noxico
 					changes.Add(subChange);
 				}
 			}
+			if (changes.Count == 0)
+			{
+				feedback = string.Empty;
+				return;
+			};
 
 			var feedbackBuilder = new StringBuilder();
 			if (feedbacks.Count == 1)
@@ -425,6 +583,11 @@ namespace Noxico
 					this.RemoveToken(change.Text);
 					continue;
 				}
+				if (change.Name == "_add")
+				{
+					this.AddToken(change.Text);
+					continue;
+				}
 				if (change.Name.StartsWith("_addto/"))
 				{
 					var path = this.Path(change.Name.Substring(7));
@@ -440,11 +603,12 @@ namespace Noxico
 			}
 		}
 
-		public void Morph(string targetPlan)
+		public string Morph(string targetPlan, Gender targetGender = Gender.Random)
 		{
-			var possibilities = GetMorphDeltas(targetPlan);
+			var possibilities = GetMorphDeltas(targetPlan, targetGender);
 			var feedback = string.Empty;
 			ApplyMutamorphDeltas(possibilities, 4, out feedback);
+			return feedback;
 		}
 	}
 }

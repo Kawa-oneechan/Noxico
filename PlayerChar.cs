@@ -47,7 +47,7 @@ namespace Noxico
 		public override void AdjustView()
 		{
 			base.AdjustView();
-			AsciiChar = '@';
+			Glyph = '@';
 		}
 
 		public bool OnWarp()
@@ -259,7 +259,7 @@ namespace Noxico
 				else
 					NoxicoGame.ContextMessage = i18n.GetString("context_container");
 			}
-			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == 0x147) != null)
+			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147) != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_bed");
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
@@ -495,11 +495,11 @@ namespace Noxico
 					Character.RemoveToken("flying");
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
-					if (tile.Water && Character.IsSlime)
+					if (tile.Fluid != Fluids.Dry && Character.IsSlime)
 						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
-					else if (tile.Cliff)
+					else if (tile.Definition.Cliff)
 						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);
-					else if (tile.Fence)
+					else if (tile.Definition.Fence)
 					{
 						//I guess I'm still a little... on the fence.
 						/*
@@ -522,7 +522,7 @@ namespace Noxico
 							return;
 						}
 						var tile = ParentBoard.Tilemap[XPosition, YPosition];
-						if (tile.Ceiling)
+						if (tile.Definition.Ceiling)
 						{
 							if (Character.GetStat(Stat.Cunning) < 10 ||
 								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
@@ -581,7 +581,7 @@ namespace Noxico
 				}
 
 				//Find bed
-				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.AsciiChar == 0x147);
+				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147);
 				if (bed != null)
 				{
 					var prompt = "It's " + NoxicoGame.InGameTime.ToShortTimeString() + ", " + NoxicoGame.InGameTime.ToLongDateString() + ". Sleep for how long?";
@@ -798,7 +798,7 @@ namespace Noxico
 			var e = BoardChar.LoadFromFile(stream);
 			var newChar = new Player()
 			{
-				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
+				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 				Character = e.Character,
 			};
@@ -874,7 +874,7 @@ namespace Noxico
 				var x = Random.Next(40 - range, 40 + range);
 				var y = Random.Next(12 - (range / 2), 12 + (range / 2));
 				var tile = ParentBoard.Tilemap[x, y];
-				if (!(tile.SolidToWalker || tile.Ceiling))
+				if (!(tile.SolidToWalker || tile.Definition.Ceiling))
 				{
 					XPosition = x;
 					YPosition = y;
