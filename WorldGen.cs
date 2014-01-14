@@ -521,32 +521,6 @@ namespace Noxico
 		}
 	}
 
-	public class ClutterDefinition
-	{
-		public Color ForegroundColor { get; private set; }
-		public Color BackgroundColor { get; private set; }
-		public char Character { get; private set; }
-		public int Description { get; private set; }
-		public bool CanBurn { get; private set; }
-		public bool Fence { get; private set; }
-		public bool Wall { get; private set; }
-		public double Chance { get; private set; }
-
-		public static ClutterDefinition FromToken(Token t)
-		{
-			var n = new ClutterDefinition();
-			n.Character = (char)t.GetToken("char").Value;
-			n.ForegroundColor = Color.FromName(t.GetToken("color").Text);
-			n.BackgroundColor = t.HasToken("background") ? Color.FromName(t.GetToken("background").Text) : Color.Transparent;
-			n.Description = t.HasToken("description") ? (int)t.GetToken("description").Value : 0;
-			n.CanBurn = t.HasToken("canburn");
-			n.Fence = t.HasToken("fence");
-			n.Wall = t.HasToken("wall");
-			n.Chance = t.HasToken("chance") ? t.GetToken("chance").Value : 0.02;
-			return n;
-		}
-	}
-
 	public class BiomeData
 	{
 		public static List<BiomeData> Biomes;
@@ -570,15 +544,10 @@ namespace Noxico
 
 		public Realms Realm { get; private set; }
 		public string Name { get; private set; }
-		//public Color Color { get; private set; }
-		//public bool IsWater { get; private set; }
-		//public bool CanBurn { get; private set; }
-		//public char[] GroundGlyphs { get; private set; }
 		public int GroundTile { get; private set; }
 		public int MaxEncounters { get; private set; }
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
-		public List<ClutterDefinition> Clutter { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
 
 		public static BiomeData FromToken(Token t, int realmNum)
@@ -593,20 +562,6 @@ namespace Noxico
 			n.GroundTile = (int)t.GetToken("ground").Value;
 			if (n.GroundTile == 0)
 				n.GroundTile = TileDefinition.Find(t.GetToken("ground").Text).Index;
-			/*
-			n.Color = Color.FromName(t.GetToken("color").Text);
-			n.IsWater = t.HasToken("iswater");
-			n.CanBurn = t.HasToken("canburn");
-
-			var groundGlyphs = t.GetToken("ground");
-			if (groundGlyphs == null)
-				n.GroundGlyphs = new[] { '\x146' };
-			else
-				n.GroundGlyphs = groundGlyphs.Text.ToCharArray();
-			var glyphs = "      ".ToCharArray().ToList();
-			glyphs.AddRange(n.GroundGlyphs);
-			n.GroundGlyphs = glyphs.ToArray();
-			*/
 
 			var encounters = t.GetToken("encounters");
 			if (encounters == null)
@@ -623,17 +578,7 @@ namespace Noxico
 			if (cultures == null)
 				n.Cultures = new[] { "human" };
 			else
-			{
 				n.Cultures = cultures.Tokens.Select(x => x.Name).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
-			}
-
-			var clutters = t.GetToken("clutters");
-			if (clutters != null)
-			{
-				n.Clutter = new List<ClutterDefinition>();
-				foreach (var clutter in clutters.Tokens.Where(c => c.Name == "clutter"))
-					n.Clutter.Add(ClutterDefinition.FromToken(clutter));
-			}
 
 			return n;
 		}

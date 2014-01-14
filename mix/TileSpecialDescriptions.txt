@@ -1,6 +1,0 @@
-<null>:First entry, should never appear.
-cave wall:Rough hewn stone separates you from whatever is behind it.
-cave wall:Rough wooden paneling covers the cave walls, providing a hiding place for all sorts of bugs on one side, and something to hang things from on the other.
-tree:It's a tree. Wow.
-rock:It's a rock. Wowie.
-cactus:What's a cactus doing in a game like this? What is this, Custer's Revenge?
