@@ -418,8 +418,9 @@ namespace Noxico
 			if (lives == 0)
 			{
 				var tile = boardChar.ParentBoard.Tilemap[x, y];
-				if (tile.Water || tile.Cliff)
-					NoxicoGame.AddMessage(i18n.Format(tile.Cliff ? "x_dropped_y_inthedepths" : "x_dropped_y_inthewater", this.ToString(item, true, false)).Viewpoint(boardChar.Character));
+				//TODO: that might not be water they're dropping in...
+				if (tile.Fluid != Fluids.Dry || tile.Definition.Cliff)
+					NoxicoGame.AddMessage(i18n.Format(tile.Definition.Cliff ? "x_dropped_y_inthedepths" : "x_dropped_y_inthewater", this.ToString(item, true, false)).Viewpoint(boardChar.Character));
 				boardChar.Character.GetToken("items").Tokens.Remove(item);
 				boardChar.Character.CheckHasteSlow();
 				return;

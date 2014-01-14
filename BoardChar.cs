@@ -39,7 +39,7 @@ namespace Noxico
 
 		public BoardChar()
 		{
-			this.AsciiChar = (char)255;
+			this.Glyph = (char)255;
 			this.ForegroundColor = Color.White;
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
@@ -76,7 +76,7 @@ namespace Noxico
 			{
 				var a = Character.GetToken("ascii");
 				if (a.HasToken("char"))
-					AsciiChar = (char)a.GetToken("char").Value;
+					Glyph = (char)a.GetToken("char").Value;
 				if (a.HasToken("fore"))
 					ForegroundColor = Color.FromName(a.GetToken("fore").Text);
 				if (a.HasToken("back"))
@@ -99,12 +99,12 @@ namespace Noxico
 					judgment = '\x163';
 				else if (Character.HasToken("taur"))
 					judgment = '\x162';
-				AsciiChar = judgment;
+				Glyph = judgment;
 			}
 
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
 			{
-				AsciiChar = '@'; //not sure about this one, what if they copy someone who's not the player?
+				Glyph = '@'; //not sure about this one, what if they copy someone who's not the player?
 			}
 
 			Eyes = 0;
@@ -208,7 +208,7 @@ namespace Noxico
 				}
 			}
 			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Background.Night());
+				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
 		}
 
 		public override bool CanSee(Entity other)
@@ -1025,7 +1025,7 @@ namespace Noxico
 			var corpse = new Container(name, new List<Token>())
 			{
 				ParentBoard = ParentBoard,
-				AsciiChar = AsciiChar,
+				Glyph = Glyph,
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
@@ -1064,7 +1064,7 @@ namespace Noxico
 			var e = Entity.LoadFromFile(stream);
 			var newChar = new BoardChar()
 			{
-				ID = e.ID, AsciiChar = e.AsciiChar, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
+				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
 				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
 			};
 			newChar.Sector = stream.ReadString();
@@ -1273,7 +1273,7 @@ namespace Noxico
 					ParentBoard = this.ParentBoard,
 					ForegroundColor = Color.FromName(effect.GetToken("fore").Text),
 					BackgroundColor = Color.FromName(effect.GetToken("back").Text),
-					AsciiChar = (char)effect.GetToken("char").Value,
+					Glyph = (char)effect.GetToken("char").Value,
 					Blocking = false,
 					XPosition = point.X,
 					YPosition = point.Y,

@@ -170,7 +170,7 @@ namespace Noxico
 					{
 						for (var x = 0; x < newTemplate.Width; x++)
 						{
-							if (Board.Tilemap[(col * 13) + x, (row * 16) + y].Water)
+							if (Board.Tilemap[(col * 13) + x, (row * 16) + y].Fluid != Fluids.Dry)
 								water++;
 						}
 					}
@@ -219,6 +219,7 @@ namespace Noxico
 					var template = building.Template;
 					var sX = (col * 13) + building.XShift;
 					var sY = (row * 16) + building.YShift;
+					/*
 					for (var y = 0; y < template.Height; y++)
 					{
 						for (var x = 0; x < template.Width; x++)
@@ -423,6 +424,7 @@ namespace Noxico
 							};
 						}
 					}
+					*/
 
 					for (var i = 0; i < building.Inhabitants.Count; i++)
 					{
@@ -448,7 +450,7 @@ namespace Noxico
 								lives--;
 								x = (col * 13) + Random.Next(13);
 								y = (row * 16) + Random.Next(16);
-								if (lives == 0 || !map[x, y].Wall && map[x,y].Ceiling && map[x, y].Character == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
+								if (lives == 0 || !map[x, y].Definition.Wall && map[x, y].Definition.Ceiling && map[x, y].Definition.Glyph == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
 									okay = true;
 							}
 							bc.XPosition = x;
@@ -465,6 +467,7 @@ namespace Noxico
 				}
 			}
 
+			/*
 			//Fix up corners and junctions
 			var cjResults = new[]
 			{
@@ -505,6 +508,7 @@ namespace Noxico
 
 				map[cj.X, cj.Y].Character = (char)cjResults[mask];
 			}
+			*/
 
 			if (safeZones.Count > 0 && includeWater)
 				Board.AddWater(safeZones);
@@ -591,28 +595,34 @@ namespace Noxico
 			}
 		}
 
-		private void MaybeSet(ref Tile[,] map, int x, int y, char c, Color floor, Color wall)
+		private void MaybeSet(ref Tile[,] map, int x, int y, int index)
 		{
-			if (map[x, y].Wall && !map[x, y].CanBurn)
-				map[x, y] = new Tile() { CanBurn = true, Character = c, Wall = true, Background = floor, Foreground = wall };
+			if (map[x, y].Definition.Wall && !map[x, y].Definition.CanBurn)
+				map[x, y].Index = index;
+		}
+		private void MaybeSet(ref Tile[,] map, int x, int y, string tileName)
+		{
+			if (map[x, y].Definition.Wall && !map[x, y].Definition.CanBurn)
+				map[x, y].Index = TileDefinition.Find(tileName).Index;
 		}
 
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			var stoneStart = Color.FromArgb(119, 120, 141);
-			var stoneEnd = Color.FromArgb(144, 144, 158);
-			var stoneFloor = Color.FromArgb(65, 66, 87);
-			var woodFloor = Color.FromArgb(86, 63, 44);
-			var woodWall = Color.FromArgb(20, 15, 12);
+			//var stoneStart = Color.FromArgb(119, 120, 141);
+			//var stoneEnd = Color.FromArgb(144, 144, 158);
+			//var stoneFloor = Color.FromArgb(65, 66, 87);
+			//var woodFloor = Color.FromArgb(86, 63, 44);
+			//var woodWall = Color.FromArgb(20, 15, 12);
 
-			var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken(), CanBurn = false };
-			var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
+			//var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken(), CanBurn = false };
+			//var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
 
 			//Base fill
+			var baseFill = TileDefinition.Find("dungeonWall").Index;
 			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
-					map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(stoneStart, stoneEnd, Random.NextDouble()) };
+					map[col, row].Index = baseFill;
 
 			//TODO: add clutter.
 			/* My idea: have a list of points. For each room, randomly scatter a few points around, and make sure there's a few around the edges.
@@ -626,7 +636,7 @@ namespace Noxico
 				{
 					for (var row = bounds.Top; row <= bounds.Bottom; row++)
 						for (var col = bounds.Left; col <= bounds.Right; col++)
-							map[col, row] = woodTile;
+							map[col, row].Definition = TileDefinition.Find("woodFloor");
 				}
 				else if (room.Material == RoomMaterials.Stone)
 				{
@@ -634,9 +644,9 @@ namespace Noxico
 					{
 						for (var col = bounds.Left; col <= bounds.Right; col++)
 						{
-							map[col, row] = stoneTile.Clone();
+							map[col, row].Definition = TileDefinition.Find("stoneFloor");
 							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
-								map[col, row].Character = 0x146;
+								map[col, row].Definition = TileDefinition.Find("stoneVariant");
 						}
 					}		
 				}
@@ -651,18 +661,18 @@ namespace Noxico
 				var inflated = new SysRectangle(bounds.Left - 1, bounds.Top - 1, bounds.Width + 2, bounds.Height + 2);
 				for (var row = inflated.Top + 1; row < inflated.Bottom; row++)
 				{
-					MaybeSet(ref map, inflated.Left, row, '\x10F', woodFloor, woodWall);
-					MaybeSet(ref map, inflated.Right, row, '\x10F', woodFloor, woodWall);
+					MaybeSet(ref map, inflated.Left, row, "innerWoodWallVertical");
+					MaybeSet(ref map, inflated.Right, row, "innerWoodWallVertical");
 				}
 				for (var col = inflated.Left + 1; col < inflated.Right; col++)
 				{
-					MaybeSet(ref map, col, inflated.Top, '\x110', woodFloor, woodWall);
-					MaybeSet(ref map, col, inflated.Bottom, '\x110', woodFloor, woodWall);
+					MaybeSet(ref map, col, inflated.Top, "innerWoodWallHorizontal");
+					MaybeSet(ref map, col, inflated.Bottom, "innerWoodWallHorizontal");
 				}
-				MaybeSet(ref map, inflated.Left, inflated.Top, '\x10B', woodFloor, woodWall);
-				MaybeSet(ref map, inflated.Right, inflated.Top, '\x10C', woodFloor, woodWall);
-				MaybeSet(ref map, inflated.Left, inflated.Bottom, '\x10D', woodFloor, woodWall);
-				MaybeSet(ref map, inflated.Right, inflated.Bottom, '\x10E', woodFloor, woodWall);
+				MaybeSet(ref map, inflated.Left, inflated.Top, "innerWoodWallTopLeft");
+				MaybeSet(ref map, inflated.Right, inflated.Top, "innerWoodWallTopRight");
+				MaybeSet(ref map, inflated.Left, inflated.Bottom, "innerWoodWallBottomLeft");
+				MaybeSet(ref map, inflated.Right, inflated.Bottom, "innerWoodWallBottomRight");
 			}
 
 			foreach (var corridor in corridors)
@@ -673,24 +683,23 @@ namespace Noxico
 				foreach (var point in Toolkit.Line(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom, true))
 				{
 					var here = map[point.X, point.Y];
-					if (there != null && there.Wall && there.CanBurn && here.Wall && !here.CanBurn)
+					if (there != null && there.Definition.Wall && there.Definition.CanBurn && here.Definition.Wall && !here.Definition.CanBurn)
 					{
-						there.Wall = false;
-						there.Character = ' ';
+						there.Definition = TileDefinition.Find("woodFloor");
 						inRoom = false;
 					}
-					if (here.Wall)
+					if (here.Definition.Wall)
 					{
-						if (!here.CanBurn)
+						if (!here.Definition.CanBurn)
 						{
-							map[point.X, point.Y] = stoneTile.Clone();
+							map[point.X, point.Y].Definition = TileDefinition.Find("stoneFloor");
 							if (Random.NextDouble() > 0.75) //randomly break up the floor a little.
-								map[point.X, point.Y].Character = 0x146;
+								map[point.X, point.Y].Definition = TileDefinition.Find("stoneVariant");
 							inRoom = false;
 						}
 						else if (!inRoom)
 						{
-							map[point.X, point.Y] = woodTile;
+							map[point.X, point.Y].Definition = TileDefinition.Find("woodFloor");
 							inRoom = true;
 						}	
 					}
@@ -699,6 +708,7 @@ namespace Noxico
 			}
 
 			#region Fade out the walls
+			/*
 			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
 			{
@@ -716,9 +726,9 @@ namespace Noxico
 			{
 				for (var col = 0; col < 80; col++)
 				{
-					if (map[col, row].Water)
+					if (map[col, row].Fluid != Fluids.Dry)
 						continue;
-					if (map[col, row].Wall && !map[col, row].CanBurn)
+					if (map[col, row].Definition.Wall && !map[col, row].Definition.CanBurn)
 					{
 						if (dijkstra[col, row] > 1)
 							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
@@ -731,6 +741,7 @@ namespace Noxico
 					}
 				}
 			}
+			*/
 			#endregion
 		}
 	}
@@ -836,26 +847,18 @@ namespace Noxico
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			var stoneFloor = Color.FromArgb(65, 66, 87);
-			var wallStart = Color.FromArgb(119, 120, 141);
-			var wallEnd = Color.FromArgb(144, 144, 158);
-			var floorCrud = "       \x146".ToCharArray();
+			//var stoneFloor = Color.FromArgb(65, 66, 87);
+			//var wallStart = Color.FromArgb(119, 120, 141);
+			//var wallEnd = Color.FromArgb(144, 144, 158);
+			//var floorCrud = "       \x146".ToCharArray();
+
+			var tiles = new[] { TileDefinition.Find("stoneFloor").Index, TileDefinition.Find("dungeonWall").Index };
 
 			for (var row = 0; row < 50; row++)
-			{
 				for (var col = 0; col < 80; col++)
-				{
-					if (this.map[col, row] == 1)
-					{
-						map[col, row] = new Tile() { Character = ' ', Wall = true, Background = Toolkit.Lerp(wallStart, wallEnd, Random.NextDouble()) };
-					}
-					else
-					{
-						map[col, row] = new Tile() { Character = floorCrud[Random.Next(floorCrud.Length)], Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken() };
-					}
-				}
-			}
+					map[col, row].Index = tiles[this.map[col, row]];
 
+			/*
 			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
 				for (var row = 0; row < 50; row++)
@@ -874,6 +877,7 @@ namespace Noxico
 					}
 				}
 			}
+			*/
 		}
 
 	}
