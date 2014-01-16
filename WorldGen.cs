@@ -561,7 +561,7 @@ namespace Noxico
 
 			n.GroundTile = (int)t.GetToken("ground").Value;
 			if (n.GroundTile == 0)
-				n.GroundTile = TileDefinition.Find(t.GetToken("ground").Text).Index;
+				n.GroundTile = TileDefinition.Find(t.GetToken("ground").Text, true).Index;
 
 			var encounters = t.GetToken("encounters");
 			if (encounters == null)

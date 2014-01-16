@@ -116,10 +116,10 @@ namespace Noxico
 				{
 					Index = i,
 					Name = tile.GetToken("id").Text,
-					Glyph = (int)tile.GetToken("glyph").Value,
-					UnicodeCharacter = tile.HasToken("unicode") ? (char)tile.GetToken("unicode").Value : (char)tile.GetToken("glyph").Value,
-					Background = Color.FromName(tile.GetToken("back")),
-					Foreground = tile.HasToken("fore") ? Color.FromName(tile.GetToken("fore")) : Color.FromName(tile.GetToken("back")).Darken(),
+					Glyph = (int)tile.GetToken("char").Value,
+					UnicodeCharacter = tile.HasToken("unicode") ? (char)tile.GetToken("unicode").Value : (char)tile.GetToken("char").Value,
+					Background = Color.FromName(tile.GetToken("back").Text),
+					Foreground = tile.HasToken("fore") ? Color.FromName(tile.GetToken("fore").Text) : Color.FromName(tile.GetToken("back").Text).Darken(),
 					Wall = tile.HasToken("wall"),
 					Ceiling = tile.HasToken("ceiling"),
 					Cliff = tile.HasToken("cliff"),
@@ -135,10 +135,12 @@ namespace Noxico
 			}
 		}
 
-		public static TileDefinition Find(string tileName)
+		public static TileDefinition Find(string tileName, bool noVariants = false)
 		{
 			var def = defs.FirstOrDefault(t => t.Value.Name.Equals(tileName, StringComparison.InvariantCultureIgnoreCase)).Value;
-			if (def.Variants.Tokens.Count > 0)
+			if (def == null)
+				return defs[0];
+			if (!noVariants && def.Variants.Tokens.Count > 0)
 			{
 				var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
 				if (Random.NextDouble() > iant.Value)
@@ -146,13 +148,13 @@ namespace Noxico
 			}
 			return def;
 		}
-	
-		public static TileDefinition Find(int index)
+
+		public static TileDefinition Find(int index, bool noVariants = false)
 		{
 			if (defs.ContainsKey(index))
 			{
 				var def = defs[index];
-				if (def.Variants.Tokens.Count > 0)
+				if (!noVariants && def.Variants.Tokens.Count > 0)
 				{
 					var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
 					if (Random.NextDouble() > iant.Value)
@@ -162,6 +164,11 @@ namespace Noxico
 			}
 			else
 				return null;
+		}
+
+		public override string ToString()
+		{
+			return Name;
 		}
 	}
 
@@ -236,6 +243,11 @@ namespace Noxico
 				Seen = this.Seen,
 				SlimeColor = this.SlimeColor
 			};
+		}
+
+		public override string ToString()
+		{
+			return Definition.ToString();
 		}
 	}
 
@@ -627,20 +639,20 @@ namespace Noxico
 			return Tilemap[col, row].Definition.Name;
 		}
 
-		public void SetTile(int row, int col, TileDefinition def)
-		{
-			if (def == null)
-				return;
-			Tilemap[col, row].Definition = def;
-			DirtySpots.Add(new Location(col, row));
-		}
 		public void SetTile(int row, int col, int index)
 		{
-			SetTile(row, col, TileDefinition.Find(index));
+			Tilemap[col, row].Index = index;
+			DirtySpots.Add(new Location(col, row));
 		}
 		public void SetTile(int row, int col, string tileName)
 		{
 			SetTile(row, col, TileDefinition.Find(tileName).Index);
+		}
+		public void SetTile(int row, int col, TileDefinition def)
+		{
+			if (def == null)
+				return;
+			SetTile(row, col, def.Index);
 		}
 
 		public void Immolate(int row, int col)
