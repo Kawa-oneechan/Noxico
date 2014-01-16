@@ -245,7 +245,6 @@
     <Content Include="mix\schedule.tml" />
     <Content Include="mix\sex.tml" />
     <Content Include="Guides\Tokeninfo.txt" />
-    <Content Include="mix\TileSpecialDescriptions.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
     <Content Include="unformatted books.txt" />
@@ -259,6 +258,7 @@
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
     <None Include="mix\missions\playerbase\floorplan.pspimage" />
+    <None Include="mix\tiles.tml" />
     <None Include="Resources\Noxico.ico" />
   </ItemGroup>
   <ItemGroup />

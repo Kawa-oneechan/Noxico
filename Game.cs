@@ -45,7 +45,6 @@ namespace Noxico
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
-		public static string[] TileDescriptions { get; private set; }
 		public static Dictionary<string, string> BodyplanHashes { get; private set; }
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
@@ -173,8 +172,6 @@ namespace Noxico
 			RollPotions();
 			ApplyRandomPotions();
 
-			TileDescriptions = Mix.GetString("TileSpecialDescriptions.txt").Split('\n');
-
 			Program.WriteLine("Loading books...");
 			BookTitles = new List<string>();
 			BookAuthors = new List<string>();
@@ -198,8 +195,8 @@ namespace Noxico
 			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
-			Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo");
-			Limbo.BoardType = BoardType.Special;
+			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo");
+			//Limbo.BoardType = BoardType.Special;
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();

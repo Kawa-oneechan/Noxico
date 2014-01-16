@@ -14,13 +14,21 @@ namespace Noxico
 			this.Entities.Clear();
 			this.GetToken("biome").Value = biomeID;
 
-			var ground = BiomeData.Biomes[biomeID].GroundTile;
+			var ground = TileDefinition.Find(BiomeData.Biomes[biomeID].GroundTile, true);
 
 			for (int row = 0; row < 50; row++)
 			{
 				for (int col = 0; col < 80; col++)
 				{
-					SetTile(row, col, ground);
+					var def = ground;
+					if (Random.Flip() && def.Variants.Tokens.Count > 0)
+					{
+						var chance = Random.NextDouble();
+						var variants = def.Variants.Tokens.Where(v => v.Value < chance).ToArray();
+						if (variants.Length > 0)
+							def = TileDefinition.Find(variants[Random.Next(variants.Length)].Name);
+					}
+					SetTile(row, col, def);
 				}
 			}
 		}
