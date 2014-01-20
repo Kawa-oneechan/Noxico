@@ -194,7 +194,7 @@ namespace Noxico
 		{
 			get
 			{
-				return TileDefinition.Find(Index);
+				return TileDefinition.Find(Index, true);
 			}
 			set
 			{
@@ -204,31 +204,33 @@ namespace Noxico
 
 		public void SaveToFile(BinaryWriter stream)
 		{
-			stream.Write7BitEncodedInt(Index);
+			stream.Write((UInt16)Index);
 
 			var bits = new BitVector32();
 			bits[32] = Shallow;
 			bits[64] = (BurnTimer > 0);
 			bits[128] = Seen;
 			stream.Write((byte)((byte)bits.Data | (byte)Fluid));
-			if (BurnTimer > 0)
+			//if (BurnTimer > 0)
 				stream.Write((byte)BurnTimer);
-			if (Fluid == Fluids.Slime)
+			//if (Fluid == Fluids.Slime)
+				if (SlimeColor == null)
+					SlimeColor = Color.Transparent;
 				SlimeColor.SaveToFile(stream);
 		}
 
 		public void LoadFromFile(BinaryReader stream)
 		{
-			Index = stream.Read7BitEncodedInt();
+			Index = stream.ReadUInt16();
 
 			var set = stream.ReadByte();
 			var bits = new BitVector32(set);
 			Shallow = bits[32];
 			Seen = bits[128];
-			if (bits[64])
+			//if (bits[64])
 				BurnTimer = stream.ReadByte();
 			Fluid = (Fluids)(set & 8);
-			if (Fluid == Fluids.Slime)
+			//if (Fluid == Fluids.Slime)
 				SlimeColor = Toolkit.LoadColorFromFile(stream);
 		}
 
