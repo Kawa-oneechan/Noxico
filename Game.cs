@@ -656,8 +656,8 @@ namespace Noxico
 				generator.GenerateWorldMap(realm, setStatus);
 				Boardificate(generator, setStatus, realm);
 				PlaceTowns(generator, setStatus, ref townBoards);
-				PlaceDungeons(generator, setStatus);
-				ApplyMissions(generator, setStatus, realm);
+				//PlaceDungeons(generator, setStatus);
+				//ApplyMissions(generator, setStatus, realm);
 
 				miniMap[i] = generator.RoughBiomeMap;
 
@@ -728,7 +728,7 @@ namespace Noxico
 				setStatus(i18n.GetString("worldgen_createboards"), y, generator.MapSizeY);
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
 				{
-					if (generator.RoughBiomeMap[y, x] == generator.WaterBiome)
+					if (generator.RoughBiomeMap[y, x] == -1)
 						continue;
 					var newBoard = new Board();
 					newBoard.Coordinate = new Point(x, y);

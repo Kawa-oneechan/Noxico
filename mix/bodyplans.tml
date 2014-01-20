@@ -294,9 +294,6 @@ bodyplan: foocubus
 	penis: studded
 		thickness: roll 1d3+1
 		length: roll 1d6+27
-	penis: studded
-		thickness: roll 1d3+1
-		length: roll 1d6+27
 	balls
 		amount: 2
 		size: roll 1d2+1

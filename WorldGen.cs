@@ -659,6 +659,7 @@ namespace Noxico
 	public class WorldMapGenerator
 	{
 		public int[,] RoughBiomeMap, TownMap, DetailedMap;
+		public byte[,] WaterMap;
 		public Board[,] BoardMap;
 		public int MapSizeX, MapSizeY, TownMarkers, WaterBiome;
 		public Realms Realm;
@@ -738,8 +739,6 @@ namespace Noxico
 
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
-			var waterLevel = BiomeData.WaterLevels[(int)Realm];
-			//var water = BiomeData.Biomes.IndexOf(BiomeData.Biomes.First(x => x.IsWater && x.Realm == Realm));
 			var cols = (int)Math.Floor(reach / 80.0) * 80;
 			var rows = (int)Math.Floor(reach / 50.0) * 50;
 			var map = new byte[rows, cols];
@@ -759,10 +758,26 @@ namespace Noxico
 							continue;
 						}
  					}
-					if (h < waterLevel)
-						map[row, col] |= 0x80;
  				}
  			}
+			return map;
+		}
+
+		private byte[,] CreateWaterMap(int reach, byte[,] height)
+		{
+			var waterLevel = BiomeData.WaterLevels[(int)Realm];
+			var cols = (int)Math.Floor(reach / 80.0) * 80;
+			var rows = (int)Math.Floor(reach / 50.0) * 50;
+			var map = new byte[rows, cols];
+			for (var row = 0; row < rows; row++)
+			{
+				for (var col = 0; col < cols; col++)
+				{
+					var h = height[row * 1, col];
+					if (h < waterLevel)
+						map[row, col] = 1;
+				}
+			}
 			return map;
 		}
 
@@ -781,6 +796,8 @@ namespace Noxico
 			var precip = CreateClouds(reach, 0.010f, 0.3, false);
 			setStatus(i18n.Format("worldgen_tempmap", realm), 0, 0); //"Creating temperature map..."
 			var temp = CreateClouds(reach, 0.005f, 0.5, true);
+			setStatus(i18n.Format("worldgen_watermap", realm), 0, 0); //"Creating water map..."
+			var water = CreateWaterMap(reach, height);
 			setStatus(i18n.Format("worldgen_biomemap", realm), 0, 0); //"Creating biome map..."
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 
@@ -806,26 +823,25 @@ namespace Noxico
 				setStatus(i18n.Format("worldgen_determinebiomes", realm), bRow, MapSizeY); //"Determining biomes..."
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
-					var counts = new int[255];
+					var counts = new int[256];
 					var oceanTreshold = 4000 - 32;
+					var waterCount = 0;
 					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
 					for (var pRow = 0; pRow < 50; pRow++)
 					{
 						for (var pCol = 0; pCol < 80; pCol++)
 						{
 							var b = biome[(bRow * 50) + pRow, (bCol * 80) + pCol];
-							if ((b | 0x80) == 0x80)
-							{
-								counts[255]++;
-								b = (byte)(b & 0x7F); 
-							}
+							var h = water[(bRow * 50) + pRow, (bCol * 80) + pCol];
+							if (h > 0)
+								waterCount++;
 							counts[b]++;
 						}
 					}
 					//Special rule for Oceans
-					if (counts[255] >= oceanTreshold)
+					if (waterCount >= oceanTreshold)
 					{
-						RoughBiomeMap[bRow, bCol] = 255;
+						RoughBiomeMap[bRow, bCol] = -1;
 						oceans++;
 					}
 					//Determine most significant non-Ocean biome
@@ -853,14 +869,14 @@ namespace Noxico
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					//Find a board with a reasonable amount of water
-					if (RoughBiomeMap[bRow, bCol] == 0)
+					if (RoughBiomeMap[bRow, bCol] == -1)
 						continue;
 					var waterAmount = 0;
 					var waterMin = 1500;
 					var waterMax = 2500;
 					for (var pRow = 0; pRow < 50; pRow++)
 						for (var pCol = 0; pCol < 80; pCol++)
-							if ((biome[(bRow * 50) + pRow, (bCol * 80) + pCol] | 0x80) == 0x80)
+							if (water[(bRow * 50) + pRow, (bCol * 80) + pCol] == 1)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -892,7 +908,7 @@ namespace Noxico
 								var waterMax = 500;
 								for (var pRow = 0; pRow < 50; pRow++)
 									for (var pCol = 0; pCol < 80; pCol++)
-										if ((biome[(row * 50) + pRow, (col * 80) + pCol] | 0x80) == 0x80)
+										if (water[(row * 50) + pRow, (col * 80) + pCol] == 1)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -935,6 +951,7 @@ namespace Noxico
 
 			TownMarkers = towns;
 			//WaterBiome = water;
+			WaterMap = water;
 			BoardMap = new Board[MapSizeY, MapSizeX];
 		}
 	}
