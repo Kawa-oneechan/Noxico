@@ -48,8 +48,10 @@ namespace Noxico
 			var coord = this.Coordinate;
 			var x = coord.X;
 			var y = coord.Y;
-			this.Entities.Clear();
 			var biomeID = generator.RoughBiomeMap[y, x];
+			if (biomeID == -1)
+				return;
+			this.Entities.Clear();
 			this.GetToken("biome").Value = biomeID;
 			var worldMapX = x * 80;
 			var worldMapY = y * 50;
@@ -58,7 +60,9 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
-					this.SetTile(row, col, BiomeData.Biomes[b].GroundTile);
+					var h = generator.WaterMap[worldMapY + row, worldMapX + col];
+					this.Tilemap[col, row].Index = TileDefinition.Find(BiomeData.Biomes[b].GroundTile).Index;
+					this.Tilemap[col, row].Fluid = h == 1 ? Fluids.Water : Fluids.Dry;
 				}
 			}
 		}

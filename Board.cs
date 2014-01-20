@@ -210,7 +210,7 @@ namespace Noxico
 			bits[32] = Shallow;
 			bits[64] = (BurnTimer > 0);
 			bits[128] = Seen;
-			stream.Write((byte)bits.Data | (byte)Fluid);
+			stream.Write((byte)((byte)bits.Data | (byte)Fluid));
 			if (BurnTimer > 0)
 				stream.Write((byte)BurnTimer);
 			if (Fluid == Fluids.Slime)
@@ -247,6 +247,8 @@ namespace Noxico
 
 		public override string ToString()
 		{
+			if (Fluid != Fluids.Dry)
+				return string.Format("{0} - {1}", Definition, Fluid);
 			return Definition.ToString();
 		}
 	}

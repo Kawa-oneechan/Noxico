@@ -219,22 +219,13 @@ namespace Noxico
 					var template = building.Template;
 					var sX = (col * 13) + building.XShift;
 					var sY = (row * 16) + building.YShift;
-					/*
 					for (var y = 0; y < template.Height; y++)
 					{
 						for (var x = 0; x < template.Width; x++)
 						{
 							var tc = template.MapScans[y][x];
-							var fgd = Color.Black;
-							var bgd = Color.Silver;
-							var chr = '?';
-							var wal = false;
-							var wat = false;
-							var cei = false;
-							var cli = false;
-							var fen = false;
-							var gra = false;
-							var bur = false;
+							var def = string.Empty;
+							var fluid = Fluids.Dry;
 
 							var addDoor = true;
 							if (tc == '/')
@@ -247,16 +238,10 @@ namespace Noxico
 								case '\'':
 									continue;
 								case '.':
-									bgd = woodFloor;
-									cei = true;
-									bur = true;
-									chr = ' ';
+									def = "woodFloor";
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
-									bgd = woodFloor;
-									chr = '\xFF';
-									cei = true;
-									bur = true;
+									def = "woodFloor";
 
 									if (addDoor)
 									{
@@ -270,55 +255,29 @@ namespace Noxico
 											ID = building.BaseID + "_Door" + doorCount,
 											ParentBoard = Board,
 											Closed = true,
-											AsciiChar = '+',
+											Glyph = '+',
+											UnicodeCharacter = '+'
 										};
 										Board.Entities.Add(door);
 									}
 									break;
 								case '+':
-									fgd = wall;
-									bgd = woodFloor;
-									wal = true;
-									cei = true;
-									bur = true;
-									cornerJunctions.Add(new Point(sX + x, sY + y));
+									def = "outerWoodWall";
 									break;
 								case '-':
-									fgd = wall;
-									bgd = woodFloor;
-									chr = '\x105';
-									wal = true;
-									cei = true;
-									bur = true;
+									def = "outerWoodWall";
 									break;
 								case '|':
-									fgd = wall;
-									bgd = woodFloor;
-									chr = '\x104';
-									wal = true;
-									cei = true;
-									bur = true;
+									def = "outerWoodWall";
 									break;
 								case '~':
-									fgd = wall;
-									bgd = woodFloor;
-									chr = '\x110';
-									wal = true;
-									cei = true;
-									bur = true;
+									def = "innerWoodWall";
 									break;
 								case ';':
-									fgd = wall;
-									bgd = woodFloor;
-									chr = '\x10F';
-									wal = true;
-									cei = true;
-									bur = true;
+									def = "innerWoodWall";
 									break;
 								case '#':
-									bgd = allowCaveFloor ? caveFloor : woodFloor;
-									bur = !allowCaveFloor;
-									chr = ' ';
+									def = allowCaveFloor ? "stoneFloor" : "woodFloor";
 									break;
 								default:
 									if (template.Markings.ContainsKey(tc))
@@ -328,19 +287,19 @@ namespace Noxico
 										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
-											bgd = woodFloor;
-											chr = ' ';
+											def = "woodFloor";
+											var tileDef = TileDefinition.Find(def, true);
 											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											if (m.Type == "bed")
 											{
 												var newBed = new Clutter()
 												{
-													AsciiChar = 0x147,
+													Glyph = 0x147,
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",
 													ForegroundColor = Color.Black,
-													BackgroundColor = bgd,
+													BackgroundColor = tileDef.Background,
 													ID = "Bed_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
 													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
 													ParentBoard = Board,
@@ -364,11 +323,11 @@ namespace Noxico
 												}	
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
-													AsciiChar = m.Params.Last()[0],
+													Glyph = m.Params.Last()[0],
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
-													BackgroundColor = bgd,
+													BackgroundColor = tileDef.Background,
 													ID = "Container_" + type + "_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
 													ParentBoard = Board,
 												};
@@ -378,11 +337,11 @@ namespace Noxico
 											{
 												var newClutter = new Clutter()
 												{
-													AsciiChar = m.Params.Last()[0],
+													Glyph = m.Params.Last()[0],
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
-													BackgroundColor = bgd,
+													BackgroundColor = tileDef.Background,
 													ParentBoard = Board,
 													Name = m.Name,
 													Description = m.Description,
@@ -393,38 +352,25 @@ namespace Noxico
 										}
 										else if (m.Type == "water")
 										{
-											chr = water.GroundGlyphs[Random.Next(water.GroundGlyphs.Length)];
-											fgd = water.Color.Darken();
-											bgd = water.Color;
-											wat = water.IsWater;
+											fluid = Fluids.Water;
 										}
 										else
 										{
+											/*
 											fgd = m.Params[0] == "floor" ? woodFloor : m.Params[0] == "wall" ? wall : Color.FromName(m.Params[0]);
 											bgd = m.Params[1] == "floor" ? woodFloor : m.Params[1] == "wall" ? wall : Color.FromName(m.Params[1]);
 											chr = m.Params.Last()[0];
 											wal = m.Type != "floor";
+											*/
 										}
 										#endregion
 									}
 									break;
 							}
-							map[sX + x, sY + y] = new Tile()
-							{
-								Character = chr,
-								Foreground = fgd,
-								Background = bgd,
-								Wall = wal,
-								Water = wat,
-								Ceiling = cei,
-								Cliff = cli,
-								Fence = fen,
-								Grate = gra,
-								CanBurn = bur,
-							};
+							map[sX + x, sY + y].Index = TileDefinition.Find(def).Index;
+							map[sX + x, sY + y].Fluid = fluid;
 						}
 					}
-					*/
 
 					for (var i = 0; i < building.Inhabitants.Count; i++)
 					{
