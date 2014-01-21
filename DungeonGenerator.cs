@@ -194,7 +194,6 @@ namespace Noxico
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
 			allowCaveFloor = false;
 
-			var cornerJunctions = new List<Point>();
 			var doorCount = 0;
 
 			var safeZones = new List<Rectangle>();
@@ -241,7 +240,7 @@ namespace Noxico
 									def = "woodFloor";
 									break;
 								case '\\': //Exit -- can't be seen, coaxes walls into shape.
-									def = "woodFloor";
+									def = "doorwayClosed";
 
 									if (addDoor)
 									{
@@ -295,6 +294,7 @@ namespace Noxico
 												var newBed = new Clutter()
 												{
 													Glyph = 0x147,
+													UnicodeCharacter = 0x0398,
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",
@@ -413,48 +413,7 @@ namespace Noxico
 				}
 			}
 
-			/*
-			//Fix up corners and junctions
-			var cjResults = new[]
-			{
-				(int)'x', //0 - none
-				0x104, //1 - only up
-				0x104, //2 - only down
-				0x104, //3 - up and down
-				0x105, //4 - only left
-				0x103, //5 - left and up
-				0x101, //6 - left and down
-				0x10A, //7 - left, up, and down
-				0x105, //8 - only right
-				0x102, //9 - right and up
-				0x100, //10 - right and down
-				0x106, //11 - right, up, and down
-				0x105, //12 - left and right
-				0x109, //13 - left, right, and up
-				0x107, //14 - left, right, and down
-				0x108, //15 - all
-			};
-			foreach (var cj in cornerJunctions)
-			{
-				var up = cj.Y > 0 ? map[cj.X, cj.Y - 1].Character : 'x';
-				var down = cj.Y < 49 ? map[cj.X, cj.Y + 1].Character : 'x';
-				var left = cj.X > 0 ? map[cj.X - 1, cj.Y].Character : 'x';
-				var right = cj.X < 79 ? map[cj.X + 1, cj.Y].Character : 'x';
-				var mask = 0;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
-					mask |= 1;
-				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
-					mask |= 2;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
-					mask |= 4;
-				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
-					mask |= 8;
-				if (mask == 0)
-					continue;
-
-				map[cj.X, cj.Y].Character = (char)cjResults[mask];
-			}
-			*/
+			Board.ResolveVariableWalls();
 
 			if (safeZones.Count > 0 && includeWater)
 				Board.AddWater(safeZones);
@@ -555,14 +514,6 @@ namespace Noxico
 		public override void ToTilemap(ref Tile[,] map)
 		{
 			//TODO: make these biome-dependant (use this.biome)
-			//var stoneStart = Color.FromArgb(119, 120, 141);
-			//var stoneEnd = Color.FromArgb(144, 144, 158);
-			//var stoneFloor = Color.FromArgb(65, 66, 87);
-			//var woodFloor = Color.FromArgb(86, 63, 44);
-			//var woodWall = Color.FromArgb(20, 15, 12);
-
-			//var stoneTile = new Tile() { Character = ' ', Wall = false, Background = stoneFloor, Foreground = stoneFloor.Darken(), CanBurn = false };
-			//var woodTile = new Tile() { Character = ' ', Wall = false, Background = woodFloor, Foreground = woodFloor, CanBurn = true };
 
 			//Base fill
 			var baseFill = TileDefinition.Find("stoneWall").Index;
@@ -582,7 +533,7 @@ namespace Noxico
 				{
 					for (var row = bounds.Top; row <= bounds.Bottom; row++)
 						for (var col = bounds.Left; col <= bounds.Right; col++)
-							map[col, row].Definition = TileDefinition.Find("woodFloor");
+							map[col, row].Index = TileDefinition.Find("woodFloor").Index;
 				}
 				else if (room.Material == RoomMaterials.Stone)
 				{
@@ -590,7 +541,7 @@ namespace Noxico
 					{
 						for (var col = bounds.Left; col <= bounds.Right; col++)
 						{
-							map[col, row].Definition = TileDefinition.Find("stoneFloor");
+							map[col, row].Index = TileDefinition.Find("stoneFloor").Index;
 						}
 					}		
 				}
@@ -603,23 +554,6 @@ namespace Noxico
 
 				var bounds = room.Bounds;
 				var inflated = new SysRectangle(bounds.Left - 1, bounds.Top - 1, bounds.Width + 2, bounds.Height + 2);
-				/*
-				//Leave this to the brute force wall fixer we haven't written yet? YES.
-				for (var row = inflated.Top + 1; row < inflated.Bottom; row++)
-				{
-					MaybeSet(ref map, inflated.Left, row, "innerWoodWallVertical");
-					MaybeSet(ref map, inflated.Right, row, "innerWoodWallVertical");
-				}
-				for (var col = inflated.Left + 1; col < inflated.Right; col++)
-				{
-					MaybeSet(ref map, col, inflated.Top, "innerWoodWallHorizontal");
-					MaybeSet(ref map, col, inflated.Bottom, "innerWoodWallHorizontal");
-				}
-				MaybeSet(ref map, inflated.Left, inflated.Top, "innerWoodWallTopLeft");
-				MaybeSet(ref map, inflated.Right, inflated.Top, "innerWoodWallTopRight");
-				MaybeSet(ref map, inflated.Left, inflated.Bottom, "innerWoodWallBottomLeft");
-				MaybeSet(ref map, inflated.Right, inflated.Bottom, "innerWoodWallBottomRight");
-				*/
 				for (var row = inflated.Top; row <= inflated.Bottom; row++)
 				{
 					MaybeSet(ref map, inflated.Left, row, "innerWoodWall");
@@ -642,25 +576,27 @@ namespace Noxico
 					var here = map[point.X, point.Y];
 					if (there != null && there.Definition.Wall && there.Definition.CanBurn && here.Definition.Wall && !here.Definition.CanBurn)
 					{
-						there.Definition = TileDefinition.Find("woodFloor");
+						there.Index = TileDefinition.Find("woodFloor").Index;
 						inRoom = false;
 					}
 					if (here.Definition.Wall)
 					{
 						if (!here.Definition.CanBurn)
 						{
-							map[point.X, point.Y].Definition = TileDefinition.Find("stoneFloor");
+							map[point.X, point.Y].Index = TileDefinition.Find("stoneFloor").Index;
 							inRoom = false;
 						}
 						else if (!inRoom)
 						{
-							map[point.X, point.Y].Definition = TileDefinition.Find("woodFloor");
+							map[point.X, point.Y].Index = TileDefinition.Find("woodFloor").Index;
 							inRoom = true;
 						}	
 					}
 					there = here;
 				}
 			}
+
+			Board.ResolveVariableWalls();
 
 			#region Fade out the walls
 			/*

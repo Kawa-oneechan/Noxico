@@ -47,6 +47,7 @@ tile: 50
 	id: stoneFloor
 	back: #414257
 	char: 32
+	unicode: 32
 	variants
 		stoneFloor_scatter: 0.75
 tile: 51
@@ -59,12 +60,19 @@ tile: 52
 	_n: rough stone wall
 	description: Rough-hewn stone separates you from whatever is behind it.
 	back: #77788D
-	char: 0x23
+	char: 0x20
 	wall
 tile: 53
 	id: woodFloor
 	back: #563F2C
 	char: 32
+	variants
+		woodFloor_scatter: 0.75
+tile: 1053
+	id: woodFloor_scatter
+	back: #563F2C
+	char: 0x158
+	unicode: U+002D
 tile: 54
 	id: outerWoodWall
 	_n: unresolved outside wall
@@ -80,6 +88,7 @@ tile: 55
 	fore: #140F0C
 	back: #563F2C
 	char: 0x23
+	unicode: U+00B7
 	wall
 	canburn
 	varwall
@@ -93,7 +102,7 @@ tile: 56
 	canburn
 	varwall
 tile: 57
-	id: outerWoodWallTopLeftJoiner
+	id: outerWoodWallBottomRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x100
@@ -102,7 +111,7 @@ tile: 57
 	canburn
 	varwall
 tile: 58
-	id: outerWoodWallTopRightJoiner
+	id: outerWoodWallBottomLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x101
@@ -111,7 +120,7 @@ tile: 58
 	canburn
 	varwall
 tile: 59
-	id: outerWoodWallBottomLeftJoiner
+	id: outerWoodWallTopRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x102
@@ -120,7 +129,7 @@ tile: 59
 	canburn
 	varwall
 tile: 60
-	id: outerWoodWallBottomRightJoiner
+	id: outerWoodWallTopLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x103
@@ -129,7 +138,7 @@ tile: 60
 	canburn
 	varwall
 tile: 61
-	id: outerWoodWallTopBottomJoiner
+	id: outerWoodWallTopBottom
 	fore: #140F0C
 	back: #563F2C
 	char: 0x104
@@ -138,7 +147,25 @@ tile: 61
 	canburn
 	varwall
 tile: 62
-	id: outerWoodWallLeftRightJoiner
+	id: outerWoodWallTop
+	fore: #140F0C
+	back: #563F2C
+	char: 0x104
+	unicode: U+2551
+	wall
+	canburn
+	varwall
+tile: 63
+	id: outerWoodWallBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x104
+	unicode: U+2551
+	wall
+	canburn
+	varwall
+tile: 64
+	id: outerWoodWallLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x105
@@ -146,8 +173,26 @@ tile: 62
 	wall
 	canburn
 	varwall
-tile: 63
-	id: outerWoodWallTopBottomRightJoiner
+tile: 65
+	id: outerWoodWallLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x105
+	unicode: U+2550
+	wall
+	canburn
+	varwall
+tile: 66
+	id: outerWoodWallRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x105
+	unicode: U+2550
+	wall
+	canburn
+	varwall
+tile: 67
+	id: outerWoodWallTopBottomRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x106
@@ -155,8 +200,8 @@ tile: 63
 	wall
 	canburn
 	varwall
-tile: 64
-	id: outerWoodWallBottomLeftRightJoiner
+tile: 68
+	id: outerWoodWallBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x107
@@ -164,8 +209,8 @@ tile: 64
 	wall
 	canburn
 	varwall
-tile: 65
-	id: outerWoodWallTopBottomLeftRightJoiner
+tile: 69
+	id: outerWoodWallTopBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x108
@@ -173,8 +218,8 @@ tile: 65
 	wall
 	canburn
 	varwall
-tile: 66
-	id: outerWoodWallTopLeftRightJoiner
+tile: 70
+	id: outerWoodWallTopLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x109
@@ -182,8 +227,8 @@ tile: 66
 	wall
 	canburn
 	varwall
-tile: 67
-	id: outerWoodWallTopBottomLeftJoiner
+tile: 71
+	id: outerWoodWallTopBottomLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10A
@@ -191,8 +236,8 @@ tile: 67
 	wall
 	canburn
 	varwall
-tile: 68
-	id: innerWoodWallTopLeftJoiner
+tile: 72
+	id: innerWoodWallBottomRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10B
@@ -200,8 +245,8 @@ tile: 68
 	wall
 	canburn
 	varwall
-tile: 69
-	id: innerWoodWallTopRightJoiner
+tile: 73
+	id: innerWoodWallBottomLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10C
@@ -209,8 +254,8 @@ tile: 69
 	wall
 	canburn
 	varwall
-tile: 70
-	id: innerWoodWallBottomLeftJoiner
+tile: 74
+	id: innerWoodWallTopRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10D
@@ -218,8 +263,8 @@ tile: 70
 	wall
 	canburn
 	varwall
-tile: 71
-	id: innerWoodWallBottomRightJoiner
+tile: 75
+	id: innerWoodWallTopLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10E
@@ -227,8 +272,8 @@ tile: 71
 	wall
 	canburn
 	varwall
-tile: 72
-	id: innerWoodWallTopBottomJoiner
+tile: 76
+	id: innerWoodWallTopBottom
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10F
@@ -236,8 +281,26 @@ tile: 72
 	wall
 	canburn
 	varwall
-tile: 73
-	id: innerWoodWallLeftRightJoiner
+tile: 77
+	id: innerWoodWallTop
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10F
+	unicode: U+2503
+	wall
+	canburn
+	varwall
+tile: 78
+	id: innerWoodWallBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10F
+	unicode: U+2503
+	wall
+	canburn
+	varwall
+tile: 79
+	id: innerWoodWallLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x110
@@ -245,8 +308,26 @@ tile: 73
 	wall
 	canburn
 	varwall
-tile: 74
-	id: innerWoodWallTopBottomRightJoiner
+tile: 80
+	id: innerWoodWallLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x110
+	unicode: U+2501
+	wall
+	canburn
+	varwall
+tile: 81
+	id: innerWoodWallRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x110
+	unicode: U+2501
+	wall
+	canburn
+	varwall
+tile: 82
+	id: innerWoodWallTopBottomRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x111
@@ -254,8 +335,8 @@ tile: 74
 	wall
 	canburn
 	varwall
-tile: 75
-	id: innerWoodWallBottomLeftRightJoiner
+tile: 83
+	id: innerWoodWallBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x112
@@ -263,8 +344,8 @@ tile: 75
 	wall
 	canburn
 	varwall
-tile: 76
-	id: innerWoodWallTopBottomLeftRightJoiner
+tile: 84
+	id: innerWoodWallTopBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x113
@@ -272,8 +353,8 @@ tile: 76
 	wall
 	canburn
 	varwall
-tile: 77
-	id: innerWoodWallTopLeftRightJoiner
+tile: 85
+	id: innerWoodWallTopLeftRight
 	fore: #140F0C
 	back: #563F2C
 	char: 0x114
@@ -281,8 +362,8 @@ tile: 77
 	wall
 	canburn
 	varwall
-tile: 78
-	id: innerWoodWallTopBottomLeftJoiner
+tile: 86
+	id: innerWoodWallTopBottomLeft
 	fore: #140F0C
 	back: #563F2C
 	char: 0x115
@@ -290,8 +371,8 @@ tile: 78
 	wall
 	canburn
 	varwall
-tile: 79
-	id: fenceTopLeftJoiner
+tile: 87
+	id: fenceTopLeft
 	fore: #140F0C
 	back: #1D3612
 	char: 0x120
@@ -299,8 +380,8 @@ tile: 79
 	fence
 	canburn
 	varwall
-tile: 80
-	id: fenceTopRightJoiner
+tile: 88
+	id: fenceTopRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x121
@@ -308,8 +389,8 @@ tile: 80
 	fence
 	canburn
 	varwall
-tile: 81
-	id: fenceBottomLeftJoiner
+tile: 89
+	id: fenceBottomLeft
 	fore: #140F0C
 	back: #1D3612
 	char: 0x122
@@ -317,8 +398,8 @@ tile: 81
 	fence
 	canburn
 	varwall
-tile: 82
-	id: fenceBottomRightJoiner
+tile: 90
+	id: fenceBottomRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x123
@@ -326,8 +407,8 @@ tile: 82
 	fence
 	canburn
 	varwall
-tile: 83
-	id: fenceTopBottomJoiner
+tile: 91
+	id: fenceTopBottom
 	fore: #140F0C
 	back: #1D3612
 	char: 0x124
@@ -335,8 +416,26 @@ tile: 83
 	fence
 	canburn
 	varwall
-tile: 84
-	id: fenceLeftRightJoiner
+tile: 92
+	id: fenceTop
+	fore: #140F0C
+	back: #1D3612
+	char: 0x124
+	unicode: U+2502
+	fence
+	canburn
+	varwall
+tile: 93
+	id: fenceBottom
+	fore: #140F0C
+	back: #1D3612
+	char: 0x124
+	unicode: U+2502
+	fence
+	canburn
+	varwall
+tile: 94
+	id: fenceLeftRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x125
@@ -344,8 +443,26 @@ tile: 84
 	fence
 	canburn
 	varwall
-tile: 85
-	id: fenceTopBottomRightJoiner
+tile: 95
+	id: fenceLeft
+	fore: #140F0C
+	back: #1D3612
+	char: 0x125
+	unicode: U+2500
+	fence
+	canburn
+	varwall
+tile: 96
+	id: fenceRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x125
+	unicode: U+2500
+	fence
+	canburn
+	varwall
+tile: 97
+	id: fenceTopBottomRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x126
@@ -353,8 +470,8 @@ tile: 85
 	fence
 	canburn
 	varwall
-tile: 86
-	id: fenceBottomLeftRightJoiner
+tile: 98
+	id: fenceBottomLeftRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x127
@@ -362,8 +479,8 @@ tile: 86
 	fence
 	canburn
 	varwall
-tile: 87
-	id: fenceTopBottomLeftRightJoiner
+tile: 99
+	id: fenceTopBottomLeftRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x128
@@ -371,8 +488,8 @@ tile: 87
 	fence
 	canburn
 	varwall
-tile: 88
-	id: fenceTopLeftRightJoiner
+tile: 100
+	id: fenceTopLeftRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x129
@@ -380,8 +497,8 @@ tile: 88
 	fence
 	canburn
 	varwall
-tile: 89
-	id: fenceTopBottomLeftJoiner
+tile: 101
+	id: fenceTopBottomLeft
 	fore: #140F0C
 	back: #1D3612
 	char: 0x12A
@@ -389,18 +506,18 @@ tile: 89
 	fence
 	canburn
 	varwall
-tile: 90
+tile: 102
 	id: doorwayClosed
 	back: #563F2C
 	char: 32
 	wall
-tile: 91
+tile: 103
 	id: doorwayOpened
 	back: #563F2C
 	char: 32
 
 -- BIOME: GRASSLAND 
-tile: 100
+tile: 200
 	id: grassland
 	back: #1D3612
 	char: 32
@@ -411,19 +528,19 @@ tile: 100
 		grassland_wavey: 0.5
 		grassland_tree: 0.9
 		grassland_rock: 0.8
-tile: 101
+tile: 201
 	id: grassland_scatter
 	back: #1D3612
 	char: 0x146
 	unicode: U+002E
 	canburn
-tile: 102
+tile: 202
 	id: grassland_wavey
 	back: #1D3612
 	char: 0x157
 	unicode: U+002C
 	canburn
-tile: 103
+tile: 203
 	id: grassland_tree
 	_n: tree
 	description: It's a tree. Wow.
@@ -433,7 +550,7 @@ tile: 103
 	unicode: U+2663
 	wall
 	canburn
-tile: 104
+tile: 204
 	id: grassland_rock
 	_n: tree
 	description: It's a rock. Wowie.
@@ -443,7 +560,7 @@ tile: 104
 	unicode: U+2601
 
 -- BIOME: TUNDRA 
-tile: 110
+tile: 210
 	id: tundra
 	back: white
 	char: 32
@@ -452,17 +569,17 @@ tile: 110
 		tundra_scatter: 0.5
 		tundra_wavey: 0.5
 		tundra_rock: 0.8
-tile: 111
+tile: 211
 	id: tundra_scatter
 	back: white
 	char: 0x146
 	unicode: U+002E
-tile: 112
+tile: 212
 	id: tundra_wavey
 	back: white
 	char: 0x157
 	unicode: U+002C
-tile: 113
+tile: 213
 	id: tundra_rock
 	_n: rock
 	description: It's a rock. Wowie.
@@ -472,7 +589,7 @@ tile: 113
 	unicode: U+2601
 
 -- BIOME: TAIGA 
-tile: 120
+tile: 220
 	id: taiga
 	back: #9EC4AB
 	char: 32
@@ -482,17 +599,17 @@ tile: 120
 		taiga_wavey: 0.5
 		taiga_rock: 0.9
 		taiga_tree: 0.8
-tile: 121
+tile: 221
 	id: taiga_scatter
 	back: #9EC4AB
 	char: 0x146
 	unicode: U+002E
-tile: 122
+tile: 222
 	id: taiga_wavey
 	back: #9EC4AB
 	char: 0x157
 	unicode: U+002C
-tile: 123
+tile: 223
 	id: taiga_rock
 	_n: rock
 	description: It's a rock. Wowie.
@@ -500,7 +617,7 @@ tile: 123
 	back: #9EC4AB
 	char: 0x143
 	unicode: U+2601
-tile: 124
+tile: 224
 	id: taiga_tree
 	_n: tree
 	description: It's a tree. Wow.
@@ -512,7 +629,7 @@ tile: 124
 	canburn
 
 -- BIOME: WOODS 
-tile: 130
+tile: 230
 	id: woods
 	back: #1F3B19
 	char: 32
@@ -524,19 +641,19 @@ tile: 130
 		woods_tree1: 0.8
 		woods_tree2: 0.8
 		woods_rock: 0.9
-tile: 131
+tile: 231
 	id: woods_scatter
 	back: #1F3B19
 	char: 0x146
 	unicode: U+002E
 	canburn
-tile: 132
+tile: 232
 	id: woods_wavey
 	back: #1F3B19
 	char: 0x157
 	unicode: U+002C
 	canburn
-tile: 133
+tile: 233
 	id: woods_tree1
 	_n: tree
 	description: It's a tree. Wow.
@@ -546,7 +663,7 @@ tile: 133
 	unicode: U+2660
 	wall
 	canburn
-tile: 134
+tile: 234
 	id: woods_tree2
 	_n: tree
 	description: It's a tree. Wow.
@@ -556,7 +673,7 @@ tile: 134
 	unicode: U+2663
 	wall
 	canburn
-tile: 135
+tile: 235
 	id: woods_rock
 	_n: rock
 	description: It's a rock. Wowie.
@@ -566,7 +683,7 @@ tile: 135
 	unicode: U+2601
 
 -- BIOME: SWAMP 
-tile: 140
+tile: 240
 	id: swamp
 	back: #343B2C
 	char: 32
@@ -574,13 +691,13 @@ tile: 140
 	variants
 		swamp_wavey: 0.4
 		swamp_tree: 0.98
-tile: 141
+tile: 241
 	id: swamp_wavey
 	back: #343B2C
 	char: 0x157
 	unicode: U+002C
 	canburn
-tile: 142
+tile: 242
 	id: swamp_tree
 	_n: tree
 	description: No use kicking a dead tree.
@@ -591,7 +708,7 @@ tile: 142
 	wall
 
 -- BIOME: RAINFOREST 
-tile: 150
+tile: 250
 	id: rainforest
 	back: #1D3612
 	char: 32
@@ -601,7 +718,7 @@ tile: 150
 		rainforest_tree1: 0.8
 		rainforest_tree2: 0.8
 		rainforest_tree3: 0.8
-tile: 151
+tile: 251
 	id: rainforest_tree1
 	_n: tree
 	description: It's a tree. Wow.
@@ -611,7 +728,7 @@ tile: 151
 	unicode: U+2660
 	wall
 	canburn
-tile: 152
+tile: 252
 	id: rainforest_tree2
 	_n: tree
 	description: It's a tree. Wow.
@@ -621,7 +738,7 @@ tile: 152
 	unicode: U+2660
 	wall
 	canburn
-tile: 153
+tile: 253
 	id: rainforest_tree3
 	_n: tree
 	description: It's a tree. Wow.
@@ -633,7 +750,7 @@ tile: 153
 	canburn
 
 -- BIOME: NETHER
-tile: 160
+tile: 260
 	id: nether
 	back: #3D1607
 	char: 32
@@ -642,12 +759,12 @@ tile: 160
 	variants
 		nether_scatter: 0.5
 		nether_wavey: 0.5
-tile: 161
+tile: 261
 	id: nether_scatter
 	back: #3D1607
 	char: 0x146
 	unicode: U+002E
-tile: 162
+tile: 262
 	id: nether_wavey
 	back: #3D1607
 	char: 0x157

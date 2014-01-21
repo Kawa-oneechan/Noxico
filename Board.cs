@@ -1235,15 +1235,19 @@ namespace Noxico
 						var baseName = def.Name.Replace("Top", "").Replace("Bottom", "").Replace("Left", "").Replace("Right", "").Replace("Joiner", "");
 						newTile.Clear();
 						newTile.Append(baseName);
-						if (row > 0 && Tilemap[col, row - 1].Definition.Name.StartsWith(baseName))
+						if (row > 0 && (Tilemap[col, row - 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row - 1].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Top");
-						if (row < 50 && Tilemap[col, row + 1].Definition.Name.StartsWith(baseName))
+						if (row < 49 && (Tilemap[col, row + 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row + 1].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Bottom");
-						if (col > 0 && Tilemap[col - 1, row].Definition.Name.StartsWith(baseName))
+						if (col > 0 && (Tilemap[col - 1, row].Definition.Name.StartsWith(baseName) || Tilemap[col - 1, row].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Left");
-						if (col < 80 && Tilemap[col + 1, row].Definition.Name.StartsWith(baseName))
+						if (col < 79 && (Tilemap[col + 1, row].Definition.Name.StartsWith(baseName) || Tilemap[col + 1, row].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Right");
-						SetTile(row, col, newTile.ToString());
+						var newDef = TileDefinition.Find(newTile.ToString());
+						if (newDef.Index == 0)
+							Console.WriteLine("Couldn't find \"{0}\".", newTile);
+						Tilemap[col, row].Index = newDef.Index;
+						//SetTile(row, col, newTile.ToString());
 					}
 				}
 			}

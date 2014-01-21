@@ -40,6 +40,7 @@ namespace Noxico
 		public BoardChar()
 		{
 			this.Glyph = (char)255;
+			this.UnicodeCharacter = '@';
 			this.ForegroundColor = Color.White;
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
