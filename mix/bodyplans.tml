@@ -10,6 +10,7 @@ bodyplan: human
 		female: "woman"
 	bestiary: "A typical human of northern stock."
 		char: 0x160
+		unicode: U+0068
 	tallness: roll 1d50+150
 	femalesmaller
 	hair
@@ -63,6 +64,7 @@ bodyplan: imp
 		generic: "imp"
 	bestiary: "A disgusting little devil that rapes and destroys whatever tickles its fancy."
 		char: 0x165
+		unicode: U+0069
 	tallness: roll 1d40+100
 	hair
 		length: 5
@@ -102,6 +104,7 @@ bodyplan: goblin
 		generic: "goblin"
 	bestiary: "Originally great engineers, now fallen into an orgiasmic frenzy."
 		char: 0x165
+		unicode: U+0067
 	tallness: roll 1d40+120
 	hair
 		length: 4
@@ -161,6 +164,7 @@ bodyplan: bee
 		female: "bee girl"
 	bestiary: "A man-sized bee, basically."
 		char: 0x166
+		unicode: U+0062
 	tallness: roll 1d20+140
 	hair
 		length: 6
@@ -207,6 +211,7 @@ bodyplan: naga
 	tallness: roll 1d20+160
 	bestiary: "Half beautiful humanoid, half snake, all desert-y allure."
 		char: 0x161
+		unicode: U+004E
 	hair
 		length: 14
 		color: oneof darkcyan, seagreen, cadetblue, springgreen, mediumpurple, lightsteelblue, lightseagreen
@@ -260,6 +265,7 @@ bodyplan: foocubus
 	fireproof
 	bestiary: "The children of the night -- the fun ones."
 		char: 0x160
+		unicode: U+0026
 	tallness: roll 1d20+170
 	hair
 		length: roll 1d3+4
@@ -314,6 +320,7 @@ bodyplan: felinoid
 		herm: "catherm"
 	bestiary: "Typical trading cat people."
 		char: 0x167
+		unicode: U+0046
 	tallness: roll 1d40+150
 	femalesmaller
 	hair
@@ -371,6 +378,7 @@ bodyplan: fox
 		herm: "foxherm"
 	bestiary: "Cunning tricksters and well-versed bards."
 		char: 0x167
+		unicode: U+0056
 	tallness: roll 1d20+150
 	hair
 		length: roll 1d6+3
@@ -426,6 +434,7 @@ bodyplan: littlepony
 		female: "mare"
 	bestiary: "I used to wonder what erotic adventure games could be."
 		char: 0x163
+		unicode: U+0075
 	-- marshmallow adjusts the way hooves are described.
 	marshmallow
 	tallness: 140
@@ -488,6 +497,7 @@ bodyplan: slime
 	-- female: "slimegirl"
 	bestiary: "I am gross and perverted. I'm obsessed and deranged."
 		char: 0x164
+		unicode: U+004A
 	tallness: roll 1d50+100
 	skin
 		type: slime
@@ -540,6 +550,7 @@ bodyplan: ursidae
 		herm: "ursus"
 	tallness: roll 1d150+150
 		char: 0x166
+		unicode: U+0055
 	hair
 		length: roll 1d4+7
 		color: oneof brown, black, gray, white, auburn
@@ -615,6 +626,7 @@ bodyplan: canine
 		style: oneof straight, wavy, ponytail, braided
 	bestiary: ""
 		char: 0x167
+		unicode: U+0044
 	skin
 		type: fur
 		color: brown
@@ -663,10 +675,9 @@ bodyplan: changeling
 		full
 	terms
 		generic: "changeling"
-	ascii
-		char: U+0075
 	bestiary: "This game is going to be perfect."
 		char: 0x163
+		unicode: U+0075
 	tallness: 134
 	hair
 		length: roll 1d3+3
@@ -720,6 +731,7 @@ bodyplan: draig
 		herm: "dragwn"
 	bestiary: "A proud race from the far West, thought by some to be related somehow to the demons."
 		char: 0x166
+		unicode: U+00A7
 	tallness: roll 1d30+200
 	skin
 		type: scales
@@ -780,6 +792,7 @@ bodyplan: bear
 	hostile
 	bestiary: "A ferocious wild animal that would tear apart anyone who dares enter its territory."
 		char: 0x171
+		unicode: U+0055
 	terms
 		generic: "bear"
 	skin
@@ -787,9 +800,6 @@ bodyplan: bear
 		color: brown
 	speed: 30
 	strength: 40
-	ascii
-		char: 0x171
-
 
 bodyplan: wild_dog
 	beast
@@ -798,6 +808,7 @@ bodyplan: wild_dog
 	hostile
 	bestiary: "Usually domesticated, but not this one."
 		char: 0x170
+		unicode: U+0064
 	terms
 		generic: "wild dog"
 	skin
@@ -806,8 +817,6 @@ bodyplan: wild_dog
 	speed: 40
 	strength: 25
 	infectswith: canine
-	ascii
-		char: 0x170
 
 
 bodyplan: tame_dog
@@ -816,6 +825,7 @@ bodyplan: tame_dog
 	hostile
 	bestiary: "Someone's pet dog. Cute."
 		char: 0x170
+		unicode: U+0064
 	terms
 		generic: "dog"
 	skin
@@ -824,9 +834,6 @@ bodyplan: tame_dog
 	speed: 40
 	strength: 25
 	neverprefix
-	ascii
-		char: 0x170
-
 
 bodyplan: rat
 	beast
@@ -835,6 +842,7 @@ bodyplan: rat
 	hostile
 	bestiary: "Pesky little vermin."
 		char: 0x173
+		unicode: U+00B5
 	terms
 		generic: "rat"
 	skin
@@ -842,8 +850,6 @@ bodyplan: rat
 		color: brown
 	speed: 30
 	strength: 5
-	ascii
-		char: U+0072
 
 
 bodyplan: snake
@@ -852,6 +858,7 @@ bodyplan: snake
 			predator
 	bestiary: "Pesky little vermin."
 		char: 0x172
+		unicode: U+00A3
 	hostile
 	terms
 		generic: "snake"
@@ -860,14 +867,13 @@ bodyplan: snake
 		color: oneof saddlebrown, olive, darkslategray
 	speed: 30
 	strength: 5
-	ascii
-		char: 0x172
 
 
 bodyplan: horse
 	beast
 	bestiary: "Large herd animal!"
 		char: 0x174
+		unicode: U+0072
 	namegen: pony
 	terms
 		generic: "horse"
@@ -876,8 +882,6 @@ bodyplan: horse
 		color: oneof brown, white, gray, black, saddlebrown
 	speed: 30
 	strength: 50
-	ascii
-		char: 0x174
 
 -- #endregion
 

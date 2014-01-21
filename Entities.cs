@@ -47,6 +47,7 @@ namespace Noxico
 		public Entity()
 		{
 			ID = "[null]";
+			UnicodeCharacter = '?';
 			this.Energy = Random.Next(4000, 5000);
 		}
 

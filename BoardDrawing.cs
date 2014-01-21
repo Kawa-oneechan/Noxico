@@ -213,8 +213,6 @@ namespace Noxico
 			var woodFloor = Color.FromArgb(86, 63, 44);
 			var caveFloor = Color.FromArgb(65, 66, 87);
 			var wall = Color.FromArgb(20, 15, 12);
-			var cornerJunctions = new List<Point>();
-			var cornerJunctionsI = new List<Point>();
 
 			var bitmap = Mix.GetBitmap(fileName);
 			for (var y = 0; y < 50; y++)
@@ -271,7 +269,6 @@ namespace Noxico
 							wal = true;
 							cei = true;
 							bur = true;
-							cornerJunctions.Add(new Point(x, y));
 							break;
 						case "ff800000": //Dark red, outer -- wall
 							fgd = wall;
@@ -303,7 +300,6 @@ namespace Noxico
 							wal = true;
 							cei = true;
 							bur = true;
-							cornerJunctionsI.Add(new Point(x, y));
 							break;
 					}
 					this.Tilemap[x, y] = new Tile()
@@ -316,94 +312,7 @@ namespace Noxico
 				}
 			}
 
-			//Fix up corners and junctions
-			FixOuterJunctions(cornerJunctions);
-			FixInnerJunctions(cornerJunctionsI);
-		}
-
-		private void FixOuterJunctions(List<Point> junctions)
-		{
-			var cjResults = new[]
-			{
-				(int)'x', //0 - none
-				0x104, //1 - only up
-				0x104, //2 - only down
-				0x104, //3 - up and down
-				0x105, //4 - only left
-				0x103, //5 - left and up
-				0x101, //6 - left and down
-				0x10A, //7 - left, up, and down
-				0x105, //8 - only right
-				0x102, //9 - right and up
-				0x100, //10 - right and down
-				0x106, //11 - right, up, and down
-				0x105, //12 - left and right
-				0x109, //13 - left, right, and up
-				0x107, //14 - left, right, and down
-				0x108, //15 - all
-			};
-			foreach (var cj in junctions)
-			{
-				var up = cj.Y > 0 ? this.Tilemap[cj.X, cj.Y - 1].Character : 'x';
-				var down = cj.Y < 24 ? this.Tilemap[cj.X, cj.Y + 1].Character : 'x';
-				var left = cj.X > 0 ? this.Tilemap[cj.X - 1, cj.Y].Character : 'x';
-				var right = cj.X < 79 ? this.Tilemap[cj.X + 1, cj.Y].Character : 'x';
-				var mask = 0;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
-					mask |= 1;
-				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
-					mask |= 2;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
-					mask |= 4;
-				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
-					mask |= 8;
-				if (mask == 0)
-					continue;
-
-				this.Tilemap[cj.X, cj.Y].Character = (char)cjResults[mask];
-			}
-		}
-		private void FixInnerJunctions(List<Point> junctions)
-		{
-			var cjResults = new[]
-			{
-				(int)'x', //0 - none
-				0x10F, //1 - only up
-				0x10F, //2 - only down
-				0x10F, //3 - up and down
-				0x110, //4 - only left
-				0x10E, //5 - left and up
-				0x10C, //6 - left and down
-				0x115, //7 - left, up, and down
-				0x110, //8 - only right
-				0x10D, //9 - right and up
-				0x10B, //10 - right and down
-				0x111, //11 - right, up, and down
-				0x110, //12 - left and right
-				0x114, //13 - left, right, and up
-				0x112, //14 - left, right, and down
-				0x113, //15 - all
-			};
-			foreach (var cj in junctions)
-			{
-				var up = cj.Y > 0 ? this.Tilemap[cj.X, cj.Y - 1].Character : 'x';
-				var down = cj.Y < 24 ? this.Tilemap[cj.X, cj.Y + 1].Character : 'x';
-				var left = cj.X > 0 ? this.Tilemap[cj.X - 1, cj.Y].Character : 'x';
-				var right = cj.X < 79 ? this.Tilemap[cj.X + 1, cj.Y].Character : 'x';
-				var mask = 0;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x101, 0x104, 0x106, 0x107, 0x108, 0x10A, 0x10B, 0x10C, 0x10F, 0x111, 0x112, 0x113, 0x115 }.Contains(up))
-					mask |= 1;
-				if (new[] { 0x3F, 0xFF, 0x102, 0x103, 0x104, 0x106, 0x108, 0x109, 0x10A, 0x10D, 0x10E, 0x10F, 0x111, 0x113, 0x114, 0x115 }.Contains(down))
-					mask |= 2;
-				if (new[] { 0x3F, 0xFF, 0x100, 0x102, 0x105, 0x106, 0x107, 0x108, 0x109, 0x10B, 0x10D, 0x110, 0x111, 0x112, 0x113, 0x114 }.Contains(left))
-					mask |= 4;
-				if (new[] { 0x3F, 0xFF, 0x101, 0x103, 0x105, 0x107, 0x108, 0x109, 0x10A, 0x10C, 0x10E, 0x110, 0x112, 0x113, 0x114, 0x115 }.Contains(right))
-					mask |= 8;
-				if (mask == 0)
-					continue;
-
-				this.Tilemap[cj.X, cj.Y].Character = (char)cjResults[mask];
-			}
+			this.ResolveVariableWalls();
 		}
 		*/
 
