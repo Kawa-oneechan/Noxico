@@ -24,13 +24,13 @@
 		<template name="simple test" inhabitants="1">
 			<map>
 				'''''''''
-				'+---+'''
-				'|Tc.|'''
-				'|c..\'''
-				'|~.~+-+'
-				'|A...C|'
-				'|B..ab|'
-				'+-----+'
+				'====='''
+				'=Tc.='''
+				'=c..+'''
+				'=-.-==='
+				'=A...C='
+				'=B..ab='
+				'======='
 			</map>
 			<markings>
 				<marking char="A" type="bed" owner="1" />
@@ -45,10 +45,10 @@
 		<template name="simple test 2" inhabitants="1">
 			<map>
 				'''''''''
-				'+-\---+'
-				'|B...A|'
-				'|b..a++'
-				'+----+''
+				'==+===='
+				'=B...A='
+				'=b..a=='
+				'======''
 				'''''''''
 			</map>
 			<markings>
@@ -61,10 +61,10 @@
 		<template name="simple test 3" inhabitants="2">
 			<map>
 				'''''''''
-				'+-----+'
-				'|BA...|'
-				'|ba...\'
-				'+-----+'
+				'======='
+				'=BA...='
+				'=ba...+'
+				'======='
 				'''''''''
 			</map>
 			<markings>
@@ -77,14 +77,14 @@
 		<template name="wide test" inhabitants="2">
 			<map>
 				'''''''''''
-				'+---+---+'
-				'|A.B;b.a|'
-				'|...;...|'
-				'+~/~+~/~+'
-				'|c......|'
-				'|Tc+\+..|'
-				'+--+'|==|'
-				''''''+--+'
+				'========='
+				'=A.B-b.a='
+				'=...-...='
+				'=-+---+-='
+				'=c......='
+				'=Tc=+=..='
+				'===='=DD='
+				''''''===='
 				'''''''''''
 			</map>
 			<markings>
@@ -94,121 +94,7 @@
 				<marking char="b" type="container,clothes,&#x14B;" owner="2" />
 				<marking char="c" type="clutter,&#x149;" name="Chair" />
 				<marking char="T" type="clutter,blocking,&#x148;" name="Table" />
-				<marking char="=" type="block,wall,floor,&#xF0;" />
-			</markings>
-		</template>
-		<!--
-		<template name="water!">
-			<map>
-				'''''''''''
-				'''www'''''
-				''wwwww''''
-				'wwwwwww'''
-				''wwwwwww''
-				''wwwwwwww'
-				''''wwwwww'
-				''''''www''
-				'''''''''''
-			</map>
-			<markings>
-				<marking char="w" type="water,blue,navy,&#x007E;" />
-			</markings>
-		</template>
-		<template name="water!">
-			<map>
-				''''''''''
-				'www''''''
-				'ww''wwww'
-				''''wwwww'
-				'''''www''
-				''''''''''
-				''''''''''
-			</map>
-			<markings>
-				<marking char="w" type="water,blue,navy,&#x007E;" />
-			</markings>
-		</template>
-		-->
-	</set>
-	<set id="dungeon">
-		<template name="simple dungeon cell">
-			<map>
-				'''''''''
-				'+-----+'
-				'|....c|'
-				'|.....|'
-				'|c....|'
-				'|.c...|'
-				'|cc...|'
-				'+-----+'
-				'''''''''
-			</map>
-			<markings>
-				<marking char="c" type="clutter,&#x149;" name="stuff" />
-			</markings>
-		</template>
-		<template name="simple dungeon cell">
-			<map>
-				'''''''
-				'+---+'
-				'|..c|'
-				'|...|'
-				'|c..|'
-				'+---+'
-				'''''''
-			</map>
-			<markings>
-				<marking char="c" type="clutter,&#x149;" name="stuff" />
-			</markings>
-		</template>
-		<template name="simple watery cell">
-			<map>
-				''''''''
-				'+----+'
-				'|.www|'
-				'|..ww|'
-				'|....|'
-				'+----+'
-				''''''''
-			</map>
-			<markings>
-				<marking char="w" type="floor,navy,floor,&#x7E;" />
-			</markings>
-		</template>
-		<template name="simple dungeon cell">
-			<map>
-				'''''''
-				''###''
-				'#####'
-				'#####'
-				'####''
-				''##'''
-				'''''''
-			</map>
-		</template>
-		<template name="simple dungeon cell">
-			<map>
-				''''''''''
-				''#####'''
-				'########'
-				'########'
-				'#######''
-				''######''
-				''''''''''
-			</map>
-		</template>
-		<template name="water!">
-			<map>
-				''''##'
-				''www##
-				'#wwww#
-				'##www#
-				'######
-				''####'
-				'''''''
-			</map>
-			<markings>
-				<marking char="w" type="water,blue,navy,&#x7E;" />
+				<marking char="D" type="block,wall,floor,&#xF0;" />
 			</markings>
 		</template>
 	</set>

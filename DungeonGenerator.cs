@@ -239,7 +239,7 @@ namespace Noxico
 								case '.':
 									def = "woodFloor";
 									break;
-								case '\\': //Exit -- can't be seen, coaxes walls into shape.
+								case '+': //Exit -- can't be seen, coaxes walls into shape.
 									def = "doorwayClosed";
 
 									if (addDoor)
@@ -260,19 +260,10 @@ namespace Noxico
 										Board.Entities.Add(door);
 									}
 									break;
-								case '+':
+								case '=':
 									def = "outerWoodWall";
 									break;
 								case '-':
-									def = "outerWoodWall";
-									break;
-								case '|':
-									def = "outerWoodWall";
-									break;
-								case '~':
-									def = "innerWoodWall";
-									break;
-								case ';':
 									def = "innerWoodWall";
 									break;
 								case '#':
