@@ -229,7 +229,7 @@ namespace Noxico
 			board.DumpToHtml("lol");
 			Application.Exit();
 			*/
-			/*
+			//*
 			var testBoard = new Board();
 			var townGen = new TownGenerator();
 			townGen.Culture = Culture.DefaultCulture;
@@ -239,7 +239,7 @@ namespace Noxico
 			townGen.ToTilemap(ref testBoard.Tilemap);
 			testBoard.DumpToHtml();
 			Application.Exit();
-			*/
+			//*/
 			/*
 			var pervA = new BoardChar(Character.Generate("human", Gender.Male));
 			var pervB = new BoardChar(Character.Generate("goblin", Gender.Male));
