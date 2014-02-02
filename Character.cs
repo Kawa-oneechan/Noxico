@@ -1841,6 +1841,7 @@ namespace Noxico
 
 		public void CreateInfoDump()
 		{
+			//TRANSLATE _ALL_ OF THIS
 			var dump = new StreamWriter(Name + " info.html");
 			var list = new List<string>();
 
@@ -1852,6 +1853,13 @@ namespace Noxico
 			dump.WriteLine("</head>");
 			dump.WriteLine("<body>");
 			dump.WriteLine("<h1>Noxico - Infodump for {0}</h1>", this.Name.ToString(true));
+
+			/*
+			if (isWinner)
+				dump.WriteLine("<p><strong>Final result: Victory!</strong></p>");
+			else
+				dump.WriteLine("<p><strong>Final result: Death.</strong></p>");
+			*/
 
 			dump.WriteLine("<h2>Screenshot</h2>");
 			NoxicoGame.HostForm.Noxico.CurrentBoard.CreateHtmlScreenshot(dump, false);
@@ -1925,6 +1933,12 @@ namespace Noxico
 
 			dump.WriteLine("<h2>Conduct</h2>");
 			dump.WriteLine("<ul>");
+			if (HasToken("easymode"))
+				dump.WriteLine("<li><strong>You were a total scrub.</strong></li>");
+#if DEBUG
+			else if (HasToken("wizard"))
+				dump.WriteLine("<li>You were playing a debug build with the infinite lives cheat enabled.</li>");
+#endif
 			dump.WriteLine(HasToken("books") ? "<li>You were literate.</li>" : "<li>You were functionally illiterate.</li>");
 			dump.WriteLine(lovers > 0 ? "<li>You were someone's lover.</li>" : "<li>You had no love to give.</li>");
 			if (lovers == 1)

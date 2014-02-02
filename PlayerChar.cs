@@ -905,10 +905,12 @@ namespace Noxico
 			XPosition = bed.XPosition;
 			YPosition = bed.YPosition;
 #if DEBUG
-			if (!Character.HasToken("wizard"))
+			if (!Character.HasToken("easymode") && !Character.HasToken("wizard"))
+#else
+			if (!Character.HasToken("easymode"))
 #endif
 				Lives--;
-			Character.Health = Character.MaximumHealth * 0.5f;
+			Character.Health = Character.MaximumHealth * 0.75f;
 			UpdateCandle();
 		}
 
@@ -918,7 +920,9 @@ namespace Noxico
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
 			//TRANSLATE
-			if (Lives == 0)
+			if (Character.HasToken("easymode"))
+				candle.Description = "Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.";
+			else if (Lives == 0)
 				candle.Description = "If this little stump of a candle is any indication, you're on your last legs. You should be careful.";
 			else if (Lives == 1)
 				candle.Description = "The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.";
