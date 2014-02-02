@@ -86,6 +86,7 @@
 				<word id="cc_sex">Biological sex</word>
 				<word id="cc_gid">Gender identity</word>
 				<word id="cc_pref">Preference</word>
+				<word id="cc_easy">Easy mode</word>
 				<word id="cc_no">Not available</word>
 				<word id="cc_hair">Hair color</word>
 				<word id="cc_body">Body color</word>
@@ -101,6 +102,7 @@
 				<word id="cchelp_sex">Are you a boy? Or are you a girl? Some species may not give you the choice.</word>
 				<word id="cchelp_gid">What does your character self-identify as?</word>
 				<word id="cchelp_pref">What does your character prefer as partners?</word>
+				<word id="cchelp_easy">Infinite lives, but you will be taunted. Because easy mode is for gradeschoolers.</word>
 				<word id="cchelp_hair">Select the color of your character's hair.</word>
 				<word id="cchelp_body">Select the color of your character's body. Some species may not give you a choice.</word>
 				<word id="cchelp_eyes">Select the color of your character's eyes. Again, you might not always have a choice.</word>

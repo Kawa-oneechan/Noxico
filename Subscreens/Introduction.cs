@@ -242,6 +242,7 @@ namespace Noxico
 					{ "sex", i18n.GetString("cchelp_sex") },
 					{ "gid", i18n.GetString("cchelp_gid") },
 					{ "pref", i18n.GetString("cchelp_pref") },
+					{ "easy", i18n.GetString("cchelp_easy") },
 					{ "hair", i18n.GetString("cchelp_hair") },
 					{ "body", i18n.GetString("cchelp_body") },
 					{ "eyes", i18n.GetString("cchelp_eyes") },
@@ -274,6 +275,7 @@ namespace Noxico
 					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 30, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 56, Top = 36, Foreground = Color.Gray } },
 					{ "pref", new UIRadioList(prefoptions) { Left = 58, Top = 37, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 58, Top = 42, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
@@ -300,6 +302,7 @@ namespace Noxico
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
+						controls["easy"],
 						controls["controlHelp"], controls["next"],
 					},
 					new List<UIElement>()
@@ -353,11 +356,14 @@ namespace Noxico
 					var gid = ((UIRadioList)controls["gid"]).Value;
 					var pref = ((UIRadioList)controls["pref"]).Value;
 					var species = ((UISingleList)controls["species"]).Index;
+					var easy = ((UIToggle)controls["easy"]).Checked;
 					var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;
 					var eyes = ((UISingleList)controls["eyes"]).Text;
 					var bonus = ((UIList)controls["gift"]).Text;
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, hair, body, eyes, bonus);
+					if (easy)
+						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
 					NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
