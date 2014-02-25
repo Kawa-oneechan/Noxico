@@ -73,15 +73,15 @@ namespace Noxico
 			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
 				ForegroundColor = Color.FromArgb(34, 34, 34);
 
-			if (Character.HasToken("ascii"))
+			Token forcedGlyph = Character.Path("glyph") ?? Character.Path("bestiary") ?? null;
+			if (forcedGlyph != null)
 			{
-				var a = Character.GetToken("ascii");
-				if (a.HasToken("char"))
-					Glyph = (char)a.GetToken("char").Value;
-				if (a.HasToken("fore"))
-					ForegroundColor = Color.FromName(a.GetToken("fore").Text);
-				if (a.HasToken("back"))
-					BackgroundColor = Color.FromName(a.GetToken("back").Text);
+				if (forcedGlyph.HasToken("char"))
+					Glyph = (int)forcedGlyph.GetToken("char").Value;
+				if (forcedGlyph.HasToken("fore"))
+					ForegroundColor = Color.FromName(forcedGlyph.GetToken("fore").Text);
+				if (forcedGlyph.HasToken("back"))
+					BackgroundColor = Color.FromName(forcedGlyph.GetToken("back").Text);
 			}
 			else
 			{

@@ -128,6 +128,9 @@ namespace Noxico
 		{
 			get
 			{
+				if (HasToken("beast"))
+					return Noxico.Gender.Neuter;
+
 				if (HasToken("player"))
 					return PreferredGender;
 				//TODO: detect a relationship token and return the preferred gender if known.
@@ -1017,7 +1020,7 @@ namespace Noxico
 
 		private void EnsureDefaultTokens()
 		{
-			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly", "bestiary" };
+			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
 			foreach (var t in metaTokens)
 				this.RemoveAll(t);
 			if (!this.HasToken("beast"))
@@ -2591,7 +2594,8 @@ namespace Noxico
 		{
 			if (BoardChar == null)
 				return false; //abandon pregnanship!
-
+			//Disabled egglaying for now.
+			/*
 			if (this.HasToken("egglayer") && this.HasToken("vagina") && !this.HasToken("pregnancy"))
 			{
 				var eggToken = this.GetToken("egglayer");
@@ -2611,7 +2615,9 @@ namespace Noxico
 					return false;
 				}
 			}
-			else if (this.HasToken("pregnancy"))
+			else
+			*/
+			if (this.HasToken("pregnancy"))
 			{
 				var pregnancy = this.GetToken("pregnancy");
 				var gestation = pregnancy.GetToken("gestation");
