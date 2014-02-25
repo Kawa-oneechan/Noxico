@@ -113,6 +113,7 @@ namespace Noxico
 					}
 				}
 			}
+			/*
 			var tSD = this.ParentBoard.GetName(YPosition, XPosition);
 			if (!string.IsNullOrWhiteSpace(tSD))
 			{
@@ -120,6 +121,7 @@ namespace Noxico
 				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = tSD;
 				return;
 			}
+			*/
 		}
 
 		public override void Update()
