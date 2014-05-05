@@ -12,7 +12,6 @@ namespace Noxico
 	{
 		private static XmlDocument xDoc;
 		private static Character top, bottom;
-		public static bool Dreaming;
 
 		private static bool letBottomChoose;
 
@@ -28,6 +27,7 @@ namespace Noxico
 
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
+			var dreaming = top.HasToken("dream");
 
 			if (name.Contains('\xE064'))
 				name = name.Remove(name.LastIndexOf('\xE064'));
@@ -67,12 +67,12 @@ namespace Noxico
 			{
 				letBottomChoose = false;
 				if (actions.Count == 0)
-					MessageBox.Notice(message, !Dreaming, bottom.GetKnownName(true, true));
+					MessageBox.Notice(message, !dreaming, bottom.GetKnownName(true, true));
 				else
-					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, !Dreaming, bottom.GetKnownName(true, true));
+					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, !dreaming, bottom.GetKnownName(true, true));
 			}
 
-			if (Dreaming)
+			if (dreaming)
 			{
 				new UIPNGBackground(Mix.GetBitmap("dream.png")).Draw();
 			}
