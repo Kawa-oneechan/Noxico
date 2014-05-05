@@ -153,7 +153,6 @@ namespace Noxico
 		{
 			var trimmers = new[] {'\t', '\n', '\r'};
 			var hadFalseIf = false;
-			var entityMap = Enum.GetNames(typeof(KeyBinding)).Select(x => x.ToLowerInvariant()).ToList();
 			foreach (var node in part.ChildNodes)
 			{
 				if (node is XmlText)
@@ -164,13 +163,6 @@ namespace Noxico
 					if (trimmers.Contains(text[text.Length - 1]))
 						text = text.TrimEnd();
 					ret.Append(text.SmartQuote());
-				}
-				else if (node is XmlEntityReference)
-				{
-					var entity = (XmlEntityReference)node;
-					var keyIndex = entityMap.IndexOf(entity.Name);
-					if (keyIndex > -1)
-						ret.Append(Toolkit.TranslateKey((KeyBinding)keyIndex));
 				}
 				else if (node is XmlElement)
 				{
