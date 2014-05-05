@@ -1187,11 +1187,15 @@ namespace Noxico
 		public void RollPotions()
 		{
 			this.Potions = new string[256];
+			for (var i = 0; i < 256; i++)
+				Potions[i] = string.Empty;
+
 			var colors = i18n.GetArray("potion_colors");
 			var mods = i18n.GetArray("potion_mods");
+
 			for (var i = 0; i < 128; i++)
 			{
-				string roll = null;
+				string roll = string.Empty;
 				while (Potions.Contains(roll))
 				{
 					var color = colors[Random.Next(colors.Length)];
@@ -1199,11 +1203,12 @@ namespace Noxico
 					roll = i18n.Format("potion_name", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
+				Program.WriteLine("{0:00}. \"{1}\"", i, Potions[i]);
 			}
 			mods = i18n.GetArray("potion_ringmods");
 			for (var i = 128; i < 192; i++)
 			{
-				string roll = null;
+				string roll = string.Empty;
 				while (Potions.Contains(roll))
 				{
 					var color = colors[Random.Next(colors.Length)];
@@ -1211,9 +1216,8 @@ namespace Noxico
 					roll = i18n.Format("potion_ringname", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
+				Program.WriteLine("{0:00}. \"{1}\"", i, Potions[i]);
 			}
-			for (var i = 192; i < 256; i++)
-				Potions[i] = string.Empty;
 		}
 
 		public void ApplyRandomPotions()
@@ -1225,6 +1229,7 @@ namespace Noxico
 					var rid = (int)item.GetToken("randomized").Value;
 					if (item.Path("equipable/ring") != null && rid < 128)
 						rid += 128;
+					Program.WriteLine("Potions[{0}] = \"{1}\"", rid, Potions[rid]);
 					var rdesc = Potions[rid].Remove(Potions[rid].IndexOf('\0'));
 
 					if (rdesc == null)

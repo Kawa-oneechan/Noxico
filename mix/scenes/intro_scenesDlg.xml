@@ -34,26 +34,6 @@
 		name CDATA #IMPLIED
 		value CDATA #IMPLIED
 	>
-
-	<!-- Key bindings for tutorial -->
-	<!ENTITY shorthand "&#xE2FE;">
-	<!ENTITY left "&#xE200;">
-	<!ENTITY right "&#xE201;">
-	<!ENTITY up "&#xE202;">
-	<!ENTITY down "&#xE203;">
-	<!ENTITY rest "&#xE204;">
-	<!ENTITY activate "&#xE205;">
-	<!ENTITY items "&#xE206;">
-	<!ENTITY interact "&#xE207;">
-	<!ENTITY fly "&#xE208;">
-	<!ENTITY travel "&#xE209;">
-	<!ENTITY accept "&#xE20A;">
-	<!ENTITY back "&#xE20B;">
-	<!ENTITY pause "&#xE20C;">
-	<!ENTITY screenshot "&#xE20D;">
-	<!ENTITY tabfocus "&#xE20E;">
-	<!ENTITY scrollup "&#xE20F;">
-	<!ENTITY scrolldown "&#xE210;">
 ]>
 <scenes>
 
@@ -398,19 +378,19 @@
 		</p>
 		<p/>
 		<p>
-			Move using the &left;, &right;, &up; and &down; keys. Rest in place with '&rest;'. Use beds, containers, and doorways by standing on them and pressing '&activate;'.
+			Move using the [!left], [!right], [!up] and [!down]; keys. Rest in place with '[!rest]'. Use beds, containers, and doorways by standing on them and pressing '[!activate]'.
 		</p>
 		<p/>
 		<p>
-			Switch to Interact Mode with '&interact;' -- you can look at things, converse with NPCs and try to have sex with them... You can check your inventory with '&items;' and open the travel screen with '&travel;'.
+			Switch to Interact Mode with '[!interact]' -- you can look at things, converse with NPCs and try to have sex with them... You can check your inventory with '[!items]' and open the travel screen with '[!travel]'.
 		</p>
 		<p/>
 		<p>
-			To attack an enemy with a melee weapon, stand next to them and move in their direction. To attack an enemy with a ranged weapon, press '&interact;' and move the targeting cursor over them, then press '&accept;'. Alternatively, to use a ranged weapon in one of the four cardinal directions, hold Shift and press a direction.
+			To attack an enemy with a melee weapon, stand next to them and move in their direction. To attack an enemy with a ranged weapon, press '[!interact]' and move the targeting cursor over them, then press '[!accept]'. Alternatively, to use a ranged weapon in one of the four cardinal directions, hold Shift and press a direction.
 		</p>
 		<p/>
 		<p>
-			To access the menu and see the full list of commands, press '&pause;'.
+			To access the menu and see the full list of commands, press '[!pause]'.
 		</p>
 		<p/>
 		<p>
