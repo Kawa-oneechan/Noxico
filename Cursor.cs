@@ -200,7 +200,7 @@ namespace Noxico
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
 									options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
-								else
+								else //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's stimulation or whatever.
 									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
 							}
 						}

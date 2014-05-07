@@ -207,114 +207,47 @@ namespace Noxico
 			Floodfill(startX, startX, judge, brush, false);
 		}
 
-		/*
-		public void MergeBitmap(string fileName)
+		public void MergeBitmap(string fileName, string tiledefs)
 		{
-			var woodFloor = Color.FromArgb(86, 63, 44);
-			var caveFloor = Color.FromArgb(65, 66, 87);
-			var wall = Color.FromArgb(20, 15, 12);
-
 			var bitmap = Mix.GetBitmap(fileName);
+			var tileset = Mix.GetString(tiledefs).Split('\n');
+			var tiles = new Dictionary<string, string>();
+			foreach (var tile in tileset)
+			{
+				var t = tile.Trim().Split('\t');
+				tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
+			}
 			for (var y = 0; y < 50; y++)
 			{
 				for (var x = 0; x < 80; x++)
 				{
-					var fgd = Color.Black;
-					var bgd = Color.Silver;
-					var chr = '?';
-					var wal = false;
-					var wat = false;
-					var cei = false;
-					var cli = false;
-					var fen = false;
-					var gra = false;
-					var bur = false;
 					var color = bitmap.GetPixel(x, y);
-
 					if (color.Name == "ff000000" || color.A == 0)
 						continue;
-
-					if (color.R == color.G && color.R == color.B)
-					{
-						//Grayscale -- draw as-is for later Replace()ment.
-						this.Tilemap[x, y] = new Tile() { Character = 'X', Foreground = color, Background = color };
+					if (!tiles.ContainsKey(color.Name))
 						continue;
-					}
+					this.Tilemap[x, y].Index = TileDefinition.Find(tiles[color.Name]).Index;
 
-					switch (color.Name)
+					if (tiles[color.Name].StartsWith("doorway"))
 					{
-						case "ffff00ff": //Magenta, biome floor, removes obstacles
-							bgd = this.Tilemap[x, y].Background;
-							fgd = this.Tilemap[x, y].Foreground;
-							bur = this.Tilemap[x, y].CanBurn;
-							chr = ' ';
-							break;
-						case "ff800080": //Purple, floor
-							bgd = woodFloor;
-							chr = ' ';
-							cei = true;
-							bur = true;
-							break;
-						case "ffff0000": //Red, outer | wall
-							fgd = wall;
-							bgd = woodFloor;
-							chr = '\x104';
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
-						case "ffff8080": //Light red, outer corner
-							fgd = wall;
-							bgd = woodFloor;
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
-						case "ff800000": //Dark red, outer -- wall
-							fgd = wall;
-							bgd = woodFloor;
-							chr = '\x105';
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
-						case "ffffff00": //Light yellow, inner | wall
-							fgd = wall;
-							bgd = woodFloor;
-							chr = '\x10F';
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
-						case "ff808000": //Dark yellow, inner -- wall
-							fgd = wall;
-							bgd = woodFloor;
-							chr = '\x110';
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
-						case "ffffffc0": //Pale yellow, inner corner
-							fgd = wall;
-							bgd = woodFloor;
-							wal = true;
-							cei = true;
-							bur = true;
-							break;
+						var door = new Door()
+						{
+							XPosition = x,
+							YPosition = y,
+							ForegroundColor = this.Tilemap[x, y].Definition.Background,
+							BackgroundColor = this.Tilemap[x, y].Definition.Background.Darken(),
+							ID = "mergeBitmap_Door" + x + "_" + y,
+							ParentBoard = this,
+							Closed = tiles[color.Name].EndsWith("Closed"),
+							Glyph = '+',
+							UnicodeCharacter = '+'
+						};
+						this.Entities.Add(door);
 					}
-					this.Tilemap[x, y] = new Tile()
-					{
-						Character = chr, Foreground = fgd, Background = bgd,
-						Wall = wal, Water = wat, Ceiling = cei,
-						Cliff = cli, Fence = fen, Grate = gra,
-						CanBurn = bur,
-					};
 				}
 			}
-
 			this.ResolveVariableWalls();
 		}
-		*/
 
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
