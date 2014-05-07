@@ -67,7 +67,7 @@
 			<![CDATA[
 				top.GetToken("money").Value -= 10;
 				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
-				homeBoard.MergeBitmap("missions\\playerbase\\toolshed.png");
+				homeBoard.MergeBitmap("missions\\playerbase\\toolshed.png", "missions\\playerbase\\lv0.txt");
 				top.AddToken("homeboardhasshed");
 				//TODO: add crafting table @ 27*25
 				var table = new Clutter();
@@ -111,7 +111,7 @@
 				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
 				var level = top.GetToken("homeboardlevel").Value + 1;
 				top.GetToken("homeboardlevel").Value = level;
-				homeBoard.MergeBitmap("missions\\playerbase\\lv" + level + ".png");
+				homeBoard.MergeBitmap("missions\\playerbase\\lv" + level + ".png", "missions\\playerbase\\lv0.txt");
 				//TODO: add furniture
 			]]>
 		</script>

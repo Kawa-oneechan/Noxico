@@ -33,11 +33,12 @@ myBoard.BoardType = BoardType.Special;
 myBoard.RemoveToken("encounters"); myBoard.AddToken("encounters").AddToken("stock");
 MakeBoardTarget(myBoard);
 
-myBoard.MergeBitmap("missions\\playerbase\\lv0.png");
+myBoard.MergeBitmap("missions\\playerbase\\lv0.png", "missions\\playerbase\\lv0.txt");
 
 //Set up player's bedroom
 var bed = new Clutter();
-bed.AsciiChar = 0x147;
+bed.Glyph = 0x147;
+bed.UnicodeCharacter = 0x398;
 bed.XPosition = 31;
 bed.YPosition = 16;
 bed.ForegroundColor = Color.Black;
@@ -51,7 +52,8 @@ myBoard.Entities.Add(bed);
 
 //Set up shrine
 var candle = new Clutter();
-candle.AsciiChar = 0xA1;
+candle.Glyph = 0xAD;
+candle.UnicodeCharacter = 0xA1;
 candle.XPosition = 33;
 candle.YPosition = 19;
 candle.ForegroundColor = Color.White;
@@ -61,25 +63,6 @@ candle.Name = "Life candle";
 candle.Description = "If you can read this, the candle wasn't reset.";
 candle.ParentBoard = myBoard;
 myBoard.Entities.Add(candle);
-
-var fence = new Tile();
-fence.Foreground = Color.FromName("DarkGoldenrod");
-fence.Background = Color.FromName("Auburn");
-fence.Fence = true;
-fence.Character = 0x125; myBoard.Line(50, 12, 60, 12, fence); myBoard.Line(50, 20, 60, 20, fence);
-fence.Character = 0x124; myBoard.Line(50, 12, 50, 20, fence); myBoard.Line(60, 12, 60, 20, fence);
-fence.Character = 0x120; myBoard.SetTile(50, 12, fence);
-fence.Character = 0x121; myBoard.SetTile(60, 12, fence);
-fence.Character = 0x122; myBoard.SetTile(50, 20, fence);
-fence.Character = 0x123; myBoard.SetTile(60, 20, fence);
-fence.Character = 0x20; fence.Fence = false; myBoard.SetTile(50, 16, fence);
-
-var dirt = new Tile();
-dirt.Background = Color.FromName("Auburn");
-dirt.Foreground = Color.Black;
-dirt.Character = 0x157;
-for (var y = 13; y < 20; y++)
-	myBoard.Line(51, y, 59, y, dirt);
 
 /*
 var testDungeon = new Warp();

@@ -93,7 +93,7 @@ tile: 55
 	canburn
 	varwall
 tile: 56
-	id: grassFence
+	id: fence
 	_n: unresolved fence
 	fore: #140F0C
 	back: #1D3612
@@ -372,7 +372,7 @@ tile: 86
 	canburn
 	varwall
 tile: 87
-	id: fenceTopLeft
+	id: fenceBottomRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x120
@@ -381,7 +381,7 @@ tile: 87
 	canburn
 	varwall
 tile: 88
-	id: fenceTopRight
+	id: fenceBottomLeft
 	fore: #140F0C
 	back: #1D3612
 	char: 0x121
@@ -390,7 +390,7 @@ tile: 88
 	canburn
 	varwall
 tile: 89
-	id: fenceBottomLeft
+	id: fenceTopRight
 	fore: #140F0C
 	back: #1D3612
 	char: 0x122
@@ -399,7 +399,7 @@ tile: 89
 	canburn
 	varwall
 tile: 90
-	id: fenceBottomRight
+	id: fenceTopLeft
 	fore: #140F0C
 	back: #1D3612
 	char: 0x123

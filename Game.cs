@@ -666,8 +666,8 @@ namespace Noxico
 				generator.GenerateWorldMap(realm, setStatus);
 				Boardificate(generator, setStatus, realm);
 				PlaceTowns(generator, setStatus, ref townBoards);
-				//PlaceDungeons(generator, setStatus);
-				//ApplyMissions(generator, setStatus, realm);
+				PlaceDungeons(generator, setStatus);
+				ApplyMissions(generator, setStatus, realm);
 
 				miniMap[i] = generator.RoughBiomeMap;
 
@@ -704,7 +704,12 @@ namespace Noxico
 			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
 			if (homeBase == null)
 			{
-				this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
+				while (true)
+				{
+					this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
+					if (this.CurrentBoard.Realm == Realms.Nox) //don't spawn in the demon world!
+						break;
+				}
 				if (!TravelTargets.ContainsKey(this.CurrentBoard.BoardNum))
 					TravelTargets.Add(this.CurrentBoard.BoardNum, this.CurrentBoard.Name);
 				this.Player.ParentBoard = this.CurrentBoard;
@@ -1203,7 +1208,6 @@ namespace Noxico
 					roll = i18n.Format("potion_name", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
-				Program.WriteLine("{0:00}. \"{1}\"", i, Potions[i]);
 			}
 			mods = i18n.GetArray("potion_ringmods");
 			for (var i = 128; i < 192; i++)
@@ -1216,7 +1220,6 @@ namespace Noxico
 					roll = i18n.Format("potion_ringname", mod, color) + '\0' + color;
 				}
 				Potions[i] = roll;
-				Program.WriteLine("{0:00}. \"{1}\"", i, Potions[i]);
 			}
 		}
 
