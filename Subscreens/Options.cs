@@ -63,8 +63,8 @@ namespace Noxico
 				{
 					Left = 6,
 					Top = 7,
-					Width = 16,
-					Height = 5,
+					Width = 32,
+					Height = 20,
 				};
 				font.Enter = (s, e) =>
 				{
