@@ -252,7 +252,9 @@
     <Content Include="mix\travel.png" />
     <Content Include="unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
-    <Content Include="mix\words.xml" />
+    <Content Include="mix\words.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Noxico.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

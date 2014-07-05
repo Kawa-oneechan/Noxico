@@ -14,13 +14,13 @@ namespace Noxico
 			{ i18n.GetString("pause_skills"), "..." },
 			{ i18n.GetString("pause_keys1"), "..." },
 			{ i18n.GetString("pause_keys2"), "..." },
-			{ i18n.GetString("pause_credits"), i18n.GetString("pause_creditscontent") },
+			{ i18n.GetString("pause_credits"), i18n.GetString("pause_creditscontent").Wordwrap(40) },
 			{ i18n.GetString("pause_memstats"), "..." },
 #if DEBUG
 			{ "Debug cheats", "..." },
 #endif
-			{ i18n.GetString("pause_opensettings"), Toolkit.Wordwrap(i18n.GetString("pause_opensettingscontent"), 40) },
-			{ i18n.GetString("pause_saveandexit"), i18n.GetString("pause_saveandexitcontent") },
+			{ i18n.GetString("pause_opensettings"), i18n.GetString("pause_opensettingscontent").Wordwrap(40) },
+			{ i18n.GetString("pause_saveandexit"), i18n.GetString("pause_saveandexitcontent").Wordwrap(40) },
 
 		};
 		private static UIList list;

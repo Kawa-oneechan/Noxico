@@ -168,20 +168,12 @@
 		<word id="pause_opensettingscontent">
 			<![CDATA[Press Enter to open the options screen.
 
-From there, you can change a bunch of
-things, such as the display font (if
-any alternatives have been installed)
-or if lengths should be in metric or
-imperial.]]>
+From there, you can change a bunch of things, such as the display font (if any alternatives have been installed) or if lengths should be in metric or imperial.]]>
 </word>
 		<word id="pause_saveandexitcontent">
 			<![CDATA[Press Enter to save.
 
-The game will automatically exit when
-done. Note that clicking the Close
-button or pressing Alt-F4 or whatever
-your operating system's methods are
-has the same effect.]]>
+The game will automatically exit when done. Note that clicking the Close button or pressing Alt-F4 or whatever your operating system's methods are has the same effect.]]>
 </word>
 		<word id="pause_memstatscontent">
 			<![CDATA[     Number of boards       {0}
