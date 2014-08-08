@@ -12,21 +12,21 @@ choice: climax
 		has: 0 havingsex/givingvaginal
 			true
 				message
-					$: [t:Youorname] cr{ies|y} out as [t:he] come{s} deep inside [b:yourornames] [pussyrand].
+					$: [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [pussyrand].
 				fertilize: 1 0
 				end
 		has: 0 havingsex/givinganal
 			true
 				message
-					$: [t:Youorname] cr{ies|y} out as [t:he] come{s} deep inside [b:yourornames] [anusrand].
+					$: [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [anusrand].
 				end
 		has: 0 havingsex/givingbothholes
 			true
 				message
-					$: [t:Youorname] cr{ies|y} out as [t:he] come{s} deep inside [b:yourornames] [pussyrand] and [anusrand].
+					$: [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [pussyrand] and [anusrand].
 				end
 		message
-			$: [t:Youorname] cr{ies|y} out as [t:he] come{s} all over [b:him].
+			$: [t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him].
 		end
 		
 
