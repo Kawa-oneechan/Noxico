@@ -382,7 +382,7 @@ namespace Noxico
 					{
 						var dream = new Character();
 						dream.Name = new Name("Dream");
-						dream.IsProperNamed = true;
+						dream.AddToken("special");
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("introdream");
 						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)");
 					}
