@@ -600,22 +600,19 @@ namespace Noxico
 
 		public void Draw()
 		{
-			var lockData = backBuffer.LockBits(new System.Drawing.Rectangle(0, 0, backBuffer.Width, backBuffer.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+			var lockData = backBuffer.LockBits(new System.Drawing.Rectangle(0, 0, backBuffer.Width, backBuffer.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 			var size = lockData.Stride * lockData.Height;
 			var scan0 = new byte[size];
 			Marshal.Copy(lockData.Scan0, scan0, 0, size);
-			using (var gfx = Graphics.FromImage(backBuffer))
+			for (int row = 0; row < 60; row++)
 			{
-				for (int row = 0; row < 60; row++)
+				for (int col = 0; col < 100; col++)
 				{
-					for (int col = 0; col < 100; col++)
+					var here = image[col, row];
+					if (here != previousImage[col, row])
 					{
-						var here = image[col, row];
-						if (here != previousImage[col, row])
-						{
 							DrawCell(scan0, lockData.Stride, row, col, here);
 							previousImage[col, row].CopyFrom(here);
-						}
 					}
 				}
 			}

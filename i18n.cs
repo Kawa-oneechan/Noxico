@@ -290,20 +290,22 @@ namespace Noxico
 				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")); } },
 				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")); } },
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
-				{ "foot", (c, s) => {return Descriptions.Foot(c.GetToken("legs")); } },
-				{ "feet", (c, s) => {return Descriptions.Foot(c.GetToken("legs"), true); } },
-				{ "cumrand", (c, s) => {return Descriptions.CumRandom(); } },
+				{ "foot", (c, s) => { return Descriptions.Foot(c.GetToken("legs")); } },
+				{ "feet", (c, s) => { return Descriptions.Foot(c.GetToken("legs"), true); } },
+				{ "cumrand", (c, s) => { return Descriptions.CumRandom(); } },
 				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
-				{ "tonguetype", (c, s) => {return Descriptions.TongueType(c.GetToken("tongue")); } },
-				{ "tailtype", (c, s) => {return Descriptions.TailType(c.GetToken("tail")); } },
-                { "hipsize", (c, s) => {return Descriptions.HipSize(c.GetToken("hips")); } },
-                { "haircolor", (c, s) => {return Descriptions.HairColor(c.GetToken("hair")); } },
-                { "hairlength", (c, s) => {return Descriptions.HairLength(c.GetToken("hair")); } },
-                { "ballsize", (c, s) => {return Descriptions.BallSize(c.GetToken("balls")); } },
+				{ "tonguetype", (c, s) => { return Descriptions.TongueType(c.GetToken("tongue")); } },
+				{ "tailtype", (c, s) => { return Descriptions.TailType(c.GetToken("tail")); } },
+                { "hipsize", (c, s) => { return Descriptions.HipSize(c.GetToken("hips")); } },
+                { "haircolor", (c, s) => { return Descriptions.HairColor(c.GetToken("hair")); } },
+                { "hairlength", (c, s) => { return Descriptions.HairLength(c.GetToken("hair")); } },
+                { "ballsize", (c, s) => { return Descriptions.BallSize(c.GetToken("balls")); } },
 				#endregion
 
-				{ "hand", (c, s) => {return Descriptions.Hand(c); } },
-				{ "hands", (c, s) => {return Descriptions.Hand(c, true); } },
+				{ "hand", (c, s) => { return Descriptions.Hand(c); } },
+				{ "hands", (c, s) => { return Descriptions.Hand(c, true); } },
+
+				{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0] + (c == player ? string.Empty : "s"))); } },
 			};
 			#endregion
 			#region [] Parser
@@ -334,9 +336,11 @@ namespace Noxico
 
 					if (match.Groups["subcom"].Captures.Count > 1)
 					{
-						subcom = match.Groups["target"].Value;
-						foreach (Capture c in match.Groups[2].Captures)
+						//subcom = match.Groups["target"].Value;
+						subcom = match.Groups["subcom"].Captures[0].Value;
+						for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
 						{
+							var c = match.Groups["subcom"].Captures[i];
 							Console.WriteLine(c);
 							parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
 						}

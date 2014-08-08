@@ -250,6 +250,11 @@ namespace Noxico
 			result = SexManager.GetResult("struggle", pervB, pervA);
 			SexManager.Apply(result, pervB, pervA, new Action<string>(x => Console.WriteLine("--> {0}", x)));
 			*/
+
+			/*
+			var testCharacter = Character.GenerateQuick("human", Gender.Female);
+			var testSentence = i18n.Viewpoint("[t:He] [t:voc:grunt] at the sight of yet another test and cups [t:his] [t:breastsize:0] [breastsrand]", testCharacter, null);
+			*/
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false, bool clear = true)
