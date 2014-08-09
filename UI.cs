@@ -906,6 +906,11 @@ namespace Noxico
 
 		public static void Draw()
 		{
+			if (Elements.Count == 0)
+			{
+				Program.WriteLine("Warning: UIManager.Draw() called with an empty elements list.");
+				return;
+			}
 			//Take this moment to highlight the first element, if needed.
 			if (highlight == null || !highlight.TabStop)
 				highlight = Elements.FirstOrDefault(x => x.TabStop && !x.Hidden);
