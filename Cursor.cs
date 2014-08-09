@@ -269,7 +269,10 @@ namespace Noxico
 									}
 									else if (PointingAt is BoardChar)
 									{
-										TextScroller.LookAt((BoardChar)PointingAt);
+										if (((BoardChar)PointingAt).Character.HasToken("beast"))
+											MessageBox.Notice(((BoardChar)PointingAt).Character.LookAt(PointingAt), true, ((BoardChar)PointingAt).Character.GetKnownName());
+										else
+											TextScroller.LookAt((BoardChar)PointingAt);
 									}
 									break;
 
@@ -458,7 +461,8 @@ namespace Noxico
 
 		public void Hide()
 		{
-			NoxicoGame.Messages.RemoveAt(NoxicoGame.Messages.Count - 1);
+			if (NoxicoGame.Messages.Count > 1)
+				NoxicoGame.Messages.RemoveAt(NoxicoGame.Messages.Count - 1);
 			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
