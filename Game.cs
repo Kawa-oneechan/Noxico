@@ -39,8 +39,9 @@ namespace Noxico
 		public Board CurrentBoard { get; set; }
 		public static Board Limbo { get; private set; }
 		public Player Player { get; set; }
-		public static List<string> BookTitles { get; private set; }
-		public static List<string> BookAuthors { get; private set; }
+		//public static List<string> BookTitles { get; private set; }
+		public static Dictionary<string, string[]> BookTitles { get; private set; }
+		//public static List<string> BookAuthors { get; private set; }
 		public static List<string> Messages { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
@@ -172,6 +173,7 @@ namespace Noxico
 			RollPotions();
 			ApplyRandomPotions();
 
+			/*
 			Program.WriteLine("Loading books...");
 			BookTitles = new List<string>();
 			BookAuthors = new List<string>();
@@ -190,6 +192,17 @@ namespace Noxico
 					i += 3;
 				}
 			}
+			*/
+			Program.WriteLine("Preloading book info...");
+			BookTitles = new Dictionary<string, string[]>();
+			foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
+			{
+				var bookFile = Mix.GetString(book, false).Split('\n');
+				var bookID = Path.GetFileNameWithoutExtension(book);
+				var bookName = bookFile[0].Substring(3).Trim();
+				var bookAuthor = bookFile[1].StartsWith("## ") ? bookFile[1].Substring(3).Trim() : i18n.GetString("book_unknownauthor");
+				BookTitles.Add(bookID, new[] { bookName, bookAuthor });
+			}
 
 			//ScriptVariables.Add("consumed", 0);
 			JavaScript.MainMachine = JavaScript.Create();
@@ -204,6 +217,8 @@ namespace Noxico
 			CurrentBoard = new Board();
 			this.Player = new Player();
 			Introduction.Title();
+
+			TextScroller.ReadBook("fonttest");
 
 			/*
 			Random.Reseed("medusacascade");

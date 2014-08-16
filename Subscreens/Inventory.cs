@@ -110,7 +110,7 @@ namespace Noxico
 						if (item.ID == "book")
 						{
 							var cga = new[] { "Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "Purple", "Brown", "Silver", "Gray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White" };
-							color = cga[(int)carriedItem.GetToken("id").Value % cga.Length];
+							color = cga[carriedItem.GetToken("id").Text.GetHashCode() % cga.Length];
 						}
 						if (color.Equals("black", StringComparison.OrdinalIgnoreCase))
 							color = "Gray";

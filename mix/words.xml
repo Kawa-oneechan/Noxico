@@ -6,11 +6,21 @@
 	<!ELEMENT hyphenation (rule*)>
 	<!ELEMENT rule (#PCDATA)>
 	<!ELEMENT pluralizer (of,sanitycheck,uncountable_words,irregular_plurals,regular_plurals)>
+	<!ELEMENT of (#PCDATA)>
 	<!ELEMENT sanitycheck (input,output)>
+	<!ELEMENT input (#PCDATA)>
+	<!ELEMENT output (#PCDATA)>
 	<!ELEMENT uncountable_words (uncountable_word+)>
+	<!ELEMENT uncountable_word (#PCDATA)>
+	<!ELEMENT irregular_plurals (irregular_plural+)>
+	<!ELEMENT irregular_plural (#PCDATA)>
+	<!ELEMENT regular_plurals (regular_plural+)>
+	<!ELEMENT regular_plural (#PCDATA)>
 	<!ATTLIST category name CDATA #IMPLIED>
 	<!ATTLIST word id ID #REQUIRED>
 	<!ATTLIST rule cutoff CDATA #REQUIRED>
+	<!ATTLIST irregular_plural from CDATA #REQUIRED to CDATA #REQUIRED fullword CDATA #IMPLIED>
+	<!ATTLIST regular_plural from CDATA #REQUIRED to CDATA #REQUIRED>
 
 	<!-- Key bindings -->
 	<!ENTITY shorthand "&#xE2FE;">
@@ -298,6 +308,9 @@ Do you want to find out?]]>
 		<word id="surprise_its_sticky">[Youorname] {{tries|try}} to unequip {0}, but find{{s}} [he] cannot!</word>
 		<word id="cannot_remove_sticky">[Youorname] cannot unequip {0} because of stickiness.</word>
 		<word id="book_description">This is "{0}", by {1}.</word>
+		<word id="book_unknownauthor">an unknown author</word>
+		<word id="book_404"><![CDATA[## Unknown book
+This book, we're sorry to say, has a broken reference.]]></word>
 
 		<word id="x_verbs_y_for_z">[t:Youorname] {0} [b:name] for [p:{1}:point].</word>
 		<word id="x_dodges_ys_attack">[t:Youorname] dodge{{s}} [b:his] attack.</word>
