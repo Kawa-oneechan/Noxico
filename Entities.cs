@@ -299,7 +299,7 @@ namespace Noxico
 				else if (ascii.HasToken("fore"))
 					this.ForegroundColor = Color.FromName(ascii.GetToken("fore").Text);
 				else if (Item.ID == "book" && Token.Tokens.Count > 0)
-					this.ForegroundColor = Color.FromCGA((int)Token.GetToken("id").Value % 16);
+					this.ForegroundColor = Color.FromCGA(Token.GetToken("id").Text.GetHashCode() % 16);
 				if (ascii.HasToken("back"))
 					this.BackgroundColor = Color.FromName(ascii.GetToken("back").Tokens[0]);
 				else

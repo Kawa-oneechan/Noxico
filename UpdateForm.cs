@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,7 +36,7 @@ namespace Noxico
 			if (!didFirstFile)
 			{
 				didFirstFile = true;
-				label1.Text = "Downloading MIX file...";
+				label1.Text = "Downloading data file...";
 				wc.DownloadFileAsync(new Uri(server + "Noxico.nox"), "Noxico._ox");
 			}
 			else

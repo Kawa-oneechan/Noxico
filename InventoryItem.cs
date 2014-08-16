@@ -27,8 +27,8 @@ namespace Noxico
 
 		public string ToString(Token token, bool the = false, bool a = true)
 		{
-			if (ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
-				return string.Format("\"{0}\"", NoxicoGame.BookTitles[(int)token.GetToken("id").Value]);
+			if (ID == "book" && token != null && token.HasToken("id") && NoxicoGame.BookTitles.ContainsKey(token.GetToken("id").Text))
+				return string.Format("\"{0}\"", NoxicoGame.BookTitles[token.GetToken("id").Text][0]);
 
 			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
 			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
@@ -95,8 +95,8 @@ namespace Noxico
 			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
 			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
 
-			if (this.ID == "book" && token != null && token.HasToken("id") && token.GetToken("id").Value < NoxicoGame.BookTitles.Count)
-				return i18n.Format("book_description", NoxicoGame.BookTitles[(int)token.GetToken("id").Value], NoxicoGame.BookAuthors[(int)token.GetToken("id").Value]);
+			if (this.ID == "book" && token != null && token.HasToken("id") && NoxicoGame.BookTitles.ContainsKey(token.GetToken("id").Text))
+				return i18n.Format("book_description", NoxicoGame.BookTitles[token.GetToken("id").Text][0], NoxicoGame.BookTitles[token.GetToken("id").Text][1]);
 			var a = "";
 			var description = isIdentified ? "description" : "unknown";
 			if (this.HasToken(description))
@@ -454,7 +454,7 @@ namespace Noxico
 			#region Books
 			if (this.ID == "book")
 			{
-				TextScroller.ReadBook((int)item.GetToken("id").Value);
+				TextScroller.ReadBook(item.GetToken("id").Text);
 				return;
 			}
 			#endregion

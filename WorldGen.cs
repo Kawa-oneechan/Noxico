@@ -418,7 +418,7 @@ namespace Noxico
 							if (knownItem.HasToken("colored"))
 								newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
 							if (knownItem.ID == "book")
-								newPoss.AddToken("id", Random.Next(NoxicoGame.BookTitles.Count));
+								newPoss.AddToken("id", Toolkit.PickOne(NoxicoGame.BookTitles.Keys.ToArray()));
 							possibilities.Add(newPoss);
 						}
 					}

@@ -109,6 +109,14 @@ namespace Noxico
 				text = (header + '\n' + message.SmartQuote().Wordwrap(86)).Split('\n');
 			else
 				text = (header + '\n' + message).SmartQuote().Split('\n');
+
+			//If it's not worth a scroller, pass it through to a messagebox instead.
+			if (text.Length < 40)
+			{
+				MessageBox.Notice(message.SmartQuote(), true, header);
+				return;
+			}
+	
 			NoxicoGame.Subscreen = Handler;
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
@@ -121,10 +129,17 @@ namespace Noxico
 			Plain(chr.LookAt(pa), chr.Name.ToString(true), false); //Fix: disabled wrapping to prevent Look At from looking like shit with new wrapper.
 		}
 
-		public static void ReadBook(int bookNum)
+		public static void ReadBook(string bookID)
 		{
-			var num = 1;
-			var bookData = Mix.GetString("books.txt").Split('\n').Select(x => x.Trim()).ToArray();
+			var bookData = new string[0];
+			try
+			{
+				bookData = Mix.GetString("books\\" + bookID + ".txt").Split('\n');
+			}
+			catch (FileNotFoundException)
+			{
+				bookData = i18n.GetString("book_404").Split('\n');
+			}
 			var text = new StringBuilder();
 			var header = string.Empty;
 			var identification = string.Empty;
@@ -140,75 +155,71 @@ namespace Noxico
 			{
 				if (bookData[i].StartsWith("##"))
 				{
-					if (num == bookNum)
+					header = bookData[i].Substring(3);
+					i++;
+					if (bookData[i].StartsWith("##"))
+						i++; //skip author
+					if (bookData[i].StartsWith("##"))
 					{
-						header = bookData[i].Substring(3);
+						identification = bookData[i].Substring(3);
 						i++;
-						if (bookData[i].StartsWith("##"))
-							i++; //skip author
-						if (bookData[i].StartsWith("##"))
-						{
-							identification = bookData[i].Substring(3);
-							i++;
-						}
+					}
 
-						var fontOffset = 0;
-						var fontHasLower = false;
-						for (; i < bookData.Length; i++)
+					var fontOffset = 0;
+					var fontHasLower = false;
+					for (; i < bookData.Length; i++)
+					{
+						var line = bookData[i];
+						if (line.StartsWith("## "))
+							break;
+						for (int j = 0; j < line.Length; j++)
 						{
-							var line = bookData[i];
-							if (line.StartsWith("## "))
-								break;
-							for (int j = 0; j < line.Length; j++)
+							if (j < line.Length - 2 && line.Substring(j, 3) == "<b>")
 							{
-								if (j < line.Length - 2 && line.Substring(j, 3) == "<b>")
-								{
-									text.Append("<cYellow>");
-									j += 2;
-								}
-								else if (j < line.Length - 3 && line.Substring(j, 4) == "</b>")
-								{
-									text.Append(" <c>");
-									j += 3;
-								}
-								else if (j < line.Length - 2 && line.Substring(j, 2) == "<f")
-								{
-									var fontName = line.Substring(j + 2);
-									fontName = fontName.Remove(fontName.IndexOf('>'));
-									j = j + fontName.Length + 2;
-									fontOffset = fonts.ContainsKey(fontName) ? fonts[fontName] : 0;
-									fontHasLower = fontName == "Hand";
-								}
+								text.Append("<cYellow>");
+								j += 2;
+							}
+							else if (j < line.Length - 3 && line.Substring(j, 4) == "</b>")
+							{
+								text.Append(" <c>");
+								j += 3;
+							}
+							else if (j < line.Length - 2 && line.Substring(j, 2) == "<f")
+							{
+								var fontName = line.Substring(j + 2);
+								fontName = fontName.Remove(fontName.IndexOf('>'));
+								j = j + fontName.Length + 2;
+								fontOffset = fonts.ContainsKey(fontName) ? fonts[fontName] : 0;
+								fontHasLower = fontName == "Hand";
+							}
+							else
+							{
+								if (fontOffset == 0)
+									text.Append(line[j]);
 								else
 								{
-									if (fontOffset == 0)
-										text.Append(line[j]);
+									if (line[j] >= 'A' && line[j] <= 'Z')
+									{
+										text.Append((char)((line[j] - 'A') + fontOffset));
+									}
+									else if (fontHasLower && line[j] >= 'a' && line[j] <= 'z')
+									{
+										text.Append((char)((line[j] - 'a') + fontOffset + 0x1A));
+									}
 									else
 									{
-										if (line[j] >= 'A' && line[j] <= 'Z')
-										{
-											text.Append((char)((line[j] - 'A') + fontOffset));
-										}
-										else if (fontHasLower && line[j] >= 'a' && line[j] <= 'z')
-										{
-											text.Append((char)((line[j] - 'a') + fontOffset + 0x1A));
-										}
-										else
-										{
-											text.Append(line[j]);
-										}
+										text.Append(line[j]);
 									}
 								}
 							}
-							//text.Append(bookData[i]);
-							text.AppendLine();
 						}
-						break;
+						//text.Append(bookData[i]);
+						//text.AppendLine();
 					}
-					i += 4;
-					num++;
+					break;
 				}
 			}
+
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
 			if (!string.IsNullOrWhiteSpace(identification))
 			{
