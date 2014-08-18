@@ -173,26 +173,6 @@ namespace Noxico
 			RollPotions();
 			ApplyRandomPotions();
 
-			/*
-			Program.WriteLine("Loading books...");
-			BookTitles = new List<string>();
-			BookAuthors = new List<string>();
-			BookTitles.Add("[null]");
-			BookAuthors.Add("[null]");
-			var bookData = Mix.GetString("books.txt").Split('\n').Select(x => x.Trim()).ToArray();
-			for (var i = 0; i < bookData.Length; i++)
-			{
-				if (bookData[i].StartsWith("## "))
-				{
-					BookTitles.Add(bookData[i].Substring(3));
-					if (bookData[i + 1].StartsWith("## "))
-						BookAuthors.Add(bookData[i + 1].Substring(3));
-					else
-						BookAuthors.Add(i18n.GetString("an unknown author"));
-					i += 3;
-				}
-			}
-			*/
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
 			foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
@@ -217,59 +197,6 @@ namespace Noxico
 			CurrentBoard = new Board();
 			this.Player = new Player();
 			Introduction.Title();
-
-			TextScroller.ReadBook("fonttest");
-
-			/*
-			Random.Reseed("medusacascade");
-			var guinea = Character.Generate("human", Gender.Male);
-			var fb = new StringBuilder();
-			for (var i = 0; i < 50; i++)
-			{
-				var feedback = guinea.Morph("foocubus", Gender.Male);
-				if (string.IsNullOrWhiteSpace(feedback))
-					break;
-				fb.AppendLine(feedback);
-			}
-			Console.WriteLine(fb.ToString());
-			var tokens = guinea.DumpTokens(guinea.Tokens, 0);
-			*/
-
-			/*
-			var dungen = new StoneDungeonGenerator();
-			var board = new Board();
-			dungen.Board = board;
-			dungen.Create(BiomeData.Biomes[2]);
-			dungen.ToTilemap(ref board.Tilemap);
-			board.DumpToHtml("lol");
-			Application.Exit();
-			*/
-			/*
-			var testBoard = new Board();
-			var townGen = new TownGenerator();
-			townGen.Culture = Culture.DefaultCulture;
-			townGen.Board = testBoard;
-			testBoard.Clear(0);
-			townGen.Create(BiomeData.Biomes[0]);
-			townGen.ToTilemap(ref testBoard.Tilemap);
-			testBoard.DumpToHtml();
-			Application.Exit();
-			*/
-			/*
-			var pervA = new BoardChar(Character.Generate("human", Gender.Male));
-			var pervB = new BoardChar(Character.Generate("goblin", Gender.Male));
-			SexManager.Engage(pervA, pervB);
-			var results = SexManager.GetPossibilities(pervA, pervB);
-			var result = SexManager.GetResult("pin_down", pervA, pervB);
-			SexManager.Apply(result, pervA, pervB, new Action<string>(x => Console.WriteLine("--> {0}", x)));
-			result = SexManager.GetResult("struggle", pervB, pervA);
-			SexManager.Apply(result, pervB, pervA, new Action<string>(x => Console.WriteLine("--> {0}", x)));
-			*/
-
-			/*
-			var testCharacter = Character.GenerateQuick("human", Gender.Female);
-			var testSentence = i18n.Viewpoint("[t:He] [t:voc:grunt] at the sight of yet another test and cups [t:his] [t:breastsize:0] [breastsrand]", testCharacter, null);
-			*/
 		}
 
 		public void SaveGame(bool noPlayer = false, bool force = false, bool clear = true)

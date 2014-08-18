@@ -268,6 +268,9 @@ namespace Noxico
 				tml = tml.Substring(0, replaceStart - 1) + tml.Substring(replaceEnd);
 			}
 			var mergeDeep = tml.Contains("-- #mergedeep");
+			var prioritize = tml.Contains("-- #prioritize");
+			if (prioritize)
+				tml = tml.Replace("-- #prioritize", "__prioritize__");
 			carrier.Tokenize(tml);
 
 			if (replaceKeys.Count > 0)
@@ -310,6 +313,20 @@ namespace Noxico
 						}
 					}
 				}
+			}
+
+			if (prioritize)
+			{
+				var insertPoint = carrier.Tokens.IndexOf(carrier.GetToken("__prioritize__"));
+				var prioritizedNode = default(Token);
+				while ((prioritizedNode = carrier.Tokens.FirstOrDefault(i => i.HasToken("priority"))) != null)
+				{
+					prioritizedNode.RemoveToken("priority");
+					carrier.RemoveToken(prioritizedNode);
+					carrier.Tokens.Insert(insertPoint, prioritizedNode);
+					insertPoint++;
+				}
+				carrier.RemoveToken("__prioritize__");
 			}
 			return carrier.Tokens;
 		}
