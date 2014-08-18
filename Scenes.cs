@@ -38,7 +38,16 @@ namespace Noxico
 				MessageBox.Notice("Could not find a proper opening for scene name \"" + name + "\". Aborting.", true, "Uh-oh.");
 				return;
 			}
-			var scene = openings.FirstOrDefault(i => SceneFiltersOkay(i));
+			var firstScene = openings.FirstOrDefault(i => SceneFiltersOkay(i));
+			var scenes = new List<XmlElement>() { firstScene };
+			if (firstScene.HasAttribute("random"))
+			{
+				var randomKey = firstScene.GetAttribute("random");
+				foreach (var s in openings.Where(i => i != firstScene && i.GetAttribute("random") == randomKey && SceneFiltersOkay(i)))
+					scenes.Add(s);
+			}
+			var scene = scenes[Random.Next(scenes.Count)];
+
 			var message = i18n.Viewpoint(ExtractParagraphsAndScripts(scene), SceneSystem.top, SceneSystem.bottom);
 			var actions = ExtractActions(scene);
 
