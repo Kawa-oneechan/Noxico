@@ -113,17 +113,6 @@ namespace Noxico
 			return GetString(key).Split(',').Select(x => x.Trim()).ToList();
 		}
 		
-		/*
-		public static string Pluralize(string singular, int amount)
-		{
-			if (words.ContainsKey(singular))
-				singular = words[singular];
-			if (amount == 1)
-				return singular;
-			//TODO: inflect right. THIS IS VERY NAIVE AND STUPID. THERE IS A BETTER SYSTEM IN INFLECTOR.SLN.
-			return singular + 's';
-		}
-		*/
 		public static string Pluralize(this string singular)
 		{
 			if (words.ContainsKey(singular))

@@ -109,7 +109,6 @@ namespace Noxico
 				{
 					var board = levels[i][j];
 
-					//TODO: uncomment this decision when the dungeon generator gets pathways.
 					if (Random.NextDouble() > 0.7 || board == entranceBoard)
 					{
 						caveGen.Board = board;

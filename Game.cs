@@ -647,7 +647,6 @@ namespace Noxico
 
 			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
-			//TODO: give the player a proper home.
 			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
 			if (homeBase == null)
 			{
