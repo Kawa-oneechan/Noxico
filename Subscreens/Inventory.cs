@@ -6,7 +6,6 @@ namespace Noxico
 {
 	public class Inventory
 	{
-		//TODO: <del>Rewrite to use UIManager</del> Adapt the Drop key to, it's the only one left.
 		private static int selection = 0;
 		//Split up the Dictionary for easier access to both halves. It was a silly setup anyway.
 		private static List<Token> inventoryTokens = new List<Token>();

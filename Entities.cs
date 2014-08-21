@@ -121,9 +121,6 @@ namespace Noxico
  
 		public virtual void Update()
 		{
-			// TODO: make asynchronous scripts unblock if needed.
-			//if (this.Script != null && this.Script.Length > 0)
-			//	RunCycle();
         }
 
 		public virtual void SaveToFile(BinaryWriter stream)
