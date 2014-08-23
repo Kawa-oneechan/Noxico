@@ -734,11 +734,11 @@ namespace Noxico
 			//var wallEnd = Color.FromArgb(144, 144, 158);
 			//var floorCrud = "       \x146".ToCharArray();
 
-			var tiles = new[] { TileDefinition.Find("stoneFloor").Index, TileDefinition.Find("dungeonWall").Index };
+			var tiles = new[] { "stoneFloor", "stoneWall" };
 
 			for (var row = 0; row < 50; row++)
 				for (var col = 0; col < 80; col++)
-					map[col, row].Index = tiles[this.map[col, row]];
+					map[col, row].Index = TileDefinition.Find(tiles[this.map[col, row]]).Index;
 
 			/*
 			var dijkstra = new int[80, 50];

@@ -37,8 +37,14 @@ namespace Noxico
 			{
 				var eX = 0;
 				var eY = 0;
+				var attempts = 0;
+				var minSides = 1;
 				while (true)
 				{
+					attempts++;
+					if (attempts == 10)
+						minSides = 0;
+
 					eX = Random.Next(1, 79);
 					eY = Random.Next(1, 49);
 
@@ -58,7 +64,7 @@ namespace Noxico
 						sides++;
 					if (b.IsSolid(eY, eX + 1))
 						sides++;
-					if (sides < 3 && sides > 1)
+					if (sides < 3 && sides >= minSides)
 						break;
 				}
 				return new Warp() { XPosition = eX, YPosition = eY };

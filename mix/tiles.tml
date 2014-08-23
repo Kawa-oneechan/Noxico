@@ -11,28 +11,32 @@ tile: 1
 	description: A rough-hewn stairway leads down into the ground...
 	fore: silver
 	back: black
-	char: 0x1C
+	char: 0x14F
+	unicode: U+2228
 tile: 2
 	id: dungeonExit
 	_n: dungeon exit
 	description: A rough-hewn stairway leads up to the surface...
 	fore: silver
 	back: black
-	char: 0x1E
+	char: 0x150
+	unicode: U+2227
 tile: 3
 	id: dungeonDownstairs
 	_n: stairs down
 	description: A rough-hewn stairway leads down to a deeper level of the dungeon...
 	fore: silver
 	back: black
-	char: 0x1C
+	char: 0x14F
+	unicode: U+002E
 tile: 4
 	id: dungeonUpstairs
 	_n: stairs up
 	description: A rough-hewn stairway leads up to a higher level of the dungeon...
 	fore: silver
 	back: black
-	char: 0x1D
+	char: 0x150
+	unicode: U+002C
 tile: 5
 	id: dungeonSideExit
 	_n: dungeon passageway
@@ -47,33 +51,43 @@ tile: 50
 	id: stoneFloor
 	back: #414257
 	char: 32
-	unicode: 32
+	unicode: U+002E
 	variants
 		stoneFloor_scatter: 0.75
 tile: 51
 	id: stoneFloor_scatter
 	back: #414257
 	char: 0x146
-	unicode: U+002E
+	unicode: U+002C
 tile: 52
 	id: stoneWall
 	_n: rough stone wall
 	description: Rough-hewn stone separates you from whatever is behind it.
 	back: #77788D
 	char: 0x20
+	variants
+		stoneWall_scatter: 0.50
 	wall
 tile: 53
+	id: stoneWall_scatter
+	_n: rough stone wall
+	description: Rough-hewn stone separates you from whatever is behind it.
+	back: #77788D
+	char: 0x146
+	unicode: U+0020
+	wall
+tile: 54
 	id: woodFloor
 	back: #563F2C
 	char: 32
 	variants
 		woodFloor_scatter: 0.75
-tile: 1053
+tile: 55
 	id: woodFloor_scatter
 	back: #563F2C
 	char: 0x158
 	unicode: U+002D
-tile: 54
+tile: 56
 	id: outerWoodWall
 	_n: unresolved outside wall
 	fore: #140F0C
@@ -82,7 +96,7 @@ tile: 54
 	wall
 	canburn
 	varwall
-tile: 55
+tile: 57
 	id: innerWoodWall
 	_n: unresolved inside wall
 	fore: #140F0C
@@ -92,7 +106,7 @@ tile: 55
 	wall
 	canburn
 	varwall
-tile: 56
+tile: 58
 	id: fence
 	_n: unresolved fence
 	fore: #140F0C
@@ -101,7 +115,7 @@ tile: 56
 	fence
 	canburn
 	varwall
-tile: 57
+tile: 59
 	id: outerWoodWallBottomRight
 	fore: #140F0C
 	back: #563F2C
@@ -110,7 +124,7 @@ tile: 57
 	wall
 	canburn
 	varwall
-tile: 58
+tile: 60
 	id: outerWoodWallBottomLeft
 	fore: #140F0C
 	back: #563F2C
@@ -119,7 +133,7 @@ tile: 58
 	wall
 	canburn
 	varwall
-tile: 59
+tile: 61
 	id: outerWoodWallTopRight
 	fore: #140F0C
 	back: #563F2C
@@ -128,7 +142,7 @@ tile: 59
 	wall
 	canburn
 	varwall
-tile: 60
+tile: 62
 	id: outerWoodWallTopLeft
 	fore: #140F0C
 	back: #563F2C
@@ -137,7 +151,7 @@ tile: 60
 	wall
 	canburn
 	varwall
-tile: 61
+tile: 63
 	id: outerWoodWallTopBottom
 	fore: #140F0C
 	back: #563F2C
@@ -146,7 +160,7 @@ tile: 61
 	wall
 	canburn
 	varwall
-tile: 62
+tile: 64
 	id: outerWoodWallTop
 	fore: #140F0C
 	back: #563F2C
@@ -155,7 +169,7 @@ tile: 62
 	wall
 	canburn
 	varwall
-tile: 63
+tile: 65
 	id: outerWoodWallBottom
 	fore: #140F0C
 	back: #563F2C
@@ -164,7 +178,7 @@ tile: 63
 	wall
 	canburn
 	varwall
-tile: 64
+tile: 66
 	id: outerWoodWallLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -173,7 +187,7 @@ tile: 64
 	wall
 	canburn
 	varwall
-tile: 65
+tile: 67
 	id: outerWoodWallLeft
 	fore: #140F0C
 	back: #563F2C
@@ -182,7 +196,7 @@ tile: 65
 	wall
 	canburn
 	varwall
-tile: 66
+tile: 68
 	id: outerWoodWallRight
 	fore: #140F0C
 	back: #563F2C
@@ -191,7 +205,7 @@ tile: 66
 	wall
 	canburn
 	varwall
-tile: 67
+tile: 69
 	id: outerWoodWallTopBottomRight
 	fore: #140F0C
 	back: #563F2C
@@ -200,7 +214,7 @@ tile: 67
 	wall
 	canburn
 	varwall
-tile: 68
+tile: 70
 	id: outerWoodWallBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -209,7 +223,7 @@ tile: 68
 	wall
 	canburn
 	varwall
-tile: 69
+tile: 71
 	id: outerWoodWallTopBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -218,7 +232,7 @@ tile: 69
 	wall
 	canburn
 	varwall
-tile: 70
+tile: 72
 	id: outerWoodWallTopLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -227,7 +241,7 @@ tile: 70
 	wall
 	canburn
 	varwall
-tile: 71
+tile: 73
 	id: outerWoodWallTopBottomLeft
 	fore: #140F0C
 	back: #563F2C
@@ -236,7 +250,7 @@ tile: 71
 	wall
 	canburn
 	varwall
-tile: 72
+tile: 74
 	id: innerWoodWallBottomRight
 	fore: #140F0C
 	back: #563F2C
@@ -245,7 +259,7 @@ tile: 72
 	wall
 	canburn
 	varwall
-tile: 73
+tile: 75
 	id: innerWoodWallBottomLeft
 	fore: #140F0C
 	back: #563F2C
@@ -254,7 +268,7 @@ tile: 73
 	wall
 	canburn
 	varwall
-tile: 74
+tile: 76
 	id: innerWoodWallTopRight
 	fore: #140F0C
 	back: #563F2C
@@ -263,7 +277,7 @@ tile: 74
 	wall
 	canburn
 	varwall
-tile: 75
+tile: 77
 	id: innerWoodWallTopLeft
 	fore: #140F0C
 	back: #563F2C
@@ -272,7 +286,7 @@ tile: 75
 	wall
 	canburn
 	varwall
-tile: 76
+tile: 78
 	id: innerWoodWallTopBottom
 	fore: #140F0C
 	back: #563F2C
@@ -281,7 +295,7 @@ tile: 76
 	wall
 	canburn
 	varwall
-tile: 77
+tile: 79
 	id: innerWoodWallTop
 	fore: #140F0C
 	back: #563F2C
@@ -290,7 +304,7 @@ tile: 77
 	wall
 	canburn
 	varwall
-tile: 78
+tile: 80
 	id: innerWoodWallBottom
 	fore: #140F0C
 	back: #563F2C
@@ -299,7 +313,7 @@ tile: 78
 	wall
 	canburn
 	varwall
-tile: 79
+tile: 81
 	id: innerWoodWallLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -308,7 +322,7 @@ tile: 79
 	wall
 	canburn
 	varwall
-tile: 80
+tile: 82
 	id: innerWoodWallLeft
 	fore: #140F0C
 	back: #563F2C
@@ -317,7 +331,7 @@ tile: 80
 	wall
 	canburn
 	varwall
-tile: 81
+tile: 83
 	id: innerWoodWallRight
 	fore: #140F0C
 	back: #563F2C
@@ -326,7 +340,7 @@ tile: 81
 	wall
 	canburn
 	varwall
-tile: 82
+tile: 84
 	id: innerWoodWallTopBottomRight
 	fore: #140F0C
 	back: #563F2C
@@ -335,7 +349,7 @@ tile: 82
 	wall
 	canburn
 	varwall
-tile: 83
+tile: 85
 	id: innerWoodWallBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -344,7 +358,7 @@ tile: 83
 	wall
 	canburn
 	varwall
-tile: 84
+tile: 86
 	id: innerWoodWallTopBottomLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -353,7 +367,7 @@ tile: 84
 	wall
 	canburn
 	varwall
-tile: 85
+tile: 87
 	id: innerWoodWallTopLeftRight
 	fore: #140F0C
 	back: #563F2C
@@ -362,7 +376,7 @@ tile: 85
 	wall
 	canburn
 	varwall
-tile: 86
+tile: 88
 	id: innerWoodWallTopBottomLeft
 	fore: #140F0C
 	back: #563F2C
@@ -371,7 +385,7 @@ tile: 86
 	wall
 	canburn
 	varwall
-tile: 87
+tile: 89
 	id: fenceBottomRight
 	fore: #140F0C
 	back: #1D3612
@@ -380,7 +394,7 @@ tile: 87
 	fence
 	canburn
 	varwall
-tile: 88
+tile: 90
 	id: fenceBottomLeft
 	fore: #140F0C
 	back: #1D3612
@@ -389,7 +403,7 @@ tile: 88
 	fence
 	canburn
 	varwall
-tile: 89
+tile: 91
 	id: fenceTopRight
 	fore: #140F0C
 	back: #1D3612
@@ -398,7 +412,7 @@ tile: 89
 	fence
 	canburn
 	varwall
-tile: 90
+tile: 92
 	id: fenceTopLeft
 	fore: #140F0C
 	back: #1D3612
@@ -407,7 +421,7 @@ tile: 90
 	fence
 	canburn
 	varwall
-tile: 91
+tile: 93
 	id: fenceTopBottom
 	fore: #140F0C
 	back: #1D3612
@@ -416,7 +430,7 @@ tile: 91
 	fence
 	canburn
 	varwall
-tile: 92
+tile: 94
 	id: fenceTop
 	fore: #140F0C
 	back: #1D3612
@@ -425,7 +439,7 @@ tile: 92
 	fence
 	canburn
 	varwall
-tile: 93
+tile: 95
 	id: fenceBottom
 	fore: #140F0C
 	back: #1D3612
@@ -434,7 +448,7 @@ tile: 93
 	fence
 	canburn
 	varwall
-tile: 94
+tile: 96
 	id: fenceLeftRight
 	fore: #140F0C
 	back: #1D3612
@@ -443,7 +457,7 @@ tile: 94
 	fence
 	canburn
 	varwall
-tile: 95
+tile: 97
 	id: fenceLeft
 	fore: #140F0C
 	back: #1D3612
@@ -452,7 +466,7 @@ tile: 95
 	fence
 	canburn
 	varwall
-tile: 96
+tile: 98
 	id: fenceRight
 	fore: #140F0C
 	back: #1D3612
@@ -461,7 +475,7 @@ tile: 96
 	fence
 	canburn
 	varwall
-tile: 97
+tile: 99
 	id: fenceTopBottomRight
 	fore: #140F0C
 	back: #1D3612
@@ -470,7 +484,7 @@ tile: 97
 	fence
 	canburn
 	varwall
-tile: 98
+tile: 100
 	id: fenceBottomLeftRight
 	fore: #140F0C
 	back: #1D3612
@@ -479,7 +493,7 @@ tile: 98
 	fence
 	canburn
 	varwall
-tile: 99
+tile: 101
 	id: fenceTopBottomLeftRight
 	fore: #140F0C
 	back: #1D3612
@@ -488,7 +502,7 @@ tile: 99
 	fence
 	canburn
 	varwall
-tile: 100
+tile: 102
 	id: fenceTopLeftRight
 	fore: #140F0C
 	back: #1D3612
@@ -497,7 +511,7 @@ tile: 100
 	fence
 	canburn
 	varwall
-tile: 101
+tile: 103
 	id: fenceTopBottomLeft
 	fore: #140F0C
 	back: #1D3612
@@ -506,12 +520,12 @@ tile: 101
 	fence
 	canburn
 	varwall
-tile: 102
+tile: 104
 	id: doorwayClosed
 	back: #563F2C
 	char: 32
 	wall
-tile: 103
+tile: 105
 	id: doorwayOpened
 	back: #563F2C
 	char: 32
