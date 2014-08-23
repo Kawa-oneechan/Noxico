@@ -575,7 +575,11 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Tilemap[col,row].Fluid == Fluids.Dry && Tilemap[col, row].BurnTimer > 0 && Tilemap[col, row].Definition.CanBurn;
+			if (Tilemap[col, row].Fluid != Fluids.Dry)
+				return false;
+			if (!Tilemap[col, row].Definition.CanBurn)
+				return false;
+			return Tilemap[col, row].BurnTimer > 0;
 		}
 
 		public bool IsWater(int row, int col)
@@ -588,7 +592,7 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
-			return Tilemap[col, row].Fluid != Fluids.Dry;
+			return Tilemap[col, row].Fluid != Fluids.Dry && !Tilemap[col, row].Shallow;
 		}
 
 		public bool IsLit(int row, int col)
@@ -672,7 +676,7 @@ namespace Noxico
 			var tile = Tilemap[col, row];
 			if (tile.Definition.CanBurn && tile.Fluid == Fluids.Dry)
 			{
-				tile.BurnTimer = Random.Next(20, 23);
+				tile.BurnTimer = Random.Next(20, 23) * 100;
 				DirtySpots.Add(new Location(col, row));
 			}
 		}
@@ -693,6 +697,8 @@ namespace Noxico
 				tile.Fluid = Fluids.Slime;
 				tile.SlimeColor = color.Darken(1.4);
 				tile.Shallow = true;
+				tile.BurnTimer = (Random.Next(0, 4) * 10) + 100;
+				DirtySpots.Add(new Location(row, col));
 			}
 		}
 
@@ -722,6 +728,7 @@ namespace Noxico
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Definition = TileDefinition.Find("ash");
+								DirtySpots.Add(new Location(col, row));
 							}
 							else if (Tilemap[col, row].BurnTimer == 10)
 							{
@@ -742,7 +749,10 @@ namespace Noxico
 						{
 							Tilemap[col, row].BurnTimer--;
 							if (Tilemap[col, row].BurnTimer == 0)
+							{
 								Tilemap[col, row].Fluid = Fluids.Dry;
+								DirtySpots.Add(new Location(col, row));
+							}
 						}
 					}
 				}
@@ -844,16 +854,29 @@ namespace Noxico
 
 		public void Draw(bool force = false)
 		{
+			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };
+			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 			foreach (var l in this.DirtySpots)
 			{
 				if (l.X >= 80 || l.Y >= 50 || l.X < 0 || l.Y < 0)
 					continue;
 				var t = this.Tilemap[l.X, l.Y];
 				var def = t.Definition;
+				var glyph = def.Glyph;
+				var fore = def.Foreground;
+				var back = def.Background;
+				if (t.Fluid != Fluids.Dry)
+				{
+					glyph = waterGlyphs[(int)t.Fluid];
+					fore = waterColors[(int)t.Fluid];
+					if (t.Fluid == Fluids.Slime)
+						fore = t.SlimeColor;
+					back = fore.Darken();
+				}
 				if (Lightmap[l.Y, l.X])
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, def.Glyph, def.Foreground, def.Background, force);
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore, back, force);
 				else if (t.Seen)
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, def.Glyph, def.Foreground.Night(), def.Background.Night(), force);
+					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore.Night(), back.Night(), force);
 				else
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, ' ', Color.Black, Color.Black, force);
 			}
