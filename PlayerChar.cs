@@ -495,7 +495,7 @@ namespace Noxico
 					Character.RemoveToken("flying");
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
-					if (tile.Fluid != Fluids.Dry && Character.IsSlime)
+					if (tile.Fluid != Fluids.Dry && !tile.Shallow && Character.IsSlime)
 						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
 					else if (tile.Definition.Cliff)
 						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);
