@@ -411,7 +411,7 @@ namespace Noxico
 				else
 					ClientSize = new Size(1920, 1080);
 
-				var prime = Screen.PrimaryScreen.Bounds;
+				var prime = Screen.FromRectangle(ClientRectangle).Bounds;
 				if (ClientSize.Width == prime.Width && ClientSize.Height == prime.Height)
 				{
 					FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -455,7 +455,7 @@ namespace Noxico
 				var cSize = CellWidth;
 				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
-				e.Graphics.DrawRectangle(cursorPens[Environment.TickCount % cursorPens.Length], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
+				e.Graphics.DrawRectangle(cursorPens[(uint)Environment.TickCount % cursorPens.Length], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
 			}
 		}
 
