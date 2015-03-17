@@ -603,7 +603,7 @@ namespace Noxico
 
 			var generator = new WorldMapGenerator();
 			var townBoards = new List<Board>();
-			miniMap = new int[2][,];
+			miniMap = new int[Enum.GetValues(typeof(Realms)).Length][,];
 			for (var i = 0; i < Enum.GetValues(typeof(Realms)).Length; i++)
 			{
 #if DEBUG

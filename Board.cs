@@ -184,6 +184,7 @@ namespace Noxico
 		public int BurnTimer { get; set; }
 		public bool Seen { get; set; }
 		public Color SlimeColor { get; set; }
+		public int InherentLight { get; set; }
 
 		public bool SolidToWalker { get { return Definition.SolidToWalker; } }
 		public bool SolidToDryWalker { get { return Definition.SolidToWalker || (Fluid != Fluids.Dry && !Shallow); } }
@@ -208,7 +209,7 @@ namespace Noxico
 
 			var bits = new BitVector32();
 			bits[32] = Shallow;
-			bits[64] = (BurnTimer > 0);
+			bits[64] = (InherentLight > 0);
 			bits[128] = Seen;
 			stream.Write((byte)((byte)bits.Data | (byte)Fluid));
 			//if (BurnTimer > 0)
@@ -217,6 +218,8 @@ namespace Noxico
 				if (SlimeColor == null)
 					SlimeColor = Color.Transparent;
 				SlimeColor.SaveToFile(stream);
+			if (InherentLight > 0)
+				stream.Write((byte)InherentLight);
 		}
 
 		public void LoadFromFile(BinaryReader stream)
@@ -227,11 +230,12 @@ namespace Noxico
 			var bits = new BitVector32(set);
 			Shallow = bits[32];
 			Seen = bits[128];
-			//if (bits[64])
-				BurnTimer = stream.ReadByte();
+			BurnTimer = stream.ReadByte();
 			Fluid = (Fluids)(set & 8);
 			//if (Fluid == Fluids.Slime)
 				SlimeColor = Toolkit.LoadColorFromFile(stream);
+				if (bits[64])
+					InherentLight = stream.ReadByte();
 		}
 
 		public Tile Clone()
@@ -243,7 +247,8 @@ namespace Noxico
 				Shallow = this.Shallow,
 				BurnTimer = this.BurnTimer,
 				Seen = this.Seen,
-				SlimeColor = this.SlimeColor
+				SlimeColor = this.SlimeColor,
+				InherentLight = this.InherentLight
 			};
 		}
 
@@ -873,6 +878,11 @@ namespace Noxico
 						fore = t.SlimeColor;
 					back = fore.Darken();
 				}
+				if (t.InherentLight > 0)
+				{
+					fore = fore.LerpDarken(t.InherentLight / 12.0);
+					back = back.LerpDarken(t.InherentLight / 12.0);
+				}
 				if (Lightmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore, back, force);
 				else if (t.Seen)
@@ -1199,8 +1209,15 @@ namespace Noxico
 					var def = tile.Definition;
 					var back = string.Format("rgb({0},{1},{2})", def.Background.R, def.Background.G, def.Background.B);
 					var fore = string.Format("rgb({0},{1},{2})", def.Foreground.R, def.Foreground.G, def.Foreground.B);
+					if (Tilemap[col, row].InherentLight > 0)
+					{
+						var newBack = def.Background.LerpDarken(Tilemap[col, row].InherentLight / 12.0);
+						var newFore = def.Background.LerpDarken(Tilemap[col, row].InherentLight / 12.0);
+						back = string.Format("rgb({0},{1},{2})", newBack.R, newBack.G, newBack.B);
+						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
+					}
 					var chr = string.Format("&#x{0:X};", (int)def.UnicodeCharacter);
-					var tag = "";
+					var tag = string.Format("{0}", Tilemap[col, row].InherentLight);
 					var link = "";
 
 					if (chr == "&#x20;")
