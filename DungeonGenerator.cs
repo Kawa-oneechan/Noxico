@@ -590,15 +590,14 @@ namespace Noxico
 			Board.ResolveVariableWalls();
 
 			#region Fade out the walls
-			/*
 			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
 			{
 				for (var row = 0; row < 50; row++)
 				{
-					if (!map[col, row].Wall)
+					if (!map[col, row].SolidToWalker)
 						continue;
-					dijkstra[col, row] = 9000; //(map[col, row].Wall && !map[col, row].CanBurn) ? 9000 : 0;
+					dijkstra[col, row] = 9000;
 				}
 			}
 
@@ -608,22 +607,15 @@ namespace Noxico
 			{
 				for (var col = 0; col < 80; col++)
 				{
-					if (map[col, row].Fluid != Fluids.Dry)
-						continue;
+					//if (map[col, row].Fluid != Fluids.Dry)
+					//	continue;
 					if (map[col, row].Definition.Wall && !map[col, row].Definition.CanBurn)
 					{
-						if (dijkstra[col, row] > 1)
-							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
-						else
-							map[col, row].SpecialDescription = 1;
-					}
-					if (map[col, row].Wall && map[col, row].CanBurn)
-					{
-						map[col, row].SpecialDescription = 2;
+						//if (dijkstra[col, row] > 1)
+						map[col, row].InherentLight = dijkstra[col, row];
 					}
 				}
 			}
-			*/
 			#endregion
 		}
 	}
@@ -740,26 +732,34 @@ namespace Noxico
 				for (var col = 0; col < 80; col++)
 					map[col, row].Index = TileDefinition.Find(tiles[this.map[col, row]]).Index;
 
-			/*
+			#region Fade out the walls
 			var dijkstra = new int[80, 50];
 			for (var col = 0; col < 80; col++)
+			{
 				for (var row = 0; row < 50; row++)
-					dijkstra[col, row] = this.map[col, row] == 0 ? 0 : 9000;
-			Dijkstra.JustDoIt(ref dijkstra, diagonals: false);
+				{
+					if (!map[col, row].SolidToWalker)
+						continue;
+					dijkstra[col, row] = 9000;
+				}
+			}
+
+			Dijkstra.JustDoIt(ref dijkstra);
+
 			for (var row = 0; row < 50; row++)
 			{
 				for (var col = 0; col < 80; col++)
 				{
-					if (this.map[col, row] == 1)
+					//if (map[col, row].Fluid != Fluids.Dry)
+					//	continue;
+					//if (map[col, row].Definition.Wall && !map[col, row].Definition.CanBurn)
 					{
-						if (dijkstra[col, row] > 1)
-							map[col, row].Background = map[col, row].Background.LerpDarken(dijkstra[col, row] / 10.0);
-						else
-							map[col, row].SpecialDescription = 1;
+						//if (dijkstra[col, row] > 1)
+							map[col, row].InherentLight = dijkstra[col, row];
 					}
 				}
 			}
-			*/
+			#endregion
 		}
 
 	}
