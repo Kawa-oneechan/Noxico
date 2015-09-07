@@ -1756,7 +1756,7 @@ namespace Noxico
 				}
 				if (ballCount > 0)
 				{
-					print("\xC0 " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicles\n");
+					print("\xC0 " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicle".Pluralize(ballCount) + "\n");
 				}
 			}
 			print("\n");
