@@ -683,6 +683,11 @@ bodyplan: bear
 	skin
 		type: fur
 		color: brown
+	drops
+		meatchunk
+		meatchunk
+		meatchunk
+		meatchunk
 	speed: 30
 	strength: 40
 
@@ -699,6 +704,9 @@ bodyplan: wild_dog
 	skin
 		type: fur
 		color: brown
+	drops
+		meatchunk
+		meatchunk
 	speed: 40
 	strength: 25
 	infectswith: canine
@@ -716,6 +724,9 @@ bodyplan: tame_dog
 	skin
 		type: fur
 		color: brown
+	drops
+		meatchunk
+		meatchunk
 	speed: 40
 	strength: 25
 	neverprefix
@@ -733,6 +744,8 @@ bodyplan: rat
 	skin
 		type: fur
 		color: brown
+	drops
+		meatgiblet
 	speed: 30
 	strength: 5
 
@@ -750,6 +763,9 @@ bodyplan: snake
 	skin
 		type: scales
 		color: oneof saddlebrown, olive, darkslategray
+	drops
+		meatgiblet
+		meatgiblet
 	speed: 30
 	strength: 5
 
@@ -759,12 +775,17 @@ bodyplan: horse
 	bestiary: "Large herd animal!"
 		char: 0x174
 		unicode: U+0072
-	namegen: pony
+--	namegen: pony
 	terms
 		generic: "horse"
 	skin
 		type: fur
 		color: oneof brown, white, gray, black, saddlebrown
+	drops
+		meatchunk
+		meatchunk
+		meatchunk
+		meatchunk
 	speed: 30
 	strength: 50
 

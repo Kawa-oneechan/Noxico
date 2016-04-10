@@ -1045,9 +1045,23 @@ namespace Noxico
 					item.RemoveToken("owner");
 				corpse.Token.GetToken("contents").AddSet(Character.GetToken("items").Tokens);
 			}
-
 			ParentBoard.EntitiesToRemove.Add(this);
-			ParentBoard.EntitiesToAdd.Add(corpse);
+			if (Character.HasToken("beast") && Character.HasToken("drops"))
+			{
+				foreach (var drop in Character.GetToken("drops").Tokens)
+				{
+					var droppedItem = new DroppedItem(drop.Text)
+					{
+						XPosition = XPosition,
+						YPosition = YPosition,
+						ParentBoard = ParentBoard,
+					};
+					droppedItem.AdjustView();
+					droppedItem.ParentBoard.EntitiesToAdd.Add(droppedItem);
+				}
+			}
+			else
+				ParentBoard.EntitiesToAdd.Add(corpse);
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
