@@ -3196,8 +3196,9 @@ namespace Noxico
 			if (Path("copier/full") != null && GetToken("copier").Value == 0)
 			{
 				//Should be a Changeling. Distance should be < 2.
+				//TODO: make this more generic, uncoupling from what should be a modpak's bodyplan.
 				var myHash = Toolkit.GetBodyComparisonHash(this);
-				var changeling = NoxicoGame.BodyplanHashes["changeling"];
+				var changeling = NoxicoGame.BodyplanHashes["mlp_changeling"];
 				if (Toolkit.GetHammingDistance(myHash, changeling) >= 2)
 					return false;
 			}

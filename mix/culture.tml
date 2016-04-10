@@ -37,28 +37,10 @@ culture: seradevar
 	marriage: 0
 	monogamous: 0.5
 
-culture: equestrian
-	bodyplans
-		littlepony
-	monogamous: 0.8
-	marriage: 0.6
-	terms
-		zeni: bit
-		the_madman: Discord
-
 culture: ursidous
 	bodyplans
 		ursidae
 	monogamous: 0.75
-
-culture: changelings
-	bodyplans
-		changeling
-	monogamous: 0.2
-	marriage: 0
-	terms
-		zeni: bit
-		the_madman: Discord
 
 -- #endregion
 
@@ -175,27 +157,6 @@ namegen: dorf
 			sur_start
 			sur_end
 
-namegen: pony
-	sets
-		a: Acorn, Azure, Amethyst, Cotton, Flora, Kitty, Candy, Cherry, Bluebery, Carrot, Starlight, Flower, Lily, Rose, Lotus, Marmalade, Bonnie, Peachy, Raisin, Roxie, Ruby, Storm, Sunny, Cloud, Cappuccino, Cotton, Daisy, Firefly, Dizzy, Lightning, Medley, Rainbow, Tornado, Crescent, Lemon, Seafoam, Twilight, Twinkle
-		b: Twist, Star, Sparkle, Dash, Pie, Blossom, Cake, Coke, Stardust, Waters, Days, Daze, Kicker, Twister, Day, Hearts
-	female
-		rule
-			a
-			_
-			b
-		prohibit: Star Star, Twilight Sparkle, Rainbow Dash
--- TODO: get a manlier set of names
-	male
-		rule
-			a
-			_
-			b
-		prohibit: Star Star, Twilight Sparkle, Rainbow Dash
-	surname
-		rule
-			_
-
 namegen: bears
 	sets
 		start_male: Earth, Air, Water, Fire, Bronze, Silver, Gold, Fleet, Ruby, Emerald, Crystal, Red, Orange, Yellow, Green, Blue, Indigo, Violet, Stone, Rage, Hate, Vagina, Blood
@@ -232,19 +193,6 @@ namegen: spacemutiny
 	surname
 		rule
 			b
-
-namegen: changeling
-	sets
-		theonlyone: Anther, Barricade, Boloria, Canadensis, Captio, Cicada, Cloudhop, Coleoptera, Coliadys, Crucible, Damaged Goods, Danaus, Danganya, Darkwing, Dekras, Demure, Dipte, Drosophila, Echo, Fractured Mind, Fritillary, Grit, Hopper, Imago, Jewel, Kiu, Knockout, Lampy, Ligament, Lustro, Mantis, Mendacium, Mindwipe, Mirror, Pupa, Rampage, Ransack, Rhynie, Scarab, Scourge, Sctriches, Shatterstar, Shrapnel, Silky, Skywarp, Slipstream, Speculum, Spinster, Striche, Styx, Swindle, Thorax, Thysania, Troubled Water, Tukor, Voluc, Wasp
-	male
-		rule
-			theonlyone
-	female
-		rule
-			theonlyone
-	surname
-		rule
-			_
 
 
 -- From 200 random male and 200 random female names, this boils down to about 70 effective male names and 94 female.
