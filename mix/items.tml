@@ -906,6 +906,36 @@ item: bacon
 		fat
 	meat
 
+item: meatchunk
+	_n: meat chunk
+	singleuse
+	statbonus
+		health: 20
+	weight: feather
+	price: 10
+	description: "It's meat. Neat."
+	ascii
+		char: 0x18D
+		fore: red
+	food: 30
+		fat
+	meat
+
+item: meatgiblet
+	_n: meat giblet
+	singleuse
+	statbonus
+		health: 10
+	weight: feather
+	price: 2
+	description: "It's meat. Neat."
+	ascii
+		char: 0x18D
+		fore: red
+	food: 10
+		fat
+	meat
+
 item: sweetroll
 	_n: sweet roll
 	singleuse
