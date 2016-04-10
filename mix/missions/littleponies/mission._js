@@ -1,7 +1,7 @@
 var myBoard = PickBoard(BoardType.Town, -1, -1);
 myBoard.Clear();
 myBoard.ID = "Ponyville";
-MakeTown(myBoard, "equestrian");
+MakeTown(myBoard, "mlp_equestrian");
 MakeBoardTarget(myBoard);
 var myChar = myBoard.PickBoardChar(Gender.Female);
 print("Picked " + myChar.Character.Name + " to replace with pony mayor.");
@@ -14,7 +14,7 @@ var spousesStuff = myBoard.GetEntitiesWith("wardrobe_" + spouse.Name.ToID(), fal
 for (var i = 0; i < spousesStuff.length; i++)
 	spousesStuff[i].GetToken("contents").Tokens.Clear();
 var oldName = myChar.Character.Name;
-myChar.Character = Character.GetUnique("ponyleader");
+myChar.Character = Character.GetUnique("mlp_ponyleader");
 myChar.AdjustView();
 myChar.ID = myChar.Character.Name.ToID();
 myChar.ReassignStuff(oldName);

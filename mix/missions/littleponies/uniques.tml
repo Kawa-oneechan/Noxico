@@ -1,6 +1,6 @@
-character: ponyleader
+character: mlp_ponyleader
 	_n: Lofty Goal
-	culture: equestrian
+	culture: mlp_equestrian
 	invisiblegender
 	terms
 		generic: "little pony"
