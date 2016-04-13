@@ -175,7 +175,9 @@ namespace Noxico
 
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
-			foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
+			//Use GetFilesWithPattern to allow books in mission folders -- /missions/homestuck/books/legendbullshit.txt
+			//foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
+			foreach (var book in Mix.GetFilesWithPattern("\\books\\*.txt"))
 			{
 				var bookFile = Mix.GetString(book, false).Split('\n');
 				var bookID = Path.GetFileNameWithoutExtension(book);
