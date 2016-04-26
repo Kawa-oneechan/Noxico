@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Drawing;
 
 namespace Noxico
 {
@@ -215,9 +216,11 @@ namespace Noxico
 		private static Dictionary<string, UIElement> controls;
 		private static List<UIElement>[] pages;
 		private static Dictionary<string, string> controlHelps;
+		private static Dictionary<string, Bitmap> portraits;
 
 		private static int page = 0;
-		private static Action<int> loadPage, loadColors;
+		private static Action<int> loadPage, loadColors, redrawBackdrop;
+		private static Bitmap backdrop, backWithPortrait;
 
 		public static void CharacterCreator()
 		{
@@ -248,14 +251,19 @@ namespace Noxico
 					{ "eyes", i18n.GetString("cchelp_eyes") },
 					{ "gift", traitHelps[0] },
 				};
-
+				backdrop = Mix.GetBitmap("chargen.png");
+				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				using (var g = Graphics.FromImage(backWithPortrait))
+				{
+					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
+				}
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC3";
 				var bar = new string('\xC4', 33);
 				string[] sexoptions = {i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Herm"), i18n.GetString("Neuter")};
 				string[] prefoptions = { i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Either") };
 				controls = new Dictionary<string, UIElement>()
 				{
-					{ "backdrop", new UIPNGBackground(Mix.GetBitmap("chargen.png")) },
+					{ "backdrop", new UIPNGBackground(backWithPortrait) },
 					{ "headerline", new UILabel(bar) { Left = 56, Top = 8, Foreground = Color.Black } },
 					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 8, Width = title.Length(), Foreground = Color.Black } },
 					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 46, Width = 10, Height = 3 } },
@@ -346,6 +354,50 @@ namespace Noxico
 					((UISingleList)controls["eyes"]).Index = 0;
 				});
 
+				redrawBackdrop = new Action<int>(i =>
+				{
+					var playable = playables[((UISingleList)controls["species"]).Index];
+					var portrait = "chargen\\" + playable.ID + "_" + "mfhn"[((UIRadioList)controls["sex"]).Value] + ".png";
+					if (!Mix.FileExists(portrait))
+					{
+						portrait = "chargen\\" + playable.ID + ".png";
+						if (!Mix.FileExists(portrait))
+						{
+							portrait = "chargen\\_.png";
+						}
+					}
+					if (portraits == null)
+						portraits = new Dictionary<string, Bitmap>();
+					if (!portraits.ContainsKey(portrait))
+						portraits.Add(portrait, Mix.GetBitmap(portrait));
+					var p = portraits[portrait];
+					for (var row = 0; row < 58; row++)
+					{
+						for (var col = 0; col < 54; col++)
+						{
+							var a = p.GetPixel(col, row).R / 255f;
+							var c = backdrop.GetPixel(col, row + 1);
+							var r = c.R / 255f;
+							var g = c.G / 255f;
+							var b = c.B / 255f;
+							r = 1 - (1 - r) * (1 - a);
+							g = 1 - (1 - g) * (1 - a);
+							b = 1 - (1 - b) * (1 - a);
+							r = r * 255f;
+							g = g * 255f;
+							b = b * 255f;
+							if (r > 255) r = 255;
+							if (g > 255) g = 255;
+							if (b > 255) b = 255;
+							if (r < 0) r = 0;
+							if (g < 0) g = 0;
+							if (b < 0) b = 0;
+							backWithPortrait.SetPixel(col, row + 1, Color.FromArgb((int)r, (int)g, (int)b));
+						}
+					}
+					((UIPNGBackground)controls["backdrop"]).Bitmap = backWithPortrait;
+				});
+
 				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
 				controls["play"].Enter = (s, e) =>
@@ -413,8 +465,14 @@ namespace Noxico
 								sexList.Value = i;
 								break;
 							}
+						}
 					}
-					}
+					redrawBackdrop(0);
+					UIManager.Draw();
+				};
+				controls["sex"].Change = (s, e) =>
+				{
+					redrawBackdrop(0);
 					UIManager.Draw();
 				};
 				controls["world"].Change = (s, e) =>
@@ -449,6 +507,7 @@ namespace Noxico
 					UIManager.Draw();
 				};
 				loadPage(page);
+				redrawBackdrop(0);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 				UIManager.HighlightChanged(null, null);

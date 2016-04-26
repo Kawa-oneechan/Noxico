@@ -307,22 +307,21 @@ bodyplan: foocubus
 		rope
 
 
-bodyplan: felinoid
+bodyplan: felin
 	playable
 	culture: human
 	namegen: japanese
-	normalgenders
+--	normalgenders
 	invisiblegender
 	terms
-		generic: "felinoid"
-		male: "catboy"
-		female: "catgirl"
-		herm: "catherm"
-	bestiary: "Typical trading cat people."
+		generic: "felin"
+		male: "fel"
+		female: "fela"
+		herm: "felhru"
+	bestiary: "Lost interstellar colonists."
 		char: 0x167
 		unicode: U+0046
 	tallness: roll 1d40+150
-	femalesmaller
 	hair
 		length: roll 1d4+5
 		color: oneof blond, brown, black, red, orange, gray, white, auburn
@@ -330,13 +329,15 @@ bodyplan: felinoid
 	skin
 		type: fur
 		color: oneof brown, orange, white, gray, black
+		pattern: oneof spots, , stripes, , splotches
+			color: black
 	eyes: oneof gold, yellow, lime
 		glow
 	face: cat
 	teeth: fangs
-	tongue: oneof barbed, normal
+	tongue: normal
 	ears: cat
-	legs: oneof human, cat
+	legs: human
 	tail: cat
 	ass
 		virgin
@@ -344,10 +345,10 @@ bodyplan: felinoid
 		size: 5
 	hips: roll 1d6
 	waist: roll 1d4+1
-	fertility: roll 1d25+5
+	fertility: 0
 	breastrow
 		amount: 2
-		size: roll 1d4+1
+		size: 0
 		nipples: 1
 			size: roll 1d2+1
 	vagina
@@ -363,7 +364,7 @@ bodyplan: felinoid
 	balls
 		amount: 2
 		size: 0.6
-
+		hidden
 
 bodyplan: fox
 	playable
