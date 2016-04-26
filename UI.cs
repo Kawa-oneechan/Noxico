@@ -614,7 +614,7 @@ namespace Noxico
 			var off = "\x13C";
 			var on = "\x13D";
 			for (var i = 0; i < choices.Length; i++)
-				NoxicoGame.HostForm.Write((val == i ? on : off) + choices[i], UIManager.Highlight == this ? (ItemsEnabled[i] ? Foreground : Color.Gray) : (ItemsEnabled[i] ? Color.Gray : Color.Silver), Background, Top + i, Left);
+				NoxicoGame.HostForm.Write((val == i ? on : off) + ' ' + choices[i], UIManager.Highlight == this ? (ItemsEnabled[i] ? Foreground : Color.Gray) : (ItemsEnabled[i] ? Color.Gray : Color.Silver), Background, Top + i, Left);
 		}
 
 		public override void DoUp()

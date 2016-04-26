@@ -194,6 +194,8 @@ namespace Noxico
 				{
 					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
 					var choice = options[Random.Next(options.Length)].Trim();
+					if (string.IsNullOrEmpty(choice))
+						continue; //picked a blank token -- eat it.
 					tokenName = choice;
 				}
 				else if (l.Contains(": "))
