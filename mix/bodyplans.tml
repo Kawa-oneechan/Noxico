@@ -13,6 +13,7 @@ bodyplan: human
 		unicode: U+0068
 	tallness: roll 1d50+150
 	femalesmaller
+	editable: skin/color|Skin, hair/color|Hair color, hair/style|Hair style, eyes|Eyes
 	hair
 		length: roll 1d4+5
 		color: oneof blond, brown, black,red, gray, white, auburn
@@ -322,6 +323,7 @@ bodyplan: felin
 		char: 0x167
 		unicode: U+0046
 	tallness: roll 1d40+150
+	editable: skin/color|Fur color, skin/pattern|Fur pattern, hair/color|Hair color, hair/style|Hair style, eyes|Eye color
 	hair
 		length: roll 1d4+5
 		color: oneof blond, brown, black, red, orange, gray, white, auburn
@@ -331,6 +333,7 @@ bodyplan: felin
 		color: oneof brown, orange, white, gray, black
 		pattern: oneof spots, , stripes, , splotches
 			color: black
+			removeifblank
 	eyes: oneof gold, yellow, lime
 		glow
 	face: cat
@@ -373,7 +376,7 @@ bodyplan: fox
 	normalgenders
 	invisiblegender
 	terms
-		generic: "vulpinoid"
+		generic: "kitsune"
 		male: "foxboy"
 		female: "foxgirl"
 		herm: "foxherm"
@@ -438,6 +441,7 @@ bodyplan: slime
 		char: 0x164
 		unicode: U+004A
 	tallness: roll 1d50+100
+	editable: skin/color|Slime color
 	skin
 		type: slime
 		color: oneof red, orangered, orange, yellow, lime, green, aqua, teal, blue, cornflowerblue, magenta, purple, chocolate, black
