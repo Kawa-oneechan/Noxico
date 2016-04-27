@@ -994,7 +994,7 @@ namespace Noxico
 			}
 		}
 
-		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, int preference, string bodyplan, string hairColor, string bodyColor, string eyeColor, string bonusTrait)
+		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, int preference, string bodyplan, Dictionary<string, string> colorMap, string bonusTrait)
 		{
 			Board.HackishBoardTypeThing = "wild";
 			var pc = Character.Generate(bodyplan, bioGender, idGender);
@@ -1029,11 +1029,38 @@ namespace Noxico
 				}
 			}
 
+			/*
 			pc.Path("skin/color").Text = bodyColor;
 			if (pc.Path("skin/type").Text != "slime" && pc.Path("hair/color") != null)
 				pc.Path("hair/color").Text = hairColor;
 			if (pc.HasToken("eyes"))
 				pc.GetToken("eyes").Text = eyeColor;
+			*/
+			foreach (var color in colorMap)
+			{
+				var colorToken = pc.Path(color.Key);
+				if (colorToken != null)
+					colorToken.Text = color.Value;
+				if (color.Value.StartsWith("["))
+					colorToken.Text = string.Empty;
+			}
+			Action<TokenCarrier> removeBlanks = null;
+			removeBlanks= new Action<TokenCarrier>(t =>
+			{
+				foreach (var token in t.Tokens)
+				{
+					if (token.HasToken("removeifblank") && string.IsNullOrWhiteSpace(token.Text))
+					{
+						t.RemoveToken(token);
+						return;
+					}
+					else
+					{
+						removeBlanks(token);
+					}
+				}
+			});
+			removeBlanks(pc);
 
 			pc.AddToken("player", (int)DateTime.Now.Ticks);
 

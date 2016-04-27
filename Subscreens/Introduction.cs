@@ -100,9 +100,12 @@ namespace Noxico
 			public string ID { get; set; }
 			public string Name { get; set; }
 			public string Skin { get; set; }
+			/*
 			public List<string> HairColors { get; set; }
 			public List<string> SkinColors { get; set; }
 			public List<string> EyeColors { get; set; }
+			*/
+			public Dictionary<string, UIElement> ColorItems { get; set; }
 			public bool[] SexLocks { get; set; }
 			public string Bestiary { get; set; }
 			public override string ToString()
@@ -143,71 +146,54 @@ namespace Noxico
 				if (!string.IsNullOrWhiteSpace(bodyPlan.GetToken("playable").Text))
 					name = bodyPlan.GetToken("playable").Text;
 
-				var bestiary = bodyPlan.HasToken("bestiary") ? bodyPlan.GetToken("bestiary").Text : string.Empty;				
+				var bestiary = bodyPlan.HasToken("bestiary") ? bodyPlan.GetToken("bestiary").Text : string.Empty;
 
-				var hairs = new List<string>() { "<None>" };
-				var hair = bodyPlan.GetToken("hair");
-				if (hair != null)
+				var colorItems = new Dictionary<string, UIElement>();
+				var editables = string.Empty;
+				if (bodyPlan.HasToken("editable"))
+					editables = bodyPlan.GetToken("editable").Text;
+				var top = 10;
+				foreach (var aspect in editables.Split(','))
 				{
-					var c = hair.GetToken("color").Text;
-					if (c.StartsWith("oneof"))
+					if (string.IsNullOrWhiteSpace(aspect))
+						continue;
+					var a = aspect.Trim().Split('|');
+					var path = a[0];
+					var label = a[1];
+					var t = bodyPlan.Path(path).Text;
+					if (t.StartsWith("oneof"))
+						t = t.Substring(6);
+					var oneof = t.Split(',').ToList();
+					var items = new List<string>();
+					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 56, Top = top, Foreground = Color.Gray });
+					if (path.EndsWith("color") || !path.Contains('/'))
 					{
-						hairs.Clear();
-						c = c.Substring(6);
-						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => hairs.Add(Color.NameColor(x.Trim()).Titlecase()));
+						foreach (var i in oneof)
+						{
+							var iT = Color.NameColor(i.Trim()).Titlecase();
+							if (string.IsNullOrWhiteSpace(iT))
+								iT = i18n.GetString("[none]", false);
+							if (!items.Contains(iT))
+								items.Add(iT);
+						}
+						colorItems.Add(path, new UIColorList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					}
 					else
 					{
-						hairs[0] = c.Titlecase();
+						foreach (var i in oneof)
+						{
+							var iT = i.Trim().Titlecase();
+							if (string.IsNullOrWhiteSpace(iT))
+								iT = i18n.GetString("[none]", false);
+							if (!items.Contains(iT))
+								items.Add(iT);
+						}
+						colorItems.Add(path, new UISingleList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					}
+					top += 4;
 				}
 
-				var eyes = new List<string>() { "Brown" };
-				{
-					var c = bodyPlan.GetToken("eyes").Text;
-					if (c.StartsWith("oneof"))
-					{
-						eyes.Clear();
-						c = c.Substring(6);
-						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => eyes.Add(Color.NameColor(x.Trim()).Titlecase()));
-					}
-					else
-					{
-						eyes[0] = c.Titlecase();
-					}
-				}
-
-				var skins = new List<string>();
-				var skinName = "skin";
-				var s = bodyPlan.GetToken("skin");
-				if (s != null)
-				{
-					if (s.HasToken("type"))
-					{
-						skinName = s.GetToken("type").Text;
-					}
-					var c = s.GetToken("color").Text;
-					if (c.StartsWith("oneof"))
-					{
-						skins.Clear();
-						c = c.Substring(6);
-						var oneof = c.Split(',').ToList();
-						oneof.ForEach(x => skins.Add(Color.NameColor(x.Trim()).Titlecase()));
-					}
-					else
-					{
-						skins.Add(Color.NameColor(c).Titlecase());
-					}
-				}
-
-				if (skins.Count > 0)
-					skins = skins.Distinct().ToList();
-				skins.Sort();
-
-				ret.Add(new PlayableRace() { ID = id, Name = name, Bestiary = bestiary, HairColors = hairs, SkinColors = skins, Skin = skinName, EyeColors = eyes, SexLocks = sexlocks });
-
+				ret.Add(new PlayableRace() { ID = id, Name = name, Bestiary = bestiary, ColorItems = colorItems, SexLocks = sexlocks });
 			}
 			return ret;
 		}
@@ -285,6 +271,7 @@ namespace Noxico
 					{ "pref", new UIRadioList(prefoptions) { Left = 58, Top = 37, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 58, Top = 42, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
+					/*
 					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "hair", new UIColorList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "bodyLabel", new UILabel(i18n.GetString("cc_body")) { Left = 56, Top = 14, Foreground = Color.Gray } },
@@ -292,6 +279,7 @@ namespace Noxico
 					{ "body", new UIColorList() { Left = 58, Top = 15, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "eyesLabel", new UILabel(i18n.GetString("cc_eyes")) { Left = 56, Top = 18, Foreground = Color.Gray } },
 					{ "eyes", new UIColorList() { Left = 58, Top = 19, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
+					*/
 
 					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "gift", new UIList("", null, traits) { Left = 58, Top = 12, Width = 30, Height = 32, Foreground = Color.Black, Background = Color.Transparent } },
@@ -313,6 +301,8 @@ namespace Noxico
 						controls["easy"],
 						controls["controlHelp"], controls["next"],
 					},
+					new List<UIElement>(), //Placeholder
+					/*
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
@@ -320,7 +310,7 @@ namespace Noxico
 						controls["bodyLabel"], controls["bodyNo"], controls["body"],
 						controls["eyesLabel"], controls["eyes"],
 						controls["controlHelp"], controls["back"], controls["next"],
-					},
+					}, */
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
@@ -341,8 +331,8 @@ namespace Noxico
 				loadColors = new Action<int>(i =>
 				{
 					var species = playables[i];
-					controlHelps["species"] = species.Bestiary; 
-					controls["bodyLabel"].Text = species.Skin.Titlecase();
+					controlHelps["species"] = species.Bestiary;
+					/* controls["bodyLabel"].Text = species.Skin.Titlecase();
 					((UISingleList)controls["hair"]).Items.Clear();
 					((UISingleList)controls["body"]).Items.Clear();
 					((UISingleList)controls["eyes"]).Items.Clear();
@@ -351,7 +341,11 @@ namespace Noxico
 					((UISingleList)controls["eyes"]).Items.AddRange(species.EyeColors);
 					((UISingleList)controls["hair"]).Index = 0;
 					((UISingleList)controls["body"]).Index = 0;
-					((UISingleList)controls["eyes"]).Index = 0;
+					((UISingleList)controls["eyes"]).Index = 0; */
+					pages[1].Clear();
+					pages[1].AddRange(new[] { controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"] });
+					pages[1].AddRange(species.ColorItems.Values);
+					pages[1].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
 				redrawBackdrop = new Action<int>(i =>
@@ -409,11 +403,21 @@ namespace Noxico
 					var pref = ((UIRadioList)controls["pref"]).Value;
 					var species = ((UISingleList)controls["species"]).Index;
 					var easy = ((UIToggle)controls["easy"]).Checked;
-					var hair = ((UISingleList)controls["hair"]).Text;
+					/* var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;
-					var eyes = ((UISingleList)controls["eyes"]).Text;
+					var eyes = ((UISingleList)controls["eyes"]).Text; */
 					var bonus = ((UIList)controls["gift"]).Text;
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, hair, body, eyes, bonus);
+					//NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, hair, body, eyes, bonus);
+					var colorMap = new Dictionary<string, string>();
+					foreach (var editable in playables[species].ColorItems)
+					{
+						if (editable.Key.StartsWith("lbl"))
+							continue;
+						var path = editable.Key;
+						var value = ((UISingleList)editable.Value).Text;
+						colorMap.Add(path, value);
+					}
+					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
 					if (easy)
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
 					NoxicoGame.HostForm.Noxico.CreateRealm();
@@ -496,8 +500,8 @@ namespace Noxico
 				UIManager.Initialize();
 				UIManager.HighlightChanged = (s, e) =>
 				{
-					var c = controls.First(x => x.Value == UIManager.Highlight);
-					if (controlHelps.ContainsKey(c.Key))
+					var c = controls.FirstOrDefault(x => x.Value == UIManager.Highlight);
+					if (c.Key != null && controlHelps.ContainsKey(c.Key))
 					{
 						controls["controlHelp"].Text = controlHelps[c.Key].Wordwrap(controls["controlHelp"].Width);
 						controls["controlHelp"].Top = c.Value.Top;
