@@ -279,7 +279,7 @@ item: cheap_pos
 
 item: catears
 	_n: [color ]cat ear headband
-	description: "One of the felinoids' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
+	description: "One of the felins' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
 	equipable
 		hat
 	weight
@@ -1648,7 +1648,7 @@ item: lena_ruby
 item: catmorph
 	_n: cat morph potion
 	wip
-	description: "A bottle filled with a thick liquid. There's a picture of a felinoid on the label."
+	description: "A bottle filled with a thick liquid. There's a picture of a feline on the label."
 	ascii
 		char: 0x180
 		fore: lightsalmon
@@ -1727,7 +1727,7 @@ item: catmorph
 				user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
 				ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
 
-				user.SetTerms("felinoid", "catboy", "catgirl", "catherm");
+				user.SetTerms("felin", "fel", "fela", "felhru");
 				if (!user.HasToken("invisiblegender"));
 				{
 					user.RemoveToken("explicitgender");

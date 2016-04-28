@@ -6,8 +6,6 @@ using Bitmap = System.Drawing.Bitmap;
 
 namespace Noxico
 {
-	//TODO: allow finer mouse control -- clicking individual list items, < > arrows...
-
 	public static class UIColors
 	{
 		public static Color WindowBackground { get { return Color.FromArgb(0x282424); } }
@@ -647,6 +645,8 @@ namespace Noxico
 
 		public override void DoMouse(int left, int top)
 		{
+			if (!ItemsEnabled[top])
+				return;
 			Value = top;
 			Draw();
 		}

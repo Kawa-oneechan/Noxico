@@ -2,21 +2,21 @@
 culture: human
 	bodyplans
 		human
-		felinoid
-		fox
+		felin
+		kitsune
 		human
 		human
-		felinoid
-		fox
+		felin
+		kitsune
 		naga
 		human
-		felinoid
+		felin
 -- Low base chance of betraying their spouse. Character tokens affect this.
 	monogamous: 0.75
 
 culture: deviant
 	bodyplans
-		felinoid
+		felin
 		imp
 	marriage: 0
 	monogamous: 0
@@ -41,6 +41,15 @@ culture: ursidous
 	bodyplans
 		ursidae
 	monogamous: 0.75
+
+culture: felin
+	bodyplans
+		felin
+	marriage: 0
+	monogamous: 0
+	mysticism: 0
+	terms
+		zeni: coin
 
 -- #endregion
 
@@ -260,6 +269,43 @@ namegen: arabic
 		rule
 			_
 
+namegen: felin
+	sets
+		startingvowel: A, Ae, Ah, Ai, E, I, Ja, O, U
+		startingconsonant: B, Ch, F, Fh, Gr, H, Hr, J, K, Kh, L, M, Mr, Rh, S, T, Th, V, W
+		middlevowel: a, ae, ah, ai, e, i, o, u
+		middleconsonant: b, ch, f, fh, gr, h, hr, ja, k, kh, l, m, mr, rh, s, t, th, v, w
+		maleending: lir, rth, ler, rith, lair, len, rath, rthir, ron, vren, thin
+		femaleending: ri, mine, rthi, ne, vra, aie, rith
+	female
+		rule
+			startingvowel
+			middleconsonant
+			middlevowel
+			femaleending
+		rule
+			startingconsonant
+			middlevowel
+			middleconsonant
+			middlevowel
+			femaleending
+		prohibit: rr, ff, hh, kk, mm
+	male
+		rule
+			startingvowel
+			middleconsonant
+			middlevowel
+			maleending
+		rule
+			startingconsonant
+			middlevowel
+			middleconsonant
+			middlevowel
+			maleending
+		prohibit: rr, ff, hh, kk, mm
+	surname
+		rule
+			_
 
 -- Fallback namegen for towns
 namegen: default
