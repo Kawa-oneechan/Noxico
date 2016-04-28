@@ -56,6 +56,7 @@ bodyplan: human
 	costume
 		casual
 
+
 bodyplan: imp
 	culture: seradevar
 	namegen: demonic
@@ -95,6 +96,7 @@ bodyplan: imp
 		amount: 2
 		size: 1
 	carnality: 50
+
 
 bodyplan: goblin
 	culture: seradevar
@@ -154,6 +156,7 @@ bodyplan: goblin
 		set: 0.6
 			carnality: 60
 
+
 bodyplan: bee
 	culture: human
 	namegen: arabic
@@ -210,6 +213,7 @@ bodyplan: naga
 	terms
 		generic: "naga"
 	tallness: roll 1d20+160
+	editable: skin/color|Skin color, hair/color|Hair color, hair/style|Hair style
 	bestiary: "Half beautiful humanoid, half snake, all desert-y allure."
 		char: 0x161
 		unicode: U+004E
@@ -268,6 +272,7 @@ bodyplan: foocubus
 		char: 0x160
 		unicode: U+0026
 	tallness: roll 1d20+170
+	editable: skin/color|Skin color, hair/color|Hair color, hair/style|Hair style, eyes|Eye color, tongue|Tongue|l
 	hair
 		length: roll 1d3+4
 		color: oneof red, black, blue, darkred, green
@@ -310,8 +315,8 @@ bodyplan: foocubus
 
 bodyplan: felin
 	playable
-	culture: human
-	namegen: japanese
+	culture: felin
+	namegen: felin
 --	normalgenders
 	invisiblegender
 	terms
@@ -369,7 +374,8 @@ bodyplan: felin
 		size: 0.6
 		hidden
 
-bodyplan: fox
+
+bodyplan: kitsune
 	playable
 	culture: human
 	namegen: japanese
@@ -494,6 +500,7 @@ bodyplan: ursidae
 	tallness: roll 1d150+150
 		char: 0x166
 		unicode: U+0055
+	editable: skin/color|Fur color, hair/color|Hair color, hair/style|Hair style
 	hair
 		length: roll 1d4+7
 		color: oneof brown, black, gray, white, auburn
@@ -623,6 +630,7 @@ bodyplan: draig
 		char: 0x166
 		unicode: U+00A7
 	tallness: roll 1d30+200
+	editable: skin/color|Scale color, eyes|Eye color
 	skin
 		type: scales
 		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold
@@ -695,6 +703,7 @@ bodyplan: bear
 		meatchunk
 	speed: 30
 	strength: 40
+
 
 bodyplan: wild_dog
 	beast

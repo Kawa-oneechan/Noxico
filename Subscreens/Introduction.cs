@@ -149,7 +149,7 @@ namespace Noxico
 				var bestiary = bodyPlan.HasToken("bestiary") ? bodyPlan.GetToken("bestiary").Text : string.Empty;
 
 				var colorItems = new Dictionary<string, UIElement>();
-				var editables = string.Empty;
+				var editables = "skin/color|Skin color, hair/color|Hair color";
 				if (bodyPlan.HasToken("editable"))
 					editables = bodyPlan.GetToken("editable").Text;
 				var top = 10;
@@ -166,7 +166,8 @@ namespace Noxico
 					var oneof = t.Split(',').ToList();
 					var items = new List<string>();
 					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 56, Top = top, Foreground = Color.Gray });
-					if (path.EndsWith("color") || !path.Contains('/'))
+					var isSingleList = (a.Length > 2 && a[2][0] == 'l') || path.EndsWith("style");
+					if (!isSingleList)
 					{
 						foreach (var i in oneof)
 						{
