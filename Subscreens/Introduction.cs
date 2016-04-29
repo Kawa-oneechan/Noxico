@@ -166,31 +166,22 @@ namespace Noxico
 					var oneof = t.Split(',').ToList();
 					var items = new List<string>();
 					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 56, Top = top, Foreground = Color.Gray });
-					var isSingleList = (a.Length > 2 && a[2][0] == 'l') || path.EndsWith("style");
-					if (!isSingleList)
+					foreach (var i in oneof)
 					{
-						foreach (var i in oneof)
-						{
-							var iT = Color.NameColor(i.Trim()).Titlecase();
-							if (string.IsNullOrWhiteSpace(iT))
-								iT = i18n.GetString("[none]", false);
-							if (!items.Contains(iT))
-								items.Add(iT);
-						}
+						var iT = i.Trim().Titlecase();
+						if (string.IsNullOrWhiteSpace(iT))
+							iT = i18n.GetString("[none]", false);
+						if (!items.Contains(iT))
+							items.Add(iT);
+					}
+					if (label.EndsWith("color", StringComparison.InvariantCultureIgnoreCase))
+					{
+						for (var i = 0; i < items.Count; i++)
+							items[i] = Color.NameColor(items[i]).Titlecase();
 						colorItems.Add(path, new UIColorList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					}
 					else
-					{
-						foreach (var i in oneof)
-						{
-							var iT = i.Trim().Titlecase();
-							if (string.IsNullOrWhiteSpace(iT))
-								iT = i18n.GetString("[none]", false);
-							if (!items.Contains(iT))
-								items.Add(iT);
-						}
 						colorItems.Add(path, new UISingleList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
-					}
 					top += 4;
 				}
 

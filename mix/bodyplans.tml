@@ -13,10 +13,10 @@ bodyplan: human
 		unicode: U+0068
 	tallness: roll 1d50+150
 	femalesmaller
-	editable: skin/color|Skin, hair/color|Hair color, hair/style|Hair style, eyes|Eyes
+	editable: skin/color|Skin color, hair/color|Hair color, hair/style|Hair style, eyes|Eye color
 	hair
 		length: roll 1d4+5
-		color: oneof blond, brown, black,red, gray, white, auburn
+		color: oneof blond, brown, black, red, gray, white, auburn
 	-- repeating a few options to increase their chances 
 		style: oneof wavy, wavy, ponytail, straight, straight, straight, straight, curly, braided
 	skin
@@ -272,7 +272,7 @@ bodyplan: foocubus
 		char: 0x160
 		unicode: U+0026
 	tallness: roll 1d20+170
-	editable: skin/color|Skin color, hair/color|Hair color, hair/style|Hair style, eyes|Eye color, tongue|Tongue|l
+	editable: skin/color|Skin color, hair/color|Hair color, hair/style|Hair style, eyes|Eye color, tongue|Tongue
 	hair
 		length: roll 1d3+4
 		color: oneof red, black, blue, darkred, green

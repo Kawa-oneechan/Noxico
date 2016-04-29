@@ -14,6 +14,7 @@ bodyplan: mlp_littlepony
 	-- marshmallow adjusts the way hooves are described.
 	marshmallow
 	tallness: 140
+	editable: skin/color|Coat color, hair/color|Mane color, eyes|Eye color
 	hair
 		length: 16
 		color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
@@ -60,7 +61,7 @@ bodyplan: mlp_littlepony
 		hip: "cutie mark"
 
 bodyplan: mlp_changeling
-	playable
+	playable: "Changeling"
 	culture: mlp_changelings
 	namegen: mlp_changeling
 	normalgenders
@@ -73,6 +74,7 @@ bodyplan: mlp_changeling
 		char: 0x163
 		unicode: U+0075
 	tallness: 134
+	editable: skin/color|Carapace color, hair/color|Mane color, eyes|Eye color
 	hair
 		length: roll 1d3+3
 		color: oneof aquamarine, cadetblue, darkcyan, darkgreen, darkslategray
