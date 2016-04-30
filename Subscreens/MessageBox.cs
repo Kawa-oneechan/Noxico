@@ -23,6 +23,7 @@ namespace Noxico
 		private static UIList lst;
 		private static UILabel key;
 		private static UITextBox txt;
+		private static UIPNG icon;
 		private static bool fromWalkaround;
 
 		public static void Handler()
@@ -42,15 +43,22 @@ namespace Noxico
 				if (UIManager.Elements == null || fromWalkaround)
 					UIManager.Initialize();
 
-				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 15, Top = top, Width = 70, Height = height };
+				if (icon != null)
+				{
+					icon.Left = 100 - icon.Bitmap.Width;
+					icon.Top = 60 - icon.Bitmap.Height;
+					UIManager.Elements.Add(icon);
+				}
+
+				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 25, Top = top, Width = 50, Height = height };
 				UIManager.Elements.Add(win);
-				lbl = new UILabel(text) { Left = 17, Top = top + 1, Width = 68, Height = lines };
+				lbl = new UILabel(text) { Left = 27, Top = top + 1, Width = 48, Height = lines };
 				UIManager.Elements.Add(lbl);
 				lst = null;
 				txt = null;
 				if (type == BoxType.List)
 				{
-					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 17, Top = top + lines + 1, Width = 66, Height = options.Count };
+					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 27, Top = top + lines + 1, Width = 46, Height = options.Count };
 					lst.Change += (s, e) =>
 						{
 							option = lst.Index;
@@ -61,7 +69,7 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 17, Top = top + lines + 1, Width = 65, Height = 1 };
+					txt = new UITextBox((string)Answer) { Left = 27, Top = top + lines + 1, Width = 45, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
 				var keys = string.Empty;
@@ -71,7 +79,7 @@ namespace Noxico
 					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
 					keys = " \x18/\x19 ";
-				key = new UILabel(keys) { Top = top + height - 1, Left = 82 - keys.Length() };
+				key = new UILabel(keys) { Top = top + height - 1, Left = 72 - keys.Length() };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;
@@ -172,7 +180,7 @@ namespace Noxico
 			UIManager.Elements.Remove(key);
 		}
 
-		public static void List(string question, Dictionary<object, string> options, Action okay, bool allowEscape = false, bool doNotPush = false, string title = "")
+		public static void List(string question, Dictionary<object, string> options, Action okay, bool allowEscape = false, bool doNotPush = false, string title = "", string icon = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
 			if (!doNotPush)
@@ -185,11 +193,12 @@ namespace Noxico
 			onYes = okay;
 			MessageBox.options = options;
 			MessageBox.allowEscape = allowEscape;
+			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Ask(string question, Action yes, Action no, bool doNotPush = false, string title = "")
+		public static void Ask(string question, Action yes, Action no, bool doNotPush = false, string title = "", string icon = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
 			if (!doNotPush)
@@ -200,11 +209,12 @@ namespace Noxico
 			text = Toolkit.Wordwrap(question.Trim(), 66); //.Split('\n');
 			onYes = yes;
 			onNo = no;
+			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Notice(string message, bool doNotPush = false, string title = "")
+		public static void Notice(string message, bool doNotPush = false, string title = "", string icon = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
 			if (!doNotPush)
@@ -213,11 +223,12 @@ namespace Noxico
 			MessageBox.title = title;
 			type = BoxType.Notice;
 			text = Toolkit.Wordwrap(message.Trim(), 66); //.Split('\n');
+			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
 
-		public static void Input(string message, string defaultValue, Action okay, bool doNotPush = false, string title = "")
+		public static void Input(string message, string defaultValue, Action okay, bool doNotPush = false, string title = "", string icon = "")
 		{
 			fromWalkaround = NoxicoGame.Subscreen == null || Subscreens.PreviousScreen.Count == 0;
 			if (!doNotPush)
@@ -225,9 +236,10 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Input;
-			text = Toolkit.Wordwrap(message.Trim(), 66); //.Split('\n');
+			text = Toolkit.Wordwrap(message.Trim(), 36); //.Split('\n');
 			Answer = defaultValue;
 			onYes = okay;
+			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
