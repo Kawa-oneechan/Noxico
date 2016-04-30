@@ -102,7 +102,10 @@ namespace Noxico
 			{
 				for (var col = 0; col < Width; col++)
 				{
-					NoxicoGame.HostForm.SetCell(Top + row, Left + col, ' ', Color.White, Bitmap.GetPixel(col, row));
+					var color = Bitmap.GetPixel(col, row);
+					if (color.A == 0)
+						continue;
+					NoxicoGame.HostForm.SetCell(Top + row, Left + col, ' ', Color.White, color);
 				}
 			}
 		}

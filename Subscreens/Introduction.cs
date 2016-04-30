@@ -24,7 +24,18 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
+				var background = new Bitmap(100, 60, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				var logo = Mix.GetBitmap("logo.png");
+				var titleOptions = Mix.GetFilesWithPattern("titles\\*.png");
+				var chosen = Mix.GetBitmap(titleOptions[Random.Next(titleOptions.Length)]);
+				using (var gfx = Graphics.FromImage(background))
+				{
+					gfx.Clear(Color.Black);
+					gfx.DrawImage(chosen, 0, 0, 100, 60);
+					gfx.DrawImage(logo, 0, 0, logo.Width, logo.Height);
+				}
+				new UIPNGBackground(background).Draw();
+				//new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
