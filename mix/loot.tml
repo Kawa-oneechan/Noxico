@@ -197,22 +197,6 @@ lootset
 lootset
 	target: npc
 	type: underwear
-	final
-	filter
-		bodymatch: littlepony
--- Nothing!
-
-lootset
-	target: npc
-	type: underwear
-	final
-	filter
-		bodymatch: changeling
--- Nothing!
-
-lootset
-	target: npc
-	type: underwear
 	filter
 		gender: female
 	oneofeach
