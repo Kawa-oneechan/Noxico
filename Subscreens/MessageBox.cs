@@ -52,7 +52,7 @@ namespace Noxico
 
 				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 25, Top = top, Width = 50, Height = height };
 				UIManager.Elements.Add(win);
-				lbl = new UILabel(text) { Left = 27, Top = top + 1, Width = 48, Height = lines };
+				lbl = new UILabel(text) { Left = 27, Top = top + 1, Width = 50, Height = lines };
 				UIManager.Elements.Add(lbl);
 				lst = null;
 				txt = null;

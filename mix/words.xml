@@ -120,8 +120,9 @@
 			<word id="cc_header">Starting a New Game</word>
 			<word id="cc_footer">&tabfocus; to switch controls, &up;/&down;/&left;/&right; and &accept; to choose. Or use a mouse.</word>
 		</category>
-    <category name="worldgen">
-      <word id="worldgen_heightmap">Creating heightmap...</word>
+		<category name="worldgen">
+			<word id="worldgen_loading">Creating the world...</word>
+			<word id="worldgen_heightmap">Creating heightmap...</word>
       <word id="worldgen_rainmap">Creating precipitation map...</word>
       <word id="worldgen_tempmap">Creating temperature map...</word>
       <word id="worldgen_biomemap">Creating biome map...</word>
