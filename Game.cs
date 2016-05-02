@@ -209,7 +209,7 @@ namespace Noxico
 			if (clear)
 				HostForm.Clear();
 			HostForm.Write(i18n.GetString("loadsave_saveheader") /* " -- Saving... -- " */, Color.White, Color.Black);
-			HostForm.Draw();
+			//HostForm.Draw();
 
 			if (!noPlayer && !Player.Character.HasToken("gameover"))
 			{
@@ -571,6 +571,7 @@ namespace Noxico
 
 		private static void SetStatus(string text, int progress, int maxProgress)
 		{
+			/*
 			var window = new UIWindow(string.Empty)
 			{
 				Left = 15,
@@ -593,6 +594,18 @@ namespace Noxico
 					HostForm.SetCell(28, 17 + i, ' ', Color.White, i < filled ? UIColors.LightBackground : UIColors.DarkBackground);
 			}
 			HostForm.Draw();
+			*/
+			if (progress + maxProgress > 0)
+			{
+				text = string.Format("{0} - {1}/{2}", text, progress, maxProgress);
+			}
+			if (UIManager.Elements.Count >= 3 && UIManager.Elements[3] is UILabel)
+			{
+				UIManager.Elements[3].Text = text.PadRight(90);
+				UIManager.Elements[3].Draw();
+			}
+			else
+				HostForm.Write(text, Color.White, UIColors.LightBackground, 0, 0);
 		}
 
 		public void CreateRealm()

@@ -10,6 +10,18 @@ namespace Noxico
 {
 	public class Introduction
 	{
+		private static System.Threading.Thread worldgen;
+		//private static int twirlingBaton = 0;
+		//private static char[] twirlingBatons = "-\\|/".ToCharArray();
+		private static UIPNGBackground titleBack;
+		private static UILabel titleCaption, titlePressEnter;
+
+		public static void KillWorldgen()
+		{
+			if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
+				worldgen.Abort();
+		}
+		
 		public static void Title()
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -34,13 +46,20 @@ namespace Noxico
 					gfx.DrawImage(chosen, 0, 0, 100, 60);
 					gfx.DrawImage(logo, 0, 0, logo.Width, logo.Height);
 				}
-				new UIPNGBackground(background).Draw();
+				UIManager.Initialize();
+				titleBack = new UIPNGBackground(background);
 				//new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
-				host.Write(subtitle, Color.Teal, Color.Transparent, 20, 25 - subtitle.Length() / 2);
-				host.Write(pressEnter, Color.Gray, Color.Transparent, 22, 25 - pressEnter.Length() / 2);
+				titleCaption = new UILabel(subtitle) { Top = 20, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal };
+				titlePressEnter = new UILabel(pressEnter) { Top = 22, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray };
+				UIManager.Elements.Add(titleBack);
+				UIManager.Elements.Add(titleCaption);
+				UIManager.Elements.Add(titlePressEnter);
+				UIManager.Draw();
+				//host.Write(subtitle, Color.Teal, Color.Transparent, 20, 25 - subtitle.Length() / 2);
+				//host.Write(pressEnter, Color.Gray, Color.Transparent, 22, 25 - pressEnter.Length() / 2);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -84,9 +103,23 @@ namespace Noxico
 					{
 						if ((string)MessageBox.Answer == "~")
 						{
-							NoxicoGame.Mode = UserMode.Subscreen;
-							NoxicoGame.Subscreen = Introduction.CharacterCreator;
-							NoxicoGame.Immediate = true;
+							//NoxicoGame.Mode = UserMode.Subscreen;
+							//NoxicoGame.Subscreen = Introduction.CharacterCreator;
+							//NoxicoGame.Immediate = true;
+							UIManager.Elements.Add(titleBack);
+							UIManager.Elements.Add(titleCaption);
+							UIManager.Elements.Add(titlePressEnter);
+							UIManager.Draw();
+							MessageBox.Input("What name would you like for your new world?",
+								NoxicoGame.RollWorldName(),
+								() =>
+								{
+									NoxicoGame.WorldName = (string)MessageBox.Answer;
+									NoxicoGame.Mode = UserMode.Subscreen;
+									NoxicoGame.Subscreen = Introduction.CharacterCreator;
+									NoxicoGame.Immediate = true;
+								}
+							);
 						}
 						else
 						{
@@ -215,6 +248,11 @@ namespace Noxico
 		{
 			if (Subscreens.FirstDraw)
 			{
+				//Start creating the world as we work...
+				worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
+				worldgen.Start();
+				//host.Noxico.CreateTheWorld();
+
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
 				var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
@@ -259,8 +297,8 @@ namespace Noxico
 					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 
-					{ "worldLabel", new UILabel(i18n.GetString("cc_world")) { Left = 56, Top = 10, Foreground = Color.Gray } },
-					{ "world", new UITextBox(NoxicoGame.RollWorldName()) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					//{ "worldLabel", new UILabel(i18n.GetString("cc_world")) { Left = 56, Top = 10, Foreground = Color.Gray } },
+					//{ "world", new UITextBox(NoxicoGame.RollWorldName()) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 14, Foreground = Color.Gray } },
 					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 15, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 15, Foreground = Color.Gray } },
@@ -297,7 +335,7 @@ namespace Noxico
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
-						controls["worldLabel"], controls["world"],
+						//controls["worldLabel"], controls["world"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
@@ -399,7 +437,7 @@ namespace Noxico
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
 				controls["play"].Enter = (s, e) =>
 				{
-					NoxicoGame.WorldName = controls["world"].Text.Replace(':', '_').Replace('\\', '_').Replace('/', '_').Replace('"', '_');
+					//NoxicoGame.WorldName = controls["world"].Text.Replace(':', '_').Replace('\\', '_').Replace('/', '_').Replace('"', '_');
 					var playerName = controls["name"].Text;
 					var sex = ((UIRadioList)controls["sex"]).Value;
 					var gid = ((UIRadioList)controls["gid"]).Value;
@@ -423,20 +461,22 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
 					if (easy)
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
-					NoxicoGame.HostForm.Noxico.CreateRealm();
+					//NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
 
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
-					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+					if (worldgen.ThreadState == System.Threading.ThreadState.Running)
+					{
+						Story();
+					}
 
+					/*
 					if (!IniFile.GetValue("misc", "skipintro", true))
 					{
 						var dream = new Character();
@@ -445,6 +485,7 @@ namespace Noxico
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("introdream");
 						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)");
 					}
+					*/
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
@@ -482,11 +523,11 @@ namespace Noxico
 					redrawBackdrop(0);
 					UIManager.Draw();
 				};
-				controls["world"].Change = (s, e) =>
+				/* controls["world"].Change = (s, e) =>
 				{
 					controls["next"].Hidden = string.IsNullOrWhiteSpace(controls["world"].Text);
 					UIManager.Draw();
-				};
+				}; */
 				controls["name"].Change = (s, e) =>
 				{
 					controls["nameRandom"].Hidden = !string.IsNullOrWhiteSpace(controls["name"].Text);
@@ -529,6 +570,74 @@ namespace Noxico
 			}
 
 			UIManager.CheckKeys();
+
+			/*
+			if (worldgen.ThreadState == System.Threading.ThreadState.Running)
+			{
+				NoxicoGame.HostForm.SetCell(19, 50, twirlingBatons[twirlingBaton / 10], Random.Next(15), 15);
+				NoxicoGame.HostForm.SetCell(19, 60, twirlingBatons[twirlingBaton / 10], Random.Next(15), 15);
+				twirlingBaton++;
+				if (twirlingBaton == 40)
+					twirlingBaton = 0;
+			}
+			*/
+		}
+
+		private static string story;
+		private static int storyCursor;
+		private static int storyDelay;
+
+		public static void Story()
+		{
+			NoxicoGame.Subscreen = Introduction.StoryHandler;
+			NoxicoGame.Mode = UserMode.Subscreen;
+			//controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
+			UIManager.Elements[0] = new UIPNGBackground(Mix.GetBitmap("story.png"));
+			UIManager.Elements[1] = new UILabel(string.Empty) { Left = 10, Top = 10, Width = 60, Foreground = Color.White };
+			UIManager.Elements[2] = new UILabel(i18n.GetString("worldgen_loading")) { Left = 1, Top = 0 };
+			UIManager.Elements[3] = new UILabel(string.Empty) { Left = 1, Top = 1 };
+			UIManager.Elements.RemoveRange(4, UIManager.Elements.Count - 4);
+			//Remove the rest of all this.
+			UIManager.Draw();
+			story = Mix.GetString("story.txt", false);	
+			storyCursor = 0;
+			storyDelay = 2;
+		}
+		public static void StoryHandler()
+		{
+			if (worldgen.ThreadState == System.Threading.ThreadState.Running)
+			{
+				if (storyDelay > 0)
+				{
+					storyDelay--;
+				}
+				else
+				{
+					if (storyCursor < story.Length - 1)
+					{
+						UIManager.Elements[1].Text += story[storyCursor];
+						storyCursor++;
+						storyDelay = 2;
+						if (story[storyCursor] == '¦')
+						{
+							storyCursor++;
+							storyDelay = 50;
+						}
+					}
+					else
+					{
+						storyDelay = 10000;
+					}
+				}
+				UIManager.Draw();
+			}
+			else
+			{
+				NoxicoGame.Mode = UserMode.Walkabout;
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+			}
 		}
 	}
 
