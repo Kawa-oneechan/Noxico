@@ -266,16 +266,16 @@ namespace Noxico
 					{ "back", i18n.GetString("cchelp_back") },
 					{ "next", i18n.GetString("cchelp_next") },
 					{ "play", Random.NextDouble() > 0.7 ? "FRUITY ANGELS MOLEST SHARKY" : "ENGAGE RIDLEY MOTHER FUCKER" },
-					{ "world", i18n.GetString("cchelp_world") },
 					{ "name", i18n.GetString("cchelp_name") },
 					{ "species", string.Empty },
 					{ "sex", i18n.GetString("cchelp_sex") },
 					{ "gid", i18n.GetString("cchelp_gid") },
 					{ "pref", i18n.GetString("cchelp_pref") },
+					{ "tutorial", i18n.GetString("cchelp_tutorial") },
 					{ "easy", i18n.GetString("cchelp_easy") },
-					{ "hair", i18n.GetString("cchelp_hair") },
-					{ "body", i18n.GetString("cchelp_body") },
-					{ "eyes", i18n.GetString("cchelp_eyes") },
+					//{ "hair", i18n.GetString("cchelp_hair") },
+					//{ "body", i18n.GetString("cchelp_body") },
+					//{ "eyes", i18n.GetString("cchelp_eyes") },
 					{ "gift", traitHelps[0] },
 				};
 				backdrop = Mix.GetBitmap("chargen.png");
@@ -299,17 +299,18 @@ namespace Noxico
 
 					//{ "worldLabel", new UILabel(i18n.GetString("cc_world")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					//{ "world", new UITextBox(NoxicoGame.RollWorldName()) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 14, Foreground = Color.Gray } },
-					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 15, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 15, Foreground = Color.Gray } },
-					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 18, Foreground = Color.Gray } },
-					{ "species", new UISingleList() { Left = 58, Top = 19, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 22, Foreground = Color.Gray } },
-					{ "sex", new UIRadioList(sexoptions) { Left = 58, Top = 23, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 29, Foreground = Color.Gray } },
-					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 30, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 56, Top = 36, Foreground = Color.Gray } },
-					{ "pref", new UIRadioList(prefoptions) { Left = 58, Top = 37, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 10, Foreground = Color.Gray } },
+					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 11, Foreground = Color.Gray } },
+					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 14, Foreground = Color.Gray } },
+					{ "species", new UISingleList() { Left = 58, Top = 15, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 18, Foreground = Color.Gray } },
+					{ "sex", new UIRadioList(sexoptions) { Left = 58, Top = 19, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 24, Foreground = Color.Gray } },
+					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 25, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 56, Top = 30, Foreground = Color.Gray } },
+					{ "pref", new UIRadioList(prefoptions) { Left = 58, Top = 31, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = 58, Top = 40, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 58, Top = 42, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					/*
@@ -339,7 +340,7 @@ namespace Noxico
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
-						controls["easy"],
+						controls["tutorial"], controls["easy"],
 						controls["controlHelp"], controls["next"],
 					},
 					new List<UIElement>(), //Placeholder
@@ -443,6 +444,7 @@ namespace Noxico
 					var gid = ((UIRadioList)controls["gid"]).Value;
 					var pref = ((UIRadioList)controls["pref"]).Value;
 					var species = ((UISingleList)controls["species"]).Index;
+					var tutorial = ((UIToggle)controls["tutorial"]).Checked;
 					var easy = ((UIToggle)controls["easy"]).Checked;
 					/* var hair = ((UISingleList)controls["hair"]).Text;
 					var body = ((UISingleList)controls["body"]).Text;
@@ -459,6 +461,8 @@ namespace Noxico
 						colorMap.Add(path, value);
 					}
 					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
+					if (tutorial)
+						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("tutorial");
 					if (easy)
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
 					//NoxicoGame.HostForm.Noxico.CreateRealm();
@@ -540,6 +544,9 @@ namespace Noxico
 					controls["controlHelp"].Top = controls["gift"].Top + giftIndex;
 					UIManager.Draw();
 				};
+
+				((UIToggle)controls["tutorial"]).Checked = IniFile.GetValue("misc", "tutorial", true);
+				((UIToggle)controls["easy"]).Checked = IniFile.GetValue("misc", "easymode", false);
 
 				UIManager.Initialize();
 				UIManager.HighlightChanged = (s, e) =>
