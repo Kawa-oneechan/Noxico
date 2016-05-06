@@ -13,6 +13,7 @@ culture: human
 		felin
 -- Low base chance of betraying their spouse. Character tokens affect this.
 	monogamous: 0.75
+	marriage: 0.75
 
 culture: deviant
 	bodyplans

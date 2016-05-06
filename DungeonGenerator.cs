@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -97,6 +97,17 @@ namespace Noxico
 				}
 				if (i == 1)
 				{
+					/* Just for the record, because I've had the wildest time trying to figure this out years later:
+					 * 			0		0,25	0,5		0,75	1		<- culture.Marriage
+					 * 	0		friend	spouse	spouse	spouse	spouse
+					 * 	0,25	friend	friend	spouse	spouse	spouse
+					 * 	0,5		friend	friend	friend	spouse	spouse
+					 * 	0,75	friend	friend	friend	friend	spouse
+					 * 	1		friend	friend	friend	friend	friend
+					 * 	^- Random.NextDouble()
+					 * So a culture with Marriage set to 0 would NEVER marry, and a culture with Marriage set to 1
+					 * NEARLY ALWAYS marries.
+					 */
 					var shipType = Random.NextDouble() < culture.Marriage ? "spouse" : "friend";
 					//if we chose spouse, handle the wife taking the surname of the husband.
 					var ship = new Token(c.ID);
