@@ -57,7 +57,7 @@ item: zillyhoo
 
 -- Eridan Ampora
 item: crosshairs
-	_n: Ahab's Crosshairs&#x2122;
+	_n: Ahab's Crosshairs&#x15c;
 	fireproof
 	unique
 	equipable

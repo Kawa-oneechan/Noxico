@@ -623,73 +623,73 @@ namespace Noxico
 			if (target is BoardChar)
 			{
 
-			//var weapon = Character.CanShoot();
-			var weapon = this.Character.GetEquippedItemBySlot("hand");
-			if (weapon != null && !weapon.HasToken("weapon"))
-				weapon = null;
-			var range = (weapon == null || weapon.Path("weapon/range") == null) ? 1 : (int)weapon.Path("weapon/range").Value;
+				//var weapon = Character.CanShoot();
+				var weapon = this.Character.GetEquippedItemBySlot("hand");
+				if (weapon != null && !weapon.HasToken("weapon"))
+					weapon = null;
+				var range = (weapon == null || weapon.Path("weapon/range") == null) ? 1 : (int)weapon.Path("weapon/range").Value;
 
-			//Determine best weapon for the job.
-			if ((distance <= 2 && range > 2) || weapon == null)
-			{
-				//Close by, could be better to use short-range weapon, or unarmed.
-				foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+				//Determine best weapon for the job.
+				if ((distance <= 2 && range > 2) || weapon == null)
 				{
-					if (carriedItem.HasToken("equipped"))
-						continue;
-					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-					if (find == null)
-						continue;
-					if (find.HasToken("equipable") && find.HasToken("weapon"))
+					//Close by, could be better to use short-range weapon, or unarmed.
+					foreach (var carriedItem in this.Character.GetToken("items").Tokens)
 					{
-						var r = find.Path("weapon/range");
-						if (r == null || r.Value == 1)
+						if (carriedItem.HasToken("equipped"))
+							continue;
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						if (find.HasToken("equipable") && find.HasToken("weapon"))
 						{
-							try
+							var r = find.Path("weapon/range");
+							if (r == null || r.Value == 1)
 							{
-								if (find.Equip(this.Character, carriedItem))
+								try
 								{
-									Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
-									Energy -= 1000;
-									return; //end turn
+									if (find.Equip(this.Character, carriedItem))
+									{
+										Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+										Energy -= 1000;
+										return; //end turn
+									}
 								}
+								catch (ItemException)
+								{ }
 							}
-							catch (ItemException)
-							{ }
 						}
 					}
 				}
-			}
-			if ((distance > 2 && range == 1) || weapon == /* still */ null)
-			{
-				//Far away, could be better to use long-range weapon, or unarmed
-				foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+				if ((distance > 2 && range == 1) || weapon == /* still */ null)
 				{
-					if (carriedItem.HasToken("equipped"))
-						continue;
-					var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-					if (find == null)
-						continue;
-					if (find.HasToken("equipable") && find.HasToken("weapon"))
+					//Far away, could be better to use long-range weapon, or unarmed
+					foreach (var carriedItem in this.Character.GetToken("items").Tokens)
 					{
-						var r = find.Path("weapon/range");
-						if (r != null && r.Value > 3)
+						if (carriedItem.HasToken("equipped"))
+							continue;
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						if (find.HasToken("equipable") && find.HasToken("weapon"))
 						{
-							try
+							var r = find.Path("weapon/range");
+							if (r != null && r.Value > 3)
 							{
-								if (find.Equip(this.Character, carriedItem))
+								try
 								{
-									Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
-									Energy -= 1000;
-									return; //end turn
+									if (find.Equip(this.Character, carriedItem))
+									{
+										Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+										Energy -= 1000;
+										return; //end turn
+									}
 								}
+								catch (ItemException)
+								{ }
 							}
-							catch (ItemException)
-							{ }
 						}
 					}
 				}
-			}
 
 				var bcTarget = target as BoardChar;
 				if (distance <= range && CanSee(bcTarget))
@@ -1269,8 +1269,9 @@ namespace Noxico
 				if (target is Player)
 				{
 					var hit = target as Player;
-					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit").Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
+					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
 					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false); //TRANSLATE
+					Energy -= 500; //fixed: succesful shots didn't take time
 					return;
 				}
 			}

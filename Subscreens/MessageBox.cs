@@ -188,7 +188,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.List;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 66); //.Split('\n');
+			text = Toolkit.Wordwrap(question.Trim(), 46); //.Split('\n');
 			option = 0;
 			onYes = okay;
 			MessageBox.options = options;
@@ -206,7 +206,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.Question;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 66); //.Split('\n');
+			text = Toolkit.Wordwrap(question.Trim(), 46); //.Split('\n');
 			onYes = yes;
 			onNo = no;
 			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
@@ -222,7 +222,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Notice;
-			text = Toolkit.Wordwrap(message.Trim(), 66); //.Split('\n');
+			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
 			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
@@ -236,7 +236,7 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Input;
-			text = Toolkit.Wordwrap(message.Trim(), 36); //.Split('\n');
+			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
 			Answer = defaultValue;
 			onYes = okay;
 			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));

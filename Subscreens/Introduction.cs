@@ -57,6 +57,7 @@ namespace Noxico
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
+				//UIManager.Elements.Add(new UILabel("\u015c") { Top = 6, Left = 50, Foreground = Color.Gray });
 				UIManager.Draw();
 				//host.Write(subtitle, Color.Teal, Color.Transparent, 20, 25 - subtitle.Length() / 2);
 				//host.Write(pressEnter, Color.Gray, Color.Transparent, 22, 25 - pressEnter.Length() / 2);
