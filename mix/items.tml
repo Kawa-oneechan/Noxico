@@ -454,7 +454,7 @@ item: spear
 	weight: heavy
 	description: "A long pole with a sharpened point of steel on one end."
 	ascii
-		char: 0x190
+		char: 0x1a8
 		fore: darkgoldenrod
 
 item: javelin
@@ -467,7 +467,7 @@ item: javelin
 	weight: heavy
 	description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
 	ascii
-		char: 0x190
+		char: 0x1a8
 		fore: darkgoldenrod
 
 item: dagger
@@ -749,7 +749,7 @@ item: croissant
 	weight: feather
 	description: "Smaczne, ale nie bardzo nape&#x142;niania."
 	ascii
-		char: 0x186
+		char: 0x187
 		fore: brown
 	food: 10
 	baked
@@ -762,7 +762,7 @@ item: bagel
 	price: 5
 	description: "Vkusno, no ne ochen zapolneniyu."
 	ascii
-		char: 0x187
+		char: 0x186
 		fore: brown
 	food: 10
 	baked
