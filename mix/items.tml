@@ -24,7 +24,7 @@ item: timertest
 		hat
 	test
 	ascii
-		char: U+00A1
+		char: 0x0fa
 		fore: lightsalmon
 	timer: 2
 		evenunequipped
@@ -144,7 +144,7 @@ item: ponifier
 item: book
 	-- This is all we'll specify.
 	ascii
-		char: U+03B5
+		char: 0x186
 	-- Books specifically have their color determined by ID.
 
 
@@ -436,7 +436,7 @@ item: chairlegoftruth
 		attacktype: crush
 	description: "Do not question the Chair Leg of Truth, for it is wise and terrible."
 	ascii
-		char: 0x4C
+		char: 0x184
 		fore: darkgoldenrod
 	rareweapon
 	wood
@@ -454,7 +454,7 @@ item: spear
 	weight: heavy
 	description: "A long pole with a sharpened point of steel on one end."
 	ascii
-		char: U+002F
+		char: 0x190
 		fore: darkgoldenrod
 
 item: javelin
@@ -467,7 +467,7 @@ item: javelin
 	weight: heavy
 	description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
 	ascii
-		char: U+002F
+		char: 0x190
 		fore: darkgoldenrod
 
 item: dagger
@@ -480,7 +480,7 @@ item: dagger
 		attacktype: stab
 	description: "A classic-style rogue's dagger."
 	ascii
-		char: U+2190
+		char: 0x196
 		fore: silver
 
 item: fireaxe
@@ -494,7 +494,7 @@ item: fireaxe
 	weight: medium
 	description: "An ordinary looking fire-axe."
 	ascii
-		char: U+00A2
+		char: 0x195
 		fore: silver
 
 item: battleaxe
@@ -508,7 +508,7 @@ item: battleaxe
 	weight: heavy
 	description: "An imposing battle axe. You could take someone's head off with this baby."
 	ascii
-		char: U+00A2
+		char: 0x195
 		fore: silver
 
 item: shortsword
@@ -522,7 +522,7 @@ item: shortsword
 		skill: short_sword
 	description: "A plain but servicable short sword."
 	ascii
-		char: U+2193
+		char: 0x182
 		fore: white
 
 item: scimitar
@@ -537,7 +537,7 @@ item: scimitar
 	identify: weapon_knowledge
 	description: "An exotic looking sword with a curved blade."
 	ascii
-		char: U+2202
+		char: 0x182
 		fore: silver
 
 item: broadsword
@@ -551,7 +551,7 @@ item: broadsword
 		skill: long_sword
 	description: "A large sword with an emphasis on the blade's width."
 	ascii
-		char: U+2191
+		char: 0x182
 		fore: silver
 
 item: longsword
@@ -565,7 +565,7 @@ item: longsword
 		skill: long_sword
 	description: "A large sword with an emphasis on length."
 	ascii
-		char: U+2191
+		char: 0x182
 		fore: silver
 
 item: zweihander
@@ -582,7 +582,7 @@ item: zweihander
 	identify: weapon_knowledge
 	description: "A sword so large you need two hands to wield it."
 	ascii
-		char: U+221A
+		char: 0x182
 		fore: silver
 
 item: katana
@@ -597,7 +597,7 @@ item: katana
 	identify: weapon_knowledge
 	description: "The common samurai sword."
 	ascii
-		char: U+2193
+		char: 0x182
 		fore: silver
 
 item: tsurugi
@@ -612,7 +612,7 @@ item: tsurugi
 	identify: weapon_knowledge
 	description: "The common samurai sword, but longer."
 	ascii
-		char: U+2193
+		char: 0x182
 		fore: silver
 
 -- lance, mace, warhammer, wooden club, rubber hose, quarterstaff
@@ -1096,7 +1096,7 @@ item: chainmail_bikini_top
 	price: 200
 	description: "Now with even less chain!"
 	ascii
-		char: U+0E3F
+		char: 0x19b
 		fore: silver
 	armor
 	for_women
@@ -1114,7 +1114,7 @@ item: chainmail_bikini_bottom
 	description: "Now with even less chain!"
 	price: 200
 	ascii
-		char: U+00AC
+		char: 0x19a
 		fore: silver
 	armor
 	for_women
@@ -1128,7 +1128,7 @@ item: bacon_bikini_top
 	price: 20
 	description: "Now with even less class!"
 	ascii
-		char: U+0E3F
+		char: 0x19b
 		fore: red
 	armor
 	for_women
@@ -1143,7 +1143,7 @@ item: bacon_bikini_bottom
 	description: "Now with even less class!"
 	price: 20
 	ascii
-		char: U+00AC
+		char: 0x19a
 		fore: red
 	armor
 	for_women
@@ -1163,7 +1163,7 @@ item: tatteredshreds_shirt
 	weight
 		light
 	ascii
-		char: U+03C0
+		char: 0x18d
 
 item: tatteredshreds_undershirt
 	_n: tattered shreds
@@ -1176,7 +1176,7 @@ item: tatteredshreds_undershirt
 	weight
 		light
 	ascii
-		char: U+03C0
+		char: 0x18d
 
 item: tatteredshreds_pants
 	_n: tattered shreds
@@ -1189,7 +1189,7 @@ item: tatteredshreds_pants
 	weight
 		light
 	ascii
-		char: U+00B5
+		char: 0x18D
 
 item: tatteredshreds_underpants
 	_n: tattered shreds
@@ -1202,7 +1202,7 @@ item: tatteredshreds_underpants
 	weight
 		light
 	ascii
-		char: U+03C4
+		char: 0x18d
 
 -- Should be used if a bodysuit is torn apart.
 item: tatteredshreds_under
@@ -1217,7 +1217,7 @@ item: tatteredshreds_under
 	weight
 		light
 	ascii
-		char: U+03C0
+		char: 0x18d
 -- Should be used if a dress is torn apart.
 item: tatteredshreds_over
 	_n: tattered shreds
@@ -1231,7 +1231,7 @@ item: tatteredshreds_over
 	weight
 		light
 	ascii
-		char: U+03C0
+		char: 0x18d
 
 item: shirt
 	_n: plain [color ]shirt
@@ -1242,7 +1242,7 @@ item: shirt
 		light
 	price: 10
 	ascii
-		char: U+041F
+		char: 0x198
 	clothing
 	overwear
 	colored
@@ -1260,7 +1260,7 @@ item: blouse
 		carnality: -5
 	price: 15
 	ascii
-		char: U+041F
+		char: 0x198
 	clothing
 	overwear
 	colored
@@ -1276,7 +1276,7 @@ item: girls_uniform_top
 		light
 	price: 100
 	ascii
-		char: U+041F
+		char: 0x198
 	clothing
 	overwear
 	for_women
@@ -1292,7 +1292,7 @@ item: boys_uniform_top
 		medium
 	price: 100
 	ascii
-		char: U+041F
+		char: 0x198
 	clothing
 	overwear
 	for_men
@@ -1311,7 +1311,7 @@ item: bikini_top
 		feather
 	price: 100
 	ascii
-		char: U+0E3F
+		char: 0x19b
 	clothing
 	swimwear
 	colored
@@ -1332,7 +1332,7 @@ item: bikini_bottom
 		feather
 	price: 50
 	ascii
-		char: U+00AC
+		char: 0x19a
 	clothing
 	swimwear
 	colored
@@ -1351,7 +1351,7 @@ item: pants
 		light
 	price: 20
 	ascii
-		char: U+220F
+		char: 0x199
 	clothing
 	legwear
 	colored
@@ -1370,7 +1370,7 @@ item: skirt
 		light
 	price: 20
 	ascii
-		char: U+004D
+		char: 0x1a1
 	clothing
 	skirt
 	colored
@@ -1387,7 +1387,7 @@ item: pleated_skirt
 		light
 	price: 60
 	ascii
-		char: U+004D
+		char: 0x1a1
 	clothing
 	skirt
 	colored
@@ -1408,7 +1408,7 @@ item: shorts
 		light
 	price: 50
 	ascii
-		char: U+006E
+		char: 0x1a2
 	clothing
 	colored
 
@@ -1428,7 +1428,7 @@ item: short_shorts
 		light
 	price: 50
 	ascii
-		char: U+006E
+		char: 0x1a2
 	clothing
 	colored
 	cute
@@ -1447,7 +1447,7 @@ item: short_skirt
 		light
 	price: 70
 	ascii
-		char: U+006E
+		char: 0x1a2
 	clothing
 	skirt
 	colored
@@ -1470,7 +1470,7 @@ item: sundress
 		light
 	price: 60
 	ascii
-		char: U+2202
+		char: 0x19d
 	clothing
 	dress
 	colored
@@ -1494,7 +1494,7 @@ item: skimpy_dress
 		light
 	price: 60
 	ascii
-		char: U+2211
+		char: 0x19d
 	clothing
 	dress
 	colored
@@ -1515,7 +1515,7 @@ item: elegant_dress
 		medium
 	price: 300
 	ascii
-		char: U+2211
+		char: 0x19d
 	clothing
 	dress
 	colored
@@ -1535,7 +1535,7 @@ item: latex_suit
 		cunning: 10
 	price: 100
 	ascii
-		char: U+2202
+		char: 0x19c
 	clothing
 	bodysuit
 	colored
@@ -1550,7 +1550,7 @@ item: stylish_cloak
 		medium
 	price: 150
 	ascii
-		char: U+222B
+		char: 0x1a7
 	clothing
 	accesory
 	colored
@@ -1989,7 +1989,7 @@ item: gExtractor
 	weight
 		light
 	ascii
-		char: 0xE8
+		char: 0x008
 		fore: goldenrod
 	tool
 -- #endregion
@@ -2004,7 +2004,7 @@ item: eternitybrooch
 	unique
 	price: 10000
 	ascii
-		char: 0x1A4
+		char: 0x1a4
 		color: white
 	description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
 -- #endregion
@@ -2014,7 +2014,7 @@ item: dye
 	description: "A small vial of [color ]dye. You can use it to color your clothing."
 	charge
 	ascii
-		char: 0xE8
+		char: 0x180
 	dye
 	colored
 -- #endregion
@@ -2424,7 +2424,7 @@ item: regen_ring
 		ring
 	randomized: 130
 	ascii
-		char: U+00A1
+		char: 0x1a0
 	timer: 5
 	script: timer
 		<[[
@@ -2439,7 +2439,7 @@ item: chaotic_regen_ring
 	randomized: 131
 	disabled
 	ascii
-		char: U+00A1
+		char: 0x1a0
 	timer: 5
 	script: timer
 		<[[
@@ -2459,7 +2459,7 @@ item: orgasm_denial_ring
 		ring
 	randomized: 132
 	ascii
-		char: U+00A1
+		char: 0x1a0
 	timer: 5
 	script: equip
 		<[[

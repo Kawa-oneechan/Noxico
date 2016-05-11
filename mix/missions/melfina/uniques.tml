@@ -2,9 +2,8 @@ character: melfina
 	invisiblegender
 	terms
 		generic: "demon"
-	ascii
-		char: U+0040
 	bestiary: "The Temptress."
+		char: 0x166
 	tallness: 190
 	hair
 		length: 16

@@ -6,8 +6,8 @@ character: mlp_ponyleader
 		generic: "little pony"
 		male: "stallion"
 		female: "mare"
-	ascii
-		char: U+0055
+	bestiary
+		char: 0x163
 	marshmallow
 	tallness: 140
 	hair

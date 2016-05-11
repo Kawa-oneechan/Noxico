@@ -1,4 +1,4 @@
-﻿-- #region Chelsie
+-- #region Chelsie
 item: chelsie_poncho
 	_n: tattered poncho
 	unique
@@ -9,7 +9,7 @@ item: chelsie_poncho
 	weight: medium
 	price: 20
 	ascii
-		char: U+2202
+		char: 0x18d
 		fore: saddlebrown
 	clothing
 -- #endregion

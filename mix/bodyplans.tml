@@ -498,7 +498,8 @@ bodyplan: ursidae
 		female: "ursavus"
 		herm: "ursus"
 	tallness: roll 1d150+150
-		char: 0x166
+	bestiary: "They're big, they're burly, they're gonna getcha!"
+		char: 0x171
 		unicode: U+0055
 	editable: skin/color|Fur color, hair/color|Hair color, hair/style|Hair style
 	hair
