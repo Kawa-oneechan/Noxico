@@ -2,14 +2,13 @@ character: chelsie
 	culture: japanese
 	invisiblegender
 	femaleonly
-	bestiary: "One of the few cheetah people, very clingy."
+	bestiary: "This game's mascot. Very clingy."
+		char: 0x167
 	terms
 		generic: "cheetah"
 		male: "cheetah man"
 		female: "cheetah girl"
 		herm: "cheetah herm"
-	ascii
-		char: U+010C
 	tallness: 182
 	hair
 		length: 7

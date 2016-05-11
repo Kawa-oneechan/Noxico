@@ -11,7 +11,7 @@ item: fishnets
 		feather
 	price: 100
 	ascii
-		char: U+220F
+		char: 0x1A9
 	clothing
 	legwear
 	colored

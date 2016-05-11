@@ -5,8 +5,8 @@ character: urta
 		male: "foxboy"
 		female: "foxgirl"
 		herm: "foxherm"
-	ascii
-		char: U+0056
+	bestiary: "Used with permission."
+		char: 0x167
 	tallness: 180
 	hair
 		length: 8
