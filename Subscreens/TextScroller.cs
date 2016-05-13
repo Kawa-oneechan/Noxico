@@ -44,10 +44,10 @@ namespace Noxico
 				if (text.Length > 24)
 				{
 					for (int i = 2; i < 51; i++)
-						host.SetCell(i, 94, (char)0x2551, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
+						host.SetCell(i, 94, (char)0x0ba, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
 					float pct = (float)(scroll - 1) / (float)((text.Length - 23 < 0) ? 1 : text.Length - 23);
 					int tp = (int)(pct * 20) + 2;
-					host.SetCell(tp, 94, (char)0x2195, Color.Black, Color.Silver, true);
+					host.SetCell(tp, 94, (char)0x1f2, Color.Black, Color.Silver, true);
 				}
 				Subscreens.Redraw = false;
 			}

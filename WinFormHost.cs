@@ -87,10 +87,26 @@ namespace Noxico
 
 		public static bool CanWrite()
 		{
-			var fi = new FileInfo(Application.ExecutablePath);
-			var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-			var isAdmin = UacHelper.IsProcessElevated;
-			return !((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly || !isAdmin);
+			//var fi = new FileInfo(Application.ExecutablePath);
+			//var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+			//var isAdmin = UacHelper.IsProcessElevated;
+			//var hereIsReadOnly = (fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+			try
+			{
+				var test = "test.txt";
+				File.WriteAllText(test, test);
+				File.Delete(test);
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return false;
+			}
+			catch (Exception x)
+			{
+				SystemMessageBox.Show(x.ToString());
+				return false;
+			}
+			return true;
 		}
 	}
 
@@ -248,6 +264,8 @@ namespace Noxico
 					portable = true;
 					var oldIniPath = IniPath;
 					IniPath = "noxico.ini";
+					Program.CanWrite();
+					/*
 					if (!Program.CanWrite())
 					{
 						var response = SystemMessageBox.Show(this, "Trying to start in portable mode, but from a protected location. Use non-portable mode?" + Environment.NewLine + "Selecting \"no\" may cause errors.", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
@@ -262,6 +280,7 @@ namespace Noxico
 							portable = false;
 						}
 					}
+					*/
 				}
 
 				if (!File.Exists(IniPath))
