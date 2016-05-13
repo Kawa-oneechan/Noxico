@@ -1825,7 +1825,7 @@ namespace Noxico
 
 			#if DEBUG
 			print("\n\n\n\n");
-			print("<cGray>Debug\n<cGray>-----\n");
+			print("<cGray>Debug\n<cGray>\xc4\xc4\xc4\xc4\xc4\n");
 			print("<cGray>Percieved gender: " + this.PercievedGender.ToString() + "\n");
 			print("<cGray>Actual gender: " + this.ActualGender.ToString() + "\n");
 			print("<cGray>Self-preferred gender: " + this.PreferredGender.ToString() + "\n");
