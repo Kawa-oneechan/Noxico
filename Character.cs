@@ -242,6 +242,11 @@ namespace Noxico
 			}
 		}
 
+		public void Heal(float amount)
+		{
+			Health += amount;
+		}
+
 		public Character()
 		{
 		}

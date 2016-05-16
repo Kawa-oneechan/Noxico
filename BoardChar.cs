@@ -347,22 +347,24 @@ namespace Noxico
 				if (knownItem.Path("timer/evenunequipped") == null && !carriedItem.HasToken("equipped"))
 					continue;
 				var time = new NoxicanDate(long.Parse(timer.Text));
-				if (NoxicoGame.InGameTime.Minute <= time.Minute)
+				if (NoxicoGame.InGameTime.Minute == time.Minute)
 					continue;
-				timer.Value--;
 				if (timer.Value > 0)
 				{
+					timer.Value--;
 					timer.Text = NoxicoGame.InGameTime.ToBinary().ToString();
-					continue;
 				}
-				timer.Value = (knownItem.GetToken("timer").Value == 0) ? 60 : knownItem.GetToken("timer").Value;
-				if (string.IsNullOrWhiteSpace(knownItem.OnTimer))
+				if (timer.Value <= 0)
 				{
-					Program.WriteLine("Warning: {0} has a timer, but no OnTimer script! Timer token removed.", carriedItem.Name);
-					carriedItem.RemoveToken("timer");
-					continue;
+					timer.Value = (knownItem.GetToken("timer").Value == 0) ? 60 : knownItem.GetToken("timer").Value;
+					if (string.IsNullOrWhiteSpace(knownItem.OnTimer))
+					{
+						Program.WriteLine("Warning: {0} has a timer, but no OnTimer script! Timer token removed.", carriedItem.Name);
+						carriedItem.RemoveToken("timer");
+						continue;
+					}
+					knownItem.RunScript(carriedItem, knownItem.OnTimer, this.Character, this, null);
 				}
-				knownItem.RunScript(carriedItem, knownItem.OnTimer, this.Character, this, null);
 			}
 		}
 
