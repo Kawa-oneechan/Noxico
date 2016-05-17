@@ -313,6 +313,21 @@ item: catears
 	sexy
 	cute
 
+item: dealwithit
+	_n: 'Deal with it' glasses
+	description: "Sunglasses with a blocky design."
+	equipable
+		goggles
+	weight
+		feather
+	statbonus
+		charisma: 2
+	price: 10
+	ascii
+		char: 0x1AC
+	clothing
+	joke
+
 item: plain_briefs
 	_n: briefs
 	_ia: a pair of
