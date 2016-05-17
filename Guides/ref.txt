@@ -1,0 +1,591 @@
+# Format: ingame, unicode, name
+
+000	0000	null
+
+# 000-01F automatically replaced by 1E0-1FF.
+
+020	0020	space
+021	0021	exclamation mark
+022	0022	quotation mark
+023	0023	number sign
+024	0024	dollar sign
+025	0025	percent sign
+026	0026	ampersand
+027	0027	apostrophe
+028	0028	left parenthesis
+029	0029	right parenthesis
+02a	002a	asterisk
+02b	002b	plus sign
+02c	002c	comma
+02d	002d	hyphen-minus
+02e	002e	full stop
+02f	002f	solidus
+
+030	0030	digit zero
+031	0031	digit one
+032	0032	digit two
+033	0033	digit three
+034	0034	digit four
+035	0035	digit five
+036	0036	digit six
+037	0037	digit seven
+038	0038	digit eight
+039	0039	digit nine
+
+03a	003a	colon
+03b	003b	semicolon
+03c	003c	less-than sign
+03d	003d	equals sign
+03e	003e	greater-than sign
+03f	003f	question mark
+040	0040	commercial at
+#		also the player character
+
+041	0041	latin capital letter a
+042	0042	latin capital letter b
+043	0043	latin capital letter c
+044	0044	latin capital letter d
+045	0045	latin capital letter e
+046	0046	latin capital letter f
+047	0047	latin capital letter g
+048	0048	latin capital letter h
+049	0049	latin capital letter i
+04a	004a	latin capital letter j
+04b	004b	latin capital letter k
+04c	004c	latin capital letter l
+04d	004d	latin capital letter m
+04e	004e	latin capital letter n
+04f	004f	latin capital letter o
+050	0050	latin capital letter p
+051	0051	latin capital letter q
+052	0052	latin capital letter r
+053	0053	latin capital letter s
+054	0054	latin capital letter t
+055	0055	latin capital letter u
+056	0056	latin capital letter v
+057	0057	latin capital letter w
+058	0058	latin capital letter x
+059	0059	latin capital letter y
+05a	005a	latin capital letter z
+
+05b	005b	left square bracket
+05c	005c	reverse solidus
+05d	005d	right square bracket
+05e	005e	circumflex accent
+05f	005f	low line
+060	0060	grave accent
+
+061	0061	latin small letter a
+062	0062	latin small letter b
+063	0063	latin small letter c
+064	0064	latin small letter d
+065	0065	latin small letter e
+066	0066	latin small letter f
+067	0067	latin small letter g
+068	0068	latin small letter h
+069	0069	latin small letter i
+06a	006a	latin small letter j
+06b	006b	latin small letter k
+06c	006c	latin small letter l
+06d	006d	latin small letter m
+06e	006e	latin small letter n
+06f	006f	latin small letter o
+070	0070	latin small letter p
+071	0071	latin small letter q
+072	0072	latin small letter r
+073	0073	latin small letter s
+074	0074	latin small letter t
+075	0075	latin small letter u
+076	0076	latin small letter v
+077	0077	latin small letter w
+078	0078	latin small letter x
+079	0079	latin small letter y
+07a	007a	latin small letter z
+
+07b	007b	left curly bracket
+07c	007c	vertical line
+07d	007d	right curly bracket
+07e	007e	tilde
+07f	2302	house
+
+080	00c7	latin capital letter c with cedilla
+081	00fc	latin small letter u with diaeresis
+082	00e9	latin small letter e with acute
+083	00e2	latin small letter a with circumflex
+084	00e4	latin small letter a with diaeresis
+085	00e0	latin small letter a with grave
+086	00e5	latin small letter a with ring above
+087	00e7	latin small letter c with cedilla
+088	00ea	latin small letter e with circumflex
+089	00eb	latin small letter e with diaeresis
+08a	00e8	latin small letter e with grave
+08b	00ef	latin small letter i with diaeresis
+08c	00ee	latin small letter i with circumflex
+08d	00ec	latin small letter i with grave
+08e	00c4	latin capital letter a with diaeresis
+08f	00c5	latin capital letter a with ring above
+090	00c9	latin capital letter e with acute
+091	00e6	latin small ligature ae
+092	00c6	latin capital ligature ae
+093	00f4	latin small letter o with circumflex
+094	00f6	latin small letter o with diaeresis
+095	00f2	latin small letter o with grave
+96	00fb	latin small letter u with circumflex
+097	00f9	latin small letter u with grave
+098	00ff	latin small letter y with diaeresis
+099	00d6	latin capital letter o with diaeresis
+09a	00dc	latin capital letter u with diaeresis
+09b	00a2	cent sign
+09c	00a3	pound sign
+09d	00a5	yen sign
+09e	20a7	peseta sign
+09f	0192	latin small letter f with hook
+0a0	00e1	latin small letter a with acute
+0a1	00ed	latin small letter i with acute
+0a2	00f3	latin small letter o with acute
+0a3	00fa	latin small letter u with acute
+0a4	00f1	latin small letter n with tilde
+0a5	00d1	latin capital letter n with tilde
+0a6	00aa	feminine ordinal indicator
+0a7	00ba	masculine ordinal indicator
+0a8	00bf	inverted question mark
+0a9	2310	reversed not sign
+0aa	00ac	not sign
+0ab	00bd	vulgar fraction one half
+0ac	00bc	vulgar fraction one quarter
+0ad	00a1	inverted exclamation mark
+0ae	00ab	left-pointing double angle quotation mark
+0af	00bb	right-pointing double angle quotation mark
+
+0b0	2591	light shade
+0b1	2592	medium shade
+0b2	2593	dark shade
+0b3	2502	box drawings light vertical
+0b4	2524	box drawings light vertical and left
+0b5	2561	box drawings vertical single and left double
+0b6	2562	box drawings vertical double and left single
+0b7	2556	box drawings down double and left single
+0b8	2555	box drawings down single and left double
+0b9	2563	box drawings double vertical and left
+0ba	2551	box drawings double vertical
+0bb	2557	box drawings double down and left
+0bc	255d	box drawings double up and left
+0bd	255c	box drawings up double and left single
+0be	255b	box drawings up single and left double
+0bf	2510	box drawings light down and left
+0c0	2514	box drawings light up and right
+0c1	2534	box drawings light up and horizontal
+0c2	252c	box drawings light down and horizontal
+0c3	251c	box drawings light vertical and right
+0c4	2500	box drawings light horizontal
+0c5	253c	box drawings light vertical and horizontal
+0c6	255e	box drawings vertical single and right double
+0c7	255f	box drawings vertical double and right single
+0c8	255a	box drawings double up and right
+0c9	2554	box drawings double down and right
+0ca	2569	box drawings double up and horizontal
+0cb	2566	box drawings double down and horizontal
+0cc	2560	box drawings double vertical and right
+0cd	2550	box drawings double horizontal
+0ce	256c	box drawings double vertical and horizontal
+0cf	2567	box drawings up single and horizontal double
+0d0	2568	box drawings up double and horizontal single
+0d1	2564	box drawings down single and horizontal double
+0d2	2565	box drawings down double and horizontal single
+0d3	2559	box drawings up double and right single
+0d4	2558	box drawings up single and right double
+0d5	2552	box drawings down single and right double
+0d6	2553	box drawings down double and right single
+0d7	256b	box drawings vertical double and horizontal single
+0d8	256a	box drawings vertical single and horizontal double
+0d9	2518	box drawings light up and left
+0da	250c	box drawings light down and right
+0db	2588	full block
+0dc	2584	lower half block
+0dd	258c	left half block
+0de	2590	right half block
+0df	2580	upper half block
+0e0	03b1	greek small letter alpha
+0e1	00df	latin small letter sharp s
+0e2	0393	greek capital letter gamma
+0e3	03c0	greek small letter pi
+0e4	03a3	greek capital letter sigma
+0e5	03c3	greek small letter sigma
+0e6	00b5	micro sign
+0e7	03c4	greek small letter tau
+0e8	03a6	greek capital letter phi
+0e9	0398	greek capital letter theta
+0ea	03a9	greek capital letter omega
+0eb	03b4	greek small letter delta
+0ec	221e	infinity
+0ed	03c6	greek small letter phi
+0ee	03b5	greek small letter epsilon
+0ef	2229	intersection
+0f0	2261	identical to
+0f1	00b1	plus-minus sign
+0f2	2265	greater-than or equal to
+0f3	2264	less-than or equal to
+0f4	2320	top half integral
+0f5	2321	bottom half integral
+0f6	00f7	division sign
+0f7	2248	almost equal to
+0f8	00b0	degree sign
+0f9	2219	bullet operator
+0fa	00b7	middle dot
+0fb	221a	square root
+0fc	207f	superscript latin small letter n
+0fd	00b2	superscript two
+0fe	25a0	black square
+0ff	00a0	no-break space
+
+100		outer wall down and right
+101		outer wall down and left
+102		outer wall up and right
+103		outer wall up and left
+104		outer wall vertical
+105		outer wall horizontal
+106		outer wall vertical and right
+107		outer wall down and horizontal
+108		outer wall vertical and horizontal
+109		outer wall up and horizontal
+10a		outer wall vertical and left
+10b		inner wall down and right
+10c		inner wall down and left
+10d		inner wall up and right
+10e		inner wall up and left
+10f		inner wall vertical
+110		inner wall horizontal
+111		inner wall vertical and right
+112		inner wall down and horizontal
+113		inner wall vertical and horizontal
+114		inner wall up and horizontal
+115		inner wall vertical and left
+11c		block drawing diagonal bottom right
+11d		block drawing diagonal bottom left
+11e		block drawing diagonal top right
+11f		block drawing diagonal top left
+120		fence down and right
+121		fence down and left
+122		fence up and right
+123		fence up and left
+124		fence vertical
+125		fence horizontal
+126		fence vertical and right
+127		fence down and horizontal
+128		fence vertical and horizontal
+129		fence up and horizontal
+12a		fence vertical and left
+12b		ground transition top left
+12c		ground transition top right
+12d		ground transition bottom left
+12e		ground transition bottom right
+12f		ground transition left
+130		ground transition right
+131		ground transition top
+132		ground transition bottom
+133		ground transition inverted top left
+134		ground transition inverted top right
+135		ground transition inverted bottom left
+136		ground transition inverted bottom right
+137	2026	horizontal ellipsis
+138	201c	left double quotation mark
+139	201d	right double qoutation mark
+13a		level mark
+13b		zenny
+13c	2610	ballot box
+13d	2612	ballot box with x
+13e	2572	box drawings light diagonal upper left to lower right
+13f	2573	box drawings light diagonal upper right to lower left
+140		energy beam vertical
+141		energy beam horizontal
+142	0142	latin small letter l with stroke
+143		rock
+144		cactus
+145		dead tree
+146		scattering
+147		bed
+148		table
+149		seat
+14a		chest
+14b		closet
+14c		splatter 1
+14d		splatter 2
+14e		splatter 3
+14f		stairs down
+150		stairs up
+151		ladder
+152		door closed horizontal
+153		door opened horizontal
+154		door closed vertical
+155		door opened vertical
+156		portcullis
+157		waves
+
+15b	03A8	greek capital letter psi
+15c	2122	trade mark sign
+15d		hermaphrodite sign
+15e	2032	prime
+15f	2033	double prime
+160		humanoid
+161		humanoid with snake tail
+162		tauroid
+163		quadruped
+164		slime
+165		tiny humanoid
+166		winged humanoid
+167		humanoid with tail
+170		dog
+171		bear
+172		snake
+173		rat
+174		horse
+180		potion
+181		belt
+182		sword
+183		gun
+184		club
+185		whip or rope
+186		book
+187		croissant
+188		bagel
+189		carrot
+18a		egg
+18b		loaf
+18c		meat
+18d		bacon
+18e		strap-on
+18f		staff
+190		trident
+191		lipstick
+192		hammer
+193		sickle
+194		needles
+195		axe
+196		knife
+197		broken sword
+198		shirt
+199		pants
+19a		underpants
+19b		bra
+19c		bodysuit
+19d		dress
+19e		helmet
+19f		boots
+1a0		ring
+1a1		skirt
+1a2		shorts
+1a3		high heel
+1a4		necklace
+1a5		cat ear headband
+1a6		creepy horse mask
+1a7		cloak
+1a8		spear
+1a9		socks
+1aa		chainsaw
+1ab		scissors
+1ac		glasses or goggles
+ 
+1e1	263a	white smiling face
+1e2	263b	black smiling face
+1e3	2665	black heart suit
+1e4	2666	black diamond suit
+1e5	2663	black club suit
+1e6	2660	black spade suit
+1e7	2022	bullet
+1e8	25d8	inverse bullet
+1e9	25cb	white circle
+1ea	25d9	inverse white circle
+1eb	2642	male sign
+1ec	2640	female sign
+1ed	266a	eight note
+1ee	266b	beamed eight notes
+1ef	263c	white sun with rays
+1f0	25ba	black right-pointing pointer
+1f1	25c4	black left-pointing pointer
+1f2	2195	up down arrow
+1f3	203c	double exclamation mark
+1f4	00b6	pilcrow sign
+1f5	00a7	section sign
+1f6	25ac	black rectangle
+1f7	21a8	up down arrow with base
+1f8	2191	upwards arrow
+1f9	2193	downwards arrow
+1fa	2192	rightwards arrow
+1fb	2190	leftwards arrow
+1fc	221f	right angle
+1fd	2194	left right arrow
+1fe	25b2	black up-pointing triangle
+1ff	25bc	black down-pointing triangle
+
+200		script capital letter a
+201		script capital letter b
+202		script capital letter c
+203		script capital letter d
+204		script capital letter e
+205		script capital letter f
+206		script capital letter g
+207		script capital letter h
+208		script capital letter i
+209		script capital letter j
+20a		script capital letter k
+20b		script capital letter l
+20c		script capital letter m
+20d		script capital letter n
+20e		script capital letter o
+20f		script capital letter p
+210		script capital letter q
+211		script capital letter r
+212		script capital letter s
+213		script capital letter t
+214		script capital letter u
+215		script capital letter v
+216		script capital letter w
+217		script capital letter x
+218		script capital letter y
+219		script capital letter z
+21a		script small letter a
+21b		script small letter b
+21c		script small letter c
+21d		script small letter d
+21e		script small letter e
+21f		script small letter f
+220		script small letter g
+221		script small letter h
+222		script small letter i
+223		script small letter j
+224		script small letter k
+225		script small letter l
+226		script small letter m
+227		script small letter n
+228		script small letter o
+229		script small letter p
+22a		script small letter q
+22b		script small letter r
+22c		script small letter s
+22d		script small letter t
+22e		script small letter u
+22f		script small letter v
+230		script small letter w
+231		script small letter x
+232		script small letter y
+233		script small letter z
+
+234		stone carving letter a
+235		stone carving letter b
+236		stone carving letter c
+237		stone carving letter d
+238		stone carving letter e
+239		stone carving letter f
+23a		stone carving letter g
+23b		stone carving letter h
+23c		stone carving letter i
+23d		stone carving letter j
+23e		stone carving letter k
+23f		stone carving letter l
+240		stone carving letter m
+241		stone carving letter n
+242		stone carving letter o
+243		stone carving letter p
+244		stone carving letter q
+245		stone carving letter r
+246		stone carving letter s
+247		stone carving letter t
+248		stone carving letter u
+249		stone carving letter v
+24a		stone carving letter w
+24b		stone carving letter x
+24c		stone carving letter y
+24d		stone carving letter z
+
+24e		daedric letter a
+24f		daedric letter b
+250		daedric letter c
+251		daedric letter d
+252		daedric letter e
+253		daedric letter f
+254		daedric letter g
+255		daedric letter h
+256		daedric letter i
+257		daedric letter j
+258		daedric letter k
+259		daedric letter l
+25a		daedric letter m
+25b		daedric letter n
+25c		daedric letter o
+25d		daedric letter p
+25e		daedric letter q
+25f		daedric letter r
+260		daedric letter s
+261		daedric letter t
+262		daedric letter u
+263		daedric letter v
+264		daedric letter w
+265		daedric letter x
+266		daedric letter y
+267		daedric letter z
+
+268		alternian letter a
+269		alternian letter b
+26a		alternian letter c
+26b		alternian letter d
+26c		alternian letter e
+26d		alternian letter f
+26e		alternian letter g
+26f		alternian letter h
+270		alternian letter i
+271		alternian letter j
+272		alternian letter k
+273		alternian letter l
+274		alternian letter m
+275		alternian letter n
+276		alternian letter o
+277		alternian letter p
+278		alternian letter q
+279		alternian letter r
+27a		alternian letter s
+27b		alternian letter t
+27c		alternian letter u
+27d		alternian letter v
+27e		alternian letter w
+27f		alternian letter x
+280		alternian letter y
+281		alternian letter z
+
+282		felin letter a
+283		felin letter ae
+284		felin letter ah
+285		felin letter ai
+286		felin letter b
+287		felin letter ch
+288		felin letter d
+289		felin letter e
+28a		felin letter f
+28b		felin letter fh
+28c		felin letter gr
+28d		felin letter h
+28e		felin letter hr
+28f		felin letter i
+290		felin letter ya
+291		felin letter ie
+292		felin letter k
+293		felin letter kh
+294		felin letter l
+295		felin letter m
+296		felin letter mr
+297		felin letter o
+298		felin letter p
+299		felin letter q
+29a		felin letter r
+29b		felin letter rh
+29c		felin letter s
+29d		felin letter t
+29e		felin letter th
+29f		felin letter u
+2a0		felin letter v
+2a1		felin letter w
+2a2		felin digit zero
+2a3		felin digit one
+2a4		felin digit two
+2a5		felin digit three
+2a6		felin digit four
+2a7		felin myriad mark
