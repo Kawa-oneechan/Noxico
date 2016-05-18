@@ -477,6 +477,7 @@ item: chairlegoftruth
 
 
 -- #region Nethack weapons
+__marker: Nethack weapons
 item: spear
 	equipable
 		hand
@@ -653,7 +654,7 @@ item: tsurugi
 -- bullwhip, pistol
 -- #endregion
 
-
+__marker: <small>Misc stuff</small>
 item: whip
 	fireproof
 	equipable
@@ -674,7 +675,8 @@ item: whip
 
 
 
--- #region Spandex stuffs 
+-- #region Spandex stuffs
+__marker: <small>Spandex fun</small>
 -- Something I just noticed. The automatic a/an distinction may need to include [color] support. "a red" but "an alice blue" BUT "a spandex".
 item: spandex_suit
 	_n: [color ]spandex bodysuit
@@ -753,7 +755,7 @@ item: sentai_helmet
 -- #endregion
 
 
-
+__marker: <small>Misc stuff</small>
 item: horsemask
 	_n: creepy horse mask
 	equipable
@@ -773,6 +775,7 @@ item: horsemask
 
 
 -- #region Foodstuffs
+__marker: Foodstuffs
 item: croissant
 	_da: le
 	singleuse
@@ -866,6 +869,7 @@ item: sweetroll
 
 -- #region Gems and stuff
 -- Mostly-autoconverted from Nethack
+__marker: Gems and stuff <small>(Mostly auto-converted from Nethack)</small>
 item: gem_dilithium
 	_n: dilithium crystal
 	_ia: a piece of
@@ -1116,6 +1120,7 @@ item: gem_glass
 
 -- #region Chainmail Bikinis and worse
 -- By LadyNistia and Pupnik
+__marker: LadyNistia and Pupnik present the chainmail bikini and worse
 item: chainmail_bikini_top
 	equipable
 		female
@@ -1185,6 +1190,7 @@ item: bacon_bikini_bottom
 
 
 -- #region Clothes from jsNoxico
+__marker: Clothes from jsNoxico
 item: tatteredshreds_shirt
 	_n: tattered shreds
 	_ia: ""
@@ -1592,6 +1598,7 @@ item: stylish_cloak
 
 
 -- #region Lena's costume, should be put in a mission or kept, recategorized as generic succubus wear.
+__marker: Lena's costume <small>(Recategorize as generic succubus wear?)</small>
 item: strapless_leather_bra
 	_n: [color ]leather bra
 	equipable
@@ -1677,6 +1684,7 @@ item: lena_ruby
 
 
 -- #region TF items
+__marker: Transformative items
 -- All of these use complicated Javascript to approximate Corruption of Champions. I wonder why, when we have Morph()...
 item: catmorph
 	_n: cat morph potion
@@ -2014,6 +2022,7 @@ item: bunnymorph
 
 
 -- #region PillowShout's stuff
+__marker: PillowShout's stuff
 item: gExtractor
 	_n: goblin extractor
 	nouse
@@ -2030,6 +2039,7 @@ item: gExtractor
 
 
 -- #region Deity artifacts
+__marker: Deity artifacts
 item: eternitybrooch
 	_n: Timeless Brooch
 	equipable
@@ -2043,6 +2053,7 @@ item: eternitybrooch
 -- #endregion
 
 -- #region Crafting ingredients that are otherwise useless
+__marker: Crafting cruft
 item: dye
 	description: "A small vial of [color ]dye. You can use it to color your clothing."
 	charge
@@ -2053,6 +2064,7 @@ item: dye
 -- #endregion
 
 -- #region Potions from tf_items.txt, don't forget to shuffle later.
+__marker: tf_items.txt
 item: chaos_potion
 	description: "Chaos in a bottle."
 	ascii
