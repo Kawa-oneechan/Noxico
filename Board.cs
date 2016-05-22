@@ -796,7 +796,7 @@ namespace Noxico
 			}
 			if (EntitiesToAdd.Count > 0)
 			{
-				EntitiesToAdd.ForEach(x => Entities.Add(x));
+				Entities.AddRange(EntitiesToAdd);
 				EntitiesToAdd.Clear();
 			}
 		}

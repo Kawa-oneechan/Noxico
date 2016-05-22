@@ -1257,6 +1257,11 @@ namespace Noxico
 				}
 				if (weapon != null)
 					FireLine(weapon.Path("effect"), target);
+				if (weap.HasToken("splash"))
+				{
+					var splashRadius = (int)weap.GetToken("splash").Value;
+					//TODO: apply splash damage to like half the points around the target or sumth
+				}
 			}
 			else
 			{
