@@ -8,8 +8,7 @@ item: fishnets
 		socks
 		reach
 		translucent
-	weight
-		feather
+	weight: feather
 	price: 100
 	ascii
 		char: 0x1A9

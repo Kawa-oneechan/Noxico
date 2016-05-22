@@ -119,8 +119,7 @@ item: strapon
 	equipable
 		female
 		underpants
-	weight
-		light
+	weight: light
 	price: 100
 	ascii
 		char: 0x18e
@@ -279,8 +278,7 @@ item: cheap_pos
 	fireproof
 	equipable
 		hand
-	weight
-		heavy
+	weight: heavy
 	weapon
 		damage: 100
 		skill: long_sword
@@ -300,8 +298,7 @@ item: catears
 	description: "One of the felins' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
 	equipable
 		hat
-	weight
-		feather
+	weight: feather
 	statbonus
 		charisma: 10
 	price: 20
@@ -318,8 +315,7 @@ item: dealwithit
 	description: "Sunglasses with a blocky design."
 	equipable
 		goggles
-	weight
-		feather
+	weight: feather
 	statbonus
 		charisma: 2
 	price: 10
@@ -336,8 +332,7 @@ item: plain_briefs
 	equipable
 		male
 		underpants
-	weight
-		feather
+	weight: feather
 	price: 10
 	ascii
 		char: 0x1A2
@@ -353,8 +348,7 @@ item: plain_boxers
 	equipable
 		male
 		underpants
-	weight
-		feather
+	weight: feather
 	price: 10
 	ascii
 		char: 0x1A2
@@ -370,8 +364,7 @@ item: plain_panties
 	equipable
 		female
 		underpants
-	weight
-		feather
+	weight: feather
 	price: 10
 	ascii
 		char: 0x19A
@@ -386,8 +379,7 @@ item: lacy_panties
 	equipable
 		female
 		underpants
-	weight
-		feather
+	weight: feather
 	price: 20
 	ascii
 		char: 0x19A
@@ -402,8 +394,7 @@ item: plain_bra
 	equipable
 		female
 		undershirt
-	weight
-		feather
+	weight: feather
 	price: 10
 	ascii
 		char: 0x19B
@@ -417,8 +408,7 @@ item: lacy_bra
 	equipable
 		female
 		undershirt
-	weight
-		feather
+	weight: feather
 	price: 20
 	ascii
 		char: 0x19B
@@ -434,8 +424,7 @@ item: sheer_top
 		female
 		shirt
 		translucent
-	weight
-		feather
+	weight: feather
 	price: 100
 	ascii
 		char: 0x198
@@ -578,8 +567,7 @@ item: broadsword
 	fireproof
 	equipable
 		hand
-	weight
-		heavy
+	weight: heavy
 	weapon
 		damage: 50
 		skill: long_sword
@@ -592,8 +580,7 @@ item: longsword
 	fireproof
 	equipable
 		hand
-	weight
-		heavy
+	weight: heavy
 	weapon
 		damage: 60
 		skill: long_sword
@@ -608,8 +595,7 @@ item: zweihander
 	equipable
 		hand
 		twohanded
-	weight
-		heavy
+	weight: heavy
 	weapon
 		damage: 70
 		skill: huge_sword
@@ -717,8 +703,7 @@ item: sentai_suit
 	equipable
 		shirt
 		pants
-	weight
-		medium
+	weight: medium
 	identify: pop_culture
 	statbonus
 		charisma: 16
@@ -738,8 +723,7 @@ item: sentai_helmet
 		hat
 		goggles
 		mask
-	weight
-		medium
+	weight: medium
 	identify: pop_culture
 	statbonus
 		charisma: 16
@@ -762,8 +746,7 @@ item: horsemask
 		hat
 		mask
 		goggles
-	weight
-		medium
+	weight: medium
 	statbonus
 		charisma: 20
 	price: 2490
@@ -798,7 +781,7 @@ item: bagel
 	price: 5
 	description: "Vkusno, no ne ochen zapolneniyu."
 	ascii
-		char: 0x186
+		char: 0x188
 		fore: brown
 	food: 10
 	baked
@@ -1129,8 +1112,7 @@ item: chainmail_bikini_top
 		charisma: 5
 		sensitivity: 10
 		cunning: -5
-	weight
-		light
+	weight: light
 	price: 200
 	description: "Now with even less chain!"
 	ascii
@@ -1147,8 +1129,7 @@ item: chainmail_bikini_bottom
 		charisma: 5
 		sensitivity: 10
 		cunning: -5
-	weight
-		light
+	weight: light
 	description: "Now with even less chain!"
 	price: 200
 	ascii
@@ -1161,8 +1142,7 @@ item: bacon_bikini_top
 	equipable
 		female
 		undershirt
-	weight
-		light
+	weight: light
 	price: 20
 	description: "Now with even less class!"
 	ascii
@@ -1176,8 +1156,7 @@ item: bacon_bikini_bottom
 	equipable
 		female
 		underpants
-	weight
-		light
+	weight: light
 	description: "Now with even less class!"
 	price: 20
 	ascii
@@ -1199,8 +1178,7 @@ item: tatteredshreds_shirt
 	equipable
 		shirt
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18d
 
@@ -1212,8 +1190,7 @@ item: tatteredshreds_undershirt
 	equipable
 		undershirt
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18d
 
@@ -1225,8 +1202,7 @@ item: tatteredshreds_pants
 	equipable
 		pants
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18D
 
@@ -1238,8 +1214,7 @@ item: tatteredshreds_underpants
 	equipable
 		underpants
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18d
 
@@ -1253,8 +1228,7 @@ item: tatteredshreds_under
 		undershirt
 		underpants
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18d
 -- Should be used if a dress is torn apart.
@@ -1267,8 +1241,7 @@ item: tatteredshreds_over
 		shirt
 		pants
 		translucent
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x18d
 
@@ -1277,8 +1250,7 @@ item: shirt
 	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt. One size fits all."
 	equipable
 		shirt
-	weight
-		light
+	weight: light
 	price: 10
 	ascii
 		char: 0x198
@@ -1291,8 +1263,7 @@ item: blouse
 	description: "An unflattering [color] blouse."
 	equipable
 		shirt
-	weight
-		light
+	weight: light
 	statbonus
 		cunning: 5
 		strength: -5
@@ -1311,8 +1282,7 @@ item: girls_uniform_top
 	equipable
 		female
 		jacket
-	weight
-		light
+	weight: light
 	price: 100
 	ascii
 		char: 0x198
@@ -1327,8 +1297,7 @@ item: boys_uniform_top
 	equipable
 		male
 		jacket
-	weight
-		medium
+	weight: medium
 	price: 100
 	ascii
 		char: 0x198
@@ -1346,8 +1315,7 @@ item: bikini_top
 		charisma: 5
 		sensitivity: 5
 		cunning: -5
-	weight
-		feather
+	weight: feather
 	price: 100
 	ascii
 		char: 0x19b
@@ -1367,8 +1335,7 @@ item: bikini_bottom
 		charisma: 5
 		sensitivity: 5
 		cunning: -5
-	weight
-		feather
+	weight: feather
 	price: 50
 	ascii
 		char: 0x19a
@@ -1386,8 +1353,7 @@ item: pants
 	plural
 	equipable
 		pants
-	weight
-		light
+	weight: light
 	price: 20
 	ascii
 		char: 0x199
@@ -1405,8 +1371,7 @@ item: skirt
 	statbonus
 		strength: 5
 		cunning: -5
-	weight
-		light
+	weight: light
 	price: 20
 	ascii
 		char: 0x1a1
@@ -1422,8 +1387,7 @@ item: pleated_skirt
 		pants
 		translucent
 		reach
-	weight
-		light
+	weight: light
 	price: 60
 	ascii
 		char: 0x1a1
@@ -1443,8 +1407,7 @@ item: shorts
 	statbonus
 		strength: 5
 		carnality: -5
-	weight
-		light
+	weight: light
 	price: 50
 	ascii
 		char: 0x1a2
@@ -1463,8 +1426,7 @@ item: short_shorts
 		charisma: 5
 		cunning: -5
 		strength: -5
-	weight
-		light
+	weight: light
 	price: 50
 	ascii
 		char: 0x1a2
@@ -1482,8 +1444,7 @@ item: short_skirt
 		sensitivity: 10
 		charisma: 10
 		cunning: -10
-	weight
-		light
+	weight: light
 	price: 70
 	ascii
 		char: 0x1a2
@@ -1505,8 +1466,7 @@ item: sundress
 		carnality: 10
 		speed: -10
 		strength: -10
-	weight
-		light
+	weight: light
 	price: 60
 	ascii
 		char: 0x19d
@@ -1529,8 +1489,7 @@ item: skimpy_dress
 		carnality: 10
 		speed: -10
 		strength: -10
-	weight
-		light
+	weight: light
 	price: 60
 	ascii
 		char: 0x19d
@@ -1550,8 +1509,7 @@ item: elegant_dress
 		charisma: 10
 		cunning: 10
 		strength: -10
-	weight
-		medium
+	weight: medium
 	price: 300
 	ascii
 		char: 0x19d
@@ -1566,8 +1524,7 @@ item: latex_suit
 	equipable
 		undershirt
 		underpants
-	weight
-		medium
+	weight: medium
 	statbonus
 		charisma: 20
 		sensitivity: 15
@@ -1585,8 +1542,7 @@ item: stylish_cloak
 	description: "A dashing cloak, enchanted so that it billows out behind you even without any wind."
 	equipable
 		coat
-	weight
-		medium
+	weight: medium
 	price: 150
 	ascii
 		char: 0x1a7
@@ -1604,8 +1560,7 @@ item: strapless_leather_bra
 	equipable
 		female
 		undershirt
-	weight
-		feather
+	weight: feather
 	price: 30
 	ascii
 		char: 0x19B
@@ -1621,8 +1576,7 @@ item: kinky_panties
 	equipable
 		female
 		underpants
-	weight
-		feather
+	weight: feather
 	price: 40
 	ascii
 		char: 0x19A
@@ -1641,8 +1595,7 @@ item: knee_socks
 		socks
 		reach
 		translucent
-	weight
-		light
+	weight: light
 	price: 40
 	ascii
 		char: 0x1A9
@@ -1658,8 +1611,7 @@ item: high_heels
 	plural
 	equipable
 		shoes
-	weight
-		light
+	weight: light
 	price: 30
 	ascii
 		char: 0x1A3
@@ -2028,8 +1980,7 @@ item: gExtractor
 	nouse
 	price: 60
 	description: "A strange device of goblin origin. It seems to be a thick, leather thong that's been modified with a complex assembly of bronze machinery and glass vials."
-	weight
-		light
+	weight: light
 	ascii
 		char: 0x008
 		fore: goldenrod
@@ -2556,3 +2507,25 @@ item: greater_restoration_potion
 
 -- #endregion
 
+item: bfg9000
+	_n: BFG-9000
+	fireproof
+	unique
+	equipable
+		hand
+	weight: medium
+	charge: 3
+	weapon
+		damage: 1000
+		range: 60
+		splash: 4
+		skill: huge_firearm
+	description: ""
+	ascii
+		char: 0x183
+		fore: gray
+	effect
+		char: 0x2A
+		fore: yellow
+		back: lime
+	rareweapon

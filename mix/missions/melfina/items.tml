@@ -6,8 +6,7 @@ item: melfina_leotard
 	equipable
 		underpants
 		undershirt
-	weight
-		light
+	weight: light
 	price: 100
 	ascii
 		char: 0x19C
@@ -25,8 +24,7 @@ item: melfina_kneesocks
 	equipable
 		socks
 		reach
-	weight
-		light
+	weight: light
 	price: 100
 	ascii
 		char: 0x1A9
@@ -41,8 +39,7 @@ item: melfina_jacket
 	unique
 	equipable
 		jacket
-	weight
-		light
+	weight: light
 	price: 100
 	ascii
 		char: 0x198
@@ -60,8 +57,7 @@ item: melfina_belt
 		pants
 		translucent
 		reach
-	weight
-		light
+	weight: light
 	price: 60
 	ascii
 		char: 0x181
@@ -77,8 +73,7 @@ item: melfina_boots
 	plural
 	equipable
 		shoes
-	weight
-		heavy
+	weight: heavy
 	price: 300
 	ascii
 		char: 0x19F
