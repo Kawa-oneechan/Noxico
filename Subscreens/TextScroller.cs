@@ -103,7 +103,7 @@ namespace Noxico
 			}
 		}
 
-		public static void Plain(string message, string header = "", bool wrap = true)
+		public static void Plain(string message, string header = "", bool wrap = true, bool forceScroller = false)
 		{
 			if (wrap)
 				text = (header + '\n' + message.SmartQuote().Wordwrap(86)).Split('\n');
@@ -111,7 +111,7 @@ namespace Noxico
 				text = (header + '\n' + message).SmartQuote().Split('\n');
 
 			//If it's not worth a scroller, pass it through to a messagebox instead.
-			if (text.Length < 40)
+			if (text.Length < 40 && !forceScroller)
 			{
 				MessageBox.Notice(message.SmartQuote(), true, header);
 				return;
@@ -126,7 +126,7 @@ namespace Noxico
 		{
 			var pa = target;
 			var chr = ((BoardChar)pa).Character;
-			Plain(chr.LookAt(pa), chr.Name.ToString(true), false); //Fix: disabled wrapping to prevent Look At from looking like shit with new wrapper.
+			Plain(chr.LookAt(pa), chr.Name.ToString(true), false, true); //Fix: disabled wrapping to prevent Look At from looking like shit with new wrapper.
 		}
 
 		public static void ReadBook(string bookID)

@@ -328,6 +328,8 @@ This book, we're sorry to say, has a broken reference.]]></word>
 		<word id="death_drowned">drowned</word>
 	</category>
 	<category name="Misc">
+		<word id="none">none</word>
+		<word id="playermark"> (player)</word>
 		<word id="msgbox_question">Question</word>
 		<word id="textscroller_help">Press &scrollup; and &scrolldown; to scroll, &back; to return.</word>
 		<word id="textscroller_book404">Can't find the content for this book.</word>
@@ -485,6 +487,24 @@ Would you like an infodump on the way out?]]>
 			<word id="teethtype_sharp">sharp teeth</word>
 			<word id="teethtype_osmond">fearsome teeth</word>
 		</category>
+		<category name="Tongue types">
+			<word id="tonguetype_forked">forked tongue</word>
+			<word id="tonguetype_barbed">barbed tongue</word>
+			<word id="tonguetype_long">long tongue</word>
+			<word id="tonguetype_cock">cock tongue</word>
+		</category>
+		<category name="Ear types">
+			<word id="eartype_flat">unremarkable earholes</word>
+			<word id="eartype_elfin">lightly pointed ears</word>
+			<word id="eartype_pointed">large pointed ears</word>
+			<word id="eartype_genbeast">animal ears</word>
+			<word id="eartype_cat">feline ears</word>
+			<word id="eartype_fox">vulpine ears</word>
+			<word id="eartype_bear">ursine ears</word>
+			<word id="eartype_dog">canine ears</word>
+			<word id="eartype_horse">equine ears</word>
+			<word id="eartype_bunny">bunny ears</word>
+		</category>
 		<category name="Tattoo locations">
 			<word id="tat_x_on_y">{0} on {1}</word>
 			<word id="tatlocation_hip">hip</word>
@@ -498,10 +518,19 @@ Would you like an infodump on the way out?]]>
       <word id="x_horntype_big_straight">{0} [P:{0}:pair] of long horns</word>
       <word id="horntype_monoceros">A single horn on [t:his] forehead</word>
     </category>
+		<word id="lookat_name_type">
+			<![CDATA[Name: {0}Type: {1}{2}
+
+]]></word>
 		<word id="lookat_header_general">
 			<![CDATA[General
 &#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
 ]]></word>
+		<word id="lookat_header_items">
+			<![CDATA[Items
+&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
+]]>
+		</word>
 		<word id="lookat_header_sexual">
 			<![CDATA[Sexual characteristics
 &#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
@@ -511,6 +540,12 @@ Would you like an infodump on the way out?]]>
 		<word id="lookat_column_head">Head</word>
 		<word id="lookat_column_hair">Hair</word>
 		<word id="lookat_column_hips">Hips and Waist</word>
+		<word id="lookat_column_clothing">
+			<![CDATA[Clothing/armor
+]]></word>
+		<word id="lookat_column_equipment">
+			<![CDATA[Equipment
+]]></word>
 	</category>
 	<category name="Crafting">
 		<word id="craft_results">Results</word>
