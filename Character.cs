@@ -1223,8 +1223,9 @@ namespace Noxico
 			}
 		}
 
-		private static void Columnize(Action<string> print, int pad, List<string> col1, List<string> col2, string header1, string header2)
+		private static void Columnize(Action<string> print, List<string> col1, List<string> col2, string header1, string header2)
 		{
+			var pad = 44;
 			var totalRows = Math.Max(col1.Count, col2.Count);
 			print(i18n.GetString(header1).PadEffective(pad) + i18n.GetString(header2) + "\n");
 			for (var i = 0; i < totalRows; i++)
@@ -1516,15 +1517,14 @@ namespace Noxico
 				if (teeth != null && !string.IsNullOrWhiteSpace(teeth.Text) && teeth.Text != "normal")
 					headThings.Add(i18n.GetString("teethtype_" + teeth.Text));
 				var tongue = this.Path("tongue");
-				//TRANSLATE
 				if (tongue != null && !string.IsNullOrWhiteSpace(tongue.Text) && tongue.Text != "normal")
-					headThings.Add(tongue.Text + " tongue");
+					headThings.Add(i18n.GetString("tonguetype_" + teeth.Text));
 			}
 
-			//TRANSLATE - finish this block
 			var ears = "human";
 			if (this.HasToken("ears"))
 				ears = this.GetToken("ears").Text;
+			/*
 			if (ears == "frill")
 				headThings.Add("head frills");
 			else
@@ -1533,15 +1533,18 @@ namespace Noxico
 					ears = "animal";
 				headThings.Add(i18n.Format("x_ears",  ears));
 			}
-
-			if (this.HasToken("monoceros"))
-				headThings.Add("unicorn horn");
+			*/
+			if (ears != "human")
+				headThings.Add(i18n.GetString("eartype_" + ears));
+			//Already covered under Hair.
+			//if (this.HasToken("monoceros"))
+			//	headThings.Add("unicorn horn");
 
 			//femininity slider
 
 
 			//Columnize it!
-			Columnize(print, 34, bodyThings, headThings, "lookat_column_body", "lookat_column_head");
+			Columnize(print, bodyThings, headThings, "lookat_column_body", "lookat_column_head");
 		}
 
 		private void LookAtHairHips(Entity pa, Action<string> print)
@@ -1609,7 +1612,7 @@ namespace Noxico
 					hipThings.Add(i18n.Format("tat_x_on_y", tatTok.Text, i18n.GetString("tatlocation_" + tat)));
 			}
 
-			Columnize(print, 34, hairThings, hipThings, "lookat_column_hair", "lookat_column_hips");
+			Columnize(print, hairThings, hipThings, "lookat_column_hair", "lookat_column_hips");
 		}
 
 		private void LookAtSexual(Entity pa, Action<string> print, bool breastsVisible, bool crotchVisible)
@@ -1769,9 +1772,10 @@ namespace Noxico
 
 		private void LookAtClothing(Entity pa, Action<string> print, List<string> worn)
 		{
-			print("Clothing\n");
+			print(i18n.GetString("lookat_header_items")); 
+			print(i18n.GetString("lookat_column_clothing"));
 			if (worn.Count == 0)
-				print("\xC0 none\n");
+				print("\xC0 " + i18n.GetString("none") + "\n");
 			else
 				for (var i = 0; i < worn.Count; i++)
 					print((i < worn.Count - 1 ? "\xC3 " : "\xC0 ") + worn[i] + "\n");
@@ -1780,14 +1784,14 @@ namespace Noxico
 
 		private void LookAtEquipment2(Entity pa, Action<string> print, List<InventoryItem> hands, List<InventoryItem> fingers)
 		{
-			print("Equipment\n");
+			print(i18n.GetString("lookat_column_equipment"));
 			var mono = HasToken("monoceros") ? 1 : 0;
 			if (this.HasToken("noarms") && hands.Count > 1 + mono)
 				print("NOTICE: dual wielding with mouth.\n");
 			if (hands.Count > 2 + mono)
 				print("NOTICE: Shiva called.\n");
 			if (hands.Count + fingers.Count == 0)
-				print("\xC0 none\n");
+				print("\xC0 " + i18n.GetString("none") + "\n");
 			else
 			{
 				var handsAndFingers = new List<string>();
@@ -1813,8 +1817,7 @@ namespace Noxico
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
-			print(("Name: " + this.Name.ToString(true)).PadEffective(34) + "Type: " + this.Title + ((pa != null && pa is Player) ? " (player)" : "") + "\n");
-			print("\n");
+			print(i18n.Format("lookat_name_type", this.Name.ToString(true).PadEffective(34), this.Title, ((pa != null && pa is Player) ? i18n.GetString("playermark") : string.Empty)));
 
 			bool breastsVisible = false, crotchVisible = false;
 			var carried = new List<InventoryItem>();
@@ -1828,7 +1831,7 @@ namespace Noxico
 			LookAtEquipment2(pa, print, hands, fingers);
 			LookAtSexual(pa, print, breastsVisible, crotchVisible);
 
-			#if DEBUG
+			#if LOLDEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>\xc4\xc4\xc4\xc4\xc4\n");
 			print("<cGray>Percieved gender: " + this.PercievedGender.ToString() + "\n");
