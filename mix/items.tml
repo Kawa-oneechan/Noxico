@@ -209,7 +209,24 @@ item: foxite
 	script
 		<[[
 			Consume();
-			//user.Morph("fox");
+			message(user.Morph("kitsune"));
+			Identify();
+		]]>
+
+item: oddnip
+	_n: Odd nip
+	test
+	description: "lol"
+	ascii
+		char: 0x180
+		fore: aquamarine
+	randomized: 2
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			message(user.Morph("felin"));
 			Identify();
 		]]>
 

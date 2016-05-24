@@ -316,7 +316,7 @@ namespace Noxico
 					}
 					else
 					{
-						var change = new Token("_addTo/wings", "small");
+						var change = new Token("_addto/wings", "small");
 						change.AddToken("$", "[views] wings shrink");
 						possibleChanges.Add(change);
 					}
@@ -428,7 +428,7 @@ namespace Noxico
 									growOrShrink = -1;
 							}
 							now = sourceDick.GetToken("thickness").Value;
-							if (targetThickness.Text.StartsWith("roll"))
+							if (!string.IsNullOrWhiteSpace(targetThickness.Text) && targetThickness.Text.StartsWith("roll"))
 							{
 								var xDyPz = targetThickness.Text;
 								var range = 0;
@@ -605,9 +605,24 @@ namespace Noxico
 
 		public string Morph(string targetPlan, Gender targetGender = Gender.Random)
 		{
+			if (this.HasToken("formlock"))
+				return i18n.GetString("formlock").Viewpoint(this);
 			var possibilities = GetMorphDeltas(targetPlan, targetGender);
 			var feedback = string.Empty;
 			ApplyMutamorphDeltas(possibilities, 4, out feedback);
+			
+			var closestMatch = GetClosestBodyplanMatch();
+			var rawPlans = Mix.GetTokenTree("bodyplans.tml");
+			var target = rawPlans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);
+			var myTerms = this.GetToken("terms");
+			var closestTerms = target.GetToken("terms");
+			if (myTerms.Tokens[0].Text != closestTerms.Tokens[0].Text)
+			{
+				for (var i = 0; i < myTerms.Tokens.Count; i++)
+					myTerms.Tokens[i].Text = closestTerms.Tokens[i].Text;
+				UpdateTitle();
+			}
+
 			return feedback;
 		}
 	}

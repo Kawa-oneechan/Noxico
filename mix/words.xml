@@ -318,6 +318,8 @@ This book, we're sorry to say, has a broken reference.]]></word>
 		<word id="x_dropped_y_inthedepths">[Youorname] drop{{s}} {0} in the depths!</word>
 
 		<word id="item_changeling_disguise">This is part of your changeling disguise.</word>
+
+		<word id="formlock">[Yourornames] skin crawls as it resists change.</word>
 	</category>
 	<category name="Causes of death">
 		<word id="death_doveinanddrowned">dove into the water and drowned</word>
