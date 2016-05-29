@@ -1322,12 +1322,12 @@ namespace Noxico
 			var paragonLight = (int)Math.Ceiling((character.GetToken("paragon").Value / 100) * 8);
 			var renegadeDark = 8 - renegadeLight;
 			var paragonDark = 8 - paragonLight;
-			HostForm.SetCell(16, 81, '\x03', Color.FromArgb(116, 48, 48), Color.Transparent);
-			HostForm.SetCell(16, 98, '\x06', Color.FromArgb(128, 128, 128), Color.Transparent);
-			HostForm.Write(new string(' ', paragonDark), Color.Black, Color.FromArgb(38, 10, 10), 16, 82);
-			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + paragonDark);
-			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + 8);
-			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82 + 8 + renegadeLight);
+			HostForm.SetCell(16, 81, '\x06', Color.Silver, Color.Transparent);
+			HostForm.SetCell(16, 98, '\x03', Color.Silver, Color.Transparent);
+			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82);
+			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + renegadeDark);
+			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + 8);
+			HostForm.Write(new string(' ', paragonDark), Color.Black, Color.FromArgb(38, 10, 10), 16, 82 + 8 + paragonLight);
 			HostForm.Write(InGameTime.ToShortTimeString(), Color.Silver, Color.Transparent, 17, 81);
 			HostForm.Write(InGameTime.ToShortDateString(), Color.Silver, Color.Transparent, 18, 81);
 
