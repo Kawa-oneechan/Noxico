@@ -115,10 +115,12 @@ namespace Noxico
 
 			var sb = new StringBuilder();
 			sb.AppendLine(i18n.GetString("pause_name").PadEffective(20) + player.Name);
+			sb.AppendLine(i18n.GetString("pause_gender").PadEffective(20) + player.Gender);
 			sb.AppendLine(i18n.GetString("pause_health").PadEffective(20) + health);
 			sb.AppendLine(i18n.GetString("pause_money").PadEffective(20) + player.GetToken("money").Value.ToString("C"));
 			sb.AppendLine(i18n.GetString("pause_playtime").PadEffective(20) + nox.Player.PlayingTime.ToString());
 			sb.AppendLine(i18n.GetString("pause_worldtime").PadEffective(20) + NoxicoGame.InGameTime.ToString());
+			sb.AppendLine();
 
 			var statNames = Enum.GetNames(typeof(Stat));
 			player.RecalculateStatBonuses();
@@ -134,20 +136,21 @@ namespace Noxico
 				if (statBonus > 0)
 					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
 				else if (statBonus < 0)
-					bonus = "<cMaroon> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
+					bonus = "<cFirebrick> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
 				sb.AppendLine(stat.PadEffective(20) + total + bonus);
 			}
 
-
+			/* Removed for superfluousity and uglyness
 			var paragadeLength = 18;
 			var renegadeLight = (int)Math.Ceiling((player.GetToken("renegade").Value / 100) * paragadeLength);
 			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
-			var renegadeDark = 18 - renegadeLight;
-			var paragonDark = 18 - paragonLight;
-			sb.Append("\x06 ");
-			sb.Append("<cMaroon>" + new string('-', renegadeDark) + "<cRed>" + new string('=', renegadeLight));
-			sb.Append("<cBlue>" + new string('=', paragonLight) + "<cNavy>" + new string('-', paragonDark));
-			sb.AppendLine(" <cSilver>\x03");
+			var renegadeDark = paragadeLength - renegadeLight;
+			var paragonDark = paragadeLength - paragonLight;
+			sb.Append("\x06");
+			sb.Append("<cNavy>" + new string('\xDB', renegadeDark) + "<cBlue>" + new string('\xDB', renegadeLight));
+			sb.Append("<cRed>" + new string('\xDB', paragonLight) + "<cMaroon>" + new string('\xDB', paragonDark));
+			sb.AppendLine("<cSilver>\x03");
+			*/
 
 			pages[i18n.GetString("pause_charstats")] = sb.ToString();
 
