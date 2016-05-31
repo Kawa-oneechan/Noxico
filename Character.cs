@@ -873,6 +873,10 @@ namespace Noxico
 					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
 
+			//Prevent a semi-common generation bug from triggering in LookAt.
+			if (newChar.Path("skin/pattern") != null && string.IsNullOrWhiteSpace(newChar.Path("skin/pattern").Text))
+				newChar.GetToken("skin").RemoveToken("pattern");
+
 			while (newChar.HasToken("_either"))
 			{
 				var either = newChar.GetToken("_either");
@@ -1188,9 +1192,13 @@ namespace Noxico
 		{
 			foreach (var toAdd in otherSet)
 			{
-				this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
+				var newToken = new Token(toAdd.Name, toAdd.Value, toAdd.Text);
 				if (toAdd.Tokens.Count > 0)
-					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
+					newToken.AddSet(toAdd.Tokens);
+				this.Tokens.Add(newToken);
+				//this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
+				//if (toAdd.Tokens.Count > 0)
+				//	this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
 		}
 

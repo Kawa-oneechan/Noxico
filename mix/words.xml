@@ -460,6 +460,7 @@ Would you like an infodump on the way out?]]>
       <word id="legtype_dog">digitigrade</word>
       <word id="legtype_cat">feline</word>
 			<word id="legtype_horse">horse-like</word>
+			<word id="legtype_bear">ursine</word>
 		</category>
 		<category name="Wing types">
 			<word id="wingtype_feather">feather-covered</word>
