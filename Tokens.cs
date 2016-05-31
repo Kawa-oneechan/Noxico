@@ -472,15 +472,17 @@ namespace Noxico
 
 		public void AddSet(List<Token> otherSet)
 		{
-			this.Tokens.AddRange(otherSet);
-			/*
+			//this.Tokens.AddRange(otherSet);
 			foreach (var toAdd in otherSet)
 			{
-				this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
+				var newToken = new Token(toAdd.Name, toAdd.Value, toAdd.Text);
 				if (toAdd.Tokens.Count > 0)
-					this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
+					newToken.AddSet(toAdd.Tokens);
+				this.Tokens.Add(newToken);
+				//this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
+				//if (toAdd.Tokens.Count > 0)
+				//	this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
-			*/
 		}
 
 		public Token Clone(bool deep = true)
