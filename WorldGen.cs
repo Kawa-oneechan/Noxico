@@ -133,6 +133,7 @@ namespace Noxico
 						board.Name = string.Format("{0}, level {1}-{2}", name, i + 1, (char)('A' + j));
 					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
 					board.BoardType = BoardType.Dungeon;
+					board.Music = "set://Dungeon";
 					var encounters = board.GetToken("encounters");
 					foreach (var e in biomeData.Encounters)
 						encounters.AddToken(e);
@@ -310,6 +311,7 @@ namespace Noxico
 			nox.Player.YPosition = originalExit.YPosition;
 			entranceBoard.UpdateLightmap(nox.Player, true);
 			entranceBoard.Redraw();
+			entranceBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
 			NoxicoGame.HostForm.Noxico.SaveGame();
@@ -551,6 +553,7 @@ namespace Noxico
 		public string Name { get; private set; }
 		public int GroundTile { get; private set; }
 		public int MaxEncounters { get; private set; }
+		public string Music { get; private set; }
 		public string[] Encounters { get; private set; }
 		public string[] Cultures { get; private set; }
 		public System.Drawing.Rectangle Rect { get; private set; }
@@ -584,6 +587,9 @@ namespace Noxico
 				n.Cultures = new[] { "human" };
 			else
 				n.Cultures = cultures.Tokens.Select(x => x.Name).Where(e => Culture.Cultures.ContainsKey(e)).ToArray();
+
+			if (t.HasToken("music"))
+				n.Music = t.GetToken("music").Text;
 
 			return n;
 		}

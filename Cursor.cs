@@ -333,6 +333,7 @@ namespace Noxico
 										drop.Take(player.Character);
 										player.Energy -= 1000;
 										NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
+										NoxicoGame.Sound.PlaySound("set://GetItem");
 										ParentBoard.Redraw();
 									}
 									break;

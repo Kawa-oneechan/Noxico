@@ -13,6 +13,7 @@ namespace Noxico
 		{
 			this.Entities.Clear();
 			this.GetToken("biome").Value = biomeID;
+			this.GetToken("music").Text = BiomeData.Biomes[biomeID].Music;
 
 			var ground = TileDefinition.Find(BiomeData.Biomes[biomeID].GroundTile, true);
 

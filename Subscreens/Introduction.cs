@@ -27,6 +27,7 @@ namespace Noxico
 			NoxicoGame.Mode = UserMode.Subscreen;
 			NoxicoGame.Subscreen = Introduction.TitleHandler;
 			NoxicoGame.Immediate = true;
+			NoxicoGame.Sound.PlayMusic("set://Title");
 		}
 
 		public static void TitleHandler()

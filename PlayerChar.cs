@@ -97,6 +97,7 @@ namespace Noxico
 				}
 				ParentBoard.UpdateLightmap(this, true);
 				ParentBoard.Redraw();
+				ParentBoard.PlayMusic();
 				NoxicoGame.Immediate = true;
 
 				//Going from a dungeon to a wild board?
@@ -121,6 +122,7 @@ namespace Noxico
 			ParentBoard.CheckCombatFinish();
 			ParentBoard.UpdateLightmap(this, true);
 			ParentBoard.Redraw();
+			ParentBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 
 			if (ParentBoard.BoardType == BoardType.Town)
@@ -232,6 +234,11 @@ namespace Noxico
 			base.Move(targetDirection, check);
 
 			EndTurn();
+
+			if (Character.HasToken("squishy") || (Character.Path("skin/type") != null && Character.Path("skin/type").Text == "slime"))
+				NoxicoGame.Sound.PlaySound("set://Squish");
+			else
+				NoxicoGame.Sound.PlaySound("set://Step");
 			
 			if (lx != XPosition || ly != YPosition)
 			{
@@ -570,6 +577,7 @@ namespace Noxico
 						drop.Take(this.Character);
 						NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
+						NoxicoGame.Sound.PlaySound("set://GetItem"); 
 						ParentBoard.Redraw();
 						return;
 					}
@@ -761,6 +769,7 @@ namespace Noxico
 					//var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 					//File.Delete(playerFile);
 					var world = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
+					NoxicoGame.Sound.PlayMusic("set://Death");
 					NoxicoGame.InGame = false;
 					MessageBox.Ask(
 						i18n.Format("youdied", obituary),
