@@ -406,6 +406,7 @@ namespace Noxico
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
+			NoxicoGame.Sound.PlaySound("set://GetItem");
 			return null;
 		}
 
@@ -444,6 +445,7 @@ namespace Noxico
 			boardchar.ParentBoard.Redraw();
 			boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
+			NoxicoGame.Sound.PlaySound("set://PutItem");
 			return null;
 		}
 	}

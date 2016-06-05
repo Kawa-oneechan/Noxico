@@ -41,6 +41,7 @@ namespace Noxico
 			if (!token.HasToken("equipped"))
 			{
 				NoxicoGame.AddMessage(i18n.Format("dropped_x", chosen.ToString(token, true, true)));
+				NoxicoGame.Sound.PlaySound("set://PutItem");
 				chosen.Drop(boardchar, token);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();

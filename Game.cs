@@ -31,6 +31,8 @@ namespace Noxico
 		public static bool ScrollWheeled { get; set; }
 		public static bool Mono { get; set; }
 
+		public static SoundSystem Sound;
+
 		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
 		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
 
@@ -148,6 +150,9 @@ namespace Noxico
 			Cursor = new Cursor();
 			Messages = new List<string>(); //new List<StatusMessage>();
 
+			Program.WriteLine("Seeing a man about some music...");
+			Sound = new SoundSystem();
+
 			Program.WriteLine("Loading bodyplans...");
 			BodyplanHashes = new Dictionary<string, string>();
 			var plans = Mix.GetTokenTree("bodyplans.tml");
@@ -190,7 +195,7 @@ namespace Noxico
 			JavaScript.MainMachine = JavaScript.Create();
 
 			BiomeData.LoadBiomes();
-			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo");
+			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
 			//Limbo.BoardType = BoardType.Special;
 
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
@@ -376,6 +381,7 @@ namespace Noxico
 				Player.ParentBoard = CurrentBoard;
 				CurrentBoard.LoadSurroundings();
 				CurrentBoard.CheckCombatStart();
+				CurrentBoard.PlayMusic();
 				CurrentBoard.Redraw();
 
 				if (!Player.Character.HasToken("player"))
@@ -544,6 +550,7 @@ namespace Noxico
 					Mode = UserMode.Walkabout;
 			}
 
+			Sound.Update();
 			HostForm.Draw();
 			Immediate = false;
 			for (int i = 0; i < 255; i++)
@@ -768,6 +775,7 @@ namespace Noxico
 							townGen.Create(biome);
 							townGen.ToTilemap(ref thisBoard.Tilemap);
 							townGen.ToSectorMap(thisBoard.Sectors);
+							thisBoard.Music = biome.Realm == Realms.Nox ? "set://Town" : "set://Dungeon";
 							thisBoard.AddToken("culture", 0, cultureName);
 
 							while (true)

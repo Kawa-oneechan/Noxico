@@ -511,6 +511,7 @@ namespace Noxico
 				{
 					if (target != null && DistanceFrom(target) <= SightRadius && CanSee(target))
 					{
+						NoxicoGame.Sound.PlaySound("set://Alert"); 
 						hostile.Value = 1; //Switch to active hunting.
 						Energy -= 500;
 
@@ -1122,6 +1123,7 @@ namespace Noxico
 			js.SetParameter("InventoryItem", typeof(InventoryItem));
 			js.SetParameter("Tile", typeof(Tile));
 			js.SetParameter("Color", typeof(Color));
+			js.SetFunction("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x))); 
 			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
 			js.SetFunction("print", new Action<string>(x =>
 			{

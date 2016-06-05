@@ -69,6 +69,8 @@ namespace Noxico
 					return;
 				if (door.Closed)
 				{
+					if (this is Player)
+						NoxicoGame.Sound.PlaySound("set://DoorOpen");
 					Energy -= 500;
 					door.Closed = false;
 				}
@@ -379,6 +381,7 @@ namespace Noxico
 					drop.Take(player.Character);
 					player.Energy -= 1000;
 					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
+					NoxicoGame.Sound.PlaySound("set://GetItem"); 
 					player.ParentBoard.Redraw();
 				}
 			);
