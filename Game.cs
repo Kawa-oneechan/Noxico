@@ -32,7 +32,7 @@ namespace Noxico
 		public static bool Mono { get; set; }
 
 		public static SoundSystem Sound;
-		public static char[] ingameToUnicode, ingameTo437;
+		public static char[] IngameToUnicode, IngameTo437;
 
 		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
 		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
@@ -151,12 +151,12 @@ namespace Noxico
 			Cursor = new Cursor();
 			Messages = new List<string>(); //new List<StatusMessage>();
 
-			ingameToUnicode = new char[0x420];
-			ingameTo437 = new char[0x420];
+			IngameToUnicode = new char[0x420];
+			IngameTo437 = new char[0x420];
 			for (var i = 0; i < 0x420; i++)
-				ingameToUnicode[i] = ingameTo437[i] = '?';
+				IngameToUnicode[i] = IngameTo437[i] = '?';
 			for (var i = 0x20; i < 0x80; i++)
-				ingameToUnicode[i] = ingameTo437[i] = (char)i;
+				IngameToUnicode[i] = IngameTo437[i] = (char)i;
 			var characterMap = Mix.GetString("lookup.txt");
 			foreach (var l in characterMap.Split('\n'))
 			{
@@ -164,13 +164,13 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
 					continue;
 				var values = line.Split(new[]{' ','\t'}).Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
-				ingameToUnicode[values[0]] = (char)values[1];
-				ingameTo437[values[0]] = (char)values[2];
+				IngameToUnicode[values[0]] = (char)values[1];
+				IngameTo437[values[0]] = (char)values[2];
 			}
 			for (var i = 0; i < 0x1F; i++)
 			{
-				ingameTo437[i + 0x1E0] = ingameTo437[i];
-				ingameToUnicode[i + 0x1E0] = ingameToUnicode[i];
+				IngameTo437[i + 0x1E0] = IngameTo437[i];
+				IngameToUnicode[i + 0x1E0] = IngameToUnicode[i];
 			}
 
 			Program.WriteLine("Seeing a man about some music...");
