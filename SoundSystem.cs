@@ -17,7 +17,15 @@ namespace Noxico
 			{
 				this.system = system;
 				FMOD.Sound ns = null;
-				var res = system.CreateSound(file, FMOD.SoundMode.Default, ref ns);
+				//var res = system.CreateSound(file, FMOD.SoundMode.Default, ref ns);
+				var data = Mix.GetBytes(file);
+				var fCSex = new FMOD.CreateSoundExInfo()
+				{
+					Size = 216,
+					Length = (uint)data.Length
+				};
+				var ret = system.CreateSound(data, FMOD.SoundMode.Default | FMOD.SoundMode.OpenMemory, ref fCSex, ref ns);
+
 				InnerSound = ns;
 				Channel = new FMOD.Channel();
 			}
@@ -26,7 +34,7 @@ namespace Noxico
 				if (InnerSound == null)
 					return;
 				var chan = Channel;
-				system.PlaySound(FMOD.ChannelIndex.Reuse, InnerSound, false, ref chan);
+				system.PlaySound(FMOD.ChannelIndex.Free, InnerSound, false, ref chan);
 			}
 		}
 
@@ -37,7 +45,7 @@ namespace Noxico
 		private FMOD.Sound music;
 		private FMOD.Channel musicChannel;
 		private float musicVolume, soundVolume;
-		private List<Token> library;
+		private List<Token> musicLibrary, soundLibrary;
 
 		public float MusicVolume
 		{
@@ -118,6 +126,8 @@ namespace Noxico
 			music = null;
 			musicChannel = null;
 
+			sounds = new Dictionary<string, Sound>();
+			/*
 			Program.WriteLine("SoundSystem: acquiring sounds...");
 			sounds = new Dictionary<string, Sound>();
 			foreach (var s in new[] { "Coin", "Door Lock", "Key", "Open Door", "Open Gate", "Push", "Shoot", "Alert" })
@@ -129,9 +139,11 @@ namespace Noxico
 					//sounds.Add(s, ns);
 				}
 			}
+			*/
 
-			Program.WriteLine("SoundSystem: loading library...");
-			library = Mix.GetTokenTree("music.tml");
+			Program.WriteLine("SoundSystem: loading libraries...");
+			musicLibrary = Mix.GetTokenTree("music.tml");
+			soundLibrary = Mix.GetTokenTree("sound.tml");
 
 			Program.WriteLine("SoundSystem: _ctor DONE");
 			Program.WriteLine("Null report:");
@@ -152,7 +164,7 @@ namespace Noxico
 			if (name.StartsWith("set://"))
 			{
 				set = name.Substring(6);
-				var setNode = library.FirstOrDefault(x => x.Name == set);
+				var setNode = musicLibrary.FirstOrDefault(x => x.Name == set);
 				if (setNode == null)
 					name = "-";
 				else
@@ -240,16 +252,62 @@ namespace Noxico
 
 		public void PlaySound(string name)
 		{
-			//TODO: rewrite to allow set:// notation.
-			/*
 			if (!Enabled || musicVolume == 0)
 				return;
-			if (sounds.ContainsKey(name))
+
+			if (name.StartsWith("set://"))
 			{
-				sounds[name].Play();
-				sounds[name].Channel.setVolume(soundVolume);
+				name = name.Substring(6);
+				var setNode = soundLibrary.FirstOrDefault(x => x.Name == name);
+				if (setNode == null)
+					name = "-";
+				else
+				{
+					name = "-";
+					var unmarked = new List<Token>();
+					foreach (var t in setNode.Tokens)
+					{
+						if (!t.HasToken("used"))
+							unmarked.Add(t);
+					}
+					if (unmarked.Count == 0)
+					{
+						foreach (var t in setNode.Tokens)
+						{
+							t.RemoveToken("used");
+							unmarked.Add(t);
+						}
+					}
+					while (unmarked.Count > 0)
+					{
+						var pick = Random.Next(unmarked.Count);
+						var file = unmarked[pick].Name;
+						if (!Mix.FileExists(file))
+							unmarked.RemoveAt(pick);
+						else
+						{
+							name = file;
+							unmarked[pick].AddToken("used");
+							break;
+						}
+					}
+				}
 			}
-			*/
+
+			if (sounds.ContainsKey(name) && sounds[name] == null)
+				return;
+			if (!sounds.ContainsKey(name))
+			{
+				if (Mix.FileExists(name))
+					sounds.Add(name, new Sound(name, system));
+				else
+				{
+					sounds.Add(name, null);
+					return;
+				}
+			}
+			sounds[name].Play();
+			sounds[name].Channel.SetVolume(soundVolume);
 		}
 
 		private void Fade()
