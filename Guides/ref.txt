@@ -130,7 +130,7 @@
 093	00f4	latin small letter o with circumflex
 094	00f6	latin small letter o with diaeresis
 095	00f2	latin small letter o with grave
-96	00fb	latin small letter u with circumflex
+096	00fb	latin small letter u with circumflex
 097	00f9	latin small letter u with grave
 098	00ff	latin small letter y with diaeresis
 099	00d6	latin capital letter o with diaeresis

@@ -370,5 +370,10 @@ namespace Noxico
 				return Translate(color.Name);
 			return string.Empty;
 		}
+
+		public string ToHex()
+		{
+			return string.Format("#{0:X2}{1:X2}{2:X2}", this.R, this.G, this.B);
+		}
 	}
 }

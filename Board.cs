@@ -473,7 +473,8 @@ namespace Noxico
 				for (var i = 0; i < numTokens; i++)
 					newBoard.Tokens.Add(Token.LoadFromFile(stream));
 				newBoard.Name = newBoard.GetToken("name").Text;
-				newBoard.ID = newBoard.GetToken("id").Text;
+				if (!newBoard.HasToken("music"))
+					newBoard.AddToken("music", "-");
 				newBoard.Music = newBoard.GetToken("music").Text;
 				newBoard.BoardType = (BoardType)newBoard.GetToken("type").Value;
 				if (!newBoard.HasToken("music"))
