@@ -710,7 +710,7 @@ namespace Noxico
 						{
 							for (int col = 0; col < 100; col++)
 							{
-								dumpFile.Write(NoxicoGame.ingameTo437[image[col, row].Character]);
+								dumpFile.Write(NoxicoGame.IngameTo437[image[col, row].Character]);
 							}
 							dumpFile.WriteLine();
 						}
@@ -726,7 +726,7 @@ namespace Noxico
 							dumpFile.Write("<tr>");
 							for (int col = 0; col < 100; col++)
 							{
-								var ch = string.Format("&#x{0:X};", (int)NoxicoGame.ingameToUnicode[image[col, row].Character]);
+								var ch = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[image[col, row].Character]);
 								if (ch == "&#x20;")
 									ch = "&nbsp;";
 								dumpFile.Write("<td style=\"background:{1};color:{2}\">{0}</td>", ch, image[col, row].Background.ToHex(), image[col, row].Foreground.ToHex());

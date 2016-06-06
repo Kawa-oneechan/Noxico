@@ -473,12 +473,19 @@ namespace Noxico
 				for (var i = 0; i < numTokens; i++)
 					newBoard.Tokens.Add(Token.LoadFromFile(stream));
 				newBoard.Name = newBoard.GetToken("name").Text;
-				if (!newBoard.HasToken("music"))
-					newBoard.AddToken("music", "-");
-				newBoard.Music = newBoard.GetToken("music").Text;
 				newBoard.BoardType = (BoardType)newBoard.GetToken("type").Value;
+				if (newBoard.HasToken("music") && newBoard.GetToken("music").Text == "-")
+					newBoard.RemoveToken("music");
 				if (!newBoard.HasToken("music"))
-					newBoard.AddToken("music");
+				{
+					var music = BiomeData.Biomes[(int)newBoard.GetToken("biome").Value].Music;
+					if (newBoard.BoardType == BoardType.Town)
+						music = "set://Town";
+					else if (newBoard.BoardType == BoardType.Town)
+						music = "set://Dungeon";
+					newBoard.AddToken("music", music);
+				}
+				newBoard.Music = newBoard.GetToken("music").Text;
 
 				Toolkit.ExpectFromFile(stream, "AMNT", "board part amounts");
 				var secCt = stream.ReadInt32();
@@ -1225,7 +1232,7 @@ namespace Noxico
 						back = string.Format("rgb({0},{1},{2})", newBack.R, newBack.G, newBack.B);
 						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
 					}
-					var chr = string.Format("&#x{0:X};", (int)def.UnicodeCharacter);
+					var chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[def.Glyph]);
 					var tag = string.Format("{0}", Tilemap[col, row].InherentLight);
 					var link = "";
 
@@ -1237,7 +1244,7 @@ namespace Noxico
 					{
 						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
 						fore = string.Format("rgb({0},{1},{2})", ent.ForegroundColor.R, ent.ForegroundColor.G, ent.ForegroundColor.B);
-						chr = string.Format("&#x{0:X};", (int)ent.UnicodeCharacter);
+						chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[ent.Glyph]);
 						tag = ent.ID;
 						if (ent is BoardChar)
 						{
