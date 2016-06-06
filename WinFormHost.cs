@@ -717,16 +717,24 @@ namespace Noxico
 					}
 					using (var dumpFile = new StreamWriter("lol.html"))
 					{
-						dumpFile.WriteLine("<pre>");
+						dumpFile.WriteLine("<!DOCTYPE html><html><head>");
+						dumpFile.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; CHARSET=utf-8\" />");
+						dumpFile.WriteLine("</head><body>");
+						dumpFile.WriteLine("<table style=\"font-family: Unifont, monospace\" cellspacing=0 cellpadding=0>");
 						for (int row = 0; row < 60; row++)
 						{
+							dumpFile.Write("<tr>");
 							for (int col = 0; col < 100; col++)
 							{
-								dumpFile.Write("<span style=\"background:{1};color:{2}\">{0}</span>", NoxicoGame.ingameToUnicode[image[col, row].Character], image[col, row].Background.ToHex(), image[col, row].Foreground.ToHex());
+								var ch = string.Format("&#x{0:X};", (int)NoxicoGame.ingameToUnicode[image[col, row].Character]);
+								if (ch == "&#x20;")
+									ch = "&nbsp;";
+								dumpFile.Write("<td style=\"background:{1};color:{2}\">{0}</td>", ch, image[col, row].Background.ToHex(), image[col, row].Foreground.ToHex());
 							}
-							dumpFile.WriteLine();
+							dumpFile.WriteLine("</tr>");
 						}
-						dumpFile.WriteLine("</pre>");
+						dumpFile.WriteLine("</table>");
+						dumpFile.WriteLine("</body></html>");
 					}
 					return;
 				}
