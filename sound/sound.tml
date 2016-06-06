@@ -1,0 +1,23 @@
+Alert
+	alert.wav
+GetItem
+	getitem.wav
+DoorOpen
+	opengate.wav
+Squish
+	splorch.wav
+Step
+	step.wav
+PutItem
+	putitem.wav
+Cursor
+	cursor.wav
+Explode
+	firebomb.wav
+Poof
+	poof.wav
+Heal
+	heal.wav
+Melee
+	punch.wav
+	swipe.wav

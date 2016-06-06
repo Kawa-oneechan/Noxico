@@ -610,6 +610,7 @@ namespace Noxico
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
 					if (target >= scan0.Length)
 						continue;
+
 					scan0[target + 0] = color.B;
 					scan0[target + 1] = color.G;
 					scan0[target + 2] = color.R;
