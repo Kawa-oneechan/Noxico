@@ -32,6 +32,7 @@ namespace Noxico
 		public static bool Mono { get; set; }
 
 		public static SoundSystem Sound;
+		public static char[] ingameToUnicode, ingameTo437;
 
 		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
 		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
@@ -149,6 +150,28 @@ namespace Noxico
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
 			Messages = new List<string>(); //new List<StatusMessage>();
+
+			ingameToUnicode = new char[0x420];
+			ingameTo437 = new char[0x420];
+			for (var i = 0; i < 0x420; i++)
+				ingameToUnicode[i] = ingameTo437[i] = '?';
+			for (var i = 0x20; i < 0x80; i++)
+				ingameToUnicode[i] = ingameTo437[i] = (char)i;
+			var characterMap = Mix.GetString("lookup.txt");
+			foreach (var l in characterMap.Split('\n'))
+			{
+				var line = l.Trim();
+				if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+					continue;
+				var values = line.Split(new[]{' ','\t'}).Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
+				ingameToUnicode[values[0]] = (char)values[1];
+				ingameTo437[values[0]] = (char)values[2];
+			}
+			for (var i = 0; i < 0x1F; i++)
+			{
+				ingameTo437[i + 0x1E0] = ingameTo437[i];
+				ingameToUnicode[i + 0x1E0] = ingameToUnicode[i];
+			}
 
 			Program.WriteLine("Seeing a man about some music...");
 			Sound = new SoundSystem();

@@ -701,6 +701,35 @@ namespace Noxico
 
 			if (e.KeyCode == (Keys)NoxicoGame.KeyBindings[KeyBinding.Screenshot])
 			{
+				if (e.Modifiers == Keys.Shift)
+				{
+					using (var dumpFile = new StreamWriter("lol.txt", false, System.Text.Encoding.GetEncoding(437)))
+					{
+						for (int row = 0; row < 60; row++)
+						{
+							for (int col = 0; col < 100; col++)
+							{
+								dumpFile.Write(NoxicoGame.ingameTo437[image[col, row].Character]);
+							}
+							dumpFile.WriteLine();
+						}
+					}
+					using (var dumpFile = new StreamWriter("lol.html"))
+					{
+						dumpFile.WriteLine("<pre>");
+						for (int row = 0; row < 60; row++)
+						{
+							for (int col = 0; col < 100; col++)
+							{
+								dumpFile.Write("<span style=\"background:{1};color:{2}\">{0}</span>", NoxicoGame.ingameToUnicode[image[col, row].Character], image[col, row].Background.ToHex(), image[col, row].Foreground.ToHex());
+							}
+							dumpFile.WriteLine();
+						}
+						dumpFile.WriteLine("</pre>");
+					}
+					return;
+				}
+
 				var shotDir = IniFile.GetValue("misc", "shotpath", "screenshots");
 				if (shotDir.StartsWith("$"))
 					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + shotDir.Substring(1);
