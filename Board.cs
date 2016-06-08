@@ -86,7 +86,6 @@ namespace Noxico
 		public string Name { get; private set; }
 		public int Index { get; private set; }
 		public int Glyph { get; private set; }
-		public char UnicodeCharacter { get; private set; }
 		public Color Foreground { get; private set; }
 		public Color Background { get; private set; }
 		public bool Wall { get; private set; }
@@ -117,7 +116,6 @@ namespace Noxico
 					Index = i,
 					Name = tile.GetToken("id").Text,
 					Glyph = (int)tile.GetToken("char").Value,
-					UnicodeCharacter = tile.HasToken("unicode") ? (char)tile.GetToken("unicode").Value : (char)tile.GetToken("char").Value,
 					Background = Color.FromName(tile.GetToken("back").Text),
 					Foreground = tile.HasToken("fore") ? Color.FromName(tile.GetToken("fore").Text) : Color.FromName(tile.GetToken("back").Text).Darken(),
 					Wall = tile.HasToken("wall"),

@@ -13,6 +13,7 @@ namespace Noxico
 		public int Inhabitants;
 		public int Width, Height;
 		public int PlotWidth, PlotHeight;
+		public bool AllowOutside;
 		public string[] MapScans;
 		public Dictionary<char, Token> Markings;
 		public Template(Token token)
@@ -25,6 +26,7 @@ namespace Noxico
 			Height = MapScans.Length;
 			PlotWidth = (int)Math.Ceiling(Width / 13.0);
 			PlotHeight = (int)Math.Ceiling(Height / 16.0);
+			AllowOutside = token.HasToken("allowOutside");
 			Markings = new Dictionary<char, Token>();
 			if (!token.HasToken("markings"))
 				return;
@@ -372,22 +374,22 @@ namespace Noxico
 						//}
 						//else
 						{
-							var okay = false;
+							//var okay = false;
 							var x = 0;
 							var y = 0;
 							var lives = 100;
-							while (!okay)
+							while (lives > 0)
 							{
 								lives--;
 								x = (col * 13) + Random.Next(13);
 								y = (row * 16) + Random.Next(16);
-								if (lives == 0 || !map[x, y].Definition.Wall && map[x, y].Definition.Ceiling && map[x, y].Definition.Glyph == ' ' && Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
-									okay = true;
+								if (!map[x, y].Definition.Wall &&
+									(!template.AllowOutside && map[x, y].Definition.Ceiling) &&
+									Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
+									break;
 							}
 							bc.XPosition = x;
 							bc.YPosition = y;
-							//bc.XPosition = (col * 13) + i;
-							//bc.YPosition = row * 16;
 						}
 						bc.Character.AddToken("sectorlock");
 						bc.ParentBoard = Board;

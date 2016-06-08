@@ -222,6 +222,7 @@ namespace Noxico
 			//Limbo.BoardType = BoardType.Special;
 
 			/*
+			Random.Reseed(1);
 			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
 			test.Realm = Realms.Nox;
 			var gen = new TownGenerator();

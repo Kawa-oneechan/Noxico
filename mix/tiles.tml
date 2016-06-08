@@ -53,12 +53,16 @@ tile: 10
 	back: #563F2C
 	fore: darkgreen
 	char: 0x00F
+	wall
+	ceiling
 tile: 15
 	id: woodFloor_Desk
 	_n: desk
 	back: #563F2C
 	fore: #140F0C
 	char: 0x0F0
+	wall
+	ceiling
 
 
 -- BUILDINGS
@@ -95,6 +99,7 @@ tile: 54
 	id: woodFloor
 	back: #563F2C
 	char: 32
+	ceiling
 	variants
 		woodFloor_scatter: 0.75
 tile: 55
@@ -102,6 +107,7 @@ tile: 55
 	back: #563F2C
 	char: 0x158
 	unicode: U+002D
+	ceiling
 tile: 56
 	id: outerWoodWall
 	_n: unresolved outside wall
@@ -540,10 +546,12 @@ tile: 104
 	back: #563F2C
 	char: 32
 	wall
+	ceiling
 tile: 105
 	id: doorwayOpened
 	back: #563F2C
 	char: 32
+	ceiling
 
 -- BIOME: GRASSLAND 
 tile: 200
