@@ -46,6 +46,21 @@ tile: 5
 	char: 0xF0
 	unicode: U+2261
 
+tile: 10
+	id: woodFloor_Plant1
+	_n: potted plant
+	description: A potted plant.
+	back: #563F2C
+	fore: darkgreen
+	char: 0x00F
+tile: 15
+	id: woodFloor_Desk
+	_n: desk
+	back: #563F2C
+	fore: #140F0C
+	char: 0x0F0
+
+
 -- BUILDINGS
 tile: 50
 	id: stoneFloor

@@ -221,6 +221,18 @@ namespace Noxico
 			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
 			//Limbo.BoardType = BoardType.Special;
 
+			/*
+			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
+			test.Realm = Realms.Nox;
+			var gen = new TownGenerator();
+			gen.Board = test;
+			gen.Culture = Culture.DefaultCulture;
+			gen.Create(BiomeData.Biomes[0]);
+			gen.ToTilemap(ref test.Tilemap);
+			test.DumpToHtml();
+			return;
+			*/
+
 			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 

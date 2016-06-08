@@ -1,5 +1,8 @@
 set: ponyville
 	template: loldummy
-	map
-		<[[
-		]]>
+		map
+			<[[
+				,,,
+				,,,
+				,,,
+			]]>

@@ -7,15 +7,6 @@ using SysRectangle = System.Drawing.Rectangle;
 
 namespace Noxico
 {
-	internal class Marking
-	{
-		public string Type;
-		public string[] Params;
-		public int Owner;
-		public string Name;
-		public string Description;
-	}
-
 	internal class Template
 	{
 		public string Name;
@@ -23,32 +14,24 @@ namespace Noxico
 		public int Width, Height;
 		public int PlotWidth, PlotHeight;
 		public string[] MapScans;
-		public Dictionary<char, Marking> Markings;
-		public Template(XmlElement element)
+		public Dictionary<char, Token> Markings;
+		public Template(Token token)
 		{
-			Name = element.GetAttribute("name");
-			Inhabitants = element.HasAttribute("inhabitants") ? int.Parse(element.GetAttribute("inhabitants")) : 0;
-			var map = element.SelectSingleNode("map") as XmlElement;
-			MapScans = map.InnerText.Trim().Split('\n').Select(x => x.Trim()).ToArray();
+			this.Name = token.Text;
+			this.Inhabitants = token.HasToken("inhabitants") ? (int)token.GetToken("inhabitants").Value : 0;
+			var map = token.GetToken("map").Tokens[0].Text;
+			MapScans = map.Trim().Split('\n').Select(x => x.Trim()).ToArray();
 			Width = MapScans[0].Length;
 			Height = MapScans.Length;
 			PlotWidth = (int)Math.Ceiling(Width / 13.0);
 			PlotHeight = (int)Math.Ceiling(Height / 16.0);
-			Markings = new Dictionary<char, Marking>();
-			foreach (var marking in element.SelectNodes("markings/marking").OfType<XmlElement>())
+			Markings = new Dictionary<char, Token>();
+			if (!token.HasToken("markings"))
+				return;
+			foreach (var marking in token.GetToken("markings").Tokens)
 			{
-				var c = marking.GetAttribute("char")[0];
-				var t = marking.GetAttribute("type");
-				var p = new string[0];
-				var o = marking.HasAttribute("owner") ? int.Parse(marking.GetAttribute("owner")) : 0;
-				if (t.Contains(','))
-				{
-					p = t.Substring(t.IndexOf(',') + 1).Split(',');
-					t = t.Remove(t.IndexOf(','));
-				}
-				var n = marking.GetAttribute("name");
-				var d = marking.InnerText.Trim();
-				Markings.Add(c, new Marking() { Type = t, Params = p, Owner = o, Name = n, Description = d });
+				var c = marking.Name[0];
+				Markings.Add(c, marking);
 			}
 		}
 	}
@@ -132,7 +115,6 @@ namespace Noxico
 		protected int[,] map;
 		protected BiomeData biome;
 		protected Building[,] plots;
-		protected static XmlDocument xDoc;
 		protected bool allowCaveFloor, includeWater, includeClutter;
 
 		public void Create(BiomeData biome, string templateSet)
@@ -145,13 +127,13 @@ namespace Noxico
 			if (templates == null)
 			{
 				templates = new Dictionary<string, List<Template>>();
-				xDoc = Mix.GetXmlDocument("buildings.xml");
-				foreach (var s in xDoc.SelectNodes("//set").OfType<XmlElement>())
+				var templateSource = Mix.GetTokenTree("buildings.tml");
+				foreach (var set in templateSource.Where(x => x.Name == "set"))
 				{
-					var thisSet = s.GetAttribute("id");
-					templates.Add(thisSet, new List<Template>());
-					foreach (var t in s.ChildNodes.OfType<XmlElement>().Where(x => x.Name == "template"))
-						templates[thisSet].Add(new Template(t));
+					var thisSet = new List<Template>();
+					foreach (var template in set.Tokens.Where(x => x.Name == "template"))
+						thisSet.Add(new Template(template));
+					templates.Add(set.Text, thisSet);
 				}
 			}
 
@@ -285,13 +267,19 @@ namespace Noxico
 									{
 										#region Custom markings
 										var m = template.Markings[tc];
-										if (m.Type != "block" && m.Type != "floor" && m.Type != "water")
+										if (m.Text == "block")
+											throw new Exception("Got a BLOCK-type marking in a building template.");
+
+										if (m.Text != "tile" && m.Text != "floor" && m.Text != "water")
 										{
 											//Keep a floor here. The entity fills in the blank.
 											def = "woodFloor";
 											var tileDef = TileDefinition.Find(def, true);
-											var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
-											if (m.Type == "bed")
+											//var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
+											var owner = (Character)null;
+											if (m.HasToken("owner"))
+												owner = building.Inhabitants[(int)m.GetToken("owner").Value - 1];
+											if (m.Text == "bed")
 											{
 												var newBed = new Clutter()
 												{
@@ -308,11 +296,11 @@ namespace Noxico
 												};
 												Board.Entities.Add(newBed);
 											}
-											if (m.Type == "container")
+											if (m.Text == "container")
 											{
-												var c = m.Params.Last()[0];
+												var c = m.GetToken("char").Value;
 												var type = c == '\x14B' ? "cabinet" : c == '\x14A' ? "chest" : "container";
-												if (m.Params[0] == "clothes")
+												if (m.HasToken("clothes"))
 												{
 													//if (type == "cabinet")
 													type = "wardrobe";
@@ -325,7 +313,7 @@ namespace Noxico
 												}	
 												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
-													Glyph = m.Params.Last()[0],
+													Glyph = (char)m.GetToken("char").Value, //m.Params.Last()[0],
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
@@ -335,35 +323,30 @@ namespace Noxico
 												};
 												Board.Entities.Add(newContainer);
 											}
-											else if (m.Type == "clutter")
+											else if (m.Text == "clutter")
 											{
 												var newClutter = new Clutter()
 												{
-													Glyph = m.Params.Last()[0],
+													Glyph = (char)m.GetToken("char").Value, //m.Params.Last()[0],
 													XPosition = sX + x,
 													YPosition = sY + y,
 													ForegroundColor = Color.Black,
 													BackgroundColor = tileDef.Background,
 													ParentBoard = Board,
 													Name = m.Name,
-													Description = m.Description,
-													Blocking = m.Params.Contains("blocking"),
+													Description = m.HasToken("description") ? m.GetToken("description").Text : string.Empty,
+													Blocking = m.HasToken("blocking"),
 												};
 												Board.Entities.Add(newClutter);
 											}
 										}
-										else if (m.Type == "water")
+										else if (m.Text == "water")
 										{
 											fluid = Fluids.Water;
 										}
 										else
 										{
-											/*
-											fgd = m.Params[0] == "floor" ? woodFloor : m.Params[0] == "wall" ? wall : Color.FromName(m.Params[0]);
-											bgd = m.Params[1] == "floor" ? woodFloor : m.Params[1] == "wall" ? wall : Color.FromName(m.Params[1]);
-											chr = m.Params.Last()[0];
-											wal = m.Type != "floor";
-											*/
+											def = TileDefinition.Find((int)m.GetToken("index").Value).Name;
 										}
 										#endregion
 									}
