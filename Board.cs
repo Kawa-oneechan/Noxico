@@ -978,7 +978,7 @@ namespace Noxico
 		{
 			var newBoard = new Board();
 			newBoard.Clear(biomeID);
-			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\ntype: 3\nbiome: " + biomeID + "\nmusic: \"" + music + "\"\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
+			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\ntype: 3\nbiome: " + biomeID + "\nmusic: \"" + music + "\"\nrealm: 0\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
 			newBoard.ID = id;
 			newBoard.Name = name;
 			newBoard.Music = music;
