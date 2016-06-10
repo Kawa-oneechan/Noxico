@@ -29,6 +29,7 @@ namespace Noxico
 
 	public partial class Character : TokenCarrier
 	{
+		public static List<Token> Bodyplans;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
@@ -760,16 +761,16 @@ namespace Noxico
 
         public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
 		{
-			var bodyPlans = Mix.GetTokenTree("bodyplans.tml", true);
-
 			var newChar = new Character();
-			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
+			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
 			if (planSource == null)
 				throw new ArgumentOutOfRangeException(string.Format("Could not find a bodyplan with id \"{0}\" to generate.", bodyPlan));
 
 			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
 			newChar.A = "a";
+
+			newChar.ResolveRolls();
 
 			newChar.HandleSelectTokens(); //by PillowShout
 
@@ -927,14 +928,13 @@ namespace Noxico
 
 		public static Character GenerateQuick(string bodyPlan, Gender gender)
 		{
-			var bodyPlans = Mix.GetTokenTree("bodyplans.tml", true);
-
 			var newChar = new Character();
-			var planSource = bodyPlans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
+			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
 			if (planSource == null)
 				throw new ArgumentOutOfRangeException(string.Format("Could not find a bodyplan with id \"{0}\" to generate.", bodyPlan));
 
 			newChar.AddSet(planSource.Tokens);
+			newChar.ResolveRolls();
 			newChar.HandleSelectTokens(); //by PillowShout
 
 			if (newChar.HasToken("femaleonly"))

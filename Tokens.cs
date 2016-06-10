@@ -11,7 +11,8 @@ namespace Noxico
 {
 	public class TokenCarrier
 	{
-		public static bool NoRolls { get; set; }
+		//TODO: put resolving the rolls for a tree in a separate method or sumth.
+		//public static bool NoRolls { get; set; }
 		public List<Token> Tokens { get; private set; }
 
 		public TokenCarrier()
@@ -190,6 +191,7 @@ namespace Noxico
 					cdataText.Clear();
 					continue;
 				}
+				/*
 				if (!NoRolls && tokenName.StartsWith("oneof "))
 				{
 					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
@@ -198,7 +200,7 @@ namespace Noxico
 						continue; //picked a blank token -- eat it.
 					tokenName = choice;
 				}
-				else if (l.Contains(": "))
+				else */ if (l.Contains(": "))
 				{
 					//Token has a value
 					if (l.Contains(": \""))
@@ -206,6 +208,7 @@ namespace Noxico
 						var text = l.Substring(l.IndexOf('\"') + 1);
 						newOne.Text = text.Remove(text.LastIndexOf('\"'));
 					}
+					/*
 					else if (!NoRolls && l.Contains(": oneof "))
 					{
 						var options = l.Substring(l.IndexOf("of ") + 3).Split(',');
@@ -220,6 +223,7 @@ namespace Noxico
 						var roll = Random.Next(y) + z;
 						newOne.Value = roll;
 					}
+					*/
 					else if (l.Contains(": U+"))
 					{
 						var codePoint = l.Substring(l.LastIndexOf('+') + 1);
@@ -290,7 +294,7 @@ namespace Noxico
 				prevTabs = tabs;
 			}
 			Tokens = t;
-			NoRolls = false;
+			//NoRolls = false;
 		}
 
 #if DEBUG
@@ -356,6 +360,113 @@ namespace Noxico
 				plus = int.Parse(m.Groups[2].Value);
 			return true;
 		}
+
+		/// <summary>
+		/// Recursively resolves roll and oneof values.
+		/// </summary>
+		public void ResolveRolls()
+		{
+			foreach (var token in Tokens)
+			{
+				if (token.Tokens.Count > 0)
+					token.ResolveRolls();
+				if (string.IsNullOrWhiteSpace(token.Text))
+					continue;
+				if (token.Text.StartsWith("roll "))
+				{
+					var xDyPz = token.Text.Substring(token.Text.LastIndexOf(' ') + 1);
+					int y = 0, z = 0;
+					ParseRoll(xDyPz, out y, out z);
+					var roll = Random.Next(y) + z;
+					token.Value = roll;
+					token.Text = null;
+				}
+				if (token.Text.StartsWith("oneof "))
+				{
+					var options = token.Text.Substring(token.Text.IndexOf("of ") + 3).Split(',');
+					var choice = options[Random.Next(options.Length)].Trim();
+					token.Text = choice;
+				}
+			}
+		}
+
+		public void Patch(string p)
+		{
+			var patch = new Token();
+			patch.Tokenize(p);
+			foreach (var token in patch.Tokens)
+			{
+				var path = token.Text;
+				if (token.Name == "add")
+				{
+					if (path == "-")
+					{
+						Tokens.AddRange(token.Tokens);
+					}
+					else if (path.EndsWith("/-"))
+					{
+						var target = Path(path.Substring(0, path.Length - 2));
+						if (target != null)
+						{
+							target.Tokens.AddRange(token.Tokens);
+						}
+					}
+					{
+						var target = Path(path);
+						if (target != null)
+						{
+							Tokens.InsertRange(Tokens.IndexOf(target) + 1, token.Tokens);
+						}
+					}
+				}
+				else if (token.Name == "remove")
+				{
+					var target = Path(path);
+					if (target != null)
+					{
+						if (path.LastIndexOf('/') == -1)
+						{
+							Tokens.Remove(target);
+						}
+						else
+						{
+							var oneUp = Path(path.Substring(0, path.LastIndexOf('/')));
+							oneUp.Tokens.Remove(target);
+						}
+					}
+				}
+				else if (token.Name == "replace")
+				{
+					var target = Path(path);
+					if (target != null)
+					{
+						if (path.LastIndexOf('/') == -1)
+						{
+							Tokens[Tokens.IndexOf(target)] = token.Tokens[0];
+						}
+						else
+						{
+							var oneUp = Path(path.Substring(0, path.LastIndexOf('/')));
+							oneUp.Tokens[oneUp.Tokens.IndexOf(target)] = token.Tokens[0];
+						}
+					}
+				}
+				else if (token.Name == "set")
+				{
+					var target = Path(path);
+					if (target != null)
+					{
+						var val = token.GetToken("value");
+						var txt = token.GetToken("text");
+						if (val != null)
+							target.Value = val.Value;
+						if (txt != null)
+							target.Text = txt.Text;
+					}
+				}
+			}
+		}
+
 	}
 
 	public class Token : TokenCarrier
