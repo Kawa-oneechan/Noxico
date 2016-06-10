@@ -224,109 +224,23 @@ namespace Noxico
 
 		public static List<Token> GetTokenTree(string fileName, bool cache = false)
 		{
+			var tml = GetString(fileName, cache);
 			var carrier = new TokenCarrier();
-			var tml = String.Empty;
-				
-			var otherFiles = fileList.Keys.Where(e => e != fileName && e.EndsWith(fileName)).ToList();
+			carrier.Tokenize(tml);
+			var patches = fileList.Keys.Where(e => e.EndsWith(fileName + ".patch")).ToList();
 			if (Directory.Exists("data"))
 			{
-				var externalOtherFiles = Directory.GetFiles("data", "*.tml", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e != fileName && e.EndsWith(fileName));
-				otherFiles.AddRange(externalOtherFiles);
+				var externals = Directory.GetFiles("data", "*.tml.patch", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e.EndsWith(fileName + ".patch"));
+				patches.AddRange(externals);
 			}
-			if (otherFiles.Count() == 0)
+			if (patches.Count > 0)
 			{
-				tml = GetString(fileName, cache);
-			}
-			else
-			{
-				Program.WriteLine("{0} has mod expansions!", fileName);
-				tml = GetString(fileName, cache);
-				var onTop = tml.Contains("-- #mergeontop");
-				foreach (var f in otherFiles)
+				Program.WriteLine("{0} has patches!", fileName);
+				foreach (var p in patches)
 				{
-					Program.WriteLine("Splicing in {0}...", f);
-					if (onTop)
-					{
-						tml = "\n\n-- #log Splice: " + f + "\n\n" + tml;
-						tml = GetString(f, cache) + tml;
-					}
-					else
-					{
-						tml += "\n\n-- #log Splice: " + f + "\n\n";
-						tml += GetString(f, cache);
-					}
+					var patch = GetString(p);
+					carrier.Patch(patch);
 				}
-			}
-
-			var replaceKeys = new List<string>();
-			while (tml.Contains("-- #replace"))
-			{
-				var replaceStart = tml.IndexOf("-- #replace");
-				var replaceEnd = tml.IndexOf('\n', replaceStart + 1);
-				var replaceKey = tml.Substring(replaceStart, replaceEnd - replaceStart).Trim().Split(' ')[2];
-				replaceKeys.Add(replaceKey);
-				tml = tml.Substring(0, replaceStart - 1) + tml.Substring(replaceEnd);
-			}
-			var mergeDeep = tml.Contains("-- #mergedeep");
-			var prioritize = tml.Contains("-- #prioritize");
-			if (prioritize)
-				tml = tml.Replace("-- #prioritize", "__prioritize__");
-			carrier.Tokenize(tml);
-
-			if (replaceKeys.Count > 0)
-			{
-				foreach (var key in replaceKeys)
-				{
-					for (var i = 0; i < carrier.Tokens.Count; i++)
-					{
-						if (carrier.Tokens[i].Name == key)
-						{
-							var firstKey = carrier.Tokens[i];
-							var value = firstKey.Text;
-							for (var j = i + 1; j < carrier.Tokens.Count; j++)
-							{
-								if (carrier.Tokens[j].Name == key && carrier.Tokens[j].Text == value)
-								{
-									var newKey = carrier.Tokens[j];
-									if (mergeDeep)
-									{
-										foreach (var t in newKey.Tokens)
-										{
-											var ft = firstKey.GetToken(t.Name);
-											if (ft == null)
-												ft = firstKey.AddToken(t.Name);
-											ft.Text = t.Text;
-											ft.Value = t.Value;
-											ft.Tokens.Clear();
-											ft.Tokens.AddRange(t.Tokens);
-										}
-									}
-									else
-									{
-										firstKey.Tokens.Clear();
-										firstKey.Tokens.AddRange(newKey.Tokens);
-									}
-									carrier.RemoveToken(j);
-									j--;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			if (prioritize)
-			{
-				var insertPoint = carrier.Tokens.IndexOf(carrier.GetToken("__prioritize__"));
-				var prioritizedNode = default(Token);
-				while ((prioritizedNode = carrier.Tokens.FirstOrDefault(i => i.HasToken("priority"))) != null)
-				{
-					prioritizedNode.RemoveToken("priority");
-					carrier.RemoveToken(prioritizedNode);
-					carrier.Tokens.Insert(insertPoint, prioritizedNode);
-					insertPoint++;
-				}
-				carrier.RemoveToken("__prioritize__");
 			}
 			return carrier.Tokens;
 		}

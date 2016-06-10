@@ -164,9 +164,7 @@ namespace Noxico
 		{
 			var ret = new List<PlayableRace>();
 			Program.WriteLine("Collecting playables...");
-			TokenCarrier.NoRolls = true; //Bit of a hack, I know. It resets to false when Tokenize() is finished.
-			var plans = Mix.GetTokenTree("bodyplans.tml");
-			foreach (var bodyPlan in plans.Where(t => t.Name == "bodyplan"))
+			foreach (var bodyPlan in Character.Bodyplans.Where(t => t.Name == "bodyplan"))
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;

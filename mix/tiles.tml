@@ -64,6 +64,11 @@ tile: 15
 	wall
 	ceiling
 
+tile: 20
+	id: biomeGround
+	char: 0x00
+	back: black
+	fore: black
 
 -- BUILDINGS
 tile: 50

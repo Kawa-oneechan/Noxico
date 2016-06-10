@@ -9,9 +9,8 @@ namespace Noxico
 	{
 		public List<Token> GetMorphDeltas(string targetPlan, Gender targetGender)
 		{
-			Token.NoRolls = true;
-			var rawPlans = Mix.GetTokenTree("bodyplans.tml");
-			var target = rawPlans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
+			//Token.NoRolls = true;
+			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
 			if (target == null)
 				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
 
@@ -612,8 +611,7 @@ namespace Noxico
 			ApplyMutamorphDeltas(possibilities, 4, out feedback);
 			
 			var closestMatch = GetClosestBodyplanMatch();
-			var rawPlans = Mix.GetTokenTree("bodyplans.tml");
-			var target = rawPlans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);
+			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);
 			var myTerms = this.GetToken("terms");
 			var closestTerms = target.GetToken("terms");
 			if (myTerms.Tokens[0].Text != closestTerms.Tokens[0].Text)
