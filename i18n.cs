@@ -42,8 +42,7 @@ namespace Noxico
 	public static class i18n
 	{
 		private static Dictionary<string, string> words;
-		private static XmlElement pluralizerData;
-		private static string of;
+		private static Token pluralizerData;
 
 		private static List<string> notFound = new List<string>();
 
@@ -52,20 +51,31 @@ namespace Noxico
 			if (words != null)
 				return;
 			words = new Dictionary<string, string>();
-			var x = Mix.GetXmlDocument("words.xml");
-			foreach (var word in x.SelectNodes("//word").OfType<XmlElement>())
-				words[word.GetAttribute("id")] = word.InnerText;
-			
-			pluralizerData = (XmlElement)x.SelectSingleNode("//pluralizer");
-			of = pluralizerData.SelectSingleNode("of").InnerText;
-			//Sanity check!
-			if (pluralizerData.SelectSingleNode("sanitycheck") != null)
+			var x = Mix.GetTokenTree("i18n.tml");
+			foreach (var word in x.Find(t => t.Name == "words").Tokens)
 			{
-				var testInput = pluralizerData.SelectSingleNode("sanitycheck/input").InnerText;
-				var expectedOutput = pluralizerData.SelectSingleNode("sanitycheck/output").InnerText;
-				var result = Pluralize(testInput, 2);
-				if (result != expectedOutput)
-					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", expectedOutput, result));
+				if (word.Text == null && word.HasToken("#text"))
+					words[word.Name] = word.GetToken("#text").Text;
+				else
+					words[word.Name] = word.Text;
+			}
+
+			pluralizerData = x.Find(t => t.Name == "pluralizer");
+			//Sanity check!
+			if (pluralizerData.HasToken("sanitycheck"))
+			{
+				foreach (var check in pluralizerData.GetToken("sanitycheck").Tokens)
+				{
+					var checkFrom = check.GetToken("from").Text;
+					var checkTo = check.GetToken("to").Text;
+					var result = string.Empty;
+					if (check.Name == "pluralize")
+						result = Pluralize(checkFrom, 2);
+					else if (check.Name == "singularize")
+						result = Singularize(checkFrom);
+					if (result != checkTo)
+						throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
+				}
 			}
 		}
 
@@ -115,6 +125,9 @@ namespace Noxico
 		
 		public static string Pluralize(this string singular)
 		{
+			var of = pluralizerData.GetToken("of").Text;
+			var simple = pluralizerData.GetToken("simple").Text;
+
 			if (words.ContainsKey(singular))
 				singular = words[singular];
 
@@ -125,25 +138,25 @@ namespace Noxico
 				var ofWhat = singular.Substring(ofPos);
 				return Pluralize(key) + ofWhat;
 			}
-			foreach (var uncountable in pluralizerData.SelectNodes("//uncountable_word").OfType<XmlElement>())
-				if (singular.EndsWith(uncountable.InnerText, StringComparison.InvariantCultureIgnoreCase))
+			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
+				if (singular.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
 					return singular;
-			foreach (var irregular in pluralizerData.SelectNodes("//irregular_plural").OfType<XmlElement>())
+			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
 			{
-				if (irregular.GetAttribute("fullword") == "yes")
+				if (irregular.HasToken("fullword"))
 				{
-					if (singular.Equals(irregular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
-						return irregular.Attributes["to"].Value;
+					if (singular.Equals(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
+						return irregular.Text;
 				}
 				else
-					if (singular.EndsWith(irregular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
-						return singular.Remove(singular.LastIndexOf(irregular.Attributes["from"].Value)) + irregular.Attributes["to"].Value;
+					if (singular.EndsWith(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
+						return singular.Remove(singular.LastIndexOf(irregular.Name)) + irregular.Text;
 			}
-			foreach (var regular in pluralizerData.SelectNodes("//regular_plural").OfType<XmlElement>())
-				if (singular.EndsWith(regular.Attributes["from"].Value, StringComparison.InvariantCultureIgnoreCase))
-					return singular.Remove(singular.LastIndexOf(regular.Attributes["from"].Value)) + regular.Attributes["to"].Value;
+			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
+				if (singular.EndsWith(regular.Name, StringComparison.InvariantCultureIgnoreCase))
+					return singular.Remove(singular.LastIndexOf(regular.Name)) + regular.Text;
 
-			return singular + 's';
+			return singular + simple;
 		}
 
 		public static string Pluralize(this string singular, int count)
@@ -155,25 +168,28 @@ namespace Noxico
 
 		public static string Singularize(this string plural)
 		{
-			if (plural.Contains(" of "))
+			var of = pluralizerData.GetToken("of").Text;
+			var simple = pluralizerData.GetToken("simple").Text;
+
+			if (plural.Contains(of))
 			{
-				var ofPos = plural.IndexOf(" of ");
+				var ofPos = plural.IndexOf(of);
 				var key = plural.Substring(0, ofPos);
 				var ofWhat = plural.Substring(ofPos);
 				return Singularize(key) + ofWhat;
 			}
-			foreach (var uncountable in pluralizerData.SelectNodes("//uncountable_word").OfType<XmlElement>())
-				if (plural.EndsWith(uncountable.InnerText, StringComparison.InvariantCultureIgnoreCase))
+			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
+				if (plural.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
 					return plural;
-			foreach (var irregular in pluralizerData.SelectNodes("//irregular_plural").OfType<XmlElement>())
-				if (plural.EndsWith(irregular.Attributes["to"].Value, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(irregular.Attributes["to"].Value)) + irregular.Attributes["from"].Value;
-			foreach (var regular in pluralizerData.SelectNodes("//regular_plural").OfType<XmlElement>())
-				if (plural.EndsWith(regular.Attributes["to"].Value, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(regular.Attributes["to"].Value)) + regular.Attributes["from"].Value;
+			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
+				if (plural.EndsWith(irregular.Text, StringComparison.InvariantCultureIgnoreCase))
+					return plural.Remove(plural.LastIndexOf(irregular.Text)) + irregular.Name;
+			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
+				if (plural.EndsWith(regular.Text, StringComparison.InvariantCultureIgnoreCase))
+					return plural.Remove(plural.LastIndexOf(regular.Text)) + regular.Name;
 
-			if (plural.EndsWith("s"))
-				return plural.Remove(plural.Length - 1);
+			if (plural.EndsWith(simple))
+				return plural.Remove(plural.Length - simple.Length);
 			return plural;
 		}
 

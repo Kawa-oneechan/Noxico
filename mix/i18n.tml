@@ -1,0 +1,624 @@
+words
+-- #region Introduction
+-- #region Title screen
+	ts_subtitle: Erotic Roguelike Misadventures
+	ts_pressentertobegin: <cTeal>Press <cAqua>&#xE20A;<cTeal> to begin
+	ts_welcometonoxico: Welcome to Noxico.
+	ts_thereisasave: There is a saved game you can restore.
+	ts_therearesaves: There are saved games you can restore.
+	ts_loadgame: {0}, "{1}"
+	ts_startoverinx: Start over in "{0}"...
+	ts_startnewgame: Start new game...
+	ts_enterworldname: Enter a name for the new world:
+-- #endregion
+-- #region Character Creator
+-- #region Labels
+	cc_title: Character Creation
+	cc_back: &#x1FB; BACK
+	cc_next: NEXT &#x1FA;
+	cc_play: PLAY &#x1FA;
+	cc_world: World
+	cc_name: Name
+	cc_random: [random]
+	cc_species: Species
+	cc_sex: Biological sex
+	cc_gid: Gender identity
+	cc_pref: Preference
+	cc_tutorial: Tutorial
+	cc_easy: Easy mode
+	cc_gift: Bonus gift
+-- #endregion
+-- #region Help strings
+	cchelp_back: Go back one page.
+	cchelp_next: Go to the next page.
+	cchelp_world: Enter the name for this world. It's what the directory will be called too, and as such can't be left blank.
+	cchelp_name: Enter the name for your character. Leave this blank to use a random name.
+	cchelp_species: Select the (initial) species you'll play as.
+	cchelp_sex: Are you a boy? Or are you a girl? Some species may not give you the choice.
+	cchelp_gid: What does your character self-identify as?
+	cchelp_pref: What does your character prefer as partners?
+	cchelp_tutorial: If you're new to this game, would you like some guidance at points?
+	cchelp_easy: Infinite lives, but you will be taunted. Because easy mode is for gradeschoolers.
+-- #endregion
+	cc_header: Starting a New Game
+	cc_footer: &#xE20E; to switch controls, &#xE202;/&#xE203;/&#xE200;/&#xE201; and &#xE20A; to choose. Or use a mouse.
+-- #endregion
+-- #region worldgen
+	worldgen_loading: Creating the world...
+	worldgen_heightmap: Creating heightmap...
+	worldgen_rainmap: Creating precipitation map...
+	worldgen_tempmap: Creating temperature map...
+	worldgen_biomemap: Creating biome map...
+	worldgen_bitmap: Drawing board bitmap...
+	worldgen_determinebiomes: Determining biomes...
+	worldgen_wateringholes: Finding watering holes...
+	worldgen_markingtowns: Marking possible town locations...
+	worldgen_createboards: Creating boards...
+	worldgen_towns: Generating towns...
+	worldgen_dungeons: Placing dungeon entrances...
+	worldgen_missions: Applying missions...
+	worldgen_ready: The world is ready.
+	loadsave_loadheader: Loading...
+	loadsave_saveheader: Saving...
+-- #endregion
+-- #endregion
+-- #region Travel
+	travel_header: Travel Mode
+	travel_footer: &#xE202;/&#xE203;/&#xE20A; to select, &#xE20B; to cancel.
+	travel_nowhere: You don't know of any other place to go.
+	travel_notfromdungeon: You cannot travel from this location. Find the exit to leave.
+	travel_notfromwilds: You cannot travel from this location. Go back to where you came in and try again there.
+	travel_current: Current location:
+	travel_new: [NEW]
+-- #endregion
+-- #region Pause
+	pause_title: PAUSED
+	pause_charstats: Character stats
+	pause_skills: Skill levels
+	pause_keys1: Important keys
+	pause_keys2: Other keys
+	pause_credits: Credits
+	pause_memstats: Memory stats
+	pause_opensettings: Open settings
+	pause_saveandexit: Save and exit
+	pause_name: Name
+	pause_gender: Gender
+	pause_health: Health
+	pause_money: Money
+	pause_playtime: Play time
+	pause_worldtime: World time
+	pause_: 
+	pause_keymove: Move
+	pause_keyinteract: Interact with something
+	pause_keyactivate: Use something
+	pause_keyrest: Rest
+	pause_keyfly: Fly or land
+	pause_keyitems: Inventory
+	pause_keytravel: Travel
+	pause_keyaccept: Accept
+	pause_keyback: Go back
+	pause_keypause: Open this menu
+	pause_keyscreenshot: Take screenshot
+	pause_creditscontent: Press &#xE20A; to view full credits.
+	pause_opensettingscontent
+	<[[
+Press Enter to open the options screen.
+
+From there, you can change a bunch of things, such as the display font (if any alternatives have been installed) or if lengths should be in metric or imperial.
+	]]>
+	pause_saveandexitcontent
+	<[[
+Press Enter to save.
+
+The game will automatically exit when done. Note that clicking the Close button or pressing Alt-F4 or whatever your operating system's methods are has the same effect.
+	]]>
+	pause_memstatscontent
+	<[[
+     Number of boards       {0}
+        Active boards       {1}
+Number of known items       {2}
+   Number of entities       {3}
+  Total set of tokens       {4}
+	]]>
+-- #endregion
+-- #region Options
+	opt_title: Options
+	opt_speed: Speed (lower = faster)
+	opt_font: Font
+	opt_misc: Various
+	opt_skipintro: Skip dream on new game
+	opt_rememberpause: Remember page in pause menu
+	opt_vistasaves: Use "Saved Games" folder when available
+	opt_xinput: Use XInput gamepad when available
+	opt_imperial: Use feet and inches instead of meters
+	opt_save: OK
+	opt_cancel: Cancel
+	opt_open: Open INI
+-- #endregion
+-- #region Actions
+	action_descyou: you, {0}
+	action_lookatit: Look at it
+	action_lookathim: Look at {0}
+	action_lookatyou: Check yourself
+	action_talktohim: Talk to {0}
+	action_masturbate: Masturbate
+	action_trade: Trade
+	action_fuckhim: Fuck {0}
+	action_rapehim: Rape {0}
+	action_shoothim: Shoot at {0}
+	action_pickup: Pick it up
+	action_copyhim: Change into {0}
+	action_revert: Release shape
+	action_craft: Craft
+-- #endregion
+-- #region Sidebar
+-- #region Stat shorthands
+	shortstat_Charisma: CHA
+	shortstat_Climax: CLI
+	shortstat_Cunning: CUN
+	shortstat_Carnality: CAR
+	shortstat_Stimulation: STI
+	shortstat_Sensitivity: SEN
+	shortstat_Speed: SPE
+	shortstat_Strength: STR
+-- #endregion
+-- #region Mods
+	mod_haste: Haste 
+	mod_slow: Slow 
+	mod_flying: Flying ({0:00}%) 
+	mod_swimming: Swimming ({0:00}%) 
+	mod_swimmingunl: Swimming 
+	mod_hostile: <cRed>Hostile <c>
+	mod_helpless: <cYellow>Helpless <c>
+-- #endregion
+-- #region Vendors
+	vendor_baker: Baker
+	vendor_butcher: Butcher
+	vendor_clothier: Clothier
+	vendor_armorer: Armorer
+	vendor_greengrocer: Greengrocer
+	vendor_carpenter: Carpenter
+-- #endregion
+-- #endregion
+-- #region Messages
+	welcometonoxico: Welcome to Noxico, &#xE220;.
+	welcomeback: Welcome back, &#xE220;.
+	rememberhelp: Remember, press <cWhite>&#xE20C;<c> for help and options.
+	pointatsomething: Point at an object or character.
+	pointingatdoor: Door
+	eyesinthedark: Eyes in the darkness
+	youpickup_x: You pick up {0}.
+	yougetup: You get back up.
+	youfly: You take off.
+	youland: You land.
+	flyneedswings: You have no wings.
+	wingsaretoosmall: Your wings are too small.
+	hittheceiling: You hit your head on the ceiling.
+	cantflyinside: You can't fly here - there's a ceiling in the way.
+	autotravelstop: Autotravel interrupted.
+	youhitxfory: You hit {0} for {1} {2}.
+	youdisplacex: You displace {0}.
+	losewings: <cRed>You lose your ability to fly!
+	yourhandsarefull: Your hands are already full.
+	yourmouthisfull: Your mouth is already full.
+	yourhornisfull: You have no more places to put it.
+	eternitybrooched: The Timeless Brooch glows white! You feel equal parts displaced and healthy. Guess you got away from that one...
+	youmelt: Your sexual distinctions melt into your blob.
+	yourevert: You revert to your true form.
+	x_reverts: [t:Youorname] revert{{s}} to [b:yourornames] true form.
+	x_imitatesyou: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
+	x_imitates_y: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
+	x_becomes_y: [t:Youorname] become{{s}} another [b:youorname].
+	you_bear1stchild
+	<[[
+You have given birth to little {0}.
+		
+Within moments, a matronly demoness appears before you and quickly introduces herself as a midwife. She picks up your child, giving you a thumbs-up and smile in return. In a large puff of smoke, she's gone again.
+
+Somehow, you feel like your child is perfectly safe with her.
+	]]>
+	you_bearNthchild: You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.
+	x_bearschild: {0} has given birth to little {1}.
+	congrats_mom: Congratulations, mom
+	dropped_x: Dropped {0}.
+	youareachicken: [Youorname] {{has|have}} laid an egg.
+	x_getsbackup: [Youorname] get{{s}} back up.
+	thisisammo: This is ammo. To use it, fire the weapon that requires this kind of munition.
+	noeffect: This item has no effect.
+	unidentied_warning
+	<[[
+You don't know what this does.
+
+Do you want to find out?
+	]]>
+	use_x_confirm: Do you want to use {0}?
+	cannot_equip_no_hands: [Youorname] cannot put on {0} because [he] lack{{s}} hands.
+	cannot_equip_no_legs: [Youorname] cannot put on {0} because [he] lack{{s}} legs.
+	surprise_its_sticky: [Youorname] {{tries|try}} to unequip {0}, but find{{s}} [he] cannot!
+	cannot_remove_sticky: [Youorname] cannot unequip {0} because of stickiness.
+	book_description: This is "{0}", by {1}.
+	book_unknownauthor: an unknown author
+	book_404
+	<[[
+## Unknown book
+This book, we're sorry to say, has a broken reference.
+	]]>
+	x_verbs_y_for_z: [t:Youorname] {0} [b:name] for [p:{1}:point].
+	x_dodges_ys_attack: [t:Youorname] dodge{{s}} [b:his] attack.
+	x_is_helpless: [t:Youorname] [is] helpless!
+	x_equiped_y: [Youorname] equip{{s}} {0}.
+	x_unequiped_y: [Youorname] unequip{{s}} {0}.
+	x_dropped_y_inthewater: [Youorname] drop{{s}} {0} in the water!
+	x_dropped_y_inthedepths: [Youorname] drop{{s}} {0} in the depths!
+	item_changeling_disguise: This is part of your changeling disguise.
+	formlock: [Yourornames] skin crawls as it resists change.
+-- #endregion
+-- #region Causes of death
+	death_doveinanddrowned: dove into the water and drowned
+	death_doveintodepths: dove into the depths
+	death_crackedagainstceiling: hit the ceiling when trying to fly
+	death_shotbyx: was shot down by {0}
+	death_burned: burned to death
+	death_drowned: drowned
+-- #endregion
+-- #region Misc
+	none: none
+	playermark:  (player)
+	msgbox_question: Question
+	textscroller_help: Press &#xE20F; and &#xE210; to scroll, &#xE20B; to return.
+	textscroller_book404: Can't find the content for this book.
+	Male: Male
+	Female: Female
+	Herm: Herm
+	Neuter: Neuter
+	Either: Either
+	Bed: Bed
+	point: point
+	thisis_x: This is {0}.
+	talkingtoyourself: Talking to yourself is the first sign of insanity.
+	talkingtoyourself_nutso: You spend a short while enjoying some pleasant but odd conversation with yourself.
+	nothingtosay: {0} has nothing to say to you.
+	gameover_title: GAME OVER
+	youdied
+	<[[
+You {0}.
+	
+Would you like an infodump on the way out?
+	]]>
+	context_warp: take exit
+	context_droppeditem: pick up
+	context_container: open
+	context_corpse: loot
+	context_bed: sleep
+	a: a
+	an: an
+	the: the
+	months: Morning Star, Sun's Dawn, First Seed, Rain's Hand, Second Seed, Midyear, Sun's Height, Last Seed, Hearthfire, Frostfall, Sun's Dusk, Evening Star
+	hesheshiit: ???, He, She, Shi, It
+	hisherhirits: ???, His, Her, Hir, Its
+	himherhirit: ???, Him, Her, Hir, It
+	counts: zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve
+	countsordinal: zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, eleventh, twelfth
+	setbymeasure: no, a single, a pair of, a trio of, a quartet of, a quintet of, a sextet of, a septet of, an octet of, a nonet of, ten, eleven, a dozen
+	potion_colors: black, blue, green, red, yellow, mauve, brown, white, silver, purple, chocolate, orange, gray
+	potion_mods: , bubbly , fizzy , viscious , translucent , smoky , smelly , fragrant , sparkly , tar-like 
+	potion_ringmods: , shiny , sparking , warm , cold , translucent , glistening 
+	potion_name: {0}{1} potion
+	potion_ringname: {0}{1} ring
+	cockrandom: penis, cock, dick, pecker, prick, rod, shaft, dong
+	pussyrandom: vagina, pussy, cunt, cooter, cooch, cunny, quim, twat
+	anusrandom: anus, asshole, butthole, rosebud, pucker
+	buttrandom: butt, ass, rear, backside, behind, bum
+	clitrandom: clitoris, clit, fun button, clitty, love button
+	breastsrandom: breasts, boobs, tits, knockers, mounds, titties
+	breastrandom: breast, boob, tit, knocker, mound
+	cumrandom: semen, cum, jizz, spunk, seed
+-- #endregion
+-- #region Inventory
+	inventory_yours: Your inventory
+	inventory_youhavenothing: You are carrying nothing.
+	inventory_pressenter_container: Press &#xE20A; to store or retrieve the highlighted item.
+	inventory_pressenter_vendor: Press &#xE20A; to buy or sell the highlighted item.
+	inventory_money: {0}: {1} -- You: {2}
+	inventory_itcosts: It costs &#x13B;{0}.
+	inventory_vendorusesthis: {0} is using this.
+	inventory_youusethis: This item is currently equipped.
+	inventory_youcantaffordthis: You can't afford this item.
+	inventory_vendorcantaffordthis: {0} can't afford this item.
+	inventory_youareusingthis: You're using this. Unequip it first.
+	inventory_pressenter_book: Press &#xE205; to read.
+	inventory_pressenter_equip: Press &#xE205; to equip.
+	inventory_pressenter_unequip: Press &#xE205; to unequip.
+	inventory_pressenter_use: Press &#xE205; to try and use.
+	inventory_cannotunequip: Cannot unequip.
+	inventory_questitem: This is a quest key item.
+	inventory_drop: Drop
+	inventory_weaponskill: Skill: {0}
+	inventory_weapontype: Type: {0}
+-- #region Sigils
+	sigil_weapon: weapon
+	sigil_fullmask: full mask
+	sigil_hat: hat
+	sigil_goggles: goggles
+	sigil_mask: mask
+	sigil_neck: neck
+	sigil_ring: ring
+	sigil_undies: undies
+	sigil_shirt: shirt
+	sigil_pants: pants
+	sigil_suit: suit
+	sigil_shoes: shoes
+	sigil_jacket: jacket
+	sigil_cloak: cloak
+	sigil_socks: socks
+	sigil_equipped: equipped
+	sigil_unidentified: unidentified
+	sigil_short_worn: W
+	sigil_ranged: ranged
+	sigil_melee: m&#x88;l&#x82;e
+-- #endregion
+-- #region Weapon attack types
+	attacktype_punch: punching
+	attacktype_tear: tearing
+	attacktype_strike: striking
+	attacktype_kick: kicking
+	attacktype_stab: stabbing
+	attacktype_pierce: piercing
+	attacktype_crush: crushing
+-- #endregion
+-- #endregion
+-- #region Look At...
+	color_eyes: {0} {1}
+	glowing_x: glowing {0}
+	x_ears: {0} ears
+	x_skin: {0} {1}
+	x_pattern: {0} {1}
+	x_legs: {0} legs
+	x_wings: {0} wings
+	small_wings: small {0}
+	x_tail: {0} tail
+	x_face: {0} face
+	face_xlike: {0}-like
+	single_taur: centaur-like
+	multi_taur: multi-taur ({0} pairs)
+-- #region Leg types
+	legtype_human: human
+	legtype_genbeast: digitigrade
+	legtype_stiletto: stilleto-heeled
+	legtype_claws: clawed
+	legtype_insect: insectoid
+	legtype_dog: digitigrade
+	legtype_cat: feline
+	legtype_horse: horse-like
+	legtype_bear: ursine
+-- #endregion
+-- #region Wing types
+	wingtype_feather: feather-covered
+	wingtype_bat: leathery
+	wingtype_insect: thin, translucent
+-- #endregion
+-- #region Tail types
+	tailtype_genbeast: beastly
+	tailtype_demon: spaded demon
+	tailtype_bunny: bunny poofball
+	tailtype_tapered_tentacle: tapered tail tentacle
+	tailtype_cocktacle: cock-headed tail tentacle
+	tailtype_tentacle: tail tentacle
+	tailtype_fox: fluffy vulpine
+	tailtype_dog: wagging canine
+	tailtype_cat: feline
+	tailtype_dragon: spined reptilian
+-- #endregion
+-- #region Face types
+	facetype_normal: human
+	facetype_genbeast: beastly
+	facetype_cow: bovine
+	facetype_reptile: reptilian
+	facetype_fox: vulpine
+-- #endregion
+-- #region Teeth types
+	teethtype_fangs: fangs
+	teethtype_sharp: sharp teeth
+	teethtype_osmond: fearsome teeth
+-- #endregion
+-- #region Tongue types
+	tonguetype_forked: forked tongue
+	tonguetype_barbed: barbed tongue
+	tonguetype_long: long tongue
+	tonguetype_cock: cock tongue
+-- #endregion
+-- #region Ear types
+	eartype_flat: unremarkable earholes
+	eartype_elfin: lightly pointed ears
+	eartype_pointed: large pointed ears
+	eartype_genbeast: animal ears
+	eartype_cat: feline ears
+	eartype_fox: vulpine ears
+	eartype_bear: ursine ears
+	eartype_dog: canine ears
+	eartype_horse: equine ears
+	eartype_bunny: bunny ears
+-- #endregion
+-- #region Tattoo locations
+	tat_x_on_y: {0} on {1}
+	tatlocation_hip: hip
+	tatlocation_smallofback: small of back
+	tatlocation_buttcheek: butt cheek
+-- #endregion
+-- #region Horns
+	x_horntype_small_curled: {0} [P:{0}:pair] of curled horns
+	x_horntype_small_straight: {0} small [P:{0}:pair] of horns
+	x_horntype_big_curled: {0} [P:{0}:pair] of ram-like horns
+	x_horntype_big_straight: {0} [P:{0}:pair] of long horns
+	horntype_monoceros: A single horn on [t:his] forehead
+-- #endregion
+	lookat_name_type
+	<[[
+Name: {0}Type: {1}{2}
+
+
+	]]>
+	lookat_header_general
+	<[[
+General
+&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
+
+	]]>
+	lookat_header_items
+	<[[
+Items
+&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
+
+	]]>
+	lookat_header_sexual
+	<[[
+Sexual characteristics
+&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;&#xc4;
+
+	]]>
+	lookat_column_body: Body
+	lookat_column_head: Head
+	lookat_column_hair: Hair
+	lookat_column_hips: Hips and Waist
+	lookat_column_clothing
+	<[[
+Clothing/armor
+
+	]]>
+	lookat_column_equipment
+	<[[
+Equipment
+
+	]]>
+-- #endregion
+-- #region Crafting
+	craft_results: Results
+	craft_nothing: You can do nothing.
+	craft_produce_x: Create {0}
+	craft_consume_x: Destroy {0}
+	craft_dye_x_y: Dye {0} {1}
+-- #endregion
+-- #region Vocalizations
+	vocalize_grunt: growl, groan, sigh, pant softly
+	vocalize_grunts: growls, groans, sighs, pants softly
+	vocalize_cryout: cry out, scream
+	vocalize_cryouts: cries out, screams
+-- #endregion
+hyphenation
+	rule
+		cutoff: 1
+		pattern: "[aeiou]st"
+	rule
+		cutoff: -1
+		pattern: "[^aeiou][aeiou][^aeiou][aeiou][\W\.]"
+	rule
+		cutoff: -1
+		pattern: "cker"
+	rule
+		cutoff: 2
+		pattern: "ck[aeiou]"
+	rule
+		cutoff: 1
+		pattern: "yph[aeiou]"
+	rule
+		cutoff: 2
+		pattern: "[aeiou][nrx][aeiou]"
+	rule
+		cutoff: 2
+		pattern: "[aeiou]mpl[aeiou]"
+	rule
+		cutoff: 2
+		pattern: "[^aeiou][aeiou][^aeiou][aeiou]"
+	rule
+		cutoff: 2
+		pattern: "([aeiou]{2})l[aeiou]"
+	rule
+		cutoff: 1
+		pattern: "[aeiou]gram"
+	rule
+		cutoff: 2
+		pattern: "[aeiou]([^aeiou]{2})[aeiou]"
+
+pluralizer
+	simple: "s"
+	of: " of "
+	sanitycheck
+		pluralize
+			from: hoof
+			to: hooves
+		pluralize
+			from: cheap piece of shit
+			to: cheap pieces of shit
+		singularize
+			from: pegasori
+			to: pegasus
+	uncountable
+		money
+		information
+		fish
+		deer
+		tuna
+		crosshairs
+		--  Japanese 
+		yaki
+		sheep
+		ninja
+		ronin
+		shito
+		shuriken
+		tengu
+		sentai
+		ki-rin
+		yoki
+	irregular
+		ox: oxen
+			fullword
+		VAX: vaxen
+			fullword
+		octopus: octopuses
+		person: people
+		pegasus: pegasori
+		stylus: styli
+		goose: geese
+		mouse: mice
+		louse: lice
+		human: humans
+		man: men
+		die: dice
+		staff: staves
+		foot: feet
+		coccus: cocci
+		convolvulus: convolvuli
+		arsis: arses
+		alula: alul&#x91;
+		alga: alg&#x91;
+		larva: larv&#x91;
+		naga: nag&#x91;
+		ida: id&#x91;
+		fungus: fungi
+		djinni: djinn
+		mumak: mumakil
+		nemesis: nemeses
+		child: children
+		--  Tolkien-specific 
+		elf: elves
+		dwarf: dwarves
+		--  <irregular_plural from="hobbit" to="hobbitses" /> 
+	regular
+		rtex: rtices
+		cubus: cubi
+		ooth: eeth
+		oof: ooves
+		fe: ves
+		--  Specify sus and lus instead of just us because house -> houses -> hous 
+		sus: suses
+		lus: luses
+		bus: buses
+		cus: ci
+		se: ses
+		ch: ches
+		oy: oys
+		x: xes
+		y: ies
+		--  <regular_plural from="" to="s" /> 
+
