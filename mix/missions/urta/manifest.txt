@@ -1,7 +1,7 @@
 Urta
 Kawa
-mission.j
-uniques.tml
+mission.js
+uniques.tml.patch
 scenesDlg.xml
-loot.tml
-items.tml
+loot.tml.patch
+items.tml.patch
