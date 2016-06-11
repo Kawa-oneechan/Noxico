@@ -162,7 +162,7 @@ namespace Noxico
 			var prevTabs = 0;
 			var cdata = false;
 			var cdataText = new StringBuilder();
-			foreach (var line in lines.Where(x => !string.IsNullOrWhiteSpace(x) && !x.TrimStart().StartsWith("--")))
+			foreach (var line in lines.Where(x => !x.TrimStart().StartsWith("--")))
 			{
 				var l = line.TrimEnd();
 				if (cdata)
@@ -176,6 +176,9 @@ namespace Noxico
 					cdataText.AppendLine(l);
 					continue;
 				}
+				else
+					if (string.IsNullOrWhiteSpace(line))
+						continue;
 				//count number of tabs in front
 				var tabs = 0;
 				for (; tabs < l.Length - 1; tabs++)

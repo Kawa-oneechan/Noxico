@@ -15,10 +15,6 @@
 -- TODO: allow TokenCarrier.Path() to support search-by-text?
 -- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
 
--- #mergedeep
--- #replace item
-
-
 item: regenring
 	_n: Ring of Regeneration
 	equipable
