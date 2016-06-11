@@ -1,0 +1,24 @@
+add: -
+	lootset
+		target: npc
+		type: clothing
+		final
+		filter
+			id: chelsie
+		oneof
+			chelsie_poncho
+	lootset
+		target: npc
+		type: underwear
+		final
+		filter
+			id: chelsie
+		-- EMPTY
+	lootset
+		target: npc
+		type: arms
+		final
+		filter
+			id: chelsie
+		oneof
+			katana

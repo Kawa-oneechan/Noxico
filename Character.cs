@@ -771,7 +771,8 @@ namespace Noxico
 			newChar.A = "a";
 
 			newChar.ResolveRolls();
-
+			if (newChar.HasToken("editable"))
+				newChar.RemoveToken("editable");
 			newChar.HandleSelectTokens(); //by PillowShout
 
 			if (newChar.HasToken("femaleonly"))
@@ -935,6 +936,8 @@ namespace Noxico
 
 			newChar.AddSet(planSource.Tokens);
 			newChar.ResolveRolls();
+			if (newChar.HasToken("editable"))
+				newChar.RemoveToken("editable");
 			newChar.HandleSelectTokens(); //by PillowShout
 
 			if (newChar.HasToken("femaleonly"))

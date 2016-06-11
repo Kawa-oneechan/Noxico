@@ -1,7 +1,7 @@
 Chelsie the Cheetah
 Kawa
-mission.j
-uniques.tml
-items.tml
-loot.tml
+mission.js
+uniques.tml.patch
+items.tml.patch
+loot.tml.patch
 lairhouse.png

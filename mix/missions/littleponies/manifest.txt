@@ -1,5 +1,5 @@
 Pony Must Pony Pony
 Kawa
-mission.j
-uniques.tml
+mission.js
+uniques.tml.patch
 buildings.xml
