@@ -13,6 +13,7 @@ namespace Noxico
 		//private static XmlDocument xDoc;
 		private static List<Token> sceneList;
 		private static Character top, bottom;
+		public static Token Placeholders;
 
 		private static bool letBottomChoose;
 
@@ -26,7 +27,10 @@ namespace Noxico
 			//if (xDoc == null)
 			//	xDoc = UnfoldIfs(Mix.GetXmlDocument("scenesDlg.xml", true));
 			if (sceneList == null)
+			{
 				sceneList = Mix.GetTokenTree("dialogue.tml", true);
+				Placeholders = sceneList.First(x => x.Name == "placeholders");
+			}
 
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
@@ -35,7 +39,7 @@ namespace Noxico
 			if (name.Contains('\xE064'))
 				name = name.Remove(name.LastIndexOf('\xE064'));
 
-			var openings = FindOpenings(name);
+			var openings = sceneList.Where(x => x.Name == "scene" && x.GetToken("name").Text == name).ToList();
 			if (openings.Count == 0)
 			{
 				MessageBox.Notice("Could not find a proper opening for scene name \"" + name + "\". Aborting.", true, "Uh-oh.");
@@ -95,50 +99,12 @@ namespace Noxico
 			}
 		}
 
-		/*
-		private static List<XmlElement> FindOpenings(string sceneName)
-		{
-			var ret = new List<XmlElement>();
-			foreach (var scene in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(t => t.GetAttribute("name") == sceneName))
-				ret.Add(scene);
-			return ret;
-		}
-		*/
-		private static List<Token> FindOpenings(string sceneName)
-		{
-			return sceneList.Where(x => x.GetToken("name").Text == sceneName).ToList();
-		}
-
-		/*
-		private static Dictionary<object, string> ExtractActions(XmlElement scene)
-		{
-			var ret = new Dictionary<object, string>();
-			foreach (var action in scene.SelectNodes("action").OfType<XmlElement>())
-			{
-				foreach (var s in xDoc.SelectNodes("//scene").OfType<XmlElement>().Where(s => s.GetAttribute("name") == action.GetAttribute("name") && SceneFiltersOkay(s)))
-				{
-					var key = action.GetAttribute("name");
-					var listAs = s.GetAttribute("list");
-					if (action.HasAttribute("listas"))
-					{
-						key = s.GetAttribute("name") + '\xE064' + ret.Count.ToString();
-						listAs = action.GetAttribute("listas");
-					}
-					if (listAs.Contains('['))
-						listAs = i18n.Viewpoint(listAs, SceneSystem.top, SceneSystem.bottom);
-					if (!ret.ContainsKey(key))
-						ret.Add(key, listAs);
-				}
-			}
-			return ret;
-		}
-		*/
 		private static Dictionary<object, string> ExtractActions(Token scene)
 		{
 			var ret = new Dictionary<object, string>();
 			foreach (var action in scene.Tokens.Where(x => x.Name == "action"))
 			{
-				foreach (var s in sceneList.Where(x => x.GetToken("name").Text == action.Text && SceneFiltersOkay(x)))
+				foreach (var s in sceneList.Where(x => x.Name == "scene" && x.GetToken("name").Text == action.Text && SceneFiltersOkay(x)))
 				{
 					var key = action.Text;
 					var listAs = s.HasToken("list") ? s.GetToken("list").Text : string.Format("[missing \"list\"!] {0}", key);
@@ -156,42 +122,6 @@ namespace Noxico
 			return ret;
 		}
 
-		/*
-		private static string ExtractParagraphsAndScripts(XmlElement scene)
-		{
-			var ret = new StringBuilder();
-			foreach (var part in scene.ChildNodes.OfType<XmlElement>().Where(p => p.Name == "p" || p.Name == "script"))
-			{
-				if (part.Name == "p")
-				{
-					ParseParagraph(ret, part);
-					ret.AppendLine();
-				}
-				else if (part.Name == "script")
-				{
-					if (part.GetAttribute("type") == "text/javascript")
-					{
-						var buffer = new StringBuilder();
-						var js = JavaScript.MainMachine;
-						JavaScript.Ascertain(js);
-
-						js.SetParameter("top", top);
-						js.SetParameter("bottom", bottom);
-						js.SetFunction("print", new Action<string>(x => buffer.Append(x)));
-						js.SetFunction("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
-						js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
-						//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-						//js.SetParameter("Expectations", NoxicoGame.Expectations);
-						//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
-						js.Run(part.InnerText);
-						ret.AppendLine(buffer.ToString());
-						ret.AppendLine();
-					}
-				}
-			}
-			return ret.ToString().TrimEnd();
-		}
-		*/
 		private static string ExtractParagraphsAndScripts(Token scene)
 		{
 			var ret = new StringBuilder();
@@ -200,9 +130,9 @@ namespace Noxico
 				if (part.Name == "$")
 				{
 					if (part.HasToken("#text"))
-						ret.AppendLine(part.GetToken("#text").Text);
+						ret.AppendLine(part.GetToken("#text").Text.SmartQuote());
 					else
-						ret.AppendLine(part.Text);
+						ret.AppendLine(part.Text.SmartQuote());
 					ret.AppendLine();
 				}
 				else
@@ -264,17 +194,6 @@ namespace Noxico
 		}
 		*/
 
-		/*
-		private static bool SceneFiltersOkay(XmlElement scene)
-		{
-			foreach (var filter in scene.ChildNodes.OfType<XmlElement>().Where(f => f.Name == "filter"))
-			{
-				if (!FiltersOkay(filter))
-					return false;
-			}
-			return true;
-		}
-		*/
 		private static bool SceneFiltersOkay(Token scene)
 		{
 			if (!scene.HasToken("filters"))
