@@ -202,6 +202,8 @@
     <Content Include="mix\missions\chelsie\lairhouse.png" />
     <Content Include="mix\missions\chelsie\items.tml.patch" />
     <Content Include="mix\missions\chelsie\loot.tml.patch" />
+    <Content Include="mix\i18n.tml" />
+    <None Include="mix\dialogue.tml" />
     <None Include="mix\missions\chelsie\mission._js" />
     <Content Include="mix\missions\chelsie\manifest.txt" />
     <Content Include="mix\missions\melfina\manifest.txt" />
@@ -242,9 +244,6 @@
     <Content Include="mix\makedemonrealm.png" />
     <Content Include="mix\missions\littleponies\manifest.txt" />
     <None Include="mix\missions\littleponies\mission._js" />
-    <Content Include="mix\scenesDlg.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="mix\scenes\intro_scenesDlg.xml" />
     <Content Include="mix\scenes\pony_scenesDlg.xml" />
     <Content Include="mix\schedule.tml" />
@@ -254,9 +253,6 @@
     <Content Include="mix\travel.png" />
     <Content Include="unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
-    <Content Include="mix\words.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Noxico.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

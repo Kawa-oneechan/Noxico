@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
 
 namespace Noxico
 {
@@ -24,8 +22,7 @@ namespace Noxico
 					Size = 216,
 					Length = (uint)data.Length
 				};
-				var ret = system.CreateSound(data, FMOD.SoundMode.Default | FMOD.SoundMode.OpenMemory, ref fCSex, ref ns);
-
+				SoundSystem.CheckError(system.CreateSound(data, FMOD.SoundMode.Default | FMOD.SoundMode.OpenMemory, ref fCSex, ref ns));
 				InnerSound = ns;
 				Channel = new FMOD.Channel();
 			}
@@ -34,7 +31,7 @@ namespace Noxico
 				if (InnerSound == null)
 					return;
 				var chan = Channel;
-				system.PlaySound(FMOD.ChannelIndex.Free, InnerSound, false, ref chan);
+				SoundSystem.CheckError(system.PlaySound(FMOD.ChannelIndex.Free, InnerSound, false, ref chan));
 			}
 		}
 
@@ -127,19 +124,6 @@ namespace Noxico
 			musicChannel = null;
 
 			sounds = new Dictionary<string, Sound>();
-			/*
-			Program.WriteLine("SoundSystem: acquiring sounds...");
-			sounds = new Dictionary<string, Sound>();
-			foreach (var s in new[] { "Coin", "Door Lock", "Key", "Open Door", "Open Gate", "Push", "Shoot", "Alert" })
-			{
-				var file = Path.Combine("sounds", s + ".wav");
-				if (File.Exists(file))
-				{
-					sounds.Add(s, new Sound(file, system));
-					//sounds.Add(s, ns);
-				}
-			}
-			*/
 
 			Program.WriteLine("SoundSystem: loading libraries...");
 			musicLibrary = Mix.GetTokenTree("music.tml");
@@ -235,9 +219,9 @@ namespace Noxico
 						Length = (uint)data.Length
 					};
 					var ret = system.CreateSound(data, FMOD.SoundMode.LoopNormal | FMOD.SoundMode.OpenMemory, ref fCSex, ref music);
-
-					if (ret != FMOD.Result.OK)
-						return;
+					CheckError(ret);
+					//if (ret != FMOD.Result.OK)
+					//	return;
 					system.PlaySound(FMOD.ChannelIndex.Reuse, music, false, ref musicChannel);
 					musicPlaying = name;
 					currentSet = set;
@@ -245,8 +229,7 @@ namespace Noxico
 					//NoxicoGame.HostForm.Text = file;
 				}
 				else
-					Console.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);
-					//System.Windows.Forms.MessageBox.Show(string.Format("Couldn't load song \"{0}\".", name), "404");
+					Program.WriteLine("PlayMusic: couldn't load song \"{0}\".", name);
 			}
 		}
 
@@ -375,6 +358,19 @@ namespace Noxico
 			}
 			system.Close();
 			system = null;
+		}
+
+		public static void CheckError(FMOD.Result result)
+		{
+			if (result != FMOD.Result.OK)
+				throw new Exception(GetError(result));
+		}
+		public static string GetError(FMOD.Result result)
+		{
+			var message = i18n.GetString(string.Format("fmod_{0}", result.ToString().ToLowerInvariant()));
+			if (message.StartsWith("[fmod_"))
+				return i18n.Format("fmod_genericerror", result);
+			return i18n.Format("fmod_error", message);
 		}
 	}
 }
