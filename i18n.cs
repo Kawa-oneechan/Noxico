@@ -316,50 +316,59 @@ namespace Noxico
 			#region [] Parser
 			var regex = new Regex(@"
 \[
-	(?:(?<target>\w):)?		#Optional target and :
+	(?:(?<target>[\w\?]):)?		#Optional target and :
 
 	(?:						#One or more subcommands
 		(?:\:?)				#Separating :, optional in case target already had one
 		(?<subcom>[\w_]+)	#Command
 	)*
 \]", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
-			message = regex.Replace(message, (match =>
+			while (regex.IsMatch(message))
 			{
-				var target = bottom;
-				var subcom = string.Empty;
-				var parms = new List<string>();
-
-				if (!match.Groups["subcom"].Success)
+				message = regex.Replace(message, (match =>
 				{
-					subcom = match.Groups["target"].Value;
-				}
-				else
-				{
-					if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
-						target = (match.Groups["target"].Value[0] == 't' ? top : bottom);
-					subcom = match.Groups["subcom"].Value;
+					var target = bottom;
+					var subcom = string.Empty;
+					var parms = new List<string>();
 
-					if (match.Groups["subcom"].Captures.Count > 1)
+					if (match.Groups["target"].Value == "?")
+					{
+						var pToks = SceneSystem.Placeholders.Tokens.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
+						var pTok = pToks[Random.Next(pToks.Count)];
+						return pTok.Tokens[Random.Next(pTok.Tokens.Count)].Text;
+					}
+					else if (!match.Groups["subcom"].Success)
 					{
 						subcom = match.Groups["target"].Value;
-						//subcom = match.Groups["subcom"].Captures[0].Value;
-						for (var i = 0; i < match.Groups["subcom"].Captures.Count; i++)
+					}
+					else
+					{
+						if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
+							target = (match.Groups["target"].Value[0] == 't' ? top : bottom);
+						subcom = match.Groups["subcom"].Value;
+
+						if (match.Groups["subcom"].Captures.Count > 1)
 						{
-							var c = match.Groups["subcom"].Captures[i];
-							Console.WriteLine(c);
-							parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
+							subcom = match.Groups["target"].Value;
+							//subcom = match.Groups["subcom"].Captures[0].Value;
+							for (var i = 0; i < match.Groups["subcom"].Captures.Count; i++)
+							{
+								var c = match.Groups["subcom"].Captures[i];
+								Console.WriteLine(c);
+								parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
+							}
 						}
 					}
-				}
 
-				parms.Add(string.Empty);
-				parms.Add(string.Empty);
-				parms.Add(string.Empty);
+					parms.Add(string.Empty);
+					parms.Add(string.Empty);
+					parms.Add(string.Empty);
 
-				if (subcoms.ContainsKey(subcom))
-					return subcoms[subcom](target, parms);
-				return string.Format("(?{0}?)", subcom);
-			}));
+					if (subcoms.ContainsKey(subcom))
+						return subcoms[subcom](target, parms);
+					return string.Format("(?{0}?)", subcom);
+				}));
+			}
 			#endregion
 
 			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);

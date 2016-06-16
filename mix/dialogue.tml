@@ -108,7 +108,7 @@ scene: GenericUnknown2
 
 scene: GenericKnown
 	name: (start)
-	$: ""Hello again, [t:name]", [b:he] greets you. "Is there something I can do for you?""
+	$: ""[?:helloagain], [t:name]", [b:he] greets you. "[?:canihelp]""
 	action: invite to have sex
 	action: no thank you goodbye
 
@@ -170,7 +170,19 @@ scene: GenericIntroduce
 	action: invite to have sex
 	action: goodbye
 
-
-
-
-
+-- #region Madlibs system, yo!
+-- Actual token names don't matter. Only their texts are used.
+placeholders
+	Hello
+		?: "Hello"
+		?: "Hi"
+	hello
+		?: "hello"
+		?: "hi"
+	helloagain
+		?: "[?:Hello] again"
+		?: "Oh [?:hello]"
+	canihelp
+		?: "Is there something I can do for you?"
+		?: "Can I help you somehow?"
+-- #endregion
