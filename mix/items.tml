@@ -274,6 +274,39 @@ item: butter_knife
 	smallweapon
 	blade
 
+item: kitchen_knife
+	_n: kitchen knife
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 25
+		skill: short_sword
+		attacktype: stab
+	description: "A big knife meant for cutting dinner with."
+	ascii
+		char: 0x196
+		fore: silver
+	price: 40
+	smallweapon
+	blade
+
+item: spork
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 2
+		skill: short_sword
+		attacktype: stab
+	description: "You're kidding, right?"
+	ascii
+		char: 0x196
+		fore: silver
+	price: 40
+	smallweapon
+	blade
+
 item: test_ring
 	equipable
 		ring
@@ -476,6 +509,20 @@ item: chairlegoftruth
 	rareweapon
 	wood
 
+item: hammer
+	fireproof
+	unique
+	equipable
+		hand
+	weight: light
+	weapon
+		damage: 40
+		skill: club
+		attacktype: crush
+	description: "A small carpenter's hammer."
+	ascii
+		char: 0x192
+		fore: silver
 
 
 -- #region Nethack weapons
@@ -648,10 +695,85 @@ item: tsurugi
 		char: 0x182
 		fore: silver
 
--- lance, mace, warhammer, wooden club, rubber hose, quarterstaff
+item: mace
+	equipable
+		hand
+		twohanded
+	weight: 
+		medium
+	weapon
+		damage: 70
+		skill: club
+		attacktype: crush
+	description: "A sturdy stick with a spiked ball on the end, not to be confused with a little spray can full of liquid pain."
+	ascii
+		char: 0x1A8
+		fore: silver
+
+item: warhammer
+	fireproof
+	unique
+	equipable
+		hand
+		twohanded
+	weight: heavy
+	weapon
+		damage: 70
+		skill: warhammer
+		attacktype: crush
+	description: "A big ol' hammer, meant for war."
+	ascii
+		char: 0x192
+		fore: silver
+
+item: woodenclub
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 70
+		skill: club
+		attacktype: crush
+	description: "A rough piece of wood, in a shape not unlike a crude bowling pin."
+	ascii
+		char: 0x184
+		fore: darkgoldenrod
+	wood
+
+-- rubber hose, quarterstaff
 -- bagh nakh (wolverine claws), riding crop, two-by-four
--- bullwhip, pistol
 -- #endregion
+
+__marker: Firearms
+item: magnum357
+	_n: "Pistol"
+	_u: "revolver"
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 40
+		range: 20
+		skill: small_firearm
+		ammo: bullet357
+	description: "Heavy ordnance. Fires up to seven shots before a reload is required, but we're abstracting that away."
+	ascii
+		char: 0x183
+		fore: silver
+
+__marker: <small>Ammo</small>
+item: bullet357
+	_n: ".357-gauge bullet"
+	test
+	fireproof
+	ammo
+	charge
+		collectivename: ".357-gauge bullets"
+-- add limit token for carrying cap per instance
+	ascii
+		char: 0x1F3
+		fore: gold
 
 __marker: <small>Misc stuff</small>
 item: whip
