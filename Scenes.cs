@@ -125,9 +125,9 @@ namespace Noxico
 		private static string ExtractParagraphsAndScripts(Token scene)
 		{
 			var ret = new StringBuilder();
-			foreach (var part in scene.Tokens.Where(x => x.Name == "$" || x.Name == "script"))
+			foreach (var part in scene.Tokens.Where(x => x.Name == "$" || x.Name == "#a" || x.Name == "script"))
 			{
-				if (part.Name == "$")
+				if (part.Name == "$" || part.Name == "#a")
 				{
 					if (part.HasToken("#text"))
 						ret.AppendLine(part.GetToken("#text").Text.SmartQuote());
