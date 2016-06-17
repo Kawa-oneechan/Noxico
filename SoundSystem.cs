@@ -15,7 +15,6 @@ namespace Noxico
 			{
 				this.system = system;
 				FMOD.Sound ns = null;
-				//var res = system.CreateSound(file, FMOD.SoundMode.Default, ref ns);
 				var data = Mix.GetBytes(file);
 				var fCSex = new FMOD.CreateSoundExInfo()
 				{
@@ -24,14 +23,14 @@ namespace Noxico
 				};
 				SoundSystem.CheckError(system.CreateSound(data, FMOD.SoundMode.Default | FMOD.SoundMode.OpenMemory, ref fCSex, ref ns));
 				InnerSound = ns;
-				Channel = new FMOD.Channel();
 			}
 			public void Play()
 			{
 				if (InnerSound == null)
 					return;
 				var chan = Channel;
-				SoundSystem.CheckError(system.PlaySound(FMOD.ChannelIndex.Free, InnerSound, false, ref chan));
+				SoundSystem.CheckError(system.PlaySound(InnerSound, false, ref chan));
+				Channel = chan;
 			}
 		}
 
@@ -218,11 +217,8 @@ namespace Noxico
 						Size = 216,
 						Length = (uint)data.Length
 					};
-					var ret = system.CreateSound(data, FMOD.SoundMode.LoopNormal | FMOD.SoundMode.OpenMemory, ref fCSex, ref music);
-					CheckError(ret);
-					//if (ret != FMOD.Result.OK)
-					//	return;
-					system.PlaySound(FMOD.ChannelIndex.Reuse, music, false, ref musicChannel);
+					CheckError(system.CreateSound(data, FMOD.SoundMode.LoopNormal | FMOD.SoundMode.OpenMemory, ref fCSex, ref music));
+					system.PlaySound(music, false, ref musicChannel);
 					musicPlaying = name;
 					currentSet = set;
 					musicChannel.SetVolume(musicVolume);
@@ -314,30 +310,41 @@ namespace Noxico
 			if (!string.IsNullOrEmpty(FadeTarget))
 				Fade();
 			system.Update();
-			/*
+#if DEBUG
 			if (!IniFile.GetValue("audio", "debug", false))
 				return;
 			var musicchans = 0;
-			var type = FMOD.SOUND_TYPE.UNKNOWN;
-			var format = FMOD.SOUND_FORMAT.NONE;
+			var type = FMOD.SoundType.Unknown;
+			var format = FMOD.SoundFormat.None;
 			var channels = 0;
 			var bits = 0;
-			var row = 0u;
-			var pattern = 0u;
-			var rows = 0u;
-			var patterns = 0u;
 			var volume = 0f;
-			music.getFormat(ref type, ref format, ref channels, ref bits);
-			music.getMusicNumChannels(ref musicchans);
-			musicChannel.getPosition(ref row, FMOD.TIMEUNIT.MODROW);
-			musicChannel.getPosition(ref pattern, FMOD.TIMEUNIT.MODPATTERN);
-			music.getLength(ref rows, FMOD.TIMEUNIT.MODROW);
-			music.getLength(ref patterns, FMOD.TIMEUNIT.MODPATTERN);
-			musicChannel.getVolume(ref volume);
-			var debug = string.Format("{0}ch {1}, row {2}/{3}, pattern {4}/{5}. Volume: {6:P0}", musicchans, type.ToString(), row, rows, pattern, patterns, volume);
-			NoxicoGame.HostForm.Write(musicPlaying.Remove(musicPlaying.LastIndexOf('.')).PadRight(80), System.Drawing.Color.Gray, System.Drawing.Color.Transparent, 0, 0);
-			NoxicoGame.HostForm.Write(debug.PadRight(80), System.Drawing.Color.Gray, System.Drawing.Color.Transparent, 0, 1);
-			*/
+			var debug = string.Empty;
+			music.GetFormat(out type, out format, out channels, out bits);
+			musicChannel.GetVolume(out volume);
+			if (type == FMOD.SoundType.Mp3 | type == FMOD.SoundType.OggVorbis)
+			{
+				var ms = 0u;
+				var len = 0u;
+				musicChannel.GetPosition(out ms, FMOD.TimeUnit.Milliseconds);
+				music.GetLength(out len, FMOD.TimeUnit.Milliseconds);
+				debug = string.Format("{0}ch {1}, {2} / {3}. Volume: {4:P0}", musicchans, type.ToString(), new TimeSpan(ms * 10000), new TimeSpan(len * 10000), volume);
+			}
+			else
+			{
+				var row = 0u;
+				var pattern = 0u;
+				var rows = 0u;
+				var patterns = 0u;
+				music.GetMusicNumChannels(out musicchans);
+				musicChannel.GetPosition(out row, FMOD.TimeUnit.ModRow);
+				musicChannel.GetPosition(out pattern, FMOD.TimeUnit.ModPattern);
+				music.GetLength(out rows, FMOD.TimeUnit.ModRow);
+				music.GetLength(out patterns, FMOD.TimeUnit.ModPattern);
+				debug = string.Format("{0}ch {1}, row {2}/{3}, pattern {4}/{5}. Volume: {6:P0}", musicchans, type.ToString(), row, rows, pattern, patterns, volume);
+			}
+			NoxicoGame.HostForm.Write(debug.PadRight(100), System.Drawing.Color.Gray, System.Drawing.Color.Black, 0, 0);
+#endif
 		}
 
 		public void ShutDown()
