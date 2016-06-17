@@ -194,16 +194,13 @@ namespace Noxico
 					cdataText.Clear();
 					continue;
 				}
-				/*
-				if (!NoRolls && tokenName.StartsWith("oneof "))
+				if (tokenName.StartsWith("- "))
 				{
-					var options = l.Substring(l.IndexOf(' ') + 1).Split(',');
-					var choice = options[Random.Next(options.Length)].Trim();
-					if (string.IsNullOrEmpty(choice))
-						continue; //picked a blank token -- eat it.
-					tokenName = choice;
+					//Token is an anonymous value -- transform from "- X" to "#a: X".
+					tokenName = string.Format("#a: {0}", tokenName.Substring(2));
+					l = tokenName;
 				}
-				else */ if (l.Contains(": "))
+				if (l.Contains(": "))
 				{
 					//Token has a value
 					if (l.Contains(": \""))
@@ -211,22 +208,6 @@ namespace Noxico
 						var text = l.Substring(l.IndexOf('\"') + 1);
 						newOne.Text = text.Remove(text.LastIndexOf('\"'));
 					}
-					/*
-					else if (!NoRolls && l.Contains(": oneof "))
-					{
-						var options = l.Substring(l.IndexOf("of ") + 3).Split(',');
-						var choice = options[Random.Next(options.Length)].Trim();
-						newOne.Text = choice;
-					}
-					else if (!NoRolls && l.Contains(": roll "))
-					{
-						var xDyPz = l.Substring(l.LastIndexOf(' ') + 1);
-						int y = 0, z = 0;
-						ParseRoll(xDyPz, out y, out z);
-						var roll = Random.Next(y) + z;
-						newOne.Value = roll;
-					}
-					*/
 					else if (l.Contains(": U+"))
 					{
 						var codePoint = l.Substring(l.LastIndexOf('+') + 1);
