@@ -1,134 +1,116 @@
 using System;
+using System.Text;
 using System.Runtime.InteropServices;
 namespace FMOD
 {
 	public class Version
 	{
-		public const int Number = 0x43705;
+		public const int Number = 0x00010804;
 #if THIRTYTWO
-        public const string Dll = "fmodex";
+        public const string Dll = "fmod";
 #else
-		public const string Dll = "fmodex64";
+		public const string Dll = "fmod64";
 #endif
 	}
 	public enum Result : int
 	{
 		OK,
-		AlreadyLocked,
 		BadCommand,
-		CDDADrivers,
-		CDDAInit,
-		CDDAInvalidDevice,
-		CDDANoAudio,
-		CDDANoDevice,
-		CDDANoDisc,
-		CDDARead,
 		ChannelAlloc,
 		ChannelStolen,
-		COM,
-		DMA,
-		DSPConnection,
-		DSPFormat,
-		DSPNotFound,
-		DSPRunning,
-		DSPTooManyConnections,
+		Dma,
+		DspConnection,
+		DspDontProcess,
+		DspFormat,
+		DspInUse,
+		DspNotFound,
+		DspReserved,
+		DspSilence,
+		DspType,
 		FileBad,
 		FileCouldNotSeek,
 		FileDiskEjected,
 		FileEOF,
+		FileEndOfData,
 		FileNotFound,
-		FileUnwantedAccess,
 		UnknownFormat,
-		HTTP,
-		HTTPAccess,
-		HTTPProxyAuth,
-		HTTPServerError,
-		HTTPTimeOut,
+		HeaderMismatch,
+		Http,
+		HttpAccess,
+		HttpProxyAuth,
+		HttpServerError,
+		HttpTimeOut,
 		Initialization,
 		Initialized,
 		Interal,
-		InvalidAddress,
 		InvalidFloat,
 		InvalidHandle,
 		InvalidParameter,
 		InvalidPosition,
 		InvalidSpeaker,
 		InvalidSyncPoint,
+		InvalidThread,
 		InvalidVector,
 		MaxAudibleReached,
 		NotEnoughMemory,
 		MemoryCanNotPoint,
-		NotEnoughConsoleMemory,
-		Needs2D,
 		Needs3D,
 		NeedsHardware,
-		NeedsSoftware,
 		NetCanNotConnect,
 		NetSocketError,
-		NetBadURL,
+		NetBadUrl,
 		NetWouldBlock,
 		NotReady,
 		OutputAllocated,
-		OutputHardwareBuffer,
+		OutputCreateBuffer,
 		OutputBadDriverCall,
-		OutputEnumeration,
 		OutputFormat,
 		OutputInit,
-		OutputNoHardware,
-		OutputNoSoftware,
-		Pan,
+		OutputNoDrivers,
 		Plugin,
-		PluginInstances,
 		PluginMissing,
 		PluginResource,
-		Preloaded,
-		ProgrammerSound,
+		PluginVersion,
 		Record,
+		ReverbChannelGroup,
 		ReverbInstance,
+		Subsounds,
 		SubsoundAllocated,
 		SubsoundCanNotMove,
-		SubsoundMode,
-		Subsounds,
 		TagNotFound,
 		TooManyChannels,
+		Truncated,
 		Unimplemented,
 		Uninitialized,
 		Unsupported,
-		Update,
 		Version,
-		EventFailed,
-		EventInfoOnly,
-		EventInternal,
-		EventMaxStreams,
-		EventMismatch,
-		EventNameConflict,
-		EventNotFound,
-		EventNeedsSimple,
-		EventGUIDConflict,
 		EventAlreadyLoaded,
-		MusicUninitialized,
-		MusicNotFound,
-		MusicNoCallback,
+		EventLiveUpdateBusy,
+		EventLiveUpdateMismatch,
+		EventLiveUpdateTimeout,
+		EventNotFound,
+		StudioUninitialized,
+		StudioNotLoaded,
+		InvalidString,
+		AlreadyLocked,
+		NotLocked,
+		RecordDisconnected,
+		TooManySamples
 	}
 	public enum InitFlags : int
 	{
 		Normal = 1,
 		StreamFromUpdate = 1,
-		RightHanded3D = 2,
-		SoftwareDisabled = 4,
-		OcclusionLowPass = 8,
-		HRTFLowPass = 0x10,
-		SoftwareReverbLowMemory = 0x40,
-		EnableProfiling = 0x20,
-		Volume0BecomesVirtual = 0x80,
-		WasapiExclusive = 0x100,
-		DisableDolby = 0x100000,
-		DisableDolbyOnWii = 0x100000,
-		Xbox360MusicMuteNotPause = 0x200000,
-		SyncMixerWithUpdate = 0x400000,
-		DTSNeuralSurround = 0x2000000,
-		GeometryUseClosest = 0x4000000,
-		DisableMyEarsAutodetect = 0x8000000
+		MixFromUpdate = 2, //Win/Wii/PS3/Xbox/360 only
+		RightHanded3D = 4,
+		LowPass = 0x100,
+		DistanceFilter = 0x200,
+		EnableProfiling = 0x10000,
+		Volume0BecomesVirtual = 0x20000,
+		GeometryUseClosest = 0x40000,
+		PreferDolbyDownmix = 0x80000,
+		ThreadUnsafe = 0x100000,
+		ProfileMeterAll = 0x200000,
 	}
 	public enum SoundMode : uint
 	{
@@ -138,8 +120,6 @@ namespace FMOD
 		LoopBiDi = 4,
 		TwoD = 8,
 		ThreeD = 0x10,
-		Hardware = 0x20,
-		Software = 0x40,
 		CreateStream = 0x80,
 		CreateSample = 0x100,
 		CreateCompressedSample = 0x200,
@@ -156,27 +136,18 @@ namespace FMOD
 		ThreeDWorldRelative = 0x80000,
 		ThreeDInverseRolloff = 0x100000,
 		ThreeDLinearSquareRolloff = 0x400000,
-		ThreeDLogRoloff = 0x100000,
-		ThreeDLinearRolloff = 0x200000,
+		ThreeDInverseTaperedRolloff = 0x800000,
 		ThreeDCustomRolloff = 0x4000000,
 		ThreeDIgnoreGeometry = 0x40000000,
-		CDDAForceAspi = 0x400000,
-		CDDAJitterCorrect = 0x800000,
-		Unicode = 0x1000000,
 		IgnoreTags = 0x2000000,
 		LowMemory = 0x8000000,
 		LoadSecondaryRam = 0x20000000,
 		VirtualPlayFromStart = 0x80000000
 	}
-	public enum ChannelIndex
-	{
-		Free = -1,
-		Reuse = -2
-	}
 	[StructLayout(LayoutKind.Sequential)]
 	public struct CreateSoundExInfo
 	{
-		public int Size; //216
+		public int Size; //216, set by CreateSound.
 		public uint Length;
 		public uint FileOffset;
 		public int NumChannels;
@@ -187,8 +158,8 @@ namespace FMOD
 		public int NumSubsounds;
 		public IntPtr InclusionList;
 		public int InclusionListNum;
-		public PCMReadCallback PCMReadCallback;
-		public PCMSetPosCallback PCMSetPosCallback;
+		public PcmReadCallback PcmReadCallback;
+		public PcmSetPosCallback PcmSetPosCallback;
 		public NonBlockCallback NonBlockCallback;
 		public string DLSName;
 		public string EncryptionKey;
@@ -201,15 +172,18 @@ namespace FMOD
 		public FileSeekCallback FileSeekCallback;
 		public FileAsyncReadCallback FileAsyncReadCallback;
 		public FileAsyncCancelCallback FileAsyncCancelCallback;
-		public SpeakerMap SpeakerMap;
+		public IntPtr FileUserData;
+		public int FileBufferSize;
+		public ChannelOrder ChannelOrder;
+		public ChannelMask ChannelMask;
 		public IntPtr InitialSoundGroup;
 		public uint InitialSeekPosition;
 		public TimeUnit InitialSeekPositionType;
 		public int IgnoreSetFilesystem;
-		public int CDDAForceAspi;
 		public uint AudioQueuePolicy;
 		public uint MinMidiGranularity;
 		public int NonBlockThreadID;
+		public IntPtr FsbGuid;
 	}
 	public enum SoundFormat : int
 	{
@@ -218,43 +192,33 @@ namespace FMOD
 		Pcm16,
 		Pcm24,
 		Pcm32,
-		PcmFloat,
-		GCADPCM,
-		IMAADPCM,
-		VAG,
-		HEVAG,
-		XMA,
-		MPEG
+		PcmFloat
 	}
 	public enum SoundType
 	{
 		Unknown,
-		AIFF,
-		ASF,
-		AT3,
-		CDDA,
-		DLS,
-		FLAC,
-		FSB,
-		GCADPCM,
-		IT,
-		MIDI,
-		MOD,
-		MPEG,
+		Aiff,
+		Asf,
+		Dls,
+		Flac,
+		Fsb,
+		It,
+		Midi,
+		Mod,
+		Mp3,
 		OggVorbis,
 		Playlist,
 		Raw,
 		S3M,
-		SF2,
-		User,
-		WAV,
+		UserCreated,
+		Wave,
 		XM,
-		XMA,
-		VAG,
+		Xma,
 		AudioQueue,
-		XWMA,
-		BCWAV,
-		AT9,
+		Vorbis,
+		MediaFoundation,
+		AndroidMediaCodec,
+		FmodAdpcm,
 	}
 	public enum TimeUnit
 	{
@@ -266,19 +230,36 @@ namespace FMOD
 		ModOrder = 0x100,
 		ModRow = 0x200,
 		ModPattern = 0x400,
-		SentenceMilliseconds = 0x10000,
-		SentencePcm = 0x20000,
-		SentencePcmBytes = 0x40000,
-		Sentence = 0x80000,
-		SentenceSubsound = 0x100000,
 		Buffered = 0x10000000,
 	}
-	public enum SpeakerMap
+	public enum ChannelMask : uint
+	{
+		FrontLeft = 1,
+		FrontRight = 2,
+		FrontCenter = 4,
+		LowFrequency = 8,
+		SurroundLeft = 0x10,
+		SurroundRight = 0x20,
+		BackLeft = 0x40,
+		BackRight = 0x80,
+		BackCenter = 0x100,
+		Mono = FrontLeft,
+		Stereo = FrontLeft | FrontRight,
+		LeftRightCenter = FrontLeft | FrontRight | FrontCenter,
+		Quad = FrontLeft | FrontRight | SurroundLeft | SurroundRight,
+		FivePtOne = FrontLeft | FrontRight | FrontCenter | LowFrequency | SurroundLeft | SurroundRight,
+		FivePtOneRears = FrontLeft | FrontRight | FrontCenter | LowFrequency | BackLeft | BackRight,
+		SevenPtOh = FrontLeft | FrontRight | FrontCenter | SurroundLeft | SurroundRight | BackLeft | BackRight,
+		SevenPtOne = FrontLeft | FrontRight | FrontCenter | LowFrequency | SurroundLeft | SurroundRight | BackLeft | BackRight,
+	}
+	public enum ChannelOrder : int
 	{
 		Default,
+		WaveFormat,
+		ProTools,
 		AllMono,
 		AllStereo,
-		Dolby51ProTools
+		Alsa
 	}
 	public enum SystemCallbackType : int
 	{
@@ -286,8 +267,17 @@ namespace FMOD
 		DeviceLost,
 		MemoryAllocFailed,
 		ThreadCreated,
-		BadDSPConnection,
-		BadDSPLevel
+		BadDspConnection,
+		BadDspLevel,
+		PreMix,
+		PostMix,
+		Error,
+		MidMix,
+		ThreadDestroyed,
+		PreUpdate,
+		PostUpdate,
+		RecordListChanged,
+
 	}
 	public enum ChannelCallbackType : int
 	{
@@ -299,8 +289,8 @@ namespace FMOD
 	public delegate Result SystemCallback(IntPtr systemRaw, SystemCallbackType type, IntPtr commanddata1, IntPtr commanddata2);
 	public delegate Result ChannelCallback(IntPtr channelRaw, ChannelCallbackType type, IntPtr commanddata1, IntPtr commanddata2);
 	public delegate Result NonBlockCallback(IntPtr soundRaw, Result result);
-	public delegate Result PCMReadCallback(IntPtr soundRaw, IntPtr data, uint dataLength);
-	public delegate Result PCMSetPosCallback(IntPtr soundRaw, int subsound, uint position, TimeUnit positionType);
+	public delegate Result PcmReadCallback(IntPtr soundRaw, IntPtr data, uint dataLength);
+	public delegate Result PcmSetPosCallback(IntPtr soundRaw, int subsound, uint position, TimeUnit positionType);
 	public delegate Result FileOpenCallback([MarshalAs(UnmanagedType.LPWStr)]string name, int unicode, ref uint fileSize, ref IntPtr handle, ref IntPtr userData);
 	public delegate Result FileCloseCallback(IntPtr handle, IntPtr userData);
 	public delegate Result FileReadCallback(IntPtr handle, IntPtr buffer, uint sizeBytes, ref uint bytesRead, IntPtr userData);
@@ -311,25 +301,62 @@ namespace FMOD
 	{
 		public static Result CreateSystem(ref System system)
 		{
-			Result result = Result.OK;
-			IntPtr systemraw = new IntPtr();
-			System systemnew = null;
-			result = FMOD_System_Create(ref systemraw);
+			system = null;
+			var rawPtr = new IntPtr();
+			var result = FMOD_System_Create(out rawPtr);
 			if (result != Result.OK)
-			{
 				return result;
-			}
-			systemnew = new System();
-			systemnew.SetRaw(systemraw);
-			system = systemnew;
+			system = new System(rawPtr);
 			return result;
 		}
 		#region importfunctions
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_Create(ref IntPtr system);
+		private static extern Result FMOD_System_Create(out IntPtr system);
 		#endregion
 	}
-	public class System
+	public class HandleBase
+	{
+		protected IntPtr rawPtr;
+		public HandleBase(IntPtr newPtr)
+		{
+			rawPtr = newPtr;
+		}
+		public bool isValid()
+		{
+			return rawPtr != IntPtr.Zero;
+		}
+		public IntPtr getRaw()
+		{
+			return rawPtr;
+		}
+		#region equality
+		public override bool Equals(Object obj)
+		{
+			return Equals(obj as HandleBase);
+		}
+		public bool Equals(HandleBase p)
+		{
+			return ((object)p != null && rawPtr == p.rawPtr);
+		}
+		public override int GetHashCode()
+		{
+			return rawPtr.ToInt32();
+		}
+		public static bool operator ==(HandleBase a, HandleBase b)
+		{
+			if (Object.ReferenceEquals(a, b))
+				return true;
+			if (((object)a == null) || ((object)b == null))
+				return false;
+			return (a.rawPtr == b.rawPtr);
+		}
+		public static bool operator !=(HandleBase a, HandleBase b)
+		{
+			return !(a == b);
+		}
+		#endregion
+	}
+	public class System : HandleBase
 	{
 		/// <summary>
 		/// Closes and frees a system object and its resources.
@@ -337,7 +364,10 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Release()
 		{
-			return FMOD_System_Release(systemRaw);
+			Result result = FMOD_System_Release(rawPtr);
+			if (result == Result.OK)
+				rawPtr = IntPtr.Zero;
+			return result;
 		}
 		/// <summary>
 		/// Closes the system object without freeing the object's memory, so the system handle will still be valid.
@@ -349,7 +379,7 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Close()
 		{
-			return FMOD_System_Close(systemRaw);
+			return FMOD_System_Close(rawPtr);
 		}
 		/// <summary>
 		/// Updates the FMOD system. This should be called once per 'game' tick, or once per frame in your application
@@ -357,7 +387,7 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Update()
 		{
-			return FMOD_System_Update(systemRaw);
+			return FMOD_System_Update(rawPtr);
 		}
 		/// <summary>
 		/// Initializes the system object, and the sound device. This has to be called at the start of the user's program.
@@ -396,7 +426,7 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Initialize(int maxChannels, InitFlags flags, IntPtr extraDriverData)
 		{
-			return FMOD_System_Init(systemRaw, maxChannels, flags, extraDriverData);
+			return FMOD_System_Init(rawPtr, maxChannels, flags, extraDriverData);
 		}
 		/// <summary>
 		/// Loads a sound into memory, or opens it for streaming.
@@ -410,34 +440,15 @@ namespace FMOD
 		/// </param>
 		/// <param name="sound">Address of a variable to receive a newly created FMOD Sound object.</param>
 		/// <returns></returns>
-		public Result CreateSound(string name, SoundMode mode, ref CreateSoundExInfo exInfo, ref Sound sound)
+		public Result CreateSound(string name, SoundMode mode, ref CreateSoundExInfo exInfo, out Sound sound)
 		{
-			Result result = Result.OK;
-			IntPtr soundraw = new IntPtr();
-			Sound soundnew = null;
-			mode = mode | FMOD.SoundMode.Unicode;
-			try
-			{
-				result = FMOD_System_CreateSound(systemRaw, name, mode, ref exInfo, ref soundraw);
-			}
-			catch
-			{
-				result = Result.InvalidParameter;
-			}
-			if (result != Result.OK)
-			{
-				return result;
-			}
-			if (sound == null)
-			{
-				soundnew = new Sound();
-				soundnew.SetRaw(soundraw);
-				sound = soundnew;
-			}
-			else
-			{
-				sound.SetRaw(soundraw);
-			}
+			sound = null;
+			byte[] stringData;
+			stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
+			exInfo.Size = Marshal.SizeOf(exInfo);
+			IntPtr soundraw;
+			Result result = FMOD_System_CreateSound(rawPtr, stringData, mode, ref exInfo, out soundraw);
+			sound = new Sound(soundraw);
 			return result;
 		}
 		/// <summary>
@@ -452,31 +463,11 @@ namespace FMOD
 		/// <returns></returns>
 		public Result CreateSound(byte[] data, SoundMode mode, ref CreateSoundExInfo exInfo, ref Sound sound)
 		{
-			Result result = Result.OK;
-			IntPtr soundraw = new IntPtr();
-			Sound soundnew = null;
-			try
-			{
-				result = FMOD_System_CreateSound(systemRaw, data, mode, ref exInfo, ref soundraw);
-			}
-			catch
-			{
-				result = Result.InvalidParameter;
-			}
-			if (result != Result.OK)
-			{
-				return result;
-			}
-			if (sound == null)
-			{
-				soundnew = new Sound();
-				soundnew.SetRaw(soundraw);
-				sound = soundnew;
-			}
-			else
-			{
-				sound.SetRaw(soundraw);
-			}
+			sound = null;
+			exInfo.Size = Marshal.SizeOf(exInfo);
+			IntPtr soundraw;
+			Result result = FMOD_System_CreateSound(rawPtr, data, mode, ref exInfo, out soundraw);
+			sound = new Sound(soundraw);
 			return result;
 		}
 		/// <summary>
@@ -490,33 +481,9 @@ namespace FMOD
 		/// <returns></returns>
 		public Result CreateSound(string name, SoundMode mode, ref Sound sound)
 		{
-			Result result = Result.OK;
-			IntPtr soundraw = new IntPtr();
-			Sound soundnew = null;
-			mode = mode | FMOD.SoundMode.Unicode;
-			try
-			{
-				result = FMOD_System_CreateSound(systemRaw, name, mode, 0, ref soundraw);
-			}
-			catch
-			{
-				result = Result.InvalidParameter;
-			}
-			if (result != Result.OK)
-			{
-				return result;
-			}
-			if (sound == null)
-			{
-				soundnew = new Sound();
-				soundnew.SetRaw(soundraw);
-				sound = soundnew;
-			}
-			else
-			{
-				sound.SetRaw(soundraw);
-			}
-			return result;
+			var exinfo = new CreateSoundExInfo();
+			exinfo.Size = Marshal.SizeOf(exinfo);
+			return CreateSound(name, mode, ref exinfo, out sound);
 		}
 		/// <summary>
 		/// Plays a sound object on a particular channel.
@@ -536,42 +503,15 @@ namespace FMOD
 		/// used, this can contain a previously used channel handle and FMOD will re-use it to play a sound on.
 		/// </param>
 		/// <returns></returns>
-		public Result PlaySound(ChannelIndex channelIndex, Sound sound, bool paused, ref Channel channel)
+		public Result PlaySound(Sound sound, bool paused, ref Channel channel)
 		{
-			Result result = Result.OK;
+			channel = null;
+			var channelGroupRaw = IntPtr.Zero;
 			IntPtr channelraw;
-			Channel channelnew = null;
-			if (channel != null)
-			{
-				channelraw = channel.GetRaw();
-			}
-			else
-			{
-				channelraw = new IntPtr();
-			}
-			try
-			{
-				result = FMOD_System_PlaySound(systemRaw, channelIndex, sound.GetRaw(), (paused ? 1 : 0), ref channelraw);
-			}
-			catch
-			{
-				result = Result.InvalidParameter;
-			}
-			if (result != Result.OK)
-			{
-				return result;
-			}
-			if (channel == null)
-			{
-				channelnew = new Channel();
-				channelnew.SetRaw(channelraw);
-				channel = channelnew;
-			}
-			else
-			{
-				channel.SetRaw(channelraw);
-			}
+			Result result = FMOD_System_PlaySound(rawPtr, sound.getRaw(), channelGroupRaw, paused, out channelraw);
+			channel = new Channel(channelraw);
 			return result;
+
 		}
 		#region importfunctions
 		[DllImport(Version.Dll)]
@@ -583,38 +523,33 @@ namespace FMOD
 		[DllImport(Version.Dll)]
 		private static extern Result FMOD_System_Update(IntPtr system);
 		[DllImport(Version.Dll, CharSet = CharSet.Unicode)]
-		private static extern Result FMOD_System_CreateSound(IntPtr system, string name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateSound(IntPtr system, string name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, out IntPtr sound);
 		[DllImport(Version.Dll, CharSet = CharSet.Unicode)]
-		private static extern Result FMOD_System_CreateStream(IntPtr system, string name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateStream(IntPtr system, string name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, out IntPtr sound);
 		[DllImport(Version.Dll, CharSet = CharSet.Unicode)]
-		private static extern Result FMOD_System_CreateSound(IntPtr system, string name_or_data, SoundMode mode, int exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateSound(IntPtr system, string name_or_data, SoundMode mode, int exinfo, out IntPtr sound);
 		[DllImport(Version.Dll, CharSet = CharSet.Unicode)]
-		private static extern Result FMOD_System_CreateStream(IntPtr system, string name_or_data, SoundMode mode, int exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateStream(IntPtr system, string name_or_data, SoundMode mode, int exinfo, out IntPtr sound);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_CreateSound(IntPtr system, byte[] name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateSound(IntPtr system, byte[] name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, out IntPtr sound);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_CreateStream(IntPtr system, byte[] name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateStream(IntPtr system, byte[] name_or_data, SoundMode mode, ref CreateSoundExInfo exinfo, out IntPtr sound);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_CreateSound(IntPtr system, byte[] name_or_data, SoundMode mode, int exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateSound(IntPtr system, byte[] name_or_data, SoundMode mode, int exinfo, out IntPtr sound);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_CreateStream(IntPtr system, byte[] name_or_data, SoundMode mode, int exinfo, ref IntPtr sound);
+		private static extern Result FMOD_System_CreateStream(IntPtr system, byte[] name_or_data, SoundMode mode, int exinfo, out IntPtr sound);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_System_PlaySound(IntPtr system, ChannelIndex channelid, IntPtr sound, int paused, ref IntPtr channel);
+		private static extern Result FMOD_System_PlaySound(IntPtr system, IntPtr sound, IntPtr channelGroup, bool paused, out IntPtr channel);
 		#endregion
 		#region wrapperinternal
-		private IntPtr systemRaw;
-		public void SetRaw(IntPtr system)
+		public System(IntPtr raw)
+			: base(raw)
 		{
-			systemRaw = new IntPtr();
-			systemRaw = system;
 		}
-		public IntPtr GetRaw()
-		{
-			return systemRaw;
-		}
+
 		#endregion
 	}
-	public class Sound
+	public class Sound : HandleBase
 	{
 		/// <summary>
 		/// Frees a sound object
@@ -622,26 +557,43 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Release()
 		{
-			return FMOD_Sound_Release(soundRaw);
+			var result = FMOD_Sound_Release(rawPtr);
+			if (result == Result.OK)
+				rawPtr = IntPtr.Zero;
+			return result;
 		}
 		#region importfunctions
 		[DllImport(Version.Dll)]
 		private static extern Result FMOD_Sound_Release(IntPtr sound);
 		#endregion
 		#region wrapperinternal
-		private IntPtr soundRaw;
-		public void SetRaw(IntPtr sound)
+		public Sound(IntPtr raw)
+			: base(raw)
 		{
-			soundRaw = new IntPtr();
-			soundRaw = sound;
-		}
-		public IntPtr GetRaw()
-		{
-			return soundRaw;
 		}
 		#endregion
+#if DEBUG
+		public Result GetFormat(out SoundType type, out SoundFormat format, out int channels, out int bits)
+		{
+			return FMOD_Sound_GetFormat(rawPtr, out type, out format, out channels, out bits);
+		}
+		public Result GetMusicNumChannels(out int numchannels)
+		{
+			return FMOD_Sound_GetMusicNumChannels(rawPtr, out numchannels);
+		}
+		public Result GetLength(out uint length, TimeUnit lengthtype)
+		{
+			return FMOD_Sound_GetLength(rawPtr, out length, lengthtype);
+		}
+		[DllImport(Version.Dll)]
+		private static extern Result FMOD_Sound_GetFormat(IntPtr sound, out SoundType type, out SoundFormat format, out int channels, out int bits);
+		[DllImport(Version.Dll)]
+		private static extern Result FMOD_Sound_GetMusicNumChannels(IntPtr sound, out int numchannels);
+		[DllImport(Version.Dll)]
+		private static extern Result FMOD_Sound_GetLength(IntPtr sound, out uint length, TimeUnit lengthtype);
+#endif
 	}
-	public class Channel
+	public class Channel : HandleBase
 	{
 		/// <summary>
 		/// Stops the channel from playing. Makes it available for re-use by the priority system.
@@ -649,7 +601,7 @@ namespace FMOD
 		/// <returns></returns>
 		public Result Stop()
 		{
-			return FMOD_Channel_Stop(channelRaw);
+			return FMOD_ChannelGroup_Stop(rawPtr);
 		}
 		/// <summary>
 		/// Sets the volume for the channel linearly.
@@ -658,7 +610,7 @@ namespace FMOD
 		/// <returns></returns>
 		public Result SetVolume(float volume)
 		{
-			return FMOD_Channel_SetVolume(channelRaw, volume);
+			return FMOD_ChannelGroup_SetVolume(rawPtr, volume);
 		}
 		/// <summary>
 		/// Sets the paused state of the channel.
@@ -667,28 +619,37 @@ namespace FMOD
 		/// <returns></returns>
 		public Result SetPaused(bool paused)
 		{
-			return FMOD_Channel_SetPaused(channelRaw, (paused ? 1 : 0));
+			return FMOD_ChannelGroup_SetPaused(rawPtr, paused);
 		}
 		#region importfunctions
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_Channel_SetVolume(IntPtr channel, float volume);
+		private static extern Result FMOD_ChannelGroup_Stop(IntPtr channelgroup);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_Channel_Stop(IntPtr channel);
+		private static extern Result FMOD_ChannelGroup_SetVolume(IntPtr channel, float volume);
 		[DllImport(Version.Dll)]
-		private static extern Result FMOD_Channel_SetPaused(IntPtr channel, int paused);
+		private static extern Result FMOD_ChannelGroup_SetPaused(IntPtr channel, bool paused);
 		#endregion
 		#region wrapperinternal
-		private IntPtr channelRaw;
-		public void SetRaw(IntPtr channel)
+		public Channel(IntPtr raw)
+			: base(raw)
 		{
-			channelRaw = new IntPtr();
-			channelRaw = channel;
-		}
-		public IntPtr GetRaw()
-		{
-			return channelRaw;
 		}
 		#endregion
+#if DEBUG
+		public Result GetVolume(out float volume)
+		{
+			return FMOD_ChannelGroup_GetVolume(rawPtr, out volume);
+		}
+
+		public Result GetPosition(out uint position, TimeUnit postype)
+		{
+			return FMOD_Channel_GetPosition(getRaw(), out position, postype);
+		}
+		[DllImport(Version.Dll)]
+		private static extern Result FMOD_ChannelGroup_GetVolume(IntPtr channelgroup, out float volume);
+		[DllImport(Version.Dll)]
+		private static extern Result FMOD_Channel_GetPosition(IntPtr channel, out uint position, TimeUnit postype);
+#endif
 	}
 }
 
