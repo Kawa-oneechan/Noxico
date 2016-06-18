@@ -272,7 +272,7 @@ namespace Noxico
 		/*
 		public string Ogle(Character otherChar)
 		{
-			//TRANSLATE - all reactions should be in words.xml, and more should be added.
+			//TRANSLATE - all reactions should be in i18n.tml, and more should be added.
 			if (this.Character.HasToken("sleeping"))
 				return null;
 			var stim = this.Character.GetStat(Stat.Stimulation);

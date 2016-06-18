@@ -92,13 +92,6 @@ namespace Noxico
 				else
 					label3.Text = "Some file was expected to be found, but is missing. This is one point where posting the exception data would be helpful.";
 			}
-			else if (typeName == "XmlException")
-			{
-				if (textBox1.Text.Contains("start tag on line"))
-					label3.Text = "An XML file somewhere has a malformed structure." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetXmlDocument\", then look at the line directly below that one. That's where the XML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetXmlDocument\" is \"at Noxico.WorldGen.LoadBiomes\", the problem is in LoadBiomes, or rather biomes.xml, and that should be mentioned as the critical point.";
-				else
-					label3.Text = "An XML file somewhere has gone wrong. This is one point where posting the exception data would be helpful.";
-			}
 			else if (typeName == "ArgumentException" && textBox1.Text.Contains("System.Drawing.Bitmap..ctor"))
 				label3.Text = "The problem is a bitmap that is not actually a bitmap." + Environment.NewLine + Environment.NewLine + "Noxico only uses PNG files, but can load BMP, GIF, and JPEG as well. If an image is requested, but the file is not actually an image of one of those types, or not even an image at all, things break.";
 			else if (textBox1.Text.Contains("bodyplan is defined twice"))
