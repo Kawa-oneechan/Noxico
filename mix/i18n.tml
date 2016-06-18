@@ -150,6 +150,8 @@ Number of known items       {2}
 	action_copyhim: Change into {0}
 	action_revert: Release shape
 	action_craft: Craft
+	action_pickup_window: Pick up...
+	action_pickup_cancel: Cancel
 -- #endregion
 -- #region Sidebar
 -- #region Stat shorthands

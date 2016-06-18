@@ -125,7 +125,7 @@ namespace Noxico
 		{
 			var pa = target;
 			var chr = ((BoardChar)pa).Character;
-			Plain(chr.LookAt(pa), chr.Name.ToString(true), false, true); //Fix: disabled wrapping to prevent Look At from looking like shit with new wrapper.
+			Plain(chr.LookAt(pa), chr.GetKnownName(true), false, true); //Fix: disabled wrapping to prevent Look At from looking like shit with new wrapper.
 		}
 
 		public static void ReadBook(string bookID)

@@ -72,7 +72,7 @@ namespace Noxico
 			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
 				ForegroundColor = Color.FromArgb(34, 34, 34);
 
-			Token forcedGlyph = Character.Path("glyph") ?? null;
+			Token forcedGlyph = Character.Path("glyph") ?? (Character.HasToken("beast") ? Character.Path("bestiary") : null) ?? null;
 			if (forcedGlyph != null)
 			{
 				if (forcedGlyph.HasToken("char"))
@@ -544,7 +544,7 @@ namespace Noxico
 								if (called > 0)
 								{
 									if (!Character.HasToken("beast"))
-										NoxicoGame.AddMessage((Character.GetKnownName(false, false, true, true) + ", " + Character.Title + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor()); //TRANSLATE
+										NoxicoGame.AddMessage((Character.GetKnownName(true, true, true, true) + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor()); //TRANSLATE
 									else
 										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor()); //TRANSLATE
 									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
@@ -1054,7 +1054,7 @@ namespace Noxico
 			{
 				foreach (var drop in Character.GetToken("drops").Tokens)
 				{
-					var droppedItem = new DroppedItem(drop.Text)
+					var droppedItem = new DroppedItem(drop.Name)
 					{
 						XPosition = XPosition,
 						YPosition = YPosition,

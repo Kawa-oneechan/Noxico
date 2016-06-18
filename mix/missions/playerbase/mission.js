@@ -29,6 +29,7 @@ while(1)
 myBoard.Drain();
 myBoard.Name = "Home";
 myBoard.ID = "home";
+myBoard.Music = "set://Home";
 myBoard.BoardType = BoardType.Special;
 myBoard.RemoveToken("encounters"); myBoard.AddToken("encounters").AddToken("stock");
 MakeBoardTarget(myBoard);

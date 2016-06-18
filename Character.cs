@@ -1828,7 +1828,11 @@ namespace Noxico
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
-			print(i18n.Format("lookat_name_type", this.Name.ToString(true).PadEffective(34), this.Title, ((pa != null && pa is Player) ? i18n.GetString("playermark") : string.Empty)));
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
+				print(i18n.Format("lookat_name_type", this.GetKnownName(true).PadEffective(34), this.Title, ((pa != null && pa is Player) ? i18n.GetString("playermark") : string.Empty)));
+			else
+				print(this.GetKnownName(true) + "\n\n\n");
 
 			bool breastsVisible = false, crotchVisible = false;
 			var carried = new List<InventoryItem>();

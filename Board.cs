@@ -1270,9 +1270,9 @@ namespace Noxico
 				NoxicoGame.Sound.PlayMusic("set://Victory", false);
 			}
 			else if (this.HasToken("combat"))
-				NoxicoGame.Sound.PlayMusic("set://Combat");
+				NoxicoGame.Sound.PlayMusic("set://Combat", false);
 			else
-				NoxicoGame.Sound.PlayMusic(this.Music);
+				NoxicoGame.Sound.PlayMusic(this.Music ?? "-");
 		}
 
 		public void LoadSurroundings()

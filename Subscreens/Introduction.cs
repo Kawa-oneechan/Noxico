@@ -472,6 +472,7 @@ namespace Noxico
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
 
+
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					if (worldgen.ThreadState == System.Threading.ThreadState.Running)
@@ -565,6 +566,7 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 				UIManager.HighlightChanged(null, null);
+				NoxicoGame.Sound.PlayMusic("set://Character Creation", false);
 
 				NoxicoGame.InGame = false;
 			}
