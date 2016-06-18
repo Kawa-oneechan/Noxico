@@ -4,7 +4,6 @@ add: -
 		invisiblegender
 		femaleonly
 		bestiary: "This game's mascot. Very clingy."
-			char: 0x167
 		terms
 			generic: "cheetah"
 			male: "cheetah man"

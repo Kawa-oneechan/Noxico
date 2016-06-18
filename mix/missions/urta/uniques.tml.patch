@@ -7,8 +7,6 @@ add: -
 			female: "foxgirl"
 			herm: "foxherm"
 		bestiary: "Used with permission."
-			char: 0x167
-		tallness: 180
 		hair
 			length: 8
 			color: darkgray

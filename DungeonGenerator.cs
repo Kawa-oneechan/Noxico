@@ -248,8 +248,7 @@ namespace Noxico
 											ID = building.BaseID + "_Door" + doorCount,
 											ParentBoard = Board,
 											Closed = true,
-											Glyph = '+',
-											UnicodeCharacter = '+'
+											Glyph = '+'
 										};
 										Board.Entities.Add(door);
 									}
@@ -285,7 +284,6 @@ namespace Noxico
 												var newBed = new Clutter()
 												{
 													Glyph = 0x147,
-													UnicodeCharacter = 0x0398,
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",

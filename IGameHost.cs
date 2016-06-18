@@ -8,22 +8,22 @@ namespace Noxico
 		string IniPath { get; }
 	
 		/// <summary>
-		/// Sets the content of the cell at the given location to the specified Unicode character and colors.
+		/// Sets the content of the cell at the given location to the specified character and colors.
 		/// The change will be made visible the next time <seealso cref="IGameHost.Draw"/> is invoked.
 		/// If the location is out of bounds, nothing is done, in silence.
 		/// </summary>
 		/// <param name="row">A value from 0 to 24 inclusive specifying the vertical location of the character.</param>
 		/// <param name="col">A value from 0 to 79 inclusive specifying the horizontal location of the character.</param>
-		/// <param name="character">A Unicode character, preferably from the Basic Multilingual Plane (U+0020 to U+FFFD).</param>
+		/// <param name="character">A character code. Range depends on implementation.</param>
 		/// <param name="foregroundColor">A <seealso cref="Noxico.Color"/> specifying the foreground color of the new cell.</param>
 		/// <param name="backgroundColor">A <seealso cref="Noxico.Color"/> specifying the background color of the new cell.</param>
 		/// <param name="forceRedraw">If true, ensures that the new cell is drawn, even if nothing changed.</param>
 		void SetCell(int row, int col, int character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false);
 		
 		/// <summary>
-		/// Clears the entire screen buffer to the given Unicode character and <seealso cref="Noxico.Color"/> values.
+		/// Clears the entire screen buffer to the given character and <seealso cref="Noxico.Color"/> values.
 		/// </summary>
-		/// <param name="character">A Unicode character, preferably from the Basic Multilingual Plane (U+0020 to U+FFFD).</param>
+		/// <param name="character">A character code. Range depends on implementation.</param>
 		/// <param name="foregroundColor">A <seealso cref="Noxico.Color"/> specifying the foreground color to clear with.</param>
 		/// <param name="backgroundColor">A <seealso cref="Noxico.Color"/> specifying the background color to clear with.</param>
 		void Clear(char character, Color foregroundColor, Color backgroundColor);
@@ -55,7 +55,7 @@ namespace Noxico
 		/// <param name="col">A value from 0 to 79 inclusive specifying the horizontal location of the initial character.</param>
 		/// <remarks>
 		/// The \r escape code (U+000D CARRIAGE RETURN) is ignored. Only \n (U+000A LINE FEED) is used.
-		/// To insert arbitrary Unicode characters, you can use the &lt;g####&gt; tag, but regular \u#### is preferred.
+		/// To insert arbitrary characters, you can use the &lt;g####&gt; tag, but regular \u#### is preferred.
 		/// To change drawing color, use the &lt;cFore,Back&gt; tag.
 		/// </remarks>
 		void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0);

@@ -34,7 +34,6 @@ namespace Noxico
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
         public int Glyph { get; set; }
-		public int UnicodeCharacter { get; set; }
 		public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }
@@ -47,7 +46,7 @@ namespace Noxico
 		public Entity()
 		{
 			ID = "[null]";
-			UnicodeCharacter = '?';
+			Glyph = '?';
 			this.Energy = Random.Next(4000, 5000);
 		}
 

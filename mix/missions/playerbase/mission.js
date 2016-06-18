@@ -38,7 +38,6 @@ myBoard.MergeBitmap("missions\\playerbase\\lv0.png", "missions\\playerbase\\lv0.
 //Set up player's bedroom
 var bed = new Clutter();
 bed.Glyph = 0x147;
-bed.UnicodeCharacter = 0x398;
 bed.XPosition = 31;
 bed.YPosition = 16;
 bed.ForegroundColor = Color.Black;
@@ -53,7 +52,6 @@ myBoard.Entities.Add(bed);
 //Set up shrine
 var candle = new Clutter();
 candle.Glyph = 0xAD;
-candle.UnicodeCharacter = 0xA1;
 candle.XPosition = 33;
 candle.YPosition = 19;
 candle.ForegroundColor = Color.White;

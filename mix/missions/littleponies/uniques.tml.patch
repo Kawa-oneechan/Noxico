@@ -8,7 +8,6 @@ add: -
 			male: "stallion"
 			female: "mare"
 		bestiary
-			char: 0x163
 		marshmallow
 		tallness: 140
 		hair

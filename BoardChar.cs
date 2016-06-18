@@ -40,7 +40,6 @@ namespace Noxico
 		public BoardChar()
 		{
 			this.Glyph = (char)255;
-			this.UnicodeCharacter = '@';
 			this.ForegroundColor = Color.White;
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
@@ -73,7 +72,7 @@ namespace Noxico
 			if (skinColor.Equals("black", StringComparison.OrdinalIgnoreCase))
 				ForegroundColor = Color.FromArgb(34, 34, 34);
 
-			Token forcedGlyph = Character.Path("glyph") ?? Character.Path("bestiary") ?? null;
+			Token forcedGlyph = Character.Path("glyph") ?? null;
 			if (forcedGlyph != null)
 			{
 				if (forcedGlyph.HasToken("char"))
@@ -89,17 +88,19 @@ namespace Noxico
 				if (Character.HasToken("tallness") && Character.GetToken("tallness").Value < 140)
 					judgment = '\x165';
 				if (Character.HasToken("wings") && !Character.GetToken("wings").HasToken("small"))
-					judgment = '\x166';
+					judgment = (judgment == '\x165') ? '\x16A' : '\x166';
 				else if (Character.HasToken("tail"))
-					judgment = '\x167';
+					judgment = (judgment == '\x166') ? '\x168' : '\x167';
 				if (Character.HasToken("snaketail"))
-					judgment = '\x161';
+					judgment = (judgment == '\x166') ? '\x169' : '\x161';
 				else if (Character.HasToken("slimeblob"))
 					judgment = '\x164';
 				else if (Character.HasToken("quadruped"))
 					judgment = '\x163';
 				else if (Character.HasToken("taur"))
 					judgment = '\x162';
+				else if (Character.GetToken("legs").Text == "bear" && Character.GetToken("ears").Text == "bear")
+					judgment = '\x171';
 				Glyph = judgment;
 			}
 

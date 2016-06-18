@@ -240,8 +240,7 @@ namespace Noxico
 							ID = "mergeBitmap_Door" + x + "_" + y,
 							ParentBoard = this,
 							Closed = tiles[color.Name].EndsWith("Closed"),
-							Glyph = '+',
-							UnicodeCharacter = '+'
+							Glyph = '+'
 						};
 						this.Entities.Add(door);
 					}

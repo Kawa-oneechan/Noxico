@@ -12,7 +12,6 @@ tile: 1
 	fore: silver
 	back: black
 	char: 0x14F
-	unicode: U+2228
 tile: 2
 	id: dungeonExit
 	_n: dungeon exit
@@ -20,7 +19,6 @@ tile: 2
 	fore: silver
 	back: black
 	char: 0x150
-	unicode: U+2227
 tile: 3
 	id: dungeonDownstairs
 	_n: stairs down
@@ -28,7 +26,6 @@ tile: 3
 	fore: silver
 	back: black
 	char: 0x14F
-	unicode: U+002E
 tile: 4
 	id: dungeonUpstairs
 	_n: stairs up
@@ -36,7 +33,6 @@ tile: 4
 	fore: silver
 	back: black
 	char: 0x150
-	unicode: U+002C
 tile: 5
 	id: dungeonSideExit
 	_n: dungeon passageway
@@ -44,7 +40,6 @@ tile: 5
 	fore: silver
 	back: black
 	char: 0xF0
-	unicode: U+2261
 
 tile: 10
 	id: woodFloor_Plant1
@@ -75,14 +70,12 @@ tile: 50
 	id: stoneFloor
 	back: #414257
 	char: 32
-	unicode: U+002E
 	variants
 		stoneFloor_scatter: 0.75
 tile: 51
 	id: stoneFloor_scatter
 	back: #414257
 	char: 0x146
-	unicode: U+002C
 tile: 52
 	id: stoneWall
 	_n: rough stone wall
@@ -98,7 +91,6 @@ tile: 53
 	description: Rough-hewn stone separates you from whatever is behind it.
 	back: #77788D
 	char: 0x146
-	unicode: U+0020
 	wall
 tile: 54
 	id: woodFloor
@@ -111,7 +103,6 @@ tile: 55
 	id: woodFloor_scatter
 	back: #563F2C
 	char: 0x158
-	unicode: U+002D
 	ceiling
 tile: 56
 	id: outerWoodWall
@@ -128,7 +119,6 @@ tile: 57
 	fore: #140F0C
 	back: #563F2C
 	char: 0x23
-	unicode: U+00B7
 	wall
 	canburn
 	varwall
@@ -146,7 +136,6 @@ tile: 59
 	fore: #140F0C
 	back: #563F2C
 	char: 0x100
-	unicode: U+2554
 	wall
 	canburn
 	varwall
@@ -155,7 +144,6 @@ tile: 60
 	fore: #140F0C
 	back: #563F2C
 	char: 0x101
-	unicode: U+2557
 	wall
 	canburn
 	varwall
@@ -164,7 +152,6 @@ tile: 61
 	fore: #140F0C
 	back: #563F2C
 	char: 0x102
-	unicode: U+255A
 	wall
 	canburn
 	varwall
@@ -173,7 +160,6 @@ tile: 62
 	fore: #140F0C
 	back: #563F2C
 	char: 0x103
-	unicode: U+255D
 	wall
 	canburn
 	varwall
@@ -182,7 +168,6 @@ tile: 63
 	fore: #140F0C
 	back: #563F2C
 	char: 0x104
-	unicode: U+2551
 	wall
 	canburn
 	varwall
@@ -191,7 +176,6 @@ tile: 64
 	fore: #140F0C
 	back: #563F2C
 	char: 0x104
-	unicode: U+2551
 	wall
 	canburn
 	varwall
@@ -200,7 +184,6 @@ tile: 65
 	fore: #140F0C
 	back: #563F2C
 	char: 0x104
-	unicode: U+2551
 	wall
 	canburn
 	varwall
@@ -209,7 +192,6 @@ tile: 66
 	fore: #140F0C
 	back: #563F2C
 	char: 0x105
-	unicode: U+2550
 	wall
 	canburn
 	varwall
@@ -218,7 +200,6 @@ tile: 67
 	fore: #140F0C
 	back: #563F2C
 	char: 0x105
-	unicode: U+2550
 	wall
 	canburn
 	varwall
@@ -227,7 +208,6 @@ tile: 68
 	fore: #140F0C
 	back: #563F2C
 	char: 0x105
-	unicode: U+2550
 	wall
 	canburn
 	varwall
@@ -236,7 +216,6 @@ tile: 69
 	fore: #140F0C
 	back: #563F2C
 	char: 0x106
-	unicode: U+2560
 	wall
 	canburn
 	varwall
@@ -245,7 +224,6 @@ tile: 70
 	fore: #140F0C
 	back: #563F2C
 	char: 0x107
-	unicode: U+2566
 	wall
 	canburn
 	varwall
@@ -254,7 +232,6 @@ tile: 71
 	fore: #140F0C
 	back: #563F2C
 	char: 0x108
-	unicode: U+256C
 	wall
 	canburn
 	varwall
@@ -263,7 +240,6 @@ tile: 72
 	fore: #140F0C
 	back: #563F2C
 	char: 0x109
-	unicode: U+2569
 	wall
 	canburn
 	varwall
@@ -272,7 +248,6 @@ tile: 73
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10A
-	unicode: U+2563
 	wall
 	canburn
 	varwall
@@ -281,7 +256,6 @@ tile: 74
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10B
-	unicode: U+250F
 	wall
 	canburn
 	varwall
@@ -290,7 +264,6 @@ tile: 75
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10C
-	unicode: U+2513
 	wall
 	canburn
 	varwall
@@ -299,7 +272,6 @@ tile: 76
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10D
-	unicode: U+2517
 	wall
 	canburn
 	varwall
@@ -308,7 +280,6 @@ tile: 77
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10E
-	unicode: U+251B
 	wall
 	canburn
 	varwall
@@ -317,7 +288,6 @@ tile: 78
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10F
-	unicode: U+2503
 	wall
 	canburn
 	varwall
@@ -326,7 +296,6 @@ tile: 79
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10F
-	unicode: U+2503
 	wall
 	canburn
 	varwall
@@ -335,7 +304,6 @@ tile: 80
 	fore: #140F0C
 	back: #563F2C
 	char: 0x10F
-	unicode: U+2503
 	wall
 	canburn
 	varwall
@@ -344,7 +312,6 @@ tile: 81
 	fore: #140F0C
 	back: #563F2C
 	char: 0x110
-	unicode: U+2501
 	wall
 	canburn
 	varwall
@@ -353,7 +320,6 @@ tile: 82
 	fore: #140F0C
 	back: #563F2C
 	char: 0x110
-	unicode: U+2501
 	wall
 	canburn
 	varwall
@@ -362,7 +328,6 @@ tile: 83
 	fore: #140F0C
 	back: #563F2C
 	char: 0x110
-	unicode: U+2501
 	wall
 	canburn
 	varwall
@@ -371,7 +336,6 @@ tile: 84
 	fore: #140F0C
 	back: #563F2C
 	char: 0x111
-	unicode: U+2523
 	wall
 	canburn
 	varwall
@@ -380,7 +344,6 @@ tile: 85
 	fore: #140F0C
 	back: #563F2C
 	char: 0x112
-	unicode: U+2533
 	wall
 	canburn
 	varwall
@@ -389,7 +352,6 @@ tile: 86
 	fore: #140F0C
 	back: #563F2C
 	char: 0x113
-	unicode: U+254B
 	wall
 	canburn
 	varwall
@@ -398,7 +360,6 @@ tile: 87
 	fore: #140F0C
 	back: #563F2C
 	char: 0x114
-	unicode: U+253B
 	wall
 	canburn
 	varwall
@@ -407,7 +368,6 @@ tile: 88
 	fore: #140F0C
 	back: #563F2C
 	char: 0x115
-	unicode: U+252B
 	wall
 	canburn
 	varwall
@@ -416,7 +376,6 @@ tile: 89
 	fore: #140F0C
 	back: #1D3612
 	char: 0x120
-	unicode: U+250C
 	fence
 	canburn
 	varwall
@@ -425,7 +384,6 @@ tile: 90
 	fore: #140F0C
 	back: #1D3612
 	char: 0x121
-	unicode: U+2510
 	fence
 	canburn
 	varwall
@@ -434,7 +392,6 @@ tile: 91
 	fore: #140F0C
 	back: #1D3612
 	char: 0x122
-	unicode: U+2514
 	fence
 	canburn
 	varwall
@@ -443,7 +400,6 @@ tile: 92
 	fore: #140F0C
 	back: #1D3612
 	char: 0x123
-	unicode: U+2518
 	fence
 	canburn
 	varwall
@@ -452,7 +408,6 @@ tile: 93
 	fore: #140F0C
 	back: #1D3612
 	char: 0x124
-	unicode: U+2502
 	fence
 	canburn
 	varwall
@@ -461,7 +416,6 @@ tile: 94
 	fore: #140F0C
 	back: #1D3612
 	char: 0x124
-	unicode: U+2502
 	fence
 	canburn
 	varwall
@@ -470,7 +424,6 @@ tile: 95
 	fore: #140F0C
 	back: #1D3612
 	char: 0x124
-	unicode: U+2502
 	fence
 	canburn
 	varwall
@@ -479,7 +432,6 @@ tile: 96
 	fore: #140F0C
 	back: #1D3612
 	char: 0x125
-	unicode: U+2500
 	fence
 	canburn
 	varwall
@@ -488,7 +440,6 @@ tile: 97
 	fore: #140F0C
 	back: #1D3612
 	char: 0x125
-	unicode: U+2500
 	fence
 	canburn
 	varwall
@@ -497,7 +448,6 @@ tile: 98
 	fore: #140F0C
 	back: #1D3612
 	char: 0x125
-	unicode: U+2500
 	fence
 	canburn
 	varwall
@@ -506,7 +456,6 @@ tile: 99
 	fore: #140F0C
 	back: #1D3612
 	char: 0x126
-	unicode: U+251C
 	fence
 	canburn
 	varwall
@@ -515,7 +464,6 @@ tile: 100
 	fore: #140F0C
 	back: #1D3612
 	char: 0x127
-	unicode: U+252C
 	fence
 	canburn
 	varwall
@@ -524,7 +472,6 @@ tile: 101
 	fore: #140F0C
 	back: #1D3612
 	char: 0x128
-	unicode: U+253C
 	fence
 	canburn
 	varwall
@@ -533,7 +480,6 @@ tile: 102
 	fore: #140F0C
 	back: #1D3612
 	char: 0x129
-	unicode: U+2534
 	fence
 	canburn
 	varwall
@@ -542,7 +488,6 @@ tile: 103
 	fore: #140F0C
 	back: #1D3612
 	char: 0x12A
-	unicode: U+2524
 	fence
 	canburn
 	varwall
@@ -563,7 +508,6 @@ tile: 200
 	id: grassland
 	back: #1D3612
 	char: 32
-	unicode: 32
 	canburn
 	variants
 		grassland_scatter: 0.5
@@ -574,13 +518,11 @@ tile: 201
 	id: grassland_scatter
 	back: #1D3612
 	char: 0x146
-	unicode: U+002E
 	canburn
 tile: 202
 	id: grassland_wavey
 	back: #1D3612
 	char: 0x157
-	unicode: U+002C
 	canburn
 tile: 203
 	id: grassland_tree
@@ -589,7 +531,6 @@ tile: 203
 	fore: #5A9640
 	back: #1D3612
 	char: 0x1E5
-	unicode: U+2663
 	wall
 	canburn
 tile: 204
@@ -599,14 +540,12 @@ tile: 204
 	fore: gray
 	back: #1D3612
 	char: 0x143
-	unicode: U+2601
 
 -- BIOME: TUNDRA 
 tile: 210
 	id: tundra
 	back: white
 	char: 32
-	unicode: 32
 	variants
 		tundra_scatter: 0.5
 		tundra_wavey: 0.5
@@ -615,12 +554,10 @@ tile: 211
 	id: tundra_scatter
 	back: white
 	char: 0x146
-	unicode: U+002E
 tile: 212
 	id: tundra_wavey
 	back: white
 	char: 0x157
-	unicode: U+002C
 tile: 213
 	id: tundra_rock
 	_n: rock
@@ -628,14 +565,12 @@ tile: 213
 	fore: gray
 	back: white
 	char: 0x143
-	unicode: U+2601
 
 -- BIOME: TAIGA 
 tile: 220
 	id: taiga
 	back: #9EC4AB
 	char: 32
-	unicode: 32
 	variants
 		taiga_scatter: 0.5
 		taiga_wavey: 0.5
@@ -645,12 +580,10 @@ tile: 221
 	id: taiga_scatter
 	back: #9EC4AB
 	char: 0x146
-	unicode: U+002E
 tile: 222
 	id: taiga_wavey
 	back: #9EC4AB
 	char: 0x157
-	unicode: U+002C
 tile: 223
 	id: taiga_rock
 	_n: rock
@@ -658,7 +591,6 @@ tile: 223
 	fore: gray
 	back: #9EC4AB
 	char: 0x143
-	unicode: U+2601
 tile: 224
 	id: taiga_tree
 	_n: tree
@@ -666,7 +598,6 @@ tile: 224
 	fore: #244428
 	back: #9EC4AB
 	char: 0x1E6
-	unicode: U+2660
 	wall
 	canburn
 
@@ -675,7 +606,6 @@ tile: 230
 	id: woods
 	back: #1F3B19
 	char: 32
-	unicode: 32
 	canburn
 	variants
 		woods_scatter: 0.5
@@ -687,13 +617,11 @@ tile: 231
 	id: woods_scatter
 	back: #1F3B19
 	char: 0x146
-	unicode: U+002E
 	canburn
 tile: 232
 	id: woods_wavey
 	back: #1F3B19
 	char: 0x157
-	unicode: U+002C
 	canburn
 tile: 233
 	id: woods_tree1
@@ -702,7 +630,6 @@ tile: 233
 	fore: #329838
 	back: #1F3B19
 	char: 0x1E6
-	unicode: U+2660
 	wall
 	canburn
 tile: 234
@@ -712,7 +639,6 @@ tile: 234
 	fore: #6CCC77
 	back: #1F3B19
 	char: 0x1E5
-	unicode: U+2663
 	wall
 	canburn
 tile: 235
@@ -722,14 +648,12 @@ tile: 235
 	fore: gray
 	back: #1F3B19
 	char: 0x143
-	unicode: U+2601
 
 -- BIOME: SWAMP 
 tile: 240
 	id: swamp
 	back: #343B2C
 	char: 32
-	unicode: 32
 	variants
 		swamp_wavey: 0.4
 		swamp_tree: 0.98
@@ -737,7 +661,6 @@ tile: 241
 	id: swamp_wavey
 	back: #343B2C
 	char: 0x157
-	unicode: U+002C
 	canburn
 tile: 242
 	id: swamp_tree
@@ -746,7 +669,6 @@ tile: 242
 	fore: black
 	back: #343B2C
 	char: 0x145
-	unicode: U+03A8
 	wall
 
 -- BIOME: RAINFOREST 
@@ -754,7 +676,6 @@ tile: 250
 	id: rainforest
 	back: #1D3612
 	char: 32
-	unicode: 32
 	canburn
 	variants
 		rainforest_tree1: 0.8
@@ -767,7 +688,6 @@ tile: 251
 	fore: #439838
 	back: #1D3612
 	char: 0x1E6
-	unicode: U+2660
 	wall
 	canburn
 tile: 252
@@ -777,7 +697,6 @@ tile: 252
 	fore: #57AA5A
 	back: #1D3612
 	char: 0x1E6
-	unicode: U+2660
 	wall
 	canburn
 tile: 253
@@ -787,7 +706,6 @@ tile: 253
 	fore: #6CCC77
 	back: #1D3612
 	char: 0x1E6
-	unicode: U+2660
 	wall
 	canburn
 
@@ -796,7 +714,6 @@ tile: 260
 	id: nether
 	back: #3D1607
 	char: 32
-	unicode: 32
 	canburn
 	variants
 		nether_scatter: 0.5
@@ -805,12 +722,10 @@ tile: 261
 	id: nether_scatter
 	back: #3D1607
 	char: 0x146
-	unicode: U+002E
 tile: 262
 	id: nether_wavey
 	back: #3D1607
 	char: 0x157
-	unicode: U+002C
 
 
 
