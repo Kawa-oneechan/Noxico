@@ -4,7 +4,6 @@ add: -
 		terms
 			generic: "demon"
 		bestiary: "The Temptress."
-			char: 0x166
 		tallness: 190
 		hair
 			length: 16
