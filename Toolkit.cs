@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace Noxico
 {
@@ -1012,19 +1011,6 @@ namespace Noxico
 		}
 
 		#region PillowShout's additions
-/// <summary>
-        /// Checks the passed body plan to ensure that it contains all required components and throws an exception if a part is missing.
-        /// Will not work with 'beast' bodyplans.
-        /// </summary>
-        /// <param name="bodyPlan">The xml bodyplan to be evaluated.</param>
-        public static void VerifyBodyplan(XmlElement bodyPlan)
-        {
-			var plan = new Token();
-			var name = bodyPlan.GetAttribute("id");
-			plan.Tokenize(bodyPlan.ChildNodes[0].Value);
-			VerifyBodyplan(plan, name);
-		}
-
 		public static void VerifyBodyplan(TokenCarrier bodyPlan, string name)
 		{
 			var plan = bodyPlan;

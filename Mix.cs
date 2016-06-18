@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
+//using System.Xml;
 
 using Bitmap = System.Drawing.Bitmap;
 
@@ -137,6 +137,7 @@ namespace Noxico
 		/// </summary>
 		/// <param name="fileName">The file to find. If this is in the root of the Mix system, mod expansions are merged in.</param>
 		/// <returns>Returns an <see cref="XmlDocument"/> with the file(s)'s contents if found, <see cref="null"/> otherwise.</returns>
+		/*
 		public static XmlDocument GetXmlDocument(string fileName, bool injectOnTop = false)
 		{
 			var x = new System.Xml.XmlDocument();
@@ -221,6 +222,7 @@ namespace Noxico
 
 			return x;
 		}
+		*/
 
 		public static List<Token> GetTokenTree(string fileName, bool cache = false)
 		{

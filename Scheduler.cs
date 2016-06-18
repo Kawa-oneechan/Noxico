@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 namespace Noxico
 {
@@ -91,7 +90,7 @@ namespace Noxico
 		private BoardChar entity;
 		private string repeatScript, repeatScriptName;
 
-		public static XmlDocument ScheduleDoc = Mix.GetXmlDocument("schedule.xml");
+		public static List<Token> ScheduleDoc = Mix.GetTokenTree("schedule.tml");
 
         /// <summary>
         /// Creates a new Scheduler instance.
@@ -451,25 +450,25 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Adds tasks from the XML activity definitions by running the javascript code contained in the section.
+		/// Adds tasks from the TML activity definitions by running the javascript code contained in the section.
 		/// </summary>
 		/// <param name="name">The name of the activity to get the tasks from.</param>
 		/// <param name="section">The section of the activity to get tasks from. Valid options are 'init', 'repeat' and 'end'.</param>
 		private void AddScheduledTasks(string name, string section)
 		{
-			var script = ScheduleDoc.DocumentElement.SelectSingleNode("//schedules/activity[@name='" + name + "']/" + section + "/script");
-
-			var text = "";
-			if (script != null)
-				text = script.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault().Value;
-
-			if (!string.IsNullOrWhiteSpace(text))
-				entity.RunScript(text);
+			var activity = ScheduleDoc.FirstOrDefault(x => x.Name == "activity" && x.Text == name);
+			if (activity == null)
+				return;
+			var script = activity.Tokens.FirstOrDefault(x => x.Name == "script" && x.Text == section);
+			if (script == null)
+				return;
+			if (!string.IsNullOrWhiteSpace(script.Tokens[0].Text))
+				entity.RunScript(script.Tokens[0].Text);
 		}
 
 		/// <summary>
 		/// Works the same as AddScheduledTasks but is modified to work with the 'repeat' section of activities, 
-		/// and only retrieves the repeated scripts from XML once. The scripts will be reloaded any time
+		/// and only retrieves the repeated scripts from TML once. The scripts will be reloaded any time
 		/// a new activity name is passed to the function.
 		/// </summary>
 		/// <param name="name">The name of the activity to run the scripts of.</param>
@@ -478,11 +477,14 @@ namespace Noxico
 			if (repeatScriptName != name)
 			{
 				repeatScriptName = name;
-
-				var script = ScheduleDoc.DocumentElement.SelectSingleNode("//schedules/activity[@name='" + name + "']/repeat/script");
-
-				if (script != null)
-					repeatScript = script.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault().Value;
+				var activity = ScheduleDoc.FirstOrDefault(x => x.Name == "activity" && x.Text == name);
+				if (activity == null)
+					return;
+				var script = activity.Tokens.FirstOrDefault(x => x.Name == "script" && x.Text == "repeat");
+				if (script == null)
+					return;
+				if (!string.IsNullOrWhiteSpace(script.Tokens[0].Text))
+					repeatScript = script.Tokens[0].Text;
 			}
 
 			if (!string.IsNullOrWhiteSpace(repeatScript))
@@ -514,21 +516,13 @@ namespace Noxico
 			if (character.HasToken("schedule"))
 				character.RemoveToken("schedule");
 
-			foreach (var entry in ScheduleDoc.DocumentElement.SelectNodes("//schedules/schedule").OfType<XmlElement>())
+			foreach (var entry in ScheduleDoc.Where(x => x.Name == "schedule" && x.Text.Equals(name, StringComparison.OrdinalIgnoreCase)))
 			{
-				if (entry.GetAttribute("name").Equals(name, StringComparison.OrdinalIgnoreCase))
-				{
-					var text = entry.ChildNodes.OfType<XmlCDataSection>().FirstOrDefault().Value;
-
-					var schedule = character.AddToken("schedule");
-
-					if (!character.HasToken("currentActivity"))
-						character.AddToken("currentActivity");
-
-					schedule.Tokenize(text);
-
-					break;
-				}
+				var schedule = character.AddToken("schedule");
+				if (!character.HasToken("currentActivity"))
+					character.AddToken("currentActivity");
+				schedule.AddSet(entry.Tokens);
+				break;
 			}
 		}
 	}
