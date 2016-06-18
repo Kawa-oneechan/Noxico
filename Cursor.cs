@@ -270,7 +270,7 @@ namespace Noxico
 									else if (PointingAt is BoardChar)
 									{
 										if (((BoardChar)PointingAt).Character.HasToken("beast"))
-											MessageBox.Notice(((BoardChar)PointingAt).Character.LookAt(PointingAt), true, ((BoardChar)PointingAt).Character.GetKnownName());
+											MessageBox.Notice(((BoardChar)PointingAt).Character.LookAt(PointingAt), true, ((BoardChar)PointingAt).Character.GetKnownName(true));
 										else
 											TextScroller.LookAt((BoardChar)PointingAt);
 									}
