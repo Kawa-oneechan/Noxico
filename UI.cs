@@ -339,7 +339,7 @@ namespace Noxico
 		public override void DoMouse(int left, int top)
 		{
 			Index = top + scroll;
-			Draw();
+			//Draw(); //not needed, broke rendering in inventory and containers.
 		}
 
 		public void EnsureVisible()

@@ -14,7 +14,7 @@ namespace Noxico
 		private static UILabel howTo, itemDesc;
 		private static UILabel capacity;
 		private static UILabel sigilView;
-		private static UIWindow descriptionWindow;
+		private static UIWindow yourWindow, descriptionWindow;
 		private static List<string> sigils;
 
 		private static void TryUse(Character character, Token token, InventoryItem chosen)
@@ -27,7 +27,7 @@ namespace Noxico
 
 		private static void TryDrop(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
-			Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
+			//Subscreens.PreviousScreen.Push(NoxicoGame.Subscreen);
 			itemList.Enabled = false;
 			if (token.HasToken("equipped"))
 				try
@@ -44,21 +44,24 @@ namespace Noxico
 				NoxicoGame.Sound.PlaySound("set://PutItem");
 				chosen.Drop(boardchar, token);
 				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				//NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.Redraw = true;
 			}
+			itemList.Enabled = true;
 		}
 
 		private static void UpdateColumns()
 		{
 			sigilView.Text = "";
-			for (var row = 0; row < sigilView.Height; row++)
+			for (var row = 0; row < itemList.Height; row++)
 			{
 				var index = row + itemList.Scroll;
-				sigilView.Text += sigils[index] + "\n";
+				if (index < sigils.Count)
+					sigilView.Text += sigils[index] + "\n";
 			}
 			sigilView.Text.TrimEnd();
+			sigilView.Draw();
 		}
 
 		public static void Handler()
@@ -190,73 +193,84 @@ namespace Noxico
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
-				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
-				UIManager.Elements.Add(new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
-				howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-				itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
-				sigilView = new UILabel("") { Left = 35, Top = 2, Width = 60, Height = height };
-				itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
-				itemList.Change = (s, e) =>
+				if (UIManager.Elements.Count < 2)
 				{
-					selection = itemList.Index;
-
-					var t = inventoryTokens[itemList.Index];
-					var i = inventoryItems[itemList.Index];
-					var r = string.Empty;
-					var d = i.GetDescription(t);
-
-					var weaponData = i.GetToken("weapon");
-					if (weaponData != null)
+					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
+					howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+					itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
+					sigilView = new UILabel("") { Left = 35, Top = 2, Width = 60, Height = height };
+					itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
+					itemList.Change = (s, e) =>
 					{
-						if (weaponData.HasToken("skill"))
-							d += "\n\n\n" + i18n.Format("inventory_weaponskill", weaponData.GetToken("skill").Text.Replace('_', ' ') + "    ");
-						if (weaponData.HasToken("attacktype"))
-							d += i18n.Format("inventory_weapontype", i18n.GetString("attacktype_" + weaponData.GetToken("attacktype").Text));
-					}
+						selection = itemList.Index;
 
-					d = Toolkit.Wordwrap(d, itemDesc.Width);
+						var t = inventoryTokens[itemList.Index];
+						var i = inventoryItems[itemList.Index];
+						var r = string.Empty;
+						var d = i.GetDescription(t);
 
-					if (i.ID == "book")
-						r = i18n.GetString("inventory_pressenter_book");
-					else if (i.HasToken("equipable"))
-					{
-						if (t.HasToken("equipped"))
+						var weaponData = i.GetToken("weapon");
+						if (weaponData != null)
 						{
-							if (t.Path("cursed/known") != null)
-								r = i18n.GetString("inventory_cannotunequip");
-							else
-								r = i18n.GetString("inventory_pressenter_unequip");
+							if (weaponData.HasToken("skill"))
+								d += "\n\n\n" + i18n.Format("inventory_weaponskill", weaponData.GetToken("skill").Text.Replace('_', ' ') + "    ");
+							if (weaponData.HasToken("attacktype"))
+								d += i18n.Format("inventory_weapontype", i18n.GetString("attacktype_" + weaponData.GetToken("attacktype").Text));
 						}
-						else
-							r = i18n.GetString("inventory_pressenter_equip");
-					}
-					else if (i.HasToken("quest"))
-						r = i18n.GetString("inventory_questitem");
-					else
-						r = i18n.GetString("inventory_pressenter_use");
 
-					howTo.Text = (' ' + r).PadEffective(80);
-					itemDesc.Text = d;
-					descriptionWindow.Text = i.ToString(t, false, false);
-					//howTo.Draw();
-					//itemDesc.Draw();
-					UpdateColumns();
-					UIManager.Draw();
-				};
-				itemList.Enter = (s, e) =>
+						d = Toolkit.Wordwrap(d, itemDesc.Width);
+
+						if (i.ID == "book")
+							r = i18n.GetString("inventory_pressenter_book");
+						else if (i.HasToken("equipable"))
+						{
+							if (t.HasToken("equipped"))
+							{
+								if (t.Path("cursed/known") != null)
+									r = i18n.GetString("inventory_cannotunequip");
+								else
+									r = i18n.GetString("inventory_pressenter_unequip");
+							}
+							else
+								r = i18n.GetString("inventory_pressenter_equip");
+						}
+						else if (i.HasToken("quest"))
+							r = i18n.GetString("inventory_questitem");
+						else
+							r = i18n.GetString("inventory_pressenter_use");
+
+						howTo.Text = (' ' + r).PadEffective(80);
+						itemDesc.Text = d;
+						descriptionWindow.Text = i.ToString(t, false, false);
+						//howTo.Draw();
+						//itemDesc.Draw();
+						UpdateColumns();
+						UIManager.Draw();
+					};
+					itemList.Enter = (s, e) =>
+					{
+						TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
+					};
+					capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
+					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height };
+					UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
+					UIManager.Elements.Add(yourWindow);
+					UIManager.Elements.Add(descriptionWindow);
+					UIManager.Elements.Add(howTo);
+					UIManager.Elements.Add(itemList);
+					UIManager.Elements.Add(sigilView);
+					UIManager.Elements.Add(itemDesc);
+					UIManager.Elements.Add(capacity);
+					UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 45 });
+					UIManager.Highlight = itemList;
+				}
+				else
 				{
-					TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
-				};
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
-				UIManager.Elements.Add(descriptionWindow);
-				UIManager.Elements.Add(howTo);
-				UIManager.Elements.Add(itemList);
-				UIManager.Elements.Add(sigilView);
-				UIManager.Elements.Add(itemDesc);
-				UIManager.Elements.Add(capacity);
-				UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 45 });
-				UIManager.Highlight = itemList;
+					yourWindow.Height = 2 + height;
+					itemList.Items = itemTexts;
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				}
 				itemList.Index = selection;
 
 				UIManager.Draw();
@@ -276,7 +290,10 @@ namespace Noxico
 			//	TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 			//}
 			else
+			{
 				UIManager.CheckKeys();
+				sigilView.Draw();
+			}
 		}
 	}
 
