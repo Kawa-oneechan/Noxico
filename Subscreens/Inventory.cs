@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
+
 
 namespace Noxico
 {
@@ -58,7 +60,9 @@ namespace Noxico
 			{
 				var index = row + itemList.Scroll;
 				if (index < sigils.Count)
+				{
 					sigilView.Text += sigils[index] + "\n";
+				}
 			}
 			sigilView.Text.TrimEnd();
 			sigilView.Draw();
@@ -179,13 +183,31 @@ namespace Noxico
 					if (itemString.Length > 33)
 						itemString = itemString.Disemvowel();
 					itemTexts.Add(itemString);
-					Inventory.sigils.Add(icon + "<cGray> " + string.Join(", ", sigils.Select(s =>
+					var sigilText = new StringBuilder();
+					var sigilComma = string.Empty;
+					for (var i = 0; i < sigils.Count; i++)
+					{
+						if (sigilText.Length < 30)
+						{
+							sigilText.Append(sigilComma);
+							sigilText.Append((sigils[i][0] == '\uE300') ? sigils[i].Substring(1) : i18n.GetString("sigil_" + sigils[i]));
+							sigilComma = ", ";
+						}
+						else
+						{
+							if (i < sigils.Count)
+								sigilText.Append('\u0137');
+							break;
+						}
+					}
+					Inventory.sigils.Add(icon + "<cGray> " + sigilText.ToString());
+					/* Inventory.sigils.Add(icon + "<cGray> " + string.Join(", ", sigils.Select(s =>
 					{
 						if (s[0] == '\uE300')
 							return s.Substring(1);
 						else
 							return i18n.GetString("sigil_" + s);
-					})));
+					}))); */
 				}
 				var height = inventoryItems.Count;
 				if (height > 34)
@@ -207,15 +229,21 @@ namespace Noxico
 						var t = inventoryTokens[itemList.Index];
 						var i = inventoryItems[itemList.Index];
 						var r = string.Empty;
-						var d = i.GetDescription(t);
+						var d = i.GetDescription(t) + "\n\n";
 
 						var weaponData = i.GetToken("weapon");
 						if (weaponData != null)
 						{
 							if (weaponData.HasToken("skill"))
-								d += "\n\n\n" + i18n.Format("inventory_weaponskill", weaponData.GetToken("skill").Text.Replace('_', ' ') + "    ");
+								d += i18n.Format("inventory_weaponskill", weaponData.GetToken("skill").Text.Replace('_', ' ') + "    ");
 							if (weaponData.HasToken("attacktype"))
 								d += i18n.Format("inventory_weapontype", i18n.GetString("attacktype_" + weaponData.GetToken("attacktype").Text));
+							d += '\n';
+						}
+						var mods = i.GetModifiers(t);
+						if (mods.Count > 0)
+						{
+							d += i18n.Format("inventory_modifiers", string.Join(", ", mods));
 						}
 
 						d = Toolkit.Wordwrap(d, itemDesc.Width);

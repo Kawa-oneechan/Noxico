@@ -337,6 +337,7 @@ Would you like an infodump on the way out?
 	inventory_drop: Drop
 	inventory_weaponskill: Skill: {0}
 	inventory_weapontype: Type: {0}
+	inventory_modifiers: Modifiers: {0}
 -- #region Sigils
 	sigil_weapon: weapon
 	sigil_fullmask: full mask
