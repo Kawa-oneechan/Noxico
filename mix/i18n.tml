@@ -324,6 +324,7 @@ Would you like an infodump on the way out?
 	inventory_money: {0}: {1} -- You: {2}
 	inventory_itcosts: It costs &#x13B;{0}.
 	inventory_vendorusesthis: {0} is using this.
+	inventory_vendorcaughtyou: {0} recognized it as [t:his] property!
 	inventory_youusethis: This item is currently equipped.
 	inventory_youcantaffordthis: You can't afford this item.
 	inventory_vendorcantaffordthis: {0} can't afford this item.

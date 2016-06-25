@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-// TODO: Add a user interface!
-
 namespace Noxico
 {
+	/// <summary>
+	/// Displays the crafting interface.
+	/// </summary>
 	public class Crafting
 	{
+		/// <summary>
+		/// The character doing the crafting. Set by GetPossibilities and Open.
+		/// </summary>
 		public static Character Carrier { get; private set; }
+		/// <summary>
+		/// The Carrier's items. Set by GetPossibilities.
+		/// </summary>
 		public static Token ItemsToWorkWith { get; private set; }
 
 		/// <summary>
@@ -171,6 +178,9 @@ namespace Noxico
 		private static UIList recipeList;
 		private static List<Recipe> recipes;
 
+		/// <summary>
+		/// Generic Subscreen handler.
+		/// </summary>
 		public static void Handler()
 		{
 			//TODO: add more things, such as a status bar and a window with the exact results.
@@ -191,7 +201,8 @@ namespace Noxico
 				recipeList.Enter = (s, e) =>
 				{
 					var i = recipeList.Index;
-					recipes[recipeList.Index].Apply();
+					recipes[i].Apply();
+					//Redetermine the possibilities and update the UI accordingly.
 					recipes = GetPossibilities(Carrier);
 					if (recipes.Count > 0)
 					{
@@ -232,6 +243,10 @@ namespace Noxico
 				UIManager.CheckKeys();
 		}
 
+		/// <summary>
+		/// Sets up a Crafting subscreen for the given Character, usually the Player.
+		/// </summary>
+		/// <param name="carrier"></param>
 		public static void Open(Character carrier)
 		{
 			Carrier = carrier;
@@ -242,14 +257,26 @@ namespace Noxico
 		}
 	}
 
+	/// <summary>
+	/// Defines a single crafting recipe, a single resulting item.
+	/// </summary>
 	public class Recipe
 	{
+		/// <summary>
+		/// The display name of this recipe's result.
+		/// </summary>
 		public string Display { get; set; }
+		/// <summary>
+		/// A list of CraftActions that produce this recipe's result.
+		/// </summary>
 		public List<CraftAction> Actions { get; set; }
 		public Recipe()
 		{
 			Actions = new List<CraftAction>();
 		}
+		/// <summary>
+		/// Simply applies each CraftAction for this Recipe.
+		/// </summary>
 		public void Apply()
 		{
 			Actions.ForEach(a => a.Apply());
@@ -260,11 +287,23 @@ namespace Noxico
 		}
 	}
 
+	/// <summary>
+	/// Base class for CraftActions.
+	/// </summary>
 	public abstract class CraftAction
 	{
+		/// <summary>
+		/// The Token that this CraftAction applies to.
+		/// </summary>
 		public Token Target { get; set; }
+		/// <summary>
+		/// What to do with the Target.
+		/// </summary>
 		public abstract void Apply();
 	}
+	/// <summary>
+	/// Adds the CraftAction's Target to the Carrier's item list.
+	/// </summary>
 	public class CraftProduceItemAction : CraftAction
 	{
 		public override void Apply()
@@ -272,6 +311,9 @@ namespace Noxico
 			Crafting.ItemsToWorkWith.AddToken(Target);
 		}
 	}
+	/// <summary>
+	/// Consumes an item with the Target's name in the Carrier's inventory.
+	/// </summary>
 	public class CraftConsumeItemAction : CraftAction
 	{
 		public override void Apply()
@@ -280,6 +322,9 @@ namespace Noxico
 			knownItem.Consume(Crafting.Carrier, Target);
 		}
 	}
+	/// <summary>
+	/// Changes the Target's Text and/or Value.
+	/// </summary>
 	public class CraftChangeTokenAction : CraftAction
 	{
 		public string NewText { get; set; }
@@ -290,6 +335,9 @@ namespace Noxico
 			Target.Value = NewValue;
 		}
 	}
+	/// <summary>
+	/// Removes a Token from the Target's children.
+	/// </summary>
 	public class CraftRemoveTokenAction : CraftAction
 	{
 		public Token Remove { get; set; }
@@ -298,6 +346,9 @@ namespace Noxico
 			Target.RemoveToken(Remove);
 		}
 	}
+	/// <summary>
+	/// Adds a Token to the Target's children.
+	/// </summary>
 	public class CraftAddTokenAction : CraftAction
 	{
 		public Token Add { get; set; }

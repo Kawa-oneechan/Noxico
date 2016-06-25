@@ -1,8 +1,10 @@
 using System.Collections.Generic;
-//using System.Windows.Forms;
 
 namespace Noxico
 {
+	/// <summary>
+	/// Displays the player's inventory and a container's contents to trade items.
+	/// </summary>
 	public class ContainerMan
 	{
 		private enum ContainerMode
@@ -16,7 +18,6 @@ namespace Noxico
 		private static List<Token> playerTokens = new List<Token>();
 		private static List<InventoryItem> playerItems = new List<InventoryItem>();
 
-		//private static Container container;
 		private static ContainerMode mode;
 		private static Token other;
 		private static string title;
@@ -28,9 +29,12 @@ namespace Noxico
 		private static UIList containerList, playerList;
 		private static UILabel description;
 		private static UILabel capacity;
-		//private static bool onLeft = true;
 		private static int indexLeft, indexRight;
 
+		/// <summary>
+		/// Sets up a ContainerMan subscreen for actual containers, such as chests and corpses.
+		/// </summary>
+		/// <param name="container">The Container to display on the left.</param>
 		public static void Setup(Container container)
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -40,10 +44,15 @@ namespace Noxico
 			other = container.Token.GetToken("contents");
 			title = container.Name;
 			mode = container.Token.HasToken("corpse") ? ContainerMode.Corpse : ContainerMode.Chest;
+			//We're not doing business, so clear out the vendor.
 			vendorChar = null;
 			vendorCaughtYou = false;
 		}
 
+		/// <summary>
+		/// Sets up a ContainerMan subscreen for trading with a vendor.
+		/// </summary>
+		/// <param name="vendor">The Character whose items to display on the left.</param>
 		public static void Setup(Character vendor)
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -57,6 +66,9 @@ namespace Noxico
 			vendorCaughtYou = false;
 		}
 
+		/// <summary>
+		/// Generic Subscreen handler.
+		/// </summary>
 		public static void Handler()
 		{
 			var keys = NoxicoGame.KeyMap;
@@ -67,6 +79,7 @@ namespace Noxico
 				UIManager.Initialize();
 				UIManager.Elements.Clear();
 
+				//Prepare the left item list and its UIElements...
 				var height = 1;
 				containerTokens.Clear();
 				containerItems.Clear();
@@ -87,6 +100,7 @@ namespace Noxico
 				}
 				else
 				{
+					//Populate the left list...
 					foreach (var carriedItem in other.Tokens)
 					{
 						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
@@ -96,13 +110,11 @@ namespace Noxico
 						containerItems.Add(find);
 
 						var item = find;
-						//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
 						var itemString = item.ToString(carriedItem, false, false);
-						//if (itemString.Length > 33)
-						//	itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
+						//Add any extra sigils.
 						if (mode == ContainerMode.Vendor && carriedItem.HasToken("equipped"))
 							itemString = itemString.Remove(32) + i18n.GetString("sigil_short_worn");
 						if (carriedItem.Path("cursed/known") != null)
@@ -121,6 +133,7 @@ namespace Noxico
 					containerList.Height = height;
 				}
 
+				//Prepare the right item list and its UIElements...
 				playerTokens.Clear();
 				playerItems.Clear();
 				playerList = null;
@@ -139,6 +152,7 @@ namespace Noxico
 				}
 				else
 				{
+					//Populate the right list...
 					foreach (var carriedItem in player.Character.GetToken("items").Tokens)
 					{
 						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
@@ -148,10 +162,7 @@ namespace Noxico
 						playerItems.Add(find);
 
 						var item = find;
-						//TEST: Removed articles from items. Remove the ", false, false") part and uncomment the below to restore.
 						var itemString = item.ToString(carriedItem, false, false);
-						//if (itemString.Length > 33)
-						//	itemString = item.ToString(carriedItem, false, false);
 						if (itemString.Length > 33)
 							itemString = itemString.Disemvowel();
 						itemString = itemString.PadEffective(33);
@@ -178,6 +189,7 @@ namespace Noxico
 					playerList.Height = height2;
 				}
 
+				//Build the bottom window.
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
@@ -186,9 +198,11 @@ namespace Noxico
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
+				//Should we be trading, replace the weight with a money indication.
 				if (mode == ContainerMode.Vendor)
 					capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 
+				//TODO: why is this check a thing?
 				if (containerList != null)
 				{
 					containerList.Change = (s, e) =>
@@ -196,11 +210,12 @@ namespace Noxico
 						if (containerList.Items.Count == 0)
 							return;
 						indexLeft = containerList.Index;
+						//Build up the content for the description window.
 						var t = containerTokens[containerList.Index];
 						var i = containerItems[containerList.Index];
 						descriptionWindow.Text = i.ToString(t, false, false);
 						var desc = i.GetDescription(t);
-						price = 0; //reset price no matter the mode so we don't accidentally pay for free shit.
+						price = 0; //Reset price no matter the mode so we don't accidentally pay for free shit.
 						if (mode == ContainerMode.Vendor && i.HasToken("price"))
 						{
 							price = i.GetToken("price").Value;
@@ -212,7 +227,6 @@ namespace Noxico
 						descriptionWindow.Draw();
 						description.Draw();
 						capacity.Draw();
-						//UIManager.Draw();
 					};
 					containerList.Enter = (s, e) =>
 					{
@@ -222,14 +236,18 @@ namespace Noxico
 						var tryAttempt = TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
 						if (string.IsNullOrWhiteSpace(tryAttempt))
 						{
+							//No errors were returned by TryRetrieve, so let's do this.
 							playerItems.Add(containerItems[containerList.Index]);
 							playerTokens.Add(containerTokens[containerList.Index]);
 							playerList.Items.Add(containerList.Items[containerList.Index]);
 							containerItems.RemoveAt(containerList.Index);
 							containerTokens.RemoveAt(containerList.Index);
 							containerList.Items.RemoveAt(containerList.Index);
+							//If this was the bottom-most item, adjust our selection.
 							if (containerList.Index >= containerList.Items.Count)
 								containerList.Index--;
+							//If this was the last item, hide the list entirely and switch to the player's side.
+							//We know that's possible -- after all, there must be at -least- one item in there now.
 							if (containerList.Items.Count == 0)
 							{
 								containerList.Hidden = true;
@@ -249,12 +267,15 @@ namespace Noxico
 						}
 						else
 						{
+							//There was some error returned by TryRetrieve, which we'll show now.
 							MessageBox.Notice(tryAttempt);
 						}
 					};
 				}
+				//TODO: same with this check.
 				if (playerList != null)
 				{
+					//We do basically the same thing as above in reverse.
 					playerList.Change = (s, e) =>
 					{
 						if (playerList.Items.Count == 0)
@@ -270,6 +291,7 @@ namespace Noxico
 							price = i.GetToken("price").Value;
 							desc += "\n" + i18n.Format("inventory_itcosts", price);
 						}
+						//This is one of the few differences.
 						if (t.Path("cursed/path") != null)
 							desc += "\nThis item is cursed and can't be removed."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						else if (i.HasToken("equipable") && t.HasToken("equipped"))
@@ -278,7 +300,6 @@ namespace Noxico
 						descriptionWindow.Draw();
 						description.Draw();
 						capacity.Draw();
-						//UIManager.Draw();
 					};
 					playerList.Enter = (s, e) =>
 					{
@@ -315,8 +336,10 @@ namespace Noxico
 						}
 						else
 						{
+							//This is set by TryStore.
 							if (vendorCaughtYou)
 							{
+								//Immediately break out of ContainerMan and call out.
 								NoxicoGame.ClearKeys();
 								NoxicoGame.Immediate = true;
 								NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
@@ -356,7 +379,6 @@ namespace Noxico
 				containerList.DrawQuick();
 				containerList.Change(null, null);
 				playerList.DrawQuick();
-				//UIManager.Draw();
 			}
 			else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
 			{
@@ -367,25 +389,33 @@ namespace Noxico
 				playerList.Change(null, null);
 				containerList.DrawQuick();
 				playerList.DrawQuick();
-				//UIManager.Draw();
 			}
 			else
 				UIManager.CheckKeys();
 		}
 
-		//Take something OUT of a container, or BUY it from a vendor.
+		/// <summary>
+		/// Take something OUT of a container, or BUY it from a vendor.
+		/// </summary>
+		/// <param name="boardchar">The container/vendor</param>
+		/// <param name="token">The item token</param>
+		/// <param name="chosen">The item's definition</param>
+		/// <returns>Return a failure message or null.</returns>
 		private static string TryRetrieve(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
 			var inv = boardchar.Character.GetToken("items");
-			var con = other; //container.Token.GetToken("contents");
+			var con = other;
 			if (token.HasToken("cursed"))
 			{
+				//Reveal the cursed item as such if we didn't already know.
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
 				return mode == ContainerMode.Vendor ? "It's cursed. " + vendorChar.Name.ToString() + " can't unequip it." : "It's cursed. You shouldn't touch this."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 			}
 			if (token.HasToken("equipped"))
 			{
+				//If we're looting a corpse's equipment, just unequip it.
+				//If a vendor is wearing it though...
 				if (mode == ContainerMode.Vendor)
 					return i18n.Format("inventory_vendorusesthis", vendorChar.Name.ToString());
 				else
@@ -393,6 +423,7 @@ namespace Noxico
 			}
 			if (mode == ContainerMode.Vendor && price != 0)
 			{
+				//Handle the transaction.
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
 				//TODO: add charisma and relationship bonuses -- look good for free food, or get a friends discount.
@@ -410,27 +441,39 @@ namespace Noxico
 			return null;
 		}
 
+		/// <summary>
+		/// Put something IN a container, or SELL it to a vendor.
+		/// </summary>
+		/// <param name="boardchar">The container/vendor</param>
+		/// <param name="token">The item token</param>
+		/// <param name="chosen">The item's definition</param>
+		/// <returns>Returns a failure message or null.</returns>
+		/// <remarks>Sets vendorCaughtYou when you're being criminal scum.</remarks>
 		private static string TryStore(BoardChar boardchar, Token token, InventoryItem chosen)
 		{
 			var inv = boardchar.Character.GetToken("items");
-			var con = other; //container.Token.GetToken("contents");
+			var con = other;
 			if (token.HasToken("cursed"))
 			{
+				//Reveal the cursed item as such if we didn't already know.
 				if (!token.GetToken("cursed").HasToken("known"))
 					token.GetToken("cursed").AddToken("known");
 				return "It's cursed! You can't unequip it."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 			}
 			if (token.HasToken("equipped"))
 			{
+				//You should probably switch over to the Inventory screen and take the thing off.
 				return i18n.GetString("inventory_youareusingthis");
 			}
 			if (mode == ContainerMode.Vendor && token.HasToken("owner") && token.GetToken("owner").Text == vendorChar.Name.ToID())
 			{
-				vendorCaughtYou = true;
-				return vendorChar.Name.ToString() + " recognized it as " + vendorChar.HisHerIts(true) + " property!";
+				//We tried to sell the vendor's own crap back to them.
+				vendorCaughtYou = true; //Handler can deal with this now.
+				return i18n.Format("inventory_vendorcaughtyou", vendorChar.Name.ToString()).Viewpoint(vendorChar);
 			}
 			if (mode == ContainerMode.Vendor && price != 0)
 			{
+				//Handle the transaction.
 				var pMoney = boardchar.Character.GetToken("money");
 				var vMoney = vendorChar.GetToken("money");
 				if (vMoney.Value - price < 0)

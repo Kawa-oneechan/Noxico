@@ -7,6 +7,9 @@ using System.Drawing;
 
 namespace Noxico
 {
+	/// <summary>
+	/// Displays the title and character creator subscreens.
+	/// </summary>
 	public class Introduction
 	{
 		private static System.Threading.Thread worldgen;
@@ -15,12 +18,18 @@ namespace Noxico
 		private static UIPNGBackground titleBack;
 		private static UILabel titleCaption, titlePressEnter;
 
+		/// <summary>
+		/// Should we be running world generation (be in the Character Creator) and exiting...
+		/// </summary>
 		public static void KillWorldgen()
 		{
 			if (worldgen != null && worldgen.ThreadState == System.Threading.ThreadState.Running)
 				worldgen.Abort();
 		}
 		
+		/// <summary>
+		/// Sets up the title screen.
+		/// </summary>
 		public static void Title()
 		{
 			NoxicoGame.Mode = UserMode.Subscreen;
@@ -29,6 +38,9 @@ namespace Noxico
 			NoxicoGame.Sound.PlayMusic("set://Title");
 		}
 
+		/// <summary>
+		/// Generic Subscreen handler.
+		/// </summary>
 		public static void TitleHandler()
 		{
 			var host = NoxicoGame.HostForm;
@@ -40,6 +52,8 @@ namespace Noxico
 				var logo = Mix.GetBitmap("logo.png");
 				var titleOptions = Mix.GetFilesWithPattern("titles\\*.png");
 				var chosen = Mix.GetBitmap(titleOptions[Random.Next(titleOptions.Length)]);
+				//Given our random backdrop and fixed logo, draw them both onto background
+				//because we can't -just- display alpha-blended PNGs.
 				using (var gfx = Graphics.FromImage(background))
 				{
 					gfx.Clear(Color.Black);
@@ -48,7 +62,6 @@ namespace Noxico
 				}
 				UIManager.Initialize();
 				titleBack = new UIPNGBackground(background);
-				//new UIPNGBackground(Mix.GetBitmap("title.png")).Draw();
 
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
@@ -59,8 +72,6 @@ namespace Noxico
 				UIManager.Elements.Add(titlePressEnter);
 				//UIManager.Elements.Add(new UILabel("\u015c") { Top = 6, Left = 50, Foreground = Color.Gray });
 				UIManager.Draw();
-				//host.Write(subtitle, Color.Teal, Color.Transparent, 20, 25 - subtitle.Length() / 2);
-				//host.Write(pressEnter, Color.Gray, Color.Transparent, 22, 25 - pressEnter.Length() / 2);
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -70,6 +81,7 @@ namespace Noxico
 				Subscreens.FirstDraw = true;
 				var rawSaves = Directory.GetDirectories(NoxicoGame.SavePath);
 				var saves = new List<string>();
+				//Check each possible save's version.
 				foreach (var s in rawSaves)
 				{
 					var verCheck = Path.Combine(s, "version");
@@ -83,6 +95,7 @@ namespace Noxico
 				}
 				NoxicoGame.ClearKeys();
 				Subscreens.Mouse = false;
+				//Linq up a set of options for each save game. This returns the game's names as the keys.
 				var options = saves.ToDictionary(new Func<string, object>(s => Path.GetFileName(s)), new Func<string, string>(s =>
 				{
 					string p;
@@ -91,7 +104,6 @@ namespace Noxico
 					{
 						using (var f = new BinaryReader(File.OpenRead(playerFile)))
 						{
-							//p = f.ReadString();
 							p = Player.LoadFromFile(f).Character.Name.ToString(true);
 						}
 						return i18n.Format("ts_loadgame", p, Path.GetFileName(s));
@@ -99,14 +111,13 @@ namespace Noxico
 					return i18n.Format("ts_startoverinx", Path.GetFileName(s));
 				}));
 				options.Add("~", i18n.GetString("ts_startnewgame"));
+				//Display our list of saves.
 				MessageBox.List(saves.Count == 0 ? i18n.GetString("ts_welcometonoxico") : i18n.GetString(saves.Count == 1 ? "ts_thereisasave" : "ts_therearesaves"), options,
 					() =>
 					{
 						if ((string)MessageBox.Answer == "~")
 						{
-							//NoxicoGame.Mode = UserMode.Subscreen;
-							//NoxicoGame.Subscreen = Introduction.CharacterCreator;
-							//NoxicoGame.Immediate = true;
+							//Restore our title screen backdrop, since the MessageBox subscreen purged it.
 							UIManager.Elements.Add(titleBack);
 							UIManager.Elements.Add(titleCaption);
 							UIManager.Elements.Add(titlePressEnter);
