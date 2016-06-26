@@ -150,19 +150,30 @@ namespace Noxico
 			}
 		}
 
-
+		/// <summary>
+		/// Holds a bunch of info for the character creator.
+		/// </summary>
 		private class PlayableRace
 		{
+			/// <summary>
+			/// Internal name of this race
+			/// </summary>
 			public string ID { get; set; }
+			/// <summary>
+			/// Display name
+			/// </summary>
 			public string Name { get; set; }
-			public string Skin { get; set; }
-			/*
-			public List<string> HairColors { get; set; }
-			public List<string> SkinColors { get; set; }
-			public List<string> EyeColors { get; set; }
-			*/
+			/// <summary>
+			/// Maps token paths to UIElements -- presumably UIColorLists and UISingleLists, and their UILabels.
+			/// </summary>
 			public Dictionary<string, UIElement> ColorItems { get; set; }
+			/// <summary>
+			/// Determines which genders can't be picked. Maps directly to UIRadioList.ItemsEnabled.
+			/// </summary>
 			public bool[] SexLocks { get; set; }
+			/// <summary>
+			/// Description, if any.
+			/// </summary>
 			public string Bestiary { get; set; }
 			public override string ToString()
 			{
@@ -170,9 +181,12 @@ namespace Noxico
 			}
 		}
 
-		private static List<PlayableRace> CollectPlayables()
+		/// <summary>
+		/// Goes through bodyplans.tml to get a list of PlayableRaces.
+		/// </summary>
+		private static void CollectPlayables()
 		{
-			var ret = new List<PlayableRace>();
+			playables = new List<PlayableRace>();
 			Program.WriteLine("Collecting playables...");
 			foreach (var bodyPlan in Character.Bodyplans.Where(t => t.Name == "bodyplan"))
 			{
@@ -196,16 +210,22 @@ namespace Noxico
 				if (bodyPlan.HasToken("allowneuter"))
 					sexlocks[3] = true;
 
+				//Use the ID ("bodyplan: example") as the name, unless there's a "playable: proper name".
 				var name = id.Replace('_', ' ').Titlecase();
 				if (!string.IsNullOrWhiteSpace(bodyPlan.GetToken("playable").Text))
 					name = bodyPlan.GetToken("playable").Text;
 
 				var bestiary = bodyPlan.HasToken("bestiary") ? bodyPlan.GetToken("bestiary").Text : string.Empty;
 
+				//Figure out what to put on page two.
+				//By default, we assume skin and hair colors can be edited.
+				//Most bodyplans will be different, though.
 				var colorItems = new Dictionary<string, UIElement>();
-				var editables = "skin/color|Skin color, hair/color|Hair color";
+				var editables = "skin/color|Skin color, hair/color|Hair color"; //path|Label, path|Label...
 				if (bodyPlan.HasToken("editable"))
 					editables = bodyPlan.GetToken("editable").Text;
+				//TODO: use more metric variables and adjust them according to the amount of editables.
+				//See http://i.imgur.com/iC18KAa.png for visual aids.
 				var top = 10;
 				foreach (var aspect in editables.Split(','))
 				{
@@ -239,10 +259,12 @@ namespace Noxico
 					top += 4;
 				}
 
-				ret.Add(new PlayableRace() { ID = id, Name = name, Bestiary = bestiary, ColorItems = colorItems, SexLocks = sexlocks });
+				playables.Add(new PlayableRace() { ID = id, Name = name, Bestiary = bestiary, ColorItems = colorItems, SexLocks = sexlocks });
 			}
-			return ret;
 		}
+		/// <summary>
+		/// Information on all bodyplans with a playable token, built by CollectPlayables.
+		/// </summary>
 		private static List<PlayableRace> playables;
 
 		private static Dictionary<string, UIElement> controls;
@@ -254,6 +276,9 @@ namespace Noxico
 		private static Action<int> loadPage, loadColors, redrawBackdrop;
 		private static Bitmap backdrop, backWithPortrait;
 
+		/// <summary>
+		/// Don't see a Subscreen with multiple handlers often...
+		/// </summary>
 		public static void CharacterCreator()
 		{
 			if (Subscreens.FirstDraw)
@@ -261,8 +286,8 @@ namespace Noxico
 				//Start creating the world as we work...
 				worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
 				worldgen.Start();
-				//host.Noxico.CreateTheWorld();
 
+				//Load all bonus traits.
 				var traits = new List<string>();
 				var traitHelps = new List<string>();
 				var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
@@ -271,6 +296,7 @@ namespace Noxico
 					traits.Add(trait.GetToken("display").Text);
 					traitHelps.Add(trait.GetToken("description").Text);
 				}
+				//Define the help texts for the standard controls.
 				controlHelps = new Dictionary<string, string>()
 				{
 					{ "back", i18n.GetString("cchelp_back") },
@@ -283,17 +309,16 @@ namespace Noxico
 					{ "pref", i18n.GetString("cchelp_pref") },
 					{ "tutorial", i18n.GetString("cchelp_tutorial") },
 					{ "easy", i18n.GetString("cchelp_easy") },
-					//{ "hair", i18n.GetString("cchelp_hair") },
-					//{ "body", i18n.GetString("cchelp_body") },
-					//{ "eyes", i18n.GetString("cchelp_eyes") },
 					{ "gift", traitHelps[0] },
 				};
+
 				backdrop = Mix.GetBitmap("chargen.png");
 				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				using (var g = Graphics.FromImage(backWithPortrait))
 				{
 					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
 				}
+				//Build the interface.
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC3";
 				var bar = new string('\xC4', 33);
 				string[] sexoptions = {i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Herm"), i18n.GetString("Neuter")};
@@ -307,8 +332,6 @@ namespace Noxico
 					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 
-					//{ "worldLabel", new UILabel(i18n.GetString("cc_world")) { Left = 56, Top = 10, Foreground = Color.Gray } },
-					//{ "world", new UITextBox(NoxicoGame.RollWorldName()) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 11, Foreground = Color.Gray } },
@@ -323,16 +346,6 @@ namespace Noxico
 					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = 58, Top = 40, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 58, Top = 42, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
-					/*
-					{ "hairLabel", new UILabel(i18n.GetString("cc_hair")) { Left = 56, Top = 10, Foreground = Color.Gray } },
-					{ "hair", new UIColorList() { Left = 58, Top = 11, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "bodyLabel", new UILabel(i18n.GetString("cc_body")) { Left = 56, Top = 14, Foreground = Color.Gray } },
-					{ "bodyNo", new UILabel(i18n.GetString("cc_no")) { Left = 60, Top = 15, Foreground = Color.Gray } },
-					{ "body", new UIColorList() { Left = 58, Top = 15, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "eyesLabel", new UILabel(i18n.GetString("cc_eyes")) { Left = 56, Top = 18, Foreground = Color.Gray } },
-					{ "eyes", new UIColorList() { Left = 58, Top = 19, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					*/
-
 					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 56, Top = 10, Foreground = Color.Gray } },
 					{ "gift", new UIList("", null, traits) { Left = 58, Top = 12, Width = 30, Height = 32, Foreground = Color.Black, Background = Color.Transparent } },
 
@@ -340,68 +353,54 @@ namespace Noxico
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
 					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 59, Foreground = Color.Silver } },
 				};
-
+				//Map the controls to pages.
 				pages = new List<UIElement>[]
 				{
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
-						//controls["worldLabel"], controls["world"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
 						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
 						controls["tutorial"], controls["easy"],
 						controls["controlHelp"], controls["next"],
 					},
-					new List<UIElement>(), //Placeholder
-					/*
-					new List<UIElement>()
-					{
-						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
-						controls["hairLabel"], controls["hair"],
-						controls["bodyLabel"], controls["bodyNo"], controls["body"],
-						controls["eyesLabel"], controls["eyes"],
-						controls["controlHelp"], controls["back"], controls["next"],
-					}, */
+					new List<UIElement>(), //Placeholder, filled in on-demand from PlayableRace.ColorItems.
 					new List<UIElement>()
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["giftLabel"], controls["gift"],
-						controls["controlHelp"], controls["back"], /* controls["playNo"], */ controls["play"],
+						controls["controlHelp"], controls["back"], controls["play"],
 					},
 				};
 
-				playables = CollectPlayables();
+				CollectPlayables();
 
 				loadPage = new Action<int>(p =>
 				{
 					UIManager.Elements.Clear();
 					UIManager.Elements.AddRange(pages[page]);
-					UIManager.Highlight = UIManager.Elements[5];
+					UIManager.Highlight = UIManager.Elements[5]; //select whatever comes after helpLine.
 				});
 
+				//Called when changing species.
 				loadColors = new Action<int>(i =>
 				{
 					var species = playables[i];
 					controlHelps["species"] = species.Bestiary;
-					/* controls["bodyLabel"].Text = species.Skin.Titlecase();
-					((UISingleList)controls["hair"]).Items.Clear();
-					((UISingleList)controls["body"]).Items.Clear();
-					((UISingleList)controls["eyes"]).Items.Clear();
-					((UISingleList)controls["hair"]).Items.AddRange(species.HairColors);
-					((UISingleList)controls["body"]).Items.AddRange(species.SkinColors);
-					((UISingleList)controls["eyes"]).Items.AddRange(species.EyeColors);
-					((UISingleList)controls["hair"]).Index = 0;
-					((UISingleList)controls["body"]).Index = 0;
-					((UISingleList)controls["eyes"]).Index = 0; */
 					pages[1].Clear();
 					pages[1].AddRange(new[] { controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"] });
 					pages[1].AddRange(species.ColorItems.Values);
 					pages[1].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
+				//Do a nice screen blend effect. Normally we can only do straight normal blends.
+				//You might think this is slow as balls, being a Get/SetPixel loop. But since our pics are only 54x58, it's not that bad.
 				redrawBackdrop = new Action<int>(i =>
 				{
+					//We try x_y.png first, where x is the bodyplan ID and y the gender.
+					//If that file doesn't exist, we try just x.png.
+					//If that doesn't work either, we use a fallback.
 					var playable = playables[((UISingleList)controls["species"]).Index];
 					var portrait = "chargen\\" + playable.ID + "_" + "mfhn"[((UIRadioList)controls["sex"]).Value] + ".png";
 					if (!Mix.FileExists(portrait))
@@ -448,7 +447,6 @@ namespace Noxico
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
 				controls["play"].Enter = (s, e) =>
 				{
-					//NoxicoGame.WorldName = controls["world"].Text.Replace(':', '_').Replace('\\', '_').Replace('/', '_').Replace('"', '_');
 					var playerName = controls["name"].Text;
 					var sex = ((UIRadioList)controls["sex"]).Value;
 					var gid = ((UIRadioList)controls["gid"]).Value;
@@ -456,11 +454,7 @@ namespace Noxico
 					var species = ((UISingleList)controls["species"]).Index;
 					var tutorial = ((UIToggle)controls["tutorial"]).Checked;
 					var easy = ((UIToggle)controls["easy"]).Checked;
-					/* var hair = ((UISingleList)controls["hair"]).Text;
-					var body = ((UISingleList)controls["body"]).Text;
-					var eyes = ((UISingleList)controls["eyes"]).Text; */
 					var bonus = ((UIList)controls["gift"]).Text;
-					//NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, hair, body, eyes, bonus);
 					var colorMap = new Dictionary<string, string>();
 					foreach (var editable in playables[species].ColorItems)
 					{
@@ -475,7 +469,6 @@ namespace Noxico
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("tutorial");
 					if (easy)
 						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
-					//NoxicoGame.HostForm.Noxico.CreateRealm();
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
@@ -490,17 +483,6 @@ namespace Noxico
 					{
 						Story();
 					}
-
-					/*
-					if (!IniFile.GetValue("misc", "skipintro", true))
-					{
-						var dream = new Character();
-						dream.Name = new Name("Dream");
-						dream.AddToken("special");
-						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("introdream");
-						SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, dream, "(new game start)");
-					}
-					*/
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
@@ -516,11 +498,10 @@ namespace Noxico
 					controlHelps["species"] = playable.Bestiary;
 					controls["controlHelp"].Text = playable.Bestiary.Wordwrap(controls["controlHelp"].Width);
 					var sexList = (UIRadioList)controls["sex"];
-					//controls["sex"].Hidden = playable.GenderLocked;
-					//controls["sexNo"].Hidden = !playable.GenderLocked;
 					sexList.ItemsEnabled = playable.SexLocks;
 					if (!sexList.ItemsEnabled[sexList.Value])
 					{
+						//Uh-oh. Select the first non-disabled item.
 						for (var i = 0; i < sexList.ItemsEnabled.Length; i++)
 						{
 							if (sexList.ItemsEnabled[i])
@@ -538,11 +519,6 @@ namespace Noxico
 					redrawBackdrop(0);
 					UIManager.Draw();
 				};
-				/* controls["world"].Change = (s, e) =>
-				{
-					controls["next"].Hidden = string.IsNullOrWhiteSpace(controls["world"].Text);
-					UIManager.Draw();
-				}; */
 				controls["name"].Change = (s, e) =>
 				{
 					controls["nameRandom"].Hidden = !string.IsNullOrWhiteSpace(controls["name"].Text);
@@ -589,39 +565,33 @@ namespace Noxico
 			}
 
 			UIManager.CheckKeys();
-
-			/*
-			if (worldgen.ThreadState == System.Threading.ThreadState.Running)
-			{
-				NoxicoGame.HostForm.SetCell(19, 50, twirlingBatons[twirlingBaton / 10], Random.Next(15), 15);
-				NoxicoGame.HostForm.SetCell(19, 60, twirlingBatons[twirlingBaton / 10], Random.Next(15), 15);
-				twirlingBaton++;
-				if (twirlingBaton == 40)
-					twirlingBaton = 0;
-			}
-			*/
 		}
 
 		private static string story;
 		private static int storyCursor;
 		private static int storyDelay;
 
+		/// <summary>
+		/// In case the world generator isn't done yet...
+		/// </summary>
 		public static void Story()
 		{
 			NoxicoGame.Subscreen = Introduction.StoryHandler;
 			NoxicoGame.Mode = UserMode.Subscreen;
-			//controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 			UIManager.Elements[0] = new UIPNGBackground(Mix.GetBitmap("story.png"));
 			UIManager.Elements[1] = new UILabel(string.Empty) { Left = 10, Top = 10, Width = 60, Foreground = Color.White };
 			UIManager.Elements[2] = new UILabel(i18n.GetString("worldgen_loading")) { Left = 1, Top = 0 };
 			UIManager.Elements[3] = new UILabel(string.Empty) { Left = 1, Top = 1 };
+			//Remove everything but these first few UIElements.
 			UIManager.Elements.RemoveRange(4, UIManager.Elements.Count - 4);
-			//Remove the rest of all this.
 			UIManager.Draw();
 			story = Mix.GetString("story.txt", false);	
 			storyCursor = 0;
 			storyDelay = 2;
 		}
+		/// <summary>
+		/// Types out the game's backstory, unimportant as it is, while waiting for the world generator to finish.
+		/// </summary>
 		public static void StoryHandler()
 		{
 			if (worldgen.ThreadState == System.Threading.ThreadState.Running)

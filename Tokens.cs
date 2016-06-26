@@ -8,47 +8,88 @@ using System.Text.RegularExpressions;
 
 namespace Noxico
 {
+	/// <summary>
+	/// Base class for all things Token.
+	/// </summary>
 	public class TokenCarrier
 	{
-		//TODO: put resolving the rolls for a tree in a separate method or sumth.
-		//public static bool NoRolls { get; set; }
+		/// <summary>
+		/// The child Tokens for this Token.
+		/// </summary>
 		public List<Token> Tokens { get; private set; }
 
+		/// <summary>
+		/// Initializes a new TokenCarrier.
+		/// </summary>
 		public TokenCarrier()
 		{
 			Tokens = new List<Token>();
 		}
 
+		/// <summary>
+		/// Checks to see if this Token has a child Token with the specified name.
+		/// </summary>
+		/// <param name="name">The Token to check for.</param>
+		/// <returns>Returns true if the Token exists, false otherwise.</returns>
 		public bool HasToken(string name)
 		{
 			var t = Tokens.Find(x => x.Name == name);
 			return t != null;
 		}
 
+		/// <summary>
+		/// Returns the first child Token with the specified name.
+		/// </summary>
+		/// <param name="name">The Token to return.</param>
+		/// <returns>Returns the Token or null.</returns>
 		public Token GetToken(string name)
 		{
 			var t = Tokens.Find(x => x.Name == name);
 			return t;
 		}
 
+		/// <summary>
+		/// Adds a new child Token with the specified name, value, and text.
+		/// </summary>
+		/// <param name="name">The name of the Token to add.</param>
+		/// <param name="value">The value to assign to the new Token.</param>
+		/// <param name="text">The text to assign to the new Token.</param>
+		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(string name, float value, string text)
 		{
 			var t = new Token(name, value, text);
 			Tokens.Add(t);
 			return t;
 		}
+		/// <summary>
+		/// Adds a new child Token with the specified name and text.
+		/// </summary>
+		/// <param name="name">The name of the Token to add.</param>
+		/// <param name="text">The text to assign to the new Token.</param>
+		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(string name, string text)
 		{
 			var t = new Token(name, text);
 			Tokens.Add(t);
 			return t;
 		}
+		/// <summary>
+		/// Adds a new child Token with the specified name and value.
+		/// </summary>
+		/// <param name="name">The name of the Token to add.</param>
+		/// <param name="value">The value to assign to the new Token.</param>
+		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(string name, float value)
 		{
 			var t = new Token(name, value);
 			Tokens.Add(t);
 			return t;
 		}
+		/// <summary>
+		/// Adds a new child Token with the specified name.
+		/// </summary>
+		/// <param name="name">The name of the Token to add.</param>
+		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(string name)
 		{
 			var t = new Token(name);
@@ -56,12 +97,22 @@ namespace Noxico
 			return t;
 		}
 
+		/// <summary>
+		/// Adds a Token to this Token's children.
+		/// </summary>
+		/// <param name="name">The Token to add.</param>
+		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(Token t)
 		{
 			Tokens.Add(t);
 			return t;
 		}
 
+		/// <summary>
+		/// Finds the first token with the specified name and removes it.
+		/// </summary>
+		/// <param name="name">The name of the Token to remove.</param>
+		/// <returns>Returns the Token that was removed, or null if there was none.</returns>
 		public Token RemoveToken(string name)
 		{
 			var t = Tokens.Find(x => x.Name == name);
@@ -70,6 +121,12 @@ namespace Noxico
 			return t;
 		}
 
+		/// <summary>
+		/// Finds the first token with the specified name and text and removes it.
+		/// </summary>
+		/// <param name="name">The name of the Token to remove.</param>
+		/// <param name="text">The text of the Token to remove.</param>
+		/// <returns>Returns the Token that was removed, or null if there was none.</returns>
 		public Token RemoveToken(string name, string text)
 		{
 			var t = Tokens.Find(x => x.Name == name && x.Text == text);
@@ -78,27 +135,48 @@ namespace Noxico
 			return t;
 		}
 
-		public Token RemoveToken(Token t)
+		/// <summary>
+		/// Removes the specified Token from this Token's children.
+		/// </summary>
+		/// <param name="token">The Token to remove.</param>
+		/// <returns>Returns the Token that was removed.</returns>
+		public Token RemoveToken(Token token)
 		{
-			Tokens.Remove(t);
-			return t;
+			Tokens.Remove(token);
+			return token;
 		}
 
-		public Token RemoveToken(int i)
+		/// <summary>
+		/// Removes the child Token at the specified index.
+		/// </summary>
+		/// <param name="index">The index of the Token to remove.</param>
+		/// <returns>Returns the Token that was removed.</returns>
+		/// <exception cref="System.ArgumentOutOfRangeException">The requested index was out of range.</exception>
+		public Token RemoveToken(int index)
 		{
-			if (i < 0 || i >= Tokens.Count)
+			if (index < 0 || index >= Tokens.Count)
 				throw new ArgumentOutOfRangeException("i");
-			var t = Tokens[i];
+			var t = Tokens[index];
 			Tokens.Remove(t);
 			return t;
 		}
 
+		/// <summary>
+		/// Removes all child Tokens by the specified name.
+		/// </summary>
+		/// <param name="name">The name of the Tokens to remove.</param>
 		public void RemoveAll(string name)
 		{
 			foreach (var t in Tokens.FindAll(x => x.Name == name))
 				Tokens.Remove(t);
 		}
 
+		/// <summary>
+		/// Finds a Token by a given path and returns it.
+		/// </summary>
+		/// <param name="pathSpec">The path to the Token to find.</param>
+		/// <returns>Returns the Token. If not found, returns null.</returns>
+		/// <example>"foo/bar" returns, the foo token's bar child. "bar[4]" returns the 4th bar token. "foo[=cake]" returns a foo token with text "cake".</example>
 		public Token Path(string pathSpec)
 		{
 			var parts = pathSpec.Split('/');
@@ -141,11 +219,11 @@ namespace Noxico
 			return null;
 		}
 
-		public Token Item(int i)
+		public Token Item(int index)
 		{
-			if (i < 0 || i >= Tokens.Count)
+			if (index < 0 || index >= Tokens.Count)
 				throw new ArgumentOutOfRangeException("i");
-			return Tokens[i];
+			return Tokens[index];
 		}
 
 		public int Count()
@@ -153,10 +231,14 @@ namespace Noxico
 			return Tokens.Count;
 		}
 
-		public void Tokenize(string a)
+		/// <summary>
+		/// Converts a TML string to a Token tree.
+		/// </summary>
+		/// <param name="source">The TML string to convert.</param>
+		public void Tokenize(string source)
 		{
 			var t = new List<Token>();
-			var lines = a.Split('\n');
+			var lines = source.Split('\n');
 			var nodes = new List<Token>();
 			var prevTabs = 0;
 			var cdata = false;
@@ -280,6 +362,12 @@ namespace Noxico
 			//NoRolls = false;
 		}
 
+		/// <summary>
+		/// Recursively converts a Token list to a TML string. Available in debug builds only.
+		/// </summary>
+		/// <param name="list">The list of Tokens to convert.</param>
+		/// <param name="tabs">The amount of tab characters to indent.</param>
+		/// <returns>Returns a TML string representation of the specified Tokens. Returns the empty string in release builds.</returns>
 #if DEBUG
 		public string DumpTokens(List<Token> list, int tabs)
 		{
@@ -373,10 +461,14 @@ namespace Noxico
 			}
 		}
 
-		public void Patch(string p)
+		/// <summary>
+		/// Applies a patch, given in TML format, to this Token tree.
+		/// </summary>
+		/// <param name="source">A TML representation of the patch to apply.</param>
+		public void Patch(string source)
 		{
 			var patch = new Token();
-			patch.Tokenize(p);
+			patch.Tokenize(source);
 			foreach (var token in patch.Tokens)
 			{
 				var path = token.Text;
