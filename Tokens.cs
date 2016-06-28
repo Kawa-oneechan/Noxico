@@ -465,6 +465,7 @@ namespace Noxico
 		/// Applies a patch, given in TML format, to this Token tree.
 		/// </summary>
 		/// <param name="source">A TML representation of the patch to apply.</param>
+		/// <remarks>Patch syntax is somewhat based on JSON PATCH, RFC 6902.</remarks>
 		public void Patch(string source)
 		{
 			var patch = new Token();
@@ -544,6 +545,9 @@ namespace Noxico
 
 	}
 
+	/// <summary>
+	/// The backbone of Noxico data.
+	/// </summary>
 	public class Token : TokenCarrier
 	{
 		public string Name { get; set; }
@@ -557,27 +561,50 @@ namespace Noxico
 			return string.Format("{0} ({1}, \"{2}\", {3})", Name, Value, Text, Tokens.Count);
 		}
 
+		/// <summary>
+		/// Initializes a new Token. Should not be used as-is unless directly followed by something to set the Name.
+		/// </summary>
 		public Token()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new Token.
+		/// </summary>
+		/// <param name="name">The name to give the new Token.</param>
 		public Token(string name)
 		{
 			Name = name;
 		}
 
+		/// <summary>
+		/// Initializes a new Token.
+		/// </summary>
+		/// <param name="name">The name to give the new Token.</param>
+		/// <param name="value">The value to give the new Token.</param>
 		public Token(string name, float value)
 		{
 			Name = name;
 			Value = value;
 		}
 
+		/// <summary>
+		/// Initializes a new Token.
+		/// </summary>
+		/// <param name="name">The name to give the new Token.</param>
+		/// <param name="text">The text to give the new Token.</param>
 		public Token(string name, string text)
 		{
 			Name = name;
 			Text = text;
 		}
 
+		/// <summary>
+		/// Initializes a new Token.
+		/// </summary>
+		/// <param name="name">The name to give the new Token.</param>
+		/// <param name="value">The value to give the new Token.</param>
+		/// <param name="text">The text to give the new Token.</param>
 		public Token(string name, float value, string text)
 		{
 			Name = name;
@@ -585,10 +612,15 @@ namespace Noxico
 			Text = text;
 		}
 
+		/// <summary>
+		/// Recursively serializes a Token to a stream for storage, along with its children.
+		/// </summary>
+		/// <param name="stream">The stream to write to.</param>
 		public void SaveToFile(BinaryWriter stream)
 		{
 			stream.Write(Name ?? string.Empty);
 			var isInt = (Value == (int)Value);
+			//Format: child count, reserved, has text, value is integral, has value.
 			var flags = 0;
 			if (Value != 0)
 				flags |= 1;
@@ -597,6 +629,7 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(Text))
 				flags |= 4;
 			flags |= Tokens.Count << 4;
+			//We store this as an encoded value to allow any amount of child tokens.
 			stream.Write7BitEncodedInt(flags);
 			if (Value != 0)
 			{
@@ -611,11 +644,17 @@ namespace Noxico
 				Tokens.ForEach(x => x.SaveToFile(stream));
 		}
 
+		/// <summary>
+		/// Recursively deserializes a Token and its children from a stream.
+		/// </summary>
+		/// <param name="stream">The stream to read from.</param>
+		/// <returns>Returns the Token that was deserialized.</returns>
 		public static Token LoadFromFile(BinaryReader stream)
 		{
 			var newToken = new Token();
 			newToken.Name = stream.ReadString();
 			var flags = stream.Read7BitEncodedInt();
+			//Format: child count, reserved, has text, value is integral, has value.
 			var numTokens = flags >> 4;
 			if ((flags & 1) == 1)
 			{
@@ -632,6 +671,11 @@ namespace Noxico
 			return newToken;
 		}
 
+		/// <summary>
+		/// Recursively checks if this Token's children matches another list of Tokens, by name.
+		/// </summary>
+		/// <param name="otherSet">The list of Tokens to compare against.</param>
+		/// <returns>Returns true if the sets match.</returns>
 		public bool IsMatch(List<Token> otherSet)
 		{
 			foreach (var toFind in this.Tokens)
@@ -649,6 +693,10 @@ namespace Noxico
 			return true;
 		}
 
+		/// <summary>
+		/// Removes each Token in the specified set from this Token's children, by reference.
+		/// </summary>
+		/// <param name="otherSet">A list of Tokens to remove.</param>
 		public void RemoveSet(List<Token> otherSet)
 		{
 			//throw new NotImplementedException();
@@ -656,6 +704,10 @@ namespace Noxico
 				this.Tokens.Remove(t);
 		}
 
+		/// <summary>
+		/// Recursively adds a list of Tokens to this Token's children, by cloning.
+		/// </summary>
+		/// <param name="otherSet">The list of Tokens to add.</param>
 		public void AddSet(List<Token> otherSet)
 		{
 			//this.Tokens.AddRange(otherSet);
@@ -671,6 +723,11 @@ namespace Noxico
 			}
 		}
 
+		/// <summary>
+		/// Creates a new Token with the same name, value, text, and (recursively) children as this one.
+		/// </summary>
+		/// <param name="deep">If true, children are also cloned. If false, they are passed as references to the originals.</param>
+		/// <returns>Returns a copy of this Token.</returns>
 		public Token Clone(bool deep = true)
 		{
 			var t = new Token(Name, Value, Text);
@@ -679,16 +736,22 @@ namespace Noxico
 			return t;
 		}
 
-		public bool Equals(Token t, bool deep = true)
+		/// <summary>
+		/// Compares this Token's name, value, and text to another Token's.
+		/// </summary>
+		/// <param name="other">The Token to compare to.</param>
+		/// <param name="deep">If true, also checks the Tokens' children.</param>
+		/// <returns>Returns true if the tokens match.</returns>
+		public bool Equals(Token other, bool deep = true)
 		{
-			if (t.Name == this.Name && t.Value == this.Value && t.Text == this.Text)
+			if (other.Name == this.Name && other.Value == this.Value && other.Text == this.Text)
 			{
 				if (deep)
 				{
-					if (t.Tokens.Count != this.Tokens.Count)
+					if (other.Tokens.Count != this.Tokens.Count)
 						return false; //quick cut-off!
 					for (var i = 0; i < this.Tokens.Count; i++)
-						if (!this.Tokens[i].Equals(t.Tokens[i]))
+						if (!this.Tokens[i].Equals(other.Tokens[i]))
 							return false; //at least one of the child tokens doesn't match.
 				}
 				return true;

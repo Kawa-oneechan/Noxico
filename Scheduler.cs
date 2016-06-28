@@ -303,6 +303,8 @@ namespace Noxico
 		private void SetNextActivityTime(Token nextActivity)
 		{
 			var range = nextActivity.GetToken("range").Text;
+			if (string.IsNullOrWhiteSpace(range))
+				range = nextActivity.GetToken("range").Value.ToString();
 
 			var time = new TimeSpan(int.Parse(nextActivity.Name.Substring(0, 2)),
 									int.Parse(nextActivity.Name.Substring(2, 2)),
