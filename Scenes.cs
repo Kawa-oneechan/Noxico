@@ -144,6 +144,13 @@ namespace Noxico
 					//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 					//js.SetParameter("Expectations", NoxicoGame.Expectations);
 					//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
+#if DEBUG
+					js.SetDebugMode(true);
+					js.Step += (s, di) =>
+					{
+						Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
+					};
+#endif
 					js.Run(part.Tokens[0].Text);
 					ret.AppendLine(buffer.ToString());
 					ret.AppendLine();

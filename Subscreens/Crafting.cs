@@ -31,6 +31,8 @@ namespace Noxico
 			foreach (var carriedItem in ItemsToWorkWith.Tokens)
 			{
 				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
+				if (knownItem == null)
+					continue;
 				foreach (var craft in tml.Where(t => t.Name == "craft"))
 				{
 					var requirements = new List<Token>();
@@ -167,6 +169,8 @@ namespace Noxico
 						}
 						if (string.IsNullOrWhiteSpace(recipe.Display))
 							continue;
+						if (results.Exists(x => x.Display == recipe.Display))
+							continue;
 						results.Add(recipe);
 					} while (repeat);
 				}
@@ -196,10 +200,14 @@ namespace Noxico
 				Subscreens.Redraw = false;
 				recipes = GetPossibilities(Carrier);
 				var h = recipes.Count < 40 ? recipes.Count : 40;
+				if (h == 0)
+					h++;
 				recipeWindow = new UIWindow(string.Empty) { Top = 2, Left = 2, Width = 76, Height = h + 2 };
 				recipeList = new UIList(string.Empty, null, recipes.Select(r => r.Display)) { Top = 3, Left = 3, Width = 74, Height = h };
 				recipeList.Enter = (s, e) =>
 				{
+					if (recipes.Count == 0)
+						return;
 					var i = recipeList.Index;
 					recipes[i].Apply();
 					//Redetermine the possibilities and update the UI accordingly.

@@ -126,7 +126,6 @@
     <Content Include="mix\fonts\8x8-bold.png" />
     <Content Include="mix\fonts\8x8-thin.png" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
-    <Content Include="mix\missions\playerbase\scenesDlg.xml" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Mutamorph.cs" />
     <Compile Include="PlayerChar.cs" />
@@ -222,6 +221,7 @@
     <Content Include="mix\missions\melfina\loot.tml.patch" />
     <Content Include="mix\missions\melfina\items.tml.patch" />
     <Content Include="mix\missions\pettancow\uniques.tml.patch" />
+    <None Include="mix\missions\playerbase\dialogue.tml.patch" />
     <None Include="mix\missions\portal\mission._js" />
     <Content Include="mix\missions\portal\platform1.png" />
     <Content Include="mix\missions\portal\platform2.png" />
