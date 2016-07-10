@@ -131,6 +131,10 @@ Number of known items       {2}
 	opt_vistasaves: Use "Saved Games" folder when available
 	opt_xinput: Use XInput gamepad when available
 	opt_imperial: Use feet and inches instead of meters
+	opt_audio: Audio
+	opt_enableaudio: Enable audio
+	opt_musicvolume: Music volume (0-100)
+	opt_soundvolume: Sound volume (0-100)
 	opt_save: OK
 	opt_cancel: Cancel
 	opt_open: Open INI
