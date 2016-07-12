@@ -1303,12 +1303,15 @@ namespace Noxico
 		public static void DrawSidebar()
 		{
 			var player = HostForm.Noxico.Player;
-			if (player == null || player.Character == null)
-				return;
 
 			for (var row = 0; row < 60; row++)
 				for (var col = 80; col < 100; col++)
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
+
+			if (NoxicoGame.Subscreen == Introduction.StoryHandler || NoxicoGame.Subscreen == Introduction.CharacterCreator)
+				return;
+			if (player == null || player.Character == null)
+				return;
 
 			var character = player.Character;
 			HostForm.SetCell(1, 81, player.Glyph, player.ForegroundColor, player.BackgroundColor);
