@@ -200,6 +200,9 @@ namespace Noxico
 			}
 			#endregion
 
+			if (Character.HasToken("tutorial"))
+				Character.GetToken("tutorial").Value++;
+
 			var newX = this.XPosition;
 			var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
@@ -478,6 +481,11 @@ namespace Noxico
 				NoxicoGame.Cursor.YPosition = this.YPosition;
 				NoxicoGame.Cursor.PopulateTabstops();
 				NoxicoGame.Cursor.Point();
+				if (Character.HasToken("tutorial") && !Character.GetToken("tutorial").HasToken("interactmode"))
+				{
+					Character.GetToken("tutorial").AddToken("dointeractmode");
+					NoxicoGame.CheckForTutorialStuff();
+				}
 				return;
 			}
 			

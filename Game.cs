@@ -575,6 +575,10 @@ namespace Noxico
 					}
 					Cursor.Draw();
 				}
+				else if (Mode == UserMode.Walkabout && PlayerReady && Player.Character.HasToken("tutorial"))
+				{
+					CheckForTutorialStuff();
+				}
 			}
 			else
 			{
@@ -1454,6 +1458,29 @@ namespace Noxico
 #if DEBUG
 			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 49, 81);
 #endif
+		}
+
+		public static void CheckForTutorialStuff()
+		{
+			//We can assume this is only invoked when we -have- a tutorial token.
+			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var tutorial = player.GetToken("tutorial");
+			if (tutorial.HasToken("dointeractmode"))
+			{
+				tutorial.AddToken("interactmode");
+				MessageBox.Notice(i18n.Entitize("\uE2FEExactly like that, yes.\n\nYou can move the targeting cursor around the same way you moved your character, then press \uE20A to call up a menu of interactions for whatever you aimed at.\n\nAlso, you can press \uE20E to more quickly aim at various things."), true, "", "tutorichel.png");
+			}
+			else if (!tutorial.HasToken("firstmoves") && tutorial.Value > 5)
+			{
+				tutorial.Value = 0;
+				tutorial.AddToken("firstmoves");
+				MessageBox.Notice(i18n.Entitize("\uE2FEWelcome to Noxico.\n\nYou probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: \uE207. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!"), true, "", "tutorichel.png");
+			}
+			else if (!tutorial.HasToken("flying") && player.HasToken("wings") && !player.GetToken("wings").HasToken("small"))
+			{
+				tutorial.AddToken("flying");
+				MessageBox.Notice(i18n.Entitize("\uE2FEIt seems you have functional wings.\n\nAs long as you have enough headroom, you can take flight by pressing \uE208. Press it again to land, but be careful where you do that!"), true, "", "tutorichel.png");
+			}
 		}
 	}
 }

@@ -160,6 +160,11 @@ namespace Noxico
 			{
 				UIManager.Initialize();
 				NoxicoGame.Mode = UserMode.Walkabout;
+				if (host.Noxico.Player.Character.Path("tutorial/dointeractmode") != null)
+				{
+					host.Noxico.Player.Character.GetToken("tutorial").RemoveToken("dointeractmode");
+					NoxicoGame.Mode = UserMode.Aiming;
+				}
 				host.Noxico.CurrentBoard.Redraw();
 			}
 			else
