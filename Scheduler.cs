@@ -86,7 +86,7 @@ namespace Noxico
 		private uint TaskTimer;
 		private Token ScheduleToken;
 		private Token CurrentActivity, NextActivity;
-		private NoxicanDate NextActivityTime;
+		private DateTime NextActivityTime; //private NoxicanDate NextActivityTime;
 		private BoardChar entity;
 		private string repeatScript, repeatScriptName;
 
@@ -259,8 +259,8 @@ namespace Noxico
         /// <returns>True if the next activity is within the next 24 hours, false if not.</returns>
         private bool VerifyNextTime()
         {
-            var maxTime = NoxicanDate.FromBinary(NoxicoGame.InGameTime.ToBinary());
-            maxTime.AddDays(1);
+			var maxTime = NoxicoGame.InGameTime.AddDays(1); //var maxTime = NoxicanDate.FromBinary(NoxicoGame.InGameTime.ToBinary());
+            //maxTime.AddDays(1);
 
             return (NextActivityTime <= maxTime && NextActivityTime >= NoxicoGame.InGameTime);
         }
@@ -332,8 +332,8 @@ namespace Noxico
 
 			time += timediff;
 
-			NextActivityTime = new NoxicanDate(NoxicoGame.InGameTime.Year, NoxicoGame.InGameTime.Month + 1, NoxicoGame.InGameTime.Day + 1);
-			NextActivityTime.Add(time);
+			NextActivityTime = NoxicoGame.InGameTime.AddMonths(1).AddDays(1).Add(time); //NextActivityTime = new NoxicanDate(NoxicoGame.InGameTime.Year, NoxicoGame.InGameTime.Month + 1, NoxicoGame.InGameTime.Day + 1);
+			//NextActivityTime.Add(time);
 		}
 
 		private void PerformTask(Task task)
@@ -509,7 +509,7 @@ namespace Noxico
 			if (ct != null && ct.Tokens.Count == 2)
 			{
 				CurrentActivity = ct.Tokens[0];
-				NextActivityTime = NoxicanDate.FromBinary(long.Parse(ct.GetToken("nexttime").Text));
+				NextActivityTime = new DateTime(long.Parse(ct.GetToken("nexttime").Text)); //NextActivityTime = NoxicanDate.FromBinary(long.Parse(ct.GetToken("nexttime").Text));
 			}
 		}
 

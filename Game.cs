@@ -57,7 +57,7 @@ namespace Noxico
 		public string[] Potions;
 		public static List<string> Identifications;
 		public static Dictionary<int, string> TravelTargets;
-		public static NoxicanDate InGameTime;
+		public static DateTime InGameTime; //public static NoxicanDate InGameTime;
 		public static bool PlayerReady { get; set; }
 
 		private static List<string> messageLog = new List<string>();
@@ -232,7 +232,7 @@ namespace Noxico
 			return;
 			*/
 
-			InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0); //InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
 			CurrentBoard = new Board();
@@ -380,7 +380,7 @@ namespace Noxico
 			Toolkit.ExpectFromFile(bin, "UNIQ", "unique item tracking");
 			var numUniques = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");
-			InGameTime = new NoxicanDate(bin.ReadInt64());
+			InGameTime = new DateTime(bin.ReadInt64()); //InGameTime = new NoxicanDate(bin.ReadInt64());
 			Toolkit.ExpectFromFile(bin, "TARG", "known targets list");
 			var numTargets = bin.ReadInt32();
 			TravelTargets = new Dictionary<int, string>();

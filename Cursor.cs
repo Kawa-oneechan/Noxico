@@ -127,6 +127,11 @@ namespace Noxico
 		public override void Update()
 		{
 			base.Update();
+			if (this.ParentBoard == null)
+			{
+				NoxicoGame.Mode = UserMode.Walkabout;
+				return;
+			}
 			this.ParentBoard.Draw(true);
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)

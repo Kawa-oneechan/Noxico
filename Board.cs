@@ -78,7 +78,7 @@ namespace Noxico
 
 	public enum Fluids
 	{
-		Dry, Water, KoolAid, Slime, Blood, Sperm, Reserved1, Reserved2
+		Dry, Water, KoolAid, Slime, Blood, Semen, Reserved1, Reserved2
 	}
 
 	public class TileDefinition
