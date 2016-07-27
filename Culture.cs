@@ -199,6 +199,7 @@ namespace Noxico
 		}
 	}
 
+	/*
 	public class NoxicanDate
 	{
 		private static string[] months;
@@ -424,4 +425,5 @@ namespace Noxico
 			return (int)this.ToBinary();
 		}
 	}
+	*/
 }

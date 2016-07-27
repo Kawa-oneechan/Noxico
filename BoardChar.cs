@@ -347,8 +347,8 @@ namespace Noxico
 					continue;
 				if (knownItem.Path("timer/evenunequipped") == null && !carriedItem.HasToken("equipped"))
 					continue;
-				var time = new NoxicanDate(long.Parse(timer.Text));
-				if (NoxicoGame.InGameTime.Minute == time.Minute)
+				var time = new DateTime(long.Parse(timer.Text)); //var time = new NoxicanDate(long.Parse(timer.Text));
+				if (NoxicoGame.InGameTime.Minute == time.Minute) //if (NoxicoGame.InGameTime.Minute == time.Minute)
 					continue;
 				if (timer.Value > 0)
 				{
