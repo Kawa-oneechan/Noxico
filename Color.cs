@@ -152,7 +152,7 @@ namespace Noxico
 			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(request, StringComparison.OrdinalIgnoreCase));
 			if (entry == null)
 				return Color.Silver;
-			return new Color((long)entry.Value, entry.Name);
+			return new Color((long)entry.Value | 0xFF000000, entry.Name); //added the | 0xFF000000 bit to ensure alpha.
 		}
 
 		private float Max(float r, float g, float b)

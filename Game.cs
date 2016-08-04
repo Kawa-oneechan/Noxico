@@ -671,10 +671,15 @@ namespace Noxico
 #endif
 				var realm = (Realms)i;
 				generator.GenerateWorldMap(realm, setStatus);
+				Program.WriteLine("{0} -- Generated basic geography and town locations.", stopwatch.Elapsed);
 				Boardificate(generator, setStatus, realm);
+				Program.WriteLine("{0} -- Made individual boards.", stopwatch.Elapsed);
 				PlaceTowns(generator, setStatus, ref townBoards);
+				Program.WriteLine("{0} -- Placed towns.", stopwatch.Elapsed);
 				PlaceDungeons(generator, setStatus);
+				Program.WriteLine("{0} -- Placed dungeon entrances.", stopwatch.Elapsed);
 				ApplyMissions(generator, setStatus, realm);
+				Program.WriteLine("{0} -- Applied missions. Basic world generation is now DONE.", stopwatch.Elapsed);
 
 				miniMap[i] = generator.RoughBiomeMap;
 

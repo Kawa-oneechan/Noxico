@@ -1,4 +1,4 @@
-using System;
+	using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,7 +49,10 @@ namespace Noxico
 					eY = Random.Next(1, 49);
 
 					//2013-03-07: prevent placing warps on same tile as clutter
-					if (b.Entities.FirstOrDefault(e => e.XPosition == eX && e.YPosition == eY) != null)
+					//<Ragath> Kawa, this is bad
+					//<Ragath> that should be a .Any() call
+					//if (b.Entities.FirstOrDefault(e => e.XPosition == eX && e.YPosition == eY) != null)
+					if (b.Entities.Any(e => e.XPosition == eX && e.YPosition == eY))
 					{
 						Program.WriteLine("Tried to place a warp below an entity -- rerolling...");
 						continue;
@@ -619,7 +622,8 @@ namespace Noxico
 
 		public float GetRandomHeight(float x, float y, float maxHeight, float frequency, float amplitude, float persistance, int octaves)
 		{
-			GenerateNoise();
+			if (!initialized)
+				GenerateNoise();
 			float FinalValue = 0.0f;
 			for (int i = 0; i < octaves; ++i)
 			{
@@ -657,8 +661,6 @@ namespace Noxico
 
 		private void GenerateNoise()
 		{
-			if (initialized) 
-				return;
 			noise = new float[width, height];
 			for (int x = 0; x < width; ++x)
 				for (int y = 0; y < height; ++y)
@@ -796,6 +798,7 @@ namespace Noxico
 		{
 			var stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
+			Program.WriteLine("{0} -- Start worldgen.", stopwatch.Elapsed);
 			var demon = realm == Realms.Seradevari;
 
 			Realm = realm;
@@ -803,14 +806,19 @@ namespace Noxico
 
 			setStatus(i18n.Format("worldgen_heightmap", realm), 0, 0); //"Creating heightmap..."
 			var height = CreateHeightMap(reach);
+			Program.WriteLine("{0} -- Create heightmap.", stopwatch.Elapsed);
 			setStatus(i18n.Format("worldgen_rainmap", realm), 0, 0); //"Creating precipitation map..."
 			var precip = CreateClouds(reach, 0.010f, 0.3, false);
+			Program.WriteLine("{0} -- Create precipitation map.", stopwatch.Elapsed);
 			setStatus(i18n.Format("worldgen_tempmap", realm), 0, 0); //"Creating temperature map..."
 			var temp = CreateClouds(reach, 0.005f, 0.5, true);
+			Program.WriteLine("{0} -- Create temperature map.", stopwatch.Elapsed);
 			setStatus(i18n.Format("worldgen_watermap", realm), 0, 0); //"Creating water map..."
 			var water = CreateWaterMap(reach, height);
+			Program.WriteLine("{0} -- Create water map.", stopwatch.Elapsed);
 			setStatus(i18n.Format("worldgen_biomemap", realm), 0, 0); //"Creating biome map..."
 			var biome = CreateBiomeMap(reach, height, precip, temp);
+			Program.WriteLine("{0} -- Create biome map.", stopwatch.Elapsed);
 
 			MapSizeX = (int)Math.Floor(reach / 80.0);
 			MapSizeY = (int)Math.Floor(reach / 50.0);
@@ -825,6 +833,7 @@ namespace Noxico
 					bmp[row, col] = biome[row, col];
 			}
 			DetailedMap = bmp;
+			Program.WriteLine("{0} -- Draw board bitmap ({1} by {2} px/tiles).", stopwatch.Elapsed, bmpWidth, bmpHeight);
 
 			RoughBiomeMap = new int[MapSizeY, MapSizeX]; //maps to usual biome list
 			var oceans = 0;
@@ -854,6 +863,7 @@ namespace Noxico
 					{
 						RoughBiomeMap[bRow, bCol] = -1;
 						oceans++;
+						continue;
 					}
 					//Determine most significant non-Ocean biome
 					var highestNumber = 0;
@@ -869,6 +879,7 @@ namespace Noxico
 					RoughBiomeMap[bRow, bCol] = biggestBiome;
 				}
 			}
+			Program.WriteLine("{0} -- Determine biomes ({1} by {2} boards).", stopwatch.Elapsed, MapSizeX, MapSizeY);
 
 			var towns = 0;
 			var townBoards = 0;
@@ -900,6 +911,7 @@ namespace Noxico
 					}
 				}
 			}
+			Program.WriteLine("{0} -- Build town location map.", stopwatch.Elapsed);
 
 			for (var bRow = 1; bRow < MapSizeY - 1; bRow++)
 			{
@@ -934,6 +946,7 @@ namespace Noxico
 					}
 				}
 			}
+			Program.WriteLine("{0} -- Determine actual town locations.", stopwatch.Elapsed);
 
 			//Ensure there's at least one town marker
 			if (towns == 0)
@@ -964,6 +977,7 @@ namespace Noxico
 			//WaterBiome = water;
 			WaterMap = water;
 			BoardMap = new Board[MapSizeY, MapSizeX];
+			Program.WriteLine("{0} -- Done.", stopwatch.Elapsed);
 		}
 	}
 }
