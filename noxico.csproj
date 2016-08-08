@@ -88,8 +88,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Jint">
-      <HintPath>.\Jint.dll</HintPath>
+    <Reference Include="Neo.Lua">
+      <HintPath>.\Neo.Lua.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -127,6 +127,7 @@
     <Content Include="mix\fonts\8x8-thin.png" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
+    <Compile Include="Lua.cs" />
     <Compile Include="Mutamorph.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
@@ -148,7 +149,6 @@
     <Compile Include="IGameHost.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="InventoryItem.cs" />
-    <Compile Include="Jint.cs" />
     <Compile Include="Mix.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="Subscreens\Travel.cs" />

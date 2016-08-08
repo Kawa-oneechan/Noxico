@@ -1,5 +1,5 @@
 Pettancow
 TDM
-mission.js
+mission.lua
 uniques.tml.patch
 scenesDlg.xml

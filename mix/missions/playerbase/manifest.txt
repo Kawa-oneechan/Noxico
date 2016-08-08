@@ -1,6 +1,6 @@
 Player's house
 Kawa
-mission.js
+mission.lua
 lv0.png
 lv1.png
 lv2.png

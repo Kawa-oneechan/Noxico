@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Jint;
 
 namespace Noxico
 {
@@ -134,24 +133,17 @@ namespace Noxico
 				else
 				{
 					var buffer = new StringBuilder();
-					var js = JavaScript.MainMachine;
-					JavaScript.Ascertain(js);
-					js.SetParameter("top", top);
-					js.SetParameter("bottom", bottom);
-					js.SetFunction("print", new Action<string>(x => buffer.Append(x)));
-					js.SetFunction("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
-					js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
+					var env = Lua.Environment;
+					Lua.Ascertain();
+					env.SetValue("top", top);
+					env.SetValue("bottom", bottom);
+					env.SetValue("print", new Action<string>(x => buffer.Append(x)));
+					env.SetValue("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
+					env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
 					//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 					//js.SetParameter("Expectations", NoxicoGame.Expectations);
 					//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
-#if DEBUG
-					js.SetDebugMode(true);
-					js.Step += (s, di) =>
-					{
-						Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-					};
-#endif
-					js.Run(part.Tokens[0].Text);
+					env.DoChunk(part.Tokens[0].Text, "lol.lua");
 					ret.AppendLine(buffer.ToString());
 					ret.AppendLine();
 				}

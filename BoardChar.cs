@@ -30,7 +30,7 @@ namespace Noxico
 		public int ScriptPathTargetX { get; private set; }
 		public int ScriptPathTargetY { get; private set; }
 		public string ScriptPathID { get; set; }
-		private Jint.JintEngine js;
+		private Neo.IronLua.LuaGlobal env;
 		private Scheduler scheduler;
 		public Dijkstra GuardMap { get; private set; }
 		public int Eyes { get; private set; }
@@ -1108,25 +1108,24 @@ namespace Noxico
 			}
 		}
 
-		private void SetupJint()
+		private void SetupLua()
 		{
-			js = JavaScript.Create();
-
-			JavaScript.Ascertain(js);
-			js.SetParameter("this", this.Character);
-			js.SetParameter("thisEntity", this);
-			js.SetParameter("playerEntity", NoxicoGame.HostForm.Noxico.Player);
-			js.SetParameter("target", ScriptPathID);
-			js.SetParameter("Random", typeof(Random));
-			js.SetParameter("BoardType", typeof(BoardType));
-			js.SetParameter("Character", typeof(Character));
-			js.SetParameter("BoardChar", typeof(BoardChar));
-			js.SetParameter("InventoryItem", typeof(InventoryItem));
-			js.SetParameter("Tile", typeof(Tile));
-			js.SetParameter("Color", typeof(Color));
-			js.SetFunction("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x))); 
-			js.SetFunction("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
-			js.SetFunction("print", new Action<string>(x =>
+			env = Lua.IronLua.CreateEnvironment();
+			Lua.Ascertain(env);
+			env.SetValue("this", this.Character);
+			env.SetValue("thisEntity", this);
+			env.SetValue("playerEntity", NoxicoGame.HostForm.Noxico.Player);
+			env.SetValue("target", ScriptPathID);
+			env.RegisterPackage("Random", typeof(Random));
+			env.RegisterPackage("BoardType", typeof(BoardType));
+			env.RegisterPackage("Character", typeof(Character));
+			env.RegisterPackage("BoardChar", typeof(BoardChar));
+			env.RegisterPackage("InventoryItem", typeof(InventoryItem));
+			env.RegisterPackage("Tile", typeof(Tile));
+			env.RegisterPackage("Color", typeof(Color));
+			env.SetValue("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x)));
+			env.SetValue("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
+			env.SetValue("print", new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
@@ -1140,7 +1139,7 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
-			js.SetFunction("FindTargetBoardByName", new Func<string, int>(x =>
+			env.SetValue("FindTargetBoardByName", new Func<string, int>(x =>
 			{
 				if (!NoxicoGame.TravelTargets.ContainsValue(x))
 					return -1;
@@ -1157,28 +1156,28 @@ namespace Noxico
 				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
 			});
 
-			js.SetFunction("MakeBoardTarget", makeBoardTarget);
-			js.SetFunction("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
-			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			js.SetParameter("scheduler", this.scheduler);
-			js.SetParameter("Task", typeof(Task));
-			js.SetParameter("TaskType", typeof(TaskType));
-			js.SetParameter("Token", typeof(Token));
+			env.SetValue("MakeBoardTarget", makeBoardTarget);
+			env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
+			env.SetValue("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
+			env.SetValue("scheduler", this.scheduler);
+			env.RegisterPackage("Task", typeof(Task));
+			env.RegisterPackage("TaskType", typeof(TaskType));
+			env.RegisterPackage("Token", typeof(Token));
 		}
 
 		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
 		{
 			if (string.IsNullOrWhiteSpace(script))
 				return true;
-			if (js == null)
-				SetupJint();
+			if (env == null)
+				SetupLua();
 
-			Board.DrawJS = js;
+			Board.DrawEnv = env;
 			if (!string.IsNullOrEmpty(extraParm))
-				js.SetParameter(extraParm, extraVal);
-			var r = js.Run(script);
-			if (r is bool)
-				return (bool)r;
+				env.SetValue(extraParm, extraVal);
+			var r = env.DoChunk(script, "lol.lua");
+			if (r.ToBoolean())
+				return r.ToBoolean();
 			return true;
 		}
 

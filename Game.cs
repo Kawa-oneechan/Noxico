@@ -213,7 +213,7 @@ namespace Noxico
 			}
 
 			//ScriptVariables.Add("consumed", 0);
-			JavaScript.MainMachine = JavaScript.Create();
+			Lua.Create();
 
 			BiomeData.LoadBiomes();
 			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
@@ -1019,35 +1019,28 @@ namespace Noxico
 				return 0;
 			};
 
-			var js = JavaScript.Create();
-			JavaScript.Ascertain(js);
-			js.SetParameter("realm", realm);
-			js.SetFunction("MakeBoardTarget", makeBoardTarget);
-			js.SetFunction("GetBoard", new Func<int, Board>(x => GetBoard(x)));
-			js.SetFunction("PickBoard", pickBoard);
-			js.SetFunction("FindBoardByID", findBoardByID);
-			js.SetFunction("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			js.SetFunction("MakeTown", makeTown);
-			js.SetFunction("print", new Action<string>(x =>
+			var env = Lua.IronLua.CreateEnvironment();
+			Lua.Ascertain(env);
+			env.SetValue("realm", realm);
+			env.SetValue("MakeBoardTarget", makeBoardTarget);
+			env.SetValue("GetBoard", new Func<int, Board>(x => GetBoard(x)));
+			env.SetValue("PickBoard", pickBoard);
+			env.SetValue("FindBoardByID", findBoardByID);
+			env.SetValue("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
+			env.SetValue("MakeTown", makeTown);
+			env.SetValue("print", new Action<string>(x =>
 			{
 				Program.WriteLine(x);
 			}));
-#if DEBUG
-			js.SetDebugMode(true);
-			js.Step += (s, di) =>
-			{
-				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-			};
-#endif
-			Board.DrawJS = js;
+			Board.DrawEnv = env;
 
 			var missionDirs = Mix.GetFilesInPath("missions");
 			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
 			{
 				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				var path = Path.GetDirectoryName(missionDir);
-				var jsFile = Path.Combine(path, "mission.js");
-				if (!Mix.FileExists(jsFile))
+				var luaFile = Path.Combine(path, "mission.lua");
+				if (!Mix.FileExists(luaFile))
 					continue;
 				var okay = true;
 				for (var i = 2; i < manifest.Length; i++)
@@ -1061,8 +1054,8 @@ namespace Noxico
 					continue;
 				}
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				var jsCode = Mix.GetString(jsFile);
-				js.Run(jsCode);
+				var luaCode = Mix.GetString(luaFile);
+				env.DoChunk(luaCode, "lol.lua");
 			}
 		}
 

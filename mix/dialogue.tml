@@ -7,7 +7,7 @@ scene: test2
 		debug
 	script
 		<[[
-			bottom.AddToken("willing");
+			bottom.AddToken("willing")
 		]]>
 	- "[b:name] is now willing. Cheater."
 
@@ -28,9 +28,9 @@ scene: test2b
 		debug
 	script
 		<[[
-			var newExpectation = ExpectTown(null, -1);
-			print("\"Have you heard of " + newExpectation.Name + "?\"");
-			bottom.AddToken("gavenewtown", newExpectation.ID, newExpectation.Name);				
+			local newExpectation = ExpectTown(null, -1)
+			print("\"Have you heard of " + newExpectation.Name + "?\"")
+			bottom.AddToken("gavenewtown", newExpectation.ID, newExpectation.Name)
 		]]>
 
 scene: ohboy
@@ -38,10 +38,12 @@ scene: ohboy
 	- ""Stop right there, criminal scum!""
 	script
 		<[[
-			if (!bottom.HasToken("stolenfrom"))
-				bottom.AddToken("stolenfrom");
-			if (!bottom.HasToken("hostile"))
-				bottom.AddToken("hostile");
+			if not bottom.HasToken("stolenfrom") then
+				bottom.AddToken("stolenfrom")
+			end
+			if not bottom.HasToken("hostile")
+				bottom.AddToken("hostile")
+			end
 		]]>
 
 scene: dreamtest
@@ -140,8 +142,8 @@ scene: GenericIntroduceHottie
 	- ""It's a pleasure meeting you, [t:name]", [b:he] says a little flustered."
 	script
 		<[[
-			top.SetRelation(bottom, "acquaintance", true);
-			bottom.SetRelation(top, "considers hot");
+			top.SetRelation(bottom, "acquaintance", true)
+			bottom.SetRelation(top, "considers hot")
 		]]>
 	action: invite to have sex
 	action: goodbye
@@ -155,7 +157,7 @@ scene: GenericIntroduceNottie
 	- ""It's... a pleasure meeting you I'm sure... [t:name]", [b:he] says."
 	script
 		<[[
-			top.SetRelation(bottom, "acquaintance", true);
+			top.SetRelation(bottom, "acquaintance", true)
 		]]>
 	action: invite to have sex
 	action: goodbye
@@ -167,7 +169,7 @@ scene: GenericIntroduce
 	- ""It's a pleasure meeting you, [t:name]", [b:he] says."
 	script
 		<[[
-			top.SetRelation(bottom, "acquaintance", true);
+			top.SetRelation(bottom, "acquaintance", true)
 		]]>
 	action: invite to have sex
 	action: goodbye
