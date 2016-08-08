@@ -1,6 +1,6 @@
 Urta
 Kawa
-mission.js
+mission.lua
 uniques.tml.patch
 scenesDlg.xml
 loot.tml.patch

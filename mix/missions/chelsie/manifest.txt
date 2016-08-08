@@ -1,6 +1,6 @@
 Chelsie the Cheetah
 Kawa
-mission.js
+mission.lua
 uniques.tml.patch
 items.tml.patch
 loot.tml.patch

@@ -1,6 +1,6 @@
 Demon Portal
 Kawa
-mission.js
+mission.lua
 uniques.tml.patch
 platform1.png
 platform2.png

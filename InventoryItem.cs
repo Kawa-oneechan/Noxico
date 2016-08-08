@@ -630,13 +630,13 @@ namespace Noxico
 
 		public object RunScript(Token item, string script, Character character, BoardChar boardchar, Action<string> running)
 		{
-			var js = JavaScript.MainMachine;
-			JavaScript.Ascertain(js);
-			js.SetParameter("user", character);
-			js.SetParameter("thisItem", this);
-			js.SetParameter("thisToken", item);
-			js.SetFunction("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
-			js.SetFunction("print", new Action<string>(x =>
+			var env = Lua.Environment;
+			Lua.Ascertain();
+			env.SetValue("user", character);
+			env.SetValue("thisItem", this);
+			env.SetValue("thisToken", item);
+			env.SetValue("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
+			env.SetValue("print", new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
@@ -650,13 +650,13 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
-			js.SetFunction("reportset", new Action<List<string>>(x =>
+			env.SetValue("ReportSet", new Action<List<string>>(x =>
 			{
 				foreach (var result in x)
 					if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 						NoxicoGame.AddMessage(result.Viewpoint(character));
 			}));
-			js.SetFunction("Identify", new Action<string>(x =>
+			env.SetValue("Identify", new Action<string>(x =>
 			{
 				if (character.GetToken("cunning").Value < 10)
 				{
@@ -693,16 +693,9 @@ namespace Noxico
 						running("You have identified this as " + this.ToString(item, true) + ".");
 				}
 			}));
-#if DEBUG
-			js.SetDebugMode(true);
-			js.Step += (s, di) =>
-			{
-				Program.Write("JINT: {0}", di.CurrentStatement.Source.Code.ToString());
-			};
-#endif
-			var ret = js.Run(script);
-			if (!(ret is bool))
-				ret = true;
+			var ret = env.DoChunk(script, "lol.lua");
+			if (!ret.ToBoolean())
+				return true;
 			return ret;
 		}
 

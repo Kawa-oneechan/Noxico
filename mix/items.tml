@@ -26,10 +26,7 @@ item: regenring
 	timer: 1
 	script: timer
 		<[[
-			//var health = user.GetToken("health");
-			//health.Value += 5;
-			//user.Heal(5);
-			user.Health += 5;
+			user.Heal(5)
 		]]>
 
 item: timertest
@@ -44,12 +41,11 @@ item: timertest
 		evenunequipped
 	script: timer
 		<[[
-			var car = user.GetToken("carnality");
-			if (car.Value < 100)
-			{
-				message("You feel your mind going...");
-				car.Value += 5;
-			}
+			local car = user.GetToken("carnality")
+			if car.Value < 100 then
+				message("You feel your mind going...")
+				car.Value = car.Value + 5
+			end
 		]]>
 
 item: henshin_belt
@@ -62,49 +58,44 @@ item: henshin_belt
 		fore: silver
 	script
 		<[[
-			var inventory = user.GetToken("items");
-			var feedback = "";
-			if (!user.HasItemEquipped("sentai_suit"))
-			{
-				feedback += "\"HENSHIN!\"\n\n";
-				var memory = thisToken.AddToken("memory");
-				var slots = [ "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" ];
-				for (var i = 0; i < slots.length; i++)
-				{
-					var x = user.GetEquippedItemBySlot(slots[i]);
-					if (x != undefined)
-					{
-						memory.AddToken(x.tempToken);
-						inventory.RemoveToken(x.tempToken);
-					}
-				}
-				var suit = inventory.AddToken("sentai_suit");
-				var helmet = inventory.AddToken("sentai_helmet");
-				var color = suit.AddToken("color");
-				color.Text = thisToken.HasToken("color") ? thisToken.GetToken("color").Text : "red";
-				suit.AddToken("equipped");
-				helmet.AddToken("equipped");
-				thisToken.AddToken("equipped");
-				var curseLock = thisToken.AddToken("cursed");
-				suit.AddToken(curseLock);
-				helmet.AddToken(curseLock);
-				curseLock.AddToken("known");
-				curseLock.AddToken("hidden");
-				curseLock.Text = "It's stuck on you. Try unmorphing instead.";
-				feedback += "\"Ecchi " + titlecase(color.Text) + "!\"";
-			}
+			local inventory = user.GetToken("items")
+			local feedback = ""
+			if not user.HasItemEquipped("sentai_suit") then
+				feedback = feedback .. "\"HENSHIN!\"\n\n"
+				local memory = thisToken.AddToken("memory")
+				local slots = { "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" }
+				for i,slot in slots do
+					local x = user.GetEquippedItemBySlot(slot)
+					if x ~= undefined then
+						memory.AddToken(x.tempToken)
+						inventory.RemoveToken(x.tempToken)
+					end
+				end
+				local suit = inventory.AddToken("sentai_suit")
+				local helmet = inventory.AddToken("sentai_helmet")
+				local color = suit.AddToken("color")
+				color.Text = thisToken.HasToken("color") and thisToken.GetToken("color").Text or "red"
+				suit.AddToken("equipped")
+				helmet.AddToken("equipped")
+				thisToken.AddToken("equipped")
+				local curseLock = thisToken.AddToken("cursed")
+				suit.AddToken(curseLock)
+				helmet.AddToken(curseLock)
+				curseLock.AddToken("known")
+				curseLock.AddToken("hidden")
+				curseLock.Text = "It's stuck on you. Try unmorphing instead."
+				feedback = feedback .. "\"Ecchi " .. titlecase(color.Text) .. "!\""
 			else
-			{
-				feedback = "You unmorph.";
-				var memory = thisToken.GetToken("memory");
-				inventory.RemoveToken("sentai_suit");
-				inventory.RemoveToken("sentai_helmet");
-				inventory.AddSet(memory.Tokens);
-				thisToken.RemoveToken("memory");
-				thisToken.RemoveToken("equipped");
-				thisToken.RemoveToken("cursed");
-			}
-			print(feedback);
+				feedback = "You unmorph."
+				local memory = thisToken.GetToken("memory")
+				inventory.RemoveToken("sentai_suit")
+				inventory.RemoveToken("sentai_helmet")
+				inventory.AddSet(memory.Tokens)
+				thisToken.RemoveToken("memory")
+				thisToken.RemoveToken("equipped")
+				thisToken.RemoveToken("cursed")
+			end
+			print(feedback)
 		]]>
 
 item: strapon
@@ -122,19 +113,18 @@ item: strapon
 	sextoy
 	script: equip
 		<[[
-			if (user.HasToken("penis"))
-			{	
-				print ("You're a man!");
-				return false;
-			}
-			var p = user.AddToken("penis");
-			p.Text = "strapon";
-			p.AddToken("thickness").Value = 3;
-			p.AddToken("length").Value = 20;
+			if user.HasToken("penis") then
+				print ("You're a man!")
+				return false
+			end
+			local p = user.AddToken("penis")
+			p.Text = "strapon"
+			p.AddToken("thickness").Value = 3
+			p.AddToken("length").Value = 20
 		]]>
 	script: unequip
 		<[[
-			user.RemoveToken("penis", "strapon");
+			user.RemoveToken("penis", "strapon")
 		]]>
 
 item: ponifier
@@ -149,9 +139,9 @@ item: ponifier
 	transformer
 	script
 		<[[
-			Consume();
-			//user.Morph("littlepony");
-			Identify();
+			Consume()
+			-- user.Morph("littlepony");
+			Identify()
 		]]>
 
 item: book
@@ -204,9 +194,9 @@ item: foxite
 	transformer
 	script
 		<[[
-			Consume();
-			message(user.Morph("kitsune"));
-			Identify();
+			Consume()
+			message(user.Morph("kitsune"))
+			Identify()
 		]]>
 
 item: oddnip
@@ -221,9 +211,9 @@ item: oddnip
 	transformer
 	script
 		<[[
-			Consume();
-			message(user.Morph("felin"));
-			Identify();
+			Consume()
+			message(user.Morph("felin"))
+			Identify()
 		]]>
 
 item: penificator
@@ -236,7 +226,7 @@ item: penificator
 	transformer
 	script
 		<[[
-			//TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
+			-- TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
 		]]>
 
 item: knife
@@ -1784,6 +1774,7 @@ item: catmorph
 	transformer
 	script
 		<[[
+			--[[
 			//Text stolen from CoC's Whisker Fruit item, for now.
 
 			//We want to buffer the output. Calling print() would result in several separate ones.
@@ -1873,6 +1864,7 @@ item: catmorph
 			//Grow up to two extra breast rows.
 
 			print(ret);
+			]]--
 		]]>
 
 item: dogmorph
@@ -1886,6 +1878,7 @@ item: dogmorph
 	transformer
 	script
 		<[[
+			--[[
 			//Text stolen from CoC's Canine Pepper item, for now.
 
 			var ret = "The pepper is strangely spicy but very tasty.";
@@ -1954,6 +1947,7 @@ item: dogmorph
 			//Grow up to two extra breast rows.
 
 			print(ret);
+			]]--
 		]]>
 
 -- Not to be confused for Foxite up top.
@@ -1968,6 +1962,7 @@ item: foxmorph
 	transformer
 	script
 		<[[
+			--[[
 			var ret = "You apply the fox morph potion.";
 
 			//Always boost cunning.
@@ -2032,6 +2027,7 @@ item: foxmorph
 			//Grow digitigrade legs.
 
 			print(ret);
+			]]--
 		]]>
 
 item: bunnymorph
@@ -2045,6 +2041,7 @@ item: bunnymorph
 	transformer
 	script
 		<[[
+			--[[
 			var ret = "You apply the bunny morph potion.";
 
 			//Always boost libido.
@@ -2103,6 +2100,7 @@ item: bunnymorph
 			}
 
 			print(ret);
+			]]--
 		]]>
 -- #endregion
 
@@ -2161,9 +2159,9 @@ item: chaos_potion
 	transformer
 	script
 		<[[
-			Consume();
-			reportset(user.Mutate(1, 10, Mutations.Random));
-			Identify();
+			Consume()
+			ReportSet(user.Mutate(1, 10, Mutations.Random))
+			Identify()
 		]]>
 
 item: enhanced_chaos_potion
@@ -2176,12 +2174,13 @@ item: enhanced_chaos_potion
 	transformer
 	script
 		<[[
-			Consume();
-			if (Random.Flip())
-				user.Mutate(1, 30, Mutations.Random);
+			Consume()
+			if Random.Flip() then
+				user.Mutate(1, 30, Mutations.Random)
 			else
-				user.Mutate(2, 15, Mutations.Random);
-			Identify();
+				user.Mutate(2, 15, Mutations.Random)
+			end
+			Identify()
 		]]>
 
 item: demonite_potion
@@ -2195,6 +2194,7 @@ item: demonite_potion
 	transformer
 	script
 		<[[
+			--[[
 			Consume();
 			var score = 0;
 			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
@@ -2302,6 +2302,7 @@ item: demonite_potion
 
 				Identify();
 			}
+			]]--
 		]]>
 
 item: tentacle_potion
@@ -2314,6 +2315,7 @@ item: tentacle_potion
 	transformer
 	script
 		<[[
+			--[[
 			Consume();
 			var ret = "";
 			if (user.HasToken("penis"))
@@ -2366,6 +2368,7 @@ item: tentacle_potion
 			}
 			print(ret);
 			Identify();
+			]]--
 		]]>
 
 item: cock_potion
@@ -2378,6 +2381,7 @@ item: cock_potion
 	transformer
 	script
 		<[[
+			--[[
 			Consume();
 			var ret = "";
 			var dicks = 0;
@@ -2418,6 +2422,7 @@ item: cock_potion
 			}
 			print(ret);
 			Identify();
+			]]--
 		]]>
 
 item: corrupted_cock_potion
@@ -2430,6 +2435,7 @@ item: corrupted_cock_potion
 	transformer
 	script
 		<[[
+			--[[
 			Consume();
 			var ret = "";
 			var dicks = 0;
@@ -2473,6 +2479,7 @@ item: corrupted_cock_potion
 			}
 			print(ret);
 			Identify();
+			]]--
 		]]>
 
 item: neutralizer_potion
@@ -2485,6 +2492,7 @@ item: neutralizer_potion
 	transformer
 	script
 		<[[
+			--[[
 			Consume();
 			var ret = "";
 			if (Random.Flip())
@@ -2546,6 +2554,7 @@ item: neutralizer_potion
 			}
 			print(ret);
 			Identify();
+			]]--
 		]]>
 
 item: regen_ring
@@ -2559,8 +2568,8 @@ item: regen_ring
 	timer: 5
 	script: timer
 		<[[
-			user.Health += 5;
-			Identify();
+			user.Heal(5)
+			Identify()
 		]]>
 
 item: chaotic_regen_ring
@@ -2574,13 +2583,12 @@ item: chaotic_regen_ring
 	timer: 5
 	script: timer
 		<[[
-			user.Health += 5;
-			if (Random.NextDouble() > 0.3)
-			{
-				user.Mutate(1, 30, Mutations.Random);
-				message("OH SHIT!");
-			}
-			Identify();
+			user.Heal(5)
+			if Random.NextDouble() > 0.3 then
+				user.Mutate(1, 30, Mutations.Random)
+				message("OH SHIT!")
+			end
+			Identify()
 		]]>
 
 item: orgasm_denial_ring
@@ -2594,14 +2602,15 @@ item: orgasm_denial_ring
 	timer: 5
 	script: equip
 		<[[
-			if (!user.HasToken("orgasm_denial"))
-				user.AddToken("orgasm_denial");
-			print("You feel constricted, even though the ring seems averagely loose-fitting.");
+			if not user.HasToken("orgasm_denial") then
+				user.AddToken("orgasm_denial")
+			end
+			print("You feel constricted, even though the ring seems averagely loose-fitting.")
 		]]>
 	script: unequip
 		<[[
-			user.RemoveToken("orgasm_denial");
-			print("You feel less constricted.");
+			user.RemoveToken("orgasm_denial")
+			print("You feel less constricted.")
 		]]>
 
 item: restoration_potion
@@ -2613,14 +2622,15 @@ item: restoration_potion
 	script
 		<[[
 			Consume();
-			var missing = user.MaximumHealth - user.Health;
-			var half = Math.ceil(missing * 0.5);
-			user.Health += half;
+			local missing = user.MaximumHealth - user.Health
+			local half = math.ceil(missing * 0.5)
+			user.Health = user.Health + half
 
-			var car = user.GetToken("carnality");
-			if (car.Value < 100)
-				car.Value += 5;
-			Identify();
+			local car = user.GetToken("carnality")
+			if car.Value < 100 then
+				car.Value = car.Value + 5;
+			end
+			Identify()
 		]]>	
 
 item: greater_restoration_potion
@@ -2631,13 +2641,14 @@ item: greater_restoration_potion
 	transformer
 	script
 		<[[
-			Consume();
-			user.Health = user.MaximumHealth;
+			Consume()
+			user.Health = user.MaximumHealth
 
-			var car = user.GetToken("carnality");
-			if (car.Value < 100)
-				car.Value += 20;
-			Identify();
+			Local car = user.GetToken("carnality");
+			if car.Value < 100 then
+				car.Value = car.Value + 20
+			end
+			Identify()
 		]]>	
 
 -- #endregion

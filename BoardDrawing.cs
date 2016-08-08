@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public partial class Board : TokenCarrier
 	{
-		public static Jint.JintEngine DrawJS;
+		public static Neo.IronLua.LuaGlobal DrawEnv;
 
 		public void Clear(int biomeID)
 		{
@@ -70,13 +70,15 @@ namespace Noxico
 
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{
-			if (DrawJS == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
-			var js = DrawJS;
+			if (DrawEnv == null)
+				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
+			var env = DrawEnv;
 			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
 			{
-				js.SetParameter("x", point.X).SetParameter("y", point.Y).SetParameter("tile", this.Tilemap[point.Y, point.X]);
-				this.Tilemap[point.Y, point.X] = (Tile)js.Run(brush);
+				env.SetValue("x", point.X);
+				env.SetValue("y", point.Y);
+				env.SetValue("tile", this.Tilemap[point.Y, point.X]);
+				env.DoChunk(brush, "lol.lua");
 			}
 		}
 		public void Line(int x1, int y1, int x2, int y2, Tile brush)
@@ -87,26 +89,22 @@ namespace Noxico
 
 		public void Replace(string checker, string replacer)
 		{
-			if (DrawJS == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
-			var js = DrawJS;
-#if DEBUG
-			js.SetDebugMode(false);
-#endif
+			if (DrawEnv == null)
+				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
+			var env = DrawEnv;
 			var height = 50;
 			var width = 80;
 			for (var y = 0; y < height; y++)
 			{
 				for (var x = 0; x < width; x++)
 				{
-					js.SetParameter("x", x).SetParameter("y", y).SetParameter("tile", this.Tilemap[x, y]);
-					if ((bool)js.Run(checker))
-						this.Tilemap[x,y] = (Tile)js.Run(replacer);
+					env.SetValue("x", x);
+					env.SetValue("y", y);
+					env.SetValue("tile", this.Tilemap[y, x]);
+					if (env.DoChunk(checker, "lol.lua").ToBoolean())
+						env.DoChunk(replacer, "lol.lua");
 				}
 			}
-#if DEBUG
-			js.SetDebugMode(true);
-#endif
 		}
 		public void Replace(Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush)
 		{
@@ -124,12 +122,9 @@ namespace Noxico
 
 		public void Floodfill(int startX, int startY, string checker, string replacer, bool allowDiagonals)
 		{
-			if (DrawJS == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing machine.");
-			var js = DrawJS;
-#if DEBUG
-			js.SetDebugMode(false);
-#endif
+			if (DrawEnv == null)
+				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
+			var env = DrawEnv;
 			var height = 50;
 			var width = 80;
 			var stack = new Stack<Point>();
@@ -142,12 +137,12 @@ namespace Noxico
 				if (x < 0 || y < 0 || x >= width || y >= height)
 					continue;
 
-				//if (judge(data[y, x], x, y))
-				js.SetParameter("x", x).SetParameter("y", y).SetParameter("tile", this.Tilemap[y, x]);
-				if ((bool)js.Run(checker))
+				env.SetValue("x", x);
+				env.SetValue("y", y);
+				env.SetValue("tile", this.Tilemap[y, x]);
+				if (env.DoChunk(checker, "lol.lua").ToBoolean())
 				{
-					//this.Tilemap[y, x] = brush(data[y, x], x, y);
-					js.Run(replacer);
+					env.DoChunk(replacer, "lol.lua");
 
 					stack.Push(new Point(x - 1, y));
 					stack.Push(new Point(x + 1, y));
@@ -162,9 +157,6 @@ namespace Noxico
 					}
 				}
 			}
-#if DEBUG
-			js.SetDebugMode(true);
-#endif
 		}
 		public void Floodfill(int startX, int startY, Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush, bool allowDiagonals)
 		{
@@ -198,7 +190,6 @@ namespace Noxico
 				}
 			}
 		}
-		//HEADS UP: With the new Jint update we might not need this one -- allowDiagonals is assumed to be False, after all...
 		public void Floodfill(int startX, int startY, string checker, string replacer)
 		{
 			Floodfill(startX, startX, checker, replacer, false);
@@ -291,7 +282,7 @@ namespace Noxico
 		public void AddWater(List<Rectangle> safeZones)
 		{
 			//TODO: Tweak some more to prevent... ahum... water damage.
-			
+
 			var biome = BiomeData.Biomes[(int)this.GetToken("biome").Value];
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
 			var points = new List<Point>();
