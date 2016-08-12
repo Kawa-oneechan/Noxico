@@ -9,12 +9,12 @@ schedule: villager
 activity: GoHome
 	script: init
 		<[[
-			scheduler.AddTask(new Task(TaskType.FindAndGoto, "Bed_" + this.Name.ToID()));
-			scheduler.AddTask(new Task(TaskType.Wander, 500));
+			scheduler.AddTask( Task(TaskType.FindAndGoto, "Bed_" .. this.Name.ToID()) )
+			scheduler.AddTask( Task(TaskType.Wander, 500) )
 		]]>
 	script: repeat
 		<[[
-			scheduler.AddTask(new Task(TaskType.Wander, 30000));
+			scheduler.AddTask( Task(TaskType.Wander, 30000) )
 		]]>
 	script: end
 		<[[
@@ -24,23 +24,24 @@ activity: GoHome
 activity: Sleep
 	script: init
 		<[[
-			scheduler.AddTask(new Task(TaskType.FindAndGoto, "Bed_" + this.Name.ToID()));			
-			var token = new Token("sleeping");
-			if (!this.HasToken("sleeping"))
-				scheduler.AddTask(new Task(TaskType.AddToken, token));
+			scheduler.AddTask( Task(TaskType.FindAndGoto, "Bed_" .. this.Name.ToID()) )
+			local token = Token("sleeping")
+			if not this.HasToken("sleeping")
+				scheduler.AddTask( Task(TaskType.AddToken, token) )
+			end
 		]]>
 	script: end
 		<[[
-			scheduler.AddTask(new Task(TaskType.RemoveToken, "sleeping"));
+			scheduler.AddTask( Task(TaskType.RemoveToken, "sleeping") )
 		]]>
 
 activity: Wander
 	script: init
 		<[[
-			scheduler.AddTask(new Task(TaskType.Wander, -1));
+			scheduler.AddTask( Task(TaskType.Wander, -1) )
 		]]>
 	script: end
 		<[[
-			scheduler.AddTask(new Task(TaskType.Wander, Math.ceil(Math.random() * 5)));
+			scheduler.AddTask( Task(TaskType.Wander, math.ceil(math.random() * 5)) )
 		]]>
 

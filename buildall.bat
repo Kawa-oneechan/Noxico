@@ -18,8 +18,7 @@ echo ---------------
 echo Packing...
 cd bin
 md Noxico
-copy Release\Jint.dll Noxico > nul
-copy Release\Antlr3.Runtime.dll Noxico > nul
+copy Release\Neo.Lua.dll Noxico > nul
 copy Release\Noxico.nox Noxico > nul
 copy Release\Noxico.exe Noxico > nul
 ..\7za.exe u noxico-0.1.5.7z Noxico > nul
