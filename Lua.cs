@@ -42,7 +42,7 @@ namespace Noxico
 			env.RegisterPackage("Tile", typeof(Tile));
 			env.RegisterPackage("Color", typeof(Color));
 			env.SetValue("titlecase", new Func<string, string>(x => x.Titlecase()));
-			env.SetValue("message", new Action<string>(x => NoxicoGame.AddMessage(x)));
+			env.SetValue("message", new Action<object, Color>((x, y) => NoxicoGame.AddMessage(x, y)));
 		}
 	}
 }
