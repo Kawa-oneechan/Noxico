@@ -540,7 +540,7 @@ namespace Noxico
 						else if (this.HasToken("taur"))
 						{
 							this.GetToken("taur").Value = Math.Max(2, this.GetToken("taur").Value + 1);
-							report += "Another taurbody extends out behind [yourornames] [buttrand] as [he] grow{s} another pair of legs.";
+							report += "Another taurbody extends out behind [yourornames] [?:butt] as [he] grow{s} another pair of legs.";
 						}
 						else
 							report += "\uE2FC";
@@ -578,7 +578,7 @@ namespace Noxico
 						else if (this.HasToken("taur") && this.GetToken("taur").Value >= 2)
 						{
 							this.GetToken("taur").Value--;
-							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [buttrand].";
+							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt].";
 						}
 						else
 							report += "\uE2FC";
@@ -591,7 +591,7 @@ namespace Noxico
                                 this.GetBreastRowByNumber(boob).GetToken("amount").Value++;
 							if (this.Tokens.Count(t => t.Name == "breastrow") > 1)
 								report += "[Youorname] [has] gained a " + this.GetBreastRowByNumber(boob).GetToken("amount").Value.CountOrdinal() +
-										  " [breastrand] in [his] " + (boob + 1).CountOrdinal() + " row.";
+										  " [?:breast] in [his] " + (boob + 1).CountOrdinal() + " row.";
                         }
 						else
 							report += "\uE2FC";
@@ -605,7 +605,7 @@ namespace Noxico
                             if (boob.GetToken("amount").Value > 1)
 							{
                                 boob.GetToken("amount").Value--;
-								report += "[Youorname] [has] lost a [breastrand] from [his] " + (rand + 1).CountOrdinal() + " row.";
+								report += "[Youorname] [has] lost a [?:breast] from [his] " + (rand + 1).CountOrdinal() + " row.";
                             }
 							else
                             {
@@ -615,7 +615,7 @@ namespace Noxico
                                     allTits[rand + 1].RemoveToken("sizefromprevious");
                                 }
                                 this.RemoveToken(boob);
-								report += "[Youorname] [has] lost a row of [breastsrand].";
+								report += "[Youorname] [has] lost a row of [?:breasts].";
                             }
                             if (!this.HasToken("breastrow"))
                             {

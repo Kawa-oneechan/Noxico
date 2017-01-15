@@ -317,7 +317,7 @@ bodyplan: felin
 	invisiblegender
 	terms
 		generic: "felin"
-		male: "fel"
+		male: "felir"
 		female: "fela"
 		herm: "felhru"
 	bestiary: "Lost interstellar colonists."

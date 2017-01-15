@@ -127,7 +127,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for penis.</returns>
 		public static string CockRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("cockrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("cockrandom"));
 		}
 
 		/// <summary>
@@ -136,7 +137,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for vagina.</returns>
 		public static string PussyRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("pussyrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("pussyrandom"));
 		}
 
 		/// <summary>
@@ -145,7 +147,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for anus.</returns>
 		public static string AnusRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("anusrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("anusrandom"));
 		}
 
 		/// <summary>
@@ -154,7 +157,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for ass.</returns>
 		public static string ButtRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("buttrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("buttrandom"));
 		}
 
 		/// <summary>
@@ -163,7 +167,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for clitoris.</returns>
 		public static string ClitRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("clitrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("clitrandom"));
 		}
 
 		/// <summary>
@@ -173,10 +178,11 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for breast(s).</returns>
 		public static string BreastRandom(bool plural = false)
 		{
-			if (plural)
-				return Toolkit.PickOne(i18n.GetArray("breastsrandom"));
-			else
-				return Toolkit.PickOne(i18n.GetArray("breastrandom"));
+			throw new Exception("This method is deprecated.");
+			//if (plural)
+			//	return Toolkit.PickOne(i18n.GetArray("breastsrandom"));
+			//else
+			//	return Toolkit.PickOne(i18n.GetArray("breastrandom"));
 		}
 
 		/// <summary>
@@ -185,7 +191,8 @@ namespace Noxico
 		/// <returns>A string containing a euphemism for semen.</returns>
 		public static string CumRandom()
 		{
-			return Toolkit.PickOne(i18n.GetArray("cumrandom"));
+			throw new Exception("This method is deprecated.");
+			//return Toolkit.PickOne(i18n.GetArray("cumrandom"));
 		}
 		#endregion
 

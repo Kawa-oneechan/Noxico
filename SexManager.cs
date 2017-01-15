@@ -148,12 +148,22 @@ namespace Noxico
 				}
 				else if (limit.Name == "hastits")
 				{
-					var target = int.Parse(limit.Text);
+					var target = (int)limit.Value;
 					var tits = actors[target].Character.GetBreastSizes();
 					if (tits.Length == 0)
 						return false;
 					if (tits.Average() < 0.2)
 						return false;
+				}
+				else if (limit.Name == "hasnipples")
+				{
+					var target = (int)limit.Value;
+					foreach (var breastRow in actors[target].Character.Tokens.Where(t => t.Name == "breastrow"))
+					{
+						if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
+							return true;
+					}
+					return false;
 				}
 				else if (limit.Name == "canreach")
 				{
