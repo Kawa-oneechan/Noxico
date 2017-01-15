@@ -231,6 +231,11 @@ namespace Noxico
 			test.DumpToHtml();
 			return;
 			*/
+			
+			//var test1 = Lua.Environment.DoChunk(@"message(""Message only"")", "lol.lua");
+			//var test2 = Lua.Environment.DoChunk(@"message({""Message one"",""Message two""})", "lol.lua");
+			//var test3 = Lua.Environment.DoChunk(@"message(""Message colored"", Color.Yellow)", "lol.lua");
+			//var test4 = Lua.Environment.DoChunk(@"message({""Message one"",""Message two""}, Color.Red)", "lol.lua");
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0); //InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
@@ -477,8 +482,20 @@ namespace Noxico
 		{
 			Messages.Clear();
 		}
-		public static void AddMessage(string message, Color color)
+		public static void AddMessage(object messageOrMore, Color color)
 		{
+			if (messageOrMore is Neo.IronLua.LuaTable)
+			{
+				var options = ((Neo.IronLua.LuaTable)messageOrMore).ArrayList.Select(o => o.ToString()).ToArray();
+				AddMessage(Toolkit.PickOne(options), color);
+				return;
+			}
+
+			var message = messageOrMore.ToString();
+			//Do not accept black -- this would imply the parameter was left out.
+			if (color.ArgbValue == 0)
+				color = Color.Silver;
+			
 			if (lastMessage != message)
 			{
 				lastMessage = message;
