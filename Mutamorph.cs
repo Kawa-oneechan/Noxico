@@ -466,20 +466,20 @@ namespace Noxico
 								if (sourceDicks.Count > 1)
 								{
 									if (growOrShrink == 1 && thickOrThin == 0)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
 									else if (growOrShrink == 1 && thickOrThin == 1)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
 									else if (growOrShrink == 0 && thickOrThin == 1)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
+										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
 								}
 								else
 								{
 									if (growOrShrink == 1 && thickOrThin == 0)
-										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
+										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
 									else if (growOrShrink == 1 && thickOrThin == 1)
-										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
+										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
 									else if (growOrShrink == 0 && thickOrThin == 1)
-										change.AddToken("$", "[views] [cockrand] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
+										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
 								}
 								possibleChanges.Add(change);
 							}
@@ -489,9 +489,9 @@ namespace Noxico
 							{
 								change = new Token("penis[" + i + "]", targetDick.Text);
 								if (sourceDicks.Count > 1)
-									change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [cockrand] becomes " + targetDick.Text);
+									change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] becomes " + targetDick.Text);
 								else
-									change.AddToken("$", "[views] [cockrand] becomes " + targetDick.Text);
+									change.AddToken("$", "[views] [?:cock] becomes " + targetDick.Text);
 								possibleChanges.Add(change);
 							}
 						}

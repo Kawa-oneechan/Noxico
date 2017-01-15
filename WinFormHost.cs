@@ -221,7 +221,7 @@ namespace Noxico
 					Location = new System.Drawing.Point(16, 16)
 				});
 
-				foreach (var reqDll in new[] { "Antlr3.Runtime.dll", "Jint.dll" })
+				foreach (var reqDll in new[] { "Neo.Lua.dll" })
 					if (!File.Exists(reqDll))
 						throw new FileNotFoundException("Required DLL " + reqDll + " is missing.");
 

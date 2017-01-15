@@ -284,19 +284,19 @@ namespace Noxico
 
 				#region PillowShout's additions
 				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
-				{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
-				{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
-				{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
-				{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
-                { "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
-				{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
-				{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
+				//{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
+				//{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
+				//{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
+				//{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
+                //{ "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
+				//{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
+				//{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
 				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")); } },
 				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")); } },
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
 				{ "foot", (c, s) => { return Descriptions.Foot(c.GetToken("legs")); } },
 				{ "feet", (c, s) => { return Descriptions.Foot(c.GetToken("legs"), true); } },
-				{ "cumrand", (c, s) => { return Descriptions.CumRandom(); } },
+				//{ "cumrand", (c, s) => { return Descriptions.CumRandom(); } },
 				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
 				{ "tonguetype", (c, s) => { return Descriptions.TongueType(c.GetToken("tongue")); } },
 				{ "tailtype", (c, s) => { return Descriptions.TailType(c.GetToken("tail")); } },
@@ -332,6 +332,9 @@ namespace Noxico
 
 					if (match.Groups["target"].Value == "?")
 					{
+						if (SceneSystem.Placeholders == null)
+							SceneSystem.Placeholders = Mix.GetTokenTree("dialogue.tml", true).First(x => x.Name == "placeholders");
+
 						var pToks = SceneSystem.Placeholders.Tokens.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
 						var pTok = pToks[Random.Next(pToks.Count)];
 						return pTok.Tokens[Random.Next(pTok.Tokens.Count)].Text;

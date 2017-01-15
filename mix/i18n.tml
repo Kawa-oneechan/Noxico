@@ -311,14 +311,14 @@ Would you like an infodump on the way out?
 	potion_ringmods: , shiny , sparking , warm , cold , translucent , glistening 
 	potion_name: {0}{1} potion
 	potion_ringname: {0}{1} ring
-	cockrandom: penis, cock, dick, pecker, prick, rod, shaft, dong
-	pussyrandom: vagina, pussy, cunt, cooter, cooch, cunny, quim, twat
-	anusrandom: anus, asshole, butthole, rosebud, pucker
-	buttrandom: butt, ass, rear, backside, behind, bum
-	clitrandom: clitoris, clit, fun button, clitty, love button
-	breastsrandom: breasts, boobs, tits, knockers, mounds, titties
-	breastrandom: breast, boob, tit, knocker, mound
-	cumrandom: semen, cum, jizz, spunk, seed
+--	cockrandom: penis, cock, dick, pecker, prick, rod, shaft, dong
+--	pussyrandom: vagina, pussy, cunt, cooter, cooch, cunny, quim, twat
+--	anusrandom: anus, asshole, butthole, rosebud, pucker
+--	buttrandom: butt, ass, rear, backside, behind, bum
+--	clitrandom: clitoris, clit, fun button, clitty, love button
+--	breastsrandom: breasts, boobs, tits, knockers, mounds, titties
+--	breastrandom: breast, boob, tit, knocker, mound
+--	cumrandom: semen, cum, jizz, spunk, seed
 -- #endregion
 -- #region Inventory
 	inventory_yours: Your inventory

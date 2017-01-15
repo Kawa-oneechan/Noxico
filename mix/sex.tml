@@ -12,23 +12,22 @@ choice: climax
 		has: 0 havingsex/givingvaginal
 			true
 				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [pussyrand].
+					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy].
 				fertilize: 1 0
 				end
 		has: 0 havingsex/givinganal
 			true
 				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [anusrand].
+					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus].
 				end
 		has: 0 havingsex/givingbothholes
 			true
 				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [pussyrand] and [anusrand].
+					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus].
 				end
 		message
 			- [t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him].
 		end
-		
 
 -- Female variant
 choice: climax
@@ -38,13 +37,20 @@ choice: climax
 		not: 0 penis
 	effects
 		stat: 0 climax -100
+		has: 1 havingsex/fingeringvaginal
+			true
+				message
+					- [t:Youorname] squirt{s} all over [b:yourornames] [b:hand].
+				end
 		message
 			- [t:Youorname] shiver{s} in the throes of orgasm.
+
 
 choice: walk_away
 	ai_unlikely
 	limitations
 		not: 0 havingsex/restrained
+		not: 0 havingsex/receivingvaginal
 	effects
 		message
 			- [t:Youorname] let{s} go of [b:youorname] and get{s} up.
@@ -147,6 +153,100 @@ choice: french_kiss
 		message
 			- ~fkissu~
 
+choice: fondle_breasts_covered
+	_n: Fondle [b:his] breasts (clothed)
+	limitations
+		not: 0 havingsex/restrained
+		hastits: 1
+		clothing: 1 top 0
+	effects
+		stat: 1 stimulation 2
+		message
+			- [t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts] through [b:his] [0].
+
+choice: fondle_breasts
+	_n: Fondle [b:his] breasts
+	limitations
+		not: 0 havingsex/restrained
+		hastits: 1
+		canreach: 1 breasts
+	effects
+		stat: 1 stimulation 4
+		message
+			- [t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts].
+
+choice: fondle_nipples
+	_n: Fondle [b:his] nipples
+	limitations
+		not: 0 havingsex/restrained
+		hasnipples: 1
+		canreach: 1 breasts
+	effects
+		stat: 1 stimulation 6
+		stat: 1 climax 2
+		message
+			- [t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples].
+
+choice: finger_pussy
+	_n: Finger [b:his] pussy
+	limitations
+		not: 0 havingsex/restrained
+		not: 0 havingsex/fingeringvaginal
+		yes: 1 vagina
+		canreach: 1 crotch
+	effects
+		stat: 1 stimulation 6
+		stat: 1 climax 4
+		add: 0 fingeringvaginal
+		message
+			- [t:Youorname] slip{s} a finger into [b:yourornames] [b:pussywetness] [?:pussy].
+
+choice: continue_finger_pussy
+	_n: Continue fingering [b:his] pussy
+	limitations
+		yes: 0 havingsex/fingeringvaginal
+--		not: 0 havingsex/restrained
+		yes: 1 vagina
+		canreach: 1 crotch
+	effects
+		stat: 1 stimulation 10
+		stat: 1 climax 4
+		message
+			- [t:Youorname] continue{s} rubbing around inside [b:yourornames] [b:pussywetness] [?:pussy].
+
+choice: stop_finger_pussy
+	_n: Stop fingering [b:his] pussy
+	limitations
+		yes: 0 havingsex/fingeringvaginal
+--		not: 0 havingsex/restrained
+		yes: 1 vagina
+		canreach: 1 crotch
+	effects
+		remove: 0 fingeringvaginal
+		message
+			- [t:Youorname] pull{s} [t:your] finger out of [b:yourornames] [?:pussy].
+
+choice: stop_them_finger_pussy
+	_n: Stop [b:him] from fingering [t:your] pussy
+	limitations
+		yes: 1 havingsex/fingeringvaginal
+		not: 1 havingsex/restrained
+		yes: 0 vagina
+	effects
+		stat: 1 stimulation 4
+		stat: 1 climax 1
+		message
+			- [t:Youorname] grab{s} [b:youorname] by the wrist.
+		roll: strength strength
+			lose
+				message
+					- [t:You] can't budge it.
+					- [t:You] can't get [b:his] [b:hand] away from [t:your] [?:pussy].
+			win
+				remove: 1 fingeringvaginal
+				message
+					- [t:You] manage to get [b:his] [b:hand] away, and [b:his] finger out of [t:your] [t:pussywetness] [?:pussy].
+
 choice: take_off_top_own
 	_n: Take off your [0]
 	limitations
@@ -198,10 +298,10 @@ choice: take_off_bottom_theirs
 		disrobe: 1 bottom
 			success
 				message
-					- [t:Youorname] reach{es} for [b:yourornames] [0] and take{s} it off.
+					- [t:Youorname] reach{es} for [b:yourornames] [3] and take{s} it off.
 			failure
 				message
-					- [t:Youorname] reach{es} for [b:yourornames] [0] but can't take it off.
+					- [t:Youorname] reach{es} for [b:yourornames] [3] but can't take it off.
 
 choice: tear_off_bottom_theirs
 	_n: Tear off [b:his] [3]
@@ -228,6 +328,7 @@ choice: insert_cock_vaginal
 		yes: 0 penis
 		yes: 1 vagina
 		not: 0 havingsex/givingvaginal
+		not: 0 havingsex/fingeringvaginal
 		not: 1 havingsex/receivingvaginal
 		consentual
 	effects
@@ -235,6 +336,8 @@ choice: insert_cock_vaginal
 		add: 1 receivingvaginal
 		stat: 0 climax 10
 		stat: 1 climax 10
+		message
+			- [t:Youorname] push{es} [t:his] [t:cocktype] [?:cock] inside of [b:yourornames] [b:pussywetness] [?:pussy].
 		has: 1 vagina/virgin
 			true
 				takevirginity: 1 0
@@ -242,8 +345,6 @@ choice: insert_cock_vaginal
 						message
 							- [b:Youorname] lost [b:his] virginity!
 -- Cause a single HP of damage?
-		message
-			- [t:Youorname] push{es} [t:his] [t:cocktype] [cockrand] inside of [b:yourornames] [b:pussywetness] [pussyrand].
 
 choice: insert_cock_vaginal_rape
 	_n: Shove it!
@@ -253,6 +354,7 @@ choice: insert_cock_vaginal_rape
 		yes: 0 penis
 		yes: 1 vagina
 		not: 0 havingsex/givingvaginal
+		not: 0 havingsex/fingeringvaginal
 		not: 1 havingsex/receivingvaginal
 		nonconsentual
 	effects
@@ -260,14 +362,14 @@ choice: insert_cock_vaginal_rape
 		add: 1 receivingvaginal
 		stat: 0 climax 10
 		stat: 1 climax 5
+		message
+			- [t:Youorname] shove{es} [t:his] [t:cocktype] [?:cock] deep inside of [b:yourornames] [b:pussywetness] [?:pussy].
 		has: 1 vagina/virgin
 			true
 				takevirginity: 1 0
 					success
 						message
 							- [b:Youorname] lost [b:his] virginity!
-		message
-			- [t:Youorname] shove{es} [t:his] [t:cocktype] [cockrand] deep inside of [b:yourornames] [b:pussywetness] [pussyrand].
 
 choice: insert_cock_vaginal_female
 	_n: Take a ride
@@ -277,6 +379,7 @@ choice: insert_cock_vaginal_female
 		yes: 1 penis
 		yes: 0 vagina
 		not: 1 havingsex/givingvaginal
+		not: 1 havingsex/fingeringvaginal
 		not: 0 havingsex/receivingvaginal
 		consentual
 	effects
@@ -284,14 +387,14 @@ choice: insert_cock_vaginal_female
 		add: 0 receivingvaginal
 		stat: 0 climax 10
 		stat: 1 climax 10
+		message
+			- [t:Youorname] line{s} [t:his] [?:pussy] up with [b:yourornames] [b:cocktype] [?:cock] and slam{s} it inside.
 		has: 0 vagina/virgin
 			true
 				takevirginity: 0
 					success
 						message
 							- [t:Youorname] lost [t:his] virginity!
-		message
-			- [t:Youorname] line{s} [t:his] [pussyrand] up with [b:yourornames] [b:cocktype] [cockrand] and slam{s} it inside.
 
 choice: continue_fucking
 	_n: Keep going
@@ -339,8 +442,8 @@ choice: pull_out
 		remove: 0 givingvaginal
 		remove: 1 receivingvaginal
 		message
-			- [t:Youorname] quickly pull{s} out of [b:yourornames] [pussyrand], scraping [t:his] [cockrand] against [b:his] [clitrand].
-			- [t:Youorname] quickly pull{s} [t:his] [cockrand] out of [b:yourornames] [pussyrand], brushing against [b:his] [clitrand].
+			- [t:Youorname] quickly pull{s} out of [b:yourornames] [?:pussy], scraping [t:his] [?:cock] against [b:his] [?:clit].
+			- [t:Youorname] quickly pull{s} [t:his] [?:cock] out of [b:yourornames] [?:pussy], brushing against [b:his] [?:clit].
 
 choice: pull_out_female
 	_n: Get off!
@@ -357,4 +460,4 @@ choice: pull_out_female
 		remove: 1 givingvaginal
 		remove: 0 receivingvaginal
 		message
-			- [t:Youorname] slip{s} off of [b:yourornames] [cockrand], scraping it against [t:his] [clitrand].
+			- [t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit].
