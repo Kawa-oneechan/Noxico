@@ -61,6 +61,18 @@ namespace Noxico
 
 		private static bool LimitsOkay(BoardChar[] actors, Token c)
 		{
+			var filter = c.GetToken("filter");
+			if (filter != null)
+			{
+				var env = Lua.Environment;
+				env.SetValue("top", actors[0]);
+				env.SetValue("bottom", actors[1]);
+				env.SetValue("consentual", !actors[1].Character.HasToken("helpless"));
+				env.SetValue("nonconsentual", actors[1].Character.HasToken("helpless"));
+				env.SetValue("masturbating", actors[0] == actors[1]);
+				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			}
+
 			var limitations = c.GetToken("limitations");
 			if (limitations == null || limitations.Tokens.Count == 0)
 				return true; //assume so
@@ -190,6 +202,8 @@ namespace Noxico
 		public static Token GetResult(string id, BoardChar actor, BoardChar target)
 		{
 			var actors = new[] { actor, target };
+			if (choices == null)
+				LoadChoices();
 			var possibilities = choices.FindAll(c => c.Text == id && LimitsOkay(actors, c)).ToArray();
 			if (possibilities.Length == 0)
 				throw new NullReferenceException(string.Format("Could not find a sex choice named \"{0}\".", id));
@@ -213,6 +227,33 @@ namespace Noxico
 
 		public static void Apply(Token result, BoardChar actor, BoardChar target, Action<string> writer)
 		{
+			if (result.HasToken("effect"))
+			{
+				var f = result.GetToken("effect");
+				var script = f.Tokens.Count == 1 ? f.Tokens[0].Text : f.Text;
+				var env = Lua.Environment;
+				env.SetValue("top", actor);
+				env.SetValue("bottom", target);
+				env.SetValue("consentual", !target.Character.HasToken("helpless"));
+				env.SetValue("nonconsentual", target.Character.HasToken("helpless"));
+				env.SetValue("masturbating", actor == target);
+				env.SetValue("message", new Action<object, Color>((x, y) =>
+					{
+						if (x is Neo.IronLua.LuaTable)
+							x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+						while (x is object[])
+						{
+							var options = (object[])x;
+							x = options[Random.Next(options.Length)];
+							if (x is Neo.IronLua.LuaTable)
+								x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+						}
+						NoxicoGame.AddMessage(x.ToString().Viewpoint(actor.Character, target.Character), y);
+					}));
+				env.DoChunk(script, "lol.lua");
+				return;
+			}
+
 			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
 			if (effects == null || effects.Tokens.Count == 0)
 				return;
@@ -395,7 +436,42 @@ namespace Noxico
 	{
 		private BoardChar sexPartner;
 
-		public bool UpdateSex()
+		public bool Restrained()
+		{
+			return Character.Path("havingsex/restrained") != null;
+		}
+		public bool Restraining()
+		{
+			return Character.Path("havingsex/restraining") != null;
+		}
+		public bool HasNipples()
+		{
+			foreach (var breastRow in Character.Tokens.Where(t => t.Name == "breastrow"))
+				if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
+					return true;
+			return false;
+		}
+		public bool CanReachBreasts()
+		{
+			return Character.CanReachBreasts();
+		}
+		public float Raise(Stat stat, float by)
+		{
+			return Character.ChangeStat(stat.ToString().ToLowerInvariant(), by);
+		}
+		public Token Path(string pathSpec)
+		{
+			return Character.Path(pathSpec);
+		}
+
+		public bool Fertilize()
+		{
+			if (!EnsureSexPartner())
+				return false;
+			return Character.Fertilize(sexPartner.Character);
+		}
+
+		public bool EnsureSexPartner()
 		{
 			if (!this.Character.HasToken("havingsex"))
 				return false;
@@ -411,8 +487,14 @@ namespace Noxico
 			{
 				Program.WriteLine("SEX: {0} is supposed to be having sex with {1} but that character isn't here.", this.ID, sexPartner.Character.Name);
 				this.Character.RemoveToken("havingsex");
-				return false;
 			}
+			return true;
+		}
+
+		public bool UpdateSex()
+		{
+			if (!EnsureSexPartner())
+				return false;
 
 			if (this.Character.GetStat(Stat.Climax) >= 100)
 			{
