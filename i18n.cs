@@ -309,7 +309,8 @@ namespace Noxico
 				{ "hand", (c, s) => { return Descriptions.Hand(c); } },
 				{ "hands", (c, s) => { return Descriptions.Hand(c, true); } },
 
-				{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0] + (c == player ? string.Empty : "s"))); } },
+				//{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0] + (c == player ? string.Empty : "s"))); } },
+				{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0])) + "{s}"; } },
 			};
 			#endregion
 			#region [] Parser
@@ -351,9 +352,9 @@ namespace Noxico
 
 						if (match.Groups["subcom"].Captures.Count > 1)
 						{
-							subcom = match.Groups["target"].Value;
-							//subcom = match.Groups["subcom"].Captures[0].Value;
-							for (var i = 0; i < match.Groups["subcom"].Captures.Count; i++)
+							//subcom = match.Groups["target"].Value;
+							subcom = match.Groups["subcom"].Captures[0].Value;
+							for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
 							{
 								var c = match.Groups["subcom"].Captures[i];
 								Console.WriteLine(c);

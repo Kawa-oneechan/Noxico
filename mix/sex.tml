@@ -7,6 +7,21 @@ choice: climax
 	meta
 	limitations
 		yes: 0 penis
+	effect
+		<[[
+			top.Raise(Stat.Climax, -100)
+			if top.Path("havingsex/givingvaginal") then
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
+				bottom.Fertilize()
+			elseif top.Path("havingsex/givinganal") then
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
+			elseif top.Path("havingsex/givingbothholes") then
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
+				bottom.Fertilize()
+			else
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]."}, Color.Orange)
+			end
+		]]>
 	effects
 		stat: 0 climax -100
 		has: 0 havingsex/givingvaginal
@@ -136,8 +151,9 @@ choice: struggle
 					- [t:Youorname] struggle{s} out of [b:yourornames] grasp.
 
 choice: kiss
-	limitations
-		consentual
+--	limitations
+--		consentual
+	filter: "consentual"
 	effects
 		stat: 0 climax 2
 		stat: 1 climax 2
@@ -177,6 +193,16 @@ choice: fondle_breasts
 
 choice: fondle_nipples
 	_n: Fondle [b:his] nipples
+	filter: (not top.Restrained()) and bottom.HasNipples() and bottom.CanReachBreasts()
+	effect
+		<[[
+			bottom.Raise(Stat.Stimulation, 6)
+			bottom.Raise(Stat.Climax, 2)
+			message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
+		]]>
+-- Alternatively, as a oneliner:
+--	effect: bottom.Raise(Stat.Stimulation, 6); bottom.Raise(Stat.Climax, 2); message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
+-- Old counterparts are ignored if the new is also defined.
 	limitations
 		not: 0 havingsex/restrained
 		hasnipples: 1
@@ -305,6 +331,7 @@ choice: take_off_bottom_theirs
 
 choice: tear_off_bottom_theirs
 	_n: Tear off [b:his] [3]
+	filter: nonconsentual
 	limitations
 		nonconsentual
 		clothing: 1 bottom 3

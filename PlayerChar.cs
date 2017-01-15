@@ -776,7 +776,7 @@ namespace Noxico
 					NoxicoGame.AddMessage(i18n.GetString("gameover_title"), Color.Red);
 					//var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 					//File.Delete(playerFile);
-					var world = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
+					var world = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
 					NoxicoGame.Sound.PlayMusic("set://Death");
 					NoxicoGame.InGame = false;
 					MessageBox.Ask(
