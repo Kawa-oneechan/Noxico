@@ -81,7 +81,7 @@ choice: wrap_up
 	effect
 		<[[
 			if bottom.Path("skin/type[=slime]") then
-				message({[t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.}, Color.Aqua)
+				message({"[t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through."}, Color.Aqua)
 				return
 			end
 			top.AddSexFlag("restraining")
