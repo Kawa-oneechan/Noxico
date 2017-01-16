@@ -1476,7 +1476,10 @@ namespace Noxico
 
 			if (this.HasToken("wings"))
 			{
-				var wt = i18n.Format("x_wings", i18n.GetString("wingtype_" + this.GetToken("wings").Text));
+				var wingType = this.GetToken("wings").Text;
+				if (string.IsNullOrWhiteSpace(wingType))
+					wingType = "feather"; //TODO: different "undefined" fallback?
+				var wt = i18n.Format("x_wings", i18n.GetString("wingtype_" + wingType));
 				if (this.Path("wings/small") != null)
 					wt = i18n.Format("small_wings", wt);
 				bodyThings.Add(wt);
