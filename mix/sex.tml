@@ -5,191 +5,165 @@ choice: wait
 -- Male variant
 choice: climax
 	meta
-	limitations
-		yes: 0 penis
+	filter: top.HasPenis() and (not top.HasVagina())
 	effect
 		<[[
 			top.Raise(Stat.Climax, -100)
-			if top.Path("havingsex/givingvaginal") then
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
-				bottom.Fertilize()
-			elseif top.Path("havingsex/givinganal") then
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
-			elseif top.Path("havingsex/givingbothholes") then
+			if top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
 				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
 				bottom.Fertilize()
+			elseif top.HasSexFlag("givingvaginal") then
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
+				bottom.Fertilize()
+			elseif top.HasSexFlag("givinganal") then
+				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
 			else
 				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]."}, Color.Orange)
 			end
 		]]>
-	effects
-		stat: 0 climax -100
-		has: 0 havingsex/givingvaginal
-			true
-				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy].
-				fertilize: 1 0
-				end
-		has: 0 havingsex/givinganal
-			true
-				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus].
-				end
-		has: 0 havingsex/givingbothholes
-			true
-				message
-					- [t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus].
-				end
-		message
-			- [t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him].
-		end
 
 -- Female variant
 choice: climax
 	meta
-	limitations
-		yes: 0 vagina
-		not: 0 penis
-	effects
-		stat: 0 climax -100
-		has: 1 havingsex/fingeringvaginal
-			true
-				message
-					- [t:Youorname] squirt{s} all over [b:yourornames] [b:hand].
-				end
-		message
-			- [t:Youorname] shiver{s} in the throes of orgasm.
-
+	filter: top.HasVagina() and (not top.HasPenis())
+	effect
+		<[[
+			top.Raise(Stat.Climax, -100)
+			if top.HasSexFlag("fingeringvaginal") then
+				message({"[t:Youorname] squirt{s} all over [b:yourornames] [b:hand]."}, Color.Orange)
+			else
+				message({"[t:Youorname] shiver{s} in the throes of orgasm."}, Color.Orange)
+			end
+		]]>
 
 choice: walk_away
 	ai_unlikely
-	limitations
-		not: 0 havingsex/restrained
-		not: 0 havingsex/receivingvaginal
-	effects
-		message
-			- [t:Youorname] let{s} go of [b:youorname] and get{s} up.
-			- [t:Youorname] release{s} [b:youorname] and get{s} up.
-		breakitoff
+	filter: (not top.Restrained()) and (not top.HasSexFlag("receivingvaginal")) and (not top.HasSexFlag("receivinganal"))
+	effect
+		<[[
+			message({
+				"[t:Youorname] let{s} go of [b:youorname] and get{s} up.",
+				"[t:Youorname] release{s} [b:youorname] and get{s} up."
+			})
+			stop()
+		]]>
 
 choice: cuddle
-	limitations
-		consentual
-		not: 0 havingsex/restrained
-		not: 1 havingsex/restraining
-	effects
-		stat: 0 climax 1
-		stat: 1 climax 1
-		message
-			- [t:Youorname] cuddle{s} up to [b:youorname].
-			- [t:Youorname] rub{s} [t:his] body against [b:youorname].
+	filter: consentual and (not top.Restrained()) and (not bottom.Restraining())
+	effect
+		<[[
+			top.Raise(Stat.Climax, 1)
+			bottom.Raise(Stat.Climax, 1)
+			message({
+				"[t:Youorname] cuddle{s} up to [b:youorname].",
+				"[t:Youorname] rub{s} [t:his] body against [b:youorname]."
+			})
+		]]>
 
 choice: pin_down
-	limitations
-		not: 0 havingsex/restrained
-		not: 0 havingsex/restraining
-		not: 1 havingsex/restrained
-		not: 1 havingsex/restraining
-		not: 0 snaketail
-	effects
-		has: 1 skin/type[=slime]
-			true
-				message
-					- You try to grab [b:name]'s arms, but can't get a good grip on [b:yourornames] slimy body.
-			false
-				add: 0 restraining
-				add: 1 restrained
-				message
-					- [t:Youorname] grab{s} [b:yourornames] arms and hold{s} them tightly in place.
-					- [t:Youorname] grab{s} [b:yourornames] arms and hold{s} tight.
+	filter: (not top.HasToken("snaketail")) and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
+	effect
+		<[[
+			if bottom.Path("skin/type[=slime]") then
+				message({"You try to grab [b:name]'s arms, but can't get a good grip on [b:yourornames] slimy body."}, Color.Aqua)
+				return
+			end
+			top.AddSexFlag("restraining")
+			bottom.AddSexFlag("restrained")
+			message({
+				"[t:Youorname] grab{s} [b:yourornames] arms and hold{s} them tightly in place.",
+				"[t:Youorname] grab{s} [b:yourornames] arms and hold{s} tight."
+			})
+		]]>
 
 choice: wrap_up
-	limitations
-		not: 0 havingsex/restrained
-		not: 0 havingsex/restraining
-		not: 1 havingsex/restrained
-		not: 1 havingsex/restraining
-		yes: 0 snaketail
-	effects
-		has: 1 skin/type[=slime]
-			true
-				message
-					- [t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.
-			false
-				add: 0 restraining
-				add: 1 restrained
-				message
-					- [t:Youorname] coil{s} [t:his] tail tightly around [b:yourornames] body.
-					- [t:Youorname] coil{s} around [b:yourornames] body and hold{s} [b:him] tight.
+	filter: top.HasToken("snaketail") and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
+	effect
+		<[[
+			if bottom.Path("skin/type[=slime]") then
+				message({[t:Youorname] {tries|try} to coil [t:his] tail around [b:youorname], but [b:your] slimy body easily squishes through.}, Color.Aqua)
+				return
+			end
+			top.AddSexFlag("restraining")
+			bottom.AddSexFlag("restrained")
+			message({
+				"[t:Youorname] coil{s} [t:his] tail tightly around [b:yourornames] body.",
+				"[t:Youorname] coil{s} around [b:yourornames] body and hold{s} [b:him] tight."
+			})
+		]]>
 
 choice: release
-	limitations
-		yes: 0 havingsex/restraining
-		yes: 1 havingsex/restrained
-	effects
-		remove: 0 restraining
-		remove: 1 restrained
-		message
-			- [t:Youorname] let{s} go of [b:yourornames] arms.
-			- [t:Youorname] release{s} [t:his] grip.
+	filter: top.Restraining() and bottom.Restrained()
+	effect
+		<[[
+			top.RemoveSexFlag("restraining")
+			bottom.RemoveSexFlag("restrained")
+			if top.HasToken("snaketail") then
+				message({
+					"[t:Youorname] release{s} [t:his] grip."
+				})
+			else
+				message({
+					"[t:Youorname] let{s} go of [b:yourornames] arms.",
+					"[t:Youorname] release{s} [t:his] grip."
+				})
+			end
+		]]>
 
 choice: struggle
-	limitations
-		yes: 0 havingsex/restrained
-		yes: 1 havingsex/restraining
-	effects
-		roll: strength strength
-			lose
-				message
-					- [t:Youorname] struggles against [b:yourornames] hold, but fails to get free.
-			win
-				remove: 0 restrained
-				remove: 1 restraining
-				message
-					- [t:Youorname] struggle{s} against [b:yourornames] hold and manage{s} to get free.
-					- [t:Youorname] manage{s} to struggle free from [b:yourornames] hold.
-					- [t:Youorname] struggle{s} out of [b:yourornames] grasp.
+	filter: top.Restrained() and bottom.Restraining()
+	effect
+		<[[
+			if roll(Stat.Strength, Stat.Strength) then
+				top.RemoveSexFlag("restrained")
+				bottom.RemoveSexFlag("restraining")
+				message({
+					"[t:Youorname] struggle{s} against [b:yourornames] hold and manage{s} to get free.",
+					"[t:Youorname] manage{s} to struggle free from [b:yourornames] hold.",
+					"[t:Youorname] struggle{s} out of [b:yourornames] grasp."
+				}, Color.Green)
+			else
+				message({
+					"[t:Youorname] struggle{s} against [b:yourornames] hold, but fail{s} to get free."
+				}, Color.Red)
+			end
+		]]>
 
 choice: kiss
---	limitations
---		consentual
-	filter: "consentual"
-	effects
-		stat: 0 climax 2
-		stat: 1 climax 2
-		message
-			- ~kissu~
+	filter: consentual
+	effect
+		<[[
+			top.Raise(Stat.Climax, 2)
+			bottom.Raise(Stat.Climax, 2)
+			message({"~kissu~"})
+		]]>
 
 choice: french_kiss
-	limitations
-		consentual
-	effects
-		stat: 0 climax 3
-		stat: 1 climax 3
-		message
-			- ~fkissu~
+	filter: consentual
+	effect
+		<[[
+			top.Raise(Stat.Climax, 3)
+			bottom.Raise(Stat.Climax, 3)
+			message({"~fkissu~"})
+		]]>
 
 choice: fondle_breasts_covered
 	_n: Fondle [b:his] breasts (clothed)
-	limitations
-		not: 0 havingsex/restrained
-		hastits: 1
-		clothing: 1 top 0
-	effects
-		stat: 1 stimulation 2
-		message
-			- [t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts] through [b:his] [0].
+	filter: (not top.Restraining()) and bottom.HasBreasts() and clothing(bottom, "top", 0)
+	effect
+		<[[
+			bottom.Raise(Stat.Stimulation, 2)
+			message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts] through [b:his] [0]."})
+		]]>
 
 choice: fondle_breasts
 	_n: Fondle [b:his] breasts
-	limitations
-		not: 0 havingsex/restrained
-		hastits: 1
-		canreach: 1 breasts
-	effects
-		stat: 1 stimulation 4
-		message
-			- [t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts].
+	filter: (not top.Restraining()) and bottom.HasBreasts() and bottom.CanReachBreasts()
+	effect
+		<[[
+			bottom.Raise(Stat.Stimulation, 4)
+			message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts]."})
+		]]>
 
 choice: fondle_nipples
 	_n: Fondle [b:his] nipples
@@ -200,291 +174,211 @@ choice: fondle_nipples
 			bottom.Raise(Stat.Climax, 2)
 			message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
 		]]>
--- Alternatively, as a oneliner:
 --	effect: bottom.Raise(Stat.Stimulation, 6); bottom.Raise(Stat.Climax, 2); message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
--- Old counterparts are ignored if the new is also defined.
-	limitations
-		not: 0 havingsex/restrained
-		hasnipples: 1
-		canreach: 1 breasts
-	effects
-		stat: 1 stimulation 6
-		stat: 1 climax 2
-		message
-			- [t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples].
 
 choice: finger_pussy
 	_n: Finger [b:his] pussy
-	limitations
-		not: 0 havingsex/restrained
-		not: 0 havingsex/fingeringvaginal
-		yes: 1 vagina
-		canreach: 1 crotch
-	effects
-		stat: 1 stimulation 6
-		stat: 1 climax 4
-		add: 0 fingeringvaginal
-		message
-			- [t:Youorname] slip{s} a finger into [b:yourornames] [b:pussywetness] [?:pussy].
+	filter: (not top.Restrained()) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal")) and bottom.HasToken("vagina") and bottom.CanReachCrotch()
+	effect
+		<[[
+			bottom.Raise(Stat.Stimulation, 6)
+			bottom.Raise(Stat.Climax, 4)
+			top.AddSexFlag("fingeringvaginal")
+			message({"[t:Youorname] slip{s} a finger into [b:yourornames] [b:pussywetness] [?:pussy]."})
+		]]>
 
 choice: continue_finger_pussy
 	_n: Continue fingering [b:his] pussy
-	limitations
-		yes: 0 havingsex/fingeringvaginal
---		not: 0 havingsex/restrained
-		yes: 1 vagina
-		canreach: 1 crotch
-	effects
-		stat: 1 stimulation 10
-		stat: 1 climax 4
-		message
-			- [t:Youorname] continue{s} rubbing around inside [b:yourornames] [b:pussywetness] [?:pussy].
+	filter: top.HasSexFlag("fingeringvaginal") and bottom.HasToken("vagina") and bottom.CanReachCrotch()
+	effect
+		<[[
+			bottom.Raise(Stat.Stimulation, 10)
+			bottom.Raise(Stat.Climax, 4)
+			message({"[t:Youorname] continue{s} rubbing around inside [b:yourornames] [b:pussywetness] [?:pussy]."})
+		]]>
 
 choice: stop_finger_pussy
 	_n: Stop fingering [b:his] pussy
-	limitations
-		yes: 0 havingsex/fingeringvaginal
---		not: 0 havingsex/restrained
-		yes: 1 vagina
-		canreach: 1 crotch
-	effects
-		remove: 0 fingeringvaginal
-		message
-			- [t:Youorname] pull{s} [t:your] finger out of [b:yourornames] [?:pussy].
+	filter: top.HasSexFlag("fingeringvaginal") and bottom.HasToken("vagina") and bottom.CanReachCrotch()
+	effect
+		<[[
+			top.RemoveSexFlag("fingeringvaginal")
+			message({"[t:Youorname] pull{s} [t:your] finger out of [b:yourornames] [?:pussy]."})
+		]]>
 
 choice: stop_them_finger_pussy
 	_n: Stop [b:him] from fingering [t:your] pussy
-	limitations
-		yes: 1 havingsex/fingeringvaginal
-		not: 1 havingsex/restrained
-		yes: 0 vagina
-	effects
-		stat: 1 stimulation 4
-		stat: 1 climax 1
-		message
-			- [t:Youorname] grab{s} [b:youorname] by the wrist.
-		roll: strength strength
-			lose
-				message
-					- [t:You] can't budge it.
-					- [t:You] can't get [b:his] [b:hand] away from [t:your] [?:pussy].
-			win
-				remove: 1 fingeringvaginal
-				message
-					- [t:You] manage to get [b:his] [b:hand] away, and [b:his] finger out of [t:your] [t:pussywetness] [?:pussy].
+	filter: bottom.HasSexFlag("fingeringvaginal") and (not top.Restrained()) and top.HasToken("vagina")
+	effect
+		<[[
+			if roll(Stat.Strength, Stat.Strength) then
+				bottom.RemoveSexFlag("fingeringvaginal")
+				message({"[t:You] manage to get [b:his] [b:hand] away, and [b:his] finger out of [t:your] [t:pussywetness] [?:pussy].", Color.Green})
+			else
+				message({
+					"[t:You] can't budge it.",
+					"[t:You] can't get [b:his] [b:hand] away from [t:your] [?:pussy]."
+				}, Color.Red)
+			end
+		]]>
 
 choice: take_off_top_own
 	_n: Take off your [0]
-	limitations
-		clothing: 0 top 0
-		not: 0 havingsex/restrained
-	effects
-		disrobe: 0 top
-			success
-				message
-					- [t:Youorname] reach{es} for [t:his] [0] and take{s} it off.
-			failure
-				message
-					- [t:Youorname] reach{es} for [t:his] [0] but can't take it off.
+	filter: clothing(top, "top", 0) and (not top.Restrained())
+	effect
+		<[[
+			if top.Disrobe("top") then
+				message({"[t:Youorname] reach{es} for [t:his] [0] and take{s} it off."}, Color.Green)
+			else
+				message({"[t:Youorname] reach{es} for [t:his] [0] but can't take it off."})
+			end
+		]]>
 
 choice: take_off_top_theirs
 	_n: Take off [b:his] [1]
-	limitations
-		clothing: 1 top 1
-		not: 0 havingsex/restrained
-	effects
-		disrobe: 1 top
-			success
-				message
-					- [t:Youorname] reach{es} for [b:yourornames] [1] and take{s} it off.
-			failure
-				message
-					- [t:Youorname] reach{es} for [b:yourornames] [1] but can't take it off.
+	filter: clothing(bottom, "top", 1) and (not top.Restrained())
+	effect
+		<[[
+			if bottom.Disrobe("top") then
+				message({"[t:Youorname] reach{es} for [b:yourornames] [1] and take{s} it off."}, Color.Green)
+			else
+				message({"[t:Youorname] reach{es} for [b:yourornames] [1] but can't take it off."})
+			end
+		]]>
 
 choice: take_off_bottom_own
 	_n: Take off your [2]
-	limitations
-		clothing: 0 bottom 2
-		not: 0 havingsex/restrained
-	effects
-		disrobe: 0 bottom
-			success
-				message
-					- [t:Youorname] reach{es} for [t:his] [2] and take{s} it off.
-			failure
-				message
-					- [t:Youorname] reach{es} for [t:his] [2] but can't take it off.
+	filter: clothing(top, "bottom", 2) and (not top.Restrained())
+	effect
+		<[[
+			if top.Disrobe("bottom") then
+				message({"[t:Youorname] reach{es} for [t:his] [2] and take{s} it off."}, Color.Green)
+			else
+				message({"[t:Youorname] reach{es} for [t:his] [2] but can't take it off."})
+			end
+		]]>
 
 choice: take_off_bottom_theirs
 	_n: Take off [b:his] [3]
-	limitations
-		clothing: 1 bottom 3
-		not: 0 havingsex/restrained
-	effects
-		disrobe: 1 bottom
-			success
-				message
-					- [t:Youorname] reach{es} for [b:yourornames] [3] and take{s} it off.
-			failure
-				message
-					- [t:Youorname] reach{es} for [b:yourornames] [3] but can't take it off.
+	filter: clothing(bottom, "bottom", 3) and (not top.Restrained())
+	effect
+		<[[
+			if bottom.Disrobe("bottom") then
+				message({"[t:Youorname] reach{es} for [b:yourornames] [3] and take{s} it off."}, Color.Green)
+			else
+				message({"[t:Youorname] reach{es} for [b:yourornames] [3] but can't take it off."})
+			end
+		]]>
 
 choice: tear_off_bottom_theirs
 	_n: Tear off [b:his] [3]
-	filter: nonconsentual
-	limitations
-		nonconsentual
-		clothing: 1 bottom 3
-		not: 0 havingsex/restrained
-	effects
-		disrobe: 1 bottom tear
-			success
-				message
-					- [t:Youorname] grab{s} [b:yourornames] [3] and tears it to pieces.
-					- [t:Youorname] grab{s} [b:yourornames] [3] and tears apart.
-					- [t:Youorname] grab{s} [b:yourornames] [3] and violently rips it off.
-			failure
-				message
-					- [t:Youorname] grab{s} [b:yourornames] [3] but can't budge it.
+	filter: nonconsentual and clothing(bottom, "bottom", 3) and (not top.Restrained())
+	effect
+		<[[
+			if bottom.Disrobe("bottom", true) then
+				message({
+					"[t:Youorname] grab{s} [b:yourornames] [3] and tears it to pieces.",
+					"[t:Youorname] grab{s} [b:yourornames] [3] and tears apart.",
+					"[t:Youorname] grab{s} [b:yourornames] [3] and violently rips it off."
+				}, Color.Green)
+			else
+				message({"[t:Youorname] reach{es} for [b:yourornames] [3] but can't budge it."})
+			end
+		]]>
 
 choice: insert_cock_vaginal
 	_n: J-J-J-JAM IT IN!!
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 0 penis
-		yes: 1 vagina
-		not: 0 havingsex/givingvaginal
-		not: 0 havingsex/fingeringvaginal
-		not: 1 havingsex/receivingvaginal
-		consentual
-	effects
-		add: 0 givingvaginal
-		add: 1 receivingvaginal
-		stat: 0 climax 10
-		stat: 1 climax 10
-		message
-			- [t:Youorname] push{es} [t:his] [t:cocktype] [?:cock] inside of [b:yourornames] [b:pussywetness] [?:pussy].
-		has: 1 vagina/virgin
-			true
-				takevirginity: 1 0
-					success
-						message
-							- [b:Youorname] lost [b:his] virginity!
--- Cause a single HP of damage?
+	filter: consentual and top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and (not top.HasSexFlag("givingvaginal")) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal"))
+	effect
+		<[[
+			top.AddSexFlag("givingvaginal")
+			bottom.AddSexFlag("receivingvaginal")
+			top.Raise(Stat.Climax, 10)
+			bottom.Raise(Stat.Climax, 10)
+			message({"[t:Youorname] push{es} [t:his] [t:cocktype] [?:cock] inside of [b:yourornames] [b:pussywetness] [?:pussy]."})
+			if bottom.TakeVirginity() then
+				message({"[b:Youorname] lost [b:his] virginity!"}, Color.Red)
+				-- Cause a single HP of damage?
+			end
+		]]>
 
 choice: insert_cock_vaginal_rape
 	_n: Shove it!
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 0 penis
-		yes: 1 vagina
-		not: 0 havingsex/givingvaginal
-		not: 0 havingsex/fingeringvaginal
-		not: 1 havingsex/receivingvaginal
-		nonconsentual
-	effects
-		add: 0 givingvaginal
-		add: 1 receivingvaginal
-		stat: 0 climax 10
-		stat: 1 climax 5
-		message
-			- [t:Youorname] shove{es} [t:his] [t:cocktype] [?:cock] deep inside of [b:yourornames] [b:pussywetness] [?:pussy].
-		has: 1 vagina/virgin
-			true
-				takevirginity: 1 0
-					success
-						message
-							- [b:Youorname] lost [b:his] virginity!
+	filter: nonconsentual and top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and (not top.HasSexFlag("givingvaginal")) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal"))
+	effect
+		<[[
+			top.AddSexFlag("givingvaginal")
+			bottom.AddSexFlag("receivingvaginal")
+			top.Raise(Stat.Climax, 10)
+			bottom.Raise(Stat.Climax, 5)
+			message({"[t:Youorname] shove{es} [t:his] [t:cocktype] [?:cock] deep inside of [b:yourornames] [b:pussywetness] [?:pussy]."})
+			if bottom.TakeVirginity() then
+				message({"[b:Youorname] lost [b:his] virginity!"}, Color.Red)
+				-- Cause a single HP of damage? More?
+			end
+		]]>
 
 choice: insert_cock_vaginal_female
 	_n: Take a ride
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 1 penis
-		yes: 0 vagina
-		not: 1 havingsex/givingvaginal
-		not: 1 havingsex/fingeringvaginal
-		not: 0 havingsex/receivingvaginal
-		consentual
-	effects
-		add: 1 givingvaginal
-		add: 0 receivingvaginal
-		stat: 0 climax 10
-		stat: 1 climax 10
-		message
-			- [t:Youorname] line{s} [t:his] [?:pussy] up with [b:yourornames] [b:cocktype] [?:cock] and slam{s} it inside.
-		has: 0 vagina/virgin
-			true
-				takevirginity: 0
-					success
-						message
-							- [t:Youorname] lost [t:his] virginity!
+	filter: consentual and top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasVagina() and bottom.HasPenis() and (not bottom.HasSexFlag("givingvaginal")) and (not bottom.HasSexFlag("fingeringvaginal")) and (not top.HasSexFlag("receivingvaginal"))
+	effect
+		<[[
+			top.AddSexFlag("receivingvaginal")
+			bottom.AddSexFlag("givingvaginal")
+			top.Raise(Stat.Climax, 10)
+			bottom.Raise(Stat.Climax, 10)
+			message({"[t:Youorname] line{s} [t:his] [?:pussy] up with [b:yourornames] [b:cocktype] [?:cock] and slam{s} it inside."})
+			if top.TakeVirginity() then
+				message({"[b:Youorname] lost [b:his] virginity!"}, Color.Red)
+				-- Cause a single HP of damage?
+			end
+		]]>
 
 choice: continue_fucking
 	_n: Keep going
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 0 penis
-		yes: 1 vagina
-		yes: 0 havingsex/givingvaginal
-		yes: 1 havingsex/receivingvaginal
-	effects
-		stat: 0 climax 5
-		stat: 1 climax 5
-		message
-			- [t:Youorname] continue{s} pumping.
+	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
+	effect
+		<[[
+			top.Raise(Stat.Climax, 5)
+			bottom.Raise(Stat.Climax, 5)
+			message({"[t:Youorname] continue{s} pumping."})
+		]]>
 
 choice: continue_fucking_female
 	_n: Keep going
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 1 penis
-		yes: 0 vagina
-		yes: 1 havingsex/givingvaginal
-		yes: 0 havingsex/receivingvaginal
-		consentual
-	effects
-		stat: 0 climax 5
-		stat: 1 climax 5
-		message
-			- [t:Youorname] continue{s} riding.
+	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasVagina() and bottom.HasPenis() and top.HasSexFlag("receivingvaginal") and bottom.HasSexFlag("givingvaginal")
+	effect
+		<[[
+			top.Raise(Stat.Climax, 5)
+			bottom.Raise(Stat.Climax, 5)
+			message({"[t:Youorname] continue{s} riding."})
+		]]>
 
 choice: pull_out
 	_n: Pull out!
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 0 penis
-		yes: 1 vagina
-		yes: 0 havingsex/givingvaginal
-		yes: 1 havingsex/receivingvaginal
-	effects
-		stat: 0 climax 2
-		stat: 1 climax 4
-		remove: 0 givingvaginal
-		remove: 1 receivingvaginal
-		message
-			- [t:Youorname] quickly pull{s} out of [b:yourornames] [?:pussy], scraping [t:his] [?:cock] against [b:his] [?:clit].
-			- [t:Youorname] quickly pull{s} [t:his] [?:cock] out of [b:yourornames] [?:pussy], brushing against [b:his] [?:clit].
+	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
+	effect
+		<[[
+			top.Raise(Stat.Climax, 2)
+			bottom.Raise(Stat.Climax, 4)
+			top.RemoveSexFlag("givingvaginal")
+			bottom.RemoveSexFlag("receivingvaginal")
+			message({
+				"[t:Youorname] quickly pull{s} out of [b:yourornames] [?:pussy], scraping [t:his] [?:cock] against [b:his] [?:clit].",
+				"[t:Youorname] quickly pull{s} [t:his] [?:cock] out of [b:yourornames] [?:pussy], brushing against [b:his] [?:clit]."
+			})
+		]]>
 
 choice: pull_out_female
 	_n: Get off!
-	limitations
-		canreach: 0 crotch
-		canreach: 1 crotch
-		yes: 1 penis
-		yes: 0 vagina
-		yes: 1 havingsex/givingvaginal
-		yes: 0 havingsex/receivingvaginal
-	effects
-		stat: 1 climax 2
-		stat: 0 climax 4
-		remove: 1 givingvaginal
-		remove: 0 receivingvaginal
-		message
-			- [t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit].
+	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasVagina() and bottom.HasPenis() and top.HasSexFlag("receivingvaginal") and bottom.HasSexFlag("givingvaginal")
+	effect
+		<[[
+			top.Raise(Stat.Climax, 4)
+			bottom.Raise(Stat.Climax, 2)
+			top.RemoveSexFlag("receivingvaginal")
+			bottom.RemoveSexFlag("givingvaginal")
+			message({
+				"[t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit]."
+			})
+		]]>

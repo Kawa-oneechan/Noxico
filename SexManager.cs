@@ -43,7 +43,7 @@ namespace Noxico
 				if (choice.HasToken("meta"))
 					continue;
 				if (!(actor is Player) && choice.HasToken("ai_unlikely"))
-					if (Random.NextDouble() < 0.75)
+					if (Random.NextDouble() < 0.85)
 						continue;
 				if (LimitsOkay(actors, choice))
 					possibilities.Add(choice);
@@ -62,17 +62,50 @@ namespace Noxico
 		private static bool LimitsOkay(BoardChar[] actors, Token c)
 		{
 			var filter = c.GetToken("filter");
-			if (filter != null)
+			if (filter == null)
+				return true;
+			var env = Lua.Environment;
+			env.SetValue("top", actors[0]);
+			env.SetValue("bottom", actors[1]);
+			env.SetValue("consentual", !actors[1].Character.HasToken("helpless"));
+			env.SetValue("nonconsentual", actors[1].Character.HasToken("helpless"));
+			env.SetValue("masturbating", actors[0] == actors[1]);
+			env.SetValue("clothing", new Func<BoardChar, string, int, bool>((a, clothClass, s) =>
 			{
-				var env = Lua.Environment;
-				env.SetValue("top", actors[0]);
-				env.SetValue("bottom", actors[1]);
-				env.SetValue("consentual", !actors[1].Character.HasToken("helpless"));
-				env.SetValue("nonconsentual", actors[1].Character.HasToken("helpless"));
-				env.SetValue("masturbating", actors[0] == actors[1]);
-				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
-			}
-
+				var t = a.Character;
+				InventoryItem cloth = null;
+				var haveSomething = false;
+				var slots = clothClass == "top" ? new[] { "cloak", "jacket", "shirt", "undershirt" } : clothClass == "bottom" ? new[] { "pants", "underpants" } : null;
+				if (slots == null)
+				{
+					cloth = t.GetEquippedItemBySlot(clothClass);
+					if (cloth != null)
+						haveSomething = true;
+				}
+				else
+				{
+					foreach (var slot in slots)
+					{
+						var newCloth = t.GetEquippedItemBySlot(slot);
+						if (newCloth != null)
+						{
+							cloth = newCloth;
+							haveSomething = true;
+							break;
+						}
+					}
+					if (!haveSomething)
+						return false;
+				}
+				if (haveSomething)
+				{
+					memory[s] = cloth.ToString(null, false, false);
+					return true;
+				}
+				return false;
+			}));
+			return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			/*
 			var limitations = c.GetToken("limitations");
 			if (limitations == null || limitations.Tokens.Count == 0)
 				return true; //assume so
@@ -190,6 +223,7 @@ namespace Noxico
 			}
 
 			return true;
+			*/
 		}
 
 		/// <summary>
@@ -227,33 +261,61 @@ namespace Noxico
 
 		public static void Apply(Token result, BoardChar actor, BoardChar target, Action<string> writer)
 		{
-			if (result.HasToken("effect"))
-			{
-				var f = result.GetToken("effect");
-				var script = f.Tokens.Count == 1 ? f.Tokens[0].Text : f.Text;
-				var env = Lua.Environment;
-				env.SetValue("top", actor);
-				env.SetValue("bottom", target);
-				env.SetValue("consentual", !target.Character.HasToken("helpless"));
-				env.SetValue("nonconsentual", target.Character.HasToken("helpless"));
-				env.SetValue("masturbating", actor == target);
-				env.SetValue("message", new Action<object, Color>((x, y) =>
-					{
-						if (x is Neo.IronLua.LuaTable)
-							x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
-						while (x is object[])
-						{
-							var options = (object[])x;
-							x = options[Random.Next(options.Length)];
-							if (x is Neo.IronLua.LuaTable)
-								x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
-						}
-						NoxicoGame.AddMessage(x.ToString().Viewpoint(actor.Character, target.Character), y);
-					}));
-				env.DoChunk(script, "lol.lua");
+			if (!result.HasToken("effect"))
 				return;
-			}
-
+			var f = result.GetToken("effect");
+			var script = f.Tokens.Count == 1 ? f.Tokens[0].Text : f.Text;
+			var env = Lua.Environment;
+			env.SetValue("top", actor);
+			env.SetValue("bottom", target);
+			env.SetValue("consentual", !target.Character.HasToken("helpless"));
+			env.SetValue("nonconsentual", target.Character.HasToken("helpless"));
+			env.SetValue("masturbating", actor == target);
+			env.SetValue("message", new Action<object, Color>((x, y) =>
+			{
+				if (x is Neo.IronLua.LuaTable)
+					x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+				while (x is object[])
+				{
+					var options = (object[])x;
+					x = options[Random.Next(options.Length)];
+					if (x is Neo.IronLua.LuaTable)
+						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+				}
+				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor.Character, target.Character), y);
+			}));
+			env.SetValue("stop", new Action(() =>
+			{ 
+				actor.Character.RemoveAll("havingsex");
+				target.Character.RemoveAll("havingsex");
+			}));
+			env.SetValue("roll", new Func<object, object, bool>((x, y) =>
+			{
+				float a, b;
+				if (!float.TryParse(x.ToString(), out a))
+				{
+					Stat stat;
+					if (x is Stat)
+						stat = (Stat)x;
+					if (Enum.TryParse<Stat>(x.ToString(), true, out stat))
+						a = actor.Character.GetStat(stat);
+					else
+						a = actor.Character.GetSkillLevel(x.ToString());
+				}
+				if (!float.TryParse(y.ToString(), out b))
+				{
+					Stat stat;
+					if (y is Stat)
+						stat = (Stat)y;
+					if (Enum.TryParse<Stat>(y.ToString(), true, out stat))
+						b = target.Character.GetStat(stat);
+					else
+						b = target.Character.GetSkillLevel(y.ToString());
+				}
+				return (a >= b);
+			}));
+			env.DoChunk(script, "lol.lua");
+			/*
 			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
 			if (effects == null || effects.Tokens.Count == 0)
 				return;
@@ -420,6 +482,7 @@ namespace Noxico
 					Program.WriteLine("** Unknown sex effect {0}.", effect.Name);
 				}
 			}
+			*/
 		}
 
 		private static string ApplyMemory(string text)
@@ -444,6 +507,14 @@ namespace Noxico
 		{
 			return Character.Path("havingsex/restraining") != null;
 		}
+		public bool HasPenis()
+		{
+			return Character.HasPenis();
+		}
+		public bool HasVagina()
+		{
+			return Character.HasVagina();
+		}
 		public bool HasNipples()
 		{
 			foreach (var breastRow in Character.Tokens.Where(t => t.Name == "breastrow"))
@@ -451,9 +522,22 @@ namespace Noxico
 					return true;
 			return false;
 		}
+		public bool HasBreasts()
+		{
+			var tits = Character.GetBreastSizes();
+			if (tits.Length == 0)
+				return false;
+			if (tits.Average() < 0.2)
+				return false;
+			return true;
+		}
 		public bool CanReachBreasts()
 		{
 			return Character.CanReachBreasts();
+		}
+		public bool CanReachCrotch()
+		{
+			return Character.CanReachCrotch();
 		}
 		public float Raise(Stat stat, float by)
 		{
@@ -463,12 +547,85 @@ namespace Noxico
 		{
 			return Character.Path(pathSpec);
 		}
+		public Token AddToken(string name, object value)
+		{
+			var t = new Token(name);
+			if (value != null)
+			{
+				if (value is double || value is int)
+					t.Value = (float)value;
+				else
+					t.Text = value.ToString();
+			}
+			Character.AddToken(t);
+			return t;
+		}
+		public bool HasToken(string name)
+		{
+			return Character.HasToken(name);
+		}
+		public Token AddSexFlag(string name)
+		{
+			var havingSex = Character.Path("havingsex");
+			return havingSex.AddToken(name);
+		}
+		public Token RemoveSexFlag(string name)
+		{
+			var havingSex = Character.Path("havingsex");
+			return havingSex.RemoveToken(name);
+		}
+		public bool HasSexFlag(string name)
+		{
+			return Character.Path("havingsex/" + name) != null;
+		}
+		public bool Disrobe(string clothClass, bool tear)
+		{
+			var t = Character;
+			InventoryItem cloth = null;
+			var slots = clothClass == "top" ? new[] { "cloak", "jacket", "shirt", "undershirt" } : clothClass == "bottom" ? new[] { "pants", "underpants" } : null;
+			if (slots == null)
+			{
+				cloth = t.GetEquippedItemBySlot(clothClass);
+			}
+			else
+			{
+				foreach (var slot in slots)
+				{
+					cloth = t.GetEquippedItemBySlot(slot);
+					if (cloth != null)
+						break;
+				}
+			}
 
+			if (cloth != null)
+			{
+				if (tear)
+				{
+					InventoryItem.TearApart(cloth, t.GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
+					return true;
+				}
+				else
+				{
+					return cloth.Unequip(t, cloth.tempToken);
+				}
+			}
+			return false;
+		}
 		public bool Fertilize()
 		{
 			if (!EnsureSexPartner())
 				return false;
 			return Character.Fertilize(sexPartner.Character);
+		}
+		public bool TakeVirginity()
+		{
+			var vagina = Character.Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
+			if (vagina != null)
+			{
+				vagina.RemoveToken("virgin");
+				return true;
+			}
+			return false;
 		}
 
 		public bool EnsureSexPartner()
