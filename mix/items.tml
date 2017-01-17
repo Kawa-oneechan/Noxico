@@ -2315,60 +2315,104 @@ item: tentacle_potion
 	transformer
 	script
 		<[[
-			--[[
-			Consume();
-			var ret = "";
-			if (user.HasToken("penis"))
-			{
-				var result = 0;
-				var dicks = 0;
-				for (var i = 0; i < user.Count(); i++)
-				{
-					if (user.Item(i).Name == "penis")
-					{
-						dicks++;
-						var thisDick = user.Item(i);
-						if (thisDick.Text == "tentacle")
-						{
-							thisDick.GetToken("length").Value += 3 + Random.Next(5);
-							result = 1;
-						}
+			-- Consume()
+			local ret = ""
+			if user.HasToken("penis") then
+				local totalDicks = 0
+				local transformations = 0
+				local lengthenings = 0
+				for i = 0, user.Count() - 1 do
+					if user.Item(i).Name == "penis" then
+						totalDicks = totalDicks + 1
+					end
+				end
+
+				for i = 0, user.Count() - 1 do
+					if user.Item(i).Name == "penis" then
+						local thisDick = user.Item(i)
+						if thisDick.Text == "tentacle" then
+							local length = thisDick.GetToken("length")
+							length.Value = length.Value + 3 + Random.Next(5)
+							lengthenings = lengthenings + 1
+
+							-- Randomly break out
+							if lengthenings > 0 and Random.Flip() then
+								break
+							end
+						end
+					end
+				end
+				for i = 0, user.Count() - 1 do
+					if user.Item(i).Name == "penis" then
+						local thisDick = user.Item(i)
+						if thisDick.Text ~= "tentacle" then
+							thisDick.Text = "tentacle"
+							transformations = transformations + 1
+
+							-- Randomly break out
+							if transformations > 0 and Random.Flip() then
+								break
+							end
+						end
+					end
+				end
+				
+				if transformations > 0 then
+					if transformations == 1 then
+						if totalDicks == 1 then
+							ret = "[Yourornames] [?:cock] "
+						elseif totalDicks == tranformations then
+							ret = "[Yourornames] [?:cocks] "
+						elseif transformations == 1 then
+							ret = "One of [yourornames] [?:cocks] "
 						else
-						{
-							thisDick.Text = "tentacle";
-							result = result == 1 ? 3 : 2;
-						}
-					}
-				}
-				if (result == 1)
-				{
-					if (dicks == 1)
-						ret += "Your tentacle dick has grown longer!";
+							ret = "Some of [yourornames] [?:cocks] "
+							-- ret = ret .. "(" .. transformations .. " of " .. totalDicks .. ") "
+						end
+						ret = ret .. "has turned into a wriggly tentacle"
 					else
-						ret += "Your tentacle dicks have grown longer!";
-				}
-				else if (result == 2)
-				{
-					if (dicks == 1)
-						ret += "Your dick has turned into a flexible tentacle!";
+						ret = "[Yourornames] [?:cocks] have turned into wriggly tentacles"
+					end
+				end
+
+				if lengthenings > 0 then
+					if transformations > 0 then
+						ret = ret .. " and "
+						if lengthenings == transformations then
+							ret = ret .. ""
+						elseif lenghtenings < totalDicks then
+							if lengthenings == 1 then
+								ret = ret .. "one "
+							else
+								ret = ret .. "some "
+								-- ret = ret .. "(" .. lengthenings .. " of " .. totalDicks .. ")"
+							end
+						end
 					else
-						ret += "One of your dicks has turned into a flexible tentacle!";
-				}
-				else if (result == 3)
-				{
-					ret += "Your dicks have grown longer and became tentacles!";
-				}
-			}
+						if totalDicks == 1 then
+							ret = "[Yourornames] [?:cock] "
+						elseif totalDicks == lengthenings then
+							ret = "[Yourornames] [?:cocks] "
+						else
+							ret = "One of [yourornames] [?:cocks] "
+						end
+					end
+					if lengthenings == 1 then
+						ret = ret .. "has "
+					else
+						ret = ret .. "have "
+					end
+					ret = ret .. "grown longer"
+				end
+				ret = ret .. "!"
 			else
-			{
-				var penis = user.AddToken("penis").Text = "tentacle";
-				penis.AddToken("thickness", 2 + Random.Next(2));
-				penis.AddToken("length", 15 + Random.Next(4));
-				ret = "You've grown a wiggly tentacle dick!";
-			}
-			print(ret);
-			Identify();
-			]]--
+				local penis = user.AddToken("penis", "tentacle")
+				penis.AddToken("thickness", 2 + Random.Next(2), nil)
+				penis.AddToken("length", 15 + Random.Next(4), nil)
+				ret = "[Youorname] [has] grown a wriggly tentacle dick!"
+			end
+			print(ret)
+			Identify()
 		]]>
 
 item: cock_potion
@@ -2483,7 +2527,7 @@ item: corrupted_cock_potion
 		]]>
 
 item: neutralizer_potion
-	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label. It removes your genitalia. If it were a cream you might've be able to choose which."
+	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label. It removes your genitalia. If it were a cream you might've been able to choose which."
 	unknown: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
 	ascii
 		char: 0x180
@@ -2586,7 +2630,9 @@ item: chaotic_regen_ring
 			user.Heal(5)
 			if Random.NextDouble() > 0.3 then
 				user.Mutate(1, 30, Mutations.Random)
-				message("OH SHIT!")
+				-- if not identified then
+				-- message({"Oh [?:swear] -- so that's what a tainted regeneration ring does!"}, Color.Red)
+				-- end
 			end
 			Identify()
 		]]>
