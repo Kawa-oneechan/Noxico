@@ -138,7 +138,7 @@ lootset
 	target: npc
 	type: clothing
 	filter
-		gender: female
+		gender: !male
 	oneof
 		$color: 1
 		shirt
@@ -152,7 +152,7 @@ lootset
 	target: npc
 	type: clothing
 	filter
-		gender: female
+		gender: !male
 	oneof
 		elegant_dress
 		sundress
@@ -161,7 +161,7 @@ lootset
 	target: npc
 	type: clothing
 	filter
-		gender: female
+		gender: !male
 	oneof
 		girls_uniform_top
 	oneof
@@ -192,6 +192,14 @@ lootset
 -- #endregion
 
 -- #region Underwear
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		culture: felin
+	-- Nothing! Felin don't do underwear.
+
 lootset
 	target: npc
 	type: underwear

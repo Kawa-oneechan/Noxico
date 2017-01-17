@@ -636,14 +636,14 @@ namespace Noxico
 			env.SetValue("thisItem", this);
 			env.SetValue("thisToken", item);
 			env.SetValue("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
-			env.SetValue("print", new Action<string>(x =>
+			env.SetValue("print", new Action<string, bool>((x, y) =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
 				{
 					paused = false;
 				};
-				MessageBox.Notice(x, true);
+				MessageBox.Notice((y ? x : x.Viewpoint(character)), true);
 				while (paused)
 				{
 					NoxicoGame.HostForm.Noxico.Update();
