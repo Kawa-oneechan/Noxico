@@ -41,15 +41,19 @@ choice: walk_away
 	filter: (not top.Restrained()) and (not top.HasSexFlag("receivingvaginal")) and (not top.HasSexFlag("receivinganal"))
 	effect
 		<[[
-			message({
-				"[t:Youorname] let{s} go of [b:youorname] and get{s} up.",
-				"[t:Youorname] release{s} [b:youorname] and get{s} up."
-			})
+			if not masturbating then
+				message({
+					"[t:Youorname] let{s} go of [b:youorname] and get{s} up.",
+					"[t:Youorname] release{s} [b:youorname] and get{s} up."
+				})
+			else
+				message({"[t:Youorname] sigh{s} in bliss."}, Color.Orange)
+			end
 			stop()
 		]]>
 
 choice: cuddle
-	filter: consentual and (not top.Restrained()) and (not bottom.Restraining())
+	filter: consentual and (not top.Restrained()) and (not bottom.Restraining()) and (not masturbating)
 	effect
 		<[[
 			top.Raise(Stat.Climax, 1)
@@ -61,7 +65,7 @@ choice: cuddle
 		]]>
 
 choice: pin_down
-	filter: (not top.HasToken("snaketail")) and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
+	filter: (not masturbating) and (not top.HasToken("snaketail")) and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
 	effect
 		<[[
 			if bottom.Path("skin/type[=slime]") then
@@ -77,7 +81,7 @@ choice: pin_down
 		]]>
 
 choice: wrap_up
-	filter: top.HasToken("snaketail") and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
+	filter: (not masturbating) and top.HasToken("snaketail") and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
 	effect
 		<[[
 			if bottom.Path("skin/type[=slime]") then
@@ -130,7 +134,7 @@ choice: struggle
 		]]>
 
 choice: kiss
-	filter: consentual
+	filter: consentual and (not masturbating)
 	effect
 		<[[
 			top.Raise(Stat.Climax, 2)
@@ -139,7 +143,7 @@ choice: kiss
 		]]>
 
 choice: french_kiss
-	filter: consentual
+	filter: consentual and (not masturbating)
 	effect
 		<[[
 			top.Raise(Stat.Climax, 3)
@@ -153,7 +157,11 @@ choice: fondle_breasts_covered
 	effect
 		<[[
 			bottom.Raise(Stat.Stimulation, 2)
-			message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts] through [b:his] [0]."})
+			if not masturbating then
+				message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts] through [b:his] [0]."})
+			else
+				message({"[t:Youorname] rub{s} [b:his] [b:breastsize] [?:breasts] through [b:his] [0]."})
+			end
 		]]>
 
 choice: fondle_breasts
@@ -162,7 +170,11 @@ choice: fondle_breasts
 	effect
 		<[[
 			bottom.Raise(Stat.Stimulation, 4)
-			message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts]."})
+			if not masturbating then
+				message({"[t:Youorname] rub{s} [b:yourornames] [b:breastsize] [?:breasts]."})
+			else
+				message({"[t:Youorname] rub{s} [b:his] [b:breastsize] [?:breasts]."})
+			end
 		]]>
 
 choice: fondle_nipples
@@ -172,7 +184,11 @@ choice: fondle_nipples
 		<[[
 			bottom.Raise(Stat.Stimulation, 6)
 			bottom.Raise(Stat.Climax, 2)
-			message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
+			if not masturbating then
+				message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
+			else
+				message({"[t:Youorname] rub{s} [b:his] [b:nipplesize] [?:nipples]."})
+			end
 		]]>
 --	effect: bottom.Raise(Stat.Stimulation, 6); bottom.Raise(Stat.Climax, 2); message({"[t:Youorname] rub{s} [b:yourornames] [b:nipplesize] [?:nipples]."})
 
@@ -184,7 +200,11 @@ choice: finger_pussy
 			bottom.Raise(Stat.Stimulation, 6)
 			bottom.Raise(Stat.Climax, 4)
 			top.AddSexFlag("fingeringvaginal")
-			message({"[t:Youorname] slip{s} a finger into [b:yourornames] [b:pussywetness] [?:pussy]."})
+			if not masturbating then
+				message({"[t:Youorname] slip{s} a finger into [b:yourornames] [b:pussywetness] [?:pussy]."})
+			else
+				message({"[t:Youorname] slip{s} a finger into [b:his] [b:pussywetness] [?:pussy]."})
+			end
 		]]>
 
 choice: continue_finger_pussy
@@ -194,7 +214,11 @@ choice: continue_finger_pussy
 		<[[
 			bottom.Raise(Stat.Stimulation, 10)
 			bottom.Raise(Stat.Climax, 4)
-			message({"[t:Youorname] continue{s} rubbing around inside [b:yourornames] [b:pussywetness] [?:pussy]."})
+			if not masturbating then
+				message({"[t:Youorname] continue{s} rubbing around inside [b:yourornames] [b:pussywetness] [?:pussy]."})
+			else
+				message({"[t:Youorname] continue{s} rubbing around inside [b:his] [b:pussywetness] [?:pussy]."})
+			end
 		]]>
 
 choice: stop_finger_pussy
@@ -203,12 +227,16 @@ choice: stop_finger_pussy
 	effect
 		<[[
 			top.RemoveSexFlag("fingeringvaginal")
-			message({"[t:Youorname] pull{s} [t:your] finger out of [b:yourornames] [?:pussy]."})
+			if not masturbating then
+				message({"[t:Youorname] pull{s} [t:your] finger out of [b:yourornames] [?:pussy]."})
+			else
+				message({"[t:Youorname] pull{s} [t:your] finger out of [b:his] [?:pussy]."})
+			end
 		]]>
 
 choice: stop_them_finger_pussy
 	_n: Stop [b:him] from fingering [t:your] pussy
-	filter: bottom.HasSexFlag("fingeringvaginal") and (not top.Restrained()) and top.HasToken("vagina")
+	filter: bottom.HasSexFlag("fingeringvaginal") and (not top.Restrained()) and top.HasToken("vagina") and (not masturbating)
 	effect
 		<[[
 			if roll(Stat.Strength, Stat.Strength) then
@@ -236,7 +264,7 @@ choice: take_off_top_own
 
 choice: take_off_top_theirs
 	_n: Take off [b:his] [1]
-	filter: clothing(bottom, "top", 1) and (not top.Restrained())
+	filter: clothing(bottom, "top", 1) and (not top.Restrained()) and (not masturbating)
 	effect
 		<[[
 			if bottom.Disrobe("top") then
@@ -260,7 +288,7 @@ choice: take_off_bottom_own
 
 choice: take_off_bottom_theirs
 	_n: Take off [b:his] [3]
-	filter: clothing(bottom, "bottom", 3) and (not top.Restrained())
+	filter: clothing(bottom, "bottom", 3) and (not top.Restrained()) and (not masturbating)
 	effect
 		<[[
 			if bottom.Disrobe("bottom") then
