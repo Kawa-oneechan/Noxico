@@ -239,8 +239,8 @@ namespace Noxico
 					}
 
 #if DEBUG
-					if (PointingAt is DroppedItem || PointingAt is BoardChar)
-						options["edit"] = "Edit";
+					//if (PointingAt is DroppedItem || PointingAt is BoardChar)
+					//	options["edit"] = "Edit";
                     if (PointingAt is BoardChar)
                         options["mutate"] = "Random mutate";
 #endif

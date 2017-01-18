@@ -806,7 +806,12 @@ namespace Noxico
 			}
 			if (EntitiesToAdd.Count > 0)
 			{
-				Entities.AddRange(EntitiesToAdd);
+				foreach (var entity in EntitiesToAdd)
+				{
+					entity.ParentBoard = this;
+					Entities.Add(entity);
+				}
+				//Entities.AddRange(EntitiesToAdd);
 				EntitiesToAdd.Clear();
 			}
 		}

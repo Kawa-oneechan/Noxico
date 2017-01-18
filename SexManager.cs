@@ -252,10 +252,18 @@ namespace Noxico
 			if (target.Character.HasToken("havingsex"))
 				throw new Exception(string.Format("Target ({0}) already having sex.", target.Character.ToString()));
 			*/
-			actor.RemoveAll("havingsex");
-			target.RemoveAll("havingsex");
-			actor.AddToken("havingsex", 0, target.ID);
-			target.AddToken("havingsex", 0, actor.ID);
+			if (actor != target)
+			{
+				actor.RemoveAll("havingsex");
+				target.RemoveAll("havingsex");
+				actor.AddToken("havingsex", 0, target.ID);
+				target.AddToken("havingsex", 0, actor.ID);
+			}
+			else
+			{
+				actor.RemoveAll("havingsex");
+				actor.AddToken("havingsex", 0, target.ID);
+			}
 		}
 
 		public static void Apply(Token result, Character actor, Character target, Action<string> writer)
@@ -618,9 +626,9 @@ namespace Noxico
 			}
 			if (sexPartner == null)
 			{
-				var s = this.BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.ID == havingSex.Text);
+				var s = this.BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.Character.ID == havingSex.Text);
 				if (s != null)
-					sexPartner = s.Character;
+					sexPartner = ((BoardChar)s).Character;
 			}
 			if (sexPartner == null || sexPartner.BoardChar.DistanceFrom(this.BoardChar) > 1)
 			{

@@ -349,9 +349,6 @@ namespace Noxico
 			if (!taker.HasToken("items"))
 				taker.Tokens.Add(new Noxico.Token() { Name = "items" });
 			taker.GetToken("items").Tokens.Add(Token);
-			//TODO: this is a workaround, not fixing the problem.  Occasionally ParentBoard = null when the player lays an egg, for unknown reasons.
-			if (ParentBoard != null)
-				ParentBoard.EntitiesToRemove.Add(this);
 			taker.CheckHasteSlow();
 		}
 
