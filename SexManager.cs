@@ -601,6 +601,10 @@ namespace Noxico
 			}
 			return false;
 		}
+		public IEnumerable<Token> GetPenises()
+		{
+			return GetAll("penis");
+		}
 
 		public bool EnsureSexPartner()
 		{
