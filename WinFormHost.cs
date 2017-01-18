@@ -767,6 +767,13 @@ namespace Noxico
 				NoxicoGame.KeyMap[Keys.A] = false;
 				NoxicoGame.ShowMessageLog();
 			}
+
+#if DEBUG
+			if (e.KeyCode == Keys.E && e.Control && NoxicoGame.Mode == UserMode.Walkabout)
+			{
+				(new Editor()).LoadBoard(Noxico.CurrentBoard);
+			}
+#endif
 		}
 
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)
