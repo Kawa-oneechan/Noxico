@@ -33,7 +33,10 @@ namespace Noxico
     {
         public Board ParentBoard { get; set; }
         public string ID { get; set; }
-        public int Glyph { get; set; }
+#if DEBUG
+		[System.ComponentModel.Editor(typeof(GlyphSelector), typeof(System.Drawing.Design.UITypeEditor))]
+#endif
+		public int Glyph { get; set; }
 		public Color ForegroundColor { get; set; }
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }

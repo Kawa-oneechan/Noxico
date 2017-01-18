@@ -42,7 +42,7 @@
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.Location = new System.Drawing.Point(0, 0);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(288, 21);
+			this.comboBox1.Size = new System.Drawing.Size(388, 21);
 			this.comboBox1.TabIndex = 0;
 			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
 			// 
@@ -54,7 +54,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(0, 21);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(288, 245);
+			this.tabControl1.Size = new System.Drawing.Size(388, 421);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// tabPage1
@@ -62,7 +62,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(280, 219);
+			this.tabPage1.Size = new System.Drawing.Size(380, 395);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "tabPage1";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -81,7 +81,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(288, 266);
+			this.ClientSize = new System.Drawing.Size(388, 442);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.comboBox1);
 			this.Name = "Editor";
