@@ -240,7 +240,7 @@ namespace Noxico
 
 #if DEBUG
 					if (PointingAt is DroppedItem || PointingAt is BoardChar)
-						options["edit"] = "Edit tokens";
+						options["edit"] = "Edit";
                     if (PointingAt is BoardChar)
                         options["mutate"] = "Random mutate";
 #endif
@@ -307,7 +307,7 @@ namespace Noxico
 
 								case "fuck":
 									if (PointingAt is BoardChar)
-										SexManager.Engage(player, (BoardChar)PointingAt);
+										SexManager.Engage(player.Character, ((BoardChar)PointingAt).Character);
 									break;
 
 								case "shoot":

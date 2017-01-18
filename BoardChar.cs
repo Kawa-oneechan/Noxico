@@ -450,7 +450,7 @@ namespace Noxico
 			CheckForTimedItems();
 			CheckForCriminalScum();
 			CheckForCopiers();
-			if (UpdateSex())
+			if (Character.UpdateSex())
 				return;
 
 			base.Update();
@@ -703,7 +703,7 @@ namespace Noxico
 					{
 						//WRONG KIND OF ATTACK! ABANDON SHIP!!
 						Character.AddToken("waitforplayer");
-						SexManager.Engage(this, bcTarget);
+						SexManager.Engage(this.Character, bcTarget.Character);
 						return;
 					}
 					if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))

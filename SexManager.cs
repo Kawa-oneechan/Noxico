@@ -31,7 +31,7 @@ namespace Noxico
 		/// <param name="actor">The participating actor</param>
 		/// <param name="target">The target of the participant's affection</param>
 		/// <returns>Possible actions by ID to pass to GetResult</returns>
-		public static Dictionary<object, string> GetPossibilities(BoardChar actor, BoardChar target)
+		public static Dictionary<object, string> GetPossibilities(Character actor, Character target)
 		{
 			memory = new string[10];
 			if (choices == null)
@@ -42,7 +42,7 @@ namespace Noxico
 			{
 				if (choice.HasToken("meta"))
 					continue;
-				if (!(actor is Player) && choice.HasToken("ai_unlikely"))
+				if (!(actor.BoardChar is Player) && choice.HasToken("ai_unlikely"))
 					if (Random.NextDouble() < 0.85)
 						continue;
 				if (LimitsOkay(actors, choice))
@@ -54,12 +54,12 @@ namespace Noxico
 			{
 				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.Text, i18n.Viewpoint(ApplyMemory(possibility.GetToken("_n").Text), actor.Character, target.Character));
+				result.Add(possibility.Text, i18n.Viewpoint(ApplyMemory(possibility.GetToken("_n").Text), actor, target));
 			}
 			return result;
 		}
 
-		private static bool LimitsOkay(BoardChar[] actors, Token c)
+		private static bool LimitsOkay(Character[] actors, Token c)
 		{
 			var filter = c.GetToken("filter");
 			if (filter == null)
@@ -67,18 +67,17 @@ namespace Noxico
 			var env = Lua.Environment;
 			env.SetValue("top", actors[0]);
 			env.SetValue("bottom", actors[1]);
-			env.SetValue("consentual", !actors[1].Character.HasToken("helpless"));
-			env.SetValue("nonconsentual", actors[1].Character.HasToken("helpless"));
+			env.SetValue("consentual", !actors[1].HasToken("helpless"));
+			env.SetValue("nonconsentual", actors[1].HasToken("helpless"));
 			env.SetValue("masturbating", actors[0] == actors[1]);
-			env.SetValue("clothing", new Func<BoardChar, string, int, bool>((a, clothClass, s) =>
+			env.SetValue("clothing", new Func<Character, string, int, bool>((a, clothClass, s) =>
 			{
-				var t = a.Character;
 				InventoryItem cloth = null;
 				var haveSomething = false;
 				var slots = clothClass == "top" ? new[] { "cloak", "jacket", "shirt", "undershirt" } : clothClass == "bottom" ? new[] { "pants", "underpants" } : null;
 				if (slots == null)
 				{
-					cloth = t.GetEquippedItemBySlot(clothClass);
+					cloth = a.GetEquippedItemBySlot(clothClass);
 					if (cloth != null)
 						haveSomething = true;
 				}
@@ -86,7 +85,7 @@ namespace Noxico
 				{
 					foreach (var slot in slots)
 					{
-						var newCloth = t.GetEquippedItemBySlot(slot);
+						var newCloth = a.GetEquippedItemBySlot(slot);
 						if (newCloth != null)
 						{
 							cloth = newCloth;
@@ -233,7 +232,7 @@ namespace Noxico
 		/// <param name="actor">The participating actor</param>
 		/// <param name="target">The target of the participant's affection</param>
 		/// <returns>A SexResult object encoding the results of the action</returns>
-		public static Token GetResult(string id, BoardChar actor, BoardChar target)
+		public static Token GetResult(string id, Character actor, Character target)
 		{
 			var actors = new[] { actor, target };
 			if (choices == null)
@@ -245,7 +244,7 @@ namespace Noxico
 			return choice;
 		}
 
-		public static void Engage(BoardChar actor, BoardChar target)
+		public static void Engage(Character actor, Character target)
 		{
 			/*
 			if (actor.Character.HasToken("havingsex"))
@@ -253,13 +252,13 @@ namespace Noxico
 			if (target.Character.HasToken("havingsex"))
 				throw new Exception(string.Format("Target ({0}) already having sex.", target.Character.ToString()));
 			*/
-			actor.Character.RemoveAll("havingsex");
-			target.Character.RemoveAll("havingsex");
-			actor.Character.AddToken("havingsex", 0, target.ID);
-			target.Character.AddToken("havingsex", 0, actor.ID);
+			actor.RemoveAll("havingsex");
+			target.RemoveAll("havingsex");
+			actor.AddToken("havingsex", 0, target.ID);
+			target.AddToken("havingsex", 0, actor.ID);
 		}
 
-		public static void Apply(Token result, BoardChar actor, BoardChar target, Action<string> writer)
+		public static void Apply(Token result, Character actor, Character target, Action<string> writer)
 		{
 			if (!result.HasToken("effect"))
 				return;
@@ -268,8 +267,8 @@ namespace Noxico
 			var env = Lua.Environment;
 			env.SetValue("top", actor);
 			env.SetValue("bottom", target);
-			env.SetValue("consentual", !target.Character.HasToken("helpless"));
-			env.SetValue("nonconsentual", target.Character.HasToken("helpless"));
+			env.SetValue("consentual", !target.HasToken("helpless"));
+			env.SetValue("nonconsentual", target.HasToken("helpless"));
 			env.SetValue("masturbating", actor == target);
 			env.SetValue("message", new Action<object, Color>((x, y) =>
 			{
@@ -282,12 +281,12 @@ namespace Noxico
 					if (x is Neo.IronLua.LuaTable)
 						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
 				}
-				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor.Character, target.Character), y);
+				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor, target), y);
 			}));
 			env.SetValue("stop", new Action(() =>
 			{ 
-				actor.Character.RemoveAll("havingsex");
-				target.Character.RemoveAll("havingsex");
+				actor.RemoveAll("havingsex");
+				target.RemoveAll("havingsex");
 			}));
 			env.SetValue("roll", new Func<object, object, bool>((x, y) =>
 			{
@@ -298,9 +297,9 @@ namespace Noxico
 					if (x is Stat)
 						stat = (Stat)x;
 					if (Enum.TryParse<Stat>(x.ToString(), true, out stat))
-						a = actor.Character.GetStat(stat);
+						a = actor.GetStat(stat);
 					else
-						a = actor.Character.GetSkillLevel(x.ToString());
+						a = actor.GetSkillLevel(x.ToString());
 				}
 				if (!float.TryParse(y.ToString(), out b))
 				{
@@ -308,9 +307,9 @@ namespace Noxico
 					if (y is Stat)
 						stat = (Stat)y;
 					if (Enum.TryParse<Stat>(y.ToString(), true, out stat))
-						b = target.Character.GetStat(stat);
+						b = target.GetStat(stat);
 					else
-						b = target.Character.GetSkillLevel(y.ToString());
+						b = target.GetSkillLevel(y.ToString());
 				}
 				return (a >= b);
 			}));
@@ -495,57 +494,37 @@ namespace Noxico
 		}
 	}
 
-	public partial class BoardChar
+	public partial class Character
 	{
-		private BoardChar sexPartner;
+		private Character sexPartner;
 
 		public bool Restrained()
 		{
-			return Character.Path("havingsex/restrained") != null;
+			return HasSexFlag("restrained");
 		}
 		public bool Restraining()
 		{
-			return Character.Path("havingsex/restraining") != null;
-		}
-		public bool HasPenis()
-		{
-			return Character.HasPenis();
-		}
-		public bool HasVagina()
-		{
-			return Character.HasVagina();
+			return HasSexFlag("restraining");
 		}
 		public bool HasNipples()
 		{
-			foreach (var breastRow in Character.Tokens.Where(t => t.Name == "breastrow"))
+			foreach (var breastRow in Tokens.Where(t => t.Name == "breastrow"))
 				if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
 					return true;
 			return false;
 		}
 		public bool HasBreasts()
 		{
-			var tits = Character.GetBreastSizes();
+			var tits = GetBreastSizes();
 			if (tits.Length == 0)
 				return false;
 			if (tits.Average() < 0.2)
 				return false;
 			return true;
 		}
-		public bool CanReachBreasts()
-		{
-			return Character.CanReachBreasts();
-		}
-		public bool CanReachCrotch()
-		{
-			return Character.CanReachCrotch();
-		}
 		public float Raise(Stat stat, float by)
 		{
-			return Character.ChangeStat(stat.ToString().ToLowerInvariant(), by);
-		}
-		public Token Path(string pathSpec)
-		{
-			return Character.Path(pathSpec);
+			return ChangeStat(stat.ToString().ToLowerInvariant(), by);
 		}
 		public Token AddToken(string name, object value)
 		{
@@ -557,41 +536,36 @@ namespace Noxico
 				else
 					t.Text = value.ToString();
 			}
-			Character.AddToken(t);
+			AddToken(t);
 			return t;
-		}
-		public bool HasToken(string name)
-		{
-			return Character.HasToken(name);
 		}
 		public Token AddSexFlag(string name)
 		{
-			var havingSex = Character.Path("havingsex");
+			var havingSex = GetToken("havingsex");
 			return havingSex.AddToken(name);
 		}
 		public Token RemoveSexFlag(string name)
 		{
-			var havingSex = Character.Path("havingsex");
+			var havingSex = GetToken("havingsex");
 			return havingSex.RemoveToken(name);
 		}
 		public bool HasSexFlag(string name)
 		{
-			return Character.Path("havingsex/" + name) != null;
+			return Path("havingsex/" + name) != null;
 		}
 		public bool Disrobe(string clothClass, bool tear)
 		{
-			var t = Character;
 			InventoryItem cloth = null;
 			var slots = clothClass == "top" ? new[] { "cloak", "jacket", "shirt", "undershirt" } : clothClass == "bottom" ? new[] { "pants", "underpants" } : null;
 			if (slots == null)
 			{
-				cloth = t.GetEquippedItemBySlot(clothClass);
+				cloth = GetEquippedItemBySlot(clothClass);
 			}
 			else
 			{
 				foreach (var slot in slots)
 				{
-					cloth = t.GetEquippedItemBySlot(slot);
+					cloth = GetEquippedItemBySlot(slot);
 					if (cloth != null)
 						break;
 				}
@@ -601,12 +575,12 @@ namespace Noxico
 			{
 				if (tear)
 				{
-					InventoryItem.TearApart(cloth, t.GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
+					InventoryItem.TearApart(cloth, GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
 					return true;
 				}
 				else
 				{
-					return cloth.Unequip(t, cloth.tempToken);
+					return cloth.Unequip(this, cloth.tempToken);
 				}
 			}
 			return false;
@@ -615,11 +589,11 @@ namespace Noxico
 		{
 			if (!EnsureSexPartner())
 				return false;
-			return Character.Fertilize(sexPartner.Character);
+			return Fertilize(sexPartner);
 		}
 		public bool TakeVirginity()
 		{
-			var vagina = Character.Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
+			var vagina = Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
 			if (vagina != null)
 			{
 				vagina.RemoveToken("virgin");
@@ -630,20 +604,24 @@ namespace Noxico
 
 		public bool EnsureSexPartner()
 		{
-			if (!this.Character.HasToken("havingsex"))
+			if (!this.HasToken("havingsex"))
 				return false;
-			var havingSex = this.Character.GetToken("havingsex");
+			var havingSex = this.GetToken("havingsex");
 			if (sexPartner != null && havingSex.Text != sexPartner.ID)
 			{
-				Program.WriteLine("SEX: {0} confuses {1} for {2}. What a slut.", this.ID, havingSex.Text, sexPartner.Character);
+				Program.WriteLine("SEX: {0} confuses {1} for {2}. What a slut.", this.ID, havingSex.Text, sexPartner);
 				sexPartner = null;
 			}
 			if (sexPartner == null)
-				sexPartner = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.ID == havingSex.Text);
-			if (sexPartner == null || sexPartner.DistanceFrom(this) > 1)
 			{
-				Program.WriteLine("SEX: {0} is supposed to be having sex with {1} but that character isn't here.", this.ID, sexPartner.Character.Name);
-				this.Character.RemoveToken("havingsex");
+				var s = this.BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.ID == havingSex.Text);
+				if (s != null)
+					sexPartner = s.Character;
+			}
+			if (sexPartner == null || sexPartner.BoardChar.DistanceFrom(this.BoardChar) > 1)
+			{
+				Program.WriteLine("SEX: {0} is supposed to be having sex with {1} but that character isn't here.", this.ID, sexPartner.Name);
+				this.RemoveToken("havingsex");
 			}
 			return true;
 		}
@@ -653,20 +631,20 @@ namespace Noxico
 			if (!EnsureSexPartner())
 				return false;
 
-			if (this.Character.GetStat(Stat.Climax) >= 100)
+			if (this.GetStat(Stat.Climax) >= 100)
 			{
 				var result = SexManager.GetResult("climax", this, sexPartner);
-				if (this.Character.HasItemEquipped("orgasm_denial_ring"))
+				if (this.HasItemEquipped("orgasm_denial_ring"))
 					result = SexManager.GetResult("orgasm_denial_ring", this, sexPartner);
 				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
-				this.Energy -= (int)result.GetToken("time").Value;
+				this.BoardChar.Energy -= (int)result.GetToken("time").Value;
 				return true;
 			}
 
 			var possibilities = SexManager.GetPossibilities(this, sexPartner);
-			if (this is Player)
+			if (this.BoardChar is Player)
 			{
-				ActionList.Show(string.Empty, this.XPosition, this.YPosition, possibilities,
+				ActionList.Show(string.Empty, this.BoardChar.XPosition, this.BoardChar.YPosition, possibilities,
 					() =>
 					{
 						var action = ActionList.Answer as string;
@@ -674,7 +652,7 @@ namespace Noxico
 							action = "wait";
 						var result = SexManager.GetResult(action, this, sexPartner);
 						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
-						this.Energy -= (int)result.GetToken("time").Value;
+						this.BoardChar.Energy -= (int)result.GetToken("time").Value;
 					}
 				);
 			}
@@ -684,7 +662,7 @@ namespace Noxico
 				var choice = Toolkit.PickOne(keys);
 				var result = SexManager.GetResult(choice, this, sexPartner);
 				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
-				this.Energy -= (int)result.GetToken("time").Value;
+				this.BoardChar.Energy -= (int)result.GetToken("time").Value;
 			}
 
 			return true;
