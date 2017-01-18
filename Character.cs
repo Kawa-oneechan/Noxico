@@ -2170,12 +2170,14 @@ namespace Noxico
 		{
 			get
 			{
+				if (BoardChar.ParentBoard == null)
+					return null;
 				//Assume that our spouse is on the same board.
 				foreach (var ship in GetToken("ships").Tokens)
 				{
 					if (ship.HasToken("spouse") || ship.HasToken("friend"))
 					{
-						var them = BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character.ID == ship.Name);
+						var them = BoardChar.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.Character != null && x.Character.ID == ship.Name);
 						if (them != null)
 							return them.Character;
 					}
