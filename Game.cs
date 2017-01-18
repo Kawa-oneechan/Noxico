@@ -422,6 +422,10 @@ namespace Noxico
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
 				Player.Character.CheckHasteSlow();
+
+				//this solves SO MANY things holy shit
+				if (Player.Character.BoardChar != Player)
+					Player.Character.BoardChar = Player;
 			}
 		}
 

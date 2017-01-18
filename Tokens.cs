@@ -18,7 +18,7 @@ namespace Noxico
 		/// </summary>
 #if DEBUG
 		//Doesn't work quite right yet.
-		//[System.ComponentModel.Editor(typeof(TokenEditor), typeof(System.Drawing.Design.UITypeEditor))]
+		[System.ComponentModel.Editor(typeof(TokenEditor), typeof(System.Drawing.Design.UITypeEditor))]
 #endif
 		public List<Token> Tokens { get; private set; }
 

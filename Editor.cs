@@ -146,6 +146,7 @@ namespace Noxico
 		{
 			carrier = new TokenCarrier();
 			textBox.Text = carrier.DumpTokens(Value, 0);
+			textBox.SelectionStart = textBox.SelectionLength = 0;
 		}
 
 		void TokenEditorForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -165,9 +166,15 @@ namespace Noxico
 				if (edSvc != null)
 				{
 					var editor = new TokenEditorForm();
-					editor.Value = (List<Token>)Convert.ChangeType(value, context.PropertyDescriptor.PropertyType);
+					var tokens = value as List<Token>;
+					editor.Value = tokens;
 					edSvc.ShowDialog(editor);
-					return editor.Value;
+					//return editor.Value;
+
+					tokens.Clear();
+					tokens.AddRange(editor.Value);
+
+					value = tokens;
 				}
 			}
 			return value;
