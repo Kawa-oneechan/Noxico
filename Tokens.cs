@@ -48,6 +48,11 @@ namespace Noxico
 			return t;
 		}
 
+		public IEnumerable<Token> GetAll(string name)
+		{
+			return Tokens.Where(t => t.Name == name);
+		}
+
 		/// <summary>
 		/// Adds a new child Token with the specified name, value, and text.
 		/// </summary>
