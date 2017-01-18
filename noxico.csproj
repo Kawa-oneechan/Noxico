@@ -115,9 +115,6 @@
     <Compile Include="Editor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editor.Designer.cs">
-      <DependentUpon>Editor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Entities.cs" />
     <Compile Include="ErrorForm.cs">
       <SubType>Form</SubType>
@@ -181,9 +178,6 @@
     <Compile Include="Vista.cs" />
     <Compile Include="WorldGen.cs" />
     <Compile Include="Board.cs" />
-    <EmbeddedResource Include="Editor.resx">
-      <DependentUpon>Editor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
