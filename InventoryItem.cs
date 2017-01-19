@@ -771,6 +771,7 @@ namespace Noxico
 		}
 
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
+		//TODO: make this a bool, return false if the item is too sturdy to tear.
 		public static void TearApart(InventoryItem equip, Token carriedItem)
 		{
 			var slot = "pants";
