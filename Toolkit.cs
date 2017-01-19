@@ -189,6 +189,8 @@ namespace Noxico
 					ret.Append(' ');
 				else
 				{
+					if (string.IsNullOrWhiteSpace(wingsToken.Text))
+						wingsToken.Text = "feather";
 					var wingTypes = new Dictionary<string, char>()
 					{
 						{ "bat", 'b' },

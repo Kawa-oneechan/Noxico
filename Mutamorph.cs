@@ -265,7 +265,7 @@ namespace Noxico
 				else if (tailNow == null && tailThen != null)
 				{
 					//Grow a tail
-					var description = "[view] grows a " + tailThen.Text + "-like tail";
+					var description = "[view] grow{s} a " + tailThen.Text + "-like tail";
 					var change = new Token("tail", tailThen.Text);
 					change.AddToken("$", description);
 					possibleChanges.Add(change);
@@ -345,6 +345,68 @@ namespace Noxico
 			#endregion
 
 			//TODO: Special lower bodies -- quads, taurs, snakes...
+			#region Legs
+			if (target.HasToken("legs") && !this.HasToken("legs"))
+			{
+				var change = new Token("_add", "legs");
+				var thenToken = target.Path("legs");
+				var changeKind = string.Empty;
+				if (thenToken.Text.StartsWith("oneof"))
+				{
+					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+					changeKind = Toolkit.PickOne(options);
+				}
+				else
+					changeKind = thenToken.Text;
+				change.AddToken("legs", changeKind);
+				foreach (var specialShit in new [] { "snaketail", "taur", "quadruped", "slimeblob" })
+					if (this.HasToken(specialShit))
+						change.AddToken("_remove", specialShit);
+				change.AddToken("$", "[view] grow{s} " + changeKind + " legs");
+				possibleChanges.Add(change);
+			}
+			else if (!target.HasToken("legs")) //&& this.HasToken("legs"))
+			{
+				var actuallyChanging = true;
+				var targetLegs = string.Empty;
+				var change = new Token("_remove", "legs");
+				foreach (var specialShit in new[] { "snaketail", "taur", "quadruped", "slimeblob" })
+				{
+					if (target.HasToken(specialShit))
+					{
+						targetLegs = specialShit;
+						break;
+					}
+				}
+				foreach (var specialShit in new[] { "snaketail", "taur", "quadruped", "slimeblob" })
+				{
+					if (this.HasToken(specialShit))
+					{
+						if (specialShit != targetLegs)
+						{
+							change.Text = specialShit;
+							//break;
+						}
+						else
+						{
+							actuallyChanging = false;
+						}
+					}
+				}
+				if (actuallyChanging)
+				{
+					change.AddToken("_add", targetLegs);
+					switch (targetLegs)
+					{
+						case "snaketail": change.AddToken("$", "[views] lower body turns into a long, coiling snake tail"); break;
+						case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
+						case "quad": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
+						case "slimeblob":	change.AddToken("$", "[views] entire lower body dissolves into a mass of goop"); break;
+					}
+				}
+				possibleChanges.Add(change);
+			}
+			#endregion
 
 			//TODO: Breastrows
 
@@ -499,7 +561,7 @@ namespace Noxico
 				}
 				else if (target.HasToken("femaleonly") || targetGender == Gender.Female)
 				{
-					//Shrink/remove dicks
+					//TODO: Shrink/remove dicks
 
 				}
 			}
@@ -616,7 +678,7 @@ namespace Noxico
 			var closestTerms = target.GetToken("terms");
 			if (myTerms.Tokens[0].Text != closestTerms.Tokens[0].Text)
 			{
-				for (var i = 0; i < myTerms.Tokens.Count; i++)
+				for (var i = 0; i < myTerms.Tokens.Count && i < closestTerms.Tokens.Count; i++)
 					myTerms.Tokens[i].Text = closestTerms.Tokens[i].Text;
 				UpdateTitle();
 			}

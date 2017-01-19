@@ -1608,6 +1608,7 @@ item: skimpy_dress
 		shirt
 		pants
 		reach
+		translucent
 	statbonus
 		sensitivity: 10
 		charisma: 10
@@ -1662,6 +1663,26 @@ item: latex_suit
 	colored
 	sexy
 
+item: latex_dress
+	_n: [color ]latex dress
+	description: "A knee-length dress made of skintight latex. Who cares about anachronisms, this thing's sexy!"
+	equipable
+		shirt
+		pants
+		reach
+	weight: medium
+	statbonus
+		charisma: 20
+		sensitivity: 15
+		cunning: 10
+	price: 100
+	ascii
+		char: 0x19c
+	clothing
+	bodysuit
+	colored
+	sexy
+
 item: stylish_cloak
 	_n: stylish [color ]cloak
 	description: "A dashing cloak, enchanted so that it billows out behind you even without any wind."
@@ -1701,6 +1722,7 @@ item: kinky_panties
 	equipable
 		female
 		underpants
+		reach
 	weight: feather
 	price: 40
 	ascii
@@ -1772,9 +1794,8 @@ item: catmorph
 		fore: lightsalmon
 	potion
 	transformer
-	script
+	dummu
 		<[[
-			--[[
 			//Text stolen from CoC's Whisker Fruit item, for now.
 
 			//We want to buffer the output. Calling print() would result in several separate ones.
@@ -1864,7 +1885,6 @@ item: catmorph
 			//Grow up to two extra breast rows.
 
 			print(ret);
-			]]--
 		]]>
 
 item: dogmorph
@@ -1876,9 +1896,8 @@ item: dogmorph
 		fore: mistyrose
 	potion
 	transformer
-	script
+	dummy
 		<[[
-			--[[
 			//Text stolen from CoC's Canine Pepper item, for now.
 
 			var ret = "The pepper is strangely spicy but very tasty.";
@@ -1947,7 +1966,6 @@ item: dogmorph
 			//Grow up to two extra breast rows.
 
 			print(ret);
-			]]--
 		]]>
 
 -- Not to be confused for Foxite up top.
@@ -1960,9 +1978,8 @@ item: foxmorph
 		fore: orangered
 	potion
 	transformer
-	script
+	dummy
 		<[[
-			--[[
 			var ret = "You apply the fox morph potion.";
 
 			//Always boost cunning.
@@ -2027,7 +2044,6 @@ item: foxmorph
 			//Grow digitigrade legs.
 
 			print(ret);
-			]]--
 		]]>
 
 item: bunnymorph
@@ -2039,9 +2055,8 @@ item: bunnymorph
 		fore: skyblue
 	potion
 	transformer
-	script
+	dummy
 		<[[
-			--[[
 			var ret = "You apply the bunny morph potion.";
 
 			//Always boost libido.
@@ -2100,7 +2115,6 @@ item: bunnymorph
 			}
 
 			print(ret);
-			]]--
 		]]>
 -- #endregion
 
@@ -2192,9 +2206,8 @@ item: demonite_potion
 	potion
 	disabled
 	transformer
-	script
+	dummy
 		<[[
-			--[[
 			Consume();
 			var score = 0;
 			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
@@ -2302,7 +2315,6 @@ item: demonite_potion
 
 				Identify();
 			}
-			]]--
 		]]>
 
 item: tentacle_potion
@@ -2576,11 +2588,8 @@ item: neutralizer_potion
 	randomized: 16
 	potion
 	transformer
-	script
+	dummy
 		<[[
-			Consume();
-
-			--[[
 			Consume();
 			var ret = "";
 			if (Random.Flip())
@@ -2642,7 +2651,6 @@ item: neutralizer_potion
 			}
 			print(ret);
 			Identify();
-			]]--
 		]]>
 
 item: regen_ring

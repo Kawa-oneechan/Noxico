@@ -241,7 +241,7 @@ choice: stop_them_finger_pussy
 		<[[
 			if roll(Stat.Strength, Stat.Strength) then
 				bottom.RemoveSexFlag("fingeringvaginal")
-				message({"[t:You] manage to get [b:his] [b:hand] away, and [b:his] finger out of [t:your] [t:pussywetness] [?:pussy].", Color.Green})
+				message({"[t:You] manage to get [b:his] [b:hand] away, and [b:his] finger out of [t:your] [t:pussywetness] [?:pussy]."}, Color.Green)
 			else
 				message({
 					"[t:You] can't budge it.",
