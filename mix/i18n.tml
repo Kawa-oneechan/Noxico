@@ -416,6 +416,7 @@ Would you like an infodump on the way out?
 	tailtype_dog: wagging canine
 	tailtype_cat: feline
 	tailtype_dragon: spined reptilian
+	tailtype_horse: equine
 -- #endregion
 -- #region Face types
 	facetype_normal: human
@@ -423,11 +424,13 @@ Would you like an infodump on the way out?
 	facetype_cow: bovine
 	facetype_reptile: reptilian
 	facetype_fox: vulpine
+	facetype_horse: equine
 -- #endregion
 -- #region Teeth types
 	teethtype_fangs: fangs
 	teethtype_sharp: sharp teeth
 	teethtype_osmond: fearsome teeth
+	teethtype_herbivore: herbivore
 -- #endregion
 -- #region Tongue types
 	tonguetype_forked: forked tongue
