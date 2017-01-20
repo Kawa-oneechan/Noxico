@@ -211,8 +211,8 @@ item: oddnip
 	transformer
 	script
 		<[[
-			-- Consume()
-			message(user.Morph("mlp_littlepony"))
+			Consume()
+			message(user.Morph("felin"))
 			Identify()
 		]]>
 

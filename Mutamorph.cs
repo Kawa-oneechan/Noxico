@@ -412,10 +412,12 @@ namespace Noxico
 			if (target.HasToken("legs"))
 			{
 				var multiLegs = new[] { "taur", "quadruped" };
+				var targetHasMultiLegs = false;
 				foreach (var multiLeg in multiLegs)
 				{
 					if (target.HasToken(multiLeg) && !this.HasToken(multiLeg))
 					{
+						targetHasMultiLegs = true;
 						var change = new Token("_add", multiLeg);
 						foreach (var m in multiLegs)
 						{
@@ -429,6 +431,23 @@ namespace Noxico
 						}
 						possibleChanges.Add(change);
 						break;
+					}
+				}
+				if (!targetHasMultiLegs)
+				{
+					foreach (var m in multiLegs)
+					{
+						if (this.HasToken(m))
+						{
+							var change = new Token("_remove", m);
+							if (target.HasToken("slimeblob"))
+								change.AddToken("$", "[views] entire lower body dissolves into a mass of goop.");
+							if (target.HasToken("snaketail"))
+								change.AddToken("$", "[views] lower body turns into a long, coiling snake tail.");
+							else
+								change.AddToken("$", "[views] lower body reconfigures into a bipedal stance.");
+							possibleChanges.Add(change);
+						}
 					}
 				}
 			}
@@ -620,7 +639,7 @@ namespace Noxico
 			}
 			if (changes.Count == 0)
 			{
-				feedback = string.Empty;
+				feedback = "Nothing happens.";
 				return;
 			};
 
