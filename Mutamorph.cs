@@ -94,6 +94,8 @@ namespace Noxico
 					continue;
 				var now = this.Path(trivialKind).Text;
 				var thenToken = target.Path(trivialKind);
+				if (string.IsNullOrWhiteSpace(thenToken.Text))
+					continue;
 				var changeKind = string.Empty;
 				if (thenToken.Text.StartsWith("oneof"))
 				{
@@ -359,7 +361,7 @@ namespace Noxico
 				else
 					changeKind = thenToken.Text;
 				change.AddToken("legs", changeKind);
-				foreach (var specialShit in new [] { "snaketail", "taur", "quadruped", "slimeblob" })
+				foreach (var specialShit in new [] { "snaketail", "slimeblob" })
 					if (this.HasToken(specialShit))
 						change.AddToken("_remove", specialShit);
 				change.AddToken("$", "[view] grow{s} " + changeKind + " legs");
@@ -370,7 +372,7 @@ namespace Noxico
 				var actuallyChanging = true;
 				var targetLegs = string.Empty;
 				var change = new Token("_remove", "legs");
-				foreach (var specialShit in new[] { "snaketail", "taur", "quadruped", "slimeblob" })
+				foreach (var specialShit in new[] { "snaketail", "slimeblob" })
 				{
 					if (target.HasToken(specialShit))
 					{
@@ -378,7 +380,7 @@ namespace Noxico
 						break;
 					}
 				}
-				foreach (var specialShit in new[] { "snaketail", "taur", "quadruped", "slimeblob" })
+				foreach (var specialShit in new[] { "snaketail", "slimeblob" })
 				{
 					if (this.HasToken(specialShit))
 					{
@@ -399,12 +401,36 @@ namespace Noxico
 					switch (targetLegs)
 					{
 						case "snaketail": change.AddToken("$", "[views] lower body turns into a long, coiling snake tail"); break;
-						case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
-						case "quad": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
+						//case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
+						//case "quad": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
 						case "slimeblob":	change.AddToken("$", "[views] entire lower body dissolves into a mass of goop"); break;
 					}
 				}
 				possibleChanges.Add(change);
+			}
+
+			if (target.HasToken("legs"))
+			{
+				var multiLegs = new[] { "taur", "quadruped" };
+				foreach (var multiLeg in multiLegs)
+				{
+					if (target.HasToken(multiLeg) && !this.HasToken(multiLeg))
+					{
+						var change = new Token("_add", multiLeg);
+						foreach (var m in multiLegs)
+						{
+							if (m != multiLeg)
+								change.AddToken("_remove", m);
+						}
+						switch (multiLeg)
+						{
+							case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
+							case "quadruped": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
+						}
+						possibleChanges.Add(change);
+						break;
+					}
+				}
 			}
 			#endregion
 
@@ -466,7 +492,7 @@ namespace Noxico
 							var growOrShrink = 0;
 							var thickOrThin = 0;
 							var now = sourceDick.GetToken("length").Value;
-							if (targetLength.Text.StartsWith("roll"))
+							if (!string.IsNullOrWhiteSpace(targetLength.Text) && targetLength.Text.StartsWith("roll"))
 							{
 								var xDyPz = targetLength.Text;
 								var range = 0;
