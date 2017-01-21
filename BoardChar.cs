@@ -1084,7 +1084,7 @@ namespace Noxico
 			var newChar = new BoardChar()
 			{
 				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
-				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
+				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking,
 			};
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 #if DEBUG
 using Keys = System.Windows.Forms.Keys;
 #endif
@@ -41,7 +40,7 @@ namespace Noxico
         public Color BackgroundColor { get; set; }
         public int XPosition { get; set; }
         public int YPosition { get; set; }
-        public Direction Flow { get; set; }
+		///<summary>For Entities, indicates whether a BoardChar can walk into this Entity's Tile. For BoardChars, indicates whether other BoardChars can switch positions into this Tile.</summary>
 		public bool Blocking { get; set; }
 		public bool Passive { get; set; }
 		public int Energy { get; set; }
@@ -88,7 +87,6 @@ namespace Noxico
 			Toolkit.PredictLocation(XPosition, YPosition, targetDirection, ref newX, ref newY);
 			XPosition = newX;
 			YPosition = newY;
-			Flow = targetDirection;
         }
 
 		public virtual object CanMove(Board board, int x, int y, SolidityCheck check = SolidityCheck.Walker)
@@ -137,7 +135,7 @@ namespace Noxico
 			ForegroundColor.SaveToFile(stream);
 			stream.Write((byte)XPosition);
 			stream.Write((byte)YPosition);
-			stream.Write((byte)Flow);
+			stream.Write((byte)0); //was Flow
 			stream.Write(Blocking);
 		}
 
@@ -151,7 +149,7 @@ namespace Noxico
 			newEntity.ForegroundColor = Toolkit.LoadColorFromFile(stream);
 			newEntity.XPosition = stream.ReadByte();
 			newEntity.YPosition = stream.ReadByte();
-			newEntity.Flow = (Direction)stream.ReadByte();
+			stream.ReadByte(); //was Flow
 			newEntity.Blocking = stream.ReadBoolean();
 			//Program.WriteLine("   * Loaded {0} {1}...", newEntity.GetType(), newEntity.ID ?? "????"); 
 			return newEntity;

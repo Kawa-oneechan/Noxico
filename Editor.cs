@@ -51,6 +51,7 @@ namespace Noxico
 			prop.Dock = DockStyle.Fill;
 			prop.SelectedObject = o;
 			prop.ToolbarVisible = false;
+			prop.HelpVisible = false;
 			prop.PropertySort = PropertySort.CategorizedAlphabetical;
 			page.Controls.Add(prop);
 			tabs.TabPages.Add(page);
@@ -63,26 +64,29 @@ namespace Noxico
 		}
 	}
 
-	public class GlyphSelectorForm : Form
+	public class GlyphSelectorControl : UserControl
 	{
-		private Bitmap sheet;
 		private Brush highlight;
 		public int Value { get; set; }
+		public IWindowsFormsEditorService EdSvc { get; set; }
 
-		public GlyphSelectorForm()
+		public GlyphSelectorControl()
 		{
-			sheet = Mix.GetBitmap("fonts\\8x8-bold.png");
+			GlyphSelector.Init();
 			highlight = new SolidBrush(Color.FromArgb(128, 64, 64, 255));
 			this.ClientSize = new Size(512, 512);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			Paint += new PaintEventHandler(GlyphSelectorForm_Paint);
 			MouseUp += new MouseEventHandler(GlyphSelectorForm_MouseUp);
 		}
 
 		void GlyphSelectorForm_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.DrawImage(sheet, 0, 0, 512, 512);
-			e.Graphics.FillRectangle(highlight, ((Value - 32) % 0x40) * 16, ((Value - 32) / 0x1F) * 16, 16, 16);
+			e.Graphics.DrawImage(GlyphSelector.Sheet, 0, 0, 512, 512);
+			var val = Value - 32;
+			e.Graphics.FillRectangle(highlight, (val % 32) * 16, (val / 32) * 16, 16, 16);
+			e.Graphics.FillRectangle(highlight, 0, (val / 32) * 16, 512, 16);
+			e.Graphics.FillRectangle(highlight, (val % 32) * 16, 0, 16, 512);
 		}
 
 		void GlyphSelectorForm_MouseUp(object sender, MouseEventArgs e)
@@ -92,12 +96,19 @@ namespace Noxico
 			if (x < 0 || y < 0 || x >= 32 || y >= 32)
 				return;
 			Value = ((y * 32) + x) + 32;
-			Close();
+			EdSvc.CloseDropDown(); //Close();
 		}
 	}
 
 	public class GlyphSelector : UITypeEditor
 	{
+		public static Bitmap Sheet;
+		public static void Init()
+		{
+			if (Sheet == null)
+				Sheet = Mix.GetBitmap("fonts\\8x8-bold.png");
+		}
+
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
 		{
 			if (context != null && context.Instance != null && provider != null)
@@ -105,18 +116,34 @@ namespace Noxico
 				var edSvc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
 				if (edSvc != null)
 				{
-					var editor = new GlyphSelectorForm();
+					var editor = new GlyphSelectorControl();
 					editor.Value = (int)Convert.ChangeType(value, context.PropertyDescriptor.PropertyType);
-					edSvc.ShowDialog(editor);
+					editor.EdSvc = edSvc;
+					//edSvc.ShowDialog(editor);
+					edSvc.DropDownControl(editor);
 					return editor.Value;
 				}
 			}
 			return value;
 		}
 
+		public override void PaintValue(PaintValueEventArgs e)
+		{
+			Init();
+			var val = (int)e.Value - 32;
+			var dest = e.Bounds;
+			var src = new System.Drawing.Rectangle((val % 32) * 8, (val / 32) * 8, 8, 8);
+			e.Graphics.DrawImage(GlyphSelector.Sheet, dest, src, GraphicsUnit.Pixel);
+		}
+
+		public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+		{
+			return true;
+		}
+
 		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
 		{
-			return UITypeEditorEditStyle.Modal;
+			return UITypeEditorEditStyle.DropDown;
 		}
 	}
 

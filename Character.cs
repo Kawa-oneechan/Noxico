@@ -33,7 +33,6 @@ namespace Noxico
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
-		//public string Species { get; set; }
 		public string Title { get; set; }
 		public bool IsProperNamed { get; set; }
 		public string A { get; set; }

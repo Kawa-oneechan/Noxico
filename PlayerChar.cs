@@ -816,7 +816,7 @@ namespace Noxico
 			var newChar = new Player()
 			{
 				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
-				XPosition = e.XPosition, YPosition = e.YPosition, Flow = e.Flow, Blocking = e.Blocking,
+				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking,
 				Character = e.Character,
 			};
 			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
