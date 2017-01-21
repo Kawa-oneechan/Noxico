@@ -1,40 +1,119 @@
 -- TODO: variants for various degrees of climax and such.
+-- TODO: proper hierarchy
 
 choice: wait
 
--- Male variant
-choice: climax
-	meta
-	filter: top.HasPenis() and (not top.HasVagina())
-	effect
-		<[[
-			top.Raise(Stat.Climax, -100)
-			if top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
-				bottom.Fertilize()
-			elseif top.HasSexFlag("givingvaginal") then
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
-				bottom.Fertilize()
-			elseif top.HasSexFlag("givinganal") then
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
-			else
-				message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]."}, Color.Orange)
-			end
-		]]>
+-- All the actions where the TOP is MALE
+group: top.HasPenis() and (not top.HasVagina())
 
--- Female variant
-choice: climax
-	meta
-	filter: top.HasVagina() and (not top.HasPenis())
-	effect
-		<[[
-			top.Raise(Stat.Climax, -100)
-			if top.HasSexFlag("fingeringvaginal") then
-				message({"[t:Youorname] squirt{s} all over [b:yourornames] [b:hand]."}, Color.Orange)
-			else
-				message({"[t:Youorname] shiver{s} in the throes of orgasm."}, Color.Orange)
-			end
-		]]>
+	choice: climax
+		meta
+		effect
+			<[[
+				top.Raise(Stat.Climax, -100)
+				if top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
+					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
+					bottom.Fertilize()
+				elseif top.HasSexFlag("givingvaginal") then
+					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
+					bottom.Fertilize()
+				elseif top.HasSexFlag("givinganal") then
+					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
+				else
+					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]."}, Color.Orange)
+				end
+			]]>
+
+-- All the actions where the TOP is FEMALE
+group: top.HasVagina() and (not top.HasPenis())
+
+	choice: climax
+		meta
+		effect
+			<[[
+				top.Raise(Stat.Climax, -100)
+				if top.HasSexFlag("fingeringvaginal") then
+					message({"[t:Youorname] squirt{s} all over [b:yourornames] [b:hand]."}, Color.Orange)
+				else
+					message({"[t:Youorname] shiver{s} in the throes of orgasm."}, Color.Orange)
+				end
+			]]>
+
+group: consentual
+
+	choice: cuddle
+		filter: (not top.Restrained()) and (not bottom.Restraining()) and (not masturbating)
+		effect
+			<[[
+				top.Raise(Stat.Climax, 1)
+				bottom.Raise(Stat.Climax, 1)
+				message({
+					"[t:Youorname] cuddle{s} up to [b:youorname].",
+					"[t:Youorname] rub{s} [t:his] body against [b:youorname]."
+				})
+			]]>
+
+	choice: kiss
+		filter: not masturbating
+		effect
+			<[[
+				top.Raise(Stat.Climax, 2)
+				bottom.Raise(Stat.Climax, 2)
+				message({"~kissu~"})
+			]]>
+
+	choice: french_kiss
+		filter: not masturbating
+		effect
+			<[[
+				top.Raise(Stat.Climax, 3)
+				bottom.Raise(Stat.Climax, 3)
+				message({"~fkissu~"})
+			]]>
+
+	group: top.HasPenis() and bottom.HasVagina()
+	
+		choice: insert_cock_vaginal
+			_n: J-J-J-JAM IT IN!!
+			filter: top.CanReachCrotch() and bottom.CanReachCrotch() and (not top.HasSexFlag("givingvaginal")) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal"))
+			effect
+				<[[
+					top.AddSexFlag("givingvaginal")
+					bottom.AddSexFlag("receivingvaginal")
+					top.Raise(Stat.Climax, 10)
+					bottom.Raise(Stat.Climax, 10)
+					message({"[t:Youorname] push{es} [t:his] [t:cocktype] [?:cock] inside of [b:yourornames] [b:pussywetness] [?:pussy]."})
+					if bottom.TakeVirginity() then
+						message({"[b:Youorname] lost [b:his] virginity!"}, Color.Red)
+						-- Cause a single HP of damage?
+					end
+				]]>
+
+		choice: continue_fucking
+			_n: Keep going
+			filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
+			effect
+				<[[
+					top.Raise(Stat.Climax, 5)
+					bottom.Raise(Stat.Climax, 5)
+					message({"[t:Youorname] continue{s} pumping."})
+				]]>
+
+		choice: pull_out
+			_n: Pull out!
+			filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
+			effect
+				<[[
+					top.Raise(Stat.Climax, 2)
+					bottom.Raise(Stat.Climax, 4)
+					top.RemoveSexFlag("givingvaginal")
+					bottom.RemoveSexFlag("receivingvaginal")
+					message({
+						"[t:Youorname] quickly pull{s} out of [b:yourornames] [?:pussy], scraping [t:his] [?:cock] against [b:his] [?:clit].",
+						"[t:Youorname] quickly pull{s} [t:his] [?:cock] out of [b:yourornames] [?:pussy], brushing against [b:his] [?:clit]."
+					})
+				]]>
+
 
 choice: walk_away
 	ai_unlikely
@@ -52,17 +131,6 @@ choice: walk_away
 			stop()
 		]]>
 
-choice: cuddle
-	filter: consentual and (not top.Restrained()) and (not bottom.Restraining()) and (not masturbating)
-	effect
-		<[[
-			top.Raise(Stat.Climax, 1)
-			bottom.Raise(Stat.Climax, 1)
-			message({
-				"[t:Youorname] cuddle{s} up to [b:youorname].",
-				"[t:Youorname] rub{s} [t:his] body against [b:youorname]."
-			})
-		]]>
 
 choice: pin_down
 	filter: (not masturbating) and (not top.HasToken("snaketail")) and (not top.Restrained()) and (not top.Restraining()) and (not bottom.Restrained()) and (not bottom.Restraining())
@@ -131,24 +199,6 @@ choice: struggle
 					"[t:Youorname] struggle{s} against [b:yourornames] hold, but fail{s} to get free."
 				}, Color.Red)
 			end
-		]]>
-
-choice: kiss
-	filter: consentual and (not masturbating)
-	effect
-		<[[
-			top.Raise(Stat.Climax, 2)
-			bottom.Raise(Stat.Climax, 2)
-			message({"~kissu~"})
-		]]>
-
-choice: french_kiss
-	filter: consentual and (not masturbating)
-	effect
-		<[[
-			top.Raise(Stat.Climax, 3)
-			bottom.Raise(Stat.Climax, 3)
-			message({"~fkissu~"})
 		]]>
 
 choice: fondle_breasts_covered
@@ -314,22 +364,6 @@ choice: tear_off_bottom_theirs
 			end
 		]]>
 
-choice: insert_cock_vaginal
-	_n: J-J-J-JAM IT IN!!
-	filter: consentual and top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and (not top.HasSexFlag("givingvaginal")) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal"))
-	effect
-		<[[
-			top.AddSexFlag("givingvaginal")
-			bottom.AddSexFlag("receivingvaginal")
-			top.Raise(Stat.Climax, 10)
-			bottom.Raise(Stat.Climax, 10)
-			message({"[t:Youorname] push{es} [t:his] [t:cocktype] [?:cock] inside of [b:yourornames] [b:pussywetness] [?:pussy]."})
-			if bottom.TakeVirginity() then
-				message({"[b:Youorname] lost [b:his] virginity!"}, Color.Red)
-				-- Cause a single HP of damage?
-			end
-		]]>
-
 choice: insert_cock_vaginal_rape
 	_n: Shove it!
 	filter: nonconsentual and top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and (not top.HasSexFlag("givingvaginal")) and (not top.HasSexFlag("fingeringvaginal")) and (not bottom.HasSexFlag("receivingvaginal"))
@@ -362,15 +396,7 @@ choice: insert_cock_vaginal_female
 			end
 		]]>
 
-choice: continue_fucking
-	_n: Keep going
-	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
-	effect
-		<[[
-			top.Raise(Stat.Climax, 5)
-			bottom.Raise(Stat.Climax, 5)
-			message({"[t:Youorname] continue{s} pumping."})
-		]]>
+
 
 choice: continue_fucking_female
 	_n: Keep going
@@ -380,21 +406,6 @@ choice: continue_fucking_female
 			top.Raise(Stat.Climax, 5)
 			bottom.Raise(Stat.Climax, 5)
 			message({"[t:Youorname] continue{s} riding."})
-		]]>
-
-choice: pull_out
-	_n: Pull out!
-	filter: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasVagina() and top.HasSexFlag("givingvaginal") and bottom.HasSexFlag("receivingvaginal")
-	effect
-		<[[
-			top.Raise(Stat.Climax, 2)
-			bottom.Raise(Stat.Climax, 4)
-			top.RemoveSexFlag("givingvaginal")
-			bottom.RemoveSexFlag("receivingvaginal")
-			message({
-				"[t:Youorname] quickly pull{s} out of [b:yourornames] [?:pussy], scraping [t:his] [?:cock] against [b:his] [?:clit].",
-				"[t:Youorname] quickly pull{s} [t:his] [?:cock] out of [b:yourornames] [?:pussy], brushing against [b:his] [?:clit]."
-			})
 		]]>
 
 choice: pull_out_female
