@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Noxico
@@ -210,6 +211,112 @@ namespace Noxico
 		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
 		{
 			return UITypeEditorEditStyle.Modal;
+		}
+	}
+
+	public class ColorEditorControl : UserControl
+	{
+		public Color Value { get; set; }
+		public IWindowsFormsEditorService EdSvc { get; set; }
+		private static List<Tuple<string, SolidBrush>> colors;
+		private TextBox hexField;
+		private ListBox knownList;
+
+		public ColorEditorControl(Color value)
+		{
+			Value = value;
+
+			hexField = new TextBox();
+			knownList = new ListBox();
+
+			hexField.Text = value.ToHex();
+			hexField.Dock = DockStyle.Top;
+
+			if (colors == null)
+			{
+				colors = new List<Tuple<string, SolidBrush>>();
+				var knownColors = Mix.GetTokenTree("knowncolors.tml", true);
+				foreach (var knownColor in knownColors)
+				{
+					var name = knownColor.Name;
+					var brush = new SolidBrush(System.Drawing.Color.FromArgb((int)((long)knownColor.Value | 0xFF000000)));
+					colors.Add(new Tuple<string, SolidBrush>(name, brush));
+				}
+			}
+			knownList.Items.AddRange(colors.ToArray());
+
+			for (var i = 0; i < colors.Count; i++)
+			{
+				var colorHere = colors[i].Item2.Color.ToArgb();
+				if ((colorHere & 0xFFFFFF) == (value.ArgbValue & 0xFFFFFF))
+				{
+					knownList.SelectedIndex = i;
+					break;
+				}
+			}
+
+			knownList.DrawMode = DrawMode.OwnerDrawFixed;
+			knownList.DrawItem += new DrawItemEventHandler(knownList_DrawItem);
+			knownList.SelectedIndexChanged += new EventHandler(knownList_SelectedIndexChanged);
+			knownList.Dock = DockStyle.Fill;
+
+			Controls.Add(knownList);
+			Controls.Add(hexField);
+		}
+
+		void knownList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			var color = ((Tuple<string, SolidBrush>)knownList.SelectedItem).Item2.Color.ToArgb();
+			var foo = color.ToString("X");
+			hexField.Text = "#" + foo.Substring(foo.Length - 8);
+			Value = Color.FromArgb(color);
+		}
+
+		void knownList_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			var item = (Tuple<string, SolidBrush>)knownList.Items[e.Index];
+			var name = item.Item1;
+			var brush = item.Item2;
+			var rect = new System.Drawing.Rectangle(e.Bounds.X + 1, e.Bounds.Y + 1, e.Bounds.Height - 2, e.Bounds.Height - 2);
+			e.DrawBackground();
+			e.Graphics.FillRectangle(brush, rect);
+			e.Graphics.DrawRectangle(Pens.Black, rect);
+			e.DrawFocusRectangle();
+		}
+	}
+
+	public class ColorEditor : UITypeEditor
+	{
+		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+		{
+			if (context != null && context.Instance != null && provider != null)
+			{
+				var edSvc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+				if (edSvc != null)
+				{
+					var editor = new ColorEditorControl((Color)Convert.ChangeType(value, context.PropertyDescriptor.PropertyType));
+					editor.EdSvc = edSvc;
+					edSvc.DropDownControl(editor);
+					return editor.Value;
+				}
+			}
+			return value;
+		}
+
+		public override void PaintValue(PaintValueEventArgs e)
+		{
+			var val = (Color)e.Value;
+			e.Graphics.FillRectangle(new SolidBrush(val), e.Bounds);
+		}
+
+		public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+		{
+			return true;
+		}
+
+		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+		{
+			return UITypeEditorEditStyle.DropDown;
 		}
 	}
 #endif

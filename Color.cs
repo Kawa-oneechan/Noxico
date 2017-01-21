@@ -12,11 +12,14 @@ using SysColor = System.Drawing.Color;
 
 namespace Noxico
 {
+#if DEBUG
+	[System.ComponentModel.Editor(typeof(ColorEditor), typeof(System.Drawing.Design.UITypeEditor))]
+#endif
 	public struct Color
 	{
 		private static List<Token> colorTable;
 
-		public long ArgbValue { get; set; }
+		public uint ArgbValue { get; set; }
 		public string Name { get; set; }
 
 		static Color()
@@ -113,7 +116,11 @@ namespace Noxico
 			return Color.FromArgb(r, g, b);
 		}
 
-		public static Color FromArgb(long argb)
+		public static Color FromArgb(int argb)
+		{
+			return new Color((uint)argb, null);
+		}
+		public static Color FromArgb(uint argb)
 		{
 			return new Color(argb, null);
 		}
@@ -126,7 +133,7 @@ namespace Noxico
 			return new Color(MakeArgb((byte)alpha, (byte)red, (byte)green, (byte)blue), null);
 		}
 
-		internal Color(long value, string name)
+		internal Color(uint value, string name)
 			: this()
 		{
 			this.ArgbValue = value;
@@ -152,7 +159,7 @@ namespace Noxico
 			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(request, StringComparison.OrdinalIgnoreCase));
 			if (entry == null)
 				return Color.Silver;
-			return new Color((long)entry.Value | 0xFF000000, entry.Name); //added the | 0xFF000000 bit to ensure alpha.
+			return new Color((uint)entry.Value | 0xFF000000, entry.Name); //added the | 0xFF000000 bit to ensure alpha.
 		}
 
 		private float Max(float r, float g, float b)
@@ -277,9 +284,9 @@ namespace Noxico
 			}
 		}
 
-		private static long MakeArgb(byte alpha, byte red, byte green, byte blue)
+		private static uint MakeArgb(byte alpha, byte red, byte green, byte blue)
 		{
-			return (long)(((ulong)((((red << 0x10) | (green << 8)) | blue) | (alpha << 0x18))) & 0xffffffffL);
+			return (uint)((((red << 0x10) | (green << 8)) | blue) | (alpha << 0x18)) & 0xFFFFFFFF;
 		}
 
 		public override string ToString()
