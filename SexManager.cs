@@ -9,13 +9,14 @@ namespace Noxico
 	{
 		private static List<Token> choices;
 		private static string[] memory;
-		
-		private static void LoadChoices()
+
+		private static void FixChoices(List<Token> list)
 		{
-			if (choices != null)
-				return;
-			choices = Mix.GetTokenTree("sex.tml");
-			foreach (var choice in choices.Where(t => t.Name == "choice"))
+			foreach (var group in list.Where(t => t.Name == "group"))
+			{
+				FixChoices(group.Tokens);
+			}
+			foreach (var choice in list.Where(t => t.Name == "choice"))
 			{
 				var n = choice.GetToken("_n") ?? choice.AddToken("_n");
 				if (string.IsNullOrWhiteSpace(n.Text))
@@ -23,6 +24,36 @@ namespace Noxico
 				if (!choice.HasToken("time"))
 					choice.AddToken("time", 1000);
 			}
+		}
+
+		private static void LoadChoices()
+		{
+			if (choices != null)
+				return;
+			choices = Mix.GetTokenTree("sex.tml");
+			FixChoices(choices);
+		}
+
+		private static List<Token> GetPossibilitiesHelper(Character[] actors, List<Token> list)
+		{
+			var possibilities = new List<Token>();
+			foreach (var choice in list)
+			{
+				if (choice.Name == "group")
+				{
+					if (LimitsOkay(actors, choice))
+						possibilities.AddRange(GetPossibilitiesHelper(actors, choice.Tokens));
+					continue;
+				}
+				if (choice.HasToken("meta"))
+					continue;
+				if (!(actors[0].BoardChar is Player) && choice.HasToken("ai_unlikely"))
+					if (Random.NextDouble() < 0.85)
+						continue;
+				if (LimitsOkay(actors, choice))
+					possibilities.Add(choice);
+			}
+			return possibilities;
 		}
 
 		/// <summary>
@@ -37,17 +68,7 @@ namespace Noxico
 			if (choices == null)
 				LoadChoices();
 			var actors = new[] { actor, target };
-			var possibilities = new List<Token>();
-			foreach (var choice in choices.Where(c => c.Name == "choice"))
-			{
-				if (choice.HasToken("meta"))
-					continue;
-				if (!(actor.BoardChar is Player) && choice.HasToken("ai_unlikely"))
-					if (Random.NextDouble() < 0.85)
-						continue;
-				if (LimitsOkay(actors, choice))
-					possibilities.Add(choice);
-			}
+			var possibilities = GetPossibilitiesHelper(actors, choices);
 			//var possibilities = choices.(c => c.Name == "choice" && LimitsOkay(actors, c));
 			var result = new Dictionary<object, string>();
 			foreach (var possibility in possibilities)
@@ -62,6 +83,8 @@ namespace Noxico
 		private static bool LimitsOkay(Character[] actors, Token c)
 		{
 			var filter = c.GetToken("filter");
+			if (c.Name == "group")
+				filter = c;
 			if (filter == null)
 				return true;
 			var env = Lua.Environment;
@@ -104,125 +127,23 @@ namespace Noxico
 				return false;
 			}));
 			return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
-			/*
-			var limitations = c.GetToken("limitations");
-			if (limitations == null || limitations.Tokens.Count == 0)
-				return true; //assume so
-			foreach (var limit in limitations.Tokens)
+		}
+
+		public static List<Token> GetResultHelper(string id, Character[] actors, List<Token> list)
+		{
+			//choices.FindAll(c => c.Text == id && LimitsOkay(actors, c)).ToArray();
+			var possibilities = new List<Token>();
+			foreach (var choice in list)
 			{
-				var check = string.IsNullOrWhiteSpace(limit.Text) ? new string[] {} : limit.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-				if (limit.Name == "consentual")
+				if (choice.Name == "group" && LimitsOkay(actors, choice))
 				{
-					if (actors[1].Character.HasToken("helpless"))
-						return false;
+					possibilities.AddRange(GetResultHelper(id, actors, choice.Tokens));
+					continue;
 				}
-				else if (limit.Name == "nonconsentual")
-				{
-					if (!actors[1].Character.HasToken("helpless"))
-						return false;
-				}
-				else if (limit.Name == "masturbating")
-				{
-					if (actors[0] != actors[1])
-						return false;
-				}
-				else if (limit.Name == "item")
-				{
-					//TODO
-				}
-				else if (limit.Name == "clothing")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var clothClass = check[1];
-					InventoryItem cloth = null;
-					var haveSomething = false;
-					if (clothClass == "top")
-					{
-						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
-						{
-							var newCloth = t.GetEquippedItemBySlot(slot);
-							if (newCloth != null)
-							{
-								cloth = newCloth;
-								haveSomething = true;
-								break;
-							}
-						}
-						if (!haveSomething)
-							return false;
-					}
-					else if (clothClass == "bottom")
-					{
-						foreach (var slot in new[] { "pants", "underpants" })
-						{
-							var newCloth = t.GetEquippedItemBySlot(slot);
-							if (newCloth != null)
-							{
-								cloth = newCloth;
-								haveSomething = true;
-								break;
-							}
-						}
-					}
-					else
-					{
-						cloth = t.GetEquippedItemBySlot(clothClass);
-						if (cloth != null)
-							haveSomething = true;
-					}
-					if (haveSomething)
-						memory[int.Parse(check[2])] = cloth.ToString(null, false, false);
-					else
-						return false;
-				}
-				else if (limit.Name == "not")
-				{
-					var target = int.Parse(check[0]);
-					var path = check[1];
-					if (actors[target].Character.Path(path) != null)
-						return false;
-				}
-				else if (limit.Name == "yes")
-				{
-					var target = int.Parse(check[0]);
-					var path = check[1];
-					if (actors[target].Character.Path(path) == null)
-						return false;
-				}
-				else if (limit.Name == "hastits")
-				{
-					var target = (int)limit.Value;
-					var tits = actors[target].Character.GetBreastSizes();
-					if (tits.Length == 0)
-						return false;
-					if (tits.Average() < 0.2)
-						return false;
-				}
-				else if (limit.Name == "hasnipples")
-				{
-					var target = (int)limit.Value;
-					foreach (var breastRow in actors[target].Character.Tokens.Where(t => t.Name == "breastrow"))
-					{
-						if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
-							return true;
-					}
-					return false;
-				}
-				else if (limit.Name == "canreach")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var item = check[1];
-					if (item == "breasts" && !t.CanReachBreasts())
-						return false;
-					if (item == "crotch" && !t.CanReachCrotch())
-						return false;
-				}
-				//TODO: add capacity checks
+				if (choice.Text == id && LimitsOkay(actors, choice))
+					possibilities.Add(choice);
 			}
-
-			return true;
-			*/
+			return possibilities;
 		}
 
 		/// <summary>
@@ -237,10 +158,10 @@ namespace Noxico
 			var actors = new[] { actor, target };
 			if (choices == null)
 				LoadChoices();
-			var possibilities = choices.FindAll(c => c.Text == id && LimitsOkay(actors, c)).ToArray();
-			if (possibilities.Length == 0)
+			var possibilities = GetResultHelper(id, actors, choices);
+			if (possibilities.Count == 0)
 				throw new NullReferenceException(string.Format("Could not find a sex choice named \"{0}\".", id));
-			var choice = possibilities[Random.Next(possibilities.Length)];
+			var choice = possibilities[Random.Next(possibilities.Count)];
 			return choice;
 		}
 
