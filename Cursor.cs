@@ -348,6 +348,7 @@ namespace Noxico
 									break;
 
 #if DEBUG
+								case "edit":
 									TokenCarrier tc = null;
 									if (PointingAt is DroppedItem)
 										tc = ((DroppedItem)PointingAt).Token;

@@ -346,7 +346,7 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Special lower bodies -- quads, taurs, snakes...
+			//TODO: Needs more testing.
 			#region Legs
 			if (target.HasToken("legs") && !this.HasToken("legs"))
 			{
