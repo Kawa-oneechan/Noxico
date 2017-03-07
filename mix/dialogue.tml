@@ -175,6 +175,7 @@ scene: GenericIntroduce
 	action: goodbye
 
 -- #region Madlibs system, yo!
+-- Put this in a separate file?
 placeholders
 	Hello
 		- "Hello"
@@ -189,85 +190,307 @@ placeholders
 		- "Is there something I can do for you?"
 		- "Can I help you somehow?"
 	cock
-		- penis
 		- cock
 		- dick
+		- dong
 		- pecker
+		- penis
 		- prick
 		- rod
 		- shaft
-		- dong
 	cocks
-		- penises
 		- cocks
 		- dicks
+		- dongs
 		- peckers
+		- penises
 		- pricks
 		- rods
 		- shafts
-		- dongs
-	pussies
-		- vaginas
-		- pussies
-		- cunts
-		- cooters
-		- coochess
-		- cunnies
-		- quims
-		- twats
 	pussy
-		- vagina
-		- pussy
-		- cunt
-		- cooter
+		- beaver
 		- cooch
+		- cooter
+		- cooze
 		- cunny
+		- cunt
+		- gash
+		- muff
+		- sheath
+		- slit
+		- snatch
+		- pussy
 		- quim
 		- twat
+		- vagina
+	pussies
+		- beavers
+		- cooches
+		- cooters
+		- coozes
+		- cunnies
+		- cunts
+		- gashes
+		- muffs
+		- sheaths
+		- slits
+		- snatches
+		- pussies
+		- quims
+		- twats
+		- vaginas
 	anus
 		- anus
 		- asshole
+		- back door
 		- butthole
-		- rosebud
+		- cornhole
+		- dock
+		- pooper
 		- pucker
+		- rectum
+		- rosebud
 	butt
-		- butt
 		- ass
-		- rear
 		- backside
 		- behind
+		- booty
 		- bum
+		- butt
+		- buttocks
+		- keister
+		- rear
+		- rear end
+		- toches
+		- tush
 	clit
-		- clitoris
+		- bean
+		- button
 		- clit
-		- fun button
+		- clitoris
 		- clitty
+		- jewel
+		- pearl
+		- skittle
+		- fun button
 		- love button
 	breasts
-		- breasts
+		- baps
 		- boobs
-		- tits
+		- breasts
+		- funbags
+		- hooters
+		- jugs
 		- knockers
+		- mammaries
 		- mounds
+		- teats
+		- tits
 		- titties
+		- udders
 	breast
-		- breast
+		- bap
 		- boob
-		- tit
+		- breast
+		- funbag
+		- hooter
+		- jug
 		- knocker
+		- mammary
 		- mound
+		- teat
+		- tit
+		- titty
+		- udder
+		- rack
 	nipples
+		- bumps
+		- headlights
+		- nertz
 		- nipples
 		- nips
+		- nubbins
 		- peanuts
+		- raisins
 	nipple
+		- bump
+		- headlight
 		- nipple
 		- nip
+		- nubbin
 		- peanut
+		- raisin
+	labia
+		- labia
+		- lips
+		- petals
 	cum
-		- semen
+		- cream
 		- cum
+		- ejaculate
+		- fuckjuice
+		- jism
 		- jizz
-		- spunk
+		- juice
+		- load
 		- seed
+		- semen
+		- spooge
+		- spunk
+	verb-fuck
+		- fuck
+		- hammer
+		- plow
+		- pound
+		- slam
+		- thrust
+	verb-fucked
+		- fucked
+		- hammered
+		- plowed
+		- pounded
+		- slammed
+		- thrusted
+	verb-fucking
+		- fucking
+		- hammering
+		- plowing
+		- pounding
+		- slamming
+		- thrusting
+	verb-insert
+		- plunge
+		- probe
+		- ram
+		- shove
+		- slide
+		- stuff
+	verb-inserted
+		- plunged
+		- probed
+		- rammed
+		- shoved
+		- slid
+		- stuffed
+	verb-inserting
+		- plunging
+		- probing
+		- ramming
+		- shoving
+		- sliding
+		- stuffing
+	verb-squirt
+		- flow
+		- gush
+		- pour
+		- spit
+		- splurge
+		- spray
+		- spritz
+		- squirt
+	verb-squirted
+		- flowed
+		- gushed
+		- poured
+		- spattered
+		- splurged
+		- sprayed
+		- spritzed
+		- squirted
+	verb-squirting
+		- flowing
+		- gushing
+		- pouring
+		- spattering
+		- splurging
+		- spraying
+		- spritzing
+		- squirting
+	verb-squirtlarge
+		- flood
+		- flow
+		- gush
+		- pour
+		- spout
+		- spray
+		- squirt
+		- surge
+	verb-squirtedlarge
+		- flooded
+		- flowed
+		- gushed
+		- poured
+		- spouted
+		- sprayed
+		- squirted
+		- surged
+	verb-squirtinglarge
+		- flooding
+		- flowing
+		- gushing
+		- pouring
+		- spouting
+		- spraying
+		- squirting
+		- surging
+	verb-dribble
+		- drain
+		- dribble
+		- drip
+		- flow
+		- foam
+		- froth
+		- leach
+		- leak
+		- ooze
+		- seep
+		- slime
+		- slobber
+		- trickle
+		- weep
+	verb-dribbled
+		- drained
+		- dribbled
+		- dripped
+		- flowed
+		- foamed
+		- frothed
+		- leached
+		- leaked
+		- oozed
+		- seeped
+		- slimed
+		- slobbered
+		- trickled
+		- wept
+	verb-dribbling
+		- draining
+		- dribbling
+		- dripping
+		- flowing
+		- foaming
+		- frothing
+		- leaching
+		- leaking
+		- oozing
+		- seeping
+		- sliming
+		- slobbering
+		- trickling
+		- weeping
+	verb-shake
+		- shake
+		- tremble
+		- quake
+		- quiver
+	verb-shaked
+		- shook
+		- trembled
+		- quaked
+		- quivered
+	verb-shaking
+		- shaking
+		- trembling
+		- quaking
+		- quivering
 -- #endregion
