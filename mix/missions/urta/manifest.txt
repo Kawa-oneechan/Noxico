@@ -2,6 +2,5 @@ Urta
 Kawa
 mission.lua
 uniques.tml.patch
-scenesDlg.xml
 loot.tml.patch
 items.tml.patch

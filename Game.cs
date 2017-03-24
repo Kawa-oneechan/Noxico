@@ -1029,7 +1029,7 @@ namespace Noxico
 				board.GetToken("culture").Text = cultureName;
 				while (true)
 				{
-					var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+					var newName = Culture.GetName(cultureName, Culture.NameType.Town);
 					if (Boards.Find(b => b != null && b.Name == newName) == null)
 					{
 						board.Name = newName;
@@ -1059,9 +1059,6 @@ namespace Noxico
 			{
 				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				var path = Path.GetDirectoryName(missionDir);
-				var luaFile = Path.Combine(path, "mission.lua");
-				if (!Mix.FileExists(luaFile))
-					continue;
 				var okay = true;
 				for (var i = 2; i < manifest.Length; i++)
 				{
@@ -1073,6 +1070,9 @@ namespace Noxico
 					Program.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
 					continue;
 				}
+				var luaFile = Path.Combine(path, "mission.lua");
+				if (!Mix.FileExists(luaFile))
+					continue;
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
 				var luaCode = Mix.GetString(luaFile);
 				env.DoChunk(luaCode, "lol.lua");
