@@ -802,7 +802,7 @@ namespace Noxico
 			var demon = realm == Realms.Seradevari;
 
 			Realm = realm;
-			var reach = 1200;
+			var reach = 600; //1200;
 
 			setStatus(i18n.Format("worldgen_heightmap", realm), 0, 0); //"Creating heightmap..."
 			var height = CreateHeightMap(reach);

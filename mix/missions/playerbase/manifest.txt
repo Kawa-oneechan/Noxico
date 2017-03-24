@@ -8,3 +8,4 @@ lv3.png
 lv4.png
 toolshed.png
 lv0.txt
+dialogue.tml.patch

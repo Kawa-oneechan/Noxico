@@ -75,8 +75,13 @@ namespace Noxico
 			});
 
 			var namegen = DefaultNameGen;
-			if (!string.IsNullOrWhiteSpace(id) && NameGens.ContainsKey(id))
-				namegen = NameGens[id];
+			if (!string.IsNullOrWhiteSpace(id))
+			{
+				if (type == NameType.Town && Cultures.ContainsKey(id) && !string.IsNullOrWhiteSpace(Cultures[id].TownName))
+					namegen = NameGens[Cultures[id].TownName];
+				else if (NameGens.ContainsKey(id))
+					namegen = NameGens[id];
+			}
 			var sets = new Dictionary<string, string[]>();
 			foreach (var set in namegen.GetToken("sets").Tokens)
 				sets.Add(set.Name, split(set));

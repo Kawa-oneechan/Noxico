@@ -4,6 +4,7 @@ add: -
 			mlp_littlepony
 		monogamous: 0.8
 		marriage: 0.6
+		townname: mlp_pony
 		terms
 			zeni: bit
 			the_madman: Discord
@@ -21,6 +22,8 @@ add: -
 		sets
 			a: Acorn, Azure, Amethyst, Cotton, Flora, Kitty, Candy, Cherry, Bluebery, Carrot, Starlight, Flower, Lily, Rose, Lotus, Marmalade, Bonnie, Peachy, Raisin, Roxie, Ruby, Storm, Sunny, Cloud, Cappuccino, Cotton, Daisy, Firefly, Dizzy, Lightning, Medley, Rainbow, Tornado, Crescent, Lemon, Seafoam, Twilight, Twinkle
 			b: Twist, Star, Sparkle, Dash, Pie, Blossom, Cake, Coke, Stardust, Waters, Days, Daze, Kicker, Twister, Day, Hearts
+			town_start: Pony, Clouds, Canter, Mane, Filly
+			town_end: ville, dale, lot, hattan, delphia
 		female
 			rule
 				a
@@ -37,6 +40,11 @@ add: -
 		surname
 			rule
 				_
+		town
+			rule
+				town_start
+				town_end
+				_
 
 	namegen: mlp_changeling
 		sets
@@ -50,4 +58,3 @@ add: -
 		surname
 			rule
 				_
-
