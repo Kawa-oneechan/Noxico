@@ -1,3 +1,4 @@
+--[[
 var vague = new Tile();
 vague.Character = 0xC5;
 vague.Foreground = Color.Black;
@@ -77,4 +78,4 @@ vague.Foreground = Color.Black;
 vague.Background = Color.FromName("Firebrick");
 vague.Water = true;
 */
-
+]]--

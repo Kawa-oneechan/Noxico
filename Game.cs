@@ -1461,7 +1461,7 @@ namespace Noxico
 					if (ex < 0 || ex >= miniMap[realm].GetLength(1))
 						continue;
 					var miniMapPart = miniMap[realm][ey, ex];
-					if (miniMapPart >= BiomeData.Biomes.Count)
+					if (miniMapPart < 0 || miniMapPart >= BiomeData.Biomes.Count)
 						continue;
 					var biomeColor = TileDefinition.Find(BiomeData.Biomes[miniMapPart].GroundTile).Background;
 					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
