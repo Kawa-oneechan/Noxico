@@ -1713,9 +1713,9 @@ namespace Noxico
 			if (!crotchVisible)
 			{
 				if (this.PercievedGender == Gender.Male)
-					print("can't tell, none assumed\n");
+					print("none?\n");
 				else if (this.PercievedGender == Gender.Female)
-					print("can't tell, one assumed\n");
+					print("one?\n");
 				else
 					print("can't tell\n");
 			}
@@ -1751,9 +1751,9 @@ namespace Noxico
 			if (!crotchVisible)
 			{
 				if (this.PercievedGender == Gender.Male)
-					print("can't tell, one assumed\n");
+					print("one?\n");
 				else if (this.PercievedGender == Gender.Female)
-					print("can't tell, none assumed\n");
+					print("none?\n");
 				else
 					print("can't tell\n");
 			}

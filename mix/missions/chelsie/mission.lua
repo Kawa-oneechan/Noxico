@@ -1,3 +1,4 @@
+--[[
 var myBoard = PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
 myBoard.Name = "Chelsie's Lair";
 myBoard.ID = "chelsielair";
@@ -27,3 +28,4 @@ Chelsie.XPosition = 50;
 Chelsie.YPosition = 22;
 myBoard.Entities.Add(Chelsie);
 Chelsie.ParentBoard = myBoard;
+]]--
