@@ -121,6 +121,7 @@ namespace Noxico
 		public void Create(BiomeData biome, string templateSet)
 		{
 			Culture = Culture.Cultures[Toolkit.PickOne(biome.Cultures)];
+			DungeonGenerator.DungeonGeneratorBiome = BiomeData.Biomes.IndexOf(biome);
 			this.biome = biome;
 			map = new int[80, 50];
 			plots = new Building[6, 3];
@@ -304,7 +305,11 @@ namespace Noxico
 													//if (type == "cabinet")
 													type = "wardrobe";
 												}
-												var contents = DungeonGenerator.GetRandomLoot("container", type, new Dictionary<string, string>() { { "gender", owner.PreferredGender.ToString().ToLowerInvariant() } }); //InventoryItem.RollContainer(owner, type);  //new List<Token>();
+												var contents = DungeonGenerator.GetRandomLoot("container", type, new Dictionary<string, string>()
+												{
+													{ "gender", owner.PreferredGender.ToString().ToLowerInvariant() },
+													{ "biome", BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() },
+												});
 												if (owner != null)
 												{
 													foreach (var content in contents)

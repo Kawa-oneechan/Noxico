@@ -1109,7 +1109,7 @@ namespace Noxico
 			if (HasToken("beast"))
 				return;
 			if (!HasToken("lootset_id"))
-				AddToken("lootset_id", 0, ID);
+				AddToken("lootset_id", 0, ID.ToLowerInvariant());
 			var filters = new Dictionary<string, string>();
 			filters["gender"] = PreferredGender.ToString().ToLowerInvariant();
 			filters["board"] = Board.HackishBoardTypeThing;
@@ -1117,6 +1117,7 @@ namespace Noxico
 			filters["name"] = this.Name.ToString(true);
 			filters["id"] = this.GetToken("lootset_id").Text;
 			filters["bodymatch"] = this.GetClosestBodyplanMatch();
+			filters["biome"] = BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant(); //AcetheSuperVillain suggests a biome key.
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();
 			clothing.AddRange(DungeonGenerator.GetRandomLoot("npc", "underwear", filters));
