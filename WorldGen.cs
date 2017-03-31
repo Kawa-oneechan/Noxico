@@ -281,7 +281,10 @@ namespace Noxico
 				if (sides < 3 && sides > 1 && goalBoard.Warps.FirstOrDefault(w => w.XPosition == treasureX && w.YPosition == treasureY) == null)
 					break;
 			}
-			var treasure = DungeonGenerator.GetRandomLoot("container", "dungeon_chest"); //InventoryItem.RollContainer(null, "dungeontreasure");
+			var treasure = DungeonGenerator.GetRandomLoot("container", "dungeon_chest", new Dictionary<string, string>()
+			{
+				{ "biome", BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() },
+			});
 			var treasureChest = new Container("Treasure chest", treasure)
 			{
 				Glyph = 0x14A,
@@ -350,6 +353,11 @@ namespace Noxico
 					if (!isOkay)
 						continue;
 				}
+				
+				//if we're looking for lootsets applying to a particular character, toss any non-character-specific potentials.
+				if (setsFilters != null && setsFilters.HasToken("id"))
+					lootsets.RemoveAll(set => !set.GetToken("filter").HasToken("id"));
+
 				lootsets.Add(potentialSet);
 				if (potentialSet.HasToken("final"))
 					break;
