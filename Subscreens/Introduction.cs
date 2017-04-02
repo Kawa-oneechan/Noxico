@@ -284,8 +284,11 @@ namespace Noxico
 			if (Subscreens.FirstDraw)
 			{
 				//Start creating the world as we work...
-				worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
-				worldgen.Start();
+				if (worldgen == null) //Conditional added by Matt Welch
+				{
+					worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
+					worldgen.Start();
+				}
 
 				//Load all bonus traits.
 				var traits = new List<string>();
@@ -482,6 +485,14 @@ namespace Noxico
 					if (worldgen.ThreadState == System.Threading.ThreadState.Running)
 					{
 						Story();
+					}
+					else
+					{
+						//This branch added by Matt Welch
+						NoxicoGame.Mode = UserMode.Walkabout;
+						NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+						NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+						TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
 					}
 				};
 
