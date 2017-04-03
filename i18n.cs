@@ -334,7 +334,7 @@ namespace Noxico
 				env.SetValue("stimulation", who.GetStat(Stat.Stimulation));
 				env.SetValue("pussyAmount", who.Tokens.Count(t => t.Name == "vagina"));
 				env.SetValue("penisAmount", who.Tokens.Count(t => t.Name == "penis"));
-				env.SetValue("pussyWetness", who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value));
+				env.SetValue("pussyWetness", who.Tokens.Any(t => t.Name == "vagina") ? who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value) : 0);
 				env.SetValue("cumAmount", who.CumAmount);
 				env.SetValue("slime", who.IsSlime);
 				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
@@ -348,7 +348,7 @@ namespace Noxico
 
 	(?:						#One or more subcommands
 		(?:\:?)				#Separating :, optional in case target already had one
-		(?<subcom>[\w_]+)	#Command
+		(?<subcom>[\w\-_]+)	#Command
 	)*
 \]", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			while (regex.IsMatch(message))

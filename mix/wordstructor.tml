@@ -1,4 +1,4 @@
-﻿-- Use in anything that's passed to i18n.Viewpoint	
+-- Use in anything that's passed to i18n.Viewpoint	
 -- #region Sentences
 Hello
 	- "Hello"
@@ -20,59 +20,93 @@ canihelp
 
 -- #region Body parts
 cock
+	- boner
 	- cock
 	- dick
 	- dong
+	- joystick
 	- length
 	- mast
+	- manhood
+	- member
 	- pecker
 	- penis
 	- prick
+	- pole
 	- rod
 	- shaft
+	- shlong
+	- slug
+	- sucker
+	- tool
+	- wang
+	- wood
 cocks
+	- boners
 	- cocks
 	- dicks
 	- dongs
+	- joysticks
 	- lengths
 	- masts
+	- manhoods
+	- members
 	- peckers
 	- penises
 	- pricks
+	- poles
 	- rods
 	- shafts
+	- shlongs
+	- slugs
+	- suckers
+	- tools
+	- wangs
+	- wood
 pussy
 	- beaver
+	- cave
 	- cooch
 	- cooter
 	- cooze
+	- coozie
 	- cunny
 	- cunt
 	- gash
+	- hole
+	- minch
 	- muff
 	- sheath
 	- slit
 	- snatch
+	- puss
 	- pussy
 	- quim
 	- twat
 	- vagina
+	- vulva
 pussies
 	- beavers
+	- caves
 	- cooches
 	- cooters
 	- coozes
+	- coozies
 	- cunnies
 	- cunts
 	- gashes
+	- holes
+	- minches
 	- muffs
-	- sheaths
+	- sheathes
 	- slits
 	- snatches
+	- pusses
 	- pussies
 	- quims
 	- twats
 	- vaginas
+	- vulvas
 anus
 	- anus
 	- asshole
@@ -345,6 +379,42 @@ verb-shaking
 	- trembling
 	- quaking
 	- quivering
+verb-caress
+	- caress
+	- feel
+	- fondle
+	- grope
+	- pet
+	- rub
+	- squeeze
+	- stroke
+	- tease
+	- tickle
+	- touch
+verb-caressed
+	- caressed
+	- felt
+	- fondled
+	- groped
+	- petted
+	- rubbed
+	- squeezed
+	- stroked
+	- teased
+	- tickled
+	- touched
+verb-caressing
+	- caressing
+	- feeling
+	- fondling
+	- groping
+	- petting
+	- rubbing
+	- squeezing
+	- stroking
+	- teasing
+	- tickling
+	- touching
 -- #endregion
 
 -- #region Other verbs
@@ -358,3 +428,21 @@ verb-striking
 	- striking
 	- hitting
 -- #endregion
+
+gesture-t-flirty
+	- bite{s} [t:his] lower lip
+	- lick{s} [t:his] lips
+	- look{s} [b:him] up and down
+	- smile{s} mischievously
+	- [?:gesture-flirty-male]
+		filter: (gender ~= "Female")
+	- [?:gesture-flirty-female]
+		filter: (gender ~= "Male")
+gesture-flirty-male
+	- act{s} innocent
+	- grin{s}
+	- lean{s} back
+gesture-flirty-female
+	- blush{es}
+	- bite{s} [t:his] finger
+	- bite{s} [t:his] knuckles

@@ -284,7 +284,7 @@ namespace Noxico
 			if (Subscreens.FirstDraw)
 			{
 				//Start creating the world as we work...
-				if (worldgen == null) //Conditional added by Matt Welch
+				if (worldgen == null) //Conditional added by Mat.
 				{
 					worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
 					worldgen.Start();
@@ -488,7 +488,7 @@ namespace Noxico
 					}
 					else
 					{
-						//This branch added by Matt Welch
+						//This branch added by Mat.
 						NoxicoGame.Mode = UserMode.Walkabout;
 						NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
 						NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
