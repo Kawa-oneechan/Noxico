@@ -27,6 +27,11 @@ namespace Noxico
 		public static Dictionary<string, Culture> Cultures;
 		public static Dictionary<string, Token> NameGens;
 
+		public override string ToString()
+		{
+			return ID;
+		}
+
 		static Culture()
 		{
 			Program.WriteLine("Loading deities...");
