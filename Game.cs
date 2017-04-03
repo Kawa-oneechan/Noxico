@@ -231,6 +231,8 @@ namespace Noxico
 			test.DumpToHtml();
 			return;
 			*/
+			//var testChar = Character.Generate("felin", Gender.Female);
+			//var test1 = "[?:helloagain]".Viewpoint(testChar);
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0); //InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();

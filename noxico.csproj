@@ -262,6 +262,7 @@
     <Content Include="Music.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="mix\wordstructor.tml" />
     <None Include="Resources\Noxico.ico" />
     <Content Include="Sound.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

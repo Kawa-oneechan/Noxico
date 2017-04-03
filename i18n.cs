@@ -42,6 +42,7 @@ namespace Noxico
 	{
 		private static Dictionary<string, string> words;
 		private static Token pluralizerData;
+		private static List<Token> wordStructor;
 
 		private static List<string> notFound = new List<string>();
 
@@ -234,7 +235,11 @@ namespace Noxico
 
 		public static string Viewpoint(this string message, Character top, Character bottom = null)
 		{
+#if DEBUG
+			var player = NoxicoGame.HostForm.Noxico.Player == null ? null : NoxicoGame.HostForm.Noxico.Player.Character;
+#else
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+#endif
 			if (top == null)
 				top = player;
 			if (bottom == null)
@@ -313,6 +318,29 @@ namespace Noxico
 				{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0])) + "{s}"; } },
 			};
 			#endregion
+
+			#region WordStructor filter
+			var wordStructFilter = new Func<Token, Character, bool>((filter, who) =>
+			{
+				var env = Lua.Environment;
+				env.SetValue("cultureID", who.Culture.ID);
+				env.SetValue("culture", who.Culture);
+				env.SetValue("gender", who.Gender);
+				env.SetValue("carnality", who.GetStat(Stat.Carnality));
+				env.SetValue("charisma", who.GetStat(Stat.Charisma));
+				env.SetValue("climax", who.GetStat(Stat.Climax));
+				env.SetValue("cunning", who.GetStat(Stat.Cunning));
+				env.SetValue("sensitivity", who.GetStat(Stat.Sensitivity));
+				env.SetValue("stimulation", who.GetStat(Stat.Stimulation));
+				env.SetValue("pussyAmount", who.Tokens.Count(t => t.Name == "vagina"));
+				env.SetValue("penisAmount", who.Tokens.Count(t => t.Name == "penis"));
+				env.SetValue("pussyWetness", who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value));
+				env.SetValue("cumAmount", who.CumAmount);
+				env.SetValue("slime", who.IsSlime);
+				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			});
+			#endregion
+
 			#region [] Parser
 			var regex = new Regex(@"
 \[
@@ -331,28 +359,36 @@ namespace Noxico
 					var subcom = string.Empty;
 					var parms = new List<string>();
 
-					if (match.Groups["target"].Value == "?")
-					{
-						if (SceneSystem.Placeholders == null)
-							SceneSystem.Placeholders = Mix.GetTokenTree("dialogue.tml", true).First(x => x.Name == "placeholders");
+					var targetGroup = match.Groups["target"].Value;
 
-						var pToks = SceneSystem.Placeholders.Tokens.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
+					if (targetGroup.StartsWith("?"))
+					{
+						if (i18n.wordStructor == null)
+							i18n.wordStructor = Mix.GetTokenTree("wordstructor.tml", true);
+
+						if (targetGroup.Length == 2 && "tb".Contains(targetGroup[1]))
+							target = (targetGroup[1] == 't' ? top : bottom);
+						var pToks = wordStructor.Where(x =>	x.Name == match.Groups["subcom"].Value).ToList();
 						var pTok = pToks[Random.Next(pToks.Count)];
-						return pTok.Tokens[Random.Next(pTok.Tokens.Count)].Text;
+						var pRes = pTok.Tokens.Where(x => !x.HasToken("filter") || wordStructFilter(x.GetToken("filter"), target)).ToList();
+						//Remove all less-specific options if any specific are found.
+						if (pRes.Any(x => x.HasToken("filter")))
+							pRes.RemoveAll(x => !x.HasToken("filter"));
+						return pRes[Random.Next(pRes.Count)].Text;
 					}
 					else if (!match.Groups["subcom"].Success)
 					{
-						subcom = match.Groups["target"].Value;
+						subcom = targetGroup;
 					}
 					else
 					{
 						if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
-							target = (match.Groups["target"].Value[0] == 't' ? top : bottom);
+							target = (targetGroup[0] == 't' ? top : bottom);
 						subcom = match.Groups["subcom"].Value;
 
 						if (match.Groups["subcom"].Captures.Count > 1)
 						{
-							//subcom = match.Groups["target"].Value;
+							//subcom = targetGroup;
 							subcom = match.Groups["subcom"].Captures[0].Value;
 							for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
 							{

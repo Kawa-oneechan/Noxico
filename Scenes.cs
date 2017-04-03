@@ -10,7 +10,6 @@ namespace Noxico
 	{
 		private static List<Token> sceneList;
 		private static Character top, bottom;
-		public static Token Placeholders;
 
 		private static bool letBottomChoose;
 
@@ -22,10 +21,7 @@ namespace Noxico
 		public static void Engage(Character top, Character bottom, string name = "(start)")
 		{
 			if (sceneList == null)
-			{
 				sceneList = Mix.GetTokenTree("dialogue.tml", true);
-				Placeholders = sceneList.First(x => x.Name == "placeholders");
-			}
 
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
@@ -199,6 +195,7 @@ namespace Noxico
 			return true;
 		}
 
+		//TODO: rewrite to use JS
 		private static bool FiltersOkay(Token filter)
 		{
 			if (filter.Name == "debug")
