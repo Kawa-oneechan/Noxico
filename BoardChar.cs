@@ -1337,6 +1337,8 @@ namespace Noxico
 				var newstock = DungeonGenerator.GetRandomLoot("vendor", "stock", filters);
 				if (newstock.Count == 0)
 					break;
+				foreach (var item in newstock)
+					item.AddToken("for_sale");
 				items.AddSet(newstock);
 			}
 		}

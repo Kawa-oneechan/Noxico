@@ -103,6 +103,10 @@ namespace Noxico
 					//Populate the left list...
 					foreach (var carriedItem in other.Tokens)
 					{
+						//Only let vendors sell things meant for sale, not their literal shirt off their back
+						if (vendorChar != null && !carriedItem.HasToken("for_sale"))
+							continue;
+
 						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
 						if (find == null)
 							continue;
@@ -415,11 +419,13 @@ namespace Noxico
 			if (token.HasToken("equipped"))
 			{
 				//If we're looting a corpse's equipment, just unequip it.
+				/* Cannot happen if we only allow buying for_sale items
 				//If a vendor is wearing it though...
 				if (mode == ContainerMode.Vendor)
 					return i18n.Format("inventory_vendorusesthis", vendorChar.Name.ToString());
 				else
-					token.RemoveToken("equipped");
+				*/
+				token.RemoveToken("equipped");
 			}
 			if (mode == ContainerMode.Vendor && price != 0)
 			{
@@ -431,6 +437,7 @@ namespace Noxico
 					return i18n.GetString("inventory_youcantaffordthis");
 				vMoney.Value += price;
 				pMoney.Value -= price;
+				token.RemoveToken("for_sale");
 			}
 			inv.Tokens.Add(token);
 			con.Tokens.Remove(token);
@@ -482,6 +489,7 @@ namespace Noxico
 				//notice that the bonus is determined AFTER the budget check so a vendor won't bug out on that.
 				pMoney.Value += price;
 				vMoney.Value -= price;
+				token.AddToken("for_sale");
 			}
 			con.Tokens.Add(token);
 			inv.Tokens.Remove(token);
