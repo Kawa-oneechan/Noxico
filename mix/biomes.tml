@@ -1,0 +1,53 @@
+realm: Nox
+	waterlevel: 64
+--	waterColor: #00007F
+	biome: Grassland
+		rect: 48 0 184 96
+		ground: grassland
+		encounters: 10
+			wild_dog
+			canine
+			canine
+			goblin
+			slime
+	biome: Tundra
+		rect: 0 0 48 192
+		ground: tundra
+		encounters: 10
+			imp
+			imp
+			wild_dog
+			imp
+	biome: Taiga
+		rect: 48 96 96 192
+		ground: tundra
+	biome: Woods
+		rect: 96 64 256 192
+		ground: woods
+		encounters: 7
+			imp
+			imp
+			goblin
+			wild_dog
+			imp
+			imp
+			goblin
+			wild_dog
+			foocubus
+	biome: Swamp
+		rect: 0 192 174 256
+		ground: swamp
+	biome: Rainforest
+		rect: 174 192 256 256
+		ground: rainforest
+realm: Seradevari
+	waterlevel: 64
+--	waterColor: #B22222
+	biome: Nether
+		rect: 0 0 256 256
+		ground: nether
+		encounters: 10
+			foocubus
+			imp
+		cultures
+			seradevar

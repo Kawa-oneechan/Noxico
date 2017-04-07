@@ -1,0 +1,297 @@
+-- Skintones
+Light: 0xF6E1D6
+	cga: 15
+Dark: 0x854543
+	cga: 6
+Ebony: 0x170B0B
+	cga: 0
+Pale: 0xF6F5E0
+	cga: 15
+
+-- Hair colors
+Blond: 0xC6A75E
+	cga: 6
+Auburn: 0x6F351A
+	cga: 4
+
+-- System.Drawing.KnownColor
+AliceBlue: 0xF0F8FF
+	cga: 15
+AntiqueWhite: 0xFAEBD7
+	cga: 14
+Aqua: 0x00FFFF
+	cga: 11
+Aquamarine: 0x7FFFD4
+	cga: 11
+Azure: 0xF0FFFF
+	cga: 15
+Beige: 0xF5F5DC
+	cga: 14
+Bisque: 0xFFE4C4
+	cga: 14
+Black: 0x000000
+	cga: 0
+BlanchedAlmond: 0xFFEBCD
+	cga: 14
+Blue: 0x0000FF
+	cga: 9
+BlueViolet: 0x8A2BE2
+	cga: 13
+Brown: 0xA52A2A
+	cga: 4
+BurlyWood: 0xDEB887
+	cga: 14
+CadetBlue: 0x5F9EA0
+	cga: 3
+Chartreuse: 0x7FFF00
+	cga: 10
+Chocolate: 0xD2691E
+	cga: 12
+Coral: 0xFF7F50
+	cga: 14
+CornflowerBlue: 0x6495ED
+	cga: 9
+Cornsilk: 0xFFF8DC
+	cga: 14
+Crimson: 0xDC143C
+	cga: 12
+Cyan: 0x00FFFF
+	cga: 11
+DarkBlue: 0x00008B
+	cga: 1
+DarkCyan: 0x008B8B
+	cga: 3
+DarkGoldenrod: 0xB8860B
+	cga: 6
+DarkGray: 0xA9A9A9
+	cga: 7
+DarkGreen: 0x006400
+	cga: 2
+DarkKhaki: 0xBDB76B
+	cga: 14
+DarkMagenta: 0x8B008B
+	cga: 5
+DarkOliveGreen: 0x556B2F
+	cga: 2
+DarkOrange: 0xFF8C00
+	cga: 6
+DarkOrchid: 0x9932CC
+	cga: 5
+DarkRed: 0x8B0000
+	cga: 4
+DarkSalmon: 0xE9967A
+	cga: 12
+DarkSeaGreen: 0x8FBC8B
+	cga: 10
+DarkSlateBlue: 0x483D8B
+	cga: 1
+DarkSlateGray: 0x2F4F4F
+	cga: 8
+DarkTurquoise: 0x00CED1
+	cga: 3
+DarkViolet: 0x9400D3
+	cga: 5
+DeepPink: 0xFF1493
+	cga: 13
+DeepSkyBlue: 0x00BFFF
+	cga: 9
+DimGray: 0x696969
+	cga: 0
+DodgerBlue: 0x1E90FF
+	cga: 9
+Firebrick: 0xB22222
+	cga: 4
+FloralWhite: 0xFFFAF0
+	cga: 14
+ForestGreen: 0x228B22
+	cga: 2
+Fuchsia: 0xFF00FF
+	cga: 13
+Gainsboro: 0xDCDCDC
+	cga: 7
+GhostWhite: 0xF8F8FF
+	cga: 15
+Gold: 0xFFD700
+	cga: 14
+Goldenrod: 0xDAA520
+	cga: 6
+Gray: 0x808080
+	cga: 8
+Green: 0x008000
+	cga: 2
+GreenYellow: 0xADFF2F
+	cga: 10
+Honeydew: 0xF0FFF0
+	cga: 10
+HotPink: 0xFF69B4
+	cga: 13
+IndianRed: 0xCD5C5C
+	cga: 12
+Indigo: 0x4B0082
+	cga: 5
+Ivory: 0xFFFFF0
+	cga: 14
+Khaki: 0xF0E68C
+	cga: 14
+Lavender: 0xE6E6FA
+	cga: 11
+LavenderBlush: 0xFFF0F5
+	cga: 15
+LawnGreen: 0x7CFC00
+	cga: 10
+LemonChiffon: 0xFFFACD
+	cga: 14
+LightBlue: 0xADD8E6
+	cga: 11
+LightCoral: 0xF08080
+	cga: 12
+LightCyan: 0xE0FFFF
+	cga: 11
+LightGoldenrodYellow: 0xFAFAD2
+	cga: 14
+LightGray: 0xD3D3D3
+	cga: 7
+LightGreen: 0x90EE90
+	cga: 10
+LightPink: 0xFFB6C1
+	cga: 12
+LightSalmon: 0xFFA07A
+	cga: 12
+LightSeaGreen: 0x20B2AA
+	cga: 3
+LightSkyBlue: 0x87CEFA
+	cga: 9
+LightSlateGray: 0x778899
+	cga: 8
+LightSteelBlue: 0xB0C4DE
+	cga: 7
+LightYellow: 0xFFFFE0
+	cga: 14
+Lime: 0x00FF00
+	cga: 10
+LimeGreen: 0x32CD32
+	cga: 10
+Linen: 0xFAF0E6
+	cga: 14
+Magenta: 0xFF00FF
+	cga: 13
+Maroon: 0x800000
+	cga: 4
+MediumAquamarine: 0x66CDAA
+	cga: 11
+MediumBlue: 0x0000CD
+	cga: 1
+MediumOrchid: 0xBA55D3
+	cga: 13
+MediumPurple: 0x9370DB
+	cga: 5
+MediumSeaGreen: 0x3CB371
+	cga: 2
+MediumSlateBlue: 0x7B68EE
+	cga: 9
+MediumSpringGreen: 0x00FA9A
+	cga: 3
+MediumTurquoise: 0x48D1CC
+	cga: 11
+MediumVioletRed: 0xC71585
+	cga: 5
+MidnightBlue: 0x191970
+	cga: 1
+MintCream: 0xF5FFFA
+	cga: 15
+MistyRose: 0xFFE4E1
+	cga: 12
+Moccasin: 0xFFE4B5
+	cga: 14
+NavajoWhite: 0xFFDEAD
+	cga: 14
+Navy: 0x000080
+	cga: 1
+OldLace: 0xFDF5E6
+	cga: 14
+Olive: 0x808000
+	cga: 6
+OliveDrab: 0x6B8E23
+	cga: 2
+Orange: 0xFFA500
+	cga: 14
+OrangeRed: 0xFF4500
+	cga: 12
+Orchid: 0xDA70D6
+	cga: 13
+PaleGoldenrod: 0xEEE8AA
+	cga: 14
+PaleGreen: 0x98FB98
+	cga: 10
+PaleTurquoise: 0xAFEEEE
+	cga: 11
+PaleVioletRed: 0xDB7093
+	cga: 13
+PapayaWhip: 0xFFEFD5
+	cga: 14
+PeachPuff: 0xFFDAB9
+	cga: 14
+Peru: 0xCD853F
+	cga: 6
+Pink: 0xFFC0CB
+	cga: 13
+Plum: 0xDDA0DD
+	cga: 13
+PowderBlue: 0xB0E0E6
+	cga: 11
+Purple: 0x800080
+	cga: 5
+Red: 0xFF0000
+	cga: 12
+RosyBrown: 0xBC8F8F
+	cga: 8
+RoyalBlue: 0x4169E1
+	cga: 9
+SaddleBrown: 0x8B4513
+	cga: 6
+Salmon: 0xFA8072
+	cga: 12
+SandyBrown: 0xF4A460
+	cga: 14
+SeaGreen: 0x2E8B57
+	cga: 2
+SeaShell: 0xFFF5EE
+	cga: 15
+Sienna: 0xA0522D
+	cga: 6
+Silver: 0xC0C0C0
+	cga: 7
+SkyBlue: 0x87CEEB
+	cga: 11
+SlateBlue: 0x6A5ACD
+	cga: 9
+SlateGray: 0x708090
+	cga: 8
+Snow: 0xFFFAFA
+	cga: 15
+SpringGreen: 0x00FF7F
+	cga: 10
+SteelBlue: 0x4682B4
+	cga: 1
+Tan: 0xD2B48C
+	cga: 6
+Teal: 0x008080
+	cga: 3
+Thistle: 0xD8BFD8
+	cga: 7
+Tomato: 0xFF6347
+	cga: 12
+Turquoise: 0x40E0D0
+	cga: 11
+Violet: 0xEE82EE
+	cga: 13
+Wheat: 0xF5DEB3
+	cga: 14
+White: 0xFFFFFF
+	cga: 15
+WhiteSmoke: 0xF5F5F5
+	cga: 15
+Yellow: 0xFFFF00
+	cga: 14
+YellowGreen: 0x9ACD32
+	cga: 10

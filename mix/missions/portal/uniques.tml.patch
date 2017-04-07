@@ -1,0 +1,75 @@
+add: -
+	character: demonportal_nox
+		_n: Demon Portal
+		terms
+			generic: "demon portal"
+		beast
+		bestiary: "The Demon Portal, in all its chaotic splendor..."
+		glyph
+			char: \x2A
+			fore: fuchsia
+			back: magenta
+		title: "Demon Portal"
+		skin
+			type: skin
+			color: fuschia
+		seekrit
+		script: tick
+			<[[
+				thisEntity.XPosition = 35;
+				thisEntity.YPosition = 22;
+				var woah = Random.Next(0,128);
+				thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
+				thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
+				thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+				return false;
+			]]>
+		script: bump
+			<[[
+				corner("WRRAAAAAAAGH~");
+				var target = this.GetToken("otherSide").Value;
+				if (target == 0)
+				{
+					corner("Error! Target is " + target);
+					return false;
+				}
+				playerEntity.OpenBoard(target);
+			]]>
+
+	character: demonportal_sera
+		_n: Demon Portal
+		terms
+			generic: "demon portal"
+		beast
+		bestiary: "The Demon Portal, in all its chaotic splendor..."
+		glyph
+			char: U+002A
+			fore: fuchsia
+			back: magenta
+		title: "Demon Portal"
+		skin
+			type: skin
+			color: fuschia
+		seekrit
+		script: tick
+			<[[
+				thisEntity.XPosition = 35;
+				thisEntity.YPosition = 22;
+				var woah = Random.Next(0,128);
+				thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
+				thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
+				thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+				return false;
+			]]>
+		script: bump
+			<[[
+				corner("WRRAAAAAAAGH~");
+				var target = this.GetToken("otherSide").Value;
+				if (target == 0)
+				{
+					corner("Error! Target is " + target);
+					return false;
+				}
+				playerEntity.OpenBoard(target);
+			]]>
+

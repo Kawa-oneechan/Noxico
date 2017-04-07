@@ -1,0 +1,115 @@
+add: -
+	bodyplan: mlp_littlepony
+		playable: "Little Pony"
+		culture: mlp_equestrian
+		namegen: mlp_pony
+		normalgenders
+		invisiblegender
+		terms
+			generic: "little pony"
+			male: "stallion"
+			female: "mare"
+		bestiary: "I used to wonder what erotic adventure games could be."
+			char: 0x163
+		-- marshmallow adjusts the way hooves are described.
+		marshmallow
+		tallness: 140
+		editable: skin/color|Coat color, hair/color|Mane color, eyes|Eye color
+		hair
+			length: 16
+			color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+		skin
+			type: fur
+			color: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+		face: horse
+		eyes: oneof red, orange, yellow, magenta, white, lime, blue, aqua, black, cornflowerblue, fuchsia, goldenrod, greenyellow, plum
+		teeth
+		tongue: normal
+		legs: horse
+		quadruped
+		-- this one lets us have either wings, a horn, or neither, but never both, at random. actually it allows any number of options...
+		_either
+			wings: feather
+			monoceros
+		-- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
+		ears: horse
+		tail: horse
+		fertility: roll 1d25+10
+		ass
+			size: 6
+			looseness: 0
+			virgin
+		vagina
+			virgin
+			wetness: 1
+			looseness: 0
+			clit: 1.5
+		womb
+		penis: horse
+			thickness: 3
+			length: 16
+			sheath
+		balls
+			amount: 2
+			size: 3
+		breastrow
+			amount: 2
+			size: 0
+			nipples: 1
+				size: 0.5
+		tattoos
+			hip: "cutie mark"
+
+	bodyplan: mlp_changeling
+		playable: "Changeling"
+		culture: mlp_changelings
+		namegen: mlp_changeling
+		normalgenders
+		invisiblegender
+		copier
+			full
+		terms
+			generic: "changeling"
+		bestiary: "This game is going to be perfect."
+			char: 0x163
+		tallness: 134
+		editable: skin/color|Carapace color, hair/color|Mane color, eyes|Eye color
+		hair
+			length: roll 1d3+3
+			color: oneof aquamarine, cadetblue, darkcyan, darkgreen, darkslategray
+		skin
+			type: carapace
+			color: oneof black, ebony, darkslategray
+		face: horse
+		eyes: oneof darkturquoise, deepskyblue, dodgerblue, lightsteelblue
+			glow
+		teeth: fangs
+		tongue
+		legs: hole-filled horse
+		quadruped
+		marshmallow
+		wings: insect
+		monoceros
+		ears: horse
+		tail: horse
+		fertility: roll 1d10
+		ass
+			size: 5
+			looseness: 0
+		vagina
+			looseness: 1
+			wetness: 2
+			clit: 1.5
+		womb
+		penis: horse
+			thickness: 3
+			length: 16
+		breastrow
+			amount: 2
+			size: 0
+			nipples: 1
+				size: 0.5
+		balls
+			amount: 2
+			size: 3
+

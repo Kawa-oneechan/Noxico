@@ -1,0 +1,485 @@
+ears
+	human
+		human-like
+		humanoid
+		anthropoid
+	elfin
+		elfin
+		elf-like
+	pointed
+		pointed
+		pointy
+	flat
+		nondescript
+		featureless
+	cat
+		feline
+		cat-like
+	dog
+		canine
+		dog-like
+	fox
+		vulpine
+		fox-like
+	horse
+		equine
+		horse-like
+	bear
+		ursine
+		bear-like
+		bearish
+face
+	human
+		human-like
+		humanoid
+		anthropoid
+	cat
+		feline
+		cat-like
+	dog
+		canine
+		dog-like
+	fox
+		vulpine
+		fox-like
+	horse
+		equine
+		horse-like
+	bear
+		ursine
+		bear-like
+hair
+	names
+		afro
+			minlen: 3
+			noun: afro
+		braided
+			minlen: 16
+			adj: braided
+			noun: braids
+		braided_ponytail
+			minlen: 26
+			noun: braided ponytail
+		bun
+			minlen: 16
+			noun: bun
+		curly
+			minlen: 0
+			adj: curly
+		emo
+			minlen: 10
+			adj: emo
+		mohawk
+			minlen: 10
+			noun: mohawk
+		ponytail
+			minlen: 10
+			noun: ponytail
+		pigtail
+			minlen: 10
+			plural
+			noun: pigtails
+		spiky
+			minlen: 6
+			adj: spiked
+		straight
+			minlen: 0
+			adj: straight
+		wavy
+			minlen: 0
+			adj: wavy
+	length
+		upto: 0
+			bald
+			shaved
+		upto: 1
+			trim
+			close-cropped
+		upto: 3
+			short
+		upto: 6
+			shaggy
+		upto: 10
+			moderately long
+		upto: 16
+			shoulder-length
+			long
+		upto: 26
+			back-length
+			very ong
+		upto: 40
+			ass-length
+		upto: 10000
+			obscenely long
+teeth
+	normal
+		human-like
+		humanoid
+	fangs
+		fanged
+	osmond
+		fearsome
+	sharp
+		predatory
+		sharp
+		carnivorous
+	soft
+		gummy
+tongue
+	normal
+		smooth
+		nimble
+	barbed
+		rough
+		barbed
+	long
+		prehensile
+		flexible
+	forked
+		forked
+		serpentine
+breasts
+	cupsize
+		upto: 0
+			flat
+		upto: 0.5
+			AA-cup
+		upto: 1
+			A-cup
+		upto: 2.5
+			B-cup
+		upto: 3.5
+			C-cup
+		upto: 4.5
+			D-cup
+		upto: 6
+			E-cup
+		upto: 7
+			F-cup
+		upto: 8
+			G-cup
+		upto: 9
+			H-cup
+		upto: 10
+			I-cup
+		upto: 12
+			J-cup
+		upto: 13
+			K-cup
+		upto: 14
+			L-cup
+		upto: 15
+			M-cup
+		upto: 1000
+			absurdly huge
+	size
+		upto: 0
+			flat
+		upto: 0.5
+			tiny
+		upto: 1
+			small
+		upto: 2.5
+			fair
+		upto: 3.5
+			appreciable
+		upto: 4.5
+			ample
+		upto: 6
+			pillowy
+		upto: 7
+			large
+		upto: 8
+			ridiculously large
+		upto: 9
+			huge
+		upto: 10
+			spacious
+		upto: 12
+			back-breaking
+		upto: 13
+			mountainous
+		upto: 14
+			ludicrous
+		upto: 15
+			exploding
+		upto: 1000
+			absurdly huge
+	nipples
+		upto: 0.25
+			dainty
+		upto: 0.5
+			perky
+		upto: 1
+			prominent
+		upto: 2
+			fleshy
+		upto: 3.2
+			hefty
+		upto: 100
+			bulky
+waist
+	upto: 1
+		emaciated
+		gaunt
+	upto: 4
+		thin
+		slender
+		scrawny
+	upto: 6
+		average
+		fit
+		normal
+	upto: 8
+		soft
+		spongy
+	upto: 11
+		chubby
+		husky
+	upto: 14
+		plump
+		meaty
+		portly
+	upto: 17
+		stout
+		tubby
+	upto: 20
+		obese
+		rotund
+	upto: 1000
+		morbid
+		corpulent
+wings
+	bat
+		bat-like
+		chiropteran
+	feather
+		feathered
+		bird-like
+	insect
+		insectoid
+		insect-like
+ass
+	size
+		upto: 1
+			very small
+			insignificant
+		upto: 4
+			tight
+			firm
+			compact
+		upto: 6
+			regular
+			unremarkable
+		upto: 8
+			full
+			shapely
+		upto: 10
+			squeezable
+			large
+			substantial
+		upto: 13
+			jiggling
+			spacious
+			heavy
+		upto: 16
+			expansive
+			generous
+			voluminous
+		upto: 20
+			huge
+			vast
+			massive
+		upto: 1000
+			ginormous
+			colossal
+			tremendous
+	looseness
+		upto: 0
+			virgin
+		upto: 1
+			tight
+		upto: 2
+			toned
+		upto: 3
+			loose
+			relaxed
+		upto: 4
+			stretched
+		upto: 5
+			distented
+		upto: 6
+			gaping
+		upto: 1000
+			cavernous
+hips
+	upto: 1
+		tiny
+		boyish
+	upto: 4
+		slender
+		narrow
+		thin
+	upto: 6
+		average
+		normal
+		plain
+	upto: 10
+		ample
+		noticable
+		girly
+	upto: 15
+		flared
+		curvy
+		wide
+	upto: 20
+		fertile
+		child-bearing
+		voluptuous
+	upto: 1000
+		broodmother-sized
+		cow-like
+		inhumanly wide
+legs
+	human
+		humanoid
+		human-like
+	dog
+		canine
+		dog-like
+	horse
+		equine
+		horse-like
+	insect
+		insectoid
+		chitinous
+	claws
+		claw-footed
+	stilleto
+		stilleto-heeled
+	genbeast
+		digitigrade
+	bear
+		ursine
+		bear-like
+penis
+	human
+		human
+		human-like
+		knob-ended
+	horse
+		equine
+		horse-like
+		flared
+	dog
+		canine
+		dog-like
+		pointed
+		knotted
+	bear
+		ursine
+		bear-like
+		tapered
+	lizard
+		reptilian
+		lizard-like
+		snake-like
+	cat
+		feline
+		cat-like
+		barbed
+	studded
+		studded
+		bumpy
+		stud-covered
+	dragon
+		draconic
+		ribbed
+		thick reptilian
+vagina
+	looseness
+		upto: 0
+			virgin
+		upto: 1
+			tight
+		upto: 2
+			toned
+		upto: 3
+			loose
+		upto: 4
+			very loose
+		upto: 5
+			gaping
+		upto: 6
+			gaping wide
+		upto: 1000
+			cavernous
+	wetness
+		upto: 0
+			dry
+		upto: 1
+			moist
+		upto: 2
+			wet
+		upto: 3
+			slick
+		upto: 4
+			drooling
+		upto: 1000
+			slavering
+	clitsizes
+balls
+	upto: 0.5
+		diminutive
+		small
+	upto: 1
+		average
+		normal
+	upto: 2
+		large
+	upto: 3
+		baseball-sized
+	upto: 4
+		apple-sized
+	upto: 5
+		grapefruit-sized
+	upto: 7
+		cantaloupe-sized
+	upto: 9
+		soccer ball-sized
+	upto: 12
+		basketball-sized
+	upto: 15
+		watermelon-sized
+	upto: 18
+		beachball-sized
+	upto: 1000
+		hideously swollen
+tail
+	fox
+		vulpine
+		fluffy
+	stinger
+		barbed
+		venomous
+		insectoid
+	horse
+		long-haired
+		equine
+		horse-like
+	dog
+		canine
+		dog-like
+		furry
+	cat
+		feline
+		cat-like
+		sinuous
+feet
+	horse: hoof
+	cow: hoof
+	dog: paw
+	bear: paw
+	cat: paw
+	insect: claw
+	default: foot
