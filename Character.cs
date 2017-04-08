@@ -27,6 +27,17 @@ namespace Noxico
 		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples
 	}
 
+	public enum TeamBehaviorClass
+	{
+		Attacking, Flocking
+	}
+	public enum TeamBehaviorAction
+	{
+		Nothing, Attack, PreferentialAttack, Avoid, Flock, FlockAlike,
+		CloseByAttack = 8, ThiefingPlayer
+	}
+
+
 	public partial class Character : TokenCarrier
 	{
 		public static List<Token> Bodyplans;
@@ -3268,6 +3279,125 @@ namespace Noxico
 			return ((pants == null || pants.CanReachThrough()) &&
 				(underpants == null || underpants.CanReachThrough()) &&
 				(socks == null || socks.CanReachThrough()));
+		}
+
+		/* TEAMS IDEA
+		 * ----------
+		 * Each character is assigned to one of the following:
+		 * 
+		 * 0 - Neutrals
+		 * 1 - The player
+		 * 2 - Hostiles
+		 * 3 - The player's posse
+		 * 4 - Guards
+		 * 5 - Predatory beasts
+		 * 6 - Prey beasts
+		 * 7 - Angry neutrals
+		 * 
+		 * This would of course mean that the Hostile token will be deprecated.
+		 * 
+		 * ATTACK GRID -- members of one team will hunt down and attack members of the other when spotted.
+		 *   0 1 2 3 4 5 6 7 <-- the other
+		 * 0 - - - - - - - - <-- neutrals don't attack
+		 * 1 - - - - - - - - <-- the player is not automatically controlled at all
+		 * 2 Y P - Y Y - - Y <-- hostiles attack neutrals, players, their possse and guards, but prefer the player
+		 * 3 - - Y - - Y - Y <-- posse attacks hostiles, predators, and angry neutrals (allow tactics control?)
+		 * 4 - T Y - - C - - <-- guards attack hostiles, thiefing players, and any predators that come too close
+		 * 5 ? Y Y Y Y ? P Y <-- predators attack basically everyone, but prefer prey
+		 * 6 - - - - - C - - <-- prey tries to bite back at predators
+		 * 7 - Y - - - - - - <-- neutrals only get angry at the player, for stealing their crap
+		 * 
+		 * FLOCKING GRID -- stay close to me... or don't?
+		 * (When you see a member of the other team, what do you do?)
+		 *   0 1 2 3 4 5 6 7
+		 * 0 - - A - - - - - <-- neutrals avoid hostiles
+		 * 1 - - - - - - - -
+		 * 2 - - S - - - - - <-- hostiles of a feather flock together (s for same)
+		 * 3 - Y - - - - - -
+		 * 4 - - - - ? - - -
+		 * 5 - - - - - S - -
+		 * 6 - ? A ? - A S - <-- prey avoids any visible predators
+		 * 7 - - A - - - - -
+		 */
+		public int Team
+		{
+			get
+			{
+				if (HasToken("team"))
+					return (int)GetToken("team").Value;
+				else
+				{
+					if (HasToken("player"))
+						return 1;
+					return 0; //Assume neutral
+				}
+			}
+			set
+			{
+				if (!HasToken("team"))
+					AddToken("team");
+				if (HasToken("player"))
+					value = 1; //Do not allow the player to be off the Player team.
+				GetToken("team").Value = value;
+			}
+		}
+
+		public TeamBehaviorAction DecideTeamBehavior(Character other, TeamBehaviorClass whatFor)
+		{
+			var myTeam = this.Team;
+			var theirTeam = other.Team;
+			if (myTeam == 1) //We are the player
+				return TeamBehaviorAction.Nothing;
+			//TODO: handle team 3 with player-decided tactics?
+			/* ACTIONS -- using ints instead of enums to make it shorter
+			 * 0 - do nothing
+			 * 1 - attack
+			 * 2 - preferential attack
+			 * 3 - avoid
+			 * 4 - flock
+			 * 5 - flock to similar
+			 * ...
+			 * 8 - close-by attack -- collapses to "nothing" or "preferential". IF RETURNED, SHIT'S FUCKED.
+			 * 9 - thiefing player check -- collapses like #8.
+			 */
+			if (whatFor == TeamBehaviorClass.Attacking)
+			{
+				var grid = new[]
+				{
+					0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0,
+					1, 2, 0, 1, 1, 0, 0, 1,
+					0, 0, 1, 0, 0, 1, 0, 1,
+					0, 9, 1, 0, 0, 8, 0, 0,
+					0, 1, 1, 1, 1, 0, 2, 1,
+					0, 0, 0, 0, 0, 8, 0, 0,
+					0, 1, 0, 0, 0, 0, 0, 0
+				};
+				var action = (TeamBehaviorAction)grid[(myTeam * 8) + theirTeam];
+				if (action == TeamBehaviorAction.CloseByAttack)
+					action = (BoardChar.DistanceFrom(other.BoardChar) > 4) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Attack;
+				//TODO: check for thieving players
+				//TODO: consider running away at low health, returning TBA.Avoid.
+				return action;
+			}
+			else
+			{
+				var grid = new[]
+				{
+					0, 0, 3, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 5, 0, 0, 0, 0, 0,
+					0, 4, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 5, 0, 0,
+					0, 0, 3, 0, 0, 3, 5, 0,
+					0, 0, 3, 0, 0, 0, 0, 0,
+				};
+				var action = (TeamBehaviorAction)grid[(myTeam * 8) + theirTeam];
+				if (action == TeamBehaviorAction.FlockAlike) //TODO: check if >= 3 is any good.
+					action = (Toolkit.GetHammingDistance(this.GetClosestBodyplanMatch(), other.GetClosestBodyplanMatch()) >= 3) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Flock;
+				return action;
+			}
 		}
 	}
 
