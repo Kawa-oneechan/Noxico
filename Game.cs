@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -82,7 +82,7 @@ namespace Noxico
 			Random.Reseed();
 
 			KeyBindings = new Dictionary<KeyBinding, Keys>();
-			RawBindings = new Dictionary<KeyBinding,string>();
+			RawBindings = new Dictionary<KeyBinding, string>();
 			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
 			//Keep this array in synch with KeyBinding.
 			var defaults = new[]
@@ -138,7 +138,7 @@ namespace Noxico
 			HostForm = hostForm;
 			KeyMap = new Dictionary<Keys, bool>();
 			KeyTrg = new Dictionary<Keys, bool>();
-			KeyRepeat = new Dictionary<Keys,DateTime>();
+			KeyRepeat = new Dictionary<Keys, DateTime>();
 			for (var i = 0; i < 255; i++)
 			{
 				KeyMap.Add((Keys)i, false);
@@ -161,7 +161,7 @@ namespace Noxico
 				var line = l.Trim();
 				if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
 					continue;
-				var values = line.Split(new[]{' ','\t'}).Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
+				var values = line.Split(new[] { ' ', '\t' }).Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
 				IngameToUnicode[values[0]] = (char)values[1];
 				IngameTo437[values[0]] = (char)values[2];
 			}
