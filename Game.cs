@@ -725,7 +725,7 @@ namespace Noxico
 								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Definition.Background);
 							}
 						}
-						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.White, (x * 80) + 1, (y * 50) + 1);
+						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.Red, (x * 80) + 1, (y * 50) + 1);
 					}
 				}
 				png.Save("world_" + realm.ToString() + ".png");
