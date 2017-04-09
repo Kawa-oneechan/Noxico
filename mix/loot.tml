@@ -1,0 +1,229 @@
+-- for sets:
+-- directitem			item with that ID
+-- @token			any random item with that token
+-- @tokenA+tokenB		any random item with those tokens
+-- @tokenA-tokenB		any random item with tokenA but NOT tokenB
+-- @tokenA+tokenB-tokenC	any random item with tokenA and B but not C
+-- @-token			any random item AT ALL that does not have that token
+-- $color: N			for color matching - makes all items in the set the same color, if allowed
+
+lootset
+	target: container
+	type: dungeon_chest
+-- Contains: ONE small weapon, large weapon, or rare weapon, TWO to FIVE food items, and ONE to THREE potions, NO to TWO dyes, MAYBE ONE book, all random.
+	oneof: 
+		@smallweapon
+		@largeweapon
+		@rareweapon
+	someof: 2-5
+		@food
+	someof: 1-3
+		@potion
+	someof: 0-2
+		dye
+	someof: 0-1
+		book
+
+-- #region Wardrobes
+lootset
+	target: container
+	type: wardrobe
+	filter
+		gender: male
+	someof: 2-5
+		@underwear-joke-for_women
+	someof: 3-7
+		@clothing-underwear-joke-for_women
+
+lootset
+	target: container
+	type: wardrobe
+	filter
+		gender: female
+	someof: 2-5
+		@underwear-joke-for_men
+	someof: 3-7
+		@clothing-underwear-joke-for_men
+
+lootset
+	target: container
+	type: wardrobe
+	someof: 0-2
+		@clothing-underwear-joke-for_men-for_women
+-- #endregion
+
+-- #region Vendors
+lootset
+	target: vendor
+	type: stock
+	filter
+		vendorclass: baker
+	someof: 10
+		@baked
+
+lootset
+	target: vendor
+	type: stock
+	filter
+		vendorclass: butcher
+	someof: 10
+		@meat
+
+lootset
+	target: vendor
+	type: stock
+	filter
+		vendorclass: clothier
+	someof: 10
+		@clothing-joke
+
+lootset
+	target: vendor
+	type: stock
+	filter
+		vendorclass: armorer
+	someof: 10
+		@armor-joke
+
+-- lootset
+--	target: vendor
+--	type: stock
+--	filter
+--		vendorclass: greengrocer
+--	someof: 10
+--		@fruit
+-- #endregion
+
+
+lootset
+	target: npc
+	type: food
+	someof: 2-8
+		@food
+
+
+-- #region Armanents
+lootset
+	target: npc
+	type: arms
+	filter
+		board: wild
+		culture: seradevar
+-- either a small or large blade.
+	oneof
+		@smallweapon+blade-rareweapon
+		@largeweapon+blade-rareweapon
+
+lootset
+	target: npc
+	type: arms
+	filter
+		gender: !female
+	oneof
+		@smallweapon+blade-rareweapon
+
+lootset
+	target: npc
+	type: arms
+	filter
+		board: town
+		gender: female
+	oneof
+		combat_knife
+-- #endregion
+
+
+-- #region Base costumes
+lootset
+	target: npc
+	type: clothing
+	filter
+		gender: !male
+	oneof
+		$color: 1
+		shirt
+		blouse
+	oneof
+		$color: 2
+		pants
+		skirt
+
+lootset
+	target: npc
+	type: clothing
+	filter
+		gender: !male
+	oneof
+		elegant_dress
+		sundress
+
+lootset
+	target: npc
+	type: clothing
+	filter
+		gender: !male
+	oneof
+		girls_uniform_top
+	oneof
+		pleated_skirt
+
+lootset
+	target: npc
+	type: clothing
+	filter
+		gender: !female
+	oneof
+		$color: 1
+		shirt
+		blouse
+	oneof
+		$color: 2
+		pants
+
+lootset
+	target: npc
+	type: clothing
+	filter
+		gender: !female
+	oneof
+		boys_uniform_top
+	oneof
+		pants
+-- #endregion
+
+-- #region Underwear
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		culture: felin
+	-- Nothing! Felin don't do underwear.
+
+lootset
+	target: npc
+	type: underwear
+	filter
+		gender: female
+	oneofeach
+		plain_panties
+		plain_bra
+
+lootset
+	target: npc
+	type: underwear
+	filter
+		gender: female
+	oneofeach
+		lacy_panties
+		lacy_bra
+
+lootset
+	target: npc
+	type: underwear
+	filter
+		gender: !female
+	oneof
+		plain_briefs
+		plain_boxers
+

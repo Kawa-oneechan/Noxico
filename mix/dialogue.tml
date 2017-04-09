@@ -1,0 +1,175 @@
+top
+
+scene: test2
+	name: invite to have sex
+	list: (DEBUG) Set willingness
+	filters
+		debug
+	script
+		<[[
+			bottom.AddToken("willing")
+		]]>
+	- "[b:name] is now willing. Cheater."
+
+scene: test2a
+	name: tell about location a
+	list: (DEBUG) Tell about random location again
+	priority
+	filters
+		debug
+		bottom: has gavenewtown
+	- ""I told you, you should visit [b:T:gavenewtown].""
+
+scene: test2b
+	name: tell about location a
+	list: (DEBUG) Tell about random location
+	priority
+	filters
+		debug
+	script
+		<[[
+			local newExpectation = ExpectTown(null, -1)
+			print("\"Have you heard of " + newExpectation.Name + "?\"")
+			bottom.AddToken("gavenewtown", newExpectation.ID, newExpectation.Name)
+		]]>
+
+scene: ohboy
+	name: (criminalscum)
+	- ""Stop right there, criminal scum!""
+	script
+		<[[
+			if not bottom.HasToken("stolenfrom") then
+				bottom.AddToken("stolenfrom")
+			end
+			if not bottom.HasToken("hostile")
+				bottom.AddToken("hostile")
+			end
+		]]>
+
+scene: dreamtest
+	name: (dream)
+	filters
+		debug
+	- "To sleep, perchance, to dream..."
+
+scene: dreamtest2
+	name: (dream)
+	filters
+		debug
+	- "What is it worth anyway?"
+
+-- Several greetings
+-- -----------------
+-- Section 1 - First Contact
+
+scene: GenericUnknownHottie
+	name: (start)
+	filters
+		bottom: relation none
+		top: value charisma >= 50
+	- ""Ah... Greetings, traveller," [b:he] says with a slightly flushed smile. "Can I... help you, maybe?""
+	action: introduce yourself
+	action: invite to have sex
+	action: no thank you goodbye
+
+scene: GenericUnknownNottie
+	name: (start)
+	filters
+		bottom: relation none
+		top: value charisma < 10
+	- ""Greetings, traveller," [b:he] says. "Can I... help you?""
+	action: introduce yourself
+	action: invite to have sex
+	action: no thank you goodbye
+
+scene: GenericUnknown
+	name: (start)
+	random: greetings
+	filters
+		bottom: relation none
+	- ""Greetings, traveller," [b:he] says with a friendly unassuming smile. "Can I help you?""
+	action: trade
+	action: token replacement test
+	action: tell about location a
+	action: introduce yourself
+	action: invite to have sex
+	action: no thank you goodbye
+
+scene: GenericUnknown2
+	name: (start)
+	random: greetings
+	filters
+		bottom: relation none
+	- ""Oh hello," [b:he] says. "Can I help?""
+	action: trade
+	action: token replacement test
+	action: tell about location a
+	action: introduce yourself
+	action: invite to have sex
+	action: no thank you goodbye
+
+-- Section 2 - We Meet Again
+
+scene: GenericKnown
+	name: (start)
+	- ""[?:helloagain], [t:name]", [b:he] greets you. "[?:canihelp]""
+	action: invite to have sex
+	action: no thank you goodbye
+
+-- Ways to say goodbye
+
+scene: GenericGoodbye
+	name: goodbye
+	list: Goodbye
+	- ""We'll probably meet again", you say as you turn away."
+	- ""Perhaps we will", [b:name] replies."
+	end
+
+scene: GenericDeclineGoodbye
+	name: no thank you goodbye
+	list: No thanks, goodbye
+	- "You apologetically shake your head. "No thank you, sorry for bothering", you say."
+	end
+
+-- Mammies, step faw'd 'n express yo'sevs!
+
+scene: GenericIntroduceHottie
+	name: introduce yourself
+	list: Introduce yourself
+	filters
+		top: value charisma >= 50
+	- "You tell [b:name] your name and flash [b:him] a twinkling smile."
+	- ""It's a pleasure meeting you, [t:name]", [b:he] says a little flustered."
+	script
+		<[[
+			top.SetRelation(bottom, "acquaintance", true)
+			bottom.SetRelation(top, "considers hot")
+		]]>
+	action: invite to have sex
+	action: goodbye
+
+scene: GenericIntroduceNottie
+	name: introduce yourself
+	list: Introduce yourself
+	filters
+		top: value charisma < 10
+	- "You tell [b:name] your name and flash [b:him] a smile."
+	- ""It's... a pleasure meeting you I'm sure... [t:name]", [b:he] says."
+	script
+		<[[
+			top.SetRelation(bottom, "acquaintance", true)
+		]]>
+	action: invite to have sex
+	action: goodbye
+
+scene: GenericIntroduce
+	name: introduce yourself
+	list: Introduce yourself
+	- "You smile back to [b:name] and tell [b:him] your name."
+	- ""It's a pleasure meeting you, [t:name]", [b:he] says."
+	script
+		<[[
+			top.SetRelation(bottom, "acquaintance", true)
+		]]>
+	action: invite to have sex
+	action: goodbye

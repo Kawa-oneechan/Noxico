@@ -1,0 +1,14 @@
+## Font Test a
+<fHand>"To be so stupid as to add font support to books instead of working on things that actually matter like the sex system is the mark of a dumbass."<f>
+
+<fInvalid>This is an invalid style value. It should render in the regular font.<f>
+
+<fDaedric>OPEN THE GATES OF OBLIVION <- daedric, woo<f>
+
+<fAlternian>EPORYP IZERET <- alternian, reverse it yourself<f>
+
+<fKeen>BEHOLD THE MIGHTY POGO STICK <- commander keen's standard galactic alphabet<f>
+
+<fCarve>CARVED INTO THE LIVING ROCK ITSELF<f>
+
+Unstyled paragraph. As in, there is no style attribute at all.
