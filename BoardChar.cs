@@ -727,7 +727,7 @@ namespace Noxico
 				var diTarget = target as DroppedItem;
 				if (distance <= 1 && CanSee(diTarget))
 				{
-					diTarget.Take(this.Character);
+					diTarget.Take(this.Character, ParentBoard);
 					this.Character.GetToken("stolenfrom").Name = "wasstolenfrom";
 					this.Character.RemoveToken("hostile");
 					this.Energy -= 1000;

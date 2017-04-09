@@ -342,13 +342,14 @@ namespace Noxico
 			return newItem;
 		}
 
-		public void Take(Character taker)
+		public void Take(Character taker, Board ParentBoard)
 		{
 			if (!taker.HasToken("items"))
 				taker.Tokens.Add(new Noxico.Token() { Name = "items" });
 			taker.GetToken("items").Tokens.Add(Token);
 			taker.CheckHasteSlow();
-		}
+            ParentBoard.EntitiesToRemove.Add(this);
+        }
 
 		public static List<DroppedItem> GetItemsAt(Board board, int x, int y)
 		{
@@ -375,7 +376,7 @@ namespace Noxico
 					var player = NoxicoGame.HostForm.Noxico.Player;
 					var item = drop.Item;
 					var token = drop.Token;
-					drop.Take(player.Character);
+					drop.Take(player.Character, player.ParentBoard);
 					player.Energy -= 1000;
 					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
 					NoxicoGame.Sound.PlaySound("set://GetItem"); 
