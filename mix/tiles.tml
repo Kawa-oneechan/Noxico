@@ -502,6 +502,10 @@ tile: 105
 	back: #563F2C
 	char: 32
 	ceiling
+tile: 106
+	id: pathWay
+	back: #281b10
+	char: 32
 
 -- BIOME: GRASSLAND 
 tile: 200

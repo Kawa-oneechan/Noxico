@@ -231,6 +231,9 @@ namespace Noxico
 							{
 								case '\'':
 									continue;
+								case ',':
+									def = "pathWay"; // TODO kind of ugly but does the job
+									break;
 								case '.':
 									def = "woodFloor";
 									break;
