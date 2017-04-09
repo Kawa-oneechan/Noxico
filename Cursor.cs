@@ -335,7 +335,7 @@ namespace Noxico
 										var drop = PointingAt as DroppedItem;
 										var item = drop.Item;
 										var token = drop.Token;
-										drop.Take(player.Character);
+										drop.Take(player.Character, ParentBoard);
 										player.Energy -= 1000;
 										NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
 										NoxicoGame.Sound.PlaySound("set://GetItem");
