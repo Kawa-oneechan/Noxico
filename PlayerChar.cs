@@ -582,8 +582,8 @@ namespace Noxico
 					var drop = itemsHere[0];
 					if (drop != null)
 					{
-						drop.Take(this.Character);
-						NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
+						drop.Take(this.Character, ParentBoard); 
+                        NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
 						NoxicoGame.Sound.PlaySound("set://GetItem"); 
 						ParentBoard.Redraw();
