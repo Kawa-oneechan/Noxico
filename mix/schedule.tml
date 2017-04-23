@@ -1,0 +1,47 @@
+schedule: villager
+	0000: Sleep
+		range: +-30
+	0630: Wander
+		range: +30
+	1700: GoHome
+		range: +30
+
+activity: GoHome
+	script: init
+		<[[
+			scheduler.AddTask( Task(TaskType.FindAndGoto, "Bed_" .. this.Name.ToID()) )
+			scheduler.AddTask( Task(TaskType.Wander, 500) )
+		]]>
+	script: repeat
+		<[[
+			scheduler.AddTask( Task(TaskType.Wander, 30000) )
+		]]>
+	script: end
+		<[[
+			//nothing
+		]]>
+
+activity: Sleep
+	script: init
+		<[[
+			scheduler.AddTask( Task(TaskType.FindAndGoto, "Bed_" .. this.Name.ToID()) )
+			local token = Token("sleeping")
+			if not this.HasToken("sleeping")
+				scheduler.AddTask( Task(TaskType.AddToken, token) )
+			end
+		]]>
+	script: end
+		<[[
+			scheduler.AddTask( Task(TaskType.RemoveToken, "sleeping") )
+		]]>
+
+activity: Wander
+	script: init
+		<[[
+			scheduler.AddTask( Task(TaskType.Wander, -1) )
+		]]>
+	script: end
+		<[[
+			scheduler.AddTask( Task(TaskType.Wander, math.ceil(math.random() * 5)) )
+		]]>
+

@@ -1,0 +1,68 @@
+trait: charismatic
+	display: Charismatic 
+	stat: charisma
+		increase: 15%
+	skill: bartering
+	description: Gives a 15% bonus on Charisma, and a level in bartering.
+trait: cunning_bastard
+	display: Cunning Bastard
+	stat: cunning
+	skill: trap_disarming
+	description: Gives a 20% bonus on Cunning, and a level in trap disarming.
+trait: fast_food
+	display: Fast Food
+	stat: speed
+	skill: swimming
+	description: Gives a 20% bonus on Speed, and a level in swimming.
+trait: olympian
+	display: Olympian
+	stat: strength
+	skill: acrobatics
+	description: Gives a 20% bonus on Strength, and a level in acrobatics.
+trait: smooth_operator
+	display: Smooth Operator
+	stat: charisma
+	skill: sweet_talking
+		level: 0.5
+	skill: kissing
+	description: Gives a 20% bonus on Charisma, levels in sweet talking and kissing, and half a level in bartering.
+trait: pervert
+	display: Pervert
+	stat: carnality
+	stat: stimulation
+	skill: sweet_talking
+		level: 0.5
+	skill: blowjobs
+	skill: penile_masturbation
+		men_only
+	skill: vaginal_masturbation
+		women_only
+	skill: anal_play
+	description: Gives a 20% bonus on Carnality and Stimulation, levels in blowjobs, masturbation, and anal play, and half a level in sweet talking.
+trait: large
+	display: Large
+	rating: breastrow/size
+		value: 5
+		women_only
+	rating: hips
+		value: 16
+		women_only
+	rating: butt
+		value: 8
+		women_only
+	rating: penis/length
+		value: 110%
+		men_only
+	rating: waist
+		value: 7
+	description: Starts with bigger body parts. Males start with a 20% penis length bonus. Women start with at least E cups, voluptuous hips, and substantial butts. Both start with at least spongy hips.
+trait: messy
+	display: Messy
+	token
+		cummultiplier: 3
+	token
+		trailer
+	token
+		milker
+		women_only
+	description: Gives triple the cum production, with a high chance of leaving trails for a time afterwards. If female, milk production is always at least a dribble at any time.

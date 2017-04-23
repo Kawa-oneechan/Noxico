@@ -1,0 +1,16 @@
+add: -
+	lootset
+		target: npc
+		type: underwear
+		final
+		filter
+			bodymatch: mlp_littlepony
+	-- Nothing!
+
+	lootset
+		target: npc
+		type: underwear
+		final
+		filter
+			bodymatch: changeling
+	-- Nothing!

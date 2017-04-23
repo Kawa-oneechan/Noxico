@@ -1,0 +1,84 @@
+add: top
+	scene: CarpenterStart
+		name: (start)
+		filters
+			bottom: text role/vendor/class carpenter
+		- ""Hello, what can I do for you?" [b:name] asks"
+		action: carpenter toolshed
+		action: carpenter upgrade
+		action: carpenter nothing
+	scene: CarpenterNothing
+		name: carpenter nothing
+		list: Nothing
+		- ""Well, it's not a problem. Come back any time!""
+	scene: CarpenterToolshed
+		name: carpenter toolshed
+		list: Asks about tool sheds
+		filters
+			top: hasnot homeboardhasshed
+		- ""Ah yes, a tool shed. A nice little place to work your manual creativity. If you want one, I can come over and build one for you.""
+		action: carpenter toolshed okay
+		action: carpenter upgrade
+		action: carpenter nothing
+	scene: CarpenterToolshedOkay
+		name: carpenter toolshed okay
+		list: Pay &#x13B;20 for a tool shed.
+		filters
+			top: value money >= 20
+		- ""Very well. It'll be there.""
+		script
+			<[[
+				top.GetToken("money").Value -= 20;
+				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
+				homeBoard.MergeBitmap("missions\\playerbase\\toolshed.png", "missions\\playerbase\\lv0.txt");
+				top.AddToken("homeboardhasshed");
+				//TODO: Can this be done in MergeBitmap?
+				var table = new Clutter();
+				table.ID = "craftstation";
+				table.Glyph = 0x148;
+				table.ForegroundColor = Color.Black;
+				table.BackgroundColor = Color.FromName("Auburn");
+				table.Blocking = true;
+				table.Name = "Crafting table";
+				table.Description = "You can use this to make stuff.";
+				table.ParentBoard = homeBoard;
+				table.XPosition = 27;
+				table.YPosition = 25;
+				homeBoard.EntitiesToAdd.Add(table);
+			]]>
+		action: carpenter upgrade
+	scene: CarpenterUpgrade
+		name: carpenter upgrade
+		list: Ask about extra rooms
+		filters
+			top: value homeboardlevel < 4
+		- ""You want extra room? It's yours, friend. As long as you have enough, mmm, zennies.""
+		action: carpenter upgrade okay
+		action: carpenter toolshed
+		action: carpenter nothing
+	scene: CarpenterUpgradeNo
+		name: carpenter upgrade
+		list: Ask about extra rooms
+		filters
+			top: value homeboardlevel == 4
+		- ""You want extra room? I'm afraid not, friend.""
+		action: carpenter nothing
+		action: carpenter toolshed
+	scene: CarpenterUpgradeOkay
+		name: carpenter upgrade okay
+		list: Pay &#x13B;100 for more bedrooms
+		filters
+			top: value money >= 100
+		- ""Very well. It'll be there.""
+		script
+			<[[
+				top.GetToken("money").Value -= 100;
+				var homeBoard = GetBoard(top.GetToken("homeboard").Value);
+				var level = top.GetToken("homeboardlevel").Value + 1;
+				top.GetToken("homeboardlevel").Value = level;
+				homeBoard.MergeBitmap("missions\\playerbase\\lv" + level + ".png", "missions\\playerbase\\lv0.txt");
+				//TODO: add furniture
+			]]>
+		action: carpenter toolshed
+		action: carpenter upgrade
+

@@ -1,0 +1,119 @@
+add: -
+	__marker: Homestuck <small>(way outdated and incomplete)</small>
+	-- Dirk Strider
+	item: fancysanta
+		_n: fancy Santa
+		fireproof
+		fearsome
+		equipable
+			hand
+		weight: medium
+		weapon
+			damage: 30
+			skill: club
+			attacktype: crush
+		description: "A smallish but ornate statue of a festive holiday character."
+		ascii
+			char: 0x165
+			fore: red
+		rareweapon
+
+	-- John Egbert
+	item: wrinklefucker
+		_u: appliance-headed warhammer
+		fireproof
+		unique
+		equipable
+			hand
+			twohanded
+		weight: medium
+		weapon
+			damage: 100
+			skill: warhammer
+			attacktype: crush
+		description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
+		ascii
+			char: 0x192
+			fore: lime
+		rareweapon
+
+	-- John Egbert
+	item: zillyhoo
+		_n: Warhammer of Zillyhoo&#x15c;
+		fireproof
+		unique
+		equipable
+			hand
+		weight: heavy
+		weapon
+			damage: 300
+			skill: warhammer
+			attacktype: crush
+		description: "Behold the glory of Zillyhoo!"
+		ascii
+			char: 0x192
+			fore: blue
+		rareweapon
+
+	-- Eridan Ampora
+	item: crosshairs
+		_n: Ahab's Crosshairs&#x15c;
+		fireproof
+		unique
+		equipable
+			hand
+		weight: medium
+		weapon
+			damage: 200
+			range: 30
+			skill: large_firearm
+		description: "Plundered from some sunken galleon somewhere, this is no ordinary rifle -- it's a laser rifle!"
+		ascii
+			char: 0x183
+			fore: blue
+		effect
+			char: U+002A
+			fore: blue
+			back: navy
+		rareweapon
+
+	-- Kanaya Maryam
+	item: ragripper
+		_n: Demonbane Ragripper&#x15c;
+		fireproof
+		unique
+		fearsome
+		equipable
+			hand
+		weight: medium
+		weapon
+			damage: 250
+			skill: chainsaw
+			attacktype: tear
+		description: "Awesome. Demonic-looking. Not actually a tube of lipstick. This is a chainsaw to be reckoned with."
+		ascii
+			char: 0x191
+			fore: purple
+		rareweapon
+
+	-- Feferi Peixes
+	item: entente
+		_n: &#x15b;don's Entente
+		_p
+		unique
+		fireproof
+		equipable
+			hand
+		weight: heavy
+		weapon
+			damage: 250
+			skill: polearm
+			attacktype: pierce
+		description: "Pronounced 'psai-dons an-tant'."
+		ascii
+			char: 0x190
+			fore: goldenrod
+		price: 1000
+		rareweapon
+
+	-- Caledflwch, regisickle, Quills of Echidna, SORD.....
