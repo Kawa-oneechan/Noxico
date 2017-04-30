@@ -189,26 +189,33 @@ namespace Noxico
 		{
 			//TODO: clean up
 			//TRANSLATE the lot of this. Could take rewrite cleanup to handle.
-			var g = PercievedGender.ToString().ToLowerInvariant();
-			Title = GetToken("terms").GetToken("generic").Text;
-			if (HasToken("prefixes"))
+			var pg = PercievedGender.ToString().ToLowerInvariant();
+
+			Title = pg + " " + GetToken("terms").GetToken("generic").Text; // generic "male human"
+				
+			// attempt to find a custom term for this race & gender combo?
+			if (pg == "male" && GetToken("terms").HasToken("male"))
+				Title = GetToken("terms").GetToken("male").Text;
+
+			if (pg == "female" && GetToken("terms").HasToken("female"))
+				Title = GetToken("terms").GetToken("female").Text;
+
+			if (pg == "herm" && GetToken("terms").HasToken("herm"))
+				Title = GetToken("terms").GetToken("herm").Text;
+
+			if (pg == "neuter" && GetToken("terms").HasToken("neuter"))
+				Title = GetToken("terms").GetToken("neuter").Text; // todo can't happen yet, update PercievedGender
+
+			if (HasToken("explicitgender")) { } // not sure where to go with these right now
+
+			if (HasToken("invisiblegender")) { } // same
+						
+			if (HasToken("prefixes")) // add prefixes, 'vorpal', 'dire' etc
 			{
 				foreach (var prefix in GetToken("prefixes").Tokens)
 					Title = prefix.Name + " " + Title;
 			}
-			if (HasToken("invisiblegender"))
-			{
-				if (g == "male" && GetToken("terms").HasToken("male"))
-					Title = GetToken("terms").GetToken("male").Text;
-				else if (g == "female" && GetToken("terms").HasToken("female"))
-					Title = GetToken("terms").GetToken("female").Text;
-				else if (g == "hermaphrodite" && GetToken("terms").HasToken("herm"))
-					Title = GetToken("terms").GetToken("herm").Text;
-			}
-			else if (HasToken("explicitgender"))
-			{
-				Title = g + " " + Title;
-			}
+			
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
