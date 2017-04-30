@@ -13,7 +13,7 @@
 -- todo climax bonuses from high stimulation
 -- todo add StretchHole
 -- todo add baseball bat, other sex toy shaped items
--- todo orgasm_denial_ring
+-- done: orgasm_denial_ring
 
 -- special
 choice: wait
@@ -93,7 +93,7 @@ choice: orgasm_denial_ring
 	effect
 		<[[
 			top.Raise(Stat.Climax, -15)
-			message({"[t:Youorname] whimper{s} as [t:he] almost, but not quite, orgasm{s}.", Color.Orange)
+			message({"[t:Youorname] whimper{s} as [t:he] almost, but not quite, orgasm{s}."}, Color.Orange)
 		]]>
 
 -- for herms
@@ -174,7 +174,7 @@ group: masturbating and top.CanReachCrotch()
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				message({"[t:Youorname] push [t:his] fingers into [t:his] own [t:pussywetness] [?:pussy]."})
+				message({"[t:Youorname] push [t:his] fingers into [t:his] own [t:anuslooseness] [?:anus]."})
 			]]>
 			
 	choice: m_tail
@@ -602,20 +602,20 @@ group: top.HasItem("gExtractor")
 
 
 -- fake group: debug
-	choice: debug_climax_top
-		_n: Debug self climax
-		effect
-		<[[
-			top.Raise(Stat.Climax, 100)
-			message({"[t:Youorname] use{s} the happy debug wand on [b:him]self."})
-		]]>
-		
-	choice: debug_climax_bottom
-		_n: Debug partner climax
-		filter: not masturbating
-		effect
-		<[[
-			bottom.Raise(Stat.Climax, 100)
-			message({"[t:Youorname] use{s} the happy debug wand on [b:name]."})
-		]]>
+choice: debug_climax_top
+	_n: Debug self climax
+	effect
+	<[[
+		top.Raise(Stat.Climax, 100)
+		message({"[t:Youorname] use{s} the happy debug wand on [b:him]self."})
+	]]>
+	
+choice: debug_climax_bottom
+	_n: Debug partner climax
+	filter: not masturbating
+	effect
+	<[[
+		bottom.Raise(Stat.Climax, 100)
+		message({"[t:Youorname] use{s} the happy debug wand on [b:name]."})
+	]]>
 --endgroup
