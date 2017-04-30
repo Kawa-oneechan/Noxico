@@ -100,7 +100,10 @@ namespace Noxico
 					return string.Format("{0}, {1} {2}{3}", Name.ToString(fullName), (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
 				return Name.ToString(fullName);
 			}
-			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+			return string.Format("{0} {1}{2}", 
+				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
+				(g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ',
+				Title);
 		}
 
 		/// <summary>
@@ -135,6 +138,9 @@ namespace Noxico
 			}
 		}
 
+		/// <summary>
+		/// Returns the character's visible gender according to body parts.
+		/// </summary>
 		public Gender PercievedGender
 		{
 			get
@@ -145,33 +151,45 @@ namespace Noxico
 				if (HasToken("player"))
 					return PreferredGender;
 				//TODO: detect a relationship token and return the preferred gender if known.
-
-				var crotchVisible = false;
+				
 				var pants = GetEquippedItemBySlot("pants");
 				var underpants = GetEquippedItemBySlot("underpants");
 				var pantsCT = (pants == null) ? true : pants.CanSeeThrough();
 				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough();
-				if (pantsCT && underpantsCT)
-					crotchVisible = true;
-				var biggestDick =  (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
+				var crotchVisible = (pantsCT && underpantsCT);
+
+				var biggestDick = (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
+
 				if (biggestDick < 4 && !crotchVisible)
 					biggestDick = 0; //hide tiny dicks with clothing on.
 
-				var score = 0.5f;
-				score -= biggestDick * 0.02f;
-				if (BiggestBreastrowNumber != -1)
-					score += GetBreastRowSize(BiggestBreastrowNumber) * 0.1f;
-				if (HasToken("vagina") && crotchVisible)
-					score += 0.5f;
-				if (HasToken("hair"))
-					score += this.Path("hair/length").Value * 0.01f;
-				//TODO: apply femininity score
+				var scoreM = 0.0f; // note scores not capped at 1.0
+				var scoreF = 0.0f;
 
-				if (score < 0.4f)
-					return Noxico.Gender.Male;
-				else if (score > 0.6f)
-					return Noxico.Gender.Female;
-				return Noxico.Gender.Herm;
+				// calibrated using felin min. penis size
+				// size 13 or more guarentees masculine looks
+				scoreM += biggestDick * 0.04f;
+
+				// calibrated using felin min. breast size
+				// size 2 or more breaks the feminine looks threshold
+				if (BiggestBreastrowNumber != -1)
+					scoreF += GetBreastRowSize(BiggestBreastrowNumber) * 0.51f;
+				
+				// visible vagina implies feminine looks
+				if (HasToken("vagina") && crotchVisible) scoreF += 0.51f;
+
+				// hair > 11 makes for feminine looks - even if you got nothing else
+				if (HasToken("hair")) scoreF += this.Path("hair/length").Value * 0.046f;
+
+				// todo consider hips & waist
+				
+				// decide what to return based on quadrants
+				if (scoreM > 0.5f && scoreF > 0.5f) return Noxico.Gender.Herm;
+				if (scoreM < 0.5f && scoreF < 0.5f) return Noxico.Gender.Neuter;
+				if (scoreM > 0.5f && scoreF < 0.5f) return Noxico.Gender.Male;
+				if (scoreM < 0.5f && scoreF > 0.5f) return Noxico.Gender.Female;
+				 
+				return Noxico.Gender.Female; // never trust floating point
 			}
 		}
 
