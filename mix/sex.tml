@@ -88,6 +88,14 @@ group: top.HasVagina() and (not top.HasPenis())
 			]]>
 -- endgroup vaginal climax
 
+choice: orgasm_denial_ring
+	meta
+	effect
+		<[[
+			top.Raise(Stat.Climax, -15)
+			message({"[t:Youorname] whimper{s} as [t:he] almost, but not quite, orgasm{s}.", Color.Orange)
+		]]>
+
 -- for herms
 group: top.HasVagina() and top.HasPenis()
 	choice: climax
@@ -591,6 +599,7 @@ group: top.HasItem("gExtractor")
 			message({"[t:Youorname] pull{s} the goblin extractor out of [b:youorname]."})
 		]]>
 --endgroup
+
 
 -- fake group: debug
 	choice: debug_climax_top

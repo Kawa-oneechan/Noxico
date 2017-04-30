@@ -157,7 +157,7 @@ namespace Noxico
 						ni.OnEquip = script.GetToken("#text").Text;
 						break;
 					case "unequip":
-						ni.OnEquip = script.GetToken("#text").Text;
+						ni.OnUnequip = script.GetToken("#text").Text;
 						break;
 					case "timer":
 						ni.OnTimer = script.GetToken("#text").Text;
