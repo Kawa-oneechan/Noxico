@@ -165,6 +165,7 @@ namespace Noxico
 		public bool Running { get; set; }
 
 		private int CellWidth, CellHeight;
+		private int CellXoffset, CellYoffset;
 		private string pngFont = "8x8-thin";
 		private byte[,] fontData;
 
@@ -414,6 +415,16 @@ namespace Noxico
 			var fontBitmap = Mix.GetBitmap("fonts\\" + pngFont + ".png");
 			CellWidth = fontBitmap.Width / 32;
 			CellHeight = fontBitmap.Height / 32;
+
+			if (CellWidth == 8)
+			{
+				CellXoffset = -3; CellYoffset = 0;
+			}
+			else if (CellWidth == 16)
+			{
+				CellXoffset = -10; CellYoffset = -4;
+			}
+
 			CachePNGFont(fontBitmap);
 
 			youtube = IniFile.GetValue("misc", "youtube", false);
@@ -631,8 +642,8 @@ namespace Noxico
 					var here = image[col, row];
 					if (here != previousImage[col, row])
 					{
-							DrawCell(scan0, lockData.Stride, row, col, here);
-							previousImage[col, row].CopyFrom(here);
+						DrawCell(scan0, lockData.Stride, row, col, here);
+						previousImage[col, row].CopyFrom(here);
 					}
 				}
 			}
@@ -785,6 +796,9 @@ namespace Noxico
 		{
 			var tx = y.X / (CellWidth);
 			var ty = y.Y / (CellHeight);
+			tx += CellXoffset;
+			ty += CellYoffset;
+
 			if (tx < 0 || ty < 0 || tx > 99 || ty > 59)
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
