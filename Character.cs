@@ -207,26 +207,32 @@ namespace Noxico
 		{
 			//TODO: clean up
 			//TRANSLATE the lot of this. Could take rewrite cleanup to handle.
-			var pg = PercievedGender.ToString().ToLowerInvariant();
+			var pg = PercievedGender; //cache the value -- K
 
-			Title = pg + " " + GetToken("terms").GetToken("generic").Text; // generic "male human"
-				
+			Title = pg.ToString().ToLowerInvariant() + " " + GetToken("terms").GetToken("generic").Text; // generic "male human"
+
 			// attempt to find a custom term for this race & gender combo?
-			if (pg == "male" && GetToken("terms").HasToken("male"))
+			//enums (being ints in disguise) compare better than strings. -- K
+			if (pg == Gender.Male && GetToken("terms").HasToken("male"))
 				Title = GetToken("terms").GetToken("male").Text;
 
-			if (pg == "female" && GetToken("terms").HasToken("female"))
+			if (pg == Gender.Female && GetToken("terms").HasToken("female"))
 				Title = GetToken("terms").GetToken("female").Text;
 
-			if (pg == "herm" && GetToken("terms").HasToken("herm"))
+			if (pg == Gender.Herm && GetToken("terms").HasToken("herm"))
 				Title = GetToken("terms").GetToken("herm").Text;
 
-			if (pg == "neuter" && GetToken("terms").HasToken("neuter"))
+			if (pg == Gender.Neuter && GetToken("terms").HasToken("neuter"))
 				Title = GetToken("terms").GetToken("neuter").Text; // todo can't happen yet, update PercievedGender
 
 			if (HasToken("explicitgender")) { } // not sure where to go with these right now
-
+			
 			if (HasToken("invisiblegender")) { } // same
+			//The ORIGINAL plan:
+			// Neither: "felin"
+			// Explicit: "male felin"
+			// Invisible: "felir"
+			// -- K
 						
 			if (HasToken("prefixes")) // add prefixes, 'vorpal', 'dire' etc
 			{
