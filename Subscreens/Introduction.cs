@@ -478,8 +478,10 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
-
-
+#if DEBUG
+					// add some debug items to play with
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
+#endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					if (worldgen.ThreadState == System.Threading.ThreadState.Running)

@@ -1308,6 +1308,33 @@ namespace Noxico
 			}
 		}
 
+		public float MilkAmount
+		{
+			get
+			{
+				var sizes = GetBreastSizes();
+				var effectiveAmount = 0f;
+
+				for (var i = 0; i < sizes.Length; i++)
+				{
+					var rowEffectiveAmount = 0f;
+					var thisSize = GetBreastRowSize(i);
+					var thisAmount = GetBreastRowAmount(i);
+					rowEffectiveAmount = thisSize * thisAmount;
+
+					if (GetBreastRowByNumber(i).HasToken("lactation"))
+						rowEffectiveAmount *= 5;
+
+					effectiveAmount += rowEffectiveAmount;
+				}
+
+				if (GetToken("perks").HasToken("messyorgasms"))
+					effectiveAmount *= 1.5f;
+				
+				return effectiveAmount;
+			}
+		}
+
 		private static void Columnize(Action<string> print, List<string> col1, List<string> col2, string header1, string header2)
 		{
 			var pad = 44;
@@ -2436,6 +2463,41 @@ namespace Noxico
 			return sizes;
 		}
 
+		// like GetBreastSizes but provides number of breasts per row
+		// todo fix tragic duplication of logic
+		public float[] GetBreastAmounts()
+		{
+			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
+			var amounts = new float[rows.Length];
+			if (rows.Length == 0)
+				return amounts;
+			var fromPrevious = false;
+			var multiplier = 1f;
+			amounts[0] = rows[0].GetToken("amount").Value;
+			for (var i = 1; i < rows.Length; i++)
+			{
+				if (rows[i].HasToken("amount"))
+				{
+					fromPrevious = false;
+					amounts[i] = rows[i].GetToken("amount").Value;
+				}
+				else if (rows[i].HasToken("amountfromprevious") || fromPrevious)
+				{
+					fromPrevious = true;
+					if (rows[i].HasToken("amountfromprevious"))
+					{
+						multiplier = rows[i].GetToken("amountfromprevious").Value;
+						if (multiplier == 0f)
+							multiplier = 1f;
+					}
+					amounts[i] = amounts[i - 1] * multiplier;
+					if (amounts[i] < 0) //just to be sure.
+						amounts[i] = 0;
+				}				
+			}
+			return amounts;
+		}
+
 		public float GetBreastRowSize(Token row)
 		{
 			var sizes = GetBreastSizes();
@@ -2451,6 +2513,14 @@ namespace Noxico
 		public float GetBreastRowSize(int row)
 		{
 			var sizes = GetBreastSizes();
+			if (row >= sizes.Length || row < 0)
+				return -1f;
+			return sizes[row];
+		}
+
+		public float GetBreastRowAmount(int row)
+		{
+			var sizes = GetBreastAmounts();
 			if (row >= sizes.Length || row < 0)
 				return -1f;
 			return sizes[row];
@@ -3008,6 +3078,8 @@ namespace Noxico
 		{
 			GetToken("climax").Value = 0;
 			GetToken("stimulation").Value = 10;
+			if (HasToken("hostile"))
+				RemoveToken("hostile");
 		}
 
 		/// <summary>
@@ -3021,7 +3093,22 @@ namespace Noxico
 		{
 			var stat = GetToken(statname).Value;
 
-			stat += amount;
+			if (statname == "climax")
+			{
+				// 0 stim gives only 50% of climax increase
+				// 50 stim gives 125% climax increase
+				// 100 stim gives 200% climax increase	 
+				var stimBonus = 0.5f + (GetStat(Stat.Stimulation) * 0.015f);
+
+				// same
+				var carnBonus = 0.5f + (GetStat(Stat.Carnality) * 0.015f);
+
+				stat += (amount * stimBonus * carnBonus);
+			}
+			else
+			{
+				stat += amount;
+			}
 
 			if (stat > 100)
 				stat = 100;
