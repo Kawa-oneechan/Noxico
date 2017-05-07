@@ -10,6 +10,7 @@
                  Programming and idea                      Kawa
                  Assistant programming              PillowShout
                                                          Xolroc
+                                                       SparksJ2
 
 
                  Inspiration from:                       Fenoxo
