@@ -8,7 +8,7 @@ namespace Noxico
 {
 	public enum Gender
 	{
-		Random, Male, Female, Herm, Neuter
+		RollDice, Male, Female, Herm, Neuter, Invisible
 	}
 
 	public enum MorphReportLevel
@@ -72,13 +72,13 @@ namespace Noxico
 		{
 			if (HasToken("title"))
 				return GetToken("title").Text;
-			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Random;
+				g = Gender.Invisible;
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
 			return string.Format("{0} {1}", A, Title);
 		}
 
@@ -86,21 +86,33 @@ namespace Noxico
 		{
 			if (HasToken("player") || HasToken("special"))
 				return Name.ToString(fullName);
+
 			if (HasToken("beast"))
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
+
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
-			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
+
+			// todo: logic duplicated from UpdateTitle()
 			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Random;
+				g = Gender.Invisible;
+
 			if (player != null && player.Path("ships/" + ID) != null)
 			{
 				if (appendTitle)
-					return string.Format("{0}, {1} {2}{3}", Name.ToString(fullName), (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+					return string.Format("{0}, {1} {2}{3}", 
+						Name.ToString(fullName), (the ? "the" : A),
+						(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
+						Title);
 				return Name.ToString(fullName);
 			}
-			return string.Format("{0} {1}{2}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+
+			return string.Format("{0} {1}{2}", 
+				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
+				(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
+				Title);
 		}
 
 		/// <summary>
@@ -135,43 +147,69 @@ namespace Noxico
 			}
 		}
 
+		/// <summary>
+		/// Returns the character's visible gender according to body parts.
+		/// </summary>
 		public Gender PercievedGender
 		{
 			get
 			{
 				if (HasToken("beast"))
-					return Noxico.Gender.Neuter;
+					return Gender.Neuter;
 
 				if (HasToken("player"))
 					return PreferredGender;
 				//TODO: detect a relationship token and return the preferred gender if known.
-
-				var crotchVisible = false;
+				
 				var pants = GetEquippedItemBySlot("pants");
 				var underpants = GetEquippedItemBySlot("underpants");
 				var pantsCT = (pants == null) ? true : pants.CanSeeThrough();
 				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough();
-				if (pantsCT && underpantsCT)
-					crotchVisible = true;
-				var biggestDick =  (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
+				var crotchVisible = (pantsCT && underpantsCT);
+
+				var biggestDick = (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
+
 				if (biggestDick < 4 && !crotchVisible)
 					biggestDick = 0; //hide tiny dicks with clothing on.
 
-				var score = 0.5f;
-				score -= biggestDick * 0.02f;
-				if (BiggestBreastrowNumber != -1)
-					score += GetBreastRowSize(BiggestBreastrowNumber) * 0.1f;
-				if (HasToken("vagina") && crotchVisible)
-					score += 0.5f;
-				if (HasToken("hair"))
-					score += this.Path("hair/length").Value * 0.01f;
-				//TODO: apply femininity score
+				var scoreM = 0.0f; // note scores not capped at 1.0
+				var scoreF = 0.0f;
 
-				if (score < 0.4f)
-					return Noxico.Gender.Male;
-				else if (score > 0.6f)
-					return Noxico.Gender.Female;
-				return Noxico.Gender.Herm;
+				// calibrated using felin min. penis size
+				// size 13 or more guarentees masculine looks
+				scoreM += biggestDick * 0.0425f;
+
+				// calibrated using human min. breast size
+				// size 2 or more breaks the feminine looks threshold
+				if (BiggestBreastrowNumber != -1)
+					scoreF += GetBreastRowSize(BiggestBreastrowNumber) * 0.51f;
+				
+				// visible vagina implies feminine looks
+				if (HasToken("vagina") && crotchVisible)
+					scoreF += 0.51f;
+
+				// hair > 11 makes for feminine looks - even if you got nothing else
+				if (HasToken("hair"))
+					scoreF += this.Path("hair/length").Value * 0.046f;
+
+				// todo consider hips & waist
+
+				// decide what to return based on quadrants
+				// currently not good with flat chested fela and long haired male naga, however,
+				// since nagas are not invisible or explit gender, they'll just get called "naga", so that's ok for them
+
+				var decision = Noxico.Gender.Female; // default. never trust floating point
+				if (scoreM > 0.5f && scoreF > 0.5f) decision = Gender.Herm;
+				if (scoreM < 0.5f && scoreF < 0.5f) decision = Gender.Neuter;
+				if (scoreM > 0.5f && scoreF < 0.5f) decision = Gender.Male;
+				if (scoreM < 0.5f && scoreF > 0.5f) decision = Gender.Female;
+
+				// felin are invisiblegender and more of a problem.
+				// fela get an exeption because I can't think of a better way to do it
+				if (decision == Gender.Neuter && HasToken("culture") && GetToken("culture").Text == "felin")
+					decision = Gender.Female;
+
+				return decision; 
 			}
 		}
 
@@ -189,26 +227,50 @@ namespace Noxico
 		{
 			//TODO: clean up
 			//TRANSLATE the lot of this. Could take rewrite cleanup to handle.
-			var g = PercievedGender.ToString().ToLowerInvariant();
-			Title = GetToken("terms").GetToken("generic").Text;
-			if (HasToken("prefixes"))
+
+			// enums (being ints in disguise) compare better than strings. -- K
+			// yeah, I know that, it was like that when I got here -- sparks
+
+			//The ORIGINAL plan:
+			// Neither: "felin"
+			// Explicit: "male felin"
+			// Invisible: "felir"
+			// -- K
+
+			var pg = PercievedGender; //cache the value -- K
+			Title = null; // start fresh
+			if (HasToken("invisiblegender")) // attempt to find a custom term for this race & gender combo eg "felir"
+			{
+				if (pg == Gender.Male && GetToken("terms").HasToken("male"))
+					Title = GetToken("terms").GetToken("male").Text;
+
+				if (pg == Gender.Female && GetToken("terms").HasToken("female"))
+					Title = GetToken("terms").GetToken("female").Text;
+
+				if (pg == Gender.Herm && GetToken("terms").HasToken("herm"))
+					Title = GetToken("terms").GetToken("herm").Text;
+
+				if (pg == Gender.Neuter && GetToken("terms").HasToken("neuter"))
+					Title = GetToken("terms").GetToken("neuter").Text;
+
+				if (Title == null) // fix to catch missing invisiblegenders
+					Title = pg.ToString().ToLowerInvariant() + " " + GetToken("terms").GetToken("generic").Text;
+			}
+			else if (HasToken("explicitgender") || Title == null) // eg "male felin"
+			{
+				Title = pg.ToString().ToLowerInvariant() + " " + GetToken("terms").GetToken("generic").Text;
+			}
+			else // just "felin"
+			{
+				Title = GetToken("terms").GetToken("generic").Text;
+			}
+			
+			if (HasToken("prefixes")) // add prefixes, 'vorpal', 'dire' etc
 			{
 				foreach (var prefix in GetToken("prefixes").Tokens)
 					Title = prefix.Name + " " + Title;
 			}
-			if (HasToken("invisiblegender"))
-			{
-				if (g == "male" && GetToken("terms").HasToken("male"))
-					Title = GetToken("terms").GetToken("male").Text;
-				else if (g == "female" && GetToken("terms").HasToken("female"))
-					Title = GetToken("terms").GetToken("female").Text;
-				else if (g == "hermaphrodite" && GetToken("terms").HasToken("herm"))
-					Title = GetToken("terms").GetToken("herm").Text;
-			}
-			else if (HasToken("explicitgender"))
-			{
-				Title = g + " " + Title;
-			}
+			
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
@@ -769,7 +831,7 @@ namespace Noxico
 		}
 #endif
 
-        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
+        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.RollDice)
 		{
 			var newChar = new Character();
 			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
@@ -794,7 +856,7 @@ namespace Noxico
 			else if (newChar.HasToken("neuteronly"))
 				gender = Gender.Neuter;
 
-			if (gender == Gender.Random)
+			if (gender == Gender.RollDice)
 			{
 				var min = 1;
 				var max = 4;
@@ -806,7 +868,7 @@ namespace Noxico
 				gender = (Gender)g;
 			}
 
-			if (idGender == Gender.Random)
+			if (idGender == Gender.RollDice)
 				idGender = gender;
 
 			if (gender != Gender.Female && newChar.HasToken("femaleonly"))
@@ -959,7 +1021,7 @@ namespace Noxico
 			else if (newChar.HasToken("neuteronly"))
 				gender = Gender.Neuter;
 
-			if (gender == Gender.Random)
+			if (gender == Gender.RollDice)
 			{
 				var min = 1;
 				var max = 4;
@@ -991,6 +1053,7 @@ namespace Noxico
 			}
 
 			newChar.EnsureDefaultTokens();
+			newChar.UpdateTitle(); // fixed: prevent title string null-sploding
 
 			if (newChar.HasToken("femalesmaller"))
 			{
