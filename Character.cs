@@ -2945,6 +2945,8 @@ namespace Noxico
 		{
 			GetToken("climax").Value = 0;
 			GetToken("stimulation").Value = 10;
+			if (HasToken("hostile"))
+				RemoveToken("hostile");
 		}
 
 		/// <summary>

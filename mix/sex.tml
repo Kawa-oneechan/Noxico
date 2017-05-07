@@ -49,7 +49,7 @@ group: top.HasPenis() and (not top.HasVagina())
 		meta
 		effect
 			<[[
-				top.Raise(Stat.Climax, -100)
+				top.Orgasm()
 				if masturbating then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]self."}, Color.Orange)
 				elseif top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
@@ -71,7 +71,7 @@ group: top.HasVagina() and (not top.HasPenis())
 		meta
 		effect
 			<[[
-				top.Raise(Stat.Climax, -100)
+				top.Orgasm()
 				if top.HasSexFlag("extracting") then
 					message({"[t:Youorname] squirt{s} into the extractor."}, Color.Orange)
 				elseif top.HasSexFlag("recievingvaginal") and top.HasSexFlag("recievinganal") then
@@ -88,21 +88,13 @@ group: top.HasVagina() and (not top.HasPenis())
 			]]>
 -- endgroup vaginal climax
 
-choice: orgasm_denial_ring
-	meta
-	effect
-		<[[
-			top.Raise(Stat.Climax, -15)
-			message({"[t:Youorname] whimper{s} as [t:he] almost, but not quite, orgasm{s}."}, Color.Orange)
-		]]>
-
 -- for herms
 group: top.HasVagina() and top.HasPenis()
 	choice: climax
 		meta
 		effect
 			<[[
-				top.Raise(Stat.Climax, -100)
+				top.Orgasm()
 				if top.HasSexFlag("extracting") then
 					message({"[t:Youorname] squirt{s} into the extractor."}, Color.Orange)
 					-- todo add potion? :-D
@@ -128,7 +120,7 @@ group: (not top.HasVagina()) and (not top.HasPenis())
 		meta
 		effect
 			<[[
-				top.Raise(Stat.Climax, -100)
+				top.Orgasm()
 				if top.HasSexFlag("fingeringanal") then
 					message({"[t:Youorname] shiver{s} on your fingers in the throes of orgasm."}, Color.Orange)
 				elseif top.HasSexFlag("recievinganal") then
@@ -138,7 +130,17 @@ group: (not top.HasVagina()) and (not top.HasPenis())
 				end
 			]]>
 -- endgroup neuterclimax
+
+choice: orgasm_denial_ring
+	meta
+	effect
+		<[[
+			top.Raise(Stat.Climax, -15)
+			message({"[t:Youorname] whimper{s} as [t:he] almost, but not quite, orgasm{s}."}, Color.Orange)
+		]]>
+
 -- endgroup climaxes
+
 
 -- masturbation specific choices
 group: masturbating and top.CanReachCrotch()
