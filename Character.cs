@@ -3030,7 +3030,22 @@ namespace Noxico
 		{
 			var stat = GetToken(statname).Value;
 
-			stat += amount;
+			if (statname == "climax")
+			{
+				// 0 stim gives only 50% of climax increase
+				// 50 stim gives 125% climax increase
+				// 100 stim gives 200% climax increase	 
+				var stimBonus = 0.5f + (GetStat(Stat.Stimulation) * 0.015f);
+
+				// same
+				var carnBonus = 0.5f + (GetStat(Stat.Carnality) * 0.015f);
+
+				stat += (amount * stimBonus * carnBonus);
+			}
+			else
+			{
+				stat += amount;
+			}
 
 			if (stat > 100)
 				stat = 100;

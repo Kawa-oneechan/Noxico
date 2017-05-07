@@ -10,7 +10,6 @@
 
 -- todo make use of use tonguetype
 -- todo milking
--- todo climax bonuses from high stimulation
 -- todo add StretchHole
 -- todo add baseball bat, other sex toy shaped items
 -- done: orgasm_denial_ring
@@ -608,8 +607,16 @@ choice: debug_climax_top
 	_n: Debug self climax
 	effect
 	<[[
-		top.Raise(Stat.Climax, 100)
+		top.Raise(Stat.Climax, 1000)
 		message({"[t:Youorname] use{s} the happy debug wand on [b:him]self."})
+	]]>
+
+choice: debug_climax_top_50
+	_n: Debug self climax 50 pct
+	effect
+	<[[
+		top.Raise(Stat.Climax, 50)
+		message({"[t:Youorname] lightly use{s} the happy debug wand on [b:him]self."})
 	]]>
 	
 choice: debug_climax_bottom
@@ -617,7 +624,7 @@ choice: debug_climax_bottom
 	filter: not masturbating
 	effect
 	<[[
-		bottom.Raise(Stat.Climax, 100)
+		bottom.Raise(Stat.Climax, 1000)
 		message({"[t:Youorname] use{s} the happy debug wand on [b:name]."})
 	]]>
 --endgroup
