@@ -230,7 +230,7 @@ group: consentual
 					})
 				]]>
 
-		group: top.CanReachCrotch() and bottom.CanReachCrotch() and (not masturbating) -- happy times for two
+		group: top.CanReachCrotch() and bottom.CanReachCrotch() and (not masturbating) -- tab in lower holes happy times for two
 			group: top.HasPenis() and bottom.HasVagina()
 				choice: start_fucking_vagina
 					_n: Fuck [b:his] [b:pussywetness][b:pussylooseness] pussy with your [t:cocktype] [?:cock].
@@ -367,8 +367,98 @@ group: consentual
 						]]>
 			-- endgroup top penis, anal
 		-- endgroup reach both crotches
-		group: top.CanReachCrotch()
-			-- todo blowjob
+
+		group: top.CanReachCrotch() and top.HasPenis() and (not masturbating) -- recieving blowjobs (reciever is the very happy one)
+			choice: make_them_suck_it
+				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				_n: Make [b:him] suck your dick
+				effect 
+					<[[
+						top.Raise(Stat.Climax, 7)
+						top.AddSexFlag("receivingoral")
+						top.AddSexFlag("penisbusy")
+						bottom.AddSexFlag("givingoral")
+						bottom.AddSexFlag("mouthbusy")
+						message({"[t:Youorname] push{es} your dick into [b:youorname]s mouth."})
+					]]>
+
+			choice: make_them_suck_more
+				filter: top.HasSexFlag("receivingoral") and bottom.HasSexFlag("givingoral")
+				_n: Push [b:his] head down onto your dick
+				effect 
+					<[[
+						top.Raise(Stat.Climax, 11)
+						message({"[t:Youorname] push{es} [b:youorname]s head down onto his dick."})
+					]]>
+
+			choice: retrieve_cock
+				filter: top.HasSexFlag("receivingoral") and bottom.HasSexFlag("givingoral")
+				_n: Stop [b:him] sucking on your dick
+				effect 
+					<[[
+						top.Raise(Stat.Climax, 4)
+						top.RemoveSexFlag("receivingoral")
+						top.RemoveSexFlag("penisbusy")
+						bottom.RemoveSexFlag("givingoral")
+						bottom.RemoveSexFlag("mouthbusy")
+						message({"[t:Youorname] pull{s} his dick out of [b:youorname]s mouth."})
+					]]>
+
+		group: bottom.CanReachCrotch() and bottom.HasPenis() and (not masturbating) -- giving blowjobs (giver is the one with a full mouth)
+			choice: we_suck_them
+				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				_n: Suck on [b:his] dick
+				effect 
+					<[[
+						bottom.Raise(Stat.Climax, 7)
+						top.AddSexFlag("givingoral")
+						top.AddSexFlag("mouthbusy")
+						bottom.AddSexFlag("receivingoral")
+						bottom.AddSexFlag("penisbusy")
+						message({"[t:Youorname] puts [b:youorname]s dick into his mouth."})
+					]]>
+
+			choice: got_cock_keep_sucking
+				filter: top.HasSexFlag("givingoral") and bottom.HasSexFlag("receivingoral")
+				_n: Keep sucking [b:his] dick
+				effect 
+					<[[
+						bottom.Raise(Stat.Climax, 11)
+						message({"[t:Youorname] take{s} [b:youorname]s dick deep into this throat."})
+					]]>
+
+			choice: spit_em_out
+				filter: top.HasSexFlag("givingoral") and bottom.HasSexFlag("receivingoral")
+				_n: Stop sucking on [b:his] dick
+				effect 
+					<[[
+						bottom.Raise(Stat.Climax, 4)
+						top.RemoveSexFlag("givingoral")
+						top.RemoveSexFlag("mouthbusy")
+						bottom.RemoveSexFlag("receivingoral")
+						bottom.RemoveSexFlag("penisbusy")
+						message({"[t:Youorname] stop{s} sucking on [b:youorname]s dick."})
+					]]>
+
+		group: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasPenis() and (not masturbating)
+			choice: oral_69 -- combines make_them_suck_it and we_suck_them
+				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				_n: Suck on each others wangs
+				effect 
+					<[[
+						top.AddSexFlag("givingoral")
+						top.AddSexFlag("mouthbusy")
+						top.AddSexFlag("receivingoral")
+						top.AddSexFlag("penisbusy")
+						top.Raise(Stat.Climax, 12)
+						bottom.AddSexFlag("receivingoral")
+						bottom.AddSexFlag("penisbusy")
+						bottom.AddSexFlag("givingoral")
+						bottom.AddSexFlag("mouthbusy")
+						bottom.Raise(Stat.Climax, 12)
+						message({"[t:Youorname] and [b:youorname] go to work orally on each others dicks."})
+					]]>
+
 		--endgroup
 		group: bottom.CanReachCrotch()
 			-- todo handjob
