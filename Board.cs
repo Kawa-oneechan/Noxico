@@ -1065,7 +1065,7 @@ namespace Noxico
 			Board.HackishBoardTypeThing = this.BoardType.ToString().ToLowerInvariant();
 			for (var i = 0; i < toAdd; i++)
 			{
-				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray()), Gender.Random))
+				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray()), Gender.RollDice))
 				{
 					ParentBoard = this,
 				};
@@ -1114,7 +1114,7 @@ namespace Noxico
 		public BoardChar PickBoardChar(Gender gender)
 		{
 			Func<BoardChar, bool> isOkay = (x) => { return true; };
-			if (gender != Gender.Random)
+			if (gender != Gender.Invisible)
 				isOkay = (x) =>
 					{
 						return (x.Character.Gender == gender);

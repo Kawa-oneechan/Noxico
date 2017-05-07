@@ -709,7 +709,7 @@ namespace Noxico
 			}
 		}
 
-		public string Morph(string targetPlan, Gender targetGender = Gender.Random)
+		public string Morph(string targetPlan, Gender targetGender = Gender.Invisible)
 		{
 			if (this.HasToken("formlock"))
 				return i18n.GetString("formlock").Viewpoint(this);

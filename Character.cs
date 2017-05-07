@@ -8,7 +8,7 @@ namespace Noxico
 {
 	public enum Gender
 	{
-		Random, Male, Female, Herm, Neuter
+		RollDice, Male, Female, Herm, Neuter, Invisible
 	}
 
 	public enum MorphReportLevel
@@ -72,13 +72,13 @@ namespace Noxico
 		{
 			if (HasToken("title"))
 				return GetToken("title").Text;
-			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Random;
+				g = Gender.Invisible;
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
 			return string.Format("{0} {1}", A, Title);
 		}
 
@@ -91,27 +91,27 @@ namespace Noxico
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
-			var g = HasToken("invisiblegender") ? Gender.Random : Gender;
+			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 
 			// todo: logic duplicated from UpdateTitle()
 			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Random;
+				g = Gender.Invisible;
 
 			if (player != null && player.Path("ships/" + ID) != null)
 			{
 				if (appendTitle)
 					return string.Format("{0}, {1} {2}{3}", 
 						Name.ToString(fullName), (the ? "the" : A),
-						(g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ',
+						(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
 						Title);
 				return Name.ToString(fullName);
 			}
 
 			return string.Format("{0} {1}{2}", 
 				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
-				(g == Gender.Random) ? "" : g.ToString().ToLowerInvariant() + ' ',
+				(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
 				Title);
 		}
 
@@ -831,7 +831,7 @@ namespace Noxico
 		}
 #endif
 
-        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.Random)
+        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.RollDice)
 		{
 			var newChar = new Character();
 			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
@@ -856,7 +856,7 @@ namespace Noxico
 			else if (newChar.HasToken("neuteronly"))
 				gender = Gender.Neuter;
 
-			if (gender == Gender.Random)
+			if (gender == Gender.RollDice)
 			{
 				var min = 1;
 				var max = 4;
@@ -868,7 +868,7 @@ namespace Noxico
 				gender = (Gender)g;
 			}
 
-			if (idGender == Gender.Random)
+			if (idGender == Gender.RollDice)
 				idGender = gender;
 
 			if (gender != Gender.Female && newChar.HasToken("femaleonly"))
@@ -1021,7 +1021,7 @@ namespace Noxico
 			else if (newChar.HasToken("neuteronly"))
 				gender = Gender.Neuter;
 
-			if (gender == Gender.Random)
+			if (gender == Gender.RollDice)
 			{
 				var min = 1;
 				var max = 4;
