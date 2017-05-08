@@ -3036,12 +3036,20 @@ namespace Noxico
 		{
 			if (hole == null || penis == null)
 				return false;
-
+ 
 			var dickSize = 0f;
 			var holeSize = 0f;
 
 			if (penis.HasToken("thickness"))
+			{
 				dickSize = penis.GetToken("thickness").Value;
+			}
+			else // might be an inventory item
+			{
+				InventoryItem toy = GetFirstInventoryItem(penis.Name);
+				if (toy != null && toy.HasToken("thickness"))
+					dickSize = toy.GetToken("thickness").Value;
+			}
 
 			var holeSizes = new[] { 0, 2, 4, 6, 10, 16 };  // Penis thicknesses the hole will fit without being stretched
 			var looseness = 0f;

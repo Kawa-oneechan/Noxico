@@ -168,8 +168,10 @@ item: baseballbat
 		hand
 	canfuck
 	-- Metrics are needed if an item has canfuck.
-	thickness: 2.75
-	length: 42
+	-- By regulation it may be no more than 2.75 inches (70 mm) in diameter 
+	--  at the thickest part and no more than 42 inches (1,100 mm) long - wikipedia
+	thickness: 7.0
+	length: 110
 	weight: medium
 	weapon
 		damage: 50
