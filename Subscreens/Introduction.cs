@@ -481,6 +481,7 @@ namespace Noxico
 #if DEBUG
 					// add some debug items to play with
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("baseballbat");
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
