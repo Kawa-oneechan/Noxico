@@ -171,6 +171,7 @@ namespace Noxico
 						{ "cow", 'c' },
 						{ "tentacle", '!' },
 						{ "stinger", 'v' },
+						{ "webber", 'w' },
 						{ "spider", 'A' },
 					};
 					if (tailTypes.ContainsKey(tailToken.Text))
