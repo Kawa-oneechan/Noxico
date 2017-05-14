@@ -734,8 +734,8 @@ namespace Noxico
 
 			Program.WriteLine("Generated all boards and contents in {0}.", stopwatch.Elapsed.ToString());
 
-			setStatus(i18n.GetString("worldgen_ready"), 0, 0);
 			//Wait for the character creator to finish.
+			setStatus(i18n.GetString("worldgen_waitingcharacter"), 0, 0);
 			while (this.Player.Character == null)
 			{
 				System.Threading.Thread.Sleep(50);
@@ -771,10 +771,9 @@ namespace Noxico
 			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 
-			//setStatus(i18n.GetString("worldgen_ready"), 0, 0);
+			setStatus(i18n.GetString("worldgen_ready"), 0, 0);
 			InGame = true;
 			System.Threading.Thread.CurrentThread.Abort();
-			//this.CurrentBoard.Redraw();
 		}
 
 		private void Boardificate(WorldMapGenerator generator, Action<string, int, int> setStatus, Realms realm)
