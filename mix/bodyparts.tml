@@ -48,6 +48,8 @@ face
 	bear
 		ursine
 		bear-like
+	spider
+		many-eyed
 hair
 	names
 		afro
@@ -106,7 +108,7 @@ hair
 			long
 		upto: 26
 			back-length
-			very ong
+			very long
 		upto: 40
 			ass-length
 		upto: 10000
@@ -463,6 +465,9 @@ tail
 		barbed
 		venomous
 		insectoid
+	webber
+		spinneretted
+		silk-spinning
 	horse
 		long-haired
 		equine

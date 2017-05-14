@@ -1678,6 +1678,8 @@ namespace Noxico
 				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
 				if (tail == "bunny")
 					hipThings.Add(i18n.GetString("tailtype_bunny"));
+				else if (tail == "webber")
+					hipThings.Add(i18n.GetString("tailtyle_webber"));
 				else if (tail == "tentacle")
 				{
 					var tentail = this.Path("tail/tip");

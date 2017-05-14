@@ -795,4 +795,49 @@ bodyplan: horse
 	speed: 30
 	strength: 50
 
+bodyplan: spider
+	culture: human
+	namegen: japanese
+	femaleonly
+	invisiblegender
+	terms
+		female: "spidergirl"
+	bestiary: "A half giant spider, half sexy girl."
+		char: 0x162
+	tallness: roll 1d150+100
+	hair
+		length: roll 1d15+10
+		color: pink
+		style: oneof straight, wavy, braided, braided_ponytail, ponytail
+	skin
+		type: skin
+		color: oneof light, pale, dark, olive
+	eyes: oneof crimson, forestgreen
+		count: 6
+		glow
+	face: normal
+	tongue: normal
+	teeth: fangs
+	ears: elfin
+	legs: insect
+		amount: 8
+	tail: webber
+		recharge: 5
+	hips: 11
+	waist: 7
+	fertility: 10
+	ass: insect
+		size: 17
+		looseness: 2
+	breastrow
+		amount: 2
+		size: roll 1d3+3
+		nipples: 1
+			size: 0.25
+	vagina
+		wetness: 5
+		looseness: 2
+		clit: 0.3
+	womb
+
 -- #endregion

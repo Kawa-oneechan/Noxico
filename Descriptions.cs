@@ -111,6 +111,7 @@ namespace Noxico
 			var tails = new Dictionary<string, string>()
 			{
 				{ "stinger", "stinger" }, //needed to prevent "stinger tail"
+				{ "webber", "webber" },
 				{ "genbeast", Random.NextDouble() < 0.5 ? "ordinary tail" : "tail" }, //"Your (ordinary) tail"
 			};
 			var tailName = tailToken.Text;

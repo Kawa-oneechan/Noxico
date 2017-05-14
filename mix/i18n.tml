@@ -418,6 +418,7 @@ Would you like an infodump on the way out?
 	tailtype_cat: feline
 	tailtype_dragon: spined reptilian
 	tailtype_horse: equine
+	tailtyle_webber: spinnerets
 -- #endregion
 -- #region Face types
 	facetype_normal: human
@@ -426,6 +427,7 @@ Would you like an infodump on the way out?
 	facetype_reptile: reptilian
 	facetype_fox: vulpine
 	facetype_horse: equine
+	facetype_spider: six-eyed
 -- #endregion
 -- #region Teeth types
 	teethtype_fangs: fangs
