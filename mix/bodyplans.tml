@@ -840,4 +840,76 @@ bodyplan: spider
 		clit: 0.3
 	womb
 
+
+bodyplan: gargoyle
+	culture: human
+	namegen: welsh
+	explicitgender
+	terms
+		generic: "gargoyle"
+	fireproof
+	bestiary: "The other children of the night -- the strong ones."
+		char: 0x166
+	tallness: roll 1d40+180
+	hair
+		length: 0
+		style: bald
+	skin
+		type: scales
+		color: oneof black, white, darkgray, darkslategray, dimgray, gray, lightgray, lightslategray, slategray
+	face: normal
+	teeth: oneof fangs, fangs, fangs, sharp, sharp, osmond
+	tongue: forked
+	eyes: oneof red, yellow, aqua, white
+	ears: flat
+	wings: bat
+	legs: genbeast
+	waist: 4
+	hips: 5
+	tail: dragon
+	fertility: 0
+	ass
+		size: 4
+		looseness: 2
+	breastrow
+		amount: 2
+		size: roll 1d3+3
+		nipples: 0
+	vagina
+		wetness: 4
+		looseness: 1
+		clit: 1.0
+	egglayer
+	penis: dragon
+		thickness: roll 1d3+1
+		length: roll 1d6+27
+	balls
+		amount: 2
+		size: roll 1d3+2
+	items
+	select
+		set: 0.40
+			femaleonly
+			overwrite: "skin/type: granite"
+			overwrite: "skin/color: oneof gray, darkgray, darkslategray, dimgray"
+			horns: 1
+				-- todo big_curled
+		set: 0.40
+			maleonly
+			overwrite: "skin/type: marble"
+			overwrite: "skin/color: oneof white, whitesmoke, lightgray, lightslategray, lightpink, lightyellow, sandybrown"
+			horns: 2
+				-- todo small_curled
+		set: 0.05
+			overwrite: "skin/type: obsidian"
+			overwrite: "skin/color: black"
+		set: 0.05
+			overwrite: "skin/type: jade"
+			overwrite: "skin/color: oneof green, darkolivegreen, darkseagreen, darkgreen"
+		set: 0.05
+			overwrite: "skin/type: onyx"
+			overwrite: "skin/color: black"
+		set: 0.05
+			overwrite: "skin/type: basalt"
+			overwrite: "skin/color: gray"
 -- #endregion
