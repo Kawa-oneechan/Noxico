@@ -841,11 +841,12 @@ namespace Noxico
 			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
 			newChar.A = "a";
-
-			newChar.ResolveRolls();
+			
 			if (newChar.HasToken("editable"))
 				newChar.RemoveToken("editable");
+
 			newChar.HandleSelectTokens(); //by PillowShout
+			newChar.ResolveRolls(); // moved rolls to after select, that way we can do rolls within selects
 
 			if (newChar.HasToken("femaleonly"))
 				gender = Gender.Female;
