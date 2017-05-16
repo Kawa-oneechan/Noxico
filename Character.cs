@@ -44,14 +44,80 @@ namespace Noxico
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
-		public string Title { get; set; }
-		public bool IsProperNamed { get; set; }
-		public string A { get; set; }
 		public Culture Culture { get; set; }
 		public BoardChar BoardChar { get; set; }
 
-		public float Capacity { get; private set; }
-		public float Carried { get; private set; }
+		public string Title
+		{
+			get
+			{
+				if (!HasToken("title")) AddToken("title").Text = "a";
+				return GetToken("title").Text;
+			}
+			set
+			{
+				if (!HasToken("title")) AddToken("title").Text = "a";
+				GetToken("title").Text = value;
+			}
+		}
+
+		public bool IsProperNamed
+		{
+			get
+			{
+				if (!HasToken("ispropernamed"))
+					AddToken("ispropernamed").Text = "false";
+				return (GetToken("ispropernamed").Text == "true") ? true : false;
+			}
+			set
+			{
+				if (!HasToken("ispropernamed"))
+					AddToken("ispropernamed").Text = "false";
+				GetToken("ispropernamed").Text = value.ToString().ToLower();
+			}
+		}
+
+		public string A
+		{
+			get
+			{
+				if (!HasToken("a")) AddToken("a").Text = "a";
+				return GetToken("a").Text;
+			}
+			set
+			{
+				if (!HasToken("a")) AddToken("a").Text = "a";
+				GetToken("a").Text = value;
+			}
+		}
+
+		public float Capacity
+		{
+			get
+			{
+				if (!HasToken("capacity")) AddToken("capacity").Value = 0;
+				return GetToken("capacity").Value;
+			}
+			private set
+			{
+				if (!HasToken("capacity")) AddToken("capacity").Value = 0;
+				GetToken("capacity").Value = value;
+			}
+		}
+
+		public float Carried
+		{
+			get
+			{
+				if (!HasToken("carried")) AddToken("carried").Value = 0;
+				return GetToken("carried").Value;
+			}
+			private set
+			{
+				if (!HasToken("carried")) AddToken("carried").Value = 0;
+				GetToken("carried").Value = value;
+			}
+		}
 
 		public string ID
 		{
@@ -1185,14 +1251,16 @@ namespace Noxico
 				return;
 			if (!HasToken("lootset_id"))
 				AddToken("lootset_id", 0, ID.ToLowerInvariant());
-			var filters = new Dictionary<string, string>();
-			filters["gender"] = PreferredGender.ToString().ToLowerInvariant();
-			filters["board"] = Board.HackishBoardTypeThing;
-			filters["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "";
-			filters["name"] = this.Name.ToString(true);
-			filters["id"] = this.GetToken("lootset_id").Text;
-			filters["bodymatch"] = this.GetClosestBodyplanMatch();
-			filters["biome"] = BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant(); //AcetheSuperVillain suggests a biome key.
+			var filters = new Dictionary<string, string>
+			{
+				["gender"] = PreferredGender.ToString().ToLowerInvariant(),
+				["board"] = Board.HackishBoardTypeThing,
+				["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "",
+				["name"] = this.Name.ToString(true),
+				["id"] = this.GetToken("lootset_id").Text,
+				["bodymatch"] = this.GetClosestBodyplanMatch(),
+				["biome"] = BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() //AcetheSuperVillain suggests a biome key.
+			};
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();
 			clothing.AddRange(DungeonGenerator.GetRandomLoot("npc", "underwear", filters));
@@ -2737,9 +2805,11 @@ namespace Noxico
 				gestation.Value++;
 				if (gestation.Value >= gestation.GetToken("max").Value)
 				{
-					var childName = new Name();
-					childName.Female = Random.NextDouble() > 0.5;
-					childName.NameGen = this.GetToken("namegen").Text;
+					var childName = new Name()
+					{
+						Female = Random.NextDouble() > 0.5,
+						NameGen = this.GetToken("namegen").Text
+					};
 					childName.Regenerate();
 					if (childName.Surname.StartsWith("#patronym"))
 						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), this.Name);
