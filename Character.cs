@@ -1658,9 +1658,17 @@ namespace Noxico
 			}
 
 			if (this.HasToken("monoceros"))
-				hairThings.Add(i18n.GetString("horntype_monoceros"));
-			if (this.HasToken("horns"))
-				hairThings.Add(i18n.Format("x_horntype_small_straight", this.GetToken("horns").Value).Viewpoint(this));
+				hairThings.Add(i18n.GetString("horntype_monoceros"));			
+			if (this.HasToken("horns") && this.Path("horns").Value > 0)
+			{
+				var count = GetToken("horns").Value;
+				Token horns = GetToken("horns");
+				string size = horns.HasToken("big") ? "big" : "small";
+				string style = horns.HasToken("curled") ? "curled" : "straight";
+				string horntype = "x_horntype_" + size + "_" + style;
+				string pairs = (count == 1) ? "pair" : "pairs"; // there is probably a better way to do this - sparks
+				hairThings.Add(i18n.Format(horntype, count, pairs));
+			}
 
 			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
