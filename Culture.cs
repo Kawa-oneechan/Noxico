@@ -52,6 +52,14 @@ namespace Noxico
 			DefaultNameGen = NameGens.ElementAt(0).Value;
 		}
 
+		public static Culture FindCultureByName(string s)
+		{
+			if (Cultures.ContainsKey(s))
+				return Cultures[s];
+			else
+				return Culture.DefaultCulture;
+		}
+
 		public static Culture FromToken(Token t)
 		{
 			var nc = new Culture();

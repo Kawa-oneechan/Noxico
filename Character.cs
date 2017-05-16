@@ -44,8 +44,22 @@ namespace Noxico
 		public static StringBuilder MorphBuffer = new StringBuilder();
 
 		public Name Name { get; set; }
-		public Culture Culture { get; set; }
 		public BoardChar BoardChar { get; set; }
+
+		public Culture Culture
+		{
+			get
+			{
+				return (!HasToken("culture")) ? 
+					Culture.DefaultCulture : 
+					Culture.FindCultureByName(GetToken("culture").Text);
+			}
+			set
+			{
+				if (!HasToken("culture")) AddToken("culture");
+				GetToken("culture").Text = value.ToString();
+			}
+		}
 
 		public string Title
 		{
