@@ -460,10 +460,10 @@ Would you like an infodump on the way out?
 	tatlocation_buttcheek: butt cheek
 -- #endregion
 -- #region Horns
-	x_horntype_small_curled: {0} [P:{0}:pair] of curled horns
-	x_horntype_small_straight: {0} small [P:{0}:pair] of horns
-	x_horntype_big_curled: {0} [P:{0}:pair] of ram-like horns
-	x_horntype_big_straight: {0} [P:{0}:pair] of long horns
+	x_horntype_small_curled: {0} {1} of curled horns
+	x_horntype_small_straight: {0} small {1} of horns
+	x_horntype_big_curled: {0} {1} of ram-like horns
+	x_horntype_big_straight: {0} {1} of long horns
 	horntype_monoceros: A single horn on [t:his] forehead
 -- #endregion
 	lookat_name_type
