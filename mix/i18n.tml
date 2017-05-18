@@ -57,6 +57,7 @@ words
 	worldgen_towns: Generating towns...
 	worldgen_dungeons: Placing dungeon entrances...
 	worldgen_missions: Applying missions...
+	worldgen_waitingcharacter: Awaiting player character...
 	worldgen_ready: The world is ready.
 	loadsave_loadheader: Loading...
 	loadsave_saveheader: Saving...
@@ -417,6 +418,7 @@ Would you like an infodump on the way out?
 	tailtype_cat: feline
 	tailtype_dragon: spined reptilian
 	tailtype_horse: equine
+	tailtyle_webber: spinnerets
 -- #endregion
 -- #region Face types
 	facetype_normal: human
@@ -425,6 +427,7 @@ Would you like an infodump on the way out?
 	facetype_reptile: reptilian
 	facetype_fox: vulpine
 	facetype_horse: equine
+	facetype_spider: six-eyed
 -- #endregion
 -- #region Teeth types
 	teethtype_fangs: fangs
@@ -457,10 +460,10 @@ Would you like an infodump on the way out?
 	tatlocation_buttcheek: butt cheek
 -- #endregion
 -- #region Horns
-	x_horntype_small_curled: {0} [P:{0}:pair] of curled horns
-	x_horntype_small_straight: {0} small [P:{0}:pair] of horns
-	x_horntype_big_curled: {0} [P:{0}:pair] of ram-like horns
-	x_horntype_big_straight: {0} [P:{0}:pair] of long horns
+	x_horntype_small_curled: {0} {1} of curled horns
+	x_horntype_small_straight: {0} small {1} of horns
+	x_horntype_big_curled: {0} {1} of ram-like horns
+	x_horntype_big_straight: {0} {1} of long horns
 	horntype_monoceros: A single horn on [t:his] forehead
 -- #endregion
 	lookat_name_type

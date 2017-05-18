@@ -1,0 +1,6 @@
+FF0000	outerWoodWall
+800080	woodFloor
+808080	fence
+5F560B	swamp_wavey
+FF00FF	stoneFloor
+00C0C0	doorwayClosed
