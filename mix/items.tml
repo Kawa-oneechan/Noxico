@@ -1790,6 +1790,25 @@ item: really_kinky_panties
 			end
 		]]>
 
+item: clit_regenring
+	_n: Clit ring of Regeneration
+	description: "Feel better in two different ways."
+	equipable
+		female
+		clit
+	weight: feather
+	sexy
+	ascii
+		char: 0x1A0
+		fore: lightsalmon
+	timer: 1
+	script: timer
+		<[[
+			user.Heal(5)
+			user.Raise(Stat.Climax, 1)
+			user.Raise(Stat.Stimulation, 1)
+		]]>
+
 item: knee_socks
 	_n: silk [color ]knee socks
 	_ia: a pair of

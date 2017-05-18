@@ -2906,13 +2906,14 @@ namespace Noxico
             return (item != null);
         }
 
-        /// <summary>
-        /// Checks the character's inventory to see if the character has an item equipped in a particular item slot.
-        /// </summary>
-        /// <param name="itemSlot">The name of the item slot to check. Valid options are:
-        /// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt</param>
-        /// <returns>True if the character has an item equipped to the specified slot, or false if not.</returns>
-        public bool HasItemInSlot(string itemSlot)
+		/// <summary>
+		/// Checks the character's inventory to see if the character has an item equipped in a particular item slot.
+		/// </summary>
+		/// <param name="itemSlot">The name of the item slot to check. Valid options are:
+		/// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt
+		/// nipple, clit, labia, vagina, anus, cockring, frenulum</param>
+		/// <returns>True if the character has an item equipped to the specified slot, or false if not.</returns>
+		public bool HasItemInSlot(string itemSlot)
         {
             return (GetEquippedItemBySlot(itemSlot) != null);
         }
@@ -2967,14 +2968,15 @@ namespace Noxico
             return itemList.Length > 0 ? itemList[0] : null;
         }
 
-        /// <summary>
-        /// Checks if the character has an item equipped to the specified item slot and returns the item.
-        /// </summary>
-        /// <param name="itemSlot">The name of the item slot to check. Valid options are:
-        /// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt</param>
-        /// <returns>Returns an InventoryItem from <see cref="NoxicoGame.KnownItems"/> matching the item held by the character. A reference to the character
+		/// <summary>
+		/// Checks if the character has an item equipped to the specified item slot and returns the item.
+		/// </summary>
+		/// <param name="itemSlot">The name of the item slot to check. Valid options are:
+		/// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt
+		/// nipple, clit, labia, vagina, anus, cockring, frenulum</param>
+		/// <returns>Returns an InventoryItem from <see cref="NoxicoGame.KnownItems"/> matching the item held by the character. A reference to the character
 		/// held item itself is stored in <see cref="InventoryItem.tempToken"/>. If there is no item in the character slot, then null is returned. </returns>
-        public InventoryItem GetEquippedItemBySlot(string itemSlot)
+		public InventoryItem GetEquippedItemBySlot(string itemSlot)
         {
             // Code mostly taken from LookAt
             
