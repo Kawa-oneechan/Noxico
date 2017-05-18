@@ -19,16 +19,16 @@ choice: initsex
 	meta
 	effect
 		<[[
-			if top.VaginalPlug() then AddSexFlag("recievingvaginal") end
-			if top.AnalPlug() then AddSexFlag("recievinganal") end
+			if top.VaginalPlug() then top.AddSexFlag("recievingvaginal") end
+			if top.AnalPlug() then top.AddSexFlag("recievinganal") end
 		]]>
 
 choice: everysexturn
 	meta
 	effect
 		<[[
-			if top.VaginalPlug() then AddSexFlag("recievingvaginal") end
-			if top.AnalPlug() then AddSexFlag("recievinganal") end
+			if top.VaginalPlug() then top.AddSexFlag("recievingvaginal") end
+			if top.AnalPlug() then top.AddSexFlag("recievinganal") end
 		]]>
 
 choice: wait
@@ -563,6 +563,7 @@ group: (not top.Restrained()) and (not masturbating)
 				end
 			]]>
 
+group: top.Restrained() and (not masturbating)
 	choice: struggle
 		filter: top.Restrained() and bottom.Restraining()
 		effect
@@ -704,7 +705,7 @@ group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
 			bottom.Raise(Stat.Climax, 4)
 			top.GetToken("items").AddToken("gExtractor")
 			bottom.GetToken("items").RemoveToken("gExtractor")
-			bottom.AddRemoveFlag("vaginabusy")
+			bottom.RemoveSexFlag("vaginabusy")
 			message({"[t:Youorname] pull{s} the goblin extractor out of [b:youorname]."})
 		]]>
 --endgroup
