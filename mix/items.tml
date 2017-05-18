@@ -2217,6 +2217,15 @@ item: gExtractor
 		char: 0x008
 		fore: goldenrod
 	tool
+	equipable
+		female
+		vagina
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+			end
+		]]>
 -- #endregion
 
 
