@@ -478,8 +478,8 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
+
 #if DEBUG
-					// add some debug items to play with
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("baseballbat");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("really_kinky_panties");
@@ -489,18 +489,8 @@ namespace Noxico
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
-					if (worldgen.ThreadState == System.Threading.ThreadState.Running)
-					{
-						Story();
-					}
-					else
-					{
-						//This branch added by Mat.
-						NoxicoGame.Mode = UserMode.Walkabout;
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-						TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
-					}
+					
+					Story();
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
@@ -596,14 +586,22 @@ namespace Noxico
 		{
 			NoxicoGame.Subscreen = Introduction.StoryHandler;
 			NoxicoGame.Mode = UserMode.Subscreen;
+
 			UIManager.Elements[0] = new UIPNGBackground(Mix.GetBitmap("story.png"));
 			UIManager.Elements[1] = new UILabel(string.Empty) { Left = 10, Top = 10, Width = 60, Foreground = Color.White };
-			UIManager.Elements[2] = new UILabel(i18n.GetString("worldgen_loading")) { Left = 1, Top = 0 };
-			UIManager.Elements[3] = new UILabel(string.Empty) { Left = 1, Top = 1 };
+			UIManager.Elements[2] = new UILabel(string.Empty) { Left = 1, Top = 0 };
+			UIManager.Elements[3] = new UILabel(string.Empty) { Left = 1, Top = 1 }; // reserved for setStatus
+
+			if (WorldGenFinished())
+			{
+				// if gen already finished we lost the status line
+				UIManager.Elements[3] = new UILabel(i18n.GetString("worldgen_ready")) { Left = 1, Top = 1 };
+			}
+
 			//Remove everything but these first few UIElements.
 			UIManager.Elements.RemoveRange(4, UIManager.Elements.Count - 4);
 			UIManager.Draw();
-			story = Mix.GetString("story.txt", false);	
+			story = Mix.GetString("story.txt", false);
 			storyCursor = 0;
 			storyDelay = 2;
 		}
@@ -612,39 +610,48 @@ namespace Noxico
 		/// </summary>
 		public static void StoryHandler()
 		{
-			if (worldgen.ThreadState == System.Threading.ThreadState.Running)
+			if (WorldGenFinished())
 			{
-				if (storyDelay > 0)
+				if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 				{
-					storyDelay--;
+					NoxicoGame.ClearKeys();
+					NoxicoGame.Immediate = true;
+					NoxicoGame.Mode = UserMode.Walkabout;
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
+					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+					Subscreens.FirstDraw = true;
+					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player); // start by showing player details
 				}
-				else
-				{
-					if (storyCursor < story.Length - 1)
-					{
-						UIManager.Elements[1].Text += story[storyCursor];
-						storyCursor++;
-						storyDelay = 2;
-						if (story[storyCursor] == '¦')
-						{
-							storyCursor++;
-							storyDelay = 50;
-						}
-					}
-					else
-					{
-						storyDelay = 10000;
-					}
-				}
-				UIManager.Draw();
+			}
+			
+			if (storyDelay > 0)
+			{
+				storyDelay--;
 			}
 			else
 			{
-				NoxicoGame.Mode = UserMode.Walkabout;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
-				TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+				if (storyCursor < story.Length - 1)
+				{
+					UIManager.Elements[1].Text += story[storyCursor];
+					storyCursor++;
+					storyDelay = 1;
+					if (story[storyCursor] == '¦')
+					{
+						storyCursor++;
+						storyDelay = 50;
+					}
+				}
+				else
+				{
+					storyDelay = 10000;
+				}
 			}
+			UIManager.Draw();
+		}
+
+		public static bool WorldGenFinished()
+		{
+			return (worldgen.ThreadState != System.Threading.ThreadState.Running);
 		}
 	}
 

@@ -10,6 +10,8 @@ realm: Nox
 			canine
 			goblin
 			slime
+			spider
+			gargoyle
 	biome: Tundra
 		rect: 0 0 48 192
 		ground: tundra
@@ -18,6 +20,8 @@ realm: Nox
 			imp
 			wild_dog
 			imp
+			spider
+			gargoyle
 	biome: Taiga
 		rect: 48 96 96 192
 		ground: tundra
@@ -29,9 +33,13 @@ realm: Nox
 			imp
 			goblin
 			wild_dog
+			spider
+			gargoyle
 			imp
 			imp
 			goblin
+			spider
+			gargoyle
 			wild_dog
 			foocubus
 	biome: Swamp

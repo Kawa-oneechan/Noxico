@@ -1,31 +1,49 @@
---[[
-var myBoard = PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
-myBoard.Name = "Chelsie's Lair";
-myBoard.ID = "chelsielair";
-MakeBoardTarget(myBoard);
-myBoard.Clear();
+if (realm ~= "Nox") then return end
 
-//Repeat for tighter packing.
-for (var i = 0; i < 8; i++) {
-	myBoard.AddClutter(12,11,20,18);
-	myBoard.AddClutter(20, 5,60,15);
-	myBoard.AddClutter(57,23,67,36);
-	myBoard.AddClutter(48,34,64,45);
-}
-for (var i = 0; i < 5; i++)
-	myBoard.AddClutter(33,36,48,42);
-for (var i = 0; i < 3; i++) {
-	myBoard.AddClutter(15, 7,20,11);
-	myBoard.AddClutter(20,15,30,17);
-	myBoard.AddClutter(60, 8,65,23);
-	myBoard.AddClutter(64,34,68,43);
-}
+local chelBoard = PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
 
-myBoard.MergeBitmap("missions\\chelsie\\lairhouse.png");
+chelBoard.Drain()
+chelBoard.Name = "Chelsie's Lair"
+chelBoard.ID = "chelsielair"
+chelBoard.Music = "set://Home"
+chelBoard.BoardType = BoardType.Special
+chelBoard.RemoveToken("encounters")
+chelBoard.AddToken("encounters").AddToken("stock")
+MakeBoardTarget(chelBoard)
 
-var Chelsie = new BoardChar(Character.GetUnique("chelsie"));
+chelBoard.MergeBitmap("missions\\chelsie\\lairhouse.png", "missions\\chelsie\\lairhouse.txt");
+
+local Chelsie = BoardChar(Character.GetUnique("chelsie"))
 Chelsie.XPosition = 50;
 Chelsie.YPosition = 22;
-myBoard.Entities.Add(Chelsie);
-Chelsie.ParentBoard = myBoard;
-]]--
+chelBoard.Entities.Add(Chelsie);
+Chelsie.ParentBoard = chelBoard;
+
+local bed = Clutter()
+bed.Glyph = 0x147
+bed.XPosition = 53
+bed.YPosition = 27
+bed.ForegroundColor = Color.Black
+bed.BackgroundColor = Color.FromArgb(86, 63, 44)
+bed.ID = "Bed_Chelsie"
+bed.Name = "Bed"
+bed.Description = "This is Chelsie's bed. Position yourself over it and press Enter to use it."
+bed.ParentBoard = chelBoard
+chelBoard.Entities.Add(bed)
+
+local table = Clutter()
+table.Glyph = 0x148
+table.XPosition = 50
+table.YPosition = 22
+table.ForegroundColor = Color.Black
+table.BackgroundColor = Color.FromArgb(86, 63, 44)
+table.ID = "Table_Chelsie"
+table.Name = "Table"
+table.Description = "This is Chelsie's table."
+table.ParentBoard = chelBoard
+chelBoard.Entities.Add(table)
+
+-- needs more furniture
+-- todo 0x149 seat
+-- todo 0x14a chest
+-- todo 0x14b closet
