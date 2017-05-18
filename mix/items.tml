@@ -1758,7 +1758,6 @@ item: really_kinky_panties
 	sexy
 	script: equip
 		<[[
-			
 			if not user.HasToken("vagina") then
 				print("You'd need a pussy to wear this!")
 				Identify()
@@ -1807,6 +1806,16 @@ item: clit_regenring
 			user.Heal(5)
 			user.Raise(Stat.Climax, 1)
 			user.Raise(Stat.Stimulation, 1)
+		]]>
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+				return false
+			elseif (not user.GetToken("vagina").HasToken("clit")) then
+				print("You'd need a clit to put this in!")
+				return false
+			end
 		]]>
 
 item: knee_socks
