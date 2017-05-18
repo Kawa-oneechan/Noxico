@@ -658,35 +658,37 @@ group: top.HasToken("snaketail")
 
 -- inventory item specific stuff goes here
 -- replace 'you' with proper wildcards
-group: top.HasItem("gExtractor")
+group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
 	choice: insert_extractor
 		_n: Insert goblin extractor
-		filter: (not top.Restrained()) and bottom.CanReachCrotch() and (not bottom.HasSexFlag("extracting")) and bottom.HasVagina()
+		filter: top.HasItem("gExtractor")
 		effect 
 		<[[
 			bottom.Raise(Stat.Climax, 4)
-			bottom.AddSexFlag("extracting")
-			bottom.AddSexFlag("receivingvaginal")
-			bottom.AddSexFlag("vaginabusy")
+			top.GetToken("items").RemoveToken("gExtractor")
+			bottom.GetToken("items").AddToken("gExtractor")
+			bottom.GetToken("items").GetToken("gExtractor").AddToken("equipped")
 			message({"[t:Youorname] push{s} the goblin extractor deep into [b:his] [b:pussywetness] [b:pussylooseness] [?:pussy]."})
 		]]>
+
 	choice: activate_extractor
 		_n: Activate goblin extractor
-		filter: (not top.Restrained()) and bottom.HasSexFlag("extracting")
+		filter: bottom.GetToken("items").HasToken("gExtractor") and bottom.GetToken("items").GetToken("gExtractor").HasToken("equipped")
 		effect 
 		<[[
-			bottom.Raise(Stat.Climax, 15)		
+			bottom.Raise(Stat.Climax, 15)
+			top.GetToken("items").AddToken("vaginafluids")
+			-- todo work out amount
 			message({"[t:Youorname] turn{s} the handle on the goblin extractor and the harsh brushes spin around inside [b:youornames] [?:pussy]."})
 		]]>
 	choice: remove_extractor
-		filter: (not top.Restrained()) and bottom.HasSexFlag("extracting")
+		filter: (not top.Restrained()) and bottom.GetToken("items").HasToken("gExtractor")
 		_n: Remove goblin extractor
 		effect 
 		<[[
 			bottom.Raise(Stat.Climax, 4)
-			bottom.RemoveSexFlag("extracting")
-			bottom.RemoveSexFlag("receivingvaginal")
-			bottom.RemoveSexFlag("vaginabusy")
+			top.GetToken("items").AddToken("gExtractor")
+			bottom.GetToken("items").RemoveToken("gExtractor")
 			message({"[t:Youorname] pull{s} the goblin extractor out of [b:youorname]."})
 		]]>
 --endgroup
