@@ -15,13 +15,28 @@
 -- done: orgasm_denial_ring
 
 -- special
+choice: initsex
+	meta
+	effect
+		<[[
+			if top.VaginalPlug() then AddSexFlag("recievingvaginal") end
+			if top.AnalPlug() then AddSexFlag("recievinganal") end
+		]]>
+
+choice: everysexturn
+	meta
+	effect
+		<[[
+			if top.VaginalPlug() then AddSexFlag("recievingvaginal") end
+			if top.AnalPlug() then AddSexFlag("recievinganal") end
+		]]>
+
 choice: wait
 	effect
 		<[[
 			message({"Time passes..."})
 			--todo add extractor idle
 		]]>
-		
 
 choice: walk_away
 	ai_unlikely
@@ -71,7 +86,7 @@ group: top.HasVagina() and (not top.HasPenis())
 		effect
 			<[[
 				top.Orgasm()
-				if top.HasSexFlag("extracting") then
+				if top.GetToken("items").HasToken("gExtractor") and top.GetToken("items").GetToken("gExtractor").HasToken("equipped") then
 					message({"[t:Youorname] squirt{s} into the extractor."}, Color.Orange)
 				elseif top.HasSexFlag("recievingvaginal") and top.HasSexFlag("recievinganal") then
 					message({"[t:Youorname] squirt{s} tremendously around [b:yourornames] [?:cock]."}, Color.Orange)
@@ -94,7 +109,7 @@ group: top.HasVagina() and top.HasPenis()
 		effect
 			<[[
 				top.Orgasm()
-				if top.HasSexFlag("extracting") then
+				if top.GetToken("items").HasToken("gExtractor") and top.GetToken("items").GetToken("gExtractor").HasToken("equipped") then
 					message({"[t:Youorname] squirt{s} into the extractor."}, Color.Orange)
 					-- todo add potion? :-D
 				-- add masturbating
@@ -221,7 +236,6 @@ group: consentual
 			filter: not masturbating
 			effect
 				<[[
-				
 					top.Raise(Stat.Climax, 1)
 					bottom.Raise(Stat.Climax, 1)
 					message({
@@ -514,7 +528,7 @@ group: (not top.Restraining()) and (not top.Restrained()) -- note: can't do this
 
 group: (not top.Restrained()) and (not masturbating)
 	choice: pin_down
-		_n: Pin [b:his] down
+		_n: Pin [b:him] down
 		filter: (not top.HasToken("snaketail")) and (not top.Restraining()) and (not bottom.Restrained())
 		effect
 			<[[
@@ -668,6 +682,7 @@ group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
 			top.GetToken("items").RemoveToken("gExtractor")
 			bottom.GetToken("items").AddToken("gExtractor")
 			bottom.GetToken("items").GetToken("gExtractor").AddToken("equipped")
+			bottom.AddSexFlag("vaginabusy")
 			message({"[t:Youorname] push{s} the goblin extractor deep into [b:his] [b:pussywetness] [b:pussylooseness] [?:pussy]."})
 		]]>
 
@@ -689,6 +704,7 @@ group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
 			bottom.Raise(Stat.Climax, 4)
 			top.GetToken("items").AddToken("gExtractor")
 			bottom.GetToken("items").RemoveToken("gExtractor")
+			bottom.AddRemoveFlag("vaginabusy")
 			message({"[t:Youorname] pull{s} the goblin extractor out of [b:youorname]."})
 		]]>
 --endgroup

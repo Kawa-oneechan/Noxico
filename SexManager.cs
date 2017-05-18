@@ -179,11 +179,15 @@ namespace Noxico
 				target.RemoveAll("havingsex");
 				actor.AddToken("havingsex", 0, target.ID);
 				target.AddToken("havingsex", 0, actor.ID);
+				actor.AddToken("havingsex_runinit", 0, target.ID);
+				target.AddToken("havingsex_runinit", 0, actor.ID);
+
 			}
 			else
 			{
 				actor.RemoveAll("havingsex");
 				actor.AddToken("havingsex", 0, target.ID);
+				actor.AddToken("havingsex_runinit", 0, target.ID);
 			}
 		}
 
@@ -565,6 +569,16 @@ namespace Noxico
 		{
 			if (!EnsureSexPartner())
 				return false;
+
+			if (HasToken("havingsex_runinit"))
+			{
+				var runinit = SexManager.GetResult("runinit", this, sexPartner);
+				SexManager.Apply(runinit, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
+				RemoveToken("havingsex_runinit");
+			}
+			
+			var everysexturn = SexManager.GetResult("everysexturn", this, sexPartner);
+			SexManager.Apply(everysexturn, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 
 			if (this.GetStat(Stat.Climax) >= 100)
 			{
