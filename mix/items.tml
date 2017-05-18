@@ -15,6 +15,8 @@
 -- TODO: allow TokenCarrier.Path() to support search-by-text?
 -- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
 
+-- note that 'print' pops up a box while 'message' prints text into the general message area
+
 item: regenring
 	_n: Ring of Regeneration
 	equipable
@@ -117,6 +119,7 @@ item: strapon
 				print ("You're a man!")
 				return false
 			end
+			print ("You're ready to poke some lucky persons holes!")
 			local p = user.AddToken("penis")
 			p.Text = "strapon"
 			p.AddToken("thickness").Value = 3
@@ -125,6 +128,7 @@ item: strapon
 	script: unequip
 		<[[
 			user.RemoveToken("penis", "strapon")
+			print ("You feel less pokey.")
 		]]>
 
 item: ponifier
@@ -1734,6 +1738,57 @@ item: kinky_panties
 	underwear
 	colored
 	sexy
+
+item: really_kinky_panties
+	_n: kinky [color ]panties
+	_ia: a pair of
+	plural
+	equipable
+		female
+		underpants
+		reach
+	weight: feather
+	price: 40
+	ascii
+		char: 0x19A
+	description: "These [color ]leather panties barely cover the crotch at all, and two flexible probes go into the wearers pussy and asshole."
+	clothing
+	underwear
+	colored
+	sexy
+	script: equip
+		<[[
+			
+			if not user.HasToken("vagina") then
+				print("You'd need a pussy to wear this!")
+				Identify()
+				return false
+			else
+				print("You slide the probes into your holes.")
+			end
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("penis", "strapon")
+			print("You feel sad but more comfortable.")
+		]]>
+	timer: 1
+	script: timer
+		<[[
+			local cli = user.GetToken("climax")
+			local sti = user.GetToken("stimulation")
+			if cli.Value < 80 or sti.Value < 80 then
+				message("Your panties are making you hot and bothered...")
+				if cli.Value < 80 then
+					user.Raise(Stat.Climax, 5)
+				end
+				if sti.Value < 80 then
+					user.Raise(Stat.Stimulation, 5)
+				end
+			else
+				message("Your panties are keeping you hot and bothered...")
+			end
+		]]>
 
 item: knee_socks
 	_n: silk [color ]knee socks
