@@ -2098,6 +2098,8 @@ namespace Noxico
 			System.Diagnostics.Process.Start(Name + " info.html");
 		}
 
+		// stuff useful for sex.tml starts here 
+
 		public bool HasPenis()
 		{
 			return HasToken("penis");
@@ -2106,6 +2108,44 @@ namespace Noxico
 		public bool HasVagina()
 		{
 			return HasToken("vagina");
+		}
+
+		public bool HasClit()
+		{
+			return (HasToken("vagina") && GetToken("vagina").HasToken("clit"));
+		}
+
+		public bool CanReachBreasts()
+		{
+			var undershirt = GetEquippedItemBySlot("undershirt");
+			var shirt = GetEquippedItemBySlot("shirt");
+			var jacket = GetEquippedItemBySlot("jacket");
+			var cloak = GetEquippedItemBySlot("cloak");
+			return ((cloak == null || cloak.CanReachThrough()) &&
+				(jacket == null || jacket.CanReachThrough()) &&
+				(shirt == null || shirt.CanReachThrough()) &&
+				(undershirt == null || undershirt.CanReachThrough()));
+		}
+
+		public bool CanReachCrotch()
+		{
+			var underpants = GetEquippedItemBySlot("underpants");
+			var pants = GetEquippedItemBySlot("pants");
+			var socks = GetEquippedItemBySlot("socks");
+			return ((pants == null || pants.CanReachThrough()) &&
+				(underpants == null || underpants.CanReachThrough()) &&
+				(socks == null || socks.CanReachThrough()));
+		}
+
+		//// sparks sex.tml helper functions
+		public bool VaginalPlug()
+		{
+			return (GetEquippedItemBySlot("vagina") != null);
+		}
+
+		public bool AnalPlug()
+		{
+			return (GetEquippedItemBySlot("anus") != null);
 		}
 
 		public void CheckPants(MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false)
@@ -3419,27 +3459,6 @@ namespace Noxico
 			}
 		}
 
-		public bool CanReachBreasts()
-		{
-			var undershirt = GetEquippedItemBySlot("undershirt");
-			var shirt = GetEquippedItemBySlot("shirt");
-			var jacket = GetEquippedItemBySlot("jacket");
-			var cloak = GetEquippedItemBySlot("cloak");
-			return ((cloak == null || cloak.CanReachThrough()) &&
-				(jacket == null || jacket.CanReachThrough()) &&
-				(shirt == null || shirt.CanReachThrough()) &&
-				(undershirt == null || undershirt.CanReachThrough()));
-		}
-
-		public bool CanReachCrotch()
-		{
-			var underpants = GetEquippedItemBySlot("underpants");
-			var pants = GetEquippedItemBySlot("pants");
-			var socks = GetEquippedItemBySlot("socks");
-			return ((pants == null || pants.CanReachThrough()) &&
-				(underpants == null || underpants.CanReachThrough()) &&
-				(socks == null || socks.CanReachThrough()));
-		}
 
 		/* TEAMS IDEA
 		 * ----------
@@ -3637,5 +3656,7 @@ namespace Noxico
 				newName.NameGen = namegen;
 			return newName;
 		}
+
+		
 	}
 }
