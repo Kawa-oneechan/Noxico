@@ -381,7 +381,11 @@ namespace Noxico
 			if (Energy < 5000)
 			{
 				var wasNight = Toolkit.IsNight();
-				NoxicoGame.InGameTime.AddMilliseconds(increase);
+
+				// kawa, DateTime is immutable now, you have to make a new one - sparks
+				DateTime newTime = NoxicoGame.InGameTime.AddMilliseconds(increase);
+				NoxicoGame.InGameTime = newTime;
+
 				if (wasNight && !Toolkit.IsNight())
 				{
 					ParentBoard.UpdateLightmap(this, true);
