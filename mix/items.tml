@@ -2228,7 +2228,13 @@ item: gExtractor
 		]]>
 -- #endregion
 
-
+item: vaginafluids
+	_n: Vaginal fluids
+	description: "A bottle filled with a thick liquid."
+	potion
+	ascii
+		char: 0x180
+		fore: whitesmoke
 
 -- #region Deity artifacts
 __marker: Deity artifacts
