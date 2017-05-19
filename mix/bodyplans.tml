@@ -879,27 +879,36 @@ bodyplan: gargoyle
 		wetness: 4
 		looseness: 1
 		clit: 1.0
+	_copy: vagina
 	egglayer
 	penis: dragon
-		thickness: roll 1d3+1
-		length: roll 1d6+27
+		thickness: roll 1d2+3
+		length: roll 1d6+15
+	_copy: penis
 	balls
 		amount: 2
 		size: roll 1d3+2
 	items
+	horns: 1
 	select
 		set: 0.40
 			femaleonly
 			overwrite: "skin/type: granite"
 			overwrite: "skin/color: oneof gray, darkgray, darkslategray, dimgray"
-			horns: 1
-				-- todo big_curled
+			overwrite: "horns: 2"
+			addto: horns
+				big
+				curled
 		set: 0.40
 			maleonly
 			overwrite: "skin/type: marble"
 			overwrite: "skin/color: oneof white, whitesmoke, lightgray, lightslategray, lightpink, lightyellow, sandybrown"
-			horns: 2
-				-- todo small_curled
+			overwrite: "horns: 3"
+			addto: horns
+				small
+				curled
+			overwrite: "horns/small: 0"
+			overwrite: "horns/straight: 0"
 		set: 0.05
 			overwrite: "skin/type: obsidian"
 			overwrite: "skin/color: black"
