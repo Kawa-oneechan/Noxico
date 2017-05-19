@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neo.IronLua;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -245,7 +246,38 @@ namespace Noxico
 				}
 				return (a >= b);
 			}));
-			env.DoChunk(script, "lol.lua");
+
+			try
+			{
+				// todo really should just compile once at startup but we're just testing the debugger trace
+				// anyway here's how you'd do it.
+				//LuaChunk chunk = env.Lua.CompileChunk(script, "lol.lua", new LuaStackTraceDebugger());
+				//env.DoChunk(chunk, "lol.lua");
+				env.DoChunk(script, "lol.lua");
+			}
+			catch (Neo.IronLua.LuaParseException lpe)
+			{
+				string complain = String.Format("Exception: {0} line {1} col {2},\r\n",
+					lpe.Message, lpe.Line, lpe.Column);
+
+				LuaExceptionData lex = LuaExceptionData.GetData(lpe);
+				foreach (LuaStackFrame lsf in lex)
+				{
+					complain += String.Format("StackTrace: {0} line {1} col {2},\r\n",
+						 lsf.MethodName, lsf.LineNumber, lsf.ColumnNumber);
+				}
+
+				var paused = true;
+				MessageBox.ScriptPauseHandler = () => paused = false;
+				MessageBox.Notice(complain);
+				while (paused)
+				{
+					NoxicoGame.HostForm.Noxico.Update();
+					System.Windows.Forms.Application.DoEvents();
+				}
+				// todo kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks
+			}
+
 			/*
 			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
 			if (effects == null || effects.Tokens.Count == 0)
