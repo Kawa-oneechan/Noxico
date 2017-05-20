@@ -738,5 +738,20 @@ tile: 262
 	back: #3D1607
 	char: 0x157
 
+tile: 263
+	id: vague
+	char: 0x157
+	fore: #000000
+	back: #B22222
+	-- todo vague.Water = true;
 
+	--local stone = new Tile();
+	--stone.Character = 0xC5;
+	--stone.Foreground = Color.Black;
+	--stone.Background = Color.FromCSS("#4B3027");
 
+	--local wall = new Tile();
+	--wall.Character = 0xC5;
+	--wall.Foreground = Color.FromCSS("#58343E")
+	--wall.Background = Color.FromCSS("#B34161");
+	--wall.Wall = true;
