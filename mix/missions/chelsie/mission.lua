@@ -14,8 +14,8 @@ MakeBoardTarget(chelBoard)
 chelBoard.MergeBitmap("missions\\chelsie\\lairhouse.png", "missions\\chelsie\\lairhouse.txt");
 
 local Chelsie = BoardChar(Character.GetUnique("chelsie"))
-Chelsie.XPosition = 50;
-Chelsie.YPosition = 22;
+Chelsie.XPosition = 36;
+Chelsie.YPosition = 20;
 chelBoard.Entities.Add(Chelsie);
 Chelsie.ParentBoard = chelBoard;
 

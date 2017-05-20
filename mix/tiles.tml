@@ -506,6 +506,13 @@ tile: 106
 	id: pathWay
 	back: #281b10
 	char: 32
+tile: 107
+	id: campfire
+	_n: campfire
+	description: It's a campfire.
+	fore: #EC6B00
+	back: #343B2C
+	char: 0x1ef
 
 -- BIOME: GRASSLAND 
 tile: 200
