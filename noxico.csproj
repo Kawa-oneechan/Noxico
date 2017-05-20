@@ -148,7 +148,9 @@
     <Compile Include="UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="WinFormHost.cs" />
+    <Compile Include="WinFormHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="IGameHost.cs" />
     <Compile Include="IniFile.cs" />

@@ -99,8 +99,8 @@ namespace Noxico
 			}
 			catch (LuaParseException pax)
 			{
-				System.Windows.Forms.MessageBox.Show((System.Windows.Forms.Form)NoxicoGame.HostForm, "Parse error while trying to run this chunk:\r\n" + PrepareParseError(block, pax.Line, pax.Column) + "\r\n" + pax.Message, "Lua error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-				return new LuaResult(false);
+				//Wrap it up in a normal Exception that our custom handler can then unwrap, so we can show the context in a nice way.
+				throw new Exception("Lua parse error while trying to run this chunk:" + System.Environment.NewLine + PrepareParseError(block, pax.Line, pax.Column) + System.Environment.NewLine + pax.Message, pax);
 			}
 			return ret;
 		}
