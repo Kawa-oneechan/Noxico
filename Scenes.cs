@@ -139,7 +139,8 @@ namespace Noxico
 					//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
 					//js.SetParameter("Expectations", NoxicoGame.Expectations);
 					//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
-					env.DoChunk(part.Tokens[0].Text, "lol.lua");
+					//env.DoChunk(part.Tokens[0].Text, "lol.lua");
+					Lua.Run(part.Tokens[0].Text, env);
 					ret.AppendLine(buffer.ToString());
 					ret.AppendLine();
 				}

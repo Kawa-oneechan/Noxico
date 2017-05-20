@@ -1175,7 +1175,8 @@ namespace Noxico
 			Board.DrawEnv = env;
 			if (!string.IsNullOrEmpty(extraParm))
 				env.SetValue(extraParm, extraVal);
-			var r = env.DoChunk(script, "lol.lua");
+			//var r = env.DoChunk(script, "lol.lua");
+			var r = Lua.Run(script, env);
 			if (r.ToBoolean())
 				return r.ToBoolean();
 			return true;

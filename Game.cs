@@ -1075,8 +1075,9 @@ namespace Noxico
 				if (!Mix.FileExists(luaFile))
 					continue;
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				var luaCode = Mix.GetString(luaFile);
-				env.DoChunk(luaCode, "lol.lua");
+				//var luaCode = Mix.GetString(luaFile);
+				//env.DoChunk(luaCode, "lol.lua");
+				Lua.RunFile(luaFile, env);
 			}
 		}
 

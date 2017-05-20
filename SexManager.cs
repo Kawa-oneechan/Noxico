@@ -127,7 +127,8 @@ namespace Noxico
 				}
 				return false;
 			}));
-			return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			return Lua.Run("return " + filter.Text, env).ToBoolean();
 		}
 
 		public static List<Token> GetResultHelper(string id, Character[] actors, List<Token> list)
@@ -247,6 +248,11 @@ namespace Noxico
 				return (a >= b);
 			}));
 
+			// Okay, Sparky. What I did was, I put all the error handling in Lua.cs, with a Run method.
+			// Instead of worrying about presentation, it just uses a standard WinForms MessageBox.
+			// After all, the game's already in a broken state by now.
+			Lua.Run(script, env);
+			/*
 			try
 			{
 				// todo really should just compile once at startup but we're just testing the debugger trace
@@ -276,174 +282,6 @@ namespace Noxico
 					System.Windows.Forms.Application.DoEvents();
 				}
 				// todo kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks
-			}
-
-			/*
-			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
-			if (effects == null || effects.Tokens.Count == 0)
-				return;
-			var actors = new[] { actor, target };
-			foreach (var effect in effects.Tokens)
-			{
-				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] { effect.Value.ToString() } : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-				if (effect.Name == "breakitoff")
-				{
-					foreach (var act in actors)
-						act.Character.RemoveAll("havingsex");
-					return;
-				}
-				else if (effect.Name == "end")
-				{
-					return;
-				}
-				else if (effect.Name == "stat")
-				{
-					actors[int.Parse(check[0])].Character.ChangeStat(check[1], float.Parse(check[2]));
-				}
-				else if (effect.Name == "increase")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var p = t.Path(check[1]);
-					if (p != null)
-						p.Value += float.Parse(check[2]);
-				}
-				else if (effect.Name == "decrease")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var p = t.Path(check[1]);
-					if (p != null)
-						p.Value -= float.Parse(check[2]);
-				}
-				else if (effect.Name == "add")
-				{
-					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
-					if (!t.HasToken(check[1]))
-						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
-					else if (check.Length > 2)
-						t.GetToken(check[1]).Value = float.Parse(check[2]);
-				}
-				else if (effect.Name == "remove")
-				{
-					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
-					if (t.HasToken(check[1]))
-						t.RemoveToken(check[1]);
-				}
-				else if (effect.Name == "add!")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (!t.HasToken(check[1]))
-						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
-					else if (check.Length > 2)
-						t.GetToken(check[1]).Value = float.Parse(check[2]);
-				}
-				else if (effect.Name == "remove!")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (t.HasToken(check[1]))
-						t.RemoveToken(check[1]);
-				}
-				else if (effect.Name == "message")
-				{
-					var message = effect.Tokens[Random.Next(effect.Tokens.Count)].Text;
-					message = i18n.Viewpoint(ApplyMemory(message), actor.Character, target.Character);
-					writer(message);
-				}
-				else if (effect.Name == "has")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (t.Path(check[1]) != null)
-						Apply(effect.GetToken("true"), actor, target, writer);
-					else if (effect.HasToken("false"))
-						Apply(effect.GetToken("false"), actor, target, writer);
-				}
-				else if (effect.Name == "roll")
-				{
-					float a, b;
-					if (!float.TryParse(check[0], out a))
-					{
-						Stat stat;
-						if (Enum.TryParse<Stat>(check[0], true, out stat))
-							a = actors[0].Character.GetStat(stat);
-						else
-							a = actors[0].Character.GetSkillLevel(check[0]);
-					}
-					if (!float.TryParse(check[1], out b))
-					{
-						Stat stat;
-						if (Enum.TryParse<Stat>(check[1], true, out stat))
-							b = actors[1].Character.GetStat(stat);
-						else
-							b = actors[1].Character.GetSkillLevel(check[0]);
-					}
-					if (a >= b && effect.HasToken("win"))
-						Apply(effect.GetToken("win"), actor, target, writer);
-					else if (effect.HasToken("lose"))
-						Apply(effect.GetToken("lose"), actor, target, writer);
-				}
-				else if (effect.Name == "disrobe")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var clothClass = check[1];
-					InventoryItem cloth = null;
-					if (clothClass == "top")
-					{
-						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
-						{
-							cloth = t.GetEquippedItemBySlot(slot);
-							if (cloth != null)
-								break;
-						}
-					}
-					else if (clothClass == "bottom")
-					{
-						foreach (var slot in new[] { "pants", "underpants" })
-						{
-							cloth = t.GetEquippedItemBySlot(slot);
-							if (cloth != null)
-								break;
-						}
-					}
-					else
-					{
-						cloth = t.GetEquippedItemBySlot(clothClass);
-					}
-					if (cloth != null)
-					{
-						if (check.Length > 2 && check[2] == "tear")
-						{
-							InventoryItem.TearApart(cloth, t.GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
-							Apply(effect.GetToken("success"), actor, target, writer);
-						}
-						else
-						{
-							var success = cloth.Unequip(t, cloth.tempToken);
-							if (success && effect.HasToken("success"))
-								Apply(effect.GetToken("success"), actor, target, writer);
-							else if (effect.HasToken("failure"))
-								Apply(effect.GetToken("failure"), actor, target, writer);
-						}
-					}
-				}
-				else if (effect.Name == "takevirginity")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var vagina = t.Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
-					if (vagina != null)
-					{
-						vagina.RemoveToken("virgin");
-						Apply(effect.GetToken("success"), actor, target, writer);
-					}
-				}
-				else if (effect.Name == "fertilize")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var t2 = actors[int.Parse(check[1])].Character;
-					t.Fertilize(t2);
-				}
-				else
-				{
-					Program.WriteLine("** Unknown sex effect {0}.", effect.Name);
-				}
 			}
 			*/
 		}
