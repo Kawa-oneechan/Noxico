@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +6,21 @@ using Neo.IronLua;
 
 namespace Noxico
 {
-	class Lua
+	/// <summary>
+	/// A custom wrapper around IronLua.
+	/// </summary>
+	public static class Lua
 	{
 		public static Neo.IronLua.Lua IronLua;
+		/// <summary>
+		/// The default environment. Any invocation of Run or RunFile without an environment will use this one.
+		/// </summary>
 		public static LuaGlobal Environment;
 
+		/// <summary>
+		/// Sets up a new Lua engine and environment.
+		/// </summary>
+		/// <returns>Returns the new Lua engine.</returns>
 		public static Neo.IronLua.Lua Create()
 		{
 			IronLua = new Neo.IronLua.Lua();
@@ -19,6 +29,10 @@ namespace Noxico
 			return IronLua;
 		}
 
+		/// <summary>
+		/// Ascertains that the Lua environment has various Noxico-specific types and functions.
+		/// </summary>
+		/// <param name="env"></param>
 		public static void Ascertain(LuaGlobal env = null)
 		{
 			if (env == null)
@@ -66,6 +80,12 @@ namespace Noxico
 			return ret.ToString();
 		}
 
+		/// <summary>
+		/// Runs a block of Lua code from a string.
+		/// </summary>
+		/// <param name="block">The code to run.</param>
+		/// <param name="env">The Lua environment to run it in.</param>
+		/// <returns>The script's return value, or False if an error occurred.</returns>
 		public static LuaResult Run(string block, LuaGlobal env = null)
 		{
 			if (env == null)
@@ -75,6 +95,7 @@ namespace Noxico
 			{
 				ret = env.DoChunk(block, "lol.lua");
 				//ret = Lua.Run(block, env); // no kawa don't do that here!
+				//oops haha -- K
 			}
 			catch (LuaParseException pax)
 			{
@@ -84,6 +105,12 @@ namespace Noxico
 			return ret;
 		}
 
+		/// <summary>
+		/// Runs a block of Lua code from a file, which may be archived.
+		/// </summary>
+		/// <param name="block">The name of the file with the code to run.</param>
+		/// <param name="env">The Lua environment to run it in.</param>
+		/// <returns>The script's return value, or False if an error occurred.</returns>
 		public static LuaResult RunFile(string name, LuaGlobal env = null)
 		{
 			return Run(Mix.GetString(name), env);

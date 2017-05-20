@@ -15,7 +15,6 @@ namespace Noxico
 		{
 			public string MixFile, Filename;
 			public int Offset, Length;
-			//public bool NeedsPremultiply;
 			public bool IsCompressed;
 		}
 
@@ -26,6 +25,7 @@ namespace Noxico
 		/// <summary>
 		/// Populates the Mix database for usage
 		/// </summary>
+		/// <param name="mainFile">The primary archive's base name.</param>
 		public static void Initialize(string mainFile = "Noxico")
 		{
 			Program.WriteLine("Mix.Initialize()");
@@ -82,6 +82,11 @@ namespace Noxico
 			}
 		}
 
+		/// <summary>
+		/// Checks whether a given file exists, be it in the data folder or in any loaded archives.
+		/// </summary>
+		/// <param name="fileName">The file to check for.</param>
+		/// <returns>True if the file exists.</returns>
 		public static bool FileExists(string fileName)
 		{
 			if (File.Exists(Path.Combine("data", fileName)))
@@ -132,6 +137,12 @@ namespace Noxico
 			return ret;
 		}
 
+		/// <summary>
+		/// Looks up the given file in the Mix database and returns its contents as a token tree.
+		/// </summary>
+		/// <param name="fileName">The file to find.</param>
+		/// <param name="cache">Should the original file contents be cached?</param>
+		/// <returns>Returns a token tree representing the file's contents.</returns>
 		public static List<Token> GetTokenTree(string fileName, bool cache = false)
 		{
 			var tml = GetString(fileName, cache);
