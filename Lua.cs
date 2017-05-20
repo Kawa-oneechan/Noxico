@@ -73,8 +73,8 @@ namespace Noxico
 			LuaResult ret = null;
 			try
 			{
-				//ret = env.DoChunk(block, "lol.lua");
-				ret = Lua.Run(block, env);
+				ret = env.DoChunk(block, "lol.lua");
+				//ret = Lua.Run(block, env); // no kawa don't do that here!
 			}
 			catch (LuaParseException pax)
 			{
