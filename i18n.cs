@@ -337,7 +337,8 @@ namespace Noxico
 				env.SetValue("pussyWetness", who.Tokens.Any(t => t.Name == "vagina") ? who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value) : 0);
 				env.SetValue("cumAmount", who.CumAmount);
 				env.SetValue("slime", who.IsSlime);
-				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+				//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+				return Lua.Run("return " + filter.Text, env).ToBoolean();
 			});
 			#endregion
 

@@ -693,7 +693,8 @@ namespace Noxico
 						running("You have identified this as " + this.ToString(item, true) + ".");
 				}
 			}));
-			var ret = env.DoChunk(script, "lol.lua");
+			//var ret = env.DoChunk(script, "lol.lua");
+			var ret = Lua.Run(script, env);
 			if (!ret.ToBoolean())
 				return true;
 			return ret;
