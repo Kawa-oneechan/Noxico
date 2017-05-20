@@ -227,6 +227,7 @@
     <None Include="mix\missions\playerbase\dialogue.tml.patch" />
     <None Include="mix\missions\playerbase\mission.lua" />
     <Content Include="mix\missions\portal\platform1.png" />
+    <Content Include="mix\missions\portal\platform1.txt" />
     <Content Include="mix\missions\portal\platform2.png" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\noxico.ini" />
