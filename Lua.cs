@@ -39,24 +39,26 @@ namespace Noxico
 				env = Environment;
 			if (NoxicoGame.HostForm.Noxico.Player != null)
 				env.SetValue("player", NoxicoGame.HostForm.Noxico.Player);
-			//TODO: predefine more stuff.
-			env.RegisterPackage("Gender", typeof(Gender));
-			env.RegisterPackage("MorphReport", typeof(MorphReportLevel));
-			env.RegisterPackage("Stat", typeof(Stat));
-			env.RegisterPackage("Realms", typeof(Realms));
-			env.RegisterPackage("Random", typeof(Random));
-			env.RegisterPackage("BoardType", typeof(BoardType));
-			env.RegisterPackage("Mutations", typeof(Mutations));
-			env.RegisterPackage("Character", typeof(Character));
+			//TODO: predefine ALL THE THINGS.
+			env.RegisterPackage("Board", typeof(Board));
 			env.RegisterPackage("BoardChar", typeof(BoardChar));
-			env.RegisterPackage("DroppedItem", typeof(DroppedItem));
+			env.RegisterPackage("BoardType", typeof(BoardType));
+			env.RegisterPackage("Character", typeof(Character));
 			env.RegisterPackage("Clutter", typeof(Clutter));
-			env.RegisterPackage("Door", typeof(Door));
-			env.RegisterPackage("InventoryItem", typeof(InventoryItem));
-			env.RegisterPackage("Warp", typeof(Warp));
-			env.RegisterPackage("Tile", typeof(Tile));
 			env.RegisterPackage("Color", typeof(Color));
-			env.SetValue("titlecase", new Func<string, string>(x => x.Titlecase()));
+			env.RegisterPackage("Door", typeof(Door));
+			env.RegisterPackage("DroppedItem", typeof(DroppedItem));
+			env.RegisterPackage("Entity", typeof(Entity));
+			env.RegisterPackage("Gender", typeof(Gender));
+			env.RegisterPackage("InventoryItem", typeof(InventoryItem));
+			env.RegisterPackage("MorphReport", typeof(MorphReportLevel));
+			env.RegisterPackage("Mutations", typeof(Mutations));
+			env.RegisterPackage("Random", typeof(Random));
+			env.RegisterPackage("Realms", typeof(Realms));
+			env.RegisterPackage("Stat", typeof(Stat));
+			env.RegisterPackage("Tile", typeof(Tile));
+			env.RegisterPackage("Warp", typeof(Warp));
+		    env.SetValue("titlecase", new Func<string, string>(x => x.Titlecase()));
 			env.SetValue("message", new Action<object, Color>((x, y) => NoxicoGame.AddMessage(x, y)));
 		}
 
