@@ -102,14 +102,14 @@ namespace Noxico
 			if (player != null && player.Path("ships/" + ID) != null)
 			{
 				if (appendTitle)
-					return string.Format("{0}, {1} {2}{3}", 
+					return string.Format("{0}, {1} {2}{3}",
 						Name.ToString(fullName), (the ? "the" : A),
 						(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
 						Title);
 				return Name.ToString(fullName);
 			}
 
-			return string.Format("{0} {1}{2}", 
+			return string.Format("{0} {1}{2}",
 				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
 				(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
 				Title);
@@ -160,7 +160,7 @@ namespace Noxico
 				if (HasToken("player"))
 					return PreferredGender;
 				//TODO: detect a relationship token and return the preferred gender if known.
-				
+
 				var pants = GetEquippedItemBySlot("pants");
 				var underpants = GetEquippedItemBySlot("underpants");
 				var pantsCT = (pants == null) ? true : pants.CanSeeThrough();
@@ -183,7 +183,7 @@ namespace Noxico
 				// size 2 or more breaks the feminine looks threshold
 				if (BiggestBreastrowNumber != -1)
 					scoreF += GetBreastRowSize(BiggestBreastrowNumber) * 0.51f;
-				
+
 				// visible vagina implies feminine looks
 				if (HasToken("vagina") && crotchVisible)
 					scoreF += 0.51f;
@@ -209,7 +209,7 @@ namespace Noxico
 				if (decision == Gender.Neuter && HasToken("culture") && GetToken("culture").Text == "felin")
 					decision = Gender.Female;
 
-				return decision; 
+				return decision;
 			}
 		}
 
@@ -264,13 +264,13 @@ namespace Noxico
 			{
 				Title = GetToken("terms").GetToken("generic").Text;
 			}
-			
+
 			if (HasToken("prefixes")) // add prefixes, 'vorpal', 'dire' etc
 			{
 				foreach (var prefix in GetToken("prefixes").Tokens)
 					Title = prefix.Name + " " + Title;
 			}
-			
+
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
@@ -391,7 +391,7 @@ namespace Noxico
 					(toFix.HasToken("amount") && toFix.GetToken("amount").Value <= 0) ||
 					(toFix.HasToken("size") && toFix.GetToken("size").Value < 0) ||
 					(toFix.HasToken("sizefromprevious") && toFix.GetToken("sizefromprevious").Value < 0))
-						toRemove.Add(toFix);
+					toRemove.Add(toFix);
 			}
 			foreach (Token removeMe in toRemove)
 			{
@@ -433,6 +433,7 @@ namespace Noxico
 			else if (gender == Gender.Herm || gender == Gender.Neuter)
 				newChar.Name.Female = Random.NextDouble() > 0.5;
 
+			newChar.ResolveMetaTokens();
 			newChar.EnsureDefaultTokens();
 			newChar.StripInvalidItems();
 			newChar.UpdateTitle();
@@ -450,6 +451,47 @@ namespace Noxico
 
 			Program.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
+		}
+
+		private void ResolveMetaTokens()
+		{
+			while (HasToken("_either"))
+			{
+				var either = GetToken("_either");
+				var eitherChoice = Random.Next(-1, either.Tokens.Count);
+				if (eitherChoice > -1)
+					AddToken(either.Tokens[eitherChoice]);
+				RemoveToken(either);
+			}
+
+			var removeThese = new List<Token>();
+
+			foreach (Token token in Tokens)
+			{
+				if (token.HasToken("_maybe"))
+				{
+					float value = token.GetToken("_maybe").Value;
+					if (value == 0.0f)
+						value = 0.5f;
+					if (Random.NextDouble() >= value)
+						removeThese.Add(token);
+					token.RemoveToken("_maybe");
+				}
+			}
+
+			foreach (Token token in removeThese)
+				RemoveToken(token);
+
+			while (HasToken("_copy"))
+			{
+				string path = GetToken("_copy").Text;
+				RemoveToken("_copy");
+				var source = Path(path);
+				if (source == null)
+					continue;
+				AddToken(source.Clone(true));
+			}
+
 		}
 
 		private Token PickATit()
@@ -952,43 +994,7 @@ namespace Noxico
 			if (newChar.Path("skin/pattern") != null && string.IsNullOrWhiteSpace(newChar.Path("skin/pattern").Text))
 				newChar.GetToken("skin").RemoveToken("pattern");
 
-			while (newChar.HasToken("_either"))
-			{
-				var either = newChar.GetToken("_either");
-				var eitherChoice = Random.Next(-1, either.Tokens.Count);
-				if (eitherChoice > -1)
-					newChar.AddToken(either.Tokens[eitherChoice]);
-				newChar.RemoveToken(either);
-            }
-
-			var removeThese = new List<Token>();
-
-			foreach (Token token in newChar.Tokens)
-			{
-				if (token.HasToken("_maybe"))
-				{
-					float value = token.GetToken("_maybe").Value;
-					if (value == 0.0f)
-						value = 0.5f;
-					if (Random.NextDouble() >= value)
-						removeThese.Add(token);
-					token.RemoveToken("_maybe");
-				}
-			}
-
-			foreach (Token token in removeThese)
-				newChar.RemoveToken(token);
-
-			while (newChar.HasToken("_copy"))
-			{
-				string path = newChar.GetToken("_copy").Text;
-				newChar.RemoveToken("_copy");
-				var source = newChar.Path(path);
-				if (source == null)
-					continue;
-				newChar.AddToken(source.Clone(true));
-			}
-
+			newChar.ResolveMetaTokens();
             newChar.StripInvalidItems();
 
 #if MUTAMORPH
@@ -1063,44 +1069,7 @@ namespace Noxico
 				else if (gender == Gender.Herm)
 					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
-
-			while (newChar.HasToken("_either"))
-			{
-				var either = newChar.GetToken("_either");
-				var eitherChoice = Random.Next(-1, either.Tokens.Count);
-				if (eitherChoice > -1)
-					newChar.AddToken(either.Tokens[eitherChoice]);
-				newChar.RemoveToken(either);
-			}
-
-			var removeThese = new List<Token>();
-
-			foreach (Token token in newChar.Tokens)
-			{
-				if (token.HasToken("_maybe"))
-				{
-					float value = token.GetToken("_maybe").Value;
-					if (value == 0.0f)
-						value = 0.5f;
-					if (Random.NextDouble() >= value)
-						removeThese.Add(token);
-					token.RemoveToken("_maybe");
-				}
-			}
-
-			foreach (Token token in removeThese)
-				newChar.RemoveToken(token);
-
-			while (newChar.HasToken("_copy"))
-			{
-				string path = newChar.GetToken("_copy").Text;
-				newChar.RemoveToken("_copy");
-				var source = newChar.Path(path);
-				if (source == null)
-					continue;
-				newChar.AddToken(source.Clone(true));
-			}
-
+			newChar.ResolveMetaTokens();
 			return newChar;
 		}
 

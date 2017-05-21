@@ -220,7 +220,7 @@
     <Content Include="mix\missions\melfina\uniques.tml.patch" />
     <Content Include="mix\missions\melfina\loot.tml.patch" />
     <Content Include="mix\missions\melfina\items.tml.patch" />
-    <Content Include="mix\missions\pettancow\uniques.tml.patch" />
+    <Content Include="mix\missions\playerbase\uniques.tml.patch" />
     <None Include="mix\missions\littleponies\mission.lua" />
     <None Include="mix\missions\melfina\mission.lua" />
     <None Include="mix\missions\pettancow\mission.lua" />

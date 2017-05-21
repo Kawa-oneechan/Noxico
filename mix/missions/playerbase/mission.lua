@@ -65,3 +65,11 @@ while (carpenter.Character.HasToken("role")) do
 end
 carpenter.Character.AddToken("role").AddToken("vendor").AddToken("class", 0, "carpenter")
 print("we're done here.")
+ 
+-- add pettancow here for simplicity
+local pettancow = BoardChar(Character.GetUnique("pettancow"))
+pettancow.XPosition = 57;
+pettancow.YPosition = 16;
+myBoard.Entities.Add(pettancow);
+pettancow.ParentBoard = myBoard;
+pettancow.AdjustView();
