@@ -209,10 +209,21 @@ namespace Noxico
 			var bitmap = Mix.GetBitmap(fileName);
 			var tileset = Mix.GetString(tiledefs).Split('\n');
 			var tiles = new Dictionary<string, string>();
+			var clutter = new Dictionary<string, string>();
 			foreach (var tile in tileset)
 			{
+				if (string.IsNullOrWhiteSpace(tile))
+					continue;
 				var t = tile.Trim().Split('\t');
-				tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
+				var t1 = t[1];
+				while (t[1].Contains("+clut")) //tileID +clut[prop:val, ...] [+clut[...] ...]
+				{
+					t1 = t1.Remove(t1.IndexOf("+clut")).Trim();
+					t[1] = t[1].Substring(t[1].IndexOf("+clut") + 6); //skip to after the [
+					clutter.Add("ff" + t[0].ToLowerInvariant(), t[1].Substring(0, t[1].IndexOf(']')));
+					t[1] = t[1].Substring(t[1].IndexOf(']') + 1);
+				}
+				tiles.Add("ff" + t[0].ToLowerInvariant(), t1);
 			}
 			for (var y = 0; y < 50; y++)
 			{
@@ -239,6 +250,49 @@ namespace Noxico
 							Glyph = '+'
 						};
 						this.Entities.Add(door);
+					}
+
+					if (clutter.ContainsKey(color.Name))
+					{
+						var nc = new Clutter()
+						{
+							XPosition = x,
+							YPosition = y,
+							ParentBoard = this
+						};
+						this.Entities.Add(nc);
+						var properties = clutter[color.Name].SplitQ();
+						foreach (var property in properties)
+						{
+							var key = property.Substring(0, property.IndexOf(':'));
+							var value = property.Substring(property.IndexOf(':') + 1);
+							switch (key.ToLowerInvariant())
+							{
+								case "id": nc.ID = value; break;
+								case "name": nc.Name = value; break;
+								case "desc": nc.Description = value; break;
+								case "glyph":
+									if (value.StartsWith("0x"))
+										nc.Glyph = int.Parse(value.Substring(2), System.Globalization.NumberStyles.HexNumber);
+									else
+										nc.Glyph = int.Parse(value);
+									break;
+								case "fg":
+									if (value.StartsWith("#"))
+										nc.ForegroundColor = Color.FromCSS(value);
+									else
+										nc.ForegroundColor = Color.FromName(value);
+									break;
+								case "bg":
+									if (value.StartsWith("#"))
+										nc.BackgroundColor = Color.FromCSS(value);
+									else
+										nc.BackgroundColor = Color.FromName(value);
+									break;
+								case "block": nc.Blocking = true; break;
+								case "burns": nc.CanBurn = true; break;
+							}
+						}
 					}
 				}
 			}
