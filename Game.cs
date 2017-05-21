@@ -223,13 +223,15 @@ namespace Noxico
 			Random.Reseed(1);
 			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
 			test.Realm = Realms.Nox;
+			test.MergeBitmap("missions\\playerbase\\toolshed.png", "missions\\playerbase\\lv0.txt");
+			test.DumpToHtml();
+			return;
+			/*
 			var gen = new TownGenerator();
 			gen.Board = test;
 			gen.Culture = Culture.DefaultCulture;
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
-			test.DumpToHtml();
-			return;
 			*/
 			//var testChar = Character.Generate("felin", Gender.Male);
 			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
