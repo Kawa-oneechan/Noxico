@@ -215,15 +215,24 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(tile))
 					continue;
 				var t = tile.Trim().Split('\t');
-				var t1 = t[1];
-				while (t[1].Contains("+clut")) //tileID +clut[prop:val, ...] [+clut[...] ...]
+				if (t[1].Contains('+')) //tileID +clut[prop:val, ...]
 				{
-					t1 = t1.Remove(t1.IndexOf("+clut")).Trim();
-					t[1] = t[1].Substring(t[1].IndexOf("+clut") + 6); //skip to after the [
-					clutter.Add("ff" + t[0].ToLowerInvariant(), t[1].Substring(0, t[1].IndexOf(']')));
-					t[1] = t[1].Substring(t[1].IndexOf(']') + 1);
+					var t1 = t[1];
+					tiles.Add("ff" + t[0].ToLowerInvariant(), t1.Remove(t1.IndexOf('+')).Trim());
+					t1 = t1.Substring(t1.IndexOf('+'));
+					while (t1.StartsWith("+"))
+					{
+						if (t1.StartsWith("+clut"))
+						{
+							t1 = t1.Substring(t1.IndexOf("+clut") + 6); //skip to after the [
+							clutter.Add("ff" + t[0].ToLowerInvariant(), t1.Substring(0, t1.IndexOf(']')));
+							t1 = t1.Substring(t1.IndexOf(']') + 1).Trim();
+						}
+						//TODO: allow other kinds of entities
+					}
 				}
-				tiles.Add("ff" + t[0].ToLowerInvariant(), t1);
+				else
+					tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
 			}
 			for (var y = 0; y < 50; y++)
 			{
