@@ -1,0 +1,757 @@
+tile: 0
+-- Shouldn't be used. At all.
+	id: null
+	fore: black
+	back: black
+	char: 32
+
+tile: 1
+	id: dungeonEntrance
+	_n: dungeon entrance
+	description: A rough-hewn stairway leads down into the ground...
+	fore: silver
+	back: black
+	char: 0x14F
+tile: 2
+	id: dungeonExit
+	_n: dungeon exit
+	description: A rough-hewn stairway leads up to the surface...
+	fore: silver
+	back: black
+	char: 0x150
+tile: 3
+	id: dungeonDownstairs
+	_n: stairs down
+	description: A rough-hewn stairway leads down to a deeper level of the dungeon...
+	fore: silver
+	back: black
+	char: 0x14F
+tile: 4
+	id: dungeonUpstairs
+	_n: stairs up
+	description: A rough-hewn stairway leads up to a higher level of the dungeon...
+	fore: silver
+	back: black
+	char: 0x150
+tile: 5
+	id: dungeonSideExit
+	_n: dungeon passageway
+	description: A rough-hewn passage leads to another part of the dungeon...
+	fore: silver
+	back: black
+	char: 0xF0
+
+tile: 10
+	id: woodFloor_Plant1
+	_n: potted plant
+	description: A potted plant.
+	back: #563F2C
+	fore: darkgreen
+	char: 0x00F
+	wall
+	ceiling
+tile: 15
+	id: woodFloor_Desk
+	_n: desk
+	back: #563F2C
+	fore: #140F0C
+	char: 0x0F0
+	wall
+	ceiling
+
+tile: 20
+	id: biomeGround
+	char: 0x00
+	back: black
+	fore: black
+
+-- BUILDINGS
+tile: 50
+	id: stoneFloor
+	back: #414257
+	char: 32
+	variants
+		stoneFloor_scatter: 0.75
+tile: 51
+	id: stoneFloor_scatter
+	back: #414257
+	char: 0x146
+tile: 52
+	id: stoneWall
+	_n: rough stone wall
+	description: Rough-hewn stone separates you from whatever is behind it.
+	back: #77788D
+	char: 0x20
+	variants
+		stoneWall_scatter: 0.50
+	wall
+tile: 53
+	id: stoneWall_scatter
+	_n: rough stone wall
+	description: Rough-hewn stone separates you from whatever is behind it.
+	back: #77788D
+	char: 0x146
+	wall
+tile: 54
+	id: woodFloor
+	back: #563F2C
+	char: 32
+	ceiling
+	variants
+		woodFloor_scatter: 0.75
+tile: 55
+	id: woodFloor_scatter
+	back: #563F2C
+	char: 0x158
+	ceiling
+tile: 56
+	id: outerWoodWall
+	_n: unresolved outside wall
+	fore: #140F0C
+	back: #563F2C
+	char: 0x23
+	wall
+	canburn
+	varwall
+tile: 57
+	id: innerWoodWall
+	_n: unresolved inside wall
+	fore: #140F0C
+	back: #563F2C
+	char: 0x23
+	wall
+	canburn
+	varwall
+tile: 58
+	id: fence
+	_n: unresolved fence
+	fore: #140F0C
+	back: #1D3612
+	char: 0x23
+	fence
+	canburn
+	varwall
+tile: 59
+	id: outerWoodWallBottomRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x100
+	wall
+	canburn
+	varwall
+tile: 60
+	id: outerWoodWallBottomLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x101
+	wall
+	canburn
+	varwall
+tile: 61
+	id: outerWoodWallTopRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x102
+	wall
+	canburn
+	varwall
+tile: 62
+	id: outerWoodWallTopLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x103
+	wall
+	canburn
+	varwall
+tile: 63
+	id: outerWoodWallTopBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x104
+	wall
+	canburn
+	varwall
+tile: 64
+	id: outerWoodWallTop
+	fore: #140F0C
+	back: #563F2C
+	char: 0x104
+	wall
+	canburn
+	varwall
+tile: 65
+	id: outerWoodWallBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x104
+	wall
+	canburn
+	varwall
+tile: 66
+	id: outerWoodWallLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x105
+	wall
+	canburn
+	varwall
+tile: 67
+	id: outerWoodWallLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x105
+	wall
+	canburn
+	varwall
+tile: 68
+	id: outerWoodWallRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x105
+	wall
+	canburn
+	varwall
+tile: 69
+	id: outerWoodWallTopBottomRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x106
+	wall
+	canburn
+	varwall
+tile: 70
+	id: outerWoodWallBottomLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x107
+	wall
+	canburn
+	varwall
+tile: 71
+	id: outerWoodWallTopBottomLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x108
+	wall
+	canburn
+	varwall
+tile: 72
+	id: outerWoodWallTopLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x109
+	wall
+	canburn
+	varwall
+tile: 73
+	id: outerWoodWallTopBottomLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10A
+	wall
+	canburn
+	varwall
+tile: 74
+	id: innerWoodWallBottomRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10B
+	wall
+	canburn
+	varwall
+tile: 75
+	id: innerWoodWallBottomLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10C
+	wall
+	canburn
+	varwall
+tile: 76
+	id: innerWoodWallTopRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10D
+	wall
+	canburn
+	varwall
+tile: 77
+	id: innerWoodWallTopLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10E
+	wall
+	canburn
+	varwall
+tile: 78
+	id: innerWoodWallTopBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10F
+	wall
+	canburn
+	varwall
+tile: 79
+	id: innerWoodWallTop
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10F
+	wall
+	canburn
+	varwall
+tile: 80
+	id: innerWoodWallBottom
+	fore: #140F0C
+	back: #563F2C
+	char: 0x10F
+	wall
+	canburn
+	varwall
+tile: 81
+	id: innerWoodWallLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x110
+	wall
+	canburn
+	varwall
+tile: 82
+	id: innerWoodWallLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x110
+	wall
+	canburn
+	varwall
+tile: 83
+	id: innerWoodWallRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x110
+	wall
+	canburn
+	varwall
+tile: 84
+	id: innerWoodWallTopBottomRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x111
+	wall
+	canburn
+	varwall
+tile: 85
+	id: innerWoodWallBottomLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x112
+	wall
+	canburn
+	varwall
+tile: 86
+	id: innerWoodWallTopBottomLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x113
+	wall
+	canburn
+	varwall
+tile: 87
+	id: innerWoodWallTopLeftRight
+	fore: #140F0C
+	back: #563F2C
+	char: 0x114
+	wall
+	canburn
+	varwall
+tile: 88
+	id: innerWoodWallTopBottomLeft
+	fore: #140F0C
+	back: #563F2C
+	char: 0x115
+	wall
+	canburn
+	varwall
+tile: 89
+	id: fenceBottomRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x120
+	fence
+	canburn
+	varwall
+tile: 90
+	id: fenceBottomLeft
+	fore: #140F0C
+	back: #1D3612
+	char: 0x121
+	fence
+	canburn
+	varwall
+tile: 91
+	id: fenceTopRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x122
+	fence
+	canburn
+	varwall
+tile: 92
+	id: fenceTopLeft
+	fore: #140F0C
+	back: #1D3612
+	char: 0x123
+	fence
+	canburn
+	varwall
+tile: 93
+	id: fenceTopBottom
+	fore: #140F0C
+	back: #1D3612
+	char: 0x124
+	fence
+	canburn
+	varwall
+tile: 94
+	id: fenceTop
+	fore: #140F0C
+	back: #1D3612
+	char: 0x124
+	fence
+	canburn
+	varwall
+tile: 95
+	id: fenceBottom
+	fore: #140F0C
+	back: #1D3612
+	char: 0x124
+	fence
+	canburn
+	varwall
+tile: 96
+	id: fenceLeftRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x125
+	fence
+	canburn
+	varwall
+tile: 97
+	id: fenceLeft
+	fore: #140F0C
+	back: #1D3612
+	char: 0x125
+	fence
+	canburn
+	varwall
+tile: 98
+	id: fenceRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x125
+	fence
+	canburn
+	varwall
+tile: 99
+	id: fenceTopBottomRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x126
+	fence
+	canburn
+	varwall
+tile: 100
+	id: fenceBottomLeftRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x127
+	fence
+	canburn
+	varwall
+tile: 101
+	id: fenceTopBottomLeftRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x128
+	fence
+	canburn
+	varwall
+tile: 102
+	id: fenceTopLeftRight
+	fore: #140F0C
+	back: #1D3612
+	char: 0x129
+	fence
+	canburn
+	varwall
+tile: 103
+	id: fenceTopBottomLeft
+	fore: #140F0C
+	back: #1D3612
+	char: 0x12A
+	fence
+	canburn
+	varwall
+tile: 104
+	id: doorwayClosed
+	back: #563F2C
+	char: 32
+	wall
+	ceiling
+tile: 105
+	id: doorwayOpened
+	back: #563F2C
+	char: 32
+	ceiling
+tile: 106
+	id: pathWay
+	back: #281b10
+	char: 32
+tile: 107
+	id: campfire
+	_n: campfire
+	description: It's a campfire.
+	fore: #EC6B00
+	back: #343B2C
+	char: 0x1ef
+
+-- BIOME: GRASSLAND 
+tile: 200
+	id: grassland
+	back: #1D3612
+	char: 32
+	canburn
+	variants
+		grassland_scatter: 0.5
+		grassland_wavey: 0.5
+		grassland_tree: 0.9
+		grassland_rock: 0.8
+tile: 201
+	id: grassland_scatter
+	back: #1D3612
+	char: 0x146
+	canburn
+tile: 202
+	id: grassland_wavey
+	back: #1D3612
+	char: 0x157
+	canburn
+tile: 203
+	id: grassland_tree
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #5A9640
+	back: #1D3612
+	char: 0x1E5
+	wall
+	canburn
+tile: 204
+	id: grassland_rock
+	_n: tree
+	description: It's a rock. Wowie.
+	fore: gray
+	back: #1D3612
+	char: 0x143
+
+-- BIOME: TUNDRA 
+tile: 210
+	id: tundra
+	back: white
+	char: 32
+	variants
+		tundra_scatter: 0.5
+		tundra_wavey: 0.5
+		tundra_rock: 0.8
+tile: 211
+	id: tundra_scatter
+	back: white
+	char: 0x146
+tile: 212
+	id: tundra_wavey
+	back: white
+	char: 0x157
+tile: 213
+	id: tundra_rock
+	_n: rock
+	description: It's a rock. Wowie.
+	fore: gray
+	back: white
+	char: 0x143
+
+-- BIOME: TAIGA 
+tile: 220
+	id: taiga
+	back: #9EC4AB
+	char: 32
+	variants
+		taiga_scatter: 0.5
+		taiga_wavey: 0.5
+		taiga_rock: 0.9
+		taiga_tree: 0.8
+tile: 221
+	id: taiga_scatter
+	back: #9EC4AB
+	char: 0x146
+tile: 222
+	id: taiga_wavey
+	back: #9EC4AB
+	char: 0x157
+tile: 223
+	id: taiga_rock
+	_n: rock
+	description: It's a rock. Wowie.
+	fore: gray
+	back: #9EC4AB
+	char: 0x143
+tile: 224
+	id: taiga_tree
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #244428
+	back: #9EC4AB
+	char: 0x1E6
+	wall
+	canburn
+
+-- BIOME: WOODS 
+tile: 230
+	id: woods
+	back: #1F3B19
+	char: 32
+	canburn
+	variants
+		woods_scatter: 0.5
+		woods_wavey: 0.5
+		woods_tree1: 0.8
+		woods_tree2: 0.8
+		woods_rock: 0.9
+tile: 231
+	id: woods_scatter
+	back: #1F3B19
+	char: 0x146
+	canburn
+tile: 232
+	id: woods_wavey
+	back: #1F3B19
+	char: 0x157
+	canburn
+tile: 233
+	id: woods_tree1
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #329838
+	back: #1F3B19
+	char: 0x1E6
+	wall
+	canburn
+tile: 234
+	id: woods_tree2
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #6CCC77
+	back: #1F3B19
+	char: 0x1E5
+	wall
+	canburn
+tile: 235
+	id: woods_rock
+	_n: rock
+	description: It's a rock. Wowie.
+	fore: gray
+	back: #1F3B19
+	char: 0x143
+
+-- BIOME: SWAMP 
+tile: 240
+	id: swamp
+	back: #343B2C
+	char: 32
+	variants
+		swamp_wavey: 0.4
+		swamp_tree: 0.98
+tile: 241
+	id: swamp_wavey
+	back: #343B2C
+	char: 0x157
+	canburn
+tile: 242
+	id: swamp_tree
+	_n: tree
+	description: No use kicking a dead tree.
+	fore: black
+	back: #343B2C
+	char: 0x145
+	wall
+
+-- BIOME: RAINFOREST 
+tile: 250
+	id: rainforest
+	back: #1D3612
+	char: 32
+	canburn
+	variants
+		rainforest_tree1: 0.8
+		rainforest_tree2: 0.8
+		rainforest_tree3: 0.8
+tile: 251
+	id: rainforest_tree1
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #439838
+	back: #1D3612
+	char: 0x1E6
+	wall
+	canburn
+tile: 252
+	id: rainforest_tree2
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #57AA5A
+	back: #1D3612
+	char: 0x1E6
+	wall
+	canburn
+tile: 253
+	id: rainforest_tree3
+	_n: tree
+	description: It's a tree. Wow.
+	fore: #6CCC77
+	back: #1D3612
+	char: 0x1E6
+	wall
+	canburn
+
+-- BIOME: NETHER
+tile: 260
+	id: nether
+	back: #3D1607
+	char: 32
+	canburn
+	variants
+		nether_scatter: 0.5
+		nether_wavey: 0.5
+tile: 261
+	id: nether_scatter
+	back: #3D1607
+	char: 0x146
+tile: 262
+	id: nether_wavey
+	back: #3D1607
+	char: 0x157
+
+tile: 263
+	id: vague
+	char: 0x157
+	fore: #000000
+	back: #B22222
+	-- todo vague.Water = true;
+
+	--local stone = new Tile();
+	--stone.Character = 0xC5;
+	--stone.Foreground = Color.Black;
+	--stone.Background = Color.FromCSS("#4B3027");
+
+	--local wall = new Tile();
+	--wall.Character = 0xC5;
+	--wall.Foreground = Color.FromCSS("#58343E")
+	--wall.Background = Color.FromCSS("#B34161");
+	--wall.Wall = true;

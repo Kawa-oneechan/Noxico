@@ -1,0 +1,448 @@
+-- Use in anything that's passed to i18n.Viewpoint	
+-- #region Sentences
+Hello
+	- "Hello"
+	- "Hi"
+	- "Mihli"
+		filter: (cultureID == "felin")
+hello
+	- "hello"
+	- "hi"
+	- "mihli"
+		filter: (cultureID == "felin")
+helloagain
+	- "[?:Hello] again"
+	- "Oh [?:hello]"
+canihelp
+	- "Is there something I can do for you?"
+	- "Can I help you somehow?"
+-- #endregion
+
+-- #region Body parts
+cock
+	- boner
+	- cock
+	- dick
+	- dong
+	- joystick
+	- length
+	- mast
+	- manhood
+	- member
+	- pecker
+	- penis
+	- prick
+	- pole
+	- rod
+	- shaft
+	- shlong
+	- slug
+	- sucker
+	- tool
+	- wang
+	- wood
+cocks
+	- boners
+	- cocks
+	- dicks
+	- dongs
+	- joysticks
+	- lengths
+	- masts
+	- manhoods
+	- members
+	- peckers
+	- penises
+	- pricks
+	- poles
+	- rods
+	- shafts
+	- shlongs
+	- slugs
+	- suckers
+	- tools
+	- wangs
+	- wood
+pussy
+	- beaver
+	- cave
+	- cooch
+	- cooter
+	- cooze
+	- coozie
+	- cunny
+	- cunt
+	- gash
+	- hole
+	- minch
+	- muff
+	- sheath
+	- slit
+	- snatch
+	- puss
+	- pussy
+	- quim
+	- twat
+	- vagina
+	- vulva
+pussies
+	- beavers
+	- caves
+	- cooches
+	- cooters
+	- coozes
+	- coozies
+	- cunnies
+	- cunts
+	- gashes
+	- holes
+	- minches
+	- muffs
+	- sheathes
+	- slits
+	- snatches
+	- pusses
+	- pussies
+	- quims
+	- twats
+	- vaginas
+	- vulvas
+anus
+	- anus
+	- asshole
+	- back door
+	- butthole
+	- cornhole
+	- dock
+	- pooper
+	- pucker
+	- rectum
+	- rosebud
+butt
+	- ass
+	- backside
+	- behind
+	- booty
+	- bum
+	- butt
+	- buttocks
+	- keister
+	- rear
+	- rear end
+	- toches
+	- tush
+clit
+	- bean
+	- button
+	- clit
+	- clitoris
+	- clitty
+	- jewel
+	- pearl
+	- skittle
+	- fun button
+	- love button
+breasts
+	- baps
+	- boobs
+	- breasts
+	- funbags
+	- hooters
+	- jugs
+	- knockers
+	- mammaries
+	- mounds
+	- teats
+	- tits
+	- titties
+	- udders
+breast
+	- bap
+	- boob
+	- breast
+	- funbag
+	- hooter
+	- jug
+	- knocker
+	- mammary
+	- mound
+	- teat
+	- tit
+	- titty
+	- udder
+	- rack
+nipples
+	- bumps
+	- headlights
+	- nertz
+	- nipples
+	- nips
+	- nubbins
+	- peanuts
+	- raisins
+nipple
+	- bump
+	- headlight
+	- nipple
+	- nip
+	- nubbin
+	- peanut
+	- raisin
+labia
+	- labia
+	- lips
+	- petals
+cum
+	- cream
+	- cum
+	- ejaculate
+	- fuckjuice
+	- jism
+	- jizz
+	- juice
+	- load
+	- seed
+	- semen
+	- spooge
+	- spunk
+
+-- #region Metaparts
+-- You can use these to make sure characters with more than one cock or pussy use the plural
+_cock
+	- [?:cock]
+		filter: (penisAmount < 2)
+	- [?:cocks]
+		filter: (penisAmount > 1)
+_pussy
+	- [?:pussy]
+		filter: (pussyAmount < 2)
+	- [?:pussy]
+		filter: (pussyAmount > 1)
+-- #endregion
+
+-- #endregion
+
+-- #region Sexual verbs
+verb-fuck
+	- fuck
+	- hammer
+	- plow
+	- pound
+	- slam
+	- thrust
+verb-fucked
+	- fucked
+	- hammered
+	- plowed
+	- pounded
+	- slammed
+	- thrusted
+verb-fucking
+	- fucking
+	- hammering
+	- plowing
+	- pounding
+	- slamming
+	- thrusting
+verb-insert
+	- plunge
+	- probe
+	- ram
+	- shove
+	- slide
+	- stuff
+verb-inserted
+	- plunged
+	- probed
+	- rammed
+	- shoved
+	- slid
+	- stuffed
+verb-inserting
+	- plunging
+	- probing
+	- ramming
+	- shoving
+	- sliding
+	- stuffing
+verb-squirt
+	- flow
+	- gush
+	- pour
+	- spit
+	- splurge
+	- spray
+	- spritz
+	- squirt
+verb-squirted
+	- flowed
+	- gushed
+	- poured
+	- spattered
+	- splurged
+	- sprayed
+	- spritzed
+	- squirted
+verb-squirting
+	- flowing
+	- gushing
+	- pouring
+	- spattering
+	- splurging
+	- spraying
+	- spritzing
+	- squirting
+verb-squirtlarge
+	- flood
+	- flow
+	- gush
+	- pour
+	- spout
+	- spray
+	- squirt
+	- surge
+verb-squirtedlarge
+	- flooded
+	- flowed
+	- gushed
+	- poured
+	- spouted
+	- sprayed
+	- squirted
+	- surged
+verb-squirtinglarge
+	- flooding
+	- flowing
+	- gushing
+	- pouring
+	- spouting
+	- spraying
+	- squirting
+	- surging
+verb-dribble
+	- drain
+	- dribble
+	- drip
+	- flow
+	- foam
+	- froth
+	- leach
+	- leak
+	- ooze
+	- seep
+	- slime
+	- slobber
+	- trickle
+	- weep
+verb-dribbled
+	- drained
+	- dribbled
+	- dripped
+	- flowed
+	- foamed
+	- frothed
+	- leached
+	- leaked
+	- oozed
+	- seeped
+	- slimed
+	- slobbered
+	- trickled
+	- wept
+verb-dribbling
+	- draining
+	- dribbling
+	- dripping
+	- flowing
+	- foaming
+	- frothing
+	- leaching
+	- leaking
+	- oozing
+	- seeping
+	- sliming
+	- slobbering
+	- trickling
+	- weeping
+verb-shake
+	- shake
+	- tremble
+	- quake
+	- quiver
+verb-shaked
+	- shook
+	- trembled
+	- quaked
+	- quivered
+verb-shaking
+	- shaking
+	- trembling
+	- quaking
+	- quivering
+verb-caress
+	- caress
+	- feel
+	- fondle
+	- grope
+	- pet
+	- rub
+	- squeeze
+	- stroke
+	- tease
+	- tickle
+	- touch
+verb-caressed
+	- caressed
+	- felt
+	- fondled
+	- groped
+	- petted
+	- rubbed
+	- squeezed
+	- stroked
+	- teased
+	- tickled
+	- touched
+verb-caressing
+	- caressing
+	- feeling
+	- fondling
+	- groping
+	- petting
+	- rubbing
+	- squeezing
+	- stroking
+	- teasing
+	- tickling
+	- touching
+-- #endregion
+
+-- #region Other verbs
+verb-strike
+	- strike
+	- hit
+verb-struck
+	- struck
+	- hit
+verb-striking
+	- striking
+	- hitting
+-- #endregion
+
+gesture-t-flirty
+	- bite{s} [t:his] lower lip
+	- lick{s} [t:his] lips
+	- look{s} [b:him] up and down
+	- smile{s} mischievously
+	- [?:gesture-flirty-male]
+		filter: (gender ~= "Female")
+	- [?:gesture-flirty-female]
+		filter: (gender ~= "Male")
+gesture-flirty-male
+	- act{s} innocent
+	- grin{s}
+	- lean{s} back
+gesture-flirty-female
+	- blush{es}
+	- bite{s} [t:his] finger
+	- bite{s} [t:his] knuckles

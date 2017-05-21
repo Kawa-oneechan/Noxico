@@ -1,0 +1,2875 @@
+-- An item token has its ID and name encoded in its text value. The old A, The, and Proper attributes are gone and filled in automatically on load.
+-- That is, a capitalized name is considered Proper, and the a/an distinction is guessed from the first letter(s).
+-- Examples: "Timer Test" -> proper, a
+--           "Element of Perversion" -> proper, an
+--           "transformation belt" -> a
+--           "egg" -> an egg
+-- For non-standard a/an and the values, the "_a" and "_t" child tokens may be used. Unidentified items can use "_u".
+-- If there's no name (no ',' to separate the text value into an ID/name pair), and there's no spaces in the ID, the name is set to the same. Possibly allow underscores ("sturdy_bat") to name-fy into spaces ("sturdy bat")?
+
+-- Item tokens basically have their subtrees indented once and transplanted into the actual KnownItem objects.
+-- Scripts can be left _in_ the tree instead of putting them in string properties, which can then be (transparently) adjusted to look their values up in the tree instead of using a private backing variable.
+
+-- Note that scripts use the new <[[ ]]> syntax. By virtue of having the script tokens' Text properties being their function, <[[ ]]> blocks are parsed into "#text" tokens.
+
+-- TODO: allow TokenCarrier.Path() to support search-by-text?
+-- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
+
+-- note that 'print' pops up a box while 'message' prints text into the general message area
+
+item: regenring
+	_n: Ring of Regeneration
+	equipable
+		ring
+	test
+	ascii
+		char: 0x1A0
+		fore: lightsalmon
+	timer: 1
+	script: timer
+		<[[
+			user.Heal(5)
+		]]>
+
+item: timertest
+	_n: Timer Test
+	equipable
+		hat
+	test
+	ascii
+		char: 0x0fa
+		fore: lightsalmon
+	timer: 2
+		evenunequipped
+	script: timer
+		<[[
+			local car = user.GetToken("carnality")
+			if car.Value < 100 then
+				message("You feel your mind going...")
+				car.Value = car.Value + 5
+			end
+		]]>
+
+item: henshin_belt
+	_n: transformation belt
+	test
+	description: "A typical transformation belt. It has a team logo on the buckle, with a button on top. The button is [color]."
+	price: 20000
+	ascii
+		char: 0x181
+		fore: silver
+	script
+		<[[
+			local inventory = user.GetToken("items")
+			local feedback : string = ""
+			if not user.HasItemEquipped("sentai_suit") then
+				feedback = feedback .. "\"HENSHIN!\"\n\n"
+				local memory = thisToken.AddToken("memory")
+				local slots = { "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" }
+				for i,slot in slots do
+					local x = user.GetEquippedItemBySlot(slot)
+					if x ~= undefined then
+						memory.AddToken(x.tempToken)
+						inventory.RemoveToken(x.tempToken)
+					end
+				end
+				local suit = inventory.AddToken("sentai_suit")
+				local helmet = inventory.AddToken("sentai_helmet")
+				local color = suit.AddToken("color")
+				color.Text = thisToken.HasToken("color") and thisToken.GetToken("color").Text or "red"
+				suit.AddToken("equipped")
+				helmet.AddToken("equipped")
+				thisToken.AddToken("equipped")
+				local curseLock = thisToken.AddToken("cursed")
+				suit.AddToken(curseLock)
+				helmet.AddToken(curseLock)
+				curseLock.AddToken("known")
+				curseLock.AddToken("hidden")
+				curseLock.Text = "It's stuck on you. Try unmorphing instead."
+				feedback = feedback .. "\"Ecchi " .. titlecase(color.Text) .. "!\""
+			else
+				feedback = "You unmorph."
+				local memory = thisToken.GetToken("memory")
+				inventory.RemoveToken("sentai_suit")
+				inventory.RemoveToken("sentai_helmet")
+				inventory.AddSet(memory.Tokens)
+				thisToken.RemoveToken("memory")
+				thisToken.RemoveToken("equipped")
+				thisToken.RemoveToken("cursed")
+			end
+			print(feedback)
+		]]>
+
+item: strapon
+	_n: strap-on dildo
+	test
+	description: "A leather belt with a hot pink dildo sticking prominently out the front."
+	plural
+	equipable
+		female
+		underpants
+	weight: light
+	price: 100
+	ascii
+		char: 0x18e
+	sextoy
+	script: equip
+		<[[
+			if user.HasToken("penis") then
+				print ("You're a man!")
+				return false
+			end
+			print ("You're ready to poke some lucky persons holes!")
+			local p = user.AddToken("penis")
+			p.Text = "strapon"
+			p.AddToken("thickness").Value = 3
+			p.AddToken("length").Value = 20
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("penis", "strapon")
+			print ("You feel less pokey.")
+		]]>
+
+item: ponifier
+	_n: Element of Perversion
+	test
+	description: "This turns you into a little pony."
+	ascii
+		char: 0x180
+		fore: aquamarine
+	randomized: 1
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			-- user.Morph("littlepony");
+			Identify()
+		]]>
+
+item: book
+	-- This is all we'll specify.
+	ascii
+		char: 0x186
+	-- Books specifically have their color determined by ID.
+
+
+
+-- #region
+item: rope
+	nouse
+	description: "A length of rope. Useful for tying people up."
+	price: 20
+	ascii
+		char: 0x185
+		fore: sienna
+
+item: baseballbat
+	_n: baseball bat
+	description: "A heavy wooden bat. Would make a good weapon, but its phallic shape gives you other ideas...."
+	equipable
+		hand
+	canfuck
+	-- Metrics are needed if an item has canfuck.
+	-- By regulation it may be no more than 2.75 inches (70 mm) in diameter 
+	--  at the thickest part and no more than 42 inches (1,100 mm) long - wikipedia
+	thickness: 7.0
+	length: 110
+	weight: medium
+	weapon
+		damage: 50
+		skill: club
+		attacktype: crush
+	ascii
+		char: 0x184
+		fore: darkgoldenrod
+	price: 100
+	largeweapon
+	wood
+
+item: foxite
+	_n: Foxite
+	test
+	description: "This is Foxite. It turns you into a fox with repeated usages."
+	ascii
+		char: 0x180
+		fore: aquamarine
+	randomized: 2
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			message(user.Morph("kitsune"))
+			Identify()
+		]]>
+
+item: oddnip
+	_n: Odd nip
+	test
+	description: "lol"
+	ascii
+		char: 0x180
+		fore: aquamarine
+	randomized: 2
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			message(user.Morph("felin"))
+			Identify()
+		]]>
+
+item: penificator
+	test
+	ascii
+		char: 0x180
+		fore: chartreuse
+	randomized: 3
+	potion
+	transformer
+	script
+		<[[
+			-- TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
+		]]>
+
+item: knife
+	_n: combat knife
+	_u: knife
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 30
+		skill: short_sword
+		attacktype: stab
+	description: "A nice, sturdy combat knife."
+	ascii
+		char: 0x196
+		fore: silver
+	price: 50
+	smallweapon
+	blade
+
+item: butter_knife
+	test
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 10
+		skill: short_sword
+		attacktype: stab
+	description: "A nice, sturdy butter knife."
+	ascii
+		char: 0x196
+		fore: silver
+	price: 5
+	smallweapon
+	blade
+
+item: kitchen_knife
+	_n: kitchen knife
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 25
+		skill: short_sword
+		attacktype: stab
+	description: "A big knife meant for cutting dinner with."
+	ascii
+		char: 0x196
+		fore: silver
+	price: 40
+	smallweapon
+	blade
+
+item: spork
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 2
+		skill: short_sword
+		attacktype: stab
+	description: "You're kidding, right?"
+	ascii
+		char: 0x196
+		fore: silver
+	price: 40
+	smallweapon
+	blade
+
+item: test_ring
+	equipable
+		ring
+	fireproof
+	ascii
+		char: 0x1A0
+		fore: firebrick
+	randomized: 128
+
+item: cheap_pos
+	_n: cheap piece of shit
+	_u: broken sword
+	test
+	unique
+	fireproof
+	equipable
+		hand
+	weight: heavy
+	weapon
+		damage: 100
+		skill: long_sword
+	statbonus
+		speed: 40
+	description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
+	ascii
+		char: 0x197
+		fore: white
+	price: 500
+	largeweapon
+	blade
+	rareweapon
+
+item: catears
+	_n: [color ]cat ear headband
+	description: "One of the felins' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
+	equipable
+		hat
+	weight: feather
+	statbonus
+		charisma: 10
+	price: 20
+	ascii
+		char: 0x1A5
+	clothing
+	colored
+	hats
+	sexy
+	cute
+
+item: dealwithit
+	_n: 'Deal with it' glasses
+	description: "Sunglasses with a blocky design."
+	equipable
+		goggles
+	weight: feather
+	statbonus
+		charisma: 2
+	price: 10
+	ascii
+		char: 0x1AC
+	clothing
+	joke
+
+item: plain_briefs
+	_n: briefs
+	_ia: a pair of
+	description: "An unremarkable pair of briefs. They do show off one's assets fairly well, though."
+	plural
+	equipable
+		male
+		underpants
+	weight: feather
+	price: 10
+	ascii
+		char: 0x1A2
+	clothing
+	underwear
+	for_men
+
+item: plain_boxers
+	_n: boxer shorts
+	_ia: a pair of
+	description: "A roomy pair of boxer shorts. Should be able to fit whatever's in your crotch, no problem!"
+	plural
+	equipable
+		male
+		underpants
+	weight: feather
+	price: 10
+	ascii
+		char: 0x1A2
+	clothing
+	underwear
+	for_men
+
+item: plain_panties
+	_n: panties
+	_ia: a pair of
+	description: "A plain pair of panties."
+	plural
+	equipable
+		female
+		underpants
+	weight: feather
+	price: 10
+	ascii
+		char: 0x19A
+	clothing
+	underwear
+	for_women
+
+item: lacy_panties
+	_ia: a pair of
+	description: "The frilliest panties you've seen in your life. You're not sure which holes are decorative loops and which ones are for putting your legs through."
+	plural
+	equipable
+		female
+		underpants
+	weight: feather
+	price: 20
+	ascii
+		char: 0x19A
+	clothing
+	underwear
+	for_women
+	lacy
+
+item: plain_bra
+	_n: bra
+	description: "An unflattering bra. One-size-fits-none."
+	equipable
+		female
+		undershirt
+	weight: feather
+	price: 10
+	ascii
+		char: 0x19B
+	clothing
+	underwear
+	bra
+	for_women
+
+item: lacy_bra
+	description: "A bra adorned with tasteful amounts of lace. Not immensely comfortable, though."
+	equipable
+		female
+		undershirt
+	weight: feather
+	price: 20
+	ascii
+		char: 0x19B
+	clothing
+	underwear
+	for_women
+	bra
+	lacy
+
+item: sheer_top
+	description: "A compromise between modesty and nudity."
+	equipable
+		female
+		shirt
+		translucent
+	weight: feather
+	price: 100
+	ascii
+		char: 0x198
+	clothing
+	for_women
+-- #endregion
+
+
+
+item: egg
+	singleuse
+	statbonus
+		health: 10
+	price: 2
+	weight: feather
+	description: "Unfertilized and high in protein."
+	ascii
+		char: 0x18A
+		fore: white
+	food: 10
+
+item: chairlegoftruth
+	_n: Chair Leg of Truth
+	equipable
+		hand
+	unique
+	weight: medium
+	weapon
+		damage: 100
+		skill: club
+		attacktype: crush
+	description: "Do not question the Chair Leg of Truth, for it is wise and terrible."
+	ascii
+		char: 0x184
+		fore: darkgoldenrod
+	rareweapon
+	wood
+
+item: hammer
+	fireproof
+	unique
+	equipable
+		hand
+	weight: light
+	weapon
+		damage: 40
+		skill: club
+		attacktype: crush
+	description: "A small carpenter's hammer."
+	ascii
+		char: 0x192
+		fore: silver
+
+
+-- #region Nethack weapons
+__marker: Nethack weapons
+item: spear
+	equipable
+		hand
+	weapon
+		damage: 40
+		skill: polearm
+		attacktype: pierce
+	weight: heavy
+	description: "A long pole with a sharpened point of steel on one end."
+	ascii
+		char: 0x1a8
+		fore: darkgoldenrod
+
+item: javelin
+	equipable
+		hand
+	weapon
+		damage: 40
+		skill: throwing
+		attacktype: pierce
+	weight: heavy
+	description: "A long pole with a sharpened point of steel on one end, specifically designed for being thrown at the target."
+	ascii
+		char: 0x1a8
+		fore: darkgoldenrod
+
+item: dagger
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 30
+		skill: short_sword
+		attacktype: stab
+	description: "A classic-style rogue's dagger."
+	ascii
+		char: 0x196
+		fore: silver
+
+item: fireaxe
+	_n: fire-axe
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 50
+		skill: axe
+	weight: medium
+	description: "An ordinary looking fire-axe."
+	ascii
+		char: 0x195
+		fore: silver
+
+item: battleaxe
+	_n: battle axe
+	equipable
+		hand
+	fireproof
+	weapon
+		damage: 70
+		skill: axe
+	weight: heavy
+	description: "An imposing battle axe. You could take someone's head off with this baby."
+	ascii
+		char: 0x195
+		fore: silver
+
+item: shortsword
+	_n: short sword
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 40
+		skill: short_sword
+	description: "A plain but servicable short sword."
+	ascii
+		char: 0x182
+		fore: white
+
+item: scimitar
+	_u: curved sword
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 50
+		skill: short_sword
+	identify: weapon_knowledge
+	description: "An exotic looking sword with a curved blade."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: broadsword
+	fireproof
+	equipable
+		hand
+	weight: heavy
+	weapon
+		damage: 50
+		skill: long_sword
+	description: "A large sword with an emphasis on the blade's width."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: longsword
+	fireproof
+	equipable
+		hand
+	weight: heavy
+	weapon
+		damage: 60
+		skill: long_sword
+	description: "A large sword with an emphasis on length."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: zweihander
+	_u: two-handed sword
+	fireproof
+	equipable
+		hand
+		twohanded
+	weight: heavy
+	weapon
+		damage: 70
+		skill: huge_sword
+	identify: weapon_knowledge
+	description: "A sword so large you need two hands to wield it."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: katana
+	_u: samurai sword
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 70
+		skill: long_sword
+	identify: weapon_knowledge
+	description: "The common samurai sword."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: tsurugi
+	_u: long samurai sword
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 70
+		skill: long_sword
+	identify: weapon_knowledge
+	description: "The common samurai sword, but longer."
+	ascii
+		char: 0x182
+		fore: silver
+
+item: mace
+	equipable
+		hand
+		twohanded
+	weight: 
+		medium
+	weapon
+		damage: 70
+		skill: club
+		attacktype: crush
+	description: "A sturdy stick with a spiked ball on the end, not to be confused with a little spray can full of liquid pain."
+	ascii
+		char: 0x1A8
+		fore: silver
+
+item: warhammer
+	fireproof
+	unique
+	equipable
+		hand
+		twohanded
+	weight: heavy
+	weapon
+		damage: 70
+		skill: warhammer
+		attacktype: crush
+	description: "A big ol' hammer, meant for war."
+	ascii
+		char: 0x192
+		fore: silver
+
+item: woodenclub
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 70
+		skill: club
+		attacktype: crush
+	description: "A rough piece of wood, in a shape not unlike a crude bowling pin."
+	ascii
+		char: 0x184
+		fore: darkgoldenrod
+	wood
+
+-- rubber hose, quarterstaff
+-- bagh nakh (wolverine claws), riding crop, two-by-four
+-- #endregion
+
+__marker: Firearms
+item: magnum357
+	_n: "Pistol"
+	_u: "revolver"
+	fireproof
+	equipable
+		hand
+	weight: medium
+	weapon
+		damage: 40
+		range: 20
+		skill: small_firearm
+		ammo: bullet357
+	description: "Heavy ordnance. Fires up to seven shots before a reload is required, but we're abstracting that away."
+	ascii
+		char: 0x183
+		fore: silver
+
+__marker: <small>Ammo</small>
+item: bullet357
+	_n: ".357-gauge bullet"
+	test
+	fireproof
+	ammo
+	charge
+		collectivename: ".357-gauge bullets"
+-- add limit token for carrying cap per instance
+	ascii
+		char: 0x1F3
+		fore: gold
+
+__marker: <small>Misc stuff</small>
+item: whip
+	fireproof
+	equipable
+		hand
+	weight: light
+	weapon
+		damage: 40
+		skill: whip
+		increase: climax
+	-- Increase token doesn't do shit without some extra code but it can be here anyway.
+	price: 200
+	description: "An ordinary but nevertheless slightly kinky whip."
+	ascii
+		char: 0x185
+		fore: brown
+	weapon
+	sexy
+
+
+
+-- #region Spandex stuffs
+__marker: <small>Spandex fun</small>
+-- Something I just noticed. The automatic a/an distinction may need to include [color] support. "a red" but "an alice blue" BUT "a spandex".
+item: spandex_suit
+	_n: [color ]spandex bodysuit
+	equipable
+		shirt
+		pants
+	weight: medium
+	statbonus
+		charisma: 18
+	description: "A suit that shows off your hot shape when worn."
+	price: 200
+	ascii
+		char: 0x19C
+	clothing
+	bodysuit
+	colored
+	sexy
+
+item: spandex_pants
+	_n: [color ]spandex pants
+	equipable
+		pants
+	weight: medium
+	statbonus
+		charisma: 12
+	description: "Feels like David Bowie."
+	price: 100
+	ascii
+		char: 0x199
+	clothing
+	colored
+	sexy
+
+-- "True Fans would know it's really called Sentai." -- noone ever
+item: sentai_suit
+	_n: [color ]super sentai costume
+	_u: [color ]power ranger costume
+	equipable
+		shirt
+		pants
+	weight: medium
+	identify: pop_culture
+	statbonus
+		charisma: 16
+		strength: 16
+	description: "Shapes your cool body in a superhero style."
+	price: 300
+	ascii
+		char: 0x19C
+	clothing
+	bodysuit
+	colored
+	joke
+item: sentai_helmet
+	_n: [color ]super sentai helmet
+	_u: [color ]power ranger helmet
+	equipable
+		hat
+		goggles
+		mask
+	weight: medium
+	identify: pop_culture
+	statbonus
+		charisma: 16
+		strength: 16
+	description: "todo"
+	price: 300
+	ascii
+		char: 0x19E
+	clothing
+	bodysuit
+	colored
+	joke
+-- #endregion
+
+
+__marker: <small>Misc stuff</small>
+item: horsemask
+	_n: creepy horse mask
+	equipable
+		hat
+		mask
+		goggles
+	weight: medium
+	statbonus
+		charisma: 20
+	price: 2490
+	ascii
+		char: 0x1A6
+		fore: chocolate
+	joke
+	description: It's not just a mask. It's a way of life.
+
+
+-- #region Foodstuffs
+__marker: Foodstuffs
+item: croissant
+	_da: le
+	singleuse
+	statbonus
+		health: 10
+	price: 5
+	weight: feather
+	description: "Smaczne, ale nie bardzo nape&#x142;niania."
+	ascii
+		char: 0x187
+		fore: brown
+	food: 10
+	baked
+
+item: bagel
+	singleuse
+	statbonus
+		health: 12
+	weight: feather
+	price: 5
+	description: "Vkusno, no ne ochen zapolneniyu."
+	ascii
+		char: 0x188
+		fore: brown
+	food: 10
+	baked
+
+item: bacon
+	_n: bacon strip
+	singleuse
+	statbonus
+		health: 15
+	weight: feather
+	price: 5
+	description: "Can't go wrong with bacon."
+	ascii
+		char: 0x18D
+		fore: red
+	food: 20
+		fat
+	meat
+
+item: meatchunk
+	_n: meat chunk
+	singleuse
+	statbonus
+		health: 20
+	weight: feather
+	price: 10
+	description: "It's meat. Neat."
+	ascii
+		char: 0x18D
+		fore: red
+	food: 30
+		fat
+	meat
+
+item: meatgiblet
+	_n: meat giblet
+	singleuse
+	statbonus
+		health: 10
+	weight: feather
+	price: 2
+	description: "It's meat. Neat."
+	ascii
+		char: 0x18D
+		fore: red
+	food: 10
+		fat
+	meat
+
+item: sweetroll
+	_n: sweet roll
+	singleuse
+	statbonus
+		health: 20
+	price: 10
+	weight: feather
+	description: "Let me guess."
+	ascii
+		char: 0x18B
+		fore: yellow
+	food: 10
+	baked
+
+-- lembas wafer, food ration, cram ration, K-ration, C-ration, slime mold, pancake, lump of royal jelly, melon, cream pie, orange, banana, apple, carrot, pear, candy bar, sprig of wolfsbane, clove of garlic, fortune cookie, kelp frond, eucalyptus leaf
+-- #endregion
+
+
+
+-- #region Gems and stuff
+-- Mostly-autoconverted from Nethack
+__marker: Gems and stuff <small>(Mostly auto-converted from Nethack)</small>
+item: gem_dilithium
+	_n: dilithium crystal
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: tan
+	weight: light
+	price: 4500
+	description: "You think this has some sciency properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
+	gemstone
+
+item: gem_diamond
+	_n: diamond
+	ascii
+		char: 0x4
+		fore: white
+	weight: light
+	price: 4000
+	description: "Shiny!"
+	gemstone
+
+item: gem_ruby
+	_n: ruby
+	ascii
+		char: 0x4
+		fore: red
+	weight: light
+	price: 3500
+	description: "Deep red and quite valuable."
+	gemstone
+
+item: gem_jacinth
+	_n: jacinth
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: orange
+	weight: light
+	price: 3250
+	description: "You've never heard of jacinth before, but it looks valuable."
+	gemstone
+
+item: gem_sapphire
+	_n: sapphire
+	ascii
+		char: 0x4
+		fore: blue
+	weight: light
+	price: 3000
+	description: "A deep blue brilliant-cut gem."
+	gemstone
+
+item: gem_black_opal
+	_n: black opal
+	ascii
+		char: 0x4
+		fore: black
+	weight: light
+	price: 2500
+	description: ""
+	gemstone
+
+item: gem_emerald
+	_n: emerald
+	ascii
+		char: 0x4
+		fore: green
+	weight: light
+	price: 2500
+	description: ""
+	gemstone
+
+item: gem_turquoise
+	_n: turquoise
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: green
+	weight: light
+	price: 2000
+	description: ""
+	gemstone
+
+item: gem_citrine
+	_n: citrine
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: yellow
+	weight: light
+	price: 1500
+	description: ""
+	gemstone
+
+item: gem_aquamarine
+	_n: aquamarine
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: green
+	weight: light
+	price: 1500
+	description: ""
+	gemstone
+
+item: gem_amber
+	_n: amber
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: peru
+	weight: light
+	price: 1000
+	description: ""
+	gemstone
+
+item: gem_topaz
+	_n: topaz
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: pure
+	weight: light
+	price: 900
+	description: ""
+	gemstone
+
+item: gem_jet
+	_n: jet
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: black
+	weight: light
+	price: 850
+	description: ""
+	gemstone
+
+item: gem_opal
+	_n: opal
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: white
+	weight: light
+	price: 800
+	description: ""
+	gemstone
+
+item: gem_chrysoberyl
+	_n: chrysoberyl
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: yellow
+	weight: light
+	price: 700
+	description: ""
+	gemstone
+
+item: gem_garnet
+	_n: garnet
+	ascii
+		char: 0x4
+		fore: red
+	weight: light
+	price: 700
+	description: ""
+	gemstone
+
+item: gem_amethyst
+	_n: amethyst
+	ascii
+		char: 0x4
+		fore: violet
+	weight: light
+	price: 600
+	description: ""
+	gemstone
+
+item: gem_jasper
+	_n: jasper
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: red
+	weight: light
+	price: 500
+	description: ""
+	gemstone
+
+item: gem_fluorite
+	_n: fluorite
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: violet
+	weight: light
+	price: 400
+	description: ""
+	gemstone
+
+item: gem_obsidian
+	_n: obsidian
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: black
+	weight: light
+	price: 200
+	description: ""
+	gemstone
+
+item: gem_agate
+	_n: agate
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: orange
+	weight: light
+	price: 200
+	description: ""
+	gemstone
+
+item: gem_jade
+	_n: jade
+	_ia: a piece of
+	ascii
+		char: 0x4
+		fore: jade
+	weight: light
+	price: 300
+	description: ""
+	gemstone
+
+item: gem_glass
+	_n: [color ]glass
+	_ia: a piece of
+	ascii
+		char: 0x4
+	weight: light
+	price: 0
+	description: ""
+	colored
+-- #endregion
+
+
+
+-- #region Chainmail Bikinis and worse
+-- By LadyNistia and Pupnik
+__marker: LadyNistia and Pupnik present the chainmail bikini and worse
+item: chainmail_bikini_top
+	equipable
+		female
+		undershirt
+	statbonus
+		charisma: 5
+		sensitivity: 10
+		cunning: -5
+	weight: light
+	price: 200
+	description: "Now with even less chain!"
+	ascii
+		char: 0x19b
+		fore: silver
+	armor
+	for_women
+
+item: chainmail_bikini_bottom
+	equipable
+		female
+		underpants
+	statbonus
+		charisma: 5
+		sensitivity: 10
+		cunning: -5
+	weight: light
+	description: "Now with even less chain!"
+	price: 200
+	ascii
+		char: 0x19a
+		fore: silver
+	armor
+	for_women
+
+item: bacon_bikini_top
+	equipable
+		female
+		undershirt
+	weight: light
+	price: 20
+	description: "Now with even less class!"
+	ascii
+		char: 0x19b
+		fore: red
+	armor
+	for_women
+	joke
+
+item: bacon_bikini_bottom
+	equipable
+		female
+		underpants
+	weight: light
+	description: "Now with even less class!"
+	price: 20
+	ascii
+		char: 0x19a
+		fore: red
+	armor
+	for_women
+	joke
+-- #endregion
+
+
+-- #region Clothes from jsNoxico
+__marker: Clothes from jsNoxico
+item: tatteredshreds_shirt
+	_n: tattered shreds
+	_ia: ""
+	description: "You would feel more comfortable wearing this if you were a rockstar."
+	plural
+	equipable
+		shirt
+		translucent
+	weight: light
+	ascii
+		char: 0x18d
+
+item: tatteredshreds_undershirt
+	_n: tattered shreds
+	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
+	plural
+	equipable
+		undershirt
+		translucent
+	weight: light
+	ascii
+		char: 0x18d
+
+item: tatteredshreds_pants
+	_n: tattered shreds
+	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
+	plural
+	equipable
+		pants
+		translucent
+	weight: light
+	ascii
+		char: 0x18D
+
+item: tatteredshreds_underpants
+	_n: tattered shreds
+	_ia: ""
+	description: "Underwear can only take so much. This is what you get when you give them too much."
+	plural
+	equipable
+		underpants
+		translucent
+	weight: light
+	ascii
+		char: 0x18d
+
+-- Should be used if a bodysuit is torn apart.
+item: tatteredshreds_under
+	_n: tattered shreds
+	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
+	plural
+	equipable
+		undershirt
+		underpants
+		translucent
+	weight: light
+	ascii
+		char: 0x18d
+-- Should be used if a dress is torn apart.
+item: tatteredshreds_over
+	_n: tattered shreds
+	_ia: ""
+	description: "You wouldn't wear this, if you had a choice."
+	plural
+	equipable
+		shirt
+		pants
+		translucent
+	weight: light
+	ascii
+		char: 0x18d
+
+item: shirt
+	_n: plain [color ]shirt
+	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt. One size fits all."
+	equipable
+		shirt
+	weight: light
+	price: 10
+	ascii
+		char: 0x198
+	clothing
+	overwear
+	colored
+
+item: blouse
+	_n: [color ]blouse
+	description: "An unflattering [color] blouse."
+	equipable
+		shirt
+	weight: light
+	statbonus
+		cunning: 5
+		strength: -5
+		carnality: -5
+	price: 15
+	ascii
+		char: 0x198
+	clothing
+	overwear
+	colored
+
+item: girls_uniform_top
+	_n: schoolgirl uniform top
+	description: "You've not seen any schools around here, but their uniforms seem to be everywhere. Maybe they're just invisible."
+-- Unseen University reference confirmed.
+	equipable
+		female
+		jacket
+	weight: light
+	price: 100
+	ascii
+		char: 0x198
+	clothing
+	overwear
+	for_women
+	sexy
+
+item: boys_uniform_top
+	_n: school uniform jacket
+	description: "A black men's jacket, supposedly part of the uniform for a school somewhere."
+	equipable
+		male
+		jacket
+	weight: medium
+	price: 100
+	ascii
+		char: 0x198
+	clothing
+	overwear
+	for_men
+
+item: bikini_top
+	_n: [color ]bikini top
+	description: "A [color] waterproof bra. Provides no support or modesty whatsoever."
+	equipable
+		female
+		undershirt
+	statbonus
+		charisma: 5
+		sensitivity: 5
+		cunning: -5
+	weight: feather
+	price: 100
+	ascii
+		char: 0x19b
+	clothing
+	swimwear
+	colored
+	for_women
+	sexy
+
+item: bikini_bottom
+	_n: [color ]bikini bottom
+	description: "A waterproof [color] pair of panties. Hides nothing."
+	equipable
+		female
+		underpants
+	statbonus
+		charisma: 5
+		sensitivity: 5
+		cunning: -5
+	weight: feather
+	price: 50
+	ascii
+		char: 0x19a
+	clothing
+	swimwear
+	colored
+	for_women
+	sexy
+
+
+item: pants
+	_n: plain [color ]pants
+	_ia: a pair of
+	description: "A baggy pair of [color] pants. They come with a free belt to hold them up!"
+	plural
+	equipable
+		pants
+	weight: light
+	price: 20
+	ascii
+		char: 0x199
+	clothing
+	legwear
+	colored
+
+item: skirt
+	_n: plain [color ]skirt
+	description: "It's a dress, minus the top half."
+	equipable
+		female
+		pants
+		reach
+	statbonus
+		strength: 5
+		cunning: -5
+	weight: light
+	price: 20
+	ascii
+		char: 0x1a1
+	clothing
+	skirt
+	colored
+
+item: pleated_skirt
+	_n: pleated [color ]skirt
+	description: "For some reason, it's all ruffly. Doesn't cover much."
+	equipable
+		female
+		pants
+		translucent
+		reach
+	weight: light
+	price: 60
+	ascii
+		char: 0x1a1
+	clothing
+	skirt
+	colored
+	for_women
+	cute
+
+item: shorts
+	_n: [color ]shorts
+	_ia: a pair of
+	description: "Pants that don't even come CLOSE to covering your ankles!  Scandalous!"
+	plural
+	equipable
+		pants
+	statbonus
+		strength: 5
+		carnality: -5
+	weight: light
+	price: 50
+	ascii
+		char: 0x1a2
+	clothing
+	colored
+
+item: short_shorts
+	_n: [color ]short shorts
+	_ia: a pair of
+	description: "Anywhere else, these would get you in jail for indecent exposure. Luckily, this is Nox."
+	plural
+	equipable
+		pants
+	statbonus
+		speed: 5
+		charisma: 5
+		cunning: -5
+		strength: -5
+	weight: light
+	price: 50
+	ascii
+		char: 0x1a2
+	clothing
+	colored
+	cute
+
+item: short_skirt
+	_n: short [color ]skirt
+	description: "Barely more than a belt. Anywhere else, this would get you in jail for indecent exposure. Luckily, this is Nox."
+	equipable
+		pants
+		reach
+	statbonus
+		sensitivity: 10
+		charisma: 10
+		cunning: -10
+	weight: light
+	price: 70
+	ascii
+		char: 0x1a2
+	clothing
+	skirt
+	colored
+	for_women
+	sexy
+
+item: sundress
+	_n: [color ]sundress
+	description: "A cute [color] dress."
+	equipable
+		shirt
+		pants
+		reach
+	statbonus
+		sensitivity: 10
+		carnality: 10
+		speed: -10
+		strength: -10
+	weight: light
+	price: 60
+	ascii
+		char: 0x19d
+	clothing
+	dress
+	colored
+	for_women
+	cute
+
+item: skimpy_dress
+	_n: skimpy [color ]dress
+	description: "A [color] dress. At least you think it's a dress. It certainly doesn't function as one."
+	equipable
+		shirt
+		pants
+		reach
+		translucent
+	statbonus
+		sensitivity: 10
+		charisma: 10
+		carnality: 10
+		speed: -10
+		strength: -10
+	weight: light
+	price: 60
+	ascii
+		char: 0x19d
+	clothing
+	dress
+	colored
+	for_women
+	sexy
+
+item: elegant_dress
+	_n: elegant [color ]dress
+	description: "This dress is designed for the fanciest of occasions, using only the fanciest silks in the fanciest designs. It's remarkably fancy."
+	equipable
+		shirt
+		pants
+	statbonus
+		charisma: 10
+		cunning: 10
+		strength: -10
+	weight: medium
+	price: 300
+	ascii
+		char: 0x19d
+	clothing
+	dress
+	colored
+	for_women
+
+item: latex_suit
+	_n: [color ]latex suit
+	description: "A full-body suit made of skintight latex. Who cares about anachronisms, this thing's sexy!"
+	equipable
+		undershirt
+		underpants
+	weight: medium
+	statbonus
+		charisma: 20
+		sensitivity: 15
+		cunning: 10
+	price: 100
+	ascii
+		char: 0x19c
+	clothing
+	bodysuit
+	colored
+	sexy
+
+item: latex_dress
+	_n: [color ]latex dress
+	description: "A knee-length dress made of skintight latex. Who cares about anachronisms, this thing's sexy!"
+	equipable
+		shirt
+		pants
+		reach
+	weight: medium
+	statbonus
+		charisma: 20
+		sensitivity: 15
+		cunning: 10
+	price: 100
+	ascii
+		char: 0x19c
+	clothing
+	bodysuit
+	colored
+	sexy
+
+item: stylish_cloak
+	_n: stylish [color ]cloak
+	description: "A dashing cloak, enchanted so that it billows out behind you even without any wind."
+	equipable
+		coat
+	weight: medium
+	price: 150
+	ascii
+		char: 0x1a7
+	clothing
+	accesory
+	colored
+-- #endregion
+
+
+
+-- #region Lena's costume, should be put in a mission or kept, recategorized as generic succubus wear.
+__marker: Lena's costume <small>(Recategorize as generic succubus wear?)</small>
+item: strapless_leather_bra
+	_n: [color ]leather bra
+	equipable
+		female
+		undershirt
+	weight: feather
+	price: 30
+	ascii
+		char: 0x19B
+	clothing
+	underwear
+	colored
+	sexy
+
+item: kinky_panties
+	_n: kinky [color ]panties
+	_ia: a pair of
+	plural
+	equipable
+		female
+		underpants
+		reach
+	weight: feather
+	price: 40
+	ascii
+		char: 0x19A
+	description: "These [color ]leather panties barely cover the crotch at all, giving an enticing minimum of so-called modesty."	
+	clothing
+	underwear
+	colored
+	sexy
+
+item: really_kinky_panties
+	_n: kinky [color ]panties
+	_ia: a pair of
+	plural
+	equipable
+		female
+		underpants
+		reach
+	weight: feather
+	price: 40
+	ascii
+		char: 0x19A
+	description: "These [color ]leather panties barely cover the crotch at all, and two flexible probes go into the wearers pussy and asshole."
+	clothing
+	underwear
+	colored
+	sexy
+	script: equip
+		<[[
+			if not user.HasToken("vagina") then
+				print("You'd need a pussy to wear this!")
+				Identify()
+				return false
+			else
+				print("You slide the probes into your holes.")
+			end
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("penis", "strapon")
+			print("You feel sad but more comfortable.")
+		]]>
+	timer: 1
+	script: timer
+		<[[
+			local cli = user.GetToken("climax")
+			local sti = user.GetToken("stimulation")
+			if cli.Value < 80 or sti.Value < 80 then
+				message("Your panties are making you hot and bothered...")
+				if cli.Value < 80 then
+					user.Raise(Stat.Climax, 5)
+				end
+				if sti.Value < 80 then
+					user.Raise(Stat.Stimulation, 5)
+				end
+			else
+				message("Your panties are keeping you hot and bothered...")
+			end
+		]]>
+
+item: clit_regenring
+	_n: Clit ring of Regeneration
+	description: "Feel better in two different ways."
+	equipable
+		female
+		clit
+	weight: feather
+	sexy
+	ascii
+		char: 0x1A0
+		fore: lightsalmon
+	timer: 1
+	script: timer
+		<[[
+			user.Heal(5)
+			user.Raise(Stat.Climax, 1)
+			user.Raise(Stat.Stimulation, 1)
+		]]>
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+				return false
+			elseif (not user.GetToken("vagina").HasToken("clit")) then
+				print("You'd need a clit to put this in!")
+				return false
+			end
+		]]>
+
+item: knee_socks
+	_n: silk [color ]knee socks
+	_ia: a pair of
+	description: "Extra-long socks that cover all the way up to one's knees. Made of extra-sheer fabric."
+	plural
+	equipable
+		socks
+		reach
+		translucent
+	weight: light
+	price: 40
+	ascii
+		char: 0x1A9
+	clothing
+	legwear
+	colored
+	sexy
+	kinky
+
+item: high_heels
+	_ia: a pair of
+	description: "A pair of shoes with long, pointed heels. They make you look taller, but they're relatively difficult to walk in."
+	plural
+	equipable
+		shoes
+	weight: light
+	price: 30
+	ascii
+		char: 0x1A3
+		fore: black
+	clothing
+	shoes
+	sexy
+
+-- Should be removed or generalized if recategorized as generic succubus wear.
+item: lena_ruby
+	_n: Lena's ruby pendant
+	unique
+	equipable
+		neck
+	weight: feather
+	description: "A blood-red ruby in the shape of a droplet."
+	ascii
+		char: 0x1A4
+		fore: crimson
+-- #endregion
+
+
+
+-- #region TF items
+__marker: Transformative items
+-- All of these use complicated Javascript to approximate Corruption of Champions. I wonder why, when we have Morph()...
+item: catmorph
+	_n: cat morph potion
+	wip
+	description: "A bottle filled with a thick liquid. There's a picture of a feline on the label."
+	ascii
+		char: 0x180
+		fore: lightsalmon
+	potion
+	transformer
+	dummu
+		<[[
+			//Text stolen from CoC's Whisker Fruit item, for now.
+
+			//We want to buffer the output. Calling print() would result in several separate ones.
+			var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
+
+			//Always boost speed.
+			var speed = user.GetToken("speed");
+			if (speed.Value < 75)
+			{
+				if (speed.Value < 30)
+				{
+					speed.Value += 2;
+					ret += "\n\nYou feel... more balanced, sure of step. You're certain that you've become just a little bit faster.";
+				}
+				else if (speed.Value < 60)
+				{
+					speed.Value += 1;
+					ret += "\n\nYou stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now.";
+				}
+				else
+				{
+					speed.Value += 0.5;
+					ret += "\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.";
+				}
+			}
+
+			//Sometimes increase charisma.
+
+			//Grow cat ears.
+			if (!user.HasToken("ears") || user.GetToken("ears").Text != "cat")
+			{
+				//Should check the existing type first.
+				ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
+
+				user.RemoveToken("ears");
+				user.AddToken("ears").Text = "cat";
+
+				print(ret);
+				return;
+			}
+
+			//Grow cat tail.
+			if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
+			{
+				//Should check the existing type first.
+				ret += "\n\nYou pause and tilt your head... something feels different. Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+				user.RemoveToken("tail");
+				user.AddToken("tail").Text = "genbeast";
+
+				print(ret);
+				return;
+			}
+
+			//Gain darkvision
+			if (user.Path("eyes/glow") == null)
+			{
+				ret += "\n\nYou feel as if you can see better.";
+				user.GetToken("eyes").AddToken("glow");
+			}
+
+			//Grow fangs.
+
+			//Grow fur.
+			var skinType = user.Path("skin/type");
+			if (skinType.Text != "fur")
+			{
+				skinType.Text = "fur";
+				user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+				ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+				user.SetTerms("felin", "fel", "fela", "felhru");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+				return;
+			}
+
+			//Grow digitigrade legs.
+
+			//Grow up to two extra breast rows.
+
+			print(ret);
+		]]>
+
+item: dogmorph
+	_n: dog morph potion
+	wip
+	description: "A bottle filled with a thick liquid. There's a picture of a canid on the label."
+	ascii
+		char: 0x180
+		fore: mistyrose
+	potion
+	transformer
+	dummy
+		<[[
+			//Text stolen from CoC's Canine Pepper item, for now.
+
+			var ret = "The pepper is strangely spicy but very tasty.";
+
+			//Always boost strength.
+			var strength = user.GetToken("strength");
+			if (strength.Value < 50)
+			{
+				strength.Value += 2;
+				ret += "\n\nYour muscles feel more toned.";
+			}
+
+			//Sometimes increase charisma.
+
+			//Grow dog ears.
+			if (!user.HasToken("ears") || user.GetToken("ears").Text != "dog")
+			{
+				//Should check the existing type first.
+				ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
+
+				user.RemoveToken("ears");
+				user.AddToken("ears").Text = "dog";
+
+				print(ret);
+				return;
+			}
+
+			//Grow dog tail.
+			if (user.Path("tail/dog") == null)
+			{
+				//Should check the existing type first.
+				ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into a long puffy tail! <cWhite>You now have a dog tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+				user.RemoveToken("tail");
+				user.AddToken("tail").AddToken("dog");
+
+				print(ret);
+				return;
+			}
+
+			//Grow fangs.
+
+			//Grow fur.
+			var skinType = user.Path("skin/type");
+			if (skinType.Text != "fur")
+			{
+				skinType.Text = "fur";						
+				user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+				user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+				return;
+			}
+
+			//Grow digitigrade legs.
+
+			//Grow up to two extra breast rows.
+
+			print(ret);
+		]]>
+
+-- Not to be confused for Foxite up top.
+item: foxmorph
+	_n: fox morph potion
+	wip
+	description: "A bottle filled with a thick liquid. There's a picture of a fox on the label."
+	ascii
+		char: 0x180
+		fore: orangered
+	potion
+	transformer
+	dummy
+		<[[
+			var ret = "You apply the fox morph potion.";
+
+			//Always boost cunning.
+			var cunning = user.GetToken("cunning");
+			if (cunning.Value < 50)
+			{
+				cunning.Value += 2;
+				ret += "\n\nYou feel more cunning.";
+			}
+
+			//Sometimes increase charisma.
+
+			//Grow dog ears.
+			if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
+			{
+				//Should check the existing type first.
+				ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
+
+				user.RemoveToken("ears");
+				user.AddToken("ears").Text = "genbeast";
+
+				print(ret);
+				return;
+			}
+
+			//Grow fox tail.
+			if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
+			{
+				//Should check the existing type first.
+				ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+				user.RemoveToken("tail");
+				user.AddToken("tail").Text = "fox";
+
+				print(ret);
+				return;
+			}
+
+			//Grow fangs.
+
+			//Grow fur.
+			var skinType = user.Path("skin/type");
+			if (skinType.Text != "fur")
+			{
+				skinType.Text = "fur";
+				user.EnsureColor(user.Path("skin/color"), "sandybrown");
+				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+				user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+				return;
+			}
+
+			//Grow digitigrade legs.
+
+			print(ret);
+		]]>
+
+item: bunnymorph
+	_n: bunny morph potion
+	wip
+	description: "A bottle filled with a thick liquid. There's a picture of a bunny on the front."
+	ascii
+		char: 0x180
+		fore: skyblue
+	potion
+	transformer
+	dummy
+		<[[
+			var ret = "You apply the bunny morph potion.";
+
+			//Always boost libido.
+			var sensitivity = user.GetToken("sensitivity");
+			if (sensitivity.Value < 80)
+			{
+				sensitivity.Value += 4;
+				ret += "\n\nYou feel hornier.";
+			}
+
+			//Grow bunny ears.
+			if (!user.HasToken("ears") || user.GetToken("ears").Text != "bunny")
+			{
+				//Should check the existing type first.
+				ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
+
+				user.RemoveToken("ears");
+				user.AddToken("ears").Text = "bunny";
+
+				print(ret);
+				return;
+			}
+
+			//Grow bunny tail.
+			if (user.Path("tail/bunny") == null)
+			{
+				//Should check the existing type first.
+				ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+				user.RemoveToken("tail");
+				user.AddToken("tail").Text = "bunny";
+
+				print(ret);
+				return;
+			}
+
+			//Grow fur.
+			var skinType = user.Path("skin/type");
+			if (skinType.Text != "fur")
+			{
+				skinType.Text = "fur";
+				user.EnsureColor(user.Path("skin/color"), "white, gray, aliceblue, gainsboro, lightpink, plum");
+				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+				user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+				return;
+			}
+
+			print(ret);
+		]]>
+-- #endregion
+
+
+
+-- #region PillowShout's stuff
+__marker: PillowShout's stuff
+item: gExtractor
+	_n: goblin extractor
+	nouse
+	price: 60
+	description: "A strange device of goblin origin. It seems to be a thick, leather thong that's been modified with a complex assembly of bronze machinery and glass vials."
+	weight: light
+	ascii
+		char: 0x008
+		fore: goldenrod
+	tool
+	equipable
+		female
+		vagina
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+			end
+		]]>
+-- #endregion
+
+item: vaginafluids
+	_n: Vaginal fluids
+	description: "A bottle filled with a thick liquid."
+	potion
+	ascii
+		char: 0x180
+		fore: whitesmoke
+
+-- #region Deity artifacts
+__marker: Deity artifacts
+item: eternitybrooch
+	_n: Timeless Brooch
+	equipable
+		neck
+	unique
+	price: 10000
+	ascii
+		char: 0x1a4
+		color: white
+	description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
+-- #endregion
+
+-- #region Crafting ingredients that are otherwise useless
+__marker: Crafting cruft
+item: dye
+	description: "A small vial of [color ]dye. You can use it to color your clothing."
+	charge
+	ascii
+		char: 0x180
+	dye
+	colored
+-- #endregion
+
+-- #region Potions from tf_items.txt, don't forget to shuffle later.
+__marker: tf_items.txt
+item: chaos_potion
+	description: "Chaos in a bottle."
+	ascii
+		char: 0x180
+	randomized: 10
+	potion
+	disabled
+	transformer
+	script
+		<[[
+			Consume()
+			ReportSet(user.Mutate(1, 10, Mutations.Random))
+			Identify()
+		]]>
+
+item: enhanced_chaos_potion
+	description: "Concentrated chaos in a bottle."
+	ascii
+		char: 0x180
+	randomized: 11
+	potion
+	disabled
+	transformer
+	script
+		<[[
+			Consume()
+			if Random.Flip() then
+				user.Mutate(1, 30, Mutations.Random)
+			else
+				user.Mutate(2, 15, Mutations.Random)
+			end
+			Identify()
+		]]>
+
+item: demonite_potion
+	description: "A [color ]bottle with a stylized but recognizable demon on the label. Very indicative of what it turns the user into."
+	unknown: "A [color ]bottle with a stylized but recognizable demon on the label."
+	ascii
+		char: 0x180
+	randomized: 12
+	potion
+	disabled
+	transformer
+	dummy
+		<[[
+			Consume();
+			var score = 0;
+			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
+				score++;
+			if (user.Path("ears[=elfin]") != null)
+				score++;
+			if (user.Path("wings[=bat]") != null)
+				score++;
+			if (user.Path("penis[=studded]") != null)
+				score++;
+			if (user.Path("tail[=demon]") != null)
+				score++;
+			if (score >= 3 && Random.Flip())
+				user.Mutate(2, 10, Mutations.Random);
+			else
+			{
+				//user.Morph("foocubus");
+				var ret = "";
+				var carnality = user.GetToken("carnality");
+				if (carnality.Value < 80)
+				{
+					carnality.Value += 4;
+					ret += "You feel hornier.  ";
+				}
+
+				if (user.HasToken("penis"))
+				{
+					var triggered = false;
+					var dicks = 0;
+					for (var i = 0; i < user.Count(); i++)
+					{
+						if (user.Item(i).Name == "penis")
+						{
+							dicks++;
+							var thisDick = user.Item(i);
+							if (thisDick.Text == "studded")
+								continue;
+							if (thisDick.Text == "tentacle")
+								continue;
+							if (!triggered)
+								thisDick.Text = "studded";
+							triggered = true;
+						}
+					}
+					if (triggered)
+					{
+						if (dicks == 1)
+							ret += "Your dick shifts into a studded affront to the nature of dicks everywhere.";
+						else
+							ret += "One of your dicks shifts into a studded affront to the nature of dicks everywhere.";
+						print(ret);
+						return;
+					}
+				}
+
+				if (user.Path("tail[=demon]") == null)
+				{
+					if (user.HasToken("tail"))
+						ret += "You feel your tail shifting, turning into a slick, thin deal with a spade at the end.";
+					else
+						ret += "You feel a slick tail growing from your backside, with a spade at the end.";
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "demon";
+
+					print(ret);
+					return;
+				}
+
+				if (user.Path("wings[=bat]") == null)
+				{
+					if (user.HasToken("wings"))
+					{
+						ret += "Your wings become leathery.";
+						user.GetToken("wings").Text = "bat";
+					}
+					else
+					{
+						ret += "You sprout leathery bat wings from your back.";
+						user.AddToken("wings").Text = "bat";
+					}
+
+					print(ret);
+					return;
+				}
+
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "metal")
+					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple");
+				if (skinType.Text == "fur")
+				{
+					ret += "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin.";
+					skinType.Text = "skin";
+				}
+
+				user.SetTerms("cubi", "incubus", "succubus", "omnibus");
+				if (!user.HasToken("invisiblegender"));
+				{
+					user.RemoveToken("explicitgender");
+					user.AddToken("invisiblegender");
+				}
+				user.UpdateTitle();
+				user.BoardChar.AdjustView();
+
+				print(ret);
+
+				Identify();
+			}
+		]]>
+
+item: tentacle_potion
+	description: "A [color ]bottle with some sort of tentacle on the label. It seems to give you a tentacle cock."
+	unknown: "A [color ]bottle with what seems to be a vine on the label."
+	ascii
+		char: 0x180
+	randomized: 13
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			local ret : string = ""
+			local totalDicks : int = 0
+			local transformations : int = 0
+			local lengthenings : int = 0
+			foreach d in user.GetPenises() do
+				totalDicks = totalDicks + 1
+			end
+
+			if totalDicks > 0 then
+				foreach d in user.GetPenises() do
+					if d.Text == "tentacle" then
+						local length = d.GetToken("length")
+						length.Value = length.Value + 3 + Random.Next(5)
+						lengthenings = lengthenings + 1
+
+						-- Randomly break out
+						if lengthenings > 0 and Random.Flip() then
+							break
+						end
+					end
+				end
+				foreach d in user.GetPenises() do
+					if d.Text ~= "tentacle" then
+						d.Text = "tentacle"
+						transformations = transformations + 1
+
+						-- Randomly break out
+						if transformations > 0 and Random.Flip() then
+							break
+						end
+					end
+				end
+				
+				if transformations > 0 then
+					if transformations == 1 then
+						if totalDicks == 1 then
+							ret = "[Yourornames] [?:cock] "
+						elseif totalDicks == tranformations then
+							ret = "[Yourornames] [?:cocks] "
+						elseif transformations == 1 then
+							ret = "One of [yourornames] [?:cocks] "
+						else
+							ret = "Some of [yourornames] [?:cocks] "
+							-- ret = ret .. "(" .. transformations .. " of " .. totalDicks .. ") "
+						end
+						ret = ret .. "has turned into a wriggly tentacle"
+					else
+						ret = "[Yourornames] [?:cocks] have turned into wriggly tentacles"
+					end
+				end
+
+				if lengthenings > 0 then
+					if transformations > 0 then
+						ret = ret .. " and "
+						if lengthenings == transformations then
+							ret = ret .. ""
+						elseif lengthenings < totalDicks then
+							if lengthenings == 1 then
+								ret = ret .. "one "
+							else
+								ret = ret .. "some "
+								-- ret = ret .. "(" .. lengthenings .. " of " .. totalDicks .. ")"
+							end
+						end
+					else
+						if totalDicks == 1 then
+							ret = "[Yourornames] [?:cock] "
+						elseif totalDicks == lengthenings then
+							ret = "[Yourornames] [?:cocks] "
+						else
+							ret = "One of [yourornames] [?:cocks] "
+						end
+					end
+					if lengthenings == 1 then
+						ret = ret .. "has "
+					else
+						ret = ret .. "have "
+					end
+					ret = ret .. "grown longer"
+				end
+				ret = ret .. "!"
+			else
+				local penis = user.AddToken("penis", "tentacle")
+				penis.AddToken("thickness", 2 + Random.Next(2), nil)
+				penis.AddToken("length", 15 + Random.Next(4), nil)
+				ret = "[Youorname] [has] grown a wriggly tentacle dick!"
+			end
+			print(ret)
+			Identify()
+		]]>
+
+item: cock_potion
+	description: "A [color ]bottle with what seems to be an erect penis on the label. It causes the user to grow a cock."
+	unknown: "A [color ]bottle with what seems to be an erect penis on the label."
+	ascii
+		char: 0x180
+	randomized: 14
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			local ret : string = ""
+			local totalDicks : int = 0
+			local lengthenings : int = 0
+			local additions : int = 0
+			foreach d in user.GetPenises() do
+				totalDicks = totalDicks + 1
+			end
+
+			if totalDicks > 0 then
+				foreach d in user.GetPenises() do
+					local length = d.GetToken("length")
+					length.Value = length.Value + 3 + Random.Next(5)
+					lengthenings = lengthenings + 1
+
+					-- Randomly break out
+					if lengthenings > 0 and Random.Flip() then
+						break
+					end
+				end
+
+			else
+				local penis = user.AddToken("penis", "human")
+				penis.AddToken("thickness", 2 + Random.Next(2), nil)
+				penis.AddToken("length", 15 + Random.Next(4), nil)
+				additions = 1
+			end
+
+			if lengthenings == 0 then
+				if additions == 0 then
+					ret = "Nothing seems to have happened."
+				else
+					ret = "[Youorname] [has] grown a [?:cock]!"
+					Identify()
+				end
+			else
+				if lengthenings == totalDicks then
+					if totalDicks == 1 then
+						ret = "[Yourornames] [?:cock] has grown longer."
+					else
+						ret = "[Yourornames] [?:cocks] have grown longer."
+					end
+				elseif lengthenings == 1 then
+					ret = "One of [yourornames] [?:cocks] has grown longer."
+				end
+				Identify()
+			end
+
+			if Random.Flip() and Random.Flip() and Random.Flip() then
+				if user.HasToken("vagina") then
+					user.RemoveToken("vagina")
+					if lengthenings + additions == 0 then
+						ret = "[Youorname] seem{s} to have lost "
+					else
+						ret = ret .. " But it seems [he] also lost "
+					end
+					if user.HasToken("vagina") then
+						ret = ret .. "one of [his] [?:pussies]."
+					else
+						ret = ret .. "[his] [?:pussy]."
+					end
+				end
+			end
+			print(ret)
+		]]>
+
+item: corrupted_cock_potion
+	description: "A [color ]bottle with what seems to be a turgid penis on the label, that rather aggressively grows you a cock."
+	unknown: "A [color ]bottle with what seems to be a turgid penis on the label."
+	ascii
+		char: 0x180
+	randomized: 15
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			local ret : string = ""
+			local totalDicks : int = 0
+			local lengthenings : int = 0
+			local additions : int = 0
+			foreach d in user.GetPenises() do
+				totalDicks = totalDicks + 1
+			end
+
+			if totalDicks > 0 then
+				foreach d in user.GetPenises() do
+					local length = d.GetToken("length")
+					length.Value = length.Value + 3 + Random.Next(5)
+					lengthenings = lengthenings + 1
+
+					-- Randomly break out
+					if lengthenings > 0 and Random.Flip() then
+						break
+					end
+				end
+			end
+
+			if Random.Flip() and Random.Flip() then
+				local penis = user.AddToken("penis", "human")
+				penis.AddToken("thickness", 2 + Random.Next(2), nil)
+				penis.AddToken("length", 15 + Random.Next(4), nil)
+				additions = 1
+			end
+
+			if lengthenings + additions == 0 then
+				ret = "Nothing seems to have happened."
+			else
+				if lengthenings == totalDicks then
+					if totalDicks == 1 then
+						ret = "[Yourornames] [?:cock] has grown longer."
+					else
+						ret = "[Yourornames] [?:cocks] have grown longer."
+					end
+				elseif lengthenings == 1 then
+					ret = "One of [yourornames] [?:cocks] has grown longer."
+				end
+				if additions == 1 then
+					if lengthenings == 0 then
+						ret = "[Youorname] [has] grown "
+					else
+						ret = ret .. " Plus, [he] [has] grown "
+					end
+					if totalDicks == 0 then
+						ret = ret .. "a [?:cock]!"
+					else
+						ret = ret .. "one extra!"
+					end
+				end
+				Identify()
+			end
+
+			if Random.Flip() then
+				if user.HasToken("vagina") then
+					user.RemoveToken("vagina")
+					if lengthenings + additions == 0 then
+						ret = "[Youorname] seem{s} to have lost "
+					else
+						ret = ret .. " But it seems [he] also lost "
+					end
+					if user.HasToken("vagina") then
+						ret = ret .. "one of [his] [?:pussies]."
+					else
+						ret = ret .. "[his] [?:pussy]."
+					end
+					Identify()
+				end
+			end
+			print(ret)
+		]]>
+
+item: neutralizer_potion
+	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label. It removes your genitalia. If it were a cream you might've been able to choose which."
+	unknown: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
+	ascii
+		char: 0x180
+	randomized: 16
+	potion
+	transformer
+	dummy
+		<[[
+			Consume();
+			var ret = "";
+			if (Random.Flip())
+			{
+				if (user.HasToken("penis"))
+				{
+					user.RemoveToken("penis");
+					if (user.HasToken("penis"))
+						ret = "One of your cocks disappears!";
+					else
+						ret = "Your cock's gone!";
+				}
+				else if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret = "One of your pussies disappears!";
+					else
+						ret = "Your pussy's gone!"
+				}
+			}
+			else
+			{
+				if (user.HasToken("vagina"))
+				{
+					user.RemoveToken("vagina");
+					if (user.HasToken("vagina"))
+						ret = "One of your pussies disappears!";
+					else
+						ret = "Your pussy's gone!"
+				}
+				else if (user.HasToken("penis"))
+				{
+					user.RemoveToken("penis");
+					if (user.HasToken("penis"))
+						ret = "One of your cocks disappears!";
+					else
+						ret = "Your cock's gone!";
+				}
+			}
+			for (var i = 0; i < user.Count(); i++)
+			{
+				if (user.Item(i).Name == "breastrow")
+				{
+					var breastrow = user.Item(i);
+					if (breastrow.Path("nipples/canfuck"))
+					{
+						breastrow.GetToken("nipples").RemoveToken("canfuck");
+						ret += "  The cocks on your breasts shrink back into regular nipples.";
+						break;
+					}
+					else if (breastrow.Path("nipples/fuckable"))
+					{
+						breastrow.GetToken("nipples").RemoveToken("fuckable");
+						ret += "  The pussies on your breasts shrink back into regular nipples.";
+						break;
+					}
+				}
+			}
+			print(ret);
+			Identify();
+		]]>
+
+item: regen_ring
+	description: "A [color ]ring that heals the wearer a little every few seconds."
+	unknown: "You have no idea what this shiny [color ]ring does."
+	equipable
+		ring
+	randomized: 130
+	ascii
+		char: 0x1a0
+	timer: 5
+	script: timer
+		<[[
+			user.Heal(5)
+			Identify()
+		]]>
+
+item: chaotic_regen_ring
+	description: "A ring that heals the wearer a little every few seconds, but it's tainted..."
+	equipable
+		ring
+	randomized: 131
+	disabled
+	ascii
+		char: 0x1a0
+	timer: 5
+	script: timer
+		<[[
+			user.Heal(5)
+			if Random.NextDouble() > 0.3 then
+				user.Mutate(1, 30, Mutations.Random)
+				-- if not identified then
+				-- message({"Oh [?:swear] -- so that's what a tainted regeneration ring does!"}, Color.Red)
+				-- end
+			end
+			Identify()
+		]]>
+
+item: orgasm_denial_ring
+	_n: Ring of Orgasm Denial
+	description: "A ring that prevents the wearer from reaching a climax. How it works, noone cares."
+	equipable
+		ring
+	randomized: 132
+	ascii
+		char: 0x1a0
+	timer: 5
+	script: equip
+		<[[
+			if not user.HasToken("orgasm_denial") then
+				user.AddToken("orgasm_denial")
+			end
+			print("You feel constricted, even though the ring seems averagely loose-fitting.")
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("orgasm_denial")
+			print("You feel less constricted.")
+		]]>
+
+item: restoration_potion
+	ascii
+		char: 0x180
+	randomized: 17
+	potion
+	transformer
+	script
+		<[[
+			Consume();
+			local missing = user.MaximumHealth - user.Health
+			local half = math.ceil(missing * 0.5)
+			user.Health = user.Health + half
+
+			local car = user.GetToken("carnality")
+			if car.Value < 100 then
+				car.Value = car.Value + 5;
+			end
+			Identify()
+		]]>	
+
+item: greater_restoration_potion
+	ascii
+		char: 0x180
+	randomized: 18
+	potion
+	transformer
+	script
+		<[[
+			Consume()
+			user.Health = user.MaximumHealth
+
+			local car = user.GetToken("carnality");
+			if car.Value < 100 then
+				car.Value = car.Value + 20
+			end
+			Identify()
+		]]>	
+
+-- #endregion
+
+item: bfg9000
+	_n: BFG-9000
+	fireproof
+	unique
+	equipable
+		hand
+	weight: medium
+	charge: 3
+	weapon
+		damage: 1000
+		range: 60
+		splash: 4
+		skill: huge_firearm
+	description: ""
+	ascii
+		char: 0x183
+		fore: gray
+	effect
+		char: 0x2A
+		fore: yellow
+		back: lime
+	rareweapon

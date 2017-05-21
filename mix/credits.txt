@@ -1,0 +1,65 @@
+
+<cCornflowerBlue>                    <g2588><g2588><g2584>  <g2588><g2588> <g2584><g2588><g2580><g2580><g2588><g2584> <g2580><g2588>   <g2588><g2580> <g2580><g2588><g2588><g2580> <g2584><g2588><g2580><g2580><g2588><g2584> <g2584><g2588><g2580><g2580><g2580><g2588><g2584>
+<cCornflowerBlue>                    <g2588><g2588><g2588><g2588><g2584><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2580><g2588><g2584><g2588><g2580>   <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>                    <g2588><g2588><g2580><g2588><g2588><g2588><g2588> <g2588><g2588>  <g2588><g2588>   <g2584><g2588><g2584>    <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>                    <g2588><g2588>  <g2580><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2588><g2580> <g2580><g2588>   <g2588><g2588>  <g2588><g2588>  <g2584><g2584> <g2588><g2588>   <g2588><g2588>
+<cCornflowerBlue>                    <g2588><g2588>   <g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2580>   <g2580><g2580> <g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2588><g2584>  <g2588><g2588>
+<cCornflowerBlue>                    <g2580>  <g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>
+
+
+                 Programming and idea                      Kawa
+                 Assistant programming              PillowShout
+                                                         Xolroc
+                                                       SparksJ2
+
+
+                 Inspiration from:                       Fenoxo
+                                                     Tarn Adams
+                                                    Greg Janson
+                                               The NetHack team
+
+
+                                    Writers
+                                   ---------
+
+                TheDarkMaster      NVos          ScourgeScarfould
+                DecidedlyDevious   demidenizen   Bodshivita
+                Hassin             noego         morrogoth
+                PillowShout
+
+
+               http://helmet.kafuka.org/noxico
+
+
+                                   Thanks to
+                                  -----------
+
+Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and RogueBasin
+coolkids, all GameDev.StackExchange.com users...
+
+                                            and mom for not making a fuss over it.
+
+
+
+
+
+
+
+
+     NE1 HAS SEEN A JAPANESE SCHOOLGIRL
+   AROUND HERE? OK CU L8R!<cGreen>          ,.
+<cGreen>                                   (())
+<cGreen>                _______            ( (
+<cGreen>          _,---':::::::`---._       \ \
+<cGreen>       _,':::::::.   .:::::::`.___,-'  )
+<cGreen>    _,'::::.    u          .:::::::.  /
+<cGreen>_,-'::::.          UU  uU ___    __,-'
+<cGreen>:::::.        u     _,---'   `--'
+<cGreen>:.        U   _,-u-'  O    o      .
+<cGreen>            ,'
+<cGreen>       Uu  /   O      .
+<cGreen>    u   _,' o
+<cGreen>  U _,-'  .
+<cGreen>_,-'              .
+<cGreen>V    o                      <cGray>mthw
+<cGreen>.

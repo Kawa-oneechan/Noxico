@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE scenes [
+	<!ELEMENT scenes (scene+)>
+	<!ELEMENT scene (filter*,(p|script)*,action*)>
+	<!ELEMENT filter EMPTY>
+	<!ELEMENT script (#PCDATA)>
+	<!ELEMENT action EMPTY>
+	<!ATTLIST scene
+		id ID #REQUIRED
+		name CDATA #REQUIRED
+		list CDATA #IMPLIED
+		priority CDATA #IMPLIED
+	>
+	<!ATTLIST filter
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+	<!ATTLIST script type CDATA #FIXED "text/javascript">
+	<!ATTLIST action
+		name CDATA #REQUIRED
+		listas CDATA #IMPLIED
+	>
+
+	<!-- P can now have not only #PCDATA, but also IF and ELSE, in any combination. -->
+	<!ELEMENT p (#PCDATA|if|else)*>
+	<!ELEMENT if (#PCDATA|if|else)*>
+	<!ELEMENT else (#PCDATA|if|else)*>
+	<!-- Same as FILTER above. -->
+	<!ATTLIST if
+		target (top|bottom) #REQUIRED
+		type CDATA #REQUIRED
+		name CDATA #IMPLIED
+		value CDATA #IMPLIED
+	>
+]>
+<scenes>
+
+	<!-- Start -->
+	<scene id="NewGameIntro_Start" name="(new game start)">
+		<script type="text/javascript">
+			<![CDATA[
+				if(!top.HasToken("dream"))
+					top.AddToken("dream");
+			]]>
+		</script>
+	
+		<p>
+			You know this is a dream; you shouldn't, as you can't see or hear anything, but you know it all the same. You try to understand how, but you can only remember the feeling of being told by someone, though not who by or when.
+		</p>
+		<p/>
+		<p>
+			Around you, the world quickly unfolds and builds itself, from the dark, into a verdant forest. Tall redwoods and broad-leaved ferns surround the small, rocky clearing that you stand in. Beneath your {if top has legs} uncovered [t:feet]{else}{if top has snaketail} serpentine lower body{else}{if top has slimeblob} translucent, sluglike lower half{endif}{endif}{endif}, you feel the pleasant softness of the carpet of moist lichen that covers the earth.
+		</p>
+		<p/>
+		<p>
+			As you stand there, admiring the scenery, you hear the sound of quiet footsteps to your left. You turn and find one of the most peculiar creatures that you've ever seen standing barely an arm's length away.
+		</p>
+		<action name="new game start 2"/>
+	</scene>
+	<scene id="NewGameIntro_Start2" name="new game start 2">
+		<p/>
+		<p>
+			It - for the creature lacks the form or features of either sex - stands before you, unclothed and unashamed. Though it appears human, its body is hairless and unblemished, and its porcelain skin is broken up only by a pair of thin, rosy lips and a set of piercingly blue eyes.
+		</p>
+		<p/>
+		<p>
+			Your gaze is drawn up to its face, and you see it smile at you before speaking. "Hello [t:name], I've come to bring you a warning."
+		</p>
+		<action name="new game what is warning"/>
+		<action name="new game done this before"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_WhatWarning" name="new game what is warning" list="A warning of what, exactly?">
+		<p>
+			"The demon empress Melfina has grown tired of waiting for Nox to fall to her influence, and has begun gathering forces from her realm for a second great invasion."
+		</p>
+		<p/>
+		<p>
+			"With this army, she intends to claim Nox by razing its cities and defiling its lands," it continues as its voice takes on a melancholy tone, "Once she has, the realm will be hers alone, and the peoples of Nox will cease to exist as we know them."
+		</p>
+		
+		<action name="new game how do i fit in"/>
+		<action name="new game who is melfina"/>
+		<action name="new game what is first invasion"/>
+	</scene>
+	<scene id="NewGameIntro_AnyMoreQuestions" name="new game any more questions">
+		<script type="text/javascript">
+			<![CDATA[
+				var dream = top.GetToken("dream")
+			
+				if(dream.HasToken("invasiontalk") && dream.HasToken("melfinatalk") && dream.HasToken("playerfate") && dream.HasToken("melfinathreat") && dream.HasToken("nameknown"))
+					print("\"Unfortunately, I don't have enough time to answer any more questions. If you need to learn more, you will have to do so on your own.\"");
+				else
+					print("\"Is there anything else you wanted to ask of me?\"");
+			]]>
+		</script>
+		<action name="new game how do i fit in"/>
+		<action name="new game who is melfina"/>
+		<action name="new game what is first invasion" listas="What happened during the first invasion?"/>
+		<action name="new game who are you"/>
+		<action name="new game how did melfina get here prompt"/>
+		<action name="new game no more questions"/>	<!-- Default option once the others are gone -->
+	</scene>
+	
+	<scene id="NewGameIntro_WhoAreYou" name="new game who are you" list="So, who are you then?">
+		<filter target="top" type="hasnot" name="dream/nameknown"/>
+		<p>
+			The creature bows its head and answers, "My name is Eutanr, and I was created by my father, the Architect, to act as his aide and proxy."
+		</p>
+		<p/>
+		<p>
+			You're not entirely satisfied with Eutanr's answer and ask it what it is and what it actually does for the Architect.
+		</p>
+		<p/>
+		<p>
+			"I am a half-mortal, though I was not born in the mortal sense. The Architect created my body, one that was without the physical flaws and limits of mortals, and filled it with a mortal soul from the Well of the Dead," it explains. "As for what I do, I deal with tasks that the Architect doesn't have time to take care of, or ones that he does not need to deal with personally."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("nameknown");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_HowDoIFitInToThis" name="new game how do i fit in" list="How do I fit into this?">
+		<filter target="top" type="hasnot" name="dream/playerfate"/>
+		<p>
+			"My father, the Architect, has seen in your fate the potential to destroy Melfina's forces and to end her defilement of Nox."
+		</p>
+		<p/>
+		<p>
+			You ask it what it means by that and scoff at the idea that you're some kind of messiah or chosen one.
+		</p>
+		<p/>
+		<p>
+			It smiles serenely and replies, "No, you are not a 'chosen one' as you put it, as you're not the only one to have this fate. However, you are still one of very few."
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> sees your confusion and continues its explanation. "The mortal understanding of fate is flawed. Fate is not simply a linear path that you follow regardless, but rather it is a convoluted roadway with many forks, intersections and ends."
+		</p>
+		<action name="new game how do i fit in 2"/>
+	</scene>
+	<scene id="NewGameIntro_HowDoIFitInToThis2" name="new game how do i fit in 2">
+		<p>
+			"When the Architect scried your fate, he only saw where a few of those paths would lead, and that some would see Melfina either crippled or dead. Likewise, there are others whose paths would take them to the same place, though by different means."
+		</p>
+		<p/>
+		<p>
+			You consider this for a moment and can see things starting to make sense. One detail still bothers you however, and you ask <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> what would happen if you found these others.
+		</p>
+		<p/>
+		<p>
+			"That would be up to you," it answers, "Should you find them, it would be in your best interest to work with them and take them as allies. Together you stand a greater chance of defeating Melfina, and as with all things, it never hurts to have help."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("playerfate");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_WhoIsMelfina" name="new game who is melfina" list="Who is Melfina?">
+		<filter target="top" type="hasnot" name="dream/melfinatalk"/>
+		<p>
+			It stares at you with its mouth agape and takes a moment before it responds. "You mean to say that you don't know who Melfina is?"
+		</p>
+		<p/>
+		<p>
+			You shake your head slowly and wonder why <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> seems so upset. It seems to scrutinize you for a few seconds before it finally sighs and says, "I will show you what I can in the time we have."
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> concentrates for barely a moment before you a figure appears a short distance away from both of you. You look at the figure curiously as and notice that she doesn't seem to acknowledge either of you in any way as she stands there.
+		</p>
+		<p/>
+		<p>
+			She appears to be mostly human, though you immediately take notice of the large, leathery wings that jut out of her back, and as you walk closer, you notice that she's actually quite tall<if target="top" type="value_lower" name="tallness" value="150"> and practically towers over you.</if>
+			<else><if target="top" type="value_lower" name="tallness" value="180">, overshadowing you at least by a head.</if>
+				<else>
+					, nearly matching your impressive stature.
+				</else>
+			</else>
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> moves next to the figure and looks up at her before it explains, "This is Melfina, the queen of Sera'devari and the would-be empress of Nox."
+		</p>
+		<action name="new game who is melfina 2"/>
+	</scene>
+	<scene id="NewGameIntro_WhoIsMelfina2" name="new game who is melfina 2">
+		<p>
+			"At a time when humans had just barely taken their first steps toward civilization, Melfina was brought into the world by a union between the Lover and a cave nymph. At the time, Melfina had only been known as a temptress, and one that only drew careless farmers and hunters away from their spouses. She was of little concern to either gods or mortals, but as she matured and grew more powerful, her actions took on a far more sinister nature."
+		</p>
+		<p/>
+		<p>
+			"Entire villages would disappear over night and join in the mad orgy that Melfina had created, and the people that did so were no longer human by the next morning. Simply by being subjected to Melfina's influence, these humans were transformed into the very first of what you know of today as demons."
+		</p>
+		<p/>
+		<p>
+			"The Earth Mother and the Sky Father saw how Melfina's wanton lust was destroying their world and decided that she could no longer remain in Nox. They then created the minor realm of Sera'devari and banished Melfina and all of her ilk there. Melfina was furious and vowed that she would take revenge on the ancient ones by returning to Nox and turning it into a barren waste of violence and depravity."
+		</p>
+		<action name="new game who is melfina 3"/>
+	</scene>	
+	<scene id="NewGameIntro_WhoIsMelfina3" name="new game who is melfina 3">
+		<p>
+			"Then, thirteen hundred years ago, Melfina found a way back into Nox and used it to start the campaign of genocide and destruction known today as the Great Invasion. She was eventually stopped, but only just, and while she could no longer attack human settlements directly, she continued to spread mutation and defile the lands."
+		</p>
+		<p/>
+		<p>
+			"After a six hundred year long stalemate, both sides agreed to a formalized the peace, and since then, Melfina has spent her time building her forces and weakening the resolve of Nox's inhabitants. Now, she means to use the advantage that she's created and make a final push toward her goal."
+		</p>
+		<p/>
+		<p>
+			The image of Melfina vanishes, and <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> looks at you imploringly. "If Melfina does take Nox, then the only thing you or anyone else can look forward to is a very brief and visceral existence."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("melfinatalk");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_HowDidMelfinaGetHerePrompt" name="new game how did melfina get here prompt" list="How did Melfina get into Nox?">
+		<filter target="top" type="hasnot" name="dream/melfinathreat"/>
+		<p>
+			"That is a rather long story," <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> cautions, "Are you certain you want to hear it?"
+		</p>
+		<action name="new game how did melfina get here" listas="Yes, I would like to hear it."/>
+		<action name="new game any more questions" listas="Actually, just forget it."/>
+	</scene>
+	<scene id="NewGameIntro_HowDidMelfinaGetHere" name="new game how did melfina get here">
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> nods and furrows its brows in concentration for a moment before it finally relaxes and directs your attention across the field. Rather than seeing the trees and ferns you expected, before you lies the scene of a man kneeling inside a darkened room, in front of whom is a glowing, arcane circle.
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> steps forward and addresses the vision. “The man you see there is named Solomon, a human sorcerer of little ability, though great desperation. On this day, more than thirteen centuries ago, he summoned the Great Defiler to Nox.”
+		</p>
+		<action name="new game how did melfina get here 2"/>
+	</scene>
+	<scene id="NewGameIntro_HowDidMelfinaGetHere2" name="new game how did melfina get here 2">
+		<p>
+			The circle slowly grows brighter each second until a blinding flare erupts from within. The man shields himself from the blast, and when he lowers his arm, his face lights up in shock and joy. A lithe and amazonian woman with raven hair and pale skin stands in the smoldering remains of the circle, her chiropteran wings wrapping around her shoulders like a cloak.
+		</p>
+		<p/>
+		<p>
+			The woman's luminous, amber eyes fall on the man in front of her, and before he can even rise, she steps toward him and pulls him into a lustful kiss. The vision disappears quickly after that moment and <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> turns to speak to you.
+		</p>
+		<p/>
+		<p>
+			"As soon as Melfina entered the mortal realm, she had already beguiled and seduced Solomon. Under the summoner's agreement that brought her here, she was permitted to stay only until Solomon had intimately known a woman, but Melfina knew this and would only give him what he desired when she was ready for him to have it."
+		</p>
+		<action name="new game how did melfina get here 3"/>
+	</scene>
+	<scene id="NewGameIntro_HowDidMelfinaGetHere3" name="new game how did melfina get here 3">
+		<p>
+			"For years, Melfina poisoned Solomon's mind with promises of power and sexual conquest, and though she taught him a great deal about the higher magics, it was not solely for his benefit," <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> continues before directing your attention back out into the field.
+		</p>
+		<p/>
+		<p>
+			Another scene opens in the same spot as the last, however this time you're shown a large and well lit hall. Melfina and Solomon - the latter of whom appears several years older - stand side by side before another summoning circle. Solomon then steps forward and pushes his hands together in front of himself as swirls of blue light slowly coalesce into a shining orb between his palms.
+		</p>
+		<p/>
+		<p>
+			"Melfina told Solomon that she could only teach him more if he were to come with her to the demon realm of Sera'devari, and that to do so he would have to open a portal to the domain. In truth, Melfina and all of her ilk have been bared from unrestricted travel between realms, and as such she used Solomon to create a portal for her when she could not."
+		</p>
+		<action name="new game how did melfina get here 4"/>
+	</scene>
+	<scene id="NewGameIntro_HowDidMelfinaGetHere4" name="new game how did melfina get here 4">
+		<p>
+			When the orb reaches the same size as his head, Solomon thrusts his hands forward and the light pours itself into the circle. Moments after, the circle flares up and floods the hall with blinding light. When you can see again, a small glassy sphere floats in the middle of the expended circle and Solomon lays on his back with Melfina straddling his hips. Once again the image fades away and you're left looking out into the forest.
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> turns to face you again. "When Melfina finally completed her contract with Solomon, she should have been sent back to her realm the same way she had been summoned, but because of how close she was to the portal, the desummoning spell tried to force its way though there. The portal, however, was never meant to allow anything as powerful as Melfina through, and when the spell tried to force its way in, it tore apart the barriers between Sera'devari and Nox and created a permanent bridge between them."
+		</p>
+		<p/>
+		<p>
+			It looks at you seriously before continuing. "This is how Melfina was able to invade Nox years later, and this is why you must end her now. The portal to the demon realm is tied to her, and only when she dies will it finally close."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("melfinathreat");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>
+	
+	
+	<scene id="NewGameIntro_WhatIsFirstInvasion" name="new game what is first invasion" list="Second great invasion? There was a first?">
+		<filter target="top" type="hasnot" name="dream/invasiontalk"/>
+		<p>
+			<if target="top" type="hasnot" name="dream/melfinatalk">"I take it that you're not a student of history," it replies and you shake your head.</if>
+				<else>"I suppose if you knew nothing of Melfina, it would be too much to expect you to know anything about the first invasion," it replies as you look away sheepishly.</else>
+		</p>
+		<p/>
+		<p>
+			It smiles graciously and says, "In that case, I'll give you the short version."
+		</p>
+		<p/>
+		<p>
+			<if target="top" type="hasnot" name="dream/melfinathreat">"Thirteen hundred years ago, Melfina finally found a way back into Nox, but because she was summoned there, her movement and abilities were limited. She later tricked her summoner into creating a gateway between Sera'devari and Nox and then took it for herself before returning to her own realm."</if>
+			<else>"When Melfina had been summoned to Nox by Solomon, it was not something she had either intended or planned for, and as such, she still needed time to prepare."</else>
+		</p>
+		<p/>
+		<p>
+			"Even after Melfina created the portal and returned to Sera'devari, it still took her nearly a decade before she had gathered the forces for her incursion. During this time, the portal had been studied by human academics for several years, who after learning as much as they could, promptly forgot about it."
+		</p>
+		<action name="new game what is first invasion 2"/>
+	</scene>
+	
+	<scene id="NewGameIntro_WhatIsFirstInvasion2" name="new game what is first invasion 2">
+		<p>
+			"This of course worked to Melfina's advantage as when she finally moved her armies through the gateway, they came through unresisted. The early attacks took several human cities by surprise, but once word got out that Melfina was leading a demon army and that she didn't appear to be attacking any single nation, alliances quickly formed among the human royalty and soon Melfina's forces were facing a unified Nox."
+		</p>
+		<p/>
+		<p>
+			"In an act of desperation, Melfina tried to bolster her own forces by taking animals native to Nox and mutating them into soldiers. She changed their bodies and minds to be more like those of mortal men, but in doing so, she also gave them mortal souls and thus free will. While a great many did join Melfina's forces, nearly as many did not, and some even later chose to fight along side the humans."
+		</p>
+		<p/>
+		<p>
+			"Ultimately, the combined might of Nox's armies pushed Melfina back to the gate, but they were never able to completely force her from Nox. Thus began the more than six hundred year long stalemate which would only end when the Kadine agreement was finally signed seven hundred years ago."
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.GetToken("dream").AddToken("invasiontalk");
+			]]>
+		</script>
+		<action name="new game any more questions"/>
+	</scene>	
+	
+	<scene id="NewGameIntro_NoMoreQuestions" name="new game no more questions" list="No, I think I've got it now.">
+		<p>
+			"There is however something I need to ask you before I go," it tells you and looks at you grimly, "Do you know how to fight?"
+		</p>
+		<action name="new game dream end" listas="Yes, I know how." />
+		<action name="new game placeholder tutorial" />
+	</scene>
+	<scene id="NewGameIntro_YesICanFight" name="new game dream end">
+		<p>
+			Apparently satisfied, <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> nods to you and seems to concentrate for a moment. The sky above you darkens and soon the trees at the edge of the forest start to dissolve away.
+		</p>
+		<p/>
+		<p>
+			"Fighting Melfina will not be easy. You will need every advantage and ally you can find, so take help wherever you can. Fare well, [t:name]"
+		</p>
+		<p/>
+		<p>
+			As the last of the forest disappears, <if target="top" type="has" name="dream/nameknown">Eutanr</if><else>the creature</else> smiles supportively before it vanishes as well. When the forest is finally gone and all that remains is the sea of black, you finally lose all sensation and feel yourself fall back into a dreamless sleep.
+		</p>
+		<p/>
+		<p>
+			When you wake up the next morning, you're greeted by the familiar sight of your bedroom. As you lay in bed, you wonder if there was any truth to the odd dream or if it was just your imagination. In the end, you decide to put it out of your mind until later and get out of bed.
+		</p>
+		<script type="text/javascript">
+			<![CDATA[
+				top.RemoveToken("dream");
+			]]>
+		</script>
+	</scene>
+	<scene id="NewGameIntro_NoICantFight" name="new game placeholder tutorial" list="No, I've never fought before.">
+		<p>
+			<if target="top" type="has" name="dream/nameknown">Eutanr</if><else>The creature</else> looks at you thoughtfully, and then replies, "I will teach you what I can, but we're short on time as it is."
+		</p>
+		<p/>
+		<p>
+			**** Placeholder Tutorial ****
+		</p>
+		<p/>
+		<p>
+			Move using the [!left], [!right], [!up] and [!down]; keys. Rest in place with '[!rest]'. Use beds, containers, and doorways by standing on them and pressing '[!activate]'.
+		</p>
+		<p/>
+		<p>
+			Switch to Interact Mode with '[!interact]' -- you can look at things, converse with NPCs and try to have sex with them... You can check your inventory with '[!items]' and open the travel screen with '[!travel]'.
+		</p>
+		<p/>
+		<p>
+			To attack an enemy with a melee weapon, stand next to them and move in their direction. To attack an enemy with a ranged weapon, press '[!interact]' and move the targeting cursor over them, then press '[!accept]'. Alternatively, to use a ranged weapon in one of the four cardinal directions, hold Shift and press a direction.
+		</p>
+		<p/>
+		<p>
+			To access the menu and see the full list of commands, press '[!pause]'.
+		</p>
+		<p/>
+		<p>
+			"This is all I can teach you for now. You'll have to learn the rest as you go."
+		</p>
+		<action name="new game dream end" />
+	</scene>
+	
+	
+	<!-- Quick End -->
+	<scene id="NewGameIntro_DoneThisBefore" name="new game done this before" list="Wait. I think I've had this dream before.">
+		<p>
+			The creature looks perplexed by your response. "If I had spoken to you before, I'm certain I would have remembered."
+		</p>
+		<p/>
+		<p>
+			It gestures to the woods around you and speaks again. "The forest you see is made to seem familiar and welcoming, so perhaps that is what you feel. The message I bring, however, is one only known to those outside the realm of Nox."
+		</p>
+			
+		<action name="new game what is warning" listas="Alright, so what's this about?"/>
+		<action name="new game fast start wake up"/>
+	</scene>
+	<scene id="NewGameIntro_FastStartWakeUp" name="new game fast start wake up" list="No, I definitely remember this. I'm just gonna wake up now.">
+		<p>
+			"Wait! Don't go!" it shouts at you, but the forest has already started to dissolve back into nothing. While at first it appears dismayed at your impending departure, it quickly resolves itself to continue as it had intended.
+		</p>
+		<p/>
+		<p>
+			"[t:name], you must join the fight against Melfina! If you do not, Nox will-" Its voice dies out abrubtly as the last of the forest disappears, and you fall back into a dreamless sleep.
+		</p>
+		<p/>
+		<p>
+			When you wake up the next morning, you're greeted by the familiar sight of your bedroom. You lay in bed for a while and wonder if there was any truth to the odd dream. Ultimately, you can't choose one way or the other, and you decide to put it out of your mind for now as you throw off your blankets and get out of bed.
+		</p>
+		
+		<script type="text/javascript">
+			<![CDATA[
+				top.RemoveToken("dream");
+			]]>
+		</script>
+	</scene>
+</scenes>
