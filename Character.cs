@@ -3179,10 +3179,27 @@ namespace Noxico
 			return GetToken(statname).Value = stat;
 		}
 
-		/// <summary>
-		/// Deals with the select tokens found in a new character's bodyplan during character generation.
-		/// </summary>
-		private void HandleSelectTokens()
+		public bool ChangeMoney(float amount)
+		{
+			var money = GetToken("money").Value;
+			var fail = false;
+
+			money += amount;
+			if (money < 0)
+			{
+				// note that if you get here, probably the person charging
+				//  you money didn't check that you had enough
+				money = 0;
+				fail = true;
+			}
+			GetToken("money").Value = money;
+			return fail;
+		}
+
+			/// <summary>
+			/// Deals with the select tokens found in a new character's bodyplan during character generation.
+			/// </summary>
+			private void HandleSelectTokens()
 		{
 			TraverseForSelectTokens(this);
 		}
