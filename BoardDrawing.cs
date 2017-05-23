@@ -210,6 +210,7 @@ namespace Noxico
 			var tileset = Mix.GetString(tiledefs).Split('\n');
 			var tiles = new Dictionary<string, string>();
 			var clutter = new Dictionary<string, string>();
+			var unique = new Dictionary<string, string>();
 			foreach (var tile in tileset)
 			{
 				if (string.IsNullOrWhiteSpace(tile))
@@ -222,13 +223,16 @@ namespace Noxico
 					t1 = t1.Substring(t1.IndexOf('+'));
 					while (t1.StartsWith("+"))
 					{
+						var skip = t1.Substring(t1.IndexOf("[")); //skip to after the [
+						var key = "ff" + t[0].ToLowerInvariant();
+						var value = skip.Substring(0, skip.IndexOf(']'));
+
 						if (t1.StartsWith("+clut"))
-						{
-							t1 = t1.Substring(t1.IndexOf("+clut") + 6); //skip to after the [
-							clutter.Add("ff" + t[0].ToLowerInvariant(), t1.Substring(0, t1.IndexOf(']')));
-							t1 = t1.Substring(t1.IndexOf(']') + 1).Trim();
-						}
-						//TODO: allow other kinds of entities
+							clutter.Add(key,value);
+						else if (t1.StartsWith("+unique"))
+							unique.Add(key, value);
+						t1 = t1.Substring(t1.IndexOf(']') + 1).Trim(); // loop other possible '+'es
+						//TODO: allow other kinds of entities such as dropped items, generic npcs, etc
 					}
 				}
 				else
@@ -302,6 +306,17 @@ namespace Noxico
 								case "burns": nc.CanBurn = true; break;
 							}
 						}
+					}
+
+					if (unique.ContainsKey(color.Name))
+					{
+						var newChar = new BoardChar(Character.GetUnique("chelsie"))
+						{
+							XPosition = x,
+							YPosition = y,
+							ParentBoard = this
+						};
+						this.Entities.Add(newChar);
 					}
 				}
 			}
