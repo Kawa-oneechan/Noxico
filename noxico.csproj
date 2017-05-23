@@ -131,6 +131,7 @@
     <Content Include="mix\fonts\8x8-bold.png" />
     <Content Include="mix\fonts\8x8-thin.png" />
     <Content Include="mix\missions\chelsie\lairhouse.txt" />
+    <None Include="mix\missions\introdream\dialogue.tml.patch.inprogress" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
