@@ -223,7 +223,7 @@ namespace Noxico
 					t1 = t1.Substring(t1.IndexOf('+'));
 					while (t1.StartsWith("+"))
 					{
-						var skip = t1.Substring(t1.IndexOf("[")); //skip to after the [
+						var skip = t1.Substring(t1.IndexOf("[") + 1); //skip to after the [
 						var key = "ff" + t[0].ToLowerInvariant();
 						var value = skip.Substring(0, skip.IndexOf(']'));
 
@@ -310,13 +310,28 @@ namespace Noxico
 
 					if (unique.ContainsKey(color.Name))
 					{
-						var newChar = new BoardChar(Character.GetUnique("chelsie"))
+						var properties = unique[color.Name].SplitQ();
+						string uniquename = "";
+						foreach (var property in properties)
 						{
-							XPosition = x,
-							YPosition = y,
-							ParentBoard = this
-						};
-						this.Entities.Add(newChar);
+							var key = property.Substring(0, property.IndexOf(':'));
+							var value = property.Substring(property.IndexOf(':') + 1);
+							switch (key.ToLowerInvariant())
+							{
+								case "id":
+									uniquename = value; break;
+							}
+						}
+						if (uniquename != "")
+						{
+							var newChar = new BoardChar(Character.GetUnique(uniquename))
+							{
+								XPosition = x,
+								YPosition = y,
+								ParentBoard = this
+							};
+							this.Entities.Add(newChar);
+						}
 					}
 				}
 			}
