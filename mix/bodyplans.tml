@@ -801,7 +801,7 @@ bodyplan: spider
 	femaleonly
 	invisiblegender
 	terms
-		female: "spiderperson"
+		generic: "spiderperson"
 		female: "spidergirl"
 	bestiary: "A half giant spider, half sexy girl."
 		char: 0x162
