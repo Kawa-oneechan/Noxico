@@ -902,7 +902,7 @@ namespace Noxico
 		}
 #endif
 
-        public static Character Generate(string bodyPlan, Gender gender, Gender idGender = Gender.RollDice)
+        public static Character Generate(string bodyPlan, Gender bioGender, Gender idGender = Gender.RollDice, Realms world = Realms.Nox)
 		{
 			var newChar = new Character();
 			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
@@ -920,15 +920,15 @@ namespace Noxico
 			newChar.ResolveRolls(); // moved rolls to after select, that way we can do rolls within selects
 
 			if (newChar.HasToken("femaleonly"))
-				gender = Gender.Female;
+				bioGender = Gender.Female;
 			else if (newChar.HasToken("maleonly"))
-				gender = Gender.Male;
+				bioGender = Gender.Male;
 			else if (newChar.HasToken("hermonly"))
-				gender = Gender.Herm;
+				bioGender = Gender.Herm;
 			else if (newChar.HasToken("neuteronly"))
-				gender = Gender.Neuter;
+				bioGender = Gender.Neuter;
 
-			if (gender == Gender.RollDice)
+			if (bioGender == Gender.RollDice)
 			{
 				var min = 1;
 				var max = 4;
@@ -937,18 +937,18 @@ namespace Noxico
 				else if (newChar.HasToken("neverneuter"))
 					max = 3;
 				var g = Random.Next(min, max + 1);
-				gender = (Gender)g;
+				bioGender = (Gender)g;
 			}
 
 			if (idGender == Gender.RollDice)
-				idGender = gender;
+				idGender = bioGender;
 
-			if (gender != Gender.Female && newChar.HasToken("femaleonly"))
+			if (bioGender != Gender.Female && newChar.HasToken("femaleonly"))
 				throw new Exception(string.Format("Cannot generate a non-female {0}.", bodyPlan));
-			if (gender != Gender.Male && newChar.HasToken("maleonly"))
+			if (bioGender != Gender.Male && newChar.HasToken("maleonly"))
 				throw new Exception(string.Format("Cannot generate a non-male {0}.", bodyPlan));
 
-			if (gender == Gender.Male || gender == Gender.Neuter)
+			if (bioGender == Gender.Male || bioGender == Gender.Neuter)
 			{
 				newChar.RemoveToken("fertility");
 				newChar.RemoveToken("womb");
@@ -957,7 +957,7 @@ namespace Noxico
 				foreach (var breastRow in newChar.Tokens.Where(t => t.Name == "breastrow" && t.HasToken("size")))
 					breastRow.GetToken("size").Value = 0;
 			}
-			if (gender == Gender.Female || gender == Gender.Neuter)
+			if (bioGender == Gender.Female || bioGender == Gender.Neuter)
 			{
 				while (newChar.HasToken("penis"))
 					newChar.RemoveToken("penis");
@@ -1013,9 +1013,9 @@ namespace Noxico
 
 			if (newChar.HasToken("femalesmaller"))
 			{
-				if (gender == Gender.Female)
+				if (bioGender == Gender.Female)
 					newChar.GetToken("tallness").Value -= Random.Next(5, 10);
-				else if (gender == Gender.Herm)
+				else if (bioGender == Gender.Herm)
 					newChar.GetToken("tallness").Value -= Random.Next(1, 6);
 			}
 
@@ -1028,7 +1028,7 @@ namespace Noxico
 
 #if MUTAMORPH
 			// because: "why the hell did I pick a male human and get herm centaur?"
-			if (!newChar.HasToken("beast") && !newChar.HasToken("player")) 
+			if (!newChar.HasToken("beast") && !newChar.HasToken("player") && world == Realms.Seradevari) 
                 newChar.Mutate(2, 20);
 #endif
 

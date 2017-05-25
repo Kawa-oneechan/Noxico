@@ -73,7 +73,15 @@ namespace Noxico
 				var plan = culture.Bodyplans[Random.Next(culture.Bodyplans.Length)];
 				if (i > 0 && Random.NextDouble() > 0.7)
 					plan = firstPlan;
-				c = Character.Generate(plan, count == 1 ? Gender.RollDice : (i == 0 ? Gender.Male : Gender.Female));
+				Realms world;
+				switch (culture.ID)
+				{
+					case "human" : world = Realms.Nox; break;
+					case "seradevar" : world = Realms.Seradevari; break;
+					default : world = Realms.Nox; break;
+				}
+				var myGender = count == 1 ? Gender.RollDice : (i == 0 ? Gender.Male : Gender.Female);
+				c = Character.Generate(plan, myGender, myGender, world);
 				if (i == 0)
 				{
 					familyName = c.Name.Surname;

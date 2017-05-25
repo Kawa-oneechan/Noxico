@@ -1087,7 +1087,7 @@ namespace Noxico
 		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, int preference, string bodyplan, Dictionary<string, string> colorMap, string bonusTrait)
 		{
 			Board.HackishBoardTypeThing = "wild";
-			var pc = Character.Generate(bodyplan, bioGender, idGender);
+			var pc = Character.Generate(bodyplan, bioGender, idGender, Realms.Nox);
 			var pref = pc.GetToken("sexpreference");
 			if (pref == null)
 				pref = pc.AddToken("sexpreference");
