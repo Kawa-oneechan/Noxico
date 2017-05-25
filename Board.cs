@@ -1065,7 +1065,8 @@ namespace Noxico
 			Board.HackishBoardTypeThing = this.BoardType.ToString().ToLowerInvariant();
 			for (var i = 0; i < toAdd; i++)
 			{
-				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray()), Gender.RollDice))
+				var bodyplan = Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray());
+				var newb = new BoardChar(Character.Generate(bodyplan, Gender.RollDice, Gender.RollDice, this.Realm))
 				{
 					ParentBoard = this,
 				};
