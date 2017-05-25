@@ -765,7 +765,7 @@ namespace Noxico
 					if (!gourmand.HasToken("player"))
 						return;
 					if (hwa.Equals("ass/size"))
-						hwa = Descriptions.ButtRandom();
+						hwa = "[?:butt]";
 					NoxicoGame.AddMessage("That went right to your " + hwa + "!");
 				}
 			}

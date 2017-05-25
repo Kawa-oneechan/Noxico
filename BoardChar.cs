@@ -712,7 +712,7 @@ namespace Noxico
 						MeleeAttack(bcTarget);
 #if MUTAMORPH
 						if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
-							bcTarget.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
+							bcTarget.Character.Morph(Character.GetToken("infectswith").Text);
 #endif
 						return;
 					}

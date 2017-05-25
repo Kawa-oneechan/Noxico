@@ -347,7 +347,9 @@ namespace Noxico
 					/* KAWA SEZ: how 'bout a small lookup mapping faces to legs? If the current face is
 					 * not in the list, do the same with skintypes. If that fails, use human legs.
 					 */
-					throw new NotImplementedException();
+					//throw new NotImplementedException();
+					// for now, you get bestial legs, mutant! :-) -sparks
+					this.AddToken("legs").AddToken("genbeast");
 			}
 			else if ((this.HasToken("snaketail") || this.HasToken("slimeblob")) && this.HasToken("legs"))
 			{
@@ -555,7 +557,7 @@ namespace Noxico
 							report += fromprevious ? " " + i18n.Pluralize("breast", amount) + Math.Round((double)size * 100).ToString() + "% the size of the " + 
 													i18n.Pluralize("one", (int)this.GetBreastRowByNumber(this.Tokens.Count(t => t.Name == "breastrow") - 1).
 													GetToken("amount").Value) + " above " + (amount == 1 ? "it, with " : "them, each with")
-												   : " " + Descriptions.GetSizeDescriptions(size, "//upperbody/breasts/sizes") + i18n.Pluralize("breast", amount) + 
+												   : " " + Descriptions.GetSizeDescription("breasts/size", size) + i18n.Pluralize("breast", amount) + 
 												    (amount == 1 ? ", with " : ", each with ");
 
 							var nipnum = Random.Next(5);
@@ -588,9 +590,10 @@ namespace Noxico
                                     newboobs.GetToken("nipples").AddToken("wetness", nipcuntwet);
                                     newboobs.GetToken("nipples").AddToken("looseness", nipcuntloose);
 
-									report += i18n.GetString("counts")[nipnum] + " " + Descriptions.GetSizeDescriptions(nipcuntloose,
-												"//lowerbody/sexorgans/vaginas/loosenesses") + " and " + Descriptions.GetSizeDescriptions(nipcuntwet,
-												"//lowerbody/sexorgans/vaginas/wetnesses") + " [p:" + nipnum.ToString() + ":nipplecunt].";
+									report += i18n.GetString("counts")[nipnum] + " " +
+										Descriptions.GetSizeDescription("vagina/looseness", nipcuntloose) + " and " + 
+										Descriptions.GetSizeDescription("vagina/wetness", nipcuntwet) + 
+										" [p:" + nipnum.ToString() + ":nipplecunt].";
 
                                     break;
                                 case 2:
@@ -614,8 +617,10 @@ namespace Noxico
 							newdick.AddToken("length", length);
 							newdick.AddToken("thickness", thick);
 							newdick.AddToken("cumsource");
-							report += "[Youorname] [has] grown a new " + Descriptions.Length(length) + " long, " + Descriptions.Length(thick)
-										+ " thick " + type + " " + Descriptions.CockRandom();
+							report += "[Youorname] [has] grown a new " + 
+								Descriptions.Length(length) + " long, " +
+								Descriptions.Length(thick) + " thick " + type + " " +
+								Descriptions.GetPartDescription("penis");
 							this.AddToken(newdick);
 						}
 						else
@@ -721,16 +726,13 @@ namespace Noxico
                                 boob.GetToken("amount").Value--;
 								report += "[Youorname] [has] lost a [?:breast] from [his] " + (rand + 1).CountOrdinal() + " row.";
                             }
-							else
-                            {
-                                if (boob.HasToken("size") && allTits.Count - 1 > rand)
-                                {
-                                    allTits[rand + 1].AddToken("size", boob.GetToken("size").Value * allTits[rand + 1].GetToken("sizefromprevious").Value);
-                                    allTits[rand + 1].RemoveToken("sizefromprevious");
-                                }
-                                this.RemoveToken(boob);
+
+							if (boob.GetToken("amount").Value == 0)
+							{
+								this.RemoveToken(boob);
 								report += "[Youorname] [has] lost a row of [?:breasts].";
-                            }
+							}
+
                             if (!this.HasToken("breastrow"))
                             {
                                 this.AddToken("breastrow").AddToken("size", 0);
@@ -778,11 +780,21 @@ namespace Noxico
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
 						{
 							var boob = PickATitNum();
-							while (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+							var tries = 0;
+							var ok = false;
+							while (tries < 10 && ok == false)
+							{
 								boob = PickATitNum();
-							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("canfuck");
-							report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-									  " have grown out and become phallic.";
+								tries++;
+								if (this.GetBreastRowByNumber(boob).HasToken("nipples") && !this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+									ok = true;
+								
+							}
+							if (tries<10)
+							{ 
+								this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("canfuck");
+								report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have grown out and become phallic.";
+							}
 						}
 						else
 							report += "\uE2FC";
@@ -791,12 +803,20 @@ namespace Noxico
 						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
 						{
 							var boob = PickATitNum();
-							while (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
+							var tries = 0;
+							var ok = false;
+							while (tries < 10 && ok == false)
+							{
 								boob = PickATitNum();
-							this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("fuckable");
-							//TODO: add wetness/looseness attributes.
-							report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-									  " have inverted and taken on a distinctly vaginal appearance.";
+								tries++;
+								if (this.GetBreastRowByNumber(boob).HasToken("nipples") && !this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
+									ok = true;
+							}
+							if (tries < 10)
+							{
+								this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("fuckable");
+								report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have inverted and taken on a distinctly vaginal appearance.";
+							}
 						}
 						else
 							report += "\uE2FC";
@@ -809,8 +829,7 @@ namespace Noxico
 								this.GetBreastRowByNumber(boob).AddToken("nipples", 1);
 							else
 								this.GetBreastRowByNumber(boob).GetToken("nipples").Value++;
-							report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-								" have each gained another " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
+							report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have each gained another " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
 								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "") + ".";
 						}
 						else
@@ -828,12 +847,10 @@ namespace Noxico
 							if (this.GetBreastRowByNumber(boob).GetToken("nipples").Value == 0)
 							{
 								this.GetBreastRowByNumber(boob).RemoveToken("nipples");
-								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-										  " have lost their " + nippleName.Pluralize() + ".";
+								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have lost their " + nippleName.Pluralize() + ".";
 							}
 							else
-								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-										  " have each lost a " + nippleName + ".";
+								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have each lost a " + nippleName + ".";
 						}
 						else
 							report += "\uE2FC";
@@ -842,20 +859,31 @@ namespace Noxico
 						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
 						{
 							var boob = PickATitNum();
-							while (!this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") && 
-									!this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+							var tries = 0;
+							var ok = false;
+							while (tries < 10 && ok == false)
+							{
 								boob = PickATitNum();
-							if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
-							{
-								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("fuckable");
-								report += "The nipplecunts on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-										  " have become normal nipples.";
+								tries++;
+								if (this.GetBreastRowByNumber(boob).HasToken("nipples"))
+								{
+									if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ||
+										this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
+										{ ok = true; }
+								}
 							}
-							else
+							if (tries < 10)
 							{
-								this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("canfuck");
-								report += "The dicknipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of " + Descriptions.BreastRandom(true) +
-										  " have become normal nipples.";
+								if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
+								{
+									this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("fuckable");
+									report += "The nipplecunts on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have become normal nipples.";
+								}
+								else
+								{
+									this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("canfuck");
+									report += "The dicknipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have become normal nipples.";
+								}
 							}
 						}
 						else
@@ -864,6 +892,7 @@ namespace Noxico
                 }
 				reports.Add(report);
             }
+			FixBroken(); // very important
 			return reports;
         }
 #else
@@ -998,7 +1027,8 @@ namespace Noxico
             newChar.StripInvalidItems();
 
 #if MUTAMORPH
-            if (!newChar.HasToken("beast"))
+			// because: "why the hell did I pick a male human and get herm centaur?"
+			if (!newChar.HasToken("beast") && !newChar.HasToken("player")) 
                 newChar.Mutate(2, 20);
 #endif
 

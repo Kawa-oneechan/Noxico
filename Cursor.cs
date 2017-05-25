@@ -239,10 +239,14 @@ namespace Noxico
 					}
 
 #if DEBUG
+#if MUTAMORPH
 					//if (PointingAt is DroppedItem || PointingAt is BoardChar)
 					//	options["edit"] = "Edit";
-                    if (PointingAt is BoardChar)
-                        options["mutate"] = "Random mutate";
+					if (PointingAt is BoardChar)
+                        options["mutate"] = "(debug) Random mutate";
+					if (PointingAt is BoardChar)
+						options["turbomutate"] = "(debug) Apply LOTS of mutations!";
+#endif
 #endif
 
 					//MessageBox.List("This is " + description + ". What would you do?", options,
@@ -382,6 +386,13 @@ namespace Noxico
 										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
                                     break;
+
+								case "turbomutate":
+									var results2 = ((BoardChar)PointingAt).Character.Mutate(2500, 30);
+									foreach (var result in results2)
+										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
+											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
+									break;
 #endif
 #endif
 
