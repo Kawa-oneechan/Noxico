@@ -131,7 +131,13 @@
     <Content Include="mix\fonts\8x8-bold.png" />
     <Content Include="mix\fonts\8x8-thin.png" />
     <Content Include="mix\missions\chelsie\lairhouse.txt" />
+    <Content Include="mix\missions\consentaclepit\uniques.tml.patch" />
+    <None Include="mix\missions\consentaclepit\dialogue.tml.patch" />
+    <None Include="mix\missions\consentaclepit\mission.lua" />
     <None Include="mix\missions\introdream\dialogue.tml.patch.inprogress" />
+    <Content Include="mix\missions\consentaclepit\thepit.png" />
+    <Content Include="mix\missions\consentaclepit\thepit.txt" />
+    <Content Include="mix\missions\consentaclepit\manifest.txt" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />

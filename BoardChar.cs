@@ -470,7 +470,7 @@ namespace Noxico
 				scheduler.RunSchedule();
 			}
 
-			if (this.Character.HasToken("sleeping"))
+			if (this.Character.HasToken("sleeping") || Character.HasToken("rootedplant"))
 				return;
 
 			ActuallyMove();

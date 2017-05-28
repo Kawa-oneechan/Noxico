@@ -1,0 +1,20 @@
+add: -
+	character: tentaclesan
+		_n: Tentacle Pit
+		terms
+			generic: "tentacle pit"
+		title: "Tentacle Pit"
+		beast
+		bestiary: "It's a pit of tentacles"
+		rootedplant
+		glyph
+			char: 0x124
+		skin
+			type: skin
+			color: forestgreen
+		seekrit
+		role: tentaclepit
+		script: bump
+			<[[
+				SceneSystem.Engage(playerEntity.Character, thisEntity.Character, "(tentaclestart)")
+			]]>
