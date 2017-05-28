@@ -56,6 +56,7 @@ namespace Noxico
 			env.RegisterPackage("Random", typeof(Random));
 			env.RegisterPackage("Realms", typeof(Realms));
 			env.RegisterPackage("Stat", typeof(Stat));
+			env.RegisterPackage("SceneSystem", typeof(SceneSystem));
 			env.RegisterPackage("Tile", typeof(Tile));
 			env.RegisterPackage("Warp", typeof(Warp));
 		    env.SetValue("titlecase", new Func<string, string>(x => x.Titlecase()));
@@ -96,10 +97,8 @@ namespace Noxico
 			try
 			{
 				ret = env.DoChunk(block, "lol.lua");
-				//ret = Lua.Run(block, env); // no kawa don't do that here!
-				//oops haha -- K
 			}
-			catch (LuaParseException pax)
+			catch (LuaParseException pax) // todo LuaRunTimeException also
 			{
 				//Wrap it up in a normal Exception that our custom handler can then unwrap, so we can show the context in a nice way.
 				throw new Exception("Lua parse error while trying to run this chunk:" + System.Environment.NewLine + PrepareParseError(block, pax.Line, pax.Column) + System.Environment.NewLine + pax.Message, pax);

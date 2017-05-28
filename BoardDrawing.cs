@@ -331,6 +331,8 @@ namespace Noxico
 								ParentBoard = this
 							};
 							this.Entities.Add(newChar);
+							newChar.AssignScripts(uniquename);
+							newChar.ReassignScripts();
 						}
 					}
 				}
