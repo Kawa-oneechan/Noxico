@@ -244,12 +244,13 @@
     <Content Include="Guides\Tokeninfo.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
-    <Content Include="unformatted books.txt" />
+    <Content Include="notes\Sparks%27 notes.txt" />
+    <Content Include="notes\unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
     <Content Include="Noxico.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Xolroc%27s random ideas.txt" />
+    <Content Include="notes\Xolroc%27s random ideas.txt" />
     <None Include="mix\crafting.tml" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
