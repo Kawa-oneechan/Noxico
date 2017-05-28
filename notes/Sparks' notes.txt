@@ -1,0 +1,93 @@
+﻿sparks notes
+
+ideas / features / todo / nothing here is solid / don't take it too seriously
+
+	o	vibrating equipment, ticks each turn
+	o	milk/cum/etc fluid reservoirs that recharge over time
+	o	tentacles as tails or vice versa
+	o	add thigh thickness stat yay
+	o	multi tails
+	o	mission: consentacle pit
+	o	add random critters, snakes etc
+	o	it's pretty easy to die, oneshotted or close to a few times, increase health?
+	o	carrying allowance is very small 
+	o	add tattoo vendor? hairstyle vendor?
+	o	dungeon clutter
+	o	mimics?
+	o	comment from monsters that have killed you previously
+	o	comment from villagers about what you've been up to / your appearance
+	o	fix gender display again (gargoyles not showing right)
+	o	goo shooting gun - immobilise
+	o	yeah where is the water?
+		o	add town ponds
+		o	add/fix world water/ocean
+	o	merge / integrate mutamorph.cs and change.cs?
+	o	bumping helpless npc opens choices window
+
+bugs?
+	o	health doesn't update right away after eating food
+	o	naughty panties not shoing equipped status properly / not updating properly
+  
+gender
+	when created:
+		biogender
+
+	which parts you currently have:
+		Gender, ActualGender <-- really should merge these
+
+	what you feel like you are:
+		idGender, preferredgender <-- really should merge these
+
+	what you look like
+		percievedGender
+
+
+dungeon navigation tips
+```````````````````````````````````
+To go down, any stairs down will do. If you can't see any stairs, take passages sideways until you find stairs down.
+If you just can't find any stairs down, look for the reward chest. If you can't find either stairs or chest, it's a bug.
+Going up is similar. Take passages until you find stairs upwards.
+
+tile suggestion
+`````````````````````
+	tile: 280
+		id: rainforest_tree_special
+		_n: special tree
+		description: It's different tree. Wow.
+		fore: #6CCC77
+		back: #1D3612
+		char: +[file:"missions/forestmission/specialtree.png" xloc:0 yloc:0]
+		wall
+		canburn
+
+
+species to add?
+```````````````
+
+catgirl nyaa
+wolfgirl
+sheepgirl
+cowgirl
+
+nymph? (like nethack)
+neuter critters : fairies like tinkerbell size
+
+robots? hentaibot
+
+centaur
+manticore
+cheshire
+hellhound
+
+dryads or something planty
+
+something with tentacles but not too horrific
+
+mermaid/siren once water is working
+
+snake/naga variations (echidna, medusa, melusine)
+spider variations (small, long-legs, large, mecha?)
+slime variations (color based personality)
+harpy & variations
+
+slutty ninjas/witches? (corrupted humans)
