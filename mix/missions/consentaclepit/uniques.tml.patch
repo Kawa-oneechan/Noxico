@@ -6,7 +6,7 @@ add: -
 		title: "Tentacle Pit"
 		beast
 		bestiary: "It's a pit of tentacles"
-		rootedplant
+		anchored
 		glyph
 			char: 0x124
 		skin
