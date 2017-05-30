@@ -98,7 +98,7 @@ namespace Noxico
 			{
 				ret = env.DoChunk(block, "lol.lua");
 			}
-			catch (LuaParseException pax) // todo LuaRunTimeException also
+			catch (LuaException pax)
 			{
 				//Wrap it up in a normal Exception that our custom handler can then unwrap, so we can show the context in a nice way.
 				throw new Exception("Lua parse error while trying to run this chunk:" + System.Environment.NewLine + PrepareParseError(block, pax.Line, pax.Column) + System.Environment.NewLine + pax.Message, pax);
