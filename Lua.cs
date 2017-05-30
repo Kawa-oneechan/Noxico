@@ -11,7 +11,10 @@ namespace Noxico
 	/// </summary>
 	public static class Lua
 	{
+		private static Dictionary<int, LuaChunk> LuaCache { get; set; }
+
 		public static Neo.IronLua.Lua IronLua;
+
 		/// <summary>
 		/// The default environment. Any invocation of Run or RunFile without an environment will use this one.
 		/// </summary>
@@ -26,6 +29,7 @@ namespace Noxico
 			IronLua = new Neo.IronLua.Lua();
 			Environment = IronLua.CreateEnvironment();
 			Ascertain(Environment);
+			LuaCache = new Dictionary<int, LuaChunk>();
 			return IronLua;
 		}
 
@@ -93,10 +97,40 @@ namespace Noxico
 		{
 			if (env == null)
 				env = Environment;
+
+			// todo Do we have this chunk cached? If so, use that version.
+			var hash = block.GetHashCode();
+			var useCache = false;
+			LuaChunk compiledChunk = null;
+			if (LuaCache.ContainsKey(hash))
+			{
+				compiledChunk = LuaCache[hash];
+				useCache = true;
+			}
+			else
+			{
+				// Attempt to compile and add it to the cache.
+				try
+				{
+					compiledChunk = IronLua.CompileChunk(block, "lol.lua" , null);
+					useCache = true;
+					LuaCache.Add(hash, compiledChunk);
+				}
+				catch (LuaException pax)
+				{
+					//Wrap it up in a normal Exception that our custom handler can then unwrap, so we can show the context in a nice way.
+					throw new Exception("Lua parse error while trying to run this chunk:" + System.Environment.NewLine + PrepareParseError(block, pax.Line, pax.Column) + System.Environment.NewLine + pax.Message, pax);
+				}
+			}
+
+			// todo It failed to compile? Run interpreted and hope for useful information
 			LuaResult ret = null;
 			try
 			{
-				ret = env.DoChunk(block, "lol.lua");
+				if (useCache)
+					ret = env.DoChunk(compiledChunk);
+				else
+					ret = env.DoChunk(block, "lol.lua");
 			}
 			catch (LuaException pax)
 			{
