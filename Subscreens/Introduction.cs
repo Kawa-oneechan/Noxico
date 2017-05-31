@@ -488,22 +488,20 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon_ovi");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon");
 #if FREETESTPOTIONS
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxite"); // ok
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("oddnip"); // ok
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("penificator");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("catmorph");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxmorph");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxite"); // ok
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("oddnip"); // ok
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("penificator");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("catmorph");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxmorph");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("demonite_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("demonite_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("demonite_potion");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("tentacle_potion");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("cock_potion");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("neutralizer_potion");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("tentacle_potion");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("cock_potion");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("neutralizer_potion");
 #endif
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
