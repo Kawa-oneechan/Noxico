@@ -2299,7 +2299,6 @@ item: chaos_potion
 		char: 0x180
 	randomized: 10
 	potion
-	disabled
 	transformer
 	script
 		<[[
@@ -2314,15 +2313,14 @@ item: enhanced_chaos_potion
 		char: 0x180
 	randomized: 11
 	potion
-	disabled
 	transformer
 	script
 		<[[
 			Consume()
 			if Random.Flip() then
-				user.Mutate(1, 30, Mutations.Random)
+				ReportSet(user.Mutate(1, 30, Mutations.Random))
 			else
-				user.Mutate(2, 15, Mutations.Random)
+				ReportSet(user.Mutate(2, 15, Mutations.Random))
 			end
 			Identify()
 		]]>
@@ -2334,7 +2332,6 @@ item: demonite_potion
 		char: 0x180
 	randomized: 12
 	potion
-	disabled
 	transformer
 	dummy
 		<[[
