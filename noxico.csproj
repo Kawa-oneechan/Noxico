@@ -138,6 +138,7 @@
     <Content Include="mix\missions\consentaclepit\thepit.png" />
     <Content Include="mix\missions\consentaclepit\thepit.txt" />
     <Content Include="mix\missions\consentaclepit\manifest.txt" />
+    <Content Include="mix\missions\morphpotions\manifest.txt" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
@@ -230,6 +231,7 @@
     <Content Include="mix\missions\playerbase\uniques.tml.patch" />
     <None Include="mix\missions\littleponies\mission.lua" />
     <None Include="mix\missions\melfina\mission.lua" />
+    <None Include="mix\missions\morphpotions\items.tml.patch" />
     <None Include="mix\missions\pettancow\mission.lua" />
     <None Include="mix\missions\playerbase\dialogue.tml.patch" />
     <None Include="mix\missions\playerbase\mission.lua" />
