@@ -2333,115 +2333,118 @@ item: demonite_potion
 	randomized: 12
 	potion
 	transformer
-	dummy
+	script
 		<[[
-			Consume();
-			var score = 0;
-			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
-				score++;
-			if (user.Path("ears[=elfin]") != null)
-				score++;
-			if (user.Path("wings[=bat]") != null)
-				score++;
-			if (user.Path("penis[=studded]") != null)
-				score++;
-			if (user.Path("tail[=demon]") != null)
-				score++;
-			if (score >= 3 && Random.Flip())
-				user.Mutate(2, 10, Mutations.Random);
-			else
-			{
-				//user.Morph("foocubus");
-				var ret = "";
-				var carnality = user.GetToken("carnality");
-				if (carnality.Value < 80)
-				{
-					carnality.Value += 4;
-					ret += "You feel hornier.  ";
-				}
+			Consume()
+			message(user.Morph("foocubus"))
+			Identify()
+			--? user.UpdateTitle()
+			--? user.BoardChar.AdjustView()
+		]]>
+	fixedscript
+		<[[
+			Consume()
+			local score = 0
+			if user.Path("legs[=claws]") ~= nil then
+				score = 1
+			end
+		
+			if user.Path("legs[=stiletto]") ~= nil then
+				score=1
+			end
+			if user.Path("ears[=elfin]") ~= nil then
+				score = score + 1
+			end
+			if (user.Path("wings[=bat]") ~= nil) then
+				score = score + 1
+			end
+			if (user.Path("penis[=studded]") ~= nil) then
+				score = score + 1
+			end
+			if (user.Path("tail[=demon]") ~= nil) then
+				score = score + 1
+			end
+			if (score >= 3 and Random.Flip()) then
+				user.Mutate(2, 10, Mutations.Random)
+				return
+			end
+			
+			--user.Morph("foocubus")
+			local ret = ""
+			local carnality = user.GetToken("carnality")
+			if carnality.Value < 80 then
+				carnality.Value = carnality.Value + 4
+				ret = ret .. "You feel hornier.  "
+			end
 
-				if (user.HasToken("penis"))
-				{
-					var triggered = false;
-					var dicks = 0;
-					for (var i = 0; i < user.Count(); i++)
-					{
-						if (user.Item(i).Name == "penis")
-						{
-							dicks++;
-							var thisDick = user.Item(i);
-							if (thisDick.Text == "studded")
-								continue;
-							if (thisDick.Text == "tentacle")
-								continue;
-							if (!triggered)
-								thisDick.Text = "studded";
-							triggered = true;
-						}
-					}
-					if (triggered)
-					{
-						if (dicks == 1)
-							ret += "Your dick shifts into a studded affront to the nature of dicks everywhere.";
-						else
-							ret += "One of your dicks shifts into a studded affront to the nature of dicks everywhere.";
-						print(ret);
-						return;
-					}
-				}
-
-				if (user.Path("tail[=demon]") == null)
-				{
-					if (user.HasToken("tail"))
-						ret += "You feel your tail shifting, turning into a slick, thin deal with a spade at the end.";
+			if (user.HasToken("penis")) then
+				local triggered = false
+				local dicks = 0
+				for i = 0, user.Count(), 1 do
+					if (user.Item(i).Name == "penis") then
+						dicks = dicks + 1
+						local thisDick = user.Item(i)
+						if ~triggered then
+							if not (thisDick.Text == "studded" or thisDick.Text == "tentacle") then
+								thisDick.Text = "studded"
+								triggered = true
+							end
+						end
+					end
+				end
+				if triggered then
+					if dicks == 1 then
+						ret = ret .. "Your dick shifts into a studded affront to the nature of dicks everywhere."
 					else
-						ret += "You feel a slick tail growing from your backside, with a spade at the end.";
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "demon";
+						ret = ret .. "One of your dicks shifts into a studded affront to the nature of dicks everywhere."
+					end
+					print(ret)
+					return
+				end
+			end
 
-					print(ret);
-					return;
-				}
+			if user.Path("tail[=demon]") == nil then
+				if user.HasToken("tail") then
+					ret = ret .. "You feel your tail shifting, turning into a slick, thin deal with a spade at the end."
+				else
+					ret = ret .. "You feel a slick tail growing from your backside, with a spade at the end."
+				end
+				user.RemoveToken("tail")
+				user.AddToken("tail").Text = "demon"
+				print(ret)
+				return
+			end
 
-				if (user.Path("wings[=bat]") == null)
-				{
-					if (user.HasToken("wings"))
-					{
-						ret += "Your wings become leathery.";
-						user.GetToken("wings").Text = "bat";
-					}
-					else
-					{
-						ret += "You sprout leathery bat wings from your back.";
-						user.AddToken("wings").Text = "bat";
-					}
+			if (user.Path("wings[=bat]") == nil) then
+				if (user.HasToken("wings")) then
+					ret = ret .. "Your wings become leathery."
+					user.GetToken("wings").Text = "bat"
+				else
+					ret = ret .. "You sprout leathery bat wings from your back."
+					user.AddToken("wings").Text = "bat"
+				end
+				print(ret)
+				return
+			end
 
-					print(ret);
-					return;
-				}
+			local skinType = user.Path("skin/type")
+			if (skinType.Text ~= "metal") then
+				user.EnsureColor(user.Path("skin/color"), "pale, brown, purple")
+			end
+			if (skinType.Text == "fur") then
+				ret = ret .. "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin."
+				skinType.Text = "skin"
+			end
 
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "metal")
-					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple");
-				if (skinType.Text == "fur")
-				{
-					ret += "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin.";
-					skinType.Text = "skin";
-				}
-
-				user.SetTerms("cubi", "incubus", "succubus", "omnibus");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-
-				Identify();
-			}
+			user.SetTerms("cubi", "incubus", "succubus", "omnibus")
+			if not user.HasToken("invisiblegender") then
+				user.RemoveToken("explicitgender")
+				user.AddToken("invisiblegender")
+			end
+			user.UpdateTitle()
+			user.BoardChar.AdjustView()
+			print(ret)
+			Identify()
 		]]>
 
 item: tentacle_potion

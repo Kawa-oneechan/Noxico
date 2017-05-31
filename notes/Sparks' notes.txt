@@ -37,6 +37,8 @@ ideas / features / todo / nothing here is solid / don't take it too seriously
 	o	add some suitably themed armours - leather, silk, fur. maybe not fur haha.
 	o	boots, kinky and non. needs feet slot?
 	o	dead simple sex ai with priorities list
+	o	go through potions changing them to use Character.Morph
+		o	before removing complex scripts from items, check Morph includes all releveant functionality
 
 bugs & balance
 	o	health doesn't update right away after eating food
