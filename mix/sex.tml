@@ -757,3 +757,17 @@ choice: self_baseball_bat
 		end
 	]]>
 --endgroup
+
+choice: ovi_dildo
+	_n: Lay toy eggs in [his] ass.
+	filter: (not masturbating) and top.HasToken("ovipositor") and (not top.Restrained()) and bottom.CanReachCrotch() and top.HasItem("strapon_ovi")
+	effect
+	<[[
+		message({"[t:Youorname] squirts{s} the toy eggs into [b:yourornames] ass. It's good dirty fun."})
+		if not bottom.GetToken("ass") then
+			bottom.AddToken("ass")
+		end
+		bottom.GetToken("ass").AddToken("toyegg")
+		bottom.GetToken("ass").GetToken("toyegg").AddToken("amount").Value = 4
+	]]>
+--endgroup

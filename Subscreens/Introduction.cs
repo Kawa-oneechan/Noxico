@@ -486,6 +486,8 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("timertest");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("clit_regenring");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("gExtractor");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon_ovi");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon");
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));

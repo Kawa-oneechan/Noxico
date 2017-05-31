@@ -131,6 +131,37 @@ item: strapon
 			print ("You feel less pokey.")
 		]]>
 
+item: strapon_ovi
+	_n: strap-on ovipositor
+	test
+	description: "A leather belt with a hot pink ovipositor dildo sticking prominently out the front."
+	plural
+	equipable
+		female
+		underpants
+	weight: light
+	price: 100
+	ascii
+		char: 0x18e
+	sextoy
+	script: equip
+		<[[
+			if user.HasToken("penis") then
+				print ("You're a man!")
+				return false
+			end
+			print ("You're ready to poke some lucky persons holes!")
+			local p = user.AddToken("ovipositor")
+			p.Text = "strapon"
+			p.AddToken("thickness").Value = 3
+			p.AddToken("length").Value = 20
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("ovipositor", "strapon")
+			print ("You feel less pokey.")
+		]]>
+
 item: ponifier
 	_n: Element of Perversion
 	test
@@ -1768,8 +1799,7 @@ item: really_kinky_panties
 		]]>
 	script: unequip
 		<[[
-			user.RemoveToken("penis", "strapon")
-			print("You feel sad but more comfortable.")
+			return true
 		]]>
 	timer: 1
 	script: timer
