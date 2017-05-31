@@ -584,9 +584,37 @@ group: top.Restrained() and (not masturbating)
 			]]>
 --endgroup
 
-group: top.HasItem("rope")
--- todo add rope restraining here (restrains bottom but top is not counted as restraining, meaning more options)
---endgroup
+-- like pinning but does not add Restraining tag to the person doing the tying.
+-- just a temporary sexflag and will not last further than this sex session.
+group: top.HasItem("rope") and (not top.Restrained()) and (not masturbating)
+	choice: tie_up
+		_n: Tie [b:him] up
+		filter: (not top.Restraining()) and (not bottom.Restrained())
+		effect
+			<[[
+				if bottom.Path("skin/type[=slime]") then
+					message({"[t:Youorname] tries to tie up [b:name], but can't get a good grip on [b:yourornames] slimy body."}, Color.Aqua)
+					return
+				end
+				bottom.AddSexFlag("restrained")
+				bottom.AddSexFlag("tiedup")
+				message({
+					"[t:Youorname] grab{s} [b:yourornames] arms and tie{s} them tightly in place.",
+					"[t:Youorname] grab{s} [b:yourornames] arms and tie{s} them tight."
+				})
+			]]>
+
+	choice: untie
+		_n: Untie [b:him]
+		filter: bottom.HasSexFlag("tiedup")
+		effect
+			<[[
+				bottom.RemoveSexFlag("restrained")
+				message({
+					"[t:Youorname] untie{s} [b:yourornames] arms.",
+					"[t:Youorname] release{s} [b:yourorname] from the ropes."
+				})
+			]]>
 
 group: (not top.Restrained()) -- clothing removal
 	choice: take_off_top_own
