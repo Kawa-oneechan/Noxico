@@ -2,7 +2,8 @@ add: -
 	item: ponifier
 		_n: Element of Perversion
 		test
-		description: "This turns you into a little pony."
+		description: "A [color ]bottle that turns you into a little pony."
+		unknown: "A [color ]bottle with a picture of a small cartoon horse. What on earth could this do?"
 		ascii
 			char: 0x180
 			fore: aquamarine
@@ -12,14 +13,16 @@ add: -
 		script
 			<[[
 				Consume()
-				-- user.Morph("littlepony");
+				message(user.Morph("littlepony"))
 				Identify()
 			]]>
 
+	-- merged with fox morph potion
 	item: foxite
 		_n: Foxite
 		test
-		description: "This is Foxite. It turns you into a fox with repeated usages."
+		description: "A [color ]bottle of Foxite. It turns you into a fox with repeated usages."
+		unknown: "A [color ]bottle with a picture of fox."
 		ascii
 			char: 0x180
 			fore: aquamarine
@@ -32,11 +35,79 @@ add: -
 				message(user.Morph("kitsune"))
 				Identify()
 			]]>
+		dummy
+			<[[
+				var ret = "You apply the fox morph potion.";
 
+				//Always boost cunning.
+				var cunning = user.GetToken("cunning");
+				if (cunning.Value < 50)
+				{
+					cunning.Value += 2;
+					ret += "\n\nYou feel more cunning.";
+				}
+
+				//Sometimes increase charisma.
+
+				//Grow dog ears.
+				if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
+
+					user.RemoveToken("ears");
+					user.AddToken("ears").Text = "genbeast";
+
+					print(ret);
+					return;
+				}
+
+				//Grow fox tail.
+				if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
+				{
+					//Should check the existing type first.
+					ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "fox";
+
+					print(ret);
+					return;
+				}
+
+				//Grow fangs.
+
+				//Grow fur.
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "fur")
+				{
+					skinType.Text = "fur";
+					user.EnsureColor(user.Path("skin/color"), "sandybrown");
+					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+					user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
+					if (!user.HasToken("invisiblegender"));
+					{
+						user.RemoveToken("explicitgender");
+						user.AddToken("invisiblegender");
+					}
+					user.UpdateTitle();
+					user.BoardChar.AdjustView();
+
+					print(ret);
+					return;
+				}
+
+				//Grow digitigrade legs.
+				print(ret);
+			]]>
+
+	-- merged with cat morph potion
 	item: oddnip
 		_n: Odd nip
 		test
-		description: "lol"
+		description: "A [color ]bottle of oddnip. It turns you into a Felin with repeated usages."
+		unknown: "There is no label on this [color ]bottle, but you could swear you can hear a Felin giggling in the distance."
 		ascii
 			char: 0x180
 			fore: aquamarine
@@ -49,34 +120,7 @@ add: -
 				message(user.Morph("felin"))
 				Identify()
 			]]>
-
-	item: penificator
-		test
-		ascii
-			char: 0x180
-			fore: chartreuse
-		randomized: 3
-		potion
-		transformer
-		script
-			<[[
-				-- TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
-			]]>
-
-
-	-- #region TF items
-	__marker: Transformative items
-	-- All of these use complicated Javascript to approximate Corruption of Champions. I wonder why, when we have Morph()...
-	item: catmorph
-		_n: cat morph potion
-		wip
-		description: "A bottle filled with a thick liquid. There's a picture of a feline on the label."
-		ascii
-			char: 0x180
-			fore: lightsalmon
-		potion
-		transformer
-		dummu
+		dummy
 			<[[
 				//Text stolen from CoC's Whisker Fruit item, for now.
 
@@ -172,7 +216,8 @@ add: -
 	item: dogmorph
 		_n: dog morph potion
 		wip
-		description: "A bottle filled with a thick liquid. There's a picture of a canid on the label."
+		description: "A [color ]bottle of Dog morph potion. It turns you into a canid with repeated usages."
+		unknown: "A [color ]bottle filled with a thick liquid. There's a picture of a canid on the label."
 		ascii
 			char: 0x180
 			fore: mistyrose
@@ -250,88 +295,11 @@ add: -
 				print(ret);
 			]]>
 
-	-- Not to be confused for Foxite up top.
-	item: foxmorph
-		_n: fox morph potion
-		wip
-		description: "A bottle filled with a thick liquid. There's a picture of a fox on the label."
-		ascii
-			char: 0x180
-			fore: orangered
-		potion
-		transformer
-		dummy
-			<[[
-				var ret = "You apply the fox morph potion.";
-
-				//Always boost cunning.
-				var cunning = user.GetToken("cunning");
-				if (cunning.Value < 50)
-				{
-					cunning.Value += 2;
-					ret += "\n\nYou feel more cunning.";
-				}
-
-				//Sometimes increase charisma.
-
-				//Grow dog ears.
-				if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
-
-					user.RemoveToken("ears");
-					user.AddToken("ears").Text = "genbeast";
-
-					print(ret);
-					return;
-				}
-
-				//Grow fox tail.
-				if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
-				{
-					//Should check the existing type first.
-					ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "fox";
-
-					print(ret);
-					return;
-				}
-
-				//Grow fangs.
-
-				//Grow fur.
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "fur")
-				{
-					skinType.Text = "fur";
-					user.EnsureColor(user.Path("skin/color"), "sandybrown");
-					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-					user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
-					if (!user.HasToken("invisiblegender"));
-					{
-						user.RemoveToken("explicitgender");
-						user.AddToken("invisiblegender");
-					}
-					user.UpdateTitle();
-					user.BoardChar.AdjustView();
-
-					print(ret);
-					return;
-				}
-
-				//Grow digitigrade legs.
-
-				print(ret);
-			]]>
-
 	item: bunnymorph
 		_n: bunny morph potion
 		wip
-		description: "A bottle filled with a thick liquid. There's a picture of a bunny on the front."
+		unknown: "A [color ]bottle filled with a thick liquid. There's a picture of a bunny on the front."
+		description: "A [color ]bottle of Bunny morph potion. It turns you into a rabbit with repeated usages."
 		ascii
 			char: 0x180
 			fore: skyblue
@@ -404,7 +372,8 @@ add: -
 	-- #region Potions from tf_items.txt, don't forget to shuffle later.
 	__marker: tf_items.txt
 	item: chaos_potion
-		description: "Chaos in a bottle."
+		description: "Chaos in a [color ]bottle."
+		unknown: "A [color ]bottle with fluid that fizzes and pops."
 		ascii
 			char: 0x180
 		randomized: 10
@@ -418,7 +387,8 @@ add: -
 			]]>
 
 	item: enhanced_chaos_potion
-		description: "Concentrated chaos in a bottle."
+		description: "Concentrated Chaos in a [color ]bottle."
+		unknown: "A [color ]bottle with fluid that fizzes and pops violently."
 		ascii
 			char: 0x180
 		randomized: 11
@@ -659,6 +629,7 @@ add: -
 				Identify()
 			]]>
 
+	-- merged with 'penificator'
 	item: cock_potion
 		description: "A [color ]bottle with what seems to be an erect penis on the label. It causes the user to grow a cock."
 		unknown: "A [color ]bottle with what seems to be an erect penis on the label."

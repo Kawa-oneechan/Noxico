@@ -490,10 +490,7 @@ namespace Noxico
 #if FREETESTPOTIONS
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxite"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("oddnip"); // ok
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("penificator");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("catmorph");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxmorph");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
