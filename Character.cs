@@ -37,8 +37,7 @@ namespace Noxico
 		CloseByAttack = 8, ThiefingPlayer
 	}
 
-
-	public partial class Character : TokenCarrier
+	public partial class Character : TokenHelpers
 	{
 		public static List<Token> Bodyplans;
 		public static StringBuilder MorphBuffer = new StringBuilder();

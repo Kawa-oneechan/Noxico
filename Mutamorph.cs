@@ -5,12 +5,15 @@ using System.Text;
 
 namespace Noxico
 {
-	public partial class Character
+	public partial class Character 
 	{
 		public List<Token> GetMorphDeltas(string targetPlan, Gender targetGender)
 		{
 			//Token.NoRolls = true;
-			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
+			var targetToken = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
+			var target = new TokenHelpers();
+			target.MorphTargetFromToken(targetToken);
+
 			if (target == null)
 				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
 
@@ -31,6 +34,8 @@ namespace Noxico
 			};
 			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };
 			var trivialColors = new[] { "eyes" };
+			var specialLegs = new[] { "snaketail", "slimeblob" };
+			var multiLegs = new[] { "taur", "quadruped" };
 			var possibleChanges = new List<Token>();
 
 			//Trivial changes are on the root level only. That makes them fairly easy to handle.
@@ -354,111 +359,211 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Needs more testing.
 			#region Legs
-			if (target.HasToken("legs") && !this.HasToken("legs"))
+			//TODO: Needs more testing.
+
+			// sparks guide to legs and how they currently work
+			// bipeds		'legs:(string)'
+			// 'taurs		'legs:(string)' and 'taur:(int)'
+			// quadrupeds	'legs:(string)' and also 'quadruped'
+			// driders have 'legs:(string)/amount:(int)'
+			// slimeblobs	 no 'legs', has 'slimeblob'
+			// nagas		 no 'legs', has 'snaketail'
+			// draigs may have 'legs:(string)' and 'snaketail'
+			//              or 'legs:(string)' and 'taur:(int)'
+
+			// so many combinations!
+			// to the limit number of possible transitions,
+			// legplan progession: (slimeblob/snaketail) <--> biped <---> (quadrupeds/taurs/amount:(int))
+			// which limits us to 2 leftwards, 2 rightwards, 
+
+			// i'm just going to ignore the draig problem for now
+
+			// rightward 1: special to biped
+			if (this.HasSpecialLegs() && (target.IsBiped() || target.HasMultiLegs()))
 			{
+				// set biped legs
 				var change = new Token("_add", "legs");
-				var thenToken = target.Path("legs");
-				var changeKind = string.Empty;
-				if (thenToken.Text.StartsWith("oneof"))
-				{
-					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
-					changeKind = Toolkit.PickOne(options);
-				}
-				else
-					changeKind = thenToken.Text;
-				change.AddToken("legs", changeKind);
-				foreach (var specialShit in new [] { "snaketail", "slimeblob" })
-					if (this.HasToken(specialShit))
-						change.AddToken("_remove", specialShit);
-				change.AddToken("$", "[view] grow{s} " + changeKind + " legs");
-				possibleChanges.Add(change);
-			}
-			else if (!target.HasToken("legs")) //&& this.HasToken("legs"))
-			{
-				var actuallyChanging = true;
-				var targetLegs = string.Empty;
-				var change = new Token("_remove", "legs");
-				foreach (var specialShit in new[] { "snaketail", "slimeblob" })
-				{
-					if (target.HasToken(specialShit))
-					{
-						targetLegs = specialShit;
-						break;
-					}
-				}
-				foreach (var specialShit in new[] { "snaketail", "slimeblob" })
-				{
-					if (this.HasToken(specialShit))
-					{
-						if (specialShit != targetLegs)
-						{
-							change.Text = specialShit;
-							//break;
-						}
-						else
-						{
-							actuallyChanging = false;
-						}
-					}
-				}
-				if (actuallyChanging)
-				{
-					change.AddToken("_add", targetLegs);
-					switch (targetLegs)
-					{
-						case "snaketail": change.AddToken("$", "[views] lower body turns into a long, coiling snake tail"); break;
-						//case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
-						//case "quad": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
-						case "slimeblob":	change.AddToken("$", "[views] entire lower body dissolves into a mass of goop"); break;
-					}
-				}
+
+				// set biped legs type, default to human if no text
+				var newLegsText = target.GetToken("legs").Text;
+				newLegsText = newLegsText != null ? newLegsText : "human";
+				change.AddToken("legs", newLegsText);
+
+				// remove specials
+				foreach (var special in specialLegs)
+					if (target.HasToken(special))
+						change.AddToken("_remove", special);
+
+				// set change text
+				change.AddToken("$", "[view] grow{s} biped legs");
+
+				// save changeset
 				possibleChanges.Add(change);
 			}
 
-			if (target.HasToken("legs"))
+			// rightward 2: biped to multi
+			if (this.IsBiped() && target.HasMultiLegs())
 			{
-				var multiLegs = new[] { "taur", "quadruped" };
-				var targetHasMultiLegs = false;
-				foreach (var multiLeg in multiLegs)
+				if (target.IsTaur())
 				{
-					if (target.HasToken(multiLeg) && !this.HasToken(multiLeg))
-					{
-						targetHasMultiLegs = true;
-						var change = new Token("_add", multiLeg);
-						foreach (var m in multiLegs)
-						{
-							if (m != multiLeg)
-								change.AddToken("_remove", m);
-						}
-						switch (multiLeg)
-						{
-							case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
-							case "quadruped": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
-						}
-						possibleChanges.Add(change);
-						break;
-					}
+					// add taur-1
+					var change = new Token("_add", "taur");
+					change.AddToken("taur", 1);
+					possibleChanges.Add(change);
 				}
-				if (!targetHasMultiLegs)
+				else if (target.IsQuad())
 				{
-					foreach (var m in multiLegs)
-					{
-						if (this.HasToken(m))
-						{
-							var change = new Token("_remove", m);
-							if (target.HasToken("slimeblob"))
-								change.AddToken("$", "[views] entire lower body dissolves into a mass of goop.");
-							if (target.HasToken("snaketail"))
-								change.AddToken("$", "[views] lower body turns into a long, coiling snake tail.");
-							else
-								change.AddToken("$", "[views] lower body reconfigures into a bipedal stance.");
-							possibleChanges.Add(change);
-						}
-					}
+					// add quadraped
+					var change = new Token("_add", "quadruped");
+					possibleChanges.Add(change);
+				}
+				else if (target.HasDriderLegs())
+				{
+					// add legs/amount
+					var change = new Token("legs/amount", target.DriderLegsNum());
+					possibleChanges.Add(change);
 				}
 			}
+
+			// leftwards 1: multi to biped
+			if (this.HasMultiLegs() && target.IsBiped())
+			{
+				// todo
+			}
+
+			// leftwards 2: biped to special
+			if (this.IsBiped() && target.HasSpecialLegs())
+			{
+				// todo
+			}
+			
+			// changes for special > special
+			if (this.HasSpecialLegs() && target.HasSpecialLegs())
+			{
+				// todo
+			}
+
+			// changes for bipeds > bipeds
+			if (this.IsBiped() && target.IsBiped())
+			{
+				// todo
+			}
+
+			// changes for multi > multi
+			if (this.IsBiped() && target.IsBiped())
+			{
+				// todo
+			}
+
+			// todo special case for draigs
+			//if (target.IsDraig)
+			//{
+
+			//}
+
+			//if (target.HasToken("legs") && !this.HasToken("legs"))
+			//{
+			//	var change = new Token("_add", "legs");
+			//	var thenToken = target.Path("legs");
+			//	var changeKind = string.Empty;
+			//	if (thenToken.Text.StartsWith("oneof"))
+			//	{
+			//		var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
+			//		changeKind = Toolkit.PickOne(options);
+			//	}
+			//	else
+			//		changeKind = thenToken.Text;
+			//	change.AddToken("legs", changeKind);
+			//	foreach (var specialShit in specialLegs)
+			//		if (this.HasToken(specialShit))
+			//			change.AddToken("_remove", specialShit);
+			//	change.AddToken("$", "[view] grow{s} " + changeKind + " legs");
+			//	possibleChanges.Add(change);
+			//}
+			//else if (!target.HasToken("legs")) //&& this.HasToken("legs"))
+			//{
+			//	var actuallyChanging = true;
+			//	var targetLegs = string.Empty;
+			//	var change = new Token("_remove", "legs");
+			//	foreach (var specialShit in specialLegs)
+			//	{
+			//		if (target.HasToken(specialShit))
+			//		{
+			//			targetLegs = specialShit;
+			//			break;
+			//		}
+			//	}
+			//	foreach (var specialShit in specialLegs)
+			//	{
+			//		if (this.HasToken(specialShit))
+			//		{
+			//			if (specialShit != targetLegs)
+			//			{
+			//				change.Text = specialShit;
+			//				//break;
+			//			}
+			//			else
+			//			{
+			//				actuallyChanging = false;
+			//			}
+			//		}
+			//	}
+			//	if (actuallyChanging)
+			//	{
+			//		change.AddToken("_add", targetLegs);
+			//		switch (targetLegs)
+			//		{
+			//			case "snaketail": change.AddToken("$", "[views] lower body turns into a long, coiling snake tail"); break;
+			//			//case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
+			//			//case "quad": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
+			//			case "slimeblob":	change.AddToken("$", "[views] entire lower body dissolves into a mass of goop"); break;
+			//		}
+			//	}
+			//	possibleChanges.Add(change);
+			//}
+
+			//if (target.HasToken("legs"))
+			//{
+			//	var targetHasMultiLegs = false;
+			//	foreach (var multiLeg in multiLegs)
+			//	{
+			//		if (target.HasToken(multiLeg) && !this.HasToken(multiLeg))
+			//		{
+			//			targetHasMultiLegs = true;
+			//			var change = new Token("_add", multiLeg);
+			//			foreach (var m in multiLegs)
+			//			{
+			//				if (m != multiLeg)
+			//					change.AddToken("_remove", m);
+			//			}
+			//			switch (multiLeg)
+			//			{
+			//				case "taur": change.AddToken("$", "[views] lower body turns into a quadrupedal, centauroid configuration"); break;
+			//				case "quadruped": change.AddToken("$", "[views] entire body turns into a quadrupedal setup"); break;
+			//			}
+			//			possibleChanges.Add(change);
+			//			break;
+			//		}
+			//	}
+			//	if (!targetHasMultiLegs)
+			//	{
+			//		foreach (var m in multiLegs)
+			//		{
+			//			if (this.HasToken(m))
+			//			{
+			//				var change = new Token("_remove", m);
+			//				if (target.HasToken("slimeblob"))
+			//					change.AddToken("$", "[views] entire lower body dissolves into a mass of goop.");
+			//				if (target.HasToken("snaketail"))
+			//					change.AddToken("$", "[views] lower body turns into a long, coiling snake tail.");
+			//				else
+			//					change.AddToken("$", "[views] lower body reconfigures into a bipedal stance.");
+			//				possibleChanges.Add(change);
+			//			}
+			//		}
+			//	}
+			//}
 			#endregion
 
 			//TODO: Breastrows
@@ -737,6 +842,52 @@ namespace Noxico
 			}
 
 			return feedback;
+		}
+	}
+
+	// added an intermediate helper class between TokenCarrier and Character, because
+	// I didn't want to clutter TokenCarrier with these helper functions, but
+	// a full Character is too much for just a morph target
+	// other cluttery functions from Character such as getPenis and getBreasts etc could be moved here also
+	// --sparks
+	public class TokenHelpers : TokenCarrier
+	{
+		public void MorphTargetFromToken(Token input)
+		{
+			foreach (Token t in input.Tokens)
+				AddToken(t);
+		}
+		public bool HasDriderLegs()
+		{
+			return (DriderLegsNum() > 2) ? true : false;
+		}
+		public int DriderLegsNum()
+		{
+			var driderLegs = 0;
+			if ((HasToken("legs") && GetToken("legs").HasToken("amount")))
+				if (GetToken("legs").GetToken("amount").Value > 2)
+					driderLegs = (int)GetToken("legs").GetToken("amount").Value;
+			return driderLegs;
+		}
+		public bool IsQuad()
+		{
+			return HasToken("quadruped");
+		}
+		public bool IsTaur()
+		{
+			return HasToken("taur");
+		}
+		public bool HasSpecialLegs() // todo use special legs list
+		{
+			return HasToken("slimeblob") || HasToken("snaketail");
+		}
+		public bool HasMultiLegs() // todo use multi legs list
+		{
+			return HasToken("quadruped") || HasToken("taur") || HasDriderLegs();
+		}
+		public bool IsBiped()
+		{
+			return !(HasSpecialLegs() || HasMultiLegs());
 		}
 	}
 }
