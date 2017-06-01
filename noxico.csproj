@@ -252,6 +252,7 @@
     <Content Include="Guides\Tokeninfo.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
+    <Content Include="notes\oldScriptsStorage.txt" />
     <Content Include="notes\Sparks%27 notes.txt" />
     <Content Include="notes\unformatted books.txt" />
     <Content Include="mix\uniques.tml" />

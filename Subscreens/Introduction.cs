@@ -490,8 +490,8 @@ namespace Noxico
 #if FREETESTPOTIONS
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxite"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("oddnip"); // ok
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph");
+					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph"); no bodyplan
+					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph"); no bodyplan
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("demonite_potion");
@@ -499,6 +499,7 @@ namespace Noxico
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("cock_potion");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
 					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("neutralizer_potion");
+					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("spidermorph");
 #endif
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);

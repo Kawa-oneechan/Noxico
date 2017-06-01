@@ -1,0 +1,401 @@
+﻿		dummy
+			<[[
+				var ret = "You apply the fox morph potion.";
+
+				//Always boost cunning.
+				var cunning = user.GetToken("cunning");
+				if (cunning.Value < 50)
+				{
+					cunning.Value += 2;
+					ret += "\n\nYou feel more cunning.";
+				}
+
+				//Sometimes increase charisma.
+
+				//Grow dog ears.
+				if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
+
+					user.RemoveToken("ears");
+					user.AddToken("ears").Text = "genbeast";
+
+					print(ret);
+					return;
+				}
+
+				//Grow fox tail.
+				if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
+				{
+					//Should check the existing type first.
+					ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "fox";
+
+					print(ret);
+					return;
+				}
+
+				//Grow fangs.
+
+				//Grow fur.
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "fur")
+				{
+					skinType.Text = "fur";
+					user.EnsureColor(user.Path("skin/color"), "sandybrown");
+					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+					user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
+					if (!user.HasToken("invisiblegender"));
+					{
+						user.RemoveToken("explicitgender");
+						user.AddToken("invisiblegender");
+					}
+					user.UpdateTitle();
+					user.BoardChar.AdjustView();
+
+					print(ret);
+					return;
+				}
+
+				//Grow digitigrade legs.
+				print(ret);
+			]]>
+
+dummy
+			<[[
+				//Text stolen from CoC's Whisker Fruit item, for now.
+
+				//We want to buffer the output. Calling print() would result in several separate ones.
+				var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
+
+				//Always boost speed.
+				var speed = user.GetToken("speed");
+				if (speed.Value < 75)
+				{
+					if (speed.Value < 30)
+					{
+						speed.Value += 2;
+						ret += "\n\nYou feel... more balanced, sure of step. You're certain that you've become just a little bit faster.";
+					}
+					else if (speed.Value < 60)
+					{
+						speed.Value += 1;
+						ret += "\n\nYou stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now.";
+					}
+					else
+					{
+						speed.Value += 0.5;
+						ret += "\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.";
+					}
+				}
+
+				//Sometimes increase charisma.
+
+				//Grow cat ears.
+				if (!user.HasToken("ears") || user.GetToken("ears").Text != "cat")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
+
+					user.RemoveToken("ears");
+					user.AddToken("ears").Text = "cat";
+
+					print(ret);
+					return;
+				}
+
+				//Grow cat tail.
+				if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYou pause and tilt your head... something feels different. Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "genbeast";
+
+					print(ret);
+					return;
+				}
+
+				//Gain darkvision
+				if (user.Path("eyes/glow") == null)
+				{
+					ret += "\n\nYou feel as if you can see better.";
+					user.GetToken("eyes").AddToken("glow");
+				}
+
+				//Grow fangs.
+
+				//Grow fur.
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "fur")
+				{
+					skinType.Text = "fur";
+					user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+					ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+					user.SetTerms("felin", "fel", "fela", "felhru");
+					if (!user.HasToken("invisiblegender"));
+					{
+						user.RemoveToken("explicitgender");
+						user.AddToken("invisiblegender");
+					}
+					user.UpdateTitle();
+					user.BoardChar.AdjustView();
+
+					print(ret);
+					return;
+				}
+
+				//Grow digitigrade legs.
+
+				//Grow up to two extra breast rows.
+
+				print(ret);
+			]]>
+
+
+dummy
+			<[[
+				//Text stolen from CoC's Canine Pepper item, for now.
+
+				var ret = "The pepper is strangely spicy but very tasty.";
+
+				//Always boost strength.
+				var strength = user.GetToken("strength");
+				if (strength.Value < 50)
+				{
+					strength.Value += 2;
+					ret += "\n\nYour muscles feel more toned.";
+				}
+
+				//Sometimes increase charisma.
+
+				//Grow dog ears.
+				if (!user.HasToken("ears") || user.GetToken("ears").Text != "dog")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
+
+					user.RemoveToken("ears");
+					user.AddToken("ears").Text = "dog";
+
+					print(ret);
+					return;
+				}
+
+				//Grow dog tail.
+				if (user.Path("tail/dog") == null)
+				{
+					//Should check the existing type first.
+					ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into a long puffy tail! <cWhite>You now have a dog tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+					user.RemoveToken("tail");
+					user.AddToken("tail").AddToken("dog");
+
+					print(ret);
+					return;
+				}
+
+				//Grow fangs.
+
+				//Grow fur.
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "fur")
+				{
+					skinType.Text = "fur";						
+					user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
+					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+					user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
+					if (!user.HasToken("invisiblegender"));
+					{
+						user.RemoveToken("explicitgender");
+						user.AddToken("invisiblegender");
+					}
+					user.UpdateTitle();
+					user.BoardChar.AdjustView();
+
+					print(ret);
+					return;
+				}
+
+				//Grow digitigrade legs.
+
+				//Grow up to two extra breast rows.
+
+				print(ret);
+			]]>
+
+dummy
+			<[[
+				var ret = "You apply the bunny morph potion.";
+
+				//Always boost libido.
+				var sensitivity = user.GetToken("sensitivity");
+				if (sensitivity.Value < 80)
+				{
+					sensitivity.Value += 4;
+					ret += "\n\nYou feel hornier.";
+				}
+
+				//Grow bunny ears.
+				if (!user.HasToken("ears") || user.GetToken("ears").Text != "bunny")
+				{
+					//Should check the existing type first.
+					ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
+
+					user.RemoveToken("ears");
+					user.AddToken("ears").Text = "bunny";
+
+					print(ret);
+					return;
+				}
+
+				//Grow bunny tail.
+				if (user.Path("tail/bunny") == null)
+				{
+					//Should check the existing type first.
+					ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
+
+					user.RemoveToken("tail");
+					user.AddToken("tail").Text = "bunny";
+
+					print(ret);
+					return;
+				}
+
+				//Grow fur.
+				var skinType = user.Path("skin/type");
+				if (skinType.Text != "fur")
+				{
+					skinType.Text = "fur";
+					user.EnsureColor(user.Path("skin/color"), "white, gray, aliceblue, gainsboro, lightpink, plum");
+					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
+
+					user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
+					if (!user.HasToken("invisiblegender"));
+					{
+						user.RemoveToken("explicitgender");
+						user.AddToken("invisiblegender");
+					}
+					user.UpdateTitle();
+					user.BoardChar.AdjustView();
+
+					print(ret);
+					return;
+				}
+
+				print(ret);
+			]]>
+
+		fixedscript
+			<[[
+				Consume()
+				local score = 0
+				if user.Path("legs[=claws]") ~= nil then
+					score = 1
+				end
+		
+				if user.Path("legs[=stiletto]") ~= nil then
+					score=1
+				end
+				if user.Path("ears[=elfin]") ~= nil then
+					score = score + 1
+				end
+				if (user.Path("wings[=bat]") ~= nil) then
+					score = score + 1
+				end
+				if (user.Path("penis[=studded]") ~= nil) then
+					score = score + 1
+				end
+				if (user.Path("tail[=demon]") ~= nil) then
+					score = score + 1
+				end
+				if (score >= 3 and Random.Flip()) then
+					user.Mutate(2, 10, Mutations.Random)
+					return
+				end
+			
+				--user.Morph("foocubus")
+				local ret = ""
+				local carnality = user.GetToken("carnality")
+				if carnality.Value < 80 then
+					carnality.Value = carnality.Value + 4
+					ret = ret .. "You feel hornier.  "
+				end
+
+				if (user.HasToken("penis")) then
+					local triggered = false
+					local dicks = 0
+					for i = 0, user.Count(), 1 do
+						if (user.Item(i).Name == "penis") then
+							dicks = dicks + 1
+							local thisDick = user.Item(i)
+							if ~triggered then
+								if not (thisDick.Text == "studded" or thisDick.Text == "tentacle") then
+									thisDick.Text = "studded"
+									triggered = true
+								end
+							end
+						end
+					end
+					if triggered then
+						if dicks == 1 then
+							ret = ret .. "Your dick shifts into a studded affront to the nature of dicks everywhere."
+						else
+							ret = ret .. "One of your dicks shifts into a studded affront to the nature of dicks everywhere."
+						end
+						print(ret)
+						return
+					end
+				end
+
+				if user.Path("tail[=demon]") == nil then
+					if user.HasToken("tail") then
+						ret = ret .. "You feel your tail shifting, turning into a slick, thin deal with a spade at the end."
+					else
+						ret = ret .. "You feel a slick tail growing from your backside, with a spade at the end."
+					end
+					user.RemoveToken("tail")
+					user.AddToken("tail").Text = "demon"
+					print(ret)
+					return
+				end
+
+				if (user.Path("wings[=bat]") == nil) then
+					if (user.HasToken("wings")) then
+						ret = ret .. "Your wings become leathery."
+						user.GetToken("wings").Text = "bat"
+					else
+						ret = ret .. "You sprout leathery bat wings from your back."
+						user.AddToken("wings").Text = "bat"
+					end
+					print(ret)
+					return
+				end
+
+				local skinType = user.Path("skin/type")
+				if (skinType.Text ~= "metal") then
+					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple")
+				end
+				if (skinType.Text == "fur") then
+					ret = ret .. "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin."
+					skinType.Text = "skin"
+				end
+
+				user.SetTerms("cubi", "incubus", "succubus", "omnibus")
+				if not user.HasToken("invisiblegender") then
+					user.RemoveToken("explicitgender")
+					user.AddToken("invisiblegender")
+				end
+				user.UpdateTitle()
+				user.BoardChar.AdjustView()
+				print(ret)
+				Identify()
+			]]>
+

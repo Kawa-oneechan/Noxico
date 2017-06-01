@@ -1,4 +1,10 @@
 add: -
+
+	-- before we start, [color ] doesn't seem to be working
+
+	-- #region Potions from tf_items.txt, don't forget to shuffle later.
+	__marker: tf_items.txt
+
 	item: ponifier
 		_n: Element of Perversion
 		test
@@ -35,72 +41,6 @@ add: -
 				message(user.Morph("kitsune"))
 				Identify()
 			]]>
-		dummy
-			<[[
-				var ret = "You apply the fox morph potion.";
-
-				//Always boost cunning.
-				var cunning = user.GetToken("cunning");
-				if (cunning.Value < 50)
-				{
-					cunning.Value += 2;
-					ret += "\n\nYou feel more cunning.";
-				}
-
-				//Sometimes increase charisma.
-
-				//Grow dog ears.
-				if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
-
-					user.RemoveToken("ears");
-					user.AddToken("ears").Text = "genbeast";
-
-					print(ret);
-					return;
-				}
-
-				//Grow fox tail.
-				if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
-				{
-					//Should check the existing type first.
-					ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "fox";
-
-					print(ret);
-					return;
-				}
-
-				//Grow fangs.
-
-				//Grow fur.
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "fur")
-				{
-					skinType.Text = "fur";
-					user.EnsureColor(user.Path("skin/color"), "sandybrown");
-					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-					user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
-					if (!user.HasToken("invisiblegender"));
-					{
-						user.RemoveToken("explicitgender");
-						user.AddToken("invisiblegender");
-					}
-					user.UpdateTitle();
-					user.BoardChar.AdjustView();
-
-					print(ret);
-					return;
-				}
-
-				//Grow digitigrade legs.
-				print(ret);
-			]]>
 
 	-- merged with cat morph potion
 	item: oddnip
@@ -111,7 +51,7 @@ add: -
 		ascii
 			char: 0x180
 			fore: aquamarine
-		randomized: 2
+		randomized: 3
 		potion
 		transformer
 		script
@@ -120,97 +60,25 @@ add: -
 				message(user.Morph("felin"))
 				Identify()
 			]]>
-		dummy
+		
+	item: spidermorph
+		_n: spider morph potion
+		wip
+		description: "A [color ]bottle of spider morph potion. It turns you into a spidergirl with repeated usages."
+		unknown: "A [color ]bottle filled with a thick liquid. There's a creepy picture of a spider on the label."
+		ascii
+			char: 0x180
+			fore: mistyrose
+		randomized: 11
+		potion
+		transformer
+		script
 			<[[
-				//Text stolen from CoC's Whisker Fruit item, for now.
-
-				//We want to buffer the output. Calling print() would result in several separate ones.
-				var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
-
-				//Always boost speed.
-				var speed = user.GetToken("speed");
-				if (speed.Value < 75)
-				{
-					if (speed.Value < 30)
-					{
-						speed.Value += 2;
-						ret += "\n\nYou feel... more balanced, sure of step. You're certain that you've become just a little bit faster.";
-					}
-					else if (speed.Value < 60)
-					{
-						speed.Value += 1;
-						ret += "\n\nYou stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now.";
-					}
-					else
-					{
-						speed.Value += 0.5;
-						ret += "\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.";
-					}
-				}
-
-				//Sometimes increase charisma.
-
-				//Grow cat ears.
-				if (!user.HasToken("ears") || user.GetToken("ears").Text != "cat")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
-
-					user.RemoveToken("ears");
-					user.AddToken("ears").Text = "cat";
-
-					print(ret);
-					return;
-				}
-
-				//Grow cat tail.
-				if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYou pause and tilt your head... something feels different. Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "genbeast";
-
-					print(ret);
-					return;
-				}
-
-				//Gain darkvision
-				if (user.Path("eyes/glow") == null)
-				{
-					ret += "\n\nYou feel as if you can see better.";
-					user.GetToken("eyes").AddToken("glow");
-				}
-
-				//Grow fangs.
-
-				//Grow fur.
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "fur")
-				{
-					skinType.Text = "fur";
-					user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
-					ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-					user.SetTerms("felin", "fel", "fela", "felhru");
-					if (!user.HasToken("invisiblegender"));
-					{
-						user.RemoveToken("explicitgender");
-						user.AddToken("invisiblegender");
-					}
-					user.UpdateTitle();
-					user.BoardChar.AdjustView();
-
-					print(ret);
-					return;
-				}
-
-				//Grow digitigrade legs.
-
-				//Grow up to two extra breast rows.
-
-				print(ret);
+				Consume()
+				for i=0, 10 do
+					message(user.Morph("spider", Gender.Female))
+				end
+				Identify()
 			]]>
 
 	item: dogmorph
@@ -223,77 +91,15 @@ add: -
 			fore: mistyrose
 		potion
 		transformer
-		dummy
+		script
+		disabled
 			<[[
-				//Text stolen from CoC's Canine Pepper item, for now.
-
-				var ret = "The pepper is strangely spicy but very tasty.";
-
-				//Always boost strength.
-				var strength = user.GetToken("strength");
-				if (strength.Value < 50)
-				{
-					strength.Value += 2;
-					ret += "\n\nYour muscles feel more toned.";
-				}
-
-				//Sometimes increase charisma.
-
-				//Grow dog ears.
-				if (!user.HasToken("ears") || user.GetToken("ears").Text != "dog")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
-
-					user.RemoveToken("ears");
-					user.AddToken("ears").Text = "dog";
-
-					print(ret);
-					return;
-				}
-
-				//Grow dog tail.
-				if (user.Path("tail/dog") == null)
-				{
-					//Should check the existing type first.
-					ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into a long puffy tail! <cWhite>You now have a dog tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-					user.RemoveToken("tail");
-					user.AddToken("tail").AddToken("dog");
-
-					print(ret);
-					return;
-				}
-
-				//Grow fangs.
-
-				//Grow fur.
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "fur")
-				{
-					skinType.Text = "fur";						
-					user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
-					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-					user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
-					if (!user.HasToken("invisiblegender"));
-					{
-						user.RemoveToken("explicitgender");
-						user.AddToken("invisiblegender");
-					}
-					user.UpdateTitle();
-					user.BoardChar.AdjustView();
-
-					print(ret);
-					return;
-				}
-
-				//Grow digitigrade legs.
-
-				//Grow up to two extra breast rows.
-
-				print(ret);
+				Consume()
+				-- todo, dogperson bodyplan
+				-- message(user.Morph("felin"))
+				Identify()
 			]]>
+		
 
 	item: bunnymorph
 		_n: bunny morph potion
@@ -305,78 +111,36 @@ add: -
 			fore: skyblue
 		potion
 		transformer
-		dummy
+		disabled
+		script
 			<[[
-				var ret = "You apply the bunny morph potion.";
-
-				//Always boost libido.
-				var sensitivity = user.GetToken("sensitivity");
-				if (sensitivity.Value < 80)
-				{
-					sensitivity.Value += 4;
-					ret += "\n\nYou feel hornier.";
-				}
-
-				//Grow bunny ears.
-				if (!user.HasToken("ears") || user.GetToken("ears").Text != "bunny")
-				{
-					//Should check the existing type first.
-					ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
-
-					user.RemoveToken("ears");
-					user.AddToken("ears").Text = "bunny";
-
-					print(ret);
-					return;
-				}
-
-				//Grow bunny tail.
-				if (user.Path("tail/bunny") == null)
-				{
-					//Should check the existing type first.
-					ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "bunny";
-
-					print(ret);
-					return;
-				}
-
-				//Grow fur.
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "fur")
-				{
-					skinType.Text = "fur";
-					user.EnsureColor(user.Path("skin/color"), "white, gray, aliceblue, gainsboro, lightpink, plum");
-					ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-					user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
-					if (!user.HasToken("invisiblegender"));
-					{
-						user.RemoveToken("explicitgender");
-						user.AddToken("invisiblegender");
-					}
-					user.UpdateTitle();
-					user.BoardChar.AdjustView();
-
-					print(ret);
-					return;
-				}
-
-				print(ret);
+				Consume()
+				-- todo, bunnyperson bodyplan
+				-- message(user.Morph("felin"))
+				Identify()
 			]]>
-	-- #endregion
 
+	item: demonite_potion
+		description: "A [color ]bottle with a stylized but recognizable demon on the label. Very indicative of what it turns the user into."
+		unknown: "A [color ]bottle with a stylized but recognizable demon on the label."
+		ascii
+			char: 0x180
+		randomized: 4
+		potion
+		transformer
+		script
+			<[[
+				Consume()
+				message(user.Morph("foocubus"))
+				Identify()
+			]]>
 
-	-- #region Potions from tf_items.txt, don't forget to shuffle later.
-	__marker: tf_items.txt
 	item: chaos_potion
 		description: "Chaos in a [color ]bottle."
 		unknown: "A [color ]bottle with fluid that fizzes and pops."
 		ascii
 			char: 0x180
-		randomized: 10
+		randomized: 5
 		potion
 		transformer
 		script
@@ -391,7 +155,7 @@ add: -
 		unknown: "A [color ]bottle with fluid that fizzes and pops violently."
 		ascii
 			char: 0x180
-		randomized: 11
+		randomized: 6
 		potion
 		transformer
 		script
@@ -405,146 +169,22 @@ add: -
 				Identify()
 			]]>
 
-	item: demonite_potion
-		description: "A [color ]bottle with a stylized but recognizable demon on the label. Very indicative of what it turns the user into."
-		unknown: "A [color ]bottle with a stylized but recognizable demon on the label."
-		ascii
-			char: 0x180
-		randomized: 12
-		potion
-		transformer
-		script
-			<[[
-				Consume()
-				message(user.Morph("foocubus"))
-				Identify()
-				--? user.UpdateTitle()
-				--? user.BoardChar.AdjustView()
-			]]>
-		fixedscript
-			<[[
-				Consume()
-				local score = 0
-				if user.Path("legs[=claws]") ~= nil then
-					score = 1
-				end
-		
-				if user.Path("legs[=stiletto]") ~= nil then
-					score=1
-				end
-				if user.Path("ears[=elfin]") ~= nil then
-					score = score + 1
-				end
-				if (user.Path("wings[=bat]") ~= nil) then
-					score = score + 1
-				end
-				if (user.Path("penis[=studded]") ~= nil) then
-					score = score + 1
-				end
-				if (user.Path("tail[=demon]") ~= nil) then
-					score = score + 1
-				end
-				if (score >= 3 and Random.Flip()) then
-					user.Mutate(2, 10, Mutations.Random)
-					return
-				end
-			
-				--user.Morph("foocubus")
-				local ret = ""
-				local carnality = user.GetToken("carnality")
-				if carnality.Value < 80 then
-					carnality.Value = carnality.Value + 4
-					ret = ret .. "You feel hornier.  "
-				end
-
-				if (user.HasToken("penis")) then
-					local triggered = false
-					local dicks = 0
-					for i = 0, user.Count(), 1 do
-						if (user.Item(i).Name == "penis") then
-							dicks = dicks + 1
-							local thisDick = user.Item(i)
-							if ~triggered then
-								if not (thisDick.Text == "studded" or thisDick.Text == "tentacle") then
-									thisDick.Text = "studded"
-									triggered = true
-								end
-							end
-						end
-					end
-					if triggered then
-						if dicks == 1 then
-							ret = ret .. "Your dick shifts into a studded affront to the nature of dicks everywhere."
-						else
-							ret = ret .. "One of your dicks shifts into a studded affront to the nature of dicks everywhere."
-						end
-						print(ret)
-						return
-					end
-				end
-
-				if user.Path("tail[=demon]") == nil then
-					if user.HasToken("tail") then
-						ret = ret .. "You feel your tail shifting, turning into a slick, thin deal with a spade at the end."
-					else
-						ret = ret .. "You feel a slick tail growing from your backside, with a spade at the end."
-					end
-					user.RemoveToken("tail")
-					user.AddToken("tail").Text = "demon"
-					print(ret)
-					return
-				end
-
-				if (user.Path("wings[=bat]") == nil) then
-					if (user.HasToken("wings")) then
-						ret = ret .. "Your wings become leathery."
-						user.GetToken("wings").Text = "bat"
-					else
-						ret = ret .. "You sprout leathery bat wings from your back."
-						user.AddToken("wings").Text = "bat"
-					end
-					print(ret)
-					return
-				end
-
-				local skinType = user.Path("skin/type")
-				if (skinType.Text ~= "metal") then
-					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple")
-				end
-				if (skinType.Text == "fur") then
-					ret = ret .. "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin."
-					skinType.Text = "skin"
-				end
-
-				user.SetTerms("cubi", "incubus", "succubus", "omnibus")
-				if not user.HasToken("invisiblegender") then
-					user.RemoveToken("explicitgender")
-					user.AddToken("invisiblegender")
-				end
-				user.UpdateTitle()
-				user.BoardChar.AdjustView()
-				print(ret)
-				Identify()
-			]]>
 
 	item: tentacle_potion
 		description: "A [color ]bottle with some sort of tentacle on the label. It seems to give you a tentacle cock."
 		unknown: "A [color ]bottle with what seems to be a vine on the label."
 		ascii
 			char: 0x180
-		randomized: 13
+		randomized: 7
 		potion
 		transformer
 		script
 			<[[
 				Consume()
 				local ret : string = ""
-				local totalDicks : int = 0
+				local totalDicks = user.GetPenisSizes().Length
 				local transformations : int = 0
 				local lengthenings : int = 0
-				foreach d in user.GetPenises() do
-					totalDicks = totalDicks + 1
-				end
 
 				if totalDicks > 0 then
 					foreach d in user.GetPenises() do
@@ -552,18 +192,17 @@ add: -
 							local length = d.GetToken("length")
 							length.Value = length.Value + 3 + Random.Next(5)
 							lengthenings = lengthenings + 1
-
 							-- Randomly break out
 							if lengthenings > 0 and Random.Flip() then
 								break
 							end
 						end
 					end
+
 					foreach d in user.GetPenises() do
 						if d.Text ~= "tentacle" then
 							d.Text = "tentacle"
 							transformations = transformations + 1
-
 							-- Randomly break out
 							if transformations > 0 and Random.Flip() then
 								break
@@ -635,32 +274,27 @@ add: -
 		unknown: "A [color ]bottle with what seems to be an erect penis on the label."
 		ascii
 			char: 0x180
-		randomized: 14
+		randomized: 8
 		potion
 		transformer
 		script
 			<[[
 				Consume()
 				local ret : string = ""
-				local totalDicks : int = 0
+				local totalDicks = user.GetPenisSizes().Length
 				local lengthenings : int = 0
 				local additions : int = 0
-				foreach d in user.GetPenises() do
-					totalDicks = totalDicks + 1
-				end
 
 				if totalDicks > 0 then
 					foreach d in user.GetPenises() do
 						local length = d.GetToken("length")
 						length.Value = length.Value + 3 + Random.Next(5)
 						lengthenings = lengthenings + 1
-
 						-- Randomly break out
 						if lengthenings > 0 and Random.Flip() then
 							break
 						end
 					end
-
 				else
 					local penis = user.AddToken("penis", "human")
 					penis.AddToken("thickness", 2 + Random.Next(2), nil)
@@ -711,26 +345,22 @@ add: -
 		unknown: "A [color ]bottle with what seems to be a turgid penis on the label."
 		ascii
 			char: 0x180
-		randomized: 15
+		randomized: 9
 		potion
 		transformer
 		script
 			<[[
 				Consume()
 				local ret : string = ""
-				local totalDicks : int = 0
+				local totalDicks = user.GetPenisSizes().Length
 				local lengthenings : int = 0
 				local additions : int = 0
-				foreach d in user.GetPenises() do
-					totalDicks = totalDicks + 1
-				end
 
 				if totalDicks > 0 then
 					foreach d in user.GetPenises() do
 						local length = d.GetToken("length")
 						length.Value = length.Value + 3 + Random.Next(5)
 						lengthenings = lengthenings + 1
-
 						-- Randomly break out
 						if lengthenings > 0 and Random.Flip() then
 							break
@@ -796,71 +426,72 @@ add: -
 		unknown: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
 		ascii
 			char: 0x180
-		randomized: 16
+		randomized: 10
 		potion
 		transformer
-		dummy
+		script
 			<[[
-				Consume();
-				var ret = "";
-				if (Random.Flip())
-				{
-					if (user.HasToken("penis"))
-					{
-						user.RemoveToken("penis");
-						if (user.HasToken("penis"))
-							ret = "One of your cocks disappears!";
-						else
-							ret = "Your cock's gone!";
-					}
-					else if (user.HasToken("vagina"))
-					{
-						user.RemoveToken("vagina");
-						if (user.HasToken("vagina"))
-							ret = "One of your pussies disappears!";
-						else
-							ret = "Your pussy's gone!"
-					}
-				}
-				else
-				{
-					if (user.HasToken("vagina"))
-					{
-						user.RemoveToken("vagina");
-						if (user.HasToken("vagina"))
-							ret = "One of your pussies disappears!";
-						else
-							ret = "Your pussy's gone!"
-					}
-					else if (user.HasToken("penis"))
-					{
-						user.RemoveToken("penis");
-						if (user.HasToken("penis"))
-							ret = "One of your cocks disappears!";
-						else
-							ret = "Your cock's gone!";
-					}
-				}
-				for (var i = 0; i < user.Count(); i++)
-				{
-					if (user.Item(i).Name == "breastrow")
-					{
-						var breastrow = user.Item(i);
-						if (breastrow.Path("nipples/canfuck"))
-						{
-							breastrow.GetToken("nipples").RemoveToken("canfuck");
-							ret += "  The cocks on your breasts shrink back into regular nipples.";
-							break;
-						}
-						else if (breastrow.Path("nipples/fuckable"))
-						{
-							breastrow.GetToken("nipples").RemoveToken("fuckable");
-							ret += "  The pussies on your breasts shrink back into regular nipples.";
-							break;
-						}
-					}
-				}
-				print(ret);
-				Identify();
+				Consume()
+				local ret = ""
+				local loss = 0
+
+				function LoseCock()
+					user.RemoveToken("penis")
+					if (user.HasToken("penis")) then 
+						ret = "One of your cocks disappears!"
+					else
+						ret = "Your cock's gone!"
+					end
+				end
+
+				function LoseVagina()
+					user.RemoveToken("vagina")
+					if (user.HasToken("vagina")) then 
+						ret = "One of your pussies disappears!"
+					else
+						ret = "Your pussy's gone!"
+					end
+				end
+
+				if user.HasToken("penis") then
+					loss = loss + 1
+				end
+				if user.HasToken("vagina") then
+					loss = loss + 2
+				end
+
+				if loss == 1 then
+					LoseCock()
+				elseif loss == 2 then
+					LoseVagina()
+				elseif loss == 3 then
+					if (Random.Flip()) then
+						LoseCock()
+					else
+						LoseVagina()
+					end
+				end
+
+				local donehere = false;
+				for i = 0, user.Count() - 1, 1 do
+					if (user.Item(i).Name == "breastrow") then 
+						local breastrow = user.Item(i)
+						if (breastrow.Path("nipples/canfuck") and not donehere) then 
+							breastrow.GetToken("nipples").RemoveToken("canfuck")
+							ret = ret .. "  The cocks on your breasts shrink back into regular nipples."
+							donehere = true
+						elseif (breastrow.Path("nipples/fuckable") and not donehere) then 
+							breastrow.GetToken("nipples").RemoveToken("fuckable")
+							ret = ret .. "  The pussies on your breasts shrink back into regular nipples."
+							donehere = true
+						end
+					end
+				end
+
+				if ret == "" then ret = "You feel no more gential-less than usual." end
+				print(ret)
+				Identify()
 			]]>
+
+	-- #endregion
 
