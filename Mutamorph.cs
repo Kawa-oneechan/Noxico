@@ -14,6 +14,14 @@ namespace Noxico
 			if (target == null)
 				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
 
+			// fix: added a default penis to prevent null exceptions when not having suitable TargetPenis 
+			if (!target.HasToken("penis"))
+			{
+				target.AddToken("penis");
+				target.GetToken("penis").AddToken("thickness").Value = 2;
+				target.GetToken("penis").AddToken("length").Value = 15;
+			}
+
 			var meta = new[] { "playable", "culture", "namegen", "bestiary", "femalesmaller", "costume", "_either", "items" };
 			var simpleTraits = new[] { "fireproof", "aquatic" };
 			var trivialSizes = new[]
