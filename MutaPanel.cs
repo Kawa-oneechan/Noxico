@@ -11,12 +11,86 @@ namespace Noxico
 {
 	public partial class MutaPanel : Form
 	{
+		private Character SavedSource;
+		private List<Token> SavedTarget;
+
 		public MutaPanel()
 		{
-			// since we're not loading the game normally, I gotta do a lot of stuff manually
 			InitializeComponent();
+			ManualStartup();
+
+			// populate menus
+			foreach (Token bp in Character.Bodyplans)
+			{
+				if (bp.HasToken("beast")) continue;
+				var bpname = bp.Text;
+
+				var newSource = new ToolStripMenuItem()
+				{
+					Name = bpname,
+					Size = new Size(225, 22),
+					Text = "Generate source " + bpname
+				};
+				sourceMenu.DropDownItems.AddRange(new ToolStripItem[] { newSource });
+				newSource.Click += new EventHandler(GenerateSourceMenuItem_Click);
+
+				var newTarget = new ToolStripMenuItem()
+				{
+					Name = bpname,
+					Size = new Size(225, 22),
+					Text = "Generate target as " + bpname
+				};
+				targetMenu.DropDownItems.AddRange(new ToolStripItem[] { newTarget });
+				newTarget.Click += new EventHandler(GenerateTargetMenuItem_Click);
+			}
+		}
+
+		private void GenerateSourceMenuItem_Click(object sender, EventArgs e)
+		{
+			// populate source box with generated character of selected bodyplan
+			ToolStripMenuItem s = (ToolStripMenuItem)sender;
+			var newchar = Character.Generate(s.Name, Gender.RollDice);
+			sourceBox.Text = newchar.DumpTokens(newchar.Tokens.ToList(), 0);
+
+			SavedSource = newchar;
+			ExecMorphTest();
+		}
+
+		private void GenerateTargetMenuItem_Click(object sender, EventArgs e)
+		{
+			// populate target box with selected bodyplan
+			ToolStripMenuItem s = (ToolStripMenuItem)sender;
+			var targetPlan = s.Name;
+			var targetToken = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
+			var targetTokens = new List<Token>();
+			targetTokens.Add(targetToken);
+			targetBox.Text = targetToken.DumpTokens(targetTokens, 0);
+
+			SavedTarget = targetTokens;
+			ExecMorphTest();
+		}
+
+		private void ExecMorphTest()
+		{
+			if (SavedSource == null || SavedTarget == null) return;
+
+			// populate deltas box
+			var morphDeltas = SavedSource.GetMorphDeltas(SavedTarget[0].Text, Gender.Invisible);
+			deltasBox.Text = SavedSource.DumpTokens(morphDeltas, 0);
+
+			// pop results.box
+			var morphFeedback = SavedSource.Morph(SavedTarget[0].Text);
+			resultBox.Text = SavedSource.DumpTokens(SavedSource.Tokens.ToList(), 0);
+
+			// pop feedback box
+			messagesBox.Text = morphFeedback;
+		}
+
+		// since we're not loading the game normally, I gotta do a lot of stuff manually
+		private void ManualStartup()
+		{
+			// load files
 			Mix.Initialize("Noxico");
-			//NoxicoGame.Initialize(this);
 
 			// load biomes
 			BiomeData.LoadBiomes();
@@ -63,7 +137,6 @@ namespace Noxico
 			NoxicoGame.KnownItems = new List<InventoryItem>();
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				NoxicoGame.KnownItems.Add(InventoryItem.FromToken(item));
-
 			// load bodyplans and hashes
 			NoxicoGame.BodyplanHashes = new Dictionary<string, string>();
 			Character.Bodyplans = Mix.GetTokenTree("bodyplans.tml");
@@ -76,42 +149,6 @@ namespace Noxico
 					continue;
 				NoxicoGame.BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(bodyPlan));
 			}
-
-			// fake player to keep thing happy
-			//NoxicoGame.HostForm.Noxico.Player.Character = Character.Generate("human", Gender.Male, Gender.Male, Realms.Nox);
-
-			//// populate menus
-			//foreach (Token bp in Character.Bodyplans)
-			//{
-			//	// todo
-			//}
-
-			// pop source box
-			var newchar = Character.Generate("human", Gender.Male, Gender.Male, Realms.Nox);
-			var Value = new List<Token>();
-			sourceBox.Text = newchar.DumpTokens(newchar.Tokens.ToList(), 0);
-
-			// pop target box
-			var targetPlan = "felin";
-			var targetToken = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
-			Value.Add(targetToken);
-			targetBox.Text = targetToken.DumpTokens(Value, 0);
-
-			// populate deltas box
-			var deltas = newchar.GetMorphDeltas("felin", Gender.Invisible);
-			deltasBox.Text = newchar.DumpTokens(deltas, 0);
-
-			// pop results.box
-			var feedback = newchar.Morph("felin");
-			resultBox.Text = newchar.DumpTokens(newchar.Tokens.ToList(), 0);
-
-			// pop feedback box
-			messagesBox.Text = feedback;
-		}
-
-		private void generateCharacterHereToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }
