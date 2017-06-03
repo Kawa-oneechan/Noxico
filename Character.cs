@@ -89,7 +89,11 @@ namespace Noxico
 			if (HasToken("beast"))
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			// hacky thing to provide fake player for MutaPanel
+			var player = NoxicoGame.HostForm != null ?
+				NoxicoGame.HostForm.Noxico.Player.Character :
+				Character.Generate("human", Gender.Male, Gender.Male, Realms.Nox);
+
 			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 
 			// todo: logic duplicated from UpdateTitle()

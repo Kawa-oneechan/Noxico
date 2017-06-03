@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Noxico
 {
+	public class MutaMorph {
+		static void Main(string[] args)
+		{
+			Application.Run(new MutaPanel());
+		}
+	}
+
 	public partial class Character 
 	{
 		public List<Token> GetMorphDeltas(string targetPlan, Gender targetGender)
