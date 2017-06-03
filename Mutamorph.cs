@@ -867,7 +867,7 @@ namespace Noxico
 		}
 		public bool HasDriderLegs()
 		{
-			return (DriderLegsNum() > 2) ? true : false;
+			return (DriderLegsNum() > 2); // derp
 		}
 		public int DriderLegsNum()
 		{
