@@ -32,10 +32,10 @@ namespace Noxico
 		public static SoundSystem Sound;
 		public static char[] IngameToUnicode, IngameTo437;
 
-		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
-		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
+		public static Dictionary<KeyBinding, Keys> KeyBindings { get; set; }
+		public static Dictionary<KeyBinding, string> RawBindings { get; set; }
 
-		public static List<InventoryItem> KnownItems { get; private set; }
+		public static List<InventoryItem> KnownItems { get; set; }
 		public List<Board> Boards { get; private set; }
 		public Board CurrentBoard { get; set; }
 		public static Board Limbo { get; private set; }
@@ -47,7 +47,7 @@ namespace Noxico
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
-		public static Dictionary<string, string> BodyplanHashes { get; private set; }
+		public static Dictionary<string, string> BodyplanHashes { get; set; }
 		public static string SavePath { get; private set; }
 		public static bool InGame { get; set; }
 		public static string ContextMessage { get; set; }

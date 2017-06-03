@@ -38,7 +38,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Noxico.Program</StartupObject>
+    <StartupObject>Noxico.MutaMorph</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -143,6 +143,12 @@
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
     <Compile Include="Mutamorph.cs" />
+    <Compile Include="MutaPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MutaPanel.Designer.cs">
+      <DependentUpon>MutaPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="SexManager.cs" />
@@ -185,6 +191,9 @@
     <Compile Include="Vista.cs" />
     <Compile Include="WorldGen.cs" />
     <Compile Include="Board.cs" />
+    <EmbeddedResource Include="MutaPanel.resx">
+      <DependentUpon>MutaPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
