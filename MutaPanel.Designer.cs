@@ -32,14 +32,11 @@
 			this.targetBox = new System.Windows.Forms.RichTextBox();
 			this.resultBox = new System.Windows.Forms.RichTextBox();
 			this.messagesBox = new System.Windows.Forms.RichTextBox();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.menuStrip2 = new System.Windows.Forms.MenuStrip();
-			this.initialMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.generateCharacterHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tagetMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.deltasBox = new System.Windows.Forms.RichTextBox();
-			this.todoSelectBodyplanHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip2.SuspendLayout();
+			this.sourceMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.targetMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuStrip = new System.Windows.Forms.MenuStrip();
+			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// sourceBox
@@ -74,48 +71,6 @@
 			this.messagesBox.TabIndex = 5;
 			this.messagesBox.Text = "Mesasges go here.";
 			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Location = new System.Drawing.Point(0, 24);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(1255, 24);
-			this.menuStrip1.TabIndex = 6;
-			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// menuStrip2
-			// 
-			this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.initialMenu,
-            this.tagetMenu});
-			this.menuStrip2.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip2.Name = "menuStrip2";
-			this.menuStrip2.Size = new System.Drawing.Size(1255, 24);
-			this.menuStrip2.TabIndex = 7;
-			this.menuStrip2.Text = "menuStrip2";
-			// 
-			// initialMenu
-			// 
-			this.initialMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateCharacterHereToolStripMenuItem});
-			this.initialMenu.Name = "initialMenu";
-			this.initialMenu.Size = new System.Drawing.Size(145, 20);
-			this.initialMenu.Text = "Choose Initial Character";
-			// 
-			// generateCharacterHereToolStripMenuItem
-			// 
-			this.generateCharacterHereToolStripMenuItem.Name = "generateCharacterHereToolStripMenuItem";
-			this.generateCharacterHereToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-			this.generateCharacterHereToolStripMenuItem.Text = "todo select sample character";
-			this.generateCharacterHereToolStripMenuItem.Click += new System.EventHandler(this.generateCharacterHereToolStripMenuItem_Click);
-			// 
-			// tagetMenu
-			// 
-			this.tagetMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.todoSelectBodyplanHereToolStripMenuItem});
-			this.tagetMenu.Name = "tagetMenu";
-			this.tagetMenu.Size = new System.Drawing.Size(149, 20);
-			this.tagetMenu.Text = "Choose Target Bodyplan";
-			// 
 			// deltasBox
 			// 
 			this.deltasBox.Location = new System.Drawing.Point(507, 24);
@@ -124,11 +79,28 @@
 			this.deltasBox.TabIndex = 8;
 			this.deltasBox.Text = "Deltas go here.";
 			// 
-			// todoSelectBodyplanHereToolStripMenuItem
+			// initialMenu
 			// 
-			this.todoSelectBodyplanHereToolStripMenuItem.Name = "todoSelectBodyplanHereToolStripMenuItem";
-			this.todoSelectBodyplanHereToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.todoSelectBodyplanHereToolStripMenuItem.Text = "todo select bodyplan here";
+			this.sourceMenu.Name = "initialMenu";
+			this.sourceMenu.Size = new System.Drawing.Size(145, 20);
+			this.sourceMenu.Text = "Choose Initial Character";
+			// 
+			// targetMenu
+			// 
+			this.targetMenu.Name = "targetMenu";
+			this.targetMenu.Size = new System.Drawing.Size(149, 20);
+			this.targetMenu.Text = "Choose Target Bodyplan";			
+			// 
+			// menuStrip
+			// 
+			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sourceMenu,
+            this.targetMenu});
+			this.menuStrip.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip.Name = "menuStrip";
+			this.menuStrip.Size = new System.Drawing.Size(1255, 24);
+			this.menuStrip.TabIndex = 7;
+			this.menuStrip.Text = "menuStrip2";
 			// 
 			// MutaPanel
 			// 
@@ -140,13 +112,11 @@
 			this.Controls.Add(this.resultBox);
 			this.Controls.Add(this.targetBox);
 			this.Controls.Add(this.sourceBox);
-			this.Controls.Add(this.menuStrip1);
-			this.Controls.Add(this.menuStrip2);
-			this.MainMenuStrip = this.menuStrip1;
+			this.Controls.Add(this.menuStrip);
 			this.Name = "MutaPanel";
-			this.Text = "MutaTestPanel";
-			this.menuStrip2.ResumeLayout(false);
-			this.menuStrip2.PerformLayout();
+			this.Text = "Mutamorph Test Panel";
+			this.menuStrip.ResumeLayout(false);
+			this.menuStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -158,12 +128,9 @@
 		private System.Windows.Forms.RichTextBox targetBox;
 		private System.Windows.Forms.RichTextBox resultBox;
 		private System.Windows.Forms.RichTextBox messagesBox;
-		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.MenuStrip menuStrip2;
-		private System.Windows.Forms.ToolStripMenuItem initialMenu;
-		private System.Windows.Forms.ToolStripMenuItem tagetMenu;
 		private System.Windows.Forms.RichTextBox deltasBox;
-		private System.Windows.Forms.ToolStripMenuItem generateCharacterHereToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem todoSelectBodyplanHereToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sourceMenu;
+		private System.Windows.Forms.ToolStripMenuItem targetMenu;
+		private System.Windows.Forms.MenuStrip menuStrip;
 	}
 }
