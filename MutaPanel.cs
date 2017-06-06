@@ -43,6 +43,8 @@ namespace Noxico
 				targetMenu.DropDownItems.AddRange(new ToolStripItem[] { newTarget });
 				newTarget.Click += new EventHandler(GenerateTargetMenuItem_Click);
 			}
+
+			// todo add triggers for typing in boxes
 		}
 
 		private void GenerateSourceMenuItem_Click(object sender, EventArgs e)
@@ -70,6 +72,40 @@ namespace Noxico
 			ExecMorphTest();
 		}
 
+		private void SourceBox_TextChanged(object sender, EventArgs e)
+		{
+			try
+			{ 
+				var newchar = Character.Generate("human", Gender.RollDice);
+				newchar.Tokens.Clear();
+				newchar.Tokenize(sourceBox.Text);
+				SavedSource = newchar;
+				ExecMorphTest();
+			}
+			catch (Exception ex)
+			{
+				// just eat the exception.
+				// really nothing we can do here, so many ways a character can be invalid.
+				deltasBox.Text = resultBox.Text = messagesBox.Text = ex.Message;
+			}
+		}
+
+		private void TargetBox_TextChanged(object sender, EventArgs e)
+		{
+			try { 
+				var targetToken = new Token();
+				targetToken.Tokenize(sourceBox.Text);
+				var targetTokens = new List<Token>();
+				SavedTarget = targetTokens;
+				ExecMorphTest();
+			}
+			catch (Exception ex)
+			{
+				// really nothing we can do here, so many ways a character can be invalid.
+				deltasBox.Text = resultBox.Text = messagesBox.Text = ex.Message;
+			}
+}
+
 		private void ExecMorphTest()
 		{
 			if (SavedSource == null || SavedTarget == null) return;
@@ -78,7 +114,7 @@ namespace Noxico
 			var morphDeltas = SavedSource.GetMorphDeltas(SavedTarget[0].Text, Gender.Invisible);
 			deltasBox.Text = SavedSource.DumpTokens(morphDeltas, 0);
 
-			// pop results.box
+			// pop results box
 			var morphFeedback = SavedSource.Morph(SavedTarget[0].Text);
 			resultBox.Text = SavedSource.DumpTokens(SavedSource.Tokens.ToList(), 0);
 
@@ -137,6 +173,7 @@ namespace Noxico
 			NoxicoGame.KnownItems = new List<InventoryItem>();
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				NoxicoGame.KnownItems.Add(InventoryItem.FromToken(item));
+
 			// load bodyplans and hashes
 			NoxicoGame.BodyplanHashes = new Dictionary<string, string>();
 			Character.Bodyplans = Mix.GetTokenTree("bodyplans.tml");
