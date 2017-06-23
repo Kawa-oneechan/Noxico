@@ -270,11 +270,11 @@ namespace Noxico
 		private static Dictionary<string, UIElement> controls;
 		private static List<UIElement>[] pages;
 		private static Dictionary<string, string> controlHelps;
-		private static Dictionary<string, Bitmap> portraits;
+		//private static Dictionary<string, Bitmap> portraits;
 
 		private static int page = 0;
-		private static Action<int> loadPage, loadColors, redrawBackdrop;
-		private static Bitmap backdrop, backWithPortrait;
+		private static Action<int> loadPage, loadColors; //, redrawBackdrop;
+		private static Bitmap backdrop; //, backWithPortrait;
 
 		/// <summary>
 		/// Don't see a Subscreen with multiple handlers often...
@@ -315,12 +315,12 @@ namespace Noxico
 					{ "gift", traitHelps[0] },
 				};
 
-				backdrop = Mix.GetBitmap("chargen.png");
-				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				backdrop = Mix.GetBitmap("chargen_new.png");
+/*				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				using (var g = Graphics.FromImage(backWithPortrait))
 				{
 					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
-				}
+				} */
 				//Build the interface.
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC3";
 				var bar = new string('\xC4', 33);
@@ -328,7 +328,7 @@ namespace Noxico
 				string[] prefoptions = { i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Either") };
 				controls = new Dictionary<string, UIElement>()
 				{
-					{ "backdrop", new UIPNGBackground(backWithPortrait) },
+					{ "backdrop", new UIPNGBackground(backdrop) }, //backWithPortrait) },
 					{ "headerline", new UILabel(bar) { Left = 56, Top = 8, Foreground = Color.Black } },
 					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 8, Width = title.Length(), Foreground = Color.Black } },
 					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 46, Width = 10, Height = 3 } },
@@ -397,7 +397,7 @@ namespace Noxico
 					pages[1].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
-				//Do a nice screen blend effect. Normally we can only do straight normal blends.
+/*				//Do a nice screen blend effect. Normally we can only do straight normal blends.
 				//You might think this is slow as balls, being a Get/SetPixel loop. But since our pics are only 54x58, it's not that bad.
 				redrawBackdrop = new Action<int>(i =>
 				{
@@ -444,7 +444,7 @@ namespace Noxico
 						}
 					}
 					((UIPNGBackground)controls["backdrop"]).Bitmap = backWithPortrait;
-				});
+				}); */
 
 				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
@@ -534,12 +534,12 @@ namespace Noxico
 							}
 						}
 					}
-					redrawBackdrop(0);
+					//redrawBackdrop(0);
 					UIManager.Draw();
 				};
 				controls["sex"].Change = (s, e) =>
 				{
-					redrawBackdrop(0);
+					//redrawBackdrop(0);
 					UIManager.Draw();
 				};
 				controls["name"].Change = (s, e) =>
@@ -572,7 +572,7 @@ namespace Noxico
 					UIManager.Draw();
 				};
 				loadPage(page);
-				redrawBackdrop(0);
+				//redrawBackdrop(0);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 				UIManager.HighlightChanged(null, null);
