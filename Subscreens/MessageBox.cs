@@ -37,7 +37,7 @@ namespace Noxico
 					height += 1 + options.Count;
 				else if (type == BoxType.Input)
 					height += 2;
-				var top = 25 - (height / 2);
+				var top = 15 - (height / 2);
 				if (top < 0)
 					top = 0;
 				if (UIManager.Elements == null || fromWalkaround)
@@ -46,7 +46,7 @@ namespace Noxico
 				if (icon != null)
 				{
 					icon.Left = 100 - icon.Bitmap.Width;
-					icon.Top = 60 - icon.Bitmap.Height;
+					icon.Top = 30 - icon.Bitmap.Height;
 					UIManager.Elements.Add(icon);
 				}
 

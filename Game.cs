@@ -1331,7 +1331,7 @@ namespace Noxico
 		{
 			var player = HostForm.Noxico.Player;
 
-			for (var row = 0; row < 60; row++)
+			for (var row = 0; row < 30; row++)
 				for (var col = 80; col < 100; col++)
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
 
@@ -1449,6 +1449,7 @@ namespace Noxico
 				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
 
+			/*
 			var coord = player.ParentBoard.Coordinate;
 			var realm = (int)player.ParentBoard.Realm;
 			var cx = coord.X;
@@ -1472,6 +1473,7 @@ namespace Noxico
 					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
 				}
 			}
+			*/
 			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
 			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
 				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
@@ -1479,7 +1481,7 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
 #if DEBUG
-			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 49, 81);
+			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
 		}
 
