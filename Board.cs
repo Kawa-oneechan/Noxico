@@ -862,6 +862,30 @@ namespace Noxico
 			}
 		}
 
+		public void AimCamera(int x, int y)
+		{
+			var oldCamY = NoxicoGame.CameraY;
+			NoxicoGame.CameraY = y - 15;
+			if (NoxicoGame.CameraY < 0)
+				NoxicoGame.CameraY = 0;
+			if (oldCamY < NoxicoGame.CameraY) //went down
+			{
+				Program.WriteLine("Aiming up");
+				//NoxicoGame.HostForm.ScrollUp(0, 20, 0, 80, Color.Teal);
+				//TODO: add dirty tiles
+				//for (int col = 0; col < 80; col++)
+				//	DirtySpots.Add(new Location(col, NoxicoGame.CameraY + 19));
+				Redraw();
+			}
+			else if (oldCamY > NoxicoGame.CameraY) //went up
+			{
+				Program.WriteLine("Aiming down");
+				Redraw();
+				//NoxicoGame.HostForm.ScrollDown(0, 20, 0, 80, Color.Teal);
+				//TODO: add dirty tiles
+			}
+		}
+
 		public void Redraw()
 		{
 			for (int row = 0; row < 50; row++)
@@ -878,11 +902,11 @@ namespace Noxico
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 			foreach (var l in this.DirtySpots)
 			{
-				var localX = l.X + 0; //cameraX;
-				var localY = l.Y + 0; //cameraY;
+				var localX = l.X - NoxicoGame.CameraX;
+				var localY = l.Y - NoxicoGame.CameraY;
 				if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
 					continue;
-				var t = this.Tilemap[localX, localY];
+				var t = this.Tilemap[l.X, l.Y];
 				var def = t.Definition;
 				var glyph = def.Glyph;
 				var fore = def.Foreground;

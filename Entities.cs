@@ -54,6 +54,8 @@ namespace Noxico
 
 		public virtual void Draw()
 		{
+			if (this.YPosition + NoxicoGame.CameraY > 25)
+				return;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, this.Glyph, this.ForegroundColor, this.BackgroundColor);
 			else
