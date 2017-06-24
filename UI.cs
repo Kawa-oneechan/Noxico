@@ -98,14 +98,16 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			for (var row = 0; row < Height; row++)
+			for (var row = 0; row < Height / 2; row++)
 			{
 				for (var col = 0; col < Width; col++)
 				{
-					var color = Bitmap.GetPixel(col, row);
-					if (color.A == 0)
-						continue;
-					NoxicoGame.HostForm.SetCell(Top + row, Left + col, ' ', Color.White, color);
+					var colorT = Bitmap.GetPixel(col, (row * 2) + 0);
+					var colorB = Bitmap.GetPixel(col, (row * 2) + 1);
+					//TODO
+					//if (color.A == 0)
+					//	continue;
+					NoxicoGame.HostForm.SetCell(Top + row, Left + col, '\xDF', colorT, colorB);
 				}
 			}
 		}

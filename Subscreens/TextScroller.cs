@@ -22,15 +22,15 @@ namespace Noxico
 				scroll = 1;
 				Subscreens.FirstDraw = false;
 
-				window = new UIWindow(text[0]) { Left = 5, Top = 1, Width = 90, Height = 52 };
+				window = new UIWindow(text[0]) { Left = 5, Top = 1, Width = 90, Height = 22 };
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, 26, 45 - (help.Length() / 2));
 				var empty = new string(' ', 88);
-				for (int i = 1; i < 50; i++)
+				for (int i = 1; i < 20; i++)
 					host.Write(empty, UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
-				for (int i = scroll; i < text.Length && i - scroll < 50; i++)
+				for (int i = scroll; i < text.Length && i - scroll < 20; i++)
 				{
 					if (i < 1)
 						continue;
@@ -42,7 +42,7 @@ namespace Noxico
 			{
 				if (text.Length > 24)
 				{
-					for (int i = 2; i < 51; i++)
+					for (int i = 2; i < 21; i++)
 						host.SetCell(i, 94, (char)0x0ba, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
 					float pct = (float)(scroll - 1) / (float)((text.Length - 23 < 0) ? 1 : text.Length - 23);
 					int tp = (int)(pct * 20) + 2;
@@ -75,7 +75,7 @@ namespace Noxico
 					scroll = 1;
 				else
 				{
-					host.ScrollDown(2, 51, 6, 94, UIColors.DarkBackground);
+					host.ScrollDown(2, 21, 6, 94, UIColors.DarkBackground);
 					var i = scroll;
 					host.Write(new string(' ', 87), UIColors.RegularText, UIColors.DarkBackground, 2, 6);
 					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 7);
@@ -86,13 +86,13 @@ namespace Noxico
 			{
 				slow = DateTime.Now;
 				scroll++;
-				if (scroll > text.Length - 50)
-					scroll = text.Length - 50;
+				if (scroll > text.Length - 20)
+					scroll = text.Length - 20;
 				else if (scroll < 1)
 					scroll = 1;
 				else
 				{
-					host.ScrollUp(2, 51, 6, 94, UIColors.DarkBackground);
+					host.ScrollUp(2, 21, 6, 94, UIColors.DarkBackground);
 					var i = scroll + 49;
 					host.Write(new string(' ', 87), UIColors.RegularText, UIColors.DarkBackground, 51, 6);
 					if (i < text.Length)

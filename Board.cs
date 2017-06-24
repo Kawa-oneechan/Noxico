@@ -878,9 +878,11 @@ namespace Noxico
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 			foreach (var l in this.DirtySpots)
 			{
-				if (l.X >= 80 || l.Y >= 50 || l.X < 0 || l.Y < 0)
+				var localX = l.X + 0; //cameraX;
+				var localY = l.Y + 0; //cameraY;
+				if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
 					continue;
-				var t = this.Tilemap[l.X, l.Y];
+				var t = this.Tilemap[localX, localY];
 				var def = t.Definition;
 				var glyph = def.Glyph;
 				var fore = def.Foreground;
@@ -898,12 +900,12 @@ namespace Noxico
 					fore = fore.LerpDarken(t.InherentLight / 12.0);
 					back = back.LerpDarken(t.InherentLight / 12.0);
 				}
-				if (Lightmap[l.Y, l.X])
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore, back, force);
+				if (Lightmap[localY, localX])
+					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore, back, force);
 				else if (t.Seen)
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore.Night(), back.Night(), force);
+					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore.Night(), back.Night(), force);
 				else
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, ' ', Color.Black, Color.Black, force);
+					NoxicoGame.HostForm.SetCell(localY, localX, ' ', Color.Black, Color.Black, force);
 			}
 			this.DirtySpots.Clear();
 
