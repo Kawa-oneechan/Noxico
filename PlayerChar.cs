@@ -235,6 +235,7 @@ namespace Noxico
 				}
 			}
 			base.Move(targetDirection, check);
+			ParentBoard.AimCamera(XPosition, YPosition);
 
 			EndTurn();
 

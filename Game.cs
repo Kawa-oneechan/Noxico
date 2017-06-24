@@ -64,6 +64,8 @@ namespace Noxico
 		private static string lastMessage = "";
 		public static int WorldVersion { get; private set; }
 
+		public static int CameraX, CameraY;
+
 		private static int[][,] miniMap;
 
 		public static int Updates = 0;
@@ -450,7 +452,7 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			for (var i = 51; i < 59; i++)
+			for (var i = 26; i < 29; i++)
 			{
 				HostForm.SetCell(i, 0, 0xBA, Color.DarkGray, Color.Black);
 				HostForm.SetCell(i, 79, 0xBA, Color.DarkGray, Color.Black);
@@ -460,10 +462,10 @@ namespace Noxico
 				HostForm.SetCell(50, col, 0xCD, Color.DarkGray, Color.Black);
 				HostForm.SetCell(59, col, 0xCD, Color.DarkGray, Color.Black);
 			}
-			HostForm.SetCell(50, 0, 0xC9, Color.DarkGray, Color.Black);
-			HostForm.SetCell(50, 79, 0xBB, Color.DarkGray, Color.Black);
-			HostForm.SetCell(59, 0, 0xC8, Color.DarkGray, Color.Black);
-			HostForm.SetCell(59, 79, 0xBC, Color.DarkGray, Color.Black);
+			HostForm.SetCell(25, 0, 0xC9, Color.DarkGray, Color.Black);
+			HostForm.SetCell(25, 79, 0xBB, Color.DarkGray, Color.Black);
+			HostForm.SetCell(39, 0, 0xC8, Color.DarkGray, Color.Black);
+			HostForm.SetCell(39, 79, 0xBC, Color.DarkGray, Color.Black);
 
 			for (var i = 51; i < 59; i++)
 				for (var col = 1; col < 79; col++)
@@ -471,7 +473,7 @@ namespace Noxico
 
 			if (Messages.Count == 0)
 				return;
-			var row = 57;
+			var row = 27;
 			for (var i = 0; i < 6 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
@@ -1481,7 +1483,8 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
 #if DEBUG
-			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
+			//HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
+			HostForm.Write(string.Format("{0}x{1}", player.XPosition, player.YPosition), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
 		}
 

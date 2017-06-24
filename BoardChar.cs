@@ -196,6 +196,8 @@ namespace Noxico
 
 		public override void Draw()
 		{
+			if (this.YPosition + NoxicoGame.CameraY > 25)
+				return; 
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				base.Draw();
