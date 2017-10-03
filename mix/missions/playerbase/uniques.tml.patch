@@ -23,12 +23,11 @@ add: -
 		hips: 6
 		waist: 3
 		fertility: 0
-		breastrow
+		boobs
 			amount: 2
 			size: 1
 			nipples: 1
 				size: 1.2
-		_copy: breastrow
 		vagina
 			clit: 0.3
 

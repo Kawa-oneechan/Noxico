@@ -497,12 +497,10 @@ Sexual characteristics
 	lookat_column_clothing
 	<[[
 Clothing/armor
-
 	]]>
 	lookat_column_equipment
 	<[[
 Equipment
-
 	]]>
 -- #endregion
 -- #region Crafting
