@@ -894,9 +894,23 @@ namespace Noxico
 			if (this.Character.Path("prefixes/underfed") != null)
 				damage *= 0.25f;
 
-			//Account for armor and such
-
 			damage *= GetDefenseFactor(weaponData, target.Character);
+
+			//Find the best overall "generic" armor defense and apply it.
+			var overallArmor = 0f;
+			foreach (var targetArmor in target.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+			{
+				var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+				if (targetArmorItem == null)
+					continue;
+				if (!targetArmorItem.HasToken("armor"))
+					continue;
+				if (targetArmorItem.GetToken("armor").Value > overallArmor)
+					overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+			}
+			if (overallArmor != 0)
+				damage /= overallArmor;
+			//Account for armor materials?
 
 			//Add some randomization
 			//Determine dodges
