@@ -136,6 +136,8 @@ namespace Noxico
 				}
 			}
 
+			this.ParentBoard.AimCamera(XPosition, YPosition);
+
 			this.DijkstraMap.UpdateWalls(!Character.IsSlime, ParentBoard);
 			this.DijkstraMap.Update();
 			this.AutoTravelMap.UpdateWalls(!Character.IsSlime, ParentBoard);
