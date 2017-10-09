@@ -864,10 +864,14 @@ namespace Noxico
 
 		public void AimCamera(int x, int y)
 		{
+			Program.WriteLine("AimCamera({0}, {1})", x, y);
 			var oldCamY = NoxicoGame.CameraY;
 			NoxicoGame.CameraY = y - 15;
 			if (NoxicoGame.CameraY < 0)
 				NoxicoGame.CameraY = 0;
+			if (NoxicoGame.CameraY > 25)
+				NoxicoGame.CameraY = 25;
+			Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
 			if (oldCamY < NoxicoGame.CameraY) //went down
 			{
 				Program.WriteLine("Aiming up");
@@ -924,7 +928,7 @@ namespace Noxico
 					fore = fore.LerpDarken(t.InherentLight / 12.0);
 					back = back.LerpDarken(t.InherentLight / 12.0);
 				}
-				if (Lightmap[localY, localX])
+				if (Lightmap[l.Y, l.X])
 					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore, back, force);
 				else if (t.Seen)
 					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore.Night(), back.Night(), force);
