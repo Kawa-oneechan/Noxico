@@ -426,7 +426,6 @@ namespace Noxico
 				CurrentBoard.Redraw();
 				CurrentBoard.AimCamera(Player.XPosition, Player.YPosition);
 
-
 				if (!Player.Character.HasToken("player"))
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
 				Player.Character.RecalculateStatBonuses();
