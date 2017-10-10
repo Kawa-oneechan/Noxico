@@ -198,21 +198,25 @@ namespace Noxico
 		{
 			//if (this.YPosition + NoxicoGame.CameraY > 25)
 			//	return; 
+			var localX = this.XPosition - NoxicoGame.CameraX;
+			var localY = this.YPosition - NoxicoGame.CameraY;
+			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+				return;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				base.Draw();
 				if (Environment.TickCount % blinkRate * 2 < blinkRate)
 				{
 					if (Character.HasToken("sleeping"))
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, 'Z', this.ForegroundColor, this.BackgroundColor);
 					else if (Character.HasToken("flying"))
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '^', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '^', this.ForegroundColor, this.BackgroundColor);
 					else if (Character.Path("role/vendor") != null)
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '$', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '$', this.ForegroundColor, this.BackgroundColor);
 				}
 			}
 			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
+				NoxicoGame.HostForm.SetCell(localY, localX, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
 		}
 
 		public override bool CanSee(Entity other)

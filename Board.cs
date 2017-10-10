@@ -862,6 +862,11 @@ namespace Noxico
 			}
 		}
 
+		public void AimCamera()
+		{
+			AimCamera(NoxicoGame.HostForm.Noxico.Player.XPosition, NoxicoGame.HostForm.Noxico.Player.YPosition);
+		}
+
 		public void AimCamera(int x, int y)
 		{
 			Program.WriteLine("AimCamera({0}, {1})", x, y);

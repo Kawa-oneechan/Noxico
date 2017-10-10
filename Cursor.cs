@@ -30,7 +30,7 @@ namespace Noxico
 			//	base.Draw();
 			if (NoxicoGame.Mode != UserMode.Aiming)
 				return;
-			NoxicoGame.HostForm.Cursor = new Point(XPosition, YPosition);
+			NoxicoGame.HostForm.Cursor = new Point(XPosition - NoxicoGame.CameraX, YPosition - NoxicoGame.CameraY);
 		}
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
@@ -59,6 +59,7 @@ namespace Noxico
 
 		public void Point()
 		{
+			this.ParentBoard.AimCamera(this.XPosition, this.YPosition);
 			PointingAt = null;
 			if (NoxicoGame.Messages.Count == 0) //fixes range error found while explaining controls
 				NoxicoGame.Messages.Add(string.Empty);
@@ -250,7 +251,7 @@ namespace Noxico
 #endif
 
 					//MessageBox.List("This is " + description + ". What would you do?", options,
-					ActionList.Show(description, PointingAt.XPosition, PointingAt.YPosition, options,
+					ActionList.Show(description, PointingAt.XPosition - NoxicoGame.CameraX, PointingAt.YPosition - NoxicoGame.CameraY, options,
 						() =>
 						{
 							Hide();
@@ -481,6 +482,7 @@ namespace Noxico
 			if (NoxicoGame.Messages.Count > 1)
 				NoxicoGame.Messages.RemoveAt(NoxicoGame.Messages.Count - 1);
 			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
+			this.ParentBoard.AimCamera();
 			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
 		}

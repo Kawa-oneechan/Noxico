@@ -796,46 +796,50 @@ namespace Noxico
 		{
 			var tx = y.X / (CellWidth);
 			var ty = y.Y / (CellHeight);
-			tx += CellXoffset;
-			ty += CellYoffset;
+			var ltx = tx - NoxicoGame.CameraX;
+			var lty = ty - NoxicoGame.CameraY;
+			var lptx = tx + NoxicoGame.CameraX;
+			var lpty = ty + NoxicoGame.CameraY;
+			//tx += CellXoffset;
+			//ty += CellYoffset;
 
 			if (tx < 0 || ty < 0 || tx > 99 || ty > 59)
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				if (tx < 80 && ty < 50)
+				if (tx < 80 && ty < 25)
 				{
 					if (y.Button == MouseButtons.Left)
-						Noxico.Player.AutoTravelTo(tx, ty);
+						Noxico.Player.AutoTravelTo(lptx, lpty);
 					else if (y.Button == MouseButtons.Right)
 					{
 						NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
-						NoxicoGame.Cursor.XPosition = tx;
-						NoxicoGame.Cursor.YPosition = ty;
+						NoxicoGame.Cursor.XPosition = lptx;
+						NoxicoGame.Cursor.YPosition = lpty;
 						NoxicoGame.Cursor.Point();
 						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
 						NoxicoGame.Cursor.Update();
 					}
 					else if (y.Button == System.Windows.Forms.MouseButtons.Middle)
 					{
-						if (ty < 8)
+						if (lpty < 8)
 						{
-							Noxico.Player.AutoTravelTo(tx, 0);
+							Noxico.Player.AutoTravelTo(lptx, 0);
 							Noxico.Player.AutoTravelLeave = Direction.North;
 						}
-						else if (ty > 42)
+						else if (lpty > 34)
 						{
-							Noxico.Player.AutoTravelTo(tx, 49);
+							Noxico.Player.AutoTravelTo(lptx, 49);
 							Noxico.Player.AutoTravelLeave = Direction.South;
 						}
-						else if (tx < 4)
+						else if (lptx < 4)
 						{
-							Noxico.Player.AutoTravelTo(0, ty);
+							Noxico.Player.AutoTravelTo(0, lpty);
 							Noxico.Player.AutoTravelLeave = Direction.West;
 						}
-						else if (tx > 72)
+						else if (lptx > 72)
 						{
-							Noxico.Player.AutoTravelTo(79, ty);
+							Noxico.Player.AutoTravelTo(79, lpty);
 							Noxico.Player.AutoTravelLeave = Direction.East;
 						}
 					}
