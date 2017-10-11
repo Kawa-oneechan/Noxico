@@ -37,7 +37,7 @@ namespace Noxico
 					height += 1 + options.Count;
 				else if (type == BoxType.Input)
 					height += 2;
-				var top = 15 - (height / 2);
+				var top = 12 - (height / 2);
 				if (top < 0)
 					top = 0;
 				if (UIManager.Elements == null || fromWalkaround)
@@ -50,15 +50,15 @@ namespace Noxico
 					UIManager.Elements.Add(icon);
 				}
 
-				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 25, Top = top, Width = 50, Height = height };
+				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 15, Top = top, Width = 50, Height = height };
 				UIManager.Elements.Add(win);
-				lbl = new UILabel(text) { Left = 27, Top = top + 1, Width = 50, Height = lines };
+				lbl = new UILabel(text) { Left = 17, Top = top + 1, Width = 50, Height = lines };
 				UIManager.Elements.Add(lbl);
 				lst = null;
 				txt = null;
 				if (type == BoxType.List)
 				{
-					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 27, Top = top + lines + 1, Width = 46, Height = options.Count };
+					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 17, Top = top + lines + 1, Width = 46, Height = options.Count };
 					lst.Change += (s, e) =>
 						{
 							option = lst.Index;
@@ -69,7 +69,7 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 27, Top = top + lines + 1, Width = 45, Height = 1 };
+					txt = new UITextBox((string)Answer) { Left = 17, Top = top + lines + 1, Width = 45, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
 				var keys = string.Empty;
@@ -79,7 +79,7 @@ namespace Noxico
 					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
 					keys = " \x18/\x19 ";
-				key = new UILabel(keys) { Top = top + height - 1, Left = 72 - keys.Length() };
+				key = new UILabel(keys) { Top = top + height - 1, Left = 62 - keys.Length() };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;

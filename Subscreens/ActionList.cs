@@ -46,14 +46,14 @@ namespace Noxico
 			width += 4;
 			//Place the window just to the right of the specified location.
 			//If this goes off-screen, try placing it to the left instead.
-			if (x + 1 + width >= 100)
+			if (x + 1 + width >= Program.Cols)
 				x = x - width;
 			else
 				x++;
 			var height = options.Count + 2;
 			//Check if we're going off the bottom of the screen and correct.
-			if (y + height >= 30)
-				y = 30 - height;
+			if (y + height >= Program.Rows)
+				y = Program.Rows - height;
 			//If we go off the left or top, fuck it -- overlap the target.
 			if (x < 0)
 				x = 0;
