@@ -1332,6 +1332,7 @@ namespace Noxico
 
 		public static void DrawSidebar()
 		{
+			/*
 			var player = HostForm.Noxico.Player;
 
 			for (var row = 0; row < 30; row++)
@@ -1451,6 +1452,7 @@ namespace Noxico
 					sb.Append(i18n.GetString("mod_helpless"));
 				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
+			*/
 
 			/*
 			var coord = player.ParentBoard.Coordinate;
@@ -1477,6 +1479,8 @@ namespace Noxico
 				}
 			}
 			*/
+			
+			/*
 			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
 			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
 				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
@@ -1487,6 +1491,7 @@ namespace Noxico
 			//HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 			HostForm.Write(string.Format("{0}x{1}", player.XPosition, player.YPosition), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
+			*/
 		}
 
 		public static void CheckForTutorialStuff()

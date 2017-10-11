@@ -13,6 +13,9 @@ namespace Noxico
 {
 	static class Program
 	{
+		public static int Rows = 25;
+		public static int Cols = 80;
+
 		[STAThread]
 		static void Main(string[] args)
 		{
@@ -156,8 +159,8 @@ namespace Noxico
 				this.Background = source.Background;
 			}
 		}
-		private Cell[,] image = new Cell[100, 30];
-		private Cell[,] previousImage = new Cell[100, 30];
+		private Cell[,] image = new Cell[Program.Cols, Program.Rows];
+		private Cell[,] previousImage = new Cell[Program.Cols, Program.Rows];
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
 		private bool starting = true, fatal = false;
@@ -165,7 +168,7 @@ namespace Noxico
 		public bool Running { get; set; }
 
 		private int CellWidth, CellHeight;
-		private int CellXoffset, CellYoffset;
+		//private int CellXoffset, CellYoffset;
 		private string pngFont = "8x16-bold";
 		private byte[,] fontData;
 
@@ -211,7 +214,7 @@ namespace Noxico
 				this.KeyPress += new KeyPressEventHandler(this.Form1_KeyPress);
 				this.KeyUp += new KeyEventHandler(this.Form1_KeyUp);
 				this.Icon = global::Noxico.Properties.Resources.app;
-				this.ClientSize = new Size(80 * CellWidth, 50 * CellHeight);
+				this.ClientSize = new Size(Program.Cols * CellWidth, Program.Rows * CellHeight);
 				this.Controls.Add(new Label()
 				{
 					Text = "Loading...",
@@ -416,6 +419,7 @@ namespace Noxico
 			CellWidth = fontBitmap.Width / 32;
 			CellHeight = fontBitmap.Height / 32;
 
+			/*
 			if (CellWidth == 8)
 			{
 				CellXoffset = -3; CellYoffset = 0;
@@ -424,16 +428,17 @@ namespace Noxico
 			{
 				CellXoffset = -10; CellYoffset = -4;
 			}
+			*/
 
 			CachePNGFont(fontBitmap);
 
 			youtube = IniFile.GetValue("misc", "youtube", false);
-			ClientSize = new Size(100 * CellWidth, 30 * CellHeight);
+			ClientSize = new Size(Program.Cols * CellWidth, Program.Rows * CellHeight);
 			if (youtube)
 			{
 				//Find nearest YT size
-				var eW = 100 * CellWidth;
-				var eH = 30 * CellHeight;
+				var eW = Program.Cols * CellWidth;
+				var eH = Program.Rows * CellHeight;
 				if (eW <= 854 || eH <= 480)
 					ClientSize = new Size(854, 480);
 				else if (eW <= 1280 || eH <= 720)
@@ -457,10 +462,10 @@ namespace Noxico
 			Show();
 			Refresh();
 
-			backBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
-			scrollBuffer = new Bitmap(100 * CellWidth, 30 * CellHeight, PixelFormat.Format24bppRgb);
-			for (int row = 0; row < 30; row++)
-				for (int col = 0; col < 100; col++)
+			backBuffer = new Bitmap(Program.Cols * CellWidth, Program.Rows * CellHeight, PixelFormat.Format24bppRgb);
+			scrollBuffer = new Bitmap(Program.Cols * CellWidth, Program.Rows * CellHeight, PixelFormat.Format24bppRgb);
+			for (int row = 0; row < Program.Rows; row++)
+				for (int col = 0; col < Program.Cols; col++)
 					previousImage[col, row].Character = '\uFFFE';
 		}
 
@@ -480,10 +485,10 @@ namespace Noxico
 			//Moved here from Draw() to prevent mouse droppings. Bonus: this allows a slightly larger cursor.
 			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
 				prevCursor = Cursor;
-			if (Cursor.X >= 0 && Cursor.X < 100 && Cursor.Y >= 0 && Cursor.Y < 30)
+			if (Cursor.X >= 0 && Cursor.X < Program.Cols && Cursor.Y >= 0 && Cursor.Y < Program.Rows)
 			{
 				var cSize = CellWidth;
-				if (Cursor.X < 99 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
+				if (Cursor.X < Program.Cols - 1 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
 				e.Graphics.DrawRectangle(cursorPens[(uint)Environment.TickCount % cursorPens.Length], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
 			}
@@ -514,7 +519,7 @@ namespace Noxico
 
 		public void SetCell(int row, int col, int character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false)
 		{
-			if (col >= 100 || row >= 30 || col < 0 || row < 0)
+			if (col >= Program.Cols || row >= Program.Rows || col < 0 || row < 0)
 				return;
 
 			image[col, row].Character = character;
@@ -525,9 +530,9 @@ namespace Noxico
 
 		public void Clear(char character, Color foregroundColor, Color backgroundColor)
 		{
-			for (int row = 0; row < 30; row++)
+			for (int row = 0; row < Program.Rows; row++)
 			{
-				for (int col = 0; col < 100; col++)
+				for (int col = 0; col < Program.Cols; col++)
 				{
 					image[col, row].Character = character;
 					image[col, row].Foreground = foregroundColor;
@@ -583,12 +588,12 @@ namespace Noxico
 					SetCell(row, col, '\uE2FF', Color.Black, Color.Black);
 					col++;
 				}
-				if (col >= 100)
+				if (col >= Program.Cols)
 				{
 					col = rx;
 					row++;
 				}
-				if (row >= 30)
+				if (row >= Program.Rows)
 					return;
 			}
 		}
@@ -635,9 +640,9 @@ namespace Noxico
 			var size = lockData.Stride * lockData.Height;
 			var scan0 = new byte[size];
 			Marshal.Copy(lockData.Scan0, scan0, 0, size);
-			for (int row = 0; row < 30; row++)
+			for (int row = 0; row < Program.Rows; row++)
 			{
-				for (int col = 0; col < 100; col++)
+				for (int col = 0; col < Program.Cols; col++)
 				{
 					var here = image[col, row];
 					if (here != previousImage[col, row])
@@ -717,9 +722,9 @@ namespace Noxico
 				{
 					using (var dumpFile = new StreamWriter("lol.txt", false, System.Text.Encoding.GetEncoding(437)))
 					{
-						for (int row = 0; row < 30; row++)
+						for (int row = 0; row < Program.Rows; row++)
 						{
-							for (int col = 0; col < 100; col++)
+							for (int col = 0; col < Program.Cols; col++)
 							{
 								dumpFile.Write(NoxicoGame.IngameTo437[image[col, row].Character]);
 							}
@@ -732,10 +737,10 @@ namespace Noxico
 						dumpFile.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; CHARSET=utf-8\" />");
 						dumpFile.WriteLine("</head><body>");
 						dumpFile.WriteLine("<table style=\"font-family: Unifont, monospace\" cellspacing=0 cellpadding=0>");
-						for (int row = 0; row < 30; row++)
+						for (int row = 0; row < Program.Rows; row++)
 						{
 							dumpFile.Write("<tr>");
-							for (int col = 0; col < 100; col++)
+							for (int col = 0; col < Program.Cols; col++)
 							{
 								var ch = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[image[col, row].Character]);
 								if (ch == "&#x20;")
@@ -768,8 +773,8 @@ namespace Noxico
 			if (e.KeyCode == Keys.R && e.Control)
 			{
 				NoxicoGame.KeyMap[Keys.R] = false;
-				for (int row = 0; row < 30; row++)
-					for (int col = 0; col < 100; col++)
+				for (int row = 0; row < Program.Rows; row++)
+					for (int col = 0; col < Program.Cols; col++)
 						previousImage[col, row].Character = '\uFFFE';
 			}
 
@@ -803,11 +808,11 @@ namespace Noxico
 			//tx += CellXoffset;
 			//ty += CellYoffset;
 
-			if (tx < 0 || ty < 0 || tx > 99 || ty > 59)
+			if (tx < 0 || ty < 0 || tx > Program.Cols - 1 || ty > Program.Rows - 1)
 				return;
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
-				if (tx < 80 && ty < 25)
+				if (tx < Program.Cols && ty < Program.Rows)
 				{
 					if (y.Button == MouseButtons.Left)
 						Noxico.Player.AutoTravelTo(lptx, lpty);
