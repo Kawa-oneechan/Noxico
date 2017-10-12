@@ -126,10 +126,7 @@
     <Compile Include="i18n.cs" />
     <Content Include="Guides\ref.png" />
     <Content Include="Guides\ref.txt" />
-    <Content Include="mix\fonts\16x16-wyse.png" />
-    <Content Include="mix\fonts\8x8-5140.png" />
-    <Content Include="mix\fonts\8x8-bold.png" />
-    <Content Include="mix\fonts\8x8-thin.png" />
+    <Content Include="mix\fonts\8x16-bold.png" />
     <Content Include="mix\missions\chelsie\lairhouse.txt" />
     <Content Include="mix\missions\consentaclepit\uniques.tml.patch" />
     <None Include="mix\missions\consentaclepit\dialogue.tml.patch" />

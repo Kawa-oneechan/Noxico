@@ -1371,11 +1371,48 @@ namespace Noxico
 
 			if (string.IsNullOrWhiteSpace(LookAt))
 			{
-				//Draw stats
+				var hpNow = character.Health;
+				var hpMax = character.MaximumHealth;
+				var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
+				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 20, 2);
+				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 20, 2);
+				HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, 20, 3);
+
+				HostForm.SetCell(20, 21, player.Glyph, player.ForegroundColor, player.BackgroundColor);
+				switch (character.Gender)
+				{
+					case Gender.Male:
+						HostForm.SetCell(20, 23, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
+						break;
+					case Gender.Female:
+						HostForm.SetCell(20, 23, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
+						break;
+					case Gender.Herm:
+						HostForm.SetCell(20, 23, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
+						break;
+				}
+				HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 20, 25);
+
+				var sb = new StringBuilder();
+				if (character.HasToken("haste"))
+					sb.Append(i18n.GetString("mod_haste"));
+				if (character.HasToken("slow"))
+					sb.Append(i18n.GetString("mod_slow"));
+				if (character.HasToken("flying"))
+					sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
+				if (character.HasToken("swimming"))
+				{
+					if (character.GetToken("swimming").Value == -1)
+						sb.Append(i18n.GetString("mod_swimmingunl"));
+					else
+						sb.Append(i18n.Format("mod_swimming", Math.Floor((character.GetToken("swimming").Value / 20) * 100)));
+				}
+				var mods = sb.ToString();
+				HostForm.Write(mods, Color.Silver, Color.Transparent, 20, 79 - mods.Length());
 			}
 			else
 			{
-				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 1);
+				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 2);
 			}
 			
 
