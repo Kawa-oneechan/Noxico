@@ -62,6 +62,7 @@ namespace Noxico
 
 		private static List<string> messageLog = new List<string>();
 		private static string lastMessage = "";
+		public static string LookAt { get; set; }
 		public static int WorldVersion { get; private set; }
 
 		public static int CameraX, CameraY;
@@ -453,41 +454,27 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			for (var i = 26; i < 29; i++)
-			{
-				HostForm.SetCell(i, 0, 0xBA, Color.DarkGray, Color.Black);
-				HostForm.SetCell(i, 79, 0xBA, Color.DarkGray, Color.Black);
-			}
-			for (var col = 1; col < 79; col++)
-			{
-				HostForm.SetCell(50, col, 0xCD, Color.DarkGray, Color.Black);
-				HostForm.SetCell(59, col, 0xCD, Color.DarkGray, Color.Black);
-			}
-			HostForm.SetCell(25, 0, 0xC9, Color.DarkGray, Color.Black);
-			HostForm.SetCell(25, 79, 0xBB, Color.DarkGray, Color.Black);
-			HostForm.SetCell(39, 0, 0xC8, Color.DarkGray, Color.Black);
-			HostForm.SetCell(39, 79, 0xBC, Color.DarkGray, Color.Black);
-
-			for (var i = 51; i < 59; i++)
-				for (var col = 1; col < 79; col++)
+			for (var i = 21; i < 25; i++)
+				for (var col = 0; col < 65; col++)
 					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
 
 			if (Messages.Count == 0)
 				return;
-			var row = 27;
-			for (var i = 0; i < 6 && i < Messages.Count; i++)
+			var row = 21;
+			for (var i = 0; i < 4 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
 				//var c = Messages[m].Color;
 				//if (c.Lightness < 0.2)
 				//	c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 2);
+				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
 				row--;
 			}
 		}
 		public static void ClearMessages()
 		{
 			Messages.Clear();
+			DrawMessages();
 		}
 		public static void AddMessage(object messageOrMore, Color color)
 		{
@@ -589,7 +576,7 @@ namespace Noxico
 				}
 				CurrentBoard.Draw();
 				//UpdateMessages();
-				DrawMessages();
+				//DrawMessages();
 				DrawSidebar();
 
 				if (Mode == UserMode.Aiming)
@@ -1332,6 +1319,67 @@ namespace Noxico
 
 		public static void DrawSidebar()
 		{
+			var player = HostForm.Noxico.Player;
+			if (NoxicoGame.Subscreen == Introduction.StoryHandler || NoxicoGame.Subscreen == Introduction.CharacterCreator)
+				return;
+			if (player == null || player.Character == null)
+				return;
+
+			for (var row = 21; row < 25; row++)
+				for (var col = 0; col < 80; col++)
+					HostForm.SetCell(row, col, ' ', Color.DarkGray, Color.Black);
+
+			for (var col = 0; col < 80; col++)
+				HostForm.SetCell(20, col, 0xCD, Color.DarkGray, Color.Black);
+			for (var row = 21; row < 25; row++)
+				HostForm.SetCell(row, 66, 0xB3, Color.DarkGray, Color.Black);
+			HostForm.SetCell(20, 66, 0xD1, Color.DarkGray, Color.Black);
+
+			var character = player.Character;
+
+			var statNames = new Dictionary<string, string>()
+			{
+				{ "Charisma", "\x2C0\x2C1" },
+				{ "Climax", "\x2C2\x2C3" },
+				{ "Cunning", "\x2C4\x2C5" },
+				{ "Carnality", "\x2C6\x2C7" },
+				{ "Stimulation", "\x2C8\x2C9" },
+				{ "Sensitivity", "\x2CA\x2CB" },
+				{ "Speed", "\x2CA\x2CC" },
+				{ "Strength", "\x2CD\x2CE" }
+			};
+			var statRow = 21;
+			var statCol = 67;
+			foreach (var stat in statNames)
+			{
+				var color = " <cGray>";
+					var statBonus = character.GetToken(stat.Key.ToLowerInvariant() + "bonus").Value;
+				var statBase = character.GetToken(stat.Key.ToLowerInvariant()).Value;
+				var total = statBase + statBonus;
+				if (statBonus > 0)
+					color = " <cWhite>";
+				else if (statBonus < 0)
+					color = " <cMaroon>";
+				HostForm.Write(stat.Value + color + total, Color.Silver, Color.Transparent, statRow, statCol);
+				statRow++;
+				if (statRow == 25)
+				{
+					statRow = 21;
+					statCol = 74;
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(LookAt))
+			{
+				//Draw stats
+			}
+			else
+			{
+				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 1);
+			}
+			
+
+			DrawMessages();
 			/*
 			var player = HostForm.Noxico.Player;
 

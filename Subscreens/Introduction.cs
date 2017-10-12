@@ -286,8 +286,8 @@ namespace Noxico
 				//Start creating the world as we work...
 				if (worldgen == null) //Conditional added by Mat.
 				{
-					//worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
-					//worldgen.Start();
+					worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
+					worldgen.Start();
 				}
 
 				//Load all bonus traits.
