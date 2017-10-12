@@ -200,7 +200,7 @@ namespace Noxico
 			//	return; 
 			var localX = this.XPosition - NoxicoGame.CameraX;
 			var localY = this.YPosition - NoxicoGame.CameraY;
-			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
 				return;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{

@@ -1270,7 +1270,7 @@ namespace Noxico
 
 		private static void Columnize(Action<string> print, List<string> col1, List<string> col2, string header1, string header2)
 		{
-			var pad = 44;
+			var pad = 22;
 			var totalRows = Math.Max(col1.Count, col2.Count);
 			print(i18n.GetString(header1).PadEffective(pad) + i18n.GetString(header2) + "\n");
 			for (var i = 0; i < totalRows; i++)
@@ -1877,9 +1877,9 @@ namespace Noxico
 
 			var player = NoxicoGame.HostForm.Noxico.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
-				print(i18n.Format("lookat_name_type", this.GetKnownName(true).PadEffective(34), this.Title, ((pa != null && pa is Player) ? i18n.GetString("playermark") : string.Empty)));
+				print(this.GetKnownName(true) + ", " + this.Title + "\n\n");
 			else
-				print(this.GetKnownName(true) + "\n\n\n");
+				print(this.Title + "\n\n");
 
 			bool breastsVisible = false, crotchVisible = false;
 			var carried = new List<InventoryItem>();
