@@ -940,64 +940,15 @@ namespace Noxico
 			return false;
 		}
 
+		
 		public float GetDefenseFactor(Token weaponToken, Noxico.Character target)
 		{
-			var ret = 0f;
-			var attackType = 0; //punch
-			var skinType = 0; //skin
-			if (weaponToken == null)
-			{
-				if (this.Character.Path("skin/type").Text == "fur" /* or the character has nails? */)
-					attackType = 1; //tear
-				else if (this.Character.HasToken("snaketail"))
-					attackType = 2; //strike
-				else if (this.Character.HasToken("quadruped") || this.Character.HasToken("taur"))
-					attackType = 3; //kick
-				//monoceros check?
-			}
-			else
-			{
-				var wat = weaponToken.HasToken("attacktype") ? weaponToken.GetToken("attacktype").Text : "strike";
-				var types = new[] { "punch", "tear", "strike", "kick", "stab", "pierce", "crush" };
-				for (var i = 0; i < types.Length; i++)
-				{
-					if (wat == types[i])
-					{
-						attackType = i;
-						break;
-					}
-				}
-			}
-
-			var skinTypes = new[] { "skin", "fur", "scales", "metal", "slime", "rubber" };
-			var tst = target.Path("skin/type").Text;
-			if (tst == "carapace")
-				tst = "scales";
-			for (var i = 0; i < skinTypes.Length; i++)
-			{
-				if (tst == skinTypes[i])
-				{
-					skinType = i;
-					break;
-				}
-			}
-
-			var factors = new[,]
-			{ //skin   fur    scales metal slime  rubber
-			  { 1,     1,     1,     0.5f, 0.75f, 0.5f }, //punch
- 			  { 1,     1,     0.5f,  0.5f, 0.75f, 2    }, //tear
-			  { 1,     1,     1,     0.5f, 0.75f, 0.5f }, //strike
-			  { 1.1f,  1.1f,  1.1f,  0.6f, 0.78f, 0.6f }, //kick (punch harder)
- 			  { 1.5f,  1.5f,  1.2f,  0.5f, 0.75f, 1    }, //stab
-			  { 1.25f, 1.25f, 1.5f,  1,    0.75f, 1    }, //pierce
-			  { 1.5f,  1.5f,  1,     1,    2,     0.5f }, //crush
-			};
-
-			ret = factors[attackType, skinType];
-			//TODO: do something like the above for any armor or shield being carried by the defender
-			//TODO: involve +N modifiers on both weapon and armor/shield
-
-			return ret;
+			if (env == null)
+				SetupLua();
+			env.SetValue("weapon", weaponToken);
+			env.SetValue("target", target);
+			var r = Lua.RunFile("defense.lua", env);
+			return (float)(r.ToDouble());
 		}
 
 		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
