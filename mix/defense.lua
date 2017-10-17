@@ -14,9 +14,8 @@ if weapon == undefined then
 else
 	local what = weapon.Path("attackType") and weapon.Path("attackType").Text or "strike"
 	local attackTypes = { "punch", "tear", "strike", "kick", "stab", "pierce", "crush" }
-	-- For whatever reason, we can't seem to do for k,v in loops :(
-	for i = 1, #attackTypes, 1 do
-		if what == attackTypes[i] then
+	for i,t in ipairs(attackTypes) do
+		if what == t then
 			attackType = i
 			break
 		end
@@ -26,8 +25,8 @@ end
 local ourSkin = target.Path("skin/type").Text
 if ourSkin == "carapace" then ourSkin = "scales" end
 local skins = { "skin", "fur", "scales", "metal", "slime", "rubber" }
-for i = 1, #skins, 1 do
-	if ourSkin == skins[i] then
+for i,s in ipairs(skins) do
+	if ourSkin == s then
 		skinType = i
 		break
 	end
