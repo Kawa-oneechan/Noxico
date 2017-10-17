@@ -273,7 +273,7 @@ namespace Noxico
 		//private static Dictionary<string, Bitmap> portraits;
 
 		private static int page = 0;
-		private static Action<int> loadPage, loadColors; // redrawBackdrop;
+		private static Action<int> loadPage, loadColors; //, redrawBackdrop;
 		private static Bitmap backdrop; //, backWithPortrait;
 
 		/// <summary>
@@ -315,8 +315,8 @@ namespace Noxico
 					{ "gift", traitHelps[0] },
 				};
 
-				backdrop = Mix.GetBitmap("chargen.png");
-				/* backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				backdrop = Mix.GetBitmap("chargen_new	.png");
+/*				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				using (var g = Graphics.FromImage(backWithPortrait))
 				{
 					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
@@ -328,7 +328,7 @@ namespace Noxico
 				string[] prefoptions = { i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Either") };
 				controls = new Dictionary<string, UIElement>()
 				{
-					{ "backdrop", new UIPNGBackground(backdrop) },
+					{ "backdrop", new UIPNGBackground(backdrop) }, //backWithPortrait) },
 					{ "headerline", new UILabel(bar) { Left = 42, Top = 3, Foreground = Color.Black } },
 					{ "header", new UILabel(title) { Left = 58 - (title.Length() / 2), Top = 3, Width = title.Length(), Foreground = Color.Black } },
 					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 42, Top = 20, Width = 10, Height = 1 } },
@@ -403,9 +403,8 @@ namespace Noxico
 					pages[2].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
-				//Do a nice screen blend effect. Normally we can only do straight normal blends.
+/*				//Do a nice screen blend effect. Normally we can only do straight normal blends.
 				//You might think this is slow as balls, being a Get/SetPixel loop. But since our pics are only 54x58, it's not that bad.
-				/*
 				redrawBackdrop = new Action<int>(i =>
 				{
 					//We try x_y.png first, where x is the bodyplan ID and y the gender.
@@ -451,8 +450,8 @@ namespace Noxico
 						}
 					}
 					((UIPNGBackground)controls["backdrop"]).Bitmap = backWithPortrait;
-				});
-				*/
+				}); */
+
 				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
 				controls["play"].Enter = (s, e) =>
