@@ -1755,13 +1755,10 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			print("<cGray>Actual gender: " + this.ActualGender.ToString() + "\n");
 			print("<cGray>Self-preferred gender: " + this.PreferredGender.ToString() + "\n");
 			print("<cGray>Cum amount: " + this.CumAmount + "mLs.\n");
-			print("<cGray>Biggest breast row: #" + this.BiggestBreastrowNumber + " @ " + this.GetBreastRowSize(this.BiggestBreastrowNumber) + "'\n");
-			print("<cGray>Biggest penis (length only): #" + this.GetBiggestPenisNumber(false) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(false), false) + "cm\n");
-			print("<cGray>Biggest penis (l * t): #" + this.GetBiggestPenisNumber(true) + " @ " + this.GetPenisSize(this.GetBiggestPenisNumber(true), true) + "cm\n");
-			print("<cGray>Highest capacity cooch: #" + this.LargestVaginaNumber + " @ " + this.GetVaginaCapacity(this.LargestVaginaNumber) + "\n");
-			print("<cGray>Smallest breast row: #" + this.SmallestBreastrowNumber + " @ " + this.GetBreastRowSize(this.SmallestBreastrowNumber) + "'\n");
-			print("<cGray>Smallest penis (l * t): #" + this.GetSmallestPenisNumber(true) + " @ " + this.GetPenisSize(this.GetSmallestPenisNumber(true), true) + "cm\n");
-			print("<cGray>Lowest capacity cooch: #" + this.SmallestVaginaNumber + " @ " + this.GetVaginaCapacity(this.SmallestVaginaNumber) + "\n");
+			print("<cGray>Breasts: " + this.GetBreastAmount() + " @ " + this.GetBreastSize() + "'\n");
+			print("<cGray>Penis (length only): " + this.GetPenisSize(false) + "cm\n");
+			print("<cGray>Penis (l * t): " + this.GetPenisSize(true) + "cm\n");
+			print("<cGray>Vagina capacity: " + this.GetVaginaCapacity() + "\n");
 			#endif
 
 			return sb.ToString();
@@ -2615,7 +2612,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 
 		public bool RemoveVirgin()
 		{
-			return RemoveVirgin(this.GetToken("vagina");
+			return RemoveVirgin(this.GetToken("vagina"));
 		}
 
 		/// <summary>
