@@ -315,7 +315,7 @@ namespace Noxico
 					{ "gift", traitHelps[0] },
 				};
 
-				backdrop = Mix.GetBitmap("chargen_new	.png");
+				backdrop = Mix.GetBitmap("chargen_new.png");
 /*				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				using (var g = Graphics.FromImage(backWithPortrait))
 				{
@@ -329,11 +329,11 @@ namespace Noxico
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(backdrop) }, //backWithPortrait) },
-					{ "headerline", new UILabel(bar) { Left = 42, Top = 3, Foreground = Color.Black } },
-					{ "header", new UILabel(title) { Left = 58 - (title.Length() / 2), Top = 3, Width = title.Length(), Foreground = Color.Black } },
-					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 42, Top = 20, Width = 10, Height = 1 } },
-					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
-					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
+					{ "headerline", new UILabel(bar) { Left = 56, Top = 8, Foreground = Color.Black } },
+					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 8, Width = title.Length(), Foreground = Color.Black } },
+					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 46, Width = 10, Height = 3 } },
+					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
 
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 42, Top = 5, Foreground = Color.Gray } },
 					{ "name", new UITextBox(string.Empty) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
