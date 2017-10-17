@@ -23,7 +23,7 @@ namespace Noxico
 
 	public enum Mutations
 	{
-		Random = -1, AddBreastRow, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
+		Random = -1, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
 		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples
 	}
 
@@ -167,22 +167,20 @@ namespace Noxico
 				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough();
 				var crotchVisible = (pantsCT && underpantsCT);
 
-				var biggestDick = (GetBiggestPenisNumber(false) == -1) ? 0 : GetPenisSize(GetPenisByNumber(GetBiggestPenisNumber(false)), false);
-
-				if (biggestDick < 4 && !crotchVisible)
-					biggestDick = 0; //hide tiny dicks with clothing on.
+				var dickSize = GetPenisSize(false);
+				if (dickSize < 4 && !crotchVisible)
+					dickSize = 0; //hide tiny dicks with clothing on.
 
 				var scoreM = 0.0f; // note scores not capped at 1.0
 				var scoreF = 0.0f;
 
 				// calibrated using felin min. penis size
 				// size 13 or more guarentees masculine looks
-				scoreM += biggestDick * 0.0425f;
+				scoreM += dickSize * 0.0425f;
 
 				// calibrated using human min. breast size
 				// size 2 or more breaks the feminine looks threshold
-				if (BiggestBreastrowNumber != -1)
-					scoreF += GetBreastRowSize(BiggestBreastrowNumber) * 0.51f;
+				scoreF += GetBreastSize() * 0.51f;
 
 				// visible vagina implies feminine looks
 				if (HasToken("vagina") && crotchVisible)
@@ -327,11 +325,11 @@ namespace Noxico
 		public void FixBoobs()
 		{
 			//moved from FixBroken() since FixBoobs() may need to be called from within FixBroken() and it's best to avoid an infinite loop.
-			if (!this.HasToken("breastrow"))
+			if (!this.HasToken("breasts"))
 			{
-				var breastRow = this.AddToken("breastrow");
-				breastRow.AddToken("amount", 2);
-				breastRow.AddToken("size", 0);
+				var boob = this.AddToken("breasts");
+				boob.AddToken("amount", 2);
+				boob.AddToken("size", 0);
 			}
 		}
 
@@ -392,8 +390,27 @@ namespace Noxico
 				if ((toFix.HasToken("count") && toFix.GetToken("count").Value <= 0) ||
 					(toFix.HasToken("amount") && toFix.GetToken("amount").Value <= 0) ||
 					(toFix.HasToken("size") && toFix.GetToken("size").Value < 0) ||
-					(toFix.HasToken("sizefromprevious") && toFix.GetToken("sizefromprevious").Value < 0))
+					(toFix.HasToken("sizefromprevious")))
 					toRemove.Add(toFix);
+			}
+			foreach (var t in this.Tokens.Where(t => t.Name == "breastrow"))
+			{
+				t.Name = "breasts";
+			}
+			//Remove superfluous genitalia
+			if (this.Tokens.Count(t => t.Name == "penis") > 2)
+			{
+				this.GetToken("penis").AddToken("dual");
+				toRemove.AddRange(this.Tokens.Where(t => t.Name == "penis").Skip(1));
+			}
+			if (this.Tokens.Count(t => t.Name == "vagina") > 2)
+			{
+				this.GetToken("vagina").AddToken("dual");
+				toRemove.AddRange(this.Tokens.Where(t => t.Name == "vagina").Skip(1));
+			}
+			if (this.Tokens.Count(t => t.Name == "breasts") > 1)
+			{
+				toRemove.AddRange(this.Tokens.Where(t => t.Name == "breasts").Skip(1));
 			}
 			foreach (Token removeMe in toRemove)
 			{
@@ -496,18 +513,6 @@ namespace Noxico
 
 		}
 
-		private Token PickATit()
-		{
-			var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
-			return allTits[Random.Next(allTits.Count)];
-		}
-
-		private int PickATitNum()
-		{
-			var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
-			return Random.Next(allTits.Count);
-		}
-
 #if MUTAMORPH
         public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
@@ -523,90 +528,12 @@ namespace Noxico
 				string report = "";
 				if (randomize)
 					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
-                switch (mutation)
-                {
+				switch (mutation)
+				{
 					case Mutations.Random:
 						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Xolroc to fix it.");
-                    case Mutations.AddBreastRow:
-						var newboobs = new Token("breastrow");
-                        if (this.Tokens.Count(t => t.Name == "breastrow") < 4)
-                        {
-							if (this.HasToken("breastrow") && this.GetToken("breastrow").GetToken("size").Value == 0)
-								this.RemoveToken("breastrow");
-							
-							var amount = 2;
-                            newboobs.AddToken("amount", amount);
-
-							report += "[Youorname] grow{s} " + i18n.GetArray("setbymeasure")[amount] + " ";
-
-							var size = 0f;
-							var fromprevious = false;
-                           
-							if (this.HasToken("breastrow"))
-							{
-								size = (float)Random.NextDouble() * intensity / 10 + 0.5f;
-								newboobs.AddToken("sizefromprevious", size);
-								fromprevious = true;
-							}
-							else
-							{
-								size = (float)Random.NextDouble() * intensity / 2 + 4f;
-								newboobs.AddToken("size", size);
-							}
-
-							report += fromprevious ? " " + i18n.Pluralize("breast", amount) + Math.Round((double)size * 100).ToString() + "% the size of the " + 
-													i18n.Pluralize("one", (int)this.GetBreastRowByNumber(this.Tokens.Count(t => t.Name == "breastrow") - 1).
-													GetToken("amount").Value) + " above " + (amount == 1 ? "it, with " : "them, each with")
-												   : " " + Descriptions.GetSizeDescription("breasts/size", size) + i18n.Pluralize("breast", amount) + 
-												    (amount == 1 ? ", with " : ", each with ");
-
-							var nipnum = Random.Next(5);
-							var nipsize = (float)Random.NextDouble() * intensity / 4 + 0.7f;
-							newboobs.AddToken("nipples", nipnum);
-                            newboobs.GetToken("nipples").AddToken("size", nipsize);
-
-							var dickniplength = -1f;
-							var dicknipthick = -1f;
-							var nipcuntwet = -1;
-							var nipcuntloose = -1;
-
-                            switch (Random.Next(3))
-                            {
-                                case 0:
-                                    newboobs.GetToken("nipples").AddToken("canfuck");
-									dickniplength = (float)Random.NextDouble() * intensity / 2 + 5f;
-									dicknipthick = (float)Random.NextDouble() * intensity / 4 + 2f;
-                                    newboobs.GetToken("nipples").AddToken("length", dickniplength);
-                                    newboobs.GetToken("nipples").AddToken("thickness", dicknipthick);
-									
-									report += i18n.GetArray("setbymeasure")[nipnum] + Descriptions.Length(dickniplength) + " [p:" + 
-												nipnum.ToString() + ":dicknipple].";
-                                    
-									break;
-                                case 1:
-                                    newboobs.GetToken("nipples").AddToken("fuckable");
-									nipcuntwet = Random.Next((int)(intensity / 2));
-									nipcuntloose = Random.Next((int)(intensity / 2));
-                                    newboobs.GetToken("nipples").AddToken("wetness", nipcuntwet);
-                                    newboobs.GetToken("nipples").AddToken("looseness", nipcuntloose);
-
-									report += i18n.GetString("counts")[nipnum] + " " +
-										Descriptions.GetSizeDescription("vagina/looseness", nipcuntloose) + " and " + 
-										Descriptions.GetSizeDescription("vagina/wetness", nipcuntwet) + 
-										" [p:" + nipnum.ToString() + ":nipplecunt].";
-
-                                    break;
-                                case 2:
-									report += i18n.GetArray("counts")[nipnum] + " " + Descriptions.Length(nipsize) + " [p:" + nipnum.ToString() + ":nipple].";
-                                    break;
-                            }
-
-                            this.AddToken(newboobs);
-                        }
-						else
-							report += "\uE2FC";
-                        break;
-                    case Mutations.AddPenis:
+					case Mutations.AddPenis:
+						/*
 						if (this.Tokens.Count(t => t.Name == "penis") < 8)
 						{
 							string[] dicktypes = { "human", "horse", "dragon", "cat", "dog", "bear", "lizard", "studded" };
@@ -617,16 +544,34 @@ namespace Noxico
 							newdick.AddToken("length", length);
 							newdick.AddToken("thickness", thick);
 							newdick.AddToken("cumsource");
-							report += "[Youorname] [has] grown a new " + 
+							report += "[Youorname] [has] grown a new " +
 								Descriptions.Length(length) + " long, " +
 								Descriptions.Length(thick) + " thick " + type + " " +
 								Descriptions.GetPartDescription("penis");
 							this.AddToken(newdick);
 						}
+						*/
+						var cock = this.GetToken("penis");
+						if (cock == null)
+						{
+							cock = this.AddToken("vagina");
+							var length = (float)Random.NextDouble() * intensity + 12f;
+							var thick = (float)Random.NextDouble() * intensity / 4 + 4f;
+							cock.AddToken("length", length);
+							cock.AddToken("thickness", thick);
+							cock.AddToken("cumsource");
+							report += "[Youorname] [has] grown a brand new [?:penis]!";
+						}
+						else if (cock != null && !cock.HasToken("dual"))
+						{
+							cock.AddToken("dual");
+							report += "[Yourornames] [?:penis] has split in two!";
+						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.AddVagina:
+						break;
+					case Mutations.AddVagina:
+						/*
 						if (this.Tokens.Count(t => t.Name == "vagina") < 5)
 						{
 							Token newpussy = new Token("vagina");
@@ -634,11 +579,25 @@ namespace Noxico
 							newpussy.AddToken("looseness", Random.Next((int)(intensity / 2)));
 							this.AddToken(newpussy);
 						}
+						*/
+						var vagina = this.GetToken("vagina");
+						if (vagina == null)
+						{
+							vagina = this.AddToken("vagina");
+vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
+							vagina.AddToken("looseness", Random.Next((int)(intensity / 2)));
+							report += "[Youorname] [has] grown a brand new, [pussywetness] [?:vagina]!";
+						}
+						else if (vagina != null && !vagina.HasToken("dual"))
+						{
+							vagina.AddToken("dual");
+							report += "[Yourornames] [?:vagina] has split in two!";
+						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.AddOddLegs:
-                        var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
+						break;
+					case Mutations.AddOddLegs:
+						var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
 						if (funkyLegs.All(x => !HasToken(x)))
 						{
 							var choice = Random.Next(funkyLegs.Length);
@@ -653,7 +612,7 @@ namespace Noxico
 													  : "[Youorname] become{s} a slime, and [his] legs melt into a blob of goo.";
 							}
 							else
-								report += choice == 0 ? "[Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear." 
+								report += choice == 0 ? "[Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear."
 													  : "[Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form.";
 						}
 						else if (this.HasToken("taur"))
@@ -663,9 +622,9 @@ namespace Noxico
 						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.RemoveOddLegs:
-						if ((this.HasToken("taur") && this.GetToken("taur").Value < 2) || this.HasToken("quadruped") 
+						break;
+					case Mutations.RemoveOddLegs:
+						if ((this.HasToken("taur") && this.GetToken("taur").Value < 2) || this.HasToken("quadruped")
 							|| this.HasToken("snaketail") || this.HasToken("slimeblob"))
 						{
 							//left out stiletto and insect, as those are meant for particular characters/species only and would look off on the wrong body
@@ -701,66 +660,62 @@ namespace Noxico
 						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.AddBreast:
-                        if (this.HasToken("breastrow"))
-                        {
-							var boob = PickATitNum();
-                            if (this.GetBreastRowByNumber(boob).GetToken("amount").Value < 5)
-                                this.GetBreastRowByNumber(boob).GetToken("amount").Value++;
-							if (this.Tokens.Count(t => t.Name == "breastrow") > 1)
-								report += "[Youorname] [has] gained a " + this.GetBreastRowByNumber(boob).GetToken("amount").Value.CountOrdinal() +
-										  " [?:breast] in [his] " + (boob + 1).CountOrdinal() + " row.";
-                        }
+						break;
+					case Mutations.AddBreast:
+						if (this.HasToken("breasts"))
+						{
+							var boob = this.GetToken("breasts");
+							if (boob.GetToken("amount").Value < 5)
+								boob.GetToken("amount").Value++;
+							report += "[Youorname] [has] gained a " + boob.GetToken("amount").Value.CountOrdinal() + " [?:breast].";
+						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.RemoveBreast:
-                        if (this.HasToken("breastrow"))
-                        {
-                            var allTits = Tokens.Where(x => x.Name == "breastrow").ToList();
-                            var rand = Random.Next(allTits.Count);
-							var boob = allTits[rand];
-                            if (boob.GetToken("amount").Value > 1)
+						break;
+					case Mutations.RemoveBreast:
+						if (this.HasToken("breasts"))
+						{
+							var boob = this.GetToken("breasts");
+							if (boob.GetToken("amount").Value > 1)
 							{
-                                boob.GetToken("amount").Value--;
-								report += "[Youorname] [has] lost a [?:breast] from [his] " + (rand + 1).CountOrdinal() + " row.";
-                            }
+								boob.GetToken("amount").Value--;
+								report += "[Youorname] [has] lost a [?:breast].";
+							}
 
 							if (boob.GetToken("amount").Value == 0)
 							{
 								this.RemoveToken(boob);
-								report += "[Youorname] [has] lost a row of [?:breasts].";
+								report += "[Youorname] [has] lost [?:breasts].";
 							}
 
-                            if (!this.HasToken("breastrow"))
-                            {
-                                this.AddToken("breastrow").AddToken("size", 0);
-                                this.GetToken("breastrow").AddToken("amount", 2);
-                            }
-                        }
+							if (!this.HasToken("breasts"))
+							{
+								this.AddToken("breasts").AddToken("size", 0);
+								this.GetToken("breasts").AddToken("amount", 2);
+							}
+						}
 						else
 							report += "\uE2FC";
-                        break;
-                    case Mutations.AddTesticle:
-                        var balls = GetToken("balls");
-                        if (balls != null)
-                        {
-                            balls.GetToken("amount").Value++;
+						break;
+					case Mutations.AddTesticle:
+						var balls = GetToken("balls");
+						if (balls != null)
+						{
+							balls.GetToken("amount").Value++;
 							report += "[Youorname] [has] gained another testicle.";
-                        }
-                        else
-                        {
+						}
+						else
+						{
 							var num = Random.Next((int)(intensity / 4)) + 1;
 							var size = (float)Random.NextDouble() * intensity / 4 + 3f;
-                            this.AddToken("balls").AddToken("amount", num);
-                            this.GetToken("balls").AddToken("size", size);
+							this.AddToken("balls").AddToken("amount", num);
+							this.GetToken("balls").AddToken("size", size);
 							report += num > 1 ? "[Youorname] [has] gained a set of " + i18n.GetArray("counts")[num] + " " + Descriptions.BallSize(this.GetToken("balls")) +
-												" balls." 
+												" balls."
 											  : "[Youorname] [has] grown a single testicle.";
-                        }
-                        break;
-                    case Mutations.RemoveTesticle:
+						}
+						break;
+					case Mutations.RemoveTesticle:
 						if (this.HasToken("balls"))
 						{
 							this.GetToken("balls").GetToken("amount").Value--;
@@ -770,126 +725,84 @@ namespace Noxico
 								report += "[Youorname] [has] lost [his] last remaining testicle.";
 							}
 							else
-								report += "[Youorname] [has] lost one of [his] balls, bringing [him] down to only " + 
+								report += "[Youorname] [has] lost one of [his] balls, bringing [him] down to only " +
 										  this.GetToken("balls").GetToken("amount").Value.Count() + ".";
 						}
 						else
 							report += "\uE2FC";
 						break;
 					case Mutations.GiveDicknipples:
-						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/canfuck") == null)
+						if (this.Path("breasts/nipples") != null && this.Path("breasts/nipples/canfuck") == null)
 						{
-							var boob = PickATitNum();
-							var tries = 0;
-							var ok = false;
-							while (tries < 10 && ok == false)
-							{
-								boob = PickATitNum();
-								tries++;
-								if (this.GetBreastRowByNumber(boob).HasToken("nipples") && !this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
-									ok = true;
-								
-							}
-							if (tries<10)
-							{ 
-								this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("canfuck");
-								report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have grown out and become phallic.";
-							}
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").AddToken("canfuck");
+							report += "The nipples on [yourornames] [?:breasts] have grown out and become phallic.";
 						}
 						else
 							report += "\uE2FC";
 						break;
 					case Mutations.GiveNipplecunts:
-						if (this.Path("breastrow/nipples") != null && this.Path("breastrow/nipples/fuckable") == null)
+						if (this.Path("breasts/nipples") != null && this.Path("breasts/nipples/fuckable") == null)
 						{
-							var boob = PickATitNum();
-							var tries = 0;
-							var ok = false;
-							while (tries < 10 && ok == false)
-							{
-								boob = PickATitNum();
-								tries++;
-								if (this.GetBreastRowByNumber(boob).HasToken("nipples") && !this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
-									ok = true;
-							}
-							if (tries < 10)
-							{
-								this.GetBreastRowByNumber(boob).GetToken("nipples").AddToken("fuckable");
-								report += "The nipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have inverted and taken on a distinctly vaginal appearance.";
-							}
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").AddToken("fuckable");
+							report += "The nipples on [yourornames] [?:breasts] have inverted and taken on a distinctly vaginal appearance.";
 						}
 						else
 							report += "\uE2FC";
 						break;
 					case Mutations.AddNipple:
-						if (this.HasToken("breastrow"))
+						if (this.HasToken("breasts"))
 						{
-							var boob = PickATitNum();
-							if (!this.GetBreastRowByNumber(boob).HasToken("nipples"))
-								this.GetBreastRowByNumber(boob).AddToken("nipples", 1);
+							var boob = this.GetToken("breasts");
+							if (!boob.HasToken("nipples"))
+								boob.AddToken("nipples", 1);
 							else
-								this.GetBreastRowByNumber(boob).GetToken("nipples").Value++;
-							report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have each gained another " + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
-								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "") + ".";
+								boob.GetToken("nipples").Value++;
+							report += "[Yourornames] [?:breasts] have gained another " + (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
+								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "") + ".";
 						}
 						else
 							report += "\uE2FC";
 						break;
 					case Mutations.RemoveNipple:
-						if (this.Path("breastrow/nipples") != null)
+						if (this.Path("breasts/nipples") != null)
 						{
-							var boob = PickATitNum();
-							while (!this.GetBreastRowByNumber(boob).HasToken("nipples"))
-								boob = PickATitNum();
-							this.GetBreastRowByNumber(boob).GetToken("nipples").Value--;
-							var nippleName = (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck") ? "dick" : "") + 
-								"nipple" + (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
-							if (this.GetBreastRowByNumber(boob).GetToken("nipples").Value == 0)
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").Value--;
+							var nippleName = (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
+								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+							if (boob.GetToken("nipples").Value == 0)
 							{
-								this.GetBreastRowByNumber(boob).RemoveToken("nipples");
-								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have lost their " + nippleName.Pluralize() + ".";
+								boob.RemoveToken("nipples");
+								report += "[Yourornames] [?:breasts] have lost their " + nippleName.Pluralize() + ".";
 							}
 							else
-								report += "[Yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have each lost a " + nippleName + ".";
+								report += "[Yourornames] [?:breasts] have each lost a " + nippleName + ".";
 						}
 						else
 							report += "\uE2FC";
 						break;
 					case Mutations.GiveRegularNipples:
-						if (this.Path("breastrow/nipples/fuckable") != null || this.Path("breastrow/nipples/canfuck") != null)
+						if (this.Path("breasts/nipples/fuckable") != null || this.Path("breasts/nipples/canfuck") != null)
 						{
-							var boob = PickATitNum();
-							var tries = 0;
-							var ok = false;
-							while (tries < 10 && ok == false)
+							var boob = this.GetToken("breasts");
+
+							if (boob.GetToken("nipples").HasToken("fuckable"))
 							{
-								boob = PickATitNum();
-								tries++;
-								if (this.GetBreastRowByNumber(boob).HasToken("nipples"))
-								{
-									if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable") ||
-										this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("canfuck"))
-										{ ok = true; }
-								}
+								boob.GetToken("nipples").RemoveToken("fuckable");
+								report += "The nipplecunts on [yourornames] [?:breasts] have become normal nipples.";
 							}
-							if (tries < 10)
+							else
 							{
-								if (this.GetBreastRowByNumber(boob).GetToken("nipples").HasToken("fuckable"))
-								{
-									this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("fuckable");
-									report += "The nipplecunts on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have become normal nipples.";
-								}
-								else
-								{
-									this.GetBreastRowByNumber(boob).GetToken("nipples").RemoveToken("canfuck");
-									report += "The dicknipples on [yourornames] " + (boob + 1).CountOrdinal() + " row of [?:breasts] have become normal nipples.";
-								}
+								boob.GetToken("nipples").RemoveToken("canfuck");
+								report += "The dicknipples on [yourornames] [?:breasts] have become normal nipples.";
 							}
 						}
 						else
 							report += "\uE2FC";
 						break;
-                }
+				}
 				reports.Add(report);
             }
 			FixBroken(); // very important
@@ -954,8 +867,8 @@ namespace Noxico
 				newChar.RemoveToken("womb");
 				while (newChar.HasToken("vagina"))
 					newChar.RemoveToken("vagina");
-				foreach (var breastRow in newChar.Tokens.Where(t => t.Name == "breastrow" && t.HasToken("size")))
-					breastRow.GetToken("size").Value = 0;
+				foreach (var boob in newChar.Tokens.Where(t => t.Name == "breasts" && t.HasToken("size")))
+					boob.GetToken("size").Value = 0;
 			}
 			if (bioGender == Gender.Female || bioGender == Gender.Neuter)
 			{
@@ -1245,25 +1158,13 @@ namespace Noxico
 		{
 			get
 			{
-				var sizes = GetBreastSizes();
-				var effectiveAmount = 0f;
-
-				for (var i = 0; i < sizes.Length; i++)
-				{
-					var rowEffectiveAmount = 0f;
-					var thisSize = GetBreastRowSize(i);
-					var thisAmount = GetBreastRowAmount(i);
-					rowEffectiveAmount = thisSize * thisAmount;
-
-					if (GetBreastRowByNumber(i).HasToken("lactation"))
-						rowEffectiveAmount *= 5;
-
-					effectiveAmount += rowEffectiveAmount;
-				}
-
+				var size = GetBreastSize();
+				var amount = GetBreastAmount();
+				var effectiveAmount = size * amount;
+				if (this.GetToken("breasts").HasToken("lactation"))
+					effectiveAmount *= 5;
 				if (GetToken("perks").HasToken("messyorgasms"))
 					effectiveAmount *= 1.5f;
-				
 				return effectiveAmount;
 			}
 		}
@@ -1677,153 +1578,107 @@ namespace Noxico
 		{
 			print(i18n.GetString("lookat_header_sexual"));
 			//TRANSLATE
-			var cocks = new List<Token>(); var vaginas = new List<Token>(); var breastRows = new List<Token>();
-			Token nuts = null;
+			Token cock = this.GetToken("penis");
+			Token vagina = this.GetToken("vagina");
+			Token breasts = this.GetToken("breasts");
+			Token nuts = this.GetToken("balls");
 			var ballCount = 0;
 			var ballSize = 0.25f;
 			//var slit = this.HasToken("snaketail");
 			//var aroused = stimulation > 50;
-
-			for (var i = 0; i < this.Tokens.Count; i++)
+			if (nuts != null)
 			{
-				var gen = this.Item(i);
-				if (gen.Name == "penis")
-					cocks.Add(gen);
-				else if (gen.Name == "vagina")
-					vaginas.Add(gen);
-				else if (gen.Name == "breastrow")
-					breastRows.Add(gen);
-				else if (gen.Name == "balls")
-				{
-					nuts = gen;
-					ballCount = nuts.HasToken("amount") ? (int)nuts.GetToken("amount").Value : 2;
-					ballSize = nuts.HasToken("size") ? nuts.GetToken("size").Value : 0.25f;
-				}
+				ballCount = nuts.HasToken("amount") ? (int)nuts.GetToken("amount").Value : 2;
+				ballSize = nuts.HasToken("size") ? nuts.GetToken("size").Value : 0.25f;
 			}
-
-
+			
 			print("Breasts: ");
-			if (breastRows.Count == 0)
+			if (breasts == null)
 				print("none\n");
 			else
 			{
-				print(Toolkit.Count(breastRows.Count) + " row" + (breastRows.Count == 1 ? "" : "s") + "\n");
-				for (var i = 0; i < breastRows.Count; i++)
-				{
-					var row = breastRows[i];
-					//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
-					//	continue;
-					print((i < breastRows.Count - 1 ? "\xC3 " : "\xC0 ") + Toolkit.Count(row.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastRowSize(i)));
-					if (breastsVisible && (row.Path("nipples") == null || row.Path("nipples").Value == 0))
-						print(" nippleless");
-					print(" breast");
-					if (row.GetToken("amount").Value > 1)
-						print("s");
-					if (!breastsVisible || (row.Path("nipples") == null || row.Path("nipples").Value == 0))
-					{
-						print("\n");
-						continue;
-					}
+				print("\n");
+				var boob = GetToken("breasts");
+				//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
+				//	continue;
+				print("\xC3 " + Toolkit.Count(boob.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastSize()));
+				if (breastsVisible && (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
+					print(" nippleless");
+				print(" breast");
+				if (boob.GetToken("amount").Value > 1)
+					print("s");
+				if (!breastsVisible || (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
+					print("\n");
 
-					if (!(row.Path("nipples") == null) && !(row.Path("nipples").Value == 0))
-					{
-						var nipSize = 0.5f;
-						if (row.Path("nipples/size") != null)
-							nipSize = row.Path("nipples/size").Value;
-						var nipType = Descriptions.NippleSize(row.GetToken("nipples")) + " " + Descriptions.Length(nipSize);
-						if (row.Path("nipples/canfuck") != null)
-							nipType += " dicknipple";
-						else if (row.Path("nipples/fuckable") != null)
-						{
-							var loose = Descriptions.Looseness(row.Path("nipples/looseness"), false);
-							var wet = Descriptions.Wetness(row.Path("nipples/wetness"));
-							if (wet != null && loose != null)
-								wet = " and " + wet;
-							else if (wet == null && loose == null)
-								loose = "";
-							nipType += (" " + loose + wet + " nipplecunt").Trim();
-						}
-						else
-							nipType += " nipple";
-						print(", " + Toolkit.Count(row.GetToken("nipples").Value) + " " + nipType);
-						if (row.GetToken("nipples").Value > 1)
-							print("s");
-						print(" on each\n");
-					}
-				}
-			}
-			print("\n");
-
-			print("Vaginas: ");
-			if (!crotchVisible)
-			{
-				if (this.PercievedGender == Gender.Male)
-					print("none?\n");
-				else if (this.PercievedGender == Gender.Female)
-					print("one?\n");
-				else
-					print("can't tell\n");
-			}
-			else
-			{
-				if (vaginas.Count == 0)
-					print("none\n");
-				else
+				if (!(boob.Path("nipples") == null) && !(boob.Path("nipples").Value == 0))
 				{
-					print(Toolkit.Count(vaginas.Count) + "\n");
-					for (var i = 0; i < vaginas.Count; i++)
+					var nipSize = 0.5f;
+					if (boob.Path("nipples/size") != null)
+						nipSize = boob.Path("nipples/size").Value;
+					var nipType = Descriptions.NippleSize(boob.GetToken("nipples")) + " " + Descriptions.Length(nipSize);
+					if (boob.Path("nipples/canfuck") != null)
+						nipType += " " + "dicknipple".Pluralize((int)boob.GetToken("nipples").Value);
+					else if (boob.Path("nipples/fuckable") != null)
 					{
-						var vagina = vaginas[i];
-						if (vagina == null)
-							print("OH NO!");
-						var loose = Descriptions.Looseness(vagina.GetToken("looseness"), false);
-						var wet = Descriptions.Wetness(vagina.GetToken("wetness"));
+						var loose = Descriptions.Looseness(boob.Path("nipples/looseness"), false);
+						var wet = Descriptions.Wetness(boob.Path("nipples/wetness"));
 						if (wet != null && loose != null)
 							wet = " and " + wet;
 						else if (wet == null && loose == null)
-							loose = "regular";
-						var clit = vagina.Path("clit");
-						var clitSize = 0.25f;
-						if (clit != null)
-							clitSize = clit.Value;
-						print((i < vaginas.Count - 1 ? "\xC3 " : "\xC0 ") + loose + wet + ", with a " + Descriptions.Length(clitSize) + " clit\n");
+							loose = "";
+						nipType += (" " + loose + wet + " " + "nipplecunt".Pluralize((int)boob.GetToken("nipples").Value)).Trim();
 					}
+					else
+						nipType += " [?:" + "nipple".Pluralize((int)boob.GetToken("nipples").Value) + "]";
+					print(", " + Toolkit.Count(boob.GetToken("nipples").Value) + " " + nipType);
+					print(" on each\n");
 				}
 			}
 			print("\n");
 
-			print("Cocks: ");
+			print("Genitals: ");
 			if (!crotchVisible)
 			{
 				if (this.PercievedGender == Gender.Male)
-					print("one?\n");
+					print("a [?:cock]?\n");
 				else if (this.PercievedGender == Gender.Female)
-					print("none?\n");
+					print("a [?:pussy?]?\n");
 				else
-					print("can't tell\n");
+					print("can't tell!\n");
 			}
 			else
 			{
-				var cocksAndBalls = cocks.Count + ballCount;
-				if (cocks.Count == 0)
-					print("none\n");
-				else
+				print("\n");
+				if (vagina != null)
 				{
-					print(Toolkit.Count(cocks.Count) + "\n");
-					for (var i = 0; i < cocks.Count; i++)
-					{
-						var cock = cocks[i];
-						var cockType = cock.Text;
-						if (string.IsNullOrWhiteSpace(cockType))
-							cockType = "human";
-						print((i < cocksAndBalls - 1 ? "\xC3 " : "\xC0 ") + cockType + ", " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
-						print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
-					}
+					//TODO: allow dual vaginas and cocks
+					var loose = Descriptions.Looseness(vagina.GetToken("looseness"), false);
+					var wet = Descriptions.Wetness(vagina.GetToken("wetness"));
+					if (wet != null && loose != null)
+						wet = " and " + wet;
+					else if (wet == null && loose == null)
+						loose = "regular";
+					var clit = vagina.Path("clit");
+					var clitSize = 0.25f;
+					if (clit != null)
+						clitSize = clit.Value;
+					print("\xC3 " + (vagina.HasToken("dual") ? "a split, " : "a ") + loose + wet + " [?:vagina], with a " + Descriptions.Length(clitSize) + " [?:clit]\n");
+				}
+
+				//var cocksAndBalls = cocks.Count + ballCount;
+				if (cock != null)
+				{
+					var cockType = cock.Text;
+					if (string.IsNullOrWhiteSpace(cockType))
+						cockType = "human";
+					print((ballCount == 0 ? "\xC0 " : "\xC3 ") + (cock.HasToken("dual") ? "a split, " : "a ") + cockType + " [?:cock], " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
+					print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
 				}
 				if (ballCount > 0)
 				{
 					print("\xC0 " + Toolkit.Count(ballCount) + " " + (ballSize < 1 ? "" : Descriptions.BallSize(nuts) + " ") + "testicle".Pluralize(ballCount) + "\n");
 				}
+				//TODO: handle assholes?
 			}
 			print("\n");
 		}
@@ -1871,7 +1726,7 @@ namespace Noxico
 
 			//Things not listed: pregnancy, horns and wings.
 			if (print == null)
-				print = new Action<string>(x => sb.Append(x));
+				print = new Action<string>(x => sb.Append(x.Viewpoint(null)));
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
@@ -1948,7 +1803,7 @@ namespace Noxico
 			{
 				if (x.Contains("| none\n") || x.Contains("Clothing\n") || x.Contains("Equipment\n"))
 					return;
-				dump.Write(x);
+				dump.Write(x.Viewpoint(null));
 			});
 			var lookAt = LookAt(null, print);
 			lookAt = lookAt.Replace("\n\n", "\n");
@@ -2408,226 +2263,40 @@ namespace Noxico
 			if (!o.Contains(colorToken.Text))
 				colorToken.Text = Toolkit.PickOne(o);
 		}
-
-
-
-		public float[] GetBreastSizes()
+		
+		public float GetBreastSize()
 		{
-			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
-			var sizes = new float[rows.Length];
-			if (rows.Length == 0)
-				return sizes;
-			var fromPrevious = false;
-			var multiplier = 1f;
-			sizes[0] = rows[0].GetToken("size").Value;
-			for (var i = 1; i < rows.Length; i++)
-			{
-				if (rows[i].HasToken("size"))
-				{
-					fromPrevious = false;
-					sizes[i] = rows[i].GetToken("size").Value;
-				}
-				else if (rows[i].HasToken("sizefromprevious") || fromPrevious)
-				{
-					fromPrevious = true;
-					if (rows[i].HasToken("sizefromprevious"))
-					{
-						multiplier = rows[i].GetToken("sizefromprevious").Value;
-						if (multiplier == 0f)
-							multiplier = 1f;
-					}
-					sizes[i] = sizes[i - 1] * multiplier;
-					if (sizes[i] < 0) //just to be sure.
-						sizes[i] = 0;
-				}
-				if (rows[i].HasToken("lactation"))
-					sizes[i] += 0.25f * rows[i].GetToken("lactation").Value;
-			}
-			return sizes;
+			if (!this.HasToken("breasts"))
+				return 0;
+			var boob = this.GetToken("breasts");
+			var size = boob.GetToken("size").Value;
+			if (boob.HasToken("lactation"))
+				size += 0.25f * boob.GetToken("lactation").Value;
+			return size;
 		}
 
-		// like GetBreastSizes but provides number of breasts per row
-		// todo fix tragic duplication of logic
-		public float[] GetBreastAmounts()
+		public float GetBreastAmount()
 		{
-			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
-			var amounts = new float[rows.Length];
-			if (rows.Length == 0)
-				return amounts;
-			var fromPrevious = false;
-			var multiplier = 1f;
-			amounts[0] = rows[0].GetToken("amount").Value;
-			for (var i = 1; i < rows.Length; i++)
-			{
-				if (rows[i].HasToken("amount"))
-				{
-					fromPrevious = false;
-					amounts[i] = rows[i].GetToken("amount").Value;
-				}
-				else if (rows[i].HasToken("amountfromprevious") || fromPrevious)
-				{
-					fromPrevious = true;
-					if (rows[i].HasToken("amountfromprevious"))
-					{
-						multiplier = rows[i].GetToken("amountfromprevious").Value;
-						if (multiplier == 0f)
-							multiplier = 1f;
-					}
-					amounts[i] = amounts[i - 1] * multiplier;
-					if (amounts[i] < 0) //just to be sure.
-						amounts[i] = 0;
-				}				
-			}
-			return amounts;
+			if (!this.HasToken("breasts"))
+				return 0;
+			var boob = this.GetToken("breasts");
+			return boob.GetToken("amount").Value;
 		}
 
-		public float GetBreastRowSize(Token row)
+		public float GetPenisSize(bool withThickness)
 		{
-			var sizes = GetBreastSizes();
-			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
-			for (var i = 0; i < rows.Length; i++)
-			{
-				if (rows[i] == row)
-					return sizes[i];
-			}
-			return -1f;
-		}
-
-		public float GetBreastRowSize(int row)
-		{
-			var sizes = GetBreastSizes();
-			if (row >= sizes.Length || row < 0)
-				return -1f;
-			return sizes[row];
-		}
-
-		public float GetBreastRowAmount(int row)
-		{
-			var sizes = GetBreastAmounts();
-			if (row >= sizes.Length || row < 0)
-				return -1f;
-			return sizes[row];
-		}
-
-		public Token GetBreastRowByNumber(int row)
-		{
-			var rows = this.Tokens.FindAll(x => x.Name == "breastrow").ToArray();
-			if (row >= rows.Length || row < 0)
-				return null;
-			return rows[row];
-		}
-
-		public int BiggestBreastrowNumber
-		{
-			get
-			{
-				var sizes = GetBreastSizes();
-				if (sizes.Length == 0)
-					return -1;
-				var biggest = -1f;
-				var ret = -1;
-				for (var i = 0; i < sizes.Length; i++)
-				{
-					if (sizes[i] > biggest)
-					{
-						biggest = sizes[i];
-						ret = i;
-					}
-				}
-				return ret;
-			}
-		}
-
-		public int SmallestBreastrowNumber
-		{
-			get
-			{
-				var sizes = GetBreastSizes();
-				if (sizes.Length == 0)
-					return -1;
-				var smallest = sizes[0];
-				var ret = 0;
-				for (var i = 0; i < sizes.Length; i++)
-				{
-					if (sizes[i] < smallest)
-					{
-						smallest = sizes[i];
-						ret = i;
-					}
-				}
-				return ret;
-			}
-		}
-
-		public float GetPenisSize(Token penis, bool withThickness)
-		{
+			if (!this.HasToken("penis"))
+				return -1;
+			var penis = this.GetToken("penis");
 			var ret =  penis.GetToken("length").Value;
 			if (withThickness)
 				ret *= penis.GetToken("thickness").Value;
 			return ret;
 		}
 
-		public float[] GetPenisSizes(bool withThickness)
+		public float GetVaginaCapacity()
 		{
-			var cocks = this.Tokens.FindAll(x => x.Name == "penis").ToArray();
-			var sizes = new float[cocks.Length];
-			for (var i = 0; i < cocks.Length; i++)
-			{
-				sizes[i] = GetPenisSize(cocks[i], withThickness);
-			}
-			return sizes;
-		}
-
-		public float GetPenisSize(int penis, bool withThickness)
-		{
-			var sizes = GetPenisSizes(withThickness);
-			if (penis >= sizes.Length || penis < 0)
-				return -1f;
-			return sizes[penis];
-		}
-
-		public Token GetPenisByNumber(int penis)
-		{
-			var cocks = this.Tokens.FindAll(x => x.Name == "penis").ToArray();
-			if (penis >= cocks.Length || penis < 0)
-				return null;
-			return cocks[penis];
-		}
-
-		public int GetBiggestPenisNumber(bool withThickness)
-		{
-			var sizes = GetPenisSizes(withThickness);
-			if (sizes.Length == 0)
-				return -1;
-			var biggest = -1f;
-			var ret = -1;
-			for (var i = 0; i < sizes.Length; i++)
-			{
-				if (sizes[i] > biggest)
-				{
-					biggest = sizes[i];
-					ret = i;
-				}
-			}
-			return ret;
-		}
-
-		public int GetSmallestPenisNumber(bool withThickness)
-		{
-			var sizes = GetPenisSizes(withThickness);
-			if (sizes.Length == 0)
-				return -1;
-			var smallest = sizes[0];
-			var ret = 0;
-			for (var i = 0; i < sizes.Length; i++)
-			{
-				if (sizes[i] < smallest)
-				{
-					smallest = sizes[i];
-					ret = i;
-				}
-			}
-			return ret;
+			return GetVaginaCapacity(this.GetToken("vagina"));
 		}
 
 		public float GetVaginaCapacity(Token vagina)
@@ -2645,6 +2314,8 @@ namespace Noxico
 			 * We've got a cock that would make Ron Jeremy consider joining a monastery in shame, and a DRY VIRGIN COOCH that could take several of those!
 			 * Changing "looseness * looseness" to just "looseness" turns 576 into 72, which is much better. But still, against such an inhuman cock...
 			 */
+			if (vagina == null)
+				return -1;
 
 			var loosenesses = new[] { 8, 16, 24, 36, 56, 100 };
 			var looseness = 0f;
@@ -2674,76 +2345,6 @@ namespace Noxico
 			return ret;
 		}
 		//can double as GetNipplecuntCapacity yay
-
-		public float[] GetVaginaCapacities()
-		{
-			var pussies = this.Tokens.FindAll(x => x.Name == "vagina").ToArray();
-			var caps = new float[pussies.Length];
-			for (var i = 0; i < pussies.Length; i++)
-			{
-				caps[i] = GetVaginaCapacity(pussies[i]);
-			}
-			return caps;
-		}
-
-		public float GetVaginaCapacity(int vagina)
-		{
-			var caps = GetVaginaCapacities();
-			if (vagina >= caps.Length || vagina < 0)
-				return -1f;
-			return caps[vagina];
-		}
-
-		public Token GetVaginaByNumber(int vagina)
-		{
-			var pussies = this.Tokens.FindAll(x => x.Name == "vagina").ToArray();
-			if (vagina >= pussies.Length || vagina < 0)
-				return null;
-			return pussies[vagina];
-		}
-
-		public int LargestVaginaNumber
-		{
-			get
-			{
-				var caps = GetVaginaCapacities();
-				if (caps.Length == 0)
-					return -1;
-				var largest = -1f;
-				var ret = -1;
-				for (var i = 0; i < caps.Length; i++)
-				{
-					if (caps[i] > largest)
-					{
-						largest = caps[i];
-						ret = i;
-					}
-				}
-				return ret;
-			}
-		}
-
-		public int SmallestVaginaNumber
-		{
-			get
-			{
-				var caps = GetVaginaCapacities();
-				if (caps.Length == 0)
-					return -1;
-				var smallest = caps[0];
-				var ret = 0;
-				for (var i = 0; i < caps.Length; i++)
-				{
-					if (caps[i] < smallest)
-					{
-						smallest = caps[i];
-						ret = i;
-					}
-				}
-				return ret;
-			}
-		}
-
 
 		public bool UpdatePregnancy()
 		{
@@ -3001,6 +2602,8 @@ namespace Noxico
 		/// <returns>Returns true if the body part had the virgin token, or false if it did not.</returns>
 		public bool RemoveVirgin(Token bodypart)
 		{
+			if (bodypart == null)
+				return false;
 			if (bodypart.HasToken("virgin"))
 			{
 				bodypart.RemoveToken("virgin");
@@ -3008,6 +2611,11 @@ namespace Noxico
 			}
 
 			return false;
+		}
+
+		public bool RemoveVirgin()
+		{
+			return RemoveVirgin(this.GetToken("vagina");
 		}
 
 		/// <summary>
@@ -3062,6 +2670,11 @@ namespace Noxico
 			}
 
 			return false;
+		}
+
+		public bool StretchHole(Token penis)
+		{
+			return StretchHole(this.GetToken("vagina"), penis);
 		}
 
 		/// <summary>
@@ -3303,7 +2916,7 @@ namespace Noxico
 			var full = copier.HasToken("full");
 			var toCopyForFull = new[]
 			{
-				"balls", "penis", "breastrow", "ass", "hips", "waist", "vagina",
+				"balls", "penis", "breasts", "ass", "hips", "waist", "vagina",
 				"legs", "skin", "ascii", "tallness", "hair", "face", "eyes",
 				"teeth", "tongue", "legs", "quadruped", "monoceros", "horns",
 				"tail", "ears", "slimeblob", "snaketail",
@@ -3311,7 +2924,7 @@ namespace Noxico
 			};
 			var toCopyForSlimes = new[]
 			{
-				"balls", "penis", "breastrow", "vagina", /* "ass", "hips", "waist", */
+				"balls", "penis", "breasts", "vagina", /* "ass", "hips", "waist", */
 			};
 			if (source == null)
 			{

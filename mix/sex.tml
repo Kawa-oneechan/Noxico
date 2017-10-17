@@ -771,9 +771,7 @@ choice: self_baseball_bat
 	filter: masturbating and top.HasItem("baseballbat") and top.HasVagina()
 	effect
 	<[[
-		if top.StretchHole(
-				bottom.GetVaginaByNumber(0),
-				top.GetToken("items").GetToken("baseballbat")) then
+		if top.StretchHole(top.GetToken("items").GetToken("baseballbat")) then
 			message({"[t:Youorname] ride{s} the baseball bat. It's hard to get it in but once you do, it's fun."})
 			top.Raise(Stat.Climax, 5)
 		else

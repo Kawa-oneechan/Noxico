@@ -82,11 +82,11 @@ namespace Noxico
 			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 
-		public static string BreastSize(Token breastRowToken, bool inCups = false)
+		public static string BreastSize(Token breastToken, bool inCups = false)
 		{
-			if (breastRowToken == null)
+			if (breastToken == null)
 				return "glitch";
-			var size = breastRowToken.HasToken("size") ? breastRowToken.GetToken("size").Value : 0f;
+			var size = breastToken.HasToken("size") ? breastToken.GetToken("size").Value : 0f;
 			return GetSizeDescription(inCups ? "breasts/cupsize" : "breasts/size", size);
 		}
 
