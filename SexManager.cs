@@ -310,17 +310,14 @@ namespace Noxico
 		}
 		public bool HasNipples()
 		{
-			foreach (var breastRow in Tokens.Where(t => t.Name == "breastrow"))
-				if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
+			var boobs = this.GetToken("breasts");
+			if (boobs.HasToken("nipples") && boobs.GetToken("nipples").Value >= 1)
 					return true;
 			return false;
 		}
 		public bool HasBreasts()
 		{
-			var tits = GetBreastSizes();
-			if (tits.Length == 0)
-				return false;
-			if (tits.Average() < 0.2)
+			if (this.GetBreastSize() < 0.2)
 				return false;
 			return true;
 		}
@@ -404,10 +401,6 @@ namespace Noxico
 				return true;
 			}
 			return false;
-		}
-		public IEnumerable<Token> GetPenises()
-		{
-			return GetAll("penis");
 		}
 
 		public bool EnsureSexPartner()

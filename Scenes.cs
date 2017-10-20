@@ -318,41 +318,18 @@ namespace Noxico
 						return false;
 					break;
 				case "canfitdickinpussy":
-					var dickSizes = fPrimary.GetPenisSizes(true);
-					var pussySizes = fSecondary.GetVaginaCapacities();
-					if (dickSizes.Length == 0 || pussySizes.Length == 0)
-						return false; //no dicks to fit, or no pussies to fit in.
-					var canFit = false;
-					foreach (var dick in dickSizes)
-					{
-						foreach (var pussy in pussySizes)
-						{
-							if (dick < pussy)
-							{
-								canFit = true;
-								break;
-							}
-						}
-					}
-					if (!canFit)
+					var dickSize = fPrimary.GetPenisSize(true);
+					var pussySize = fSecondary.GetVaginaCapacity();
+					if (dickSize == -1 || pussySize == -1)
 						return false;
-					break;
+					if (dickSize < pussySize)
+						return true;
+					return false;
 				case "canfitdickinmouth":
-					dickSizes = fPrimary.GetPenisSizes(true);
-					if (dickSizes.Length == 0)
-						return false; //no dicks to fit.
-					canFit = false;
-					foreach (var dick in dickSizes)
-					{
-						if (dick < 40)
-						{
-							canFit = true;
-							break;
-						}
-					}
-					if (!canFit)
-						return false;
-					break;
+					dickSize = fPrimary.GetPenisSize(true);
+					if (dickSize < 40)
+						return true;
+					return false;
 				case "isfather":
 					var pregnancy = fSecondary.Path("pregnancy");
 					if (pregnancy == null)
