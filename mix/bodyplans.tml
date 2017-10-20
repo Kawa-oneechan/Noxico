@@ -35,7 +35,7 @@ bodyplan: human
 	hips: roll 1d2+4
 	-- The creature creator adjusts this part.
 	fertility: roll 1d15+5
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+1
 		nipples: 1
@@ -127,7 +127,7 @@ bodyplan: goblin
 	ass
 		size: roll 1d3+6
 		looseness: 1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -192,7 +192,7 @@ bodyplan: bee
 	ass: insect
 		size: 13
 		looseness: 4
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+1
 		nipples: 1
@@ -233,7 +233,7 @@ bodyplan: naga
 	ass
 		size: 6
 		looseness: 1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d4+3
 		nipples: 2
@@ -289,7 +289,7 @@ bodyplan: foocubus
 	ass
 		size: 7
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+4
 		nipples: 1
@@ -349,7 +349,7 @@ bodyplan: felin
 	hips: roll 1d6
 	waist: roll 1d4+1
 	fertility: 0
-	breastrow
+	breasts
 		amount: 2
 		size: 0
 		nipples: 1
@@ -405,7 +405,7 @@ bodyplan: kitsune
 	hips: roll 1d2+1
 	waist: 2
 	fertility: roll 1d20+10
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -460,7 +460,7 @@ bodyplan: slime
 	waist: roll 1d5+1
 	hips: roll 1d3+4
 	fertility: roll 1d15+5
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d7+4
 		nipples: 1
@@ -516,25 +516,7 @@ bodyplan: ursidae
 	hips: roll 1d14+2
 	waist: roll 1d12+2
 	fertility: roll 1d25+5
-	-- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
-	-- Requires only one roll and a divisor token. In fact, I could list it right now.
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		divisor: 0.85
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d8+2
 		nipples: 1
@@ -587,7 +569,7 @@ bodyplan: canine
 	hips: roll 1d2+1
 	waist: 2
 	fertility: roll 1d20+10
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -645,7 +627,7 @@ bodyplan: draig
 	tail: dragon
 	fertility: roll 1d10+5
 	egglayer
-	breastrow
+	breasts
 		amount: roll 1d2+2
 		size: roll 1d4+2
 		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
@@ -664,7 +646,6 @@ bodyplan: draig
 	penis: dragon
 		length: roll 1d10+15
 		thickness: roll 1d3+2
-	_copy: penis
 	balls
 		amount: roll 1d3+1
 		size: roll 1d3+2
@@ -830,7 +811,7 @@ bodyplan: spider
 	ass: insect
 		size: 17
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -872,7 +853,7 @@ bodyplan: gargoyle
 	ass
 		size: 4
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 0
@@ -880,12 +861,10 @@ bodyplan: gargoyle
 		wetness: 4
 		looseness: 1
 		clit: 1.0
-	_copy: vagina
 	egglayer
 	penis: dragon
 		thickness: roll 1d2+3
 		length: roll 1d6+15
-	_copy: penis
 	balls
 		amount: 2
 		size: roll 1d3+2

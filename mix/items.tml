@@ -66,7 +66,7 @@ item: henshin_belt
 				feedback = feedback .. "\"HENSHIN!\"\n\n"
 				local memory = thisToken.AddToken("memory")
 				local slots = { "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" }
-				for i,slot in slots do
+				for _,slot in ipairs(slots) do
 					local x = user.GetEquippedItemBySlot(slot)
 					if x ~= undefined then
 						memory.AddToken(x.tempToken)
@@ -1263,6 +1263,40 @@ item: bacon_bikini_bottom
 	joke
 -- #endregion
 
+-- #region Bikini Armor Battle Damage
+__marker: Ottola and Ozzie present...
+item: protection_bikini_top
+	equipable
+		female
+		undershirt
+	statbonus
+		charisma: 20
+		sensitivity: 15
+	weight: light
+	price: 200
+	description: "How does this even work?"
+	ascii
+		char: 0x19b
+		fore: silver
+	armor: 999
+	for_women
+
+item: protection_bikini_bottom
+	equipable
+		female
+		underpants
+	statbonus
+		charisma: 20
+		sensitivity: 15
+	weight: light
+	description: "How does this even work?"
+	price: 200
+	ascii
+		char: 0x19a
+		fore: silver
+	armor: 999
+	for_women
+-- #endregion
 
 -- #region Clothes from jsNoxico
 __marker: Clothes from jsNoxico

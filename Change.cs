@@ -30,6 +30,7 @@ namespace Noxico
 				{
 					switch (change.Name)
 					{
+						/*
 						case "deltaBreastSize":
 							target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("size").Value += change.GetToken("size").Value;
 							target.FixBoobs();
@@ -114,6 +115,7 @@ namespace Noxico
 								returns.Add(true);
 							}
 							break;
+						*/
 						case "taur":
 							if (!target.HasToken("taur"))
 							{

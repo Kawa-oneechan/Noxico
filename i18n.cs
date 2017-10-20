@@ -281,14 +281,14 @@ namespace Noxico
 				{ "has", (c, s) => { return c == player ? "have" : "has"; } },
 				{ "does", (c, s) => { return c == player ? "do" : "does"; } },
 
-				{ "breastsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]")); } },
-                { "breastcupsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]"), true); } },
-				{ "nipplesize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.NippleSize(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "breastsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts")); } },
+                { "breastcupsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts"), true); } },
+				{ "nipplesize", (c, s) => { return Descriptions.NippleSize(c.Path("breasts/nipples")); } },
 				{ "waistsize", (c, s) => { return Descriptions.WaistSize(c.Path("waist")); } },
 				{ "buttsize", (c, s) => { return Descriptions.ButtSize(c.Path("ass")); } },
 
 				#region PillowShout's additions
-				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
+				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.GetToken("penis")); } },
 				//{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
 				//{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
 				//{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
@@ -296,8 +296,8 @@ namespace Noxico
                 //{ "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
 				//{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
 				//{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
-				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")); } },
-				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")); } },
+				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina/wetness")); } },
+				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina/looseness")); } },
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
 				{ "foot", (c, s) => { return Descriptions.Foot(c.GetToken("legs")); } },
 				{ "feet", (c, s) => { return Descriptions.Foot(c.GetToken("legs"), true); } },
@@ -332,9 +332,9 @@ namespace Noxico
 				env.SetValue("cunning", who.GetStat(Stat.Cunning));
 				env.SetValue("sensitivity", who.GetStat(Stat.Sensitivity));
 				env.SetValue("stimulation", who.GetStat(Stat.Stimulation));
-				env.SetValue("pussyAmount", who.Tokens.Count(t => t.Name == "vagina"));
-				env.SetValue("penisAmount", who.Tokens.Count(t => t.Name == "penis"));
-				env.SetValue("pussyWetness", who.Tokens.Any(t => t.Name == "vagina") ? who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value) : 0);
+				env.SetValue("pussyAmount", who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0);
+				env.SetValue("penisAmount", who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0);
+				env.SetValue("pussyWetness", who.HasToken("vagina") ? who.GetToken("vagina").GetToken("wetness").Value : 0);
 				env.SetValue("cumAmount", who.CumAmount);
 				env.SetValue("slime", who.IsSlime);
 				//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
