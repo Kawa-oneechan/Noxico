@@ -345,7 +345,7 @@ namespace Noxico
 			#region [] Parser
 			var regex = new Regex(@"
 \[
-	(?:(?<target>[\w\?]):)?		#Optional target and :
+	(?:(?<target>[tb\?]):)?		#Optional target and :
 
 	(?:						#One or more subcommands
 		(?:\:?)				#Separating :, optional in case target already had one
@@ -357,7 +357,7 @@ namespace Noxico
 				message = regex.Replace(message, (match =>
 				{
 					var target = bottom;
-					var subcom = string.Empty;
+					var subcom = match.Groups["subcom"].Captures[0].Value;
 					var parms = new List<string>();
 
 					var targetGroup = match.Groups["target"].Value;
@@ -369,7 +369,7 @@ namespace Noxico
 
 						if (targetGroup.Length == 2 && "tb".Contains(targetGroup[1]))
 							target = (targetGroup[1] == 't' ? top : bottom);
-						var pToks = wordStructor.Where(x =>	x.Name == match.Groups["subcom"].Value).ToList();
+						var pToks = wordStructor.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
 						var pTok = pToks[Random.Next(pToks.Count)];
 						var pRes = pTok.Tokens.Where(x => !x.HasToken("filter") || wordStructFilter(x.GetToken("filter"), target)).ToList();
 						//Remove all less-specific options if any specific are found.
@@ -377,27 +377,18 @@ namespace Noxico
 							pRes.RemoveAll(x => !x.HasToken("filter"));
 						return pRes[Random.Next(pRes.Count)].Text;
 					}
-					else if (!match.Groups["subcom"].Success)
+					else if (targetGroup.StartsWith("t"))
 					{
-						subcom = targetGroup;
+						target = top;
 					}
-					else
-					{
-						if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
-							target = (targetGroup[0] == 't' ? top : bottom);
-						subcom = match.Groups["subcom"].Value;
 
-						if (match.Groups["subcom"].Captures.Count > 1)
-						{
-							//subcom = targetGroup;
-							subcom = match.Groups["subcom"].Captures[0].Value;
-							for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
-							{
-								var c = match.Groups["subcom"].Captures[i];
-								Console.WriteLine(c);
-								parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
-							}
-						}
+					//subcom = targetGroup;
+					//subcom = match.Groups["subcom"].Captures[0].Value;
+					for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
+					{
+						var c = match.Groups["subcom"].Captures[i];
+						//Console.WriteLine(c);
+						parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
 					}
 
 					parms.Add(string.Empty);

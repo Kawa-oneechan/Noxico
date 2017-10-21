@@ -34,9 +34,9 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				UIManager.Initialize();
-				UIManager.Elements.Add(new UIWindow(i18n.GetString("pause_title")) { Left = 5, Top = 4, Width = 22, Height = pages.Count + 2 });
-				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 2, Width = 44, Height = 18 });
-				list = new UIList() { Width = 20, Height = pages.Count, Left = 6, Top = 5 };
+				UIManager.Elements.Add(new UIWindow(i18n.GetString("pause_title")) { Left = 3, Top = 1, Width = 22, Height = pages.Count + 2 });
+				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 1, Width = 49, Height = 18 });
+				list = new UIList() { Width = 20, Height = pages.Count, Left = 4, Top = 2 };
 				list.Items.AddRange(pages.Keys);
 				list.Change += (s, e) =>
 				{
@@ -60,7 +60,7 @@ namespace Noxico
 						TextScroller.Plain(Mix.GetString("credits.txt"), i18n.GetString("pause_credits"), false);
 					}
 				};
-				text = new UILabel("...") { Left = 30, Top = 3 };
+				text = new UILabel("...") { Left = 30, Top = 2 };
 				UIManager.Elements.Add(list);
 				UIManager.Elements.Add(text);
 				list.Index = IniFile.GetValue("misc", "rememberpause", true) ? page : 0;
@@ -170,24 +170,25 @@ namespace Noxico
 			sb.Clear();
 			for (var i = 0; i < 4; i++)
 				sb.Append(Toolkit.TranslateKey((KeyBinding)i));
-			sb.AppendLine("     - " + i18n.GetString("pause_keymove"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact).PadEffective(8) + " - " + i18n.GetString("pause_keyinteract"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate).PadEffective(8) + " - " + i18n.GetString("pause_keyactivate"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest).PadEffective(8) + " - " + i18n.GetString("pause_keyrest"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly).PadEffective(8) + " - " + i18n.GetString("pause_keyfly"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items).PadEffective(8) + " - " + i18n.GetString("pause_keyitems"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel).PadEffective(8) + " - " + i18n.GetString("pause_keytravel"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept).PadEffective(8) + " - " + i18n.GetString("pause_keyaccept"));
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back).PadEffective(8) + " - " + i18n.GetString("pause_keyback"));
+			sb.AppendLine("         - " + i18n.GetString("pause_keymove"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Interact, true).PadEffective(12) + " - " + i18n.GetString("pause_keyinteract"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Activate, true).PadEffective(12) + " - " + i18n.GetString("pause_keyactivate"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Rest, true).PadEffective(12) + " - " + i18n.GetString("pause_keyrest"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Fly, true).PadEffective(12) + " - " + i18n.GetString("pause_keyfly"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Items, true).PadEffective(12) + " - " + i18n.GetString("pause_keyitems"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Travel, true).PadEffective(12) + " - " + i18n.GetString("pause_keytravel"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Accept, true).PadEffective(12) + " - " + i18n.GetString("pause_keyaccept"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Back, true).PadEffective(12) + " - " + i18n.GetString("pause_keyback"));
 			pages[i18n.GetString("pause_keys1")] = sb.ToString();
 			sb.Clear();
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause).PadEffective(4) + " - " + i18n.GetString("pause_keypause"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Pause, true).PadEffective(8) + " - " + i18n.GetString("pause_keypause"));
 #if DEBUG
-			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3).PadEffective(4) + " - Dump board to HTML (debug only)");
+			sb.AppendLine(Toolkit.TranslateKey(System.Windows.Forms.Keys.F3, true).PadEffective(8) + " - Dump board to HTML (debug only)");
 #endif
-			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot).PadEffective(4) + " - " + i18n.GetString("pause_keyscreenshot"));
+			sb.AppendLine(Toolkit.TranslateKey(KeyBinding.Screenshot, true).PadEffective(8) + " - " + i18n.GetString("pause_keyscreenshot"));
 			pages[i18n.GetString("pause_keys2")] = sb.ToString();
 	
+#if DEBUG
 			var entities = 0;
 			var tokens = 0;
 			foreach (var x in nox.Boards.Where(x => x != null))
@@ -215,6 +216,7 @@ namespace Noxico
 				NoxicoGame.KnownItems.Count.ToString("G"),
 				entities.ToString("G"),
 				tokens.ToString("G"));
+#endif
 
 			if (!IniFile.GetValue("misc", "rememberpause", true))
 				page = 0;
