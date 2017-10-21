@@ -29,12 +29,12 @@ namespace Noxico
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, 22, 40 - (help.Length() / 2));
 				var empty = new string(' ', 70);
 				for (int i = 1; i < 20; i++)
-					host.Write(empty, UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
+					host.Write(empty, UIColors.RegularText, UIColors.WindowBackground, 1 + i, 6);
 				for (int i = scroll; i < text.Length && i - scroll < 20; i++)
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadEffective(69), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 4);
+					host.Write(' ' + text[i].PadEffective(70), UIColors.RegularText, UIColors.WindowBackground, 1 + i, 4);
 				}
 				Subscreens.Redraw = true;
 			}
@@ -80,8 +80,8 @@ namespace Noxico
 				{
 					host.ScrollDown(2, 21, 4, 76, UIColors.DarkBackground);
 					var i = scroll;
-					host.Write(new string(' ', 69), UIColors.RegularText, UIColors.DarkBackground, 2, 4);
-					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 5);
+					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 2, 4);
+					host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 2, 5);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -97,9 +97,9 @@ namespace Noxico
 				{
 					host.ScrollUp(2, 21, 4, 76, UIColors.DarkBackground);
 					var i = scroll + 22;
-					host.Write(new string(' ', 69), UIColors.RegularText, UIColors.DarkBackground, 21, 4);
+					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 21, 4);
 					if (i < text.Length)
-						host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 21, 5);
+						host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 21, 5);
 					Subscreens.Redraw = true;
 				}
 			}

@@ -62,7 +62,7 @@ namespace Noxico
 
 			UIManager.Initialize();
 			win = new UIWindow(title) { Left = x, Top = y, Width = width, Height = height };
-			lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = x + 1, Top = y + 1, Width = width - 2, Height = height - 2 };
+			lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = x + 1, Top = y + 1, Width = width - 2, Height = height - 2, Background = UIColors.WindowBackground };
 			lst.Change += (s, e) =>
 			{
 				option = lst.Index;
