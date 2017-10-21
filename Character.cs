@@ -1160,6 +1160,8 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			{
 				var size = GetBreastSize();
 				var amount = GetBreastAmount();
+				if (amount == 0)
+					return 0;
 				var effectiveAmount = size * amount;
 				if (this.GetToken("breasts").HasToken("lactation"))
 					effectiveAmount *= 5;

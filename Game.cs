@@ -460,7 +460,7 @@ namespace Noxico
 
 			if (Messages.Count == 0)
 				return;
-			var row = 21;
+			var row = 24;
 			for (var i = 0; i < 4 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
@@ -504,7 +504,7 @@ namespace Noxico
 					lastLine = "";
 				else
 					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(76).Trim().Split('\n');
+				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
 				if (newLines.Length > 1)
 				{
 					for (var i = 1; i < newLines.Length; i++)

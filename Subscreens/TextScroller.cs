@@ -22,19 +22,19 @@ namespace Noxico
 				scroll = 1;
 				Subscreens.FirstDraw = false;
 
-				window = new UIWindow(text[0]) { Left = 5, Top = 1, Width = 70, Height = 22 };
+				window = new UIWindow(text[0]) { Left = 3, Top = 1, Width = 74, Height = 22 };
 				window.Draw();
 				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, 22, 40 - (help.Length() / 2));
-				var empty = new string(' ', 68);
+				var empty = new string(' ', 70);
 				for (int i = 1; i < 20; i++)
 					host.Write(empty, UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
 				for (int i = scroll; i < text.Length && i - scroll < 20; i++)
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadEffective(67), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 6);
+					host.Write(' ' + text[i].PadEffective(69), UIColors.RegularText, UIColors.DarkBackground, 1 + i, 4);
 				}
 				Subscreens.Redraw = true;
 			}
@@ -78,10 +78,10 @@ namespace Noxico
 					scroll = 1;
 				else
 				{
-					host.ScrollDown(2, 21, 6, 74, UIColors.DarkBackground);
+					host.ScrollDown(2, 21, 4, 76, UIColors.DarkBackground);
 					var i = scroll;
-					host.Write(new string(' ', 67), UIColors.RegularText, UIColors.DarkBackground, 2, 6);
-					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 7);
+					host.Write(new string(' ', 69), UIColors.RegularText, UIColors.DarkBackground, 2, 4);
+					host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 2, 5);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -95,11 +95,11 @@ namespace Noxico
 					scroll = 1;
 				else
 				{
-					host.ScrollUp(2, 21, 6, 74, UIColors.DarkBackground);
+					host.ScrollUp(2, 21, 4, 76, UIColors.DarkBackground);
 					var i = scroll + 22;
-					host.Write(new string(' ', 67), UIColors.RegularText, UIColors.DarkBackground, 21, 6);
+					host.Write(new string(' ', 69), UIColors.RegularText, UIColors.DarkBackground, 21, 4);
 					if (i < text.Length)
-						host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 21, 7);
+						host.Write(text[i], UIColors.RegularText, UIColors.DarkBackground, 21, 5);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -108,7 +108,7 @@ namespace Noxico
 		public static void Plain(string message, string header = "", bool wrap = true, bool forceScroller = false)
 		{
 			if (wrap)
-				text = (header + '\n' + message.SmartQuote().Wordwrap(86)).Split('\n');
+				text = (header + '\n' + message.SmartQuote().Wordwrap(76)).Split('\n');
 			else
 				text = (header + '\n' + message).SmartQuote().Split('\n');
 
@@ -151,7 +151,7 @@ namespace Noxico
 				{ "Carve", 0x234 },
 				{ "Daedric", 0x24E },
 				{ "Alternian", 0x268 },
-				{ "Keen", 0x282 },
+				{ "Felin", 0x282 },
 			};
 			for (var i = 0; i < bookData.Length; i++)
 			{
