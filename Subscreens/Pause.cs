@@ -36,7 +36,7 @@ namespace Noxico
 				UIManager.Initialize();
 				UIManager.Elements.Add(new UIWindow(i18n.GetString("pause_title")) { Left = 3, Top = 1, Width = 22, Height = pages.Count + 2 });
 				UIManager.Elements.Add(new UIWindow("") { Left = 28, Top = 1, Width = 49, Height = 18 });
-				list = new UIList() { Width = 20, Height = pages.Count, Left = 4, Top = 2 };
+				list = new UIList() { Width = 20, Height = pages.Count, Left = 4, Top = 2, Background = UIColors.WindowBackground };
 				list.Items.AddRange(pages.Keys);
 				list.Change += (s, e) =>
 				{

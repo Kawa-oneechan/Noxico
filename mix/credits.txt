@@ -1,10 +1,14 @@
 
-<cCornflowerBlue>          <g2588><g2588><g2584>  <g2588><g2588> <g2584><g2588><g2580><g2580><g2588><g2584> <g2580><g2588>   <g2588><g2580> <g2580><g2588><g2588><g2580> <g2584><g2588><g2580><g2580><g2588><g2584> <g2584><g2588><g2580><g2580><g2580><g2588><g2584>
-<cCornflowerBlue>          <g2588><g2588><g2588><g2588><g2584><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2580><g2588><g2584><g2588><g2580>   <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>          <g2588><g2588><g2580><g2588><g2588><g2588><g2588> <g2588><g2588>  <g2588><g2588>   <g2584><g2588><g2584>    <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>          <g2588><g2588>  <g2580><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2588><g2580> <g2580><g2588>   <g2588><g2588>  <g2588><g2588>  <g2584><g2584> <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>          <g2588><g2588>   <g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2580>   <g2580><g2580> <g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2588><g2584>  <g2588><g2588>
-<cCornflowerBlue>          <g2580>  <g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>
+<cCornflowerBlue>              <gDB><gDB><g11D>  <gDB><gDB> <g11C><gDB><gDB><gDB><gDB><g11D> <gDB><g11D>  <g11C><gDB> <gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB><g11D>
+<cCornflowerBlue>              <gDB><gDB><gDB><g11D> <gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11E><gDB><g11D><g11C><gDB><g11F>  <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB><g11E><gDB><g11D><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11E><gDB><gDB><g11F>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <g11E><gDB><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11C><gDB><gDB><g11D>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>  <g11E><gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11C><gDB><g11F><g11E><gDB><g11D>  <gDB><gDB>  <gDB><gDB>  <g11C><gDB> <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>   <g11E><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <gDB><g11F>  <g11E><gDB> <gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <g11E><gDB><g11D>  <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>    <g11E>                            <g11E><gDB><g11D> <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><g11F>
+<cCornflowerBlue>              <gDB><g11F> 
+<cCornflowerBlue>              <g11F>  <cSilver> Erotic Roguelike Misadventures
 
 
             Programming and idea                      Kawa

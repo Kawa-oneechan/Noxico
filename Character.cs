@@ -1173,7 +1173,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 
 		private static void Columnize(Action<string> print, List<string> col1, List<string> col2, string header1, string header2)
 		{
-			var pad = 22;
+			var pad = 36;
 			var totalRows = Math.Max(col1.Count, col2.Count);
 			print(i18n.GetString(header1).PadEffective(pad) + i18n.GetString(header2) + "\n");
 			for (var i = 0; i < totalRows; i++)
@@ -1644,7 +1644,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 				if (this.PercievedGender == Gender.Male)
 					print("a [?:cock]?\n");
 				else if (this.PercievedGender == Gender.Female)
-					print("a [?:pussy?]?\n");
+					print("a [?:pussy]?\n");
 				else
 					print("can't tell!\n");
 			}

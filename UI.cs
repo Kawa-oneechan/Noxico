@@ -143,7 +143,7 @@ namespace Noxico
 			Text = text;
 			Foreground = UIColors.WindowBorder;
 			Background = UIColors.WindowBackground;
-			Gradient = true;
+			Gradient = false;
 		}
 
 		public override void Draw()
