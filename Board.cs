@@ -1079,7 +1079,32 @@ namespace Noxico
 					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
 					file.WriteLine("</pre>");
 				}
-			} 
+			}
+			if (Entities.OfType<Clutter>().Count() > 0)
+			{
+				file.WriteLine("<h3>Clutter</h3>");
+				foreach (var c in Entities.OfType<Clutter>())
+				{
+					file.WriteLine("<h4 id=\"{3}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
+					file.WriteLine("<pre>");
+					file.WriteLine("ID: {0}", c.ID);
+					file.WriteLine("Description: {0}", c.Description);
+					file.WriteLine("</pre>");
+				}
+			}
+			if (Entities.OfType<DroppedItem>().Count() > 0)
+			{
+				file.WriteLine("<h3>DroppedItem</h3>");
+				foreach (var c in Entities.OfType<DroppedItem>())
+				{
+					file.WriteLine("<h4>{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition);
+					file.WriteLine("<pre>Item:");
+					file.WriteLine(c.Item.DumpTokens(c.Item.Tokens, 0));
+					file.WriteLine("DroppedItem:");
+					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
+					file.WriteLine("</pre>");
+				}
+			}
 			file.Flush();
 			file.Close();
 		}
@@ -1254,7 +1279,7 @@ namespace Noxico
 
 		public void CreateHtmlScreenshot(StreamWriter stream, bool linked)
 		{
-			stream.WriteLine("<table style=\"font-family: Unifont, monospace;\" cellspacing=0 cellpadding=0>");
+			stream.WriteLine("<table style=\"font-family: Unifont, monospace; cursor: default;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 50; row++)
 			{
 				stream.WriteLine("\t<tr>");
@@ -1272,13 +1297,13 @@ namespace Noxico
 						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
 					}
 					var chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[def.Glyph]);
-					var tag = string.Format("{0}", Tilemap[col, row].InherentLight);
-					var link = "";
+					var tag = string.Empty; //string.Format("{0}", Tilemap[col, row].InherentLight);
+					var link = string.Empty;
 
 					if (chr == "&#x20;")
 						chr = "&nbsp;";
 
-					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
+					var ent = Entities.LastOrDefault(x => x.XPosition == col && x.YPosition == row);
 					if (ent != null)
 					{
 						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
@@ -1290,6 +1315,15 @@ namespace Noxico
 							tag = ((BoardChar)ent).Character.Name.ToString(true);
 							if (linked)
 								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+						else if (ent is Clutter)
+						{
+							if (linked)
+								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+						else if (ent is DroppedItem)
+						{
+							tag = ((DroppedItem)ent).Name;
 						}
 					}
 					if (!string.IsNullOrWhiteSpace(tag))
