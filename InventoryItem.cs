@@ -697,7 +697,7 @@ namespace Noxico
 			var ret = Lua.Run(script, env);
 			if (!ret.ToBoolean())
 				return true;
-			return ret;
+			return ret.ToBoolean();
 		}
 
 		#region PillowShout's additions

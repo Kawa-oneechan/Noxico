@@ -96,7 +96,7 @@ namespace Noxico
 				else
 				{
 					host.ScrollUp(2, 21, 4, 76, UIColors.DarkBackground);
-					var i = scroll + 22;
+					var i = scroll + 19;
 					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 21, 4);
 					if (i < text.Length)
 						host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 21, 5);

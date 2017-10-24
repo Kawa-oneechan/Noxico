@@ -52,8 +52,8 @@ namespace Noxico
 				x++;
 			var height = options.Count + 2;
 			//Check if we're going off the bottom of the screen and correct.
-			if (y + height >= Program.Rows)
-				y = Program.Rows - height;
+			if (y + height >= Program.Rows - 5)
+				y = Program.Rows - height - 5;
 			//If we go off the left or top, fuck it -- overlap the target.
 			if (x < 0)
 				x = 0;
