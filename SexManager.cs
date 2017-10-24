@@ -311,6 +311,8 @@ namespace Noxico
 		public bool HasNipples()
 		{
 			var boobs = this.GetToken("breasts");
+			if (boobs == null)
+				return false;
 			if (boobs.HasToken("nipples") && boobs.GetToken("nipples").Value >= 1)
 					return true;
 			return false;

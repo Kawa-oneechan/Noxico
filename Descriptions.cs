@@ -56,7 +56,7 @@ namespace Noxico
 			var set = descTable.Path(path);
 			if (set == null)
 				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
-			var ret = string.Empty;
+			var ret = set.Tokens[0].Tokens[Random.Next(set.Tokens[0].Tokens.Count)].Name;
 			foreach (var item in set.Tokens)
 			{
 				if (item.Value <= upTo)

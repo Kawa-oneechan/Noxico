@@ -611,7 +611,7 @@ bodyplan: draig
 		length: 0
 		style: straight
 		color: white
-	face: lizard
+	face: dragon
 	eyes: oneof yellow, crimson, lightblue, green
 		count: roll 1d2+2
 	ears: oneof flat, flat, flat, flat, elfin
@@ -649,6 +649,63 @@ bodyplan: draig
 	balls
 		amount: roll 1d3+1
 		size: roll 1d3+2
+
+
+bodyplan: xenon
+	playable
+	culture: felin
+	namegen: norse
+	invisiblegender
+	terms
+		generic: "xenon"
+		male: "xenon"
+		female: "xenon"
+		herm: "xenon"
+	bestiary: "Not argonians."
+		char: 0x160
+	tallness: roll 1d30+200
+	editable: skin/color|Scale color, eyes|Eye color, hair/color|Hair color, hair/style|Hair style
+	skin
+		type: scales
+		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold
+	hair
+		length: roll 1d15+10
+		style: oneof straight, braided, wavy
+		color: oneof blond, brown, black, red, gray, white, auburn
+	face: dragon
+	eyes: oneof yellow, crimson, lightblue, green
+		count: 2
+	ears: flat
+	horns: 1
+		_maybe: 0.75
+	legs: claws
+	tongue: long
+	teeth: oneof sharp, fangs
+	tail: dragon
+	fertility: roll 1d10+5
+	breasts
+		amount: 2
+		size: roll 1d4+2
+		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
+	ass
+		virgin
+		size: roll 1d3+2
+		looseness: 0
+	vagina
+		virgin
+		looseness: roll 1d2+1
+		wetness: roll 1d2+1
+		clit: 1
+	hips: roll 1d4+4
+	waist: roll 1d6+8
+	womb
+	penis: dragon
+		length: roll 1d10+15
+		thickness: roll 1d3+2
+	balls
+		amount: 2
+		size: roll 1d3+2
+		hidden
 
 
 -- #region Beasties

@@ -316,11 +316,7 @@ namespace Noxico
 				};
 
 				backdrop = Mix.GetBitmap("chargen.png");
-/*				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-				using (var g = Graphics.FromImage(backWithPortrait))
-				{
-					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
-				} */
+
 				//Build the interface.
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC3";
 				var bar = new string('\xC4', 33);
@@ -403,63 +399,14 @@ namespace Noxico
 					pages[2].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
-/*				//Do a nice screen blend effect. Normally we can only do straight normal blends.
-				//You might think this is slow as balls, being a Get/SetPixel loop. But since our pics are only 54x58, it's not that bad.
-				redrawBackdrop = new Action<int>(i =>
-				{
-					//We try x_y.png first, where x is the bodyplan ID and y the gender.
-					//If that file doesn't exist, we try just x.png.
-					//If that doesn't work either, we use a fallback.
-					var playable = playables[((UISingleList)controls["species"]).Index];
-					var portrait = "chargen\\" + playable.ID + "_" + "mfhn"[((UIRadioList)controls["sex"]).Value] + ".png";
-					if (!Mix.FileExists(portrait))
-					{
-						portrait = "chargen\\" + playable.ID + ".png";
-						if (!Mix.FileExists(portrait))
-						{
-							portrait = "chargen\\_.png";
-						}
-					}
-					if (portraits == null)
-						portraits = new Dictionary<string, Bitmap>();
-					if (!portraits.ContainsKey(portrait))
-						portraits.Add(portrait, Mix.GetBitmap(portrait));
-					var p = portraits[portrait];
-					for (var row = 0; row < 58; row++)
-					{
-						for (var col = 0; col < 54; col++)
-						{
-							var a = p.GetPixel(col, row).R / 255f;
-							var c = backdrop.GetPixel(col, row + 1);
-							var r = c.R / 255f;
-							var g = c.G / 255f;
-							var b = c.B / 255f;
-							r = 1 - (1 - r) * (1 - a);
-							g = 1 - (1 - g) * (1 - a);
-							b = 1 - (1 - b) * (1 - a);
-							r = r * 255f;
-							g = g * 255f;
-							b = b * 255f;
-							if (r > 255) r = 255;
-							if (g > 255) g = 255;
-							if (b > 255) b = 255;
-							if (r < 0) r = 0;
-							if (g < 0) g = 0;
-							if (b < 0) b = 0;
-							backWithPortrait.SetPixel(col, row + 1, Color.FromArgb((int)r, (int)g, (int)b));
-						}
-					}
-					((UIPNGBackground)controls["backdrop"]).Bitmap = backWithPortrait;
-				}); */
-
 				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
 				controls["next"].Enter = (s, e) => { page++; loadPage(page); UIManager.Draw(); };
 				controls["play"].Enter = (s, e) =>
 				{
 					var playerName = controls["name"].Text;
 					var sex = ((UIRadioList)controls["sex"]).Value;
-					var gid = ((UIRadioList)controls["gid"]).Value;
-					var pref = ((UIRadioList)controls["pref"]).Value;
+					var gid = ((UISingleList)controls["gid"]).Index;
+					var pref = ((UISingleList)controls["pref"]).Index;
 					var species = ((UISingleList)controls["species"]).Index;
 					var tutorial = ((UIToggle)controls["tutorial"]).Checked;
 					var easy = ((UIToggle)controls["easy"]).Checked;
@@ -511,7 +458,7 @@ namespace Noxico
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					
-					Story();
+					//Story();
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
@@ -556,7 +503,7 @@ namespace Noxico
 				controls["gift"].Change = (s, e) =>
 				{
 					var giftIndex = ((UIList)controls["gift"]).Index;
-					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(50);
+					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(controls["controlHelp"].Width);
 					controls["controlHelp"].Top = controls["gift"].Top + giftIndex;
 					UIManager.Draw();
 				};

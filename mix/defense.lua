@@ -2,7 +2,7 @@ local ret = 0
 local attackType = 0 --punch
 local skinType = 0 --regular skin
 
-if weapon == undefined then
+if weapon == nil then
 	if target.Path("skin/type").Text == "fur" then --or perhaps they have nails?
 		attackType = 1 --tear
 	elseif target.HasToken("snaketail") then

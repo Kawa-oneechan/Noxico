@@ -560,12 +560,12 @@ namespace Noxico
 							cock.AddToken("length", length);
 							cock.AddToken("thickness", thick);
 							cock.AddToken("cumsource");
-							report += "[Youorname] [has] grown a brand new [?:penis]!";
+							report += "[Youorname] [has] grown a brand new [?:cock]!";
 						}
 						else if (cock != null && !cock.HasToken("dual"))
 						{
 							cock.AddToken("dual");
-							report += "[Yourornames] [?:penis] has split in two!";
+							report += "[Yourornames] [?:cock] has split in two!";
 						}
 						else
 							report += "\uE2FC";
@@ -586,12 +586,12 @@ namespace Noxico
 							vagina = this.AddToken("vagina");
 vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 							vagina.AddToken("looseness", Random.Next((int)(intensity / 2)));
-							report += "[Youorname] [has] grown a brand new, [pussywetness] [?:vagina]!";
+							report += "[Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!";
 						}
 						else if (vagina != null && !vagina.HasToken("dual"))
 						{
 							vagina.AddToken("dual");
-							report += "[Yourornames] [?:vagina] has split in two!";
+							report += "[Yourornames] [?:pussy] has split in two!";
 						}
 						else
 							report += "\uE2FC";
@@ -1179,11 +1179,11 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			for (var i = 0; i < totalRows; i++)
 			{
 				if (i < col1.Count)
-					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + i18n.GetString(col1[i], false)).PadEffective(pad));
+					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col1[i], false)).ToLowerInvariant()).PadEffective(pad));
 				else
 					print("".PadEffective(pad));
 				if (i < col2.Count)
-					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + i18n.GetString(col2[i], false));
+					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col2[i], false).ToLowerInvariant()));
 				print("\n");
 			}
 			print("\n");
@@ -1603,7 +1603,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 				var boob = GetToken("breasts");
 				//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
 				//	continue;
-				print("\xC3 " + Toolkit.Count(boob.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastSize()));
+				print("\xC0 " + Toolkit.Count(boob.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastSize()));
 				if (breastsVisible && (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
 					print(" nippleless");
 				print(" breast");
@@ -1664,7 +1664,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 					var clitSize = 0.25f;
 					if (clit != null)
 						clitSize = clit.Value;
-					print("\xC3 " + (vagina.HasToken("dual") ? "a split, " : "a ") + loose + wet + " [?:vagina], with a " + Descriptions.Length(clitSize) + " [?:clit]\n");
+					print((cock == null && ballCount == 0 ? "\xC0 " : "\xC3 ") + (vagina.HasToken("dual") ? "a split, " : "a ") + loose + wet + " [?:pussy], with a " + Descriptions.Length(clitSize) + " [?:clit]\n");
 				}
 
 				//var cocksAndBalls = cocks.Count + ballCount;

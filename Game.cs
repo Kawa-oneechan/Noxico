@@ -1355,7 +1355,7 @@ namespace Noxico
 				var color = " <cGray>";
 					var statBonus = character.GetToken(stat.Key.ToLowerInvariant() + "bonus").Value;
 				var statBase = character.GetToken(stat.Key.ToLowerInvariant()).Value;
-				var total = statBase + statBonus;
+				var total = (int)statBase + statBonus;
 				if (statBonus > 0)
 					color = " <cWhite>";
 				else if (statBonus < 0)
@@ -1414,7 +1414,9 @@ namespace Noxico
 			{
 				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 2);
 			}
-			
+
+			if (!string.IsNullOrWhiteSpace(ContextMessage))
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length() - 2);
 
 			DrawMessages();
 			/*
