@@ -64,7 +64,7 @@ namespace Noxico
 				titleBack = new UIPNGBackground(background);
 
 				var subtitle = i18n.GetString("ts_subtitle");
-				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
+				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
 				titleCaption = new UILabel(subtitle) { Top = 10, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal };
 				titlePressEnter = new UILabel(pressEnter) { Top = 12, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray };
 				UIManager.Elements.Add(titleBack);
@@ -349,7 +349,7 @@ namespace Noxico
 					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 42, Top = 5, Foreground = Color.Gray } },
 					{ "gift", new UIList("", null, traits) { Left = 44, Top = 6, Width = 30, Height = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White } },
+					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White, Darken = true } },
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
 					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 24, Foreground = Color.Silver } },
 				};

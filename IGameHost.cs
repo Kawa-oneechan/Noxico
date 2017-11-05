@@ -58,7 +58,7 @@ namespace Noxico
 		/// To insert arbitrary characters, you can use the &lt;g####&gt; tag, but regular \u#### is preferred.
 		/// To change drawing color, use the &lt;cFore,Back&gt; tag.
 		/// </remarks>
-		void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0);
+		void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0, bool darken = false);
 		
 		/// <summary>
 		/// Moves an entire block of cells in the screen buffer up one row, to make space for new stuff below.

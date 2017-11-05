@@ -545,7 +545,7 @@ namespace Noxico
 			Clear(' ', Color.White, Color.Black);
 		}
 
-		public void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0)
+		public void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0, bool darken = false)
 		{
 			if (!text.IsNormalized())
 				text = text.Normalize();
@@ -581,6 +581,9 @@ namespace Noxico
 						}
 					}
 				}
+				
+				if (darken) image[col, row].Background = image[col, row].Background.Darken();
+
 				SetCell(row, col, c, foregroundColor, backgroundColor, true);
 				col++;
 				if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000) || (c >= 0xE400 && c < 0xE500))

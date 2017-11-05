@@ -176,6 +176,7 @@ namespace Noxico
 		{
 			get { return false; }
 		}
+		public bool Darken { get; set; }
 
 		public UILabel(string text)
 		{
@@ -186,7 +187,7 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			NoxicoGame.HostForm.Write(Text, Foreground, Background, Top, Left);
+			NoxicoGame.HostForm.Write(Text, Foreground, Background, Top, Left, Darken);
 		}
 	}
 
