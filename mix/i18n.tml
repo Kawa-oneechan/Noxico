@@ -393,7 +393,7 @@ Would you like an infodump on the way out?
 -- #region Leg types
 	legtype_human: human
 	legtype_genbeast: digitigrade
-	legtype_stiletto: stilleto-heeled
+	legtype_stiletto: stiletto-heeled
 	legtype_claws: clawed
 	legtype_insect: insectoid
 	legtype_dog: digitigrade
