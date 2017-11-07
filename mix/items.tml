@@ -17,6 +17,12 @@
 
 -- note that 'print' pops up a box while 'message' prints text into the general message area
 
+item: broken_reference
+	description: "404 item not found."
+	ascii
+		char: 0x3F
+		fore: silver
+
 item: regenring
 	_n: Ring of Regeneration
 	equipable
@@ -302,7 +308,7 @@ item: cheap_pos
 
 item: catears
 	_n: [color ]cat ear headband
-	description: "One of the felins' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
+	description: "One of the felin secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
 	equipable
 		hat
 	weight: feather
@@ -564,7 +570,7 @@ item: shortsword
 	weapon
 		damage: 40
 		skill: short_sword
-	description: "A plain but servicable short sword."
+	description: "A plain but serviceable short sword."
 	ascii
 		char: 0x182
 		fore: white
@@ -612,6 +618,7 @@ item: longsword
 
 item: zweihander
 	_u: two-handed sword
+	_n: zweih&#x84;nder
 	fireproof
 	equipable
 		hand
@@ -671,7 +678,7 @@ item: mace
 		char: 0x1A8
 		fore: silver
 
-item: warhammer
+item: war_hammer
 	fireproof
 	unique
 	equipable
@@ -680,14 +687,14 @@ item: warhammer
 	weight: heavy
 	weapon
 		damage: 70
-		skill: warhammer
+		skill: war_hammer
 		attacktype: crush
 	description: "A big ol' hammer, meant for war."
 	ascii
 		char: 0x192
 		fore: silver
 
-item: woodenclub
+item: wooden_club
 	equipable
 		hand
 	weight: medium
@@ -957,7 +964,7 @@ item: gem_dilithium
 		fore: tan
 	weight: light
 	price: 4500
-	description: "You think this has some sciency properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
+	description: "You think this has some science-y properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
 	gemstone
 
 item: gem_diamond
@@ -1511,7 +1518,7 @@ item: skirt
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
-	description: "For some reason, it's all ruffly. Doesn't cover much."
+	description: "For some reason, it's all ruffled. Doesn't cover much."
 	equipable
 		female
 		pants
@@ -1959,7 +1966,7 @@ item: chaotic_regen_ring
 
 item: orgasm_denial_ring
 	_n: Ring of Orgasm Denial
-	description: "A ring that prevents the wearer from reaching a climax. How it works, noone cares."
+	description: "A ring that prevents the wearer from reaching a climax. How it works, no one cares."
 	equipable
 		ring
 	randomized: 132

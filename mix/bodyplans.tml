@@ -104,7 +104,7 @@ bodyplan: goblin
 	invisiblegender
 	terms
 		generic: "goblin"
-	bestiary: "Originally great engineers, now fallen into an orgiasmic frenzy."
+	bestiary: "Originally great engineers, now fallen into an orgasmic frenzy."
 		small
 		char: 0x165
 	tallness: roll 1d40+120

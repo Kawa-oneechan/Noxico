@@ -140,6 +140,7 @@
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
+    <None Include="mix\clutter.tml" />
     <Compile Include="Mutamorph.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />

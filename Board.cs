@@ -513,6 +513,7 @@ namespace Noxico
 
 				Toolkit.ExpectFromFile(stream, "ENTT", "board entity");
 				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
+				Clutter.ParentBoardHack = newBoard;
 				for (int i = 0; i < chrCt; i++)
 					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
 				for (int i = 0; i < drpCt; i++)
