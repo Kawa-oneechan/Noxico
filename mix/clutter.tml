@@ -1,0 +1,25 @@
+id: bed
+	role: bed
+	char: 0x147
+	color: black
+	background: inherit
+id: table
+	role: furniture
+	char: 0x148
+	name: "Table"
+	description: "Solid oaken table, very sturdy."
+	color: black
+	background: inherit
+id: seat
+	role: furniture
+	char: 0x149
+	name: "Chair"
+	description: "Solid oaken chair, very sturdy."
+	color: black
+	background: inherit
+
+id: container
+	role: wardrobe
+	char: 0x14b
+	color: black
+	background: inherit
