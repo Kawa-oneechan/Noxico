@@ -700,8 +700,6 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
-			if (Character.UpdatePregnancy())
-				return;
 
 			NoxicoGame.PlayerReady = false;
 

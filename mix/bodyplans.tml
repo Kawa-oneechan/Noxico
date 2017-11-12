@@ -34,7 +34,6 @@ bodyplan: human
 	waist: roll 1d4+1
 	hips: roll 1d2+4
 	-- The creature creator adjusts this part.
-	fertility: roll 1d15+5
 	breasts
 		amount: 2
 		size: roll 1d5+1
@@ -123,7 +122,6 @@ bodyplan: goblin
 	legs: human
 	waist: roll 1d2+1
 	hips: roll 1d3+4
-	fertility: 50
 	ass
 		size: roll 1d3+6
 		looseness: 1
@@ -188,7 +186,6 @@ bodyplan: bee
 		recharge: 5
 	hips: 6
 	waist: 3
-	fertility: 10
 	ass: insect
 		size: 13
 		looseness: 4
@@ -229,7 +226,6 @@ bodyplan: naga
 	snaketail
 	waist: 4
 	hips: 5
-	fertility: 20
 	ass
 		size: 6
 		looseness: 1
@@ -285,7 +281,6 @@ bodyplan: foocubus
 	legs: oneof claws, stiletto, stiletto, human, human, human
 	waist: roll 1d3+2
 	hips: 6
-	fertility: roll 1d20+30
 	ass
 		size: 7
 		looseness: 2
@@ -348,7 +343,6 @@ bodyplan: felin
 		size: 5
 	hips: roll 1d6
 	waist: roll 1d4+1
-	fertility: 0
 	breasts
 		amount: 2
 		size: 0
@@ -404,7 +398,6 @@ bodyplan: kitsune
 		looseness: 0
 	hips: roll 1d2+1
 	waist: 2
-	fertility: roll 1d20+10
 	breasts
 		amount: 2
 		size: roll 1d3+3
@@ -459,7 +452,6 @@ bodyplan: slime
 		looseness: 2
 	waist: roll 1d5+1
 	hips: roll 1d3+4
-	fertility: roll 1d15+5
 	breasts
 		amount: 2
 		size: roll 1d7+4
@@ -515,7 +507,6 @@ bodyplan: ursidae
 		size: 7
 	hips: roll 1d14+2
 	waist: roll 1d12+2
-	fertility: roll 1d25+5
 	breasts
 		amount: 2
 		size: roll 1d8+2
@@ -568,7 +559,6 @@ bodyplan: canine
 		looseness: 0
 	hips: roll 1d2+1
 	waist: 2
-	fertility: roll 1d20+10
 	breasts
 		amount: 2
 		size: roll 1d3+3
@@ -625,7 +615,6 @@ bodyplan: draig
 	tongue: forked
 	teeth: oneof sharp, fangs
 	tail: dragon
-	fertility: roll 1d10+5
 	egglayer
 	breasts
 		amount: roll 1d2+2
@@ -682,7 +671,6 @@ bodyplan: xenon
 	tongue: long
 	teeth: oneof sharp, fangs
 	tail: dragon
-	fertility: roll 1d10+5
 	breasts
 		amount: 2
 		size: roll 1d4+2
@@ -864,7 +852,6 @@ bodyplan: spider
 		recharge: 5
 	hips: 11
 	waist: 7
-	fertility: 10
 	ass: insect
 		size: 17
 		looseness: 2
@@ -906,7 +893,6 @@ bodyplan: gargoyle
 	waist: 4
 	hips: 5
 	tail: dragon
-	fertility: 0
 	ass
 		size: 4
 		looseness: 2

@@ -330,16 +330,6 @@ namespace Noxico
 					if (dickSize < 40)
 						return true;
 					return false;
-				case "isfather":
-					var pregnancy = fSecondary.Path("pregnancy");
-					if (pregnancy == null)
-						return false;
-					var father = fSecondary.Path("pregnancy/father");
-					if (father == null)
-						return false;
-					if (father.Text != fPrimary.ID)
-						return false;
-					break;
 				case "relation":
 					var ship = parts[1];
 					if (ship != "none")

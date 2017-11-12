@@ -304,10 +304,12 @@ namespace Noxico
 		{
 			return HasSexFlag("restrained");
 		}
+		
 		public bool Restraining()
 		{
 			return HasSexFlag("restraining");
 		}
+		
 		public bool HasNipples()
 		{
 			var boobs = this.GetToken("breasts");
@@ -317,16 +319,19 @@ namespace Noxico
 					return true;
 			return false;
 		}
+		
 		public bool HasBreasts()
 		{
 			if (this.GetBreastSize() < 0.2)
 				return false;
 			return true;
 		}
+		
 		public float Raise(Stat stat, float by)
 		{
 			return ChangeStat(stat.ToString().ToLowerInvariant(), by);
 		}
+		
 		public Token AddToken(string name, object value)
 		{
 			var t = new Token(name);
@@ -342,20 +347,24 @@ namespace Noxico
 			AddToken(t);
 			return t;
 		}
+		
 		public Token AddSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.AddToken(name);
 		}
+		
 		public Token RemoveSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.RemoveToken(name);
 		}
+		
 		public bool HasSexFlag(string name)
 		{
 			return Path("havingsex/" + name) != null;
 		}
+	
 		public bool Disrobe(string clothClass, bool tear)
 		{
 			InventoryItem cloth = null;
@@ -388,12 +397,7 @@ namespace Noxico
 			}
 			return false;
 		}
-		public bool Fertilize()
-		{
-			if (!EnsureSexPartner())
-				return false;
-			return Fertilize(sexPartner);
-		}
+
 		public bool TakeVirginity()
 		{
 			var vagina = Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));

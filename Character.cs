@@ -841,7 +841,6 @@ namespace Noxico
 
 			if (bioGender == Gender.Male || bioGender == Gender.Neuter)
 			{
-				newChar.RemoveToken("fertility");
 				newChar.RemoveToken("womb");
 				while (newChar.HasToken("vagina"))
 					newChar.RemoveToken("vagina");
@@ -1627,7 +1626,7 @@ namespace Noxico
 					print((cock == null && ballCount == 0 ? "\xC0 " : "\xC3 ") + (vagina.HasToken("dual") ? "a split, " : "a ") + loose + wet + " [?:pussy], with a " + Descriptions.Length(clitSize) + " [?:clit]\n");
 				}
 
-\				if (cock != null)
+				if (cock != null)
 				{
 					var cockType = cock.Text;
 					if (string.IsNullOrWhiteSpace(cockType))
@@ -1685,7 +1684,7 @@ namespace Noxico
 
 			var sb = new StringBuilder();
 
-			//Things not listed: pregnancy, horns and wings.
+			//Things not listed: horns and wings.
 			if (print == null)
 				print = new Action<string>(x => sb.Append(x.Viewpoint(null)));
 
@@ -2153,9 +2152,6 @@ namespace Noxico
 			//TODO: if (totalWeight > capacity) become immobile
 
 			//body weight
-			var gestation = this.Path("pregnancy/gestation");
-			if (gestation != null && gestation.Value == gestation.GetToken("max").Value / 2)
-				score--;
 
 			//equips
 			/*
@@ -2304,13 +2300,11 @@ namespace Noxico
 		}
 		//can double as GetNipplecuntCapacity yay
 
-		public bool UpdatePregnancy()
+		public void UpdateOviposition()
 		{
 			if (BoardChar == null)
-				return false; //abandon pregnanship!
-			//Disabled egglaying for now.
-			/*
-			if (this.HasToken("egglayer") && this.HasToken("vagina") && !this.HasToken("pregnancy"))
+				return;
+			if (this.HasToken("egglayer") && this.HasToken("vagina"))
 			{
 				var eggToken = this.GetToken("egglayer");
 				eggToken.Value++;
@@ -2323,79 +2317,13 @@ namespace Noxico
 						YPosition = BoardChar.YPosition,
 						ParentBoard = BoardChar.ParentBoard,
 					};
-					egg.Take(this);
+					egg.Take(this, BoardChar.ParentBoard);
 					if (BoardChar is Player)
 						NoxicoGame.AddMessage(i18n.GetString("youareachicken").Viewpoint(this));
-					return false;
+					return;
 				}
 			}
-			else
-			*/
-			if (this.HasToken("pregnancy"))
-			{
-				var pregnancy = this.GetToken("pregnancy");
-				var gestation = pregnancy.GetToken("gestation");
-				gestation.Value++;
-				if (gestation.Value >= gestation.GetToken("max").Value)
-				{
-					var childName = new Name();
-					childName.Female = Random.NextDouble() > 0.5;
-					childName.NameGen = this.GetToken("namegen").Text;
-					childName.Regenerate();
-					if (childName.Surname.StartsWith("#patronym"))
-						childName.ResolvePatronym(new Name(pregnancy.GetToken("father").Text), this.Name);
-
-					var ships = this.GetToken("ships");
-					ships.AddToken(childName.ToID()).AddToken("child");
-
-					//Gotta grow a vagina if we don't have one right now.
-					//if (!this.HasToken("vagina"))
-
-					if (this.HasToken("player"))
-					{
-						var children = 0;
-						foreach (var ship in ships.Tokens)
-						{
-							if (ship.HasToken("child"))
-								children++;
-						}
-						if (children == 1)
-						{
-							//First time!
-							MessageBox.Notice(i18n.Format("you_bear1stchild", childName.FirstName), true, i18n.GetString("congrats_mom"));
-						}
-						else
-							MessageBox.Notice(i18n.Format("you_bearNthchild", childName.FirstName), true, i18n.GetString("congrats_mom"));
-					}
-					else if (pregnancy.GetToken("father").Text == NoxicoGame.Me.Player.Character.Name.ToString(true))
-					{
-						NoxicoGame.AddMessage(i18n.Format("x_bearschild", this.Name, childName.FirstName));
-					}
-
-					this.RemoveToken("pregnancy");
-					return true;
-				}
-				else if (gestation.Value == gestation.GetToken("max").Value / 2)
-					CheckHasteSlow();
-			}
-			return false;
-		}
-
-		public bool Fertilize(Character father)
-		{
-			if (!this.HasToken("womb"))
-				return false;
-			var fertility = 0.0;
-			if (this.HasToken("fertility"))
-				fertility = this.GetToken("fertility").Value;
-			//Simple version for now -- should involve the father, too.
-			if (Random.Next() > fertility)
-				return false;
-
-			var pregnancy = AddToken("pregnancy");
-			pregnancy.AddToken("gestation").AddToken("max", 1000); //TODO: tweak gestation time. Has to be high, though; gestation is in time, not turns!
-			pregnancy.AddToken("father", 0, father.Name.ToString(true));
-			return true;		
+			return;
 		}
 
 		public void GiveRapistPoints(Character bottom)
