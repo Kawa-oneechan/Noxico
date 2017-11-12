@@ -41,8 +41,8 @@ namespace Noxico
 		{
 			if (env == null)
 				env = Environment;
-			if (NoxicoGame.HostForm.Noxico.Player != null)
-				env.SetValue("player", NoxicoGame.HostForm.Noxico.Player);
+			if (NoxicoGame.Me.Player != null)
+				env.SetValue("player", NoxicoGame.Me.Player);
 			//TODO: predefine ALL THE THINGS.
 			env.RegisterPackage("Board", typeof(Board));
 			env.RegisterPackage("BoardChar", typeof(BoardChar));
@@ -143,7 +143,7 @@ namespace Noxico
 		/// <summary>
 		/// Runs a block of Lua code from a file, which may be archived.
 		/// </summary>
-		/// <param name="block">The name of the file with the code to run.</param>
+		/// <param name="name">The name of the file with the code to run.</param>
 		/// <param name="env">The Lua environment to run it in.</param>
 		/// <returns>The script's return value, or False if an error occurred.</returns>
 		public static LuaResult RunFile(string name, LuaGlobal env = null)

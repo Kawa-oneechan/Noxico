@@ -278,7 +278,7 @@ namespace Noxico
 				MessageBox.Notice(complain);
 				while (paused)
 				{
-					NoxicoGame.HostForm.Noxico.Update();
+					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
 				// todo kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks

@@ -439,7 +439,7 @@ namespace Noxico
 
 		public void Use(Character character, Token item, bool noConfirm = false)
 		{
-			var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
+			var boardchar = NoxicoGame.Me.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
 			var runningDesc = "";
 
 			Action<string> showDesc = new Action<string>(d =>
@@ -646,7 +646,7 @@ namespace Noxico
 				MessageBox.Notice((y ? x : x.Viewpoint(character)), true);
 				while (paused)
 				{
-					NoxicoGame.HostForm.Noxico.Update();
+					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
@@ -671,12 +671,12 @@ namespace Noxico
 					var rid = (int)this.GetToken("randomized").Value;
 					if (this.Path("equipable/ring") != null && rid < 128)
 						rid += 128;
-					var rdesc = NoxicoGame.HostForm.Noxico.Potions[rid];
+					var rdesc = NoxicoGame.Me.Potions[rid];
 					if (rdesc[0] != '!')
 					{
 						//Still unidentified. Let's rock.
 						rdesc = '!' + rdesc;
-						NoxicoGame.HostForm.Noxico.Potions[rid] = rdesc;
+						NoxicoGame.Me.Potions[rid] = rdesc;
 						this.UnknownName = null;
 					}
 					//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
@@ -750,7 +750,7 @@ namespace Noxico
 			return ToString(token) + " (" + string.Join(", ", info) + ")";
 		}
 
-		//TRANSLATE
+		//TODO: i18n
 		public void Eat(Character gourmand, Token item)
 		{
 			if (item.HasToken("fat"))

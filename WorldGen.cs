@@ -320,7 +320,7 @@ namespace Noxico
 			entranceBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
-			NoxicoGame.HostForm.Noxico.SaveGame();
+			NoxicoGame.Me.SaveGame();
 
 			return entranceBoard;
 		}

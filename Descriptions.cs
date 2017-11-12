@@ -324,7 +324,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a string containing a description of the passed 'nipple' token's size.
 		/// </summary>
-		/// <param name="ballsToken">The 'nipple' token of a character.</param>
+		/// <param name="nipplesToken">The 'nipple' token of a character.</param>
 		/// <returns>A string containging the description of the 'nipple' token's size.</returns>
 		public static string NippleSize(Token nipplesToken)
 		{
@@ -386,7 +386,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a string containing a description of the passed 'ass' token size.
 		/// </summary>
-		/// <param name="ballsToken">The 'ass' token of a character.</param>
+		/// <param name="buttToken">The 'ass' token of a character.</param>
 		/// <returns>A string containging the description of the 'ass' token's size.</returns>
 		public static string ButtSize(Token buttToken)
 		{
@@ -441,7 +441,7 @@ namespace Noxico
 		/// <returns>A string containing a description of the hand type.</returns>
 		public static string Hand(Character character, bool plural = false)
 		{
-			//TRANSLATE
+			//TODO: i18n
 			if (character.HasToken("quadruped"))
 				return Foot(character.GetToken("legs"), plural);
 			//Clawed hands and such can go here.

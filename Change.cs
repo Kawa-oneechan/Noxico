@@ -30,6 +30,7 @@ namespace Noxico
 				{
 					switch (change.Name)
 					{
+						//TODO: Rework the breast-related morphs.
 						/*
 						case "deltaBreastSize":
 							target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("size").Value += change.GetToken("size").Value;

@@ -84,8 +84,8 @@ namespace Noxico
 			var longhand = !input.Contains('\uE2FE');
 			for (var i = 0; i <= 0x10; i++)
 				input = input.Replace(((char)(0xE200 + i)).ToString(), Toolkit.TranslateKey((KeyBinding)i, longhand));
-			if (NoxicoGame.HostForm.Noxico.Player != null && NoxicoGame.HostForm.Noxico.Player.Character != null)
-				input = input.Replace("\uE220", NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString());
+			if (NoxicoGame.Me.Player != null && NoxicoGame.Me.Player.Character != null)
+				input = input.Replace("\uE220", NoxicoGame.Me.Player.Character.Name.ToString());
 			else
 				input = input.Replace("\uE220", "????");
 			input = input.Replace("\uE2FE", "");
@@ -236,9 +236,9 @@ namespace Noxico
 		public static string Viewpoint(this string message, Character top, Character bottom = null)
 		{
 #if DEBUG
-			var player = NoxicoGame.HostForm.Noxico.Player == null ? null : NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 #else
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 #endif
 			if (top == null)
 				top = player;

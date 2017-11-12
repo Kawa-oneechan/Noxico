@@ -45,8 +45,8 @@ namespace Noxico
 				NoxicoGame.AddMessage(i18n.Format("dropped_x", chosen.ToString(token, true, true)));
 				NoxicoGame.Sound.PlaySound("set://PutItem");
 				chosen.Drop(boardchar, token);
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
-				//NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				NoxicoGame.Me.CurrentBoard.Update();
+				//NoxicoGame.Me.CurrentBoard.Draw();
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.Redraw = true;
 			}
@@ -70,7 +70,7 @@ namespace Noxico
 
 		public static void Handler()
 		{
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{
 				MessageBox.Notice(i18n.GetString("inventory_youhavenothing"), true);
@@ -296,8 +296,8 @@ namespace Noxico
 				{
 					yourWindow.Height = 2 + height;
 					itemList.Items = itemTexts;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+					NoxicoGame.Me.CurrentBoard.Redraw();
+					NoxicoGame.Me.CurrentBoard.Draw();
 				}
 				itemList.Index = selection;
 
@@ -309,8 +309,8 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

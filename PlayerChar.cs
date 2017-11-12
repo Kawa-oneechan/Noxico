@@ -75,7 +75,7 @@ namespace Noxico
 					return;
 				}
 
-				var game = NoxicoGame.HostForm.Noxico;
+				var game = NoxicoGame.Me;
 				var targetBoard = game.GetBoard(warp.TargetBoard); //game.Boards[warp.TargetBoard]; //.Find(b => b.ID == warp.TargetBoard);
 
 				var sourceBoard = ParentBoard;
@@ -114,7 +114,7 @@ namespace Noxico
 				this.ParentBoard.EntitiesToRemove.Add(this);
 				this.ParentBoard.SaveToFile(this.ParentBoard.BoardNum);
 			}
-			var n = NoxicoGame.HostForm.Noxico;
+			var n = NoxicoGame.Me;
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
@@ -166,7 +166,7 @@ namespace Noxico
 				check = SolidityCheck.Flyer;
 
 			#region Inter-board travel
-			var n = NoxicoGame.HostForm.Noxico;
+			var n = NoxicoGame.Me;
 			Board otherBoard = null;
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
@@ -591,7 +591,7 @@ namespace Noxico
 					if (drop != null)
 					{
 						drop.Take(this.Character, ParentBoard);
-						NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
+						NoxicoGame.Me.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
 						NoxicoGame.Sound.PlaySound("set://GetItem"); 
 						ParentBoard.Redraw();
@@ -923,7 +923,7 @@ namespace Noxico
 
 		public void Respawn()
 		{
-			var game = NoxicoGame.HostForm.Noxico;
+			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var bed = homeBoard.Entities.First(e => e is Clutter && e.ID == "Bed_playerRespawn");
 			if (ParentBoard != homeBoard)
@@ -942,10 +942,10 @@ namespace Noxico
 
 		public void UpdateCandle()
 		{
-			var game = NoxicoGame.HostForm.Noxico;
+			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
-			//TRANSLATE
+			//TODO: i18n
 			if (Character.HasToken("easymode"))
 				candle.Description = "Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.";
 			else if (Lives == 0)

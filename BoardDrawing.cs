@@ -78,7 +78,6 @@ namespace Noxico
 				env.SetValue("x", point.X);
 				env.SetValue("y", point.Y);
 				env.SetValue("tile", this.Tilemap[point.Y, point.X]);
-				//env.DoChunk(brush, "lol.lua");
 				Lua.Run(brush, env);
 			}
 		}
@@ -102,8 +101,6 @@ namespace Noxico
 					env.SetValue("x", x);
 					env.SetValue("y", y);
 					env.SetValue("tile", this.Tilemap[y, x]);
-					//if (env.DoChunk(checker, "lol.lua").ToBoolean())
-					//	env.DoChunk(replacer, "lol.lua");
 					if (Lua.Run(checker, env).ToBoolean())
 						Lua.Run(replacer, env);
 				}
@@ -143,10 +140,8 @@ namespace Noxico
 				env.SetValue("x", x);
 				env.SetValue("y", y);
 				env.SetValue("tile", this.Tilemap[y, x]);
-				//if (env.DoChunk(checker, "lol.lua").ToBoolean())
 				if (Lua.Run(checker, env).ToBoolean())
 				{
-					//env.DoChunk(replacer, "lol.lua");
 					Lua.Run(replacer, env);
 
 					stack.Push(new Point(x - 1, y));
@@ -342,6 +337,7 @@ namespace Noxico
 
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
+			//TODO: Reimplement this? Is currently covered by Variants.
 			/*
 			if (y2 >= 50)
 				y2 = 49;
