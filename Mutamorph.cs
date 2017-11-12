@@ -26,7 +26,7 @@ namespace Noxico
 			var simpleTraits = new[] { "fireproof", "aquatic" };
 			var trivialSizes = new[]
 			{
-				"tallness", "hips", "waist", "fertility", "ass/size",
+				"tallness", "hips", "waist", "ass/size",
 				"charisma", "cunning", "carnality", "sensitivity", "speed", "strength"
 			};
 			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };

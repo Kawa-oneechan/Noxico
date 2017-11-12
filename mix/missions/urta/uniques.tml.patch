@@ -22,7 +22,6 @@ add: -
 		ass
 			size: 12
 		hips: 12
-		fertility: 0
 		breasts
 			amount: 2
 			size: 6

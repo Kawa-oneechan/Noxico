@@ -68,10 +68,8 @@ group: top.HasPenis() and (not top.HasVagina())
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]self."}, Color.Orange)
 				elseif top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
-					bottom.Fertilize()
 				elseif top.HasSexFlag("givingvaginal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
-					bottom.Fertilize()
 				elseif top.HasSexFlag("givinganal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
 				else
@@ -115,10 +113,8 @@ group: top.HasVagina() and top.HasPenis()
 				-- add masturbating
 				elseif top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
-					bottom.Fertilize()
 				elseif top.HasSexFlag("givingvaginal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
-					bottom.Fertilize()
 				elseif top.HasSexFlag("givinganal") then
 					message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
 				elseif top.HasSexFlag("fingeringvaginal") then

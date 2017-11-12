@@ -453,7 +453,7 @@ namespace Noxico
 
 			base.Update();
 			Excite();
-			Character.UpdatePregnancy();
+			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "burning to death", null)) //TODO: i18n

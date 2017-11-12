@@ -216,17 +216,6 @@ Number of known items       {2}
 	x_imitatesyou: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
 	x_imitates_y: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
 	x_becomes_y: [t:Youorname] become{{s}} another [b:youorname].
-	you_bear1stchild
-	<[[
-You have given birth to little {0}.
-		
-Within moments, a matronly demoness appears before you and quickly introduces herself as a midwife. She picks up your child, giving you a thumbs-up and smile in return. In a large puff of smoke, she's gone again.
-
-Somehow, you feel like your child is perfectly safe with her.
-	]]>
-	you_bearNthchild: You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.
-	x_bearschild: {0} has given birth to little {1}.
-	congrats_mom: Congratulations, mom
 	dropped_x: Dropped {0}.
 	youareachicken: [Youorname] {{has|have}} laid an egg.
 	x_getsbackup: [Youorname] get{{s}} back up.

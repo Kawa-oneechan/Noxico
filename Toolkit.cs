@@ -1049,9 +1049,6 @@ namespace Noxico
 
 			if (!(plan.HasToken("maleonly") || plan.HasToken("neuteronly")))
 			{
-				if (!plan.HasToken("fertility"))
-					missing.Add("fertility");
-				
 				if (plan.HasToken("vagina"))
 				{
 					var vaginas = plan.Tokens.FindAll(x => x.Name == "vagina");
