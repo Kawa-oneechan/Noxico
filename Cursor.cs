@@ -26,8 +26,6 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			//if (Environment.TickCount % blinkRate * 2 < blinkRate)
-			//	base.Draw();
 			if (NoxicoGame.Mode != UserMode.Aiming)
 				return;
 			NoxicoGame.HostForm.Cursor = new Point(XPosition - NoxicoGame.CameraX, YPosition - NoxicoGame.CameraY);
@@ -35,7 +33,7 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
 			if (CanMove(targetDirection, check) != null)
 				return;
@@ -77,9 +75,9 @@ namespace Noxico
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
 				{
-					if (!this.ParentBoard.IsLit(YPosition, XPosition) && NoxicoGame.HostForm.Noxico.Player.CanSee(entity))
+					if (!this.ParentBoard.IsLit(YPosition, XPosition) && NoxicoGame.Me.Player.CanSee(entity))
 					{
-						if (NoxicoGame.HostForm.Noxico.Player.Character.Path("eyes/glow") == null)
+						if (NoxicoGame.Me.Player.Character.Path("eyes/glow") == null)
 						{
 							//No darkvision
 							if (entity is BoardChar && ((BoardChar)entity).Character.Path("eyes/glow") != null)
@@ -166,7 +164,7 @@ namespace Noxico
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
-				var player = NoxicoGame.HostForm.Noxico.Player;
+				var player = NoxicoGame.Me.Player;
 				if (PointingAt != null)
 				{
 					LastTarget = PointingAt;
@@ -455,7 +453,7 @@ namespace Noxico
 
 		public void PopulateTabstops()
 		{
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			Tabstops.Clear();
 			foreach (var e in ParentBoard.Entities)
 			{
@@ -493,7 +491,7 @@ namespace Noxico
 			NoxicoGame.LookAt = null;
 			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 			this.ParentBoard.AimCamera();
-			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
 		}
 	}

@@ -13,39 +13,78 @@ namespace Noxico
 	public delegate void SubscreenFunc();
 
 	/// <summary>
-	/// The poor man's System.Drawing.Rectangle.
+	/// Stores a set of four integers that represent the location and size of a rectangle.
+	/// Basically a version of <see cref="System.Drawing.Rectangle"/> that replaces the extra stuff with a single feature.
 	/// </summary>
 	public struct Rectangle
 	{
+		/// <summary>
+		/// Gets the x-coordinate of the left edge of this <see cref="Noxico.Rectangle"/> structure.
+		/// </summary>
 		public int Left { get; set; }
 		public int Top { get; set; }
 		public int Right { get; set; }
 		public int Bottom { get; set; }
-		public Location GetCenter()
+
+		/// <summary>
+		/// Creates and returns a <see cref="Noxico.Point"/> that is the centerpoint of this <c>Noxico.Rectangle</c>.
+		/// </summary>
+		/// <returns></returns>
+		public Point GetCenter()
 		{
-			return new Location(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
+			return new Point(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
 		}
 	}
 
 	/// <summary>
-	/// The poor man's System.Drawing.Point, but with extras.
+	/// Represents an ordered pair of integer x- and y-coordinates that defines a point in a two-dimensional plane.
+	/// Basically a version of <see cref="System.Drawing.Point"/> without the extra stuff.
 	/// </summary>
 	public struct Point
 	{
-		public int X, Y;
-		public Point(int x, int y)
+		public int X { get; set; }
+		public int Y { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Noxico.Point"/> class with the specified coordinates.
+		/// </summary>
+		/// <param name="x">The horizontal position of the point.</param>
+		/// <param name="y">The vertical position of the point.</param>
+		public Point(int x, int y) : this()
 		{
 			X = x;
 			Y = y;
 		}
+
+		/// <summary>
+		/// Compares two <see cref="Noxico.Point"/> objects.
+		/// The result specifies whether the values of the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> properties of the two <see cref="Noxico.Point"/> objects are equal.
+		/// </summary>
+		/// <param name="l">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <param name="r">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <returns>true if the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> values of left and right are equal; otherwise, false.</returns>
 		public static bool operator ==(Point l, Point r)
 		{
 			return l.X == r.X && l.Y == r.Y;
 		}
+
+		/// <summary>
+		/// Compares two <see cref="Noxico.Point"/> objects.
+		/// The result specifies whether the values of the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> properties of the two <see cref="Noxico.Point"/> objects are unequal.
+		/// </summary>
+		/// <param name="l">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <param name="r">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <returns>true if the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> values of left and right differ; otherwise, false.</returns>
 		public static bool operator !=(Point l, Point r)
 		{
 			return !(l == r);
 		}
+
+		/// <summary>
+		/// Specifies whether this <see cref="Noxico.Point"/> contains the same coordinates as the specified <c>System.Object</c>.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object"/> to test.</param>
+		/// <returns>true if <paramref name="obj"/> is a <see cref="Noxico.Point"/> and has the same coordinates as this <see cref="Noxico.Point"/>.</returns>
 		public override bool Equals(object obj)
 		{
 			if (obj == null || !(obj is Point))
@@ -53,10 +92,20 @@ namespace Noxico
 			var opt = (Point)obj;
 			return opt.X == X && opt.Y == Y;
 		}
+
+		/// <summary>
+		/// Returns a hash code for this <see cref="Noxico.Point"/>.
+		/// </summary>
+		/// <returns>An integer value that specifies a hash value for this <see cref="Noxico.Point"/>.</returns>
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
 		}
+
+		/// <summary>
+		/// Converts this <see cref="Noxico.Point"/> to a human-readable string.
+		/// </summary>
+		/// <returns>A string that represents this <see cref="Noxico.Point"/>.</returns>
 		public override string ToString()
 		{
 			return string.Format("{0}x{1}", X, Y);
@@ -352,7 +401,7 @@ namespace Noxico
 		}
 		public List<Entity> Entities { get; private set; }
 		public List<Warp> Warps { get; private set; }
-		public List<Location> DirtySpots { get; private set; }
+		public List<Point> DirtySpots { get; private set; }
 		public List<Entity> EntitiesToRemove { get; private set; }
 		public List<Entity> EntitiesToAdd { get; private set; }
 
@@ -360,7 +409,7 @@ namespace Noxico
 		public bool[,] Lightmap = new bool[50, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; private set; }
-		public List<Location> ExitPossibilities { get; private set; }
+		public List<Point> ExitPossibilities { get; private set; }
 
 		public override string ToString()
 		{
@@ -380,7 +429,7 @@ namespace Noxico
 			this.EntitiesToAdd = new List<Entity>();
 			this.Warps = new List<Warp>();
 			this.Sectors = new Dictionary<string, Rectangle>();
-			this.DirtySpots = new List<Location>();
+			this.DirtySpots = new List<Point>();
 			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
 					this.Tilemap[col, row] = new Tile();
@@ -389,10 +438,10 @@ namespace Noxico
 		public void Flush()
 		{
 			Program.WriteLine("Flushing board {0}.", ID);
-			var me = NoxicoGame.HostForm.Noxico.Boards.FindIndex(x => x == this);
+			var me = NoxicoGame.Me.Boards.FindIndex(x => x == this);
 			CleanUpSlimeTrails();
 			SaveToFile(me);
-			NoxicoGame.HostForm.Noxico.Boards[me] = null;
+			NoxicoGame.Me.Boards[me] = null;
 		}
 
 		public void SaveToFile(int index)
@@ -666,7 +715,7 @@ namespace Noxico
 		public void SetTile(int row, int col, int index)
 		{
 			Tilemap[col, row].Index = index;
-			DirtySpots.Add(new Location(col, row));
+			DirtySpots.Add(new Point(col, row));
 		}
 		public void SetTile(int row, int col, string tileName)
 		{
@@ -693,7 +742,7 @@ namespace Noxico
 			if (tile.Definition.CanBurn && tile.Fluid == Fluids.Dry)
 			{
 				tile.BurnTimer = Random.Next(20, 23) * 100;
-				DirtySpots.Add(new Location(col, row));
+				DirtySpots.Add(new Point(col, row));
 			}
 		}
 
@@ -714,7 +763,7 @@ namespace Noxico
 				tile.SlimeColor = color.Darken(1.4);
 				tile.Shallow = true;
 				tile.BurnTimer = (Random.Next(0, 4) * 10) + 100;
-				DirtySpots.Add(new Location(row, col));
+				DirtySpots.Add(new Point(row, col));
 			}
 		}
 
@@ -737,14 +786,14 @@ namespace Noxico
 						{
 							//Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
 							//Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
-							DirtySpots.Add(new Location(col, row));
+							DirtySpots.Add(new Point(col, row));
 							if (!spread)
 								continue;
 							Tilemap[col, row].BurnTimer--;
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Definition = TileDefinition.Find("ash");
-								DirtySpots.Add(new Location(col, row));
+								DirtySpots.Add(new Point(col, row));
 							}
 							else if (Tilemap[col, row].BurnTimer == 10)
 							{
@@ -767,7 +816,7 @@ namespace Noxico
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Fluid = Fluids.Dry;
-								DirtySpots.Add(new Location(col, row));
+								DirtySpots.Add(new Point(col, row));
 							}
 						}
 					}
@@ -785,7 +834,7 @@ namespace Noxico
 				{
 					entity.Update();
 
-					if (NoxicoGame.HostForm.Noxico.Player.Character.Health <= 0)
+					if (NoxicoGame.Me.Player.Character.Health <= 0)
 						return;
 				}
 				if (!surrounding && BoardType != BoardType.Dungeon)
@@ -798,11 +847,11 @@ namespace Noxico
 
 			foreach (var entity in this.Entities.Where(x => x.Passive))
 				entity.Update();
-			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-				NoxicoGame.HostForm.Noxico.Player.Update();
+			if (NoxicoGame.Me.CurrentBoard == this)
+				NoxicoGame.Me.Player.Update();
 			if (EntitiesToRemove.Count > 0)
 			{
-				EntitiesToRemove.ForEach(x => { Entities.Remove(x); this.DirtySpots.Add(new Location(x.XPosition, x.YPosition)); });
+				EntitiesToRemove.ForEach(x => { Entities.Remove(x); this.DirtySpots.Add(new Point(x.XPosition, x.YPosition)); });
 				EntitiesToRemove.Clear();
 			}
 			if (EntitiesToAdd.Count > 0)
@@ -819,7 +868,7 @@ namespace Noxico
 
 		public void UpdateSurroundings()
 		{
-			var nox = NoxicoGame.HostForm.Noxico;
+			var nox = NoxicoGame.Me;
 			if (this != nox.CurrentBoard)
 				return;
 			if (this.ToNorth > -1)
@@ -865,7 +914,7 @@ namespace Noxico
 
 		public void AimCamera()
 		{
-			AimCamera(NoxicoGame.HostForm.Noxico.Player.XPosition, NoxicoGame.HostForm.Noxico.Player.YPosition);
+			AimCamera(NoxicoGame.Me.Player.XPosition, NoxicoGame.Me.Player.YPosition);
 		}
 
 		public void AimCamera(int x, int y)
@@ -879,28 +928,16 @@ namespace Noxico
 				NoxicoGame.CameraY = 30;
 			Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
 			if (oldCamY < NoxicoGame.CameraY) //went down
-			{
-				Program.WriteLine("Aiming up");
-				//NoxicoGame.HostForm.ScrollUp(0, 20, 0, 80, Color.Teal);
-				//TODO: add dirty tiles
-				//for (int col = 0; col < 80; col++)
-				//	DirtySpots.Add(new Location(col, NoxicoGame.CameraY + 19));
 				Redraw();
-			}
 			else if (oldCamY > NoxicoGame.CameraY) //went up
-			{
-				Program.WriteLine("Aiming down");
 				Redraw();
-				//NoxicoGame.HostForm.ScrollDown(0, 20, 0, 80, Color.Teal);
-				//TODO: add dirty tiles
-			}
 		}
 
 		public void Redraw()
 		{
 			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
-					DirtySpots.Add(new Location(col, row));
+					DirtySpots.Add(new Point(col, row));
 
 			NoxicoGame.DrawSidebar();
 			NoxicoGame.DrawMessages();
@@ -1008,7 +1045,7 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					if (Lightmap[row, col] != previousMap[row, col])
-						DirtySpots.Add(new Location(col, row));
+						DirtySpots.Add(new Point(col, row));
 				}
 			}
 		}
@@ -1353,7 +1390,7 @@ namespace Noxico
 
 		public void LoadSurroundings()
 		{
-			var nox = NoxicoGame.HostForm.Noxico;
+			var nox = NoxicoGame.Me;
 			UpdateLightmap(nox.Player, true);
 			if (this.ToNorth > -1 && nox.Boards[this.ToNorth] == null)
 				nox.GetBoard(this.ToNorth);

@@ -199,8 +199,8 @@ namespace Noxico
 						else if (enableAudio.Checked && !NoxicoGame.Sound.Enabled)
 						{
 							NoxicoGame.Sound = new SoundSystem();
-							if (NoxicoGame.HostForm.Noxico.CurrentBoard != null)
-								NoxicoGame.HostForm.Noxico.CurrentBoard.PlayMusic();
+							if (NoxicoGame.Me.CurrentBoard != null)
+								NoxicoGame.Me.CurrentBoard.PlayMusic();
 						}
 
 						//if (previousFont != font.Text)
@@ -218,8 +218,8 @@ namespace Noxico
 						UIManager.Elements.Clear();
 						NoxicoGame.ClearKeys();
 						NoxicoGame.Immediate = true;
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+						NoxicoGame.Me.CurrentBoard.Redraw();
+						NoxicoGame.Me.CurrentBoard.Draw(true);
 						NoxicoGame.Mode = UserMode.Walkabout;
 						Subscreens.FirstDraw = true;
 					}) { Left = 60, Top = 20, Width = 16 };

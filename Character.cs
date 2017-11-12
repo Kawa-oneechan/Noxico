@@ -90,10 +90,10 @@ namespace Noxico
 			if (HasToken("beast"))
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 
-			// todo: logic duplicated from UpdateTitle()
+			//TODO: logic duplicated from UpdateTitle()
 			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
 				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
 				(g == Gender.Herm && HasToken("hermonly")))
@@ -224,7 +224,7 @@ namespace Noxico
 		public void UpdateTitle()
 		{
 			//TODO: clean up
-			//TRANSLATE the lot of this. Could take rewrite cleanup to handle.
+			//TODO: i18n the lot of this. Could take rewrite cleanup to handle.
 
 			// enums (being ints in disguise) compare better than strings. -- K
 			// yeah, I know that, it was like that when I got here -- sparks
@@ -269,6 +269,11 @@ namespace Noxico
 					Title = prefix.Name + " " + Title;
 			}
 
+			//TODO: i18n this
+			/* ...would a Lua file for i18n be a good idea perhaps? Special i18n env with a bunch of language-specific functions?
+			 * Think "GetArticle(noun)", which for the default English version would do the below, while a language with other
+			 * articles can have its own GetArticle function. Maybe it'd return nothing?
+			 */
 			if (A == "a" && Title.StartsWithVowel())
 				A = "an";
 			else if (A == "an" && !Title.StartsWithVowel())
@@ -516,7 +521,7 @@ namespace Noxico
 #if MUTAMORPH
         public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
-			//TODO: return a summary of what was done, coded for i18n
+			//TODO: i18n
 
             //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
 			var randomize = false;
@@ -531,26 +536,8 @@ namespace Noxico
 				switch (mutation)
 				{
 					case Mutations.Random:
-						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Xolroc to fix it.");
+						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Kawa to fix it.");
 					case Mutations.AddPenis:
-						/*
-						if (this.Tokens.Count(t => t.Name == "penis") < 8)
-						{
-							string[] dicktypes = { "human", "horse", "dragon", "cat", "dog", "bear", "lizard", "studded" };
-							var type = dicktypes[Random.Next(dicktypes.Length)];
-							var newdick = new Token("penis", 0f, type);
-							var length = (float)Random.NextDouble() * intensity + 12f;
-							var thick = (float)Random.NextDouble() * intensity / 4 + 4f;
-							newdick.AddToken("length", length);
-							newdick.AddToken("thickness", thick);
-							newdick.AddToken("cumsource");
-							report += "[Youorname] [has] grown a new " +
-								Descriptions.Length(length) + " long, " +
-								Descriptions.Length(thick) + " thick " + type + " " +
-								Descriptions.GetPartDescription("penis");
-							this.AddToken(newdick);
-						}
-						*/
 						var cock = this.GetToken("penis");
 						if (cock == null)
 						{
@@ -571,20 +558,11 @@ namespace Noxico
 							report += "\uE2FC";
 						break;
 					case Mutations.AddVagina:
-						/*
-						if (this.Tokens.Count(t => t.Name == "vagina") < 5)
-						{
-							Token newpussy = new Token("vagina");
-							newpussy.AddToken("wetness", Random.Next((int)(intensity / 2)));
-							newpussy.AddToken("looseness", Random.Next((int)(intensity / 2)));
-							this.AddToken(newpussy);
-						}
-						*/
 						var vagina = this.GetToken("vagina");
 						if (vagina == null)
 						{
 							vagina = this.AddToken("vagina");
-vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
+							vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 							vagina.AddToken("looseness", Random.Next((int)(intensity / 2)));
 							report += "[Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!";
 						}
@@ -945,7 +923,6 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
                 newChar.Mutate(2, 20);
 #endif
 
-			//Program.WriteLine("Generated {0}.", newChar);
 			return newChar;
 		}
 
@@ -1119,9 +1096,6 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 				if (toAdd.Tokens.Count > 0)
 					newToken.AddSet(toAdd.Tokens);
 				this.Tokens.Add(newToken);
-				//this.AddToken(toAdd.Name, toAdd.Value, toAdd.Text);
-				//if (toAdd.Tokens.Count > 0)
-				//	this.GetToken(toAdd.Name).AddSet(toAdd.Tokens);
 			}
 		}
 
@@ -1475,24 +1449,10 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			var ears = "human";
 			if (this.HasToken("ears"))
 				ears = this.GetToken("ears").Text;
-			/*
-			if (ears == "frill")
-				headThings.Add("head frills");
-			else
-			{
-				if (ears == "genbeast")
-					ears = "animal";
-				headThings.Add(i18n.Format("x_ears",  ears));
-			}
-			*/
 			if (ears != "human")
 				headThings.Add(i18n.GetString("eartype_" + ears));
-			//Already covered under Hair.
-			//if (this.HasToken("monoceros"))
-			//	headThings.Add("unicorn horn");
 
 			//femininity slider
-
 
 			//Columnize it!
 			Columnize(print, bodyThings, headThings, "lookat_column_body", "lookat_column_head");
@@ -1500,7 +1460,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 
 		private void LookAtHairHips(Entity pa, Action<string> print)
 		{
-			//TRANSLATE
+			//TODO: i18n
 			var hairThings = new List<string>();
 			var hipThings = new List<string>();
 			if (this.HasToken("hair") && this.Path("hair/length").Value > 0)
@@ -1579,7 +1539,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 		private void LookAtSexual(Entity pa, Action<string> print, bool breastsVisible, bool crotchVisible)
 		{
 			print(i18n.GetString("lookat_header_sexual"));
-			//TRANSLATE
+			//TODO: i18n
 			Token cock = this.GetToken("penis");
 			Token vagina = this.GetToken("vagina");
 			Token breasts = this.GetToken("breasts");
@@ -1667,8 +1627,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 					print((cock == null && ballCount == 0 ? "\xC0 " : "\xC3 ") + (vagina.HasToken("dual") ? "a split, " : "a ") + loose + wet + " [?:pussy], with a " + Descriptions.Length(clitSize) + " [?:clit]\n");
 				}
 
-				//var cocksAndBalls = cocks.Count + ballCount;
-				if (cock != null)
+\				if (cock != null)
 				{
 					var cockType = cock.Text;
 					if (string.IsNullOrWhiteSpace(cockType))
@@ -1732,7 +1691,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
 				print(this.GetKnownName(true) + ", " + this.Title + "\n\n");
 			else
@@ -1768,7 +1727,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 
 		public void CreateInfoDump()
 		{
-			//TRANSLATE _ALL_ OF THIS
+			//TODO: i18n _ALL_ OF THIS
 			var dump = new StreamWriter(Name + " info.html");
 			var list = new List<string>();
 
@@ -1789,7 +1748,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			*/
 
 			dump.WriteLine("<h2>Screenshot</h2>");
-			NoxicoGame.HostForm.Noxico.CurrentBoard.CreateHtmlScreenshot(dump, false);
+			NoxicoGame.Me.CurrentBoard.CreateHtmlScreenshot(dump, false);
 
 			foreach (var carriedItem in GetToken("items").Tokens)
 			{
@@ -1951,7 +1910,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			{
 				if (reportLevel == MorphReportLevel.NoReports)
 					return;
-				if (reportLevel == MorphReportLevel.PlayerOnly && this != NoxicoGame.HostForm.Noxico.Player.Character)
+				if (reportLevel == MorphReportLevel.PlayerOnly && this != NoxicoGame.Me.Player.Character)
 					return;
 				if (reportAsMessages)
 					NoxicoGame.AddMessage(s);
@@ -1978,7 +1937,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 					}
 					else
 					{
-                        if (this == NoxicoGame.HostForm.Noxico.Player.Character)
+                        if (this == NoxicoGame.Me.Player.Character)
                             doReport(string.Format("[Youorname] slip{{s}} out of [his] {0}.", originalname).Viewpoint(this));
                         //mention for others?  Less dramatic than tearing out
                         //else
@@ -2408,7 +2367,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 						else
 							MessageBox.Notice(i18n.Format("you_bearNthchild", childName.FirstName), true, i18n.GetString("congrats_mom"));
 					}
-					else if (pregnancy.GetToken("father").Text == NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString(true))
+					else if (pregnancy.GetToken("father").Text == NoxicoGame.Me.Player.Character.Name.ToString(true))
 					{
 						NoxicoGame.AddMessage(i18n.Format("x_bearschild", this.Name, childName.FirstName));
 					}
@@ -2439,8 +2398,6 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			return true;		
 		}
 
-
-
 		public void GiveRapistPoints(Character bottom)
 		{
 			var points = Random.Next(4, 8);
@@ -2462,7 +2419,6 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			ChangeStat("paragon", Random.Next(1, 4));
 			//TODO: more effects?
 		}
-
 
 		#region PillowShout's additions
 		/// <summary>
@@ -2982,7 +2938,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 						var cursed = newToken.GetToken("cursed");
 						if (cursed == null)
 							cursed = newToken.AddToken("cursed");
-						cursed.Text = i18n.GetString("item_changeling_disguise"); //"This is part of your disguise.";
+						cursed.Text = i18n.GetString("item_changeling_disguise");
 						cursed.AddToken("hidden");
 						cursed.AddToken("known");
 					}
@@ -3159,6 +3115,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 		public string Surname { get; set; }
 		public string Title { get; set; }
 		public string NameGen { get; set; }
+
 		public Name()
 		{
 			FirstName = "";
@@ -3166,6 +3123,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			Title = "";
 			NameGen = "";
 		}
+
 		public Name(string name)
 			: this()
 		{
@@ -3175,12 +3133,14 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			if (split.Length >= 2)
 				Surname = split[1];
 		}
+
 		public void Regenerate()
 		{
 			FirstName = Culture.GetName(NameGen, Female ? Noxico.Culture.NameType.Female : Noxico.Culture.NameType.Male);
 			Surname = Culture.GetName(NameGen, Noxico.Culture.NameType.Surname);
 			Title = "";
 		}
+
 		public void ResolvePatronym(Name father, Name mother)
 		{
 			if (!Surname.StartsWith("#patronym"))
@@ -3193,21 +3153,24 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			else
 				Surname = father.FirstName + male;
 		}
+
 		public override string ToString()
 		{
 			return FirstName;
 		}
+
 		public string ToString(bool full)
 		{
 			if (!full || string.IsNullOrWhiteSpace(Surname))
 				return FirstName;
 			return FirstName + ' ' + Surname;
 		}
+
 		public string ToID()
 		{
-			//had the silly thing in reverse ^_^;
 			return FirstName + (string.IsNullOrWhiteSpace(Surname) ? string.Empty : '_' + Surname);
 		}
+
 		public void SaveToFile(BinaryWriter stream)
 		{
 			Toolkit.SaveExpectation(stream, "NGEN");
@@ -3216,6 +3179,7 @@ vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 			stream.Write(Title);
 			stream.Write(NameGen);
 		}
+
 		public static Name LoadFromFile(BinaryReader stream)
 		{
 			var newName = new Name();

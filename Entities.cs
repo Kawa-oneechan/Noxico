@@ -18,6 +18,7 @@ namespace Noxico
 		Stand, Wander, WanderSector, Hunt, //...
 	}
 
+	/*
     public class Location
     {
         public int X, Y;
@@ -27,6 +28,7 @@ namespace Noxico
             Y = y;
         }
     }
+	*/
 
     public class Entity
     {
@@ -85,7 +87,7 @@ namespace Noxico
                 return;
             }
 			if (XPosition >= 0 && YPosition >= 0 && XPosition < 80 && YPosition < 50)
-	            this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+	            this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			var newX = 0;
 			var newY = 0;
 			Toolkit.PredictLocation(XPosition, YPosition, targetDirection, ref newX, ref newY);
@@ -429,7 +431,7 @@ namespace Noxico
 						return;
 					}
 					var drop = ActionList.Answer as DroppedItem;
-					var player = NoxicoGame.HostForm.Noxico.Player;
+					var player = NoxicoGame.Me.Player;
 					var item = drop.Item;
 					var token = drop.Token;
 					drop.Take(player.Character, player.ParentBoard);

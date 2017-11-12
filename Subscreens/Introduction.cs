@@ -137,12 +137,12 @@ namespace Noxico
 						{
 							NoxicoGame.WorldName = (string)MessageBox.Answer;
 							host.Noxico.LoadGame();
-							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+							NoxicoGame.Me.CurrentBoard.Draw();
 							Subscreens.FirstDraw = true;
 							NoxicoGame.Immediate = true;
 							NoxicoGame.AddMessage(i18n.GetString("welcomeback"), Color.Yellow);
 							NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
-							//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+							//TextScroller.LookAt(NoxicoGame.Me.Player);
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 					}
@@ -286,7 +286,7 @@ namespace Noxico
 				//Start creating the world as we work...
 				if (worldgen == null) //Conditional added by Mat.
 				{
-					worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
+					worldgen = new System.Threading.Thread(NoxicoGame.Me.CreateRealm);
 					worldgen.Start();
 				}
 
@@ -420,39 +420,39 @@ namespace Noxico
 						var value = ((UISingleList)editable.Value).Text;
 						colorMap.Add(path, value);
 					}
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
+					NoxicoGame.Me.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
 					if (tutorial)
-						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("tutorial");
+						NoxicoGame.Me.Player.Character.AddToken("tutorial");
 					if (easy)
-						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
+						NoxicoGame.Me.Player.Character.AddToken("easymode");
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
-					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
+					NoxicoGame.Me.CurrentBoard.UpdateLightmap(NoxicoGame.Me.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
 #if DEBUG
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("baseballbat");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("really_kinky_panties");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("timertest");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("clit_regenring");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("gExtractor");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon_ovi");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("strapon");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("baseballbat");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("really_kinky_panties");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("timertest");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("clit_regenring");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("gExtractor");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("strapon_ovi");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("strapon");
 #if FREETESTPOTIONS
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("foxite"); // ok
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("oddnip"); // ok
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("dogmorph"); no bodyplan
-					//NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("bunnymorph"); no bodyplan
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("demonite_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("tentacle_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("cock_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("neutralizer_potion");
-					NoxicoGame.HostForm.Noxico.Player.Character.GetToken("items").AddToken("spidermorph");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("foxite"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("oddnip"); // ok
+					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("dogmorph"); no bodyplan
+					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("bunnymorph"); no bodyplan
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("demonite_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("tentacle_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("cock_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("neutralizer_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("spidermorph");
 #endif
 #endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
@@ -585,10 +585,10 @@ namespace Noxico
 					NoxicoGame.ClearKeys();
 					NoxicoGame.Immediate = true;
 					NoxicoGame.Mode = UserMode.Walkabout;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+					NoxicoGame.Me.CurrentBoard.Redraw();
+					NoxicoGame.Me.CurrentBoard.Draw(true);
 					Subscreens.FirstDraw = true;
-					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player); // start by showing player details
+					TextScroller.LookAt(NoxicoGame.Me.Player); // start by showing player details
 				}
 			}
 			

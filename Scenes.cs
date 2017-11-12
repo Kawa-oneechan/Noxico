@@ -56,7 +56,7 @@ namespace Noxico
 				actions.Add(target, "==>");
 			}
 
-			if (bottom == NoxicoGame.HostForm.Noxico.Player.Character && !letBottomChoose)
+			if (bottom == NoxicoGame.Me.Player.Character && !letBottomChoose)
 			{
 				if (actions.Count == 0)
 				{
@@ -85,8 +85,8 @@ namespace Noxico
 			}
 			else
 			{
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw();
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Noxico
 					Func<BoardType, int, int, Realms, Board> pickBoard = (boardType, biome, maxWater, inRealm) =>
 					{
 						var options = new List<Board>();
-						var game = NoxicoGame.HostForm.Noxico;
+						var game = NoxicoGame.Me;
 						tryAgain:
 						foreach (var board in game.Boards)
 						{
@@ -192,7 +192,7 @@ namespace Noxico
 					env.SetValue("bottom", bottom);
 					env.SetValue("print", new Action<string>(x => buffer.Append(x)));
 					env.SetValue("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
-					env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
+					env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x)));
 					env.SetValue("PickBoard", pickBoard);
 					env.SetValue("MakeBoardTarget", makeBoardTarget);
 					env.SetValue("thisBoard", bottom.BoardChar.ParentBoard);

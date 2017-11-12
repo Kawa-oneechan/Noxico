@@ -64,8 +64,8 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
@@ -222,7 +222,7 @@ namespace Noxico
 				}
 			}
 
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 			if (!string.IsNullOrWhiteSpace(identification))
 			{
 				foreach (var item in NoxicoGame.KnownItems.Where(ki => ki.HasToken("identify") && ki.GetToken("identify").Text == identification && !NoxicoGame.Identifications.Contains(ki.ID)))

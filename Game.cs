@@ -16,6 +16,14 @@ namespace Noxico
 
 	public class NoxicoGame
 	{
+		public static NoxicoGame Me
+		{
+			get
+			{
+				return NoxicoGame.HostForm.Noxico;
+			}
+		}
+
 		public int Speed { get; set; }
 		public static bool Immediate { get; set; }
 
@@ -40,9 +48,7 @@ namespace Noxico
 		public Board CurrentBoard { get; set; }
 		public static Board Limbo { get; private set; }
 		public Player Player { get; set; }
-		//public static List<string> BookTitles { get; private set; }
 		public static Dictionary<string, string[]> BookTitles { get; private set; }
-		//public static List<string> BookAuthors { get; private set; }
 		public static List<string> Messages { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
@@ -150,7 +156,7 @@ namespace Noxico
 			}
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
-			Messages = new List<string>(); //new List<StatusMessage>();
+			Messages = new List<string>();
 
 			IngameToUnicode = new char[0x420];
 			IngameTo437 = new char[0x420];
@@ -205,7 +211,6 @@ namespace Noxico
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
 			//Use GetFilesWithPattern to allow books in mission folders -- /missions/homestuck/books/legendbullshit.txt
-			//foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
 			foreach (var book in Mix.GetFilesWithPattern("\\books\\*.txt"))
 			{
 				var bookFile = Mix.GetString(book, false).Split('\n');
@@ -215,7 +220,6 @@ namespace Noxico
 				BookTitles.Add(bookID, new[] { bookName, bookAuthor });
 			}
 
-			//ScriptVariables.Add("consumed", 0);
 			Lua.Create();
 
 			BiomeData.LoadBiomes();
@@ -240,7 +244,7 @@ namespace Noxico
 			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
 			//var test = Lua.Run("return foo = 4 + \"foo\"");
 
-			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0); //InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
 			CurrentBoard = new Board();
@@ -349,7 +353,7 @@ namespace Noxico
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
-			HostForm.Write(i18n.GetString("loadsave_loadheader") /* " -- Loading... -- " */, Color.White, Color.Black);
+			HostForm.Write(i18n.GetString("loadsave_loadheader"), Color.White, Color.Black);
 			HostForm.Draw();
 
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
@@ -388,7 +392,7 @@ namespace Noxico
 			Toolkit.ExpectFromFile(bin, "UNIQ", "unique item tracking");
 			var numUniques = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");
-			InGameTime = new DateTime(bin.ReadInt64()); //InGameTime = new NoxicanDate(bin.ReadInt64());
+			InGameTime = new DateTime(bin.ReadInt64());
 			Toolkit.ExpectFromFile(bin, "TARG", "known targets list");
 			var numTargets = bin.ReadInt32();
 			TravelTargets = new Dictionary<int, string>();
@@ -464,9 +468,6 @@ namespace Noxico
 			for (var i = 0; i < 4 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
-				//var c = Messages[m].Color;
-				//if (c.Lightness < 0.2)
-				//	c = Toolkit.Lerp(c, Color.White, 0.5);
 				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
 				row--;
 			}
@@ -511,7 +512,6 @@ namespace Noxico
 						newLines[i] = "<c" + color.Name + ">" + newLines[i];
 				}
 				Messages.AddRange(newLines);
-				//Messages.Add(new StatusMessage() { Message = message, Color = color });
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}
@@ -525,7 +525,7 @@ namespace Noxico
 		public static void ShowMessageLog()
 		{
 			if (messageLog.Count == 0)
-				MessageBox.Notice(i18n.GetString("nomoremessages"), true); //"There are no messages to display."
+				MessageBox.Notice(i18n.GetString("nomoremessages"), true);
 			else
 				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE2FD"))));
 		}
@@ -575,8 +575,6 @@ namespace Noxico
 					}
 				}
 				CurrentBoard.Draw();
-				//UpdateMessages();
-				//DrawMessages();
 				DrawSidebar();
 
 				if (Mode == UserMode.Aiming)
@@ -631,30 +629,6 @@ namespace Noxico
 
 		private static void SetStatus(string text, int progress, int maxProgress)
 		{
-			/*
-			var window = new UIWindow(string.Empty)
-			{
-				Left = 15,
-				Top = 24,
-				Width = 70,
-				Height = 7,
-			};
-			var label = new UILabel(text)
-			{
-				Left = 17,
-				Top = 26,
-			};
-			window.Draw();
-			label.Draw();
-			if (progress + maxProgress != 0)
-			{
-				var length = 66;
-				var filled = (int)Math.Floor(((float)progress / (float)maxProgress) * (float)length);
-				for (var i = 0; i < length; i++)
-					HostForm.SetCell(28, 17 + i, ' ', Color.White, i < filled ? UIColors.LightBackground : UIColors.DarkBackground);
-			}
-			HostForm.Draw();
-			*/
 			if (progress + maxProgress > 0)
 			{
 				text = string.Format("{0} - {1}/{2}", text, progress, maxProgress);
@@ -875,7 +849,6 @@ namespace Noxico
 								chosenCitizen.RestockVendor();
 							}
 
-							//if (!townGen.Culture.Demonic) 
 							townBoards.Add(thisBoard);
 						}
 					}
@@ -935,7 +908,6 @@ namespace Noxico
 						};
 						thisBoard.Warps.Add(newWarp);
 						thisBoard.SetTile(eY, eX, "dungeonEntrance");
-						//thisBoard.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 
 						dungeonEntrances++;
 					}
@@ -987,7 +959,6 @@ namespace Noxico
 				}
 				if (options.Count == 0)
 				{
-					//return null;
 					if (maxWater < 2000)
 					{
 						maxWater *= 2;
@@ -1068,8 +1039,6 @@ namespace Noxico
 				if (!Mix.FileExists(luaFile))
 					continue;
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				//var luaCode = Mix.GetString(luaFile);
-				//env.DoChunk(luaCode, "lol.lua");
 				Lua.RunFile(luaFile, env);
 			}
 		}
@@ -1109,13 +1078,6 @@ namespace Noxico
 				}
 			}
 
-			/*
-			pc.Path("skin/color").Text = bodyColor;
-			if (pc.Path("skin/type").Text != "slime" && pc.Path("hair/color") != null)
-				pc.Path("hair/color").Text = hairColor;
-			if (pc.HasToken("eyes"))
-				pc.GetToken("eyes").Text = eyeColor;
-			*/
 			foreach (var color in colorMap)
 			{
 				var colorToken = pc.Path(color.Key);
@@ -1229,9 +1191,6 @@ namespace Noxico
 			Player.Character.CheckHasteSlow();
 			Player.Character.UpdateTitle();
 			Player.AdjustView();
-
-			//InGame = true;
-			//SaveGame();
 		}
 
 		public static string RollWorldName()
@@ -1419,6 +1378,8 @@ namespace Noxico
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length() - 2);
 
 			DrawMessages();
+
+			//Old sidebar code left here for cannibalization purposes.
 			/*
 			var player = HostForm.Noxico.Player;
 
@@ -1539,9 +1500,7 @@ namespace Noxico
 					sb.Append(i18n.GetString("mod_helpless"));
 				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
 			}
-			*/
 
-			/*
 			var coord = player.ParentBoard.Coordinate;
 			var realm = (int)player.ParentBoard.Realm;
 			var cx = coord.X;
@@ -1565,9 +1524,7 @@ namespace Noxico
 					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
 				}
 			}
-			*/
-			
-			/*
+
 			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
 			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
 				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
@@ -1579,12 +1536,14 @@ namespace Noxico
 			HostForm.Write(string.Format("{0}x{1}", player.XPosition, player.YPosition), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
 			*/
+			//...he says while *removing* all manner of old commented-out bits.
 		}
 
 		public static void CheckForTutorialStuff()
 		{
 			//We can assume this is only invoked when we -have- a tutorial token.
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			//TODO: i18n this.
+			var player = NoxicoGame.Me.Player.Character;
 			var tutorial = player.GetToken("tutorial");
 			if (tutorial.HasToken("dointeractmode"))
 			{
