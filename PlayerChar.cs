@@ -945,17 +945,17 @@ namespace Noxico
 			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
 			//TODO: i18n
 			if (Character.HasToken("easymode"))
-				candle.Description = "Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.";
+				candle.Description = i18n.GetString("candle_easymode");
 			else if (Lives == 0)
-				candle.Description = "If this little stump of a candle is any indication, you're on your last legs. You should be careful.";
+				candle.Description = i18n.GetString("candle_0");
 			else if (Lives == 1)
-				candle.Description = "The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.";
+				candle.Description = i18n.GetString("candle_1");
 			else if (Lives < 4)
-				candle.Description = "The candle still has a ways to go, and so do you. Still, it's no good to tempt Death.";
+				candle.Description = i18n.GetString("candle_3");
 			else if (Lives < 7)
-				candle.Description = "The candle burns brightly.";
+				candle.Description = i18n.GetString("candle_6");
 			else
-				candle.Description = "The candle is positively ablaze with life.";
+				candle.Description = i18n.GetString("candle_X");
 		}
 	}
 }

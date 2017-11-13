@@ -72,25 +72,8 @@ namespace Noxico
 				if (growOrShrink == 0)
 					continue;
 
-				var description = "[views] " + trivialSize + (growOrShrink > 0 ? " increases" : " decreases");
-				//TODO: replace with a better i18n-based way to work.
-				//Perhaps a key like "morph_tallness_1" or "morph_hips_-1".
-				//For now, these'll do.
-				switch (trivialSize)
-				{
-					case "tallness":
-						description = "[view] grow{s} a bit " + (growOrShrink > 0 ? "taller" : "shorter");
-						break;
-					case "hips":
-						description = "[views] hips " + (growOrShrink > 0 ? "flare out some more" : "become smaller");
-						break;
-					case "waist":
-						description = "[views] waist grows " + (growOrShrink > 0 ? "a bit wider" : "a bit less wide");
-						break;
-				}
-
 				var change = new Token(trivialSize, now + (growOrShrink * Random.Next(1, 3)));
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.GetString("morphpart_" + trivialSize.Replace('/', '_') + '_' + growOrShrink));
 				possibleChanges.Add(change);
 			}
 			#endregion
@@ -117,11 +100,8 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeKind))
 					continue;
 
-				var description = "[views] " + trivialKind + " turns " + changeKind;
-				//TODO: similar as trivialSize above.
-
 				var change = new Token(trivialKind, changeKind);
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.GetString("morphpart_" + trivialKind + '_' + changeKind));
 				possibleChanges.Add(change);
 			}
 			#endregion
@@ -147,18 +127,15 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeColor))
 					continue;
 
-				var description = "[views] " + trivialColor + " turns " + changeColor;
-				//TODO: similar as trivialSize above.
-
 				var change = new Token(trivialColor, changeColor);
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.Format("morphpart_eyes_x", changeColor));
 				possibleChanges.Add(change);
 			}
 			#endregion
 
 			#region Skin
 			{
-				//TODO: RULE: a slime does NOT NEED to have a slimeblob, but a nonslime MAY NEVER have one.
+				//RULE: a slime does NOT NEED to have a slimeblob, but a nonslime MAY NEVER have one.
 				var skinNow = this.GetToken("skin");
 				var skinThen = target.GetToken("skin");
 				var skinTypeNow = skinNow.GetToken("type").Text;
@@ -183,9 +160,8 @@ namespace Noxico
 				}
 				if (skinTypeNow != skinTypeThen)
 				{
-					var description = "[views] body turns to " + skinColorThen + " " + skinTypeThen;
 					var change = new Token("skin/type", skinTypeThen);
-					change.AddToken("$", 0, description);
+					change.AddToken("$", 0, i18n.Format("morphpart_skin_" + skinTypeThen, skinColorThen));
 					change.AddToken("skin/color", skinColorThen);
 					possibleChanges.Add(change);
 
@@ -199,22 +175,21 @@ namespace Noxico
 							var options = legsThen.Substring(legsThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 							legsThen = Toolkit.PickOne(options);
 						}
-						var newChange = change.AddToken("$", "[views] lower body reforms into a pair of " + legsThen + " legs.");
+						var newChange = change.AddToken("$", i18n.GetString("morphpart_slime_" + legsThen));
 						newChange.AddToken("legs", legsThen);
 					}
 					else if (skinTypeThen == "slime")
 					{
 						var newChange = new Token("_add", "slimeblob");
-						newChange.AddToken("$", 0, "[views] legs dissolve into a puddle of goop.");
+						newChange.AddToken("$", 0, i18n.GetString("morphpart_slime_blob"));
 						newChange.AddToken("_remove", "legs");
 						change.AddToken(newChange);
 					}
 				}
 				else if (skinColorNow != skinColorThen)
 				{
-					var description = "[views] body turns " + skinColorThen;
 					var change = new Token("skin/color", skinColorThen);
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.Format("morphpart_skin_color", skinColorThen));
 					possibleChanges.Add(change);
 				}
 			}
@@ -240,9 +215,8 @@ namespace Noxico
 					}
 					if (hairColorNow != hairColorThen)
 					{
-						var description = "[views] hair turns " + hairColorThen;
 						var change = new Token("hair/color", hairColorThen);
-						change.AddToken("$", 0, description);
+						change.AddToken("$", 0, i18n.Format("morphpart_hair_color", hairColorThen));
 						possibleChanges.Add(change);
 					}
 				}
@@ -266,31 +240,29 @@ namespace Noxico
 					//Change tails
 					if (tailThen.Text != tailNow.Text)
 					{
-						var description = "[views] tail becomes " + tailThen.Text + "-like";
 						var change = new Token("tail", tailThen.Text);
-						change.AddToken("$", description);
+						change.AddToken("$", i18n.GetString("morphpart_tail_" + tailThen.Text));
 						possibleChanges.Add(change);
 					}
 				}
 				else if (tailNow == null && tailThen != null)
 				{
 					//Grow a tail
-					var description = "[view] grow{s} a " + tailThen.Text + "-like tail";
 					var change = new Token("tail", tailThen.Text);
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.GetString("morphpart_gettail_" + tailThen.Text));
 					possibleChanges.Add(change);
 				}
 				else if (tailNow != null && tailThen == null)
 				{
 					//Lose a tail
-					var description = "[views] tail disappears";
 					var change = new Token("_remove", "tail");
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.GetString("morphpart_tail_lose"));
 					possibleChanges.Add(change);
 				}
 			}
 			#endregion
 
+			//TODO: i18n this.
 			#region Wings
 			{
 				var wingsNow = this.GetToken("wings");
@@ -354,7 +326,7 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Needs more testing.
+			//TODO: Needs more testing. Also, i18n this after.
 			#region Legs
 			if (target.HasToken("legs") && !this.HasToken("legs"))
 			{
@@ -465,7 +437,9 @@ namespace Noxico
 
 			//TODO: Vaginas
 
+			//TODO: Rewrite this to simplify into a single penis token, assuming a dualcock has two identical ones.
 			#region Penis
+			/*
 			{
 				if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
 				{
@@ -618,6 +592,7 @@ namespace Noxico
 
 				}
 			}
+			*/
 			#endregion
 
 			//TODO: Balls
@@ -627,6 +602,7 @@ namespace Noxico
 
 		public void ApplyMutamorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
 		{
+			//TODO: i18n.
 			var numChanges = Math.Min(4, possibilities.Count);
 			var changes = new List<Token>();
 			var feedbacks = new List<string>();
