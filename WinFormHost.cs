@@ -857,15 +857,15 @@ namespace Noxico
 			{
 				if (y.Button == MouseButtons.Left)
 				{
-					//TODO: only do this for non-list MessageBoxes? That would allow clicking on an action, right?
-					if (NoxicoGame.Subscreen == MessageBox.Handler || NoxicoGame.Subscreen == ActionList.Handler)
-					{
-						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
-						return;
-					}
 					Subscreens.MouseX = tx;
 					Subscreens.MouseY = ty;
 					Subscreens.Mouse = true;
+					if (NoxicoGame.Subscreen == MessageBox.Handler || NoxicoGame.Subscreen == ActionList.Handler)
+					{
+						UIManager.CheckKeys();
+						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
+						return;
+					}
 				}
 				else if (y.Button == MouseButtons.Right)
 				{

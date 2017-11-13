@@ -224,8 +224,6 @@ namespace Noxico
 				var editables = "skin/color|Skin color, hair/color|Hair color"; //path|Label, path|Label...
 				if (bodyPlan.HasToken("editable"))
 					editables = bodyPlan.GetToken("editable").Text;
-				//TODO: use more metric variables and adjust them according to the amount of editables.
-				//See http://i.imgur.com/iC18KAa.png for visual aids.
 				var top = 5;
 				foreach (var aspect in editables.Split(','))
 				{

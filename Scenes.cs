@@ -197,10 +197,6 @@ namespace Noxico
 					env.SetValue("MakeBoardTarget", makeBoardTarget);
 					env.SetValue("thisBoard", bottom.BoardChar.ParentBoard);
 					env.SetValue("thisRealm", bottom.BoardChar.ParentBoard.Realm); 
-					//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-					//js.SetParameter("Expectations", NoxicoGame.Expectations);
-					//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
-					//env.DoChunk(part.Tokens[0].Text, "lol.lua");
 					Lua.Run(part.Tokens[0].Text, env);
 					ret.AppendLine(buffer.ToString());
 					ret.AppendLine();
@@ -208,44 +204,6 @@ namespace Noxico
 			}
 			return ret.ToString().TrimEnd();
 		}
-
-		/*
-		private static void ParseParagraph(StringBuilder ret, XmlElement part)
-		{
-			var trimmers = new[] {'\t', '\n', '\r'};
-			var hadFalseIf = false;
-			foreach (var node in part.ChildNodes)
-			{
-				if (node is XmlText)
-				{
-					var text = (node as XmlText).Value;
-					if (trimmers.Contains(text[0]))
-						text = text.TrimStart();
-					if (trimmers.Contains(text[text.Length - 1]))
-						text = text.TrimEnd();
-					ret.Append(text.SmartQuote());
-				}
-				else if (node is XmlElement)
-				{
-					var element = node as XmlElement;
-					if (element.Name == "if")
-					{
-						if (FiltersOkay(element))
-							ParseParagraph(ret, element);
-						else
-							hadFalseIf = true;
-					}
-					else if (element.Name == "else" && hadFalseIf)
-					{
-						ParseParagraph(ret, element);
-						hadFalseIf = false;
-					}
-				}
-			}
-			//ret.AppendLine(part.InnerText.Trim());
-			//ret.AppendLine();
-		}
-		*/
 
 		private static bool SceneFiltersOkay(Token scene)
 		{
@@ -257,7 +215,7 @@ namespace Noxico
 			return true;
 		}
 
-		//TODO: rewrite to use JS
+		//TODO: rewrite to use Lua, like sex.tml's
 		private static bool FiltersOkay(Token filter)
 		{
 			if (filter.Name == "debug")

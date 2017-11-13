@@ -472,7 +472,7 @@ namespace Noxico
 				{
 					//TODO: only ask if it's the player?
 					//Not wearing it
-					MessageBox.Ask(runningDesc + "Equip " + this.ToString(item, true) + "?", () =>
+					MessageBox.Ask(runningDesc + i18n.Format("inventory_equip_x", this.ToString(item, true)), () =>
 					{
 						try
 						{
@@ -496,11 +496,11 @@ namespace Noxico
 					//Wearing/wielding it
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
-						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
+						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : i18n.Format("inventory_cursed_" + (this.HasToken("plural") ? "plural" : "singular"), this.ToString(item, true));
 						showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					}
-					MessageBox.Ask("Unequip " + this.ToString(item, true) + "?", () =>
+					MessageBox.Ask(i18n.Format("inventory_unequip_x", this.ToString(item, true)), () =>
 					{
 						try
 						{
@@ -690,7 +690,7 @@ namespace Noxico
 				{
 					NoxicoGame.Identifications.Add(this.ID);
 					if (running != null)
-						running("You have identified this as " + this.ToString(item, true) + ".");
+						running(i18n.Format("inventory_identified_as_x", this.ToString(item, true)));
 				}
 			}));
 			//var ret = env.DoChunk(script, "lol.lua");

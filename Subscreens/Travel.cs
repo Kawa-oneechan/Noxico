@@ -31,7 +31,6 @@ namespace Noxico
 
 				var list = new UIList()
 				{
-					//Items = NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList(),
 					Left = 4,
 					Top = 3,
 					Width = 36,
@@ -82,8 +81,6 @@ namespace Noxico
 						host.Noxico.Player.Reposition();
 				};
 
-				//var thisBoard = NoxicoGame.KnownTargets.FirstOrDefault(kt => kt == host.Noxico.CurrentBoard.BoardNum);
-				//list.Index = NoxicoGame.TargetNames.First(tn => tn.Key == thisBoard).Key;
 				if (host.Noxico.CurrentBoard.Name != null)
 				{
 					var thisBoard = NoxicoGame.TravelTargets.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
