@@ -750,7 +750,6 @@ namespace Noxico
 			return ToString(token) + " (" + string.Join(", ", info) + ")";
 		}
 
-		//TODO: i18n
 		public void Eat(Character gourmand, Token item)
 		{
 			if (item.HasToken("fat"))
@@ -764,15 +763,15 @@ namespace Noxico
 					gourmand.Path(hwa).Value += (float)change;
 					if (!gourmand.HasToken("player"))
 						return;
-					if (hwa.Equals("ass/size"))
-						hwa = "[?:butt]";
-					NoxicoGame.AddMessage("That went right to your " + hwa + "!");
+					if (hwa == "ass/size") hwa = "butt";
+					NoxicoGame.AddMessage(i18n.GetString("eat_toyour" + hwa).Viewpoint(gourmand));
 				}
 			}
 		}
 
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
 		//TODO: make this a bool, return false if the item is too sturdy to tear.
+		//TODO: make this not *replace* the item, but apply tearing (https://bitbucket.org/Kawa/noxico/issues/14/clothing-statuses)
 		public static void TearApart(InventoryItem equip, Token carriedItem)
 		{
 			var slot = "pants";

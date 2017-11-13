@@ -128,7 +128,7 @@ namespace Noxico
 				}
 				else
 				{
-					// todo these Funcs are clones from elsewhere,
+					// FIXME: these Funcs are clones from elsewhere,
 					//  we could tidy these up into Lua.Ascertain eventually.
 					Func<BoardType, int, int, Realms, Board> pickBoard = (boardType, biome, maxWater, inRealm) =>
 					{
