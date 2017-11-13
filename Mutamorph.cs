@@ -602,7 +602,6 @@ namespace Noxico
 
 		public void ApplyMutamorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
 		{
-			//TODO: i18n.
 			var numChanges = Math.Min(4, possibilities.Count);
 			var changes = new List<Token>();
 			var feedbacks = new List<string>();
@@ -623,45 +622,43 @@ namespace Noxico
 			}
 			if (changes.Count == 0)
 			{
-				feedback = "Nothing happens.";
+				feedback = i18n.GetString("morphfinal_nothing");
 				return;
 			};
 
 			var feedbackBuilder = new StringBuilder();
 			if (feedbacks.Count == 1)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_1", feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]")));
 			}
 			else if (feedbacks.Count == 2)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(" and ");
-				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_2",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]")));
 			}
 			else if (feedbacks.Count == 3)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(", ");
-				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(", and ");
-				feedbackBuilder.Append(feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_3",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"),
+					feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]")));
 			}
 			else
 			{
+				feedbackBuilder.Append(i18n.Format("morphfinal_n1",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]")));
+
+
 				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
 				feedbackBuilder.Append(". ");
 				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]"));
 				for (var i = 2; i < feedbacks.Count - 1; i++)
 				{
-					feedbackBuilder.Append(", ");
-					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+					feedbackBuilder.Append(i18n.Format("morphfinal_n2", feedbacks[i].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]")));
 				}
-				feedbackBuilder.Append(", and ");
-				feedbackBuilder.Append(feedbacks[feedbacks.Count - 1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_n3", feedbacks[feedbacks.Count - 1].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]")));
 			}
 			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
 			feedback = feedbackBuilder.ToString().Viewpoint(this);

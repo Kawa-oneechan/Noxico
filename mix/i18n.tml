@@ -339,6 +339,11 @@ Would you like an infodump on the way out?
 	inventory_weaponskill: Skill: {0}
 	inventory_weapontype: Type: {0}
 	inventory_modifiers: Modifiers: {0}
+	inventory_equip_x: Equip {0}?
+	inventory_unequip_x: Unequip {0}?
+	inventory_cursed_singular: You can't unequip {0}; it is cursed.
+	inventory_cursed_plural: You can't unequip {0}; they are cursed.
+	inventory_identify_as_x: You've identified this as {0}.
 -- #region Sigils
 	sigil_weapon: weapon
 	sigil_fullmask: full mask
@@ -598,6 +603,13 @@ Equipment
 	morphpart_tail_: [views] tail becomes -like
 	morphpart_gettail_: [views] tail becomes -like
 	morphpart_tail_lose: [views] tail disappears
+	morphfinal_nothing: Nothing happens.
+	morphfinal_1: {0}.
+	morphfinal_2: {0} and {1}.
+	morphfinal_3: {0}, {1}, and {2}.
+	morphfinal_n1: {0}. {1}
+	morphfinal_n2: , {0}
+	morphfinal_n3: , and {0}.
 -- #endregion
 -- #region Tutorial
 	tutorial_firststeps

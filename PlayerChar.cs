@@ -943,7 +943,6 @@ namespace Noxico
 			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
-			//TODO: i18n
 			if (Character.HasToken("easymode"))
 				candle.Description = i18n.GetString("candle_easymode");
 			else if (Lives == 0)

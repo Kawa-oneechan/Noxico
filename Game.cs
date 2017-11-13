@@ -1542,7 +1542,6 @@ namespace Noxico
 		public static void CheckForTutorialStuff()
 		{
 			//We can assume this is only invoked when we -have- a tutorial token.
-			//TODO: i18n this.
 			var player = NoxicoGame.Me.Player.Character;
 			var tutorial = player.GetToken("tutorial");
 			if (tutorial.HasToken("dointeractmode"))
