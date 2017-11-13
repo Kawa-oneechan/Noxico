@@ -230,6 +230,7 @@ namespace Noxico
 					name = name.Replace(key, "");
 			}
 
+			//TODO: see Mutamorph/GetMorphDeltas about scripted articles.
 			if (article == "the")
 				name = knownItem.Definite + " " + name;
 			else if (article == "a")
@@ -288,7 +289,7 @@ namespace Noxico
 
 		public static string Hair(Token hairToken)
 		{
-			//TODO finish hair
+			//TODO: finish hair
 
 			return null;
 		}
@@ -441,12 +442,11 @@ namespace Noxico
 		/// <returns>A string containing a description of the hand type.</returns>
 		public static string Hand(Character character, bool plural = false)
 		{
-			//TODO: i18n
 			if (character.HasToken("quadruped"))
 				return Foot(character.GetToken("legs"), plural);
 			//Clawed hands and such can go here.
-			return "hand".Pluralize(plural ? 2 : 1);
+			var request = descTable.Path("hand/default");
+			return request.Text.Pluralize(plural ? 2 : 1);
 		}
-
 	}
 }

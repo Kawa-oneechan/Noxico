@@ -190,7 +190,7 @@ namespace Noxico
 				if (HasToken("hair"))
 					scoreF += this.Path("hair/length").Value * 0.046f;
 
-				// todo consider hips & waist
+				// TODO: consider hips & waist
 
 				// decide what to return based on quadrants
 				// currently not good with flat chested fela and long haired male naga, however,
@@ -547,12 +547,12 @@ namespace Noxico
 							cock.AddToken("length", length);
 							cock.AddToken("thickness", thick);
 							cock.AddToken("cumsource");
-							report += "[Youorname] [has] grown a brand new [?:cock]!";
+							report += i18n.GetString("morph_growcock");
 						}
 						else if (cock != null && !cock.HasToken("dual"))
 						{
 							cock.AddToken("dual");
-							report += "[Yourornames] [?:cock] has split in two!";
+							report += i18n.GetString("morph_splitcock");
 						}
 						else
 							report += "\uE2FC";
@@ -564,12 +564,12 @@ namespace Noxico
 							vagina = this.AddToken("vagina");
 							vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
 							vagina.AddToken("looseness", Random.Next((int)(intensity / 2)));
-							report += "[Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!";
+							report += i18n.GetString("morph_growpussy");
 						}
 						else if (vagina != null && !vagina.HasToken("dual"))
 						{
 							vagina.AddToken("dual");
-							report += "[Yourornames] [?:pussy] has split in two!";
+							report += i18n.GetString("morph_splitpussy");
 						}
 						else
 							report += "\uE2FC";
@@ -586,17 +586,17 @@ namespace Noxico
 							{
 								this.RemoveToken("legs");
 								this.RemoveToken("tail");
-								report += choice == 2 ? "[Youorname] [has] lost [his] legs and gained a long, serpentine tail."
-													  : "[Youorname] become{s} a slime, and [his] legs melt into a blob of goo.";
+								report += choice == 2 ? i18n.GetString("morph_growsnaketail")
+													  : i18n.GetString("morph_growslimeblob");
 							}
 							else
-								report += choice == 0 ? "[Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear."
-													  : "[Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form.";
+								report += choice == 0 ? i18n.GetString("morph_taurify")
+													  : i18n.GetString("morph_quadrify");
 						}
 						else if (this.HasToken("taur"))
 						{
 							this.GetToken("taur").Value = Math.Max(2, this.GetToken("taur").Value + 1);
-							report += "Another taurbody extends out behind [yourornames] [?:butt] as [he] grow{s} another pair of legs.";
+							report += i18n.GetString("morph_taurtrain");
 						}
 						else
 							report += "\uE2FC";
@@ -620,21 +620,17 @@ namespace Noxico
 									this.AddToken("waist", (float)Random.NextDouble() * intensity / 4 + 2f);
 								if (!this.HasToken("ass"))
 									this.AddToken("ass", (float)Random.NextDouble() * intensity / 4 + 2f);
-								if (this.HasToken("snaketail"))
-									report += "[Youorname] [has] lost [his] snaketail ";
-								else if (this.HasToken("slimeblob"))
-									report += "[Youorname] [has] solidified ";
-								report += "and gained a pair of " + legnames[type] + " legs.";
+								report += i18n.Format("morph_lose_x_and_gain_y_legs", i18n.GetString(this.HasToken("snaketail") ? "morph_losesnaketail" : "morph_loseslimeblob"), legnames[type]);
 							}
 							else
-								report += "[Yourornames] body has returned to a normal bipedal shape.";
+								report += i18n.GetString("morph_bipedify");
 							this.RemoveToken("snaketail");
 							this.RemoveToken("slimeblob");
 						}
 						else if (this.HasToken("taur") && this.GetToken("taur").Value >= 2)
 						{
 							this.GetToken("taur").Value--;
-							report += "[Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt].";
+							report += i18n.GetString("morph_untaurtrain");
 						}
 						else
 							report += "\uE2FC";
@@ -645,7 +641,7 @@ namespace Noxico
 							var boob = this.GetToken("breasts");
 							if (boob.GetToken("amount").Value < 5)
 								boob.GetToken("amount").Value++;
-							report += "[Youorname] [has] gained a " + boob.GetToken("amount").Value.CountOrdinal() + " [?:breast].";
+							report += i18n.Format("morph_gainbreast", boob.GetToken("amount").Value.CountOrdinal());
 						}
 						else
 							report += "\uE2FC";
@@ -657,13 +653,13 @@ namespace Noxico
 							if (boob.GetToken("amount").Value > 1)
 							{
 								boob.GetToken("amount").Value--;
-								report += "[Youorname] [has] lost a [?:breast].";
+								report += i18n.GetString("morph_losebreast");
 							}
 
 							if (boob.GetToken("amount").Value == 0)
 							{
 								this.RemoveToken(boob);
-								report += "[Youorname] [has] lost [?:breasts].";
+								report += i18n.GetString("morph_loselastbreast");
 							}
 
 							if (!this.HasToken("breasts"))
@@ -680,7 +676,7 @@ namespace Noxico
 						if (balls != null)
 						{
 							balls.GetToken("amount").Value++;
-							report += "[Youorname] [has] gained another testicle.";
+							report += i18n.GetString("morph_gaintesticle");
 						}
 						else
 						{
@@ -688,9 +684,8 @@ namespace Noxico
 							var size = (float)Random.NextDouble() * intensity / 4 + 3f;
 							this.AddToken("balls").AddToken("amount", num);
 							this.GetToken("balls").AddToken("size", size);
-							report += num > 1 ? "[Youorname] [has] gained a set of " + i18n.GetArray("counts")[num] + " " + Descriptions.BallSize(this.GetToken("balls")) +
-												" balls."
-											  : "[Youorname] [has] grown a single testicle.";
+							report += num > 1 ? i18n.Format("morph_gainballs", i18n.GetArray("counts")[num], Descriptions.BallSize(this.GetToken("balls")))
+											  : i18n.GetString("morph_gainonenut");
 						}
 						break;
 					case Mutations.RemoveTesticle:
@@ -700,11 +695,10 @@ namespace Noxico
 							if (this.GetToken("balls").GetToken("amount").Value <= 0)
 							{
 								this.RemoveToken("balls");
-								report += "[Youorname] [has] lost [his] last remaining testicle.";
+								report += i18n.GetString("morph_loselastnut");
 							}
 							else
-								report += "[Youorname] [has] lost one of [his] balls, bringing [him] down to only " +
-										  this.GetToken("balls").GetToken("amount").Value.Count() + ".";
+								report += i18n.Format("morph_loseonenut", this.GetToken("balls").GetToken("amount").Value.Count());
 						}
 						else
 							report += "\uE2FC";
@@ -714,7 +708,7 @@ namespace Noxico
 						{
 							var boob = this.GetToken("breasts");
 							boob.GetToken("nipples").AddToken("canfuck");
-							report += "The nipples on [yourornames] [?:breasts] have grown out and become phallic.";
+							report += i18n.GetString("morph_gaindicknipples");
 						}
 						else
 							report += "\uE2FC";
@@ -724,7 +718,7 @@ namespace Noxico
 						{
 							var boob = this.GetToken("breasts");
 							boob.GetToken("nipples").AddToken("fuckable");
-							report += "The nipples on [yourornames] [?:breasts] have inverted and taken on a distinctly vaginal appearance.";
+							report += i18n.GetString("morph_gainnipplecunts");
 						}
 						else
 							report += "\uE2FC";
@@ -737,8 +731,9 @@ namespace Noxico
 								boob.AddToken("nipples", 1);
 							else
 								boob.GetToken("nipples").Value++;
-							report += "[Yourornames] [?:breasts] have gained another " + (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
-								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "") + ".";
+							var nippleName = (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
+								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+							report += i18n.GetString("morph_gain" + nippleName);
 						}
 						else
 							report += "\uE2FC";
@@ -753,10 +748,10 @@ namespace Noxico
 							if (boob.GetToken("nipples").Value == 0)
 							{
 								boob.RemoveToken("nipples");
-								report += "[Yourornames] [?:breasts] have lost their " + nippleName.Pluralize() + ".";
+								report += i18n.GetString("morph_lose" + nippleName + "s");
 							}
 							else
-								report += "[Yourornames] [?:breasts] have each lost a " + nippleName + ".";
+								report += i18n.GetString("morph_lose" + nippleName);
 						}
 						else
 							report += "\uE2FC";
@@ -769,12 +764,12 @@ namespace Noxico
 							if (boob.GetToken("nipples").HasToken("fuckable"))
 							{
 								boob.GetToken("nipples").RemoveToken("fuckable");
-								report += "The nipplecunts on [yourornames] [?:breasts] have become normal nipples.";
+								report += i18n.GetString("morph_revertnipplecunts");
 							}
 							else
 							{
 								boob.GetToken("nipples").RemoveToken("canfuck");
-								report += "The dicknipples on [yourornames] [?:breasts] have become normal nipples.";
+								report += i18n.GetString("morph_revertdicknipples");
 							}
 						}
 						else

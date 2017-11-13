@@ -499,3 +499,5 @@ feet
 	insect: claw
 	default: foot
 	dragon: claw
+hand
+	default: hand

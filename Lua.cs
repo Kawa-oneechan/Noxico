@@ -98,7 +98,7 @@ namespace Noxico
 			if (env == null)
 				env = Environment;
 
-			// todo Do we have this chunk cached? If so, use that version.
+			// Do we have this chunk cached? If so, use that version.
 			var hash = block.GetHashCode();
 			var useCache = false;
 			LuaChunk compiledChunk = null;
@@ -123,7 +123,7 @@ namespace Noxico
 				}
 			}
 
-			// todo It failed to compile? Run interpreted and hope for useful information
+			// TODO: It failed to compile? Run interpreted and hope for useful information
 			LuaResult ret = null;
 			try
 			{

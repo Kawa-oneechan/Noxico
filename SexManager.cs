@@ -255,7 +255,7 @@ namespace Noxico
 			/*
 			try
 			{
-				// todo really should just compile once at startup but we're just testing the debugger trace
+				// really should just compile once at startup but we're just testing the debugger trace
 				// anyway here's how you'd do it.
 				//LuaChunk chunk = env.Lua.CompileChunk(script, "lol.lua", new LuaStackTraceDebugger());
 				//env.DoChunk(chunk, "lol.lua");
@@ -281,7 +281,7 @@ namespace Noxico
 					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
-				// todo kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks
+				// kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks
 			}
 			*/
 		}

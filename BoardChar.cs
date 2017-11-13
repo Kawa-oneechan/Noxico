@@ -456,7 +456,7 @@ namespace Noxico
 			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
-				if (Hurt(10, "burning to death", null)) //TODO: i18n
+				if (Hurt(10, i18n.GetString("death_burning"), null))
 					return;
 
 			//Pillowshout added this.

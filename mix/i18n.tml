@@ -248,6 +248,9 @@ This book, we're sorry to say, has a broken reference.
 	x_dropped_y_inthedepths: [Youorname] drop{{s}} {0} in the depths!
 	item_changeling_disguise: This is part of your changeling disguise.
 	formlock: [Yourornames] skin crawls as it resists change.
+	eat_toyourhips: That went right to your hips!
+	eat_toyourwaist: That went right to your waist!
+	eat_toyourbutt: That went right to your [t:buttsize] [?:butt]!
 -- #endregion
 -- #region Causes of death
 	death_doveinanddrowned: dove into the water and drowned
@@ -256,6 +259,7 @@ This book, we're sorry to say, has a broken reference.
 	death_shotbyx: was shot down by {0}
 	death_burned: burned to death
 	death_drowned: drowned
+	death_burning: burning to death
 -- #endregion
 -- #region Misc
 	none: none
@@ -504,6 +508,43 @@ Equipment
 	vocalize_grunts: growls, groans, sighs, pants softly
 	vocalize_cryout: cry out, scream
 	vocalize_cryouts: cries out, screams
+-- #endregion
+-- #region Mutamorph
+	morph_growcock: [Youorname] [has] grown a brand new [?:cock]!
+	morph_growpussy: [Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!
+	morph_splitcock: [Yourornames] [?:cock] has split in two!
+	morph_splitpussy: [Yourornames] [?:pussy] has split in two!
+	morph_growsnaketail: [Youorname] [has] lost [his] legs and gained a long, serpentine tail.
+	morph_growslimeblob: [Youorname] become{s} a slime, and [his] legs melt into a blob of goo.
+	morph_bipedify: [Yourornames] body has returned to a normal bipedal shape.
+	morph_taurify: [Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear.
+	morph_quadrify: [Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form.
+	morph_taurtrain: Another taurbody extends out behind [yourornames] [?:butt] as [he] grow{s} another pair of legs.
+	morph_untaurtrain: [Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt].
+	morph_lose_x_and_gain_y_legs: [Youorname] [has] {0} and gained a pair of {1} legs.
+	morph_losesnaketail: lost [his] snaketail
+	morph_loseslimeblob: solidified
+	morph_gainbreast: [Youorname] [has] gained a {0} [?:breast].
+	morph_losebreast: [Youorname] [has] lost a [?:breast].
+	morph_loselastbreast: [Youorname] [has] lost [his] [?:breasts].
+	morph_gaintesticle: [Youorname] [has] gained another testicle.
+	morph_gainonenut: [Youorname] [has] grown a single testicle.
+	morph_gainballs: [Youorname] [has] gained a set of {0} {1} balls.
+	morph_loselastnut: [Youorname] [has] lost [his] last remaining testicle.
+	morph_loseonenut: [Youorname] [has] lost one of [his] balls, bringing [him] down to only {0}.
+	morph_gaindicknipples: The nipples on [yourornames] [?:breasts] have grown out and become phallic.
+	morph_gainnipplecunts: The nipples on [yourornames] [?:breasts] have inverted and taken on a distinctly vaginal appearance.
+	morph_gainnipple: [Yourornames] [?:breasts] have gained another nipple.
+	morph_gaindicknipple: [Yourornames] [?:breasts] have gained another dicknipple.
+	morph_gainnipplecunt: [Yourornames] [?:breasts] have gained another nipplecunt.
+	morph_losenipples: [Yourornames] [?:breasts] have lost their nipples.
+	morph_losedicknipples: [Yourornames] [?:breasts] have lost their dicknipples.
+	morph_losenipplecunts: [Yourornames] [?:breasts] have lost their nipplecunts.
+	morph_losenipple: [Yourornames] [?:breasts] have each lost a nipple.
+	morph_losedicknipple: [Yourornames] [?:breasts] have each lost a dicknipple.
+	morph_losenipplecunts: [Yourornames] [?:breasts] have each lost a nipplecunt.
+	morph_revertdicknipples: The dicknipples on [yourornames] [?:breasts] have become normal nipples.
+	morph_revertnipplecunts: The nipplecunts on [yourornames] [?:breasts] have become normal nipples.
 -- #endregion
 -- #region FMOD
 add: words/-
