@@ -280,6 +280,8 @@ This book, we're sorry to say, has a broken reference.
 	talkingtoyourself: Talking to yourself is the first sign of insanity.
 	talkingtoyourself_nutso: You spend a short while enjoying some pleasant but odd conversation with yourself.
 	nothingtosay: {0} has nothing to say to you.
+	corpse_description: These are the remains of {0}, who {1}.
+	generic_description: Nothing special about it.
 	gameover_title: GAME OVER
 	youdied
 	<[[

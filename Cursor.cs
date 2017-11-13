@@ -189,6 +189,27 @@ namespace Noxico
 								options["revert"] = i18n.GetString("action_revert");
 						}
 					}
+					else if (PointingAt is DroppedItem)
+					{
+						var drop = PointingAt as DroppedItem;
+						var item = drop.Item;
+						var token = drop.Token;
+						description = item.ToString(token);
+						if (distance <= 1)
+							options["take"] = i18n.GetString("action_pickup");
+					}
+					else if (PointingAt is Container)
+					{
+						var container = PointingAt as Container;
+						description = container.Name ?? "container";
+					}
+					else if (PointingAt is Clutter)
+					{
+						var clutter = PointingAt as Clutter;
+						description = clutter.Name ?? "something";
+						if (clutter.ID == "craftstation")
+							options["craft"] = i18n.GetString("action_craft");
+					}
 					else if (PointingAt is BoardChar)
 					{
 						var boardChar = PointingAt as BoardChar;
@@ -229,22 +250,6 @@ namespace Noxico
 							options["shoot"] = i18n.Format("action_shoothim", boardChar.Character.HimHerIt(true));
 						}
 					}
-					else if (PointingAt is DroppedItem)
-					{
-						var drop = PointingAt as DroppedItem;
-						var item = drop.Item;
-						var token = drop.Token;
-						description = item.ToString(token);
-						if (distance <= 1)
-							options["take"] = i18n.GetString("action_pickup");
-					}
-					else if (PointingAt is Clutter && distance <= 1)
-					{
-						var clutter = PointingAt as Clutter;
-						description = clutter.Name ?? "something";
-						if (clutter.ID == "craftstation")
-							options["craft"] = i18n.GetString("action_craft");
-					}
 
 #if DEBUG
 #if MUTAMORPH
@@ -283,6 +288,10 @@ namespace Noxico
 									else if (PointingAt is Clutter && !string.IsNullOrWhiteSpace(((Clutter)PointingAt).Description))
 									{
 										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true, ((Clutter)PointingAt).Name ?? "something");
+									}
+									else if (PointingAt is Container)
+									{
+										MessageBox.Notice(((Container)PointingAt).Description.Trim(), true, ((Container)PointingAt).Name ?? "container");
 									}
 									else if (PointingAt is BoardChar)
 									{

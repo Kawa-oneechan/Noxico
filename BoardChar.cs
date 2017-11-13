@@ -996,16 +996,11 @@ namespace Noxico
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
-				//TODO: add Look At Container functionality, perhaps using a Token so as to not break saves, so we can have obituaries for corpses.
-				//Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
-			if (!Character.IsProperNamed)
-			{
-				//corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
-			}
 			corpse.Token.AddToken("corpse");
+			corpse.Token.AddToken("description", i18n.Format("corpse_description", Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, true, false), obituary));
 			if (!(this is Player))
 			{
 				foreach (var item in Character.GetToken("items").Tokens)
