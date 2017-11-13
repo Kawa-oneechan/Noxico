@@ -248,6 +248,7 @@ namespace Noxico
 			#region Definitions
 			var subcoms = new Dictionary<string, Func<Character, IList<string>, string>>()
 			{
+				//TODO: i18n... somehow.
 				{ "You", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
 				{ "Your", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
 				{ "you", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },

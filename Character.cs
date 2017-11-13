@@ -521,9 +521,7 @@ namespace Noxico
 #if MUTAMORPH
         public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
         {
-			//TODO: i18n
-
-            //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
+           //Applies a few random mutations to the calling Character.  Intensity determines sizes and numbers of added objects, number determines how many mutations to apply.
 			var randomize = false;
 			if (mutation == Mutations.Random)
 				randomize = true;
@@ -1721,27 +1719,19 @@ namespace Noxico
 
 		public void CreateInfoDump()
 		{
-			//TODO: i18n _ALL_ OF THIS
 			var dump = new StreamWriter(Name + " info.html");
 			var list = new List<string>();
 
 			dump.WriteLine("<!DOCTYPE html>");
 			dump.WriteLine("<html>");
 			dump.WriteLine("<head>");
-			dump.WriteLine("<title>Noxico - Infodump for {0}</title>", this.Name.ToString(true));
+			dump.WriteLine("<title>{0}</title>", i18n.Format("infodump_title", this.Name.ToString(true)));
 			dump.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; CHARSET=utf-8\" />");
 			dump.WriteLine("</head>");
 			dump.WriteLine("<body>");
-			dump.WriteLine("<h1>Noxico - Infodump for {0}</h1>", this.Name.ToString(true));
+			dump.WriteLine("<h1>{0}</h1>", i18n.Format("infodump_title", this.Name.ToString(true)));
 
-			/*
-			if (isWinner)
-				dump.WriteLine("<p><strong>Final result: Victory!</strong></p>");
-			else
-				dump.WriteLine("<p><strong>Final result: Death.</strong></p>");
-			*/
-
-			dump.WriteLine("<h2>Screenshot</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_screenshot"));
 			NoxicoGame.Me.CurrentBoard.CreateHtmlScreenshot(dump, false);
 
 			foreach (var carriedItem in GetToken("items").Tokens)
@@ -1749,12 +1739,13 @@ namespace Noxico
 				carriedItem.RemoveToken("equipped");
 			}
 
-			dump.WriteLine("<h2>About You</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_about"));
 			dump.WriteLine("<pre>");
 			Action<string> print = new Action<string>(x =>
 			{
-				if (x.Contains("| none\n") || x.Contains("Clothing\n") || x.Contains("Equipment\n"))
+				if (x.Contains(' ' + i18n.GetString("none") + '\n') || x.Contains(i18n.GetString("lookat_column_clothing")) || x.Contains(i18n.GetString("lookat_header_items")))
 					return;
+				x = x.Replace("\xC3", "&#x251C;").Replace("\xC0", "&#x2514;").Replace("&#xc4;", "&#x2500;");
 				dump.Write(x.Viewpoint(null));
 			});
 			var lookAt = LookAt(null, print);
@@ -1762,10 +1753,10 @@ namespace Noxico
 			dump.WriteLine(lookAt);
 			dump.WriteLine("</pre>");
 
-			dump.WriteLine("<h2>All of your items</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_items"));
 			dump.WriteLine("<ul>");
 			if (GetToken("items").Tokens.Count == 0)
-				dump.WriteLine("<li>You were carrying nothing.</li>");
+				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_no_items"));
 			else
 			{
 				list.Clear();
@@ -1783,17 +1774,17 @@ namespace Noxico
 			}
 			dump.WriteLine("</ul>");
 
-			dump.WriteLine("<h2>Relationships</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_relationships"));
 			dump.WriteLine("<ul>");
 			var victims = 0;
 			var lovers = 0;
-			var deities = 0;
-			if (GetToken("ships").Tokens.Count == 0)
-				dump.WriteLine("<li>You were in no relationships.</li>");
+			//var deities = 0;
+			if (GetToken("ships").Tokens.Where(t => !t.HasToken("player")).Count() == 0)
+				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_no_ships"));
 			else
 			{
 				list.Clear();
-				foreach (var person in GetToken("ships").Tokens)
+				foreach (var person in GetToken("ships").Tokens.Where(t => !t.HasToken("player")))
 				{
 					var reparsed = person.Name.Replace('_', ' ');
 					if (reparsed.StartsWith("\xF4EF"))
@@ -1803,35 +1794,35 @@ namespace Noxico
 						victims++;
 					if (person.HasToken("lover"))
 						lovers++;
-					if (person.HasToken("prayer"))
-						deities++;
+					//if (person.HasToken("prayer"))
+					//	deities++;
 				}
 				list.Sort();
 				list.ForEach(x => dump.WriteLine("<li>{0}</li>", x));
 			}
 			dump.WriteLine("</ul>");
 
-			dump.WriteLine("<h2>Conduct</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_conduct"));
 			dump.WriteLine("<ul>");
 			if (HasToken("easymode"))
-				dump.WriteLine("<li><strong>You were a total scrub.</strong></li>");
+				dump.WriteLine("<li><strong>{0}</strong></li>", i18n.GetString("infodump_easymode"));
 #if DEBUG
 			else if (HasToken("wizard"))
-				dump.WriteLine("<li>You were playing a debug build with the infinite lives cheat enabled.</li>");
+				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_wizard"));
 #endif
-			dump.WriteLine(HasToken("books") ? "<li>You were literate.</li>" : "<li>You were functionally illiterate.</li>");
-			dump.WriteLine(lovers > 0 ? "<li>You were someone's lover.</li>" : "<li>You had no love to give.</li>");
+			dump.WriteLine("<li>{0}</li>", i18n.GetString(HasToken("books") ? "infodump_literate" : "infodump_illiterate"));
+			dump.WriteLine("<li>{0}</li>", i18n.GetString(lovers > 0 ? "infodump_had_lovers" : "infodump_no_lovers"));
 			if (lovers == 1)
-				dump.WriteLine("<li>You were faithful.</li>");
+				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_one_lover"));
 			if (victims > 0)
-				dump.WriteLine(victims == 1 ? "<li>You had raped someone.</li>" : "<li>You had raped several people.</li>");
-			if (deities == 0)
-				dump.WriteLine("<li>You were an atheist.</li>");
-			else
-				dump.WriteLine(deities == 1 ? "<li>You were monotheistic.</li>" : "<li>You were a polytheist.</li>");
+				dump.WriteLine("<li>{0}</li>", i18n.GetString(victims == 1 ? "infodump_rapist" : "infodump_serial_rapist"));
+			//if (deities == 0)
+			//	dump.WriteLine("<li>You were an atheist.</li>");
+			//else
+			//	dump.WriteLine(deities == 1 ? "<li>You were monotheistic.</li>" : "<li>You were a polytheist.</li>");
 			dump.WriteLine("</ul>");
 
-			dump.WriteLine("<h2>Books you've read</h2>");
+			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_books"));
 			dump.WriteLine("<ul>");
 			if (HasToken("books"))
 			{
@@ -1839,7 +1830,7 @@ namespace Noxico
 					dump.WriteLine("<li>&ldquo;{0}&rdquo;</li>", book.Text);
 			}
 			else
-				dump.WriteLine("<li>You did not read any books.</li>");
+				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_no_books"));
 			dump.WriteLine("</ul>");
 
 			dump.Flush();
@@ -2923,31 +2914,34 @@ namespace Noxico
 		 * 5 - Predatory beasts
 		 * 6 - Prey beasts
 		 * 7 - Angry neutrals
+		 * 8 - Routed hostile
 		 * 
 		 * This would of course mean that the Hostile token will be deprecated.
 		 * 
 		 * ATTACK GRID -- members of one team will hunt down and attack members of the other when spotted.
-		 *   0 1 2 3 4 5 6 7 <-- the other
-		 * 0 - - - - - - - - <-- neutrals don't attack
-		 * 1 - - - - - - - - <-- the player is not automatically controlled at all
-		 * 2 Y P - Y Y - - Y <-- hostiles attack neutrals, players, their possse and guards, but prefer the player
-		 * 3 - - Y - - Y - Y <-- posse attacks hostiles, predators, and angry neutrals (allow tactics control?)
-		 * 4 - T Y - - C - - <-- guards attack hostiles, thiefing players, and any predators that come too close
-		 * 5 ? Y Y Y Y ? P Y <-- predators attack basically everyone, but prefer prey
-		 * 6 - - - - - C - - <-- prey tries to bite back at predators
-		 * 7 - Y - - - - - - <-- neutrals only get angry at the player, for stealing their crap
+		 *   0 1 2 3 4 5 6 7 8 <-- the other
+		 * 0 - - - - - - - - - <-- neutrals don't attack
+		 * 1 - - - - - - - - - <-- the player is not automatically controlled at all
+		 * 2 Y P - Y Y - - Y - <-- hostiles attack neutrals, players, their possse and guards, but prefer the player
+		 * 3 - - Y - - Y - Y - <-- posse attacks hostiles, predators, and angry neutrals (allow tactics control?)
+		 * 4 - T Y - - C - - - <-- guards attack hostiles, thiefing players, and any predators that come too close
+		 * 5 ? Y Y Y Y ? P Y P <-- predators attack basically everyone, but prefer prey
+		 * 6 - - - - - C - - - <-- prey tries to bite back at predators
+		 * 7 - Y - - - - - - - <-- neutrals only get angry at the player, for stealing their crap
+		 * 8 - - - - - - - - - <-- routed hostiles don't attack anyone, too busy getting the hell away
 		 * 
 		 * FLOCKING GRID -- stay close to me... or don't?
 		 * (When you see a member of the other team, what do you do?)
-		 *   0 1 2 3 4 5 6 7
-		 * 0 - - A - - - - - <-- neutrals avoid hostiles
-		 * 1 - - - - - - - -
-		 * 2 - - S - - - - - <-- hostiles of a feather flock together (s for same)
-		 * 3 - Y - - - - - -
-		 * 4 - - - - ? - - -
-		 * 5 - - - - - S - -
-		 * 6 - ? A ? - A S - <-- prey avoids any visible predators
-		 * 7 - - A - - - - -
+		 *   0 1 2 3 4 5 6 7 8
+		 * 0 - - A - - - - - - <-- neutrals avoid hostiles
+		 * 1 - - - - - - - - -
+		 * 2 - - S - - - - - S <-- hostiles of a feather flock together (s for same)
+		 * 3 - Y - - - - - - -
+		 * 4 - - - - ? - - - -
+		 * 5 - - - - - S - - -
+		 * 6 - ? A ? - A S - - <-- prey avoids any visible predators
+		 * 7 - - A - - - - - -
+		 * 8 - A - A A A - A Y
 		 */
 		public int Team
 		{
@@ -2994,16 +2988,17 @@ namespace Noxico
 			{
 				var grid = new[]
 				{
-					0, 0, 0, 0, 0, 0, 0, 0,
-					0, 0, 0, 0, 0, 0, 0, 0,
-					1, 2, 0, 1, 1, 0, 0, 1,
-					0, 0, 1, 0, 0, 1, 0, 1,
-					0, 9, 1, 0, 0, 8, 0, 0,
-					0, 1, 1, 1, 1, 0, 2, 1,
-					0, 0, 0, 0, 0, 8, 0, 0,
-					0, 1, 0, 0, 0, 0, 0, 0
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					1, 2, 0, 1, 1, 0, 0, 1, 0,
+					0, 0, 1, 0, 0, 1, 0, 1, 0,
+					0, 9, 1, 0, 0, 8, 0, 0, 0,
+					0, 1, 1, 1, 1, 0, 2, 1, 2,
+					0, 0, 0, 0, 0, 8, 0, 0, 0,
+					0, 1, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
 				};
-				var action = (TeamBehaviorAction)grid[(myTeam * 8) + theirTeam];
+				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
 				if (action == TeamBehaviorAction.CloseByAttack)
 					action = (BoardChar.DistanceFrom(other.BoardChar) > 4) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Attack;
 				//TODO: check for thieving players
@@ -3014,16 +3009,17 @@ namespace Noxico
 			{
 				var grid = new[]
 				{
-					0, 0, 3, 0, 0, 0, 0, 0,
-					0, 0, 0, 0, 0, 0, 0, 0,
-					0, 0, 5, 0, 0, 0, 0, 0,
-					0, 4, 0, 0, 0, 0, 0, 0,
-					0, 0, 0, 0, 0, 0, 0, 0,
-					0, 0, 0, 0, 0, 5, 0, 0,
-					0, 0, 3, 0, 0, 3, 5, 0,
-					0, 0, 3, 0, 0, 0, 0, 0,
+					0, 0, 3, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 5, 0, 0, 0, 0, 0, 5,
+					0, 4, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 5, 0, 0, 0,
+					0, 0, 3, 0, 0, 3, 5, 0, 0,
+					0, 0, 3, 0, 0, 0, 0, 0, 0,
+					0, 3, 0, 3, 3, 3, 0, 3, 4,
 				};
-				var action = (TeamBehaviorAction)grid[(myTeam * 8) + theirTeam];
+				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
 				if (action == TeamBehaviorAction.FlockAlike) //TODO: check if >= 3 is any good.
 					action = (Toolkit.GetHammingDistance(this.GetClosestBodyplanMatch(), other.GetClosestBodyplanMatch()) >= 3) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Flock;
 				return action;
