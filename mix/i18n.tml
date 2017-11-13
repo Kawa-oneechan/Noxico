@@ -251,6 +251,8 @@ This book, we're sorry to say, has a broken reference.
 	eat_toyourhips: That went right to your hips!
 	eat_toyourwaist: That went right to your waist!
 	eat_toyourbutt: That went right to your [t:buttsize] [?:butt]!
+	call_out: {0}: "There [b:he] [b:is]!"
+	call_out_animal: The [t:title] vocalizes an alert!
 -- #endregion
 -- #region Causes of death
 	death_doveinanddrowned: dove into the water and drowned
@@ -618,6 +620,27 @@ Also, you can press &#xE20E; to more quickly aim at various things.
 
 As long as you have enough headroom, you can take flight by pressing &#xE208;. Press it again to land, but be careful where you do that!
 	]]>
+-- #endregion
+-- #region Infodump
+	infodump_title: Noxico - Infodump for {0}
+	infodump_screenshot: Screenshot
+	infodump_about: About you
+	infodump_items: All of your items
+	infodump_no_items: You were carrying nothing.
+	infodump_relationships: Relationships
+	infodump_no_ships: You were in no relationships.
+	infodump_conduct: Conduct
+	infodump_easymode: You were a total scrub.
+	infodump_wizard: You were playing a debug build with the infinite lives cheat enabled.
+	infodump_literate: You were literate.
+	infodump_illiterate: You were functionally illiterate.
+	infodump_had_lovers: You were someone's lover.
+	infodump_no_lovers: You had no love to give.
+	infodump_one_lover: You were faithful.
+	infodump_rapist: You had raped someone.
+	infodump_serial_rapist: You had raped several people. You monster.
+	infodump_books: Books you've read
+	infodump_no_books: You did not read any books.
 -- #endregion
 -- #region Stuff in the player's base (cut out and place in Player Base mission later)
 	candle_easymode: Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.

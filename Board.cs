@@ -34,6 +34,23 @@ namespace Noxico
 		{
 			return new Point(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
 		}
+
+		public void SaveToFile(BinaryWriter stream)
+		{
+			stream.Write(Left);
+			stream.Write(Top);
+			stream.Write(Right);
+			stream.Write(Bottom);
+		}
+
+		public static Rectangle LoadFromFile(BinaryReader stream)
+		{
+			var l = stream.ReadInt32();
+			var t = stream.ReadInt32();
+			var r = stream.ReadInt32();
+			var b = stream.ReadInt32();
+			return new Rectangle() { Left = l, Top = t, Right = r, Bottom = b };
+		}
 	}
 
 	/// <summary>
@@ -476,12 +493,8 @@ namespace Noxico
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
 				{
-					//TODO: give sectors their own serialization function. For readability.
 					stream.Write(sector.Key);
-					stream.Write(sector.Value.Left);
-					stream.Write(sector.Value.Top);
-					stream.Write(sector.Value.Right);
-					stream.Write(sector.Value.Bottom);
+					sector.Value.SaveToFile(stream);
 				}
 
 				Toolkit.SaveExpectation(stream, "ENTT");
@@ -553,11 +566,7 @@ namespace Noxico
 				for (int i = 0; i < secCt; i++)
 				{
 					var secName = stream.ReadString();
-					var l = stream.ReadInt32();
-					var t = stream.ReadInt32();
-					var r = stream.ReadInt32();
-					var b = stream.ReadInt32();
-					newBoard.Sectors.Add(secName, new Rectangle() { Left = l, Top = t, Right = r, Bottom = b });
+					newBoard.Sectors.Add(secName, Rectangle.LoadFromFile(stream));
 				}
 
 				Toolkit.ExpectFromFile(stream, "ENTT", "board entity");

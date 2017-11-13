@@ -420,6 +420,7 @@ namespace Noxico
 					NoxicoGame.AddMessage(i18n.GetString("x_getsbackup").Viewpoint(Character));
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
+					//If the team system is used, perhaps switch to a Routed Hostile team.
 				}
 				else
 					return;
@@ -542,9 +543,9 @@ namespace Noxico
 								if (called > 0)
 								{
 									if (!Character.HasToken("beast"))
-										NoxicoGame.AddMessage((Character.GetKnownName(true, true, true, true) + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor()); //TODO: i18n
+										NoxicoGame.AddMessage(i18n.Format("call_out", Character.GetKnownName(true, true, true, true)).SmartQuote().Viewpoint(this.Character, target.Character), GetEffectiveColor());
 									else
-										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor()); //TODO: i18n
+										NoxicoGame.AddMessage(i18n.Format("call_out_animal").Viewpoint(this.Character), GetEffectiveColor());
 									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
 									Energy -= 2000;
 								}
