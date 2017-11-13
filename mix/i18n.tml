@@ -546,24 +546,86 @@ Equipment
 	morph_revertdicknipples: The dicknipples on [yourornames] [?:breasts] have become normal nipples.
 	morph_revertnipplecunts: The nipplecunts on [yourornames] [?:breasts] have become normal nipples.
 -- #endregion
--- #region FMOD
-add: words/-
-	fmod_genericerror: An error occurred in FMOD that's not further explained. The error code is "{0}".
-	fmod_error: An error occurred in FMOD: {0}
-	fmod_ok: Nothing happened! Everything supposedly went right, but you got this message anyway. Contact Kawa.
-	fmod_badcommand: Tried to call a function on a data type that doesn't allow that type of functionality. For example, calling Sound::lock on a streaming sound.
-	fmod_channelalloc: Error trying to allocate a channel.
-	fmod_channelstolen: The specified channel has been reused to play another sound.
-	fmod_filebad: Error loading file.
-	fmod_fileeof: End of file unexpectedly reached while trying to read essential data.
-	fmod_fileendofdata: End of current chunk reached while trying to read data.
-	fmod_filenotfound: File not found.
-	fmod_unknownformat: Unsupported file or audio format.
-	fmod_initialization: FMOD was not initialized correctly to support this function.
-	fmod_notenoughmemory: Not enough memory or resources.
-	fmod_notready: Operation could not be performed because specified sound is not ready.
-	fmod_outputallocated: Error initializing output device, but more specifically, the output device is already in use and cannot be reused.
-	fmod_outputinit: Error initializing output device.
+-- #region Morph delta descriptions
+-- Metrics: tallness hips waist ass_size charisma cunning carnality sensitivity speed strength
+	morphpart_tallness_-1: [view] grow{s} a bit shorter
+	morphpart_tallness_1: [view] grow{s} a bit taller
+	morphpart_hips_-1: [views] hips	become smaller
+	morphpart_hips_1: [views] hips flare out some more
+	morphpart_waist_-1: [views] waist grows a bit less wide
+	morphpart_waist_1: [views] waist grows a bit wider
+	morphpart_ass_size_-1: [views] [?:butt] shrinks a bit
+	morphpart_ass_size_1: [views] [?:butt] expands a bit
+-- Vary that up a bit, yo!
+	morphpart_charisma_-1: [views] charisma decreases
+	morphpart_charisma_1: [views] charisma increases
+	morphpart_cunning_-1: [views] cunning decreases
+	morphpart_cunning_1: [views] cunning increases
+	morphpart_carnality_-1: [views] carnality decreases
+	morphpart_carnality_1: [views] carnality increases
+	morphpart_sensitivity_-1: [views] sensitivity decreases
+	morphpart_sensitivity_1: [views] sensitivity increases
+	morphpart_speed_-1: [views] speed decreases
+	morphpart_speed_1: [views] speed increases
+	morphpart_strength_-1: [views] strength decreases
+	morphpart_strength_1: [views] strength increases
+-- Trivial kinds: face teeth tongue ears legs --> things listed in bodyparts.tml
+-- for now, let's just let it return "[morphpart_face_cat]"...
+-- Trivial colors: eyes only for now, to any known color.
+	morphpart_eyes_x: [views] eyes turn {0}
+-- Skin type changes, including colors
+	morphpart_skin_skin: [views] body turns to smooth {0} skin
+	morphpart_skin_fur: [views] body grows a coat of {0} fur
+	morphpart_skin_slime: [views] body dissolves into {0} slime
+	morphpart_skin_scales: [views] body grows sturdy {0} scales
+	morphpart_skin_color: [views] body turns {0}
+-- Leg type changes
+	morphpart_slime_human: [views] lower body reforms into a pair of regular legs
+	morphpart_slime_dog: [views] lower body reforms into a pair of dog-like legs
+	morphpart_slime_horse: [views] lower body reforms into a pair of horse legs
+	morphpart_slime_insect: [views] lower body reforms into a pair of chitinous legs
+	morphpart_slime_claws: [views] lower body reforms into a pair of claw-footed legs
+	morphpart_slime_stiletto: [views] lower body reforms into a pair of legs with stiletto-heeled feet
+	morphpart_slime_genbeast: [views] lower body reforms into a pair of animalistic legs
+	morphpart_slime_bear: [views] lower body reforms into a hefty pair of bear legs
+	morphpart_slime_blob: [views] legs dissolve into a puddle of goop
+-- Hair changes
+	morphpart_hair_color: [views] hair turns {0}
+-- Tail changes
+-- for now, let's just let it return "[morphpart_tail_cat]"...
+	morphpart_tail_: [views] tail becomes -like
+	morphpart_gettail_: [views] tail becomes -like
+	morphpart_tail_lose: [views] tail disappears
+-- #endregion
+-- #region Tutorial
+	tutorial_firststeps
+	<[[
+&#xE2FE;Welcome to Noxico.
+
+You probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: &#xE207;. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!
+	]]>
+	tutorial_interactmode
+	<[[
+&#xE2FE;Exactly like that, yes.
+
+You can move the targeting cursor around the same way you moved your character, then press &#xE20A; to call up a menu of interactions for whatever you aimed at.
+
+Also, you can press &#xE20E; to more quickly aim at various things.
+	]]>
+	tutorial_flying
+	<[[
+&#xE2FE;It seems you have functional wings.
+
+As long as you have enough headroom, you can take flight by pressing &#xE208;. Press it again to land, but be careful where you do that!
+	]]>
+-- #endregion
+-- #region Stuff in the player's base (cut out and place in Player Base mission later)
+	candle_easymode: Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.
+	candle_0: If this little stump of a candle is any indication, you're on your last legs. You should be careful.
+	candle_1: The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.
+	candle_3: The candle still has a ways to go, and so do you. Still, it's no good to tempt Death.
+	candle_6: The candle burns brightly.
+	candle_X: The candle is positively ablaze with life.
 -- #endregion
 
 hyphenation

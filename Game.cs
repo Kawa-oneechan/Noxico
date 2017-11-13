@@ -1548,18 +1548,18 @@ namespace Noxico
 			if (tutorial.HasToken("dointeractmode"))
 			{
 				tutorial.AddToken("interactmode");
-				MessageBox.Notice(i18n.Entitize("\uE2FEExactly like that, yes.\n\nYou can move the targeting cursor around the same way you moved your character, then press \uE20A to call up a menu of interactions for whatever you aimed at.\n\nAlso, you can press \uE20E to more quickly aim at various things."), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, string.Empty, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("firstmoves") && tutorial.Value > 5)
 			{
 				tutorial.Value = 0;
 				tutorial.AddToken("firstmoves");
-				MessageBox.Notice(i18n.Entitize("\uE2FEWelcome to Noxico.\n\nYou probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: \uE207. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!"), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, string.Empty, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("flying") && player.HasToken("wings") && !player.GetToken("wings").HasToken("small"))
 			{
 				tutorial.AddToken("flying");
-				MessageBox.Notice(i18n.Entitize("\uE2FEIt seems you have functional wings.\n\nAs long as you have enough headroom, you can take flight by pressing \uE208. Press it again to land, but be careful where you do that!"), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, string.Empty, "tutorichel.png");
 			}
 		}
 	}

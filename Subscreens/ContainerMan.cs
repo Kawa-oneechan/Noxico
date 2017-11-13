@@ -206,7 +206,7 @@ namespace Noxico
 				if (mode == ContainerMode.Vendor)
 					capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 
-				//TODO: why is this check a thing?
+				//FIXME: why is this check a thing?
 				if (containerList != null)
 				{
 					containerList.Change = (s, e) =>
