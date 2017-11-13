@@ -447,6 +447,15 @@ namespace Noxico
 	public class Container : Entity
 	{
 		private static List<Token> clutterDB;
+		public string Description
+		{
+			get
+			{
+				if (this.Token.HasToken("description") && !string.IsNullOrWhiteSpace(this.Token.GetToken("description").Text))
+					return this.Token.GetToken("description").Text;
+				return i18n.GetString("generic_description");
+			}
+		}
 
 		public Token Token { get; set; }
 
@@ -519,6 +528,8 @@ namespace Noxico
 				//newContainer.CanBurn = knownClutter.HasToken("canburn");
 				//if (knownContainer.HasToken("name")) newContainer.Name = knownContainer.GetToken("name").Text;
 				newContainer.Blocking = knownContainer.HasToken("blocking");
+				if (knownContainer.HasToken("description") && !newContainer.Token.HasToken("description"))
+					newContainer.Token.AddToken("description", knownContainer.GetToken("description").Text);
 				//if (knownClutter.HasToken("role")) newContainer.DBRole = knownClutter.GetToken("role").Text;
 			}
 

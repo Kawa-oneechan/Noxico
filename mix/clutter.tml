@@ -18,8 +18,15 @@ id: seat
 	color: black
 	background: inherit
 
-id: container
-	role: wardrobe
+id: wardrobe
+	name: wardrobe
 	char: 0x14b
+	description: "This is a wardrobe, meant for storing clothing and such."
+	color: black
+	background: inherit
+id: chest
+	name: chest
+	char: 0x14a
+	description: "This is a chest, meant for storing things."
 	color: black
 	background: inherit
