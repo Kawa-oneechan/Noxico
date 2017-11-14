@@ -605,6 +605,21 @@ Equipment
 	morphpart_tail_: [views] tail becomes -like
 	morphpart_gettail_: [views] tail becomes -like
 	morphpart_tail_lose: [views] tail disappears
+-- Penis changes
+	morphpart_grow_dick: [view] grow{s} a {0} [?:cock]
+	morphpart_cock_split: [views] [?:cock] splits in two
+	morphpart_cock_join: [views] [?:cocks] fuse into one
+	morphpart_lose_dick: [views] [?:cock] disappears
+	morphpart_penis_-1_-1: [views] [?:cock] grows shorter and thinner
+	morphpart_penis_-1_0: [views] [?:cock] grows shorter
+	morphpart_penis_-1_1: [views] [?:cock] grows shorter and fatter
+	morphpart_penis_0_-1: [views] [?:cock] grows thinner
+	morphpart_penis_0_0: [views] [?:cock] stays exactly the same
+	morphpart_penis_0_1: [views] [?:cock] grows fatter
+	morphpart_penis_1_-1: [views] [?:cock] grows longer and thinner
+	morphpart_penis_1_0: [views] [?:cock] grows longer
+	morphpart_penis_1_-1: [views] [?:cock] grows longer and fatter
+-- Final joiners
 	morphfinal_nothing: Nothing happens.
 	morphfinal_1: {0}.
 	morphfinal_2: {0} and {1}.
