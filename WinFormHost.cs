@@ -175,7 +175,7 @@ namespace Noxico
 		public string IniPath { get; set; }
 		public new Point Cursor { get; set; }
 		private Point prevCursor;
-		private Pen[] cursorPens;
+		private Pen[,] cursorPens;
 
 		private Dictionary<Keys, Keys> numpad = new Dictionary<Keys, Keys>()
 			{
@@ -326,10 +326,14 @@ namespace Noxico
 				Running = true;
 
 				Cursor = new Point(-1, -1);
-				cursorPens = new Pen[16];
-				cursorPens[0] = Pens.Black;
+				cursorPens = new Pen[3, 16];
+				cursorPens[0, 0] = cursorPens[1, 0] = cursorPens[2, 0] = Pens.Black;
 				for (var i = 1; i < 9; i++)
-					cursorPens[i] = cursorPens[16 - i] = new Pen(Color.FromArgb(0, (i * 32) - 1, 0));
+				{
+					cursorPens[0, i] = cursorPens[0, 16 - i] = new Pen(Color.FromArgb((i * 16) - 1, (i * 16) - 1, 0));
+					cursorPens[1, i] = cursorPens[1, 16 - i] = new Pen(Color.FromArgb(0, (i * 32) - 1, 0));
+					cursorPens[2, i] = cursorPens[2, 16 - i] = new Pen(Color.FromArgb((i * 32) - 1, (i * 32) - 1, (i * 32) - 1));
+				}
 
 				fpsTimer = new Timer()
 				{
@@ -490,7 +494,9 @@ namespace Noxico
 				var cSize = CellWidth;
 				if (Cursor.X < Program.Cols - 1 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
-				e.Graphics.DrawRectangle(cursorPens[(uint)Environment.TickCount % cursorPens.Length], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
+
+				var pen = (uint)Environment.TickCount % 16;
+				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
 			}
 		}
 
