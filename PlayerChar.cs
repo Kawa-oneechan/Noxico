@@ -44,11 +44,13 @@ namespace Noxico
 			this.Energy = 5000;
 		}
 
+		/*
 		public override void AdjustView()
 		{
 			base.AdjustView();
 			Glyph = '@';
 		}
+		*/
 
 		public bool OnWarp()
 		{

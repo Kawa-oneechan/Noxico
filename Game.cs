@@ -552,8 +552,10 @@ namespace Noxico
 				if (Mode == UserMode.Walkabout)
 				{
 					Subscreens.PreviousScreen.Clear();
-					if (HostForm.Cursor.X >= 0)
-						HostForm.Cursor = new Point(-1, -1);
+					//if (HostForm.Cursor.X >= 0)
+					//	HostForm.Cursor = new Point(-1, -1);
+					HostForm.Cursor = new Point(Player.XPosition - CameraX, Player.YPosition - CameraY);
+
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;
 					//if ((timeNow - lastUpdate).Milliseconds >= Speed)
