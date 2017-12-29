@@ -154,6 +154,7 @@ namespace Noxico
 		public int Glyph { get; private set; }
 		public Color Foreground { get; private set; }
 		public Color Background { get; private set; }
+		public Color MultiForeground { get; private set; }
 		public bool Wall { get; private set; }
 		public bool Ceiling { get; private set; }
 		public bool Cliff { get; private set; }
@@ -195,6 +196,7 @@ namespace Noxico
 					Variants = tile.HasToken("variants") ? tile.GetToken("variants") : new Token("variants"),
 					IsVariableWall = tile.HasToken("varwall"),
 				};
+				def.MultiForeground = tile.HasToken("mult") ? Color.FromName(tile.GetToken("mult").Text) : def.Foreground;
 				defs.Add(i, def);
 			}
 		}
@@ -613,7 +615,7 @@ namespace Noxico
 
 		private void CleanUpCorpses()
 		{
-			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
+			foreach (var corpse in Entities.OfType<Container>().Where(x => x.Token.HasToken("corpse")))
 				if (Random.NextDouble() > 0.7)
 					this.EntitiesToRemove.Add(corpse);
 		}
@@ -965,7 +967,7 @@ namespace Noxico
 				var t = this.Tilemap[l.X, l.Y];
 				var def = t.Definition;
 				var glyph = def.Glyph;
-				var fore = def.Foreground;
+				var fore = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? def.MultiForeground : def.Foreground;
 				var back = def.Background;
 				if (t.Fluid != Fluids.Dry)
 				{

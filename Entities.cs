@@ -60,10 +60,11 @@ namespace Noxico
 			var localY = this.YPosition - NoxicoGame.CameraY;
 			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
 				return;
+			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
-				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor, this.BackgroundColor);
+				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor, b);
 			else
-				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor.Night(), this.BackgroundColor.Night());
+				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor.Night(), b.Night());
 		}
 
 		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
