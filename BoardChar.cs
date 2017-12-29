@@ -194,17 +194,18 @@ namespace Noxico
 			var localY = this.YPosition - NoxicoGame.CameraY;
 			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
 				return;
+			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				base.Draw();
 				if (Environment.TickCount % blinkRate * 2 < blinkRate)
 				{
 					if (Character.HasToken("sleeping"))
-						NoxicoGame.HostForm.SetCell(localY, localX, 'Z', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, 'Z', this.ForegroundColor, b);
 					else if (Character.HasToken("flying"))
-						NoxicoGame.HostForm.SetCell(localY, localX, '^', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '^', this.ForegroundColor, b);
 					else if (Character.Path("role/vendor") != null)
-						NoxicoGame.HostForm.SetCell(localY, localX, '$', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '$', this.ForegroundColor, b);
 				}
 			}
 			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
@@ -988,6 +989,7 @@ namespace Noxico
 				//Revert changelings to their true form first.
 				Character.Copy(null);
 			}
+			//TODO: I18N
 			var name = (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)) + "'s remains";
 			var corpse = new Container(name, new List<Token>())
 			{

@@ -197,6 +197,9 @@ namespace Noxico
 		private Timer fpsTimer;
 		private bool youtube = false;
 		private System.Drawing.Rectangle youtubeRect;
+		private System.Drawing.Color[] palette;
+
+		public bool IsMultiColor { get { return palette.Length > 2; } }
 
 		public MainForm()
 		{
@@ -507,6 +510,7 @@ namespace Noxico
 			var cWidth = source.Width / 32;
 			var cHeight = source.Height / 32;
 			fontData = new byte[1024, cWidth * cHeight];
+			palette = source.Palette.Entries;
 			for (var ch = 0; ch < 1024; ch++)
 			{
 				var i = 0;
@@ -516,7 +520,16 @@ namespace Noxico
 				{
 					for (var x = 0; x < cWidth; x++)
 					{
-						fontData[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R); // > 127 ? 1 : 0);
+						//fontData[ch, i] = (byte)(source.GetPixel(sX + x, sY + y).R); // > 127 ? 1 : 0);
+						var c = source.GetPixel(sX + x, sY + y);
+						for (var p = 0; p < palette.Length; p++)
+						{
+							if (c == palette[p])
+							{
+								fontData[ch, i] = (byte)p;
+								break;
+							}
+						}
 						i++;
 					}
 				}
@@ -630,8 +643,16 @@ namespace Noxico
 			{
 				for (var x = 0; x < width; x++)
 				{
+					//var d = fontData[c, (y * width) + x];
+					//var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
+					var color = b;
 					var d = fontData[c, (y * width) + x];
-					var color = (d == 0) ? b : (d == 255) ? f : Toolkit.Lerp(b, f, d / 256.0);
+					if (d == 1)
+						color = f;
+					else if (d == 2)
+						color = f.Darken();
+					else if (d > 0)
+						color = palette[d];
 					var target = ((sTY + y) * stride) + ((sTX + x) * 3);
 					if (target >= scan0.Length)
 						continue;

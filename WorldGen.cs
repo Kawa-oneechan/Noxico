@@ -285,7 +285,7 @@ namespace Noxico
 			{
 				{ "biome", BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() },
 			});
-			var treasureChest = new Container("Treasure chest", treasure)
+			var treasureChest = new Container(i18n.GetString("treasurechest"), treasure)
 			{
 				Glyph = 0x14A,
 				XPosition = treasureX,

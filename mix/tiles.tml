@@ -134,6 +134,7 @@ tile: 58
 tile: 59
 	id: outerWoodWallBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x100
 	wall
@@ -142,6 +143,7 @@ tile: 59
 tile: 60
 	id: outerWoodWallBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x101
 	wall
@@ -150,6 +152,7 @@ tile: 60
 tile: 61
 	id: outerWoodWallTopRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x102
 	wall
@@ -158,6 +161,7 @@ tile: 61
 tile: 62
 	id: outerWoodWallTopLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x103
 	wall
@@ -166,6 +170,7 @@ tile: 62
 tile: 63
 	id: outerWoodWallTopBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x104
 	wall
@@ -174,6 +179,7 @@ tile: 63
 tile: 64
 	id: outerWoodWallTop
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x104
 	wall
@@ -182,6 +188,7 @@ tile: 64
 tile: 65
 	id: outerWoodWallBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x104
 	wall
@@ -190,6 +197,7 @@ tile: 65
 tile: 66
 	id: outerWoodWallLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x105
 	wall
@@ -198,6 +206,7 @@ tile: 66
 tile: 67
 	id: outerWoodWallLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x105
 	wall
@@ -206,6 +215,7 @@ tile: 67
 tile: 68
 	id: outerWoodWallRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x105
 	wall
@@ -214,6 +224,7 @@ tile: 68
 tile: 69
 	id: outerWoodWallTopBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x106
 	wall
@@ -222,6 +233,7 @@ tile: 69
 tile: 70
 	id: outerWoodWallBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x107
 	wall
@@ -230,6 +242,7 @@ tile: 70
 tile: 71
 	id: outerWoodWallTopBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x108
 	wall
@@ -238,6 +251,7 @@ tile: 71
 tile: 72
 	id: outerWoodWallTopLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x109
 	wall
@@ -246,6 +260,7 @@ tile: 72
 tile: 73
 	id: outerWoodWallTopBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10A
 	wall
@@ -254,6 +269,7 @@ tile: 73
 tile: 74
 	id: innerWoodWallBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10B
 	wall
@@ -262,6 +278,7 @@ tile: 74
 tile: 75
 	id: innerWoodWallBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10C
 	wall
@@ -270,6 +287,7 @@ tile: 75
 tile: 76
 	id: innerWoodWallTopRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10D
 	wall
@@ -278,6 +296,7 @@ tile: 76
 tile: 77
 	id: innerWoodWallTopLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10E
 	wall
@@ -286,6 +305,7 @@ tile: 77
 tile: 78
 	id: innerWoodWallTopBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10F
 	wall
@@ -294,6 +314,7 @@ tile: 78
 tile: 79
 	id: innerWoodWallTop
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10F
 	wall
@@ -302,6 +323,7 @@ tile: 79
 tile: 80
 	id: innerWoodWallBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x10F
 	wall
@@ -310,6 +332,7 @@ tile: 80
 tile: 81
 	id: innerWoodWallLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x110
 	wall
@@ -318,6 +341,7 @@ tile: 81
 tile: 82
 	id: innerWoodWallLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x110
 	wall
@@ -326,6 +350,7 @@ tile: 82
 tile: 83
 	id: innerWoodWallRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x110
 	wall
@@ -334,6 +359,7 @@ tile: 83
 tile: 84
 	id: innerWoodWallTopBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x111
 	wall
@@ -342,6 +368,7 @@ tile: 84
 tile: 85
 	id: innerWoodWallBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x112
 	wall
@@ -350,6 +377,7 @@ tile: 85
 tile: 86
 	id: innerWoodWallTopBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x113
 	wall
@@ -358,6 +386,7 @@ tile: 86
 tile: 87
 	id: innerWoodWallTopLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x114
 	wall
@@ -366,6 +395,7 @@ tile: 87
 tile: 88
 	id: innerWoodWallTopBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #563F2C
 	char: 0x115
 	wall
@@ -374,6 +404,7 @@ tile: 88
 tile: 89
 	id: fenceBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x120
 	fence
@@ -382,6 +413,7 @@ tile: 89
 tile: 90
 	id: fenceBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x121
 	fence
@@ -390,6 +422,7 @@ tile: 90
 tile: 91
 	id: fenceTopRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x122
 	fence
@@ -398,6 +431,7 @@ tile: 91
 tile: 92
 	id: fenceTopLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x123
 	fence
@@ -406,6 +440,7 @@ tile: 92
 tile: 93
 	id: fenceTopBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x124
 	fence
@@ -414,6 +449,7 @@ tile: 93
 tile: 94
 	id: fenceTop
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x124
 	fence
@@ -422,6 +458,7 @@ tile: 94
 tile: 95
 	id: fenceBottom
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x124
 	fence
@@ -430,6 +467,7 @@ tile: 95
 tile: 96
 	id: fenceLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x125
 	fence
@@ -438,6 +476,7 @@ tile: 96
 tile: 97
 	id: fenceLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x125
 	fence
@@ -446,6 +485,7 @@ tile: 97
 tile: 98
 	id: fenceRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x125
 	fence
@@ -454,6 +494,7 @@ tile: 98
 tile: 99
 	id: fenceTopBottomRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x126
 	fence
@@ -462,6 +503,7 @@ tile: 99
 tile: 100
 	id: fenceBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x127
 	fence
@@ -470,6 +512,7 @@ tile: 100
 tile: 101
 	id: fenceTopBottomLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x128
 	fence
@@ -478,6 +521,7 @@ tile: 101
 tile: 102
 	id: fenceTopLeftRight
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x129
 	fence
@@ -486,6 +530,7 @@ tile: 102
 tile: 103
 	id: fenceTopBottomLeft
 	fore: #140F0C
+	mult: #C28D66
 	back: #1D3612
 	char: 0x12A
 	fence
@@ -541,7 +586,7 @@ tile: 203
 	description: It's a tree. Wow.
 	fore: #5A9640
 	back: #1D3612
-	char: 0x1E5
+	char: 0x159
 	wall
 	canburn
 tile: 204
@@ -640,7 +685,7 @@ tile: 233
 	description: It's a tree. Wow.
 	fore: #329838
 	back: #1F3B19
-	char: 0x1E6
+	char: 0x15A
 	wall
 	canburn
 tile: 234
@@ -649,7 +694,7 @@ tile: 234
 	description: It's a tree. Wow.
 	fore: #6CCC77
 	back: #1F3B19
-	char: 0x1E5
+	char: 0x159
 	wall
 	canburn
 tile: 235
