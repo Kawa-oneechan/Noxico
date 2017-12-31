@@ -107,30 +107,33 @@ tile: 55
 tile: 56
 	id: outerWoodWall
 	_n: unresolved outside wall
+	description: A thick wooden exterior wall.
 	fore: #140F0C
 	back: #563F2C
 	char: 0x23
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 57
 	id: innerWoodWall
 	_n: unresolved inside wall
+	description: A thin wooden wall.
 	fore: #140F0C
 	back: #563F2C
 	char: 0x23
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 58
 	id: fence
 	_n: unresolved fence
+	description: A waist-high wooden fence.
 	fore: #140F0C
 	back: #1D3612
 	char: 0x23
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 59
 	id: outerWoodWallBottomRight
 	fore: #140F0C
@@ -139,7 +142,7 @@ tile: 59
 	char: 0x100
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 60
 	id: outerWoodWallBottomLeft
 	fore: #140F0C
@@ -148,7 +151,7 @@ tile: 60
 	char: 0x101
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 61
 	id: outerWoodWallTopRight
 	fore: #140F0C
@@ -157,7 +160,7 @@ tile: 61
 	char: 0x102
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 62
 	id: outerWoodWallTopLeft
 	fore: #140F0C
@@ -166,7 +169,7 @@ tile: 62
 	char: 0x103
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 63
 	id: outerWoodWallTopBottom
 	fore: #140F0C
@@ -175,7 +178,7 @@ tile: 63
 	char: 0x104
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 64
 	id: outerWoodWallTop
 	fore: #140F0C
@@ -184,7 +187,7 @@ tile: 64
 	char: 0x104
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 65
 	id: outerWoodWallBottom
 	fore: #140F0C
@@ -193,7 +196,7 @@ tile: 65
 	char: 0x104
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 66
 	id: outerWoodWallLeftRight
 	fore: #140F0C
@@ -202,7 +205,7 @@ tile: 66
 	char: 0x105
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 67
 	id: outerWoodWallLeft
 	fore: #140F0C
@@ -211,7 +214,7 @@ tile: 67
 	char: 0x105
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 68
 	id: outerWoodWallRight
 	fore: #140F0C
@@ -220,7 +223,7 @@ tile: 68
 	char: 0x105
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 69
 	id: outerWoodWallTopBottomRight
 	fore: #140F0C
@@ -229,7 +232,7 @@ tile: 69
 	char: 0x106
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 70
 	id: outerWoodWallBottomLeftRight
 	fore: #140F0C
@@ -238,7 +241,7 @@ tile: 70
 	char: 0x107
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 71
 	id: outerWoodWallTopBottomLeftRight
 	fore: #140F0C
@@ -247,7 +250,7 @@ tile: 71
 	char: 0x108
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 72
 	id: outerWoodWallTopLeftRight
 	fore: #140F0C
@@ -256,7 +259,7 @@ tile: 72
 	char: 0x109
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 73
 	id: outerWoodWallTopBottomLeft
 	fore: #140F0C
@@ -265,7 +268,7 @@ tile: 73
 	char: 0x10A
 	wall
 	canburn
-	varwall
+	varwall: 56
 tile: 74
 	id: innerWoodWallBottomRight
 	fore: #140F0C
@@ -274,7 +277,7 @@ tile: 74
 	char: 0x10B
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 75
 	id: innerWoodWallBottomLeft
 	fore: #140F0C
@@ -283,7 +286,7 @@ tile: 75
 	char: 0x10C
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 76
 	id: innerWoodWallTopRight
 	fore: #140F0C
@@ -301,7 +304,7 @@ tile: 77
 	char: 0x10E
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 78
 	id: innerWoodWallTopBottom
 	fore: #140F0C
@@ -310,7 +313,7 @@ tile: 78
 	char: 0x10F
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 79
 	id: innerWoodWallTop
 	fore: #140F0C
@@ -319,7 +322,7 @@ tile: 79
 	char: 0x10F
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 80
 	id: innerWoodWallBottom
 	fore: #140F0C
@@ -328,7 +331,7 @@ tile: 80
 	char: 0x10F
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 81
 	id: innerWoodWallLeftRight
 	fore: #140F0C
@@ -337,7 +340,7 @@ tile: 81
 	char: 0x110
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 82
 	id: innerWoodWallLeft
 	fore: #140F0C
@@ -346,7 +349,7 @@ tile: 82
 	char: 0x110
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 83
 	id: innerWoodWallRight
 	fore: #140F0C
@@ -355,7 +358,7 @@ tile: 83
 	char: 0x110
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 84
 	id: innerWoodWallTopBottomRight
 	fore: #140F0C
@@ -364,7 +367,7 @@ tile: 84
 	char: 0x111
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 85
 	id: innerWoodWallBottomLeftRight
 	fore: #140F0C
@@ -373,7 +376,7 @@ tile: 85
 	char: 0x112
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 86
 	id: innerWoodWallTopBottomLeftRight
 	fore: #140F0C
@@ -382,7 +385,7 @@ tile: 86
 	char: 0x113
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 87
 	id: innerWoodWallTopLeftRight
 	fore: #140F0C
@@ -391,7 +394,7 @@ tile: 87
 	char: 0x114
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 88
 	id: innerWoodWallTopBottomLeft
 	fore: #140F0C
@@ -400,7 +403,7 @@ tile: 88
 	char: 0x115
 	wall
 	canburn
-	varwall
+	varwall: 57
 tile: 89
 	id: fenceBottomRight
 	fore: #140F0C
@@ -409,7 +412,7 @@ tile: 89
 	char: 0x120
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 90
 	id: fenceBottomLeft
 	fore: #140F0C
@@ -418,7 +421,7 @@ tile: 90
 	char: 0x121
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 91
 	id: fenceTopRight
 	fore: #140F0C
@@ -427,7 +430,7 @@ tile: 91
 	char: 0x122
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 92
 	id: fenceTopLeft
 	fore: #140F0C
@@ -436,7 +439,7 @@ tile: 92
 	char: 0x123
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 93
 	id: fenceTopBottom
 	fore: #140F0C
@@ -445,7 +448,7 @@ tile: 93
 	char: 0x124
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 94
 	id: fenceTop
 	fore: #140F0C
@@ -454,7 +457,7 @@ tile: 94
 	char: 0x124
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 95
 	id: fenceBottom
 	fore: #140F0C
@@ -463,7 +466,7 @@ tile: 95
 	char: 0x124
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 96
 	id: fenceLeftRight
 	fore: #140F0C
@@ -472,7 +475,7 @@ tile: 96
 	char: 0x125
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 97
 	id: fenceLeft
 	fore: #140F0C
@@ -481,7 +484,7 @@ tile: 97
 	char: 0x125
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 98
 	id: fenceRight
 	fore: #140F0C
@@ -490,7 +493,7 @@ tile: 98
 	char: 0x125
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 99
 	id: fenceTopBottomRight
 	fore: #140F0C
@@ -499,7 +502,7 @@ tile: 99
 	char: 0x126
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 100
 	id: fenceBottomLeftRight
 	fore: #140F0C
@@ -508,7 +511,7 @@ tile: 100
 	char: 0x127
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 101
 	id: fenceTopBottomLeftRight
 	fore: #140F0C
@@ -517,7 +520,7 @@ tile: 101
 	char: 0x128
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 102
 	id: fenceTopLeftRight
 	fore: #140F0C
@@ -526,7 +529,7 @@ tile: 102
 	char: 0x129
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 103
 	id: fenceTopBottomLeft
 	fore: #140F0C
@@ -535,7 +538,7 @@ tile: 103
 	char: 0x12A
 	fence
 	canburn
-	varwall
+	varwall: 58
 tile: 104
 	id: doorwayClosed
 	back: #563F2C

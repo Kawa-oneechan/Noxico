@@ -59,18 +59,21 @@ namespace Noxico
 		{
 			this.ParentBoard.AimCamera(this.XPosition, this.YPosition);
 			PointingAt = null;
-			/*
-			if (NoxicoGame.Messages.Count == 0) //fixes range error found while explaining controls
-				NoxicoGame.Messages.Add(string.Empty);
-			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointatsomething");
-			*/
 			NoxicoGame.LookAt = i18n.GetString("pointatsomething");
 			if (!this.ParentBoard.IsSeen(YPosition, XPosition))
 			{
-				//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cGray>Unexplored";
 				NoxicoGame.LookAt = i18n.GetString("unexplored");
 				return;
 			}
+
+			var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
+			if (!string.IsNullOrWhiteSpace(tSD))
+			{
+				PointingAt = null;
+				NoxicoGame.LookAt = tSD;
+			}
+
+
 			foreach (var entity in this.ParentBoard.Entities)
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
@@ -83,7 +86,6 @@ namespace Noxico
 							if (entity is BoardChar && ((BoardChar)entity).Character.Path("eyes/glow") != null)
 							{
 								//Entity has glowing eyes, but we don't let the player actually interact with them.
-								//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + i18n.GetString("eyesinthedark");
 								NoxicoGame.LookAt = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + i18n.GetString("eyesinthedark");
 							}
 							return;
@@ -97,39 +99,29 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
 						NoxicoGame.LookAt = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
 						//return;
 					}
 					else if (entity is DroppedItem)
 					{
-						//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + ((DroppedItem)PointingAt).Name;
 						NoxicoGame.LookAt = ((DroppedItem)PointingAt).Name;
 						//return;
 					}
 					else if (entity is Clutter || entity is Container)
 					{
-						//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + (entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name);
-						NoxicoGame.LookAt = (entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name);
+						var desc = (entity is Container ? ((Container)PointingAt).Description : ((Clutter)PointingAt).Description);
+						if (desc.Length() > 70)
+							desc = desc.Remove(desc.IndexOf('.') + 1);
+						NoxicoGame.LookAt = desc;
 						//return;
 					}
 					else if (entity is Door)
 					{
-						//NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointingatdoor");
 						NoxicoGame.LookAt = i18n.GetString("pointingatdoor");
 						//return;
 					}
 				}
 			}
-			/*
-			var tSD = this.ParentBoard.GetName(YPosition, XPosition);
-			if (!string.IsNullOrWhiteSpace(tSD))
-			{
-				PointingAt = null;
-				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = tSD;
-				return;
-			}
-			*/
 		}
 
 		public override void Update()
@@ -253,8 +245,6 @@ namespace Noxico
 
 #if DEBUG
 #if MUTAMORPH
-					//if (PointingAt is DroppedItem || PointingAt is BoardChar)
-					//	options["edit"] = "Edit";
 					if (PointingAt is BoardChar)
                         options["mutate"] = "(debug) Random mutate";
 					if (PointingAt is BoardChar)
@@ -262,7 +252,6 @@ namespace Noxico
 #endif
 #endif
 
-					//MessageBox.List("This is " + description + ". What would you do?", options,
 					ActionList.Show(description, PointingAt.XPosition - NoxicoGame.CameraX, PointingAt.YPosition - NoxicoGame.CameraY, options,
 						() =>
 						{
@@ -423,6 +412,7 @@ namespace Noxico
 				}
 				else
 				{
+					/*
 					var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
 					if (!string.IsNullOrWhiteSpace(tSD))
 					{
@@ -435,6 +425,7 @@ namespace Noxico
 						MessageBox.Notice(tSD, true);
 						return;
 					}
+					*/
 				}
 			}
 
