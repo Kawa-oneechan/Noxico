@@ -164,7 +164,8 @@ namespace Noxico
 		public string FriendlyName { get; private set; }
 		public string Description { get; private set; }
 		public Token Variants { get; private set; }
-		public bool IsVariableWall { get; private set; }
+		public int VariableWall { get; private set; }
+		public bool IsVariableWall { get { return VariableWall > 0; } }
 
 		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
 		public bool SolidToFlyer { get { return Ceiling || Wall; } }
@@ -194,7 +195,7 @@ namespace Noxico
 					FriendlyName = tile.HasToken("_n") ? tile.GetToken("_n").Text : null,
 					Description = tile.HasToken("description") ? tile.GetToken("description").Text : null,
 					Variants = tile.HasToken("variants") ? tile.GetToken("variants") : new Token("variants"),
-					IsVariableWall = tile.HasToken("varwall"),
+					VariableWall = tile.HasToken("varwall") ? (int)tile.GetToken("varwall").Value : 0,
 				};
 				def.MultiForeground = tile.HasToken("mult") ? Color.FromName(tile.GetToken("mult").Text) : def.Foreground;
 				defs.Add(i, def);
@@ -707,6 +708,9 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
+			var tileDef = Tilemap[col, row].Definition;
+			if (tileDef.IsVariableWall)
+				return TileDefinition.Find(tileDef.VariableWall, true).Description;
 			return Tilemap[col, row].Definition.Description;
 		}
 

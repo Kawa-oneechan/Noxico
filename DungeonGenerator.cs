@@ -302,7 +302,8 @@ namespace Noxico
 													ForegroundColor = Color.Black,
 													BackgroundColor = tileDef.Background,
 													ID = "Bed_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
-													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
+													//TODO: I18N
+													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt(true)),
 													ParentBoard = Board,
 												};
 												Board.Entities.Add(newBed);
