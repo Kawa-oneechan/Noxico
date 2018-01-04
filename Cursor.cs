@@ -294,8 +294,7 @@ namespace Noxico
 								case "talk":
 									if (PointingAt is Player)
 									{
-										if (Culture.CheckSummoningDay())
-											return;
+										//if (Culture.CheckSummoningDay()) return;
 										if (player.Character.Path("cunning").Value >= 10)
 											MessageBox.Notice(i18n.GetString("talkingotyourself"), true);
 										else

@@ -474,6 +474,7 @@ item: chairlegoftruth
 		char: 0x184
 		fore: darkgoldenrod
 	rareweapon
+	club
 	wood
 
 item: hammer
@@ -532,6 +533,8 @@ item: dagger
 	ascii
 		char: 0x196
 		fore: silver
+	smallweapon
+	blade
 
 item: fireaxe
 	_n: fire-axe
@@ -706,6 +709,7 @@ item: wooden_club
 	ascii
 		char: 0x184
 		fore: darkgoldenrod
+	club
 	wood
 
 -- rubber hose, quarterstaff
