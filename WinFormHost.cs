@@ -497,6 +497,8 @@ namespace Noxico
 				var cSize = CellWidth;
 				if (Cursor.X < Program.Cols - 1 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
+				if (NoxicoGame.Mode == UserMode.Subscreen)
+					cSize = 1;
 
 				var pen = (uint)Environment.TickCount % 16;
 				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);

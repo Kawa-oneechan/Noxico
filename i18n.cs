@@ -60,23 +60,33 @@ namespace Noxico
 					words[word.Name] = word.Text;
 			}
 
-			pluralizerData = x.Find(t => t.Name == "pluralizer");
-			//Sanity check!
-			if (pluralizerData.HasToken("sanitycheck"))
+#if DEBUG
+			var sanityCheck = new[] {
+				"P|hoof|hooves",
+				"S|hooves|hoof",
+				"P|cheap piece of shit|cheap pieces of shit",
+				"S|cheap pieces of shit|cheap piece of shit",
+				"P|vortex|vortices",
+				"S|cortices|cortex",
+				"P|pegasus|pegasori",
+				"S|pegasori|pegasus",
+				"P|alga|algæ",
+				"S|kunai|kunai",
+				"P|kunai of the dawn|kunai of the dawn",
+			};
+			foreach (var test in sanityCheck.Select(t => t.Split('|')))
 			{
-				foreach (var check in pluralizerData.GetToken("sanitycheck").Tokens)
-				{
-					var checkFrom = check.GetToken("from").Text;
-					var checkTo = check.GetToken("to").Text;
-					var result = string.Empty;
-					if (check.Name == "pluralize")
-						result = Pluralize(checkFrom, 2);
-					else if (check.Name == "singularize")
-						result = Singularize(checkFrom);
-					if (result != checkTo)
-						throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
-				}
+				var checkFrom = test[1];
+				var checkTo = test[2];
+				var result = string.Empty;
+				if (test[0] == "P")
+					result = Pluralize(checkFrom, 2);
+				else if (test[0] == "S")
+					result = Singularize(checkFrom);
+				if (result != checkTo)
+					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
 			}
+#endif
 		}
 
 		public static string Entitize(string input)
@@ -125,38 +135,12 @@ namespace Noxico
 		
 		public static string Pluralize(this string singular)
 		{
-			var of = pluralizerData.GetToken("of").Text;
-			var simple = pluralizerData.GetToken("simple").Text;
-
 			if (words.ContainsKey(singular))
 				singular = words[singular];
-
-			if (singular.Contains(of))
-			{
-				var ofPos = singular.IndexOf(of);
-				var key = singular.Substring(0, ofPos);
-				var ofWhat = singular.Substring(ofPos);
-				return Pluralize(key) + ofWhat;
-			}
-			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
-				if (singular.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
-					return singular;
-			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
-			{
-				if (irregular.HasToken("fullword"))
-				{
-					if (singular.Equals(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
-						return irregular.Text;
-				}
-				else
-					if (singular.EndsWith(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
-						return singular.Remove(singular.LastIndexOf(irregular.Name)) + irregular.Text;
-			}
-			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
-				if (singular.EndsWith(regular.Name, StringComparison.InvariantCultureIgnoreCase))
-					return singular.Remove(singular.LastIndexOf(regular.Name)) + regular.Text;
-
-			return singular + simple;
+			Lua.Environment["plural"] = null;
+			Lua.Environment["singular"] = singular;
+			var result = Lua.RunFile("pluralizer.lua");
+			return result.ToString();
 		}
 
 		public static string Pluralize(this string singular, int count)
@@ -168,29 +152,12 @@ namespace Noxico
 
 		public static string Singularize(this string plural)
 		{
-			var of = pluralizerData.GetToken("of").Text;
-			var simple = pluralizerData.GetToken("simple").Text;
-
-			if (plural.Contains(of))
-			{
-				var ofPos = plural.IndexOf(of);
-				var key = plural.Substring(0, ofPos);
-				var ofWhat = plural.Substring(ofPos);
-				return Singularize(key) + ofWhat;
-			}
-			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
-				if (plural.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
-					return plural;
-			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
-				if (plural.EndsWith(irregular.Text, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(irregular.Text)) + irregular.Name;
-			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
-				if (plural.EndsWith(regular.Text, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(regular.Text)) + regular.Name;
-
-			if (plural.EndsWith(simple))
-				return plural.Remove(plural.Length - simple.Length);
-			return plural;
+			if (words.ContainsKey(plural))
+				plural = words[plural];
+			Lua.Environment["plural"] = plural;
+			Lua.Environment["singular"] = null;
+			var result = Lua.RunFile("pluralizer.lua");
+			return result.ToString();
 		}
 
 

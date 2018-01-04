@@ -90,6 +90,8 @@ namespace Noxico
 
 			Random.Reseed();
 
+			Lua.Create();
+
 			KeyBindings = new Dictionary<KeyBinding, Keys>();
 			RawBindings = new Dictionary<KeyBinding, string>();
 			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
@@ -219,8 +221,6 @@ namespace Noxico
 				var bookAuthor = bookFile[1].StartsWith("## ") ? bookFile[1].Substring(3).Trim() : i18n.GetString("book_unknownauthor");
 				BookTitles.Add(bookID, new[] { bookName, bookAuthor });
 			}
-
-			Lua.Create();
 
 			BiomeData.LoadBiomes();
 			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
