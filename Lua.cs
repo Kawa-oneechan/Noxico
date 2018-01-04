@@ -41,7 +41,7 @@ namespace Noxico
 		{
 			if (env == null)
 				env = Environment;
-			if (NoxicoGame.Me.Player != null)
+			if (NoxicoGame.HostForm != null && NoxicoGame.Me.Player != null)
 				env.SetValue("player", NoxicoGame.Me.Player);
 			//TODO: predefine ALL THE THINGS.
 			env.RegisterPackage("Board", typeof(Board));

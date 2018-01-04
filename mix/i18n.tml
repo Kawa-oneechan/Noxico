@@ -280,6 +280,7 @@ This book, we're sorry to say, has a broken reference.
 	talkingtoyourself: Talking to yourself is the first sign of insanity.
 	talkingtoyourself_nutso: You spend a short while enjoying some pleasant but odd conversation with yourself.
 	nothingtosay: {0} has nothing to say to you.
+	corpse_name: {0}'s remains
 	corpse_description: These are the remains of {0}, who {1}.
 	generic_description: Nothing special about it.
 	gameover_title: GAME OVER
@@ -309,14 +310,6 @@ Would you like an infodump on the way out?
 	potion_ringmods: , shiny , sparking , warm , cold , translucent , glistening 
 	potion_name: {0}{1} potion
 	potion_ringname: {0}{1} ring
---	cockrandom: penis, cock, dick, pecker, prick, rod, shaft, dong
---	pussyrandom: vagina, pussy, cunt, cooter, cooch, cunny, quim, twat
---	anusrandom: anus, asshole, butthole, rosebud, pucker
---	buttrandom: butt, ass, rear, backside, behind, bum
---	clitrandom: clitoris, clit, fun button, clitty, love button
---	breastsrandom: breasts, boobs, tits, knockers, mounds, titties
---	breastrandom: breast, boob, tit, knocker, mound
---	cumrandom: semen, cum, jizz, spunk, seed
 -- #endregion
 -- #region Inventory
 	inventory_yours: Your inventory
@@ -714,87 +707,3 @@ hyphenation
 	rule
 		cutoff: 2
 		pattern: "[aeiou]([^aeiou]{2})[aeiou]"
-
-pluralizer
-	simple: "s"
-	of: " of "
-	sanitycheck
-		pluralize
-			from: hoof
-			to: hooves
-		pluralize
-			from: cheap piece of shit
-			to: cheap pieces of shit
-		singularize
-			from: pegasori
-			to: pegasus
-	uncountable
-		money
-		information
-		fish
-		deer
-		tuna
-		crosshairs
-		--  Japanese 
-		yaki
-		sheep
-		ninja
-		ronin
-		shito
-		shuriken
-		tengu
-		sentai
-		ki-rin
-		yoki
-	irregular
-		ox: oxen
-			fullword
-		VAX: vaxen
-			fullword
-		octopus: octopuses
-		person: people
-		pegasus: pegasori
-		stylus: styli
-		goose: geese
-		mouse: mice
-		louse: lice
-		human: humans
-		man: men
-		die: dice
-		staff: staves
-		foot: feet
-		coccus: cocci
-		convolvulus: convolvuli
-		arsis: arses
-		alula: alul&#x91;
-		alga: alg&#x91;
-		larva: larv&#x91;
-		naga: nag&#x91;
-		ida: id&#x91;
-		fungus: fungi
-		djinni: djinn
-		mumak: mumakil
-		nemesis: nemeses
-		child: children
-		--  Tolkien-specific 
-		elf: elves
-		dwarf: dwarves
-		--  <irregular_plural from="hobbit" to="hobbitses" /> 
-	regular
-		rtex: rtices
-		cubus: cubi
-		ooth: eeth
-		oof: ooves
-		fe: ves
-		--  Specify sus and lus instead of just us because house -> houses -> hous 
-		sus: suses
-		lus: luses
-		bus: buses
-		cus: ci
-		se: ses
-		ch: ches
-		oy: oys
-		x: xes
-		y: ies
-		--  <regular_plural from="" to="s" /> 
-

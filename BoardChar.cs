@@ -938,7 +938,6 @@ namespace Noxico
 			return false;
 		}
 
-		
 		public float GetDefenseFactor(Token weaponToken, Noxico.Character target)
 		{
 			if (env == null)
@@ -989,8 +988,7 @@ namespace Noxico
 				//Revert changelings to their true form first.
 				Character.Copy(null);
 			}
-			//TODO: I18N
-			var name = (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)) + "'s remains";
+			var name = i18n.Format("corpse_name", (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)));
 			var corpse = new Container(name, new List<Token>())
 			{
 				ParentBoard = ParentBoard,
@@ -1239,7 +1237,7 @@ namespace Noxico
 				{
 					var hit = target as Player;
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
-					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false); //TODO: i18n
+					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.GetKnownName(true, true, true)), this, false);
 					Energy -= 500; //fixed: succesful shots didn't take time
 					return;
 				}
