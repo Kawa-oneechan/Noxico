@@ -1196,23 +1196,7 @@ namespace Noxico
 					continue;
 				newb.Character.Health = 12 * Random.Next(3);
 				newb.Character.AddToken("hostile");
-				//arm them
-				if (!newb.Character.HasToken("beast"))
-				{
-					var items = newb.Character.Path("items");
-					if (items == null)
-						items = newb.Character.AddToken("items");
-					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat" }; //TODO: make this cultural
-					var w = Random.Next(1, 2);
-					while (w > 0)
-					{
-						var weapon = Toolkit.PickOne(weapons);
-						if (items.HasToken(weapon))
-							continue;
-						items.AddToken(weapon);
-						w--;
-					}
-				}
+				//Arming the character was removed -- lootsets applied in character creation covered that much better.
 				newb.AdjustView();
 				this.Entities.Add(newb);
 			}

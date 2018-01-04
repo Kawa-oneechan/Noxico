@@ -19,7 +19,7 @@ namespace Noxico
 		public double Monogamous { get; private set; }
 		public Dictionary<string, string> Terms { get; private set; }
 
-		public static List<Deity> Deities;
+		//public static List<Deity> Deities;
 
 		public static Culture DefaultCulture;
 		public static Token DefaultNameGen;
@@ -34,12 +34,14 @@ namespace Noxico
 
 		static Culture()
 		{
+			/*
 			Program.WriteLine("Loading deities...");
 			Deities = new List<Deity>();
 			var deities = Mix.GetTokenTree("deities.tml");
 			foreach (var deity in deities.Where(t => t.Name == "deity"))
 				Deities.Add(new Deity(deity));
-			
+			*/
+
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new Dictionary<string, Token>();
@@ -61,11 +63,7 @@ namespace Noxico
 			nc.Monogamous = t.HasToken("monogamous") ? t.GetToken("monogamous").Value : 0.0f;
 			nc.TownName = t.HasToken("townname") ? t.GetToken("townname").Text : null;
 			if (t.HasToken("terms"))
-			{
-				nc.Terms = new Dictionary<string, string>();
-				foreach (var term in t.GetToken("terms").Tokens)
-					nc.Terms[term.Name.Replace('_', ' ')] = term.Text;
-			}
+				nc.Terms = t.GetToken("terms").Tokens.ToDictionary(x => x.Name.Replace('_', ' '), x => x.Text);
 			return nc;
 		}
 
@@ -140,6 +138,7 @@ namespace Noxico
 			}
 		}
 
+		/*
 		public static bool CheckSummoningDay()
 		{
 			var today = NoxicoGame.InGameTime;
@@ -154,6 +153,7 @@ namespace Noxico
 			SceneSystem.Engage(NoxicoGame.Me.Player.Character, summon, deity.DialogueHook);
 			return true;
 		}
+		*/
 
 		public static Func<string, string> GetSpeechFilter(Culture culture, Func<string, string> original = null)
 		{
@@ -182,6 +182,7 @@ namespace Noxico
 	}
 	
 	//TODO: consider removing
+	/*
 	public class Deity
 	{
 		public string Name { get; private set; }
@@ -209,4 +210,5 @@ namespace Noxico
 			return Name;
 		}
 	}
+	*/
 }
