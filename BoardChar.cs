@@ -175,7 +175,7 @@ namespace Noxico
 					swimming.Value -= 1;
 					if (swimming.Value == 0)
 					{
-						Hurt(9999, i18n.GetString("death_drowned"), null, false);
+						Hurt(9999, "death_drowned", null, false);
 					}
 					Energy -= 1750;
 				}
@@ -458,7 +458,7 @@ namespace Noxico
 			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
-				if (Hurt(10, i18n.GetString("death_burning"), null))
+				if (Hurt(10, "death_burned", null))
 					return;
 
 			//Pillowshout added this.
@@ -851,7 +851,7 @@ namespace Noxico
 			var dodged = false;
 			var skill = "unarmed_combat";
 			var verb = "strike{s}"; //TODO: i18n
-			var obituary = "died from being struck down"; //TODO: i18n
+			var cause = "death_struckdown";
 			var attackerName = this.Character.GetKnownName(false, false, true);
 			var attackerFullName = this.Character.GetKnownName(true, true, true);
 			var targetName = target.Character.GetKnownName(false, false, true);
@@ -930,7 +930,7 @@ namespace Noxico
 				NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", verb, (int)damage).Viewpoint(this.Character, target.Character), target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true)) //TODO: i18n - may need reworking
+			if (target.Hurt(damage, cause, this, true)) //TODO: i18n - may need reworking
 			{
 				//Gain a bonus from killing the target?
 				return true;
@@ -948,7 +948,7 @@ namespace Noxico
 			return (float)(r.ToDouble());
 		}
 
-		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
+		public virtual bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			RunScript(OnHurt, "damage", damage);
 			var health = Character.Health;
@@ -965,15 +965,15 @@ namespace Noxico
 				}
 				//Dead, but how?
 				Character.Health = 0;
-				if (aggressor != null)
+				if (aggressor != null && aggressor is BoardChar)
 				{
 					if (Character.HasToken("stolenfrom") && aggressor is Player)
 					{
-						aggressor.Character.GiveRenegadePoints(10);
+						((BoardChar)aggressor).Character.GiveRenegadePoints(10);
 					}
 				}
 				if (leaveCorpse)
-					LeaveCorpse(obituary);
+					LeaveCorpse(cause, aggressor);
 				this.ParentBoard.CheckCombatFinish();
 				return true;
 			}
@@ -981,7 +981,7 @@ namespace Noxico
 			return false;
 		}
 
-		private void LeaveCorpse(string obituary)
+		private void LeaveCorpse(string cause, object aggressor)
 		{
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value > 0 && Character.GetToken("copier").HasToken("full"))
 			{
@@ -1000,6 +1000,15 @@ namespace Noxico
 				YPosition = YPosition,
 			};
 			corpse.Token.AddToken("corpse");
+			cause = i18n.GetString(cause);
+			var obituary = cause;
+			if (aggressor != null)
+			{
+				if (aggressor is BoardChar)
+					obituary = i18n.Format("corpse_xed_by_y", cause, ((BoardChar)aggressor).Character.IsProperNamed ? ((BoardChar)aggressor).Character.Name.ToString(true) : ((BoardChar)aggressor).Character.GetKnownName(true, true, false));
+				else
+					obituary = i18n.Format("corpse_xed_by_y", cause, i18n.GetString((string)aggressor));
+			}
 			corpse.Token.AddToken("description", i18n.Format("corpse_description", Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, true, false), obituary));
 			if (!(this is Player))
 			{
@@ -1237,7 +1246,7 @@ namespace Noxico
 				{
 					var hit = target as Player;
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
-					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.GetKnownName(true, true, true)), this, false);
+					hit.Hurt(damage, "death_shot", this, false);
 					Energy -= 500; //fixed: succesful shots didn't take time
 					return;
 				}

@@ -255,13 +255,15 @@ This book, we're sorry to say, has a broken reference.
 	call_out_animal: The [t:title] vocalizes an alert!
 -- #endregion
 -- #region Causes of death
+	death_struckdown: was struck down
+	death_struckdown_player: were struck down
 	death_doveinanddrowned: dove into the water and drowned
 	death_doveintodepths: dove into the depths
-	death_crackedagainstceiling: hit the ceiling when trying to fly
-	death_shotbyx: was shot down by {0}
+	death_crackedagainstceiling: hit the ceiling trying to fly
+	death_shot: was shot down
+	death_shot_player: were shot down
 	death_burned: burned to death
 	death_drowned: drowned
-	death_burning: burning to death
 -- #endregion
 -- #region Misc
 	none: none
@@ -282,6 +284,7 @@ This book, we're sorry to say, has a broken reference.
 	nothingtosay: {0} has nothing to say to you.
 	corpse_name: {0}'s remains
 	corpse_description: These are the remains of {0}, who {1}.
+	corpse_xed_by_y: {0} by {1}
 	generic_description: Nothing special about it.
 	gameover_title: GAME OVER
 	youdied

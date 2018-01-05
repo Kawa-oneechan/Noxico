@@ -331,7 +331,7 @@ namespace Noxico
 				{
 					FireLine(weapon.Path("effect"), x, y);
 					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", damage)));
-					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.GetKnownName(true, true)), this, false);
+					hit.Hurt(damage, "death_shot", this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
 				}
@@ -521,9 +521,9 @@ namespace Noxico
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
 					if (tile.Fluid != Fluids.Dry && !tile.Shallow && Character.IsSlime)
-						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
+						Hurt(9999, "death_doveinanddrowned", null, false);
 					else if (tile.Definition.Cliff)
-						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);
+						Hurt(9999, "death_doveintodepths", null, false, false);
 					else if (tile.Definition.Fence)
 					{
 						//I guess I'm still a little... on the fence.
@@ -552,7 +552,7 @@ namespace Noxico
 							if (Character.GetStat(Stat.Cunning) < 10 ||
 								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
 							{
-								Hurt(2, i18n.GetString("death_crackedagainstceiling"), null, false);
+								Hurt(2, "death_crackedagainstceiling", null, false);
 								NoxicoGame.AddMessage(i18n.GetString("hittheceiling"));
 							}
 							else
@@ -724,11 +724,11 @@ namespace Noxico
 			}
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
-				Hurt(10, i18n.GetString("death_burned"), null, false, false);
+				Hurt(10, "death_burned", null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 		}
 
-		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
+		public override bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			if (AutoTravelling)
 			{
@@ -752,30 +752,31 @@ namespace Noxico
 				}
 			}
 
-			var dead = base.Hurt(damage, obituary, aggressor, finishable);
+			var dead = base.Hurt(damage, cause, aggressor, finishable);
 			if (dead)
 			{
-				if (aggressor != null)
+				if (aggressor != null && aggressor is BoardChar)
 				{
-					var relation = Character.Path("ships/" + aggressor.Character.ID);
+					var aggChar = ((BoardChar)aggressor).Character;
+					var relation = Character.Path("ships/" + aggChar.ID);
 					if (relation == null)
 					{
-						relation = new Token(aggressor.Character.ID);
+						relation = new Token(aggChar.ID);
 						Character.Path("ships").Tokens.Add(relation);
 					}
 					relation.AddToken("killer");
-					if (aggressor.Character.HasToken("stolenfrom"))
+					if (aggChar.HasToken("stolenfrom"))
 					{
 						var myItems = Character.GetToken("items").Tokens;
-						var hisItems = aggressor.Character.GetToken("items").Tokens;
-						var stolenGoods = myItems.Where(t => t.HasToken("owner") && t.GetToken("owner").Text == aggressor.Character.ID).ToList();
+						var hisItems = aggChar.GetToken("items").Tokens;
+						var stolenGoods = myItems.Where(t => t.HasToken("owner") && t.GetToken("owner").Text == aggChar.ID).ToList();
 						foreach (var item in stolenGoods)
 						{
 							hisItems.Add(item);
 							myItems.Remove(item);
 						}
-						aggressor.Character.GetToken("stolenfrom").Name = "wasstolenfrom";
-						aggressor.Character.RemoveToken("hostile");
+						aggChar.GetToken("stolenfrom").Name = "wasstolenfrom";
+						aggChar.RemoveToken("hostile");
 					}
 				}
 
@@ -788,8 +789,11 @@ namespace Noxico
 					var world = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
 					NoxicoGame.Sound.PlayMusic("set://Death");
 					NoxicoGame.InGame = false;
+					var c = i18n.GetString(cause + "_player");
+					if (c[0] == '[')
+						c = i18n.GetString(cause);
 					MessageBox.Ask(
-						i18n.Format("youdied", obituary),
+						i18n.Format("youdied", c),
 						() =>
 						{
 							Character.CreateInfoDump();
@@ -880,8 +884,9 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false);
+					//NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)damage)));
+					hit.Hurt(damage, "death_shot", this, false);
 				}
 				this.Character.IncreaseSkill(skill.Text);
 			}
