@@ -1081,13 +1081,13 @@ namespace Noxico
 				AddToken("lootset_id", 0, ID.ToLowerInvariant());
 			var filters = new Dictionary<string, string>
 			{
-				["gender"] = PreferredGender.ToString().ToLowerInvariant(),
-				["board"] = Board.HackishBoardTypeThing,
-				["culture"] = this.HasToken("culture") ? this.GetToken("culture").Text : "",
-				["name"] = this.Name.ToString(true),
-				["id"] = this.GetToken("lootset_id").Text,
-				["bodymatch"] = this.GetClosestBodyplanMatch(),
-				["biome"] = BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() //AcetheSuperVillain suggests a biome key.
+				{ "gender", PreferredGender.ToString().ToLowerInvariant() },
+				{ "board", Board.HackishBoardTypeThing },
+				{ "culture", this.HasToken("culture") ? this.GetToken("culture").Text : string.Empty },
+				{ "name", this.Name.ToString(true) },
+				{ "id", this.GetToken("lootset_id").Text },
+				{ "bodymatch", this.GetClosestBodyplanMatch() },
+				{ "biome", BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() } //AcetheSuperVillain suggests a biome key.
 			};
 			var inventory = this.GetToken("items");
 			var clothing = new List<Token>();

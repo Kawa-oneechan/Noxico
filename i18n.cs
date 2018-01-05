@@ -41,7 +41,6 @@ namespace Noxico
 	public static class i18n
 	{
 		private static Dictionary<string, string> words;
-		private static Token pluralizerData;
 		private static List<Token> wordStructor;
 
 		private static List<string> notFound = new List<string>();
