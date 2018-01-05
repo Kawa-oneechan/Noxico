@@ -145,6 +145,7 @@
     <Compile Include="Lua.cs" />
     <None Include="mix\clutter.tml" />
     <Compile Include="Mutamorph.cs" />
+    <Compile Include="Name.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="SexManager.cs" />
