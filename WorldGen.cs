@@ -76,7 +76,7 @@ namespace Noxico
 			Warp originalExit = null;
 
 			BiomeData.LoadBiomes();
-			var biomeData = BiomeData.Biomes[DungeonGeneratorBiome]; //TODO: replace 3 with DungeonGeneratorBiome -- this is for testing.
+			var biomeData = BiomeData.Biomes[DungeonGeneratorBiome];
 
 			/* Step 1 - Randomize jagged array, make boards for each entry.
 			 * ------------------------------------------------------------
@@ -285,7 +285,7 @@ namespace Noxico
 			{
 				{ "biome", BiomeData.Biomes[DungeonGenerator.DungeonGeneratorBiome].Name.ToLowerInvariant() },
 			});
-			var treasureChest = new Container("Treasure chest", treasure)
+			var treasureChest = new Container(i18n.GetString("treasurechest"), treasure)
 			{
 				Glyph = 0x14A,
 				XPosition = treasureX,
@@ -320,7 +320,7 @@ namespace Noxico
 			entranceBoard.PlayMusic();
 			NoxicoGame.Immediate = true;
 			NoxicoGame.Mode = UserMode.Walkabout;
-			NoxicoGame.HostForm.Noxico.SaveGame();
+			NoxicoGame.Me.SaveGame();
 
 			return entranceBoard;
 		}

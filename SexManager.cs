@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neo.IronLua;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -126,7 +127,8 @@ namespace Noxico
 				}
 				return false;
 			}));
-			return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+			return Lua.Run("return " + filter.Text, env).ToBoolean();
 		}
 
 		public static List<Token> GetResultHelper(string id, Character[] actors, List<Token> list)
@@ -179,11 +181,14 @@ namespace Noxico
 				target.RemoveAll("havingsex");
 				actor.AddToken("havingsex", 0, target.ID);
 				target.AddToken("havingsex", 0, actor.ID);
+				actor.AddToken("havingsex_initsex", 0, target.ID);
+				target.AddToken("havingsex_initsex", 0, actor.ID);
 			}
 			else
 			{
 				actor.RemoveAll("havingsex");
 				actor.AddToken("havingsex", 0, target.ID);
+				actor.AddToken("havingsex_initsex", 0, target.ID);
 			}
 		}
 
@@ -242,173 +247,41 @@ namespace Noxico
 				}
 				return (a >= b);
 			}));
-			env.DoChunk(script, "lol.lua");
+
+			// Okay, Sparky. What I did was, I put all the error handling in Lua.cs, with a Run method.
+			// Instead of worrying about presentation, it just uses a standard WinForms MessageBox.
+			// After all, the game's already in a broken state by now.
+			Lua.Run(script, env);
 			/*
-			var effects = (result.Name == "choice") ? result.GetToken("effects") : result;
-			if (effects == null || effects.Tokens.Count == 0)
-				return;
-			var actors = new[] { actor, target };
-			foreach (var effect in effects.Tokens)
+			try
 			{
-				var check = string.IsNullOrWhiteSpace(effect.Text) ? new string[] { effect.Value.ToString() } : effect.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-				if (effect.Name == "breakitoff")
+				// really should just compile once at startup but we're just testing the debugger trace
+				// anyway here's how you'd do it.
+				//LuaChunk chunk = env.Lua.CompileChunk(script, "lol.lua", new LuaStackTraceDebugger());
+				//env.DoChunk(chunk, "lol.lua");
+				env.DoChunk(script, "lol.lua");
+			}
+			catch (Neo.IronLua.LuaParseException lpe)
+			{
+				string complain = String.Format("Exception: {0} line {1} col {2},\r\n",
+					lpe.Message, lpe.Line, lpe.Column);
+
+				LuaExceptionData lex = LuaExceptionData.GetData(lpe);
+				foreach (LuaStackFrame lsf in lex)
 				{
-					foreach (var act in actors)
-						act.Character.RemoveAll("havingsex");
-					return;
+					complain += String.Format("StackTrace: {0} line {1} col {2},\r\n",
+						 lsf.MethodName, lsf.LineNumber, lsf.ColumnNumber);
 				}
-				else if (effect.Name == "end")
+
+				var paused = true;
+				MessageBox.ScriptPauseHandler = () => paused = false;
+				MessageBox.Notice(complain);
+				while (paused)
 				{
-					return;
+					NoxicoGame.Me.Update();
+					System.Windows.Forms.Application.DoEvents();
 				}
-				else if (effect.Name == "stat")
-				{
-					actors[int.Parse(check[0])].Character.ChangeStat(check[1], float.Parse(check[2]));
-				}
-				else if (effect.Name == "increase")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var p = t.Path(check[1]);
-					if (p != null)
-						p.Value += float.Parse(check[2]);
-				}
-				else if (effect.Name == "decrease")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var p = t.Path(check[1]);
-					if (p != null)
-						p.Value -= float.Parse(check[2]);
-				}
-				else if (effect.Name == "add")
-				{
-					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
-					if (!t.HasToken(check[1]))
-						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
-					else if (check.Length > 2)
-						t.GetToken(check[1]).Value = float.Parse(check[2]);
-				}
-				else if (effect.Name == "remove")
-				{
-					var t = actors[int.Parse(check[0])].Character.GetToken("havingsex");
-					if (t.HasToken(check[1]))
-						t.RemoveToken(check[1]);
-				}
-				else if (effect.Name == "add!")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (!t.HasToken(check[1]))
-						t.AddToken(check[1], check.Length > 2 ? float.Parse(check[2]) : 0);
-					else if (check.Length > 2)
-						t.GetToken(check[1]).Value = float.Parse(check[2]);
-				}
-				else if (effect.Name == "remove!")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (t.HasToken(check[1]))
-						t.RemoveToken(check[1]);
-				}
-				else if (effect.Name == "message")
-				{
-					var message = effect.Tokens[Random.Next(effect.Tokens.Count)].Text;
-					message = i18n.Viewpoint(ApplyMemory(message), actor.Character, target.Character);
-					writer(message);
-				}
-				else if (effect.Name == "has")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					if (t.Path(check[1]) != null)
-						Apply(effect.GetToken("true"), actor, target, writer);
-					else if (effect.HasToken("false"))
-						Apply(effect.GetToken("false"), actor, target, writer);
-				}
-				else if (effect.Name == "roll")
-				{
-					float a, b;
-					if (!float.TryParse(check[0], out a))
-					{
-						Stat stat;
-						if (Enum.TryParse<Stat>(check[0], true, out stat))
-							a = actors[0].Character.GetStat(stat);
-						else
-							a = actors[0].Character.GetSkillLevel(check[0]);
-					}
-					if (!float.TryParse(check[1], out b))
-					{
-						Stat stat;
-						if (Enum.TryParse<Stat>(check[1], true, out stat))
-							b = actors[1].Character.GetStat(stat);
-						else
-							b = actors[1].Character.GetSkillLevel(check[0]);
-					}
-					if (a >= b && effect.HasToken("win"))
-						Apply(effect.GetToken("win"), actor, target, writer);
-					else if (effect.HasToken("lose"))
-						Apply(effect.GetToken("lose"), actor, target, writer);
-				}
-				else if (effect.Name == "disrobe")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var clothClass = check[1];
-					InventoryItem cloth = null;
-					if (clothClass == "top")
-					{
-						foreach (var slot in new[] { "cloak", "jacket", "shirt", "undershirt" })
-						{
-							cloth = t.GetEquippedItemBySlot(slot);
-							if (cloth != null)
-								break;
-						}
-					}
-					else if (clothClass == "bottom")
-					{
-						foreach (var slot in new[] { "pants", "underpants" })
-						{
-							cloth = t.GetEquippedItemBySlot(slot);
-							if (cloth != null)
-								break;
-						}
-					}
-					else
-					{
-						cloth = t.GetEquippedItemBySlot(clothClass);
-					}
-					if (cloth != null)
-					{
-						if (check.Length > 2 && check[2] == "tear")
-						{
-							InventoryItem.TearApart(cloth, t.GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
-							Apply(effect.GetToken("success"), actor, target, writer);
-						}
-						else
-						{
-							var success = cloth.Unequip(t, cloth.tempToken);
-							if (success && effect.HasToken("success"))
-								Apply(effect.GetToken("success"), actor, target, writer);
-							else if (effect.HasToken("failure"))
-								Apply(effect.GetToken("failure"), actor, target, writer);
-						}
-					}
-				}
-				else if (effect.Name == "takevirginity")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var vagina = t.Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
-					if (vagina != null)
-					{
-						vagina.RemoveToken("virgin");
-						Apply(effect.GetToken("success"), actor, target, writer);
-					}
-				}
-				else if (effect.Name == "fertilize")
-				{
-					var t = actors[int.Parse(check[0])].Character;
-					var t2 = actors[int.Parse(check[1])].Character;
-					t.Fertilize(t2);
-				}
-				else
-				{
-					Program.WriteLine("** Unknown sex effect {0}.", effect.Name);
-				}
+				// kawa! things get REALLY BROKEN at this point but at least you got a MessageBox -- sparks
 			}
 			*/
 		}
@@ -431,30 +304,34 @@ namespace Noxico
 		{
 			return HasSexFlag("restrained");
 		}
+		
 		public bool Restraining()
 		{
 			return HasSexFlag("restraining");
 		}
+		
 		public bool HasNipples()
 		{
-			foreach (var breastRow in Tokens.Where(t => t.Name == "breastrow"))
-				if (breastRow.HasToken("nipples") && breastRow.GetToken("nipples").Value >= 1)
+			var boobs = this.GetToken("breasts");
+			if (boobs == null)
+				return false;
+			if (boobs.HasToken("nipples") && boobs.GetToken("nipples").Value >= 1)
 					return true;
 			return false;
 		}
+		
 		public bool HasBreasts()
 		{
-			var tits = GetBreastSizes();
-			if (tits.Length == 0)
-				return false;
-			if (tits.Average() < 0.2)
+			if (this.GetBreastSize() < 0.2)
 				return false;
 			return true;
 		}
+		
 		public float Raise(Stat stat, float by)
 		{
 			return ChangeStat(stat.ToString().ToLowerInvariant(), by);
 		}
+		
 		public Token AddToken(string name, object value)
 		{
 			var t = new Token(name);
@@ -470,20 +347,24 @@ namespace Noxico
 			AddToken(t);
 			return t;
 		}
+		
 		public Token AddSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.AddToken(name);
 		}
+		
 		public Token RemoveSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.RemoveToken(name);
 		}
+		
 		public bool HasSexFlag(string name)
 		{
 			return Path("havingsex/" + name) != null;
 		}
+	
 		public bool Disrobe(string clothClass, bool tear)
 		{
 			InventoryItem cloth = null;
@@ -516,12 +397,7 @@ namespace Noxico
 			}
 			return false;
 		}
-		public bool Fertilize()
-		{
-			if (!EnsureSexPartner())
-				return false;
-			return Fertilize(sexPartner);
-		}
+
 		public bool TakeVirginity()
 		{
 			var vagina = Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
@@ -531,10 +407,6 @@ namespace Noxico
 				return true;
 			}
 			return false;
-		}
-		public IEnumerable<Token> GetPenises()
-		{
-			return GetAll("penis");
 		}
 
 		public bool EnsureSexPartner()
@@ -565,6 +437,16 @@ namespace Noxico
 		{
 			if (!EnsureSexPartner())
 				return false;
+
+			if (HasToken("havingsex_initsex"))
+			{
+				var runinit = SexManager.GetResult("initsex", this, sexPartner);
+				SexManager.Apply(runinit, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
+				RemoveToken("havingsex_initsex");
+			}
+			
+			var everysexturn = SexManager.GetResult("everysexturn", this, sexPartner);
+			SexManager.Apply(everysexturn, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 
 			if (this.GetStat(Stat.Climax) >= 100)
 			{
@@ -604,5 +486,3 @@ namespace Noxico
 		}
 	}
 }
-
-// tiny test commit

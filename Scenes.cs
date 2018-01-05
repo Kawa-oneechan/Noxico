@@ -56,7 +56,7 @@ namespace Noxico
 				actions.Add(target, "==>");
 			}
 
-			if (bottom == NoxicoGame.HostForm.Noxico.Player.Character && !letBottomChoose)
+			if (bottom == NoxicoGame.Me.Player.Character && !letBottomChoose)
 			{
 				if (actions.Count == 0)
 				{
@@ -85,8 +85,8 @@ namespace Noxico
 			}
 			else
 			{
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw();
 			}
 		}
 
@@ -128,6 +128,63 @@ namespace Noxico
 				}
 				else
 				{
+					// FIXME: these Funcs are clones from elsewhere,
+					//  we could tidy these up into Lua.Ascertain eventually.
+					Func<BoardType, int, int, Realms, Board> pickBoard = (boardType, biome, maxWater, inRealm) =>
+					{
+						var options = new List<Board>();
+						var game = NoxicoGame.Me;
+						tryAgain:
+						foreach (var board in game.Boards)
+						{
+							if (board == null)
+								continue;
+							var boardRealmTxt = board.Realm.ToString().ToLower();
+							var inRealmTxt = inRealm.ToString().ToLower();
+							if (boardRealmTxt != null && inRealmTxt.ToLower() != inRealmTxt.ToLower())
+								continue;
+							if (board.BoardType != boardType)
+								continue;
+							if (biome > 0 && board.GetToken("biome").Value != biome)
+								continue;
+							if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
+								continue;
+							if (maxWater != -1)
+							{
+								var water = 0;
+								for (var y = 0; y < 50; y++)
+									for (var x = 0; x < 80; x++)
+										if (board.Tilemap[x, y].Fluid != Fluids.Dry)
+											water++;
+								if (water > maxWater)
+									continue;
+							}
+							options.Add(board);
+						}
+						if (options.Count == 0)
+						{
+							//return null;
+							if (maxWater < 2000)
+							{
+								maxWater *= 2;
+								goto tryAgain;
+							}
+							else
+								return null;
+						}
+						var choice = options[Random.Next(options.Count)];
+						return choice;
+					};
+
+					var makeBoardTarget = new Action<Board>(board =>
+					{
+						if (string.IsNullOrWhiteSpace(board.Name))
+							throw new Exception("Board must have a name before it can be added to the target list.");
+						if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
+							return; //throw new Exception("Board is already a travel target.");
+						NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
+					});
+
 					var buffer = new StringBuilder();
 					var env = Lua.Environment;
 					Lua.Ascertain();
@@ -135,55 +192,18 @@ namespace Noxico
 					env.SetValue("bottom", bottom);
 					env.SetValue("print", new Action<string>(x => buffer.Append(x)));
 					env.SetValue("LetBottomChoose", new Action<string>(x => letBottomChoose = true));
-					env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
-					//js.SetFunction("ExpectTown", new Func<string, int, Expectation>(Expectation.ExpectTown));
-					//js.SetParameter("Expectations", NoxicoGame.Expectations);
-					//js.SetFunction("LearnUnknownLocation", new Action<string>(NoxicoGame.LearnUnknownLocation));
-					env.DoChunk(part.Tokens[0].Text, "lol.lua");
+					env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x)));
+					env.SetValue("PickBoard", pickBoard);
+					env.SetValue("MakeBoardTarget", makeBoardTarget);
+					env.SetValue("thisBoard", bottom.BoardChar.ParentBoard);
+					env.SetValue("thisRealm", bottom.BoardChar.ParentBoard.Realm); 
+					Lua.Run(part.Tokens[0].Text, env);
 					ret.AppendLine(buffer.ToString());
 					ret.AppendLine();
 				}
 			}
 			return ret.ToString().TrimEnd();
 		}
-
-		/*
-		private static void ParseParagraph(StringBuilder ret, XmlElement part)
-		{
-			var trimmers = new[] {'\t', '\n', '\r'};
-			var hadFalseIf = false;
-			foreach (var node in part.ChildNodes)
-			{
-				if (node is XmlText)
-				{
-					var text = (node as XmlText).Value;
-					if (trimmers.Contains(text[0]))
-						text = text.TrimStart();
-					if (trimmers.Contains(text[text.Length - 1]))
-						text = text.TrimEnd();
-					ret.Append(text.SmartQuote());
-				}
-				else if (node is XmlElement)
-				{
-					var element = node as XmlElement;
-					if (element.Name == "if")
-					{
-						if (FiltersOkay(element))
-							ParseParagraph(ret, element);
-						else
-							hadFalseIf = true;
-					}
-					else if (element.Name == "else" && hadFalseIf)
-					{
-						ParseParagraph(ret, element);
-						hadFalseIf = false;
-					}
-				}
-			}
-			//ret.AppendLine(part.InnerText.Trim());
-			//ret.AppendLine();
-		}
-		*/
 
 		private static bool SceneFiltersOkay(Token scene)
 		{
@@ -195,7 +215,7 @@ namespace Noxico
 			return true;
 		}
 
-		//TODO: rewrite to use JS
+		//TODO: rewrite to use Lua, like sex.tml's
 		private static bool FiltersOkay(Token filter)
 		{
 			if (filter.Name == "debug")
@@ -256,51 +276,18 @@ namespace Noxico
 						return false;
 					break;
 				case "canfitdickinpussy":
-					var dickSizes = fPrimary.GetPenisSizes(true);
-					var pussySizes = fSecondary.GetVaginaCapacities();
-					if (dickSizes.Length == 0 || pussySizes.Length == 0)
-						return false; //no dicks to fit, or no pussies to fit in.
-					var canFit = false;
-					foreach (var dick in dickSizes)
-					{
-						foreach (var pussy in pussySizes)
-						{
-							if (dick < pussy)
-							{
-								canFit = true;
-								break;
-							}
-						}
-					}
-					if (!canFit)
+					var dickSize = fPrimary.GetPenisSize(true);
+					var pussySize = fSecondary.GetVaginaCapacity();
+					if (dickSize == -1 || pussySize == -1)
 						return false;
-					break;
+					if (dickSize < pussySize)
+						return true;
+					return false;
 				case "canfitdickinmouth":
-					dickSizes = fPrimary.GetPenisSizes(true);
-					if (dickSizes.Length == 0)
-						return false; //no dicks to fit.
-					canFit = false;
-					foreach (var dick in dickSizes)
-					{
-						if (dick < 40)
-						{
-							canFit = true;
-							break;
-						}
-					}
-					if (!canFit)
-						return false;
-					break;
-				case "isfather":
-					var pregnancy = fSecondary.Path("pregnancy");
-					if (pregnancy == null)
-						return false;
-					var father = fSecondary.Path("pregnancy/father");
-					if (father == null)
-						return false;
-					if (father.Text != fPrimary.ID)
-						return false;
-					break;
+					dickSize = fPrimary.GetPenisSize(true);
+					if (dickSize < 40)
+						return true;
+					return false;
 				case "relation":
 					var ship = parts[1];
 					if (ship != "none")

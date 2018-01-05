@@ -343,7 +343,7 @@ namespace Noxico
 				music.GetLength(out patterns, FMOD.TimeUnit.ModPattern);
 				debug = string.Format("{0}ch {1}, row {2}/{3}, pattern {4}/{5}. Volume: {6:P0}", musicchans, type.ToString(), row, rows, pattern, patterns, volume);
 			}
-			NoxicoGame.HostForm.Write(debug.PadRight(100), System.Drawing.Color.Gray, System.Drawing.Color.Black, 0, 0);
+			NoxicoGame.HostForm.Write(debug.PadRight(Program.Cols), System.Drawing.Color.Gray, System.Drawing.Color.Black, 0, 0);
 #endif
 		}
 

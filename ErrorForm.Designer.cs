@@ -162,7 +162,7 @@
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(389, 158);
 			this.label3.TabIndex = 0;
-			this.label3.Text = "label3";
+			this.label3.Text = "";
 			// 
 			// ErrorForm
 			// 

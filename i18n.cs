@@ -60,23 +60,33 @@ namespace Noxico
 					words[word.Name] = word.Text;
 			}
 
-			pluralizerData = x.Find(t => t.Name == "pluralizer");
-			//Sanity check!
-			if (pluralizerData.HasToken("sanitycheck"))
+#if DEBUG
+			var sanityCheck = new[] {
+				"P|hoof|hooves",
+				"S|hooves|hoof",
+				"P|cheap piece of shit|cheap pieces of shit",
+				"S|cheap pieces of shit|cheap piece of shit",
+				"P|vortex|vortices",
+				"S|cortices|cortex",
+				"P|pegasus|pegasori",
+				"S|pegasori|pegasus",
+				"P|alga|algæ",
+				"S|kunai|kunai",
+				"P|kunai of the dawn|kunai of the dawn",
+			};
+			foreach (var test in sanityCheck.Select(t => t.Split('|')))
 			{
-				foreach (var check in pluralizerData.GetToken("sanitycheck").Tokens)
-				{
-					var checkFrom = check.GetToken("from").Text;
-					var checkTo = check.GetToken("to").Text;
-					var result = string.Empty;
-					if (check.Name == "pluralize")
-						result = Pluralize(checkFrom, 2);
-					else if (check.Name == "singularize")
-						result = Singularize(checkFrom);
-					if (result != checkTo)
-						throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
-				}
+				var checkFrom = test[1];
+				var checkTo = test[2];
+				var result = string.Empty;
+				if (test[0] == "P")
+					result = Pluralize(checkFrom, 2);
+				else if (test[0] == "S")
+					result = Singularize(checkFrom);
+				if (result != checkTo)
+					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
 			}
+#endif
 		}
 
 		public static string Entitize(string input)
@@ -84,8 +94,8 @@ namespace Noxico
 			var longhand = !input.Contains('\uE2FE');
 			for (var i = 0; i <= 0x10; i++)
 				input = input.Replace(((char)(0xE200 + i)).ToString(), Toolkit.TranslateKey((KeyBinding)i, longhand));
-			if (NoxicoGame.HostForm.Noxico.Player != null && NoxicoGame.HostForm.Noxico.Player.Character != null)
-				input = input.Replace("\uE220", NoxicoGame.HostForm.Noxico.Player.Character.Name.ToString());
+			if (NoxicoGame.Me.Player != null && NoxicoGame.Me.Player.Character != null)
+				input = input.Replace("\uE220", NoxicoGame.Me.Player.Character.Name.ToString());
 			else
 				input = input.Replace("\uE220", "????");
 			input = input.Replace("\uE2FE", "");
@@ -125,38 +135,12 @@ namespace Noxico
 		
 		public static string Pluralize(this string singular)
 		{
-			var of = pluralizerData.GetToken("of").Text;
-			var simple = pluralizerData.GetToken("simple").Text;
-
 			if (words.ContainsKey(singular))
 				singular = words[singular];
-
-			if (singular.Contains(of))
-			{
-				var ofPos = singular.IndexOf(of);
-				var key = singular.Substring(0, ofPos);
-				var ofWhat = singular.Substring(ofPos);
-				return Pluralize(key) + ofWhat;
-			}
-			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
-				if (singular.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
-					return singular;
-			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
-			{
-				if (irregular.HasToken("fullword"))
-				{
-					if (singular.Equals(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
-						return irregular.Text;
-				}
-				else
-					if (singular.EndsWith(irregular.Name, StringComparison.InvariantCultureIgnoreCase))
-						return singular.Remove(singular.LastIndexOf(irregular.Name)) + irregular.Text;
-			}
-			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
-				if (singular.EndsWith(regular.Name, StringComparison.InvariantCultureIgnoreCase))
-					return singular.Remove(singular.LastIndexOf(regular.Name)) + regular.Text;
-
-			return singular + simple;
+			Lua.Environment["plural"] = null;
+			Lua.Environment["singular"] = singular;
+			var result = Lua.RunFile("pluralizer.lua");
+			return result.ToString();
 		}
 
 		public static string Pluralize(this string singular, int count)
@@ -168,29 +152,12 @@ namespace Noxico
 
 		public static string Singularize(this string plural)
 		{
-			var of = pluralizerData.GetToken("of").Text;
-			var simple = pluralizerData.GetToken("simple").Text;
-
-			if (plural.Contains(of))
-			{
-				var ofPos = plural.IndexOf(of);
-				var key = plural.Substring(0, ofPos);
-				var ofWhat = plural.Substring(ofPos);
-				return Singularize(key) + ofWhat;
-			}
-			foreach (var uncountable in pluralizerData.GetToken("uncountable").Tokens)
-				if (plural.EndsWith(uncountable.Name, StringComparison.InvariantCultureIgnoreCase))
-					return plural;
-			foreach (var irregular in pluralizerData.GetToken("irregular").Tokens)
-				if (plural.EndsWith(irregular.Text, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(irregular.Text)) + irregular.Name;
-			foreach (var regular in pluralizerData.GetToken("regular").Tokens)
-				if (plural.EndsWith(regular.Text, StringComparison.InvariantCultureIgnoreCase))
-					return plural.Remove(plural.LastIndexOf(regular.Text)) + regular.Name;
-
-			if (plural.EndsWith(simple))
-				return plural.Remove(plural.Length - simple.Length);
-			return plural;
+			if (words.ContainsKey(plural))
+				plural = words[plural];
+			Lua.Environment["plural"] = plural;
+			Lua.Environment["singular"] = null;
+			var result = Lua.RunFile("pluralizer.lua");
+			return result.ToString();
 		}
 
 
@@ -236,9 +203,9 @@ namespace Noxico
 		public static string Viewpoint(this string message, Character top, Character bottom = null)
 		{
 #if DEBUG
-			var player = NoxicoGame.HostForm.Noxico.Player == null ? null : NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 #else
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 #endif
 			if (top == null)
 				top = player;
@@ -248,6 +215,7 @@ namespace Noxico
 			#region Definitions
 			var subcoms = new Dictionary<string, Func<Character, IList<string>, string>>()
 			{
+				//TODO: i18n... somehow.
 				{ "You", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
 				{ "Your", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
 				{ "you", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
@@ -281,14 +249,14 @@ namespace Noxico
 				{ "has", (c, s) => { return c == player ? "have" : "has"; } },
 				{ "does", (c, s) => { return c == player ? "do" : "does"; } },
 
-				{ "breastsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]")); } },
-                { "breastcupsize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.BreastSize(c.Path("breastrow[" + s[0] + "]"), true); } },
-				{ "nipplesize", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.NippleSize(c.Path("breastrow[" + s[0] + "]/nipples")); } },
+				{ "breastsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts")); } },
+                { "breastcupsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts"), true); } },
+				{ "nipplesize", (c, s) => { return Descriptions.NippleSize(c.Path("breasts/nipples")); } },
 				{ "waistsize", (c, s) => { return Descriptions.WaistSize(c.Path("waist")); } },
 				{ "buttsize", (c, s) => { return Descriptions.ButtSize(c.Path("ass")); } },
 
 				#region PillowShout's additions
-				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.Path("penis[" + s[0] + "]")); } },
+				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.GetToken("penis")); } },
 				//{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
 				//{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
 				//{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
@@ -296,8 +264,8 @@ namespace Noxico
                 //{ "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
 				//{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
 				//{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
-				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina[" + s[0] + "]/wetness")); } },
-				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina[" + s[0] + "]/looseness")); } },
+				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina/wetness")); } },
+				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina/looseness")); } },
 				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
 				{ "foot", (c, s) => { return Descriptions.Foot(c.GetToken("legs")); } },
 				{ "feet", (c, s) => { return Descriptions.Foot(c.GetToken("legs"), true); } },
@@ -332,19 +300,20 @@ namespace Noxico
 				env.SetValue("cunning", who.GetStat(Stat.Cunning));
 				env.SetValue("sensitivity", who.GetStat(Stat.Sensitivity));
 				env.SetValue("stimulation", who.GetStat(Stat.Stimulation));
-				env.SetValue("pussyAmount", who.Tokens.Count(t => t.Name == "vagina"));
-				env.SetValue("penisAmount", who.Tokens.Count(t => t.Name == "penis"));
-				env.SetValue("pussyWetness", who.Tokens.Any(t => t.Name == "vagina") ? who.Tokens.Where(t => t.Name =="vagina").Max(t => t.GetToken("wetness").Value) : 0);
+				env.SetValue("pussyAmount", who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0);
+				env.SetValue("penisAmount", who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0);
+				env.SetValue("pussyWetness", who.HasToken("vagina") ? who.GetToken("vagina").GetToken("wetness").Value : 0);
 				env.SetValue("cumAmount", who.CumAmount);
 				env.SetValue("slime", who.IsSlime);
-				return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+				//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
+				return Lua.Run("return " + filter.Text, env).ToBoolean();
 			});
 			#endregion
 
 			#region [] Parser
 			var regex = new Regex(@"
 \[
-	(?:(?<target>[\w\?]):)?		#Optional target and :
+	(?:(?<target>[tb\?]):)?		#Optional target and :
 
 	(?:						#One or more subcommands
 		(?:\:?)				#Separating :, optional in case target already had one
@@ -356,7 +325,7 @@ namespace Noxico
 				message = regex.Replace(message, (match =>
 				{
 					var target = bottom;
-					var subcom = string.Empty;
+					var subcom = match.Groups["subcom"].Captures[0].Value;
 					var parms = new List<string>();
 
 					var targetGroup = match.Groups["target"].Value;
@@ -368,7 +337,7 @@ namespace Noxico
 
 						if (targetGroup.Length == 2 && "tb".Contains(targetGroup[1]))
 							target = (targetGroup[1] == 't' ? top : bottom);
-						var pToks = wordStructor.Where(x =>	x.Name == match.Groups["subcom"].Value).ToList();
+						var pToks = wordStructor.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
 						var pTok = pToks[Random.Next(pToks.Count)];
 						var pRes = pTok.Tokens.Where(x => !x.HasToken("filter") || wordStructFilter(x.GetToken("filter"), target)).ToList();
 						//Remove all less-specific options if any specific are found.
@@ -376,27 +345,18 @@ namespace Noxico
 							pRes.RemoveAll(x => !x.HasToken("filter"));
 						return pRes[Random.Next(pRes.Count)].Text;
 					}
-					else if (!match.Groups["subcom"].Success)
+					else if (targetGroup.StartsWith("t"))
 					{
-						subcom = targetGroup;
+						target = top;
 					}
-					else
-					{
-						if (match.Groups["target"].Length == 1 && "tb".Contains(match.Groups[1].Value[0]))
-							target = (targetGroup[0] == 't' ? top : bottom);
-						subcom = match.Groups["subcom"].Value;
 
-						if (match.Groups["subcom"].Captures.Count > 1)
-						{
-							//subcom = targetGroup;
-							subcom = match.Groups["subcom"].Captures[0].Value;
-							for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
-							{
-								var c = match.Groups["subcom"].Captures[i];
-								Console.WriteLine(c);
-								parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
-							}
-						}
+					//subcom = targetGroup;
+					//subcom = match.Groups["subcom"].Captures[0].Value;
+					for (var i = 1; i < match.Groups["subcom"].Captures.Count; i++)
+					{
+						var c = match.Groups["subcom"].Captures[i];
+						//Console.WriteLine(c);
+						parms.Add(c.Value.Replace('(', '[').Replace(')', ']'));
 					}
 
 					parms.Add(string.Empty);

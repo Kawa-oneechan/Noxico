@@ -16,6 +16,14 @@ namespace Noxico
 
 	public class NoxicoGame
 	{
+		public static NoxicoGame Me
+		{
+			get
+			{
+				return NoxicoGame.HostForm.Noxico;
+			}
+		}
+
 		public int Speed { get; set; }
 		public static bool Immediate { get; set; }
 
@@ -40,9 +48,7 @@ namespace Noxico
 		public Board CurrentBoard { get; set; }
 		public static Board Limbo { get; private set; }
 		public Player Player { get; set; }
-		//public static List<string> BookTitles { get; private set; }
 		public static Dictionary<string, string[]> BookTitles { get; private set; }
-		//public static List<string> BookAuthors { get; private set; }
 		public static List<string> Messages { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
@@ -62,7 +68,10 @@ namespace Noxico
 
 		private static List<string> messageLog = new List<string>();
 		private static string lastMessage = "";
+		public static string LookAt { get; set; }
 		public static int WorldVersion { get; private set; }
+
+		public static int CameraX, CameraY;
 
 		private static int[][,] miniMap;
 
@@ -80,6 +89,8 @@ namespace Noxico
 			Program.WriteLine("IT BEGINS...");
 
 			Random.Reseed();
+
+			Lua.Create();
 
 			KeyBindings = new Dictionary<KeyBinding, Keys>();
 			RawBindings = new Dictionary<KeyBinding, string>();
@@ -147,7 +158,7 @@ namespace Noxico
 			}
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
-			Messages = new List<string>(); //new List<StatusMessage>();
+			Messages = new List<string>();
 
 			IngameToUnicode = new char[0x420];
 			IngameTo437 = new char[0x420];
@@ -202,7 +213,6 @@ namespace Noxico
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
 			//Use GetFilesWithPattern to allow books in mission folders -- /missions/homestuck/books/legendbullshit.txt
-			//foreach (var book in Mix.GetFilesInPath("books").Where(b => b.EndsWith(".txt")))
 			foreach (var book in Mix.GetFilesWithPattern("\\books\\*.txt"))
 			{
 				var bookFile = Mix.GetString(book, false).Split('\n');
@@ -212,9 +222,6 @@ namespace Noxico
 				BookTitles.Add(bookID, new[] { bookName, bookAuthor });
 			}
 
-			//ScriptVariables.Add("consumed", 0);
-			Lua.Create();
-
 			BiomeData.LoadBiomes();
 			//Limbo = Board.CreateBasicOverworldBoard(BiomeData.ByName("nether"), "Limbo", "Limbo", "darkmere_deathtune.mod");
 			//Limbo.BoardType = BoardType.Special;
@@ -223,18 +230,21 @@ namespace Noxico
 			Random.Reseed(1);
 			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
 			test.Realm = Realms.Nox;
+			test.MergeBitmap("missions\\playerbase\\toolshed.png", "missions\\playerbase\\lv0.txt");
+			test.DumpToHtml();
+			return;
+			/*
 			var gen = new TownGenerator();
 			gen.Board = test;
 			gen.Culture = Culture.DefaultCulture;
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
-			test.DumpToHtml();
-			return;
 			*/
 			//var testChar = Character.Generate("felin", Gender.Male);
 			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
+			//var test = Lua.Run("return foo = 4 + \"foo\"");
 
-			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0); //InGameTime = new NoxicanDate(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
+			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
 			CurrentBoard = new Board();
@@ -343,7 +353,7 @@ namespace Noxico
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
-			HostForm.Write(i18n.GetString("loadsave_loadheader") /* " -- Loading... -- " */, Color.White, Color.Black);
+			HostForm.Write(i18n.GetString("loadsave_loadheader"), Color.White, Color.Black);
 			HostForm.Draw();
 
 			var playerFile = Path.Combine(SavePath, WorldName, "player.bin");
@@ -382,7 +392,7 @@ namespace Noxico
 			Toolkit.ExpectFromFile(bin, "UNIQ", "unique item tracking");
 			var numUniques = bin.ReadInt32();
 			Toolkit.ExpectFromFile(bin, "TIME", "ingame time");
-			InGameTime = new DateTime(bin.ReadInt64()); //InGameTime = new NoxicanDate(bin.ReadInt64());
+			InGameTime = new DateTime(bin.ReadInt64());
 			Toolkit.ExpectFromFile(bin, "TARG", "known targets list");
 			var numTargets = bin.ReadInt32();
 			TravelTargets = new Dictionary<int, string>();
@@ -419,6 +429,7 @@ namespace Noxico
 				CurrentBoard.CheckCombatStart();
 				CurrentBoard.PlayMusic();
 				CurrentBoard.Redraw();
+				CurrentBoard.AimCamera(Player.XPosition, Player.YPosition);
 
 				if (!Player.Character.HasToken("player"))
 					Player.Character.AddToken("player", (int)DateTime.Now.Ticks);
@@ -447,41 +458,24 @@ namespace Noxico
 
 		public static void DrawMessages()
 		{
-			for (var i = 51; i < 59; i++)
-			{
-				HostForm.SetCell(i, 0, 0xBA, Color.DarkGray, Color.Black);
-				HostForm.SetCell(i, 79, 0xBA, Color.DarkGray, Color.Black);
-			}
-			for (var col = 1; col < 79; col++)
-			{
-				HostForm.SetCell(50, col, 0xCD, Color.DarkGray, Color.Black);
-				HostForm.SetCell(59, col, 0xCD, Color.DarkGray, Color.Black);
-			}
-			HostForm.SetCell(50, 0, 0xC9, Color.DarkGray, Color.Black);
-			HostForm.SetCell(50, 79, 0xBB, Color.DarkGray, Color.Black);
-			HostForm.SetCell(59, 0, 0xC8, Color.DarkGray, Color.Black);
-			HostForm.SetCell(59, 79, 0xBC, Color.DarkGray, Color.Black);
-
-			for (var i = 51; i < 59; i++)
-				for (var col = 1; col < 79; col++)
+			for (var i = 21; i < 25; i++)
+				for (var col = 0; col < 65; col++)
 					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
 
 			if (Messages.Count == 0)
 				return;
-			var row = 57;
-			for (var i = 0; i < 6 && i < Messages.Count; i++)
+			var row = 24;
+			for (var i = 0; i < 4 && i < Messages.Count; i++)
 			{
 				var m = Messages.Count - 1 - i;
-				//var c = Messages[m].Color;
-				//if (c.Lightness < 0.2)
-				//	c = Toolkit.Lerp(c, Color.White, 0.5);
-				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 2);
+				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
 				row--;
 			}
 		}
 		public static void ClearMessages()
 		{
 			Messages.Clear();
+			DrawMessages();
 		}
 		public static void AddMessage(object messageOrMore, Color color)
 		{
@@ -511,14 +505,13 @@ namespace Noxico
 					lastLine = "";
 				else
 					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(76).Trim().Split('\n');
+				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
 				if (newLines.Length > 1)
 				{
 					for (var i = 1; i < newLines.Length; i++)
 						newLines[i] = "<c" + color.Name + ">" + newLines[i];
 				}
 				Messages.AddRange(newLines);
-				//Messages.Add(new StatusMessage() { Message = message, Color = color });
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}
@@ -532,7 +525,7 @@ namespace Noxico
 		public static void ShowMessageLog()
 		{
 			if (messageLog.Count == 0)
-				MessageBox.Notice(i18n.GetString("nomoremessages"), true); //"There are no messages to display."
+				MessageBox.Notice(i18n.GetString("nomoremessages"), true);
 			else
 				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE2FD"))));
 		}
@@ -559,8 +552,10 @@ namespace Noxico
 				if (Mode == UserMode.Walkabout)
 				{
 					Subscreens.PreviousScreen.Clear();
-					if (HostForm.Cursor.X >= 0)
-						HostForm.Cursor = new Point(-1, -1);
+					//if (HostForm.Cursor.X >= 0)
+					//	HostForm.Cursor = new Point(-1, -1);
+					HostForm.Cursor = new Point(Player.XPosition - CameraX, Player.YPosition - CameraY);
+
 					var timeNow = DateTime.Now;
 					//while ((DateTime.Now - timeNow).Milliseconds < (Immediate ? 1 : Speed)) ;
 					//if ((timeNow - lastUpdate).Milliseconds >= Speed)
@@ -582,8 +577,6 @@ namespace Noxico
 					}
 				}
 				CurrentBoard.Draw();
-				//UpdateMessages();
-				DrawMessages();
 				DrawSidebar();
 
 				if (Mode == UserMode.Aiming)
@@ -638,30 +631,6 @@ namespace Noxico
 
 		private static void SetStatus(string text, int progress, int maxProgress)
 		{
-			/*
-			var window = new UIWindow(string.Empty)
-			{
-				Left = 15,
-				Top = 24,
-				Width = 70,
-				Height = 7,
-			};
-			var label = new UILabel(text)
-			{
-				Left = 17,
-				Top = 26,
-			};
-			window.Draw();
-			label.Draw();
-			if (progress + maxProgress != 0)
-			{
-				var length = 66;
-				var filled = (int)Math.Floor(((float)progress / (float)maxProgress) * (float)length);
-				for (var i = 0; i < length; i++)
-					HostForm.SetCell(28, 17 + i, ' ', Color.White, i < filled ? UIColors.LightBackground : UIColors.DarkBackground);
-			}
-			HostForm.Draw();
-			*/
 			if (progress + maxProgress > 0)
 			{
 				text = string.Format("{0} - {1}/{2}", text, progress, maxProgress);
@@ -882,7 +851,6 @@ namespace Noxico
 								chosenCitizen.RestockVendor();
 							}
 
-							//if (!townGen.Culture.Demonic) 
 							townBoards.Add(thisBoard);
 						}
 					}
@@ -942,7 +910,6 @@ namespace Noxico
 						};
 						thisBoard.Warps.Add(newWarp);
 						thisBoard.SetTile(eY, eX, "dungeonEntrance");
-						//thisBoard.SetTile(eY, eX, '>', Color.Silver, Color.Black);
 
 						dungeonEntrances++;
 					}
@@ -994,7 +961,6 @@ namespace Noxico
 				}
 				if (options.Count == 0)
 				{
-					//return null;
 					if (maxWater < 2000)
 					{
 						maxWater *= 2;
@@ -1075,15 +1041,14 @@ namespace Noxico
 				if (!Mix.FileExists(luaFile))
 					continue;
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				var luaCode = Mix.GetString(luaFile);
-				env.DoChunk(luaCode, "lol.lua");
+				Lua.RunFile(luaFile, env);
 			}
 		}
 
 		public void CreatePlayerCharacter(string name, Gender bioGender, Gender idGender, int preference, string bodyplan, Dictionary<string, string> colorMap, string bonusTrait)
 		{
 			Board.HackishBoardTypeThing = "wild";
-			var pc = Character.Generate(bodyplan, bioGender, idGender);
+			var pc = Character.Generate(bodyplan, bioGender, idGender, Realms.Nox);
 			var pref = pc.GetToken("sexpreference");
 			if (pref == null)
 				pref = pc.AddToken("sexpreference");
@@ -1115,13 +1080,6 @@ namespace Noxico
 				}
 			}
 
-			/*
-			pc.Path("skin/color").Text = bodyColor;
-			if (pc.Path("skin/type").Text != "slime" && pc.Path("hair/color") != null)
-				pc.Path("hair/color").Text = hairColor;
-			if (pc.HasToken("eyes"))
-				pc.GetToken("eyes").Text = eyeColor;
-			*/
 			foreach (var color in colorMap)
 			{
 				var colorToken = pc.Path(color.Key);
@@ -1235,9 +1193,6 @@ namespace Noxico
 			Player.Character.CheckHasteSlow();
 			Player.Character.UpdateTitle();
 			Player.AdjustView();
-
-			//InGame = true;
-			//SaveGame();
 		}
 
 		public static string RollWorldName()
@@ -1326,8 +1281,111 @@ namespace Noxico
 		public static void DrawSidebar()
 		{
 			var player = HostForm.Noxico.Player;
+			if (NoxicoGame.Subscreen == Introduction.StoryHandler || NoxicoGame.Subscreen == Introduction.CharacterCreator)
+				return;
+			if (player == null || player.Character == null)
+				return;
 
-			for (var row = 0; row < 60; row++)
+			for (var row = 21; row < 25; row++)
+				for (var col = 0; col < 80; col++)
+					HostForm.SetCell(row, col, ' ', Color.DarkGray, Color.Black);
+
+			for (var col = 0; col < 80; col++)
+				HostForm.SetCell(20, col, 0xCD, Color.DarkGray, Color.Black);
+			for (var row = 21; row < 25; row++)
+				HostForm.SetCell(row, 66, 0xB3, Color.DarkGray, Color.Black);
+			HostForm.SetCell(20, 66, 0xD1, Color.DarkGray, Color.Black);
+
+			var character = player.Character;
+
+			var statNames = new Dictionary<string, string>()
+			{
+				{ "Charisma", "\x2C0\x2C1" },
+				{ "Climax", "\x2C2\x2C3" },
+				{ "Cunning", "\x2C4\x2C5" },
+				{ "Carnality", "\x2C6\x2C7" },
+				{ "Stimulation", "\x2C8\x2C9" },
+				{ "Sensitivity", "\x2CA\x2CB" },
+				{ "Speed", "\x2CA\x2CC" },
+				{ "Strength", "\x2CD\x2CE" }
+			};
+			var statRow = 21;
+			var statCol = 67;
+			foreach (var stat in statNames)
+			{
+				var color = " <cGray>";
+					var statBonus = character.GetToken(stat.Key.ToLowerInvariant() + "bonus").Value;
+				var statBase = character.GetToken(stat.Key.ToLowerInvariant()).Value;
+				var total = (int)statBase + statBonus;
+				if (statBonus > 0)
+					color = " <cWhite>";
+				else if (statBonus < 0)
+					color = " <cMaroon>";
+				HostForm.Write(stat.Value + color + total, Color.Silver, Color.Transparent, statRow, statCol);
+				statRow++;
+				if (statRow == 25)
+				{
+					statRow = 21;
+					statCol = 74;
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(LookAt))
+			{
+				var hpNow = character.Health;
+				var hpMax = character.MaximumHealth;
+				var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
+				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 20, 2);
+				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 20, 2);
+				HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, 20, 3);
+
+				HostForm.SetCell(20, 21, player.Glyph, player.ForegroundColor, player.BackgroundColor);
+				switch (character.Gender)
+				{
+					case Gender.Male:
+						HostForm.SetCell(20, 23, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
+						break;
+					case Gender.Female:
+						HostForm.SetCell(20, 23, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
+						break;
+					case Gender.Herm:
+						HostForm.SetCell(20, 23, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
+						break;
+				}
+				HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 20, 25);
+
+				var sb = new StringBuilder();
+				if (character.HasToken("haste"))
+					sb.Append(i18n.GetString("mod_haste"));
+				if (character.HasToken("slow"))
+					sb.Append(i18n.GetString("mod_slow"));
+				if (character.HasToken("flying"))
+					sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
+				if (character.HasToken("swimming"))
+				{
+					if (character.GetToken("swimming").Value == -1)
+						sb.Append(i18n.GetString("mod_swimmingunl"));
+					else
+						sb.Append(i18n.Format("mod_swimming", Math.Floor((character.GetToken("swimming").Value / 20) * 100)));
+				}
+				var mods = sb.ToString();
+				HostForm.Write(mods, Color.Silver, Color.Transparent, 20, 79 - mods.Length());
+			}
+			else
+			{
+				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 2);
+			}
+
+			if (!string.IsNullOrWhiteSpace(ContextMessage))
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length() - 2);
+
+			DrawMessages();
+
+			//Old sidebar code left here for cannibalization purposes.
+			/*
+			var player = HostForm.Noxico.Player;
+
+			for (var row = 0; row < 30; row++)
 				for (var col = 80; col < 100; col++)
 					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
 
@@ -1468,6 +1526,7 @@ namespace Noxico
 					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
 				}
 			}
+
 			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
 			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
 				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
@@ -1475,30 +1534,33 @@ namespace Noxico
 			if (!string.IsNullOrWhiteSpace(ContextMessage))
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
 #if DEBUG
-			HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 49, 81);
+			//HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
+			HostForm.Write(string.Format("{0}x{1}", player.XPosition, player.YPosition), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
 #endif
+			*/
+			//...he says while *removing* all manner of old commented-out bits.
 		}
 
 		public static void CheckForTutorialStuff()
 		{
 			//We can assume this is only invoked when we -have- a tutorial token.
-			var player = NoxicoGame.HostForm.Noxico.Player.Character;
+			var player = NoxicoGame.Me.Player.Character;
 			var tutorial = player.GetToken("tutorial");
 			if (tutorial.HasToken("dointeractmode"))
 			{
 				tutorial.AddToken("interactmode");
-				MessageBox.Notice(i18n.Entitize("\uE2FEExactly like that, yes.\n\nYou can move the targeting cursor around the same way you moved your character, then press \uE20A to call up a menu of interactions for whatever you aimed at.\n\nAlso, you can press \uE20E to more quickly aim at various things."), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, string.Empty, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("firstmoves") && tutorial.Value > 5)
 			{
 				tutorial.Value = 0;
 				tutorial.AddToken("firstmoves");
-				MessageBox.Notice(i18n.Entitize("\uE2FEWelcome to Noxico.\n\nYou probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: \uE207. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!"), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, string.Empty, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("flying") && player.HasToken("wings") && !player.GetToken("wings").HasToken("small"))
 			{
 				tutorial.AddToken("flying");
-				MessageBox.Notice(i18n.Entitize("\uE2FEIt seems you have functional wings.\n\nAs long as you have enough headroom, you can take flight by pressing \uE208. Press it again to land, but be careful where you do that!"), true, "", "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, string.Empty, "tutorichel.png");
 			}
 		}
 	}

@@ -1049,9 +1049,6 @@ namespace Noxico
 
 			if (!(plan.HasToken("maleonly") || plan.HasToken("neuteronly")))
 			{
-				if (!plan.HasToken("fertility"))
-					missing.Add("fertility");
-				
 				if (plan.HasToken("vagina"))
 				{
 					var vaginas = plan.Tokens.FindAll(x => x.Name == "vagina");
@@ -1065,20 +1062,17 @@ namespace Noxico
 				else
 					missing.Add("vagina");
 
-				if (plan.HasToken("breastrow"))
+				if (plan.HasToken("breasts"))
 				{
-					var breastrows = plan.Tokens.FindAll(x => x.Name == "breastrow");
-					foreach (var b in breastrows)
-					{
-						foreach (var t in new[] { "amount", "size" })
-							if (!b.HasToken(t))
-								missing.Add("breastrow/" + t);
-					}
+					var boobs = plan.GetToken("breasts");
+					foreach (var t in new[] { "amount", "size" })
+						if (!boobs.HasToken(t))
+							missing.Add("breasts/" + t);
 				}
 				else if (!plan.HasToken("quadruped"))
 				{
-					//Only consider missing breastrows a problem if the character is not a quadruped.
-					missing.Add("breastrow");
+					//Only consider missing breasts a problem if the character is not a quadruped.
+					missing.Add("breasts");
 				}
 			}
 

@@ -73,7 +73,15 @@ namespace Noxico
 				var plan = culture.Bodyplans[Random.Next(culture.Bodyplans.Length)];
 				if (i > 0 && Random.NextDouble() > 0.7)
 					plan = firstPlan;
-				c = Character.Generate(plan, count == 1 ? Gender.RollDice : (i == 0 ? Gender.Male : Gender.Female));
+				Realms world;
+				switch (culture.ID)
+				{
+					case "human" : world = Realms.Nox; break;
+					case "seradevar" : world = Realms.Seradevari; break;
+					default : world = Realms.Nox; break;
+				}
+				var myGender = count == 1 ? Gender.RollDice : (i == 0 ? Gender.Male : Gender.Female);
+				c = Character.Generate(plan, myGender, myGender, world);
 				if (i == 0)
 				{
 					familyName = c.Name.Surname;
@@ -232,7 +240,7 @@ namespace Noxico
 								case '\'':
 									continue;
 								case ',':
-									def = "pathWay"; // TODO kind of ugly but does the job
+									def = "pathWay"; // FIXME: kind of ugly but does the job
 									break;
 								case '.':
 									def = "woodFloor";
@@ -294,7 +302,8 @@ namespace Noxico
 													ForegroundColor = Color.Black,
 													BackgroundColor = tileDef.Background,
 													ID = "Bed_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
-													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt()),
+													//TODO: I18N
+													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt(true)),
 													ParentBoard = Board,
 												};
 												Board.Entities.Add(newBed);

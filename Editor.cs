@@ -75,7 +75,7 @@ namespace Noxico
 		{
 			GlyphSelector.Init();
 			highlight = new SolidBrush(Color.FromArgb(128, 64, 64, 255));
-			this.ClientSize = new Size(512, 512);
+			this.ClientSize = new Size(256, 512);
 			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			Paint += new PaintEventHandler(GlyphSelectorForm_Paint);
 			MouseUp += new MouseEventHandler(GlyphSelectorForm_MouseUp);
@@ -83,16 +83,16 @@ namespace Noxico
 
 		void GlyphSelectorForm_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.DrawImage(GlyphSelector.Sheet, 0, 0, 512, 512);
+			e.Graphics.DrawImage(GlyphSelector.Sheet, 0, 0, 256, 512);
 			var val = Value - 32;
-			e.Graphics.FillRectangle(highlight, (val % 32) * 16, (val / 32) * 16, 16, 16);
-			e.Graphics.FillRectangle(highlight, 0, (val / 32) * 16, 512, 16);
-			e.Graphics.FillRectangle(highlight, (val % 32) * 16, 0, 16, 512);
+			e.Graphics.FillRectangle(highlight, (val % 32) * 8, (val / 32) * 16, 8, 16);
+			e.Graphics.FillRectangle(highlight, 0, (val / 32) * 16, 256, 16);
+			e.Graphics.FillRectangle(highlight, (val % 32) * 8, 0, 8, 512);
 		}
 
 		void GlyphSelectorForm_MouseUp(object sender, MouseEventArgs e)
 		{
-			var x = e.X / 16;
+			var x = e.X / 8;
 			var y = e.Y / 16;
 			if (x < 0 || y < 0 || x >= 32 || y >= 32)
 				return;
@@ -107,7 +107,7 @@ namespace Noxico
 		public static void Init()
 		{
 			if (Sheet == null)
-				Sheet = Mix.GetBitmap("fonts\\8x8-bold.png");
+				Sheet = Mix.GetBitmap("fonts\\8x16-bold.png");
 		}
 
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
@@ -133,7 +133,7 @@ namespace Noxico
 			Init();
 			var val = (int)e.Value - 32;
 			var dest = e.Bounds;
-			var src = new System.Drawing.Rectangle((val % 32) * 8, (val / 32) * 8, 8, 8);
+			var src = new System.Drawing.Rectangle((val % 32) * 8, (val / 32) * 16, 8, 16);
 			e.Graphics.DrawImage(GlyphSelector.Sheet, dest, src, GraphicsUnit.Pixel);
 		}
 

@@ -14,11 +14,40 @@ namespace Noxico
 			if (target == null)
 				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
 
+			// fix: added a default penis to prevent null exceptions when not having suitable TargetPenis 
+			if (!target.HasToken("penis"))
+			{
+				target.AddToken("penis");
+				target.GetToken("penis").AddToken("thickness").Value = 2;
+				target.GetToken("penis").AddToken("length").Value = 15;
+			}
+
+			if (target.HasToken("femaleonly"))
+				targetGender = Gender.Female;
+			else if (target.HasToken("maleonly"))
+				targetGender = Gender.Male;
+			else if (target.HasToken("hermonly"))
+				targetGender = Gender.Herm;
+			else if (target.HasToken("neuteronly"))
+				targetGender = Gender.Neuter;
+
+			if (targetGender == Gender.RollDice)
+			{
+				var min = 1;
+				var max = 4;
+				if (target.HasToken("normalgenders"))
+					max = 2;
+				else if (target.HasToken("neverneuter"))
+					max = 3;
+				var g = Random.Next(min, max + 1);
+				targetGender = (Gender)g;
+			}
+
 			var meta = new[] { "playable", "culture", "namegen", "bestiary", "femalesmaller", "costume", "_either", "items" };
 			var simpleTraits = new[] { "fireproof", "aquatic" };
 			var trivialSizes = new[]
 			{
-				"tallness", "hips", "waist", "fertility", "ass/size",
+				"tallness", "hips", "waist", "ass/size",
 				"charisma", "cunning", "carnality", "sensitivity", "speed", "strength"
 			};
 			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };
@@ -64,25 +93,8 @@ namespace Noxico
 				if (growOrShrink == 0)
 					continue;
 
-				var description = "[views] " + trivialSize + (growOrShrink > 0 ? " increases" : " decreases");
-				//TODO: replace with a better i18n-based way to work.
-				//Perhaps a key like "morph_tallness_1" or "morph_hips_-1".
-				//For now, these'll do.
-				switch (trivialSize)
-				{
-					case "tallness":
-						description = "[view] grow{s} a bit " + (growOrShrink > 0 ? "taller" : "shorter");
-						break;
-					case "hips":
-						description = "[views] hips " + (growOrShrink > 0 ? "flare out some more" : "become smaller");
-						break;
-					case "waist":
-						description = "[views] waist grows " + (growOrShrink > 0 ? "a bit wider" : "a bit less wide");
-						break;
-				}
-
 				var change = new Token(trivialSize, now + (growOrShrink * Random.Next(1, 3)));
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.GetString("morphpart_" + trivialSize.Replace('/', '_') + '_' + growOrShrink));
 				possibleChanges.Add(change);
 			}
 			#endregion
@@ -109,11 +121,8 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeKind))
 					continue;
 
-				var description = "[views] " + trivialKind + " turns " + changeKind;
-				//TODO: similar as trivialSize above.
-
 				var change = new Token(trivialKind, changeKind);
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.GetString("morphpart_" + trivialKind + '_' + changeKind));
 				possibleChanges.Add(change);
 			}
 			#endregion
@@ -139,18 +148,15 @@ namespace Noxico
 				if (string.IsNullOrWhiteSpace(changeColor))
 					continue;
 
-				var description = "[views] " + trivialColor + " turns " + changeColor;
-				//TODO: similar as trivialSize above.
-
 				var change = new Token(trivialColor, changeColor);
-				change.AddToken("$", description);
+				change.AddToken("$", i18n.Format("morphpart_eyes_x", changeColor));
 				possibleChanges.Add(change);
 			}
 			#endregion
 
 			#region Skin
 			{
-				//TODO: RULE: a slime does NOT NEED to have a slimeblob, but a nonslime MAY NEVER have one.
+				//RULE: a slime does NOT NEED to have a slimeblob, but a nonslime MAY NEVER have one.
 				var skinNow = this.GetToken("skin");
 				var skinThen = target.GetToken("skin");
 				var skinTypeNow = skinNow.GetToken("type").Text;
@@ -175,9 +181,8 @@ namespace Noxico
 				}
 				if (skinTypeNow != skinTypeThen)
 				{
-					var description = "[views] body turns to " + skinColorThen + " " + skinTypeThen;
 					var change = new Token("skin/type", skinTypeThen);
-					change.AddToken("$", 0, description);
+					change.AddToken("$", 0, i18n.Format("morphpart_skin_" + skinTypeThen, skinColorThen));
 					change.AddToken("skin/color", skinColorThen);
 					possibleChanges.Add(change);
 
@@ -191,22 +196,21 @@ namespace Noxico
 							var options = legsThen.Substring(legsThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 							legsThen = Toolkit.PickOne(options);
 						}
-						var newChange = change.AddToken("$", "[views] lower body reforms into a pair of " + legsThen + " legs.");
+						var newChange = change.AddToken("$", i18n.GetString("morphpart_slime_" + legsThen));
 						newChange.AddToken("legs", legsThen);
 					}
 					else if (skinTypeThen == "slime")
 					{
 						var newChange = new Token("_add", "slimeblob");
-						newChange.AddToken("$", 0, "[views] legs dissolve into a puddle of goop.");
+						newChange.AddToken("$", 0, i18n.GetString("morphpart_slime_blob"));
 						newChange.AddToken("_remove", "legs");
 						change.AddToken(newChange);
 					}
 				}
 				else if (skinColorNow != skinColorThen)
 				{
-					var description = "[views] body turns " + skinColorThen;
 					var change = new Token("skin/color", skinColorThen);
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.Format("morphpart_skin_color", skinColorThen));
 					possibleChanges.Add(change);
 				}
 			}
@@ -232,9 +236,8 @@ namespace Noxico
 					}
 					if (hairColorNow != hairColorThen)
 					{
-						var description = "[views] hair turns " + hairColorThen;
 						var change = new Token("hair/color", hairColorThen);
-						change.AddToken("$", 0, description);
+						change.AddToken("$", 0, i18n.Format("morphpart_hair_color", hairColorThen));
 						possibleChanges.Add(change);
 					}
 				}
@@ -258,31 +261,29 @@ namespace Noxico
 					//Change tails
 					if (tailThen.Text != tailNow.Text)
 					{
-						var description = "[views] tail becomes " + tailThen.Text + "-like";
 						var change = new Token("tail", tailThen.Text);
-						change.AddToken("$", description);
+						change.AddToken("$", i18n.GetString("morphpart_tail_" + tailThen.Text));
 						possibleChanges.Add(change);
 					}
 				}
 				else if (tailNow == null && tailThen != null)
 				{
 					//Grow a tail
-					var description = "[view] grow{s} a " + tailThen.Text + "-like tail";
 					var change = new Token("tail", tailThen.Text);
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.GetString("morphpart_gettail_" + tailThen.Text));
 					possibleChanges.Add(change);
 				}
 				else if (tailNow != null && tailThen == null)
 				{
 					//Lose a tail
-					var description = "[views] tail disappears";
 					var change = new Token("_remove", "tail");
-					change.AddToken("$", description);
+					change.AddToken("$", i18n.GetString("morphpart_tail_lose"));
 					possibleChanges.Add(change);
 				}
 			}
 			#endregion
 
+			//TODO: i18n this.
 			#region Wings
 			{
 				var wingsNow = this.GetToken("wings");
@@ -346,7 +347,7 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Needs more testing.
+			//TODO: Needs more testing. Also, i18n this after.
 			#region Legs
 			if (target.HasToken("legs") && !this.HasToken("legs"))
 			{
@@ -453,161 +454,179 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Breastrows
+			//TODO: Breasts
 
 			//TODO: Vaginas
 
+			//TODO: Rewrite this to simplify into a single penis token, assuming a dualcock has two identical ones.
 			#region Penis
+			//if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
+			if (targetGender == Noxico.Gender.Male || targetGender == Noxico.Gender.Herm)
 			{
-				if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
+				if (target.HasToken("penis") && !this.HasToken("penis"))
 				{
-					//Grow at least one dick or change one
-					var targetDicks = target.Tokens.Where(t => t.Name == "penis").ToList();
-					var sourceDicks = this.Tokens.Where(t => t.Name == "penis").ToList();
-					if (sourceDicks.Count < targetDicks.Count)
+					//Grow a dick, since we have none.
+
+					var targetDick = target.GetToken("penis");
+					var change = new Token("_add", "penis");
+					change.AddToken("penis", targetDick.Text);
+					change.AddToken("_addto/penis", "thickness");
+					var targetThickness = targetDick.GetToken("thickness");
+					if (targetThickness.Text.StartsWith("roll"))
 					{
-						//Not enough dicks right now.
-						var change = new Token("_add", "penis");
-						var targetDick = targetDicks[sourceDicks.Count];
-						change.AddToken("penis[" + sourceDicks.Count + "]", targetDick.Text);
-						change.AddToken("_addto/penis[" + sourceDicks.Count + "]", "thickness");
-						var targetThickness = targetDick.GetToken("thickness");
-						if (targetThickness.Text.StartsWith("roll"))
+						var xDyPz = targetThickness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetThickness.Value = min;
+					}
+					change.AddToken("penis/thickness", targetThickness.Value);
+					var targetLength = targetDick.GetToken("length");
+					if (targetLength.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetLength.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetLength.Value = min;
+					}
+					change.AddToken("_addto/penis", "length");
+					change.AddToken("penis/length", targetLength.Value / 2);
+					change.AddToken("$", i18n.Format("morphpart_grow_dick", targetDick.Text));
+					possibleChanges.Add(change);
+				}
+				else
+				{
+					//Change a dick.
+
+					var sourceDick = this.GetToken("penis");
+					var targetDick = target.GetToken("penis");
+					var targetLength = targetDick.GetToken("length");
+					var targetThickness = targetDick.GetToken("thickness");
+					var splitOrJoin = 0;
+					var growOrShrink = 0;
+					var thickOrThin = 0;
+
+					if (targetDick.HasToken("dual") && !sourceDick.HasToken("dual"))
+						splitOrJoin = 1;
+					else if (!targetDick.HasToken("dual") && sourceDick.HasToken("dual"))
+						splitOrJoin = -1;
+
+					var now = sourceDick.GetToken("length").Value;
+					if (!string.IsNullOrWhiteSpace(targetLength.Text) && targetLength.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetLength.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							growOrShrink = 1;
+						else if (now > max)
+							growOrShrink = -1;
+					}
+					else
+					{
+						var then = targetLength.Value;
+						if (now < then)
+							growOrShrink = 1;
+						else if (now > then)
+							growOrShrink = -1;
+					}
+					if (targetGender == Noxico.Gender.Female || targetGender == Noxico.Gender.Neuter)
+						growOrShrink = -1;
+
+					now = sourceDick.GetToken("thickness").Value;
+					if (!string.IsNullOrWhiteSpace(targetThickness.Text) && targetThickness.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetThickness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							thickOrThin = 1;
+						else if (now > max)
+							thickOrThin = -1;
+					}
+					else
+					{
+						var then = targetThickness.Value;
+						if (now < then)
+							thickOrThin = 1;
+						else if (now > then)
+							thickOrThin = -1;
+					}
+
+					Token change = null;
+
+					if (splitOrJoin != 0 && Random.Flip())
+					{
+						if (splitOrJoin == 1)
 						{
-							var xDyPz = targetThickness.Text;
-							var range = 0;
-							var plus = 0;
-							xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
-							ParseRoll(xDyPz, out range, out plus);
-							var min = plus;
-							targetThickness.Value = min;
+							change = new Token("_addto/penis", "dual");
+							change.AddToken("$", i18n.GetString("morphpart_cock_split"));
 						}
-						change.AddToken("penis[" + sourceDicks.Count + "]/thickness", targetThickness.Value);
-						var targetLength = targetDick.GetToken("length");
-						if (targetLength.Text.StartsWith("roll"))
+						else
 						{
-							var xDyPz = targetLength.Text;
-							var range = 0;
-							var plus = 0;
-							xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
-							ParseRoll(xDyPz, out range, out plus);
-							var min = plus;
-							targetLength.Value = min;
+							if (splitOrJoin == -1)
+							{
+								change = new Token("_removefrom/penis", "dual");
+								change.AddToken("$", i18n.GetString("morphpart_cock_join"));
+							}
 						}
-						change.AddToken("_addto/penis[" + sourceDicks.Count + "]", "length");
-						change.AddToken("penis[" + sourceDicks.Count + "]/length", targetLength.Value / 2);
-						change.AddToken("$", "[view] grow{s} a " + targetDick.Text + " penis");
+					}
+					else
+					{
+						if (growOrShrink != 0)
+							change = new Token("penis/length", sourceDick.GetToken("length").Value + growOrShrink);
+						if (thickOrThin != 0)
+						{
+							if (change == null)
+								change = new Token("penis/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
+							else
+								change.AddToken("penis/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
+						}
+
+						//I18N this with morphpart_penis_-1_-1 etc
+						change.AddToken("$", i18n.GetString("morphpart_penis_" + growOrShrink + "_" + thickOrThin));
+					}
+
+					if (change != null)
+						possibleChanges.Add(change);
+				}
+			}
+			else if (target.HasToken("femaleonly") || targetGender == Gender.Female)
+			{
+				if (this.HasToken("penis"))
+				{
+					var sourceDick = this.GetToken("penis");
+					if (sourceDick.GetToken("length").Value > 2)
+					{
+						var change = new Token("penis/length", sourceDick.GetToken("length").Value * 0.25f);
+						change.AddToken("$", i18n.GetString("morphpart_penis_-1_0"));
 						possibleChanges.Add(change);
 					}
-					//else
+					else
 					{
-						//Compare sizes
-						for (var i = 0; i < sourceDicks.Count; i++)
-						{
-							var sourceDick = sourceDicks[i];
-							var targetDick = targetDicks[i < targetDicks.Count ? i : targetDicks.Count - 1];
-							var targetLength = targetDick.GetToken("length");
-							var targetThickness = targetDick.GetToken("thickness");
-							var growOrShrink = 0;
-							var thickOrThin = 0;
-							var now = sourceDick.GetToken("length").Value;
-							if (!string.IsNullOrWhiteSpace(targetLength.Text) && targetLength.Text.StartsWith("roll"))
-							{
-								var xDyPz = targetLength.Text;
-								var range = 0;
-								var plus = 0;
-								xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
-								ParseRoll(xDyPz, out range, out plus);
-								var min = plus;
-								var max = min + range;
-								if (now < min)
-									growOrShrink = 1;
-								else if (now > max)
-									growOrShrink = -1;
-							}
-							else
-							{
-								var then = targetLength.Value;
-								if (now < then)
-									growOrShrink = 1;
-								else if (now > then)
-									growOrShrink = -1;
-							}
-							now = sourceDick.GetToken("thickness").Value;
-							if (!string.IsNullOrWhiteSpace(targetThickness.Text) && targetThickness.Text.StartsWith("roll"))
-							{
-								var xDyPz = targetThickness.Text;
-								var range = 0;
-								var plus = 0;
-								xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
-								ParseRoll(xDyPz, out range, out plus);
-								var min = plus;
-								var max = min + range;
-								if (now < min)
-									thickOrThin = 1;
-								else if (now > max)
-									thickOrThin = -1;
-							}
-							else
-							{
-								var then = targetThickness.Value;
-								if (now < then)
-									thickOrThin = 1;
-								else if (now > then)
-									thickOrThin = -1;
-							}
-
-							Token change = null;
-							if (growOrShrink == 1 && thickOrThin == 0)
-								change = new Token("penis[" + i + "]/length", sourceDick.GetToken("length").Value + growOrShrink);
-							else if (growOrShrink == 1 && thickOrThin == 1)
-							{
-								change = new Token("penis[" + i + "]/length", sourceDick.GetToken("length").Value + growOrShrink);
-								change.AddToken("penis[" + i + "]/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
-							}
-							else if (growOrShrink == 0 && thickOrThin == 1)
-								change = new Token("penis[" + i + "]/thickness", sourceDick.GetToken("thickness").Value + (thickOrThin * 0.25f));
-
-							if (change != null)
-							{
-								if (sourceDicks.Count > 1)
-								{
-									if (growOrShrink == 1 && thickOrThin == 0)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
-									else if (growOrShrink == 1 && thickOrThin == 1)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
-									else if (growOrShrink == 0 && thickOrThin == 1)
-										change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
-								}
-								else
-								{
-									if (growOrShrink == 1 && thickOrThin == 0)
-										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter"));
-									else if (growOrShrink == 1 && thickOrThin == 1)
-										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "longer" : "shorter") + " and " + (thickOrThin > 0 ? "thicker" : "thinner"));
-									else if (growOrShrink == 0 && thickOrThin == 1)
-										change.AddToken("$", "[views] [?:cock] grows " + (growOrShrink > 0 ? "thicker" : "thinner"));
-								}
-								possibleChanges.Add(change);
-							}
-
-							//TODO: allow oneof
-							if (sourceDick.Text != targetDick.Text)
-							{
-								change = new Token("penis[" + i + "]", targetDick.Text);
-								if (sourceDicks.Count > 1)
-									change.AddToken("$", "[views] " + (i + 1).Ordinal() + " [?:cock] becomes " + targetDick.Text);
-								else
-									change.AddToken("$", "[views] [?:cock] becomes " + targetDick.Text);
-								possibleChanges.Add(change);
-							}
-						}
+						var change = new Token("_remove", "penis");
+						change.AddToken(new Token("_remove", "balls"));
+						change.AddToken("$", i18n.GetString("morphpart_lose_dick"));
 					}
-				}
-				else if (target.HasToken("femaleonly") || targetGender == Gender.Female)
-				{
-					//TODO: Shrink/remove dicks
-
+					if (sourceDick.HasToken("dual") && Random.Flip())
+					{
+						var change = new Token("_removefrom/penis", "dual");
+						change.AddToken("$", i18n.GetString("morphpart_cock_join"));
+						possibleChanges.Add(change);
+					}
 				}
 			}
 			#endregion
@@ -639,45 +658,38 @@ namespace Noxico
 			}
 			if (changes.Count == 0)
 			{
-				feedback = "Nothing happens.";
+				feedback = i18n.GetString("morphfinal_nothing");
 				return;
 			};
 
 			var feedbackBuilder = new StringBuilder();
 			if (feedbacks.Count == 1)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_1", feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]")));
 			}
 			else if (feedbacks.Count == 2)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(" and ");
-				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_2",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]")));
 			}
 			else if (feedbacks.Count == 3)
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(", ");
-				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(", and ");
-				feedbackBuilder.Append(feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_3",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"),
+					feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]")));
 			}
 			else
 			{
-				feedbackBuilder.Append(feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
-				feedbackBuilder.Append(". ");
-				feedbackBuilder.Append(feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]"));
+				feedbackBuilder.Append(i18n.Format("morphfinal_n1",
+					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
+					feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]")));
 				for (var i = 2; i < feedbacks.Count - 1; i++)
 				{
-					feedbackBuilder.Append(", ");
-					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+					feedbackBuilder.Append(i18n.Format("morphfinal_n2", feedbacks[i].Replace("[views]", "[yourornames]").Replace("[view]", "[youorname]")));
 				}
-				feedbackBuilder.Append(", and ");
-				feedbackBuilder.Append(feedbacks[feedbacks.Count - 1].Replace("[views]", "[his]").Replace("[view]", "[he]"));
-				feedbackBuilder.Append(".");
+				feedbackBuilder.Append(i18n.Format("morphfinal_n3", feedbacks[feedbacks.Count - 1].Replace("[views]", "[he]").Replace("[view]", "[he]")));
 			}
 			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
 			feedback = feedbackBuilder.ToString().Viewpoint(this);
@@ -687,6 +699,13 @@ namespace Noxico
 				if (change.Name == "_remove")
 				{
 					this.RemoveToken(change.Text);
+					continue;
+				}
+				if (change.Name == "_removefrom/")
+				{
+					var path = this.Path(change.Name.Substring(12));
+					if (path != null)
+						path.RemoveToken(change.Text);
 					continue;
 				}
 				if (change.Name == "_add")

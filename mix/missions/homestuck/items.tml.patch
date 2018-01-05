@@ -31,7 +31,7 @@ add: -
 			damage: 100
 			skill: warhammer
 			attacktype: crush
-		description: "An impressive but sorta goofy-looking double-headed warhammer that has irons on both ends. As in, household appliances."
+		description: "An impressive but sort of goofy-looking double-headed war hammer that has irons on both ends. As in, household appliances."
 		ascii
 			char: 0x192
 			fore: lime

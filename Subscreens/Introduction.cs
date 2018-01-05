@@ -48,7 +48,7 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
-				var background = new Bitmap(100, 60, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				var background = new Bitmap(Program.Cols, Program.Rows * 2, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				var logo = Mix.GetBitmap("logo.png");
 				var titleOptions = Mix.GetFilesWithPattern("titles\\*.png");
 				var chosen = Mix.GetBitmap(titleOptions[Random.Next(titleOptions.Length)]);
@@ -57,16 +57,16 @@ namespace Noxico
 				using (var gfx = Graphics.FromImage(background))
 				{
 					gfx.Clear(Color.Black);
-					gfx.DrawImage(chosen, 0, 0, 100, 60);
+					gfx.DrawImage(chosen, 0, 0, Program.Cols, Program.Rows * 2);
 					gfx.DrawImage(logo, 0, 0, logo.Width, logo.Height);
 				}
 				UIManager.Initialize();
 				titleBack = new UIPNGBackground(background);
 
 				var subtitle = i18n.GetString("ts_subtitle");
-				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC4\xC4\xC4\xC4\xC4";
-				titleCaption = new UILabel(subtitle) { Top = 20, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal };
-				titlePressEnter = new UILabel(pressEnter) { Top = 22, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray };
+				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
+				titleCaption = new UILabel(subtitle) { Top = 10, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal };
+				titlePressEnter = new UILabel(pressEnter) { Top = 12, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray };
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
@@ -137,12 +137,12 @@ namespace Noxico
 						{
 							NoxicoGame.WorldName = (string)MessageBox.Answer;
 							host.Noxico.LoadGame();
-							NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+							NoxicoGame.Me.CurrentBoard.Draw();
 							Subscreens.FirstDraw = true;
 							NoxicoGame.Immediate = true;
 							NoxicoGame.AddMessage(i18n.GetString("welcomeback"), Color.Yellow);
 							NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
-							//TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player);
+							//TextScroller.LookAt(NoxicoGame.Me.Player);
 							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 					}
@@ -224,9 +224,7 @@ namespace Noxico
 				var editables = "skin/color|Skin color, hair/color|Hair color"; //path|Label, path|Label...
 				if (bodyPlan.HasToken("editable"))
 					editables = bodyPlan.GetToken("editable").Text;
-				//TODO: use more metric variables and adjust them according to the amount of editables.
-				//See http://i.imgur.com/iC18KAa.png for visual aids.
-				var top = 10;
+				var top = 5;
 				foreach (var aspect in editables.Split(','))
 				{
 					if (string.IsNullOrWhiteSpace(aspect))
@@ -239,7 +237,7 @@ namespace Noxico
 						t = t.Substring(6);
 					var oneof = t.Split(',').ToList();
 					var items = new List<string>();
-					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 56, Top = top, Foreground = Color.Gray });
+					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 42, Top = top, Foreground = Color.Gray });
 					foreach (var i in oneof)
 					{
 						var iT = i.Trim().Titlecase();
@@ -252,11 +250,11 @@ namespace Noxico
 					{
 						for (var i = 0; i < items.Count; i++)
 							items[i] = Color.NameColor(items[i]).Titlecase();
-						colorItems.Add(path, new UIColorList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
+						colorItems.Add(path, new UIColorList() { Items = items, Left = 44, Top = top + 1, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					}
 					else
-						colorItems.Add(path, new UISingleList() { Items = items, Left = 58, Top = top + 1, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
-					top += 4;
+						colorItems.Add(path, new UISingleList() { Items = items, Left = 44, Top = top + 1, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
+					top += 2;
 				}
 
 				playables.Add(new PlayableRace() { ID = id, Name = name, Bestiary = bestiary, ColorItems = colorItems, SexLocks = sexlocks });
@@ -270,11 +268,11 @@ namespace Noxico
 		private static Dictionary<string, UIElement> controls;
 		private static List<UIElement>[] pages;
 		private static Dictionary<string, string> controlHelps;
-		private static Dictionary<string, Bitmap> portraits;
+		//private static Dictionary<string, Bitmap> portraits;
 
 		private static int page = 0;
-		private static Action<int> loadPage, loadColors, redrawBackdrop;
-		private static Bitmap backdrop, backWithPortrait;
+		private static Action<int> loadPage, loadColors; //, redrawBackdrop;
+		private static Bitmap backdrop; //, backWithPortrait;
 
 		/// <summary>
 		/// Don't see a Subscreen with multiple handlers often...
@@ -286,7 +284,7 @@ namespace Noxico
 				//Start creating the world as we work...
 				if (worldgen == null) //Conditional added by Mat.
 				{
-					worldgen = new System.Threading.Thread(NoxicoGame.HostForm.Noxico.CreateRealm);
+					worldgen = new System.Threading.Thread(NoxicoGame.Me.CreateRealm);
 					worldgen.Start();
 				}
 
@@ -316,11 +314,7 @@ namespace Noxico
 				};
 
 				backdrop = Mix.GetBitmap("chargen.png");
-				backWithPortrait = new Bitmap(backdrop.Width, backdrop.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-				using (var g = Graphics.FromImage(backWithPortrait))
-				{
-					g.DrawImage(backdrop, 0, 0, backdrop.Width, backdrop.Height);
-				}
+
 				//Build the interface.
 				var title = "\xB4 " + i18n.GetString("cc_title") + " \xC3";
 				var bar = new string('\xC4', 33);
@@ -328,33 +322,34 @@ namespace Noxico
 				string[] prefoptions = { i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Either") };
 				controls = new Dictionary<string, UIElement>()
 				{
-					{ "backdrop", new UIPNGBackground(backWithPortrait) },
-					{ "headerline", new UILabel(bar) { Left = 56, Top = 8, Foreground = Color.Black } },
-					{ "header", new UILabel(title) { Left = 73 - (title.Length() / 2), Top = 8, Width = title.Length(), Foreground = Color.Black } },
-					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 58, Top = 46, Width = 10, Height = 3 } },
-					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
-					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 78, Top = 46, Width = 10, Height = 3 } },
+					{ "backdrop", new UIPNGBackground(backdrop) }, //backWithPortrait) },
+					{ "headerline", new UILabel(bar) { Left = 42, Top = 3, Foreground = Color.Black } },
+					{ "header", new UILabel(title) { Left = 58 - (title.Length() / 2), Top = 3, Width = title.Length(), Foreground = Color.Black } },
+					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 42, Top = 20, Width = 10, Height = 1 } },
+					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
 
-					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 56, Top = 10, Foreground = Color.Gray } },
-					{ "name", new UITextBox(string.Empty) { Left = 58, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 60, Top = 11, Foreground = Color.Gray } },
-					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 56, Top = 14, Foreground = Color.Gray } },
-					{ "species", new UISingleList() { Left = 58, Top = 15, Width = 30, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 56, Top = 18, Foreground = Color.Gray } },
-					{ "sex", new UIRadioList(sexoptions) { Left = 58, Top = 19, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 56, Top = 24, Foreground = Color.Gray } },
-					{ "gid", new UIRadioList(sexoptions) { Left = 58, Top = 25, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 56, Top = 30, Foreground = Color.Gray } },
-					{ "pref", new UIRadioList(prefoptions) { Left = 58, Top = 31, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = 58, Top = 40, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 58, Top = 42, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 42, Top = 5, Foreground = Color.Gray } },
+					{ "name", new UITextBox(string.Empty) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 46, Top = 6, Foreground = Color.Gray } },
+					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 42, Top = 8, Foreground = Color.Gray } },
+					{ "species", new UISingleList() { Left = 44, Top = 9, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = 42, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 42, Top = 12, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 56, Top = 10, Foreground = Color.Gray } },
-					{ "gift", new UIList("", null, traits) { Left = 58, Top = 12, Width = 30, Height = 32, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 42, Top = 5, Foreground = Color.Gray } },
+					{ "sex", new UIRadioList(sexoptions) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 42, Top = 11, Foreground = Color.Gray } },
+					{ "gid", new UISingleList(/*sexoptions*/) { Left = 44, Top = 12, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Items = sexoptions.ToList(), Index = 0 } },
+					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 42, Top = 14, Foreground = Color.Gray } },
+					{ "pref", new UISingleList(/*prefoptions*/) { Left = 44, Top = 15, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Items = prefoptions.ToList(), Index = 1 } },
 
-					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 50, Height = 4, Foreground = Color.White } },
+					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 42, Top = 5, Foreground = Color.Gray } },
+					{ "gift", new UIList("", null, traits) { Left = 44, Top = 6, Width = 30, Height = 24, Foreground = Color.Black, Background = Color.Transparent } },
+
+					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White, Darken = true } },
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 59, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 24, Foreground = Color.Silver } },
 				};
 				//Map the controls to pages.
 				pages = new List<UIElement>[]
@@ -364,9 +359,14 @@ namespace Noxico
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["nameLabel"], controls["name"], controls["nameRandom"],
 						controls["speciesLabel"], controls["species"],
-						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
 						controls["tutorial"], controls["easy"],
 						controls["controlHelp"], controls["next"],
+					},
+					new List<UIElement>()
+					{
+						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
+						controls["sexLabel"], controls["sex"], controls["gidLabel"], controls["gid"], controls["prefLabel"], controls["pref"],
+						controls["controlHelp"], controls["back"], controls["next"],
 					},
 					new List<UIElement>(), //Placeholder, filled in on-demand from PlayableRace.ColorItems.
 					new List<UIElement>()
@@ -391,59 +391,10 @@ namespace Noxico
 				{
 					var species = playables[i];
 					controlHelps["species"] = species.Bestiary;
-					pages[1].Clear();
-					pages[1].AddRange(new[] { controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"] });
-					pages[1].AddRange(species.ColorItems.Values);
-					pages[1].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
-				});
-
-				//Do a nice screen blend effect. Normally we can only do straight normal blends.
-				//You might think this is slow as balls, being a Get/SetPixel loop. But since our pics are only 54x58, it's not that bad.
-				redrawBackdrop = new Action<int>(i =>
-				{
-					//We try x_y.png first, where x is the bodyplan ID and y the gender.
-					//If that file doesn't exist, we try just x.png.
-					//If that doesn't work either, we use a fallback.
-					var playable = playables[((UISingleList)controls["species"]).Index];
-					var portrait = "chargen\\" + playable.ID + "_" + "mfhn"[((UIRadioList)controls["sex"]).Value] + ".png";
-					if (!Mix.FileExists(portrait))
-					{
-						portrait = "chargen\\" + playable.ID + ".png";
-						if (!Mix.FileExists(portrait))
-						{
-							portrait = "chargen\\_.png";
-						}
-					}
-					if (portraits == null)
-						portraits = new Dictionary<string, Bitmap>();
-					if (!portraits.ContainsKey(portrait))
-						portraits.Add(portrait, Mix.GetBitmap(portrait));
-					var p = portraits[portrait];
-					for (var row = 0; row < 58; row++)
-					{
-						for (var col = 0; col < 54; col++)
-						{
-							var a = p.GetPixel(col, row).R / 255f;
-							var c = backdrop.GetPixel(col, row + 1);
-							var r = c.R / 255f;
-							var g = c.G / 255f;
-							var b = c.B / 255f;
-							r = 1 - (1 - r) * (1 - a);
-							g = 1 - (1 - g) * (1 - a);
-							b = 1 - (1 - b) * (1 - a);
-							r = r * 255f;
-							g = g * 255f;
-							b = b * 255f;
-							if (r > 255) r = 255;
-							if (g > 255) g = 255;
-							if (b > 255) b = 255;
-							if (r < 0) r = 0;
-							if (g < 0) g = 0;
-							if (b < 0) b = 0;
-							backWithPortrait.SetPixel(col, row + 1, Color.FromArgb((int)r, (int)g, (int)b));
-						}
-					}
-					((UIPNGBackground)controls["backdrop"]).Bitmap = backWithPortrait;
+					pages[2].Clear();
+					pages[2].AddRange(new[] { controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"] });
+					pages[2].AddRange(species.ColorItems.Values);
+					pages[2].AddRange(new[] { controls["controlHelp"], controls["back"], controls["next"] });
 				});
 
 				controls["back"].Enter = (s, e) => { page--; loadPage(page); UIManager.Draw(); };
@@ -452,8 +403,8 @@ namespace Noxico
 				{
 					var playerName = controls["name"].Text;
 					var sex = ((UIRadioList)controls["sex"]).Value;
-					var gid = ((UIRadioList)controls["gid"]).Value;
-					var pref = ((UIRadioList)controls["pref"]).Value;
+					var gid = ((UISingleList)controls["gid"]).Index;
+					var pref = ((UISingleList)controls["pref"]).Index;
 					var species = ((UISingleList)controls["species"]).Index;
 					var tutorial = ((UIToggle)controls["tutorial"]).Checked;
 					var easy = ((UIToggle)controls["easy"]).Checked;
@@ -467,22 +418,45 @@ namespace Noxico
 						var value = ((UISingleList)editable.Value).Text;
 						colorMap.Add(path, value);
 					}
-					NoxicoGame.HostForm.Noxico.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
+					NoxicoGame.Me.CreatePlayerCharacter(playerName.Trim(), (Gender)(sex + 1), (Gender)(gid + 1), pref, playables[species].ID, colorMap, bonus);
 					if (tutorial)
-						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("tutorial");
+						NoxicoGame.Me.Player.Character.AddToken("tutorial");
 					if (easy)
-						NoxicoGame.HostForm.Noxico.Player.Character.AddToken("easymode");
+						NoxicoGame.Me.Player.Character.AddToken("easymode");
 					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
 					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
 					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
-					NoxicoGame.HostForm.Noxico.CurrentBoard.UpdateLightmap(NoxicoGame.HostForm.Noxico.Player, true);
+					NoxicoGame.Me.CurrentBoard.UpdateLightmap(NoxicoGame.Me.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
-
+#if DEBUG
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("baseballbat");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("really_kinky_panties");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("timertest");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("clit_regenring");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("gExtractor");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("strapon_ovi");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("strapon");
+#if FREETESTPOTIONS
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("foxite"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("oddnip"); // ok
+					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("dogmorph"); no bodyplan
+					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("bunnymorph"); no bodyplan
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("enhanced_chaos_potion"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("demonite_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("tentacle_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("cock_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("corrupted_cock_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("neutralizer_potion");
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("spidermorph");
+#endif
+#endif
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					
-					Story();
+					//Story();
 				};
 
 				((UISingleList)controls["species"]).Items.Clear();
@@ -511,12 +485,12 @@ namespace Noxico
 							}
 						}
 					}
-					redrawBackdrop(0);
+					//redrawBackdrop(0);
 					UIManager.Draw();
 				};
 				controls["sex"].Change = (s, e) =>
 				{
-					redrawBackdrop(0);
+					//redrawBackdrop(0);
 					UIManager.Draw();
 				};
 				controls["name"].Change = (s, e) =>
@@ -527,7 +501,7 @@ namespace Noxico
 				controls["gift"].Change = (s, e) =>
 				{
 					var giftIndex = ((UIList)controls["gift"]).Index;
-					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(50);
+					controls["controlHelp"].Text = traitHelps[giftIndex].Wordwrap(controls["controlHelp"].Width);
 					controls["controlHelp"].Top = controls["gift"].Top + giftIndex;
 					UIManager.Draw();
 				};
@@ -549,7 +523,7 @@ namespace Noxico
 					UIManager.Draw();
 				};
 				loadPage(page);
-				redrawBackdrop(0);
+				//redrawBackdrop(0);
 				Subscreens.FirstDraw = false;
 				Subscreens.Redraw = true;
 				UIManager.HighlightChanged(null, null);
@@ -609,10 +583,10 @@ namespace Noxico
 					NoxicoGame.ClearKeys();
 					NoxicoGame.Immediate = true;
 					NoxicoGame.Mode = UserMode.Walkabout;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+					NoxicoGame.Me.CurrentBoard.Redraw();
+					NoxicoGame.Me.CurrentBoard.Draw(true);
 					Subscreens.FirstDraw = true;
-					TextScroller.LookAt(NoxicoGame.HostForm.Noxico.Player); // start by showing player details
+					TextScroller.LookAt(NoxicoGame.Me.Player); // start by showing player details
 				}
 			}
 			
@@ -646,4 +620,5 @@ namespace Noxico
 			return (worldgen.ThreadState != System.Threading.ThreadState.Running);
 		}
 	}
+
 }

@@ -18,21 +18,20 @@ add: -
 			<[[
 				thisEntity.XPosition = 35;
 				thisEntity.YPosition = 22;
-				var woah = Random.Next(0,128);
+				local woah = Random.Next(0,128);
 				thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
 				thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
-				thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+				thisEntity.Glyph = Random.Next(0x21, 0x2F);
 				return false;
 			]]>
 		script: bump
 			<[[
 				corner("WRRAAAAAAAGH~");
-				var target = this.GetToken("otherSide").Value;
-				if (target == 0)
-				{
-					corner("Error! Target is " + target);
+				local target = this.GetToken("otherSide").Value;
+				if (target == 0) then
+					corner("Error! Target is " .. target);
 					return false;
-				}
+				end
 				playerEntity.OpenBoard(target);
 			]]>
 
@@ -55,21 +54,20 @@ add: -
 			<[[
 				thisEntity.XPosition = 35;
 				thisEntity.YPosition = 22;
-				var woah = Random.Next(0,128);
+				local woah = Random.Next(0,128);
 				thisEntity.ForegroundColor = Color.FromArgb(woah + 128, 0, woah + 128);
 				thisEntity.BackgroundColor = Color.FromArgb(woah, 0, woah);
-				thisEntity.AsciiChar = Random.Next(0x21, 0x2F);
+				thisEntity.Glyph = Random.Next(0x21, 0x2F);
 				return false;
 			]]>
 		script: bump
 			<[[
 				corner("WRRAAAAAAAGH~");
-				var target = this.GetToken("otherSide").Value;
-				if (target == 0)
-				{
-					corner("Error! Target is " + target);
+				local target = this.GetToken("otherSide").Value;
+				if (target == 0) then
+					corner("Error! Target is " .. target);
 					return false;
-				}
+				end
 				playerEntity.OpenBoard(target);
 			]]>
 

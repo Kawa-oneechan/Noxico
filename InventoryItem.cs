@@ -157,7 +157,7 @@ namespace Noxico
 						ni.OnEquip = script.GetToken("#text").Text;
 						break;
 					case "unequip":
-						ni.OnEquip = script.GetToken("#text").Text;
+						ni.OnUnequip = script.GetToken("#text").Text;
 						break;
 					case "timer":
 						ni.OnTimer = script.GetToken("#text").Text;
@@ -439,7 +439,7 @@ namespace Noxico
 
 		public void Use(Character character, Token item, bool noConfirm = false)
 		{
-			var boardchar = NoxicoGame.HostForm.Noxico.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
+			var boardchar = NoxicoGame.Me.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
 			var runningDesc = "";
 
 			Action<string> showDesc = new Action<string>(d =>
@@ -472,7 +472,7 @@ namespace Noxico
 				{
 					//TODO: only ask if it's the player?
 					//Not wearing it
-					MessageBox.Ask(runningDesc + "Equip " + this.ToString(item, true) + "?", () =>
+					MessageBox.Ask(runningDesc + i18n.Format("inventory_equip_x", this.ToString(item, true)), () =>
 					{
 						try
 						{
@@ -496,11 +496,11 @@ namespace Noxico
 					//Wearing/wielding it
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
-						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : "[You] can't unequip " + this.ToString(item, true) + "; " + (this.HasToken("plural") ? "they are" : "it is") + " cursed.";
+						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : i18n.Format("inventory_cursed_" + (this.HasToken("plural") ? "plural" : "singular"), this.ToString(item, true));
 						showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					}
-					MessageBox.Ask("Unequip " + this.ToString(item, true) + "?", () =>
+					MessageBox.Ask(i18n.Format("inventory_unequip_x", this.ToString(item, true)), () =>
 					{
 						try
 						{
@@ -646,7 +646,7 @@ namespace Noxico
 				MessageBox.Notice((y ? x : x.Viewpoint(character)), true);
 				while (paused)
 				{
-					NoxicoGame.HostForm.Noxico.Update();
+					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
@@ -671,12 +671,12 @@ namespace Noxico
 					var rid = (int)this.GetToken("randomized").Value;
 					if (this.Path("equipable/ring") != null && rid < 128)
 						rid += 128;
-					var rdesc = NoxicoGame.HostForm.Noxico.Potions[rid];
+					var rdesc = NoxicoGame.Me.Potions[rid];
 					if (rdesc[0] != '!')
 					{
 						//Still unidentified. Let's rock.
 						rdesc = '!' + rdesc;
-						NoxicoGame.HostForm.Noxico.Potions[rid] = rdesc;
+						NoxicoGame.Me.Potions[rid] = rdesc;
 						this.UnknownName = null;
 					}
 					//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
@@ -690,13 +690,14 @@ namespace Noxico
 				{
 					NoxicoGame.Identifications.Add(this.ID);
 					if (running != null)
-						running("You have identified this as " + this.ToString(item, true) + ".");
+						running(i18n.Format("inventory_identified_as_x", this.ToString(item, true)));
 				}
 			}));
-			var ret = env.DoChunk(script, "lol.lua");
+			//var ret = env.DoChunk(script, "lol.lua");
+			var ret = Lua.Run(script, env);
 			if (!ret.ToBoolean())
 				return true;
-			return ret;
+			return ret.ToBoolean();
 		}
 
 		#region PillowShout's additions
@@ -749,7 +750,6 @@ namespace Noxico
 			return ToString(token) + " (" + string.Join(", ", info) + ")";
 		}
 
-		//TRANSLATE
 		public void Eat(Character gourmand, Token item)
 		{
 			if (item.HasToken("fat"))
@@ -763,15 +763,15 @@ namespace Noxico
 					gourmand.Path(hwa).Value += (float)change;
 					if (!gourmand.HasToken("player"))
 						return;
-					if (hwa.Equals("ass/size"))
-						hwa = Descriptions.ButtRandom();
-					NoxicoGame.AddMessage("That went right to your " + hwa + "!");
+					if (hwa == "ass/size") hwa = "butt";
+					NoxicoGame.AddMessage(i18n.GetString("eat_toyour" + hwa).Viewpoint(gourmand));
 				}
 			}
 		}
 
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
 		//TODO: make this a bool, return false if the item is too sturdy to tear.
+		//TODO: make this not *replace* the item, but apply tearing (https://bitbucket.org/Kawa/noxico/issues/14/clothing-statuses)
 		public static void TearApart(InventoryItem equip, Token carriedItem)
 		{
 			var slot = "pants";

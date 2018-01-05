@@ -159,12 +159,6 @@ namespace Noxico
 		{
 			if (Character.HasToken("slimeblob"))
 				ParentBoard.TrailSlime(YPosition, XPosition, ForegroundColor);
-			//check = SolidityCheck.Walker;
-			//if (Character.HasToken("flying"))
-			//{
-			//	check = SolidityCheck.Flyer;
-			//	Energy -= 1000;
-			//}
 			if (ParentBoard.IsWater(YPosition, XPosition))
 			{
 				if (Character.HasToken("aquatic"))
@@ -181,7 +175,7 @@ namespace Noxico
 					swimming.Value -= 1;
 					if (swimming.Value == 0)
 					{
-						Hurt(9999, i18n.GetString("death_drowned"), null, false);
+						Hurt(9999, "death_drowned", null, false);
 					}
 					Energy -= 1750;
 				}
@@ -196,21 +190,26 @@ namespace Noxico
 
 		public override void Draw()
 		{
+			var localX = this.XPosition - NoxicoGame.CameraX;
+			var localY = this.YPosition - NoxicoGame.CameraY;
+			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
+				return;
+			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				base.Draw();
 				if (Environment.TickCount % blinkRate * 2 < blinkRate)
 				{
 					if (Character.HasToken("sleeping"))
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, 'Z', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, 'Z', this.ForegroundColor, b);
 					else if (Character.HasToken("flying"))
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '^', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '^', this.ForegroundColor, b);
 					else if (Character.Path("role/vendor") != null)
-						NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, '$', this.ForegroundColor, this.BackgroundColor);
+						NoxicoGame.HostForm.SetCell(localY, localX, '$', this.ForegroundColor, b);
 				}
 			}
 			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
-				NoxicoGame.HostForm.SetCell(this.YPosition, this.XPosition, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
+				NoxicoGame.HostForm.SetCell(localY, localX, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
 		}
 
 		public override bool CanSee(Entity other)
@@ -228,7 +227,7 @@ namespace Noxico
 		{
 			if (this.Character.HasToken("beast") || this.Character.HasToken("sleeping"))
 				return;
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			if (player.ParentBoard != this.ParentBoard)
 				player = null;
 			//var ogled = false;
@@ -257,7 +256,7 @@ namespace Noxico
 						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
 						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
 						{
-							//TRANSLATE - needs reworking to translate better.
+							//TODO: i18n - needs reworking to translate better.
 							NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 							if (!this.Character.HasToken("oglestim"))
 								this.Character.AddToken("oglestim");
@@ -270,10 +269,11 @@ namespace Noxico
 			}
 		}
 
+		//TODO: rework ogling.
 		/*
 		public string Ogle(Character otherChar)
 		{
-			//TRANSLATE - all reactions should be in i18n.tml, and more should be added.
+			//TODO: i18n - all reactions should be in i18n.tml, and more should be added.
 			if (this.Character.HasToken("sleeping"))
 				return null;
 			var stim = this.Character.GetStat(Stat.Stimulation);
@@ -315,7 +315,7 @@ namespace Noxico
 		{
 			if (Character.HasToken("hostile") || Character.HasToken("sleeping"))
 				return;
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			if (CanSee(player) && DistanceFrom(player) < 10)
 			{
 				var myID = this.Character.ID;
@@ -347,8 +347,8 @@ namespace Noxico
 					continue;
 				if (knownItem.Path("timer/evenunequipped") == null && !carriedItem.HasToken("equipped"))
 					continue;
-				var time = new DateTime(long.Parse(timer.Text)); //var time = new NoxicanDate(long.Parse(timer.Text));
-				if (NoxicoGame.InGameTime.Minute == time.Minute) //if (NoxicoGame.InGameTime.Minute == time.Minute)
+				var time = new DateTime(long.Parse(timer.Text));
+				if (NoxicoGame.InGameTime.Minute == time.Minute)
 					continue;
 				if (timer.Value > 0)
 				{
@@ -418,17 +418,17 @@ namespace Noxico
 				if (Random.NextDouble() < 0.05)
 				{
 					Character.Health += 2;
-					//TRANSLATE
 					NoxicoGame.AddMessage(i18n.GetString("x_getsbackup").Viewpoint(Character));
 					Character.RemoveToken("helpless");
 					//TODO: Remove hostility? Replace with fear?
+					//If the team system is used, perhaps switch to a Routed Hostile team.
 				}
 				else
 					return;
 			}
 			if (Character.HasToken("waitforplayer") && !(this is Player))
 			{
-				if (!NoxicoGame.HostForm.Noxico.Player.Character.HasToken("helpless"))
+				if (!NoxicoGame.Me.Player.Character.HasToken("helpless"))
 				{
 					Character.RemoveToken("waitforplayer");
 					Character.AddToken("cooldown", 5, "");
@@ -455,10 +455,10 @@ namespace Noxico
 
 			base.Update();
 			Excite();
-			Character.UpdatePregnancy();
+			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
-				if (Hurt(10, "burning to death", null)) //TRANSLATE
+				if (Hurt(10, "death_burned", null))
 					return;
 
 			//Pillowshout added this.
@@ -470,7 +470,7 @@ namespace Noxico
 				scheduler.RunSchedule();
 			}
 
-			if (this.Character.HasToken("sleeping"))
+			if (this.Character.HasToken("sleeping") || Character.HasToken("anchored"))
 				return;
 
 			ActuallyMove();
@@ -501,7 +501,7 @@ namespace Noxico
 
 			var ally = Character.HasToken("ally");
 			var hostile = ally ? Character.GetToken("ally") : Character.GetToken("hostile");
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			if (ParentBoard == player.ParentBoard && hostile != null)
 			{
 				var target = (BoardChar)player;
@@ -544,9 +544,9 @@ namespace Noxico
 								if (called > 0)
 								{
 									if (!Character.HasToken("beast"))
-										NoxicoGame.AddMessage((Character.GetKnownName(true, true, true, true) + ": \"There " + player.Character.HeSheIt(true) + " is!\"").SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor()); //TRANSLATE
+										NoxicoGame.AddMessage(i18n.Format("call_out", Character.GetKnownName(true, true, true, true)).SmartQuote().Viewpoint(this.Character, target.Character), GetEffectiveColor());
 									else
-										NoxicoGame.AddMessage("The " + Character.Title + " vocalizes an alert!", GetEffectiveColor()); //TRANSLATE
+										NoxicoGame.AddMessage(i18n.Format("call_out_animal").Viewpoint(this.Character), GetEffectiveColor());
 									Program.WriteLine("{0} called {1} others to player's location.", this.Character.Name, called);
 									Energy -= 2000;
 								}
@@ -605,8 +605,8 @@ namespace Noxico
 			//If no target is given, assume the player.
 			if (Character.HasToken("huntingtarget"))
 				target = ParentBoard.Entities.OfType<BoardChar>().First(x => x.ID == Character.GetToken("huntingtarget").Text);
-			else if (!ally && NoxicoGame.HostForm.Noxico.Player.ParentBoard == this.ParentBoard)
-				target = NoxicoGame.HostForm.Noxico.Player;
+			else if (!ally && NoxicoGame.Me.Player.ParentBoard == this.ParentBoard)
+				target = NoxicoGame.Me.Player;
 
 			if (Character.HasToken("stolenfrom"))
 			{
@@ -626,8 +626,6 @@ namespace Noxico
 
 			if (target is BoardChar)
 			{
-
-				//var weapon = Character.CanShoot();
 				var weapon = this.Character.GetEquippedItemBySlot("hand");
 				if (weapon != null && !weapon.HasToken("weapon"))
 					weapon = null;
@@ -712,7 +710,7 @@ namespace Noxico
 						MeleeAttack(bcTarget);
 #if MUTAMORPH
 						if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
-							bcTarget.Character.Morph(Character.GetToken("infectswith").Text, MorphReportLevel.PlayerOnly, true, 0);
+							bcTarget.Character.Morph(Character.GetToken("infectswith").Text);
 #endif
 						return;
 					}
@@ -852,8 +850,8 @@ namespace Noxico
 			var baseDamage = 0.0f;
 			var dodged = false;
 			var skill = "unarmed_combat";
-			var verb = "strike{s}"; //LOOKUP
-			var obituary = "died from being struck down"; //LOOKUP
+			var verb = "strike{s}"; //TODO: i18n
+			var cause = "death_struckdown";
 			var attackerName = this.Character.GetKnownName(false, false, true);
 			var attackerFullName = this.Character.GetKnownName(true, true, true);
 			var targetName = target.Character.GetKnownName(false, false, true);
@@ -894,9 +892,23 @@ namespace Noxico
 			if (this.Character.Path("prefixes/underfed") != null)
 				damage *= 0.25f;
 
-			//Account for armor and such
-
 			damage *= GetDefenseFactor(weaponData, target.Character);
+
+			//Find the best overall "generic" armor defense and apply it.
+			var overallArmor = 0f;
+			foreach (var targetArmor in target.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+			{
+				var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+				if (targetArmorItem == null)
+					continue;
+				if (!targetArmorItem.HasToken("armor"))
+					continue;
+				if (targetArmorItem.GetToken("armor").Value > overallArmor)
+					overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+			}
+			if (overallArmor != 0)
+				damage /= overallArmor;
+			//Account for armor materials?
 
 			//Add some randomization
 			//Determine dodges
@@ -918,7 +930,7 @@ namespace Noxico
 				NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", verb, (int)damage).Viewpoint(this.Character, target.Character), target.GetEffectiveColor());
 				Character.IncreaseSkill(skill);
 			}
-			if (target.Hurt(damage, obituary + " by " + attackerFullName, this, true)) //TRANSLATE - may need reworking
+			if (target.Hurt(damage, cause, this, true)) //TODO: i18n - may need reworking
 			{
 				//Gain a bonus from killing the target?
 				return true;
@@ -928,65 +940,15 @@ namespace Noxico
 
 		public float GetDefenseFactor(Token weaponToken, Noxico.Character target)
 		{
-			var ret = 0f;
-			var attackType = 0; //punch
-			var skinType = 0; //skin
-			if (weaponToken == null)
-			{
-				if (this.Character.Path("skin/type").Text == "fur" /* or the character has nails? */)
-					attackType = 1; //tear
-				else if (this.Character.HasToken("snaketail"))
-					attackType = 2; //strike
-				else if (this.Character.HasToken("quadruped") || this.Character.HasToken("taur"))
-					attackType = 3; //kick
-				//monoceros check?
-			}
-			else
-			{
-				var wat = weaponToken.HasToken("attacktype") ? weaponToken.GetToken("attacktype").Text : "strike";
-				var types = new[] { "punch", "tear", "strike", "kick", "stab", "pierce", "crush" };
-				for (var i = 0; i < types.Length; i++)
-				{
-					if (wat == types[i])
-					{
-						attackType = i;
-						break;
-					}
-				}
-			}
-
-			var skinTypes = new[] { "skin", "fur", "scales", "metal", "slime", "rubber" };
-			var tst = target.Path("skin/type").Text;
-			if (tst == "carapace")
-				tst = "scales";
-			for (var i = 0; i < skinTypes.Length; i++)
-			{
-				if (tst == skinTypes[i])
-				{
-					skinType = i;
-					break;
-				}
-			}
-
-			var factors = new[,]
-			{ //skin   fur    scales metal slime  rubber
-			  { 1,     1,     1,     0.5f, 0.75f, 0.5f }, //punch
- 			  { 1,     1,     0.5f,  0.5f, 0.75f, 2    }, //tear
-			  { 1,     1,     1,     0.5f, 0.75f, 0.5f }, //strike
-			  { 1.1f,  1.1f,  1.1f,  0.6f, 0.78f, 0.6f }, //kick (punch harder)
- 			  { 1.5f,  1.5f,  1.2f,  0.5f, 0.75f, 1    }, //stab
-			  { 1.25f, 1.25f, 1.5f,  1,    0.75f, 1    }, //pierce
-			  { 1.5f,  1.5f,  1,     1,    2,     0.5f }, //crush
-			};
-
-			ret = factors[attackType, skinType];
-			//TODO: do something like the above for any armor or shield being carried by the defender
-			//TODO: involve +N modifiers on both weapon and armor/shield
-
-			return ret;
+			if (env == null)
+				SetupLua();
+			env.SetValue("weapon", weaponToken);
+			env.SetValue("target", target);
+			var r = Lua.RunFile("defense.lua", env);
+			return (float)(r.ToDouble());
 		}
 
-		public virtual bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
+		public virtual bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			RunScript(OnHurt, "damage", damage);
 			var health = Character.Health;
@@ -1003,15 +965,15 @@ namespace Noxico
 				}
 				//Dead, but how?
 				Character.Health = 0;
-				if (aggressor != null)
+				if (aggressor != null && aggressor is BoardChar)
 				{
 					if (Character.HasToken("stolenfrom") && aggressor is Player)
 					{
-						aggressor.Character.GiveRenegadePoints(10);
+						((BoardChar)aggressor).Character.GiveRenegadePoints(10);
 					}
 				}
 				if (leaveCorpse)
-					LeaveCorpse(obituary);
+					LeaveCorpse(cause, aggressor);
 				this.ParentBoard.CheckCombatFinish();
 				return true;
 			}
@@ -1019,14 +981,14 @@ namespace Noxico
 			return false;
 		}
 
-		private void LeaveCorpse(string obituary)
+		private void LeaveCorpse(string cause, object aggressor)
 		{
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value > 0 && Character.GetToken("copier").HasToken("full"))
 			{
 				//Revert changelings to their true form first.
 				Character.Copy(null);
 			}
-			var name = (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)) + "'s remains";
+			var name = i18n.Format("corpse_name", (Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, false, false, true)));
 			var corpse = new Container(name, new List<Token>())
 			{
 				ParentBoard = ParentBoard,
@@ -1034,15 +996,20 @@ namespace Noxico
 				ForegroundColor = ForegroundColor.Darken(),
 				BackgroundColor = BackgroundColor.Darken(),
 				Blocking = false,
-				//Description = "These are the remains of " + Character.Name.ToString(true) + " the " + Character.Title + ", who " + obituary + ".",
 				XPosition = XPosition,
 				YPosition = YPosition,
 			};
-			if (!Character.IsProperNamed)
-			{
-				//corpse.Description = "These are the remains of " + Character.GetKnownName(true, true, false) + ", who " + obituary + ".";
-			}
 			corpse.Token.AddToken("corpse");
+			cause = i18n.GetString(cause);
+			var obituary = cause;
+			if (aggressor != null)
+			{
+				if (aggressor is BoardChar)
+					obituary = i18n.Format("corpse_xed_by_y", cause, ((BoardChar)aggressor).Character.IsProperNamed ? ((BoardChar)aggressor).Character.Name.ToString(true) : ((BoardChar)aggressor).Character.GetKnownName(true, true, false));
+				else
+					obituary = i18n.Format("corpse_xed_by_y", cause, i18n.GetString((string)aggressor));
+			}
+			corpse.Token.AddToken("description", i18n.Format("corpse_description", Character.IsProperNamed ? Character.Name.ToString(true) : Character.GetKnownName(true, true, false), obituary));
 			if (!(this is Player))
 			{
 				foreach (var item in Character.GetToken("items").Tokens)
@@ -1114,7 +1081,7 @@ namespace Noxico
 			Lua.Ascertain(env);
 			env.SetValue("this", this.Character);
 			env.SetValue("thisEntity", this);
-			env.SetValue("playerEntity", NoxicoGame.HostForm.Noxico.Player);
+			env.SetValue("playerEntity", NoxicoGame.Me.Player);
 			env.SetValue("target", ScriptPathID);
 			env.RegisterPackage("Random", typeof(Random));
 			env.RegisterPackage("BoardType", typeof(BoardType));
@@ -1135,7 +1102,7 @@ namespace Noxico
 				MessageBox.Notice(x, true, this.Character.Name.ToString(true));
 				while (paused)
 				{
-					NoxicoGame.HostForm.Noxico.Update();
+					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}));
@@ -1157,7 +1124,7 @@ namespace Noxico
 			});
 
 			env.SetValue("MakeBoardTarget", makeBoardTarget);
-			env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.HostForm.Noxico.GetBoard(x)));
+			env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x)));
 			env.SetValue("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
 			env.SetValue("scheduler", this.scheduler);
 			env.RegisterPackage("Task", typeof(Task));
@@ -1175,7 +1142,7 @@ namespace Noxico
 			Board.DrawEnv = env;
 			if (!string.IsNullOrEmpty(extraParm))
 				env.SetValue(extraParm, extraVal);
-			var r = env.DoChunk(script, "lol.lua");
+			var r = Lua.Run(script, env);
 			if (r.ToBoolean())
 				return r.ToBoolean();
 			return true;
@@ -1279,7 +1246,7 @@ namespace Noxico
 				{
 					var hit = target as Player;
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
-					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false); //TRANSLATE
+					hit.Hurt(damage, "death_shot", this, false);
 					Energy -= 500; //fixed: succesful shots didn't take time
 					return;
 				}
@@ -1329,7 +1296,7 @@ namespace Noxico
 			var items = Character.Path("items");
 			var diff = 20 - items.Tokens.Count;
 			if (diff > 0)
-				Character.GetToken("money").Value += diff * 50; //?
+				Character.GetToken("money").Value += diff * 50; //TODO: explain this
 			var filters = new Dictionary<string, string>();
 			filters["vendorclass"] = vendor.GetToken("class").Text;
 			while (items.Tokens.Count < 20)

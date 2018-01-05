@@ -130,7 +130,7 @@ namespace Noxico
 		/// </returns>
 		public static double NextDouble()
 		{
-			//Hack alert! Not sure if this'll always be in range, but a hundred thousand samples show good results.
+			//Not sure if this'll always be in range, but a hundred thousand samples show good results.
 			var d = (double)Next() / 0x7fffffffL;
 			if (d < 0)
 				d = -d;

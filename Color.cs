@@ -28,15 +28,13 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Gets the red component value of this Color.
-		/// </summary>		/// <summary>
 		/// Gets the alpha component value of this Color.
 		/// </summary>
-
 		public byte R
 		{
 			get { return (byte)((this.ArgbValue >> 0x10) & 0xFF); }
 		}
+
 		/// <summary>
 		/// Gets the green component value of this Color.
 		/// </summary>
@@ -44,6 +42,7 @@ namespace Noxico
 		{
 			get { return (byte)((this.ArgbValue >> 8) & 0xFF); }
 		}
+
 		/// <summary>
 		/// Gets the blue component value of this Color.
 		/// </summary>
@@ -51,6 +50,7 @@ namespace Noxico
 		{
 			get { return (byte)(this.ArgbValue & 0xFF); }
 		}
+
 		/// <summary>
 		/// Gets the alpha component value of this Color.
 		/// </summary>
@@ -88,6 +88,11 @@ namespace Noxico
 		public static Color Orange { get { return new Color(0xFFFFA500, "Orange"); } }
 		public static Color DarkGray { get { return new Color(0xFF404040, "DarkGray"); } }
 
+		/// <summary>
+		/// Returns a <see cref="Noxico.Color"/> matching the Color Graphics Adapter palette.
+		/// </summary>
+		/// <param name="index">The palette index to return a color for.</param>
+		/// <returns>a <see cref="Noxico.Color"/> matching the CGA palette for <paramref name="index"/>.</returns>
 		public static Color FromCGA(int index)
 		{
 			if (index < 0 || index > 15)
@@ -100,6 +105,11 @@ namespace Noxico
 			return Color.FromArgb((int)r, (int)g, (int)b);
 		}
 
+		/// <summary>
+		/// Returns a <see cref="Noxico.Color"/> matching a CSS-style hex code.
+		/// </summary>
+		/// <param name="hexCode">A three or six-digit hexadecimal number, with or without a '#' in front.</param>
+		/// <returns>the <see cref="Noxico.Color"/> matching the <paramref name="hexCode"/>.</returns>
 		public static Color FromCSS(string hexCode)
 		{
 			if (string.IsNullOrWhiteSpace(hexCode))
@@ -120,14 +130,17 @@ namespace Noxico
 		{
 			return new Color((uint)argb, null);
 		}
+
 		public static Color FromArgb(uint argb)
 		{
 			return new Color(argb, null);
 		}
+
 		public static Color FromArgb(int red, int green, int blue)
 		{
 			return FromArgb(0xFF, red, green, blue);
 		}
+
 		public static Color FromArgb(int alpha, int red, int green, int blue)
 		{
 			return new Color(MakeArgb((byte)alpha, (byte)red, (byte)green, (byte)blue), null);
@@ -141,14 +154,11 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Creates a Color structure by looking it up in Noxico's known color list.
+		/// Creates a <see cref="Noxico.Color"/> by looking it up in Noxico's known color list.
+		/// Also accepts CSS hexCodes via <see cref="Noxico.Color.FromCSS(string hexCode)"/>.
 		/// </summary>
-		/// <param name="name">
-		/// The color to find.
-		/// </param>
-		/// <returns>
-		/// A Color structure matching the specified name if it was found; otherwise, Silver (#C0C0C0).
-		/// </returns>
+		/// <param name="name">The color to find.</param>
+		/// <returns>a <see cref="Noxico.Color"/> matching the specified name if it was found; otherwise, Silver (#C0C0C0).</returns>
 		public static Color FromName(string name)
 		{
 			if (string.IsNullOrEmpty(name))
@@ -327,6 +337,7 @@ namespace Noxico
 		{
 			return SysColor.FromArgb(color.A, color.R, color.G, color.B);
 		}
+
 		public static implicit operator Noxico.Color(SysColor color)
 		{
 			return Color.FromArgb(color.A, color.R, color.G, color.B);

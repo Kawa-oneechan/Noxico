@@ -78,7 +78,7 @@ namespace Noxico
 				env.SetValue("x", point.X);
 				env.SetValue("y", point.Y);
 				env.SetValue("tile", this.Tilemap[point.Y, point.X]);
-				env.DoChunk(brush, "lol.lua");
+				Lua.Run(brush, env);
 			}
 		}
 		public void Line(int x1, int y1, int x2, int y2, Tile brush)
@@ -101,8 +101,8 @@ namespace Noxico
 					env.SetValue("x", x);
 					env.SetValue("y", y);
 					env.SetValue("tile", this.Tilemap[y, x]);
-					if (env.DoChunk(checker, "lol.lua").ToBoolean())
-						env.DoChunk(replacer, "lol.lua");
+					if (Lua.Run(checker, env).ToBoolean())
+						Lua.Run(replacer, env);
 				}
 			}
 		}
@@ -140,9 +140,9 @@ namespace Noxico
 				env.SetValue("x", x);
 				env.SetValue("y", y);
 				env.SetValue("tile", this.Tilemap[y, x]);
-				if (env.DoChunk(checker, "lol.lua").ToBoolean())
+				if (Lua.Run(checker, env).ToBoolean())
 				{
-					env.DoChunk(replacer, "lol.lua");
+					Lua.Run(replacer, env);
 
 					stack.Push(new Point(x - 1, y));
 					stack.Push(new Point(x + 1, y));
@@ -204,10 +204,34 @@ namespace Noxico
 			var bitmap = Mix.GetBitmap(fileName);
 			var tileset = Mix.GetString(tiledefs).Split('\n');
 			var tiles = new Dictionary<string, string>();
+			var clutter = new Dictionary<string, string>();
+			var unique = new Dictionary<string, string>();
 			foreach (var tile in tileset)
 			{
+				if (string.IsNullOrWhiteSpace(tile))
+					continue;
 				var t = tile.Trim().Split('\t');
-				tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
+				if (t[1].Contains('+')) //tileID +clut[prop:val, ...]
+				{
+					var t1 = t[1];
+					tiles.Add("ff" + t[0].ToLowerInvariant(), t1.Remove(t1.IndexOf('+')).Trim());
+					t1 = t1.Substring(t1.IndexOf('+'));
+					while (t1.StartsWith("+"))
+					{
+						var skip = t1.Substring(t1.IndexOf("[") + 1); //skip to after the [
+						var key = "ff" + t[0].ToLowerInvariant();
+						var value = skip.Substring(0, skip.IndexOf(']'));
+
+						if (t1.StartsWith("+clut"))
+							clutter.Add(key,value);
+						else if (t1.StartsWith("+unique"))
+							unique.Add(key, value);
+						t1 = t1.Substring(t1.IndexOf(']') + 1).Trim(); // loop other possible '+'es
+						//TODO: allow other kinds of entities such as dropped items, generic npcs, etc
+					}
+				}
+				else
+					tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
 			}
 			for (var y = 0; y < 50; y++)
 			{
@@ -235,6 +259,77 @@ namespace Noxico
 						};
 						this.Entities.Add(door);
 					}
+
+					if (clutter.ContainsKey(color.Name))
+					{
+						var nc = new Clutter()
+						{
+							XPosition = x,
+							YPosition = y,
+							ParentBoard = this
+						};
+						this.Entities.Add(nc);
+						var properties = clutter[color.Name].SplitQ();
+						foreach (var property in properties)
+						{
+							var key = property.Substring(0, property.IndexOf(':'));
+							var value = property.Substring(property.IndexOf(':') + 1);
+							switch (key.ToLowerInvariant())
+							{
+								case "id": nc.ID = value; break;
+								case "name": nc.Name = value; break;
+								case "desc": nc.Description = value; break;
+								case "glyph":
+									if (value.StartsWith("0x"))
+										nc.Glyph = int.Parse(value.Substring(2), System.Globalization.NumberStyles.HexNumber);
+									else
+										nc.Glyph = int.Parse(value);
+									break;
+								case "fg":
+									if (value.StartsWith("#"))
+										nc.ForegroundColor = Color.FromCSS(value);
+									else
+										nc.ForegroundColor = Color.FromName(value);
+									break;
+								case "bg":
+									if (value.StartsWith("#"))
+										nc.BackgroundColor = Color.FromCSS(value);
+									else
+										nc.BackgroundColor = Color.FromName(value);
+									break;
+								case "block": nc.Blocking = true; break;
+								case "burns": nc.CanBurn = true; break;
+							}
+						}
+					}
+
+					if (unique.ContainsKey(color.Name))
+					{
+						var properties = unique[color.Name].SplitQ();
+						string uniquename = "";
+						foreach (var property in properties)
+						{
+							var key = property.Substring(0, property.IndexOf(':'));
+							var value = property.Substring(property.IndexOf(':') + 1);
+							switch (key.ToLowerInvariant())
+							{
+								case "id":
+									uniquename = value; break;
+							}
+						}
+						if (uniquename != "")
+						{
+							var newChar = new BoardChar(Character.GetUnique(uniquename))
+							{
+								XPosition = x,
+								YPosition = y,
+								ParentBoard = this
+							};
+							this.Entities.Add(newChar);
+							newChar.AssignScripts(uniquename);
+							newChar.ReassignScripts();
+						}
+					}
 				}
 			}
 			this.ResolveVariableWalls();
@@ -242,6 +337,7 @@ namespace Noxico
 
 		public void AddClutter(int x1, int y1, int x2, int y2)
 		{
+			//TODO: Reimplement this? Is currently covered by Variants.
 			/*
 			if (y2 >= 50)
 				y2 = 49;

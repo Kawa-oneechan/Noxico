@@ -31,20 +31,18 @@ namespace Noxico
 					switch (change.Name)
 					{
 						case "deltaBreastSize":
-							target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("size").Value += change.GetToken("size").Value;
 							target.FixBoobs();
+							target.GetToken("breasts").GetToken("size").Value += change.GetToken("size").Value;
 							returns.Add(true);
 							break;
 						case "deltaBreastNum":
-							Token boob = target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value);
-							boob.GetToken("amount").Value += change.GetToken("amount").Value;
-							if (boob.GetToken("amount").Value == 0)
-								target.RemoveToken(boob);
 							target.FixBoobs();
+							target.GetToken("breasts").GetToken("amount").Value += change.GetToken("amount").Value;
 							returns.Add(true);
 							break;
 						case "dicknipples":
-							Token nips = target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("nipples");
+							target.FixBoobs();
+							var nips = target.GetToken("breasts").GetToken("nipples");
 							if (nips != null)
 							{
 								if (!nips.HasToken("canfuck"))
@@ -64,17 +62,17 @@ namespace Noxico
 								returns.Add(false);
 							break;
 						case "nipplecunts":
-							Token nipples = target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value).GetToken("nipples");
-							if (nipples != null)
+							nips = target.GetToken("breasts").GetToken("nipples");
+							if (nips != null)
 							{
-								if (!nipples.HasToken("fuckable"))
+								if (!nips.HasToken("fuckable"))
 								{
-									nipples.RemoveToken("canfuck");
-									nipples.RemoveToken("length");
-									nipples.RemoveToken("thickness");
-									nipples.AddToken("fuckable");
-									nipples.AddToken("wetness", change.GetToken("wetness").Value);
-									nipples.AddToken("looseness", change.GetToken("looseness").Value);
+									nips.RemoveToken("canfuck");
+									nips.RemoveToken("length");
+									nips.RemoveToken("thickness");
+									nips.AddToken("fuckable");
+									nips.AddToken("wetness", change.GetToken("wetness").Value);
+									nips.AddToken("looseness", change.GetToken("looseness").Value);
 									returns.Add(true);
 								}
 								else
@@ -84,35 +82,45 @@ namespace Noxico
 								returns.Add(false);
 							break;
 						case "deltaCockLength":
-							target.GetPenisByNumber((int)change.GetToken("index").Value).GetToken("length").Value += change.GetToken("length").Value;
-							returns.Add(true);
+							if (target.HasToken("penis"))
+							{
+								target.GetToken("penis").GetToken("length").Value += change.GetToken("length").Value;
+								returns.Add(true);
+							}
+							else
+								returns.Add(false);
 							break;
 						case "deltaCockThickness":
-							target.GetPenisByNumber((int)change.GetToken("index").Value).GetToken("thickness").Value += change.GetToken("thickness").Value;
-							returns.Add(true);
+							if (target.HasToken("penis"))
+							{
+								target.GetToken("penis").GetToken("thickness").Value += change.GetToken("thickness").Value;
+								returns.Add(true);
+							}
+							else
+								returns.Add(false);
 							break;
 						case "deltaNippleSize":
-							Token boobs = target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value);
-							if (boobs.HasToken("nipples"))
+							target.FixBoobs();
+							if (target.GetToken("breasts").HasToken("nipples"))
 							{
-								boobs.GetToken("nipples").GetToken("size").Value += change.GetToken("size").Value;
+								target.GetToken("breasts").GetToken("nipples").GetToken("size").Value += change.GetToken("size").Value;
 								returns.Add(true);
 							}
 							else
 								returns.Add(false);
 							break;
 						case "deltaNippleNumber":
-							Token boobies = target.GetBreastRowByNumber((int)change.GetToken("rowNumber").Value);
-							if (boobies.HasToken("nipples"))
+							target.FixBoobs();
+							var boobs = target.GetToken("breasts");
+							if (boobs.HasToken("nipples"))
 							{
-								boobies.GetToken("nipples").Value += change.GetToken("amount").Value;
-								returns.Add(true);
+								boobs.GetToken("nipples").Value += change.GetToken("amount").Value;
+								if (boobs.GetToken("nipples").Value <= 0)
+									boobs.RemoveToken("nipples");
 							}
 							else
-							{
-								boobies.AddToken("nipples", change.GetToken("amount").Value);
-								returns.Add(true);
-							}
+								boobs.AddToken("nipples", change.GetToken("amount").Value).AddToken("size", 0.5f);
+							returns.Add(true);
 							break;
 						case "taur":
 							if (!target.HasToken("taur"))

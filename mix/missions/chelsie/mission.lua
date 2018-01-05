@@ -13,11 +13,11 @@ MakeBoardTarget(chelBoard)
 
 chelBoard.MergeBitmap("missions\\chelsie\\lairhouse.png", "missions\\chelsie\\lairhouse.txt");
 
-local Chelsie = BoardChar(Character.GetUnique("chelsie"))
-Chelsie.XPosition = 50;
-Chelsie.YPosition = 22;
-chelBoard.Entities.Add(Chelsie);
-Chelsie.ParentBoard = chelBoard;
+--local Chelsie = BoardChar(Character.GetUnique("chelsie"))
+--Chelsie.XPosition = 36;
+--Chelsie.YPosition = 20;
+--chelBoard.Entities.Add(Chelsie);
+--Chelsie.ParentBoard = chelBoard;
 
 local bed = Clutter()
 bed.Glyph = 0x147
