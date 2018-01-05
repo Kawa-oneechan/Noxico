@@ -45,8 +45,8 @@ namespace Noxico
 				NoxicoGame.AddMessage(i18n.Format("dropped_x", chosen.ToString(token, true, true)));
 				NoxicoGame.Sound.PlaySound("set://PutItem");
 				chosen.Drop(boardchar, token);
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Update();
-				//NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+				NoxicoGame.Me.CurrentBoard.Update();
+				//NoxicoGame.Me.CurrentBoard.Draw();
 				NoxicoGame.Subscreen = Inventory.Handler;
 				Subscreens.Redraw = true;
 			}
@@ -70,7 +70,7 @@ namespace Noxico
 
 		public static void Handler()
 		{
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			if (!player.Character.HasToken("items") || player.Character.GetToken("items").Tokens.Count == 0)
 			{
 				MessageBox.Notice(i18n.GetString("inventory_youhavenothing"), true);
@@ -210,18 +210,18 @@ namespace Noxico
 					}))); */
 				}
 				var height = inventoryItems.Count;
-				if (height > 34)
-					height = 34;
+				if (height > 10)
+					height = 10;
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
 				if (UIManager.Elements.Count < 2)
 				{
-					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
-					howTo = new UILabel("") { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-					itemDesc = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
+					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
+					howTo = new UILabel("") { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+					itemDesc = new UILabel("") { Left = 4, Top = 15, Width = 72, Height = 5 };
 					sigilView = new UILabel("") { Left = 35, Top = 2, Width = 60, Height = height };
-					itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection };
+					itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection, Background = UIColors.WindowBackground };
 					itemList.Change = (s, e) =>
 					{
 						selection = itemList.Index;
@@ -279,7 +279,7 @@ namespace Noxico
 					{
 						TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 					};
-					capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
+					capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
 					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height };
 					UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
 					UIManager.Elements.Add(yourWindow);
@@ -289,18 +289,19 @@ namespace Noxico
 					UIManager.Elements.Add(sigilView);
 					UIManager.Elements.Add(itemDesc);
 					UIManager.Elements.Add(capacity);
-					UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 45 });
+					UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 1 });
 					UIManager.Highlight = itemList;
 				}
 				else
 				{
 					yourWindow.Height = 2 + height;
 					itemList.Items = itemTexts;
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-					NoxicoGame.HostForm.Noxico.CurrentBoard.Draw();
+					NoxicoGame.Me.CurrentBoard.Redraw();
+					NoxicoGame.Me.CurrentBoard.Draw();
 				}
 				itemList.Index = selection;
 
+				NoxicoGame.DrawSidebar();
 				UIManager.Draw();
 			}
 
@@ -308,8 +309,8 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

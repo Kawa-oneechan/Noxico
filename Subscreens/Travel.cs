@@ -31,18 +31,17 @@ namespace Noxico
 
 				var list = new UIList()
 				{
-					//Items = NoxicoGame.KnownTargets.Select(kt => NoxicoGame.TargetNames[kt]).ToList(),
 					Left = 4,
-					Top = 4,
+					Top = 3,
 					Width = 36,
-					Height = 16,
+					Height = 18,
 					Background = Color.White,
 					Foreground = Color.Black,
 				};
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_header")) { Left = 1, Top = 0, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = 59, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere")) { Left = 44, Top = 3, Width = 60, Foreground = Color.Teal });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = 24, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere")) { Left = 44, Top = 3, Width = 40, Foreground = Color.Teal });
 				UIManager.Elements.Add(list);
 				
 				var targets = new List<int>();
@@ -82,8 +81,6 @@ namespace Noxico
 						host.Noxico.Player.Reposition();
 				};
 
-				//var thisBoard = NoxicoGame.KnownTargets.FirstOrDefault(kt => kt == host.Noxico.CurrentBoard.BoardNum);
-				//list.Index = NoxicoGame.TargetNames.First(tn => tn.Key == thisBoard).Key;
 				if (host.Noxico.CurrentBoard.Name != null)
 				{
 					var thisBoard = NoxicoGame.TravelTargets.FirstOrDefault(tn => host.Noxico.CurrentBoard.Name.StartsWith(tn.Value));
@@ -103,6 +100,7 @@ namespace Noxico
 				NoxicoGame.Immediate = true;
 				host.Noxico.CurrentBoard.Redraw();
 				host.Noxico.CurrentBoard.Draw(true);
+				host.Noxico.CurrentBoard.AimCamera();
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

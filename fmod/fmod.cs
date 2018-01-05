@@ -488,10 +488,6 @@ namespace FMOD
 		/// <summary>
 		/// Plays a sound object on a particular channel.
 		/// </summary>
-		/// <param name="channelIndex">
-		/// Use ChannelIndex.Free or -1 to get FMOD to pick a free channel. Otherwise, specify a channel number
-		/// from 0 to the maxChannels value specified in System.Initialize, minus 1.
-		/// </param>
 		/// <param name="sound">Pointer to the sound to play. This is opened with System.CreateSound.</param>
 		/// <param name="paused">
 		/// True or false flag to specify whether to start the channel paused or not. Starting a channel paused

@@ -23,10 +23,12 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MUTAMORPH FREETESTPOTIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -126,13 +128,22 @@
     <Compile Include="i18n.cs" />
     <Content Include="Guides\ref.png" />
     <Content Include="Guides\ref.txt" />
-    <Content Include="mix\fonts\16x16-wyse.png" />
-    <Content Include="mix\fonts\8x8-5140.png" />
-    <Content Include="mix\fonts\8x8-bold.png" />
-    <Content Include="mix\fonts\8x8-thin.png" />
+    <Content Include="mix\fonts\8x16-bold.png" />
+    <Content Include="mix\missions\chelsie\lairhouse.txt" />
+    <Content Include="mix\missions\consentaclepit\uniques.tml.patch" />
+    <None Include="mix\defense.lua" />
+    <None Include="mix\pluralizer.lua" />
+    <None Include="mix\missions\consentaclepit\dialogue.tml.patch" />
+    <None Include="mix\missions\consentaclepit\mission.lua" />
+    <None Include="mix\missions\introdream\dialogue.tml.patch.inprogress" />
+    <Content Include="mix\missions\consentaclepit\thepit.png" />
+    <Content Include="mix\missions\consentaclepit\thepit.txt" />
+    <Content Include="mix\missions\consentaclepit\manifest.txt" />
+    <Content Include="mix\missions\morphpotions\manifest.txt" />
     <Content Include="mix\missions\playerbase\lv0.txt" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
+    <None Include="mix\clutter.tml" />
     <Compile Include="Mutamorph.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />
@@ -221,13 +232,15 @@
     <Content Include="mix\missions\melfina\uniques.tml.patch" />
     <Content Include="mix\missions\melfina\loot.tml.patch" />
     <Content Include="mix\missions\melfina\items.tml.patch" />
-    <Content Include="mix\missions\pettancow\uniques.tml.patch" />
+    <Content Include="mix\missions\playerbase\uniques.tml.patch" />
     <None Include="mix\missions\littleponies\mission.lua" />
     <None Include="mix\missions\melfina\mission.lua" />
+    <None Include="mix\missions\morphpotions\items.tml.patch" />
     <None Include="mix\missions\pettancow\mission.lua" />
     <None Include="mix\missions\playerbase\dialogue.tml.patch" />
     <None Include="mix\missions\playerbase\mission.lua" />
     <Content Include="mix\missions\portal\platform1.png" />
+    <Content Include="mix\missions\portal\platform1.txt" />
     <Content Include="mix\missions\portal\platform2.png" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\noxico.ini" />
@@ -243,12 +256,14 @@
     <Content Include="Guides\Tokeninfo.txt" />
     <Content Include="mix\title.png" />
     <Content Include="mix\travel.png" />
-    <Content Include="unformatted books.txt" />
+    <Content Include="notes\oldScriptsStorage.txt" />
+    <Content Include="notes\Sparks%27 notes.txt" />
+    <Content Include="notes\unformatted books.txt" />
     <Content Include="mix\uniques.tml" />
     <Content Include="Noxico.nox">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Xolroc%27s random ideas.txt" />
+    <Content Include="notes\Xolroc%27s random ideas.txt" />
     <None Include="mix\crafting.tml" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />

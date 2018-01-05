@@ -56,7 +56,7 @@ namespace Noxico
 			var set = descTable.Path(path);
 			if (set == null)
 				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
-			var ret = string.Empty;
+			var ret = set.Tokens[0].Tokens[Random.Next(set.Tokens[0].Tokens.Count)].Name;
 			foreach (var item in set.Tokens)
 			{
 				if (item.Value <= upTo)
@@ -82,11 +82,11 @@ namespace Noxico
 			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 
-		public static string BreastSize(Token breastRowToken, bool inCups = false)
+		public static string BreastSize(Token breastToken, bool inCups = false)
 		{
-			if (breastRowToken == null)
+			if (breastToken == null)
 				return "glitch";
-			var size = breastRowToken.HasToken("size") ? breastRowToken.GetToken("size").Value : 0f;
+			var size = breastToken.HasToken("size") ? breastToken.GetToken("size").Value : 0f;
 			return GetSizeDescription(inCups ? "breasts/cupsize" : "breasts/size", size);
 		}
 
@@ -230,6 +230,7 @@ namespace Noxico
 					name = name.Replace(key, "");
 			}
 
+			//TODO: see Mutamorph/GetMorphDeltas about scripted articles.
 			if (article == "the")
 				name = knownItem.Definite + " " + name;
 			else if (article == "a")
@@ -288,7 +289,7 @@ namespace Noxico
 
 		public static string Hair(Token hairToken)
 		{
-			//TODO finish hair
+			//TODO: finish hair
 
 			return null;
 		}
@@ -324,7 +325,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a string containing a description of the passed 'nipple' token's size.
 		/// </summary>
-		/// <param name="ballsToken">The 'nipple' token of a character.</param>
+		/// <param name="nipplesToken">The 'nipple' token of a character.</param>
 		/// <returns>A string containging the description of the 'nipple' token's size.</returns>
 		public static string NippleSize(Token nipplesToken)
 		{
@@ -386,7 +387,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns a string containing a description of the passed 'ass' token size.
 		/// </summary>
-		/// <param name="ballsToken">The 'ass' token of a character.</param>
+		/// <param name="buttToken">The 'ass' token of a character.</param>
 		/// <returns>A string containging the description of the 'ass' token's size.</returns>
 		public static string ButtSize(Token buttToken)
 		{
@@ -441,12 +442,11 @@ namespace Noxico
 		/// <returns>A string containing a description of the hand type.</returns>
 		public static string Hand(Character character, bool plural = false)
 		{
-			//TRANSLATE
 			if (character.HasToken("quadruped"))
 				return Foot(character.GetToken("legs"), plural);
 			//Clawed hands and such can go here.
-			return "hand".Pluralize(plural ? 2 : 1);
+			var request = descTable.Path("hand/default");
+			return request.Text.Pluralize(plural ? 2 : 1);
 		}
-
 	}
 }

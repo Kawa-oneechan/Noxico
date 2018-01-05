@@ -35,7 +35,7 @@ namespace Noxico
 		public void UpdateWalls(bool allowSwimming = true, Board board = null)
 		{
 			if (board == null)
-				board = NoxicoGame.HostForm.Noxico.CurrentBoard;
+				board = NoxicoGame.Me.CurrentBoard;
 			if (board == null)
 				return;
 			for (var row = 0; row < mapRows; row++)
@@ -50,7 +50,7 @@ namespace Noxico
 			var lowest = vhn;
 			var ret = false;
 
-			var board = NoxicoGame.HostForm.Noxico.CurrentBoard;
+			var board = NoxicoGame.Me.CurrentBoard;
 			var ignored = new List<int?>();
 			if (Ignore == DijkstraIgnore.Instance && IgnoreObject != null)
 			{

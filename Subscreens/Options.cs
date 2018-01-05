@@ -23,21 +23,21 @@ namespace Noxico
 
 				var window = new UIWindow(i18n.GetString("opt_title"))
 				{
-					Left = 1,
-					Top = 1,
-					Width = 92,
+					Left = 0,
+					Top = 0,
+					Width = 80,
 					Height = 25,
 				};
 
 				var speedLabel = new UILabel(i18n.GetString("opt_speed"))
 				{
-					Left = 4,
-					Top = 3,
+					Left = 3,
+					Top = 2,
 				};
 				speed = new UITextBox(IniFile.GetValue("misc", "speed", "15"))
 				{
-					Left = 6,
-					Top = 4,
+					Left = 4,
+					Top = 3,
 					Width = 4,
 					Numeric = true
 				};
@@ -56,14 +56,14 @@ namespace Noxico
 				//previousFont = fonts[currentFontIndex];
 				var fontLabel = new UILabel(i18n.GetString("opt_font"))
 				{
-					Left = 4,
-					Top = 6,
+					Left = 3,
+					Top = 5,
 				};
 				font = new UIList(string.Empty, null, fonts, currentFontIndex)
 				{
-					Left = 6,
-					Top = 7,
-					Width = 32,
+					Left = 4,
+					Top = 6,
+					Width = 20,
 					Height = 20,
 				};
 				font.Enter = (s, e) =>
@@ -76,32 +76,32 @@ namespace Noxico
 
 				var miscWindow = new UIWindow(i18n.GetString("opt_misc"))
 				{
-					Left = 40,
-					Top = 3,
+					Left = 27,
+					Top = 2,
 					Width = 50,
 					Height = 11,
 				};
 
 				skipIntro = new UIToggle(i18n.GetString("opt_skipintro"))
 				{
-					Left = 42,
-					Top = 4,
+					Left = 29,
+					Top = 3,
 					Checked = IniFile.GetValue("misc", "skipintro", false),
 					Background = Color.Transparent,
 				};
 
 				rememberPause = new UIToggle(i18n.GetString("opt_rememberpause"))
 				{
-					Left = 42,
-					Top = 6,
+					Left = 29,
+					Top = 5,
 					Checked = IniFile.GetValue("misc", "rememberpause", true),
 					Background = Color.Transparent,
 				};
 
 				vistaSaves = new UIToggle(i18n.GetString("opt_vistasaves"))
 				{
-					Left = 42,
-					Top = 8,
+					Left = 29,
+					Top = 7,
 					Checked = IniFile.GetValue("misc", "vistasaves", true),
 					Enabled = Vista.IsVista,
 					Background = Color.Transparent,
@@ -109,8 +109,8 @@ namespace Noxico
 				
 				xInput = new UIToggle(i18n.GetString("opt_xinput"))
 				{
-					Left = 42,
-					Top = 10,
+					Left = 29,
+					Top = 9,
 					Checked = IniFile.GetValue("misc", "xinput", true),
 					Enabled = Vista.IsVista,
 					Background = Color.Transparent,
@@ -118,47 +118,47 @@ namespace Noxico
 
 				imperial = new UIToggle(i18n.GetString("opt_imperial"))
 				{
-					Left = 42,
-					Top = 12,
+					Left = 29,
+					Top = 11,
 					Checked = IniFile.GetValue("misc", "imperial", false),
 					Background = Color.Transparent,
 				};
 
 				var audioWindow = new UIWindow(i18n.GetString("opt_audio"))
 				{
-					Left = 4,
-					Top = 16,
+					Left = 3,
+					Top = 15,
 					Width = 32,
 					Height = 8,
 				};
 
 				enableAudio = new UIToggle(i18n.GetString("opt_enableaudio"))
 				{
-					Left = 6,
-					Top = 17,
+					Left = 5,
+					Top = 16,
 					Checked = IniFile.GetValue("audio", "enabled", true),
 					Background = Color.Transparent,
 				};
 
 				var musicVolumeLabel = new UILabel(i18n.GetString("opt_musicvolume"))
 				{
-					Left = 6,
-					Top = 19
+					Left = 5,
+					Top = 18
 				};
 				musicVolume = new UITextBox(IniFile.GetValue("audio", "musicvolume", "100"))
 				{
-					Left = 8,
-					Top = 20,
+					Left = 6,
+					Top = 19,
 				};
 				var soundVolumeLabel = new UILabel(i18n.GetString("opt_soundvolume"))
 				{
-					Left = 6,
-					Top = 21,
+					Left = 5,
+					Top = 20,
 				};
 				soundVolume = new UITextBox(IniFile.GetValue("audio", "soundvolume", "100"))
 				{
-					Left = 8,
-					Top = 22,
+					Left = 6,
+					Top = 21,
 				};
 
 				saveButton = new UIButton(i18n.GetString("opt_save"), (s, e) =>
@@ -199,8 +199,8 @@ namespace Noxico
 						else if (enableAudio.Checked && !NoxicoGame.Sound.Enabled)
 						{
 							NoxicoGame.Sound = new SoundSystem();
-							if (NoxicoGame.HostForm.Noxico.CurrentBoard != null)
-								NoxicoGame.HostForm.Noxico.CurrentBoard.PlayMusic();
+							if (NoxicoGame.Me.CurrentBoard != null)
+								NoxicoGame.Me.CurrentBoard.PlayMusic();
 						}
 
 						//if (previousFont != font.Text)
@@ -208,21 +208,21 @@ namespace Noxico
 
 						IniFile.Save();
 						cancelButton.DoEnter();
-					}) { Left = 74, Top = 19, Width = 16 };
+					}) { Left = 60, Top = 16, Width = 16 };
 				openButton = new UIButton(i18n.GetString("opt_open"), (s, e) =>
 					{
 						System.Diagnostics.Process.Start(NoxicoGame.HostForm.IniPath);
-					}) { Left = 74, Top = 21, Width = 16 };
+					}) { Left = 60, Top = 18, Width = 16 };
 				cancelButton = new UIButton(i18n.GetString("opt_cancel"), (s, e) =>
 					{
 						UIManager.Elements.Clear();
 						NoxicoGame.ClearKeys();
 						NoxicoGame.Immediate = true;
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-						NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+						NoxicoGame.Me.CurrentBoard.Redraw();
+						NoxicoGame.Me.CurrentBoard.Draw(true);
 						NoxicoGame.Mode = UserMode.Walkabout;
 						Subscreens.FirstDraw = true;
-					}) { Left = 74, Top = 23, Width = 16 };
+					}) { Left = 60, Top = 20, Width = 16 };
 				UIManager.Elements.Add(window);
 				UIManager.Elements.Add(speedLabel);
 				UIManager.Elements.Add(speed);

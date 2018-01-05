@@ -26,16 +26,14 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			//if (Environment.TickCount % blinkRate * 2 < blinkRate)
-			//	base.Draw();
 			if (NoxicoGame.Mode != UserMode.Aiming)
 				return;
-			NoxicoGame.HostForm.Cursor = new Point(XPosition, YPosition);
+			NoxicoGame.HostForm.Cursor = new Point(XPosition - NoxicoGame.CameraX, YPosition - NoxicoGame.CameraY);
 		}
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
 			if (CanMove(targetDirection, check) != null)
 				return;
@@ -59,28 +57,36 @@ namespace Noxico
 
 		public void Point()
 		{
+			this.ParentBoard.AimCamera(this.XPosition, this.YPosition);
 			PointingAt = null;
-			if (NoxicoGame.Messages.Count == 0) //fixes range error found while explaining controls
-				NoxicoGame.Messages.Add(string.Empty);
-			NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointatsomething");
+			NoxicoGame.LookAt = i18n.GetString("pointatsomething");
 			if (!this.ParentBoard.IsSeen(YPosition, XPosition))
 			{
-				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cGray>Unexplored";
+				NoxicoGame.LookAt = i18n.GetString("unexplored");
 				return;
 			}
+
+			var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
+			if (!string.IsNullOrWhiteSpace(tSD))
+			{
+				PointingAt = null;
+				NoxicoGame.LookAt = tSD;
+			}
+
+
 			foreach (var entity in this.ParentBoard.Entities)
 			{
 				if (entity.XPosition == XPosition && entity.YPosition == YPosition)
 				{
-					if (!this.ParentBoard.IsLit(YPosition, XPosition) && NoxicoGame.HostForm.Noxico.Player.CanSee(entity))
+					if (!this.ParentBoard.IsLit(YPosition, XPosition) && NoxicoGame.Me.Player.CanSee(entity))
 					{
-						if (NoxicoGame.HostForm.Noxico.Player.Character.Path("eyes/glow") == null)
+						if (NoxicoGame.Me.Player.Character.Path("eyes/glow") == null)
 						{
 							//No darkvision
 							if (entity is BoardChar && ((BoardChar)entity).Character.Path("eyes/glow") != null)
 							{
 								//Entity has glowing eyes, but we don't let the player actually interact with them.
-								NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + i18n.GetString("eyesinthedark");
+								NoxicoGame.LookAt = "<c" + ((BoardChar)entity).Character.Path("eyes").Text + ">" + i18n.GetString("eyesinthedark");
 							}
 							return;
 						}
@@ -93,35 +99,29 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
+						NoxicoGame.LookAt = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
 						//return;
 					}
 					else if (entity is DroppedItem)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + ((DroppedItem)PointingAt).Name;
+						NoxicoGame.LookAt = ((DroppedItem)PointingAt).Name;
 						//return;
 					}
 					else if (entity is Clutter || entity is Container)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + (entity is Container ? ((Container)PointingAt).Name : ((Clutter)PointingAt).Name);
+						var desc = (entity is Container ? ((Container)PointingAt).Description : ((Clutter)PointingAt).Description);
+						if (desc.Length() > 70)
+							desc = desc.Remove(desc.IndexOf('.') + 1);
+						NoxicoGame.LookAt = desc;
 						//return;
 					}
 					else if (entity is Door)
 					{
-						NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = "<cSilver>" + i18n.GetString("pointingatdoor");
+						NoxicoGame.LookAt = i18n.GetString("pointingatdoor");
 						//return;
 					}
 				}
 			}
-			/*
-			var tSD = this.ParentBoard.GetName(YPosition, XPosition);
-			if (!string.IsNullOrWhiteSpace(tSD))
-			{
-				PointingAt = null;
-				NoxicoGame.Messages[NoxicoGame.Messages.Count - 1] = tSD;
-				return;
-			}
-			*/
 		}
 
 		public override void Update()
@@ -156,7 +156,7 @@ namespace Noxico
 			{
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
-				var player = NoxicoGame.HostForm.Noxico.Player;
+				var player = NoxicoGame.Me.Player;
 				if (PointingAt != null)
 				{
 					LastTarget = PointingAt;
@@ -180,6 +180,27 @@ namespace Noxico
 							if (player.Character.Path("copier/backup") != null || player.Character.Path("copier/full") == null)
 								options["revert"] = i18n.GetString("action_revert");
 						}
+					}
+					else if (PointingAt is DroppedItem)
+					{
+						var drop = PointingAt as DroppedItem;
+						var item = drop.Item;
+						var token = drop.Token;
+						description = item.ToString(token);
+						if (distance <= 1)
+							options["take"] = i18n.GetString("action_pickup");
+					}
+					else if (PointingAt is Container)
+					{
+						var container = PointingAt as Container;
+						description = container.Name ?? "container";
+					}
+					else if (PointingAt is Clutter)
+					{
+						var clutter = PointingAt as Clutter;
+						description = clutter.Name ?? "something";
+						if (clutter.ID == "craftstation")
+							options["craft"] = i18n.GetString("action_craft");
 					}
 					else if (PointingAt is BoardChar)
 					{
@@ -221,38 +242,23 @@ namespace Noxico
 							options["shoot"] = i18n.Format("action_shoothim", boardChar.Character.HimHerIt(true));
 						}
 					}
-					else if (PointingAt is DroppedItem)
-					{
-						var drop = PointingAt as DroppedItem;
-						var item = drop.Item;
-						var token = drop.Token;
-						description = item.ToString(token);
-						if (distance <= 1)
-							options["take"] = i18n.GetString("action_pickup");
-					}
-					else if (PointingAt is Clutter && distance <= 1)
-					{
-						var clutter = PointingAt as Clutter;
-						description = clutter.Name ?? "something";
-						if (clutter.ID == "craftstation")
-							options["craft"] = i18n.GetString("action_craft");
-					}
 
 #if DEBUG
-					//if (PointingAt is DroppedItem || PointingAt is BoardChar)
-					//	options["edit"] = "Edit";
-                    if (PointingAt is BoardChar)
-                        options["mutate"] = "Random mutate";
+#if MUTAMORPH
+					if (PointingAt is BoardChar)
+                        options["mutate"] = "(debug) Random mutate";
+					if (PointingAt is BoardChar)
+						options["turbomutate"] = "(debug) Apply LOTS of mutations!";
+#endif
 #endif
 
-					//MessageBox.List("This is " + description + ". What would you do?", options,
-					ActionList.Show(description, PointingAt.XPosition, PointingAt.YPosition, options,
+					ActionList.Show(description, PointingAt.XPosition - NoxicoGame.CameraX, PointingAt.YPosition - NoxicoGame.CameraY, options,
 						() =>
 						{
 							Hide();
 							if (ActionList.Answer is int && (int)ActionList.Answer == -1)
 							{
-								NoxicoGame.Messages.Add("[Aim message]");
+								//NoxicoGame.Messages.Add("[Aim message]");
 								NoxicoGame.Mode = UserMode.Aiming;
 								Point();
 								return;
@@ -272,6 +278,10 @@ namespace Noxico
 									{
 										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true, ((Clutter)PointingAt).Name ?? "something");
 									}
+									else if (PointingAt is Container)
+									{
+										MessageBox.Notice(((Container)PointingAt).Description.Trim(), true, ((Container)PointingAt).Name ?? "container");
+									}
 									else if (PointingAt is BoardChar)
 									{
 										if (((BoardChar)PointingAt).Character.HasToken("beast"))
@@ -284,8 +294,7 @@ namespace Noxico
 								case "talk":
 									if (PointingAt is Player)
 									{
-										if (Culture.CheckSummoningDay())
-											return;
+										//if (Culture.CheckSummoningDay()) return;
 										if (player.Character.Path("cunning").Value >= 10)
 											MessageBox.Notice(i18n.GetString("talkingotyourself"), true);
 										else
@@ -382,6 +391,13 @@ namespace Noxico
 										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
                                     break;
+
+								case "turbomutate":
+									var results2 = ((BoardChar)PointingAt).Character.Mutate(2500, 30);
+									foreach (var result in results2)
+										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
+											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
+									break;
 #endif
 #endif
 
@@ -395,6 +411,7 @@ namespace Noxico
 				}
 				else
 				{
+					/*
 					var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
 					if (!string.IsNullOrWhiteSpace(tSD))
 					{
@@ -407,6 +424,7 @@ namespace Noxico
 						MessageBox.Notice(tSD, true);
 						return;
 					}
+					*/
 				}
 			}
 
@@ -434,7 +452,7 @@ namespace Noxico
 
 		public void PopulateTabstops()
 		{
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 			Tabstops.Clear();
 			foreach (var e in ParentBoard.Entities)
 			{
@@ -467,10 +485,12 @@ namespace Noxico
 
 		public void Hide()
 		{
-			if (NoxicoGame.Messages.Count > 1)
-				NoxicoGame.Messages.RemoveAt(NoxicoGame.Messages.Count - 1);
+			//if (NoxicoGame.Messages.Count > 1)
+			//	NoxicoGame.Messages.RemoveAt(NoxicoGame.Messages.Count - 1);
+			NoxicoGame.LookAt = null;
 			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
-			this.ParentBoard.DirtySpots.Add(new Location(XPosition, YPosition));
+			this.ParentBoard.AimCamera();
+			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			this.ParentBoard.Draw(true);
 		}
 	}

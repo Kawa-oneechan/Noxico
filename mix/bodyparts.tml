@@ -50,6 +50,11 @@ face
 		bear-like
 	spider
 		many-eyed
+	dragon
+		draconic
+		reptilian
+		dragon-like
+		reptile-like
 hair
 	names
 		afro
@@ -357,8 +362,8 @@ legs
 		chitinous
 	claws
 		claw-footed
-	stilleto
-		stilleto-heeled
+	stiletto
+		stiletto-heeled
 	genbeast
 		digitigrade
 	bear
@@ -397,7 +402,7 @@ penis
 	dragon
 		draconic
 		ribbed
-		thick reptilian
+		reptilian
 vagina
 	looseness
 		upto: 0
@@ -480,6 +485,11 @@ tail
 		feline
 		cat-like
 		sinuous
+	dragon
+		draconic
+		reptilian
+		dragon-like
+		reptile-like
 feet
 	horse: hoof
 	cow: hoof
@@ -488,3 +498,6 @@ feet
 	cat: paw
 	insect: claw
 	default: foot
+	dragon: claw
+hand
+	default: hand

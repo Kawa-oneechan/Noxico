@@ -13,39 +13,95 @@ namespace Noxico
 	public delegate void SubscreenFunc();
 
 	/// <summary>
-	/// The poor man's System.Drawing.Rectangle.
+	/// Stores a set of four integers that represent the location and size of a rectangle.
+	/// Basically a version of <see cref="System.Drawing.Rectangle"/> that replaces the extra stuff with a single feature.
 	/// </summary>
 	public struct Rectangle
 	{
+		/// <summary>
+		/// Gets the x-coordinate of the left edge of this <see cref="Noxico.Rectangle"/> structure.
+		/// </summary>
 		public int Left { get; set; }
 		public int Top { get; set; }
 		public int Right { get; set; }
 		public int Bottom { get; set; }
-		public Location GetCenter()
+
+		/// <summary>
+		/// Creates and returns a <see cref="Noxico.Point"/> that is the centerpoint of this <c>Noxico.Rectangle</c>.
+		/// </summary>
+		/// <returns></returns>
+		public Point GetCenter()
 		{
-			return new Location(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
+			return new Point(Left + ((Right - Left) / 2), Top + ((Bottom - Top) / 2));
+		}
+
+		public void SaveToFile(BinaryWriter stream)
+		{
+			stream.Write(Left);
+			stream.Write(Top);
+			stream.Write(Right);
+			stream.Write(Bottom);
+		}
+
+		public static Rectangle LoadFromFile(BinaryReader stream)
+		{
+			var l = stream.ReadInt32();
+			var t = stream.ReadInt32();
+			var r = stream.ReadInt32();
+			var b = stream.ReadInt32();
+			return new Rectangle() { Left = l, Top = t, Right = r, Bottom = b };
 		}
 	}
 
 	/// <summary>
-	/// The poor man's System.Drawing.Point, but with extras.
+	/// Represents an ordered pair of integer x- and y-coordinates that defines a point in a two-dimensional plane.
+	/// Basically a version of <see cref="System.Drawing.Point"/> without the extra stuff.
 	/// </summary>
 	public struct Point
 	{
-		public int X, Y;
-		public Point(int x, int y)
+		public int X { get; set; }
+		public int Y { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Noxico.Point"/> class with the specified coordinates.
+		/// </summary>
+		/// <param name="x">The horizontal position of the point.</param>
+		/// <param name="y">The vertical position of the point.</param>
+		public Point(int x, int y) : this()
 		{
 			X = x;
 			Y = y;
 		}
+
+		/// <summary>
+		/// Compares two <see cref="Noxico.Point"/> objects.
+		/// The result specifies whether the values of the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> properties of the two <see cref="Noxico.Point"/> objects are equal.
+		/// </summary>
+		/// <param name="l">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <param name="r">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <returns>true if the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> values of left and right are equal; otherwise, false.</returns>
 		public static bool operator ==(Point l, Point r)
 		{
 			return l.X == r.X && l.Y == r.Y;
 		}
+
+		/// <summary>
+		/// Compares two <see cref="Noxico.Point"/> objects.
+		/// The result specifies whether the values of the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> properties of the two <see cref="Noxico.Point"/> objects are unequal.
+		/// </summary>
+		/// <param name="l">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <param name="r">A <see cref="Noxico.Point"/> to compare.</param>
+		/// <returns>true if the <see cref="Noxico.Point.X"/> and <see cref="Noxico.Point.Y"/> values of left and right differ; otherwise, false.</returns>
 		public static bool operator !=(Point l, Point r)
 		{
 			return !(l == r);
 		}
+
+		/// <summary>
+		/// Specifies whether this <see cref="Noxico.Point"/> contains the same coordinates as the specified <c>System.Object</c>.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object"/> to test.</param>
+		/// <returns>true if <paramref name="obj"/> is a <see cref="Noxico.Point"/> and has the same coordinates as this <see cref="Noxico.Point"/>.</returns>
 		public override bool Equals(object obj)
 		{
 			if (obj == null || !(obj is Point))
@@ -53,10 +109,20 @@ namespace Noxico
 			var opt = (Point)obj;
 			return opt.X == X && opt.Y == Y;
 		}
+
+		/// <summary>
+		/// Returns a hash code for this <see cref="Noxico.Point"/>.
+		/// </summary>
+		/// <returns>An integer value that specifies a hash value for this <see cref="Noxico.Point"/>.</returns>
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
 		}
+
+		/// <summary>
+		/// Converts this <see cref="Noxico.Point"/> to a human-readable string.
+		/// </summary>
+		/// <returns>A string that represents this <see cref="Noxico.Point"/>.</returns>
 		public override string ToString()
 		{
 			return string.Format("{0}x{1}", X, Y);
@@ -88,6 +154,7 @@ namespace Noxico
 		public int Glyph { get; private set; }
 		public Color Foreground { get; private set; }
 		public Color Background { get; private set; }
+		public Color MultiForeground { get; private set; }
 		public bool Wall { get; private set; }
 		public bool Ceiling { get; private set; }
 		public bool Cliff { get; private set; }
@@ -97,7 +164,8 @@ namespace Noxico
 		public string FriendlyName { get; private set; }
 		public string Description { get; private set; }
 		public Token Variants { get; private set; }
-		public bool IsVariableWall { get; private set; }
+		public int VariableWall { get; private set; }
+		public bool IsVariableWall { get { return VariableWall > 0; } }
 
 		public bool SolidToWalker { get { return Wall || Fence || Cliff; } }
 		public bool SolidToFlyer { get { return Ceiling || Wall; } }
@@ -127,8 +195,9 @@ namespace Noxico
 					FriendlyName = tile.HasToken("_n") ? tile.GetToken("_n").Text : null,
 					Description = tile.HasToken("description") ? tile.GetToken("description").Text : null,
 					Variants = tile.HasToken("variants") ? tile.GetToken("variants") : new Token("variants"),
-					IsVariableWall = tile.HasToken("varwall"),
+					VariableWall = tile.HasToken("varwall") ? (int)tile.GetToken("varwall").Value : 0,
 				};
+				def.MultiForeground = tile.HasToken("mult") ? Color.FromName(tile.GetToken("mult").Text) : def.Foreground;
 				defs.Add(i, def);
 			}
 		}
@@ -352,7 +421,7 @@ namespace Noxico
 		}
 		public List<Entity> Entities { get; private set; }
 		public List<Warp> Warps { get; private set; }
-		public List<Location> DirtySpots { get; private set; }
+		public List<Point> DirtySpots { get; private set; }
 		public List<Entity> EntitiesToRemove { get; private set; }
 		public List<Entity> EntitiesToAdd { get; private set; }
 
@@ -360,7 +429,7 @@ namespace Noxico
 		public bool[,] Lightmap = new bool[50, 80];
 
 		public Dictionary<string, Rectangle> Sectors { get; private set; }
-		public List<Location> ExitPossibilities { get; private set; }
+		public List<Point> ExitPossibilities { get; private set; }
 
 		public override string ToString()
 		{
@@ -380,7 +449,7 @@ namespace Noxico
 			this.EntitiesToAdd = new List<Entity>();
 			this.Warps = new List<Warp>();
 			this.Sectors = new Dictionary<string, Rectangle>();
-			this.DirtySpots = new List<Location>();
+			this.DirtySpots = new List<Point>();
 			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
 					this.Tilemap[col, row] = new Tile();
@@ -389,10 +458,10 @@ namespace Noxico
 		public void Flush()
 		{
 			Program.WriteLine("Flushing board {0}.", ID);
-			var me = NoxicoGame.HostForm.Noxico.Boards.FindIndex(x => x == this);
+			var me = NoxicoGame.Me.Boards.FindIndex(x => x == this);
 			CleanUpSlimeTrails();
 			SaveToFile(me);
-			NoxicoGame.HostForm.Noxico.Boards[me] = null;
+			NoxicoGame.Me.Boards[me] = null;
 		}
 
 		public void SaveToFile(int index)
@@ -427,12 +496,8 @@ namespace Noxico
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
 				{
-					//TODO: give sectors their own serialization function. For readability.
 					stream.Write(sector.Key);
-					stream.Write(sector.Value.Left);
-					stream.Write(sector.Value.Top);
-					stream.Write(sector.Value.Right);
-					stream.Write(sector.Value.Bottom);
+					sector.Value.SaveToFile(stream);
 				}
 
 				Toolkit.SaveExpectation(stream, "ENTT");
@@ -504,15 +569,12 @@ namespace Noxico
 				for (int i = 0; i < secCt; i++)
 				{
 					var secName = stream.ReadString();
-					var l = stream.ReadInt32();
-					var t = stream.ReadInt32();
-					var r = stream.ReadInt32();
-					var b = stream.ReadInt32();
-					newBoard.Sectors.Add(secName, new Rectangle() { Left = l, Top = t, Right = r, Bottom = b });
+					newBoard.Sectors.Add(secName, Rectangle.LoadFromFile(stream));
 				}
 
 				Toolkit.ExpectFromFile(stream, "ENTT", "board entity");
 				//Unlike in SaveToFile, there's no need to worry about the player because that one's handled on the world level.
+				Clutter.ParentBoardHack = newBoard;
 				for (int i = 0; i < chrCt; i++)
 					newBoard.Entities.Add(BoardChar.LoadFromFile(stream));
 				for (int i = 0; i < drpCt; i++)
@@ -554,7 +616,7 @@ namespace Noxico
 
 		private void CleanUpCorpses()
 		{
-			foreach (var corpse in Entities.OfType<Clutter>().Where(x => x.Name.EndsWith("'s remains")))
+			foreach (var corpse in Entities.OfType<Container>().Where(x => x.Token.HasToken("corpse")))
 				if (Random.NextDouble() > 0.7)
 					this.EntitiesToRemove.Add(corpse);
 		}
@@ -646,6 +708,9 @@ namespace Noxico
 				row = 49;
 			if (row < 0)
 				row = 0;
+			var tileDef = Tilemap[col, row].Definition;
+			if (tileDef.IsVariableWall)
+				return TileDefinition.Find(tileDef.VariableWall, true).Description;
 			return Tilemap[col, row].Definition.Description;
 		}
 
@@ -665,7 +730,7 @@ namespace Noxico
 		public void SetTile(int row, int col, int index)
 		{
 			Tilemap[col, row].Index = index;
-			DirtySpots.Add(new Location(col, row));
+			DirtySpots.Add(new Point(col, row));
 		}
 		public void SetTile(int row, int col, string tileName)
 		{
@@ -692,7 +757,7 @@ namespace Noxico
 			if (tile.Definition.CanBurn && tile.Fluid == Fluids.Dry)
 			{
 				tile.BurnTimer = Random.Next(20, 23) * 100;
-				DirtySpots.Add(new Location(col, row));
+				DirtySpots.Add(new Point(col, row));
 			}
 		}
 
@@ -713,7 +778,7 @@ namespace Noxico
 				tile.SlimeColor = color.Darken(1.4);
 				tile.Shallow = true;
 				tile.BurnTimer = (Random.Next(0, 4) * 10) + 100;
-				DirtySpots.Add(new Location(row, col));
+				DirtySpots.Add(new Point(row, col));
 			}
 		}
 
@@ -736,14 +801,14 @@ namespace Noxico
 						{
 							//Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
 							//Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
-							DirtySpots.Add(new Location(col, row));
+							DirtySpots.Add(new Point(col, row));
 							if (!spread)
 								continue;
 							Tilemap[col, row].BurnTimer--;
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Definition = TileDefinition.Find("ash");
-								DirtySpots.Add(new Location(col, row));
+								DirtySpots.Add(new Point(col, row));
 							}
 							else if (Tilemap[col, row].BurnTimer == 10)
 							{
@@ -766,7 +831,7 @@ namespace Noxico
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Fluid = Fluids.Dry;
-								DirtySpots.Add(new Location(col, row));
+								DirtySpots.Add(new Point(col, row));
 							}
 						}
 					}
@@ -784,7 +849,7 @@ namespace Noxico
 				{
 					entity.Update();
 
-					if (NoxicoGame.HostForm.Noxico.Player.Character.Health <= 0)
+					if (NoxicoGame.Me.Player.Character.Health <= 0)
 						return;
 				}
 				if (!surrounding && BoardType != BoardType.Dungeon)
@@ -797,11 +862,11 @@ namespace Noxico
 
 			foreach (var entity in this.Entities.Where(x => x.Passive))
 				entity.Update();
-			if (NoxicoGame.HostForm.Noxico.CurrentBoard == this)
-				NoxicoGame.HostForm.Noxico.Player.Update();
+			if (NoxicoGame.Me.CurrentBoard == this)
+				NoxicoGame.Me.Player.Update();
 			if (EntitiesToRemove.Count > 0)
 			{
-				EntitiesToRemove.ForEach(x => { Entities.Remove(x); this.DirtySpots.Add(new Location(x.XPosition, x.YPosition)); });
+				EntitiesToRemove.ForEach(x => { Entities.Remove(x); this.DirtySpots.Add(new Point(x.XPosition, x.YPosition)); });
 				EntitiesToRemove.Clear();
 			}
 			if (EntitiesToAdd.Count > 0)
@@ -818,7 +883,7 @@ namespace Noxico
 
 		public void UpdateSurroundings()
 		{
-			var nox = NoxicoGame.HostForm.Noxico;
+			var nox = NoxicoGame.Me;
 			if (this != nox.CurrentBoard)
 				return;
 			if (this.ToNorth > -1)
@@ -862,11 +927,32 @@ namespace Noxico
 			}
 		}
 
+		public void AimCamera()
+		{
+			AimCamera(NoxicoGame.Me.Player.XPosition, NoxicoGame.Me.Player.YPosition);
+		}
+
+		public void AimCamera(int x, int y)
+		{
+			Program.WriteLine("AimCamera({0}, {1})", x, y);
+			var oldCamY = NoxicoGame.CameraY;
+			NoxicoGame.CameraY = y - 12;
+			if (NoxicoGame.CameraY < 0)
+				NoxicoGame.CameraY = 0;
+			if (NoxicoGame.CameraY > 30)
+				NoxicoGame.CameraY = 30;
+			Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
+			if (oldCamY < NoxicoGame.CameraY) //went down
+				Redraw();
+			else if (oldCamY > NoxicoGame.CameraY) //went up
+				Redraw();
+		}
+
 		public void Redraw()
 		{
 			for (int row = 0; row < 50; row++)
 				for (int col = 0; col < 80; col++)
-					DirtySpots.Add(new Location(col, row));
+					DirtySpots.Add(new Point(col, row));
 
 			NoxicoGame.DrawSidebar();
 			NoxicoGame.DrawMessages();
@@ -878,12 +964,14 @@ namespace Noxico
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 			foreach (var l in this.DirtySpots)
 			{
-				if (l.X >= 80 || l.Y >= 50 || l.X < 0 || l.Y < 0)
+				var localX = l.X - NoxicoGame.CameraX;
+				var localY = l.Y - NoxicoGame.CameraY;
+				if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
 					continue;
 				var t = this.Tilemap[l.X, l.Y];
 				var def = t.Definition;
 				var glyph = def.Glyph;
-				var fore = def.Foreground;
+				var fore = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? def.MultiForeground : def.Foreground;
 				var back = def.Background;
 				if (t.Fluid != Fluids.Dry)
 				{
@@ -899,11 +987,11 @@ namespace Noxico
 					back = back.LerpDarken(t.InherentLight / 12.0);
 				}
 				if (Lightmap[l.Y, l.X])
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore, back, force);
+					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore, back, force);
 				else if (t.Seen)
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, glyph, fore.Night(), back.Night(), force);
+					NoxicoGame.HostForm.SetCell(localY, localX, glyph, fore.Night(), back.Night(), force);
 				else
-					NoxicoGame.HostForm.SetCell(l.Y, l.X, ' ', Color.Black, Color.Black, force);
+					NoxicoGame.HostForm.SetCell(localY, localX, ' ', Color.Black, Color.Black, force);
 			}
 			this.DirtySpots.Clear();
 
@@ -972,7 +1060,7 @@ namespace Noxico
 				for (int col = 0; col < 80; col++)
 				{
 					if (Lightmap[row, col] != previousMap[row, col])
-						DirtySpots.Add(new Location(col, row));
+						DirtySpots.Add(new Point(col, row));
 				}
 			}
 		}
@@ -1044,7 +1132,32 @@ namespace Noxico
 					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
 					file.WriteLine("</pre>");
 				}
-			} 
+			}
+			if (Entities.OfType<Clutter>().Count() > 0)
+			{
+				file.WriteLine("<h3>Clutter</h3>");
+				foreach (var c in Entities.OfType<Clutter>())
+				{
+					file.WriteLine("<h4 id=\"{3}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
+					file.WriteLine("<pre>");
+					file.WriteLine("ID: {0}", c.ID);
+					file.WriteLine("Description: {0}", c.Description);
+					file.WriteLine("</pre>");
+				}
+			}
+			if (Entities.OfType<DroppedItem>().Count() > 0)
+			{
+				file.WriteLine("<h3>DroppedItem</h3>");
+				foreach (var c in Entities.OfType<DroppedItem>())
+				{
+					file.WriteLine("<h4>{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition);
+					file.WriteLine("<pre>Item:");
+					file.WriteLine(c.Item.DumpTokens(c.Item.Tokens, 0));
+					file.WriteLine("DroppedItem:");
+					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
+					file.WriteLine("</pre>");
+				}
+			}
 			file.Flush();
 			file.Close();
 		}
@@ -1065,7 +1178,8 @@ namespace Noxico
 			Board.HackishBoardTypeThing = this.BoardType.ToString().ToLowerInvariant();
 			for (var i = 0; i < toAdd; i++)
 			{
-				var newb = new BoardChar(Character.Generate(Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray()), Gender.RollDice))
+				var bodyplan = Toolkit.PickOne(encData.Tokens.Select(x => x.Name).Where(x => x != "stock").ToArray());
+				var newb = new BoardChar(Character.Generate(bodyplan, Gender.RollDice, Gender.RollDice, this.Realm))
 				{
 					ParentBoard = this,
 				};
@@ -1082,23 +1196,7 @@ namespace Noxico
 					continue;
 				newb.Character.Health = 12 * Random.Next(3);
 				newb.Character.AddToken("hostile");
-				//arm them
-				if (!newb.Character.HasToken("beast"))
-				{
-					var items = newb.Character.Path("items");
-					if (items == null)
-						items = newb.Character.AddToken("items");
-					var weapons = new[] { "dagger", "shortsword", "whip", "baseballbat" }; //TODO: make this cultural
-					var w = Random.Next(1, 2);
-					while (w > 0)
-					{
-						var weapon = Toolkit.PickOne(weapons);
-						if (items.HasToken(weapon))
-							continue;
-						items.AddToken(weapon);
-						w--;
-					}
-				}
+				//Arming the character was removed -- lootsets applied in character creation covered that much better.
 				newb.AdjustView();
 				this.Entities.Add(newb);
 			}
@@ -1218,7 +1316,7 @@ namespace Noxico
 
 		public void CreateHtmlScreenshot(StreamWriter stream, bool linked)
 		{
-			stream.WriteLine("<table style=\"font-family: Unifont, monospace;\" cellspacing=0 cellpadding=0>");
+			stream.WriteLine("<table style=\"font-family: Unifont, monospace; cursor: default;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 50; row++)
 			{
 				stream.WriteLine("\t<tr>");
@@ -1236,13 +1334,13 @@ namespace Noxico
 						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
 					}
 					var chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[def.Glyph]);
-					var tag = string.Format("{0}", Tilemap[col, row].InherentLight);
-					var link = "";
+					var tag = string.Empty; //string.Format("{0}", Tilemap[col, row].InherentLight);
+					var link = string.Empty;
 
 					if (chr == "&#x20;")
 						chr = "&nbsp;";
 
-					var ent = Entities.FirstOrDefault(x => x.XPosition == col && x.YPosition == row);
+					var ent = Entities.LastOrDefault(x => x.XPosition == col && x.YPosition == row);
 					if (ent != null)
 					{
 						back = string.Format("rgb({0},{1},{2})", ent.BackgroundColor.R, ent.BackgroundColor.G, ent.BackgroundColor.B);
@@ -1254,6 +1352,15 @@ namespace Noxico
 							tag = ((BoardChar)ent).Character.Name.ToString(true);
 							if (linked)
 								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+						else if (ent is Clutter)
+						{
+							if (linked)
+								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+						}
+						else if (ent is DroppedItem)
+						{
+							tag = ((DroppedItem)ent).Name;
 						}
 					}
 					if (!string.IsNullOrWhiteSpace(tag))
@@ -1282,7 +1389,7 @@ namespace Noxico
 
 		public void LoadSurroundings()
 		{
-			var nox = NoxicoGame.HostForm.Noxico;
+			var nox = NoxicoGame.Me;
 			UpdateLightmap(nox.Player, true);
 			if (this.ToNorth > -1 && nox.Boards[this.ToNorth] == null)
 				nox.GetBoard(this.ToNorth);

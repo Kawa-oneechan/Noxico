@@ -72,7 +72,7 @@ namespace Noxico
 		public static void Handler()
 		{
 			var keys = NoxicoGame.KeyMap;
-			var player = NoxicoGame.HostForm.Noxico.Player;
+			var player = NoxicoGame.Me.Player;
 
 			if (Subscreens.FirstDraw)
 			{
@@ -87,7 +87,7 @@ namespace Noxico
 				var containerTexts = new List<string>();
 
 				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
-				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft };
+				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(containerWindow);
 				var emptyMessage = mode == ContainerMode.Vendor ? vendorChar.Name.ToString() + " has nothing." : mode == ContainerMode.Corpse ? "Nothing left to loot." : "It's empty.";
 				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = 36, Height = 1 });
@@ -126,8 +126,8 @@ namespace Noxico
 						containerTexts.Add(itemString);
 					}
 					height = containerItems.Count;
-					if (height > 34)
-						height = 34;
+					if (height > 10)
+						height = 10;
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
@@ -144,7 +144,7 @@ namespace Noxico
 				var playerTexts = new List<string>();
 
 				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 42, Top = 1, Width = 37, Height = 3 };
-				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight };
+				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(playerWindow);
 				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = 44, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(playerList);
@@ -179,8 +179,8 @@ namespace Noxico
 					var height2 = playerItems.Count;
 					if (height2 == 0)
 						height2 = 1;
-					if (height2 > 34)
-						height2 = 34;
+					if (height2 > 10)
+						height2 = 10;
 					if (indexRight >= playerItems.Count)
 						indexRight = playerItems.Count - 1;
 
@@ -194,11 +194,11 @@ namespace Noxico
 				}
 
 				//Build the bottom window.
-				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 49, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 39, Width = 76, Height = 8, Title = UIColors.RegularText };
-				description = new UILabel("") { Left = 4, Top = 40, Width = 72, Height = 7 };
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 46 };
+				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
+				description = new UILabel("") { Left = 4, Top = 15, Width = 72, Height = 5 };
+				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
@@ -206,7 +206,7 @@ namespace Noxico
 				if (mode == ContainerMode.Vendor)
 					capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 
-				//TODO: why is this check a thing?
+				//FIXME: why is this check a thing?
 				if (containerList != null)
 				{
 					containerList.Change = (s, e) =>
@@ -258,15 +258,16 @@ namespace Noxico
 								keys[NoxicoGame.KeyBindings[KeyBinding.Right]] = true;
 							}
 							else
-								containerList.Height = (containerList.Items.Count < 34) ? containerList.Items.Count : 34;
+								containerList.Height = (containerList.Items.Count < 10) ? containerList.Items.Count : 10;
 							playerList.Hidden = false; //always the case.
-							playerList.Height = (playerList.Items.Count < 34) ? playerList.Items.Count : 34;
+							playerList.Height = (playerList.Items.Count < 10) ? playerList.Items.Count : 10;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (mode == ContainerMode.Vendor)
 								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							containerList.Change(s, e);
+							NoxicoGame.DrawSidebar(); 
 							UIManager.Draw();
 						}
 						else
@@ -327,15 +328,16 @@ namespace Noxico
 								keys[NoxicoGame.KeyBindings[KeyBinding.Left]] = true;
 							}
 							else
-								playerList.Height = (playerList.Items.Count < 34) ? playerList.Items.Count : 34;
+								playerList.Height = (playerList.Items.Count < 10) ? playerList.Items.Count : 10;
 							containerList.Hidden = false; //always the case.
-							containerList.Height = (containerList.Items.Count < 34) ? containerList.Items.Count : 34;
+							containerList.Height = (containerList.Items.Count < 10) ? containerList.Items.Count : 10;
 							containerWindow.Height = containerList.Height + 2;
 							playerWindow.Height = playerList.Height + 2;
 							capacity.Text = player.Character.Carried + "/" + player.Character.Capacity;
 							if (mode == ContainerMode.Vendor)
 								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							playerList.Change(s, e);
+							NoxicoGame.DrawSidebar();
 							UIManager.Draw();
 						}
 						else
@@ -346,8 +348,8 @@ namespace Noxico
 								//Immediately break out of ContainerMan and call out.
 								NoxicoGame.ClearKeys();
 								NoxicoGame.Immediate = true;
-								NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-								NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+								NoxicoGame.Me.CurrentBoard.Redraw();
+								NoxicoGame.Me.CurrentBoard.Draw(true);
 								NoxicoGame.Mode = UserMode.Walkabout;
 								Subscreens.FirstDraw = true;
 								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)");
@@ -369,8 +371,8 @@ namespace Noxico
 			{
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Redraw();
-				NoxicoGame.HostForm.Noxico.CurrentBoard.Draw(true);
+				NoxicoGame.Me.CurrentBoard.Redraw();
+				NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

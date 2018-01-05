@@ -15,7 +15,6 @@ namespace Noxico
 		{
 			public string MixFile, Filename;
 			public int Offset, Length;
-			//public bool NeedsPremultiply;
 			public bool IsCompressed;
 		}
 
@@ -26,6 +25,7 @@ namespace Noxico
 		/// <summary>
 		/// Populates the Mix database for usage
 		/// </summary>
+		/// <param name="mainFile">The primary archive's base name.</param>
 		public static void Initialize(string mainFile = "Noxico")
 		{
 			Program.WriteLine("Mix.Initialize()");
@@ -82,6 +82,11 @@ namespace Noxico
 			}
 		}
 
+		/// <summary>
+		/// Checks whether a given file exists, be it in the data folder or in any loaded archives.
+		/// </summary>
+		/// <param name="fileName">The file to check for.</param>
+		/// <returns>True if the file exists.</returns>
 		public static bool FileExists(string fileName)
 		{
 			if (File.Exists(Path.Combine("data", fileName)))
@@ -93,7 +98,7 @@ namespace Noxico
 		/// Looks up the given file in the Mix database and returns a <see cref="MemoryStream"/> for it.
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
-		/// <returns>Returns a <see cref="MemoryStream"/> if found, <see cref="null"/> otherwise.</returns>
+		/// <returns>Returns a <see cref="MemoryStream"/> if found, null otherwise.</returns>
 		public static Stream GetStream(string fileName)
 		{
 			Program.WriteLine("Mix.GetStream({0})", fileName);
@@ -115,7 +120,8 @@ namespace Noxico
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="string"/>.
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
-		/// <returns>Returns a <see cref="string"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
+		/// <param name="cache">If true, stores the resulting string in cache for quicker reuse.</param>
+		/// <returns>Returns a <see cref="string"/> with the file's contents if found, null otherwise.</returns>
 		public static string GetString(string fileName, bool cache = true)
 		{
 			if (cache && stringCache.ContainsKey(fileName))
@@ -132,6 +138,12 @@ namespace Noxico
 			return ret;
 		}
 
+		/// <summary>
+		/// Looks up the given file in the Mix database and returns its contents as a token tree.
+		/// </summary>
+		/// <param name="fileName">The file to find.</param>
+		/// <param name="cache">Should the original file contents be cached?</param>
+		/// <returns>Returns a token tree representing the file's contents.</returns>
 		public static List<Token> GetTokenTree(string fileName, bool cache = false)
 		{
 			var tml = GetString(fileName, cache);
@@ -159,7 +171,7 @@ namespace Noxico
 		/// Looks up the given file in the Mix database and returns its contents as a <see cref="Bitmap"/>.
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
-		/// <returns>Returns a <see cref="Bitmap"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
+		/// <returns>Returns a <see cref="Bitmap"/> with the file's contents if found, null otherwise.</returns>
 		//TODO: cache the returns.
 		public static Bitmap GetBitmap(string fileName)
 		{
@@ -174,10 +186,10 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Looks up the given file in the Mix database and returns its contents as a <see cref="byte[]"/>.
+		/// Looks up the given file in the Mix database and returns its contents as a <see cref="Byte"/> array.
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
-		/// <returns>Returns a <see cref="byte[]"/> with the file's contents if found, <see cref="null"/> otherwise.</returns>
+		/// <returns>Returns a <see cref="Byte"/> array with the file's contents if found, null otherwise.</returns>
 		public static byte[] GetBytes(string fileName)
 		{
 			Program.WriteLine("Mix.GetBytes({0})", fileName);
@@ -218,7 +230,7 @@ namespace Noxico
 		/// Returns a list of all the files in a given path.
 		/// </summary>
 		/// <param name="path">The path to look in.</param>
-		/// <returns>A <see cref="string[]"/> with all the files found, which may be empty.</returns>
+		/// <returns>A string array with all the files found, which may be empty.</returns>
 		public static string[] GetFilesInPath(string path)
 		{
 			var ret = new List<string>();

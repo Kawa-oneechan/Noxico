@@ -22,7 +22,7 @@ namespace Noxico
 
 		public TaskType type { get; protected set; }
 		public TaskStatus status { get; set; }
-		public Location moveTarget { get; set; }
+		public Point moveTarget { get; set; }
 		public int timer { get; protected set; }
 		public Token token { get; protected set; }
 		public string param { get; protected set; }
@@ -46,7 +46,7 @@ namespace Noxico
 			this.param = param;
 		}
 
-		public Task(TaskType type, Location moveTarget)
+		public Task(TaskType type, Point moveTarget)
 		{
 			this.type = type;
 			this.moveTarget = moveTarget;

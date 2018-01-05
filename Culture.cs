@@ -19,7 +19,7 @@ namespace Noxico
 		public double Monogamous { get; private set; }
 		public Dictionary<string, string> Terms { get; private set; }
 
-		public static List<Deity> Deities;
+		//public static List<Deity> Deities;
 
 		public static Culture DefaultCulture;
 		public static Token DefaultNameGen;
@@ -34,12 +34,14 @@ namespace Noxico
 
 		static Culture()
 		{
+			/*
 			Program.WriteLine("Loading deities...");
 			Deities = new List<Deity>();
 			var deities = Mix.GetTokenTree("deities.tml");
 			foreach (var deity in deities.Where(t => t.Name == "deity"))
 				Deities.Add(new Deity(deity));
-			
+			*/
+
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new Dictionary<string, Token>();
@@ -69,11 +71,7 @@ namespace Noxico
 			nc.Monogamous = t.HasToken("monogamous") ? t.GetToken("monogamous").Value : 0.0f;
 			nc.TownName = t.HasToken("townname") ? t.GetToken("townname").Text : null;
 			if (t.HasToken("terms"))
-			{
-				nc.Terms = new Dictionary<string, string>();
-				foreach (var term in t.GetToken("terms").Tokens)
-					nc.Terms[term.Name.Replace('_', ' ')] = term.Text;
-			}
+				nc.Terms = t.GetToken("terms").Tokens.ToDictionary(x => x.Name.Replace('_', ' '), x => x.Text);
 			return nc;
 		}
 
@@ -148,6 +146,7 @@ namespace Noxico
 			}
 		}
 
+		/*
 		public static bool CheckSummoningDay()
 		{
 			var today = NoxicoGame.InGameTime;
@@ -159,9 +158,10 @@ namespace Noxico
 			var summon = new Character();
 			summon.Name = new Name(deity.Name);
 			summon.IsProperNamed = true;
-			SceneSystem.Engage(NoxicoGame.HostForm.Noxico.Player.Character, summon, deity.DialogueHook);
+			SceneSystem.Engage(NoxicoGame.Me.Player.Character, summon, deity.DialogueHook);
 			return true;
 		}
+		*/
 
 		public static Func<string, string> GetSpeechFilter(Culture culture, Func<string, string> original = null)
 		{
@@ -189,6 +189,8 @@ namespace Noxico
 		}
 	}
 	
+	//TODO: consider removing
+	/*
 	public class Deity
 	{
 		public string Name { get; private set; }
@@ -214,233 +216,6 @@ namespace Noxico
 		public override string ToString()
 		{
 			return Name;
-		}
-	}
-
-	/*
-	public class NoxicanDate
-	{
-		private static string[] months;
-		static NoxicanDate()
-		{
-			months = i18n.GetArray("months");
-		}
-
-		public int Day { get; private set; }
-		public int Month { get; private set; }
-		public int Year { get; private set; }
-		public int Hour { get; private set; }
-		public int Minute { get; private set; }
-		public int Second { get; private set; }
-		public int Millisecond { get; private set; }
-		public int DayOfYear { get { return (Month * 30) + Day; } }
-
-		public NoxicanDate()
-		{
-		}
-
-		public NoxicanDate(long val)
-		{
-			Year = (int)((long)(val >> 47) & 2047);
-			Month = (int)((long)(val >> 36) & 15);
-			Day = (int)((long)(val >> 31) & 31);
-			Hour = (int)(val >> 23) & 31;
-			Minute = (int)(val >> 17) & 63;
-			Second = (int)(val >> 7) & 63;
-			Millisecond = (int)(val >> 0) & 127;
-		}
-
-		public NoxicanDate(int year, int month, int day)
-		{
-			AddYears(year);
-			AddMonths(month - 1);
-			AddDays(day - 1);
-		}
-
-		public NoxicanDate(int year, int month, int day, int hour, int minute, int second)
-		{
-			AddYears(year);
-			AddMonths(month - 1);
-			AddDays(day - 1);
-			AddHours(hour);
-			AddMinutes(minute);
-			AddSeconds(second);
-		}
-
-		public long ToBinary()
-		{
-			//........ ........ YYYYYYYY YYYMMMM. DDDDD HHHHHMMM MMMSSSSS Smmmmmmm
-			//                  |        |        |        |
-			//                  47       39       31       23
-			var ret = 0UL;
-			ret |= (ulong)Year << 47;
-			ret |= (ulong)Month << 36;
-			ret |= (ulong)Day << 31;
-			ret |= (ulong)Hour << 23;
-			ret |= (ulong)Minute << 17;
-			ret |= (ulong)Second << 7;
-			ret |= (uint)Millisecond;
-			return (long)ret;
-		}
-
-		public static NoxicanDate FromBinary(long val)
-		{
-			return new NoxicanDate(val);
-		}
-
-		public void Add(TimeSpan time)
-		{
-			if (time == null)
-				return;
-			if (time.Days > 0) this.AddDays((int)time.Days);
-			if (time.Hours > 0) this.AddHours((int)time.Hours);
-			if (time.Minutes > 0) this.AddMinutes((int)time.Minutes);
-			if (time.Seconds > 0) this.AddSeconds((int)time.Seconds);
-			if (time.Milliseconds > 0) this.AddMilliseconds((int)time.Milliseconds);
-		}
-
-		public void AddMilliseconds(int milliseconds)
-		{
-			this.Millisecond += milliseconds;
-			while (this.Millisecond >= 100)
-			{
-				this.Millisecond -= 100;
-				this.AddSeconds(1);
-			}
-		}
-
-		public void AddSeconds(int seconds)
-		{
-			this.Second += seconds;
-			while (this.Second >= 60)
-			{
-				this.Second -= 60;
-				this.AddMinutes(1);
-			}
-		}
-
-		public void AddMinutes(int minutes)
-		{
-			this.Minute += minutes;
-			if (this.Minute >= 60)
-			{
-				this.Minute -= 60;
-				this.AddHours(1);
-			}
-		}
-
-		public void AddHours(int hours)
-		{
-			this.Hour += hours;
-			while (this.Hour >= 24)
-			{
-				this.Hour -= 24;
-				this.AddDays(1);
-			}
-		}
-
-		public void AddDays(int days)
-		{
-			this.Day += days;
-			while (this.Day >= 30)
-			{
-				this.Day -= 30;
-				this.AddMonths(1);
-			}
-		}
-
-		public void AddMonths(int months)
-		{
-			this.Month += months;
-			if (this.Month >= 12)
-			{
-				this.Month -= 12;
-				this.AddYears(1);
-			}
-		}
-
-		public void AddYears(int years)
-		{
-			this.Year += years;
-		}
-
-		public override string ToString()
-		{
-			return this.ToShortDateString() + ' ' + this.ToShortTimeString();
-		}
-
-		public string ToLongDateString()
-		{
-			return string.Format("{0}{1} of {2}, {3} AI", Day + 1, Ordinal(Day + 1), months[Month], Year);
-		}
-
-		public string ToShortDateString()
-		{
-			return string.Format("{0:00}/{1:00}/{2:0000}", Day + 1, Month + 1, Year);
-		}
-
-		public string ToShortTimeString()
-		{
-			return string.Format("{0:00}:{1:00}:{2:00}", Hour, Minute, Second);
-		}
-
-		private static string Ordinal(int number)
-		{
-			var i = number;
-			var dd = i % 10;
-			return (dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd";
-		}
-
-		public void SetMidday()
-		{
-			Hour = 13;
-		}
-
-		public static bool operator >=(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() >= right.ToBinary());
-		}
-		public static bool operator <=(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() <= right.ToBinary());
-		}
-		public static bool operator ==(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() == right.ToBinary());
-		}
-		public static bool operator !=(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() != right.ToBinary());
-		}
-		public static bool operator >(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() > right.ToBinary());
-		}
-		public static bool operator <(NoxicanDate left, NoxicanDate right)
-		{
-			if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-				return false;
-			return (left.ToBinary() < right.ToBinary());
-		}
-		public override bool Equals(object right)
-		{
-			if (!(right is NoxicanDate))
-				return false;
-			return (this.ToBinary() == (right as NoxicanDate).ToBinary());
-		}
-		public override int GetHashCode()
-		{
-			return (int)this.ToBinary();
 		}
 	}
 	*/

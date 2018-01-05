@@ -44,11 +44,13 @@ namespace Noxico
 			this.Energy = 5000;
 		}
 
+		/*
 		public override void AdjustView()
 		{
 			base.AdjustView();
 			Glyph = '@';
 		}
+		*/
 
 		public bool OnWarp()
 		{
@@ -75,7 +77,7 @@ namespace Noxico
 					return;
 				}
 
-				var game = NoxicoGame.HostForm.Noxico;
+				var game = NoxicoGame.Me;
 				var targetBoard = game.GetBoard(warp.TargetBoard); //game.Boards[warp.TargetBoard]; //.Find(b => b.ID == warp.TargetBoard);
 
 				var sourceBoard = ParentBoard;
@@ -114,7 +116,7 @@ namespace Noxico
 				this.ParentBoard.EntitiesToRemove.Add(this);
 				this.ParentBoard.SaveToFile(this.ParentBoard.BoardNum);
 			}
-			var n = NoxicoGame.HostForm.Noxico;
+			var n = NoxicoGame.Me;
 			this.ParentBoard = n.GetBoard(index);
 			n.CurrentBoard = this.ParentBoard;
 			this.ParentBoard.Entities.Add(this);
@@ -135,6 +137,8 @@ namespace Noxico
 					Program.WriteLine("Registered {0} as a fast-travel target.", boardName);
 				}
 			}
+
+			this.ParentBoard.AimCamera(XPosition, YPosition);
 
 			this.DijkstraMap.UpdateWalls(!Character.IsSlime, ParentBoard);
 			this.DijkstraMap.Update();
@@ -164,7 +168,7 @@ namespace Noxico
 				check = SolidityCheck.Flyer;
 
 			#region Inter-board travel
-			var n = NoxicoGame.HostForm.Noxico;
+			var n = NoxicoGame.Me;
 			Board otherBoard = null;
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
@@ -235,6 +239,7 @@ namespace Noxico
 				}
 			}
 			base.Move(targetDirection, check);
+			ParentBoard.AimCamera(XPosition, YPosition);
 
 			EndTurn();
 
@@ -269,7 +274,8 @@ namespace Noxico
 				else
 					NoxicoGame.ContextMessage = i18n.GetString("context_container");
 			}
-			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147) != null)
+			//else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147) != null)
+			else if (ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.DBRole == "bed") != null)
 				NoxicoGame.ContextMessage = i18n.GetString("context_bed");
 			if (NoxicoGame.ContextMessage != null)
 				NoxicoGame.ContextMessage = Toolkit.TranslateKey(KeyBinding.Activate, false, false) + " - " + NoxicoGame.ContextMessage;
@@ -325,7 +331,7 @@ namespace Noxico
 				{
 					FireLine(weapon.Path("effect"), x, y);
 					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", damage)));
-					hit.Hurt(damage, i18n.Format("death_shotbyx", this.Character.GetKnownName(true, true)), this, false);
+					hit.Hurt(damage, "death_shot", this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
 				}
@@ -381,7 +387,11 @@ namespace Noxico
 			if (Energy < 5000)
 			{
 				var wasNight = Toolkit.IsNight();
-				NoxicoGame.InGameTime.AddMilliseconds(increase);
+
+				// kawa, DateTime is immutable now, you have to make a new one - sparks
+				DateTime newTime = NoxicoGame.InGameTime.AddMilliseconds(increase);
+				NoxicoGame.InGameTime = newTime;
+
 				if (wasNight && !Toolkit.IsNight())
 				{
 					ParentBoard.UpdateLightmap(this, true);
@@ -474,7 +484,7 @@ namespace Noxico
 			if (NoxicoGame.IsKeyDown(KeyBinding.Interact) || Vista.Triggers == XInputButtons.A)
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.Messages.Add("[Aim message]");
+				//NoxicoGame.Messages.Add("[Aim message]");
 				NoxicoGame.Mode = UserMode.Aiming;
 				NoxicoGame.Cursor.ParentBoard = this.ParentBoard;
 				NoxicoGame.Cursor.XPosition = this.XPosition;
@@ -511,9 +521,9 @@ namespace Noxico
 					//add swim capability?
 					var tile = ParentBoard.Tilemap[XPosition, YPosition];
 					if (tile.Fluid != Fluids.Dry && !tile.Shallow && Character.IsSlime)
-						Hurt(9999, i18n.GetString("death_doveinanddrowned"), null, false);
+						Hurt(9999, "death_doveinanddrowned", null, false);
 					else if (tile.Definition.Cliff)
-						Hurt(9999, i18n.GetString("death_doveintodepths"), null, false, false);
+						Hurt(9999, "death_doveintodepths", null, false, false);
 					else if (tile.Definition.Fence)
 					{
 						//I guess I'm still a little... on the fence.
@@ -542,7 +552,7 @@ namespace Noxico
 							if (Character.GetStat(Stat.Cunning) < 10 ||
 								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
 							{
-								Hurt(2, i18n.GetString("death_crackedagainstceiling"), null, false);
+								Hurt(2, "death_crackedagainstceiling", null, false);
 								NoxicoGame.AddMessage(i18n.GetString("hittheceiling"));
 							}
 							else
@@ -583,7 +593,7 @@ namespace Noxico
 					if (drop != null)
 					{
 						drop.Take(this.Character, ParentBoard);
-						NoxicoGame.HostForm.Noxico.Player.Energy -= 1000;
+						NoxicoGame.Me.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
 						NoxicoGame.Sound.PlaySound("set://GetItem"); 
 						ParentBoard.Redraw();
@@ -597,7 +607,8 @@ namespace Noxico
 				}
 
 				//Find bed
-				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147);
+				//var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.Glyph == 0x147);
+				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.DBRole == "bed");
 				if (bed != null)
 				{
 					var prompt = "It's " + NoxicoGame.InGameTime.ToShortTimeString() + ", " + NoxicoGame.InGameTime.ToLongDateString() + ". Sleep for how long?";
@@ -691,8 +702,6 @@ namespace Noxico
 		public void EndTurn()
 		{
 			Excite();
-			if (Character.UpdatePregnancy())
-				return;
 
 			NoxicoGame.PlayerReady = false;
 
@@ -715,11 +724,11 @@ namespace Noxico
 			}
 			ParentBoard.Update(true);
 			if (ParentBoard.IsBurning(YPosition, XPosition))
-				Hurt(10, i18n.GetString("death_burned"), null, false, false);
+				Hurt(10, "death_burned", null, false, false);
 			//Leave EntitiesToAdd/Remove to Board.Update next passive cycle.
 		}
 
-		public override bool Hurt(float damage, string obituary, BoardChar aggressor, bool finishable = false, bool leaveCorpse = true)
+		public override bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
 		{
 			if (AutoTravelling)
 			{
@@ -743,30 +752,31 @@ namespace Noxico
 				}
 			}
 
-			var dead = base.Hurt(damage, obituary, aggressor, finishable);
+			var dead = base.Hurt(damage, cause, aggressor, finishable);
 			if (dead)
 			{
-				if (aggressor != null)
+				if (aggressor != null && aggressor is BoardChar)
 				{
-					var relation = Character.Path("ships/" + aggressor.Character.ID);
+					var aggChar = ((BoardChar)aggressor).Character;
+					var relation = Character.Path("ships/" + aggChar.ID);
 					if (relation == null)
 					{
-						relation = new Token(aggressor.Character.ID);
+						relation = new Token(aggChar.ID);
 						Character.Path("ships").Tokens.Add(relation);
 					}
 					relation.AddToken("killer");
-					if (aggressor.Character.HasToken("stolenfrom"))
+					if (aggChar.HasToken("stolenfrom"))
 					{
 						var myItems = Character.GetToken("items").Tokens;
-						var hisItems = aggressor.Character.GetToken("items").Tokens;
-						var stolenGoods = myItems.Where(t => t.HasToken("owner") && t.GetToken("owner").Text == aggressor.Character.ID).ToList();
+						var hisItems = aggChar.GetToken("items").Tokens;
+						var stolenGoods = myItems.Where(t => t.HasToken("owner") && t.GetToken("owner").Text == aggChar.ID).ToList();
 						foreach (var item in stolenGoods)
 						{
 							hisItems.Add(item);
 							myItems.Remove(item);
 						}
-						aggressor.Character.GetToken("stolenfrom").Name = "wasstolenfrom";
-						aggressor.Character.RemoveToken("hostile");
+						aggChar.GetToken("stolenfrom").Name = "wasstolenfrom";
+						aggChar.RemoveToken("hostile");
 					}
 				}
 
@@ -779,8 +789,11 @@ namespace Noxico
 					var world = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
 					NoxicoGame.Sound.PlayMusic("set://Death");
 					NoxicoGame.InGame = false;
+					var c = i18n.GetString(cause + "_player");
+					if (c[0] == '[')
+						c = i18n.GetString(cause);
 					MessageBox.Ask(
-						i18n.Format("youdied", obituary),
+						i18n.Format("youdied", c),
 						() =>
 						{
 							Character.CreateInfoDump();
@@ -871,8 +884,9 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
-					hit.Hurt(damage, "being shot down by " + this.Character.GetKnownName(true, true, true), this, false);
+					//NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
+					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)damage)));
+					hit.Hurt(damage, "death_shot", this, false);
 				}
 				this.Character.IncreaseSkill(skill.Text);
 			}
@@ -914,7 +928,7 @@ namespace Noxico
 
 		public void Respawn()
 		{
-			var game = NoxicoGame.HostForm.Noxico;
+			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var bed = homeBoard.Entities.First(e => e is Clutter && e.ID == "Bed_playerRespawn");
 			if (ParentBoard != homeBoard)
@@ -933,22 +947,21 @@ namespace Noxico
 
 		public void UpdateCandle()
 		{
-			var game = NoxicoGame.HostForm.Noxico;
+			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
 			var candle = (Clutter)homeBoard.Entities.First(e => e is Clutter && e.ID == "lifeCandle");
-			//TRANSLATE
 			if (Character.HasToken("easymode"))
-				candle.Description = "Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.";
+				candle.Description = i18n.GetString("candle_easymode");
 			else if (Lives == 0)
-				candle.Description = "If this little stump of a candle is any indication, you're on your last legs. You should be careful.";
+				candle.Description = i18n.GetString("candle_0");
 			else if (Lives == 1)
-				candle.Description = "The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.";
+				candle.Description = i18n.GetString("candle_1");
 			else if (Lives < 4)
-				candle.Description = "The candle still has a ways to go, and so do you. Still, it's no good to tempt Death.";
+				candle.Description = i18n.GetString("candle_3");
 			else if (Lives < 7)
-				candle.Description = "The candle burns brightly.";
+				candle.Description = i18n.GetString("candle_6");
 			else
-				candle.Description = "The candle is positively ablaze with life.";
+				candle.Description = i18n.GetString("candle_X");
 		}
 	}
 }

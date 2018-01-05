@@ -34,7 +34,6 @@ add: -
 		-- monoceros, incidentally, is a special kind of horn that is not mirrored, and allows one extra hand slot (TK!) and two more rings.
 		ears: horse
 		tail: horse
-		fertility: roll 1d25+10
 		ass
 			size: 6
 			looseness: 0
@@ -52,7 +51,7 @@ add: -
 		balls
 			amount: 2
 			size: 3
-		breastrow
+		breasts
 			amount: 2
 			size: 0
 			nipples: 1
@@ -92,7 +91,6 @@ add: -
 		monoceros
 		ears: horse
 		tail: horse
-		fertility: roll 1d10
 		ass
 			size: 5
 			looseness: 0
@@ -104,7 +102,7 @@ add: -
 		penis: horse
 			thickness: 3
 			length: 16
-		breastrow
+		breasts
 			amount: 2
 			size: 0
 			nipples: 1

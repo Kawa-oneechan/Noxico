@@ -1,0 +1,32 @@
+add: -
+	character: pettancow
+		invisiblegender
+		terms
+			generic: "cowgirl"
+		bestiary: "The Milkmaid."
+		tallness: 160
+		hair
+			length: 15
+			color: brown
+		skin
+			type: fur
+			color: sienna
+			pattern: patches
+				color: white
+		eyes: blue
+		face: normal
+		ears: genbeast
+		legs: genbeast
+		tail: genbeast
+		ass
+			size: 5
+		hips: 6
+		waist: 3
+		boobs
+			amount: 2
+			size: 1
+			nipples: 1
+				size: 1.2
+		vagina
+			clit: 0.3
+

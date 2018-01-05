@@ -13,11 +13,21 @@ namespace Noxico
 			this.Text = Application.ProductName + " " + Application.ProductVersion;
 			pictureBox1.Image = Noxico.Properties.Resources.app.ToBitmap();
 
+			if (x.InnerException is Neo.IronLua.LuaParseException)
+			{
+				label3.Text = x.Message;
+				//x = x.InnerException as Neo.IronLua.LuaParseException;
+				//If we unwrap it, we can't see the context in the main copypasta.
+				tabControl1.TabPages[1].Text = "Lua context";
+				tabControl1.SelectedIndex = 1;
+			}
+
 			var sb = new StringBuilder();
 			var typeName = x.GetType().Name;
 			if (typeName != "Exception")
 				sb.AppendLine("Exception type: " + typeName);
 			sb.AppendLine("Main message: " + x.Message);
+
 			sb.AppendLine();
 			sb.AppendLine("Stack trace:");
 			var trace = x.StackTrace;
@@ -100,10 +110,13 @@ namespace Noxico
 				label3.Text = "A TML file somewhere has a malformed structure, as described on the Data tab." + Environment.NewLine + Environment.NewLine + "Check the stack trace for a reference to \"GetTokenTree\", then look at the line directly below that one. That's where the TML file was requested from, and that's what you should bring up on the support forum." + Environment.NewLine + Environment.NewLine + "For example, if the line directly below \"at Noxico.Mix.GetTokenTree\" is \"at Noxico.Character.GetUnique\", the problem is in GetUnique, or rather uniques.tml, and that should be mentioned as the critical point.";
 			else if (textBox1.Text.Contains("has an incorrect header"))
 				label3.Text = "The NOX file mentioned is technically just a ZIP file. The system that parses this file is -very- picky and does not play nice with certain features that a ZIP file may support. For example, ZIP64 is not supported, nor are encryption, comments, or any storage method other than Deflate and Store. At any rate, something was encountered that the loader did not except.";
-			else
-			{
+			else if (textBox1.Text.Contains("Can not format") && textBox1.Text.Contains("to dec"))
+				label3.Text = "This may indicate an attempt to use a string value where a number is expected. For example, using the addition \"+\" instead of concatenation \"..\". A string value containing a number is okay, though.";
+			else if (textBox1.Text.Contains("No operator is defined") && textBox1.Text.Contains("Object Add Object"))
+				label3.Text = "This may indicate an undefined variable, or an expression of a type that can't be mathematically added to another.";
+			
+			if (string.IsNullOrWhiteSpace(label3.Text))
 				tabControl1.TabPages.RemoveAt(1);
-			}
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -120,6 +133,26 @@ namespace Noxico
 		private void button1_Click(object sender, EventArgs e)
 		{
 			Application.ExitThread();
+		}
+
+		private static string PrepareParseError(string block, int line, int column)
+		{
+			var lines = block.Split('\r');
+			if (lines.Length == 1)
+				return lines[0].Trim() + " <---";
+			var first = line - 4;
+			var last = line + 4;
+			if (first < 0) first = 0;
+			if (last > lines.Length) last = lines.Length;
+			var ret = new StringBuilder();
+			for (var i = first; i < last; i++)
+			{
+				ret.Append(lines[i].Trim());
+				if (i == line - 1)
+					ret.Append(" <---");
+				ret.AppendLine();
+			}
+			return ret.ToString();
 		}
 	}
 }

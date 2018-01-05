@@ -109,7 +109,7 @@ namespace Noxico
 		/// <summary>
 		/// Adds a Token to this Token's children.
 		/// </summary>
-		/// <param name="name">The Token to add.</param>
+		/// <param name="t">The Token to add.</param>
 		/// <returns>Returns the Token that was added.</returns>
 		public Token AddToken(Token t)
 		{

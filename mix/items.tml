@@ -15,6 +15,14 @@
 -- TODO: allow TokenCarrier.Path() to support search-by-text?
 -- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
 
+-- note that 'print' pops up a box while 'message' prints text into the general message area
+
+item: broken_reference
+	description: "404 item not found."
+	ascii
+		char: 0x3F
+		fore: silver
+
 item: regenring
 	_n: Ring of Regeneration
 	equipable
@@ -64,7 +72,7 @@ item: henshin_belt
 				feedback = feedback .. "\"HENSHIN!\"\n\n"
 				local memory = thisToken.AddToken("memory")
 				local slots = { "shoes", "pants", "cloak", "jacket", "shoes", "hat", "goggles", "mask", "neck" }
-				for i,slot in slots do
+				for _,slot in ipairs(slots) do
 					local x = user.GetEquippedItemBySlot(slot)
 					if x ~= undefined then
 						memory.AddToken(x.tempToken)
@@ -117,6 +125,7 @@ item: strapon
 				print ("You're a man!")
 				return false
 			end
+			print ("You're ready to poke some lucky persons holes!")
 			local p = user.AddToken("penis")
 			p.Text = "strapon"
 			p.AddToken("thickness").Value = 3
@@ -125,23 +134,38 @@ item: strapon
 	script: unequip
 		<[[
 			user.RemoveToken("penis", "strapon")
+			print ("You feel less pokey.")
 		]]>
 
-item: ponifier
-	_n: Element of Perversion
+item: strapon_ovi
+	_n: strap-on ovipositor
 	test
-	description: "This turns you into a little pony."
+	description: "A leather belt with a hot pink ovipositor dildo sticking prominently out the front."
+	plural
+	equipable
+		female
+		underpants
+	weight: light
+	price: 100
 	ascii
-		char: 0x180
-		fore: aquamarine
-	randomized: 1
-	potion
-	transformer
-	script
+		char: 0x18e
+	sextoy
+	script: equip
 		<[[
-			Consume()
-			-- user.Morph("littlepony");
-			Identify()
+			if user.HasToken("penis") then
+				print ("You're a man!")
+				return false
+			end
+			print ("You're ready to poke some lucky persons holes!")
+			local p = user.AddToken("ovipositor")
+			p.Text = "strapon"
+			p.AddToken("thickness").Value = 3
+			p.AddToken("length").Value = 20
+		]]>
+	script: unequip
+		<[[
+			user.RemoveToken("ovipositor", "strapon")
+			print ("You feel less pokey.")
 		]]>
 
 item: book
@@ -149,8 +173,6 @@ item: book
 	ascii
 		char: 0x186
 	-- Books specifically have their color determined by ID.
-
-
 
 -- #region
 item: rope
@@ -168,8 +190,10 @@ item: baseballbat
 		hand
 	canfuck
 	-- Metrics are needed if an item has canfuck.
-	thickness: 2.75
-	length: 42
+	-- By regulation it may be no more than 2.75 inches (70 mm) in diameter 
+	--  at the thickest part and no more than 42 inches (1,100 mm) long - wikipedia
+	thickness: 7.0
+	length: 110
 	weight: medium
 	weapon
 		damage: 50
@@ -181,53 +205,6 @@ item: baseballbat
 	price: 100
 	largeweapon
 	wood
-
-item: foxite
-	_n: Foxite
-	test
-	description: "This is Foxite. It turns you into a fox with repeated usages."
-	ascii
-		char: 0x180
-		fore: aquamarine
-	randomized: 2
-	potion
-	transformer
-	script
-		<[[
-			Consume()
-			message(user.Morph("kitsune"))
-			Identify()
-		]]>
-
-item: oddnip
-	_n: Odd nip
-	test
-	description: "lol"
-	ascii
-		char: 0x180
-		fore: aquamarine
-	randomized: 2
-	potion
-	transformer
-	script
-		<[[
-			Consume()
-			message(user.Morph("felin"))
-			Identify()
-		]]>
-
-item: penificator
-	test
-	ascii
-		char: 0x180
-		fore: chartreuse
-	randomized: 3
-	potion
-	transformer
-	script
-		<[[
-			-- TODO: 50% chance of growing a new penis that is between 5 and 8 cm long, or to have a random existing penis grow by 2 to 5 cm.
-		]]>
 
 item: knife
 	_n: combat knife
@@ -331,7 +308,7 @@ item: cheap_pos
 
 item: catears
 	_n: [color ]cat ear headband
-	description: "One of the felins' secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
+	description: "One of the felin secret mind-control devices for their plot to take over the world. Or possibly just a cute part of a costume."
 	equipable
 		hat
 	weight: feather
@@ -497,6 +474,7 @@ item: chairlegoftruth
 		char: 0x184
 		fore: darkgoldenrod
 	rareweapon
+	club
 	wood
 
 item: hammer
@@ -555,6 +533,8 @@ item: dagger
 	ascii
 		char: 0x196
 		fore: silver
+	smallweapon
+	blade
 
 item: fireaxe
 	_n: fire-axe
@@ -593,7 +573,7 @@ item: shortsword
 	weapon
 		damage: 40
 		skill: short_sword
-	description: "A plain but servicable short sword."
+	description: "A plain but serviceable short sword."
 	ascii
 		char: 0x182
 		fore: white
@@ -641,6 +621,7 @@ item: longsword
 
 item: zweihander
 	_u: two-handed sword
+	_n: zweih&#x84;nder
 	fireproof
 	equipable
 		hand
@@ -700,7 +681,7 @@ item: mace
 		char: 0x1A8
 		fore: silver
 
-item: warhammer
+item: war_hammer
 	fireproof
 	unique
 	equipable
@@ -709,14 +690,14 @@ item: warhammer
 	weight: heavy
 	weapon
 		damage: 70
-		skill: warhammer
+		skill: war_hammer
 		attacktype: crush
 	description: "A big ol' hammer, meant for war."
 	ascii
 		char: 0x192
 		fore: silver
 
-item: woodenclub
+item: wooden_club
 	equipable
 		hand
 	weight: medium
@@ -728,6 +709,7 @@ item: woodenclub
 	ascii
 		char: 0x184
 		fore: darkgoldenrod
+	club
 	wood
 
 -- rubber hose, quarterstaff
@@ -986,7 +968,7 @@ item: gem_dilithium
 		fore: tan
 	weight: light
 	price: 4500
-	description: "You think this has some sciency properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
+	description: "You think this has some science-y properties, but this world isn't advanced enough to use it as anything other than a pretty gem."
 	gemstone
 
 item: gem_diamond
@@ -1292,6 +1274,40 @@ item: bacon_bikini_bottom
 	joke
 -- #endregion
 
+-- #region Bikini Armor Battle Damage
+__marker: Ottola and Ozzie present...
+item: protection_bikini_top
+	equipable
+		female
+		undershirt
+	statbonus
+		charisma: 20
+		sensitivity: 15
+	weight: light
+	price: 200
+	description: "How does this even work?"
+	ascii
+		char: 0x19b
+		fore: silver
+	armor: 999
+	for_women
+
+item: protection_bikini_bottom
+	equipable
+		female
+		underpants
+	statbonus
+		charisma: 20
+		sensitivity: 15
+	weight: light
+	description: "How does this even work?"
+	price: 200
+	ascii
+		char: 0x19a
+		fore: silver
+	armor: 999
+	for_women
+-- #endregion
 
 -- #region Clothes from jsNoxico
 __marker: Clothes from jsNoxico
@@ -1506,7 +1522,7 @@ item: skirt
 
 item: pleated_skirt
 	_n: pleated [color ]skirt
-	description: "For some reason, it's all ruffly. Doesn't cover much."
+	description: "For some reason, it's all ruffled. Doesn't cover much."
 	equipable
 		female
 		pants
@@ -1733,6 +1749,84 @@ item: kinky_panties
 	colored
 	sexy
 
+item: really_kinky_panties
+	_n: kinky [color ]panties
+	_ia: a pair of
+	plural
+	equipable
+		female
+		underpants
+		reach
+	weight: feather
+	price: 40
+	ascii
+		char: 0x19A
+	description: "These [color ]leather panties barely cover the crotch at all, and two flexible probes go into the wearers pussy and asshole."
+	clothing
+	underwear
+	colored
+	sexy
+	script: equip
+		<[[
+			if not user.HasToken("vagina") then
+				print("You'd need a pussy to wear this!")
+				Identify()
+				return false
+			else
+				print("You slide the probes into your holes.")
+			end
+		]]>
+	script: unequip
+		<[[
+			return true
+		]]>
+	timer: 1
+	script: timer
+		<[[
+			local cli = user.GetToken("climax")
+			local sti = user.GetToken("stimulation")
+			if cli.Value < 80 or sti.Value < 80 then
+				message("Your panties are making you hot and bothered...")
+				if cli.Value < 80 then
+					user.Raise(Stat.Climax, 5)
+				end
+				if sti.Value < 80 then
+					user.Raise(Stat.Stimulation, 5)
+				end
+			else
+				message("Your panties are keeping you hot and bothered...")
+			end
+		]]>
+
+item: clit_regenring
+	_n: Clit ring of Regeneration
+	description: "Feel better in two different ways."
+	equipable
+		female
+		clit
+	weight: feather
+	sexy
+	ascii
+		char: 0x1A0
+		fore: lightsalmon
+	timer: 1
+	script: timer
+		<[[
+			user.Heal(5)
+			user.Raise(Stat.Climax, 1)
+			user.Raise(Stat.Stimulation, 1)
+		]]>
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+				return false
+			elseif (not user.GetToken("vagina").HasToken("clit")) then
+				print("You'd need a clit to put this in!")
+				return false
+			end
+		]]>
+
 item: knee_socks
 	_n: silk [color ]knee socks
 	_ia: a pair of
@@ -1782,344 +1876,6 @@ item: lena_ruby
 
 
 
--- #region TF items
-__marker: Transformative items
--- All of these use complicated Javascript to approximate Corruption of Champions. I wonder why, when we have Morph()...
-item: catmorph
-	_n: cat morph potion
-	wip
-	description: "A bottle filled with a thick liquid. There's a picture of a feline on the label."
-	ascii
-		char: 0x180
-		fore: lightsalmon
-	potion
-	transformer
-	dummu
-		<[[
-			//Text stolen from CoC's Whisker Fruit item, for now.
-
-			//We want to buffer the output. Calling print() would result in several separate ones.
-			var ret = "You take a bite of the fruit and gulp it down. It's thick and juicy and has an almost overpowering sweetness. Nevertheless, it is delicious and you certainly could use a meal. You devour the fruit, stopping only when the hard, nubby pit is left, which you toss aside.";
-
-			//Always boost speed.
-			var speed = user.GetToken("speed");
-			if (speed.Value < 75)
-			{
-				if (speed.Value < 30)
-				{
-					speed.Value += 2;
-					ret += "\n\nYou feel... more balanced, sure of step. You're certain that you've become just a little bit faster.";
-				}
-				else if (speed.Value < 60)
-				{
-					speed.Value += 1;
-					ret += "\n\nYou stumble as you shift position, surprised by how quickly you move. After a moment or two of disorientation, you adjust. You're certain that you can run faster now.";
-				}
-				else
-				{
-					speed.Value += 0.5;
-					ret += "\n\nYou pause mid-step and crouch. Your leg muscles have cramped up like crazy. After a few moments, the pain passes and you feel like you could chase anything down.";
-				}
-			}
-
-			//Sometimes increase charisma.
-
-			//Grow cat ears.
-			if (!user.HasToken("ears") || user.GetToken("ears").Text != "cat")
-			{
-				//Should check the existing type first.
-				ret += "\n\nYour ears tingle and begin to change shape. Within a few moments, they've become long and feline. Thanks to the new fuzzy organs, you find yourself able to hear things that eluded your notice up until now. <cWhite>You now have cat ears.<c>";
-
-				user.RemoveToken("ears");
-				user.AddToken("ears").Text = "cat";
-
-				print(ret);
-				return;
-			}
-
-			//Grow cat tail.
-			if (!user.HasToken("tail") || user.GetToken("tail").Text != "genbeast")
-			{
-				//Should check the existing type first.
-				ret += "\n\nYou pause and tilt your head... something feels different. Ah, that's what it is; you turn around and look down at your tail as it starts to change shape, narrowing and sprouting glossy fur. <cWhite>You now have a cat tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-				user.RemoveToken("tail");
-				user.AddToken("tail").Text = "genbeast";
-
-				print(ret);
-				return;
-			}
-
-			//Gain darkvision
-			if (user.Path("eyes/glow") == null)
-			{
-				ret += "\n\nYou feel as if you can see better.";
-				user.GetToken("eyes").AddToken("glow");
-			}
-
-			//Grow fangs.
-
-			//Grow fur.
-			var skinType = user.Path("skin/type");
-			if (skinType.Text != "fur")
-			{
-				skinType.Text = "fur";
-				user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
-				ret += "\n\nYour whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-				user.SetTerms("felin", "fel", "fela", "felhru");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-				return;
-			}
-
-			//Grow digitigrade legs.
-
-			//Grow up to two extra breast rows.
-
-			print(ret);
-		]]>
-
-item: dogmorph
-	_n: dog morph potion
-	wip
-	description: "A bottle filled with a thick liquid. There's a picture of a canid on the label."
-	ascii
-		char: 0x180
-		fore: mistyrose
-	potion
-	transformer
-	dummy
-		<[[
-			//Text stolen from CoC's Canine Pepper item, for now.
-
-			var ret = "The pepper is strangely spicy but very tasty.";
-
-			//Always boost strength.
-			var strength = user.GetToken("strength");
-			if (strength.Value < 50)
-			{
-				strength.Value += 2;
-				ret += "\n\nYour muscles feel more toned.";
-			}
-
-			//Sometimes increase charisma.
-
-			//Grow dog ears.
-			if (!user.HasToken("ears") || user.GetToken("ears").Text != "dog")
-			{
-				//Should check the existing type first.
-				ret += "\n\nYour ears transform, becoming more canine in appearance. <cWhite>You now have dog ears.<c>";
-
-				user.RemoveToken("ears");
-				user.AddToken("ears").Text = "dog";
-
-				print(ret);
-				return;
-			}
-
-			//Grow dog tail.
-			if (user.Path("tail/dog") == null)
-			{
-				//Should check the existing type first.
-				ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into a long puffy tail! <cWhite>You now have a dog tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-				user.RemoveToken("tail");
-				user.AddToken("tail").AddToken("dog");
-
-				print(ret);
-				return;
-			}
-
-			//Grow fangs.
-
-			//Grow fur.
-			var skinType = user.Path("skin/type");
-			if (skinType.Text != "fur")
-			{
-				skinType.Text = "fur";						
-				user.EnsureColor(user.Path("skin/color"), "brown, orange, white, gray, black");
-				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-				user.SetTerms("caninoid", "dogboy", "doggirl", "dogherm");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-				return;
-			}
-
-			//Grow digitigrade legs.
-
-			//Grow up to two extra breast rows.
-
-			print(ret);
-		]]>
-
--- Not to be confused for Foxite up top.
-item: foxmorph
-	_n: fox morph potion
-	wip
-	description: "A bottle filled with a thick liquid. There's a picture of a fox on the label."
-	ascii
-		char: 0x180
-		fore: orangered
-	potion
-	transformer
-	dummy
-		<[[
-			var ret = "You apply the fox morph potion.";
-
-			//Always boost cunning.
-			var cunning = user.GetToken("cunning");
-			if (cunning.Value < 50)
-			{
-				cunning.Value += 2;
-				ret += "\n\nYou feel more cunning.";
-			}
-
-			//Sometimes increase charisma.
-
-			//Grow dog ears.
-			if (!user.HasToken("ears") || user.GetToken("ears").Text != "genbeast")
-			{
-				//Should check the existing type first.
-				ret += "\n\nYour head itches as you grow a pair of fuzzy, pointed ears. <cWhite>You now have fox ears.<c>";
-
-				user.RemoveToken("ears");
-				user.AddToken("ears").Text = "genbeast";
-
-				print(ret);
-				return;
-			}
-
-			//Grow fox tail.
-			if (!user.HasToken("tail") || user.GetToken("tail").Text != "bunny")
-			{
-				//Should check the existing type first.
-				ret += "\n\nA fox tail sprouts from just above your butt. <cWhite>You now have a fox tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-				user.RemoveToken("tail");
-				user.AddToken("tail").Text = "fox";
-
-				print(ret);
-				return;
-			}
-
-			//Grow fangs.
-
-			//Grow fur.
-			var skinType = user.Path("skin/type");
-			if (skinType.Text != "fur")
-			{
-				skinType.Text = "fur";
-				user.EnsureColor(user.Path("skin/color"), "sandybrown");
-				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-				user.SetTerms("vulpinoid", "foxboy", "foxgirl", "foxherm");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-				return;
-			}
-
-			//Grow digitigrade legs.
-
-			print(ret);
-		]]>
-
-item: bunnymorph
-	_n: bunny morph potion
-	wip
-	description: "A bottle filled with a thick liquid. There's a picture of a bunny on the front."
-	ascii
-		char: 0x180
-		fore: skyblue
-	potion
-	transformer
-	dummy
-		<[[
-			var ret = "You apply the bunny morph potion.";
-
-			//Always boost libido.
-			var sensitivity = user.GetToken("sensitivity");
-			if (sensitivity.Value < 80)
-			{
-				sensitivity.Value += 4;
-				ret += "\n\nYou feel hornier.";
-			}
-
-			//Grow bunny ears.
-			if (!user.HasToken("ears") || user.GetToken("ears").Text != "bunny")
-			{
-				//Should check the existing type first.
-				ret += "\n\nYour ears transform, becoming more bunny in appearance. <cWhite>You now have bunny ears.<c>";
-
-				user.RemoveToken("ears");
-				user.AddToken("ears").Text = "bunny";
-
-				print(ret);
-				return;
-			}
-
-			//Grow bunny tail.
-			if (user.Path("tail/bunny") == null)
-			{
-				//Should check the existing type first.
-				ret += "\n\nYou feel your backside shift and change, flesh molding and displacing into an adorable puffball! <cWhite>You now have a bunny tail.<c>\n\n<cYellow>Now would be an excellent time to stop taking this stuff.<c>";
-
-				user.RemoveToken("tail");
-				user.AddToken("tail").Text = "bunny";
-
-				print(ret);
-				return;
-			}
-
-			//Grow fur.
-			var skinType = user.Path("skin/type");
-			if (skinType.Text != "fur")
-			{
-				skinType.Text = "fur";
-				user.EnsureColor(user.Path("skin/color"), "white, gray, aliceblue, gainsboro, lightpink, plum");
-				ret += "Your whole body itches as a thin layer of " + user.Path("skin/color").Text + " fur grows all over.";
-
-				user.SetTerms("lapinoid", "bunnyboy", "bunnygirl", "bunnyherm");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-				return;
-			}
-
-			print(ret);
-		]]>
--- #endregion
-
-
-
 -- #region PillowShout's stuff
 __marker: PillowShout's stuff
 item: gExtractor
@@ -2132,9 +1888,24 @@ item: gExtractor
 		char: 0x008
 		fore: goldenrod
 	tool
+	equipable
+		female
+		vagina
+	script: equip
+		<[[
+			if (not user.HasToken("vagina")) then
+				print("You'd need a pussy to wear this!")
+			end
+		]]>
 -- #endregion
 
-
+item: vaginafluids
+	_n: Vaginal fluids
+	description: "A bottle filled with a thick liquid."
+	potion
+	ascii
+		char: 0x180
+		fore: whitesmoke
 
 -- #region Deity artifacts
 __marker: Deity artifacts
@@ -2160,498 +1931,6 @@ item: dye
 	dye
 	colored
 -- #endregion
-
--- #region Potions from tf_items.txt, don't forget to shuffle later.
-__marker: tf_items.txt
-item: chaos_potion
-	description: "Chaos in a bottle."
-	ascii
-		char: 0x180
-	randomized: 10
-	potion
-	disabled
-	transformer
-	script
-		<[[
-			Consume()
-			ReportSet(user.Mutate(1, 10, Mutations.Random))
-			Identify()
-		]]>
-
-item: enhanced_chaos_potion
-	description: "Concentrated chaos in a bottle."
-	ascii
-		char: 0x180
-	randomized: 11
-	potion
-	disabled
-	transformer
-	script
-		<[[
-			Consume()
-			if Random.Flip() then
-				user.Mutate(1, 30, Mutations.Random)
-			else
-				user.Mutate(2, 15, Mutations.Random)
-			end
-			Identify()
-		]]>
-
-item: demonite_potion
-	description: "A [color ]bottle with a stylized but recognizable demon on the label. Very indicative of what it turns the user into."
-	unknown: "A [color ]bottle with a stylized but recognizable demon on the label."
-	ascii
-		char: 0x180
-	randomized: 12
-	potion
-	disabled
-	transformer
-	dummy
-		<[[
-			Consume();
-			var score = 0;
-			if (user.Path("legs[=claws]") != null || user.Path("legs[=stiletto]") != null)
-				score++;
-			if (user.Path("ears[=elfin]") != null)
-				score++;
-			if (user.Path("wings[=bat]") != null)
-				score++;
-			if (user.Path("penis[=studded]") != null)
-				score++;
-			if (user.Path("tail[=demon]") != null)
-				score++;
-			if (score >= 3 && Random.Flip())
-				user.Mutate(2, 10, Mutations.Random);
-			else
-			{
-				//user.Morph("foocubus");
-				var ret = "";
-				var carnality = user.GetToken("carnality");
-				if (carnality.Value < 80)
-				{
-					carnality.Value += 4;
-					ret += "You feel hornier.  ";
-				}
-
-				if (user.HasToken("penis"))
-				{
-					var triggered = false;
-					var dicks = 0;
-					for (var i = 0; i < user.Count(); i++)
-					{
-						if (user.Item(i).Name == "penis")
-						{
-							dicks++;
-							var thisDick = user.Item(i);
-							if (thisDick.Text == "studded")
-								continue;
-							if (thisDick.Text == "tentacle")
-								continue;
-							if (!triggered)
-								thisDick.Text = "studded";
-							triggered = true;
-						}
-					}
-					if (triggered)
-					{
-						if (dicks == 1)
-							ret += "Your dick shifts into a studded affront to the nature of dicks everywhere.";
-						else
-							ret += "One of your dicks shifts into a studded affront to the nature of dicks everywhere.";
-						print(ret);
-						return;
-					}
-				}
-
-				if (user.Path("tail[=demon]") == null)
-				{
-					if (user.HasToken("tail"))
-						ret += "You feel your tail shifting, turning into a slick, thin deal with a spade at the end.";
-					else
-						ret += "You feel a slick tail growing from your backside, with a spade at the end.";
-					user.RemoveToken("tail");
-					user.AddToken("tail").Text = "demon";
-
-					print(ret);
-					return;
-				}
-
-				if (user.Path("wings[=bat]") == null)
-				{
-					if (user.HasToken("wings"))
-					{
-						ret += "Your wings become leathery.";
-						user.GetToken("wings").Text = "bat";
-					}
-					else
-					{
-						ret += "You sprout leathery bat wings from your back.";
-						user.AddToken("wings").Text = "bat";
-					}
-
-					print(ret);
-					return;
-				}
-
-				var skinType = user.Path("skin/type");
-				if (skinType.Text != "metal")
-					user.EnsureColor(user.Path("skin/color"), "pale, brown, purple");
-				if (skinType.Text == "fur")
-				{
-					ret += "Your whole body is abuzz as your fur falls out, revealing " + user.Path("skin/color").Text + " skin.";
-					skinType.Text = "skin";
-				}
-
-				user.SetTerms("cubi", "incubus", "succubus", "omnibus");
-				if (!user.HasToken("invisiblegender"));
-				{
-					user.RemoveToken("explicitgender");
-					user.AddToken("invisiblegender");
-				}
-				user.UpdateTitle();
-				user.BoardChar.AdjustView();
-
-				print(ret);
-
-				Identify();
-			}
-		]]>
-
-item: tentacle_potion
-	description: "A [color ]bottle with some sort of tentacle on the label. It seems to give you a tentacle cock."
-	unknown: "A [color ]bottle with what seems to be a vine on the label."
-	ascii
-		char: 0x180
-	randomized: 13
-	potion
-	transformer
-	script
-		<[[
-			Consume()
-			local ret : string = ""
-			local totalDicks : int = 0
-			local transformations : int = 0
-			local lengthenings : int = 0
-			foreach d in user.GetPenises() do
-				totalDicks = totalDicks + 1
-			end
-
-			if totalDicks > 0 then
-				foreach d in user.GetPenises() do
-					if d.Text == "tentacle" then
-						local length = d.GetToken("length")
-						length.Value = length.Value + 3 + Random.Next(5)
-						lengthenings = lengthenings + 1
-
-						-- Randomly break out
-						if lengthenings > 0 and Random.Flip() then
-							break
-						end
-					end
-				end
-				foreach d in user.GetPenises() do
-					if d.Text ~= "tentacle" then
-						d.Text = "tentacle"
-						transformations = transformations + 1
-
-						-- Randomly break out
-						if transformations > 0 and Random.Flip() then
-							break
-						end
-					end
-				end
-				
-				if transformations > 0 then
-					if transformations == 1 then
-						if totalDicks == 1 then
-							ret = "[Yourornames] [?:cock] "
-						elseif totalDicks == tranformations then
-							ret = "[Yourornames] [?:cocks] "
-						elseif transformations == 1 then
-							ret = "One of [yourornames] [?:cocks] "
-						else
-							ret = "Some of [yourornames] [?:cocks] "
-							-- ret = ret .. "(" .. transformations .. " of " .. totalDicks .. ") "
-						end
-						ret = ret .. "has turned into a wriggly tentacle"
-					else
-						ret = "[Yourornames] [?:cocks] have turned into wriggly tentacles"
-					end
-				end
-
-				if lengthenings > 0 then
-					if transformations > 0 then
-						ret = ret .. " and "
-						if lengthenings == transformations then
-							ret = ret .. ""
-						elseif lengthenings < totalDicks then
-							if lengthenings == 1 then
-								ret = ret .. "one "
-							else
-								ret = ret .. "some "
-								-- ret = ret .. "(" .. lengthenings .. " of " .. totalDicks .. ")"
-							end
-						end
-					else
-						if totalDicks == 1 then
-							ret = "[Yourornames] [?:cock] "
-						elseif totalDicks == lengthenings then
-							ret = "[Yourornames] [?:cocks] "
-						else
-							ret = "One of [yourornames] [?:cocks] "
-						end
-					end
-					if lengthenings == 1 then
-						ret = ret .. "has "
-					else
-						ret = ret .. "have "
-					end
-					ret = ret .. "grown longer"
-				end
-				ret = ret .. "!"
-			else
-				local penis = user.AddToken("penis", "tentacle")
-				penis.AddToken("thickness", 2 + Random.Next(2), nil)
-				penis.AddToken("length", 15 + Random.Next(4), nil)
-				ret = "[Youorname] [has] grown a wriggly tentacle dick!"
-			end
-			print(ret)
-			Identify()
-		]]>
-
-item: cock_potion
-	description: "A [color ]bottle with what seems to be an erect penis on the label. It causes the user to grow a cock."
-	unknown: "A [color ]bottle with what seems to be an erect penis on the label."
-	ascii
-		char: 0x180
-	randomized: 14
-	potion
-	transformer
-	script
-		<[[
-			Consume()
-			local ret : string = ""
-			local totalDicks : int = 0
-			local lengthenings : int = 0
-			local additions : int = 0
-			foreach d in user.GetPenises() do
-				totalDicks = totalDicks + 1
-			end
-
-			if totalDicks > 0 then
-				foreach d in user.GetPenises() do
-					local length = d.GetToken("length")
-					length.Value = length.Value + 3 + Random.Next(5)
-					lengthenings = lengthenings + 1
-
-					-- Randomly break out
-					if lengthenings > 0 and Random.Flip() then
-						break
-					end
-				end
-
-			else
-				local penis = user.AddToken("penis", "human")
-				penis.AddToken("thickness", 2 + Random.Next(2), nil)
-				penis.AddToken("length", 15 + Random.Next(4), nil)
-				additions = 1
-			end
-
-			if lengthenings == 0 then
-				if additions == 0 then
-					ret = "Nothing seems to have happened."
-				else
-					ret = "[Youorname] [has] grown a [?:cock]!"
-					Identify()
-				end
-			else
-				if lengthenings == totalDicks then
-					if totalDicks == 1 then
-						ret = "[Yourornames] [?:cock] has grown longer."
-					else
-						ret = "[Yourornames] [?:cocks] have grown longer."
-					end
-				elseif lengthenings == 1 then
-					ret = "One of [yourornames] [?:cocks] has grown longer."
-				end
-				Identify()
-			end
-
-			if Random.Flip() and Random.Flip() and Random.Flip() then
-				if user.HasToken("vagina") then
-					user.RemoveToken("vagina")
-					if lengthenings + additions == 0 then
-						ret = "[Youorname] seem{s} to have lost "
-					else
-						ret = ret .. " But it seems [he] also lost "
-					end
-					if user.HasToken("vagina") then
-						ret = ret .. "one of [his] [?:pussies]."
-					else
-						ret = ret .. "[his] [?:pussy]."
-					end
-				end
-			end
-			print(ret)
-		]]>
-
-item: corrupted_cock_potion
-	description: "A [color ]bottle with what seems to be a turgid penis on the label, that rather aggressively grows you a cock."
-	unknown: "A [color ]bottle with what seems to be a turgid penis on the label."
-	ascii
-		char: 0x180
-	randomized: 15
-	potion
-	transformer
-	script
-		<[[
-			Consume()
-			local ret : string = ""
-			local totalDicks : int = 0
-			local lengthenings : int = 0
-			local additions : int = 0
-			foreach d in user.GetPenises() do
-				totalDicks = totalDicks + 1
-			end
-
-			if totalDicks > 0 then
-				foreach d in user.GetPenises() do
-					local length = d.GetToken("length")
-					length.Value = length.Value + 3 + Random.Next(5)
-					lengthenings = lengthenings + 1
-
-					-- Randomly break out
-					if lengthenings > 0 and Random.Flip() then
-						break
-					end
-				end
-			end
-
-			if Random.Flip() and Random.Flip() then
-				local penis = user.AddToken("penis", "human")
-				penis.AddToken("thickness", 2 + Random.Next(2), nil)
-				penis.AddToken("length", 15 + Random.Next(4), nil)
-				additions = 1
-			end
-
-			if lengthenings + additions == 0 then
-				ret = "Nothing seems to have happened."
-			else
-				if lengthenings == totalDicks then
-					if totalDicks == 1 then
-						ret = "[Yourornames] [?:cock] has grown longer."
-					else
-						ret = "[Yourornames] [?:cocks] have grown longer."
-					end
-				elseif lengthenings == 1 then
-					ret = "One of [yourornames] [?:cocks] has grown longer."
-				end
-				if additions == 1 then
-					if lengthenings == 0 then
-						ret = "[Youorname] [has] grown "
-					else
-						ret = ret .. " Plus, [he] [has] grown "
-					end
-					if totalDicks == 0 then
-						ret = ret .. "a [?:cock]!"
-					else
-						ret = ret .. "one extra!"
-					end
-				end
-				Identify()
-			end
-
-			if Random.Flip() then
-				if user.HasToken("vagina") then
-					user.RemoveToken("vagina")
-					if lengthenings + additions == 0 then
-						ret = "[Youorname] seem{s} to have lost "
-					else
-						ret = ret .. " But it seems [he] also lost "
-					end
-					if user.HasToken("vagina") then
-						ret = ret .. "one of [his] [?:pussies]."
-					else
-						ret = ret .. "[his] [?:pussy]."
-					end
-					Identify()
-				end
-			end
-			print(ret)
-		]]>
-
-item: neutralizer_potion
-	description: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label. It removes your genitalia. If it were a cream you might've been able to choose which."
-	unknown: "A [color ]bottle with what seems to be a penis with a big red 'forbidden' circle on the label."
-	ascii
-		char: 0x180
-	randomized: 16
-	potion
-	transformer
-	dummy
-		<[[
-			Consume();
-			var ret = "";
-			if (Random.Flip())
-			{
-				if (user.HasToken("penis"))
-				{
-					user.RemoveToken("penis");
-					if (user.HasToken("penis"))
-						ret = "One of your cocks disappears!";
-					else
-						ret = "Your cock's gone!";
-				}
-				else if (user.HasToken("vagina"))
-				{
-					user.RemoveToken("vagina");
-					if (user.HasToken("vagina"))
-						ret = "One of your pussies disappears!";
-					else
-						ret = "Your pussy's gone!"
-				}
-			}
-			else
-			{
-				if (user.HasToken("vagina"))
-				{
-					user.RemoveToken("vagina");
-					if (user.HasToken("vagina"))
-						ret = "One of your pussies disappears!";
-					else
-						ret = "Your pussy's gone!"
-				}
-				else if (user.HasToken("penis"))
-				{
-					user.RemoveToken("penis");
-					if (user.HasToken("penis"))
-						ret = "One of your cocks disappears!";
-					else
-						ret = "Your cock's gone!";
-				}
-			}
-			for (var i = 0; i < user.Count(); i++)
-			{
-				if (user.Item(i).Name == "breastrow")
-				{
-					var breastrow = user.Item(i);
-					if (breastrow.Path("nipples/canfuck"))
-					{
-						breastrow.GetToken("nipples").RemoveToken("canfuck");
-						ret += "  The cocks on your breasts shrink back into regular nipples.";
-						break;
-					}
-					else if (breastrow.Path("nipples/fuckable"))
-					{
-						breastrow.GetToken("nipples").RemoveToken("fuckable");
-						ret += "  The pussies on your breasts shrink back into regular nipples.";
-						break;
-					}
-				}
-			}
-			print(ret);
-			Identify();
-		]]>
 
 item: regen_ring
 	description: "A [color ]ring that heals the wearer a little every few seconds."
@@ -2691,7 +1970,7 @@ item: chaotic_regen_ring
 
 item: orgasm_denial_ring
 	_n: Ring of Orgasm Denial
-	description: "A ring that prevents the wearer from reaching a climax. How it works, noone cares."
+	description: "A ring that prevents the wearer from reaching a climax. How it works, no one cares."
 	equipable
 		ring
 	randomized: 132

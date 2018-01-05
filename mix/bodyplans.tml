@@ -34,8 +34,7 @@ bodyplan: human
 	waist: roll 1d4+1
 	hips: roll 1d2+4
 	-- The creature creator adjusts this part.
-	fertility: roll 1d15+5
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+1
 		nipples: 1
@@ -104,7 +103,7 @@ bodyplan: goblin
 	invisiblegender
 	terms
 		generic: "goblin"
-	bestiary: "Originally great engineers, now fallen into an orgiasmic frenzy."
+	bestiary: "Originally great engineers, now fallen into an orgasmic frenzy."
 		small
 		char: 0x165
 	tallness: roll 1d40+120
@@ -123,11 +122,10 @@ bodyplan: goblin
 	legs: human
 	waist: roll 1d2+1
 	hips: roll 1d3+4
-	fertility: 50
 	ass
 		size: roll 1d3+6
 		looseness: 1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -188,11 +186,10 @@ bodyplan: bee
 		recharge: 5
 	hips: 6
 	waist: 3
-	fertility: 10
 	ass: insect
 		size: 13
 		looseness: 4
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+1
 		nipples: 1
@@ -229,11 +226,10 @@ bodyplan: naga
 	snaketail
 	waist: 4
 	hips: 5
-	fertility: 20
 	ass
 		size: 6
 		looseness: 1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d4+3
 		nipples: 2
@@ -285,11 +281,10 @@ bodyplan: foocubus
 	legs: oneof claws, stiletto, stiletto, human, human, human
 	waist: roll 1d3+2
 	hips: 6
-	fertility: roll 1d20+30
 	ass
 		size: 7
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d5+4
 		nipples: 1
@@ -348,8 +343,7 @@ bodyplan: felin
 		size: 5
 	hips: roll 1d6
 	waist: roll 1d4+1
-	fertility: 0
-	breastrow
+	breasts
 		amount: 2
 		size: 0
 		nipples: 1
@@ -404,8 +398,7 @@ bodyplan: kitsune
 		looseness: 0
 	hips: roll 1d2+1
 	waist: 2
-	fertility: roll 1d20+10
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -459,8 +452,7 @@ bodyplan: slime
 		looseness: 2
 	waist: roll 1d5+1
 	hips: roll 1d3+4
-	fertility: roll 1d15+5
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d7+4
 		nipples: 1
@@ -515,26 +507,7 @@ bodyplan: ursidae
 		size: 7
 	hips: roll 1d14+2
 	waist: roll 1d12+2
-	fertility: roll 1d25+5
-	-- Idea from Kawa: have a token to make the generators automatically scale down lower breastrows.
-	-- Requires only one roll and a divisor token. In fact, I could list it right now.
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		divisor: 0.85
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
-		amount: 2
-		size: roll 1d8+2
-		nipples: 1
-			size: roll 1d4+1
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d8+2
 		nipples: 1
@@ -586,8 +559,7 @@ bodyplan: canine
 		looseness: 0
 	hips: roll 1d2+1
 	waist: 2
-	fertility: roll 1d20+10
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -629,7 +601,7 @@ bodyplan: draig
 		length: 0
 		style: straight
 		color: white
-	face: lizard
+	face: dragon
 	eyes: oneof yellow, crimson, lightblue, green
 		count: roll 1d2+2
 	ears: oneof flat, flat, flat, flat, elfin
@@ -643,9 +615,8 @@ bodyplan: draig
 	tongue: forked
 	teeth: oneof sharp, fangs
 	tail: dragon
-	fertility: roll 1d10+5
 	egglayer
-	breastrow
+	breasts
 		amount: roll 1d2+2
 		size: roll 1d4+2
 		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
@@ -664,10 +635,65 @@ bodyplan: draig
 	penis: dragon
 		length: roll 1d10+15
 		thickness: roll 1d3+2
-	_copy: penis
 	balls
 		amount: roll 1d3+1
 		size: roll 1d3+2
+
+
+bodyplan: xenon
+	playable
+	culture: felin
+	namegen: norse
+	invisiblegender
+	terms
+		generic: "xenon"
+		male: "xenon"
+		female: "xenon"
+		herm: "xenon"
+	bestiary: "Not argonians."
+		char: 0x160
+	tallness: roll 1d30+200
+	editable: skin/color|Scale color, eyes|Eye color, hair/color|Hair color, hair/style|Hair style
+	skin
+		type: scales
+		color: oneof darkblue, darkcyan, forestgreen, slategray, darkviolet, crimson, gold
+	hair
+		length: roll 1d15+10
+		style: oneof straight, braided, wavy
+		color: oneof blond, brown, black, red, gray, white, auburn
+	face: dragon
+	eyes: oneof yellow, crimson, lightblue, green
+		count: 2
+	ears: flat
+	horns: 1
+		_maybe: 0.75
+	legs: claws
+	tongue: long
+	teeth: oneof sharp, fangs
+	tail: dragon
+	breasts
+		amount: 2
+		size: roll 1d4+2
+		--no nipples, since dragons are reptilian.  They may get added by Mutate() though.
+	ass
+		virgin
+		size: roll 1d3+2
+		looseness: 0
+	vagina
+		virgin
+		looseness: roll 1d2+1
+		wetness: roll 1d2+1
+		clit: 1
+	hips: roll 1d4+4
+	waist: roll 1d6+8
+	womb
+	penis: dragon
+		length: roll 1d10+15
+		thickness: roll 1d3+2
+	balls
+		amount: 2
+		size: roll 1d3+2
+		hidden
 
 
 -- #region Beasties
@@ -801,6 +827,7 @@ bodyplan: spider
 	femaleonly
 	invisiblegender
 	terms
+		generic: "spiderperson"
 		female: "spidergirl"
 	bestiary: "A half giant spider, half sexy girl."
 		char: 0x162
@@ -825,11 +852,10 @@ bodyplan: spider
 		recharge: 5
 	hips: 11
 	waist: 7
-	fertility: 10
 	ass: insect
 		size: 17
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 1
@@ -867,11 +893,10 @@ bodyplan: gargoyle
 	waist: 4
 	hips: 5
 	tail: dragon
-	fertility: 0
 	ass
 		size: 4
 		looseness: 2
-	breastrow
+	breasts
 		amount: 2
 		size: roll 1d3+3
 		nipples: 0
@@ -881,25 +906,32 @@ bodyplan: gargoyle
 		clit: 1.0
 	egglayer
 	penis: dragon
-		thickness: roll 1d3+1
-		length: roll 1d6+27
+		thickness: roll 1d2+3
+		length: roll 1d6+15
 	balls
 		amount: 2
 		size: roll 1d3+2
 	items
+	horns: 1
 	select
 		set: 0.40
 			femaleonly
 			overwrite: "skin/type: granite"
 			overwrite: "skin/color: oneof gray, darkgray, darkslategray, dimgray"
-			horns: 1
-				-- todo big_curled
+			overwrite: "horns: 2"
+			addto: horns
+				big
+				curled
 		set: 0.40
 			maleonly
 			overwrite: "skin/type: marble"
 			overwrite: "skin/color: oneof white, whitesmoke, lightgray, lightslategray, lightpink, lightyellow, sandybrown"
-			horns: 2
-				-- todo small_curled
+			overwrite: "horns: 3"
+			addto: horns
+				small
+				curled
+			overwrite: "horns/small: 0"
+			overwrite: "horns/straight: 0"
 		set: 0.05
 			overwrite: "skin/type: obsidian"
 			overwrite: "skin/color: black"

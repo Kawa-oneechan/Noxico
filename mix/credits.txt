@@ -1,53 +1,57 @@
 
-<cCornflowerBlue>                    <g2588><g2588><g2584>  <g2588><g2588> <g2584><g2588><g2580><g2580><g2588><g2584> <g2580><g2588>   <g2588><g2580> <g2580><g2588><g2588><g2580> <g2584><g2588><g2580><g2580><g2588><g2584> <g2584><g2588><g2580><g2580><g2580><g2588><g2584>
-<cCornflowerBlue>                    <g2588><g2588><g2588><g2588><g2584><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2580><g2588><g2584><g2588><g2580>   <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>                    <g2588><g2588><g2580><g2588><g2588><g2588><g2588> <g2588><g2588>  <g2588><g2588>   <g2584><g2588><g2584>    <g2588><g2588>  <g2588><g2588>     <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>                    <g2588><g2588>  <g2580><g2588><g2588> <g2588><g2588>  <g2588><g2588>  <g2588><g2580> <g2580><g2588>   <g2588><g2588>  <g2588><g2588>  <g2584><g2584> <g2588><g2588>   <g2588><g2588>
-<cCornflowerBlue>                    <g2588><g2588>   <g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2580>   <g2580><g2580> <g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>  <g2580><g2588><g2584>  <g2588><g2588>
-<cCornflowerBlue>                    <g2580>  <g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580><g2580>  <g2580><g2580><g2580><g2580>
+<cCornflowerBlue>              <gDB><gDB><g11D>  <gDB><gDB> <g11C><gDB><gDB><gDB><gDB><g11D> <gDB><g11D>  <g11C><gDB> <gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB><g11D>
+<cCornflowerBlue>              <gDB><gDB><gDB><g11D> <gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11E><gDB><g11D><g11C><gDB><g11F>  <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB><g11E><gDB><g11D><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11E><gDB><gDB><g11F>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <g11E><gDB><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11C><gDB><gDB><g11D>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>  <g11E><gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11C><gDB><g11F><g11E><gDB><g11D>  <gDB><gDB>  <gDB><gDB>  <g11C><gDB> <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>   <g11E><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <gDB><g11F>  <g11E><gDB> <gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <g11E><gDB><g11D>  <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>    <g11E>                            <g11E><gDB><g11D> <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><g11F>
+<cCornflowerBlue>              <gDB><g11F> 
+<cCornflowerBlue>              <g11F>  <cSilver> Erotic Roguelike Misadventures
 
 
-                 Programming and idea                      Kawa
-                 Assistant programming              PillowShout
-                                                         Xolroc
-                                                       SparksJ2
+            Programming and idea                      Kawa
+            Assistant programming              PillowShout
+                                                    Xolroc
+                                                  SparksJ2
 
 
-                 Inspiration from:                       Fenoxo
-                                                     Tarn Adams
-                                                    Greg Janson
-                                               The NetHack team
+            Inspiration from:                       Fenoxo
+                                                Tarn Adams
+                                               Greg Janson
+                                          The NetHack team
 
 
-                                    Writers
-                                   ---------
+                               Writers
+                              ---------
 
-                TheDarkMaster      NVos          ScourgeScarfould
-                DecidedlyDevious   demidenizen   Bodshivita
-                Hassin             noego         morrogoth
-                PillowShout
-
-
-               http://helmet.kafuka.org/noxico
+           TheDarkMaster      NVos          ScourgeScarfould
+           DecidedlyDevious   demidenizen   Bodshivita
+           Hassin             noego         morrogoth
+           PillowShout
 
 
-                                   Thanks to
-                                  -----------
-
-Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and RogueBasin
-coolkids, all GameDev.StackExchange.com users...
-
-                                            and mom for not making a fuss over it.
+          http://helmet.kafuka.org/noxico
 
 
+                              Thanks to
+                             -----------
 
+Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and
+RogueBasin coolkids, all GameDev.StackExchange.com users...
+
+                             and mom for not making a fuss over it.
 
 
 
 
 
-     NE1 HAS SEEN A JAPANESE SCHOOLGIRL
-   AROUND HERE? OK CU L8R!<cGreen>          ,.
+
+
+
+          NE1 HAS SEEN A JAPANESE SCHOOLGIRL
+        AROUND HERE? OK CU L8R!<cGreen>     ,.
 <cGreen>                                   (())
 <cGreen>                _______            ( (
 <cGreen>          _,---':::::::`---._       \ \

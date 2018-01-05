@@ -216,17 +216,6 @@ Number of known items       {2}
 	x_imitatesyou: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
 	x_imitates_y: [t:Youorname] {{copies|copy}} [b:yourornames] sexual distinctions.
 	x_becomes_y: [t:Youorname] become{{s}} another [b:youorname].
-	you_bear1stchild
-	<[[
-You have given birth to little {0}.
-		
-Within moments, a matronly demoness appears before you and quickly introduces herself as a midwife. She picks up your child, giving you a thumbs-up and smile in return. In a large puff of smoke, she's gone again.
-
-Somehow, you feel like your child is perfectly safe with her.
-	]]>
-	you_bearNthchild: You have given birth to little {0}. The midwife d&#xE6;mon is quick to snatch your child away for safekeeping.
-	x_bearschild: {0} has given birth to little {1}.
-	congrats_mom: Congratulations, mom
 	dropped_x: Dropped {0}.
 	youareachicken: [Youorname] {{has|have}} laid an egg.
 	x_getsbackup: [Youorname] get{{s}} back up.
@@ -259,12 +248,20 @@ This book, we're sorry to say, has a broken reference.
 	x_dropped_y_inthedepths: [Youorname] drop{{s}} {0} in the depths!
 	item_changeling_disguise: This is part of your changeling disguise.
 	formlock: [Yourornames] skin crawls as it resists change.
+	eat_toyourhips: That went right to your hips!
+	eat_toyourwaist: That went right to your waist!
+	eat_toyourbutt: That went right to your [t:buttsize] [?:butt]!
+	call_out: {0}: "There [b:he] [b:is]!"
+	call_out_animal: The [t:title] vocalizes an alert!
 -- #endregion
 -- #region Causes of death
+	death_struckdown: was struck down
+	death_struckdown_player: were struck down
 	death_doveinanddrowned: dove into the water and drowned
 	death_doveintodepths: dove into the depths
-	death_crackedagainstceiling: hit the ceiling when trying to fly
-	death_shotbyx: was shot down by {0}
+	death_crackedagainstceiling: hit the ceiling trying to fly
+	death_shot: was shot down
+	death_shot_player: were shot down
 	death_burned: burned to death
 	death_drowned: drowned
 -- #endregion
@@ -285,6 +282,10 @@ This book, we're sorry to say, has a broken reference.
 	talkingtoyourself: Talking to yourself is the first sign of insanity.
 	talkingtoyourself_nutso: You spend a short while enjoying some pleasant but odd conversation with yourself.
 	nothingtosay: {0} has nothing to say to you.
+	corpse_name: {0}'s remains
+	corpse_description: These are the remains of {0}, who {1}.
+	corpse_xed_by_y: {0} by {1}
+	generic_description: Nothing special about it.
 	gameover_title: GAME OVER
 	youdied
 	<[[
@@ -312,14 +313,6 @@ Would you like an infodump on the way out?
 	potion_ringmods: , shiny , sparking , warm , cold , translucent , glistening 
 	potion_name: {0}{1} potion
 	potion_ringname: {0}{1} ring
---	cockrandom: penis, cock, dick, pecker, prick, rod, shaft, dong
---	pussyrandom: vagina, pussy, cunt, cooter, cooch, cunny, quim, twat
---	anusrandom: anus, asshole, butthole, rosebud, pucker
---	buttrandom: butt, ass, rear, backside, behind, bum
---	clitrandom: clitoris, clit, fun button, clitty, love button
---	breastsrandom: breasts, boobs, tits, knockers, mounds, titties
---	breastrandom: breast, boob, tit, knocker, mound
---	cumrandom: semen, cum, jizz, spunk, seed
 -- #endregion
 -- #region Inventory
 	inventory_yours: Your inventory
@@ -344,6 +337,11 @@ Would you like an infodump on the way out?
 	inventory_weaponskill: Skill: {0}
 	inventory_weapontype: Type: {0}
 	inventory_modifiers: Modifiers: {0}
+	inventory_equip_x: Equip {0}?
+	inventory_unequip_x: Unequip {0}?
+	inventory_cursed_singular: You can't unequip {0}; it is cursed.
+	inventory_cursed_plural: You can't unequip {0}; they are cursed.
+	inventory_identify_as_x: You've identified this as {0}.
 -- #region Sigils
 	sigil_weapon: weapon
 	sigil_fullmask: full mask
@@ -393,7 +391,7 @@ Would you like an infodump on the way out?
 -- #region Leg types
 	legtype_human: human
 	legtype_genbeast: digitigrade
-	legtype_stiletto: stilleto-heeled
+	legtype_stiletto: stiletto-heeled
 	legtype_claws: clawed
 	legtype_insect: insectoid
 	legtype_dog: digitigrade
@@ -497,12 +495,10 @@ Sexual characteristics
 	lookat_column_clothing
 	<[[
 Clothing/armor
-
 	]]>
 	lookat_column_equipment
 	<[[
 Equipment
-
 	]]>
 -- #endregion
 -- #region Crafting
@@ -518,24 +514,166 @@ Equipment
 	vocalize_cryout: cry out, scream
 	vocalize_cryouts: cries out, screams
 -- #endregion
--- #region FMOD
-add: words/-
-	fmod_genericerror: An error occurred in FMOD that's not further explained. The error code is "{0}".
-	fmod_error: An error occurred in FMOD: {0}
-	fmod_ok: Nothing happened! Everything supposedly went right, but you got this message anyway. Contact Kawa.
-	fmod_badcommand: Tried to call a function on a data type that doesn't allow that type of functionality. For example, calling Sound::lock on a streaming sound.
-	fmod_channelalloc: Error trying to allocate a channel.
-	fmod_channelstolen: The specified channel has been reused to play another sound.
-	fmod_filebad: Error loading file.
-	fmod_fileeof: End of file unexpectedly reached while trying to read essential data.
-	fmod_fileendofdata: End of current chunk reached while trying to read data.
-	fmod_filenotfound: File not found.
-	fmod_unknownformat: Unsupported file or audio format.
-	fmod_initialization: FMOD was not initialized correctly to support this function.
-	fmod_notenoughmemory: Not enough memory or resources.
-	fmod_notready: Operation could not be performed because specified sound is not ready.
-	fmod_outputallocated: Error initializing output device, but more specifically, the output device is already in use and cannot be reused.
-	fmod_outputinit: Error initializing output device.
+-- #region Mutamorph
+	morph_growcock: [Youorname] [has] grown a brand new [?:cock]!
+	morph_growpussy: [Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!
+	morph_splitcock: [Yourornames] [?:cock] has split in two!
+	morph_splitpussy: [Yourornames] [?:pussy] has split in two!
+	morph_growsnaketail: [Youorname] [has] lost [his] legs and gained a long, serpentine tail.
+	morph_growslimeblob: [Youorname] become{s} a slime, and [his] legs melt into a blob of goo.
+	morph_bipedify: [Yourornames] body has returned to a normal bipedal shape.
+	morph_taurify: [Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear.
+	morph_quadrify: [Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form.
+	morph_taurtrain: Another taurbody extends out behind [yourornames] [?:butt] as [he] grow{s} another pair of legs.
+	morph_untaurtrain: [Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt].
+	morph_lose_x_and_gain_y_legs: [Youorname] [has] {0} and gained a pair of {1} legs.
+	morph_losesnaketail: lost [his] snaketail
+	morph_loseslimeblob: solidified
+	morph_gainbreast: [Youorname] [has] gained a {0} [?:breast].
+	morph_losebreast: [Youorname] [has] lost a [?:breast].
+	morph_loselastbreast: [Youorname] [has] lost [his] [?:breasts].
+	morph_gaintesticle: [Youorname] [has] gained another testicle.
+	morph_gainonenut: [Youorname] [has] grown a single testicle.
+	morph_gainballs: [Youorname] [has] gained a set of {0} {1} balls.
+	morph_loselastnut: [Youorname] [has] lost [his] last remaining testicle.
+	morph_loseonenut: [Youorname] [has] lost one of [his] balls, bringing [him] down to only {0}.
+	morph_gaindicknipples: The nipples on [yourornames] [?:breasts] have grown out and become phallic.
+	morph_gainnipplecunts: The nipples on [yourornames] [?:breasts] have inverted and taken on a distinctly vaginal appearance.
+	morph_gainnipple: [Yourornames] [?:breasts] have gained another nipple.
+	morph_gaindicknipple: [Yourornames] [?:breasts] have gained another dicknipple.
+	morph_gainnipplecunt: [Yourornames] [?:breasts] have gained another nipplecunt.
+	morph_losenipples: [Yourornames] [?:breasts] have lost their nipples.
+	morph_losedicknipples: [Yourornames] [?:breasts] have lost their dicknipples.
+	morph_losenipplecunts: [Yourornames] [?:breasts] have lost their nipplecunts.
+	morph_losenipple: [Yourornames] [?:breasts] have each lost a nipple.
+	morph_losedicknipple: [Yourornames] [?:breasts] have each lost a dicknipple.
+	morph_losenipplecunts: [Yourornames] [?:breasts] have each lost a nipplecunt.
+	morph_revertdicknipples: The dicknipples on [yourornames] [?:breasts] have become normal nipples.
+	morph_revertnipplecunts: The nipplecunts on [yourornames] [?:breasts] have become normal nipples.
+-- #endregion
+-- #region Morph delta descriptions
+-- Metrics: tallness hips waist ass_size charisma cunning carnality sensitivity speed strength
+	morphpart_tallness_-1: [view] grow{s} a bit shorter
+	morphpart_tallness_1: [view] grow{s} a bit taller
+	morphpart_hips_-1: [views] hips	become smaller
+	morphpart_hips_1: [views] hips flare out some more
+	morphpart_waist_-1: [views] waist grows a bit less wide
+	morphpart_waist_1: [views] waist grows a bit wider
+	morphpart_ass_size_-1: [views] [?:butt] shrinks a bit
+	morphpart_ass_size_1: [views] [?:butt] expands a bit
+-- Vary that up a bit, yo!
+	morphpart_charisma_-1: [views] charisma decreases
+	morphpart_charisma_1: [views] charisma increases
+	morphpart_cunning_-1: [views] cunning decreases
+	morphpart_cunning_1: [views] cunning increases
+	morphpart_carnality_-1: [views] carnality decreases
+	morphpart_carnality_1: [views] carnality increases
+	morphpart_sensitivity_-1: [views] sensitivity decreases
+	morphpart_sensitivity_1: [views] sensitivity increases
+	morphpart_speed_-1: [views] speed decreases
+	morphpart_speed_1: [views] speed increases
+	morphpart_strength_-1: [views] strength decreases
+	morphpart_strength_1: [views] strength increases
+-- Trivial kinds: face teeth tongue ears legs --> things listed in bodyparts.tml
+-- for now, let's just let it return "[morphpart_face_cat]"...
+-- Trivial colors: eyes only for now, to any known color.
+	morphpart_eyes_x: [views] eyes turn {0}
+-- Skin type changes, including colors
+	morphpart_skin_skin: [views] body turns to smooth {0} skin
+	morphpart_skin_fur: [views] body grows a coat of {0} fur
+	morphpart_skin_slime: [views] body dissolves into {0} slime
+	morphpart_skin_scales: [views] body grows sturdy {0} scales
+	morphpart_skin_color: [views] body turns {0}
+-- Leg type changes
+	morphpart_slime_human: [views] lower body reforms into a pair of regular legs
+	morphpart_slime_dog: [views] lower body reforms into a pair of dog-like legs
+	morphpart_slime_horse: [views] lower body reforms into a pair of horse legs
+	morphpart_slime_insect: [views] lower body reforms into a pair of chitinous legs
+	morphpart_slime_claws: [views] lower body reforms into a pair of claw-footed legs
+	morphpart_slime_stiletto: [views] lower body reforms into a pair of legs with stiletto-heeled feet
+	morphpart_slime_genbeast: [views] lower body reforms into a pair of animalistic legs
+	morphpart_slime_bear: [views] lower body reforms into a hefty pair of bear legs
+	morphpart_slime_blob: [views] legs dissolve into a puddle of goop
+-- Hair changes
+	morphpart_hair_color: [views] hair turns {0}
+-- Tail changes
+-- for now, let's just let it return "[morphpart_tail_cat]"...
+	morphpart_tail_: [views] tail becomes -like
+	morphpart_gettail_: [views] tail becomes -like
+	morphpart_tail_lose: [views] tail disappears
+-- Penis changes
+	morphpart_grow_dick: [view] grow{s} a {0} [?:cock]
+	morphpart_cock_split: [views] [?:cock] splits in two
+	morphpart_cock_join: [views] [?:cocks] fuse into one
+	morphpart_lose_dick: [views] [?:cock] disappears
+	morphpart_penis_-1_-1: [views] [?:cock] grows shorter and thinner
+	morphpart_penis_-1_0: [views] [?:cock] grows shorter
+	morphpart_penis_-1_1: [views] [?:cock] grows shorter and fatter
+	morphpart_penis_0_-1: [views] [?:cock] grows thinner
+	morphpart_penis_0_0: [views] [?:cock] stays exactly the same
+	morphpart_penis_0_1: [views] [?:cock] grows fatter
+	morphpart_penis_1_-1: [views] [?:cock] grows longer and thinner
+	morphpart_penis_1_0: [views] [?:cock] grows longer
+	morphpart_penis_1_-1: [views] [?:cock] grows longer and fatter
+-- Final joiners
+	morphfinal_nothing: Nothing happens.
+	morphfinal_1: {0}.
+	morphfinal_2: {0} and {1}.
+	morphfinal_3: {0}, {1}, and {2}.
+	morphfinal_n1: {0}. {1}
+	morphfinal_n2: , {0}
+	morphfinal_n3: , and {0}.
+-- #endregion
+-- #region Tutorial
+	tutorial_firststeps
+	<[[
+&#xE2FE;Welcome to Noxico.
+
+You probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: &#xE207;. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!
+	]]>
+	tutorial_interactmode
+	<[[
+&#xE2FE;Exactly like that, yes.
+
+You can move the targeting cursor around the same way you moved your character, then press &#xE20A; to call up a menu of interactions for whatever you aimed at.
+
+Also, you can press &#xE20E; to more quickly aim at various things.
+	]]>
+	tutorial_flying
+	<[[
+&#xE2FE;It seems you have functional wings.
+
+As long as you have enough headroom, you can take flight by pressing &#xE208;. Press it again to land, but be careful where you do that!
+	]]>
+-- #endregion
+-- #region Infodump
+	infodump_title: Noxico - Infodump for {0}
+	infodump_screenshot: Screenshot
+	infodump_about: About you
+	infodump_items: All of your items
+	infodump_no_items: You were carrying nothing.
+	infodump_relationships: Relationships
+	infodump_no_ships: You were in no relationships.
+	infodump_conduct: Conduct
+	infodump_easymode: You were a total scrub.
+	infodump_wizard: You were playing a debug build with the infinite lives cheat enabled.
+	infodump_literate: You were literate.
+	infodump_illiterate: You were functionally illiterate.
+	infodump_had_lovers: You were someone's lover.
+	infodump_no_lovers: You had no love to give.
+	infodump_one_lover: You were faithful.
+	infodump_rapist: You had raped someone.
+	infodump_serial_rapist: You had raped several people. You monster.
+	infodump_books: Books you've read
+	infodump_no_books: You did not read any books.
+-- #endregion
+-- #region Stuff in the player's base (cut out and place in Player Base mission later)
+	candle_easymode: Because you're playing on easy mode, the candle is pretty much just a small stump of wax. The wick isn't even burning.
+	candle_0: If this little stump of a candle is any indication, you're on your last legs. You should be careful.
+	candle_1: The mediocre length of the candle tells you that you shouldn't tempt Death too often. Perhaps you should be careful.
+	candle_3: The candle still has a ways to go, and so do you. Still, it's no good to tempt Death.
+	candle_6: The candle burns brightly.
+	candle_X: The candle is positively ablaze with life.
 -- #endregion
 
 hyphenation
@@ -572,87 +710,3 @@ hyphenation
 	rule
 		cutoff: 2
 		pattern: "[aeiou]([^aeiou]{2})[aeiou]"
-
-pluralizer
-	simple: "s"
-	of: " of "
-	sanitycheck
-		pluralize
-			from: hoof
-			to: hooves
-		pluralize
-			from: cheap piece of shit
-			to: cheap pieces of shit
-		singularize
-			from: pegasori
-			to: pegasus
-	uncountable
-		money
-		information
-		fish
-		deer
-		tuna
-		crosshairs
-		--  Japanese 
-		yaki
-		sheep
-		ninja
-		ronin
-		shito
-		shuriken
-		tengu
-		sentai
-		ki-rin
-		yoki
-	irregular
-		ox: oxen
-			fullword
-		VAX: vaxen
-			fullword
-		octopus: octopuses
-		person: people
-		pegasus: pegasori
-		stylus: styli
-		goose: geese
-		mouse: mice
-		louse: lice
-		human: humans
-		man: men
-		die: dice
-		staff: staves
-		foot: feet
-		coccus: cocci
-		convolvulus: convolvuli
-		arsis: arses
-		alula: alul&#x91;
-		alga: alg&#x91;
-		larva: larv&#x91;
-		naga: nag&#x91;
-		ida: id&#x91;
-		fungus: fungi
-		djinni: djinn
-		mumak: mumakil
-		nemesis: nemeses
-		child: children
-		--  Tolkien-specific 
-		elf: elves
-		dwarf: dwarves
-		--  <irregular_plural from="hobbit" to="hobbitses" /> 
-	regular
-		rtex: rtices
-		cubus: cubi
-		ooth: eeth
-		oof: ooves
-		fe: ves
-		--  Specify sus and lus instead of just us because house -> houses -> hous 
-		sus: suses
-		lus: luses
-		bus: buses
-		cus: ci
-		se: ses
-		ch: ches
-		oy: oys
-		x: xes
-		y: ies
-		--  <regular_plural from="" to="s" /> 
-
