@@ -1073,12 +1073,15 @@ namespace Noxico
 		private void SetupLua()
 		{
 			var env = Lua.Environment;
+			/*
 			env.me = this.Character;
 			env.thisEntity = this;
 			env.playerEntity = NoxicoGame.Me.Player;
 			env.target = ScriptPathID;
 			env.scheduler = this.scheduler;
-			env.Print = new Action<string>(x =>
+			*/
+			env.me = this;
+			env.MessageBox = new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>

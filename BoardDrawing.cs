@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public partial class Board : TokenCarrier
 	{
-		public static Neo.IronLua.LuaGlobal DrawEnv;
+		//public static Neo.IronLua.LuaGlobal DrawEnv;
 
 		public void Clear(int biomeID)
 		{

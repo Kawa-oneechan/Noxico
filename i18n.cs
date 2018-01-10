@@ -61,6 +61,8 @@ namespace Noxico
 
 #if DEBUG
 			var sanityCheck = new[] {
+				"A|pie|a",
+				"A|apple|an",
 				"P|hoof|hooves",
 				"S|hooves|hoof",
 				"P|cheap piece of shit|cheap pieces of shit",
@@ -82,6 +84,8 @@ namespace Noxico
 					result = Pluralize(checkFrom, 2);
 				else if (test[0] == "S")
 					result = Singularize(checkFrom);
+				else if (test[0] == "A")
+					result = GetArticle(checkFrom);
 				if (result != checkTo)
 					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
 			}
@@ -155,6 +159,10 @@ namespace Noxico
 			return result.ToString();
 		}
 
+		public static string GetArticle(this string topic)
+		{
+			return Lua.Environment.GetArticle(topic);
+		}
 
 		/// <summary>Gets the number of effective tiles needed to draw the current String.</summary>
 		public static int Length(this string input)
