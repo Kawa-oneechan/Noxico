@@ -18,7 +18,7 @@ namespace Noxico
 		/// <summary>
 		/// The default environment. Any invocation of Run or RunFile without an environment will use this one.
 		/// </summary>
-		public static LuaGlobal Environment;
+		public static dynamic Environment;
 
 		/// <summary>
 		/// Sets up a new Lua engine and environment.
@@ -28,8 +28,8 @@ namespace Noxico
 		{
 			IronLua = new Neo.IronLua.Lua();
 			Environment = IronLua.CreateEnvironment();
-			Ascertain(Environment);
 			LuaCache = new Dictionary<int, LuaChunk>();
+			Ascertain(Environment);
 			return IronLua;
 		}
 
@@ -37,34 +37,71 @@ namespace Noxico
 		/// Ascertains that the Lua environment has various Noxico-specific types and functions.
 		/// </summary>
 		/// <param name="env"></param>
-		public static void Ascertain(LuaGlobal env = null)
+		public static void Ascertain(dynamic env = null)
 		{
 			if (env == null)
 				env = Environment;
-			if (NoxicoGame.HostForm != null && NoxicoGame.Me.Player != null)
-				env.SetValue("player", NoxicoGame.Me.Player);
+
+			if (env.player == null && NoxicoGame.HostForm != null && NoxicoGame.Me.Player != null)
+				env.player = NoxicoGame.Me.Player;
+
+			if (env.ascertained != null)
+				return;
+
+			Lua.RunFile("pluralizer.lua");
+			Lua.RunFile("defense.lua");
+
 			//TODO: predefine ALL THE THINGS.
-			env.RegisterPackage("Board", typeof(Board));
-			env.RegisterPackage("BoardChar", typeof(BoardChar));
-			env.RegisterPackage("BoardType", typeof(BoardType));
-			env.RegisterPackage("Character", typeof(Character));
-			env.RegisterPackage("Clutter", typeof(Clutter));
-			env.RegisterPackage("Color", typeof(Color));
-			env.RegisterPackage("Door", typeof(Door));
-			env.RegisterPackage("DroppedItem", typeof(DroppedItem));
-			env.RegisterPackage("Entity", typeof(Entity));
-			env.RegisterPackage("Gender", typeof(Gender));
-			env.RegisterPackage("InventoryItem", typeof(InventoryItem));
-			env.RegisterPackage("MorphReport", typeof(MorphReportLevel));
-			env.RegisterPackage("Mutations", typeof(Mutations));
-			env.RegisterPackage("Random", typeof(Random));
-			env.RegisterPackage("Realms", typeof(Realms));
-			env.RegisterPackage("Stat", typeof(Stat));
-			env.RegisterPackage("SceneSystem", typeof(SceneSystem));
-			env.RegisterPackage("Tile", typeof(Tile));
-			env.RegisterPackage("Warp", typeof(Warp));
-		    env.SetValue("titlecase", new Func<string, string>(x => x.Titlecase()));
-			env.SetValue("message", new Action<object, Color>((x, y) => NoxicoGame.AddMessage(x, y)));
+			env.Board = typeof(Board);
+			env.BoardChar = typeof(BoardChar);
+			env.BoardType = typeof(BoardType);
+			env.Character = typeof(Character);
+			env.Clutter = typeof(Clutter);
+			env.Color = typeof(Color);
+			env.Door = typeof(Door);
+			env.DroppedItem = typeof(DroppedItem);
+			env.Entity = typeof(Entity);
+			env.Gender = typeof(Gender);
+			env.InventoryItem = typeof(InventoryItem);
+			env.MorphReport = typeof(MorphReportLevel);
+			env.Mutations = typeof(Mutations);
+			env.Random = typeof(Random);
+			env.Realms = typeof(Realms);
+			env.Stat = typeof(Stat);
+			env.SceneSystem = typeof(SceneSystem);
+			env.Tile = typeof(Tile);
+			env.Warp = typeof(Warp);
+
+			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
+			env.Message = new Action<string>(x => NoxicoGame.AddMessage(x));
+			env.MessageC = new Action<object, Color>((x, y) => NoxicoGame.AddMessage(x, y));
+			env.Titlecase = new Func<string, string>(x => x.Titlecase());
+
+			env.FindTargetBoardByName = new Func<string, int>(x =>
+			{
+				if (!NoxicoGame.TravelTargets.ContainsValue(x))
+					return -1;
+				var i = NoxicoGame.TravelTargets.First(b => b.Value == x);
+				return i.Key;
+			});
+
+			env.MakeBoardTarget = new Action<Board>(board =>
+			{
+				if (string.IsNullOrWhiteSpace(board.Name))
+					throw new Exception("Board must have a name before it can be added to the target list.");
+				if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
+					return; //throw new Exception("Board is already a travel target.");
+				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
+			});
+
+			env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
+			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
+
+			env.Task = typeof(Task);
+			env.TaskType = typeof(TaskType);
+			env.Token = typeof(Token);
+
+			env.ascertained = true;
 		}
 
 		private static string PrepareParseError(string block, int line, int column)

@@ -68,6 +68,16 @@ namespace Noxico
 			}
 		}
 
+		/* TODO: Rewrite to use... I dunno, callback functions?
+		 * Tired:
+		 *	board.Replace("return (tile.Character == 0x58 && tile.Foreground.R == 64)", "return vague");
+		 * Wired:
+		 *	board.Replace(
+		 *		function(t, d, x, y) return (d.Glyph == 0x58 && d.Foreground.R == 64) end,
+		 *		function() return vague end
+		 *	)
+		 */
+		/*
 		public void Line(int x1, int y1, int x2, int y2, string brush)
 		{
 			if (DrawEnv == null)
@@ -198,6 +208,7 @@ namespace Noxico
 		{
 			Floodfill(startX, startX, judge, brush, false);
 		}
+		*/
 
 		public void MergeBitmap(string fileName, string tiledefs)
 		{

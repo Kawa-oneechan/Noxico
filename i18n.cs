@@ -131,14 +131,12 @@ namespace Noxico
 		{
 			return GetString(key).Split(',').Select(x => x.Trim()).ToList();
 		}
-		
+
 		public static string Pluralize(this string singular)
 		{
 			if (words.ContainsKey(singular))
 				singular = words[singular];
-			Lua.Environment["plural"] = null;
-			Lua.Environment["singular"] = singular;
-			var result = Lua.RunFile("pluralizer.lua");
+			var result = Lua.Environment.Pluralize(singular);
 			return result.ToString();
 		}
 
@@ -153,9 +151,7 @@ namespace Noxico
 		{
 			if (words.ContainsKey(plural))
 				plural = words[plural];
-			Lua.Environment["plural"] = plural;
-			Lua.Environment["singular"] = null;
-			var result = Lua.RunFile("pluralizer.lua");
+			var result = Lua.Environment.Singularize(plural);
 			return result.ToString();
 		}
 
@@ -290,22 +286,22 @@ namespace Noxico
 			var wordStructFilter = new Func<Token, Character, bool>((filter, who) =>
 			{
 				var env = Lua.Environment;
-				env.SetValue("cultureID", who.Culture.ID);
-				env.SetValue("culture", who.Culture);
-				env.SetValue("gender", who.Gender);
-				env.SetValue("carnality", who.GetStat(Stat.Carnality));
-				env.SetValue("charisma", who.GetStat(Stat.Charisma));
-				env.SetValue("climax", who.GetStat(Stat.Climax));
-				env.SetValue("cunning", who.GetStat(Stat.Cunning));
-				env.SetValue("sensitivity", who.GetStat(Stat.Sensitivity));
-				env.SetValue("stimulation", who.GetStat(Stat.Stimulation));
-				env.SetValue("pussyAmount", who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0);
-				env.SetValue("penisAmount", who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0);
-				env.SetValue("pussyWetness", who.HasToken("vagina") ? who.GetToken("vagina").GetToken("wetness").Value : 0);
-				env.SetValue("cumAmount", who.CumAmount);
-				env.SetValue("slime", who.IsSlime);
+				env.cultureID = who.Culture.ID;
+				env.culture = who.Culture;
+				env.gender = who.Gender;
+				env.carnality = who.GetStat(Stat.Carnality);
+				env.charisma = who.GetStat(Stat.Charisma);
+				env.climax = who.GetStat(Stat.Climax);
+				env.cunning = who.GetStat(Stat.Cunning);
+				env.sensitivity = who.GetStat(Stat.Sensitivity);
+				env.stimulation = who.GetStat(Stat.Stimulation);
+				env.pussyAmount = who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0;
+				env.penisAmount = who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0;
+				env.pussyWetness = who.HasToken("vagina") ? who.GetToken("vagina").GetToken("wetness").Value : 0;
+				env.cumAmount = who.CumAmount;
+				env.slime = who.IsSlime;
 				//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
-				return Lua.Run("return " + filter.Text, env).ToBoolean();
+				return Lua.Run("return " + filter.Text, env);
 			});
 			#endregion
 

@@ -89,12 +89,12 @@ namespace Noxico
 			if (filter == null)
 				return true;
 			var env = Lua.Environment;
-			env.SetValue("top", actors[0]);
-			env.SetValue("bottom", actors[1]);
-			env.SetValue("consentual", !actors[1].HasToken("helpless"));
-			env.SetValue("nonconsentual", actors[1].HasToken("helpless"));
-			env.SetValue("masturbating", actors[0] == actors[1]);
-			env.SetValue("clothing", new Func<Character, string, int, bool>((a, clothClass, s) =>
+			env.top = actors[0];
+			env.bottom = actors[1];
+			env.consentual = !actors[1].HasToken("helpless");
+			env.nonconsentual = actors[1].HasToken("helpless");
+			env.masturbating = actors[0] == actors[1];
+			env.clothing = new Func<Character, string, int, bool>((a, clothClass, s) =>
 			{
 				InventoryItem cloth = null;
 				var haveSomething = false;
@@ -126,9 +126,9 @@ namespace Noxico
 					return true;
 				}
 				return false;
-			}));
+			});
 			//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();
-			return Lua.Run("return " + filter.Text, env).ToBoolean();
+			return Lua.Run("return " + filter.Text, env);
 		}
 
 		public static List<Token> GetResultHelper(string id, Character[] actors, List<Token> list)
@@ -199,12 +199,12 @@ namespace Noxico
 			var f = result.GetToken("effect");
 			var script = f.Tokens.Count == 1 ? f.Tokens[0].Text : f.Text;
 			var env = Lua.Environment;
-			env.SetValue("top", actor);
-			env.SetValue("bottom", target);
-			env.SetValue("consentual", !target.HasToken("helpless"));
-			env.SetValue("nonconsentual", target.HasToken("helpless"));
-			env.SetValue("masturbating", actor == target);
-			env.SetValue("message", new Action<object, Color>((x, y) =>
+			env.top = actor;
+			env.bottom = target;
+			env.consentual = !target.HasToken("helpless");
+			env.nonconsentual = target.HasToken("helpless");
+			env.masturbating = actor == target;
+			env.message = new Action<object, Color>((x, y) =>
 			{
 				if (x is Neo.IronLua.LuaTable)
 					x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
@@ -216,13 +216,13 @@ namespace Noxico
 						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
 				}
 				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor, target), y);
-			}));
-			env.SetValue("stop", new Action(() =>
+			});
+			env.stop = new Action(() =>
 			{ 
 				actor.RemoveAll("havingsex");
 				target.RemoveAll("havingsex");
-			}));
-			env.SetValue("roll", new Func<object, object, bool>((x, y) =>
+			});
+			env.roll = new Func<object, object, bool>((x, y) =>
 			{
 				float a, b;
 				if (!float.TryParse(x.ToString(), out a))
@@ -246,7 +246,7 @@ namespace Noxico
 						b = target.GetSkillLevel(y.ToString());
 				}
 				return (a >= b);
-			}));
+			});
 
 			// Okay, Sparky. What I did was, I put all the error handling in Lua.cs, with a Run method.
 			// Instead of worrying about presentation, it just uses a standard WinForms MessageBox.
