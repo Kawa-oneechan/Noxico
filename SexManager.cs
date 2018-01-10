@@ -94,7 +94,7 @@ namespace Noxico
 			env.consentual = !actors[1].HasToken("helpless");
 			env.nonconsentual = actors[1].HasToken("helpless");
 			env.masturbating = actors[0] == actors[1];
-			env.clothing = new Func<Character, string, int, bool>((a, clothClass, s) =>
+			env.GetClothing = new Func<Character, string, int, bool>((a, clothClass, s) =>
 			{
 				InventoryItem cloth = null;
 				var haveSomething = false;
@@ -204,7 +204,7 @@ namespace Noxico
 			env.consentual = !target.HasToken("helpless");
 			env.nonconsentual = target.HasToken("helpless");
 			env.masturbating = actor == target;
-			env.message = new Action<object, Color>((x, y) =>
+			env.MessageR = new Action<object, Color>((x, y) =>
 			{
 				if (x is Neo.IronLua.LuaTable)
 					x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
@@ -217,12 +217,12 @@ namespace Noxico
 				}
 				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor, target), y);
 			});
-			env.stop = new Action(() =>
+			env.Stop = new Action(() =>
 			{ 
 				actor.RemoveAll("havingsex");
 				target.RemoveAll("havingsex");
 			});
-			env.roll = new Func<object, object, bool>((x, y) =>
+			env.Roll = new Func<object, object, bool>((x, y) =>
 			{
 				float a, b;
 				if (!float.TryParse(x.ToString(), out a))

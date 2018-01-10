@@ -1008,7 +1008,7 @@ namespace Noxico
 
 			dynamic env = Lua.IronLua.CreateEnvironment();
 			Lua.Ascertain(env);
-			env.realm = realm;
+			env.Realm = realm;
 			env.MakeBoardTarget = makeBoardTarget;
 			env.GetBoard = new Func<int, Board>(x => GetBoard(x));
 			env.PickBoard = pickBoard;
@@ -1019,7 +1019,7 @@ namespace Noxico
 			{
 				Program.WriteLine(x);
 			});
-			Board.DrawEnv = env;
+			//Board.DrawEnv = env;
 
 			var missionDirs = Mix.GetFilesInPath("missions");
 			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))

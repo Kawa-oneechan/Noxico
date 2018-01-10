@@ -48,7 +48,7 @@ namespace Noxico
 			if (env.ascertained != null)
 				return;
 
-			Lua.RunFile("pluralizer.lua");
+			Lua.RunFile("i18n.lua");
 			Lua.RunFile("defense.lua");
 
 			//TODO: predefine ALL THE THINGS.
@@ -100,6 +100,8 @@ namespace Noxico
 			env.Task = typeof(Task);
 			env.TaskType = typeof(TaskType);
 			env.Token = typeof(Token);
+
+			env.StartsWithVowel = new Func<string, bool>(x => x.StartsWithVowel());
 
 			env.ascertained = true;
 		}

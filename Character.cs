@@ -349,15 +349,7 @@ namespace Noxico
 					Title = prefix.Name + " " + Title;
 			}
 
-			//TODO: i18n this
-			/* ...would a Lua file for i18n be a good idea perhaps? Special i18n env with a bunch of language-specific functions?
-			 * Think "GetArticle(noun)", which for the default English version would do the below, while a language with other
-			 * articles can have its own GetArticle function. Maybe it'd return nothing?
-			 */
-			if (A == "a" && Title.StartsWithVowel())
-				A = "an";
-			else if (A == "an" && !Title.StartsWithVowel())
-				A = "a";
+			A = Title.GetArticle();
 		}
 
 		public string HeSheIt(bool lower = false)

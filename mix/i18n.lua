@@ -68,6 +68,14 @@ local regular = {
 	y = "ies",
 }
 
+function GetArticle(topic)
+	if StartsWithVowel(topic) then
+		return "an"
+	else
+		return "a"
+	end
+end
+
 function Pluralize(singular)
 	local of = singular:find(" of ")
 	if (of) then
