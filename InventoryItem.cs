@@ -631,12 +631,11 @@ namespace Noxico
 		public object RunScript(Token item, string script, Character character, BoardChar boardchar, Action<string> running)
 		{
 			var env = Lua.Environment;
-			Lua.Ascertain();
-			env.SetValue("user", character);
-			env.SetValue("thisItem", this);
-			env.SetValue("thisToken", item);
-			env.SetValue("Consume", new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */));
-			env.SetValue("print", new Action<string, bool>((x, y) =>
+			env.user = character;
+			env.thisItem = this;
+			env.thisToken = item;
+			env.Consume = new Action<string>(x => this.Consume(character, item) /* character.GetToken("items").Tokens.Remove(item) */);
+			env.print = new Action<string, bool>((x, y) =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
@@ -649,14 +648,14 @@ namespace Noxico
 					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
-			}));
-			env.SetValue("ReportSet", new Action<List<string>>(x =>
+			});
+			env.ReportSet = new Action<List<string>>(x =>
 			{
 				foreach (var result in x)
 					if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 						NoxicoGame.AddMessage(result.Viewpoint(character));
-			}));
-			env.SetValue("Identify", new Action<string>(x =>
+			});
+			env.Identify = new Action<string>(x =>
 			{
 				if (character.GetToken("cunning").Value < 10)
 				{
@@ -680,7 +679,7 @@ namespace Noxico
 						this.UnknownName = null;
 					}
 					//Random potions and rings are un-unidentified by taking away their UnknownName, but we clear the unidentified state anyway.
-					//item.RemoveToken("unidentified");
+					//item.RemoveToken("unidentified";
 					//runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
 					//return;
 				}
@@ -692,12 +691,9 @@ namespace Noxico
 					if (running != null)
 						running(i18n.Format("inventory_identified_as_x", this.ToString(item, true)));
 				}
-			}));
+			});
 			//var ret = env.DoChunk(script, "lol.lua");
-			var ret = Lua.Run(script, env);
-			if (!ret.ToBoolean())
-				return true;
-			return ret.ToBoolean();
+			return Lua.Run(script, env);
 		}
 
 		#region PillowShout's additions

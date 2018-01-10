@@ -240,8 +240,8 @@ namespace Noxico
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
 			*/
-			//var testChar = Character.Generate("felin", Gender.Male);
-			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
+			var testChar = Character.Generate("felin", Gender.Male);
+			var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
 			//var test = Lua.Run("return foo = 4 + \"foo\"");
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
@@ -1006,19 +1006,19 @@ namespace Noxico
 				return 0;
 			};
 
-			var env = Lua.IronLua.CreateEnvironment();
+			dynamic env = Lua.IronLua.CreateEnvironment();
 			Lua.Ascertain(env);
-			env.SetValue("realm", realm);
-			env.SetValue("MakeBoardTarget", makeBoardTarget);
-			env.SetValue("GetBoard", new Func<int, Board>(x => GetBoard(x)));
-			env.SetValue("PickBoard", pickBoard);
-			env.SetValue("FindBoardByID", findBoardByID);
-			env.SetValue("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			env.SetValue("MakeTown", makeTown);
-			env.SetValue("print", new Action<string>(x =>
+			env.realm = realm;
+			env.MakeBoardTarget = makeBoardTarget;
+			env.GetBoard = new Func<int, Board>(x => GetBoard(x));
+			env.PickBoard = pickBoard;
+			env.FindBoardByID = findBoardByID;
+			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
+			env.MakeTown = makeTown;
+			env.print = new Action<string>(x =>
 			{
 				Program.WriteLine(x);
-			}));
+			});
 			Board.DrawEnv = env;
 
 			var missionDirs = Mix.GetFilesInPath("missions");

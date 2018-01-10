@@ -30,7 +30,6 @@ namespace Noxico
 		public int ScriptPathTargetX { get; private set; }
 		public int ScriptPathTargetY { get; private set; }
 		public string ScriptPathID { get; set; }
-		private Neo.IronLua.LuaGlobal env;
 		private Scheduler scheduler;
 		public Dijkstra GuardMap { get; private set; }
 		public int Eyes { get; private set; }
@@ -940,12 +939,8 @@ namespace Noxico
 
 		public float GetDefenseFactor(Token weaponToken, Noxico.Character target)
 		{
-			if (env == null)
-				SetupLua();
-			env.SetValue("weapon", weaponToken);
-			env.SetValue("target", target);
-			var r = Lua.RunFile("defense.lua", env);
-			return (float)(r.ToDouble());
+			var r = Lua.Environment.GetDefenseFactor(weaponToken, target);
+			return (float)r;
 		}
 
 		public virtual bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
@@ -1077,22 +1072,13 @@ namespace Noxico
 
 		private void SetupLua()
 		{
-			env = Lua.IronLua.CreateEnvironment();
-			Lua.Ascertain(env);
-			env.SetValue("this", this.Character);
-			env.SetValue("thisEntity", this);
-			env.SetValue("playerEntity", NoxicoGame.Me.Player);
-			env.SetValue("target", ScriptPathID);
-			env.RegisterPackage("Random", typeof(Random));
-			env.RegisterPackage("BoardType", typeof(BoardType));
-			env.RegisterPackage("Character", typeof(Character));
-			env.RegisterPackage("BoardChar", typeof(BoardChar));
-			env.RegisterPackage("InventoryItem", typeof(InventoryItem));
-			env.RegisterPackage("Tile", typeof(Tile));
-			env.RegisterPackage("Color", typeof(Color));
-			env.SetValue("sound", new Action<string>(x => NoxicoGame.Sound.PlaySound(x)));
-			env.SetValue("corner", new Action<string>(x => NoxicoGame.AddMessage(x)));
-			env.SetValue("print", new Action<string>(x =>
+			var env = Lua.Environment;
+			env.me = this.Character;
+			env.thisEntity = this;
+			env.playerEntity = NoxicoGame.Me.Player;
+			env.target = ScriptPathID;
+			env.scheduler = this.scheduler;
+			env.Print = new Action<string>(x =>
 			{
 				var paused = true;
 				MessageBox.ScriptPauseHandler = () =>
@@ -1105,44 +1091,19 @@ namespace Noxico
 					NoxicoGame.Me.Update();
 					System.Windows.Forms.Application.DoEvents();
 				}
-			}));
-			env.SetValue("FindTargetBoardByName", new Func<string, int>(x =>
-			{
-				if (!NoxicoGame.TravelTargets.ContainsValue(x))
-					return -1;
-				var i = NoxicoGame.TravelTargets.First(b => b.Value == x);
-				return i.Key;
-			}));
-
-			var makeBoardTarget = new Action<Board>(board =>
-			{
-				if (string.IsNullOrWhiteSpace(board.Name))
-					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
-					return; //throw new Exception("Board is already a travel target.");
-				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
 			});
-
-			env.SetValue("MakeBoardTarget", makeBoardTarget);
-			env.SetValue("GetBoard", new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x)));
-			env.SetValue("GetBiomeByName", new Func<string, int>(BiomeData.ByName));
-			env.SetValue("scheduler", this.scheduler);
-			env.RegisterPackage("Task", typeof(Task));
-			env.RegisterPackage("TaskType", typeof(TaskType));
-			env.RegisterPackage("Token", typeof(Token));
 		}
 
 		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
 		{
 			if (string.IsNullOrWhiteSpace(script))
 				return true;
-			if (env == null)
-				SetupLua();
+			SetupLua();
 
-			Board.DrawEnv = env;
+			//Board.DrawEnv = env;
 			if (!string.IsNullOrEmpty(extraParm))
-				env.SetValue(extraParm, extraVal);
-			var r = Lua.Run(script, env);
+				((Neo.IronLua.LuaGlobal)Lua.Environment).SetValue(extraParm, extraVal);
+			var r = Lua.Run(script);
 			if (r.ToBoolean())
 				return r.ToBoolean();
 			return true;

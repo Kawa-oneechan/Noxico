@@ -109,7 +109,6 @@ function Singularize(plural)
 	if (of) then
 		local key = plural:sub(1, of - 1)
 		local ofWhat = plural:sub(of)
-		print("key '" .. key .. "', ofWhat '" .. ofWhat .. "'");
 		return Singularize(key) .. ofWhat
 	end
 
@@ -137,12 +136,5 @@ function Singularize(plural)
 		end
 	end
 
-	print ("Returning '" .. plural:sub(1, -2) .. "'")
 	return plural:sub(1, -2)
 end
-
-
-
-if (singular) then return Pluralize(singular) end
-if (plural) then return Singularize(plural) end
-
