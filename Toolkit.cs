@@ -60,161 +60,63 @@ namespace Noxico
 		public static string GetBodyComparisonHash(TokenCarrier token)
 		{
 			var ret = new StringBuilder();
+			ret.Append('[');
+			var parts = new[] { "skin", "ears", "face", "teeth", "tongue", "wings", "legs", "penis", "tail" };
+			foreach (var part in parts)
+			{
+				var pt = token.Path(part + "/type");
+				if (pt == null)
+					pt = token.GetToken(part);
+				if (pt == null)
+				{
+					if (part == "tail")
+					{
+						if (token.HasToken("snaketail"))
+							ret.Append('§');
+						else if (token.HasToken("slimeblob"))
+							ret.Append('ß');
+						else
+							ret.Append(' ');
+					}
+					else
+						ret.Append(' ');
+					continue;
+				}
+				var letter = Descriptions.descTable.Path(part + '/' + pt.Text + "/_hash");
+				if (letter == null)
+					ret.Append(' ');
+				else
+				{
+					if (part == "wings" && !pt.HasToken("small"))
+						ret.Append(letter.Text.ToUpperInvariant());
+					else
+						ret.Append(letter.Text);
+				}
+			}
 			if (token.Path("hair") != null)
 				ret.Append('h');
 			else
 				ret.Append(' ');
-
-			if (token.Path("skin") == null)
-				ret.Append('s');
-			else
-			{
-				var skinTypeToken = token.Path("skin/type");
-				if (skinTypeToken == null)
-					ret.Append('s');
-				else
-				{
-					var skinTypes = new Dictionary<string, char>()
-					{
-						{ "skin", 's' },
-						{ "fur", 'f' },
-						{ "scales", 'c' },
-						{ "slime", 'j' },
-						{ "rubber", 'r' },
-						{ "metal", 'm' },
-						{ "carapace", 'C' },
-					};
-					if (skinTypes.ContainsKey(skinTypeToken.Text))
-						ret.Append(skinTypes[skinTypeToken.Text]);
-					else
-						ret.Append('s');
-				}
-			}
-
-			if (token.Path("face") == null)
-				ret.Append(' ');
-			else
-			{
-				var faceToken = token.Path("face");
-				if (faceToken == null)
-					ret.Append(' ');
-				else
-				{
-					var faceTypes = new Dictionary<string, char>()
-					{
-						{ "normal", ' ' },
-						{ "genbeast", 'b' },
-						{ "horse", 'h' },
-						{ "dog", 'd' },
-						{ "cow", 'm' },
-						{ "cat", 'c' },
-						{ "reptile", 'r' },
-					};
-					if (faceTypes.ContainsKey(faceToken.Text))
-						ret.Append(faceTypes[faceToken.Text]);
-					else
-						ret.Append(' ');
-				}
-			}
-
-			if (token.Path("ears") == null)
-				ret.Append(' ');
-			else
-			{
-				var earsToken = token.Path("ears");
-				if (earsToken == null)
-					ret.Append(' ');
-				else
-				{
-					var earTypes = new Dictionary<string, char>()
-					{
-						{ "human", ' ' },
-						{ "elfin", 'e' },
-						{ "genbeast", 'b' },
-						{ "horse", 'h' },
-						{ "dog", 'd' },
-						{ "cat", 'c' },
-						{ "cow", 'm' },
-						{ "frill", 'f' },
-						{ "bear", 'u' },
-					};
-					if (earTypes.ContainsKey(earsToken.Text))
-						ret.Append(earTypes[earsToken.Text]);
-					else
-						ret.Append(' ');
-				}
-			}
-
 			if (token.Path("antennae") == null)
 				ret.Append(' ');
 			else
 				ret.Append('!');
-
-			if (token.Path("snaketail") != null)
-				ret.Append('S');
-			else if (token.Path("tail") == null)
-				ret.Append(' ');
-			else
-			{
-				var tailToken = token.Path("tail");
-				if (tailToken == null)
-					ret.Append(' ');
-				else
-				{
-					var tailTypes = new Dictionary<string, char>()
-					{
-						{ "genbeast", 'b' },
-						{ "horse", 'h' },
-						{ "dog", 't' },
-						{ "fox", 'T' },
-						{ "squirrel", 'T' },
-						{ "cow", 'c' },
-						{ "tentacle", '!' },
-						{ "stinger", 'v' },
-						{ "webber", 'w' },
-						{ "spider", 'A' },
-					};
-					if (tailTypes.ContainsKey(tailToken.Text))
-						ret.Append(tailTypes[tailToken.Text]);
-					else
-						ret.Append('t');
-				}
-			}
-
-			if (token.Path("wings") == null)
-				ret.Append(' ');
-			else
-			{
-				var wingsToken = token.Path("wings");
-				if (wingsToken == null)
-					ret.Append(' ');
-				else
-				{
-					if (string.IsNullOrWhiteSpace(wingsToken.Text))
-						wingsToken.Text = "feather";
-					var wingTypes = new Dictionary<string, char>()
-					{
-						{ "bat", 'b' },
-						{ "dragon", 'd' },
-						{ "feather", 'f' },
-					};
-					if (wingTypes.ContainsKey(wingsToken.Text))
-						ret.Append(wingsToken.HasToken("small") ? wingTypes[wingsToken.Text] : wingTypes[wingsToken.Text].ToString().ToUpperInvariant()[0]);
-					else
-						ret.Append(' ');
-				}
-			}
-
 			var tallness = token.Path("tallness");
 			if (tallness == null)
 				ret.Append(' ');
-			else if (tallness.Value < 140)
-				ret.Append('_');
-			else if (tallness.Value > 180)
-				ret.Append('!');
 			else
-				ret.Append(' ');
-
+			{
+				var t = tallness.Value;
+				if (t == 0 && tallness.Text.StartsWith("roll"))
+					t = float.Parse(tallness.Text.Substring(tallness.Text.IndexOf('+') + 1));
+				if (t < 140)
+					ret.Append('_');
+				else if (t > 180)
+					ret.Append('!');
+				else
+					ret.Append(' ');
+			}
+			ret.Append(']');
 			return ret.ToString();
 		}
 

@@ -72,14 +72,16 @@ namespace Noxico
 			var set = descTable.Path(path);
 			if (set == null)
 				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
-			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
+			return Toolkit.PickOne(set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray());
+			//return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 		public static string GetPartDescription(string path, params string[] alternatives)
 		{
 			var set = descTable.Path(path);
 			if (set == null)
 				return Toolkit.PickOne(alternatives);
-			return set.Tokens[Random.Next(set.Tokens.Count)].Name;
+			return Toolkit.PickOne(set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray());
+			//return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 
 		public static string BreastSize(Token breastToken, bool inCups = false)
