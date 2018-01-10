@@ -196,7 +196,23 @@ namespace Noxico
 				if (bodyPlan.HasToken("beast"))
 					continue;
 				BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(bodyPlan));
+				Program.WriteLine("{0}\t{1}", id, BodyplanHashes[id]);
 			}
+
+#if DEBUG
+			Program.WriteLine("----------------");
+			foreach (var planRow in BodyplanHashes)
+			{
+				Program.Write(planRow.Key);
+				foreach (var planCol in BodyplanHashes.Values)
+				{
+					Program.Write("\t{0}", Toolkit.GetHammingDistance(planRow.Value, planCol));
+				}
+				Program.WriteLine(string.Empty);
+			}
+			Program.WriteLine("----------------");
+#endif
+
 
 			Program.WriteLine("Loading items...");
 			Identifications = new List<string>();
