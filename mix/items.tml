@@ -15,7 +15,7 @@
 -- TODO: allow TokenCarrier.Path() to support search-by-text?
 -- That is, you can do "x/y[i]" to get the i-th y that is a child of an x, but you could maybe do "script['timer']/#text" to get a Timer script?
 
--- note that 'print' pops up a box while 'message' prints text into the general message area
+-- note that 'print' pops up a box while 'Message' prints text into the general Message area
 
 item: broken_reference
 	description: "404 item not found."
@@ -51,7 +51,7 @@ item: timertest
 		<[[
 			local car = user.GetToken("carnality")
 			if car.Value < 100 then
-				message("You feel your mind going...")
+				Message("You feel your mind going...")
 				car.Value = car.Value + 5
 			end
 		]]>
@@ -1786,7 +1786,7 @@ item: really_kinky_panties
 			local cli = user.GetToken("climax")
 			local sti = user.GetToken("stimulation")
 			if cli.Value < 80 or sti.Value < 80 then
-				message("Your panties are making you hot and bothered...")
+				Message("Your panties are making you hot and bothered...")
 				if cli.Value < 80 then
 					user.Raise(Stat.Climax, 5)
 				end
@@ -1794,7 +1794,7 @@ item: really_kinky_panties
 					user.Raise(Stat.Stimulation, 5)
 				end
 			else
-				message("Your panties are keeping you hot and bothered...")
+				Message("Your panties are keeping you hot and bothered...")
 			end
 		]]>
 
@@ -1962,7 +1962,7 @@ item: chaotic_regen_ring
 			if Random.NextDouble() > 0.3 then
 				user.Mutate(1, 30, Mutations.Random)
 				-- if not identified then
-				-- message({"Oh [?:swear] -- so that's what a tainted regeneration ring does!"}, Color.Red)
+				-- Message({"Oh [?:swear] -- so that's what a tainted regeneration ring does!"}, Color.Red)
 				-- end
 			end
 			Identify()

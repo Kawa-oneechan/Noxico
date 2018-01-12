@@ -736,7 +736,7 @@ namespace Noxico
 		{
 			SetTile(row, col, TileDefinition.Find(tileName).Index);
 		}
-		public void SetTile(int row, int col, TileDefinition def)
+		public void SetTile(int row, int col, TileDefinition def)	
 		{
 			if (def == null)
 				return;

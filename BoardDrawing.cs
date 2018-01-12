@@ -7,8 +7,6 @@ namespace Noxico
 {
 	public partial class Board : TokenCarrier
 	{
-		//public static Neo.IronLua.LuaGlobal DrawEnv;
-
 		public void Clear(int biomeID)
 		{
 			this.Entities.Clear();
@@ -68,75 +66,112 @@ namespace Noxico
 			}
 		}
 
-		/* TODO: Rewrite to use... I dunno, callback functions?
-		 * Tired:
-		 *	board.Replace("return (tile.Character == 0x58 && tile.Foreground.R == 64)", "return vague");
-		 * Wired:
-		 *	board.Replace(
-		 *		function(t, d, x, y) return (d.Glyph == 0x58 && d.Foreground.R == 64) end,
-		 *		function() return vague end
-		 *	)
-		 */
-		/*
-		public void Line(int x1, int y1, int x2, int y2, string brush)
+		/// <summary>
+		/// Draws a line from one point to another.
+		/// </summary>
+		/// <param name="x1">The starting row.</param>
+		/// <param name="y1">The starting column.</param>
+		/// <param name="x2">The ending row.</param>
+		/// <param name="y2">The ending column.</param>
+		/// <param name="brush">A <see cref="Noxico.TileDefinition"/>, tile name as a string, or tile number, or a Lua callback function.</param>
+		/// <remarks>The callback function takes the tile number and TileDefinition at the current coordinates in the line and the coordinates, and must return a TileDef, string, or int.</remarks>
+		public void Line(int x1, int y1, int x2, int y2, object brush)
 		{
-			if (DrawEnv == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
-			var env = DrawEnv;
-			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
+			if (brush is TileDefinition)
+				brush = ((TileDefinition)brush).Index;
+			else if (brush is string)
+				brush = TileDefinition.Find((string)brush).Index;
+			if (brush is int)
 			{
-				env.SetValue("x", point.X);
-				env.SetValue("y", point.Y);
-				env.SetValue("tile", this.Tilemap[point.Y, point.X]);
-				Lua.Run(brush, env);
+				foreach (var point in Toolkit.Line(x1, y1, x2, y2))
+					SetTile(point.X, point.Y, (int)brush);
 			}
-		}
-		public void Line(int x1, int y1, int x2, int y2, Tile brush)
-		{
-			foreach (var point in Toolkit.Line(x1, y1, x2, y2))
-				this.Tilemap[point.X, point.Y] = brush.Clone();
-		}
-
-		public void Replace(string checker, string replacer)
-		{
-			if (DrawEnv == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
-			var env = DrawEnv;
-			var height = 50;
-			var width = 80;
-			for (var y = 0; y < height; y++)
+			else if (brush is Func<object, object, object, object, Neo.IronLua.LuaResult>)
 			{
-				for (var x = 0; x < width; x++)
+				var callback = (Func<object, object, object, object, Neo.IronLua.LuaResult>)brush;
+				foreach (var point in Toolkit.Line(x1, y1, x2, y2))
 				{
-					env.SetValue("x", x);
-					env.SetValue("y", y);
-					env.SetValue("tile", this.Tilemap[y, x]);
-					if (Lua.Run(checker, env).ToBoolean())
-						Lua.Run(replacer, env);
-				}
-			}
-		}
-		public void Replace(Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush)
-		{
-			var height = 50;
-			var width = 80;
-			for (var y = 0; y < height; y++)
-			{
-				for (var x = 0; x < width; x++)
-				{
-					if (judge(this.Tilemap[y, x], x, y))
-						this.Tilemap[x, y] = brush(this.Tilemap[y, x], x, y);
+					var tileHere = Tilemap[point.Y, point.Y];
+					brush = callback(tileHere.Index, tileHere.Definition, point.X, point.Y)[0];
+					if (brush is TileDefinition)
+						brush = ((TileDefinition)brush).Index;
+					else if (brush is string)
+						brush = TileDefinition.Find((string)brush).Index;
+					SetTile(point.X, point.Y, (int)brush);
 				}
 			}
 		}
 
-		public void Floodfill(int startX, int startY, string checker, string replacer, bool allowDiagonals)
+		/// <summary>
+		/// Replaces one tile with another across the board.
+		/// </summary>
+		/// <param name="replaceThis">A <see cref="Noxico.TileDefinition"/>, tile name as a string, or tile number, or a Lua callback function.</param>
+		/// <param name="withThis">A <see cref="Noxico.TileDefinition"/>, tile name as a string, or tile number, or a Lua callback function.</param>
+		/// <remarks>The callback functions takes the tile number and TileDefinition at the current coordinates in the line and the coordinates. One must return a boolean, the other a TileDef, string, or int.</remarks>
+		public void Replace(object replaceThis, object withThis)
 		{
-			if (DrawEnv == null)
-				throw new NullReferenceException("Tried to use a board drawing routine with a null drawing environment.");
-			var env = DrawEnv;
-			var height = 50;
-			var width = 80;
+			if (replaceThis is TileDefinition)
+				replaceThis = ((TileDefinition)replaceThis).Index;
+			else if (replaceThis is string)
+				replaceThis = TileDefinition.Find((string)replaceThis).Index;
+			if (withThis is TileDefinition)
+				withThis = ((TileDefinition)withThis).Index;
+			else if (withThis is string)
+				withThis = TileDefinition.Find((string)withThis).Index;
+			for (var y = 0; y < 80; y++)
+			{
+				for (var x = 0; x < 50; x++)
+				{
+					if (replaceThis is int)
+					{
+						if (Tilemap[y, x].Index != (int)replaceThis)
+							continue;
+					}
+					else if (replaceThis is Func<object, object, object, object, Neo.IronLua.LuaResult>)
+					{
+						var callback = (Func<object, object, object, object, Neo.IronLua.LuaResult>)replaceThis;
+						var tileHere = Tilemap[y, x];
+						if (!(bool)callback(tileHere.Index, tileHere.Definition, x, y)[0])
+							continue;
+					}
+
+					var w = withThis;
+					if (w is Func<object, object, object, object, Neo.IronLua.LuaResult>)
+					{
+						var callback = (Func<object, object, object, object, Neo.IronLua.LuaResult>)withThis;
+						var tileHere = Tilemap[y, x];
+						w = callback(tileHere.Index, tileHere.Definition, x, y)[0];
+					}
+					SetTile(x, y, (int)w);
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Replaces every tile found in a floodfill with another.
+		/// </summary>
+		/// <param name="startX">The starting row.</param>
+		/// <param name="startY">The starting column.</param>
+		/// <param name="replaceThis">Null/nil, a <see cref="Noxico.TileDefinition"/>, tile name as a string, or tile number, or a Lua callback function.</param>
+		/// <param name="withThis">A <see cref="Noxico.TileDefinition"/>, tile name as a string, or tile number, or a Lua callback function.</param>
+		/// <param name="allowDiagonals">If true, flood in eight directions, passing through more gaps.</param>
+		/// <remarks>The callback functions takes the tile number and TileDefinition at the current coordinates in the line and the coordinates. One must return a boolean, the other a TileDef, string, or int. If a null/nil is given, the tile number at the starting coordinates is used.</remarks>
+		public void Floodfill(int startX, int startY, object replaceThis, object withThis, bool allowDiagonals)
+		{
+			if (replaceThis is TileDefinition)
+				replaceThis = ((TileDefinition)replaceThis).Index;
+			else if (replaceThis is string)
+				replaceThis = TileDefinition.Find((string)replaceThis).Index;
+			if (withThis is TileDefinition)
+				withThis = ((TileDefinition)withThis).Index;
+			else if (withThis is string)
+				withThis = TileDefinition.Find((string)withThis).Index;
+
+			if (replaceThis == null)
+			{
+				replaceThis = Tilemap[startY, startX].Index;
+			}
+
 			var stack = new Stack<Point>();
 			stack.Push(new Point(startX, startY));
 			while (stack.Count > 0)
@@ -144,15 +179,31 @@ namespace Noxico
 				var point = stack.Pop();
 				var x = point.X;
 				var y = point.Y;
-				if (x < 0 || y < 0 || x >= width || y >= height)
+				if (x < 0 || y < 0 || x >= 50 || y >= 80)
 					continue;
 
-				env.SetValue("x", x);
-				env.SetValue("y", y);
-				env.SetValue("tile", this.Tilemap[y, x]);
-				if (Lua.Run(checker, env).ToBoolean())
+				if (replaceThis is int)
 				{
-					Lua.Run(replacer, env);
+					if (Tilemap[y, x].Index != (int)replaceThis)
+						continue;
+				}
+				else if (replaceThis is Func<object, object, object, object, Neo.IronLua.LuaResult>)
+				{
+					var callback = (Func<object, object, object, object, Neo.IronLua.LuaResult>)replaceThis;
+					var tileHere = Tilemap[y, x];
+					if (!(bool)callback(tileHere.Index, tileHere.Definition, x, y)[0])
+						continue;
+				}
+				
+				{
+					var w = withThis;
+					if (w is Func<object, object, object, object, Neo.IronLua.LuaResult>)
+					{
+						var callback = (Func<object, object, object, object, Neo.IronLua.LuaResult>)withThis;
+						var tileHere = Tilemap[y, x];
+						w = callback(tileHere.Index, tileHere.Definition, x, y)[0];
+					}
+					SetTile(x, y, (int)w);
 
 					stack.Push(new Point(x - 1, y));
 					stack.Push(new Point(x + 1, y));
@@ -168,47 +219,6 @@ namespace Noxico
 				}
 			}
 		}
-		public void Floodfill(int startX, int startY, Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush, bool allowDiagonals)
-		{
-			var height = 50;
-			var width = 80;
-			var stack = new Stack<Point>();
-			stack.Push(new Point(startX, startY));
-			while (stack.Count > 0)
-			{
-				var point = stack.Pop();
-				var x = point.X;
-				var y = point.Y;
-				if (x < 0 || y < 0 || x >= width || y >= height)
-					continue;
-
-				if (judge(this.Tilemap[y, x], x, y))
-				{
-					this.Tilemap[y, x] = brush(this.Tilemap[y, x], x, y);
-
-					stack.Push(new Point(x - 1, y));
-					stack.Push(new Point(x + 1, y));
-					stack.Push(new Point(x, y - 1));
-					stack.Push(new Point(x, y + 1));
-					if (allowDiagonals)
-					{
-						stack.Push(new Point(x - 1, y - 1));
-						stack.Push(new Point(x - 1, y + 1));
-						stack.Push(new Point(x + 1, y - 1));
-						stack.Push(new Point(x + 1, y + 1));
-					}
-				}
-			}
-		}
-		public void Floodfill(int startX, int startY, string checker, string replacer)
-		{
-			Floodfill(startX, startX, checker, replacer, false);
-		}
-		public void Floodfill(int startX, int startY, Func<Tile, int, int, bool> judge, Func<Tile, int, int, Tile> brush)
-		{
-			Floodfill(startX, startX, judge, brush, false);
-		}
-		*/
 
 		public void MergeBitmap(string fileName, string tiledefs)
 		{
