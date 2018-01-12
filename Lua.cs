@@ -27,7 +27,7 @@ namespace Noxico
 		public static Neo.IronLua.Lua Create()
 		{
 			IronLua = new Neo.IronLua.Lua();
-			Environment = IronLua.CreateEnvironment();
+			Environment = IronLua.CreateEnvironment<LuaGlobal>();
 			LuaCache = new Dictionary<int, LuaChunk>();
 			Ascertain(Environment);
 			return IronLua;
@@ -51,6 +51,15 @@ namespace Noxico
 			Lua.RunFile("i18n.lua");
 			Lua.RunFile("defense.lua");
 
+			//Replace IronLua's printer with our own. Why? Because fuck you.
+			env.print = new Action<object[]>(x =>
+			{
+				if (x.Length == 1 && x[0] is LuaTable)
+					Program.WriteLine("Table: {{ " + string.Join(", ", ((LuaTable)x[0]).Values.Select(v => string.Format("{0} = {1}", v.Key, v.Value is string ? "\"" + v.Value + "\"" : v.Value))) + " }}");
+				else
+					Program.WriteLine(string.Join("\t", x.Select(v => v ?? "nil")));
+			});
+
 			//TODO: predefine ALL THE THINGS.
 			env.Board = typeof(Board);
 			env.BoardChar = typeof(BoardChar);
@@ -73,8 +82,8 @@ namespace Noxico
 			env.Warp = typeof(Warp);
 
 			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
-			env.Message = new Action<string>(x => NoxicoGame.AddMessage(x));
-			env.MessageC = new Action<object, Color>((x, y) => NoxicoGame.AddMessage(x, y));
+			env.Message = new Action<object, Color>((x, y) =>
+				NoxicoGame.AddMessage(x, y));
 			env.Titlecase = new Func<string, string>(x => x.Titlecase());
 
 			env.FindTargetBoardByName = new Func<string, int>(x =>

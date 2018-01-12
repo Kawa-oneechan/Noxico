@@ -256,8 +256,30 @@ namespace Noxico
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
 			*/
-			var testChar = Character.Generate("felin", Gender.Male);
-			var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
+			/*
+			//New BoardDrawing methods :)
+			Random.Reseed(1);
+			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
+			var env = Lua.Environment;
+			env.testBoard = test;
+			Lua.Run(@"
+testBoard.Floodfill(1, 1, nil, ""nether"", true)
+
+-- testBoard.Replace(201, 221); -- ints
+-- testBoard.Replace(function(t,d,x,y) return t < 203 end, function(t,d,x,y) return t+1 end);
+
+-- testBoard.Line(2, 2, 8, 16, 223) -- int: tile #
+-- testBoard.Line(2, 2, 8, 16, ""taiga_rock"") -- string: tile name
+-- testBoard.Line(2, 2, 8, 16, function(t, d, x, y) return 223 + (x % 2) end) -- a goddamn callback function!
+-- t: tile #
+-- d: t.Definition
+-- x/y: coordinate
+-- return: TileDefinition, tile name, or tile #.
+");
+			test.DumpToHtml();
+			*/
+			//var testChar = Character.Generate("felin", Gender.Male);
+			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
 			//var test = Lua.Run("return foo = 4 + \"foo\"");
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);

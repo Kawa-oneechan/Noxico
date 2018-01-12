@@ -19,7 +19,7 @@ add: -
 		script
 			<[[
 				Consume()
-				message(user.Morph("littlepony"))
+				Message(user.Morph("littlepony"))
 				Identify()
 			]]>
 
@@ -37,7 +37,7 @@ add: -
 		script
 			<[[
 				Consume()
-				message(user.Morph("kitsune"))
+				Message(user.Morph("kitsune"))
 				Identify()
 			]]>
 
@@ -55,7 +55,7 @@ add: -
 		script
 			<[[
 				Consume()
-				message(user.Morph("felin"))
+				Message(user.Morph("felin"))
 				Identify()
 			]]>
 
@@ -74,7 +74,7 @@ add: -
 			<[[
 				Consume()
 				for i=0, 10 do
-					message(user.Morph("spider", Gender.Female))
+					Message(user.Morph("spider", Gender.Female))
 				end
 				Identify()
 			]]>
@@ -94,7 +94,7 @@ add: -
 			<[[
 				Consume()
 				-- todo, dogperson bodyplan
-				-- message(user.Morph("felin"))
+				-- Message(user.Morph("felin"))
 				Identify()
 			]]>
 
@@ -114,7 +114,7 @@ add: -
 			<[[
 				Consume()
 				-- todo, bunnyperson bodyplan
-				-- message(user.Morph("felin"))
+				-- Message(user.Morph("felin"))
 				Identify()
 			]]>
 
@@ -129,7 +129,7 @@ add: -
 		script
 			<[[
 				Consume()
-				message(user.Morph("foocubus"))
+				Message(user.Morph("foocubus"))
 				Identify()
 			]]>
 
