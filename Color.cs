@@ -97,12 +97,15 @@ namespace Noxico
 		{
 			if (index < 0 || index > 15)
 				throw new ArgumentOutOfRangeException("cgaIndex");
+			return Color.FromName("CGA" + index);
+			/*
 			var r = (2.0 / 3 * (index & 4) / 4 + 1 / 3 * (index & 8)) * 255;
 			var g = (2.0 / 3 * (index & 2) / 2 + 1 / 3 * (index & 8)) * 255;
 			var b = (2.0 / 3 * (index & 1) / 1 + 1 / 3 * (index & 8)) * 255;
 			if (index == 6)
 				g /= 2;
 			return Color.FromArgb((int)r, (int)g, (int)b);
+			*/
 		}
 
 		/// <summary>

@@ -82,7 +82,7 @@ namespace Noxico
 			env.Warp = typeof(Warp);
 
 			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
-			env.Message = new Action<object, Color>((x, y) =>
+			env.Message = new Action<object, object>((x, y) =>
 				NoxicoGame.AddMessage(x, y));
 			env.Titlecase = new Func<string, string>(x => x.Titlecase());
 
@@ -111,6 +111,23 @@ namespace Noxico
 			env.Token = typeof(Token);
 
 			env.StartsWithVowel = new Func<string, bool>(x => x.StartsWithVowel());
+
+			//Because apparently we can't use the Color type directly anymore?
+			env.colors = new LuaTable();
+			for (var i = 0; i < 16; i++)
+				env.colors[i] = Color.FromCGA(i);
+			foreach (var c in new[] {
+				"Black", "Silver", "Gray", "White", "Maroon", "Red",
+				"Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow",
+				"Navy", "Blue", "Teal", "Aqua", "Brown", "Orange", "DarkGray"
+			})
+				env.colors[c] = Color.FromName(c);
+			env.colors.Get = new Func<object, Color>(x =>
+			{
+				if (x is string) return Color.FromName((string)x);
+				if (x is int) return Color.FromArgb((int)x);
+				return Color.Black;
+			});
 
 			env.ascertained = true;
 		}
