@@ -33,7 +33,7 @@ namespace Noxico
     public class Entity
     {
         public Board ParentBoard { get; set; }
-        public string ID { get; set; }
+       public string ID { get; set; }
 #if DEBUG
 		[System.ComponentModel.Editor(typeof(GlyphSelector), typeof(System.Drawing.Design.UITypeEditor))]
 #endif
@@ -232,38 +232,54 @@ namespace Noxico
 			Console.WriteLine("Trying to move clutter.");
 		}
 
-		public bool ResetToKnown()
+		public static bool ResetToKnown(Entity thing)
 		{
+			if (!(thing is Clutter) && !(thing is Container))
+				throw new InvalidCastException("ResetToKnown only takes Clutter and Container objects.");
+
+			var name = string.Empty;
+			if (thing is Clutter) name = ((Clutter)thing).Name;
+			else if (thing is Container) name = ((Container)thing).Name;
 			if (clutterDB == null)
 				clutterDB = Mix.GetTokenTree("clutter.tml", true);
-			var knownClutter = clutterDB.FirstOrDefault(kc =>
-				Glyph == kc.GetToken("char").Value ||
-				Name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase) ||
-				ID.StartsWith(kc.Text, StringComparison.InvariantCultureIgnoreCase));
-			if (knownClutter != null)
+			var knownThing = clutterDB.FirstOrDefault(kc =>
+				thing.Glyph == kc.GetToken("char").Value ||
+				(!string.IsNullOrWhiteSpace(name) && name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase)) ||
+				thing.ID.StartsWith(kc.Text, StringComparison.InvariantCultureIgnoreCase));
+			if (knownThing != null)
 			{
-				Glyph = (int)knownClutter.GetToken("char").Value;
-				if (knownClutter.HasToken("color"))
+				thing.Glyph = (int)knownThing.GetToken("char").Value;
+				if (knownThing.HasToken("color"))
 				{
-					ForegroundColor = Color.FromName(knownClutter.GetToken("color").Text);
-					BackgroundColor = ForegroundColor.Darken(); //TileDefinition.Find(parentBoardHack.Tilemap[e.XPosition, e.YPosition].Index).Background;
+					thing.ForegroundColor = Color.FromName(knownThing.GetToken("color").Text);
+					thing.BackgroundColor = thing.ForegroundColor.Darken(); //TileDefinition.Find(parentBoardHack.Tilemap[e.XPosition, e.YPosition].Index).Background;
 				}
-				if (knownClutter.HasToken("background"))
+				if (knownThing.HasToken("background"))
 				{
-					if (knownClutter.GetToken("background").Text == "inherit")
-						BackgroundColor = TileDefinition.Find(ParentBoardHack.Tilemap[XPosition, YPosition].Index).Background;
+					if (knownThing.GetToken("background").Text == "inherit")
+						thing.BackgroundColor = TileDefinition.Find((thing.ParentBoard ?? ParentBoardHack).Tilemap[thing.XPosition, thing.YPosition].Index).Background;
 					else
-						BackgroundColor = Color.FromName(knownClutter.GetToken("background").Text);
+						thing.BackgroundColor = Color.FromName(knownThing.GetToken("background").Text);
 				}
-				CanBurn = knownClutter.HasToken("canburn");
-				Blocking = knownClutter.HasToken("blocking");
-				if (knownClutter.HasToken("description"))
+				if (thing is Clutter) ((Clutter)thing).CanBurn = knownThing.HasToken("canburn");
+				//else if (thing is Container) ((Container)thing).CanBurn = knownClutter.HasToken("canburn");
+				thing.Blocking = knownThing.HasToken("blocking");
+				if (knownThing.HasToken("description"))
 				{
-					Description = knownClutter.GetToken("description").Text;
-					descriptionFromDB = true;
+					if (thing is Clutter)
+					{
+						((Clutter)thing).Description = knownThing.GetToken("description").Text;
+						((Clutter)thing).descriptionFromDB = true;
+					}
+					else if (thing is Container && !((Container)thing).Token.HasToken("description"))
+						((Container)thing).Token.AddToken("description", knownThing.GetToken("description").Text);
 				}
-				if (knownClutter.HasToken("name")) Name = knownClutter.GetToken("name").Text;
-				if (knownClutter.HasToken("role")) DBRole = knownClutter.GetToken("role").Text;
+				if (knownThing.HasToken("name"))
+				{
+					if (thing is Clutter) ((Clutter)thing).Name = knownThing.GetToken("name").Text;
+					if (thing is Container) ((Container)thing).Name = knownThing.GetToken("name").Text;
+				}
+				if (knownThing.HasToken("role") && thing is Clutter) ((Clutter)thing).DBRole = knownThing.GetToken("role").Text;
 				return true;
 			}
 			return false;
@@ -283,7 +299,7 @@ namespace Noxico
 		{
 			Toolkit.ExpectFromFile(stream, "CLUT", "clutter entity");
 			var e = Entity.LoadFromFile(stream);
-			var newDress = new Clutter()
+			var newClutter = new Clutter()
 			{
 				ID = e.ID,
 				Glyph = e.Glyph,
@@ -293,12 +309,12 @@ namespace Noxico
 				YPosition = e.YPosition,
 				Blocking = e.Blocking
 			};
-			newDress.Name = stream.ReadString();
-			newDress.Description = stream.ReadString();
-			newDress.CanBurn = stream.ReadBoolean();
-			newDress.Life = stream.ReadInt32();
-			newDress.ResetToKnown();
-			return newDress;
+			newClutter.Name = stream.ReadString();
+			newClutter.Description = stream.ReadString();
+			newClutter.CanBurn = stream.ReadBoolean();
+			newClutter.Life = stream.ReadInt32();
+			Clutter.ResetToKnown(newClutter);
+			return newClutter;
 		}
 
 	}
@@ -465,7 +481,7 @@ namespace Noxico
 
 		public Token Token { get; set; }
 
-		public string Name
+		public new string Name
 		{
 			get
 			{
@@ -473,6 +489,10 @@ namespace Noxico
 					return "container";
 				else
 					return Token.Text;
+			}
+			set
+			{
+				Token.Text = value;
 			}
 		}
 
@@ -485,41 +505,6 @@ namespace Noxico
 				c.AddSet(contents);
 			Token.Tokens.Add(c);
 			Blocking = false;
-		}
-
-		public bool ResetToKnown()
-		{
-			//TODO: see about code deduplication...
-			if (clutterDB == null)
-				clutterDB = Mix.GetTokenTree("clutter.tml", true);
-			var knownContainer = clutterDB.FirstOrDefault(kc =>
-				Glyph == kc.GetToken("char").Value ||
-				Name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase) ||
-				ID.StartsWith(kc.Text, StringComparison.InvariantCultureIgnoreCase));
-			if (knownContainer != null)
-			{
-				Glyph = (int)knownContainer.GetToken("char").Value;
-				if (knownContainer.HasToken("color"))
-				{
-					ForegroundColor = Color.FromName(knownContainer.GetToken("color").Text);
-					BackgroundColor = ForegroundColor.Darken(); //TileDefinition.Find(parentBoardHack.Tilemap[e.XPosition, e.YPosition].Index).Background;
-				}
-				if (knownContainer.HasToken("background"))
-				{
-					if (knownContainer.GetToken("background").Text == "inherit")
-						BackgroundColor = TileDefinition.Find(Clutter.ParentBoardHack.Tilemap[XPosition, YPosition].Index).Background;
-					else
-						BackgroundColor = Color.FromName(knownContainer.GetToken("background").Text);
-				}
-				//CanBurn = knownClutter.HasToken("canburn");
-				//if (knownContainer.HasToken("name")) Name = knownContainer.GetToken("name").Text;
-				Blocking = knownContainer.HasToken("blocking");
-				if (knownContainer.HasToken("description") && !Token.HasToken("description"))
-					Token.AddToken("description", knownContainer.GetToken("description").Text);
-				//if (knownClutter.HasToken("role")) DBRole = knownClutter.GetToken("role").Text;
-				return true;
-			}
-			return false;
 		}
 
 		public override void SaveToFile(BinaryWriter stream)
@@ -543,7 +528,7 @@ namespace Noxico
 				YPosition = e.YPosition,
 			};
 			newContainer.Token = Token.LoadFromFile(stream);
-			newContainer.ResetToKnown();
+			Clutter.ResetToKnown(newContainer);
 			return newContainer;
 		}
 
