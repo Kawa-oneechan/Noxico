@@ -4,6 +4,29 @@ using System.Linq;
 using System.Text;
 using SysRectangle = System.Drawing.Rectangle;
 
+/* A'ight but consider this:
+ * 
+ * Given a blank slate, be it open ground, open water, or a massive 50*80 slab of granite...
+ * Have each different generator be available as operations.
+ * So you could have like an open grassland board and use the cell cave generator to make a lake in it.
+ * Or you could do the opposite and have an island.
+ * Or you could have open water with an island and *another* cell-made forest on top.
+ * And on top of all that you could have the StoneDungeon and Town generators only place rooms.
+ * They could leave markers for corridor endpoints.
+ * Another function might then take those endpoint markers and draw pathways between them.
+ * 
+ * To do a populated town:
+ * 1. start with open ground
+ * 2. drain it?
+ * 3. run the residential generator -> draw fully furnished and cluttered homes, get zones, inhabitants, endpoints
+ * 4. run the pathway generator, limit 4 -> draw unconnected bits of path extending up to four tiles from the doors
+ * 
+ * Underground town?
+ * 1. start with granite
+ * 2. run the residential generator
+ * 3. run the pathway generator, no limit
+ */
+
 namespace Noxico
 {
 	internal class Template
@@ -306,7 +329,7 @@ namespace Noxico
 													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt(true)),
 													ParentBoard = Board,
 												};
-												newBed.ResetToKnown();
+												Clutter.ResetToKnown(newBed);
 												Board.Entities.Add(newBed);
 											}
 											if (m.Text == "container")
@@ -332,7 +355,7 @@ namespace Noxico
 													ID = "Container_" + type + "_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
 													ParentBoard = Board,
 												};
-												newContainer.ResetToKnown();
+												Clutter.ResetToKnown(newContainer);
 												Board.Entities.Add(newContainer);
 											}
 											else if (m.Text == "clutter")
@@ -347,7 +370,7 @@ namespace Noxico
 														ID = m.GetToken("id").Text,
 														Name = string.Empty,
 													};
-													newClutter.ResetToKnown();
+													Clutter.ResetToKnown(newClutter);
 													Board.Entities.Add(newClutter);
 												}
 												else
