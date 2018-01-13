@@ -515,7 +515,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			Messages.Clear();
 			DrawMessages();
 		}
-		public static void AddMessage(object messageOrMore, Color color)
+		public static void AddMessage(object messageOrMore, object color = null)
 		{
 			if (messageOrMore is Neo.IronLua.LuaTable)
 				messageOrMore = ((Neo.IronLua.LuaTable)messageOrMore).ArrayList.ToArray();
@@ -530,34 +530,38 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 			var message = messageOrMore.ToString();
 			//Do not accept black -- this would imply the parameter was left out.
-			if (color.ArgbValue == 0)
-				color = Color.Silver;
-			
+			var clr = Color.Silver;
+			if (color != null)
+			{
+				if (color is string)
+					clr = Color.FromName((string)color);
+				else if (color is Color)
+					clr = (Color)color;
+				if (string.IsNullOrEmpty(clr.Name))
+					throw new Exception(string.Format("Message colors must be named, sorry. The color 0x{0:X} has no name.", clr.ArgbValue));
+			}
+
 			if (lastMessage != message)
 			{
 				lastMessage = message;
-				if (color.Lightness < 0.2)
-					color = Color.Gray;
+				if (clr.Lightness < 0.2)
+					clr = Color.Gray;
 				var lastLine = Messages.LastOrDefault();
 				if (lastLine == null)
 					lastLine = "";
 				else
 					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + color.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
+				var newLines = (lastLine + "  <c" + clr.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
 				if (newLines.Length > 1)
 				{
 					for (var i = 1; i < newLines.Length; i++)
-						newLines[i] = "<c" + color.Name + ">" + newLines[i];
+						newLines[i] = "<c" + clr.Name + ">" + newLines[i];
 				}
 				Messages.AddRange(newLines);
 				if (Mode == UserMode.Walkabout)
 					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
 			}
 			DrawMessages();
-		}
-		public static void AddMessage(string message)
-		{
-			AddMessage(message, Color.Silver);
 		}
 
 		public static void ShowMessageLog()

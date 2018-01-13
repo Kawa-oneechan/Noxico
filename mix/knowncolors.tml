@@ -14,6 +14,40 @@ Blond: 0xC6A75E
 Auburn: 0x6F351A
 	cga: 4
 
+-- CGA colors
+CGA0: 0x000000
+	cga: 0
+CGA1: 0x0000AA
+	cga: 1
+CGA2: 0x00AA00
+	cga: 2
+CGA3: 0x00AAAA
+	cga: 3
+CGA4: 0xAA0000
+	cga: 4
+CGA5: 0xAA00AA
+	cga: 5
+CGA6: 0xAA5500
+	cga: 6
+CGA7: 0xAAAAAA
+	cga: 7
+CGA8: 0x000000
+	cga: 8
+CGA9: 0x0000AA
+	cga: 9
+CGA10: 0x00AA00
+	cga: 10
+CGA11: 0x00AAAA
+	cga: 11
+CGA12: 0xAA0000
+	cga: 12
+CGA13: 0xAA00AA
+	cga: 13
+CGA14: 0xAAAA00
+	cga: 14
+CGA15: 0xAAAAAA
+	cga: 15
+
 -- System.Drawing.KnownColor
 AliceBlue: 0xF0F8FF
 	cga: 15
