@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -249,12 +249,17 @@ namespace Noxico
 			test.MergeBitmap("missions\\playerbase\\toolshed.png", "missions\\playerbase\\lv0.txt");
 			test.DumpToHtml();
 			return;
+			*/
 			/*
+			Random.Reseed(2);
+			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
+			test.Realm = Realms.Nox;
 			var gen = new TownGenerator();
 			gen.Board = test;
 			gen.Culture = Culture.DefaultCulture;
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
+			test.DumpToHtml();
 			*/
 			/*
 			//New BoardDrawing methods :)

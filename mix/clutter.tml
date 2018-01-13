@@ -9,8 +9,9 @@ id: table
 	name: "Table"
 	description: "Solid oaken table, very sturdy."
 	color: black
+	blocking
 	background: inherit
-id: seat
+id: chair
 	role: furniture
 	char: 0x149
 	name: "Chair"
