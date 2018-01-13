@@ -1116,7 +1116,7 @@ namespace Noxico
 				file.WriteLine("<h3>BoardChar</h3>");
 				foreach (var bc in Entities.OfType<BoardChar>())
 				{
-					file.WriteLine("<h4 id=\"{1}\">{0}</h4>", bc.Character.IsProperNamed ? bc.Character.Name.ToString(true) : bc.Character.Title, bc.ID);
+					file.WriteLine("<h4 id=\"{1}_{2}x{3}\">{0}</h4>", bc.Character.IsProperNamed ? bc.Character.Name.ToString(true) : bc.Character.Title, bc.ID, bc.XPosition, bc.YPosition);
 					file.WriteLine("<pre>");
 					file.WriteLine(bc.Character.DumpTokens(bc.Character.Tokens, 0));
 					file.WriteLine("</pre>");
@@ -1127,7 +1127,7 @@ namespace Noxico
 				file.WriteLine("<h3>Container</h3>");
 				foreach (var c in Entities.OfType<Container>())
 				{
-					file.WriteLine("<h4>{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition);
+					file.WriteLine("<h4 id=\"{3}_{1}x{2}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
 					file.WriteLine("<pre>");
 					file.WriteLine(c.Token.DumpTokens(c.Token.Tokens, 0));
 					file.WriteLine("</pre>");
@@ -1138,7 +1138,7 @@ namespace Noxico
 				file.WriteLine("<h3>Clutter</h3>");
 				foreach (var c in Entities.OfType<Clutter>())
 				{
-					file.WriteLine("<h4 id=\"{3}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
+					file.WriteLine("<h4 id=\"{3}_{1}x{2}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
 					file.WriteLine("<pre>");
 					file.WriteLine("ID: {0}", c.ID);
 					file.WriteLine("Description: {0}", c.Description);
@@ -1150,7 +1150,7 @@ namespace Noxico
 				file.WriteLine("<h3>DroppedItem</h3>");
 				foreach (var c in Entities.OfType<DroppedItem>())
 				{
-					file.WriteLine("<h4>{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition);
+					file.WriteLine("<h4 id=\"{3}_{1}x{2}\">{0} at {1}x{2}</h4>", c.Name, c.XPosition, c.YPosition, c.ID);
 					file.WriteLine("<pre>Item:");
 					file.WriteLine(c.Item.DumpTokens(c.Item.Tokens, 0));
 					file.WriteLine("DroppedItem:");
@@ -1337,6 +1337,8 @@ namespace Noxico
 					var tag = string.Empty; //string.Format("{0}", Tilemap[col, row].InherentLight);
 					var link = string.Empty;
 
+					if (!string.IsNullOrWhiteSpace(def.Description)) tag = def.Description;
+
 					if (chr == "&#x20;")
 						chr = "&nbsp;";
 
@@ -1351,16 +1353,24 @@ namespace Noxico
 						{
 							tag = ((BoardChar)ent).Character.Name.ToString(true);
 							if (linked)
-								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+								link = string.Format("<a href=\"#{0}_{1}x{2}\" style=\"color: {3};\">", ent.ID, ent.XPosition, ent.YPosition, fore);
+						}
+						else if (ent is Container)
+						{
+							tag = ((Container)ent).Name;
+							if (linked)
+								link = string.Format("<a href=\"#{0}_{1}x{2}\" style=\"color: {3};\">", ent.ID, ent.XPosition, ent.YPosition, fore);
 						}
 						else if (ent is Clutter)
 						{
 							if (linked)
-								link = "<a href=\"#" + ent.ID + "\" style=\"color: " + fore + ";\">";
+								link = string.Format("<a href=\"#{0}_{1}x{2}\" style=\"color: {3};\">", ent.ID, ent.XPosition, ent.YPosition, fore);
 						}
 						else if (ent is DroppedItem)
 						{
 							tag = ((DroppedItem)ent).Name;
+							if (linked)
+								link = string.Format("<a href=\"#{0}_{1}x{2}\" style=\"color: {3};\">", ent.ID, ent.XPosition, ent.YPosition, fore);
 						}
 					}
 					if (!string.IsNullOrWhiteSpace(tag))

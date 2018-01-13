@@ -20,22 +20,16 @@ set: town
 				owner: 2
 			B: container
 				clothes
-				char: 0x14B
 				owner: 1
 			b: container
 				clothes
-				char: 0x14B
 				owner: 2
 			C: tile
-				index: 10
+				index: 15
 			c: clutter
-				name: "Chair"
-				char: 0x149
+				id: chair
 			T: clutter
-				name: "Table"
-				description: "Solid fuckin' oak. No IKEA here, bitches!"
-				blocking
-				char: 0x148
+				id: table
 	
 	template: simple test 2
 		inhabitants: 1
@@ -55,11 +49,9 @@ set: town
 				owner: 2
 			B: container
 				clothes
-				char: 0x14B
 				owner: 1
 			b: container
 				clothes
-				char: 0x14B
 				owner: 2
 
 	template: simple test 3
@@ -80,11 +72,9 @@ set: town
 				owner: 2
 			B: container
 				clothes
-				char: 0x14B
 				owner: 1
 			b: container
 				clothes
-				char: 0x14B
 				owner: 2
 
 	template: wide test
@@ -109,20 +99,14 @@ set: town
 				owner: 2
 			B: container
 				clothes
-				char: 0x14B
 				owner: 1
 			b: container
 				clothes
-				char: 0x14B
 				owner: 2
 			c: clutter
-				name: "Chair"
-				char: 0x149
+				id: chair
 			T: clutter
-				name: "Table"
-				description: "Solid fuckin' oak. No IKEA here, bitches!"
-				blocking
-				char: 0x148
+				id: table
 			D: tile
 				index: 15
 -- #endregion
@@ -146,8 +130,7 @@ set: dungeon
 			]]>
 		markings
 			c: clutter
-				name: "Chair"
-				char: 0x149
+				id: chair
 
 	template: simple dungeon cell 2
 		map
@@ -162,8 +145,7 @@ set: dungeon
 			]]>
 		markings
 			c: clutter
-				name: "Chair"
-				char: 0x149
+				id: chair
 	
 	template: simple watery cell 1
 		map

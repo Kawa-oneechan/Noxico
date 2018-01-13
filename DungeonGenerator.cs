@@ -197,6 +197,8 @@ namespace Noxico
 			var water = BiomeData.Biomes[BiomeData.ByName(biome.Realm == Realms.Nox ? "Water" : "KoolAid")];
 			allowCaveFloor = false;
 
+			Clutter.ParentBoardHack = Board;
+
 			var doorCount = 0;
 
 			var safeZones = new List<Rectangle>();
@@ -286,7 +288,8 @@ namespace Noxico
 										{
 											//Keep a floor here. The entity fills in the blank.
 											def = "woodFloor";
-											var tileDef = TileDefinition.Find(def, true);
+											var tileDef = TileDefinition.Find(def, false);
+											map[sX + x, sY + y].Index = tileDef.Index;
 											//var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											var owner = (Character)null;
 											if (m.HasToken("owner"))
@@ -295,28 +298,23 @@ namespace Noxico
 											{
 												var newBed = new Clutter()
 												{
-													Glyph = 0x147,
 													XPosition = sX + x,
 													YPosition = sY + y,
 													Name = "Bed",
-													ForegroundColor = Color.Black,
-													BackgroundColor = tileDef.Background,
 													ID = "Bed_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
 													//TODO: I18N
 													Description = owner == null ? "This is a free bed. Position yourself over it and press Enter to use it." : string.Format("This is {0}'s bed. If you want to use it, you should ask {1} for permission.", owner.Name.ToString(true), owner.HimHerIt(true)),
 													ParentBoard = Board,
 												};
+												newBed.ResetToKnown();
 												Board.Entities.Add(newBed);
 											}
 											if (m.Text == "container")
 											{
-												var c = m.GetToken("char").Value;
-												var type = c == '\x14B' ? "cabinet" : c == '\x14A' ? "chest" : "container";
-												if (m.HasToken("clothes"))
-												{
-													//if (type == "cabinet")
+												//var type = c == '\x14B' ? "cabinet" : c == '\x14A' ? "chest" : "container";
+												var type = "chest";
+												if (m.HasToken("wardrobe"))
 													type = "wardrobe";
-												}
 												var contents = DungeonGenerator.GetRandomLoot("container", type, new Dictionary<string, string>()
 												{
 													{ "gender", owner.PreferredGender.ToString().ToLowerInvariant() },
@@ -327,33 +325,47 @@ namespace Noxico
 													foreach (var content in contents)
 														content.AddToken("owner", 0, owner.ID);
 												}	
-												var newContainer = new Container(owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
+												var newContainer = new Container(type, contents) //owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
-													Glyph = (char)m.GetToken("char").Value, //m.Params.Last()[0],
 													XPosition = sX + x,
 													YPosition = sY + y,
-													ForegroundColor = Color.Black,
-													BackgroundColor = tileDef.Background,
 													ID = "Container_" + type + "_" + (owner == null ? Board.Entities.Count.ToString() : owner.Name.ToID()),
 													ParentBoard = Board,
 												};
+												newContainer.ResetToKnown();
 												Board.Entities.Add(newContainer);
 											}
 											else if (m.Text == "clutter")
 											{
-												var newClutter = new Clutter()
+												if (m.HasToken("id"))
 												{
-													Glyph = (char)m.GetToken("char").Value, //m.Params.Last()[0],
-													XPosition = sX + x,
-													YPosition = sY + y,
-													ForegroundColor = Color.Black,
-													BackgroundColor = tileDef.Background,
-													ParentBoard = Board,
-													Name = m.Name,
-													Description = m.HasToken("description") ? m.GetToken("description").Text : string.Empty,
-													Blocking = m.HasToken("blocking"),
-												};
-												Board.Entities.Add(newClutter);
+													var newClutter = new Clutter()
+													{
+														XPosition = sX + x,
+														YPosition = sY + y,
+														ParentBoard = Board,
+														ID = m.GetToken("id").Text,
+														Name = string.Empty,
+													};
+													newClutter.ResetToKnown();
+													Board.Entities.Add(newClutter);
+												}
+												else
+												{
+													var newClutter = new Clutter()
+													{
+														Glyph = (char)m.GetToken("char").Value, //m.Params.Last()[0],
+														XPosition = sX + x,
+														YPosition = sY + y,
+														ForegroundColor = Color.Black,
+														BackgroundColor = tileDef.Background,
+														ParentBoard = Board,
+														Name = m.GetToken("name").Text, //Name,
+														Description = m.HasToken("description") ? m.GetToken("description").Text : string.Empty,
+														Blocking = m.HasToken("blocking"),
+													};
+													Board.Entities.Add(newClutter);
+												}
 											}
 										}
 										else if (m.Text == "water")
