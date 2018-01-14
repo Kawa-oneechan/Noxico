@@ -17,6 +17,7 @@ words
 	cc_back: &#x1FB; BACK
 	cc_next: NEXT &#x1FA;
 	cc_play: PLAY &#x1FA;
+	cc_wait: Wait&#x137;
 	cc_world: World
 	cc_name: Name
 	cc_random: [random]
@@ -625,15 +626,16 @@ Equipment
 	morphfinal_n3: , and {0}.
 -- #endregion
 -- #region Tutorial
-	tutorial_firststeps
+	tutorial_title: Tutorial
+	tutorial_firstmoves
 	<[[
-&#xE2FE;Welcome to Noxico.
+Welcome to Noxico.
 
 You probably already came to grips with your basic movement in these past five turns, so here's another key you might find interesting to know: &#xE207;. That'll switch you to Interact mode and lets you investigate things, talk to people... lots of things!
 	]]>
 	tutorial_interactmode
 	<[[
-&#xE2FE;Exactly like that, yes.
+Exactly like that, yes.
 
 You can move the targeting cursor around the same way you moved your character, then press &#xE20A; to call up a menu of interactions for whatever you aimed at.
 
@@ -641,7 +643,7 @@ Also, you can press &#xE20E; to more quickly aim at various things.
 	]]>
 	tutorial_flying
 	<[[
-&#xE2FE;It seems you have functional wings.
+It seems you have functional wings.
 
 As long as you have enough headroom, you can take flight by pressing &#xE208;. Press it again to land, but be careful where you do that!
 	]]>

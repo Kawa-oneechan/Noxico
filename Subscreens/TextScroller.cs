@@ -118,7 +118,8 @@ namespace Noxico
 				MessageBox.Notice(message.SmartQuote(), true, header);
 				return;
 			}
-	
+
+			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 			NoxicoGame.Subscreen = Handler;
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;

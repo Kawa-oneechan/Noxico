@@ -13,6 +13,7 @@ namespace Noxico
 	public class Introduction
 	{
 		private static System.Threading.Thread worldgen;
+		public static bool WorldGenFinished;
 		//private static int twirlingBaton = 0;
 		//private static char[] twirlingBatons = "-\\|/".ToCharArray();
 		private static UIPNGBackground titleBack;
@@ -327,7 +328,8 @@ namespace Noxico
 					{ "header", new UILabel(title) { Left = 58 - (title.Length() / 2), Top = 3, Width = title.Length(), Foreground = Color.Black } },
 					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 42, Top = 20, Width = 10, Height = 1 } },
 					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
-					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
+					{ "wait", new UILabel(i18n.GetString("cc_wait")) { Left = 64, Top = 20, Foreground = Color.Silver } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 64, Top = 20, Width = 10, Height = 1, Hidden = true } },
 
 					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 42, Top = 5, Foreground = Color.Gray } },
 					{ "name", new UITextBox(string.Empty) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
@@ -373,7 +375,7 @@ namespace Noxico
 					{
 						controls["backdrop"], controls["headerline"], controls["header"], controls["topHeader"], controls["helpLine"],
 						controls["giftLabel"], controls["gift"],
-						controls["controlHelp"], controls["back"], controls["play"],
+						controls["controlHelp"], controls["back"], controls["wait"], controls["play"],
 					},
 				};
 
@@ -440,7 +442,7 @@ namespace Noxico
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("strapon");
 #if FREETESTPOTIONS
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("foxite"); // ok
-					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("oddnip"); // ok
+					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("odd_nip"); // ok
 					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("dogmorph"); no bodyplan
 					//NoxicoGame.Me.Player.Character.GetToken("items").AddToken("bunnymorph"); no bodyplan
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("chaos_potion"); // ok
@@ -538,9 +540,17 @@ namespace Noxico
 				Subscreens.Redraw = false;
 			}
 
+			if (WorldGenFinished)
+			{
+				WorldGenFinished = false;
+				controls["play"].Hidden = false;
+				UIManager.Draw();
+			}
+
 			UIManager.CheckKeys();
 		}
 
+		/*
 		private static string story;
 		private static int storyCursor;
 		private static int storyDelay;
@@ -614,11 +624,6 @@ namespace Noxico
 			}
 			UIManager.Draw();
 		}
-
-		public static bool WorldGenFinished()
-		{
-			return (worldgen.ThreadState != System.Threading.ThreadState.Running);
-		}
+		*/
 	}
-
 }

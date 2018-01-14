@@ -752,6 +752,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 			//Wait for the character creator to finish.
 			setStatus(i18n.GetString("worldgen_waitingcharacter"), 0, 0);
+			Introduction.WorldGenFinished = true;
 			while (this.Player.Character == null)
 			{
 				System.Threading.Thread.Sleep(50);
@@ -787,7 +788,15 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
 
-			setStatus(i18n.GetString("worldgen_ready"), 0, 0);
+			//setStatus(i18n.GetString("worldgen_ready"), 0, 0);
+			ClearKeys();
+			Immediate = true;
+			Mode = UserMode.Walkabout;
+			Me.CurrentBoard.Redraw();
+			Me.CurrentBoard.Draw(true);
+			Subscreens.FirstDraw = true;
+			TextScroller.LookAt(NoxicoGame.Me.Player); // start by showing player details
+
 			InGame = true;
 			System.Threading.Thread.CurrentThread.Abort();
 		}
@@ -1274,7 +1283,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 		public static void DrawSidebar()
 		{
 			var player = HostForm.Noxico.Player;
-			if (NoxicoGame.Subscreen == Introduction.StoryHandler || NoxicoGame.Subscreen == Introduction.CharacterCreator)
+			if (NoxicoGame.Subscreen == Introduction.CharacterCreator)
 				return;
 			if (player == null || player.Character == null)
 				return;
@@ -1542,18 +1551,18 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (tutorial.HasToken("dointeractmode"))
 			{
 				tutorial.AddToken("interactmode");
-				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, string.Empty, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("firstmoves") && tutorial.Value > 5)
 			{
 				tutorial.Value = 0;
 				tutorial.AddToken("firstmoves");
-				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, string.Empty, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
 			}
 			else if (!tutorial.HasToken("flying") && player.HasToken("wings") && !player.GetToken("wings").HasToken("small"))
 			{
 				tutorial.AddToken("flying");
-				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, string.Empty, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
 			}
 		}
 	}

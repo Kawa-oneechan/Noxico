@@ -259,7 +259,7 @@ namespace Noxico
 				{
 					if (l.EndsWith("]]>"))
 					{
-						nodes.Last().AddToken("#text", 0, cdataText.ToString());
+						nodes.Last().AddToken("#text", 0, ParseEscapes(cdataText.ToString()));
 						cdata = false;
 						continue;
 					}
@@ -319,15 +319,7 @@ namespace Noxico
 					}
 					tokenName = tokenName.Remove(tokenName.IndexOf(':'));
 					if (!string.IsNullOrWhiteSpace(newOne.Text))
-					{
-						var entity = new Regex("&#x([A-Za-z0-9]{2,4});");
-						var matches = entity.Matches(newOne.Text);
-						foreach (Match match in matches)
-						{
-							var replacement = new string((char)int.Parse(match.Value.Substring(3, match.Value.Length - 4), NumberStyles.HexNumber), 1);
-							newOne.Text = newOne.Text.Replace(match.Value, replacement);
-						}
-					}
+						newOne.Text = ParseEscapes(newOne.Text);
 #if DEBUG
 					if (tokenName.Contains(' '))
 						throw new Exception(string.Format("Found a token \"{0}\", probably a typo.", tokenName));
@@ -416,6 +408,18 @@ namespace Noxico
 			return string.Empty;
 		}
 #endif
+
+		private string ParseEscapes(string text)
+		{
+			var entity = new Regex("&#x([A-Za-z0-9]{2,4});");
+			var matches = entity.Matches(text);
+			foreach (Match match in matches)
+			{
+				var replacement = new string((char)int.Parse(match.Value.Substring(3, match.Value.Length - 4), NumberStyles.HexNumber), 1);
+				text = text.Replace(match.Value, replacement);
+			}
+			return text;
+		}
 
 		/// <summary>
 		/// Given a string of the format "1dX" or "1dX+Y", returns X and Y.
