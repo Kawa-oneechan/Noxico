@@ -45,8 +45,8 @@ namespace Noxico
 
 				if (icon != null)
 				{
-					icon.Left = 100 - icon.Bitmap.Width;
-					icon.Top = 30 - icon.Bitmap.Height;
+					icon.Left = 80 - icon.Bitmap.Width;
+					icon.Top = 25 - icon.Bitmap.Height;
 					UIManager.Elements.Add(icon);
 				}
 

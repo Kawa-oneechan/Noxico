@@ -1,6 +1,6 @@
 Demon Portal
 Kawa
-mission.lua
+fission.lua
 uniques.tml.patch
 platform1.png
 platform2.png
