@@ -59,10 +59,10 @@ namespace Noxico
 					NoxicoGame.Mode = UserMode.Walkabout;
 					Subscreens.FirstDraw = true;
 
-					NoxicoGame.InGameTime.AddDays(1);
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddDays(1);
 					while (Toolkit.IsNight())
-						NoxicoGame.InGameTime.AddHours(Random.Next(1, 3));
-					NoxicoGame.InGameTime.AddMinutes(Random.Next(10, 50));
+						NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddHours(Random.Next(1, 3));
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddMinutes(Random.Next(10, 50));
 
 					host.Noxico.Player.OpenBoard(newBoard);
 					var hereNow = host.Noxico.Player.ParentBoard;

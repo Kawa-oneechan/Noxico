@@ -11,16 +11,16 @@ local defenseFactors =
 
 function GetDefenseFactor(weapon, target)
 	local ret = 0
-	local attackType = 0 --punch
-	local skinType = 0 --regular skin
+	local attackType = 1 --punch
+	local skinType = 1 --regular skin
 
 	if weapon == nil then
 		if target.Path("skin/type").Text == "fur" then --or perhaps they have nails?
-			attackType = 1 --tear
+			attackType = 2 --tear
 		elseif target.HasToken("snaketail") then
-			attackType = 2 --strike
+			attackType = 3 --strike
 		elseif target.HasToken("quadruped") or target.HasToken("taur") then
-			attackType = 3 --kick
+			attackType = 4 --kick
 		end
 		--monoceros check?
 	else

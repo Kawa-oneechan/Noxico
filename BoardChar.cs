@@ -30,7 +30,7 @@ namespace Noxico
 		public int ScriptPathTargetX { get; private set; }
 		public int ScriptPathTargetY { get; private set; }
 		public string ScriptPathID { get; set; }
-		private Scheduler scheduler;
+		//private Scheduler scheduler;
 		public Dijkstra GuardMap { get; private set; }
 		public int Eyes { get; private set; }
 		public int SightRadius { get; private set; }
@@ -461,6 +461,7 @@ namespace Noxico
 					return;
 
 			//Pillowshout added this.
+			/*
 			if (!(this is Player) && !this.Character.HasToken("hostile") && this.ParentBoard.BoardType == BoardType.Town)
 			{
 				if (scheduler == null)
@@ -468,6 +469,8 @@ namespace Noxico
 
 				scheduler.RunSchedule();
 			}
+			*/
+			//Disabled for the sake of the Lua overhaul and possible replacement.
 
 			if (this.Character.HasToken("sleeping") || Character.HasToken("anchored"))
 				return;

@@ -61,25 +61,29 @@ namespace Noxico
 			});
 
 			//TODO: predefine ALL THE THINGS.
-			env.Board = typeof(Board);
-			env.BoardChar = typeof(BoardChar);
-			env.BoardType = typeof(BoardType);
-			env.Character = typeof(Character);
-			env.Clutter = typeof(Clutter);
-			env.Color = typeof(Color);
-			env.Door = typeof(Door);
-			env.DroppedItem = typeof(DroppedItem);
-			env.Entity = typeof(Entity);
-			env.Gender = typeof(Gender);
-			env.InventoryItem = typeof(InventoryItem);
-			env.MorphReport = typeof(MorphReportLevel);
-			env.Mutations = typeof(Mutations);
-			env.Random = typeof(Random);
-			env.Realms = typeof(Realms);
-			env.Stat = typeof(Stat);
-			env.SceneSystem = typeof(SceneSystem);
-			env.Tile = typeof(Tile);
-			env.Warp = typeof(Warp);
+			var env2 = (LuaGlobal)env;
+			env2.RegisterPackage("Board", typeof(Board));
+			env2.RegisterPackage("BoardChar", typeof(BoardChar));
+			env2.RegisterPackage("BoardType", typeof(BoardType));
+			env2.RegisterPackage("Character", typeof(Character));
+			env2.RegisterPackage("Clutter", typeof(Clutter));
+			env2.RegisterPackage("Color", typeof(Color));
+			env2.RegisterPackage("Door", typeof(Door));
+			env2.RegisterPackage("DroppedItem", typeof(DroppedItem));
+			env2.RegisterPackage("Entity", typeof(Entity));
+			env2.RegisterPackage("Gender", typeof(Gender));
+			env2.RegisterPackage("InventoryItem", typeof(InventoryItem));
+			env2.RegisterPackage("MorphReport", typeof(MorphReportLevel));
+			env2.RegisterPackage("Mutations", typeof(Mutations));
+			env2.RegisterPackage("Random", typeof(Random));
+			env2.RegisterPackage("Realms", typeof(Realms));
+			env2.RegisterPackage("Stat", typeof(Stat));
+			env2.RegisterPackage("SceneSystem", typeof(SceneSystem));
+			env2.RegisterPackage("Tile", typeof(Tile));
+			env2.RegisterPackage("Warp", typeof(Warp));
+			env2.RegisterPackage("Task", typeof(Task));
+			env2.RegisterPackage("TaskType", typeof(TaskType));
+			env2.RegisterPackage("Token", typeof(Token));
 
 			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
 			env.Message = new Action<object, object>((x, y) =>
@@ -103,16 +107,64 @@ namespace Noxico
 				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
 			});
 
+			env.PickBoard = new Func<BoardType, int, int, object, Board>((boardType, biome, maxWater, realm) =>
+			{
+				var r = Realms.Nox;
+				if (realm == null)
+				{
+					if (NoxicoGame.Me.CurrentBoard != null)
+						r = NoxicoGame.Me.CurrentBoard.Realm;
+				}
+				else
+					r = (Realms)realm;
+				var options = new List<Board>();
+			tryAgain:
+				foreach (var board in NoxicoGame.Me.Boards)
+				{
+					if (board == null)
+						continue;
+					if (board.Realm != r)
+						continue;
+					if (board.BoardType != boardType)
+						continue;
+					if (biome > 0 && board.GetToken("biome").Value != biome)
+						continue;
+					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
+						continue;
+					if (maxWater != -1)
+					{
+						var water = 0;
+						for (var y = 0; y < 50; y++)
+							for (var x = 0; x < 80; x++)
+								if (board.Tilemap[x, y].Fluid != Fluids.Dry)
+									water++;
+						if (water > maxWater)
+							continue;
+					}
+					options.Add(board);
+				}
+				if (options.Count == 0)
+				{
+					if (maxWater < 2000)
+					{
+						maxWater *= 2;
+						goto tryAgain;
+					}
+					else
+						return null;
+				}
+				var choice = options[Random.Next(options.Count)];
+				return choice;
+			});
+
 			env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
 
-			env.Task = typeof(Task);
-			env.TaskType = typeof(TaskType);
-			env.Token = typeof(Token);
-
 			env.StartsWithVowel = new Func<string, bool>(x => x.StartsWithVowel());
 
+			/*
 			//Because apparently we can't use the Color type directly anymore?
+			//Turns out this was because RegisterPackage is a thing you need for Types.
 			env.colors = new LuaTable();
 			for (var i = 0; i < 16; i++)
 				env.colors[i] = Color.FromCGA(i);
@@ -128,6 +180,7 @@ namespace Noxico
 				if (x is int) return Color.FromArgb((int)x);
 				return Color.Black;
 			});
+			*/
 
 			env.ascertained = true;
 		}

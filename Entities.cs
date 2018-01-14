@@ -63,8 +63,8 @@ namespace Noxico
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor, b);
-			else
-				NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor.Night(), b.Night());
+			//else
+			//	NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor.Night(), b.Night());
 		}
 
 		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
@@ -468,7 +468,6 @@ namespace Noxico
 
 	public class Container : Entity
 	{
-		private static List<Token> clutterDB;
 		public string Description
 		{
 			get
@@ -481,7 +480,7 @@ namespace Noxico
 
 		public Token Token { get; set; }
 
-		public new string Name
+		public string Name
 		{
 			get
 			{

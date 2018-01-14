@@ -968,58 +968,6 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 		{
 			setStatus(i18n.Format("worldgen_missions", realm), 0, 0);
 
-			var makeBoardTarget = new Action<Board>(board =>
-			{
-				if (string.IsNullOrWhiteSpace(board.Name))
-					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (TravelTargets.ContainsKey(board.BoardNum))
-					TravelTargets[board.BoardNum] = board.Name;
-				else
-					TravelTargets.Add(board.BoardNum, board.Name);
-			});
-
-			Func<BoardType, int, int, Board> pickBoard = (boardType, biome, maxWater) =>
-			{
-				var options = new List<Board>();
-				tryAgain:
-				foreach (var board in Boards)
-				{
-					if (board == null)
-						continue;
-					if (board.Realm != realm)
-						continue;
-					if (board.BoardType != boardType)
-						continue;
-					if (biome > 0 && board.GetToken("biome").Value != biome)
-						continue;
-					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
-						continue;
-					if (maxWater != -1)
-					{
-						var water = 0;
-						for (var y = 0; y < 50; y++)
-							for (var x = 0; x < 80; x++)
-								if (board.Tilemap[x, y].Fluid != Fluids.Dry)
-									water++;
-						if (water > maxWater)
-							continue;
-					}
-					options.Add(board);
-				}
-				if (options.Count == 0)
-				{
-					if (maxWater < 2000)
-					{
-						maxWater *= 2;
-						goto tryAgain;
-					}
-					else
-						return null;
-				}
-				var choice = options[Random.Next(options.Count)];
-				return choice;
-			};
-
 			Func<string, Board> findBoardByID = (id) =>
 			{
 				var board = Boards.FirstOrDefault(b => b != null && b.ID == id);
@@ -1056,9 +1004,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			dynamic env = Lua.IronLua.CreateEnvironment();
 			Lua.Ascertain(env);
 			env.Realm = realm;
-			env.MakeBoardTarget = makeBoardTarget;
 			env.GetBoard = new Func<int, Board>(x => GetBoard(x));
-			env.PickBoard = pickBoard;
 			env.FindBoardByID = findBoardByID;
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
 			env.MakeTown = makeTown;
