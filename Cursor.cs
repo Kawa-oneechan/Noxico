@@ -110,8 +110,10 @@ namespace Noxico
 					else if (entity is Clutter || entity is Container)
 					{
 						var desc = (entity is Container ? ((Container)PointingAt).Description : ((Clutter)PointingAt).Description);
-						if (desc.Length() > 70)
-							desc = desc.Remove(desc.IndexOf('.') + 1);
+						if (desc.Length() > 70 && desc.Contains('.'))
+							desc = desc.Remove(desc.IndexOf('.')) + '.';
+						if (desc.Length() > 70 && desc.Contains(','))
+							desc = desc.Remove(desc.IndexOf(',')) + '.';
 						NoxicoGame.LookAt = desc;
 						//return;
 					}

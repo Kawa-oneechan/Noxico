@@ -51,7 +51,7 @@ scene: ohboy
 			if not bottom.HasToken("stolenfrom") then
 				bottom.AddToken("stolenfrom")
 			end
-			if not bottom.HasToken("hostile")
+			if not bottom.HasToken("hostile") then
 				bottom.AddToken("hostile")
 			end
 		]]>
