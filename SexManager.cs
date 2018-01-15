@@ -251,7 +251,25 @@ namespace Noxico
 			// Okay, Sparky. What I did was, I put all the error handling in Lua.cs, with a Run method.
 			// Instead of worrying about presentation, it just uses a standard WinForms MessageBox.
 			// After all, the game's already in a broken state by now.
+
+			var msg = env.Message;
+			env.Message = new Action<object, object>((x, y) =>
+			{
+				if (x is Neo.IronLua.LuaTable)
+					x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+				while (x is object[])
+				{
+					var options = (object[])x;
+					x = options[Random.Next(options.Length)];
+					if (x is Neo.IronLua.LuaTable)
+						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
+				}
+				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor, target), y);
+			});
+
 			Lua.Run(script, env);
+
+			env.Message = msg;
 			/*
 			try
 			{

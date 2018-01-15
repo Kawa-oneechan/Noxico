@@ -534,6 +534,12 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			}
 
 			var message = messageOrMore.ToString();
+
+			/*
+			if (message.Contains("[t:") || message.Contains("[b:"))
+				message = message.Viewpoint((Character)Lua.Environment.top, (Character)Lua.Environment.bottom);
+			*/
+
 			//Do not accept black -- this would imply the parameter was left out.
 			var clr = Color.Silver;
 			if (color != null)
