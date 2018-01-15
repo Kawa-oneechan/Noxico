@@ -251,7 +251,7 @@ namespace Noxico
 			return;
 			*/
 			/*
-			Random.Reseed(2);
+			Random.Reseed(1);
 			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
 			test.Realm = Realms.Nox;
 			var gen = new TownGenerator();
@@ -260,6 +260,8 @@ namespace Noxico
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
 			test.DumpToHtml();
+			Application.Exit();
+			return;
 			*/
 			/*
 			//New BoardDrawing methods :)

@@ -1316,6 +1316,9 @@ namespace Noxico
 
 		public void CreateHtmlScreenshot(StreamWriter stream, bool linked)
 		{
+			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };
+			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
+
 			stream.WriteLine("<table style=\"font-family: Unifont, monospace; cursor: default;\" cellspacing=0 cellpadding=0>");
 			for (int row = 0; row < 50; row++)
 			{
@@ -1326,16 +1329,28 @@ namespace Noxico
 					var def = tile.Definition;
 					var back = string.Format("rgb({0},{1},{2})", def.Background.R, def.Background.G, def.Background.B);
 					var fore = string.Format("rgb({0},{1},{2})", def.Foreground.R, def.Foreground.G, def.Foreground.B);
-					if (Tilemap[col, row].InherentLight > 0)
+					if (tile.InherentLight > 0)
 					{
 						var newBack = def.Background.LerpDarken(Tilemap[col, row].InherentLight / 12.0);
 						var newFore = def.Background.LerpDarken(Tilemap[col, row].InherentLight / 12.0);
 						back = string.Format("rgb({0},{1},{2})", newBack.R, newBack.G, newBack.B);
 						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
 					}
+
 					var chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[def.Glyph]);
 					var tag = string.Empty; //string.Format("{0}", Tilemap[col, row].InherentLight);
 					var link = string.Empty;
+
+					if (tile.Fluid != Fluids.Dry)
+					{
+						chr = string.Format("&#x{0:X};", (int)NoxicoGame.IngameToUnicode[waterGlyphs[(int)tile.Fluid]]);
+						var newFore = waterColors[(int)tile.Fluid];
+						if (tile.Fluid == Fluids.Slime)
+							newFore = tile.SlimeColor;
+						var newBack = newFore.Darken();
+						back = string.Format("rgb({0},{1},{2})", newBack.R, newBack.G, newBack.B);
+						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
+					}
 
 					if (!string.IsNullOrWhiteSpace(def.Description)) tag = def.Description;
 
