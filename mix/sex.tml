@@ -483,7 +483,7 @@ group: nonconsentual
 group: (not top.Restraining()) and (not top.Restrained()) -- note: can't do this if you're using your hands to restrain
 	choice: fondle_breasts_covered
 		_n: Fondle [b:his] [b:breastsize] breasts (clothed)
-		filter: (not top.Restraining()) and bottom.HasBreasts() and clothing(bottom, "top", 0)
+		filter: (not top.Restraining()) and bottom.HasBreasts() and GetClothing(bottom, "top", 0)
 		effect
 			<[[
 				bottom.Raise(Stat.Stimulation, 2)
@@ -615,7 +615,7 @@ group: top.HasItem("rope") and (not top.Restrained()) and (not masturbating)
 group: (not top.Restrained()) -- clothing removal
 	choice: take_off_top_own
 		_n: Take off your [0]
-		filter: clothing(top, "top", 0)
+		filter: GetClothing(top, "top", 0)
 		effect
 			<[[
 				if top.Disrobe("top") then
@@ -626,7 +626,7 @@ group: (not top.Restrained()) -- clothing removal
 			]]>
 	choice: take_off_bottom_own
 		_n: Take off your [2]
-		filter: clothing(top, "bottom", 2)
+		filter: GetClothing(top, "bottom", 2)
 		effect
 			<[[
 				if top.Disrobe("bottom") then
@@ -638,7 +638,7 @@ group: (not top.Restrained()) -- clothing removal
 	group: (not masturbating) -- partners clothes
 		choice: take_off_top_theirs
 			_n: Take off [b:his] [1]
-			filter: clothing(bottom, "top", 1)
+			filter: GetClothing(bottom, "top", 1)
 			effect
 				<[[
 					if bottom.Disrobe("top") then
@@ -649,7 +649,7 @@ group: (not top.Restrained()) -- clothing removal
 				]]>
 		choice: take_off_bottom_theirs
 			_n: Take off [b:his] [3]
-			filter: clothing(bottom, "bottom", 3) and (not masturbating)
+			filter: GetClothing(bottom, "bottom", 3) and (not masturbating)
 			effect
 				<[[
 					if bottom.Disrobe("bottom") then
@@ -660,7 +660,7 @@ group: (not top.Restrained()) -- clothing removal
 				]]>
 		choice: tear_off_bottom_theirs
 			_n: Tear off [b:his] [3]
-			filter: nonconsentual and clothing(bottom, "bottom", 3)
+			filter: nonconsentual and GetClothing(bottom, "bottom", 3)
 			effect
 				<[[
 					if bottom.Disrobe("bottom", true) then
