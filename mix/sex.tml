@@ -51,7 +51,7 @@ choice: walk_away
 			else
 				Message({"[t:Youorname] sigh{s} in bliss."}, Color.Orange)
 			end
-			stop()
+			Stop()
 		]]>
 
 -- pretend group: climaxes
@@ -564,7 +564,7 @@ group: top.Restrained() and (not masturbating)
 		filter: top.Restrained() and bottom.Restraining()
 		effect
 			<[[
-				if roll(Stat.Strength, Stat.Strength) then
+				if Roll(Stat.Strength, Stat.Strength) then
 					top.RemoveSexFlag("restrained")
 					bottom.RemoveSexFlag("restraining")
 					Message({
