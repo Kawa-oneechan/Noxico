@@ -298,7 +298,7 @@ namespace Noxico
 			Shallow = bits[32];
 			Seen = bits[128];
 			BurnTimer = stream.ReadByte();
-			Fluid = (Fluids)(set & ~8);
+			Fluid = (Fluids)(set & 7);
 			//if (Fluid == Fluids.Slime)
 				SlimeColor = Toolkit.LoadColorFromFile(stream);
 				if (bits[64])
