@@ -130,11 +130,13 @@ item: strapon
 			p.Text = "strapon"
 			p.AddToken("thickness").Value = 3
 			p.AddToken("length").Value = 20
+			return true
 		]]>
 	script: unequip
 		<[[
 			user.RemoveToken("penis", "strapon")
 			print ("You feel less pokey.")
+			return true
 		]]>
 
 item: strapon_ovi
@@ -161,11 +163,13 @@ item: strapon_ovi
 			p.Text = "strapon"
 			p.AddToken("thickness").Value = 3
 			p.AddToken("length").Value = 20
+			return true
 		]]>
 	script: unequip
 		<[[
 			user.RemoveToken("ovipositor", "strapon")
 			print ("You feel less pokey.")
+			return true
 		]]>
 
 item: book
@@ -1774,6 +1778,7 @@ item: really_kinky_panties
 				return false
 			else
 				print("You slide the probes into your holes.")
+				return true
 			end
 		]]>
 	script: unequip
@@ -1825,6 +1830,7 @@ item: clit_regenring
 				print("You'd need a clit to put this in!")
 				return false
 			end
+			return true
 		]]>
 
 item: knee_socks
@@ -1896,6 +1902,7 @@ item: gExtractor
 			if (not user.HasToken("vagina")) then
 				print("You'd need a pussy to wear this!")
 			end
+			return true
 		]]>
 -- #endregion
 
@@ -1983,11 +1990,13 @@ item: orgasm_denial_ring
 				user.AddToken("orgasm_denial")
 			end
 			print("You feel constricted, even though the ring seems averagely loose-fitting.")
+			return true
 		]]>
 	script: unequip
 		<[[
 			user.RemoveToken("orgasm_denial")
 			print("You feel less constricted.")
+			return true
 		]]>
 
 item: restoration_potion
