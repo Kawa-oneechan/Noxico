@@ -302,7 +302,7 @@ namespace Noxico
 
 			var succeed = true;
 			if (!string.IsNullOrWhiteSpace(this.OnEquip))
-				succeed = (bool)RunScript(item, this.OnEquip, character, null, null);
+				succeed = Convert.ToBoolean(RunScript(item, this.OnEquip, character, null, null));
 			if (succeed)
 				item.AddToken("equipped");
 
@@ -360,7 +360,7 @@ namespace Noxico
 
 			var succeed = true;
 			if (!string.IsNullOrWhiteSpace(this.OnUnequip))
-				succeed = (bool)RunScript(item, this.OnUnequip, character, null, null);
+				succeed = Convert.ToBoolean(RunScript(item, this.OnUnequip, character, null, null));
 			if (succeed)
 				item.RemoveToken("equipped");
 
