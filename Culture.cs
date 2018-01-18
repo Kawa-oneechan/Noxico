@@ -15,11 +15,10 @@ namespace Noxico
 		public string ID { get; private set; }
 		public string TownName { get; private set; }
 		public string[] Bodyplans { get; private set; }
-		public double Marriage  { get; private set; }
+		public double Marriage { get; private set; }
 		public double Monogamous { get; private set; }
 		public Dictionary<string, string> Terms { get; private set; }
-
-		//public static List<Deity> Deities;
+		public string SpeechFilter { get; private set; }
 
 		public static Culture DefaultCulture;
 		public static Token DefaultNameGen;
@@ -34,14 +33,6 @@ namespace Noxico
 
 		static Culture()
 		{
-			/*
-			Program.WriteLine("Loading deities...");
-			Deities = new List<Deity>();
-			var deities = Mix.GetTokenTree("deities.tml");
-			foreach (var deity in deities.Where(t => t.Name == "deity"))
-				Deities.Add(new Deity(deity));
-			*/
-
 			Program.WriteLine("Loading cultures...");
 			Cultures = new Dictionary<string, Culture>();
 			NameGens = new Dictionary<string, Token>();
@@ -72,6 +63,8 @@ namespace Noxico
 			nc.TownName = t.HasToken("townname") ? t.GetToken("townname").Text : null;
 			if (t.HasToken("terms"))
 				nc.Terms = t.GetToken("terms").Tokens.ToDictionary(x => x.Name.Replace('_', ' '), x => x.Text);
+			if (t.HasToken("speechfilter"))
+				nc.SpeechFilter = t.GetToken("speechfilter").Text;
 			return nc;
 		}
 
@@ -146,23 +139,8 @@ namespace Noxico
 			}
 		}
 
+		//TODO: rework into cultural dialect/accent scripts
 		/*
-		public static bool CheckSummoningDay()
-		{
-			var today = NoxicoGame.InGameTime;
-			var month = today.Month;
-			var day = today.Day;
-			var deity = Deities.Find(d => d.CanSummon && d.SummonDay == day && d.SummonMonth == month);
-			if (deity == null)
-				return false;
-			var summon = new Character();
-			summon.Name = new Name(deity.Name);
-			summon.IsProperNamed = true;
-			SceneSystem.Engage(NoxicoGame.Me.Player.Character, summon, deity.DialogueHook);
-			return true;
-		}
-		*/
-
 		public static Func<string, string> GetSpeechFilter(Culture culture, Func<string, string> original = null)
 		{
 			if (original == null)
@@ -187,36 +165,6 @@ namespace Noxico
 				return new Func<string, string>(x => x);
 			return GetSpeechFilter(Cultures[culture], original);
 		}
+		*/
 	}
-	
-	//TODO: consider removing
-	/*
-	public class Deity
-	{
-		public string Name { get; private set; }
-		public Color Color { get; private set; }
-		public bool CanSummon { get; private set; }
-		public string DialogueHook { get; private set; }
-		public int SummonMonth { get; private set; }
-		public int SummonDay { get; private set; }
-		public Deity(Token t)
-		{
-			Name = t.HasToken("_n") ? t.GetToken("_n").Text : t.Text.Replace('_', ' ').Titlecase();
-			Color = Color.FromName(t.GetToken("color").Text);
-			CanSummon = false;
-			var month = t.GetToken("month");
-			if (month != null)
-			{
-				CanSummon = true;
-				SummonMonth = (int)month.Value - 1;
-				SummonDay = (int)t.GetToken("day").Value - 1;
-				DialogueHook = t.GetToken("dialogue").Text;
-			}
-		}
-		public override string ToString()
-		{
-			return Name;
-		}
-	}
-	*/
 }

@@ -51,6 +51,7 @@ culture: felin
 	mysticism: 0
 	terms
 		zeni: coin
+	speechfilter: speechfilters\felin.lua
 
 -- #endregion
 

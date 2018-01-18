@@ -45,6 +45,7 @@ namespace Noxico
 
 		public Name Name { get; set; }
 		public BoardChar BoardChar { get; set; }
+		public Func<string, string> SpeechFilter { get; set; }
 
 		public Culture Culture
 		{
@@ -2784,6 +2785,8 @@ namespace Noxico
 		}
 		#endregion
 
+		//REMOVE
+		/*
 		public Func<string, string> GetSpeechFilter(Func<string, string> original = null)
 		{
 			if (i18n.GetString("meta_nospeechfilters")[0] == '[')
@@ -2797,6 +2800,7 @@ namespace Noxico
 				return new Func<string, string>(x => original(x.Replace("r", "rr")));
 			return original;
 		}
+		*/
 
 		public string GetClosestBodyplanMatch()
 		{

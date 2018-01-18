@@ -1,4 +1,4 @@
-﻿using Neo.IronLua;
+using Neo.IronLua;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -487,9 +487,8 @@ namespace Noxico
 				ActionList.Show(string.Empty, this.BoardChar.XPosition, this.BoardChar.YPosition, possibilities,
 					() =>
 					{
-						var action = (ActionList.Answer as Token).Text;
-						if (action == null)
-							action = "wait";
+						var answer = ActionList.Answer as Token;
+						var action = (answer == null) ? "wait" : answer.Text;
 						var result = SexManager.GetResult(action, this, sexPartner);
 						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 						this.BoardChar.Energy -= (int)result.GetToken("time").Value;

@@ -1,0 +1,8 @@
+sssnaketalk
+	have: teeth=fangs
+	have: tongue=long
+	file: speechfilters\sssnake.lua
+sssnaketalk-alt
+	have: teeth=sharp
+	have: tongue=long
+	file: speechfilters\sssnake.lua

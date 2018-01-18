@@ -42,6 +42,7 @@ namespace Noxico
 	{
 		private static Dictionary<string, string> words;
 		private static List<Token> wordStructor;
+		private static List<Token> impediments;
 
 		private static List<string> notFound = new List<string>();
 
@@ -341,7 +342,9 @@ namespace Noxico
 						if (targetGroup.Length == 2 && "tb".Contains(targetGroup[1]))
 							target = (targetGroup[1] == 't' ? top : bottom);
 						var pToks = wordStructor.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
-						var pTok = pToks[Random.Next(pToks.Count)];
+						if (pToks.Count == 0)
+							return string.Format("<WordStructor fail: {0}>", match.Groups["subcom"].Value);
+						var pTok = pToks.PickWeighted(); //pToks[Random.Next(pToks.Count)];
 						var pRes = pTok.Tokens.Where(x => !x.HasToken("filter") || wordStructFilter(x.GetToken("filter"), target)).ToList();
 						//Remove all less-specific options if any specific are found.
 						if (pRes.Any(x => x.HasToken("filter")))
@@ -376,6 +379,46 @@ namespace Noxico
 			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			message = regex.Replace(message, (match => top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value));
 			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
+
+			Func<string, string> speechFilter = top.SpeechFilter;
+			if (speechFilter == null)
+			{
+				if (top.Culture.SpeechFilter != null)
+					speechFilter = new Func<string, string>(x =>
+					{
+						Lua.RunFile(top.Culture.SpeechFilter);
+						x = Lua.Environment.SpeechFilter(x);
+						return x;
+					});
+				if (impediments == null)
+					impediments = Mix.GetTokenTree("impediments.tml");
+				foreach (var impediment in impediments)
+				{
+					var apply = true;
+					foreach (var filter in impediment.Tokens.Where(t => t.Name == "have"))
+					{
+						var f = filter.Text.Split('=');
+						var p = top.Path(f[0]);
+						if (p == null || p.Text != f[1])
+						{
+							apply = false;
+							break;
+						}
+					}
+					if (apply)
+					{
+						var oldFilter = speechFilter;
+						speechFilter = new Func<string, string>(x =>
+						{
+							Lua.RunFile(impediment.GetToken("file").Text);
+							x = Lua.Environment.SpeechFilter(x);
+							return oldFilter(x);
+						});
+					}
+				}
+				top.SpeechFilter = speechFilter;
+			}
+			message = message.SmartQuote(speechFilter);
 
 			return message;
 		}
