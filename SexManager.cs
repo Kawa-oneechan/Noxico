@@ -48,10 +48,13 @@ namespace Noxico
 				}
 				if (choice.HasToken("meta"))
 					continue;
-				if (!(actors[0].BoardChar is Player) && choice.HasToken("ai_unlikely"))
-					if (Random.NextDouble() < 0.85)
-						continue;
-				if (LimitsOkay(actors, choice))
+				/*
+				if (!(actors[0].BoardChar is Player) && choice.HasToken("ai_unlikely") && Random.NextDouble() < 0.85)
+					continue;
+                if (!(actors[0].BoardChar is Player) && choice.HasToken("ai_cant"))
+                    continue;
+				*/
+                if (LimitsOkay(actors, choice))
 					possibilities.Add(choice);
 			}
 			return possibilities;
@@ -76,7 +79,7 @@ namespace Noxico
 			{
 				if (result.ContainsKey(possibility.Text))
 					continue;
-				result.Add(possibility.Text, i18n.Viewpoint(ApplyMemory(possibility.GetToken("_n").Text), actor, target));
+				result.Add(possibility, i18n.Viewpoint(ApplyMemory(possibility.GetToken("_n").Text), actor, target));
 			}
 			return result;
 		}
@@ -112,6 +115,8 @@ namespace Noxico
 						var newCloth = a.GetEquippedItemBySlot(slot);
 						if (newCloth != null)
 						{
+							if (!(a.BoardChar is Player) && newCloth.HasToken("sextoy"))
+								continue; //Let's not take off that strap-on lol...
 							cloth = newCloth;
 							haveSomething = true;
 							break;
@@ -482,7 +487,7 @@ namespace Noxico
 				ActionList.Show(string.Empty, this.BoardChar.XPosition, this.BoardChar.YPosition, possibilities,
 					() =>
 					{
-						var action = ActionList.Answer as string;
+						var action = (ActionList.Answer as Token).Text;
 						if (action == null)
 							action = "wait";
 						var result = SexManager.GetResult(action, this, sexPartner);
@@ -493,8 +498,9 @@ namespace Noxico
 			}
 			else
 			{
-				var keys = possibilities.Keys.Select(p => p as string).ToArray();
-				var choice = Toolkit.PickOne(keys);
+				//var keys = possibilities.Keys.Select(p => p as string).ToArray();
+				//var choice = Toolkit.PickOne(keys);
+				var choice = possibilities.Keys.OfType<Token>().ToList().PickWeighted().Text;
 				var result = SexManager.GetResult(choice, this, sexPartner);
 				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 				this.BoardChar.Energy -= (int)result.GetToken("time").Value;

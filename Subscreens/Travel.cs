@@ -49,6 +49,7 @@ namespace Noxico
 					targets.Add(target.Key);
 				targets.Sort();
 				list.Items.AddRange(targets.Select(x => NoxicoGame.TravelTargets[x]));
+				list.Index = 0; //fixes crash when pressing Enter right away
 
 				list.Enter = (s, e) =>
 				{
