@@ -150,6 +150,42 @@ namespace Noxico
 			return options[Random.Next(options.Length)];
 		}
 
+		public static Token PickWeighted(this List<Token> tokens)
+		{
+			if (tokens.Count == 0) return null;
+			if (tokens.Count == 1) return tokens[0];
+			var useWeight = false;
+			var weights = new float[tokens.Count];
+			for (var i = 0; i < tokens.Count; i++)
+			{
+				weights[i] = -1;
+				if (tokens[i].HasToken("weight"))
+				{
+					weights[i] = tokens[i].GetToken("weight").Value;
+					useWeight = true;
+				}
+			}
+			if (!useWeight)
+				return tokens[Random.Next(tokens.Count)];
+			var numWithWeigths = weights.Count(x => x > -1);
+			var totalWithWeights = weights.Where(x => x > -1).Sum();
+			var defaultWeight = (1.0f - totalWithWeights) / numWithWeigths;
+			for (var i = 0; i < weights.Length; i++)
+				if (weights[i] == -1)
+					weights[i] = defaultWeight;
+			var w = weights.Sum();
+			var r = (float)(Random.NextDouble() * w);
+			for (var i = 0; i < weights.Length; i++)
+			{
+				if (r < weights[i])
+					return tokens[i];
+				r -= weights[i];
+			}
+			//fuck it, go unweighted.
+			return tokens[Random.Next(tokens.Count)];
+		}
+
+
 		/// <summary>
 		/// Returns the given number as a word, from "one" up to "twelve". 13 and higher are returned as-is.
 		/// </summary>

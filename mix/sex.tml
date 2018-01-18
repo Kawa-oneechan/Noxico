@@ -16,6 +16,7 @@
 
 -- special
 choice: initsex
+	weight: 0.0
 	meta
 	effect
 		<[[
@@ -24,6 +25,7 @@ choice: initsex
 		]]>
 
 choice: everysexturn
+	weight: 0.0
 	meta
 	effect
 		<[[
@@ -39,7 +41,7 @@ choice: wait
 		]]>
 
 choice: walk_away
-	ai_unlikely
+	weight: 0.1
 	filter: (not top.Restrained()) and (not top.HasSexFlag("vaginabusy")) and (not top.HasSexFlag("anusbusy"))
 	effect
 		<[[
@@ -58,14 +60,15 @@ choice: walk_away
 -- climaxes, similar to before, added herm & neuter options
 -- todo all: blowjob/pussyeating climaxes
 -- todo add anal orgasm
-group: top.HasPenis() and (not top.HasVagina())
+group: top.HasPenis() and (not top.HasVagina()) and top.GetToken('penis').Text ~= 'strapon'
 	choice: climax
+		weight: 0.0
 		meta
 		effect
 			<[[
 				top.Orgasm()
 				if masturbating then
-					Message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [b:him]self."}, Color.Orange)
+					Message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} all over [t:Him]self."}, Color.Orange)
 				elseif top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
 					Message({"[t:Youorname] [t:voc:cryout] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
 				elseif top.HasSexFlag("givingvaginal") then
@@ -78,8 +81,9 @@ group: top.HasPenis() and (not top.HasVagina())
 			]]>
 -- endgroup penis climax
 
-group: top.HasVagina() and (not top.HasPenis())
+group: top.HasVagina() and ((not top.HasPenis()) or top.GetToken('penis').Text == 'strapon')
 	choice: climax
+		weight: 0.0
 		meta
 		effect
 			<[[
@@ -91,7 +95,7 @@ group: top.HasVagina() and (not top.HasPenis())
 				elseif top.HasSexFlag("recievingvaginal") then
 					Message({"[t:Youorname] squirt{s} around [b:yourornames] [?:cock]."}, Color.Orange)
 				elseif top.HasSexFlag("recievinganal") then
-					Message({"[t:Youorname] squirt{s} all over [b:yourornames] [?:cock]."}, Color.Orange)
+					Message({"[t:Youorname] shiver{s} on your cock in the throes of orgasm."}, Color.Orange)
 				elseif top.HasSexFlag("fingeringvaginal") then
 					Message({"[t:Youorname] squirt{s} all over [b:yourornames] [b:hand]."}, Color.Orange)
 				else
@@ -101,8 +105,9 @@ group: top.HasVagina() and (not top.HasPenis())
 -- endgroup vaginal climax
 
 -- for herms
-group: top.HasVagina() and top.HasPenis()
+group: top.HasVagina() and top.HasPenis() and top.GetToken('penis').Text ~= 'strapon'
 	choice: climax
+		weight: 0.0
 		meta
 		effect
 			<[[
@@ -125,16 +130,17 @@ group: top.HasVagina() and top.HasPenis()
 			]]>
 -- endgroup herm climax
 
-group: (not top.HasVagina()) and (not top.HasPenis())
+group: (not top.HasVagina()) and ((not top.HasPenis()) or top.GetToken('penis').Text == 'strapon')
 	choice: climax
+		weight: 0.0
 		meta
 		effect
 			<[[
 				top.Orgasm()
 				if top.HasSexFlag("fingeringanal") then
-					Message({"[t:Youorname] shiver{s} on your fingers in the throes of orgasm."}, Color.Orange)
+					Message({"[t:Youorname] shiver{s} on [b:yourornames] fingers in the throes of orgasm."}, Color.Orange)
 				elseif top.HasSexFlag("recievinganal") then
-					Message({"[t:Youorname] shiver{s} on your cock in the throes of orgasm."}, Color.Orange)
+					Message({"[t:Youorname] shiver{s} on [b:yourornames] cock in the throes of orgasm."}, Color.Orange)
 				else
 					Message({"[t:Youorname] shiver{s} in the throes of orgasm."}, Color.Orange)
 				end
@@ -142,6 +148,7 @@ group: (not top.HasVagina()) and (not top.HasPenis())
 -- endgroup neuterclimax
 
 choice: orgasm_denial_ring
+	weight: 0.0
 	meta
 	effect
 		<[[
@@ -156,47 +163,47 @@ choice: orgasm_denial_ring
 group: masturbating and top.CanReachCrotch()
 	choice: wank
 		_n: Stroke your [?:cock]
-		filter: top.HasPenis()
+		filter: top.HasPenis() and top.CanReachCrotch('penis')
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				Message({"[t:Youorname] stroke [t:his] own [t:cocktype] [?:cock]."})
+				Message({"[t:Youorname] stroke{s} [t:his] own [t:cocktype] [?:cock]."})
 			]]>
 
 	choice: m_clit
-		filter: top.HasVagina()
+		filter: top.HasVagina() and top.CanReachCrotch('vagina')
 		_n: Stroke your [?:clit]
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				Message({"[t:Youorname] gently touch [t:his] own [?:clit]."})
+				Message({"[t:Youorname] gently touch{es} [t:his] own [?:clit]."})
 			]]>
 
 	choice: m_pussy
-		filter: top.HasVagina()
+		filter: top.HasVagina() and top.CanReachCrotch('vagina')
 		_n: Touch your [?:pussy]
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				Message({"[t:Youorname] push [t:his] fingers into [t:his] own [t:pussywetness] [?:pussy]."})
+				Message({"[t:Youorname] push{es} [t:his] fingers into [t:his] own [t:pussywetness] [?:pussy]."})
 			]]>
 
 	choice: m_anus
+		filter: top.CanReachCrotch('anus')
 		_n: Finger your [?:anus]
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				Message({"[t:Youorname] push [t:his] fingers into [t:his] own [t:anuslooseness] [?:anus]."})
+				Message({"[t:Youorname] push{es} [t:his] fingers into [t:his] own [t:anuslooseness] [?:anus]."})
 			]]>
 			
 	choice: m_tail
-		filter: top.HasToken("snaketail") and top.HasVagina()
-		-- todo figure out other tails -- or top.HasToken("tail: ""cat""")
+		filter: top.HasToken("snaketail") or (top.HasToken('tail') and (top.GetToken('tail').Text == 'cat' or top.GetToken('tail').Text == 'dragon' or top.GetToken('tail').Text == 'tentacle')) and top.HasVagina() and top.CanReachCrotch('vagina')
 		_n: Fuck your own tail
 		effect
 			<[[
 				top.Raise(Stat.Climax, 7)
-				Message({"[t:Youorname] push [t:his] tail into [t:his] own [t:pussywetness] [?:pussy]."})
+				Message({"[t:Youorname] push{es} [t:his] tail into [t:his] own [t:pussywetness] [?:pussy]."})
 			]]>
 	choice: m_tail_2
 		filter: top.HasToken("snaketail") 
@@ -204,13 +211,13 @@ group: masturbating and top.CanReachCrotch()
 		effect
 			<[[
 				top.Raise(Stat.Climax, 1)
-				Message({"[t:Youorname] wrap [t:his] tail around [t:his]self like a complicated pretzel. It's super cosy."})
+				Message({"[t:Youorname] wrap{s} [t:his] tail around [t:his]self like a complicated pretzel. It's super cosy."})
 			]]>
 --endgroup
 
 group: consentual
 	choice: kiss
-		filter: not masturbating
+		filter: not masturbating and (not top.HasSexFlag('mouthbusy')) and (not bottom.HasSexFlag('mouthbusy'))
 		effect
 			<[[
 				top.Raise(Stat.Climax, 2)
@@ -219,7 +226,7 @@ group: consentual
 			]]>
 
 	choice: french_kiss
-		filter: not masturbating
+		filter: not masturbating and (not top.HasSexFlag('mouthbusy')) and (not bottom.HasSexFlag('mouthbusy'))
 		effect
 			<[[
 				top.Raise(Stat.Climax, 3)
@@ -244,7 +251,7 @@ group: consentual
 			group: top.HasPenis() and bottom.HasVagina()
 				choice: start_fucking_vagina
 					_n: Fuck [b:his] [b:pussywetness][b:pussylooseness] pussy with your [t:cocktype] [?:cock].
-					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("vaginabusy")) and (not top.HasSexFlag("vaginabusy"))
+					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("vaginabusy")) and (not top.HasSexFlag("vaginabusy")) and top.CanReachCrotch('penis') and bottom.CanReachCrotch('vagina')
 					effect
 						<[[
 							top.AddSexFlag("givingvaginal")
@@ -290,7 +297,7 @@ group: consentual
 			group: top.HasVagina() and bottom.HasPenis()
 				choice: insert_cock_vaginal_female
 					_n: Ride [b:his] cock
-					filter: (not top.HasSexFlag("vaginabusy")) and (not bottom.HasSexFlag("penisbusy")) and (not top.HasSexFlag("givingvaginal"))
+					filter: (not top.HasSexFlag("vaginabusy")) and (not bottom.HasSexFlag("penisbusy")) and (not top.HasSexFlag("givingvaginal")) and top.CanReachCrotch('vagina') and bottom.CanReachCrotch('penis')
 					effect
 						<[[
 							top.AddSexFlag("receivingvaginal")
@@ -329,10 +336,10 @@ group: consentual
 							Message({"[t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit]."})
 						]]>
 			-- endgroup top vagina bottom penis
-			group: top.HasPenis() -- and bottom has an anus but everbody has an anus right?
+			group: top.HasPenis() and (not top.HasSexFlag('anusbusy')) -- and bottom has an anus but everbody has an anus right?
 				choice: start_fucking_ass
 					_n: Fuck [b:his] [b:anuslooseness] [?:anus]
-					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("anusbusy")) and (not top.HasSexFlag("givingvaginal"))
+					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("anusbusy")) and (not top.HasSexFlag("givingvaginal")) and top.CanReachCrotch('penis') and bottom.CanReachCrotch('anus')
 					effect
 						<[[
 							top.AddSexFlag("givinganal")
@@ -349,7 +356,7 @@ group: consentual
 						]]>
 				
 				choice: continue_fucking_ass
-					_n: Keep ass fucking [b:his]
+					_n: Keep ass fucking [b:him]
 					filter: top.HasSexFlag("givinganal") and bottom.HasSexFlag("receivinganal")
 					effect
 						<[[
@@ -380,7 +387,7 @@ group: consentual
 
 		group: top.CanReachCrotch() and top.HasPenis() and (not masturbating) -- recieving blowjobs (reciever is the very happy one)
 			choice: make_them_suck_it
-				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy")) and top.CanReachCrotch('penis')
 				_n: Make [b:him] suck your dick
 				effect 
 					<[[
@@ -389,7 +396,7 @@ group: consentual
 						top.AddSexFlag("penisbusy")
 						bottom.AddSexFlag("givingoral")
 						bottom.AddSexFlag("mouthbusy")
-						Message({"[t:Youorname] push{es} your dick into [b:youorname]s mouth."})
+						Message({"[t:Youorname] push{es} your dick into [b:yourornames] mouth."})
 					]]>
 
 			choice: make_them_suck_more
@@ -398,7 +405,7 @@ group: consentual
 				effect 
 					<[[
 						top.Raise(Stat.Climax, 11)
-						Message({"[t:Youorname] push{es} [b:youorname]s head down onto his dick."})
+						Message({"[t:Youorname] push{es} [b:yourornames] head down onto [t:his] dick."})
 					]]>
 
 			choice: retrieve_cock
@@ -411,12 +418,12 @@ group: consentual
 						top.RemoveSexFlag("penisbusy")
 						bottom.RemoveSexFlag("givingoral")
 						bottom.RemoveSexFlag("mouthbusy")
-						Message({"[t:Youorname] pull{s} his dick out of [b:youorname]s mouth."})
+						Message({"[t:Youorname] pull{s} [t:his] dick out of [b:yourornames] mouth."})
 					]]>
 
 		group: bottom.CanReachCrotch() and bottom.HasPenis() and (not masturbating) -- giving blowjobs (giver is the one with a full mouth)
 			choice: we_suck_them
-				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				filter: (not bottom.HasSexFlag("penisbusy")) and (not top.HasSexFlag("mouthbusy")) and bottom.CanReachCrotch('penis')
 				_n: Suck on [b:his] dick
 				effect 
 					<[[
@@ -425,7 +432,7 @@ group: consentual
 						top.AddSexFlag("mouthbusy")
 						bottom.AddSexFlag("receivingoral")
 						bottom.AddSexFlag("penisbusy")
-						Message({"[t:Youorname] puts [b:youorname]s dick into his mouth."})
+						Message({"[t:Youorname] put{s} [b:yourornames] dick into [t:his] mouth."})
 					]]>
 
 			choice: got_cock_keep_sucking
@@ -434,7 +441,7 @@ group: consentual
 				effect 
 					<[[
 						bottom.Raise(Stat.Climax, 11)
-						Message({"[t:Youorname] take{s} [b:youorname]s dick deep into this throat."})
+						Message({"[t:Youorname] take{s} [b:yourornames] dick deep into [t:his] throat."})
 					]]>
 
 			choice: spit_em_out
@@ -447,12 +454,12 @@ group: consentual
 						top.RemoveSexFlag("mouthbusy")
 						bottom.RemoveSexFlag("receivingoral")
 						bottom.RemoveSexFlag("penisbusy")
-						Message({"[t:Youorname] stop{s} sucking on [b:youorname]s dick."})
+						Message({"[t:Youorname] stop{s} sucking on [b:yourornames] dick."})
 					]]>
 
 		group: top.CanReachCrotch() and bottom.CanReachCrotch() and top.HasPenis() and bottom.HasPenis() and (not masturbating)
 			choice: oral_69 -- combines make_them_suck_it and we_suck_them
-				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy")) and (not bottom.HasSexFlag("mouthbusy"))
+				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy")) and (not bottom.HasSexFlag("mouthbusy")) and top.CanReachCrotch('penis') and bottom.CanReachCrotch('penis')
 				_n: Suck on each others wangs
 				effect 
 					<[[
@@ -697,7 +704,7 @@ group: top.HasToken("snaketail")
 
 -- inventory item specific stuff goes here
 -- replace 'you' with proper wildcards
-group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
+group: (not top.Restrained()) and bottom.CanReachCrotch('vagina') and bottom.HasVagina()
 	choice: insert_extractor
 		_n: Insert goblin extractor
 		filter: top.HasItem("gExtractor")
@@ -737,6 +744,7 @@ group: (not top.Restrained()) and bottom.CanReachCrotch() and bottom.HasVagina()
 
 -- fake group: debug
 choice: debug_climax_top
+	weight: 0.0
 	_n: Debug self climax
 	effect
 	<[[
@@ -745,6 +753,7 @@ choice: debug_climax_top
 	]]>
 
 choice: debug_climax_top_50
+	weight: 0.0
 	_n: Debug self climax 50 pct
 	effect
 	<[[
@@ -753,6 +762,7 @@ choice: debug_climax_top_50
 	]]>
 	
 choice: debug_climax_bottom
+	weight: 0.0
 	_n: Debug partner climax
 	filter: not masturbating
 	effect
@@ -764,7 +774,7 @@ choice: debug_climax_bottom
 
 choice: self_baseball_bat
 	_n: Play with the baseball bat
-	filter: masturbating and top.HasItem("baseballbat") and top.HasVagina()
+	filter: masturbating and top.HasItem("baseballbat") and top.HasVagina() and top.CanReachCrotch('vagina')
 	effect
 	<[[
 		if top.StretchHole(top.GetToken("items").GetToken("baseballbat")) then
@@ -782,7 +792,7 @@ choice: self_baseball_bat
 
 choice: ovi_dildo
 	_n: Lay toy eggs in [his] ass.
-	filter: (not masturbating) and top.HasToken("ovipositor") and (not top.Restrained()) and bottom.CanReachCrotch() and top.HasItem("strapon_ovi")
+	filter: (not masturbating) and top.HasToken("ovipositor") and (not top.Restrained()) and bottom.CanReachCrotch('anus') and top.HasItem("strapon_ovi")
 	effect
 	<[[
 		Message({"[t:Youorname] squirts{s} the toy eggs into [b:yourornames] ass. It's good dirty fun."})

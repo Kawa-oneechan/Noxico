@@ -1942,14 +1942,14 @@ namespace Noxico
 				(undershirt == null || undershirt.CanReachThrough()));
 		}
 
-		public bool CanReachCrotch()
+		public bool CanReachCrotch(string Part = null)
 		{
 			var underpants = GetEquippedItemBySlot("underpants");
 			var pants = GetEquippedItemBySlot("pants");
 			var socks = GetEquippedItemBySlot("socks");
-			return ((pants == null || pants.CanReachThrough()) &&
-				(underpants == null || underpants.CanReachThrough()) &&
-				(socks == null || socks.CanReachThrough()));
+			return ((pants == null || pants.CanReachThrough(Part)) &&
+				(underpants == null || underpants.CanReachThrough(Part)) &&
+				(socks == null || socks.CanReachThrough(Part)));
 		}
 
 		//// sparks sex.tml helper functions

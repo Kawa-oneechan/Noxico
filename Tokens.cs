@@ -555,7 +555,6 @@ namespace Noxico
 				}
 			}
 		}
-
 	}
 
 	/// <summary>

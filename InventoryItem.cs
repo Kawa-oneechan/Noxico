@@ -236,11 +236,19 @@ namespace Noxico
 			return this.GetToken("equipable").HasToken("translucent");
 		}
 
-		public bool CanReachThrough()
+		public bool CanReachThrough(string Part = null)
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check reach on something not equipable.");
-			return this.GetToken("equipable").HasToken("reach");
+            if (string.IsNullOrWhiteSpace(Part))
+                return this.GetToken("equipable").HasToken("reach");
+            else if (this.GetToken("equipable").HasToken("reach"))
+            {
+                if (this.GetToken("equipable").GetToken("reach").Count() == 0)
+                    return true;
+                return this.GetToken("equipable").GetToken("reach").HasToken(Part);
+            }
+            return false;
 		}
 
 		public bool Equip(Character character, Token item)

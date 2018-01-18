@@ -251,6 +251,21 @@ namespace Noxico
 			return;
 			*/
 			/*
+			var weightedListTest = new Token();
+			weightedListTest.Tokenize(@"
+foo
+	weight: 0.6
+bar
+	weight: 0.0
+grill
+quux
+");
+			for (var lol = 0; lol < 10; lol++)
+			{
+				var weightedChoice = weightedListTest.Pick();
+			}
+			*/
+			/*
 			Random.Reseed(1);
 			var test = Board.CreateBasicOverworldBoard(BiomeData.ByName("Grassland"), "test", "test", "test");
 			test.Realm = Realms.Nox;
