@@ -2,15 +2,13 @@
 culture: human
 	bodyplans
 		human
+			weight: 0.4
 		felin
+			weight: 0.3
 		kitsune
-		human
-		human
-		felin
-		kitsune
+			weight: 0.2
 		naga
-		human
-		felin
+			weight: 0.1
 -- Low base chance of betraying their spouse. Character tokens affect this.
 	monogamous: 0.75
 	marriage: 0.75
@@ -25,16 +23,13 @@ culture: deviant
 culture: seradevar
 	bodyplans
 		foocubus
+			weight: 0.35
+		goblin
+			weight: 0.35
 		imp
-		goblin
-		foocubus
-		goblin
+			weight: 0.2
 		slime
-		foocubus
-		imp
-		goblin
-		foocubus
-		goblin
+			weight: 0.1
 	marriage: 0
 	monogamous: 0.5
 

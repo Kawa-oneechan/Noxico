@@ -93,7 +93,7 @@ namespace Noxico
 			for (var i = 0; i < count; i++)
 			{
 				Character c;
-				var plan = culture.Bodyplans[Random.Next(culture.Bodyplans.Length)];
+				var plan = culture.Bodyplans.PickWeighted().Name;
 				if (i > 0 && Random.NextDouble() > 0.7)
 					plan = firstPlan;
 				Realms world;
