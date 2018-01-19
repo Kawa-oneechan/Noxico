@@ -303,10 +303,12 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			//var testChar = Character.Generate("felin", Gender.Male);
 			//var test1 = "[t:He] [?:gesture-t-flirty].".Viewpoint(testChar);
 			//var test = Lua.Run("return foo = 4 + \"foo\"");
+			/*
 			var testChar = Character.Generate("naga", Gender.Female);
 			testChar.Culture = Culture.FindCultureByName("felin");
 			var testLine = "[t:He] says, \"[?:Hello], my good [?:friend]! So much joy seeing you, it's great!\"".Viewpoint(testChar);
 			var testLine2 = "\"Oh, what am I even thinking saying that kind of ghastly things?\"".Viewpoint(testChar);
+			*/
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
