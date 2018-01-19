@@ -416,6 +416,8 @@ namespace Noxico
 						});
 					}
 				}
+				if (speechFilter == null) //Still?
+					speechFilter = new Func<string, string>(x => x); //Then just assign a dummy so we don't do this all over and over again.
 				top.SpeechFilter = speechFilter;
 			}
 			message = message.SmartQuote(speechFilter);
