@@ -14,7 +14,7 @@ namespace Noxico
 
 		public string ID { get; private set; }
 		public string TownName { get; private set; }
-		public string[] Bodyplans { get; private set; }
+		public List<Token> Bodyplans { get; private set; }
 		public double Marriage { get; private set; }
 		public double Monogamous { get; private set; }
 		public Dictionary<string, string> Terms { get; private set; }
@@ -57,7 +57,7 @@ namespace Noxico
 		{
 			var nc = new Culture();
 			nc.ID = t.Text;
-			nc.Bodyplans = t.GetToken("bodyplans").Tokens.Select(x => x.Name).ToArray();
+			nc.Bodyplans = t.GetToken("bodyplans").Tokens;
 			nc.Marriage = t.HasToken("marriage") ? t.GetToken("marriage").Value : 0.0f;
 			nc.Monogamous = t.HasToken("monogamous") ? t.GetToken("monogamous").Value : 0.0f;
 			nc.TownName = t.HasToken("townname") ? t.GetToken("townname").Text : null;
