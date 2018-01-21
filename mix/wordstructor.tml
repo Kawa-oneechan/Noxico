@@ -18,6 +18,57 @@ canihelp
 	- "Can I help you somehow?"
 -- #endregion
 
+-- #region Vocalizations
+Umm
+	- ""
+	- "Ah... "
+	- "Uh... "
+	- "Hrm... "
+	- "Hmm... "
+umm
+	- ""
+	- "ah... "
+	- "uh... "
+	- "hrm... "
+	- "hmm... "
+Moan
+	- "Mmm... "
+	- "Aww... "
+	- "Hah... "
+	- "Oh... "
+	- "Mmmyeah... "
+	- "Wow... "
+	- "Nnn... "
+	- "Aww yeah... "
+	- "[?:OhGod]... "
+moan
+	- "mmm... "
+	- "aww... "
+	- "hah... "
+	- "oh... "
+	- "mmmyeah... "
+	- "wow... "
+	- "nnn... "
+	- "aww yeah... "
+	- "[?:ohgod]... "
+OhGod
+	- "Oh god"
+	- "Ooh god"
+	- "Ah geez"
+	- "Myaah"
+		filter: (cultureID == "felin")
+	- "Mrrr"
+		filter: (cultureID == "felin")
+ohgod
+	- "oh [?:God]"
+	- "ooh [?:God]"
+	- "ah geez"
+	- "myaah"
+		filter: (cultureID == "felin")
+	- "Mrrr"
+		filter: (cultureID == "felin")
+-- #endregion
+
 -- #region Body parts
 penis
 	- [?:cock]
