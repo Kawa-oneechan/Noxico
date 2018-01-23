@@ -43,6 +43,7 @@ namespace Noxico
 		private static Dictionary<string, string> words;
 		private static List<Token> wordStructor;
 		private static List<Token> impediments;
+		private static Dictionary<string, Func<Character, IList<string>, Neo.IronLua.LuaResult>> SubCommands;
 
 		private static List<string> notFound = new List<string>();
 
@@ -204,6 +205,18 @@ namespace Noxico
 			return new string(' ', length - lengthNow) + input;
 		}
 
+		public static void RegisterVPTags(Neo.IronLua.LuaTable table)
+		{
+			SubCommands = new Dictionary<string, Func<Character, IList<string>, Neo.IronLua.LuaResult>>();
+			foreach (var item in table)
+			{
+				var v = item.Value as Func<Character, IList<string>, Neo.IronLua.LuaResult>;
+				if (v == null)
+					continue;
+				SubCommands.Add(item.Key.ToString(), v);
+			}
+		}
+
 		public static string Viewpoint(this string message, Character top, Character bottom = null)
 		{
 #if DEBUG
@@ -216,80 +229,8 @@ namespace Noxico
 			if (bottom == null)
 				bottom = top;
 			//var tIP = player == top;
-			#region Definitions
-			var subcoms = new Dictionary<string, Func<Character, IList<string>, string>>()
-			{
-				//TODO: i18n... somehow.
-				{ "You", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
-				{ "Your", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
-				{ "you", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
-				{ "your", (c, s) => { return c == player ? "your" : c.HisHerIts(true); } },
 
-				{ "Youorname", (c, s) => { return c == player ? "You" : c.GetKnownName(false, false, true, true); } },
-				{ "youorname", (c, s) => { return c == player ? "you" : c.GetKnownName(false, false, true); } },
-				{ "Yourornames", (c, s) => { return c == player ? "Your" : c.GetKnownName(false, false, true, true) + "'s" /* i18n.GetString("possessive") */; } },
-				{ "yourornames", (c, s) => { return c == player ? "your" : c.GetKnownName(false, false, true, false) + "'s" /* i18n.GetString("possessive") */; } },
-
-				{ "isme", (c, s) => { return c == player ? s[0] : s[1]; } },
-				{ "g", (c, s) => { var g = c.Gender; return g == Gender.Male ? s[0] : (g == Gender.Herm && !string.IsNullOrEmpty(s[2]) ? s[2] : s[1]); } },
-				{ "t", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text.ToLower(); } },
-				{ "T", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Text; } },
-				{ "v", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : t.Value.ToString(); } },
-				{ "l", (c, s) => { var t = c.Path(s[0]); return t == null ? "<404>" : Descriptions.Length(t.Value); } },
-				{ "p", (c, s) => { return string.Format("{0} {1}", s[0], Pluralize(s[1], int.Parse(s[0]))); } },
-				{ "P", (c, s) => { return Pluralize(s[1], int.Parse(s[0])); } },
-
-				{ "name", (c, s) => { return c.GetKnownName(false, false, true); } },
-				{ "fullname", (c, s) => { return c.GetKnownName(true, false, true); } },
-				{ "title", (c, s) => { return c.Title; } },
-				{ "gender", (c, s) => { return c.Gender.ToString().ToLowerInvariant(); } },
-				{ "His", (c, s) => { return c == player ? "Your" : c.HisHerIts(); } },
-				{ "He", (c, s) => { return c == player ? "You" : c.HeSheIt(); } },
-				{ "Him", (c, s) => { return c == player ? "Your" : c.HimHerIt(); } },
-				{ "his", (c, s) => { return c == player ? "your" : c.HisHerIts(true); } },
-				{ "he", (c, s) => { return c == player ? "you" : c.HeSheIt(true); } },
-				{ "him", (c, s) => { return c == player ? "you" : c.HimHerIt(true); } },
-				{ "is", (c, s) => { return c == player ? "are" : "is"; } },
-				{ "has", (c, s) => { return c == player ? "have" : "has"; } },
-				{ "does", (c, s) => { return c == player ? "do" : "does"; } },
-
-				{ "breastsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts")); } },
-                { "breastcupsize", (c, s) => { return Descriptions.BreastSize(c.GetToken("breasts"), true); } },
-				{ "nipplesize", (c, s) => { return Descriptions.NippleSize(c.Path("breasts/nipples")); } },
-				{ "waistsize", (c, s) => { return Descriptions.WaistSize(c.Path("waist")); } },
-				{ "buttsize", (c, s) => { return Descriptions.ButtSize(c.Path("ass")); } },
-
-				#region PillowShout's additions
-				{ "cocktype", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.CockType(c.GetToken("penis")); } },
-				//{ "cockrand", (c, s) => { return Descriptions.CockRandom(); } },
-				//{ "pussyrand", (c, s) => { return Descriptions.PussyRandom(); } },
-				//{ "clitrand", (c, s) => { return Descriptions.ClitRandom(); } },
-				//{ "anusrand", (c, s) => { return Descriptions.AnusRandom(); } },
-                //{ "buttrand", (c, s) => { return Descriptions.ButtRandom(); } },
-				//{ "breastrand", (c, s) => { return Descriptions.BreastRandom(); } },
-				//{ "breastsrand", (c, s) => { return Descriptions.BreastRandom(true); } },
-				{ "pussywetness", (c, s) => { if (s[0].Length == 0) s[0] = "0"; return Descriptions.Wetness(c.Path("vagina/wetness")); } },
-				{ "pussylooseness", (c, s) => { return Descriptions.Looseness(c.Path("vagina/looseness")); } },
-				{ "anuslooseness", (c, s) => { return Descriptions.Looseness(c.Path("ass/looseness"), true); } },
-				{ "foot", (c, s) => { return Descriptions.Foot(c.GetToken("legs")); } },
-				{ "feet", (c, s) => { return Descriptions.Foot(c.GetToken("legs"), true); } },
-				//{ "cumrand", (c, s) => { return Descriptions.CumRandom(); } },
-				{ "equipment", (c, s) => {var i = c.GetEquippedItemBySlot(s[0]); return (s[1] == "color" || s[1] == "c") ? Descriptions.Item(i, i.tempToken, s[2], true) : Descriptions.Item(i, i.tempToken, s[1]); } },
-				{ "tonguetype", (c, s) => { return Descriptions.TongueType(c.GetToken("tongue")); } },
-				{ "tailtype", (c, s) => { return Descriptions.TailType(c.GetToken("tail")); } },
-                { "hipsize", (c, s) => { return Descriptions.HipSize(c.GetToken("hips")); } },
-                { "haircolor", (c, s) => { return Descriptions.HairColor(c.GetToken("hair")); } },
-                { "hairlength", (c, s) => { return Descriptions.HairLength(c.GetToken("hair")); } },
-                { "ballsize", (c, s) => { return Descriptions.BallSize(c.GetToken("balls")); } },
-				#endregion
-
-				{ "hand", (c, s) => { return Descriptions.Hand(c); } },
-				{ "hands", (c, s) => { return Descriptions.Hand(c, true); } },
-
-				//{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0] + (c == player ? string.Empty : "s"))); } },
-				{ "voc", (c, s) => { return Toolkit.PickOne(i18n.GetArray("vocalize_" + s[0])) + "{s}"; } },
-			};
-			#endregion
+			//Definitions used to be here. Now they're defined in i18n.lua.
 
 			#region WordStructor filter
 			var wordStructFilter = new Func<Token, Character, bool>((filter, who) =>
@@ -319,9 +260,9 @@ namespace Noxico
 \[
 	(?:(?<target>[tb\?]):)?		#Optional target and :
 
-	(?:						#One or more subcommands
-		(?:\:?)				#Separating :, optional in case target already had one
-		(?<subcom>[\w\-_]+)	#Command
+	(?:							#One or more subcommands
+		(?:\:?)					#Separating :, optional in case target already had one
+		(?<subcom>[\w\/\-_]+)	#Command
 	)*
 \]", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			while (regex.IsMatch(message))
@@ -369,8 +310,8 @@ namespace Noxico
 					parms.Add(string.Empty);
 					parms.Add(string.Empty);
 
-					if (subcoms.ContainsKey(subcom))
-						return subcoms[subcom](target, parms);
+					//if (subcoms.ContainsKey(subcom)) return subcoms[subcom](target, parms);
+					if (SubCommands.ContainsKey(subcom)) return SubCommands[subcom](target, parms).ToString();
 					return string.Format("(?{0}?)", subcom);
 				}));
 			}
@@ -379,6 +320,8 @@ namespace Noxico
 			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			message = regex.Replace(message, (match => top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value));
 			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
+
+			Lua.Environment.isPlayer = top == player;
 
 			Func<string, string> speechFilter = top.SpeechFilter;
 			if (speechFilter == null)
