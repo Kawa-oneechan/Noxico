@@ -146,3 +146,116 @@ function Singularize(plural)
 
 	return plural:sub(1, -2)
 end
+
+-- NOTICE THIS: Lists and arrays passed from .Net are ZERO-INDEXED.
+RegisterVPTags(
+{
+	You = function(c, s) if isPlayer then return "You" else return c.HeSheIt() end end,
+	Your = function(c, s) if isPlayer then return "Your" else return c.HisHerIts() end end,
+	you = function(c, s) if isPlayer then return "you" else return c.HeSheIt(true) end end,
+	your = function(c, s) if isPlayer then return "your" else return c.HisHerIts(true) end end,
+	Youorname = function(c, s) if isPlayer then return "You" else return c.GetKnownName(false, false, true, true) end end,
+	youorname = function(c, s) if isPlayer then return "you" else return c.GetKnownName(false, false, true) end end,
+	Yourornames = function(c, s) if isPlayer then return "Your" else return c.GetKnownName(false, false, true, true) end end,
+	yourornames = function(c, s) if isPlayer then return "your" else return c.GetKnownName(false, false, true, false) end end,
+
+	isme = function(c, s) if isPlayer then return s[0] else return s[1] end end,
+	g = function(c, s)
+			local g = c.Gender
+			if g == Gender.Male then return s[0] end
+			if (g == Gender.Herm and not string.IsNullOrEmpty(s[2])) then return s[2] end
+			return s[1]
+		end,
+	t = function(c, s)
+			local t = c.Path(s[0])
+			if t == nil then return "<404>" end
+			return t.Text.ToLower()
+		end,
+	T = function(c, s)
+			local t = c.Path(s[0])
+			if t == nil then return "<404>" end
+			return t.Text
+		end,
+	v = function(c, s)
+			local t = c.Path(s[0])
+			if t == nil then return "<404>" end
+			return t.Value
+		end,
+	l = function(c, s)
+			local t = c.Path(s[0])
+			if t == nil then return "<404>" end
+			return Descriptions.Length(t.Value)
+		end,
+	p = function(c, s)
+			local ct = tonumber(s[0])
+			if (ct == 1) then return (s[0] .. " " .. s[1]) end
+			return (s[0] .. " " .. Pluralize(s[1]))
+		end,
+	P = function(c, s)
+			local ct = tonumber(s[0])
+			if (ct == 1) then return s[1] end
+			return Pluralize(s[1])
+		end,
+
+	name = function(c, s) return c.GetKnownName(false, false, true) end,
+	fullname = function(c, s) return c.GetKnownName(true, false, true) end,
+	title = function(c, s) return c.Title end,
+	gender = function(c, s) return c.Gender.ToString().ToLowerInvariant() end,
+	His = function(c, s) if isPlayer then return "Your" else return c.HisHerIts() end end,	
+	He = function(c, s) if isPlayer then return "You" else return c.HeSheIt() end end,	
+	Him = function(c, s) if isPlayer then return "You" else return c.HimHerIt() end end,	
+	his = function(c, s) if isPlayer then return "your" else return c.HisHerIts(true) end end,	
+	he = function(c, s) if isPlayer then return "you" else return c.HeSheIt(true) end end,	
+	him = function(c, s) if isPlayer then return "you" else return c.HimHerIt(true) end end,	
+	is = function(c, s) if isPlayer then return "are" else return "is" end end,	
+	has = function(c, s) if isPlayer then return "have" else return "has" end end,	
+	does = function(c, s) if isPlayer then return "do" else return "does" end end,	
+
+
+	breastsize = function(c, s) return Descriptions.BreastSize(c.GetToken("breasts")) end,
+	breastcupsize = function(c, s) return Descriptions.BreastSize(c.GetToken("breasts"), true) end,
+	nipplesize = function(c, s) return Descriptions.NippleSize(c.Path("breasts/nipples")) end,
+	waistsize = function(c, s) return Descriptions.WaistSize(c.Path("waist")) end,
+	buttsize = function(c, s) return Descriptions.ButtSize(c.Path("ass")) end,
+
+	-- PillowShout's stuff
+	cocktype = function(c, s)
+			if s[0].Length == 0 then s[0] = "0" end
+			return Descriptions.CockType(c.GetToken("penis"))
+		end,
+	-- cockrand = function(c, s) return Descriptions.CockRandom() end,
+	-- pussyrand = function(c, s) return Descriptions.PussyRandom() end,
+	-- clitrand = function(c, s) return Descriptions.ClitRandom() end,
+	-- anusrand = function(c, s) return Descriptions.AnusRandom() end,
+	-- buttrand = function(c, s) return Descriptions.ButtRandom() end,
+	-- breastrand = function(c, s) return Descriptions.BreastRandom() end,
+	-- breastsrand = function(c, s) return Descriptions.BreastRandom(true) end,
+	pussywetness = function(c, s)
+			if s[0].Length == 0 then s[0] = "0" end
+			return Descriptions.Wetness(c.Path("vagina/wetness"))
+		end,
+	pussylooseness = function(c, s) return Descriptions.Looseness(c.Path("vagina/looseness")) end,
+	anuslooseness = function(c, s) return Descriptions.Looseness(c.Path("ass/looseness"), true) end,
+	foot = function(c, s) return Descriptions.Foot(c.GetToken("legs")) end,
+	feet = function(c, s) return Descriptions.Foot(c.GetToken("legs"), true) end,
+	-- cumrand = function(c, s) return Descriptions.CumRandom() end,
+	equipment = function(c, s)
+			local i = c.GetEquippedItemBySlot(s[0])
+			if s[1] == "color" or s[1] == "c" then
+				return Descriptions.Item(i, i.tempToken, s[2], true)
+			end
+			return Descriptions.Item(i, i.tempToken, s[1])
+		end,
+	tonguetype = function(c, s) return Descriptions.TongueType(c.GetToken("tongue")) end,
+	tailtype = function(c, s) return Descriptions.TailType(c.GetToken("tail")) end,
+	hipsize = function(c, s) return Descriptions.HipSize(c.GetToken("hips")) end,
+	haircolor = function(c, s) return Descriptions.HairColor(c.GetToken("hair")) end,
+	hairlength = function(c, s) return Descriptions.HairLength(c.GetToken("hair")) end,
+	ballsize = function(c, s) return Descriptions.BallSize(c.GetToken("balls")) end,
+	-- End of PillowShout's stuff
+
+	hand = function(c, s) return Descriptions.Hand(c) end,
+	hands = function(c, s) return Descriptions.Hand(c, true) end,
+	
+	voc = function(c, s) return Toolkit.PickOne(i18n.GetArray("vocalize_" .. s[0])) .. "{s}" end,
+})
