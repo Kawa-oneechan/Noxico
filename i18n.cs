@@ -228,6 +228,7 @@ namespace Noxico
 				top = player;
 			if (bottom == null)
 				bottom = top;
+			Lua.Environment.isPlayer = top == player;
 			//var tIP = player == top;
 
 			//Definitions used to be here. Now they're defined in i18n.lua.
@@ -316,12 +317,13 @@ namespace Noxico
 				}));
 			}
 			#endregion
-
+			
 			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 			message = regex.Replace(message, (match => top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value));
 			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
 
-			Lua.Environment.isPlayer = top == player;
+			if (!message.Contains('"'))
+				return message;
 
 			Func<string, string> speechFilter = top.SpeechFilter;
 			if (speechFilter == null)
