@@ -572,6 +572,8 @@ namespace Noxico
 				text = text.Normalize();
 			text = text.FoldEntities();
 
+			var fg = foregroundColor;
+			var bg = backgroundColor;
 			var rx = col;
 			for (var i = 0; i < text.Length; i++)
 			{
@@ -596,8 +598,8 @@ namespace Noxico
 						if (tag[0] == 'c')
 						{
 							var match = Regex.Match(tag, @"c(?<fore>\w+)(?:,(?<back>\w+))?");
-							foregroundColor = !string.IsNullOrEmpty(match.Groups["fore"].Value) ? Color.FromName(match.Groups["fore"].Value) : Color.Silver;
-							backgroundColor = !string.IsNullOrEmpty(match.Groups["back"].Value) ? Color.FromName(match.Groups["back"].Value) : Color.Transparent;
+							foregroundColor = (!string.IsNullOrEmpty(match.Groups["fore"].Value) && match.Groups["fore"].Value.Length > 1) ? Color.FromName(match.Groups["fore"].Value) : fg;
+							backgroundColor = !string.IsNullOrEmpty(match.Groups["back"].Value) ? Color.FromName(match.Groups["back"].Value) : bg;
 							continue;
 						}
 					}

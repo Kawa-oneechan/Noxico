@@ -491,8 +491,6 @@ namespace Noxico
 					for (int col = 0; col < 80; col++)
 						Tilemap[col, row].SaveToFile(stream);
 
-				var temp = new List<bool>();
-
 				Toolkit.SaveExpectation(stream, "SECT");
 				foreach (var sector in Sectors)
 				{

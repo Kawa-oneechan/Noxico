@@ -11,7 +11,7 @@ namespace Noxico
 	public static class Toolkit
 	{
 		public static TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-		//private static List<Tuple<Regex, int>> hyphenationRules;
+		private static List<Tuple<Regex, int>> hyphenationRules;
 
 		/// <summary>
 		/// Returns the amount of change between two strings according to the Levenshtein method.
@@ -285,6 +285,47 @@ namespace Noxico
 
 			text = text.Normalize();
 
+			#region Hyphenator
+			if (hyphenationRules == null)
+			{
+				var rulesRoot = Mix.GetTokenTree("i18n.tml").First(t => t.Name == "hyphenation");
+				hyphenationRules = new List<Tuple<Regex, int>>();
+				foreach (var rule in rulesRoot.Tokens)
+				{
+					var newTuple = Tuple.Create(new Regex(rule.GetToken("pattern").Text), (int)rule.GetToken("cutoff").Value);
+					hyphenationRules.Add(newTuple);
+				}
+			}
+
+			var newText = new StringBuilder();
+			foreach (var inWord in text.Split(' '))
+			{
+				if (inWord.Contains('\u00AD') || inWord.Length < 6)
+				{
+					newText.Append(inWord);
+					newText.Append(' ');
+					continue;
+				}
+				var word = inWord;
+				foreach (var rule in hyphenationRules)
+				{
+					if (rule.Item2 == -1 && rule.Item1.IsMatch(word))
+						break;
+					while (rule.Item1.IsMatch(word))
+					{
+						var match = rule.Item1.Match(word);
+						word = word.Substring(0, match.Index + rule.Item2) + '\u00AD' + word.Substring(match.Index + rule.Item2);
+					}
+				}
+				newText.Append(word);
+				newText.Append(' ');
+			}
+			text = newText.ToString();
+			text = text.Replace("\u00AD\u00AD", "\u00AD");
+			//todo: remove shys from tags
+			text = Regex.Replace(text, "<(?:[\\w^­]+)(\u00AD)(?:[\\w^­]+)>", (m => m.Captures[0].Value.Replace("\u00AD", "")));
+			#endregion
+
 			var currentWord = new StringBuilder();
 			var breakIt = false;
 			var spaceAfter = false;
@@ -297,6 +338,12 @@ namespace Noxico
 				var nextCh = (i < text.Length - 1) ? text[i + 1] : '\0';
 				if (ch == '<' && nextCh == 'c')
 				{
+					if (text[i + 2] == '>')
+					{
+						color = Color.Transparent;
+						i += 2;
+						continue;
+					}
 					var colorToken = new StringBuilder();
 					for (var j = i + 2; j < text.Length; j++)
 					{
@@ -366,55 +413,6 @@ namespace Noxico
 				words.Add(newWord);
 			}
 
-			#region
-			//Automatic hyphenation temporarily disabled.
-			/*
-			if (hyphenationRules == null)
-			{
-				var wordsXml = Mix.GetXmlDocument("words.xml");
-				var ruleNodes = wordsXml.SelectNodes("//hyphenation/rule").OfType<XmlElement>();
-				hyphenationRules = new List<Tuple<Regex, int>>();
-				foreach (var rule in ruleNodes)
-				{
-					var newTuple = Tuple.Create(new Regex(rule.InnerText.Trim()), int.Parse(rule.GetAttribute("cutoff")));
-					hyphenationRules.Add(newTuple);
-				}
-			}
-
-			for (var i = 0; i < words.Count; i++)
-			{
-				var word = words[i];
-				if (word.Length < 5)
-					continue;
-				if (word.IndexOf('\u00AD') > 0 || i > 1 && words[i - 1].IndexOf('\u00AD') > 0)
-					continue;
-
-				foreach (var rule in hyphenationRules)
-				{
-					if (rule.Item2 == -1 && rule.Item1.IsMatch(word))
-						break;
-					while (rule.Item1.IsMatch(word))
-					{
-						var match = rule.Item1.Match(word);
-						var replacement = '\u00AD';
-						if (match.ToString().Contains(' ') || match.ToString().Contains('\u00AD'))
-							replacement = '\uFFFE'; //prevent this match from retriggering
-						word = word.Substring(0, match.Index + rule.Item2) + replacement + word.Substring(match.Index + rule.Item2);
-					}
-				}
-				word = word.Replace("\uFFFE", ""); //cleanup in aisle -2!
-				while (word.IndexOf('\u00AD') > 0 && word.IndexOf('\u00AD') < word.Length - 1)
-				{
-					var natch = word.Substring(0, word.IndexOf('\u00AD') + 1);
-					words.Insert(i, natch);
-					i++;
-					word = word.Substring(word.IndexOf('\u00AD') + 1);
-				}
-				words[i] = word;
-			}
-			*/
-			#endregion
-
 			var line = new StringBuilder();
 			var spaceLeft = length;
 			color = Color.Transparent;
@@ -429,7 +427,7 @@ namespace Noxico
 				if (word.Color != color)
 				{
 					color = word.Color;
-					line.AppendFormat("<c{0}>", color.Name);
+					line.AppendFormat("<c{0}>", color == Color.Transparent ? string.Empty : color.Name);
 				}
 
 				if (word.Content == "\u2029")
