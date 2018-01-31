@@ -146,6 +146,7 @@ namespace Noxico
 			var text = new StringBuilder();
 			var header = string.Empty;
 			var identification = string.Empty;
+			/*
 			var fonts = new Dictionary<string, int>()
 			{
 				{ "Hand", 0x200 },
@@ -154,6 +155,7 @@ namespace Noxico
 				{ "Alternian", 0x268 },
 				{ "Felin", 0x282 },
 			};
+			*/
 			for (var i = 0; i < bookData.Length; i++)
 			{
 				if (bookData[i].StartsWith("##"))
@@ -168,8 +170,8 @@ namespace Noxico
 						i++;
 					}
 
-					var fontOffset = 0;
-					var fontHasLower = false;
+					//var fontOffset = 0;
+					//var fontHasLower = false;
 					for (; i < bookData.Length; i++)
 					{
 						var line = bookData[i];
@@ -187,6 +189,7 @@ namespace Noxico
 								text.Append(" <c>");
 								j += 3;
 							}
+							/*
 							else if (j < line.Length - 2 && line.Substring(j, 2) == "<f")
 							{
 								var fontName = line.Substring(j + 2);
@@ -197,8 +200,9 @@ namespace Noxico
 							}
 							else
 							{
-								if (fontOffset == 0)
+								if (fontOffset == 0) */
 									text.Append(line[j]);
+							/*
 								else
 								{
 									if (line[j] >= 'A' && line[j] <= 'Z')
@@ -215,6 +219,7 @@ namespace Noxico
 									}
 								}
 							}
+							*/
 						}
 						//text.Append(bookData[i]);
 						//text.AppendLine();
