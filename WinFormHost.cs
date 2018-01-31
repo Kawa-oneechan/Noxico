@@ -572,6 +572,17 @@ namespace Noxico
 				text = text.Normalize();
 			text = text.FoldEntities();
 
+			var fonts = new Dictionary<string, Tuple<int, bool>>()
+			{
+				{ "Hand", Tuple.Create(0x200, true) },
+				{ "Carve", Tuple.Create(0x234, false) },
+				{ "Daedric", Tuple.Create(0x24E, false) },
+				{ "Alternian", Tuple.Create(0x268, false) },
+				{ "Felin", Tuple.Create(0x282, true) },
+			};
+			var font = 0;
+			var fontHasLower = true;
+
 			var fg = foregroundColor;
 			var bg = backgroundColor;
 			var rx = col;
@@ -602,7 +613,29 @@ namespace Noxico
 							backgroundColor = !string.IsNullOrEmpty(match.Groups["back"].Value) ? Color.FromName(match.Groups["back"].Value) : bg;
 							continue;
 						}
+						else if (tag[0] == 'f')
+						{
+							var match = Regex.Match(tag, @"f(?<face>\w+)?");
+							font = 0;
+							var face = match.Groups["face"].Value;
+							if (!string.IsNullOrEmpty(face) && face.Length > 1)
+							{
+								if (fonts.ContainsKey(face))
+								{
+									font = fonts[face].Item1;
+									fontHasLower = fonts[face].Item2;
+								}
+							}
+							continue;
+						}
 					}
+				}
+				if (font > 0)
+				{
+					if (c >= 'A' && c <= 'Z')
+						c = (char)((c - 'A') + font);
+					else if (fontHasLower && c >= 'a' && c <= 'z')
+						c = (char)((c - 'a') + font + 0x1A);
 				}
 				
 				if (darken) image[col, row].Background = image[col, row].Background.Darken();
