@@ -309,6 +309,9 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			var testLine = "[t:He] says, \"[?:Hello], my good [?:friend]! So much joy seeing you, it's great!\"".Viewpoint(testChar);
 			var testLine2 = "g test: [hairlength]".Viewpoint(testChar);
 			*/
+			//var testChar = Character.GetUnique("TRS-180");
+			//TextScroller.Plain(testChar.LookAt(null), "", false, true);
+			//return;
 
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();

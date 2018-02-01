@@ -1,1 +1,148 @@
 -- There are no uniques in the base package
+
+-- Well, there WOULDN'T be if I hadn't whipped up a few test cases.
+
+character: squeaky
+	culture: seradevar
+	special
+	sexpreference: 2
+	terms
+		generic: "rubberdoll"
+		male: "rubberdoll"
+		female: "rubberdoll"
+		herm: "rubberdoll"
+	bestiary: "A living fucktoy, rubber through and through."
+		char: 0x166
+	tallness: 160
+	hair
+		length: 30
+		color: blue
+		style: braided_ponytail
+	skin
+		type: rubber
+		color: purple
+	face: human
+	teeth: soft
+	tongue: long
+	eyes: yellow
+	ears: cat
+	tail: cat
+	legs: human
+	horns: 1
+		small
+	waist: 9
+	hips: 9
+	ass
+		size: 9
+		looseness: 4
+	breasts
+		amount: 2
+		size: 6
+		nipples: 1
+			size: 2
+	vagina
+		wetness: 4
+		looseness: 4
+		clit: 2
+	womb
+--	penis: studded
+--		thickness: 4
+--		length: 16
+--	balls
+--		amount: 2
+--		size: 3
+	items
+		rope
+	stimulationbonus: 100
+
+character: TRS-180
+	culture: human
+	special
+	terms
+		generic: "foxbot"
+		male: "foxbot"
+		female: "foxbot"
+		herm: "foxbot"
+	bestiary: "TRS-180 is a foxbot!"
+		char: 0x160
+	tallness: 190
+	hair
+		length: 20
+		color: white
+		style: straight
+	skin
+		type: metal
+		color: silver
+	eyes: yellow
+		glow
+	face: fox
+	tongue: long
+	teeth: sharp
+	ears: fox
+	legs: genbeast
+	feet: dog
+	ass
+		looseness: 1
+		size: 4
+	waist: 6
+	hips: 10
+	breasts
+		amount: 2
+		size: 4
+	vagina
+		looseness: 1
+		wetness: 1
+
+character: tiny
+	terms
+		generic: "human"
+		male: "man"
+		female: "woman"
+	bestiary: "A typical human of northern stock."
+		char: 0x160
+	tallness: 1000
+	hair
+		length: 10000
+		color: purple
+		style: wavy
+	skin
+		type: slime
+		color: pale
+	eyes: green
+		count: 1000
+	face: normal
+	tongue: long
+	teeth: normal
+	ears: human
+	legs: human
+	wings: feather
+	antennae
+	horns: 1000
+		big
+		curled
+	tail: tentacle
+	ass
+		looseness: 1000
+		size: 1000
+	waist: 1000
+	hips: 1000
+	breasts
+		amount: 1000
+		size: 1000
+		nipples: 1000
+			size: 1000
+	vagina
+		looseness: 1000
+		wetness: 1000
+		clit: 1000
+		dual
+	womb
+	penis: human
+		thickness: 1000
+		length: 1000
+		dual
+	balls
+		amount: 1000
+		size: 1000
+	carnalitybonus: 1000
+	stimulationbonus: 1000

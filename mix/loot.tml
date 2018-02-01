@@ -227,3 +227,84 @@ lootset
 		plain_briefs
 		plain_boxers
 
+
+
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		id: squeaky
+	colors
+		black
+	oneofeach
+		useless_rubber_panties
+lootset
+	target: npc
+	type: clothing
+	final
+	filter
+		id: squeaky
+	colors
+		black
+	oneofeach
+		rubber_corset
+		high_heels
+lootset
+	target: npc
+	type: arms
+	final
+	filter
+		id: squeaky
+	oneof
+		whip
+
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		id: TRS-180
+	oneofeach
+lootset
+	target: npc
+	type: clothing
+	final
+	filter
+		id: TRS-180
+	colors
+		red
+	oneofeach
+		rubber_bustier
+		high_heels
+		skimpy_dress
+lootset
+	target: npc
+	type: arms
+	final
+	filter
+		id: TRS-180
+	oneof
+		whip
+
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		id: tiny
+	oneofeach
+lootset
+	target: npc
+	type: clothing
+	final
+	filter
+		id: tiny
+	oneofeach
+lootset
+	target: npc
+	type: arms
+	final
+	filter
+		id: tiny
+	oneofeach

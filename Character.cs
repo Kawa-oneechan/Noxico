@@ -220,7 +220,7 @@ namespace Noxico
 			}
 		}
 
-		public Gender ActualGender
+		public Gender BiologicalGender
 		{
 			get
 			{
@@ -239,7 +239,7 @@ namespace Noxico
 					return Gender.Neuter;
 
 				if (HasToken("player"))
-					return PreferredGender;
+					return (Gender)(PreferredGender + 1);
 				//TODO: detect a relationship token and return the preferred gender if known.
 
 				var pants = GetEquippedItemBySlot("pants");
@@ -297,8 +297,8 @@ namespace Noxico
 			get
 			{
 				if (HasToken("preferredgender"))
-					return (Gender)Enum.Parse(typeof(Gender), GetToken("preferredgender").Text, true);
-				return ActualGender; //stopgap
+					return (Gender)((int)GetToken("preferredgender").Value);
+				return BiologicalGender; //stopgap
 			}
 		}
 
@@ -504,7 +504,7 @@ namespace Noxico
 			var newChar = new Character();
 			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
 			if (planSource == null)
-				throw new ArgumentOutOfRangeException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
+				throw new FileNotFoundException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
 			newChar.AddSet(planSource.Tokens);
 			newChar.AddToken("lootset_id", 0, id);
 			if (newChar.HasToken("_n"))
@@ -533,6 +533,7 @@ namespace Noxico
 			newChar.ResolveMetaTokens();
 			newChar.EnsureDefaultTokens();
 			newChar.StripInvalidItems();
+			newChar.CheckHasteSlow();
 			newChar.UpdateTitle();
 			newChar.ApplyCostume();
 			foreach (var item in newChar.GetToken("items").Tokens)
@@ -981,6 +982,7 @@ namespace Noxico
 
 			newChar.ResolveMetaTokens();
             newChar.StripInvalidItems();
+			newChar.CheckHasteSlow();
 
 #if MUTAMORPH
 			// because: "why the hell did I pick a male human and get herm centaur?"
@@ -1498,7 +1500,7 @@ namespace Noxico
 					eyes = i18n.Format("glowing_x", eyes);
 					eyesHidden = false;
 				}
-				eyes = i18n.GetArray("setbymeasure")[count] + " " + eyes;
+				eyes = (count <= 12 ? i18n.GetArray("setbymeasure")[count] : count.ToString()) + " " + eyes;
 				if (!eyesHidden)
 					headThings.Add(eyes);
 			}
@@ -1537,11 +1539,11 @@ namespace Noxico
 				if (this.Path("skin/type").Text != "slime")
 					hairThings.Add(Descriptions.HairColor(hair));
 				if (this.Path("hair/style") != null)
-					hairThings.Add(this.Path("hair/style").Text);
+					hairThings.Add(Descriptions.HairStyle(hair));
 				if (this.Path("skin/type").Text == "slime")
 					hairThings.Add("goopy");
 				if (this.Path("skin/type").Text == "rubber")
-					hairThings.Add("stringy");
+					hairThings.Add("rubbery");
 				if (this.Path("skin/type").Text == "metal")
 					hairThings.Add("cord-like");
 			}
@@ -1563,7 +1565,7 @@ namespace Noxico
 			{
 				hipThings.Add(Descriptions.HipSize(this.GetToken("hips")) + " hips");
 				hipThings.Add(Descriptions.WaistSize(this.GetToken("waist")) + " waist");
-				hipThings.Add(Descriptions.ButtSize(this.Path("ass/size")) + " ass");
+				hipThings.Add(Descriptions.ButtSize(this.GetToken("ass")) + " ass");
 			}
 			else
 			{
@@ -1758,7 +1760,7 @@ namespace Noxico
 
 			//var stimulation = this.GetToken("stimulation").Value;
 
-			var player = NoxicoGame.Me.Player.Character;
+			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
 				print(this.GetKnownName(true) + ", " + this.Title + "\n\n");
 			else
@@ -1776,6 +1778,50 @@ namespace Noxico
 			LookAtEquipment2(pa, print, hands, fingers);
 			LookAtSexual(pa, print, breastsVisible, crotchVisible);
 
+			#if DEBUG
+			print(string.Format(@"
+Debug
+-------
+Hash: {0} (closest match: {1})
+Article: {2}
+Biological gender: {3} (mirror of gender property)
+Breasts: {24} @ {25}
+Carry capacity: {5} of {4}
+Culture: {6}
+Cum amount: {7}
+Gender: {8} (determined from genitalia)
+Health: {9} of {15}
+ID: {10}
+Is proper named: {11}
+Is slime: {12}
+Likes boys: {13} (derived from sexpreference token)
+Likes girls: {14} (derived from sexpreference token)
+Milk amount: {16}
+Name: {17}
+Penis (length only): {26}
+Penis (length * thickness): {27}
+Percieved gender: {18} (what they seem to be)
+Preferred gender: {19} (what to call them)
+Spouse: {20}
+Team: {21}
+Title: {22}
+Vaginal capacity: {28}
+
+Tokens:
+{23}",
+				   Toolkit.GetBodyComparisonHash(this),
+				   GetClosestBodyplanMatch(),
+				   this.A, this.BiologicalGender, this.Capacity, this.Carried, this.Culture,
+				   this.CumAmount, this.Gender, this.Health, this.ID, this.IsProperNamed,
+				   this.IsSlime, this.LikesBoys, this.LikesGirls, this.MaximumHealth,
+				   this.MilkAmount, this.Name, this.PercievedGender, this.PreferredGender,
+				   this.Spouse == null ? "noone" : this.Spouse.ToString(),
+				   this.Team, this.Title, DumpTokens(this.Tokens, 1).Replace("\t", "  "),
+				   this.GetBreastAmount(), this.GetBreastSize(),
+				   this.GetPenisSize(false), this.GetPenisSize(true),
+				   this.GetVaginaCapacity()
+				   ));
+			#endif
 			#if LOLDEBUG
 			print("\n\n\n\n");
 			print("<cGray>Debug\n<cGray>\xc4\xc4\xc4\xc4\xc4\n");
@@ -2127,6 +2173,8 @@ namespace Noxico
 		{
 			get
 			{
+				if (BoardChar == null)
+					return null;
 				if (BoardChar.ParentBoard == null)
 					return null;
 				//Assume that our spouse is on the same board.
@@ -2784,23 +2832,6 @@ namespace Noxico
 			}
 		}
 		#endregion
-
-		//REMOVE
-		/*
-		public Func<string, string> GetSpeechFilter(Func<string, string> original = null)
-		{
-			if (i18n.GetString("meta_nospeechfilters")[0] == '[')
-				return original;
-			if (original == null)
-				original = new Func<string, string>(x => x);
-			if (this.GetToken("face").Text == "reptile")
-				return new Func<string, string>(x => original(x.Replace("s", "sh").Replace("S", "Sh")));
-			var match = this.GetClosestBodyplanMatch();
-			if (match == "felinoid")
-				return new Func<string, string>(x => original(x.Replace("r", "rr")));
-			return original;
-		}
-		*/
 
 		public string GetClosestBodyplanMatch()
 		{
