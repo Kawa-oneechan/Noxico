@@ -103,10 +103,12 @@ namespace Noxico
 				Glyph = judgment;
 			}
 
+			/*
 			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
 			{
 				Glyph = '@'; //not sure about this one, what if they copy someone who's not the player?
 			}
+			*/
 
 			Eyes = 0;
 			SightRadius = 1;
