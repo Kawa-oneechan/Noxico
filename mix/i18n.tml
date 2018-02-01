@@ -515,7 +515,7 @@ Equipment
 	vocalize_cryout: cry out, scream
 	vocalize_cryouts: cries out, screams
 -- #endregion
--- #region Mutamorph
+-- #region Morph
 	morph_growcock: [Youorname] [has] grown a brand new [?:cock]!
 	morph_growpussy: [Youorname] [has] grown a brand new, [pussywetness] [?:pussy]!
 	morph_splitcock: [Yourornames] [?:cock] has split in two!
