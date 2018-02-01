@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public partial class Character
 	{
-		public List<Token> GetMorphDeltas(string targetPlan, Gender targetGender)
+		public List<Token> GetTargetedMorphDeltas(string targetPlan, Gender targetGender)
 		{
 			//Token.NoRolls = true;
 			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
@@ -636,7 +636,278 @@ namespace Noxico
 			return possibleChanges;
 		}
 
-		public void ApplyMutamorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
+		/// <summary>
+		/// Applies a few random mutations to the Character. Contrast with Morph, which is more targeted.
+		/// </summary>
+		/// <param name="number">Amount of mutations to apply.</param>
+		/// <param name="intensity">How much impact each mutation can have.</param>
+		/// <param name="mutation">What kind of mutation.</param>
+		/// <returns>Returns a list of report strings.</returns>
+		public List<string> Mutate(int number, float intensity, Mutations mutation = Mutations.Random)
+		{
+			if (GetToken("perks").HasToken("formlock"))
+				return new List<string>() { i18n.GetString("formlock").Viewpoint(this) };
+
+			//TODO: use Morph Deltas, like GetTargetedMorphDeltas returns.
+			var randomize = false;
+			if (mutation == Mutations.Random)
+				randomize = true;
+			List<string> reports = new List<string>();
+			for (var i = 0; i < number; i++)
+			{
+				string report = "";
+				if (randomize)
+					mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
+				switch (mutation)
+				{
+					case Mutations.Random:
+						throw new Exception("Something went wrong, and the mutation was not randomized properly.  Pester Kawa to fix it.");
+					case Mutations.AddPenis:
+						var cock = this.GetToken("penis");
+						if (cock == null)
+						{
+							cock = this.AddToken("vagina");
+							var length = (float)Random.NextDouble() * intensity + 12f;
+							var thick = (float)Random.NextDouble() * intensity / 4 + 4f;
+							cock.AddToken("length", length);
+							cock.AddToken("thickness", thick);
+							cock.AddToken("cumsource");
+							report += i18n.GetString("morph_growcock");
+						}
+						else if (cock != null && !cock.HasToken("dual"))
+						{
+							cock.AddToken("dual");
+							report += i18n.GetString("morph_splitcock");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.AddVagina:
+						var vagina = this.GetToken("vagina");
+						if (vagina == null)
+						{
+							vagina = this.AddToken("vagina");
+							vagina.AddToken("wetness", Random.Next((int)(intensity / 2)));
+							vagina.AddToken("looseness", Random.Next((int)(intensity / 2)));
+							report += i18n.GetString("morph_growpussy");
+						}
+						else if (vagina != null && !vagina.HasToken("dual"))
+						{
+							vagina.AddToken("dual");
+							report += i18n.GetString("morph_splitpussy");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.AddOddLegs:
+						var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
+						if (funkyLegs.All(x => !HasToken(x)))
+						{
+							var choice = Random.Next(funkyLegs.Length);
+							if (choice < funkyLegs.Length - 1)
+								if (this.GetClosestBodyplanMatch() != "human" || funkyLegs[choice] != "quadruped")
+									this.AddToken(funkyLegs[choice]);
+							if (choice == 2 || choice == 3)
+							{
+								this.RemoveToken("legs");
+								this.RemoveToken("tail");
+								report += choice == 2 ? i18n.GetString("morph_growsnaketail")
+													  : i18n.GetString("morph_growslimeblob");
+							}
+							else
+								report += choice == 0 ? i18n.GetString("morph_taurify")
+													  : i18n.GetString("morph_quadrify");
+						}
+						else if (this.HasToken("taur"))
+						{
+							this.GetToken("taur").Value = Math.Max(2, this.GetToken("taur").Value + 1);
+							report += i18n.GetString("morph_taurtrain");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.RemoveOddLegs:
+						if ((this.HasToken("taur") && this.GetToken("taur").Value < 2) || this.HasToken("quadruped")
+							|| this.HasToken("snaketail") || this.HasToken("slimeblob"))
+						{
+							//left out stiletto and insect, as those are meant for particular characters/species only and would look off on the wrong body
+							var legtypes = new[] { "human", "horse", "claws", "genbeast", "bear", "dog" };
+							var legnames = new[] { "human", "equine", "clawed", "digitigrade", "ursine", "digitigrade" };
+							var type = Random.Next(legtypes.Length);
+							this.RemoveToken("taur");
+							this.RemoveToken("quadruped");
+							if (!this.HasToken("legs"))
+							{
+								this.AddToken("legs", 0f, legtypes[type]);
+								if (!this.HasToken("hips"))
+									this.AddToken("hips", (float)Random.NextDouble() * intensity / 4 + 2f);
+								if (!this.HasToken("waist"))
+									this.AddToken("waist", (float)Random.NextDouble() * intensity / 4 + 2f);
+								if (!this.HasToken("ass"))
+									this.AddToken("ass").AddToken("size", (float)Random.NextDouble() * intensity / 4 + 2f);
+								report += i18n.Format("morph_lose_x_and_gain_y_legs", i18n.GetString(this.HasToken("snaketail") ? "morph_losesnaketail" : "morph_loseslimeblob"), legnames[type]);
+							}
+							else
+								report += i18n.GetString("morph_bipedify");
+							this.RemoveToken("snaketail");
+							this.RemoveToken("slimeblob");
+						}
+						else if (this.HasToken("taur") && this.GetToken("taur").Value >= 2)
+						{
+							this.GetToken("taur").Value--;
+							report += i18n.GetString("morph_untaurtrain");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.AddBreast:
+						if (this.HasToken("breasts"))
+						{
+							var boob = this.GetToken("breasts");
+							if (boob.GetToken("amount").Value < 5)
+								boob.GetToken("amount").Value++;
+							report += i18n.Format("morph_gainbreast", boob.GetToken("amount").Value.CountOrdinal());
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.RemoveBreast:
+						if (this.HasToken("breasts"))
+						{
+							var boob = this.GetToken("breasts");
+							if (boob.GetToken("amount").Value > 1)
+							{
+								boob.GetToken("amount").Value--;
+								report += i18n.GetString("morph_losebreast");
+							}
+
+							if (boob.GetToken("amount").Value == 0)
+							{
+								this.RemoveToken(boob);
+								report += i18n.GetString("morph_loselastbreast");
+							}
+
+							if (!this.HasToken("breasts"))
+							{
+								this.AddToken("breasts").AddToken("size", 0);
+								this.GetToken("breasts").AddToken("amount", 2);
+							}
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.AddTesticle:
+						var balls = GetToken("balls");
+						if (balls != null)
+						{
+							balls.GetToken("amount").Value++;
+							report += i18n.GetString("morph_gaintesticle");
+						}
+						else
+						{
+							var num = Random.Next((int)(intensity / 4)) + 1;
+							var size = (float)Random.NextDouble() * intensity / 4 + 3f;
+							this.AddToken("balls").AddToken("amount", num);
+							this.GetToken("balls").AddToken("size", size);
+							report += num > 1 ? i18n.Format("morph_gainballs", i18n.GetArray("counts")[num], Descriptions.BallSize(this.GetToken("balls")))
+											  : i18n.GetString("morph_gainonenut");
+						}
+						break;
+					case Mutations.RemoveTesticle:
+						if (this.HasToken("balls"))
+						{
+							this.GetToken("balls").GetToken("amount").Value--;
+							if (this.GetToken("balls").GetToken("amount").Value <= 0)
+							{
+								this.RemoveToken("balls");
+								report += i18n.GetString("morph_loselastnut");
+							}
+							else
+								report += i18n.Format("morph_loseonenut", this.GetToken("balls").GetToken("amount").Value.Count());
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.GiveDicknipples:
+						if (this.Path("breasts/nipples") != null && this.Path("breasts/nipples/canfuck") == null)
+						{
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").AddToken("canfuck");
+							report += i18n.GetString("morph_gaindicknipples");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.GiveNipplecunts:
+						if (this.Path("breasts/nipples") != null && this.Path("breasts/nipples/fuckable") == null)
+						{
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").AddToken("fuckable");
+							report += i18n.GetString("morph_gainnipplecunts");
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.AddNipple:
+						if (this.HasToken("breasts"))
+						{
+							var boob = this.GetToken("breasts");
+							if (!boob.HasToken("nipples"))
+								boob.AddToken("nipples", 1);
+							else
+								boob.GetToken("nipples").Value++;
+							var nippleName = (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
+								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+							report += i18n.GetString("morph_gain" + nippleName);
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.RemoveNipple:
+						if (this.Path("breasts/nipples") != null)
+						{
+							var boob = this.GetToken("breasts");
+							boob.GetToken("nipples").Value--;
+							var nippleName = (boob.GetToken("nipples").HasToken("canfuck") ? "dick" : "") +
+								"nipple" + (boob.GetToken("nipples").HasToken("fuckable") ? "cunt" : "");
+							if (boob.GetToken("nipples").Value == 0)
+							{
+								boob.RemoveToken("nipples");
+								report += i18n.GetString("morph_lose" + nippleName + "s");
+							}
+							else
+								report += i18n.GetString("morph_lose" + nippleName);
+						}
+						else
+							report += "\uE2FC";
+						break;
+					case Mutations.GiveRegularNipples:
+						if (this.Path("breasts/nipples/fuckable") != null || this.Path("breasts/nipples/canfuck") != null)
+						{
+							var boob = this.GetToken("breasts");
+
+							if (boob.GetToken("nipples").HasToken("fuckable"))
+							{
+								boob.GetToken("nipples").RemoveToken("fuckable");
+								report += i18n.GetString("morph_revertnipplecunts");
+							}
+							else
+							{
+								boob.GetToken("nipples").RemoveToken("canfuck");
+								report += i18n.GetString("morph_revertdicknipples");
+							}
+						}
+						else
+							report += "\uE2FC";
+						break;
+				}
+				reports.Add(report);
+			}
+			FixBroken(); // very important
+			return reports;
+		}
+
+		public void ApplyMorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
 		{
 			var numChanges = Math.Min(4, possibilities.Count);
 			var changes = new List<Token>();
@@ -730,11 +1001,11 @@ namespace Noxico
 
 		public string Morph(string targetPlan, Gender targetGender = Gender.Invisible)
 		{
-			if (this.HasToken("formlock"))
+			if (GetToken("perks").HasToken("formlock"))
 				return i18n.GetString("formlock").Viewpoint(this);
-			var possibilities = GetMorphDeltas(targetPlan, targetGender);
+			var possibilities = GetTargetedMorphDeltas(targetPlan, targetGender);
 			var feedback = string.Empty;
-			ApplyMutamorphDeltas(possibilities, 4, out feedback);
+			ApplyMorphDeltas(possibilities, 4, out feedback);
 			
 			var closestMatch = GetClosestBodyplanMatch();
 			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);

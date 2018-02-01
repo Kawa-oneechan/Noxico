@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;MUTAMORPH FREETESTPOTIONS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;FREETESTPOTIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -101,7 +101,6 @@
   <ItemGroup>
     <Compile Include="BoardChar.cs" />
     <Compile Include="BoardDrawing.cs" />
-    <Compile Include="Change.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="CryptStream.cs" />
@@ -140,7 +139,7 @@
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
     <None Include="mix\clutter.tml" />
-    <Compile Include="Mutamorph.cs" />
+    <Compile Include="Morph.cs" />
     <Compile Include="Name.cs" />
     <Compile Include="PlayerChar.cs" />
     <Compile Include="Scheduler.cs" />

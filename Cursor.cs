@@ -246,12 +246,10 @@ namespace Noxico
 					}
 
 #if DEBUG
-#if MUTAMORPH
 					if (PointingAt is BoardChar)
                         options["mutate"] = "(debug) Random mutate";
 					if (PointingAt is BoardChar)
 						options["turbomutate"] = "(debug) Apply LOTS of mutations!";
-#endif
 #endif
 
 					ActionList.Show(description, PointingAt.XPosition - NoxicoGame.CameraX, PointingAt.YPosition - NoxicoGame.CameraY, options,
@@ -386,7 +384,6 @@ namespace Noxico
 									((BoardChar)PointingAt).Character.CheckHasteSlow();
 									break;
                                 
-#if MUTAMORPH
                                 case "mutate":
                                     var results = ((BoardChar)PointingAt).Character.Mutate(1, 30);
 									foreach (var result in results)
@@ -400,7 +397,6 @@ namespace Noxico
 										if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
 											NoxicoGame.AddMessage(result.Viewpoint(((BoardChar)PointingAt).Character));
 									break;
-#endif
 #endif
 
 								default:
