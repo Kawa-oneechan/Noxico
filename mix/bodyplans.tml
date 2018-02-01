@@ -51,8 +51,6 @@ bodyplan: human
 	balls
 		amount: 2
 		size: 0.6
-	costume
-		casual
 
 
 bodyplan: imp
@@ -245,9 +243,6 @@ bodyplan: naga
 		amount: 2
 		size: 0.7
 		hidden
-	costume
-		lacy_undies
-		bikini
 
 
 bodyplan: foocubus

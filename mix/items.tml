@@ -1718,6 +1718,91 @@ item: stylish_cloak
 	clothing
 	accesory
 	colored
+
+item: leather_corset
+	_n: [color ]leather corset
+	description: ""
+	equipable
+		undershirt
+		reach
+		translucent
+	weight: medium
+	statbonus
+		charisma: 10
+		sensitivity: 10
+	price: 150
+	ascii
+		char: 0x19b
+	clothing
+	colored
+
+item: rubber_corset
+	_n: [color ]rubber corset
+	description: ""
+	equipable
+		undershirt
+		reach
+		translucent
+	weight: medium
+	statbonus
+		charisma: 14
+		sensitivity: 16
+	price: 150
+	ascii
+		char: 0x19b
+	clothing
+	colored
+
+item: leather_bustier
+	_n: [color ]leather bustier
+	description: ""
+	equipable
+		undershirt
+	weight: medium
+	statbonus
+		charisma: 14
+		sensitivity: 16
+	price: 150
+	ascii
+		char: 0x19b
+	clothing
+	colored
+
+item: rubber_bustier
+	_n: [color ]rubber bustier
+	description: ""
+	equipable
+		undershirt
+	weight: medium
+	statbonus
+		charisma: 14
+		sensitivity: 16
+	price: 150
+	ascii
+		char: 0x19b
+	clothing
+	colored
+
+item: useless_rubber_panties
+	_n: useless [color ]rubber panties
+	_ia: a pair of
+	plural
+	equipable
+		underpants
+		reach
+		translucent
+	weight: feather
+	statbonus
+		charisma: 14
+	price: 40
+	ascii
+		char: 0x19A
+	description: "These [color ]leather panties have holes in them, serving no purpose but to tittilate."	
+	clothing
+	underwear
+	colored
+	sexy
+
 -- #endregion
 
 

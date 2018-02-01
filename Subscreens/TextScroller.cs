@@ -56,8 +56,8 @@ namespace Noxico
 
 			if (keys[System.Windows.Forms.Keys.S])
 			{
-				File.WriteAllText("current.txt", string.Join("\n", text));
-				File.WriteAllText("current.html", string.Join("\n", text).ToHtml());
+				File.WriteAllText("current.txt", string.Join("\n", text).ToUnicode());
+				File.WriteAllText("current.html", string.Join("\n", text).ToUnicode().ToHtml());
 			}
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)

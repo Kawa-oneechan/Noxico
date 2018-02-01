@@ -572,6 +572,7 @@ namespace Noxico
 				text = text.Normalize();
 			text = text.FoldEntities();
 
+			//TODO: read these from a TML file somewhere, outside of this method.
 			var fonts = new Dictionary<string, Tuple<int, bool>>()
 			{
 				{ "Hand", Tuple.Create(0x200, true) },

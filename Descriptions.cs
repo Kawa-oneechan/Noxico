@@ -289,6 +289,21 @@ namespace Noxico
 			return GetSizeDescription("hair/length", hairToken.HasToken("length") ? hairToken.GetToken("length").Value : 0f);
 		}
 
+		public static string HairStyle(Token hairToken)
+		{
+			if (hairToken == null)
+				return "glitch";
+			var style = hairToken.GetToken("style").Text;
+			var set = descTable.Path("hair/names/" + style);
+			if (set == null)
+				throw new Exception("Could not find bodyparts.tml item \"hair/names/" + style + "\".");
+			if (set.HasToken("noun"))
+				return set.GetToken("noun").Text;
+			if (set.HasToken("adj"))
+				return set.GetToken("adj").Text;
+			return set.Name.Replace('_', ' ');
+		}
+
 		public static string Hair(Token hairToken)
 		{
 			//TODO: finish hair

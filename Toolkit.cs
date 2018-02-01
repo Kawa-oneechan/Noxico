@@ -629,6 +629,7 @@ namespace Noxico
 		public static string ToHtml(this string text)
 		{
 			var html = new StringBuilder();
+			text = text.Replace("\n", "\r\n").Replace("\r\r", "\r");
 			var lines = text.Split('\n');
 			var glyph = @"\<g([0-9a-fA-F]{4})\>";
 			var color = @"<c(?:(?:(?<fore>\w+)(?:(?:,(?<back>\w+))?))?)>";
@@ -636,8 +637,8 @@ namespace Noxico
 			foreach (var line in lines)
 			{
 				var s = line;
-				if (s.Equals(lines[0]))
-					s = "<h3>" + s + "</h3>";
+				//if (s.Equals(lines[0]))
+				//	s = "<h3>" + s.Trim() + "</h3>";
 				var colorClosers = 0;
 				while (Regex.IsMatch(s, color))
 				{
@@ -667,6 +668,20 @@ namespace Noxico
 			}
 			html.Append("</pre>");
 			return html.ToString();
+		}
+
+		public static string ToUnicode(this string text)
+		{
+			var sb = new StringBuilder(text.Length);
+			var table = NoxicoGame.IngameToUnicode;
+			foreach (var ch in text)
+			{
+				if (ch < ' ')
+					sb.Append(ch);
+				else
+					sb.Append(table[ch]);
+			}
+			return sb.ToString();
 		}
 
 		/// <summary>

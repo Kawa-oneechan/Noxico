@@ -325,6 +325,9 @@ namespace Noxico
 			if (!message.Contains('"'))
 				return message;
 
+			if (top == null)
+				return message;
+
 			Func<string, string> speechFilter = top.SpeechFilter;
 			if (speechFilter == null)
 			{
