@@ -156,8 +156,8 @@ RegisterVPTags(
 	your = function(c, s) if isPlayer then return "your" else return c.HisHerIts(true) end end,
 	Youorname = function(c, s) if isPlayer then return "You" else return c.GetKnownName(false, false, true, true) end end,
 	youorname = function(c, s) if isPlayer then return "you" else return c.GetKnownName(false, false, true) end end,
-	Yourornames = function(c, s) if isPlayer then return "Your" else return c.GetKnownName(false, false, true, true) end end,
-	yourornames = function(c, s) if isPlayer then return "your" else return c.GetKnownName(false, false, true, false) end end,
+	Yourornames = function(c, s) if isPlayer then return "Your" else return (c.GetKnownName(false, false, true, true) .. "'s") end end,
+	yourornames = function(c, s) if isPlayer then return "your" else return (c.GetKnownName(false, false, true, false) .. "'s") end end,
 
 	isme = function(c, s) if isPlayer then return s[0] else return s[1] end end,
 	g = function(c, s)

@@ -218,7 +218,7 @@ namespace Noxico
 				return words[num];
 			return Ordinal(num);
 		}
-
+		
 		/// <summary>
 		/// Applies [grammar replacement] from a given character's point of view.
 		/// </summary>
@@ -249,6 +249,11 @@ namespace Noxico
 			return text;
 		}
 		*/
+
+		public static bool IsBlank(this string text)
+		{
+			return string.IsNullOrWhiteSpace(text);
+		}
 
 		public static bool StartsWithVowel(this string text)
 		{

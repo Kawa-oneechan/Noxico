@@ -24,7 +24,7 @@ namespace Noxico
 	public enum Mutations
 	{
 		Random = -1, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
-		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples
+		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples, GrowPenis
 	}
 
 	public enum TeamBehaviorClass
@@ -1178,7 +1178,7 @@ namespace Noxico
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
 				{
-					var taur = (int)this.GetToken("taur").Value;
+					var taur = (int)this.GetToken("taur").Value + 1;
 					if (taur < 2)
 						bodyThings.Add(i18n.GetString("single_taur"));
 					else if (taur > 1)
