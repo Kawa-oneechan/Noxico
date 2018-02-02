@@ -1,0 +1,239 @@
+BODYPLANS.TML
+-------------
+bodyplan: <id>
+	playable		Can we select this in CC?
+	culture: <id>		What culture(s) can this character belong to?
+	namegen: <id>		What name generator(s) can this character use?
+	hostile			Character will attack the player. Will be replaced by team membership.
+
+	maleonly		Character can only be male.
+	femaleonly		Character can only be female.
+	hermonly		Character can only be herm.
+	neuteronly		Character can only be neuter.
+	normalgenders		Limits gender choice to male or female.
+	neverneuter		Limits gender choice to male, female, or herm.
+	allowneuter		Unlocks the neuter choice in CC.
+	
+	invisiblegender		Never show character's gender in title, use bare terms only ("felir").
+	explicitgender		Always show character's gender in title, using generic term ("male felin").
+	terms			Lists the terms to use for this plan.
+		generic: <string>
+		male: <string>
+		female: <string>
+		herm: <string>
+
+	bestiary: <string>	What to show in the reference list and to the side in the CC.
+		char: <char>	The character to use in the reference list.
+	editable: <edits>	A list of fields for the CC, eg "skin/color|Skin color, hair/color|Hair color".
+
+	tallness: <measure>	How tall this character is.
+	femalesmaller		If the final gender is female, take five to ten centimeters off. If herm, one to six centimeters.
+
+	hair
+		length: <measure>
+		color: <color>
+		style: <string>	Anything listed in bodyparts.tml:hair/names.
+	skin
+		type: <string>	Anything listed in bodyparts.tml:skin.
+		color: <color>
+		pattern: <string>	Affected by removeifblank.
+			color: <color>
+	eyes: <color>
+		glow		Character's eyes glow in the dark.
+		count: <amount>	Defaults to two.
+	ears: <string>		Anything listed in bodyparts.tml:ears.
+	face: <string>		Anything listed in bodyparts.tml:face.
+	tongue: <string>	Anything listed in bodyparts.tml:tongue.
+	teeth: <string>		Anything listed in bodyparts.tml:teeth.
+	legs: <string>		Anything listed in bodyparts.tml:legs.
+	tail: <string>		Anything listed in bodyparts.tml:tail.
+	horns: <amount>		Amount is per pair.
+		big
+		curled
+		small		Implied from lack of big
+		straight	Implied from lack of curled
+	wings: <type>		Anything listed in bodyparts.tml:wings.
+		small		Character's wings are too small to fly with.
+	antennae		Character has insectile antennae.
+	snaketail		Character has a snake tail. Forcibly removes legs token.
+	slimeblob		Character has a slime blob for a lower body. Should forcibly remove legs token?
+	quadruped		Character has four legs and no arms.
+	taur			Character has four legs and two arms.
+	monoceros		Character has a unicorn horn.
+	
+	waist: <rating>		Refer to bodyparts.tml:waist.
+	hips: <rating>		Refer to bodyparts.tml:hips.
+	ass
+		size: <rating>	Refer to bodyparts.tml:ass/size.
+		looseness: <rating>	Refer to bodyparts.tml:ass/looseness.
+		virgin		Character's ass has never been penetrated.
+	penis: <string>		Anything listed in bodyparts.tml:penis.
+		length: <measure>
+		thickness: <measure>
+		dual		Character has two identical penises.
+	balls:
+		amount: <count>
+		size: <rating>	Refer to bodyparts.tml:balls.
+	vagina
+		wetness: <rating>	Refer to bodyparts.tml:vagina/wetness.
+		looseness: <rating>	Refer to bodyparts.tml:vagina/looseness.
+		clit: <measure>
+		virgin		Character's vagina has never been penetrated.
+	breasts
+		amount: <count>
+		size: <rating>	Refer to bodyparts.tml:breasts/size.
+		nipples: <count>
+			size: <measure>
+			canfuck	Character's nipples are little penises.
+			fuckable	Character's nipples are little vaginas.
+			wetness		As with vaginas.
+			looseness
+		lactation	Milk amount is quintupled.
+	
+	tattoos
+		<location>: <string>	Location can be hip, smallofback, or buttcheek. Should be encoded into bodyparts.tml.
+
+	copier: <state>		Character can copy others' sexy bits.
+		full		Character can copy others' full appearance.
+		backup		Added when needed, used to store the character's true appearance.
+		timeout: <ticks>	Added when needed, used to determine when a full copier reverts.
+			minute: <time>
+
+	beast			Turns this character into a mindless beast that can't be interacted with much.
+		role		Will be replaced by team membership.
+			predator
+			prey
+	drops			Beasts only.
+		<item ID>
+	infectswith: <bodyplan ID>	Beasts only. Causes target to shift towards indicated bodyplan when struck.
+	neverprefix		Beasts only.
+
+UNIQUES.TML
+-----------
+character: <id>			Same as bodyplan, but shouldn't use random parts.
+	special			Character's name is always known.
+
+IN-GAME
+-------
+Extras for characters:		Use them as you wish in a bodyplan or unique.
+	a: <string>		Article to use for this character.
+	ispropernamed: <bool>	Character -has- a name.
+	sexpreference: <num>	0 for men, 1 for women, 2 for either, 3 for none.
+	items			Character's inventory
+		<item ID>
+			color: <color>
+			equipped
+			owner: <ID>
+	health: <health>	Max health is determined from other stats.
+	perks
+		messyorgasms	Cum and milk amount is increased by 50%.
+		formlock	Mutate and Morph refuse to work on this character.
+		<more to come>
+	skills
+		<skill>: <progress>	Skill level is (int)progress.
+
+	money: <amount>
+	ships			TODO: DESCRIBE THIS
+	paragon: <stat>
+	renegade: <stat>
+
+	capacity: <amount>	Carrying capacity, determined from strength.
+	carried: <amount>	Carrying weight.
+	title: <string>		Determined from terms and explicitgender.
+	cummultiplier: <value>
+
+	charisma: <stat>
+	climax: <stat>
+	cunning: <stat>
+	carnality: <stat>
+	stimulation: <stat>
+	sensitivity: <stat>
+	speed: <stat>
+	strength: <stat>
+
+	charismabonus: <stat>
+	climaxbonus: <stat>
+	cunningbonus: <stat>
+	carnalitybonus: <stat>
+	stimulationbonus: <stat>
+	sensitivitybonus: <stat>
+	speedbonus: <stat>
+	strengthbonus: <stat>
+
+ITEMS.TML
+---------
+item: <id>
+	_n: <string>		If left out, use transformed ID as name.
+	_u: <string>		Unidentified name.
+	_ia: <string>		Indefinite article, defaults to "a" or "an". Can be set to "" if you need.
+	_da: <string>		Definite article, defaults to "the".
+	plural			The item is plural-named.
+	description: <string>
+	colored			The item can be colored. Use "[color]", "[ color]", and "[color ]" in the description and name as you wish. The item's visual will be adjusted to match.
+	randomized: <number>	Use a randomized name and appearance. #0 through 127 are for potions, #128 to 191 are for rings.
+	ascii			TODO: Consider removing this and hoisting char and fore? We're not even using ASCII!
+		char: <char>	Which character to use for this item.
+		fore: <color>	Which color to use for this item. Not used if the item can be dyed.
+	equipable		The item can be worn or wielded.
+		coat		The item is worn over any jackets.
+		female		The item is for women only.
+		goggles		The item covers the eyes.
+		hand		The item is wielded or held in hand.
+		hat		The item is worn on the head.
+		jacket		The item is worn on the upper body, over any shirts.
+		male		The item is for men only
+		mask		The item covers the lower face.
+		neck		The item is worn on the neck.
+		pants		The item is worn on the lower body, over any underclothes.
+		ring		The item is worn on a finger.
+		shirt		The item is worn on the upper body, over any underclothes.
+		shoes		The item is worn on the feet, over any socks.
+		socks		The item is worn on the feet.
+		undershirt	The item is worn on the upper body.
+		underpants	The item is worn on the lower body and can't be used by non-bipeds.
+UNIMP		twohanded	The item is wielded with two hands.
+		translucent	The item does not (fully) obscure what's beneath it.
+		reach		The item does not preclude access.
+			penis	The item allows access to the penis.
+			anus	The item allows access to the anus.
+	unique			There should be only one of this item in the entire game.
+	statbonus		When equipped, the item yields various bonuses to stats.
+		<stat>: <amount>
+	weight: <class>		Can be "feather", "light", "medium", "heavy", or "immense".
+	armor: <value>		The item, when equipped, counts as armor. Highest rated item wins.
+	weapon
+		damage: <amount>	Base damage done when using this item as a weapon.
+		skill: <skill ID>	Skill to train by using this item as a weapon.
+		attacktype: <type>	As listed in defense.lua.
+		range: <amount>		The item is a long-range weapon that can aim up to this many tiles away.
+		ammo: <item ID>		What other item to consume as ammo.
+UNIMP		splash: <range>		When fired, there's this much splash damage.
+UNIMP		increase: <stat>	When hit, this stat is increased.
+	food: <amount>		The item can be eaten to restore an amount of HP.
+		fat		When eaten, risks increasing the user's hips, waist, or ass rating.
+	singleuse		The item is destroyed when used.
+	ammo			The item is munition and cannot be directly used.
+	charge: <amount>	The item can be consumed multiple times. Weapons fire this many times.
+		revert: <item ID>	When drained of charge, become this item.
+		limit: <amount>	The maximum charge of the item.
+		collectivename: <string>	The plural form of the item's name.
+	effect			For a long-range weapon, what should the ray look like?
+		char: <char>
+		fore: <color>
+		back: <color>
+	identify: <topic ID>	The item can be identified by learning about this topic.
+	timer: <ticks>		How often to invoke the item's timer script.
+		evenunequipped	The timer script should run even if the item is merely carried.
+	script: <name>		Name can be "timer", "equip", "unequip", or blank. If blank, script runs on use.
+		<[[ Lua ]]>
+	price: <amount>
+UNIMP	canfuck			The item can be used during sex to penetrate.
+		length: <measure>
+		thickness: <measure>
+	sextoy			The item is worn and should not be considered for the AI to take off during sex.
+	nouse			The item simply cannot be used at all.
+	quest			Same as nouse, but with a semantically different value.
+	fireproof		The item will survive being burned.
+
+Items can have various arbitrary tags that lootsets can then use as filters.
+

@@ -1803,6 +1803,22 @@ item: useless_rubber_panties
 	colored
 	sexy
 
+item: vault_jumpsuit
+	_n: Vault Dweller jumpsuit
+	_u: dingy blue jumpsuit
+	equipable
+		shirt
+		pants
+	weight: medium
+	price: 200
+	identify: pop_culture
+	ascii
+		char: 0x19C
+		fore: blue
+	description: "A dirty blue one-size-fits-all jumpsuit with yellow accents and a big 13 on the back."
+	clothing
+	joke
+
 -- #endregion
 
 
