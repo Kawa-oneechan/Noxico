@@ -84,7 +84,7 @@ namespace Noxico
 		}
 
 		//Added for Jint's sake.
-		//HEADS UP: were it not for 'a' being true by default, we could remove this with the newest Jint update.
+		//TODO: do we still need this now that we don't USE Jint anymore?
 		public string ToString(Token token)
 		{
 			return this.ToString(token, false, true);
@@ -759,7 +759,7 @@ namespace Noxico
 			if (item.HasToken("fat"))
 			{
 				var hwa = Random.Flip() ? "hips" : Random.Flip() ? "waist" : "ass/size";
-				if (gourmand.Path("hwa") == null)
+				if (gourmand.Path(hwa) == null)
 					return;
 				var change = Random.NextDouble() * 0.25;
 				if (change > 0)
