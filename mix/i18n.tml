@@ -516,45 +516,45 @@ Equipment
 	vocalize_cryouts: cries out, screams
 -- #endregion
 -- #region Morph
-	morph_growcock: [Youorname] [has] grown a brand new [?:cock]
-	morph_growpussy: [Youorname] [has] grown a brand new, [pussywetness] [?:pussy]
-	morph_splitcock: [Yourornames] [?:cock] has split in two
-	morph_splitpussy: [Yourornames] [?:pussy] has split in two
-	morph_growsnaketail: [Youorname] [has] lost [his] legs and gained a long, serpentine tail
-	morph_growslimeblob: [Youorname] become{s} a slime, and [his] legs melt into a blob of goo
-	morph_bipedify: [Yourornames] body has returned to a normal bipedal shape
-	morph_taurify: [Youorname] grow{s} a second pair of legs as a taurbody extends from [his] rear
-	morph_quadrify: [Youorname] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form
-	morph_taurtrain: Another taurbody extends out behind [yourornames] [?:butt] as [he] grow{s} another pair of legs
-	morph_untaurtrain: [Youorname] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt]
-	morph_lose_x_and_gain_y_legs: [Youorname] [has] {0} and gained a pair of {1} legs
+	morph_growcock: [view] [has] grown a brand new [?:cock]
+	morph_growpussy: [view] [has] grown a brand new, [pussywetness] [?:pussy]
+	morph_splitcock: [views] [?:cock] has split in two
+	morph_splitpussy: [views] [?:pussy] has split in two
+	morph_growsnaketail: [view] [has] lost [his] legs and gained a long, serpentine tail
+	morph_growslimeblob: [view] become{s} a slime, and [his] legs melt into a blob of goo
+	morph_bipedify: [views] body has returned to a normal bipedal shape
+	morph_taurify: [view] grow{s} a second pair of legs as a taurbody extends from [his] rear
+	morph_quadrify: [view] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form
+	morph_taurtrain: Another taurbody extends out behind [views] [?:butt] as [he] grow{s} another pair of legs
+	morph_untaurtrain: [view] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt]
+	morph_lose_x_and_gain_y_legs: [view] [has] {0} and gained a pair of {1} legs
 	morph_losesnaketail: lost [his] snaketail
 	morph_loseslimeblob: solidified
-	morph_legsfail: [Yourornames] lower body tingles, but nothing happens
-	morph_gainbreast: [Youorname] [has] gained a [?:breast]
-	morph_gainmorebreasts: [Youorname] [has] gained a {0} [?:breast]
-	morph_losebreast: [Youorname] [has] lost a [?:breast]
-	morph_loselastbreast: [Youorname] [has] lost [his] [?:breasts]
-	morph_gaintesticle: [Youorname] [has] gained another testicle
-	morph_gainonenut: [Youorname] [has] grown a single testicle
-	morph_gainballs: [Youorname] [has] gained a set of {0} {1} balls
-	morph_loselastnut: [Youorname] [has] lost [his] last remaining testicle
-	morph_loseonenut: [Youorname] [has] lost one of [his] balls, bringing [him] down to only {0}
-	morph_gaindicknipples: The nipples on [yourornames] [?:breasts] have grown out and become phallic
-	morph_gainnipplecunts: The nipples on [yourornames] [?:breasts] have inverted and taken on a distinctly vaginal appearance
-	morph_gainonenipple: [Yourornames] [?:breasts] have gained a nipple
-	morph_gainnipple: [Yourornames] [?:breasts] have gained another nipple
-	morph_gaindicknipple: [Yourornames] [?:breasts] have gained another dicknipple
-	morph_gainnipplecunt: [Yourornames] [?:breasts] have gained another nipplecunt
-	morph_losenipples: [Yourornames] [?:breasts] have lost their nipples
-	morph_losedicknipples: [Yourornames] [?:breasts] have lost their dicknipples
-	morph_losenipplecunts: [Yourornames] [?:breasts] have lost their nipplecunts
-	morph_losenipple: [Yourornames] [?:breasts] have each lost a nipple
-	morph_losedicknipple: [Yourornames] [?:breasts] have each lost a dicknipple
-	morph_losenipplecunts: [Yourornames] [?:breasts] have each lost a nipplecunt
-	morph_revertdicknipples: The dicknipples on [yourornames] [?:breasts] have become normal nipples
-	morph_revertnipplecunts: The nipplecunts on [yourornames] [?:breasts] have become normal nipples
-	morph_nipplefail: [Yourornames] chest tingles, but nothing happens
+	morph_legsfail: [views] lower body tingles, but nothing happens
+	morph_gainbreast: [view] [has] gained a [?:breast]
+	morph_gainmorebreasts: [view] [has] gained a {0} [?:breast]
+	morph_losebreast: [view] [has] lost a [?:breast]
+	morph_loselastbreast: [view] [has] lost [his] [?:breasts]
+	morph_gaintesticle: [view] [has] gained another testicle
+	morph_gainonenut: [view] [has] grown a single testicle
+	morph_gainballs: [view] [has] gained a set of {0} {1} balls
+	morph_loselastnut: [view] [has] lost [his] last remaining testicle
+	morph_loseonenut: [view] [has] lost one of [his] balls, bringing [him] down to only {0}
+	morph_gaindicknipples: The nipples on [views] [?:breasts] have grown out and become phallic
+	morph_gainnipplecunts: The nipples on [views] [?:breasts] have inverted and taken on a distinctly vaginal appearance
+	morph_gainonenipple: [views] [?:breasts] have gained a nipple
+	morph_gainnipple: [views] [?:breasts] have gained another nipple
+	morph_gaindicknipple: [views] [?:breasts] have gained another dicknipple
+	morph_gainnipplecunt: [views] [?:breasts] have gained another nipplecunt
+	morph_losenipples: [views] [?:breasts] have lost their nipples
+	morph_losedicknipples: [views] [?:breasts] have lost their dicknipples
+	morph_losenipplecunts: [views] [?:breasts] have lost their nipplecunts
+	morph_losenipple: [views] [?:breasts] have each lost a nipple
+	morph_losedicknipple: [views] [?:breasts] have each lost a dicknipple
+	morph_losenipplecunts: [views] [?:breasts] have each lost a nipplecunt
+	morph_revertdicknipples: The dicknipples on [views] [?:breasts] have become normal nipples
+	morph_revertnipplecunts: The nipplecunts on [views] [?:breasts] have become normal nipples
+	morph_nipplefail: [views] chest tingles, but nothing happens
 -- #endregion
 -- #region Morph delta descriptions
 -- Metrics: tallness hips waist ass_size charisma cunning carnality sensitivity speed strength
@@ -606,6 +606,11 @@ Equipment
 	morphpart_tail_: [views] tail becomes -like
 	morphpart_gettail_: [views] tail becomes -like
 	morphpart_tail_lose: [views] tail disappears
+-- Pussy changes
+	morphpart_grow_pussy: [view] grow{s} a {0} [?:pussy]
+	morphpart_pussy_split: [views] [?:pussy] splits in two
+	morphpart_pussy_join: [views] [?:pussies] fuse into one
+	morphpart_lose_pussy: [views] [?:pussy] disappears
 -- Penis changes
 	morphpart_grow_dick: [view] grow{s} a {0} [?:cock]
 	morphpart_cock_split: [views] [?:cock] splits in two
@@ -622,12 +627,11 @@ Equipment
 	morphpart_penis_1_-1: [views] [?:cock] grows longer and fatter
 -- Final joiners
 	morphfinal_nothing: Nothing happens.
-	morphfinal_1: {0}.
-	morphfinal_2: {0} and {1}.
-	morphfinal_3: {0}, {1}, and {2}.
-	morphfinal_n1: {0}. {1}
-	morphfinal_n2: , {0}
-	morphfinal_n3: , and {0}.
+	morphfinal_0: ", "
+	morphfinal_1: " and "
+	morphfinal_2: ", and "
+	morphfinal_3: ". "
+	morphfinal_4: "."
 -- #endregion
 -- #region Tutorial
 	tutorial_title: Tutorial

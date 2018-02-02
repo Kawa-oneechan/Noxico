@@ -767,7 +767,7 @@ namespace Noxico
 				#region Breasts and nipples -- removing
 				case Mutations.RemoveBreast:
 				case Mutations.RemoveNipple:
-					throw new NotImplementedException();
+					break; //throw new NotImplementedException();
 				#endregion
 				#region Odd lower bodies
 				case Mutations.AddOddLegs:
@@ -854,9 +854,9 @@ namespace Noxico
 								return possibleChanges;
 							}
 						}
-						var fail = new Token("_dummy");
-						fail.AddToken("$", i18n.GetString("morph_legsfail"));
-						possibleChanges.Add(fail);
+						//var fail = new Token("_dummy");
+						//fail.AddToken("$", i18n.GetString("morph_legsfail"));
+						//possibleChanges.Add(fail);
 						break;
 					}
 				#endregion
@@ -901,7 +901,7 @@ namespace Noxico
 					break;
 				case Mutations.AddVagina:
 				case Mutations.AddTesticle:
-					throw new NotImplementedException();
+					break; //throw new NotImplementedException();
 				#endregion
 				#region Genitalia -- changing
 				//case Mutations.AlterPenis:
@@ -929,10 +929,77 @@ namespace Noxico
 				//case Mutations.GrowTesticles:
 				#endregion
 				#region Genitalia -- removing
-				//case Mutations.RemovePenis:
-				//case Mutations.RemoveVagina:
+				case Mutations.RemovePenis:
+					{
+						if (!this.HasToken("penis"))
+						{
+							//var change = new Token("_dummy");
+							//change.AddToken("$", i18n.GetString("morph_legsfail"));
+							//possibleChanges.Add(change);
+						}
+						else if (this.GetToken("penis").HasToken("dual"))
+						{
+							var change = new Token("_removefrom/penis", "dual");
+							change.AddToken("$", i18n.GetString("morphpart_cock_join"));
+							possibleChanges.Add(change);
+						}
+						else
+						{
+							var change = new Token("_remove", "penis");
+							change.AddToken("$", i18n.GetString("morphpart_lose_dick"));
+							possibleChanges.Add(change);
+						}
+						break;
+					}
+				case Mutations.RemoveVagina:
+					{
+						if (!this.HasToken("vagina"))
+						{
+							//var change = new Token("_dummy");
+							//change.AddToken("$", i18n.GetString("morph_legsfail"));
+							//possibleChanges.Add(change);
+						}
+						else if (this.GetToken("vagina").HasToken("dual"))
+						{
+							var change = new Token("_removefrom/vagina", "dual");
+							change.AddToken("$", i18n.GetString("morphpart_pussy_join"));
+							possibleChanges.Add(change);
+						}
+						else
+						{
+							var change = new Token("_remove", "vagina");
+							change.AddToken("$", i18n.GetString("morphpart_lose_pussy"));
+							possibleChanges.Add(change);
+						}
+						break;
+					}
 				case Mutations.RemoveTesticle:
-					throw new NotImplementedException();
+					{
+						var balls = this.GetToken("balls");
+						if (balls != null)
+						{
+							var amount = balls.GetToken("amount");
+							if (amount.Value > 1)
+							{
+								var change = new Token("balls/amount", amount.Value - 1);
+								change.AddToken("$", i18n.Format("morph_loseonenut", amount.Value - 1));
+								possibleChanges.Add(change);
+							}
+							else
+							{
+								var change = new Token("_remove", "balls");
+								change.AddToken("$", i18n.GetString("morph_loselastnut"));
+								possibleChanges.Add(change);
+							}
+						}
+						else
+						{
+							//var change = new Token("_dummy");
+							//change.AddToken("$", i18n.GetString("morph_legsfail"));
+							//possibleChanges.Add(change);
+						}
+					}
+					break;
 				#endregion
 			}
 
@@ -1086,11 +1153,10 @@ namespace Noxico
 		}
 		*/
 
-		public void ApplyMorphDeltas(List<Token> possibilities, int maxChanges, out string feedback)
+		public void ApplyMorphDeltas(List<Token> possibilities, int maxChanges, List<string> feedbacks)
 		{
 			var numChanges = Math.Min(4, possibilities.Count);
 			var changes = new List<Token>();
-			var feedbacks = new List<string>();
 			for (var i = 0; i < numChanges; i++)
 			{
 				var possibility = possibilities[Random.Next(possibilities.Count)];
@@ -1100,49 +1166,13 @@ namespace Noxico
 				{
 					if (subChange.Name == "$")
 					{
-						feedbacks.Add(subChange.Text);
+						if (!feedbacks.Contains(subChange.Text))
+							feedbacks.Add(subChange.Text);
 						continue;
 					}
 					changes.Add(subChange);
 				}
 			}
-			if (changes.Count == 0)
-			{
-				feedback = i18n.GetString("morphfinal_nothing");
-				return;
-			};
-
-			var feedbackBuilder = new StringBuilder();
-			if (feedbacks.Count == 1)
-			{
-				feedbackBuilder.Append(i18n.Format("morphfinal_1", feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]")));
-			}
-			else if (feedbacks.Count == 2)
-			{
-				feedbackBuilder.Append(i18n.Format("morphfinal_2",
-					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
-					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]")));
-			}
-			else if (feedbacks.Count == 3)
-			{
-				feedbackBuilder.Append(i18n.Format("morphfinal_3",
-					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
-					feedbacks[1].Replace("[views]", "[his]").Replace("[view]", "[he]"),
-					feedbacks[2].Replace("[views]", "[his]").Replace("[view]", "[he]")));
-			}
-			else
-			{
-				feedbackBuilder.Append(i18n.Format("morphfinal_n1",
-					feedbacks[0].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"),
-					feedbacks[1].Replace("[views]", "[His]").Replace("[view]", "[He]")));
-				for (var i = 2; i < feedbacks.Count - 1; i++)
-				{
-					feedbackBuilder.Append(i18n.Format("morphfinal_n2", feedbacks[i].Replace("[views]", "[yourornames]").Replace("[view]", "[youorname]")));
-				}
-				feedbackBuilder.Append(i18n.Format("morphfinal_n3", feedbacks[feedbacks.Count - 1].Replace("[views]", "[he]").Replace("[view]", "[he]")));
-			}
-			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
-			feedback = feedbackBuilder.ToString().Viewpoint(this);
 
 			foreach (var change in changes)
 			{
@@ -1180,14 +1210,88 @@ namespace Noxico
 			}
 		}
 
+		public string GetMorphFeedback(List<string> feedbacks)
+		{
+			if (feedbacks.Count == 0)
+				return i18n.GetString("morphfinal_nothing");
+
+			var isStart = new bool[feedbacks.Count];
+			isStart[0] = true;
+			for (var i = 1; i < feedbacks.Count; i++)
+				if (feedbacks[i][0] != '[')
+					isStart[i] = true;
+
+			var fragmentEnd = new int[feedbacks.Count];
+			fragmentEnd[feedbacks.Count-1] = 4; //"."
+			var fragmentLength = 0;
+			for (var i = 0; i < feedbacks.Count - 1; i++)
+			{
+				if (isStart[i + 1])
+				{
+					fragmentEnd[i] = 3; //". "
+					if (fragmentLength > 0)
+					{
+						if (fragmentLength == 1)
+							fragmentEnd[i - 1] = 1; //" and "
+						else
+							fragmentEnd[i - 1] = 2; //", and "
+					}
+					fragmentLength = 0;
+				}
+				else
+				{
+					fragmentLength++;
+					if (fragmentLength == 4)
+					{
+						//Force an end.
+						fragmentLength = 0;
+						fragmentEnd[i] = 3; //". "
+						if (i < feedbacks.Count - 1)
+							isStart[i + 1] = true;
+						if (i > 0)
+						{
+							if (fragmentLength == 1)
+								fragmentEnd[i - 1] = 1; //" and "
+							else
+								fragmentEnd[i - 1] = 2; //", and "
+						}
+					}
+				}
+			}
+			//fix final part
+			if (fragmentLength > 0)
+			{
+				if (fragmentLength == 1)
+					fragmentEnd[feedbacks.Count - 2] = 1; //" and "
+				else
+					fragmentEnd[feedbacks.Count - 2] = 2; //", and "
+			}
+
+			var feedbackBuilder = new StringBuilder();
+
+			for (var i = 0; i < feedbacks.Count; i++)
+			{
+				if (isStart[i])
+					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[Yourornames]").Replace("[view]", "[Youorname]"));
+				else
+					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[his]").Replace("[view]", "[he]"));
+				feedbackBuilder.Append(i18n.GetString("morphfinal_" + fragmentEnd[i]));
+			}
+			
+			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
+			return feedbackBuilder.ToString().Viewpoint(this);
+		}
+
 		public string Morph(string targetPlan, Gender targetGender = Gender.Invisible)
 		{
 			if (GetToken("perks").HasToken("formlock"))
 				return i18n.GetString("formlock").Viewpoint(this);
 			var possibilities = GetTargetedMorphDeltas(targetPlan, targetGender);
-			var feedback = string.Empty;
-			ApplyMorphDeltas(possibilities, 4, out feedback);
-			
+			var feedbacks = new List<string>();
+			ApplyMorphDeltas(possibilities, 4, feedbacks);
+
+			var feedback = GetMorphFeedback(feedbacks);
+
 			var closestMatch = GetClosestBodyplanMatch();
 			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);
 			var myTerms = this.GetToken("terms");
@@ -1215,15 +1319,15 @@ namespace Noxico
 		{
 			if (GetToken("perks").HasToken("formlock"))
 				return i18n.GetString("formlock").Viewpoint(this);
-			var fb = new StringBuilder();
+			var feedbacks = new List<string>();
 			for (var i = 0; i < number; i++)
 			{
 				var possibilities = GetWildMorphDeltas(intensity, mutation);
 				var feedback = string.Empty;
-				ApplyMorphDeltas(possibilities, 4, out feedback);
-				fb.Append(feedback);
-				fb.Append(' ');
+				ApplyMorphDeltas(possibilities, 4, feedbacks);
 			}
+
+			var fb = GetMorphFeedback(feedbacks);
 
 			var closestMatch = GetClosestBodyplanMatch();
 			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == closestMatch);
@@ -1238,7 +1342,7 @@ namespace Noxico
 
 			SpeechFilter = null; //invalidate here -- we don't necessarily have this character speak right away and need to adjust for new impediments.
 
-			return fb.ToString().Trim();
+			return fb.Trim();
 		}
 	}
 }

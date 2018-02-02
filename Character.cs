@@ -24,7 +24,7 @@ namespace Noxico
 	public enum Mutations
 	{
 		Random = -1, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
-		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples, GrowPenis
+		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples, GrowPenis, RemovePenis, RemoveVagina,
 	}
 
 	public enum TeamBehaviorClass

@@ -311,7 +311,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			*/
 			/*
 			var testChar = Character.GetUnique("squeaky");
-			var report = testChar.Mutate(4, 1, Mutations.GrowPenis);
+			var report = testChar.Mutate(20, 100, Mutations.Random);
 			//report = testChar.Mutate(3, 1, Mutations.RemoveOddLegs);
 			TextScroller.Plain(testChar.LookAt(null), testChar.GetKnownName(), false, true);
 			return;
