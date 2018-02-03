@@ -52,7 +52,7 @@ namespace Noxico
 				var background = new Bitmap(Program.Cols, Program.Rows * 2, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				var logo = Mix.GetBitmap("logo.png");
 				var titleOptions = Mix.GetFilesWithPattern("titles\\*.png");
-				var chosen = Mix.GetBitmap(titleOptions[Random.Next(titleOptions.Length)]);
+				var chosen = Mix.GetBitmap(titleOptions.PickOne());
 				//Given our random backdrop and fixed logo, draw them both onto background
 				//because we can't -just- display alpha-blended PNGs.
 				using (var gfx = Graphics.FromImage(background))

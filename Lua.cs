@@ -156,7 +156,7 @@ namespace Noxico
 					else
 						return null;
 				}
-				var choice = options[Random.Next(options.Count)];
+				var choice = options.PickOne();
 				return choice;
 			});
 

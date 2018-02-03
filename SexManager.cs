@@ -168,7 +168,7 @@ namespace Noxico
 			var possibilities = GetResultHelper(id, actors, choices);
 			if (possibilities.Count == 0)
 				throw new NullReferenceException(string.Format("Could not find a sex choice named \"{0}\".", id));
-			var choice = possibilities[Random.Next(possibilities.Count)];
+			var choice = possibilities.PickOne();
 			return choice;
 		}
 
@@ -216,7 +216,7 @@ namespace Noxico
 				while (x is object[])
 				{
 					var options = (object[])x;
-					x = options[Random.Next(options.Length)];
+					x = options.PickOne();
 					if (x is Neo.IronLua.LuaTable)
 						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
 				}
@@ -265,7 +265,7 @@ namespace Noxico
 				while (x is object[])
 				{
 					var options = (object[])x;
-					x = options[Random.Next(options.Length)];
+					x = options.PickOne();
 					if (x is Neo.IronLua.LuaTable)
 						x = ((Neo.IronLua.LuaTable)x).ArrayList.ToArray();
 				}

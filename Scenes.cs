@@ -44,7 +44,7 @@ namespace Noxico
 				foreach (var s in openings.Where(i => i != firstScene && i.HasToken("random") && i.GetToken("random").Text == randomKey && SceneFiltersOkay(i)))
 					scenes.Add(s);
 			}
-			var scene = scenes[Random.Next(scenes.Count)];
+			var scene = scenes.PickOne();
 
 			var message = i18n.Viewpoint(ExtractParagraphsAndScripts(scene), SceneSystem.top, SceneSystem.bottom);
 			var actions = ExtractActions(scene);
@@ -64,7 +64,7 @@ namespace Noxico
 				}
 				else
 				{
-					var randomAction = actions.Keys.ToArray()[Random.Next(actions.Count)];
+					var randomAction = actions.Keys.ToArray().PickOne();
 					actions.Clear();
 					actions.Add(randomAction, "==>");
 					MessageBox.List(message, actions, () => { Engage(SceneSystem.top, SceneSystem.bottom, (string)MessageBox.Answer); }, false, true, bottom.GetKnownName(true, true));
@@ -172,7 +172,7 @@ namespace Noxico
 							else
 								return null;
 						}
-						var choice = options[Random.Next(options.Count)];
+						var choice = options.PickOne();
 						return choice;
 					};
 
@@ -245,8 +245,8 @@ namespace Noxico
 						return false;
 					break;
 				case "bodyhash":
-					var hash = Toolkit.GetBodyComparisonHash(fPrimary);
-					var distance = Toolkit.GetHammingDistance(hash, NoxicoGame.BodyplanHashes[parts[1]]);
+					var hash = fPrimary.GetBodyComparisonHash();
+					var distance = hash.GetHammingDistance(NoxicoGame.BodyplanHashes[parts[1]]);
 					if (distance > 0) //?
 						return false;
 					break;

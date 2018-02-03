@@ -468,7 +468,7 @@ namespace Noxico
 				else if (token.Text.StartsWith("oneof "))
 				{
 					var options = token.Text.Substring(token.Text.IndexOf("of ") + 3).Split(',');
-					var choice = options[Random.Next(options.Length)].Trim();
+					var choice = options.PickOne().Trim();
 					token.Text = choice;
 				}
 			}

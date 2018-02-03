@@ -16,7 +16,7 @@ namespace Noxico
 		/// <summary>
 		/// Returns the amount of change between two strings according to the Levenshtein method.
 		/// </summary>
-		public static int GetLevenshteinDistance(string s, string t)
+		public static int GetLevenshteinDistance(this string s, string t)
 		{
 			var n = s.Length;
 			var m = t.Length;
@@ -47,77 +47,11 @@ namespace Noxico
 		/// <summary>
 		/// Returns the amount of change between two strings according to the Hamming method.
 		/// </summary>
-		public static int GetHammingDistance(string s, string t)
+		public static int GetHammingDistance(this string s, string t)
 		{
 			if (s.Length != t.Length)
 				throw new ArgumentException("Subject strings in a Hamming distance calculation should be of equal length.");
 			return s.Zip(t, (c1, c2) => c1 == c2 ? 0 : 1).Sum();
-		}
-
-		/// <summary>
-		/// Creates an encoded textual description of a character's body to use in comparisons.
-		/// </summary>
-		public static string GetBodyComparisonHash(TokenCarrier token)
-		{
-			var ret = new StringBuilder();
-			ret.Append('[');
-			var parts = new[] { "skin", "ears", "face", "teeth", "tongue", "wings", "legs", "penis", "tail" };
-			foreach (var part in parts)
-			{
-				var pt = token.Path(part + "/type");
-				if (pt == null)
-					pt = token.GetToken(part);
-				if (pt == null)
-				{
-					if (part == "tail")
-					{
-						if (token.HasToken("snaketail"))
-							ret.Append('§');
-						else if (token.HasToken("slimeblob"))
-							ret.Append('ß');
-						else
-							ret.Append(' ');
-					}
-					else
-						ret.Append(' ');
-					continue;
-				}
-				var letter = Descriptions.descTable.Path(part + '/' + pt.Text + "/_hash");
-				if (letter == null)
-					ret.Append(' ');
-				else
-				{
-					if (part == "wings" && !pt.HasToken("small"))
-						ret.Append(letter.Text.ToUpperInvariant());
-					else
-						ret.Append(letter.Text);
-				}
-			}
-			if (token.Path("hair") != null)
-				ret.Append('h');
-			else
-				ret.Append(' ');
-			if (token.Path("antennae") == null)
-				ret.Append(' ');
-			else
-				ret.Append('!');
-			var tallness = token.Path("tallness");
-			if (tallness == null)
-				ret.Append(' ');
-			else
-			{
-				var t = tallness.Value;
-				if (t == 0 && tallness.Text.StartsWith("roll"))
-					t = float.Parse(tallness.Text.Substring(tallness.Text.IndexOf('+') + 1));
-				if (t < 140)
-					ret.Append('_');
-				else if (t > 180)
-					ret.Append('!');
-				else
-					ret.Append(' ');
-			}
-			ret.Append(']');
-			return ret.ToString();
 		}
 
 		/// <summary>
@@ -143,11 +77,16 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Picks a single item from a string array, at random.
+		/// Picks a single item from an array, at random.
 		/// </summary>
-		public static string PickOne(params string[] options)
+		public static T PickOne<T>(this T[] options)
 		{
 			return options[Random.Next(options.Length)];
+		}
+
+		public static T PickOne<T>(this List<T> options)
+		{
+			return options[Random.Next(options.Count)];
 		}
 
 		public static Token PickWeighted(this List<Token> tokens)
@@ -166,7 +105,7 @@ namespace Noxico
 				}
 			}
 			if (!useWeight)
-				return tokens[Random.Next(tokens.Count)];
+				return tokens.PickOne();
 			var numWithWeigths = weights.Count(x => x > -1);
 			var totalWithWeights = weights.Where(x => x > -1).Sum();
 			var defaultWeight = (1.0f - totalWithWeights) / numWithWeigths;
@@ -182,7 +121,7 @@ namespace Noxico
 				r -= weights[i];
 			}
 			//fuck it, go unweighted.
-			return tokens[Random.Next(tokens.Count)];
+			return tokens.PickOne();
 		}
 
 
@@ -829,7 +768,7 @@ namespace Noxico
 			while (token.HasToken("random"))
 			{
 				var rnd = token.GetToken("random");
-				var pick = rnd.Tokens[Random.Next(rnd.Tokens.Count)];
+				var pick = rnd.Tokens.PickOne();
 				token.Tokens.Remove(rnd);
 				foreach (var t in pick.Tokens)
 					token.Tokens.Add(t);

@@ -209,7 +209,7 @@ namespace Noxico
 				return defs[0];
 			if (!noVariants && def.Variants.Tokens.Count > 0)
 			{
-				var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
+				var iant = def.Variants.Tokens.PickOne();
 				if (Random.NextDouble() > iant.Value)
 					def = TileDefinition.Find(iant.Name);
 			}
@@ -223,7 +223,7 @@ namespace Noxico
 				var def = defs[index];
 				if (!noVariants && def.Variants.Tokens.Count > 0)
 				{
-					var iant = def.Variants.Tokens[Random.Next(def.Variants.Tokens.Count)];
+					var iant = def.Variants.Tokens.PickOne();
 					if (Random.NextDouble() > iant.Value)
 						def = TileDefinition.Find(iant.Name);
 				}

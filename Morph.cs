@@ -3,8 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+/* A consideration.
+ * 
+ * Right now, mutamorph feedback is given pre-i18n'd, and one can gain a thing and then shortly if not immediately after lose it again.
+ * Detecting such a thing would be pretty easy if we could somehow tag the feedback bits for recognition -- if we find a "gain dick"
+ * and "lose dick" in the same list of feedbacks, we know we can probably remove it. Maybe not if we have an "alter dick" in there too.
+ * The easiest way to do it, I think? Rewrite the feedback text to use the various placeholder tags! Instead of returning "you grew a
+ * 3rd [?:breast]", return "morphpart_grewabreast", which would *later* resolve to "[view] grew a [ord:[v:breasts/amount]] [?:breast]",
+ * and then finally be shown on screen as "you grew a 3rd bap". That way, we can count how many times "morphpart_grewabreast" appears
+ * and compare it to how many times "morphpart_lostabreast" does.
+ */
+
 namespace Noxico
 {
+	public enum Mutations
+	{
+		Random = -1, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle,
+		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples, RemovePenis, RemoveVagina,
+		AddTail
+	}
+
 	public partial class Character
 	{
 		public List<Token> GetTargetedMorphDeltas(string targetPlan, Gender targetGender)
@@ -113,7 +131,7 @@ namespace Noxico
 				{
 					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(now))
-						changeKind = Toolkit.PickOne(options);
+						changeKind = options.PickOne();
 				}
 				else if (thenToken.Text != now)
 					changeKind = thenToken.Text;
@@ -140,7 +158,7 @@ namespace Noxico
 				{
 					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(now))
-						changeColor = Toolkit.PickOne(options);
+						changeColor = options.PickOne();
 				}
 				else if (thenToken.Text != now)
 					changeColor = thenToken.Text;
@@ -167,7 +185,7 @@ namespace Noxico
 				{
 					var options = skinTypeThen.Substring(skinTypeThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(skinTypeNow))
-						skinTypeThen = Toolkit.PickOne(options);
+						skinTypeThen = options.PickOne();
 					else
 						skinTypeThen = skinTypeNow;
 				}
@@ -175,7 +193,7 @@ namespace Noxico
 				{
 					var options = skinColorThen.Substring(skinColorThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(skinColorNow))
-						skinColorThen = Toolkit.PickOne(options);
+						skinColorThen = options.PickOne();
 					else
 						skinColorThen = skinColorNow;
 				}
@@ -194,7 +212,7 @@ namespace Noxico
 						if (legsThen.StartsWith("oneof"))
 						{
 							var options = legsThen.Substring(legsThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
-							legsThen = Toolkit.PickOne(options);
+							legsThen = options.PickOne();
 						}
 						var newChange = change.AddToken("$", i18n.GetString("morphpart_slime_" + legsThen));
 						newChange.AddToken("legs", legsThen);
@@ -230,7 +248,7 @@ namespace Noxico
 					{
 						var options = hairColorThen.Substring(hairColorThen.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 						if (!options.Contains(hairColorNow))
-							hairColorThen = Toolkit.PickOne(options);
+							hairColorThen = options.PickOne();
 						else
 							hairColorThen = hairColorNow;
 					}
@@ -252,7 +270,7 @@ namespace Noxico
 				{
 					var options = tailThen.Text.Substring(tailThen.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(tailNow.Text))
-						tailThen.Text = Toolkit.PickOne(options);
+						tailThen.Text = options.PickOne();
 					else
 						tailThen.Text = tailNow.Text;
 				}
@@ -292,7 +310,7 @@ namespace Noxico
 				{
 					var options = wingsThen.Text.Substring(wingsThen.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
 					if (!options.Contains(wingsNow.Text))
-						wingsThen.Text = Toolkit.PickOne(options);
+						wingsThen.Text = options.PickOne();
 					else
 						wingsThen.Text = wingsNow.Text;
 				}
@@ -357,7 +375,7 @@ namespace Noxico
 				if (thenToken.Text.StartsWith("oneof"))
 				{
 					var options = thenToken.Text.Substring(thenToken.Text.IndexOf("of ") + 3).Split(',').Select(x => x.Trim()).ToArray();
-					changeKind = Toolkit.PickOne(options);
+					changeKind = options.PickOne();
 				}
 				else
 					changeKind = thenToken.Text;
@@ -642,6 +660,8 @@ namespace Noxico
 				mutation = (Mutations)Random.Next(Enum.GetNames(typeof(Mutations)).Length - 1); //subtract one from the length to account for Random = -1
 			var closestBodyplan = Bodyplans.First(t => t.Text == GetClosestBodyplanMatch());
 			var possibleChanges = new List<Token>();
+			var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
+			var tailTypes = Descriptions.descTable.GetToken("tail").Tokens.Select(t => t.Name).ToArray();
 			switch (mutation)
 			{
 				#region Breasts and nipples -- adding
@@ -771,10 +791,9 @@ namespace Noxico
 				#endregion
 				#region Odd lower bodies
 				case Mutations.AddOddLegs:
-					var funkyLegs = new[] { "taur", "quadruped", "snaketail", "slimeblob" };
-					if (funkyLegs.All(x => !HasToken(x)))
+					if (funkyLegs.All(x => !this.HasToken(x)))
 					{
-						var choice = "taur"; // Toolkit.PickOne(funkyLegs);
+						var choice = funkyLegs.PickOne();
 						var change = new Token("_add", choice);
 						switch (choice)
 						{
@@ -861,8 +880,23 @@ namespace Noxico
 					}
 				#endregion
 				#region Tails and Wings
-				//case Mutations.AddTail:
-				//case Mutations.AlterTail:
+				case Mutations.AddTail:
+					if (funkyLegs.Any(x => this.HasToken(x)))
+						break;
+					if (this.HasToken("tail"))
+					{
+						var change = new Token("tail", tailTypes.PickOne());
+						change.AddToken("$", i18n.GetString("morph_altertail"));
+						possibleChanges.Add(change);
+					}
+					else
+					{
+						var change = new Token("_add", "tail");
+						change.AddToken("tail", tailTypes.PickOne());
+						change.AddToken("$", i18n.GetString("morph_growtail"));
+						possibleChanges.Add(change);
+					}
+					break;
 				#endregion
 				#region Horns and Antennae
 				//case Mutations.AddHorns:
@@ -884,19 +918,21 @@ namespace Noxico
 						change.AddToken("$", i18n.GetString("morph_growcock"));
 						possibleChanges.Add(change);
 					}
-					else if (!this.GetToken("penis").HasToken("dual"))
-					{
-						var change = new Token("_addto/penis", "dual");
-						change.AddToken("$", i18n.GetString("morph_splitcock"));
-						possibleChanges.Add(change);
-					}
 					else
 					{
-						//Instead of failing, let's just grow 'em!
-						var change = new Token("penis/length", this.Path("penis/length").Value + (float)Random.NextDouble() * intensity + 2f);
-						change.AddToken("penis/thickness", this.Path("penis/thickness").Value + (float)Random.NextDouble() * (intensity / 3));
-						change.AddToken("$", i18n.GetString("morphpart_penis_1_0"));
-						possibleChanges.Add(change);
+						if (Random.Flip() && !this.GetToken("penis").HasToken("dual"))
+						{
+							var change = new Token("_addto/penis", "dual");
+							change.AddToken("$", i18n.GetString("morph_splitcock"));
+							possibleChanges.Add(change);
+						}
+						else
+						{
+							var change = new Token("penis/length", this.Path("penis/length").Value + (float)Random.NextDouble() * intensity + 2f);
+							change.AddToken("penis/thickness", this.Path("penis/thickness").Value + (float)Random.NextDouble() * (intensity / 3));
+							change.AddToken("$", i18n.GetString("morphpart_penis_1_0"));
+							possibleChanges.Add(change);
+						}
 					}
 					break;
 				case Mutations.AddVagina:
@@ -905,39 +941,14 @@ namespace Noxico
 				#endregion
 				#region Genitalia -- changing
 				//case Mutations.AlterPenis:
-				case Mutations.GrowPenis:
-					if (!this.HasToken("penis"))
-					{
-						//Don't got one? Get one!
-						var change = new Token("_add", "penis");
-						change.AddToken("_addto/penis", "length");
-						change.AddToken("penis/length", (float)Random.NextDouble() * intensity + 12f);
-						change.AddToken("_addto/penis", "thickness");
-						change.AddToken("penis/thickness", (float)Random.NextDouble() * intensity / 4 + 4f);
-						change.AddToken("$", i18n.GetString("morph_growcock"));
-						possibleChanges.Add(change);
-					}
-					else
-					{
-						var change = new Token("penis/length", this.Path("penis/length").Value + (float)Random.NextDouble() * intensity + 2f);
-						change.AddToken("penis/thickness", this.Path("penis/thickness").Value + (float)Random.NextDouble() * (intensity / 3));
-						change.AddToken("$", i18n.GetString("morphpart_penis_1_0"));
-						possibleChanges.Add(change);
-					}
-					break;
-				//case Mutations.GrowVagina:
 				//case Mutations.GrowTesticles:
 				#endregion
 				#region Genitalia -- removing
 				case Mutations.RemovePenis:
 					{
 						if (!this.HasToken("penis"))
-						{
-							//var change = new Token("_dummy");
-							//change.AddToken("$", i18n.GetString("morph_legsfail"));
-							//possibleChanges.Add(change);
-						}
-						else if (this.GetToken("penis").HasToken("dual"))
+							break;
+						if (this.GetToken("penis").HasToken("dual"))
 						{
 							var change = new Token("_removefrom/penis", "dual");
 							change.AddToken("$", i18n.GetString("morphpart_cock_join"));
@@ -954,12 +965,8 @@ namespace Noxico
 				case Mutations.RemoveVagina:
 					{
 						if (!this.HasToken("vagina"))
-						{
-							//var change = new Token("_dummy");
-							//change.AddToken("$", i18n.GetString("morph_legsfail"));
-							//possibleChanges.Add(change);
-						}
-						else if (this.GetToken("vagina").HasToken("dual"))
+							break;
+						if (this.GetToken("vagina").HasToken("dual"))
 						{
 							var change = new Token("_removefrom/vagina", "dual");
 							change.AddToken("$", i18n.GetString("morphpart_pussy_join"));
@@ -991,12 +998,6 @@ namespace Noxico
 								change.AddToken("$", i18n.GetString("morph_loselastnut"));
 								possibleChanges.Add(change);
 							}
-						}
-						else
-						{
-							//var change = new Token("_dummy");
-							//change.AddToken("$", i18n.GetString("morph_legsfail"));
-							//possibleChanges.Add(change);
 						}
 					}
 					break;
@@ -1159,7 +1160,7 @@ namespace Noxico
 			var changes = new List<Token>();
 			for (var i = 0; i < numChanges; i++)
 			{
-				var possibility = possibilities[Random.Next(possibilities.Count)];
+				var possibility = possibilities.PickOne();
 				possibilities.Remove(possibility);
 				changes.Add(possibility);
 				foreach (var subChange in possibility.Tokens)
@@ -1343,6 +1344,96 @@ namespace Noxico
 			SpeechFilter = null; //invalidate here -- we don't necessarily have this character speak right away and need to adjust for new impediments.
 
 			return fb.Trim();
+		}
+
+		/// <summary>
+		/// Creates an encoded textual description of a character's body to use in comparisons.
+		/// </summary>
+		public static string GetBodyComparisonHash(TokenCarrier token)
+		{
+			var ret = new StringBuilder();
+			ret.Append('[');
+			var parts = new[] { "skin", "ears", "face", "teeth", "tongue", "wings", "legs", "penis", "tail" };
+			foreach (var part in parts)
+			{
+				var pt = token.Path(part + "/type");
+				if (pt == null)
+					pt = token.GetToken(part);
+				if (pt == null)
+				{
+					if (part == "tail")
+					{
+						if (token.HasToken("snaketail"))
+							ret.Append('§');
+						else if (token.HasToken("slimeblob"))
+							ret.Append('ß');
+						else
+							ret.Append(' ');
+					}
+					else
+						ret.Append(' ');
+					continue;
+				}
+				var letter = Descriptions.descTable.Path(part + '/' + pt.Text + "/_hash");
+				if (letter == null)
+					ret.Append(' ');
+				else
+				{
+					if (part == "wings" && !pt.HasToken("small"))
+						ret.Append(letter.Text.ToUpperInvariant());
+					else
+						ret.Append(letter.Text);
+				}
+			}
+			if (token.Path("hair") != null)
+				ret.Append('h');
+			else
+				ret.Append(' ');
+			if (token.Path("antennae") == null)
+				ret.Append(' ');
+			else
+				ret.Append('!');
+			var tallness = token.Path("tallness");
+			if (tallness == null)
+				ret.Append(' ');
+			else
+			{
+				var t = tallness.Value;
+				if (t == 0 && tallness.Text.StartsWith("roll"))
+					t = float.Parse(tallness.Text.Substring(tallness.Text.IndexOf('+') + 1));
+				if (t < 140)
+					ret.Append('_');
+				else if (t > 180)
+					ret.Append('!');
+				else
+					ret.Append(' ');
+			}
+			ret.Append(']');
+			return ret.ToString();
+		}
+
+		public string GetBodyComparisonHash()
+		{
+			return GetBodyComparisonHash(this);
+		}
+
+		public string GetClosestBodyplanMatch()
+		{
+			var thisHash = this.GetBodyComparisonHash();
+			var ret = string.Empty;
+			var score = 999;
+			foreach (var hash in NoxicoGame.BodyplanHashes)
+			{
+				var distance = thisHash.GetHammingDistance(hash.Value);
+				if (distance < score)
+				{
+					score = distance;
+					ret = hash.Key;
+				}
+			}
+			if (score == 999)
+				return "human";
+			return ret;
 		}
 	}
 }
