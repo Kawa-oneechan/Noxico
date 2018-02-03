@@ -72,16 +72,16 @@ namespace Noxico
 		{
 			Func<Token, string[]> split = new Func<Token, string[]>(toSplit =>
 			{
-				if (toSplit == null || string.IsNullOrWhiteSpace(toSplit.Text))
+				if (toSplit == null || toSplit.Text.IsBlank())
 					return new string[0];
 				else
 					return toSplit.Text.Split(',').Select(x => x.Trim()).ToArray();
 			});
 
 			var namegen = DefaultNameGen;
-			if (!string.IsNullOrWhiteSpace(id))
+			if (!id.IsBlank())
 			{
-				if (type == NameType.Town && Cultures.ContainsKey(id) && !string.IsNullOrWhiteSpace(Cultures[id].TownName))
+				if (type == NameType.Town && Cultures.ContainsKey(id) && !Cultures[id].TownName.IsBlank())
 					namegen = NameGens[Cultures[id].TownName];
 				else if (NameGens.ContainsKey(id))
 					namegen = NameGens[id];

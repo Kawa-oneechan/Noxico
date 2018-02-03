@@ -84,11 +84,17 @@ namespace Noxico
 			return options[Random.Next(options.Length)];
 		}
 
+		/// <summary>
+		/// Picks a single item from a List, at random.
+		/// </summary>
 		public static T PickOne<T>(this List<T> options)
 		{
 			return options[Random.Next(options.Count)];
 		}
 
+		/// <summary>
+		/// Picks a single item from a token list, weighted.
+		/// </summary>
 		public static Token PickWeighted(this List<Token> tokens)
 		{
 			if (tokens.Count == 0) return null;
@@ -157,11 +163,11 @@ namespace Noxico
 				return words[num];
 			return Ordinal(num);
 		}
-		
+
+		/*
 		/// <summary>
 		/// Applies [grammar replacement] from a given character's point of view.
 		/// </summary>
-		/*
 		public static string Viewpoint(this string text, BoardChar point)
 		{
 			if (point != null && point is Player)
@@ -192,6 +198,34 @@ namespace Noxico
 		public static bool IsBlank(this string text)
 		{
 			return string.IsNullOrWhiteSpace(text);
+		}
+
+		public static string IsBlank(this string text, string ifItIs, string ifNot)
+		{
+			return string.IsNullOrWhiteSpace(text) ? ifItIs : ifNot;
+		}
+
+		public static string OrEmpty(this string text)
+		{
+			return (text == null) ? string.Empty : text;
+		}
+
+		public static string Join<T>(this T[] values)
+		{
+			return string.Join(", ", values);
+		}
+		public static string Join<T>(this IEnumerable<T> values)
+		{
+			return string.Join(", ", values);
+		}
+
+		public static bool StartsWith(this string text, char ch)
+		{
+			return (text.Length > 0 && text[0] == ch);
+		}
+		public static bool EndsWith(this string text, char ch)
+		{
+			return (text.Length > 0 && text[text.Length - 1] == ch);
 		}
 
 		public static bool StartsWithVowel(this string text)
@@ -344,12 +378,12 @@ namespace Noxico
 					currentWord.Clear();
 				}
 			}
-			if (currentWord.ToString() != "")
+			if (currentWord.ToString() != string.Empty)
 			{
 				var newWord = new Word()
 				{
 					Content = currentWord.ToString().Trim(),
-					SpaceAfter = currentWord.ToString().EndsWith(" "),
+					SpaceAfter = currentWord.ToString().EndsWith(' '),
 					MandatoryBreak = false,
 					SoftHyphen = softHyphen,
 					Color = color,
@@ -396,7 +430,7 @@ namespace Noxico
 				spaceLeft -= word.Length;
 				if (next != null && spaceLeft - next.Content.TrimEnd().Length <= 0)
 				{
-					if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
+					if (!line.ToString().Trim().IsBlank())
 						lines.Add(line.ToString().Trim());
 					line.Clear();
 					spaceLeft = length;
@@ -419,13 +453,13 @@ namespace Noxico
 				}
 
 			}
-			if (!string.IsNullOrWhiteSpace(line.ToString().Trim()))
+			if (!line.ToString().Trim().IsBlank())
 				lines.Add(line.ToString());
 
 			return string.Join("\n", lines.ToArray()) + '\n';
 		}
 
-		public static string SmartQuote(this string text, Func<string, string> filter = null)
+		public static string SmartQuote(this string text, SpeechFilter filter = null)
 		{
 			var ret = new StringBuilder();
 			var open = false;
@@ -753,6 +787,7 @@ namespace Noxico
 		/// </summary>
 		public static string Possessive(this string subject)
 		{
+			//TODO: Luafy
 			if (!subject.Equals("it", StringComparison.OrdinalIgnoreCase))
 				return subject + "s";
 			else if (subject.EndsWith("s"))
@@ -794,18 +829,15 @@ namespace Noxico
 			{
 				var getvar = token.GetToken("var");
 				var id = (int)getvar.Value;
-				if (string.IsNullOrWhiteSpace(vars[id]))
+				if (vars[id].IsBlank())
 					token.RemoveToken("var");
 				else
 					getvar.Name = vars[id];
 			}
-			if (!string.IsNullOrWhiteSpace(token.Text) && token.Text.Trim().StartsWith("var "))
+			if (!token.Text.IsBlank() && token.Text.Trim().StartsWith("var "))
 			{
 				var id = int.Parse(token.Text.Trim().Substring(4));
-				if (string.IsNullOrWhiteSpace(vars[id]))
-					token.Text = "<invalid token>";
-				else
-					token.Text = vars[id];
+				token.Text = vars[id].IsBlank("<invalid token>", vars[id]);
 			}
 			foreach (var child in token.Tokens)
 				FoldCostumeVariables(child, vars);

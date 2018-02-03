@@ -39,7 +39,7 @@ namespace Noxico
 
 		public Name Name { get; set; }
 		public BoardChar BoardChar { get; set; }
-		public Func<string, string> SpeechFilter { get; set; }
+		public SpeechFilter SpeechFilter { get; set; }
 
 		public Culture Culture
 		{
@@ -344,7 +344,7 @@ namespace Noxico
 					Title = prefix.Name + " " + Title;
 			}
 
-			A = Title.GetArticle();
+			A = HasToken("_a") ? GetToken("_a").Text : Title.GetArticle();
 		}
 
 		public string HeSheIt(bool lower = false)
@@ -506,10 +506,6 @@ namespace Noxico
 			else
 				newChar.Name = new Name(id.Replace('_', ' ').Titlecase());
 			newChar.RemoveToken("_n");
-			if (planSource.HasToken("_a"))
-				newChar.A = planSource.GetToken("_a").Text;
-			else
-				newChar.A = newChar.Name.ToString().StartsWithVowel() ? i18n.GetString("an") : i18n.GetString("a");
 			newChar.IsProperNamed = char.IsUpper(newChar.Name.ToString()[0]);
 
 			var gender = Gender.Neuter;
@@ -595,7 +591,6 @@ namespace Noxico
 
 			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
-			newChar.A = "a";
 			
 			if (newChar.HasToken("editable"))
 				newChar.RemoveToken("editable");
@@ -703,7 +698,7 @@ namespace Noxico
 			}
 
 			//Prevent a semi-common generation bug from triggering in LookAt.
-			if (newChar.Path("skin/pattern") != null && string.IsNullOrWhiteSpace(newChar.Path("skin/pattern").Text))
+			if (newChar.Path("skin/pattern") != null && newChar.Path("skin/pattern").Text.IsBlank())
 				newChar.GetToken("skin").RemoveToken("pattern");
 
 			newChar.ResolveMetaTokens();
@@ -878,7 +873,7 @@ namespace Noxico
 			}
 			if (toDelete.Count > 0)
 			{
-				Program.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, Name, string.Join(", ", toDelete));
+				Program.WriteLine("Had to remove {0} inventory item(s) from {1}: {2}", toDelete.Count, Name, toDelete.Join());
 				GetToken("items").RemoveSet(toDelete);
 			}
 		}
@@ -1146,9 +1141,9 @@ namespace Noxico
 			if (this.HasToken("legs"))
 			{
 				var lt = this.GetToken("legs").Text;
-				var legs = string.IsNullOrWhiteSpace(lt) ? "human" : lt;
-				int count;
-				string number_or_pair = "counts";
+				var legs = lt.IsBlank("human", lt);
+				var count = 0;
+				var numberOrPair = "counts";
 				if (this.GetToken("legs").GetToken("amount") != null)
 					count = (int)this.GetToken("legs").GetToken("amount").Value;
 				else
@@ -1166,8 +1161,8 @@ namespace Noxico
 					}
 				}
 				if (count < 6)
-					number_or_pair = "setbymeasure";
-				bodyThings.Add(i18n.GetArray(number_or_pair)[count] + " " + i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
+					numberOrPair = "setbymeasure";
+				bodyThings.Add(i18n.GetArray(numberOrPair)[count] + " " + i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
@@ -1183,7 +1178,7 @@ namespace Noxico
 			if (this.HasToken("wings"))
 			{
 				var wingType = this.GetToken("wings").Text;
-				if (string.IsNullOrWhiteSpace(wingType))
+				if (wingType.IsBlank())
 					wingType = "feather"; //TODO: different "undefined" fallback?
 				var wt = i18n.Format("x_wings", i18n.GetString("wingtype_" + wingType));
 				if (this.Path("wings/small") != null)
@@ -1234,10 +1229,10 @@ namespace Noxico
 			if (mask != null && mask.CanSeeThrough())
 			{
 				var teeth = this.Path("teeth");
-				if (teeth != null && !string.IsNullOrWhiteSpace(teeth.Text) && teeth.Text != "normal")
+				if (teeth != null && !teeth.Text.IsBlank() && teeth.Text != "normal")
 					headThings.Add(i18n.GetString("teethtype_" + teeth.Text));
 				var tongue = this.Path("tongue");
-				if (tongue != null && !string.IsNullOrWhiteSpace(tongue.Text) && tongue.Text != "normal")
+				if (tongue != null && !tongue.Text.IsBlank() && tongue.Text != "normal")
 					headThings.Add(i18n.GetString("tonguetype_" + teeth.Text));
 			}
 
@@ -1301,7 +1296,7 @@ namespace Noxico
 			if (this.HasToken("tail"))
 			{
 				var tt = this.GetToken("tail").Text;
-				var tail = string.IsNullOrWhiteSpace(tt) ? "genbeast" : tt;
+				var tail = tt.IsBlank("genbeast", tt);
 				if (tail == "bunny")
 					hipThings.Add(i18n.GetString("tailtype_bunny"));
 				else if (tail == "webber")
@@ -1424,9 +1419,7 @@ namespace Noxico
 
 				if (cock != null)
 				{
-					var cockType = cock.Text;
-					if (string.IsNullOrWhiteSpace(cockType))
-						cockType = "human";
+					var cockType = cock.Text.IsBlank("human", cock.Text);
 					print((ballCount == 0 ? "\xC0 " : "\xC3 ") + (cock.HasToken("dual") ? "a split, " : "a ") + cockType + " [?:cock], " + Descriptions.Length(cock.GetToken("length").Value) + " long, ");
 					print(Descriptions.Length(cock.GetToken("thickness").Value) + " thick\n");
 				}
@@ -1634,9 +1627,9 @@ Tokens:
 				foreach (var person in GetToken("ships").Tokens.Where(t => !t.HasToken("player")))
 				{
 					var reparsed = person.Name.Replace('_', ' ');
-					if (reparsed.StartsWith("\xF4EF"))
+					if (reparsed.StartsWith('\xF4EF'))
 						reparsed = reparsed.Remove(reparsed.IndexOf('#')).Substring(1);
-					list.Add(reparsed + " &mdash; " + string.Join(", ", person.Tokens.Select(x => x.Name)));
+					list.Add(reparsed + " &mdash; " + person.Tokens.Select(x => x.Name).Join());
 					if (person.HasToken("victim"))
 						victims++;
 					if (person.HasToken("lover"))
@@ -1974,7 +1967,7 @@ Tokens:
 					if (!knownItem.HasToken("weapon") && carriedItem.HasToken("equipped"))
 						continue;
 					var weightToken = knownItem.GetToken("weight");
-					if (string.IsNullOrWhiteSpace(weightToken.Text))
+					if (weightToken.Text.IsBlank())
 						itemWeight = weightToken.Value;
 					else if (weightClasses.ContainsKey(weightToken.Text))
 						itemWeight = weightClasses[weightToken.Text];

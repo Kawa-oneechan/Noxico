@@ -178,7 +178,7 @@ namespace Noxico
 
 					var makeBoardTarget = new Action<Board>(board =>
 					{
-						if (string.IsNullOrWhiteSpace(board.Name))
+						if (board.Name.IsBlank())
 							throw new Exception("Board must have a name before it can be added to the target list.");
 						if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
 							return; //throw new Exception("Board is already a travel target.");
@@ -228,7 +228,7 @@ namespace Noxico
 			}
 			var fPrimary = filter.Name == "top" ? top : bottom;
 			var fSecondary = filter.Name == "top" ? bottom : top;
-			var parts = string.IsNullOrWhiteSpace(filter.Text) ? new string[0] : filter.Text.SplitQ();
+			var parts = filter.Text.IsBlank() ? new string[0] : filter.Text.SplitQ();
 			var fType = parts[0];
 			switch (fType)
 			{

@@ -14,16 +14,16 @@ namespace Noxico
 		public static void Load(string fileName)
 		{
 			settings.Clear();
-			var thisSection = "";
+			var thisSection = string.Empty;
 			var lines = File.ReadAllLines(fileName);
 			foreach (var line in lines)
 			{
 				var l = line;
 				if (l.Contains(';'))
 					l = l.Remove(l.IndexOf(';'));
-				if (string.IsNullOrWhiteSpace(l))
+				if (l.IsBlank())
 					continue;
-				if (l.StartsWith("[") && l.EndsWith("]"))
+				if (l.StartsWith('[') && l.EndsWith(']'))
 				{
 					var key = l.Trim('[', ']');
 					settings.Add(key, new Dictionary<string, string>());
@@ -36,7 +36,7 @@ namespace Noxico
 					var val = l.Substring(sep + 1).Trim();
 					if (settings[thisSection].ContainsKey(key))
 					{
-						throw new Exception("There's an error in the INI file: the key \"" + key + "\" in section \"" + thisSection + "\" has already been used in that section.");
+						throw new Exception(string.Format("There's an error in the INI file: the key \"{0}\" in section \"{1}\" has already been used in that section.", key, thisSection));
 						//settings[thisSection][key] = val;
 					}
 					else
@@ -46,13 +46,13 @@ namespace Noxico
 			lastFileName = fileName;
 		}
 
-		public static void Save(string fileName = "")
+		public static void Save(string fileName)
 		{
-			if (string.IsNullOrWhiteSpace(fileName))
+			if (fileName.IsBlank())
 				fileName = lastFileName;
 			if (!File.Exists(fileName))
 			{
-				var sb = new StringBuilder("");
+				var sb = new StringBuilder(string.Empty);
 				foreach (var section in settings)
 				{
 					sb.AppendFormat("[{0}]", section.Key);
@@ -73,13 +73,13 @@ namespace Noxico
 				{
 					for (var i = 0; i < lines.Length; i++)
 					{
-						if (lines[i].StartsWith("[" + section.Key + "]"))
+						if (lines[i].StartsWith('[' + section.Key + ']'))
 						{
 							var sStart = i + 1;
 							var sEnd = lines.Length;
 							for (i = sStart; i < lines.Length; i++)
 							{
-								if (lines[i].StartsWith("["))
+								if (lines[i].StartsWith('['))
 								{
 									sEnd = i;
 									break;

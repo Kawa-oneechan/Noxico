@@ -276,7 +276,7 @@ namespace Noxico
 
 					var targetGroup = match.Groups["target"].Value;
 
-					if (targetGroup.StartsWith("?"))
+					if (targetGroup.StartsWith('?'))
 					{
 						if (i18n.wordStructor == null)
 							i18n.wordStructor = Mix.GetTokenTree("wordstructor.tml", true);
@@ -293,7 +293,7 @@ namespace Noxico
 							pRes.RemoveAll(x => !x.HasToken("filter"));
 						return pRes.PickOne().Text;
 					}
-					else if (targetGroup.StartsWith("t"))
+					else if (targetGroup.StartsWith('t'))
 					{
 						target = top;
 					}
@@ -328,11 +328,11 @@ namespace Noxico
 			if (top == null)
 				return message;
 
-			Func<string, string> speechFilter = top.SpeechFilter;
+			SpeechFilter speechFilter = top.SpeechFilter;
 			if (speechFilter == null)
 			{
 				if (top.Culture.SpeechFilter != null)
-					speechFilter = new Func<string, string>(x =>
+					speechFilter = new SpeechFilter(x =>
 					{
 						Lua.RunFile(top.Culture.SpeechFilter);
 						x = Lua.Environment.SpeechFilter(x);
@@ -356,7 +356,7 @@ namespace Noxico
 					if (apply)
 					{
 						var oldFilter = speechFilter;
-						speechFilter = new Func<string, string>(x =>
+						speechFilter = new SpeechFilter(x =>
 						{
 							Lua.RunFile(impediment.GetToken("file").Text);
 							x = Lua.Environment.SpeechFilter(x);
@@ -365,7 +365,7 @@ namespace Noxico
 					}
 				}
 				if (speechFilter == null) //Still?
-					speechFilter = new Func<string, string>(x => x); //Then just assign a dummy so we don't do this all over and over again.
+					speechFilter = new SpeechFilter(x => x); //Then just assign a dummy so we don't do this all over and over again.
 				top.SpeechFilter = speechFilter;
 			}
 			message = message.SmartQuote(speechFilter);
@@ -373,4 +373,6 @@ namespace Noxico
 			return message;
 		}
 	}
+
+	public delegate string SpeechFilter(string input);
 }

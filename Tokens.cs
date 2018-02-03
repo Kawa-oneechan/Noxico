@@ -214,8 +214,7 @@ namespace Noxico
 					var trueP = p.Remove(p.IndexOf('['));
 					var text = textRE.Match(p).Groups["text"].ToString();
 					var possibilities = point.Tokens.Where(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase));
-					target = possibilities.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Text) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
-					//target = point.Tokens.FirstOrDefault(t => t.Name.Equals(trueP, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(t.Text) && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
+					target = possibilities.FirstOrDefault(t => !t.Text.IsBlank() && t.Text.Equals(text, StringComparison.OrdinalIgnoreCase));
 				}
 				else
 					target = point.Tokens.Find(t => t.Name.Equals(p, StringComparison.OrdinalIgnoreCase));
@@ -267,7 +266,7 @@ namespace Noxico
 					continue;
 				}
 				else
-					if (string.IsNullOrWhiteSpace(line))
+					if (line.IsBlank())
 						continue;
 				//count number of tabs in front
 				var tabs = 0;
@@ -318,7 +317,7 @@ namespace Noxico
 							newOne.Text = value;
 					}
 					tokenName = tokenName.Remove(tokenName.IndexOf(':'));
-					if (!string.IsNullOrWhiteSpace(newOne.Text))
+					if (!newOne.Text.IsBlank())
 						newOne.Text = ParseEscapes(newOne.Text);
 #if DEBUG
 					if (tokenName.Contains(' '))
@@ -386,7 +385,7 @@ namespace Noxico
 				}
 
 				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
-				if (item.Value != 0 || !string.IsNullOrWhiteSpace(item.Text))
+				if (item.Value != 0 || !item.Text.IsBlank())
 				{
 					ret.Append(": ");
 					if (item.Value != 0)
@@ -454,7 +453,7 @@ namespace Noxico
 			{
 				if (token.Tokens.Count > 0)
 					token.ResolveRolls();
-				if (string.IsNullOrWhiteSpace(token.Text))
+				if (token.Text.IsBlank())
 					continue;
 				if (token.Text.StartsWith("roll "))
 				{
@@ -568,9 +567,8 @@ namespace Noxico
 
 		public override string ToString()
 		{
-			if (string.IsNullOrWhiteSpace(Text))
-				return string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count);
-			return string.Format("{0} ({1}, \"{2}\", {3})", Name, Value, Text, Tokens.Count);
+			return Text.IsBlank(string.Format("{0} ({1}, {2})", Name, Value, Tokens.Count),
+				string.Format("{0} ({1}, \"{2}\", {3})", Name, Value, Text, Tokens.Count));
 		}
 
 		/// <summary>
@@ -630,7 +628,7 @@ namespace Noxico
 		/// <param name="stream">The stream to write to.</param>
 		public void SaveToFile(BinaryWriter stream)
 		{
-			stream.Write(Name ?? string.Empty);
+			stream.Write(Name.OrEmpty());
 			var isInt = (Value == (int)Value);
 			//Format: child count, reserved, has text, value is integral, has value.
 			var flags = 0;
@@ -638,7 +636,7 @@ namespace Noxico
 				flags |= 1;
 			if (isInt)
 				flags |= 2;
-			if (!string.IsNullOrWhiteSpace(Text))
+			if (!Text.IsBlank())
 				flags |= 4;
 			flags |= Tokens.Count << 4;
 			//We store this as an encoded value to allow any amount of child tokens.
@@ -650,7 +648,7 @@ namespace Noxico
 				else
 					stream.Write((Single)Value);
 			}
-			if (!string.IsNullOrWhiteSpace(Text))
+			if (!Text.IsBlank())
 				stream.Write(Text);
 			if (Tokens.Count > 0)
 				Tokens.ForEach(x => x.SaveToFile(stream));

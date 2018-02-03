@@ -226,7 +226,7 @@ namespace Noxico
 							EndTurn();
 							return;
 						}
-						if (!string.IsNullOrWhiteSpace(bc.OnPlayerBump))
+						if (!bc.OnPlayerBump.IsBlank())
 						{
 							bc.RunScript(bc.OnPlayerBump);
 							return;
@@ -632,7 +632,7 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[Keys.F3])
 			{
 				NoxicoGame.ClearKeys();
-				ParentBoard.DumpToHtml();
+				ParentBoard.DumpToHtml(string.Empty);
 				NoxicoGame.AddMessage("Board dumped.");
 				return;
 			}

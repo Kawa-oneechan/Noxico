@@ -244,7 +244,7 @@ namespace Noxico
 				clutterDB = Mix.GetTokenTree("clutter.tml", true);
 			var knownThing = clutterDB.FirstOrDefault(kc =>
 				thing.Glyph == kc.GetToken("char").Value ||
-				(!string.IsNullOrWhiteSpace(name) && name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase)) ||
+				(!name.IsBlank() && name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase)) ||
 				thing.ID.StartsWith(kc.Text, StringComparison.InvariantCultureIgnoreCase));
 			if (knownThing != null)
 			{
@@ -472,7 +472,7 @@ namespace Noxico
 		{
 			get
 			{
-				if (this.Token.HasToken("description") && !string.IsNullOrWhiteSpace(this.Token.GetToken("description").Text))
+				if (this.Token.HasToken("description") && !this.Token.GetToken("description").Text.IsBlank())
 					return this.Token.GetToken("description").Text;
 				return i18n.GetString("generic_description");
 			}
@@ -484,10 +484,7 @@ namespace Noxico
 		{
 			get
 			{
-				if (string.IsNullOrWhiteSpace(Token.Text))
-					return "container";
-				else
-					return Token.Text;
+				return Token.Text.IsBlank("container", Token.Text);
 			}
 			set
 			{

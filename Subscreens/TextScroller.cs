@@ -229,7 +229,7 @@ namespace Noxico
 			}
 
 			var player = NoxicoGame.Me.Player.Character;
-			if (!string.IsNullOrWhiteSpace(identification))
+			if (!identification.IsBlank())
 			{
 				foreach (var item in NoxicoGame.KnownItems.Where(ki => ki.HasToken("identify") && ki.GetToken("identify").Text == identification && !NoxicoGame.Identifications.Contains(ki.ID)))
 					NoxicoGame.Identifications.Add(item.ID);

@@ -229,7 +229,7 @@ namespace Noxico
 			var unique = new Dictionary<string, string>();
 			foreach (var tile in tileset)
 			{
-				if (string.IsNullOrWhiteSpace(tile))
+				if (tile.IsBlank())
 					continue;
 				var t = tile.Trim().Split('\t');
 				if (t[1].Contains('+')) //tileID +clut[prop:val, ...]
@@ -237,7 +237,7 @@ namespace Noxico
 					var t1 = t[1];
 					tiles.Add("ff" + t[0].ToLowerInvariant(), t1.Remove(t1.IndexOf('+')).Trim());
 					t1 = t1.Substring(t1.IndexOf('+'));
-					while (t1.StartsWith("+"))
+					while (t1.StartsWith('+'))
 					{
 						var skip = t1.Substring(t1.IndexOf("[") + 1); //skip to after the [
 						var key = "ff" + t[0].ToLowerInvariant();
@@ -307,13 +307,13 @@ namespace Noxico
 										nc.Glyph = int.Parse(value);
 									break;
 								case "fg":
-									if (value.StartsWith("#"))
+									if (value.StartsWith('#'))
 										nc.ForegroundColor = Color.FromCSS(value);
 									else
 										nc.ForegroundColor = Color.FromName(value);
 									break;
 								case "bg":
-									if (value.StartsWith("#"))
+									if (value.StartsWith('#'))
 										nc.BackgroundColor = Color.FromCSS(value);
 									else
 										nc.BackgroundColor = Color.FromName(value);
@@ -327,7 +327,7 @@ namespace Noxico
 					if (unique.ContainsKey(color.Name))
 					{
 						var properties = unique[color.Name].SplitQ();
-						string uniquename = "";
+						string uniquename = string.Empty;
 						foreach (var property in properties)
 						{
 							var key = property.Substring(0, property.IndexOf(':'));
@@ -338,7 +338,7 @@ namespace Noxico
 									uniquename = value; break;
 							}
 						}
-						if (uniquename != "")
+						if (uniquename != string.Empty)
 						{
 							var newChar = new BoardChar(Character.GetUnique(uniquename))
 							{

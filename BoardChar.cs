@@ -341,7 +341,7 @@ namespace Noxico
 				var timer = carriedItem.Path("timer");
 				if (timer == null)
 					continue;
-				if (string.IsNullOrWhiteSpace(timer.Text))
+				if (timer.Text.IsBlank())
 					continue;
 				var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
 				if (knownItem == null)
@@ -359,7 +359,7 @@ namespace Noxico
 				if (timer.Value <= 0)
 				{
 					timer.Value = (knownItem.GetToken("timer").Value == 0) ? 60 : knownItem.GetToken("timer").Value;
-					if (string.IsNullOrWhiteSpace(knownItem.OnTimer))
+					if (knownItem.OnTimer.IsBlank())
 					{
 						Program.WriteLine("Warning: {0} has a timer, but no OnTimer script! Timer token removed.", carriedItem.Name);
 						carriedItem.RemoveToken("timer");
@@ -1102,12 +1102,12 @@ namespace Noxico
 
 		public bool RunScript(string script, string extraParm = "", float extraVal = 0)
 		{
-			if (string.IsNullOrWhiteSpace(script))
+			if (script.IsBlank())
 				return true;
 			SetupLua();
 
 			//Board.DrawEnv = env;
-			if (!string.IsNullOrEmpty(extraParm))
+			if (!extraParm.IsBlank())
 				((Neo.IronLua.LuaGlobal)Lua.Environment).SetValue(extraParm, extraVal);
 			var r = Lua.Run(script);
 			if (r.ToBoolean())

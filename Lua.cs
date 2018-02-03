@@ -57,7 +57,7 @@ namespace Noxico
 			env.print = new Action<object[]>(x =>
 			{
 				if (x.Length == 1 && x[0] is LuaTable)
-					Program.WriteLine("Table: {{ " + string.Join(", ", ((LuaTable)x[0]).Values.Select(v => string.Format("{0} = {1}", v.Key, v.Value is string ? "\"" + v.Value + "\"" : v.Value))) + " }}");
+					Program.WriteLine("Table: {{ " + ((LuaTable)x[0]).Values.Select(v => string.Format("{0} = {1}", v.Key, v.Value is string ? "\"" + v.Value + "\"" : v.Value)).Join() + " }}");
 				else
 					Program.WriteLine(string.Join("\t", x.Select(v => v ?? "nil")));
 			});
@@ -83,8 +83,8 @@ namespace Noxico
 			env2.RegisterPackage("SceneSystem", typeof(SceneSystem));
 			env2.RegisterPackage("Tile", typeof(Tile));
 			env2.RegisterPackage("Warp", typeof(Warp));
-			env2.RegisterPackage("Task", typeof(Task));
-			env2.RegisterPackage("TaskType", typeof(TaskType));
+			//env2.RegisterPackage("Task", typeof(Task));
+			//env2.RegisterPackage("TaskType", typeof(TaskType));
 			env2.RegisterPackage("Token", typeof(Token));
 			env2.RegisterPackage("Descriptions", typeof(Descriptions));
 
@@ -103,7 +103,7 @@ namespace Noxico
 
 			env.MakeBoardTarget = new Action<Board>(board =>
 			{
-				if (string.IsNullOrWhiteSpace(board.Name))
+				if (board.Name.IsBlank())
 					throw new Exception("Board must have a name before it can be added to the target list.");
 				if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
 					return; //throw new Exception("Board is already a travel target.");
