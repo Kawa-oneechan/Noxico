@@ -67,7 +67,7 @@ namespace Noxico
 			}
 
 			var tSD = this.ParentBoard.GetDescription(YPosition, XPosition);
-			if (!string.IsNullOrWhiteSpace(tSD))
+			if (!tSD.IsBlank())
 			{
 				PointingAt = null;
 				NoxicoGame.LookAt = tSD;
@@ -274,7 +274,7 @@ namespace Noxico
 										var text = (item.HasToken("description") && !token.HasToken("unidentified") ? item.GetToken("description").Text : i18n.Format("thisis_x", item.ToString(token))).Trim();
 										MessageBox.Notice(text, true);
 									}
-									else if (PointingAt is Clutter && !string.IsNullOrWhiteSpace(((Clutter)PointingAt).Description))
+									else if (PointingAt is Clutter && !((Clutter)PointingAt).Description.IsBlank())
 									{
 										MessageBox.Notice(((Clutter)PointingAt).Description.Trim(), true, ((Clutter)PointingAt).Name ?? "something");
 									}

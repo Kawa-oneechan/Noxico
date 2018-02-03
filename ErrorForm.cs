@@ -114,8 +114,8 @@ namespace Noxico
 				label3.Text = "This may indicate an attempt to use a string value where a number is expected. For example, using the addition \"+\" instead of concatenation \"..\". A string value containing a number is okay, though.";
 			else if (textBox1.Text.Contains("No operator is defined") && textBox1.Text.Contains("Object Add Object"))
 				label3.Text = "This may indicate an undefined variable, or an expression of a type that can't be mathematically added to another.";
-			
-			if (string.IsNullOrWhiteSpace(label3.Text))
+
+			if (label3.Text.IsBlank())
 				tabControl1.TabPages.RemoveAt(1);
 		}
 

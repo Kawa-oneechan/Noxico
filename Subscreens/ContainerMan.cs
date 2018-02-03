@@ -238,7 +238,7 @@ namespace Noxico
 							return; 
 						//onLeft = true;
 						var tryAttempt = TryRetrieve(player, containerTokens[containerList.Index], containerItems[containerList.Index]);
-						if (string.IsNullOrWhiteSpace(tryAttempt))
+						if (tryAttempt.IsBlank())
 						{
 							//No errors were returned by TryRetrieve, so let's do this.
 							playerItems.Add(containerItems[containerList.Index]);
@@ -312,7 +312,7 @@ namespace Noxico
 							return; 
 						//onLeft = false;
 						var tryAttempt = TryStore(player, playerTokens[playerList.Index], playerItems[playerList.Index]);
-						if (string.IsNullOrWhiteSpace(tryAttempt))
+						if (tryAttempt.IsBlank())
 						{
 							containerItems.Add(playerItems[playerList.Index]);
 							containerTokens.Add(playerTokens[playerList.Index]);

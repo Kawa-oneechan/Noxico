@@ -243,7 +243,7 @@ namespace Noxico
 						var mods = i.GetModifiers(t);
 						if (mods.Count > 0)
 						{
-							d += i18n.Format("inventory_modifiers", string.Join(", ", mods));
+							d += i18n.Format("inventory_modifiers", mods.Join());
 						}
 
 						d = Toolkit.Wordwrap(d, itemDesc.Width);

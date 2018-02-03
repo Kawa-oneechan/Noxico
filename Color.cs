@@ -115,7 +115,7 @@ namespace Noxico
 		/// <returns>the <see cref="Noxico.Color"/> matching the <paramref name="hexCode"/>.</returns>
 		public static Color FromCSS(string hexCode)
 		{
-			if (string.IsNullOrWhiteSpace(hexCode))
+			if (hexCode.IsBlank())
 				throw new ArgumentNullException("hexCode");
 			if (hexCode[0] == '#')
 				hexCode = hexCode.Substring(1);

@@ -198,7 +198,7 @@ namespace Noxico
 			onYes = okay;
 			MessageBox.options = options;
 			MessageBox.allowEscape = allowEscape;
-			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
+			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
@@ -214,7 +214,7 @@ namespace Noxico
 			text = Toolkit.Wordwrap(question.Trim(), 46); //.Split('\n');
 			onYes = yes;
 			onNo = no;
-			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
+			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
@@ -228,7 +228,7 @@ namespace Noxico
 			MessageBox.title = title;
 			type = BoxType.Notice;
 			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
-			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
+			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}
@@ -244,7 +244,7 @@ namespace Noxico
 			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
 			Answer = defaultValue;
 			onYes = okay;
-			MessageBox.icon = (string.IsNullOrWhiteSpace(icon)) ? null : new UIPNG(Mix.GetBitmap(icon));
+			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
 		}

@@ -53,14 +53,14 @@ namespace Noxico
 		}
 		public string ToString(bool full)
 		{
-			if (!full || string.IsNullOrWhiteSpace(Surname))
+			if (!full || Surname.IsBlank())
 				return FirstName;
 			return FirstName + ' ' + Surname;
 		}
 		public string ToID()
 		{
 			//had the silly thing in reverse ^_^;
-			return FirstName + (string.IsNullOrWhiteSpace(Surname) ? string.Empty : '_' + Surname);
+			return FirstName + Surname.IsBlank(string.Empty, '_' + Surname);
 		}
 		public void SaveToFile(BinaryWriter stream)
 		{

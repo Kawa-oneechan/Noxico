@@ -30,7 +30,7 @@ namespace Noxico
 			if (ID == "book" && token != null && token.HasToken("id") && NoxicoGame.BookTitles.ContainsKey(token.GetToken("id").Text))
 				return string.Format("\"{0}\"", NoxicoGame.BookTitles[token.GetToken("id").Text][0]);
 
-			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
+			var canBeIdentified = !UnknownName.IsBlank();
 			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
 
 			var name = isIdentified ? Name : UnknownName;
@@ -92,7 +92,7 @@ namespace Noxico
 
 		public string GetDescription(Token token)
 		{
-			var canBeIdentified = !string.IsNullOrWhiteSpace(UnknownName);
+			var canBeIdentified = !UnknownName.IsBlank();
 			var isIdentified = canBeIdentified ? NoxicoGame.Identifications.Contains(ID) : true;
 
 			if (this.ID == "book" && token != null && token.HasToken("id") && NoxicoGame.BookTitles.ContainsKey(token.GetToken("id").Text))
@@ -236,17 +236,17 @@ namespace Noxico
 			return this.GetToken("equipable").HasToken("translucent");
 		}
 
-		public bool CanReachThrough(string Part = null)
+		public bool CanReachThrough(string part = null)
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check reach on something not equipable.");
-            if (string.IsNullOrWhiteSpace(Part))
+            if (part.IsBlank())
                 return this.GetToken("equipable").HasToken("reach");
             else if (this.GetToken("equipable").HasToken("reach"))
             {
                 if (this.GetToken("equipable").GetToken("reach").Count() == 0)
                     return true;
-                return this.GetToken("equipable").GetToken("reach").HasToken(Part);
+                return this.GetToken("equipable").GetToken("reach").HasToken(part);
             }
             return false;
 		}
@@ -309,12 +309,12 @@ namespace Noxico
 			}
 
 			var succeed = true;
-			if (!string.IsNullOrWhiteSpace(this.OnEquip))
+			if (!this.OnEquip.IsBlank())
 				succeed = Convert.ToBoolean(RunScript(item, this.OnEquip, character, null, null));
 			if (succeed)
 				item.AddToken("equipped");
 
-			if (this.HasToken("timer") && !string.IsNullOrWhiteSpace(this.OnTimer) && !item.HasToken("timer"))
+			if (this.HasToken("timer") && !this.OnTimer.IsBlank() && !item.HasToken("timer"))
 			{
 				item.AddToken("timer").Value = (this.GetToken("timer").Value == 0) ? 60 : this.GetToken("timer").Value;
 				item.GetToken("timer").Text = NoxicoGame.InGameTime.ToBinary().ToString();
@@ -338,7 +338,7 @@ namespace Noxico
 			mark item as unequipped.
 			*/
 			if (item != null && item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
-				throw new ItemException(!string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : i18n.Format("cannot_remove_sticky", this.ToString(item, true)));
+				throw new ItemException(item.GetToken("cursed").Text.IsBlank(i18n.Format("cannot_remove_sticky", this.ToString(item, true)), item.GetToken("cursed").Text));
 
 			var equip = this.GetToken("equipable");
 			var tempRemove = new Stack<Token>();
@@ -367,12 +367,12 @@ namespace Noxico
 			}
 
 			var succeed = true;
-			if (!string.IsNullOrWhiteSpace(this.OnUnequip))
+			if (!this.OnUnequip.IsBlank())
 				succeed = Convert.ToBoolean(RunScript(item, this.OnUnequip, character, null, null));
 			if (succeed)
 				item.RemoveToken("equipped");
 
-			if (!string.IsNullOrWhiteSpace(this.OnTimer) && this.Path("timer/evenunequipped") == null)
+			if (!this.OnTimer.IsBlank() && this.Path("timer/evenunequipped") == null)
 				item.RemoveToken("timer");
 
 			//Not sure about automatically putting pants back on after taking them off to take off underpants...
@@ -493,7 +493,7 @@ namespace Noxico
 						{
 							runningDesc += c.Message;
 						}
-						if (!string.IsNullOrWhiteSpace(runningDesc))
+						if (!runningDesc.IsBlank())
 							showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					},
@@ -504,7 +504,7 @@ namespace Noxico
 					//Wearing/wielding it
 					if (item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 					{
-						runningDesc += !string.IsNullOrWhiteSpace(item.GetToken("cursed").Text) ? item.GetToken("cursed").Text : i18n.Format("inventory_cursed_" + (this.HasToken("plural") ? "plural" : "singular"), this.ToString(item, true));
+						runningDesc += item.GetToken("cursed").Text.IsBlank(i18n.Format("inventory_cursed_" + (this.HasToken("plural") ? "plural" : "singular"), this.ToString(item, true)), item.GetToken("cursed").Text);
 						showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					}
@@ -521,7 +521,7 @@ namespace Noxico
 						{
 							runningDesc += x.Message;
 						}
-						if (!string.IsNullOrWhiteSpace(runningDesc))
+						if (!runningDesc.IsBlank())
 							showDesc(runningDesc.Viewpoint(boardchar.Character));
 						return;
 					},
@@ -550,11 +550,11 @@ namespace Noxico
 			{
 				var name = new StringBuilder();
 				if (this.IsProperNamed)
-					name.Append(string.IsNullOrWhiteSpace(this.Definite) ? "" : this.Definite + ' ');
+					name.Append(this.Definite.IsBlank(string.Empty, this.Definite + ' '));
 				else
-					name.Append(string.IsNullOrWhiteSpace(this.Indefinite) ? "" : this.Indefinite + ' ');
+					name.Append(this.Indefinite.IsBlank(string.Empty, this.Indefinite + ' '));
 				name.Append(this.Name);
-				if (item.HasToken("unidentified") && !string.IsNullOrWhiteSpace(this.UnknownName))
+				if (item.HasToken("unidentified") && !this.UnknownName.IsBlank())
 				{
 					runningDesc = i18n.GetString("unidentified_warning");
 				}
@@ -589,12 +589,12 @@ namespace Noxico
 			if (food != null)
 				Eat(character, food);
 
-			if (!string.IsNullOrWhiteSpace(this.OnUse))
+			if (!this.OnUse.IsBlank())
 				RunScript(item, this.OnUse, character, boardchar, (x => runningDesc += x));
 			else
 				this.Consume(character, item);
 
-			if (!string.IsNullOrWhiteSpace(runningDesc))
+			if (!runningDesc.IsBlank())
 				showDesc(runningDesc.Viewpoint(boardchar.Character));
 		}
 
@@ -660,7 +660,7 @@ namespace Noxico
 			env.ReportSet = new Action<List<string>>(x =>
 			{
 				foreach (var result in x)
-					if (!string.IsNullOrWhiteSpace(result) && result[0] != '\uE2FC')
+					if (!result.IsBlank() && result[0] != '\uE2FC')
 						NoxicoGame.AddMessage(result.Viewpoint(character));
 			});
 			env.Identify = new Action<string>(x =>
@@ -693,7 +693,7 @@ namespace Noxico
 				}
 
 				//Regular item identification
-				if (!string.IsNullOrWhiteSpace(this.UnknownName) && !NoxicoGame.Identifications.Contains(this.ID))
+				if (!this.UnknownName.IsBlank() && !NoxicoGame.Identifications.Contains(this.ID))
 				{
 					NoxicoGame.Identifications.Add(this.ID);
 					if (running != null)
@@ -751,7 +751,7 @@ namespace Noxico
 			var info = GetModifiers(token);
 			if (info.Count == 0)
 				return ToString(token);
-			return ToString(token) + " (" + string.Join(", ", info) + ")";
+			return string.Format("{0} ({1})", ToString(token), info.Join());
 		}
 
 		public void Eat(Character gourmand, Token item)

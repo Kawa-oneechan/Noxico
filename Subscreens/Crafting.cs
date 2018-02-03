@@ -39,7 +39,7 @@ namespace Noxico
 					var key = craft.GetToken("key").Tokens[0];
 					var craftOkay = true;
 					var considerations = new List<Token>();
-					if (key.Name.StartsWith("@"))
+					if (key.Name.StartsWith('@'))
 					{
 						var r = key.Name.Substring(1);
 						if (!knownItem.HasToken(r))
@@ -56,7 +56,7 @@ namespace Noxico
 						repeat = false;
 						foreach (var requirement in craft.GetToken("require").Tokens)
 						{
-							if (requirement.Name.StartsWith("@"))
+							if (requirement.Name.StartsWith('@'))
 							{
 								var r = requirement.Name.Substring(1);
 								if (r[0] == '-')
@@ -167,7 +167,7 @@ namespace Noxico
 									recipe.Actions.Add(new CraftChangeTokenAction() { Target = requirements[1].GetToken("color"), NewText = color, NewValue = requirements[1].Value });
 							}
 						}
-						if (string.IsNullOrWhiteSpace(recipe.Display))
+						if (recipe.Display.IsBlank())
 							continue;
 						if (results.Exists(x => x.Display == recipe.Display))
 							continue;

@@ -206,7 +206,7 @@ namespace Noxico
 						//if (previousFont != font.Text)
 						NoxicoGame.HostForm.RestartGraphics();
 
-						IniFile.Save();
+						IniFile.Save(string.Empty);
 						cancelButton.DoEnter();
 					}) { Left = 60, Top = 16, Width = 16 };
 				openButton = new UIButton(i18n.GetString("opt_open"), (s, e) =>

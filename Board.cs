@@ -1076,10 +1076,10 @@ namespace Noxico
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
-		public void DumpToHtml(string suffix = "")
+		public void DumpToHtml(string suffix)
 		{
-			if (!string.IsNullOrWhiteSpace(suffix) && !suffix.StartsWith("_"))
-				suffix = "_" + suffix;
+			if (!suffix.IsBlank() && !suffix.StartsWith('_'))
+				suffix = '_' + suffix;
 			var file = new StreamWriter("Board-" + ID + suffix + ".html");
 			file.WriteLine("<!DOCTYPE html>");
 			file.WriteLine("<html>");
@@ -1241,7 +1241,7 @@ namespace Noxico
 
 		public bool SectorContains(string sector, int x, int y)
 		{
-			if (string.IsNullOrWhiteSpace(sector) || Sectors.Count == 0)
+			if (sector.IsBlank() || Sectors.Count == 0)
 				return true;
 			if (!Sectors.ContainsKey(sector))
 				return false;
@@ -1350,7 +1350,8 @@ namespace Noxico
 						fore = string.Format("rgb({0},{1},{2})", newFore.R, newFore.G, newFore.B);
 					}
 
-					if (!string.IsNullOrWhiteSpace(def.Description)) tag = def.Description;
+					if (!def.Description.IsBlank())
+						tag = def.Description;
 
 					if (chr == "&#x20;")
 						chr = "&nbsp;";
@@ -1386,10 +1387,10 @@ namespace Noxico
 								link = string.Format("<a href=\"#{0}_{1}x{2}\" style=\"color: {3};\">", ent.ID, ent.XPosition, ent.YPosition, fore);
 						}
 					}
-					if (!string.IsNullOrWhiteSpace(tag))
+					if (!tag.IsBlank())
 						tag = " title=\"" + tag + "\"";
 
-					stream.WriteLine("\t\t<td style=\"background: {0}; color: {1};\"{3}>{4}{2}{5}</td>", back, fore, chr, tag, link, string.IsNullOrWhiteSpace(link) ? "" : "</a>");
+					stream.WriteLine("\t\t<td style=\"background: {0}; color: {1};\"{3}>{4}{2}{5}</td>", back, fore, chr, tag, link, link.IsBlank(string.Empty, "</a>"));
 					//DirtySpots.Add(new Location(col, row));
 				}
 				stream.WriteLine("</tr>");

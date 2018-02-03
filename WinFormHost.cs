@@ -824,7 +824,7 @@ namespace Noxico
 				}
 
 				var shotDir = IniFile.GetValue("misc", "shotpath", "screenshots");
-				if (shotDir.StartsWith("$"))
+				if (shotDir.StartsWith('$'))
 					shotDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + shotDir.Substring(1);
 
 				if (!Directory.Exists(shotDir))

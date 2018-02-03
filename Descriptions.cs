@@ -212,7 +212,7 @@ namespace Noxico
 		{
 			if (knownItem == null)
 				return null;
-			var name = (token != null && token.HasToken("unidentified") && !string.IsNullOrWhiteSpace(knownItem.UnknownName)) ? knownItem.UnknownName : knownItem.Name;
+			var name = (token != null && token.HasToken("unidentified") && !knownItem.UnknownName.IsBlank()) ? knownItem.UnknownName : knownItem.Name;
 			var color = (token != null && token.HasToken("color")) ? Color.NameColor(token.GetToken("color").Text) : "";
 			var reps = new Dictionary<string, string>()
 			{

@@ -82,7 +82,7 @@ namespace Noxico
 				var now = this.Path(trivialSize).Value;
 				var thenToken = target.Path(trivialSize);
 				var growOrShrink = 0;
-				if (!string.IsNullOrWhiteSpace(thenToken.Text))
+				if (!thenToken.Text.IsBlank())
 				{
 					if (thenToken.Text.StartsWith("roll"))
 					{
@@ -124,7 +124,7 @@ namespace Noxico
 					continue;
 				var now = this.Path(trivialKind).Text;
 				var thenToken = target.Path(trivialKind);
-				if (string.IsNullOrWhiteSpace(thenToken.Text))
+				if (thenToken.Text.IsBlank())
 					continue;
 				var changeKind = string.Empty;
 				if (thenToken.Text.StartsWith("oneof"))
@@ -136,7 +136,7 @@ namespace Noxico
 				else if (thenToken.Text != now)
 					changeKind = thenToken.Text;
 
-				if (string.IsNullOrWhiteSpace(changeKind))
+				if (changeKind.IsBlank())
 					continue;
 
 				var change = new Token(trivialKind, changeKind);
@@ -163,7 +163,7 @@ namespace Noxico
 				else if (thenToken.Text != now)
 					changeColor = thenToken.Text;
 
-				if (string.IsNullOrWhiteSpace(changeColor))
+				if (changeColor.IsBlank())
 					continue;
 
 				var change = new Token(trivialColor, changeColor);
@@ -535,7 +535,7 @@ namespace Noxico
 						splitOrJoin = -1;
 
 					var now = sourceDick.GetToken("length").Value;
-					if (!string.IsNullOrWhiteSpace(targetLength.Text) && targetLength.Text.StartsWith("roll"))
+					if (!targetLength.Text.IsBlank() && targetLength.Text.StartsWith("roll"))
 					{
 						var xDyPz = targetLength.Text;
 						var range = 0;
@@ -561,7 +561,7 @@ namespace Noxico
 						growOrShrink = -1;
 
 					now = sourceDick.GetToken("thickness").Value;
-					if (!string.IsNullOrWhiteSpace(targetThickness.Text) && targetThickness.Text.StartsWith("roll"))
+					if (!targetThickness.Text.IsBlank() && targetThickness.Text.StartsWith("roll"))
 					{
 						var xDyPz = targetThickness.Text;
 						var range = 0;
@@ -1204,7 +1204,7 @@ namespace Noxico
 					continue;
 				}
 				var token = this.Path(change.Name) ?? this.AddToken(change.Name);
-				if (!string.IsNullOrWhiteSpace(change.Text))
+				if (!change.Text.IsBlank())
 					token.Text = change.Text;
 				else
 					token.Value = change.Value;

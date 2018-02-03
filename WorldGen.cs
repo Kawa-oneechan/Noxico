@@ -132,7 +132,7 @@ namespace Noxico
 					}
 
 					board.Name = string.Format("Level {0}-{1}", i + 1, (char)('A' + j));
-					if (!string.IsNullOrWhiteSpace(name))
+					if (!name.IsBlank())
 						board.Name = string.Format("{0}, level {1}-{2}", name, i + 1, (char)('A' + j));
 					board.ID = string.Format("Dng_{0}_{1}{2}", DungeonGeneratorEntranceBoardNum, i + 1, (char)('A' + j));
 					board.BoardType = BoardType.Dungeon;

@@ -134,7 +134,7 @@ namespace Noxico
 			else
 			{
 				SavePath = IniFile.GetValue("misc", "savepath", @"$/Noxico"); //"saves"; //Use <startup>\saves instead
-				if (SavePath.StartsWith("$"))
+				if (SavePath.StartsWith('$'))
 					SavePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + SavePath.Substring(1);
 				SavePath = Path.GetFullPath(SavePath);
 			}
@@ -170,7 +170,7 @@ namespace Noxico
 			foreach (var l in characterMap.Split('\n'))
 			{
 				var line = l.Trim();
-				if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+				if (line.IsBlank() || line[0] == '#')
 					continue;
 				var values = line.Split(new[] { ' ', '\t' }).Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
 				IngameToUnicode[values[0]] = (char)values[1];
@@ -1098,7 +1098,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				item.RemoveToken("owner");
 
 			pc.IsProperNamed = true;
-			if (!string.IsNullOrWhiteSpace(name))
+			if (!name.IsBlank())
 			{
 				pc.Name = new Name(name);
 				if (idGender == Gender.Female)
@@ -1124,7 +1124,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				var colorToken = pc.Path(color.Key);
 				if (colorToken != null)
 					colorToken.Text = color.Value;
-				if (color.Value.StartsWith("["))
+				if (color.Value.StartsWith('['))
 					colorToken.Text = string.Empty;
 			}
 			Action<TokenCarrier> removeBlanks = null;
@@ -1132,7 +1132,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			{
 				foreach (var token in t.Tokens)
 				{
-					if (token.HasToken("removeifblank") && string.IsNullOrWhiteSpace(token.Text))
+					if (token.HasToken("removeifblank") && token.Text.IsBlank())
 					{
 						t.RemoveToken(token);
 						return;
@@ -1197,14 +1197,14 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 								continue;
 							var valueToken = bonus.GetToken("value");
 							oldVal = aspect.Value;
-							if (!string.IsNullOrWhiteSpace(valueToken.Text))
+							if (!valueToken.Text.IsBlank())
 							{
-								if (valueToken.Text.EndsWith("%"))
+								if (valueToken.Text.EndsWith('%'))
 								{
 									var percentage = int.Parse(valueToken.Text.Remove(valueToken.Text.Length - 1));
 									aspect.Value = (percentage / 100.0f) * oldVal;
 								}
-								else if (valueToken.Text.StartsWith("+"))
+								else if (valueToken.Text.StartsWith('+'))
 								{
 									increase = int.Parse(valueToken.Text.Substring(1));
 									aspect.Value = oldVal + increase;
@@ -1370,7 +1370,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				}
 			}
 
-			if (string.IsNullOrWhiteSpace(LookAt))
+			if (LookAt.IsBlank())
 			{
 				var hpNow = character.Health;
 				var hpMax = character.MaximumHealth;
@@ -1416,7 +1416,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 2);
 			}
 
-			if (!string.IsNullOrWhiteSpace(ContextMessage))
+			if (!ContextMessage.IsBlank())
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length() - 2);
 
 			DrawMessages();

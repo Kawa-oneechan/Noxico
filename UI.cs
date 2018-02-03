@@ -151,7 +151,7 @@ namespace Noxico
 			var caption = ' ' + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text) + "  ";
 
 			NoxicoGame.HostForm.Write(top, Foreground, Background, Top, Left);
-			if (!string.IsNullOrWhiteSpace(Text))
+			if (!Text.IsBlank())
 				NoxicoGame.HostForm.Write(caption, Title.A > 0 ? Title : Foreground, Background, Top, Left + (Width / 2) - (caption.Length() / 2));
 
 			var bg = Background;

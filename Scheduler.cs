@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Noxico
 {
+/*
 	public enum TaskType
 	{
 		Wait, Wander, FindAndGoto, AddToken, RemoveToken
@@ -528,4 +529,5 @@ namespace Noxico
 			}
 		}
 	}
+*/
 }

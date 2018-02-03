@@ -20,7 +20,7 @@ namespace Noxico
 			foreach (var choice in list.Where(t => t.Name == "choice"))
 			{
 				var n = choice.GetToken("_n") ?? choice.AddToken("_n");
-				if (string.IsNullOrWhiteSpace(n.Text))
+				if (n.Text.IsBlank())
 					n.Text = choice.Text.Replace('_', ' ').Titlecase();
 				if (!choice.HasToken("time"))
 					choice.AddToken("time", 1000);
@@ -311,10 +311,10 @@ namespace Noxico
 
 		private static string ApplyMemory(string text)
 		{
-			if (string.IsNullOrWhiteSpace(text))
+			if (text.IsBlank())
 				return string.Empty;
 			for (var i = 0; i < memory.Length; i++)
-				text = text.Replace("[" + i + "]", memory[i] ?? string.Empty);
+				text = text.Replace(string.Format("[{0}]", i), memory[i].OrEmpty());
 			return text;
 		}
 	}

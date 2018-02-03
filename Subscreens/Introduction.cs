@@ -213,7 +213,7 @@ namespace Noxico
 
 				//Use the ID ("bodyplan: example") as the name, unless there's a "playable: proper name".
 				var name = id.Replace('_', ' ').Titlecase();
-				if (!string.IsNullOrWhiteSpace(bodyPlan.GetToken("playable").Text))
+				if (!bodyPlan.GetToken("playable").Text.IsBlank())
 					name = bodyPlan.GetToken("playable").Text;
 
 				var bestiary = bodyPlan.HasToken("bestiary") ? bodyPlan.GetToken("bestiary").Text : string.Empty;
@@ -228,7 +228,7 @@ namespace Noxico
 				var top = 5;
 				foreach (var aspect in editables.Split(','))
 				{
-					if (string.IsNullOrWhiteSpace(aspect))
+					if (aspect.IsBlank())
 						continue;
 					var a = aspect.Trim().Split('|');
 					var path = a[0];
@@ -241,9 +241,8 @@ namespace Noxico
 					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 42, Top = top, Foreground = Color.Gray });
 					foreach (var i in oneof)
 					{
-						var iT = i.Trim().Titlecase();
-						if (string.IsNullOrWhiteSpace(iT))
-							iT = i18n.GetString("[none]", false);
+						var iT = i.Trim();
+						iT = iT.IsBlank(i18n.GetString("[none]", false), iT.Titlecase());
 						if (!items.Contains(iT))
 							items.Add(iT);
 					}
@@ -497,7 +496,7 @@ namespace Noxico
 				};
 				controls["name"].Change = (s, e) =>
 				{
-					controls["nameRandom"].Hidden = !string.IsNullOrWhiteSpace(controls["name"].Text);
+					controls["nameRandom"].Hidden = !controls["name"].Text.IsBlank();
 					UIManager.Draw();
 				};
 				controls["gift"].Change = (s, e) =>
