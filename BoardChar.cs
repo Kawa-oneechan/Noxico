@@ -432,7 +432,7 @@ namespace Noxico
 				if (!NoxicoGame.Me.Player.Character.HasToken("helpless"))
 				{
 					Character.RemoveToken("waitforplayer");
-					Character.AddToken("cooldown", 5, "");
+					Character.AddToken("cooldown", 5);
 				}
 				return;
 			}

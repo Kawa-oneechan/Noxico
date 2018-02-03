@@ -87,8 +87,9 @@ namespace Noxico
 				var containerTexts = new List<string>();
 
 				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
-				containerList = new UIList("", null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
+				containerList = new UIList(string.Empty, null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(containerWindow);
+				//TODO: i18n
 				var emptyMessage = mode == ContainerMode.Vendor ? vendorChar.Name.ToString() + " has nothing." : mode == ContainerMode.Corpse ? "Nothing left to loot." : "It's empty.";
 				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(containerList);
@@ -144,7 +145,7 @@ namespace Noxico
 				var playerTexts = new List<string>();
 
 				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 42, Top = 1, Width = 37, Height = 3 };
-				playerList = new UIList("", null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
+				playerList = new UIList(string.Empty, null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(playerWindow);
 				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = 44, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(playerList);
@@ -197,7 +198,7 @@ namespace Noxico
 				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
-				description = new UILabel("") { Left = 4, Top = 15, Width = 72, Height = 5 };
+				description = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);

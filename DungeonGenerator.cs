@@ -85,10 +85,10 @@ namespace Noxico
 		private static List<Character> GetInhabitants(int count, Culture culture)
 		{
 			var r = new List<Character>();
-			var familyName = "";
+			var familyName = string.Empty;
 			//var dontShareSurname = true;
 			var areMarried = Random.NextDouble() > 0.7;
-			var firstPlan = "";
+			var firstPlan = string.Empty;
 			count = 2;
 			for (var i = 0; i < count; i++)
 			{

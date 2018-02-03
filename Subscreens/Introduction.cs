@@ -66,8 +66,8 @@ namespace Noxico
 
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
-				titleCaption = new UILabel(subtitle) { Top = 10, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal };
-				titlePressEnter = new UILabel(pressEnter) { Top = 12, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray };
+				titleCaption = new UILabel(subtitle) { Top = 10, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal, Darken = true };
+				titlePressEnter = new UILabel(pressEnter) { Top = 12, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
@@ -341,12 +341,12 @@ namespace Noxico
 					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 42, Top = 5, Foreground = Color.Gray } },
 					{ "sex", new UIRadioList(sexoptions) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 42, Top = 11, Foreground = Color.Gray } },
-					{ "gid", new UISingleList(/*sexoptions*/) { Left = 44, Top = 12, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Items = sexoptions.ToList(), Index = 0 } },
+					{ "gid", new UISingleList(string.Empty, null, sexoptions.ToList(), 0) { Left = 44, Top = 12, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
 					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 42, Top = 14, Foreground = Color.Gray } },
-					{ "pref", new UISingleList(/*prefoptions*/) { Left = 44, Top = 15, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Items = prefoptions.ToList(), Index = 1 } },
+					{ "pref", new UISingleList(string.Empty, null, prefoptions.ToList(), 1) { Left = 44, Top = 15, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 42, Top = 5, Foreground = Color.Gray } },
-					{ "gift", new UIList("", null, traits) { Left = 44, Top = 6, Width = 30, Height = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gift", new UIList(string.Empty, null, traits) { Left = 44, Top = 6, Width = 30, Height = 24, Foreground = Color.Black, Background = Color.Transparent } },
 
 					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White, Darken = true } },
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
@@ -520,7 +520,7 @@ namespace Noxico
 						controls["controlHelp"].Top = c.Value.Top;
 					}
 					else
-						controls["controlHelp"].Text = "";
+						controls["controlHelp"].Text = string.Empty;
 					UIManager.Draw();
 				};
 				loadPage(page);

@@ -33,7 +33,7 @@ namespace Noxico
 			var openings = sceneList.Where(x => x.Name == "scene" && x.GetToken("name").Text == name).ToList();
 			if (openings.Count == 0)
 			{
-				MessageBox.Notice("Could not find a proper opening for scene name \"" + name + "\". Aborting.", true, "Uh-oh.");
+				MessageBox.Notice(string.Format("Could not find a proper opening for scene name \"{0}\". Aborting.", name), true, "Uh-oh.");
 				return;
 			}
 			var firstScene = openings.FirstOrDefault(i => SceneFiltersOkay(i));

@@ -15,6 +15,7 @@ namespace Noxico
 		private static Dictionary<object, string> options;
 		private static int option;
 		private static bool allowEscape;
+		private static int width;
 		public static object Answer { get; private set; }
 		public static Action ScriptPauseHandler { get; set; }
 
@@ -33,8 +34,14 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 				var lines = text.Split('\n').Length;
 				var height = lines + 1;
+				var listHeight = 0;
 				if (type == BoxType.List)
-					height += 1 + options.Count;
+				{
+					listHeight = options.Count;
+					if (listHeight > 16)
+						listHeight = 16;
+					height += 1 + listHeight;
+				}
 				else if (type == BoxType.Input)
 					height += 2;
 				var top = 12 - (height / 2);
@@ -49,16 +56,17 @@ namespace Noxico
 					icon.Top = 25 - icon.Bitmap.Height;
 					UIManager.Elements.Add(icon);
 				}
+				var left = 40 - (width / 2);
 
-				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = 15, Top = top, Width = 50, Height = height };
+				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = left, Top = top, Width = width + 4, Height = height };
 				UIManager.Elements.Add(win);
-				lbl = new UILabel(text) { Left = 17, Top = top + 1, Width = 50, Height = lines };
+				lbl = new UILabel(text) { Left = left + 2, Top = top + 1, Width = width, Height = lines };
 				UIManager.Elements.Add(lbl);
 				lst = null;
 				txt = null;
 				if (type == BoxType.List)
 				{
-					lst = new UIList("", Enter, options.Values.ToList(), 0) { Left = 17, Top = top + lines + 1, Width = 46, Height = options.Count };
+					lst = new UIList(string.Empty, Enter, options.Values.ToList(), 0) { Left = left + 2, Top = top + lines + 1, Width = width, Height = listHeight };
 					lst.Change += (s, e) =>
 						{
 							option = lst.Index;
@@ -69,7 +77,7 @@ namespace Noxico
 				}
 				else if (type == BoxType.Input)
 				{
-					txt = new UITextBox((string)Answer) { Left = 17, Top = top + lines + 1, Width = 45, Height = 1 };
+					txt = new UITextBox((string)Answer) { Left = left + 2, Top = top + lines + 1, Width = width - 1, Height = 1 };
 					UIManager.Elements.Add(txt);
 				}
 				var keys = string.Empty;
@@ -79,7 +87,7 @@ namespace Noxico
 					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
 					keys = " \x18/\x19 ";
-				key = new UILabel(keys) { Top = top + height - 1, Left = 62 - keys.Length() };
+				key = new UILabel(keys) { Top = top + height - 1, Left = left + width - 2 - keys.Length() };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;
@@ -193,7 +201,11 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.List;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 46); //.Split('\n');
+			width = 46;
+			foreach (var o in options.Values)
+				if (o.Length() + 2 > width)
+					width = o.Length() + 2;
+			text = Toolkit.Wordwrap(question.Trim(), width); //.Split('\n');
 			option = 0;
 			onYes = okay;
 			MessageBox.options = options;
@@ -211,7 +223,8 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			type = BoxType.Question;
 			MessageBox.title = title;
-			text = Toolkit.Wordwrap(question.Trim(), 46); //.Split('\n');
+			width = 46;
+			text = Toolkit.Wordwrap(question.Trim(), width); //.Split('\n');
 			onYes = yes;
 			onNo = no;
 			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
@@ -227,7 +240,8 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Notice;
-			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
+			width = 46;
+			text = Toolkit.Wordwrap(message.Trim(), width); //.Split('\n');
 			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));
 			NoxicoGame.Mode = UserMode.Subscreen;
 			Subscreens.FirstDraw = true;
@@ -241,7 +255,8 @@ namespace Noxico
 			NoxicoGame.Subscreen = MessageBox.Handler;
 			MessageBox.title = title;
 			type = BoxType.Input;
-			text = Toolkit.Wordwrap(message.Trim(), 46); //.Split('\n');
+			width = 46;
+			text = Toolkit.Wordwrap(message.Trim(), width); //.Split('\n');
 			Answer = defaultValue;
 			onYes = okay;
 			MessageBox.icon = icon.IsBlank() ? null : new UIPNG(Mix.GetBitmap(icon));

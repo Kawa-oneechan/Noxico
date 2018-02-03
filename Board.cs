@@ -352,7 +352,7 @@ namespace Noxico
 			stream.Write((byte)XPosition);
 			stream.Write((byte)YPosition);
 			stream.Write(TargetBoard);
-			stream.Write(TargetWarpID ?? "");
+			stream.Write(TargetWarpID.OrEmpty());
 		}
 
 		public static Warp LoadFromFile(BinaryReader stream)
@@ -1435,7 +1435,7 @@ namespace Noxico
 					var def = Tilemap[col, row].Definition;
 					if (def.IsVariableWall)
 					{
-						var baseName = def.Name.Replace("Top", "").Replace("Bottom", "").Replace("Left", "").Replace("Right", "").Replace("Joiner", "");
+						var baseName = def.Name.Replace("Top", string.Empty).Replace("Bottom", string.Empty).Replace("Left", string.Empty).Replace("Right", string.Empty).Replace("Joiner", string.Empty);
 						newTile.Clear();
 						newTile.Append(baseName);
 						if (row > 0 && (Tilemap[col, row - 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row - 1].Definition.Name.StartsWith("doorway")))

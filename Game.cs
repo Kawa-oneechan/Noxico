@@ -67,7 +67,7 @@ namespace Noxico
 		public static bool PlayerReady { get; set; }
 
 		private static List<string> messageLog = new List<string>();
-		private static string lastMessage = "";
+		private static string lastMessage = string.Empty;
 		public static string LookAt { get; set; }
 		public static int WorldVersion { get; private set; }
 
@@ -590,7 +590,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					clr = Color.Gray;
 				var lastLine = Messages.LastOrDefault();
 				if (lastLine == null)
-					lastLine = "";
+					lastLine = string.Empty;
 				else
 					Messages.Remove(lastLine);
 				var newLines = (lastLine + "  <c" + clr.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
