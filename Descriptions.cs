@@ -56,11 +56,11 @@ namespace Noxico
 			var set = descTable.Path(path);
 			if (set == null)
 				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
-			var ret = set.Tokens[0].Tokens[Random.Next(set.Tokens[0].Tokens.Count)].Name;
+			var ret = set.Tokens[0].Tokens.PickOne().Name;
 			foreach (var item in set.Tokens)
 			{
 				if (item.Value <= upTo)
-					ret = item.Tokens[Random.Next(item.Tokens.Count)].Name;
+					ret = item.Tokens.PickOne().Name;
 				else
 					return ret;
 			}
@@ -72,15 +72,15 @@ namespace Noxico
 			var set = descTable.Path(path);
 			if (set == null)
 				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
-			return Toolkit.PickOne(set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray());
+			return set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray().PickOne();
 			//return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 		public static string GetPartDescription(string path, params string[] alternatives)
 		{
 			var set = descTable.Path(path);
 			if (set == null)
-				return Toolkit.PickOne(alternatives);
-			return Toolkit.PickOne(set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray());
+				return alternatives.PickOne();
+			return set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray().PickOne();
 			//return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
 

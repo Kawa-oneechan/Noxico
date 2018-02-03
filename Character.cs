@@ -21,12 +21,6 @@ namespace Noxico
 		Health, Charisma, Climax, Cunning, Carnality, Stimulation, Sensitivity, Speed, Strength
 	}
 
-	public enum Mutations
-	{
-		Random = -1, AddPenis, AddVagina, AddOddLegs, RemoveOddLegs, AddBreast, RemoveBreast, AddTesticle, RemoveTesticle, 
-		GiveDicknipples, GiveNipplecunts, AddNipple, RemoveNipple, GiveRegularNipples, GrowPenis, RemovePenis, RemoveVagina,
-	}
-
 	public enum TeamBehaviorClass
 	{
 		Attacking, Flocking
@@ -693,10 +687,10 @@ namespace Noxico
 			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix") && Random.NextDouble() > 0.5)
 			{
 				var prefixes = new[] { "vorpal", "poisonous", "infectious", "dire", "underfed" };
-				var chosen = prefixes[Random.Next(prefixes.Length)];
+				var chosen = prefixes.PickOne();
 				if (!newChar.HasToken("infectswith"))
 					while (chosen == "infectious")
-						chosen = prefixes[Random.Next(prefixes.Length)];
+						chosen = prefixes.PickOne();
 				newChar.UpdateTitle();
 			}
 
@@ -1541,7 +1535,7 @@ Vaginal capacity: {28}
 
 Tokens:
 {23}",
-				   Toolkit.GetBodyComparisonHash(this),
+				   this.GetBodyComparisonHash(),
 				   GetClosestBodyplanMatch(),
 				   this.A, this.BiologicalGender, this.Capacity, this.Carried, this.Culture,
 				   this.CumAmount, this.Gender, this.Health, this.ID, this.IsProperNamed,
@@ -2056,7 +2050,7 @@ Tokens:
 		{
 			var o = options.Split(',').Select(x => x.Trim()).ToArray();
 			if (!o.Contains(colorToken.Text))
-				colorToken.Text = Toolkit.PickOne(o);
+				colorToken.Text = o.PickOne();
 		}
 		
 		public float GetBreastSize()
@@ -2565,25 +2559,6 @@ Tokens:
 		}
 		#endregion
 
-		public string GetClosestBodyplanMatch()
-		{
-			var thisHash = Toolkit.GetBodyComparisonHash(this);
-			var ret = "";
-			var score = 999;
-			foreach (var hash in NoxicoGame.BodyplanHashes)
-			{
-				var distance = Toolkit.GetHammingDistance(thisHash, hash.Value);
-				if (distance < score)
-				{
-					score = distance;
-					ret = hash.Key;
-				}
-			}
-			if (score == 999)
-				return "human";
-			return ret;
-		}
-
 		public bool LikesBoys
 		{
 			get
@@ -2719,9 +2694,9 @@ Tokens:
 			{
 				//Should be a Changeling. Distance should be < 2.
 				//TODO: make this more generic, uncoupling from what should be a modpak's bodyplan.
-				var myHash = Toolkit.GetBodyComparisonHash(this);
+				var myHash = this.GetBodyComparisonHash();
 				var changeling = NoxicoGame.BodyplanHashes["mlp_changeling"];
-				if (Toolkit.GetHammingDistance(myHash, changeling) >= 2)
+				if (myHash.GetHammingDistance(changeling) >= 2)
 					return false;
 			}
 			else
@@ -2862,7 +2837,7 @@ Tokens:
 				};
 				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
 				if (action == TeamBehaviorAction.FlockAlike) //TODO: check if >= 3 is any good.
-					action = (Toolkit.GetHammingDistance(this.GetClosestBodyplanMatch(), other.GetClosestBodyplanMatch()) >= 3) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Flock;
+					action = (this.GetClosestBodyplanMatch().GetHammingDistance(other.GetClosestBodyplanMatch()) >= 3) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Flock;
 				return action;
 			}
 		}

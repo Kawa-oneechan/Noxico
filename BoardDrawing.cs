@@ -25,7 +25,7 @@ namespace Noxico
 						var chance = Random.NextDouble();
 						var variants = def.Variants.Tokens.Where(v => v.Value < chance).ToArray();
 						if (variants.Length > 0)
-							def = TileDefinition.Find(variants[Random.Next(variants.Length)].Name);
+							def = TileDefinition.Find(variants.PickOne().Name);
 					}
 					SetTile(row, col, def);
 				}

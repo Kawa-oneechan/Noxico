@@ -107,7 +107,7 @@ namespace Noxico
 			var rules = typeSet.Tokens.Where(x => x.Name == "rule").ToArray();
 			while (true)
 			{
-				var rule = rules[Random.Next(rules.Length)];
+				var rule = rules.PickOne();
 				var name = new StringBuilder();
 				foreach (var part in rule.Tokens)
 				{
@@ -120,7 +120,7 @@ namespace Noxico
 						if (part.Value > 0 && Random.Next(100) > part.Value)
 							continue;
 						var list = sets[part.Name];
-						var word = list[Random.Next(list.Length)];
+						var word = list.PickOne();
 						name.Append(word);
 					}
 				}

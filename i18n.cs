@@ -291,7 +291,7 @@ namespace Noxico
 						//Remove all less-specific options if any specific are found.
 						if (pRes.Any(x => x.HasToken("filter")))
 							pRes.RemoveAll(x => !x.HasToken("filter"));
-						return pRes[Random.Next(pRes.Count)].Text;
+						return pRes.PickOne().Text;
 					}
 					else if (targetGroup.StartsWith("t"))
 					{

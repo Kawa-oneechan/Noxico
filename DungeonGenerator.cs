@@ -151,7 +151,7 @@ namespace Noxico
 
 		public void Create(BiomeData biome, string templateSet)
 		{
-			Culture = Culture.Cultures[Toolkit.PickOne(biome.Cultures)];
+			Culture = Culture.Cultures[biome.Cultures.PickOne()];
 			DungeonGenerator.DungeonGeneratorBiome = BiomeData.Biomes.IndexOf(biome);
 			this.biome = biome;
 			map = new int[80, 50];
@@ -184,7 +184,7 @@ namespace Noxico
 						//justPlaced = false;
 						continue;
 					}
-					var newTemplate = templates[templateSet][Random.Next(templates[templateSet].Count)];
+					var newTemplate = templates[templateSet].PickOne();
 					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
 					var sX = newTemplate.Width < 13 ? Random.Next(1, 13 - newTemplate.Width) : 0;
@@ -670,7 +670,7 @@ namespace Noxico
 	{
 		public void Create(BiomeData biome)
 		{
-			Culture = Culture.Cultures[Toolkit.PickOne(biome.Cultures)];
+			Culture = Culture.Cultures[biome.Cultures.PickOne()];
 			base.Create(biome, "town");
 		}
 

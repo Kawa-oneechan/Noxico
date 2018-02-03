@@ -195,7 +195,7 @@ namespace Noxico
 				Toolkit.VerifyBodyplan(bodyPlan, id);
 				if (bodyPlan.HasToken("beast"))
 					continue;
-				BodyplanHashes.Add(id, Toolkit.GetBodyComparisonHash(bodyPlan));
+				BodyplanHashes.Add(id, Character.GetBodyComparisonHash(bodyPlan));
 				Program.WriteLine("{0}\t{1}", id, BodyplanHashes[id]);
 			}
 
@@ -206,7 +206,7 @@ namespace Noxico
 				Program.Write(planRow.Key);
 				foreach (var planCol in BodyplanHashes.Values)
 				{
-					Program.Write("\t{0}", Toolkit.GetHammingDistance(planRow.Value, planCol));
+					Program.Write("\t{0}", planRow.Value.GetHammingDistance(planCol));
 				}
 				Program.WriteLine(string.Empty);
 			}
@@ -559,7 +559,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			while (messageOrMore is object[])
 			{
 				var options = (object[])messageOrMore;
-				messageOrMore = options[Random.Next(options.Length)];
+				messageOrMore = options.PickOne();
 				if (messageOrMore is Neo.IronLua.LuaTable)
 					messageOrMore = ((Neo.IronLua.LuaTable)messageOrMore).ArrayList.ToArray();
 			}
@@ -800,7 +800,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			{
 				while (true)
 				{
-					this.CurrentBoard = townBoards[Random.Next(townBoards.Count)];
+					this.CurrentBoard = townBoards.PickOne();
 					if (this.CurrentBoard.Realm == Realms.Nox) //don't spawn in the demon world!
 						break;
 				}
@@ -904,7 +904,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 							thisBoard.GetToken("encounters").Tokens.Clear();
 							townGen.Board = thisBoard;
 							var biome = BiomeData.Biomes[(int)thisBoard.GetToken("biome").Value];
-							var cultureName = biome.Cultures[Random.Next(biome.Cultures.Length)];
+							var cultureName = biome.Cultures.PickOne();
 							townGen.Culture = Culture.Cultures[cultureName];
 							townGen.Create(biome);
 							townGen.ToTilemap(ref thisBoard.Tilemap);
@@ -930,7 +930,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 									continue;
 								if (citizens.Count == 0) //Shouldn't happen, but who knows.
 									break;
-								var chosenCitizen = citizens[Random.Next(citizens.Count)];
+								var chosenCitizen = citizens.PickOne();
 								citizens.Remove(chosenCitizen);
 								var spouse = chosenCitizen.Character.Spouse;
 								if (spouse != null)
@@ -1029,7 +1029,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				board.Sectors.Clear();
 				townGen.Board = board;
 				var biome = BiomeData.Biomes[(int)board.GetToken("biome").Value];
-				var cultureName = string.IsNullOrWhiteSpace(culture) ? biome.Cultures[Random.Next(biome.Cultures.Length)] : culture;
+				var cultureName = culture.IsBlank() ? biome.Cultures.PickOne() : culture;
 				townGen.Culture = Culture.Cultures[cultureName];
 				townGen.Create(biome);
 				townGen.ToTilemap(ref board.Tilemap);
@@ -1236,11 +1236,12 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 		public static string RollWorldName()
 		{
+			//TODO: Luafy
 			var x = Mix.GetString("Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			var a = Toolkit.PickOne(x);
-			var b = Toolkit.PickOne(x);
-			while(b == a)
-				b = Toolkit.PickOne(x);
+			var a = x.PickOne();
+			var b = x.PickOne();
+			while (b == a)
+				b = x.PickOne();
 			return "Land of " + a + " and " + b;
 		}
 
@@ -1258,7 +1259,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				string roll = string.Empty;
 				while (Potions.Contains(roll))
 				{
-					var color = colors[Random.Next(colors.Length)];
+					var color = colors.PickOne();
 					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
 					roll = i18n.Format("potion_name", mod, color) + '\0' + color;
 				}
@@ -1270,7 +1271,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				string roll = string.Empty;
 				while (Potions.Contains(roll))
 				{
-					var color = colors[Random.Next(colors.Length)];
+					var color = colors.PickOne();
 					var mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
 					roll = i18n.Format("potion_ringname", mod, color) + '\0' + color;
 				}

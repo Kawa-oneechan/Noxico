@@ -108,8 +108,8 @@ namespace Noxico
 			}
 
 			//Decide which boards are the exit and goal
-			var entranceBoard = levels[0][Random.Next(levels[0].Count)];
-			var goalBoard = levels[levels.Count - 1][Random.Next(levels[levels.Count - 1].Count)];
+			var entranceBoard = levels[0].PickOne();
+			var goalBoard = levels[levels.Count - 1].PickOne();
 
 			//Generate content for each board
 			for (var i = 0; i < levels.Count; i++)
@@ -374,7 +374,7 @@ namespace Noxico
 				{
 					if (cols.Count == 0)
 						cols.AddRange(c.Split(',').Select(x => x.Trim()).ToList());
-					var co = cols[Random.Next(cols.Count)];
+					var co = cols.PickOne();
 					cols.Remove(co);
 					pal.Add(co);
 				}
@@ -395,7 +395,7 @@ namespace Noxico
 						//simple negatory token check
 						var items = NoxicoGame.KnownItems.Where(i => (!i.HasToken(option))).ToList();
 						if (items.Count > 0)
-							possibilities.Add(new Token(items[Random.Next(items.Count)].ID));
+							possibilities.Add(new Token(items.PickOne().ID));
 					}
 					else if (option.Contains('-') || option.Contains('+'))
 					{
@@ -431,17 +431,17 @@ namespace Noxico
 						var items = NoxicoGame.KnownItems.Where(i => i.HasToken(option) && !i.HasToken("unique")).ToList();
 						if (items.Count > 0)
 						{
-							var knownItem = items[Random.Next(items.Count)];
+							var knownItem = items.PickOne();
 							var newPoss = new Token(knownItem.ID);
 							if (knownItem.HasToken("colored"))
 								newPoss.AddToken("color", 0, colors[color == -1 ? Random.Next(colors.Count) : color]);
 							if (knownItem.ID == "book")
-								newPoss.AddToken("id", Toolkit.PickOne(NoxicoGame.BookTitles.Keys.ToArray()));
+								newPoss.AddToken("id", NoxicoGame.BookTitles.Keys.ToArray().PickOne());
 							possibilities.Add(newPoss);
 						}
 					}
 					if (possibilities.Count > 0)
-						return possibilities[Random.Next(possibilities.Count)];
+						return possibilities.PickOne();
 				}
 				else
 				{
@@ -463,7 +463,7 @@ namespace Noxico
 			var lootsets = GetLoots(target, type, filters);
 			if (lootsets.Count == 0)
 				return loot;
-			var lootset = lootsets[Random.Next(lootsets.Count)];
+			var lootset = lootsets.PickOne();
 			if (!lootset.HasToken("someof") && !lootset.HasToken("oneof") && !lootset.HasToken("oneofeach"))
 				return loot;
 			foreach (var of in lootset.Tokens)
@@ -515,7 +515,7 @@ namespace Noxico
 				var amount = Random.Next(min, max);
 				while (amount > 0)
 				{
-					var option = options[Random.Next(options.Count)];
+					var option = options.PickOne();
 					var toAdd = parseOption(option);
 					if (toAdd != null)
 						loot.Add(toAdd);
