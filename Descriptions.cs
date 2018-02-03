@@ -55,7 +55,7 @@ namespace Noxico
 		{
 			var set = descTable.Path(path);
 			if (set == null)
-				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
+				throw new Exception(string.Format("Could not find bodyparts.tml item \"{0}\".", path));
 			var ret = set.Tokens[0].Tokens.PickOne().Name;
 			foreach (var item in set.Tokens)
 			{
@@ -71,7 +71,7 @@ namespace Noxico
 		{
 			var set = descTable.Path(path);
 			if (set == null)
-				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
+				throw new Exception(string.Format("Could not find bodyparts.tml item \"{0}\".", path));
 			return set.Tokens.Where(t => t.Name[0] != '_').Select(t => t.Name).ToArray().PickOne();
 			//return set.Tokens[Random.Next(set.Tokens.Count)].Name;
 		}
@@ -229,14 +229,14 @@ namespace Noxico
 			else
 			{
 				foreach (var key in reps.Keys)
-					name = name.Replace(key, "");
+					name = name.Replace(key, string.Empty);
 			}
 
 			//TODO: see Mutamorph/GetMorphDeltas about scripted articles.
 			if (article == "the")
-				name = knownItem.Definite + " " + name;
+				name = knownItem.Definite + ' ' + name;
 			else if (article == "a")
-				name = knownItem.Indefinite + " " + name;
+				name = knownItem.Indefinite + ' ' + name;
 
 			return name;
 		}

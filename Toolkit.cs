@@ -164,37 +164,6 @@ namespace Noxico
 			return Ordinal(num);
 		}
 
-		/*
-		/// <summary>
-		/// Applies [grammar replacement] from a given character's point of view.
-		/// </summary>
-		public static string Viewpoint(this string text, BoardChar point)
-		{
-			if (point != null && point is Player)
-			{
-				text = text.Replace("[Your]", "Your");
-				text = text.Replace("[your]", "your");
-				text = text.Replace("[You]", "You");
-				text = text.Replace("[you]", "you");
-				text = text.Replace("[have]", "have");
-				text = text.Replace("[s]", "");
-				text = text.Replace("[ies]", "y");
-			}
-			else
-			{
-				//For third-person descriptions...
-				text = text.Replace("[Your]", point.Character.HisHerIts(false));
-				text = text.Replace("[your]", point.Character.HisHerIts(true));
-				text = text.Replace("[You]", point.Character.HeSheIt(false));
-				text = text.Replace("[you]", point.Character.HeSheIt(true));
-				text = text.Replace("[have]", "has");
-				text = text.Replace("[s]", "s");
-				text = text.Replace("[ies]", "ies");
-			}
-			return text;
-		}
-		*/
-
 		public static bool IsBlank(this string text)
 		{
 			return string.IsNullOrWhiteSpace(text);
@@ -301,7 +270,7 @@ namespace Noxico
 			text = newText.ToString();
 			text = text.Replace("\u00AD\u00AD", "\u00AD");
 			//todo: remove shys from tags
-			text = Regex.Replace(text, "<(?:[\\w^­]+)(\u00AD)(?:[\\w^­]+)>", (m => m.Captures[0].Value.Replace("\u00AD", "")));
+			text = Regex.Replace(text, "<(?:[\\w^­]+)(\u00AD)(?:[\\w^­]+)>", (m => m.Captures[0].Value.Replace("\u00AD", string.Empty)));
 			#endregion
 
 			var currentWord = new StringBuilder();
@@ -924,7 +893,7 @@ namespace Noxico
 
 		public static string ToID(this string name)
 		{
-			return Regex.Replace(name.ToLower(), "(^[A-Z])", "");
+			return Regex.Replace(name.ToLower(), "(^[A-Z])", string.Empty);
 		}
 
 		public static Direction Opposite(Direction current)
@@ -1029,7 +998,7 @@ namespace Noxico
 			}
 
 			if (missing.Count > 0)
-				throw new Exception("The \"" + name + "\" bodyplan is missing the following token(s):\r\n * " + string.Join("\r\n * ", missing));
+				throw new Exception(string.Format("The \"\" bodyplan is missing the following token(s):\r\n * {1}", name, string.Join("\r\n * ", missing)));
         }
 		#endregion
 

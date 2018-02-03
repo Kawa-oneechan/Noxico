@@ -289,8 +289,8 @@ namespace Noxico
 		{
 			Toolkit.SaveExpectation(stream, "CLUT");
 			base.SaveToFile(stream);
-			stream.Write(Name ?? "");
-			stream.Write(descriptionFromDB ? "" : (Description ?? ""));
+			stream.Write(Name.OrEmpty());
+			stream.Write(descriptionFromDB ? string.Empty : (Description.OrEmpty()));
 			stream.Write(CanBurn);
 			stream.Write(Life);
 		}
@@ -401,7 +401,7 @@ namespace Noxico
 			var exists = NoxicoGame.KnownItems.Any(ki => ki.ID == id);
 			if (!exists)
 			{
-				var attempt = NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID.Replace("_", "") == id);
+				var attempt = NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID.Replace("_", string.Empty) == id);
 				if (attempt != null)
 					id = attempt.ID;
 				else
@@ -514,7 +514,7 @@ namespace Noxico
 		{
 			Toolkit.ExpectFromFile(stream, "CONT", "container entity");
 			var e = Entity.LoadFromFile(stream);
-			var newContainer = new Container("", null)
+			var newContainer = new Container(string.Empty, null)
 			{
 				ID = e.ID,
 				Glyph = e.Glyph,

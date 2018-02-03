@@ -30,7 +30,7 @@ namespace Noxico
 			//Token.NoRolls = true;
 			var target = Character.Bodyplans.FirstOrDefault(x => x.Name == "bodyplan" && x.Text == targetPlan);
 			if (target == null)
-				throw new ArgumentException("No such bodyplan \"" + targetPlan + "\".");
+				throw new ArgumentException(string.Format("No such bodyplan \"{0}\".", targetPlan));
 
 			// fix: added a default penis to prevent null exceptions when not having suitable TargetPenis 
 			if (!target.HasToken("penis"))

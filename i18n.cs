@@ -103,7 +103,7 @@ namespace Noxico
 				input = input.Replace("\uE220", NoxicoGame.Me.Player.Character.Name.ToString());
 			else
 				input = input.Replace("\uE220", "????");
-			input = input.Replace("\uE2FE", "");
+			input = input.Replace("\uE2FE", string.Empty);
 			return input;
 		}
 

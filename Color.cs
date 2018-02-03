@@ -122,7 +122,7 @@ namespace Noxico
 			if (hexCode.Length != 6 && hexCode.Length != 3)
 				throw new ArgumentException("CSS hexcodes have only three or six digits.");
 			if (hexCode.Length == 3)
-				hexCode = string.Join("", new char[] { hexCode[0], hexCode[0], hexCode[1], hexCode[1], hexCode[2], hexCode[2] });
+				hexCode = string.Join(string.Empty, new char[] { hexCode[0], hexCode[0], hexCode[1], hexCode[1], hexCode[2], hexCode[2] });
 			var r = int.Parse(hexCode.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
 			var g = int.Parse(hexCode.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
 			var b = int.Parse(hexCode.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
@@ -168,7 +168,7 @@ namespace Noxico
 				return Color.Silver;
 			if (name[0] == '#')
 				return Color.FromCSS(name);
-			var request = name.ToLower().Replace("_", "").Replace(" ", "");
+			var request = name.ToLower().Replace("_", string.Empty).Replace(" ", string.Empty);
 			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(request, StringComparison.OrdinalIgnoreCase));
 			if (entry == null)
 				return Color.Silver;
@@ -351,8 +351,8 @@ namespace Noxico
 		/// </summary>
 		public static string NameColor(string color)
 		{
-			var req = color.Trim().ToLower().Replace("_", "").Replace(" ", "");
-			var colorName = "";
+			var req = color.Trim().ToLower().Replace("_", string.Empty).Replace(" ", string.Empty);
+			var colorName = string.Empty;
 			var entry = colorTable.FirstOrDefault(x => x.Name.Equals(color, StringComparison.OrdinalIgnoreCase));
 			if (entry != null)
 				colorName = entry.Name;
@@ -379,7 +379,7 @@ namespace Noxico
 
 		public static string Translate(string color)
 		{
-			var translated = i18n.GetString("color_" + color.Replace(" ", "").ToLowerInvariant());
+			var translated = i18n.GetString("color_" + color.Replace(" ", string.Empty).ToLowerInvariant());
 			if (translated[0] == '[')
 				return color; //Do NOT return "[color_red]"!
 			return translated;

@@ -45,7 +45,7 @@ namespace Noxico
 			if (color.Length == 0)
 			{
 				foreach (var key in reps.Keys)
-					name = name.Replace(key, "");
+					name = name.Replace(key, string.Empty);
 			}
 			else
 			{
@@ -97,7 +97,7 @@ namespace Noxico
 
 			if (this.ID == "book" && token != null && token.HasToken("id") && NoxicoGame.BookTitles.ContainsKey(token.GetToken("id").Text))
 				return i18n.Format("book_description", NoxicoGame.BookTitles[token.GetToken("id").Text][0], NoxicoGame.BookTitles[token.GetToken("id").Text][1]);
-			var a = "";
+			var a = string.Empty;
 			var description = isIdentified ? "description" : "unknown";
 			if (this.HasToken(description))
 			{
@@ -113,7 +113,7 @@ namespace Noxico
 				if (color.Length == 0)
 				{
 					foreach (var key in reps.Keys)
-						ret = ret.Replace(key, "");
+						ret = ret.Replace(key, string.Empty);
 				}
 				else
 				{
@@ -448,7 +448,7 @@ namespace Noxico
 		public void Use(Character character, Token item, bool noConfirm = false)
 		{
 			var boardchar = NoxicoGame.Me.CurrentBoard.Entities.OfType<BoardChar>().First(x => x.Character == character);
-			var runningDesc = "";
+			var runningDesc = string.Empty;
 
 			Action<string> showDesc = new Action<string>(d =>
 			{

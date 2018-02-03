@@ -55,7 +55,7 @@ namespace Noxico
 
 		private static void UpdateColumns()
 		{
-			sigilView.Text = "";
+			sigilView.Text = string.Empty;
 			for (var row = 0; row < itemList.Height; row++)
 			{
 				var index = row + itemList.Scroll;
@@ -218,10 +218,10 @@ namespace Noxico
 				if (UIManager.Elements.Count < 2)
 				{
 					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
-					howTo = new UILabel("") { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-					itemDesc = new UILabel("") { Left = 4, Top = 15, Width = 72, Height = 5 };
-					sigilView = new UILabel("") { Left = 35, Top = 2, Width = 60, Height = height };
-					itemList = new UIList("", null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection, Background = UIColors.WindowBackground };
+					howTo = new UILabel(string.Empty) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+					itemDesc = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
+					sigilView = new UILabel(string.Empty) { Left = 35, Top = 2, Width = 60, Height = height };
+					itemList = new UIList(string.Empty, null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection, Background = UIColors.WindowBackground };
 					itemList.Change = (s, e) =>
 					{
 						selection = itemList.Index;

@@ -57,7 +57,7 @@ namespace Noxico
 			env.print = new Action<object[]>(x =>
 			{
 				if (x.Length == 1 && x[0] is LuaTable)
-					Program.WriteLine("Table: {{ " + ((LuaTable)x[0]).Values.Select(v => string.Format("{0} = {1}", v.Key, v.Value is string ? "\"" + v.Value + "\"" : v.Value)).Join() + " }}");
+					Program.WriteLine("Table: {{ " + ((LuaTable)x[0]).Values.Select(v => string.Format("{0} = {1}", v.Key, v.Value is string ? '\"' + v.Value.ToString() + '\"' : v.Value)).Join() + " }}");
 				else
 					Program.WriteLine(string.Join("\t", x.Select(v => v ?? "nil")));
 			});

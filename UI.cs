@@ -244,7 +244,7 @@ namespace Noxico
 
 		public UIList()
 		{
-			Text = "";
+			Text = string.Empty;
 			Items = new List<string>();
 			_index = 0;
 			Width = 32;
@@ -278,6 +278,7 @@ namespace Noxico
 						_index == i + scroll ? UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused : Background,
 						 t, l);
 
+			DrawScrollArrows();
 		}
 
 		public void DrawQuick()
@@ -308,6 +309,9 @@ namespace Noxico
 				UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText,
 				UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused,
 				Top + _index - scroll, Left);
+
+			DrawScrollArrows();
+
 			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
@@ -331,9 +335,20 @@ namespace Noxico
 								UIManager.Highlight == this ? UIColors.SelectedText : UIColors.HighlightText,
 				UIManager.Highlight == this ? UIColors.SelectedBackground : UIColors.SelectedBackUnfocused,
 				Top + _index - scroll, Left);
+
+			DrawScrollArrows();
+
 			Text = Items[_index];
 			if (Change != null)
 				Change(this, null);
+		}
+
+		private void DrawScrollArrows()
+		{
+			if (scroll > 0)
+				NoxicoGame.HostForm.Write("\x1E", UIColors.RegularText, Color.Transparent, Top, Left + Width - 1);
+			if (scroll + Height < Items.Count)
+				NoxicoGame.HostForm.Write("\x1F", UIColors.RegularText, Color.Transparent, Top + Height - 1, Left + Width - 1);
 		}
 
 		public override void DoMouse(int left, int top)

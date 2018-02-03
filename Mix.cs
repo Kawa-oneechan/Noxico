@@ -271,7 +271,7 @@ namespace Noxico
 						return ret.ToArray();
 				}
 				var getFiles = Directory.GetFiles("data", pattern, SearchOption.AllDirectories);
-				ret.AddRange(getFiles);
+				ret.AddRange(getFiles.Select(f => f.Substring(5)).Where(f => !ret.Contains(f)));
 			}
 			return ret.ToArray();
 		}

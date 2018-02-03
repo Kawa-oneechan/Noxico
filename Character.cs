@@ -153,12 +153,13 @@ namespace Noxico
 				(g == Gender.Herm && HasToken("hermonly")))
 				g = Gender.Invisible;
 			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ', Title);
+				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ', Title);
 			return string.Format("{0} {1}", A, Title);
 		}
 
 		public string GetKnownName(bool fullName = false, bool appendTitle = false, bool the = false, bool initialCaps = false)
 		{
+			//TODO: i18n
 			if (HasToken("player") || HasToken("special"))
 				return Name.ToString(fullName);
 
@@ -179,14 +180,14 @@ namespace Noxico
 				if (appendTitle)
 					return string.Format("{0}, {1} {2}{3}",
 						Name.ToString(fullName), (the ? "the" : A),
-						(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
+						(g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ',
 						Title);
 				return Name.ToString(fullName);
 			}
 
 			return string.Format("{0} {1}{2}",
 				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
-				(g == Gender.Invisible) ? "" : g.ToString().ToLowerInvariant() + ' ',
+				(g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ',
 				Title);
 		}
 
@@ -945,7 +946,7 @@ namespace Noxico
 				if (i < col1.Count)
 					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col1[i], false)).ToLowerInvariant()).PadEffective(pad));
 				else
-					print("".PadEffective(pad));
+					print(string.Empty.PadEffective(pad));
 				if (i < col2.Count)
 					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col2[i], false).ToLowerInvariant()));
 				print("\n");

@@ -36,8 +36,8 @@ namespace Noxico
 
 		private FMOD.System system;
 		private Dictionary<string, Sound> sounds;
-		private string musicPlaying = "";
-		private string currentSet = "";
+		private string musicPlaying = string.Empty;
+		private string currentSet = string.Empty;
 		private FMOD.Sound music;
 		private FMOD.Channel musicChannel;
 		private float musicVolume, soundVolume;
@@ -200,8 +200,8 @@ namespace Noxico
 					musicChannel.Stop();
 				if (music != null)
 					music.Release();
-				currentSet = "";
-				musicPlaying = "";
+				currentSet = string.Empty;
+				musicPlaying = string.Empty;
 			}
 			else if (musicPlaying != name)
 			{

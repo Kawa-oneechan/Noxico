@@ -15,10 +15,10 @@ namespace Noxico
 		public string NameGen { get; set; }
 		public Name()
 		{
-			FirstName = "";
-			Surname = "";
-			Title = "";
-			NameGen = "";
+			FirstName = string.Empty;
+			Surname = string.Empty;
+			Title = string.Empty;
+			NameGen = string.Empty;
 		}
 		public Name(string name)
 			: this()
