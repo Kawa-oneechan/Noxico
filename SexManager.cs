@@ -409,21 +409,16 @@ namespace Noxico
 			if (cloth != null)
 			{
 				if (tear)
-				{
-					InventoryItem.TearApart(cloth, GetToken("items").Tokens.First(x => x.Name == cloth.ID && x.HasToken("equipped")));
-					return true;
-				}
+					return InventoryItem.TearApart(cloth, false);
 				else
-				{
 					return cloth.Unequip(this, cloth.tempToken);
-				}
 			}
 			return false;
 		}
 
-		public bool TakeVirginity()
+		public bool TakeVirginity(string vaginaOrAss)
 		{
-			var vagina = Tokens.FirstOrDefault(x => x.Name == "vagina" && x.HasToken("virgin"));
+			var vagina = Tokens.FirstOrDefault(x => x.Name == vaginaOrAss && x.HasToken("virgin"));
 			if (vagina != null)
 			{
 				vagina.RemoveToken("virgin");
