@@ -364,6 +364,8 @@ Would you like an infodump on the way out?
 	sigil_short_worn: W
 	sigil_ranged: ranged
 	sigil_melee: m&#x88;l&#x82;e
+	sigil_torn: torn
+	(torn): (torn)
 -- #endregion
 -- #region Weapon attack types
 	attacktype_punch: punching

@@ -294,9 +294,10 @@ namespace Noxico
 			if (hairToken == null)
 				return "glitch";
 			var style = hairToken.GetToken("style").Text;
-			var set = descTable.Path("hair/names/" + style);
+			var path = "hair/names/" + style.ToLowerInvariant().Replace(' ', '_');
+			var set = descTable.Path(path);
 			if (set == null)
-				throw new Exception("Could not find bodyparts.tml item \"hair/names/" + style + "\".");
+				throw new Exception("Could not find bodyparts.tml item \"" + path + "\".");
 			if (set.HasToken("noun"))
 				return set.GetToken("noun").Text;
 			if (set.HasToken("adj"))

@@ -774,17 +774,46 @@ namespace Noxico
 			var newChar = new Character();
 			Toolkit.ExpectFromFile(stream, "CHAR", "character");
 			newChar.Name = Name.LoadFromFile(stream);
-			newChar.IsProperNamed = stream.ReadBoolean();
-			newChar.A = stream.ReadString();
-			var culture = stream.ReadString();
-			newChar.Culture = Culture.DefaultCulture;
+			/* newChar.IsProperNamed = */ stream.ReadBoolean();
+			/* newChar.A = */ stream.ReadString();
+			/* var culture = */ stream.ReadString();
+			/* newChar.Culture = Culture.DefaultCulture;
 			if (Culture.Cultures.ContainsKey(culture))
-				newChar.Culture = Culture.Cultures[culture];
+				newChar.Culture = Culture.Cultures[culture]; */
 			Toolkit.ExpectFromFile(stream, "TOKS", "character token tree");
 			var numTokens = stream.ReadInt32();
 			for (var i = 0; i < numTokens; i++)
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
 			newChar.UpdateTitle();
+
+			//Fix the results of a bug that caused multiple a, ispropernamed, and culture tokens to appear, namely the above-commented.
+			//TODO: bump world version, remove that shit.
+			var a = false;
+			var p = false;
+			var c = false;
+			foreach (var token in newChar.Tokens)
+			{
+				if (token.Name == "a")
+				{
+					if (a)
+						token.Name = "__kill";
+					a = true;
+				}
+				else if (token.Name == "ispropernamed")
+				{
+					if (p)
+						token.Name = "__kill";
+					p = true;
+				}
+				else if (token.Name == "culture")
+				{
+					if (c)
+						token.Name = "__kill";
+					c = true;
+				}
+			}
+			newChar.Tokens.RemoveAll(t => t.Name == "__kill");
+
 			return newChar;
 		}
 
@@ -1709,14 +1738,14 @@ Tokens:
 				(undershirt == null || undershirt.CanReachThrough()));
 		}
 
-		public bool CanReachCrotch(string Part = null)
+		public bool CanReachCrotch(string part = null)
 		{
 			var underpants = GetEquippedItemBySlot("underpants");
 			var pants = GetEquippedItemBySlot("pants");
 			var socks = GetEquippedItemBySlot("socks");
-			return ((pants == null || pants.CanReachThrough(Part)) &&
-				(underpants == null || underpants.CanReachThrough(Part)) &&
-				(socks == null || socks.CanReachThrough(Part)));
+			return ((pants == null || pants.CanReachThrough(part)) &&
+				(underpants == null || underpants.CanReachThrough(part)) &&
+				(socks == null || socks.CanReachThrough(part)));
 		}
 
 		//// sparks sex.tml helper functions
@@ -1758,7 +1787,7 @@ Tokens:
 					var originalname = find.ToString(carriedItem, false, false);
 					if (HasToken("quadruped") || HasToken("taur"))
 					{
-						InventoryItem.TearApart(find, carriedItem);
+						InventoryItem.TearApart(find, true);
 						doReport(string.Format("[Youorname] [has] torn out of [his] {0}!", originalname).Viewpoint(this));
 					}
 					else
@@ -2223,33 +2252,19 @@ Tokens:
 		/// <see cref="InventoryItem.tempToken"/>. If no matching items are found, returns an empty list.</returns>
         public InventoryItem[] GetInventoryItems(string itemID)
         {
-            // Code mostly taken from LookAt
-
-            Func<string, InventoryItem> getKnownItem = new Func<string, InventoryItem>(x =>
-                {
-                    return NoxicoGame.KnownItems.Find(y => y.ID == x);
-                }
-            );
-
-            var carried = new List<InventoryItem>();
-
-            var carriedItems = this.GetToken("items");
-            for (var i = 0; i < carriedItems.Tokens.Count; i++)
-            {
-                Token carriedItem = carriedItems.Item(i);
-                InventoryItem foundItem = getKnownItem(carriedItem.Name);
-                if (foundItem == null)
-                {
-                    continue;
-                }
-
-                if(foundItem.ID == itemID)
+			var carriedItems = this.GetToken("items");
+			var carried = new List<InventoryItem>();
+			foreach (var carriedItem in carriedItems.Tokens)
+			{
+				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
+				if (foundItem == null)
+					continue;
+				if (foundItem.ID == itemID)
                 {
                     foundItem.tempToken = carriedItem;
                     carried.Add(foundItem);
                 }
             }
-
             return carried.ToArray();
         }
 
@@ -2274,25 +2289,12 @@ Tokens:
 		/// held item itself is stored in <see cref="InventoryItem.tempToken"/>. If there is no item in the character slot, then null is returned. </returns>
 		public InventoryItem GetEquippedItemBySlot(string itemSlot)
         {
-            // Code mostly taken from LookAt
-            
-            Func<string, InventoryItem> getKnownItem = new Func<string, InventoryItem>(x =>
-            {
-                return NoxicoGame.KnownItems.Find(y => y.ID == x);
-            }
-            );
-
-            var carriedItems = this.GetToken("items");
-
-            for (var i = 0; i < carriedItems.Tokens.Count; i++)
-            {
-                var carriedItem = carriedItems.Item(i);
-                var foundItem = getKnownItem(carriedItem.Name);
+			var carriedItems = this.GetToken("items");
+			foreach (var carriedItem in carriedItems.Tokens)
+			{
+                var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
                 if (foundItem == null)
-                {
                     continue;
-                }
-
                 if (foundItem.HasToken("equipable") && carriedItem.HasToken("equipped"))
                 {
                     var eq = foundItem.GetToken("equipable");
@@ -2453,10 +2455,10 @@ Tokens:
 			return fail;
 		}
 
-			/// <summary>
-			/// Deals with the select tokens found in a new character's bodyplan during character generation.
-			/// </summary>
-			private void HandleSelectTokens()
+		/// <summary>
+		/// Deals with the select tokens found in a new character's bodyplan during character generation.
+		/// </summary>
+		private void HandleSelectTokens()
 		{
 			TraverseForSelectTokens(this);
 		}
@@ -2711,6 +2713,17 @@ Tokens:
 			}
 		}
 
+		public void ResetEquipmentTempTokens()
+		{
+			var carriedItems = this.GetToken("items");
+			foreach (var carriedItem in carriedItems.Tokens)
+			{
+				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
+				if (foundItem == null)
+					continue;
+				foundItem.tempToken = null;
+			}
+		}
 
 		/* TEAMS IDEA
 		 * ----------

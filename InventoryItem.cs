@@ -76,7 +76,7 @@ namespace Noxico
 					if (collective != null)
 						name = collective.Text;
 				}
-				return string.Format("{0} {1} ({2}/{3})", the ? Definite : (Toolkit.StartsWithVowel(name) ? "an" : "a"), name, charge, limit);
+				return string.Format("{0} {1} ({2}/{3})", the ? Definite : i18n.GetArticle(name), name, charge, limit);
 			}
 			if (isIdentified)
 				return string.Format("{0} {1}", the ? Definite : Indefinite, name).Trim();
@@ -230,9 +230,10 @@ namespace Noxico
 
 		public bool CanSeeThrough()
 		{
-			//return true;
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check translucency on something not equipable.");
+			if (tempToken != null && (tempToken.HasToken("torn") || tempToken.HasToken("wet")))
+				return true;
 			return this.GetToken("equipable").HasToken("translucent");
 		}
 
@@ -240,7 +241,9 @@ namespace Noxico
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check reach on something not equipable.");
-            if (part.IsBlank())
+			if (tempToken != null && tempToken.HasToken("torn"))
+				return true;
+			if (part.IsBlank())
                 return this.GetToken("equipable").HasToken("reach");
             else if (this.GetToken("equipable").HasToken("reach"))
             {
@@ -719,6 +722,8 @@ namespace Noxico
 		public List<string> GetModifiers(Token token)
 		{
 			var info = new List<string>();
+			if (token != null && token.HasToken("torn"))
+				info.Add(i18n.GetString("sigil_torn"));
 			//if (HasToken("equipable"))
 			{
 				if (HasToken("weapon"))
@@ -776,8 +781,15 @@ namespace Noxico
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
 		//TODO: make this a bool, return false if the item is too sturdy to tear.
 		//TODO: make this not *replace* the item, but apply tearing (https://bitbucket.org/Kawa/noxico/issues/14/clothing-statuses)
-		public static void TearApart(InventoryItem equip, Token carriedItem)
+		public static bool TearApart(InventoryItem equip, bool force = false)
 		{
+			if (equip.tempToken == null)
+				return false; //no actual item to tear
+			if (!force && equip.HasToken("sturdy"))
+				return false; //failed, too sturdy
+			equip.tempToken.AddToken("torn");
+			return true;
+			/*
 			var slot = "pants";
 			if (equip.HasToken("pants") && equip.HasToken("shirt"))
 				slot = "over";
@@ -789,6 +801,7 @@ namespace Noxico
 			}
 			carriedItem.Name = "tatteredshreds_" + slot;
 			carriedItem.Tokens.Clear();
+			*/
 		}
 	}
 

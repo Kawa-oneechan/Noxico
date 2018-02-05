@@ -75,6 +75,10 @@ hair
 		afro
 			minlen: 3
 			noun: afro
+		braids
+			minlen: 16
+			adj: braided
+			noun: braids
 		braided
 			minlen: 16
 			adj: braided
