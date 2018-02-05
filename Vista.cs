@@ -8,7 +8,6 @@ namespace Noxico
 {
 	public static class Vista
 	{
-		//That || should be an &&. I'm stupid and probably forgot to invert the logic from "is this NOT Vista".
 		public static bool IsVista = (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6);
 
 		public static readonly Guid SavedGames = new Guid("4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4");
@@ -23,7 +22,7 @@ namespace Noxico
 			IntPtr pPath;
 			try
 			{
-				if (SafeNativeMethods.SHGetKnownFolderPath(SavedGames, 0, IntPtr.Zero, out pPath) == 0)
+				if (SafeNativeMethods.SHGetKnownFolderPath(target, 0, IntPtr.Zero, out pPath) == 0)
 				{
 					ret = System.Runtime.InteropServices.Marshal.PtrToStringUni(pPath);
 					System.Runtime.InteropServices.Marshal.FreeCoTaskMem(pPath);

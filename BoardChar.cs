@@ -175,9 +175,7 @@ namespace Noxico
 						swimming = Character.AddToken("swimming", 20);
 					swimming.Value -= 1;
 					if (swimming.Value == 0)
-					{
 						Hurt(9999, "death_drowned", null, false);
-					}
 					Energy -= 1750;
 				}
 			}
@@ -792,18 +790,6 @@ namespace Noxico
 				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
 					Move(dir);
 			}
-			else
-			{
-				/*
-				//If we're out of range, switch back to wandering.
-				MoveSpeed = 2;
-				Movement = Motor.Wander;
-				if (!string.IsNullOrWhiteSpace(Sector) && Sector != "<null>")
-					Movement = Motor.WanderSector;
-				//TODO: go back to assigned sector.
-				return;
-				*/
-			}
 		}
 
 		public void CallTo(BoardChar target)
@@ -1207,11 +1193,27 @@ namespace Noxico
 			var aimSuccess = true; //TODO: make this skill-relevant.
 			if (aimSuccess)
 			{
-				var damage = weap.Path("damage").Value;
 				this.Character.IncreaseSkill(skill.Text);
-				if (target is Player)
+				if (target is BoardChar)
 				{
-					var hit = target as Player;
+					var hit = (BoardChar)target;
+					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
+					
+					var overallArmor = 0f;
+					//TODO: split this into a GetArmorValue method
+					foreach (var targetArmor in hit.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+					{
+						var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+						if (targetArmorItem == null)
+							continue;
+						if (!targetArmorItem.HasToken("armor"))
+							continue;
+						if (targetArmorItem.GetToken("armor").Value > overallArmor)
+							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+					}
+					if (overallArmor != 0)
+						damage /= overallArmor;
+					
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
 					hit.Hurt(damage, "death_shot", this, false);
 					Energy -= 500; //fixed: succesful shots didn't take time
