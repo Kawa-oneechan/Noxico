@@ -159,6 +159,75 @@ namespace Noxico
 				Subscreens.PreviousScreen.Clear();
 				NoxicoGame.ClearKeys();
 				var player = NoxicoGame.Me.Player;
+#if DEBUG
+				if (PointingAt == null)
+				{
+					ActionList.Show("Debug?", this.XPosition - NoxicoGame.CameraX, this.YPosition - NoxicoGame.CameraY,
+						new Dictionary<object, string>()
+						{
+							{ "teleport", "Teleport" },
+							{ "spawn", "Spawn character" },
+						},
+						() =>
+						{
+							Hide();
+							if (ActionList.Answer is int && (int)ActionList.Answer == -1)
+							{
+								NoxicoGame.Mode = UserMode.Walkabout;
+								Hide();
+								return;
+							}
+							switch (ActionList.Answer as string)
+							{
+								case "teleport":
+									player.XPosition = this.XPosition;
+									player.YPosition = this.YPosition;
+									ParentBoard.AimCamera();
+									ParentBoard.Redraw();
+									NoxicoGame.Mode = UserMode.Aiming;
+									Point();
+									return;
+								case "spawn":
+									var spawnOptions = new Dictionary<object, string>();
+									foreach (var bp in Character.Bodyplans)
+										spawnOptions[bp.Text] = bp.Text;
+									var uniques = Mix.GetTokenTree("uniques.tml", true);
+									foreach (var bp in uniques)
+										spawnOptions['!' + bp.Text] = bp.Text;
+									ActionList.Show("Debug?", this.XPosition - NoxicoGame.CameraX, this.YPosition - NoxicoGame.CameraY, spawnOptions,
+										() =>
+										{
+											if (ActionList.Answer is int && (int)ActionList.Answer == -1)
+											{
+												NoxicoGame.Mode = UserMode.Aiming;
+												Point();
+												return;
+											}
+											Character newChar = null;
+											if (ActionList.Answer is string && ((string)ActionList.Answer).StartsWith('!'))
+												newChar = Character.GetUnique(((string)ActionList.Answer).Substring(1));
+											else
+												newChar = Character.Generate((string)ActionList.Answer, Gender.RollDice);
+											var newBoardChar = new BoardChar(newChar)
+											{
+												XPosition = this.XPosition,
+												YPosition = this.YPosition,
+												ParentBoard = this.ParentBoard
+											};
+											newBoardChar.AdjustView();
+											ParentBoard.EntitiesToAdd.Add(newBoardChar);
+											ParentBoard.Redraw();
+											NoxicoGame.Mode = UserMode.Walkabout;
+											Hide();
+											return;
+										}
+									);
+									break;
+							}
+						}
+					);
+				}
+#endif
 				if (PointingAt != null)
 				{
 					LastTarget = PointingAt;

@@ -188,7 +188,8 @@ namespace Noxico
 			Program.WriteLine("Loading bodyplans...");
 			BodyplanHashes = new Dictionary<string, string>();
 			Character.Bodyplans = Mix.GetTokenTree("bodyplans.tml");
-			foreach (var bodyPlan in Character.Bodyplans.Where(t => t.Name == "bodyplan"))
+			Character.Bodyplans.RemoveAll(t => t.Name != "bodyplan");
+			foreach (var bodyPlan in Character.Bodyplans)
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;

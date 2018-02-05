@@ -13,23 +13,6 @@ namespace Noxico
         North, East, South, West,
     }
 
-	public enum Motor
-	{
-		Stand, Wander, WanderSector, Hunt, //...
-	}
-
-	/*
-    public class Location
-    {
-        public int X, Y;
-        public Location(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-	*/
-
     public class Entity
     {
         public Board ParentBoard { get; set; }

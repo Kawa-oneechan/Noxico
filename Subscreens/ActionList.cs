@@ -34,6 +34,7 @@ namespace Noxico
 		{
 			option = 0;
 			onChoice = okay;
+			Answer = null;
 			ActionList.options = options;
 
 			//Determine window width according to its contents.

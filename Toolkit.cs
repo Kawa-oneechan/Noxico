@@ -623,7 +623,7 @@ namespace Noxico
 			var table = NoxicoGame.IngameToUnicode;
 			foreach (var ch in text)
 			{
-				if (ch < ' ')
+				if (ch < ' ' || ch > table.Length)
 					sb.Append(ch);
 				else
 					sb.Append(table[ch]);

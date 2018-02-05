@@ -317,7 +317,7 @@ namespace Noxico
 			var y = this.YPosition;
 			var distance = 0;
 			var range = (int)weapon.Path("weapon/range").Value;
-			var damage = (int)weapon.Path("weapon/damage").Value;
+			//var damage = (int)weapon.Path("weapon/damage").Value;
 			var skill = weap.GetToken("skill").Text;
 			Func<int, int, bool> gotHit = (xPos, yPos) =>
 			{
@@ -329,8 +329,23 @@ namespace Noxico
 				var hit = this.ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(e => e.XPosition == x && e.YPosition == y);
 				if (hit != null)
 				{
+					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
+					var overallArmor = 0f;
+					foreach (var targetArmor in hit.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+					{
+						var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+						if (targetArmorItem == null)
+							continue;
+						if (!targetArmorItem.HasToken("armor"))
+							continue;
+						if (targetArmorItem.GetToken("armor").Value > overallArmor)
+							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+					}
+					if (overallArmor != 0)
+						damage /= overallArmor;
+
 					FireLine(weapon.Path("effect"), x, y);
-					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", damage)));
+					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)Math.Ceiling(damage))));
 					hit.Hurt(damage, "death_shot", this, false);
 					this.Character.IncreaseSkill(skill);
 					return true;
@@ -844,7 +859,7 @@ namespace Noxico
 
 			if (target is Player)
 			{
-				MessageBox.Notice("Dont shoot yourself in the foot!", true);
+				MessageBox.Notice("Don't shoot yourself in the foot!", true);
 				return;
 			}
 
@@ -884,7 +899,21 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					//NoxicoGame.AddMessage(string.Format("You hit {0} for {1} point{2}.", hit.Character.GetKnownName(false, false, true), damage, damage > 1 ? "s" : ""));
+					
+					var overallArmor = 0f;
+					foreach (var targetArmor in hit.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+					{
+						var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+						if (targetArmorItem == null)
+							continue;
+						if (!targetArmorItem.HasToken("armor"))
+							continue;
+						if (targetArmorItem.GetToken("armor").Value > overallArmor)
+							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+					}
+					if (overallArmor != 0)
+						damage /= overallArmor;					
+
 					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)damage)));
 					hit.Hurt(damage, "death_shot", this, false);
 				}
