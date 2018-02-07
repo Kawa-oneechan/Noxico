@@ -228,7 +228,6 @@ namespace Noxico
 				top = player;
 			if (bottom == null)
 				bottom = top;
-			Lua.Environment.isPlayer = top == player;
 			//var tIP = player == top;
 
 			//Definitions used to be here. Now they're defined in i18n.lua.
@@ -297,6 +296,8 @@ namespace Noxico
 					{
 						target = top;
 					}
+
+					Lua.Environment.isPlayer = (target == player);
 
 					//subcom = targetGroup;
 					//subcom = match.Groups["subcom"].Captures[0].Value;

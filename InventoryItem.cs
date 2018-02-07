@@ -18,7 +18,7 @@ namespace Noxico
 		public string OnUnequip { get; private set; }
 		public string OnTimer { get; private set; }
 
-		public Token tempToken { get; set; }
+		public Dictionary<string, Token> tempToken { get; private set; }
 
 		public override string ToString()
 		{
@@ -174,6 +174,8 @@ namespace Noxico
 			ni.RemoveAll("_ia");
 			ni.RemoveAll("_da");
 			ni.RemoveAll("script");
+
+			ni.tempToken = new Dictionary<string, Token>();
 			return ni;
 		}
 
@@ -228,20 +230,20 @@ namespace Noxico
 			throw new ItemException(i18n.GetString("cannot_equip_incompatible_body")); //"Your body is not made for this sort of clothing.");
 		}
 
-		public bool CanSeeThrough()
+		public bool CanSeeThrough(Character who)
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check translucency on something not equipable.");
-			if (tempToken != null && (tempToken.HasToken("torn") || tempToken.HasToken("wet")))
+			if (tempToken.ContainsKey(who.ID) && (tempToken[who.ID].HasToken("torn") || tempToken[who.ID].HasToken("wet")))
 				return true;
 			return this.GetToken("equipable").HasToken("translucent");
 		}
-
-		public bool CanReachThrough(string part = null)
+		
+		public bool CanReachThrough(Character who, string part = null)
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check reach on something not equipable.");
-			if (tempToken != null && tempToken.HasToken("torn"))
+			if (tempToken.ContainsKey(who.ID) && tempToken[who.ID].HasToken("torn"))
 				return true;
 			if (part.IsBlank())
                 return this.GetToken("equipable").HasToken("reach");
@@ -293,7 +295,7 @@ namespace Noxico
 				{
 					var currentNonLayeredItem = character.GetEquippedItemBySlot(nonLayeredSlot);
 					if (currentNonLayeredItem != null)
-						currentNonLayeredItem.Unequip(character, currentNonLayeredItem.tempToken);
+						currentNonLayeredItem.Unequip(character);
 				}
 			}
 
@@ -330,7 +332,7 @@ namespace Noxico
 			return succeed;
 		}
 
-		public bool Unequip(Character character, Token item)
+		public bool Unequip(Character character)
 		{
 			/*
 			if item's slots have covering slots
@@ -340,6 +342,7 @@ namespace Noxico
 			if item is cursed, error out
 			mark item as unequipped.
 			*/
+			var item = this.tempToken.ContainsKey(character.ID) ? this.tempToken[character.ID] : null;
 			if (item != null && item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 				throw new ItemException(item.GetToken("cursed").Text.IsBlank(i18n.Format("cannot_remove_sticky", this.ToString(item, true)), item.GetToken("cursed").Text));
 
@@ -405,7 +408,7 @@ namespace Noxico
 				{
 					if (equip.HasToken("reach"))
 						return true;
-					var success = find.Unequip(character, carriedItem);
+					var success = find.Unequip(character);
 					if (success)
 						list.Push(carriedItem);
 					return success;
@@ -515,7 +518,7 @@ namespace Noxico
 					{
 						try
 						{
-							if (this.Unequip(character, item))
+							if (this.Unequip(character))
 							{
 								runningDesc += i18n.Format("x_unequiped_y", this.ToString(item, true));
 							}
@@ -781,13 +784,13 @@ namespace Noxico
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
 		//TODO: make this a bool, return false if the item is too sturdy to tear.
 		//TODO: make this not *replace* the item, but apply tearing (https://bitbucket.org/Kawa/noxico/issues/14/clothing-statuses)
-		public static bool TearApart(InventoryItem equip, bool force = false)
+		public static bool TearApart(InventoryItem equip, Character who, bool force = false)
 		{
-			if (equip.tempToken == null)
+			if (!equip.tempToken.ContainsKey(who.ID))
 				return false; //no actual item to tear
 			if (!force && equip.HasToken("sturdy"))
 				return false; //failed, too sturdy
-			equip.tempToken.AddToken("torn");
+			equip.tempToken[who.ID].AddToken("torn");
 			return true;
 			/*
 			var slot = "pants";

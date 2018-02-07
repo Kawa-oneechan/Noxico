@@ -649,7 +649,7 @@ group: (not top.Restrained()) -- clothing removal
 		filter: GetClothing(top, "top", 0)
 		effect
 			<[[
-				if top.Disrobe("top", true) then
+				if top.Disrobe("top") then
 					Message({"[t:Youorname] reach{es} for [t:his] [0] and take{s} it off."}, Color.Green)
 				else
 					Message({"[t:Youorname] reach{es} for [t:his] [0] but can't take it off."})
@@ -691,7 +691,8 @@ group: (not top.Restrained()) -- clothing removal
 				]]>
 		choice: tear_off_bottom_theirs
 			_n: Tear off [b:his] [3]
-			filter: nonconsentual and GetClothing(bottom, "bottom", 3)
+			weight: 0.0
+			filter: consentual and GetClothing(bottom, "bottom", 3)
 			effect
 				<[[
 					if bottom.Disrobe("bottom", true) then
