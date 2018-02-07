@@ -239,8 +239,8 @@ namespace Noxico
 
 				var pants = GetEquippedItemBySlot("pants");
 				var underpants = GetEquippedItemBySlot("underpants");
-				var pantsCT = (pants == null) ? true : pants.CanSeeThrough();
-				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough();
+				var pantsCT = (pants == null) ? true : pants.CanSeeThrough(this);
+				var underpantsCT = (underpants == null) ? true : underpants.CanSeeThrough(this);
 				var crotchVisible = (pantsCT && underpantsCT);
 
 				var dickSize = GetPenisSize(false);
@@ -1015,71 +1015,71 @@ namespace Noxico
 					if (eq.HasToken("underpants"))
 					{
 						underpants = foundItem;
-						underpants.tempToken = carriedItem;
+						underpants.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("undershirt"))
 					{
 						undershirt = foundItem;
-						undershirt.tempToken = carriedItem;
+						undershirt.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("socks"))
 					{
 						socks = foundItem;
-						socks.tempToken = carriedItem;
+						socks.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("pants"))
 					{
 						pants = foundItem;
-						pants.tempToken = carriedItem;
+						pants.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("shirt"))
 					{
 						shirt = foundItem;
-						shirt.tempToken = carriedItem;
+						shirt.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("jacket"))
 					{
 						jacket = foundItem;
-						jacket.tempToken = carriedItem;
+						jacket.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("cloak"))
 					{
 						cloak = foundItem;
-						cloak.tempToken = carriedItem;
+						cloak.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("shoes"))
 					{
 						shoes = foundItem;
-						shoes.tempToken = carriedItem;
+						shoes.tempToken[this.ID] = carriedItem;
 					} 
 					if (eq.HasToken("hat"))
 					{
 						hat = foundItem;
-						hat.tempToken = carriedItem;
+						hat.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("goggles"))
 					{
 						goggles = foundItem;
-						goggles.tempToken = carriedItem;
+						goggles.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("mask"))
 					{
 						mask = foundItem;
-						mask.tempToken = carriedItem;
+						mask.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("neck"))
 					{
 						neck = foundItem;
-						neck.tempToken = carriedItem;
+						neck.tempToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("ring"))
 					{
-						foundItem.tempToken = carriedItem;
+						foundItem.tempToken[this.ID] = carriedItem;
 						fingers.Add(foundItem);
 					}
 					if (eq.HasToken("hand"))
 					{
-						foundItem.tempToken = carriedItem;
+						foundItem.tempToken[this.ID] = carriedItem;
 						hands.Add(foundItem);
 					}
 				}
@@ -1090,50 +1090,50 @@ namespace Noxico
 			}
 
 			if (hat != null)
-				worn.Add(hat.ToLongString(hat.tempToken));
+				worn.Add(hat.ToLongString(hat.tempToken[this.ID]));
 			if (goggles != null)
-				worn.Add(goggles.ToLongString(goggles.tempToken));
+				worn.Add(goggles.ToLongString(goggles.tempToken[this.ID]));
 			if (mask != null)
-				worn.Add(mask.ToLongString(mask.tempToken));
+				worn.Add(mask.ToLongString(mask.tempToken[this.ID]));
 			if (neck != null)
-				worn.Add(neck.ToLongString(neck.tempToken));
+				worn.Add(neck.ToLongString(neck.tempToken[this.ID]));
 			if (cloak != null)
-				worn.Add(cloak.ToLongString(cloak.tempToken));
+				worn.Add(cloak.ToLongString(cloak.tempToken[this.ID]));
 			if (jacket != null)
-				worn.Add(jacket.ToLongString(jacket.tempToken));
+				worn.Add(jacket.ToLongString(jacket.tempToken[this.ID]));
 			if (shirt != null)
-				worn.Add(shirt.ToLongString(shirt.tempToken));
+				worn.Add(shirt.ToLongString(shirt.tempToken[this.ID]));
 			if (pants != null && pants != shirt)
-				worn.Add(pants.ToLongString(pants.tempToken));
+				worn.Add(pants.ToLongString(pants.tempToken[this.ID]));
 			if (shoes != null)
-				worn.Add(shoes.ToLongString(shoes.tempToken));
+				worn.Add(shoes.ToLongString(shoes.tempToken[this.ID]));
 			if (!(pa != null && pa is Player))
 			{
-				if (undershirt != null && (shirt == null || shirt.CanSeeThrough()))
+				if (undershirt != null && (shirt == null || shirt.CanSeeThrough(this)))
 				{
-					breastsVisible = undershirt.CanSeeThrough();
-					worn.Add(undershirt.ToLongString(undershirt.tempToken));
+					breastsVisible = undershirt.CanSeeThrough(this);
+					worn.Add(undershirt.ToLongString(undershirt.tempToken[this.ID]));
 				}
 				else
-					breastsVisible = (shirt == null || shirt.CanSeeThrough());
-				if (underpants != null && underpants != undershirt && (pants == null || pants.CanSeeThrough()))
+					breastsVisible = (shirt == null || shirt.CanSeeThrough(this));
+				if (underpants != null && underpants != undershirt && (pants == null || pants.CanSeeThrough(this)))
 				{
-					crotchVisible = underpants.CanSeeThrough();
-					worn.Add(underpants.ToLongString(underpants.tempToken));
+					crotchVisible = underpants.CanSeeThrough(this);
+					worn.Add(underpants.ToLongString(underpants.tempToken[this.ID]));
 				}
 				else
-					crotchVisible = (pants == null || pants.CanSeeThrough());
-				if (socks != null && (pants == null || pants.CanSeeThrough()))
-					worn.Add(socks.ToLongString(socks.tempToken));
+					crotchVisible = (pants == null || pants.CanSeeThrough(this));
+				if (socks != null && (pants == null || pants.CanSeeThrough(this)))
+					worn.Add(socks.ToLongString(socks.tempToken[this.ID]));
 			}
 			else
 			{
 				if (undershirt != null)
-					worn.Add(undershirt.ToLongString(undershirt.tempToken));
+					worn.Add(undershirt.ToLongString(undershirt.tempToken[this.ID]));
 				if (underpants != null && underpants != undershirt)
-					worn.Add(underpants.ToLongString(underpants.tempToken));
+					worn.Add(underpants.ToLongString(underpants.tempToken[this.ID]));
 				if (socks != null)
-					worn.Add(socks.ToLongString(socks.tempToken));
+					worn.Add(socks.ToLongString(socks.tempToken[this.ID]));
 				crotchVisible = breastsVisible = true;
 			}
 		}
@@ -1244,7 +1244,7 @@ namespace Noxico
 					count = (int)this.GetToken("eyes").GetToken("count").Value;
 					eyes = i18n.Format("color_eyes", Color.Translate(Color.NameColor(this.GetToken("eyes").Text)), i18n.Pluralize("eye", count));
 				}
-				if (goggles != null && !goggles.CanSeeThrough())
+				if (goggles != null && !goggles.CanSeeThrough(this))
 					eyesHidden = true;
 				if (this.Path("eyes/glow") != null)
 				{
@@ -1256,7 +1256,7 @@ namespace Noxico
 					headThings.Add(eyes);
 			}
 
-			if (mask != null && mask.CanSeeThrough())
+			if (mask != null && mask.CanSeeThrough(this))
 			{
 				var teeth = this.Path("teeth");
 				if (teeth != null && !teeth.Text.IsBlank() && teeth.Text != "normal")
@@ -1487,8 +1487,8 @@ namespace Noxico
 			else
 			{
 				var handsAndFingers = new List<string>();
-				handsAndFingers.AddRange(hands.Select(x => x.ToLongString(x.tempToken)));
-				handsAndFingers.AddRange(fingers.Select(x => x.ToLongString(x.tempToken)));
+				handsAndFingers.AddRange(hands.Select(x => x.ToLongString(x.tempToken[this.ID])));
+				handsAndFingers.AddRange(fingers.Select(x => x.ToLongString(x.tempToken[this.ID])));
 				for (var i = 0; i < handsAndFingers.Count; i++)
 					print((i < handsAndFingers.Count - 1 ? "\xC3 " : "\xC0 ") + handsAndFingers[i] + "\n");
 			}
@@ -1732,10 +1732,10 @@ Tokens:
 			var shirt = GetEquippedItemBySlot("shirt");
 			var jacket = GetEquippedItemBySlot("jacket");
 			var cloak = GetEquippedItemBySlot("cloak");
-			return ((cloak == null || cloak.CanReachThrough()) &&
-				(jacket == null || jacket.CanReachThrough()) &&
-				(shirt == null || shirt.CanReachThrough()) &&
-				(undershirt == null || undershirt.CanReachThrough()));
+			return ((cloak == null || cloak.CanReachThrough(this)) &&
+				(jacket == null || jacket.CanReachThrough(this)) &&
+				(shirt == null || shirt.CanReachThrough(this)) &&
+				(undershirt == null || undershirt.CanReachThrough(this)));
 		}
 
 		public bool CanReachCrotch(string part = null)
@@ -1743,9 +1743,9 @@ Tokens:
 			var underpants = GetEquippedItemBySlot("underpants");
 			var pants = GetEquippedItemBySlot("pants");
 			var socks = GetEquippedItemBySlot("socks");
-			return ((pants == null || pants.CanReachThrough(part)) &&
-				(underpants == null || underpants.CanReachThrough(part)) &&
-				(socks == null || socks.CanReachThrough(part)));
+			return ((pants == null || pants.CanReachThrough(this, part)) &&
+				(underpants == null || underpants.CanReachThrough(this, part)) &&
+				(socks == null || socks.CanReachThrough(this, part)));
 		}
 
 		//// sparks sex.tml helper functions
@@ -1787,7 +1787,7 @@ Tokens:
 					var originalname = find.ToString(carriedItem, false, false);
 					if (HasToken("quadruped") || HasToken("taur"))
 					{
-						InventoryItem.TearApart(find, true);
+						InventoryItem.TearApart(find, this, true);
 						doReport(string.Format("[Youorname] [has] torn out of [his] {0}!", originalname).Viewpoint(this));
 					}
 					else
@@ -2226,7 +2226,7 @@ Tokens:
         public bool HasItemEquipped(string itemID)
         {
             var itemList = GetInventoryItems(itemID);
-            var item = itemList.FirstOrDefault(y => y.tempToken.HasToken("equipped"));
+            var item = itemList.FirstOrDefault(y => y.tempToken.ContainsKey(this.ID) && y.tempToken[this.ID].HasToken("equipped"));
 
             return (item != null);
         }
@@ -2261,7 +2261,7 @@ Tokens:
 					continue;
 				if (foundItem.ID == itemID)
                 {
-                    foundItem.tempToken = carriedItem;
+                    foundItem.tempToken[this.ID] = carriedItem;
                     carried.Add(foundItem);
                 }
             }
@@ -2300,7 +2300,7 @@ Tokens:
                     var eq = foundItem.GetToken("equipable");
                     if (eq.HasToken(itemSlot))
                     {
-                        foundItem.tempToken = carriedItem;
+                        foundItem.tempToken[this.ID] = carriedItem;
                         return foundItem;
                     }
                 }
@@ -2721,7 +2721,8 @@ Tokens:
 				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
 				if (foundItem == null)
 					continue;
-				foundItem.tempToken = null;
+				if (foundItem.tempToken.ContainsKey(this.ID))
+					foundItem.tempToken.Remove(this.ID);
 			}
 		}
 

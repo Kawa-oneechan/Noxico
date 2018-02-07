@@ -117,6 +117,8 @@ namespace Noxico
 						{
 							if (!(a.BoardChar is Player) && newCloth.HasToken("sextoy"))
 								continue; //Let's not take off that strap-on lol...
+							if (newCloth.tempToken[a.ID].HasToken("torn"))
+								continue; //Ignore torn stuff.
 							cloth = newCloth;
 							haveSomething = true;
 							break;
@@ -401,6 +403,8 @@ namespace Noxico
 				foreach (var slot in slots)
 				{
 					cloth = GetEquippedItemBySlot(slot);
+					if (cloth != null && cloth.tempToken.ContainsKey(this.ID) && cloth.tempToken[this.ID].HasToken("torn"))
+						continue; //scan along
 					if (cloth != null)
 						break;
 				}
@@ -409,9 +413,9 @@ namespace Noxico
 			if (cloth != null)
 			{
 				if (tear)
-					return InventoryItem.TearApart(cloth, false);
+					return InventoryItem.TearApart(cloth, this, false);
 				else
-					return cloth.Unequip(this, cloth.tempToken);
+					return cloth.Unequip(this);
 			}
 			return false;
 		}

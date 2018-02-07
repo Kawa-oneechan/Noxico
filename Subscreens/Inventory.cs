@@ -34,7 +34,7 @@ namespace Noxico
 			if (token.HasToken("equipped"))
 				try
 				{
-					chosen.Unequip(boardchar.Character, token);
+					chosen.Unequip(boardchar.Character);
 				}
 				catch (ItemException x)
 				{
