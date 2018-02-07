@@ -287,6 +287,11 @@ namegen: felin
 			middlevowel
 			femaleending
 		prohibit: rr, ff, hh, kk, mm
+--		rule
+--			markov
+--				order: 2
+--				minlength: 2
+--				sourcenames: Aelir, Aleror, Althiwa, Amter, Anerae, Avlin, Baejarth, Cier, Eklistie, Elaie, Emla, Eron, Ethi, Evrui, Flarlen, Flarne, Flimathin, Gralthin, Harmai, Ilemi, Ilira, Jalmine, Khlawethi, Khluvi, Laenathin, Lenirthi, Letrune, Leur, Livra, Meilathi, Mio, Movlethi, Olmur, Remtil, Shema, Siav, Sinranoi, Teslithan, Thimlur, Urmil, Uthri
 	male
 		rule
 			startingvowel

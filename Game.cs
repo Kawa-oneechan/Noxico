@@ -318,7 +318,6 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			return;
 			*/
 
-
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 

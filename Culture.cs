@@ -111,6 +111,8 @@ namespace Noxico
 				var name = new StringBuilder();
 				foreach (var part in rule.Tokens)
 				{
+					if (part.Name == "markov")
+						name.Append(Markov(part));
 					if (part.Name == "_")
 						name.Append(' ');
 					else if (part.Name == "$")
@@ -137,6 +139,79 @@ namespace Noxico
 				if (!reject)
 					return name.ToString().Trim();
 			}
+		}
+
+		private static string Markov(Token settings)
+		{
+			var order = (int)settings.GetToken("order").Value;
+			var minLength = (int)settings.GetToken("minlength").Value;
+			var samples = settings.GetToken("sourcenames").Text.Split(',').Select(n => n.Trim()).ToArray();
+			var chains = new Dictionary<string, List<char>>();
+
+			Func<string, char> getLetter = new Func<string, char>(token =>
+			{
+				if (!chains.ContainsKey(token))
+					return '?';
+				List<char> letters = chains[token];
+				return letters.PickOne();
+			});
+
+			foreach (string word in samples)
+			{
+				for (int letter = 0; letter < word.Length - order; letter++)
+				{
+					var token = word.Substring(letter, order);
+					List<char> entry = null;
+					if (chains.ContainsKey(token))
+						entry = chains[token];
+					else
+					{
+						entry = new List<char>();
+						chains[token] = entry;
+					}
+					entry.Add(word[letter + order]);
+				}
+			}
+
+			var ret = string.Empty;
+			do
+			{
+				var n = Random.Next(samples.Length);
+				int nameLength = samples[n].Length;
+				//ret = (samples[n].Substring(Random.Next(0, samples[n].Length - order), order));
+				ret = samples[n].Substring(0, order);
+				while (ret.Length < nameLength)
+				{
+					string token = ret.Substring(ret.Length - order, order);
+					char c = getLetter(token);
+					if (c != '?')
+						ret += getLetter(token);
+					else
+						break;
+				}
+
+				if (ret.Contains(' '))
+				{
+					string[] tokens = ret.Split(' ');
+					ret = string.Empty;
+					for (int t = 0; t < tokens.Length; t++)
+					{
+						if (tokens[t].IsBlank())
+							continue;
+						if (tokens[t].Length == 1)
+							tokens[t] = tokens[t].ToUpper();
+						else
+							tokens[t] = tokens[t].Substring(0, 1) + tokens[t].Substring(1).ToLower();
+						if (!ret.IsBlank())
+							ret += ' ';
+						ret += tokens[t];
+					}
+				}
+				else
+					ret = ret.Substring(0, 1) + ret.Substring(1).ToLower();
+			}
+			while (/* _used.Contains(s) || */ ret.Length < minLength);
+			return ret;
 		}
 
 		//TODO: rework into cultural dialect/accent scripts
