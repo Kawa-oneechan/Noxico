@@ -864,6 +864,7 @@ namespace Noxico
 				NoxicoGame.Me.Player.Update();
 			if (EntitiesToRemove.Count > 0)
 			{
+				EntitiesToRemove.ForEach(x => { if (x is BoardChar) { ((BoardChar)x).Character.ResetEquipmentCarries(); } });
 				EntitiesToRemove.ForEach(x => { Entities.Remove(x); this.DirtySpots.Add(new Point(x.XPosition, x.YPosition)); });
 				EntitiesToRemove.Clear();
 			}

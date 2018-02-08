@@ -213,33 +213,5 @@ namespace Noxico
 			while (/* _used.Contains(s) || */ ret.Length < minLength);
 			return ret;
 		}
-
-		//TODO: rework into cultural dialect/accent scripts
-		/*
-		public static Func<string, string> GetSpeechFilter(Culture culture, Func<string, string> original = null)
-		{
-			if (original == null)
-				original = new Func<string, string>(x => x);
-			if (culture.Terms == null || culture.Terms.Count == 0)
-				return original;
-			return new Func<string, string>(x =>
-			{
-				foreach (var term in culture.Terms)
-				{
-					x = x.Replace(term.Key, term.Value);
-				}
-				return original(x);
-			});
-		}
-
-		public static Func<string, string> GetSpeechFilter(string culture, Func<string, string> original = null)
-		{
-			if (i18n.GetString("meta_nospeechfilters")[0] == '[')
-				return original;
-			if (!Cultures.ContainsKey(culture))
-				return new Func<string, string>(x => x);
-			return GetSpeechFilter(Cultures[culture], original);
-		}
-		*/
 	}
 }
