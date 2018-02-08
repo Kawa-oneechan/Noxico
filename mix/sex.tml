@@ -692,7 +692,7 @@ group: (not top.Restrained()) -- clothing removal
 		choice: tear_off_bottom_theirs
 			_n: Tear off [b:his] [3]
 			weight: 0.0
-			filter: consentual and GetClothing(bottom, "bottom", 3)
+			filter: nonconsentual and GetClothing(bottom, "bottom", 3)
 			effect
 				<[[
 					if bottom.Disrobe("bottom", true) then

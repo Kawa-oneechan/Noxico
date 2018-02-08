@@ -767,6 +767,7 @@ namespace Noxico
 			Toolkit.SaveExpectation(stream, "TOKS");
 			stream.Write(Tokens.Count);
 			Tokens.ForEach(x => x.SaveToFile(stream));
+			ResetEquipmentCarries();
 		}
 
 		public static Character LoadFromFile(BinaryReader stream)
@@ -1015,71 +1016,71 @@ namespace Noxico
 					if (eq.HasToken("underpants"))
 					{
 						underpants = foundItem;
-						underpants.tempToken[this.ID] = carriedItem;
+						underpants.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("undershirt"))
 					{
 						undershirt = foundItem;
-						undershirt.tempToken[this.ID] = carriedItem;
+						undershirt.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("socks"))
 					{
 						socks = foundItem;
-						socks.tempToken[this.ID] = carriedItem;
+						socks.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("pants"))
 					{
 						pants = foundItem;
-						pants.tempToken[this.ID] = carriedItem;
+						pants.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("shirt"))
 					{
 						shirt = foundItem;
-						shirt.tempToken[this.ID] = carriedItem;
+						shirt.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("jacket"))
 					{
 						jacket = foundItem;
-						jacket.tempToken[this.ID] = carriedItem;
+						jacket.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("cloak"))
 					{
 						cloak = foundItem;
-						cloak.tempToken[this.ID] = carriedItem;
+						cloak.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("shoes"))
 					{
 						shoes = foundItem;
-						shoes.tempToken[this.ID] = carriedItem;
+						shoes.CarriedToken[this.ID] = carriedItem;
 					} 
 					if (eq.HasToken("hat"))
 					{
 						hat = foundItem;
-						hat.tempToken[this.ID] = carriedItem;
+						hat.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("goggles"))
 					{
 						goggles = foundItem;
-						goggles.tempToken[this.ID] = carriedItem;
+						goggles.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("mask"))
 					{
 						mask = foundItem;
-						mask.tempToken[this.ID] = carriedItem;
+						mask.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("neck"))
 					{
 						neck = foundItem;
-						neck.tempToken[this.ID] = carriedItem;
+						neck.CarriedToken[this.ID] = carriedItem;
 					}
 					if (eq.HasToken("ring"))
 					{
-						foundItem.tempToken[this.ID] = carriedItem;
+						foundItem.CarriedToken[this.ID] = carriedItem;
 						fingers.Add(foundItem);
 					}
 					if (eq.HasToken("hand"))
 					{
-						foundItem.tempToken[this.ID] = carriedItem;
+						foundItem.CarriedToken[this.ID] = carriedItem;
 						hands.Add(foundItem);
 					}
 				}
@@ -1090,50 +1091,50 @@ namespace Noxico
 			}
 
 			if (hat != null)
-				worn.Add(hat.ToLongString(hat.tempToken[this.ID]));
+				worn.Add(hat.ToLongString(hat.CarriedToken[this.ID]));
 			if (goggles != null)
-				worn.Add(goggles.ToLongString(goggles.tempToken[this.ID]));
+				worn.Add(goggles.ToLongString(goggles.CarriedToken[this.ID]));
 			if (mask != null)
-				worn.Add(mask.ToLongString(mask.tempToken[this.ID]));
+				worn.Add(mask.ToLongString(mask.CarriedToken[this.ID]));
 			if (neck != null)
-				worn.Add(neck.ToLongString(neck.tempToken[this.ID]));
+				worn.Add(neck.ToLongString(neck.CarriedToken[this.ID]));
 			if (cloak != null)
-				worn.Add(cloak.ToLongString(cloak.tempToken[this.ID]));
+				worn.Add(cloak.ToLongString(cloak.CarriedToken[this.ID]));
 			if (jacket != null)
-				worn.Add(jacket.ToLongString(jacket.tempToken[this.ID]));
+				worn.Add(jacket.ToLongString(jacket.CarriedToken[this.ID]));
 			if (shirt != null)
-				worn.Add(shirt.ToLongString(shirt.tempToken[this.ID]));
+				worn.Add(shirt.ToLongString(shirt.CarriedToken[this.ID]));
 			if (pants != null && pants != shirt)
-				worn.Add(pants.ToLongString(pants.tempToken[this.ID]));
+				worn.Add(pants.ToLongString(pants.CarriedToken[this.ID]));
 			if (shoes != null)
-				worn.Add(shoes.ToLongString(shoes.tempToken[this.ID]));
+				worn.Add(shoes.ToLongString(shoes.CarriedToken[this.ID]));
 			if (!(pa != null && pa is Player))
 			{
 				if (undershirt != null && (shirt == null || shirt.CanSeeThrough(this)))
 				{
 					breastsVisible = undershirt.CanSeeThrough(this);
-					worn.Add(undershirt.ToLongString(undershirt.tempToken[this.ID]));
+					worn.Add(undershirt.ToLongString(undershirt.CarriedToken[this.ID]));
 				}
 				else
 					breastsVisible = (shirt == null || shirt.CanSeeThrough(this));
 				if (underpants != null && underpants != undershirt && (pants == null || pants.CanSeeThrough(this)))
 				{
 					crotchVisible = underpants.CanSeeThrough(this);
-					worn.Add(underpants.ToLongString(underpants.tempToken[this.ID]));
+					worn.Add(underpants.ToLongString(underpants.CarriedToken[this.ID]));
 				}
 				else
 					crotchVisible = (pants == null || pants.CanSeeThrough(this));
 				if (socks != null && (pants == null || pants.CanSeeThrough(this)))
-					worn.Add(socks.ToLongString(socks.tempToken[this.ID]));
+					worn.Add(socks.ToLongString(socks.CarriedToken[this.ID]));
 			}
 			else
 			{
 				if (undershirt != null)
-					worn.Add(undershirt.ToLongString(undershirt.tempToken[this.ID]));
+					worn.Add(undershirt.ToLongString(undershirt.CarriedToken[this.ID]));
 				if (underpants != null && underpants != undershirt)
-					worn.Add(underpants.ToLongString(underpants.tempToken[this.ID]));
+					worn.Add(underpants.ToLongString(underpants.CarriedToken[this.ID]));
 				if (socks != null)
-					worn.Add(socks.ToLongString(socks.tempToken[this.ID]));
+					worn.Add(socks.ToLongString(socks.CarriedToken[this.ID]));
 				crotchVisible = breastsVisible = true;
 			}
 		}
@@ -1487,8 +1488,8 @@ namespace Noxico
 			else
 			{
 				var handsAndFingers = new List<string>();
-				handsAndFingers.AddRange(hands.Select(x => x.ToLongString(x.tempToken[this.ID])));
-				handsAndFingers.AddRange(fingers.Select(x => x.ToLongString(x.tempToken[this.ID])));
+				handsAndFingers.AddRange(hands.Select(x => x.ToLongString(x.CarriedToken[this.ID])));
+				handsAndFingers.AddRange(fingers.Select(x => x.ToLongString(x.CarriedToken[this.ID])));
 				for (var i = 0; i < handsAndFingers.Count; i++)
 					print((i < handsAndFingers.Count - 1 ? "\xC3 " : "\xC0 ") + handsAndFingers[i] + "\n");
 			}
@@ -2226,7 +2227,7 @@ Tokens:
         public bool HasItemEquipped(string itemID)
         {
             var itemList = GetInventoryItems(itemID);
-            var item = itemList.FirstOrDefault(y => y.tempToken.ContainsKey(this.ID) && y.tempToken[this.ID].HasToken("equipped"));
+            var item = itemList.FirstOrDefault(y => y.CarriedToken.ContainsKey(this.ID) && y.CarriedToken[this.ID].HasToken("equipped"));
 
             return (item != null);
         }
@@ -2249,7 +2250,7 @@ Tokens:
         /// <param name="itemID">The ID of the item to search for.</param>
 		/// <returns>A list containing all the items in the character's inventory with matching IDs. Each element is an <see cref="InventoryItem"/> from
 		/// <see cref="NoxicoGame.KnownItems"/> that matches the item held by the character. A reference to the character held item itself is stored in
-		/// <see cref="InventoryItem.tempToken"/>. If no matching items are found, returns an empty list.</returns>
+		/// <see cref="InventoryItem.CarriedToken"/>. If no matching items are found, returns an empty list.</returns>
         public InventoryItem[] GetInventoryItems(string itemID)
         {
 			var carriedItems = this.GetToken("items");
@@ -2261,7 +2262,7 @@ Tokens:
 					continue;
 				if (foundItem.ID == itemID)
                 {
-                    foundItem.tempToken[this.ID] = carriedItem;
+                    foundItem.CarriedToken[this.ID] = carriedItem;
                     carried.Add(foundItem);
                 }
             }
@@ -2286,7 +2287,7 @@ Tokens:
 		/// cloak, goggles, hand, hat, jacket, mask, neck, pants, ring, shirt, underpants, undershirt
 		/// nipple, clit, labia, vagina, anus, cockring, frenulum</param>
 		/// <returns>Returns an InventoryItem from <see cref="NoxicoGame.KnownItems"/> matching the item held by the character. A reference to the character
-		/// held item itself is stored in <see cref="InventoryItem.tempToken"/>. If there is no item in the character slot, then null is returned. </returns>
+		/// held item itself is stored in <see cref="InventoryItem.CarriedToken"/>. If there is no item in the character slot, then null is returned. </returns>
 		public InventoryItem GetEquippedItemBySlot(string itemSlot)
         {
 			var carriedItems = this.GetToken("items");
@@ -2300,7 +2301,7 @@ Tokens:
                     var eq = foundItem.GetToken("equipable");
                     if (eq.HasToken(itemSlot))
                     {
-                        foundItem.tempToken[this.ID] = carriedItem;
+                        foundItem.CarriedToken[this.ID] = carriedItem;
                         return foundItem;
                     }
                 }
@@ -2713,7 +2714,7 @@ Tokens:
 			}
 		}
 
-		public void ResetEquipmentTempTokens()
+		public void ResetEquipmentCarries()
 		{
 			var carriedItems = this.GetToken("items");
 			foreach (var carriedItem in carriedItems.Tokens)
@@ -2721,8 +2722,8 @@ Tokens:
 				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
 				if (foundItem == null)
 					continue;
-				if (foundItem.tempToken.ContainsKey(this.ID))
-					foundItem.tempToken.Remove(this.ID);
+				if (foundItem.CarriedToken.ContainsKey(this.ID))
+					foundItem.CarriedToken.Remove(this.ID);
 			}
 		}
 

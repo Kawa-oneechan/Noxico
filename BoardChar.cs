@@ -472,8 +472,6 @@ namespace Noxico
 			*/
 			//Disabled for the sake of the Lua overhaul and possible replacement.
 
-			this.Character.ResetEquipmentTempTokens();
-
 			if (this.Character.HasToken("sleeping") || Character.HasToken("anchored"))
 				return;
 

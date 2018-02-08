@@ -18,7 +18,14 @@ namespace Noxico
 		public string OnUnequip { get; private set; }
 		public string OnTimer { get; private set; }
 
-		public Dictionary<string, Token> tempToken { get; private set; }
+		/// <summary>
+		/// To help bind an InventoryItem to a Character's actual inventory. Key is supposed to be a character's ID.
+		/// </summary>
+		/// <remarks>
+		/// Don't forget to clear out characters that don't matter anymore.
+		/// You *really* don't want two of the same type of item equipped by the same character, too.
+		/// </remarks>
+		public Dictionary<string, Token> CarriedToken { get; private set; }
 
 		public override string ToString()
 		{
@@ -175,7 +182,7 @@ namespace Noxico
 			ni.RemoveAll("_da");
 			ni.RemoveAll("script");
 
-			ni.tempToken = new Dictionary<string, Token>();
+			ni.CarriedToken = new Dictionary<string, Token>();
 			return ni;
 		}
 
@@ -234,7 +241,7 @@ namespace Noxico
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check translucency on something not equipable.");
-			if (tempToken.ContainsKey(who.ID) && (tempToken[who.ID].HasToken("torn") || tempToken[who.ID].HasToken("wet")))
+			if (CarriedToken.ContainsKey(who.ID) && (CarriedToken[who.ID].HasToken("torn") || CarriedToken[who.ID].HasToken("wet")))
 				return true;
 			return this.GetToken("equipable").HasToken("translucent");
 		}
@@ -243,7 +250,7 @@ namespace Noxico
 		{
 			if (!HasToken("equipable"))
 				throw new ItemException("Tried to check reach on something not equipable.");
-			if (tempToken.ContainsKey(who.ID) && tempToken[who.ID].HasToken("torn"))
+			if (CarriedToken.ContainsKey(who.ID) && CarriedToken[who.ID].HasToken("torn"))
 				return true;
 			if (part.IsBlank())
                 return this.GetToken("equipable").HasToken("reach");
@@ -342,7 +349,7 @@ namespace Noxico
 			if item is cursed, error out
 			mark item as unequipped.
 			*/
-			var item = this.tempToken.ContainsKey(character.ID) ? this.tempToken[character.ID] : null;
+			var item = this.CarriedToken.ContainsKey(character.ID) ? this.CarriedToken[character.ID] : null;
 			if (item != null && item.HasToken("cursed") && item.GetToken("cursed").HasToken("known"))
 				throw new ItemException(item.GetToken("cursed").Text.IsBlank(i18n.Format("cannot_remove_sticky", this.ToString(item, true)), item.GetToken("cursed").Text));
 
@@ -782,15 +789,13 @@ namespace Noxico
 		}
 
 		//YOU ARE TEARING ME APAAAAHT LISA!!!
-		//TODO: make this a bool, return false if the item is too sturdy to tear.
-		//TODO: make this not *replace* the item, but apply tearing (https://bitbucket.org/Kawa/noxico/issues/14/clothing-statuses)
 		public static bool TearApart(InventoryItem equip, Character who, bool force = false)
 		{
-			if (!equip.tempToken.ContainsKey(who.ID))
+			if (!equip.CarriedToken.ContainsKey(who.ID))
 				return false; //no actual item to tear
 			if (!force && equip.HasToken("sturdy"))
 				return false; //failed, too sturdy
-			equip.tempToken[who.ID].AddToken("torn");
+			equip.CarriedToken[who.ID].AddToken("torn");
 			return true;
 			/*
 			var slot = "pants";

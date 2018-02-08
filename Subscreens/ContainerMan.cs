@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Noxico
@@ -481,6 +482,7 @@ namespace Noxico
 				vendorCaughtYou = true; //Handler can deal with this now.
 				return i18n.Format("inventory_vendorcaughtyou", vendorChar.Name.ToString()).Viewpoint(vendorChar);
 			}
+			if (token.HasToken("torn")) price = (float)Math.Ceiling(price * 0.25f); //this ain't worth shit, bruh.
 			if (mode == ContainerMode.Vendor && price != 0)
 			{
 				//Handle the transaction.
