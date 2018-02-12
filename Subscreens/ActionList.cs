@@ -93,6 +93,7 @@ namespace Noxico
 			if (Subscreens.Redraw)
 			{
 				Subscreens.Redraw = false;
+				NoxicoGame.DrawSidebar();
 				UIManager.Draw();
 			}
 

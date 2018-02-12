@@ -237,3 +237,28 @@ UNIMP	canfuck			The item can be used during sex to penetrate.
 
 Items can have various arbitrary tags that lootsets can then use as filters.
 
+BIOMES.TML
+----------
+realm: <name>			Name is ignored, realms are Noxico and Seradevari, in that order.
+	waterLevel: <value>	For world generation, heightmap value to trigger water at.
+	biome: <name>
+		rect: <four ints>	The area of the 2D temperature/moisture map for this biome.
+		ground: <tilename>
+		encounters: <stock>
+			<bodyplans>
+		cultures
+			<cultures>
+
+CRAFTING.TML
+------------
+craft
+	key			What item to have, primarily, to use this recipe.
+		<item>		Just the one item ID or a @class.
+	require			Further ingredients.
+		<items>
+	actions
+		consume: <item #>	#1 is the key, #2 and on are the requires.
+		produce: <item name>
+			bonus: <skill>	Give produced item a bonus modifier if skill is high enough.
+		skill: <skill>		Practice the given skill.
+		dye			Gives a color token to #2 based on that of #1.
