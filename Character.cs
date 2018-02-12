@@ -1572,18 +1572,6 @@ Tokens:
 				   this.GetVaginaCapacity()
 				   ));
 			#endif
-			#if LOLDEBUG
-			print("\n\n\n\n");
-			print("<cGray>Debug\n<cGray>\xc4\xc4\xc4\xc4\xc4\n");
-			print("<cGray>Percieved gender: " + this.PercievedGender.ToString() + "\n");
-			print("<cGray>Actual gender: " + this.ActualGender.ToString() + "\n");
-			print("<cGray>Self-preferred gender: " + this.PreferredGender.ToString() + "\n");
-			print("<cGray>Cum amount: " + this.CumAmount + "mLs.\n");
-			print("<cGray>Breasts: " + this.GetBreastAmount() + " @ " + this.GetBreastSize() + "'\n");
-			print("<cGray>Penis (length only): " + this.GetPenisSize(false) + "cm\n");
-			print("<cGray>Penis (l * t): " + this.GetPenisSize(true) + "cm\n");
-			print("<cGray>Vagina capacity: " + this.GetVaginaCapacity() + "\n");
-			#endif
 
 			return sb.ToString();
 		}
@@ -1959,12 +1947,12 @@ Tokens:
 			var strengthToCapacity = new Dictionary<int, int>()
 			{
 				{ 0, 1 }, //Boneless Chicken
-				{ 10, 4 }, //Picked Last at P.E.
-				{ 20, 8 }, //Average Joe
-				{ 40, 16 }, //Heavy Delivery
-				{ 60, 32 }, //Bench Press a Bunch
-				{ 80, 56 }, //Olympic God
-				{ 100, 64 }, //Demigod
+				{ 10, 8 }, //Picked Last at P.E.
+				{ 20, 16 }, //Average Joe
+				{ 40, 32 }, //Heavy Delivery
+				{ 60, 64 }, //Bench Press a Bunch
+				{ 80, 128 }, //Olympic God
+				{ 100, 256 }, //Demigod
 			};
 			var strength = GetStat(Stat.Strength);
 			var capacity = 0f;
