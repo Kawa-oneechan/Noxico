@@ -638,10 +638,15 @@ namespace Noxico
 					else if (fontHasLower && c >= 'a' && c <= 'z')
 						c = (char)((c - 'a') + font + 0x1A);
 				}
-				
-				if (darken) image[col, row].Background = image[col, row].Background.Darken();
 
-				SetCell(row, col, c, foregroundColor, backgroundColor, true);
+				if (darken)
+				{
+					image[col, row].Background = image[col, row].Background.Darken();
+					image[col, row].Foreground = image[col, row].Foreground.Darken();
+				}
+
+				if (!(darken && c == ' '))
+					SetCell(row, col, c, foregroundColor, backgroundColor, true);
 				col++;
 				if ((c >= 0x3000 && c < 0x4000) || (c >= 0x4E00 && c < 0xA000) || (c >= 0xE400 && c < 0xE500))
 				{
