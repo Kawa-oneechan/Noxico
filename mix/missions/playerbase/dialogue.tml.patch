@@ -1,8 +1,7 @@
 add: top
 	scene: CarpenterStart
 		name: (start)
-		filters
-			bottom: text role/vendor/class carpenter
+		filter: bottom.HasRole("carpenter")
 		- ""Hello, what can I do for you?" [b:name] asks"
 		action: carpenter toolshed
 		action: carpenter upgrade
@@ -26,8 +25,7 @@ add: top
 	scene: CarpenterToolshedOkay
 		name: carpenter toolshed okay
 		list: Pay &#x13B;20 for a tool shed.
-		filters
-			top: value money >= 20
+		filter: top.GetToken("money").Value >= 20
 		- ""Very well. It'll be there.""
 		script
 			<[[
@@ -55,8 +53,7 @@ add: top
 	scene: CarpenterUpgrade
 		name: carpenter upgrade
 		list: Ask about extra rooms
-		filters
-			top: value homeboardlevel < 4
+		filter: top.GetToken("homeboardlevel").Value < 4
 		- ""You want extra room? It's yours, friend. As long as you have enough, mmm, zennies.""
 		action: carpenter upgrade okay
 		action: carpenter toolshed
@@ -65,8 +62,7 @@ add: top
 	scene: CarpenterUpgradeNo
 		name: carpenter upgrade
 		list: Ask about extra rooms
-		filters
-			top: value homeboardlevel == 4
+		filter: top.GetToken("homeboardlevel").Value == 4
 		- ""You want extra room? I'm afraid not, friend.""
 		action: carpenter nothing
 		action: carpenter toolshed
@@ -74,8 +70,7 @@ add: top
 	scene: CarpenterUpgradeOkay
 		name: carpenter upgrade okay
 		list: Pay &#x13B;100 for more bedrooms
-		filters
-			top: value money >= 100
+		filter: top.GetToken("money").Value >= 100
 		- ""Very well. It'll be there.""
 		script
 			<[[

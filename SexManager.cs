@@ -84,7 +84,7 @@ namespace Noxico
 			return result;
 		}
 
-		private static bool LimitsOkay(Character[] actors, Token c)
+		public static bool LimitsOkay(Character[] actors, Token c)
 		{
 			var filter = c.GetToken("filter");
 			if (c.Name == "group")
@@ -92,12 +92,17 @@ namespace Noxico
 			if (filter == null)
 				return true;
 			var env = Lua.Environment;
+#if DEBUG
+			env.debug = true;
+#else
+			env.debug = false;
+#endif
 			env.top = actors[0];
 			env.bottom = actors[1];
 			env.consentual = !actors[1].HasToken("helpless");
 			env.nonconsentual = actors[1].HasToken("helpless");
 			env.masturbating = actors[0] == actors[1];
-			env.GetClothing = new Func<Character, string, int, bool>((a, clothClass, s) =>
+			if (env.GetClothing == null) env.GetClothing = new Func<Character, string, int, bool>((a, clothClass, s) =>
 			{
 				InventoryItem cloth = null;
 				var haveSomething = false;

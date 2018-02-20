@@ -10,6 +10,7 @@ namespace Noxico
 	{
 		private static List<Token> sceneList;
 		private static Character top, bottom;
+		private static Character[] actors;
 
 		private static bool letBottomChoose;
 
@@ -25,6 +26,7 @@ namespace Noxico
 
 			SceneSystem.top = top;
 			SceneSystem.bottom = bottom;
+			SceneSystem.actors = new[] { top, bottom };
 			var dreaming = top.HasToken("dream");
 
 			if (name.Contains('\xE064'))
@@ -36,12 +38,12 @@ namespace Noxico
 				MessageBox.Notice(string.Format("Could not find a proper opening for scene name \"{0}\". Aborting.", name), true, "Uh-oh.");
 				return;
 			}
-			var firstScene = openings.FirstOrDefault(i => SceneFiltersOkay(i));
+			var firstScene = openings.FirstOrDefault(i => SexManager.LimitsOkay(actors, i));
 			var scenes = new List<Token>() { firstScene };
 			if (firstScene.HasToken("random"))
 			{
 				var randomKey = firstScene.GetToken("random").Text;
-				foreach (var s in openings.Where(i => i != firstScene && i.HasToken("random") && i.GetToken("random").Text == randomKey && SceneFiltersOkay(i)))
+				foreach (var s in openings.Where(i => i != firstScene && i.HasToken("random") && i.GetToken("random").Text == randomKey && SexManager.LimitsOkay(actors, i)))
 					scenes.Add(s);
 			}
 			var scene = scenes.PickOne();
@@ -95,7 +97,7 @@ namespace Noxico
 			var ret = new Dictionary<object, string>();
 			foreach (var action in scene.Tokens.Where(x => x.Name == "action"))
 			{
-				foreach (var s in sceneList.Where(x => x.Name == "scene" && x.GetToken("name").Text == action.Text && SceneFiltersOkay(x)))
+				foreach (var s in sceneList.Where(x => x.Name == "scene" && x.GetToken("name").Text == action.Text && SexManager.LimitsOkay(actors, x)))
 				{
 					var key = action.Text;
 					var listAs = s.HasToken("list") ? s.GetToken("list").Text : string.Format("[missing \"list\"!] {0}", key);
@@ -205,6 +207,7 @@ namespace Noxico
 			return ret.ToString().TrimEnd();
 		}
 
+/*
 		private static bool SceneFiltersOkay(Token scene)
 		{
 			if (!scene.HasToken("filters"))
@@ -358,6 +361,21 @@ namespace Noxico
 					break;
 			}
 			return true;
+		}
+*/
+	}
+
+	partial class Character
+	{
+		public bool HasRelation(Character with)
+		{
+			return (this.Path("ships/" + with.ID) != null);
+		}
+
+		public bool HasRole(string role)
+		{
+			var t = this.Path("role/vendor/class");
+			return (t != null && t.Text == role);
 		}
 	}
 }

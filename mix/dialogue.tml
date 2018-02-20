@@ -15,17 +15,14 @@ scene: test2a
 	name: tell about location a
 	list: (DEBUG) Tell about random location again
 	priority
-	filters
-		debug
-		bottom: has gavenewtown
+	filter: debug and bottom.HasToken("gavenewtown")
 	- ""I told you, you should visit [b:T:gavenewtown].""
 
 scene: test2b
 	name: tell about location a
 	list: (DEBUG) Tell about random location
 	priority
-	filters
-		debug
+	filter: debug
 	script
 		<[[
 			local newExpectation = PickBoard(BoardType.Town, -1, -1, thisRealm)
@@ -58,14 +55,12 @@ scene: ohboy
 
 scene: dreamtest
 	name: (dream)
-	filters
-		debug
+	filter: debug
 	- "To sleep, perchance, to dream..."
 
 scene: dreamtest2
 	name: (dream)
-	filters
-		debug
+	filter: debug
 	- "What is it worth anyway?"
 
 -- Several greetings
@@ -74,9 +69,7 @@ scene: dreamtest2
 
 scene: GenericUnknownHottie
 	name: (start)
-	filters
-		bottom: relation none
-		top: value charisma >= 50
+	filter: (not bottom.HasRelation(top)) and (top.GetStat(Stat.Charisma) >= 50)
 	- ""Ah... Greetings, traveller," [b:he] says with a slightly flushed smile. "Can I... help you, maybe?""
 	action: introduce yourself
 	action: invite to have sex
@@ -84,9 +77,7 @@ scene: GenericUnknownHottie
 
 scene: GenericUnknownNottie
 	name: (start)
-	filters
-		bottom: relation none
-		top: value charisma < 10
+	filter: (not bottom.HasRelation(top)) and (top.GetStat(Stat.Charisma) < 10)
 	- ""Greetings, traveller," [b:he] says. "Can I... help you?""
 	action: introduce yourself
 	action: invite to have sex
@@ -95,8 +86,7 @@ scene: GenericUnknownNottie
 scene: GenericUnknown
 	name: (start)
 	random: greetings
-	filters
-		bottom: relation none
+	filter: not bottom.HasRelation(top)
 	- ""Greetings, traveller," [b:he] says with a friendly unassuming smile. "Can I help you?""
 	action: trade
 	action: token replacement test
@@ -108,8 +98,7 @@ scene: GenericUnknown
 scene: GenericUnknown2
 	name: (start)
 	random: greetings
-	filters
-		bottom: relation none
+	filter: not bottom.HasRelation(top)
 	- ""Oh hello," [b:he] says. "Can I help?""
 	action: trade
 	action: token replacement test
@@ -146,8 +135,7 @@ scene: GenericDeclineGoodbye
 scene: GenericIntroduceHottie
 	name: introduce yourself
 	list: Introduce yourself
-	filters
-		top: value charisma >= 50
+	filter: top.GetStat(Stat.Charisma) >= 50
 	- "You tell [b:name] your name and flash [b:him] a twinkling smile."
 	- ""It's a pleasure meeting you, [t:name]", [b:he] says a little flustered."
 	script
@@ -161,8 +149,7 @@ scene: GenericIntroduceHottie
 scene: GenericIntroduceNottie
 	name: introduce yourself
 	list: Introduce yourself
-	filters
-		top: value charisma < 10
+	filter: top.GetStat(Stat.Charisma) < 10
 	- "You tell [b:name] your name and flash [b:him] a smile."
 	- ""It's... a pleasure meeting you I'm sure... [t:name]", [b:he] says."
 	script
