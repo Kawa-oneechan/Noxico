@@ -247,7 +247,7 @@ namespace Noxico
 				env.stimulation = who.GetStat(Stat.Stimulation);
 				env.pussyAmount = who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0;
 				env.penisAmount = who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0;
-				env.pussyWetness = who.HasToken("vagina") ? who.GetToken("vagina").GetToken("wetness").Value : 0;
+				env.pussyWetness = who.HasToken("vagina") && who.GetToken("vagina").HasToken("wetness") ? who.GetToken("vagina").GetToken("wetness").Value : 0;
 				env.cumAmount = who.CumAmount;
 				env.slime = who.IsSlime;
 				//return env.DoChunk("return " + filter.Text, "lol.lua").ToBoolean();

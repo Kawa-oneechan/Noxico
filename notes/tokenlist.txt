@@ -262,3 +262,34 @@ craft
 			bonus: <skill>	Give produced item a bonus modifier if skill is high enough.
 		skill: <skill>		Practice the given skill.
 		dye			Gives a color token to #2 based on that of #1.
+
+DIALOGUE.TML
+------------
+scene: <unique id>
+	name: <selector name>	Used to bind to actions.
+	list: <text>		What to list this scene as in the action list.
+	filters			TODO: rework to be like the filters in sex.tml.
+	random			Allow one of several filter-passing scenes to be picked at random.
+	- <text>		Paragraph to show. You can have any number of these.
+	script			Script to run while composing output. Can be freely woven between paragraphs.
+		<[[ Lua ]]>
+	action: <selector name>	Action to show as a choice. You can have any number.
+
+Actions whose scenes' filters don't pass don't show up.
+If there's only one action possible, it's always listed as "==>".
+Default names: (start), (criminalscum), (dream).
+
+IMPEDIMENTS.TML
+---------------
+<id>
+	have: <path>=<value>
+	file: <Lua file path>
+
+WORDSTRUCTOR.TML
+----------------
+<id>
+	- <text>
+		filter: <expression>	Optional.
+
+A given id should have more than just one option. They may have weights, and may recurse (have "[?:<another id>]" in them).
+

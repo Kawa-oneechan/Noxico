@@ -85,47 +85,59 @@ tits
 cock
 	- boner
 	- cock
+		weight: 0.4
 	- dick
+		weight: 0.4
 	- dong
 	- joystick
 	- length
 	- mast
 	- manhood
+		weight: 0.4
 	- member
+		weight: 0.3
 	- pecker
 	- penis
+		weight: 0.4
 	- prick
 	- pole
 	- rod
+		weight: 0.3
 	- shaft
+		weight: 0.3
 	- shlong
 	- slug
 	- sucker
 	- tool
 	- wang
-	- wood
 cocks
 	- boners
 	- cocks
+		weight: 0.4
 	- dicks
+		weight: 0.4
 	- dongs
 	- joysticks
 	- lengths
 	- masts
 	- manhoods
+		weight: 0.4
 	- members
+		weight: 0.3
 	- peckers
 	- penises
+		weight: 0.4
 	- pricks
 	- poles
 	- rods
+		weight: 0.3
 	- shafts
+		weight: 0.3
 	- shlongs
 	- slugs
 	- suckers
 	- tools
 	- wangs
-	- wood
 pussy
 	- beaver
 	- cave
@@ -135,18 +147,24 @@ pussy
 	- coozie
 	- cunny
 	- cunt
+		weight: 0.4
 	- gash
 	- hole
 	- minch
 	- muff
 	- sheath
 	- slit
+		weight: 0.3
 	- snatch
+		weight: 0.3
 	- puss
 	- pussy
+		weight: 0.4
 	- quim
 	- twat
+		weight: 0.4
 	- vagina
+		weight: 0.4
 	- vulva
 pussies
 	- beavers
@@ -157,22 +175,29 @@ pussies
 	- coozies
 	- cunnies
 	- cunts
+		weight: 0.4
 	- gashes
 	- holes
 	- minches
 	- muffs
 	- sheathes
 	- slits
+		weight: 0.3
 	- snatches
+		weight: 0.3
 	- pusses
 	- pussies
+		weight: 0.4
 	- quims
 	- twats
+		weight: 0.4
 	- vaginas
+		weight: 0.4
 	- vulvas
 anus
 	- anus
 	- asshole
+		weight: 0.6
 	- back door
 	- butthole
 	- cornhole
@@ -183,11 +208,13 @@ anus
 	- rosebud
 butt
 	- ass
+		weight: 0.4
 	- backside
 	- behind
 	- booty
 	- bum
 	- butt
+		weight: 0.4
 	- buttocks
 	- keister
 	- rear
@@ -198,7 +225,9 @@ clit
 	- bean
 	- button
 	- clit
+		weight: 0.4
 	- clitoris
+		weight: 0.3
 	- clitty
 	- jewel
 	- pearl
@@ -208,7 +237,9 @@ clit
 breasts
 	- baps
 	- boobs
+		weight: 0.4
 	- breasts
+		weight: 0.4
 	- funbags
 	- hooters
 	- jugs
@@ -217,12 +248,15 @@ breasts
 	- mounds
 	- teats
 	- tits
+		weight: 0.4
 	- titties
 	- udders
 breast
 	- bap
 	- boob
+		weight: 0.4
 	- breast
+		weight: 0.4
 	- funbag
 	- hooter
 	- jug
@@ -231,6 +265,7 @@ breast
 	- mound
 	- teat
 	- tit
+		weight: 0.4
 	- titty
 	- udder
 	- rack
@@ -239,6 +274,7 @@ nipples
 	- headlights
 	- nertz
 	- nipples
+		weight: 0.6
 	- nips
 	- nubbins
 	- peanuts
@@ -247,6 +283,7 @@ nipple
 	- bump
 	- headlight
 	- nipple
+		weight: 0.6
 	- nip
 	- nubbin
 	- peanut
@@ -255,17 +292,22 @@ labia
 	- labia
 	- lips
 	- petals
+		weight: 0.3
 cum
 	- cream
 	- cum
+		weight: 0.4
 	- ejaculate
 	- fuckjuice
 	- jism
 	- jizz
+		weight: 0.4
 	- juice
 	- load
 	- seed
+		weight: 0.3
 	- semen
+		weight: 0.3
 	- spooge
 	- spunk
 
