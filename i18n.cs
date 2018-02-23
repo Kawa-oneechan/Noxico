@@ -239,12 +239,20 @@ namespace Noxico
 				env.cultureID = who.Culture.ID;
 				env.culture = who.Culture;
 				env.gender = who.Gender;
-				env.carnality = who.GetStat(Stat.Carnality);
-				env.charisma = who.GetStat(Stat.Charisma);
-				env.climax = who.GetStat(Stat.Climax);
-				env.cunning = who.GetStat(Stat.Cunning);
-				env.sensitivity = who.GetStat(Stat.Sensitivity);
-				env.stimulation = who.GetStat(Stat.Stimulation);
+				/*
+				env.carnality = who.GetStat("carnality");
+				env.charisma = who.GetStat("charisma");
+				env.climax = who.GetStat("climax");
+				env.cunning = who.GetStat("cunning");
+				env.sensitivity = who.GetStat("sensitivity");
+				env.stimulation = who.GetStat("stimulation");
+				*/
+				foreach (var stat in env.stats)
+				{
+					var statName = ((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant();
+					env[statName] = who.GetStat(statName);
+				}
+
 				env.pussyAmount = who.HasToken("vagina") ? (who.GetToken("vagina").HasToken("dual") ? 2 : 1) : 0;
 				env.penisAmount = who.HasToken("penis") ? (who.GetToken("penis").HasToken("dual") ? 2 : 1) : 0;
 				env.pussyWetness = who.HasToken("vagina") && who.GetToken("vagina").HasToken("wetness") ? who.GetToken("vagina").GetToken("wetness").Value : 0;

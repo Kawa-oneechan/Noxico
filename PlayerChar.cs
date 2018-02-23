@@ -393,7 +393,7 @@ namespace Noxico
 				return;
 			}
 
-			var increase = 200 + (int)Character.GetStat(Stat.Speed);
+			var increase = 200 + (int)Character.GetStat("speed");
 			if (Character.HasToken("haste"))
 				increase *= 2;
 			else if (Character.HasToken("slow"))
@@ -417,6 +417,8 @@ namespace Noxico
 			}
 			else
 			{
+				if (!NoxicoGame.PlayerReady)
+					NoxicoGame.AgeMessages();
 				NoxicoGame.PlayerReady = true;
 				Energy = 5000;
 			}
@@ -564,8 +566,8 @@ namespace Noxico
 						var tile = ParentBoard.Tilemap[XPosition, YPosition];
 						if (tile.Definition.Ceiling)
 						{
-							if (Character.GetStat(Stat.Cunning) < 10 ||
-								(Character.GetStat(Stat.Cunning) < 20 && Random.NextDouble() < 0.5))
+							if (Character.GetStat("cunning") < 10 ||
+								(Character.GetStat("cunning") < 20 && Random.NextDouble() < 0.5))
 							{
 								Hurt(2, "death_crackedagainstceiling", null, false);
 								NoxicoGame.AddMessage(i18n.GetString("hittheceiling"));

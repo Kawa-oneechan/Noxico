@@ -191,7 +191,7 @@ namespace Noxico
 		{
 			var localX = this.XPosition - NoxicoGame.CameraX;
 			var localY = this.YPosition - NoxicoGame.CameraY;
-			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
+			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
 				return;
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
@@ -238,10 +238,10 @@ namespace Noxico
 					continue;
 				if (!this.Character.Likes(other.Character))
 					return;
-				if (other.Character.GetStat(Stat.Charisma) >= 10)
+				if (other.Character.GetStat("charisma") >= 10)
 				{
 					var stim = this.Character.GetToken("stimulation");
-					var otherChar = other.Character.GetStat(Stat.Charisma);
+					var otherChar = other.Character.GetStat("charisma");
 					var distance = other.DistanceFrom(this);
 					var increase = (otherChar / 20) * (distance * 0.25);
 					stim.Value += (float)increase;
@@ -275,8 +275,8 @@ namespace Noxico
 			//TODO: i18n - all reactions should be in i18n.tml, and more should be added.
 			if (this.Character.HasToken("sleeping"))
 				return null;
-			var stim = this.Character.GetStat(Stat.Stimulation);
-			var carn = this.Character.GetStat(Stat.Carnality);
+			var stim = this.Character.GetStat("stimulation");
+			var carn = this.Character.GetStat("carnality");
 			var r = Random.Next(4);
 			if (r == 0)
 			{
@@ -295,7 +295,7 @@ namespace Noxico
 			}
 			//TODO: add more reactions.
 			{
-				var cha = otherChar.GetStat(Stat.Charisma);
+				var cha = otherChar.GetStat("charisma");
 				if (cha > 0)
 				{
 					if (cha < 30)
@@ -401,7 +401,7 @@ namespace Noxico
 			if (Character.Health <= 0)
 				return;
 
-			var increase = 200 + (int)Character.GetStat(Stat.Speed);
+			var increase = 200 + (int)Character.GetStat("speed");
 			if (Character.HasToken("haste"))
 				increase *= 2;
 			else if (Character.HasToken("slow"))
@@ -534,7 +534,7 @@ namespace Noxico
 							}
 
 							//If we're gonna rape the target, we'd want them for ourself. Otherwise...
-							if (Character.GetStat(Stat.Stimulation) < 30)
+							if (Character.GetStat("stimulation") < 30)
 							{
 								//...we call out to nearby hostiles
 								var called = 0;

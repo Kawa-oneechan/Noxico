@@ -14,6 +14,36 @@ namespace Noxico
 		Accept, Back, Pause, Screenshot, TabFocus, ScrollUp, ScrollDown
 	}
 
+	public class Message
+	{
+		public string Text { get; set; }
+		public Color Color { get; set; }
+		/// <summary>Should be increased by 1 every time the player gets to move.</summary>
+		public int Turns { get; set; }
+		public DateTime Time { get; private set; }
+
+		public Message(string text)
+		{
+			Text = text;
+			Color = Color.Silver;
+			Turns = 0;
+			Time = NoxicoGame.InGameTime;
+		}
+
+		public Message(string text, Color color)
+		{
+			Text = text;
+			Color = color;
+			Turns = 0;
+			Time = NoxicoGame.InGameTime;
+		}
+
+		public override string ToString()
+		{
+			return Text;
+		}
+	}
+
 	public class NoxicoGame
 	{
 		public static NoxicoGame Me
@@ -49,7 +79,8 @@ namespace Noxico
 		public static Board Limbo { get; private set; }
 		public Player Player { get; set; }
 		public static Dictionary<string, string[]> BookTitles { get; private set; }
-		public static List<string> Messages { get; private set; }
+		public static List<Message> Messages { get; private set; }
+		public static List<Message> MessageLog { get; private set; }
 		public static UserMode Mode { get; set; }
 		public static Cursor Cursor { get; set; }
 		public static SubscreenFunc Subscreen { get; set; }
@@ -66,7 +97,6 @@ namespace Noxico
 		public static DateTime InGameTime; //public static NoxicanDate InGameTime;
 		public static bool PlayerReady { get; set; }
 
-		private static List<string> messageLog = new List<string>();
 		private static string lastMessage = string.Empty;
 		public static string LookAt { get; set; }
 		public static int WorldVersion { get; private set; }
@@ -147,6 +177,7 @@ namespace Noxico
 			Speed = 60;
 			this.Boards = new List<Board>();
 			HostForm = hostForm;
+			Lua.Environment.HostForm = hostForm;
 			KeyMap = new Dictionary<Keys, bool>();
 			KeyTrg = new Dictionary<Keys, bool>();
 			KeyRepeat = new Dictionary<Keys, DateTime>();
@@ -158,7 +189,8 @@ namespace Noxico
 			}
 			Modifiers = new bool[3];
 			Cursor = new Cursor();
-			Messages = new List<string>();
+			Messages = new List<Message>();
+			MessageLog = new List<Message>();
 
 			IngameToUnicode = new char[0x420];
 			IngameTo437 = new char[0x420];
@@ -530,27 +562,33 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			return Boards[index];
 		}
 
+		public static void AgeMessages()
+		{
+			var maxLines = 5;
+			var maxAge = 10;
+			if (Messages.Count > maxLines)
+				Messages.RemoveAll(m => m.Turns > 1);
+			Messages.ForEach(m => m.Turns++);
+			Messages.RemoveAll(m => m.Turns > maxAge);
+		}
+
 		public static void DrawMessages()
 		{
-			for (var i = 21; i < 25; i++)
-				for (var col = 0; col < 65; col++)
-					HostForm.SetCell(i, col, ' ', Color.Silver, Color.Black);
-
-			if (Messages.Count == 0)
-				return;
-			var row = 24;
-			for (var i = 0; i < 4 && i < Messages.Count; i++)
-			{
-				var m = Messages.Count - 1 - i;
-				HostForm.Write(Messages[m], Color.Silver, Color.Black, row, 1);
-				row--;
-			}
+			//assume top left
+			//Me.CurrentBoard.Redraw();
+			var max = 5;
+			var line = 0;
+			var from = Math.Max(0, Messages.Count - max);
+			for (var i = from; i < Messages.Count; i++, line++)
+				HostForm.Write(Messages[i].Text, Messages[i].Color, Color.Transparent, line, 0, true);
 		}
+	
 		public static void ClearMessages()
 		{
 			Messages.Clear();
-			DrawMessages();
+			//DrawMessages();
 		}
+
 		public static void AddMessage(object messageOrMore, object color = null)
 		{
 			if (messageOrMore is Neo.IronLua.LuaTable)
@@ -586,32 +624,19 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (lastMessage != message)
 			{
 				lastMessage = message;
-				if (clr.Lightness < 0.2)
-					clr = Color.Gray;
-				var lastLine = Messages.LastOrDefault();
-				if (lastLine == null)
-					lastLine = string.Empty;
-				else
-					Messages.Remove(lastLine);
-				var newLines = (lastLine + "  <c" + clr.Name + ">" + message).Wordwrap(64).Trim().Split('\n');
-				if (newLines.Length > 1)
-				{
-					for (var i = 1; i < newLines.Length; i++)
-						newLines[i] = "<c" + clr.Name + ">" + newLines[i];
-				}
-				Messages.AddRange(newLines);
-				if (Mode == UserMode.Walkabout)
-					messageLog.Add(InGameTime.ToShortTimeString() + " -- " + message);
+				var m = new Message(message, clr);
+				Messages.Add(m);
+				MessageLog.Add(m);
 			}
 			DrawMessages();
 		}
 
 		public static void ShowMessageLog()
 		{
-			if (messageLog.Count == 0)
+			if (MessageLog.Count == 0)
 				MessageBox.Notice(i18n.GetString("nomoremessages"), true);
 			else
-				TextScroller.Plain(string.Join("\n", messageLog.Where(m => !m.StartsWith("\uE2FD"))));
+				TextScroller.Plain(string.Join("\n", MessageLog.Where(m => !m.Text.StartsWith('\uE2FD')).Select(m => string.Format("{0} -- <c{1}>{2}<c>", m.Time.ToShortTimeString(), m.Color.Name, m.Text))));
 		}
 
 		public void FlushDungeons()
@@ -674,9 +699,10 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					}
 					Cursor.Draw();
 				}
-				else if (Mode == UserMode.Walkabout && PlayerReady && Player.Character.HasToken("tutorial"))
+				else if (Mode == UserMode.Walkabout && PlayerReady)
 				{
-					CheckForTutorialStuff();
+					if (Player.Character.HasToken("tutorial"))
+						CheckForTutorialStuff();
 				}
 			}
 			else
@@ -1325,260 +1351,20 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				return;
 			if (player == null || player.Character == null)
 				return;
-
-			for (var row = 21; row < 25; row++)
-				for (var col = 0; col < 80; col++)
-					HostForm.SetCell(row, col, ' ', Color.DarkGray, Color.Black);
-
-			for (var col = 0; col < 80; col++)
-				HostForm.SetCell(20, col, 0xCD, Color.DarkGray, Color.Black);
-			for (var row = 21; row < 25; row++)
-				HostForm.SetCell(row, 66, 0xB3, Color.DarkGray, Color.Black);
-			HostForm.SetCell(20, 66, 0xD1, Color.DarkGray, Color.Black);
-
 			var character = player.Character;
 
-			var statNames = new Dictionary<string, string>()
-			{
-				{ "Charisma", "\x2C0\x2C1" },
-				{ "Climax", "\x2C2\x2C3" },
-				{ "Cunning", "\x2C4\x2C5" },
-				{ "Carnality", "\x2C6\x2C7" },
-				{ "Stimulation", "\x2C8\x2C9" },
-				{ "Sensitivity", "\x2CA\x2CB" },
-				{ "Speed", "\x2CA\x2CC" },
-				{ "Strength", "\x2CD\x2CE" }
-			};
-			var statRow = 21;
-			var statCol = 67;
-			foreach (var stat in statNames)
-			{
-				var color = " <cGray>";
-					var statBonus = character.GetToken(stat.Key.ToLowerInvariant() + "bonus").Value;
-				var statBase = character.GetToken(stat.Key.ToLowerInvariant()).Value;
-				var total = (int)statBase + statBonus;
-				if (statBonus > 0)
-					color = " <cWhite>";
-				else if (statBonus < 0)
-					color = " <cMaroon>";
-				HostForm.Write(stat.Value + color + total, Color.Silver, Color.Transparent, statRow, statCol);
-				statRow++;
-				if (statRow == 25)
-				{
-					statRow = 21;
-					statCol = 74;
-				}
-			}
+			Me.CurrentBoard.Redraw();
+			if (Mode == UserMode.Walkabout)
+				DrawMessages();
 
-			if (LookAt.IsBlank())
-			{
-				var hpNow = character.Health;
-				var hpMax = character.MaximumHealth;
-				var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
-				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 20, 2);
-				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 20, 2);
-				HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, 20, 3);
+			Lua.Environment.player = player;
+			Lua.Environment.DrawStatus();
 
-				HostForm.SetCell(20, 21, player.Glyph, player.ForegroundColor, player.BackgroundColor);
-				switch (character.Gender)
-				{
-					case Gender.Male:
-						HostForm.SetCell(20, 23, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
-						break;
-					case Gender.Female:
-						HostForm.SetCell(20, 23, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
-						break;
-					case Gender.Herm:
-						HostForm.SetCell(20, 23, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
-						break;
-				}
-				HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 20, 25);
-
-				var sb = new StringBuilder();
-				if (character.HasToken("haste"))
-					sb.Append(i18n.GetString("mod_haste"));
-				if (character.HasToken("slow"))
-					sb.Append(i18n.GetString("mod_slow"));
-				if (character.HasToken("flying"))
-					sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
-				if (character.HasToken("swimming"))
-				{
-					if (character.GetToken("swimming").Value == -1)
-						sb.Append(i18n.GetString("mod_swimmingunl"));
-					else
-						sb.Append(i18n.Format("mod_swimming", Math.Floor((character.GetToken("swimming").Value / 20) * 100)));
-				}
-				var mods = sb.ToString();
-				HostForm.Write(mods, Color.Silver, Color.Transparent, 20, 79 - mods.Length());
-			}
-			else
-			{
-				HostForm.Write(LookAt, Color.Silver, Color.Black, 20, 2);
-			}
+			if (!LookAt.IsBlank())
+				HostForm.Write(LookAt, Color.Silver, Color.Transparent, 0, 0, true);
 
 			if (!ContextMessage.IsBlank())
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 80 - ContextMessage.Length() - 2);
-
-			DrawMessages();
-
-			//Old sidebar code left here for cannibalization purposes.
-			/*
-			var player = HostForm.Noxico.Player;
-
-			for (var row = 0; row < 30; row++)
-				for (var col = 80; col < 100; col++)
-					HostForm.SetCell(row, col, ' ', Color.Silver, Color.Black);
-
-			if (NoxicoGame.Subscreen == Introduction.StoryHandler || NoxicoGame.Subscreen == Introduction.CharacterCreator)
-				return;
-			if (player == null || player.Character == null)
-				return;
-
-			var character = player.Character;
-			HostForm.SetCell(1, 81, player.Glyph, player.ForegroundColor, player.BackgroundColor);
-			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 1, 83);
-			switch (character.Gender)
-			{
-				case Gender.Male:
-					HostForm.SetCell(2, 81, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
-					break;
-				case Gender.Female:
-					HostForm.SetCell(2, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
-					break;
-				case Gender.Herm:
-					HostForm.SetCell(2, 81, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
-					break;
-			}
-			HostForm.Write(character.GetToken("money").Value.ToString("C").PadLeft(17), Color.White, Color.Transparent, 2, 82);
-
-			var hpNow = character.Health;
-			var hpMax = character.MaximumHealth;
-			var hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
-			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), 3, 81);
-			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 3, 81);
-			HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, 3, 81);
-
-			var statNames = Enum.GetNames(typeof(Stat));
-			var statRow = 5;
-			foreach (var stat in statNames)
-			{
-				if (stat == "Health")
-					continue;
-				var bonus = "";
-				var statBonus = character.GetToken(stat.ToLowerInvariant() + "bonus").Value;
-				var statBase = character.GetToken(stat.ToLowerInvariant()).Value;
-				var total = statBase + statBonus;
-				if (statBonus > 0)
-					bonus = "<cGray> (" + Math.Ceiling(statBase) + "+" + Math.Ceiling(statBonus) + ")<cSilver>";
-				else if (statBonus < 0)
-					bonus = "<cMaroon> (" + Math.Ceiling(statBase) + "-" + Math.Ceiling(-statBonus) + ")<cSilver>";
-				HostForm.Write(i18n.GetString("shortstat_" + stat) + "  <cWhite>" + total + bonus, Color.Silver, Color.Transparent, statRow, 81);
-				statRow++;
-			}
-			var sb = new StringBuilder();
-			if (character.HasToken("haste"))
-				sb.Append(i18n.GetString("mod_haste"));
-			if (character.HasToken("slow"))
-				sb.Append(i18n.GetString("mod_slow"));
-			if (character.HasToken("flying"))
-				sb.Append(i18n.Format("mod_flying", Math.Floor((character.GetToken("flying").Value / 100) * 100)));
-			if (character.HasToken("swimming"))
-			{
-				if (character.GetToken("swimming").Value == -1)
-					sb.Append(i18n.GetString("mod_swimmingunl"));
-				else
-					sb.Append(i18n.Format("mod_swimming", Math.Floor((character.GetToken("swimming").Value / 20) * 100)));
-			}
-
-			HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, statRow, 81);
-
-			var renegadeLight = (int)Math.Ceiling((character.GetToken("renegade").Value / 100) * 8);
-			var paragonLight = (int)Math.Ceiling((character.GetToken("paragon").Value / 100) * 8);
-			var renegadeDark = 8 - renegadeLight;
-			var paragonDark = 8 - paragonLight;
-			HostForm.SetCell(16, 81, '\x06', Color.Silver, Color.Transparent);
-			HostForm.SetCell(16, 98, '\x03', Color.Silver, Color.Transparent);
-			HostForm.Write(new string(' ', renegadeDark), Color.Black, Color.FromArgb(9, 21, 39), 16, 82);
-			HostForm.Write(new string(' ', renegadeLight), Color.Black, Color.FromArgb(30, 54, 90), 16, 82 + renegadeDark);
-			HostForm.Write(new string(' ', paragonLight), Color.Black, Color.FromArgb(90, 30, 30), 16, 82 + 8);
-			HostForm.Write(new string(' ', paragonDark), Color.Black, Color.FromArgb(38, 10, 10), 16, 82 + 8 + paragonLight);
-			HostForm.Write(InGameTime.ToShortTimeString(), Color.Silver, Color.Transparent, 17, 81);
-			HostForm.Write(InGameTime.ToShortDateString(), Color.Silver, Color.Transparent, 18, 81);
-
-			if (Mode == UserMode.Aiming && Cursor.PointingAt is BoardChar && !(Cursor.PointingAt is Player))
-			{
-				var boardChar = Cursor.PointingAt as BoardChar;
-				character = boardChar.Character;
-				HostForm.SetCell(20, 81, boardChar.Glyph, boardChar.ForegroundColor, boardChar.BackgroundColor);
-				HostForm.Write(character.GetKnownName(), Color.White, Color.Transparent, 20, 83);
-
-				switch (character.PercievedGender)
-				{
-					case Gender.Male:
-						HostForm.SetCell(21, 81, '\x0B', Color.FromArgb(30, 54, 90), Color.Transparent);
-						break;
-					case Gender.Female:
-						HostForm.SetCell(21, 81, '\x0C', Color.FromArgb(90, 30, 30), Color.Transparent);
-						break;
-					case Gender.Herm:
-						HostForm.SetCell(21, 81, '\x15D', Color.FromArgb(84, 30, 90), Color.Transparent);
-						break;
-				}
-
-				if (!character.HasToken("beast"))
-					HostForm.Write(character.Title, Color.Silver, Color.Transparent, 21, 83);
-
-				hpNow = character.Health;
-				hpMax = character.MaximumHealth;
-				hpBarLength = (int)Math.Ceiling((hpNow / hpMax) * 18);
-				HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 22, 39), 22, 81);
-				HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 22, 81);
-				sb.Clear();
-				if (character.Path("role/vendor") != null)
-					sb.Append(i18n.GetString("vendor_" + character.Path("role/vendor/class").Text) + ' ');
-				if (character.HasToken("hostile"))
-					sb.Append(i18n.GetString("mod_hostile"));
-				if (character.HasToken("helpless"))
-					sb.Append(i18n.GetString("mod_helpless"));
-				HostForm.Write(sb.ToString().Wordwrap(18), Color.Silver, Color.Transparent, 23, 81);
-			}
-
-			var coord = player.ParentBoard.Coordinate;
-			var realm = (int)player.ParentBoard.Realm;
-			var cx = coord.X;
-			var cy = coord.Y;
-			var extent = 13;
-			var center = 6;
-			for (var y = 0; y < extent; y++)
-			{
-				for (var x = 0; x < extent; x++)
-				{
-					var ey = cy - center + y;
-					var ex = cx - center + x;
-					if (ey < 0 || ey >= miniMap[realm].GetLength(0))
-						continue;
-					if (ex < 0 || ex >= miniMap[realm].GetLength(1))
-						continue;
-					var miniMapPart = miniMap[realm][ey, ex];
-					if (miniMapPart < 0 || miniMapPart >= BiomeData.Biomes.Count)
-						continue;
-					var biomeColor = TileDefinition.Find(BiomeData.Biomes[miniMapPart].GroundTile).Background;
-					HostForm.SetCell(30 + y, 81 + x, (y == center && x == center) ? '\xF9' : ' ', Color.White, biomeColor);
-				}
-			}
-
-			//if (player.ParentBoard.BoardType == BoardType.Dungeon)
-			if (!string.IsNullOrWhiteSpace(player.ParentBoard.Name))
-				HostForm.Write(Toolkit.Wordwrap(player.ParentBoard.Name, 15), Color.Silver, Color.Transparent, 28, 82);
-
-			if (!string.IsNullOrWhiteSpace(ContextMessage))
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Black, 0, 100 - ContextMessage.Length() - 2);
-#if DEBUG
-			//HostForm.Write(player.Energy.ToString(), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
-			HostForm.Write(string.Format("{0}x{1}", player.XPosition, player.YPosition), PlayerReady ? Color.Yellow : Color.Red, Color.Black, 29, 81);
-#endif
-			*/
-			//...he says while *removing* all manner of old commented-out bits.
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Transparent, 0, 80 - ContextMessage.Length() - 2, true);
 		}
 
 		public static void CheckForTutorialStuff()

@@ -257,5 +257,9 @@ RegisterVPTags(
 	hand = function(c, s) return Descriptions.Hand(c) end,
 	hands = function(c, s) return Descriptions.Hand(c, true) end,
 	
-	voc = function(c, s) return Toolkit.PickOne(i18n.GetArray("vocalize_" .. s[0])) .. "{s}" end,
+	voc = function(c, s)
+		local vocs = i18n.GetArray("vocalize_" .. s[0]);
+		local myVoc = vocs[Random.Next(#vocs)];
+		return myVoc .. "{s}"
+	end,
 })

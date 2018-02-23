@@ -51,6 +51,7 @@ namespace Noxico
 			env.RegisterVPTags = new Action<LuaTable>(t => i18n.RegisterVPTags(t));
 
 			Lua.RunFile("i18n.lua");
+			Lua.RunFile("stats.lua");
 			Lua.RunFile("defense.lua");
 
 			//Replace IronLua's printer with our own. Why? Because fuck you.
@@ -79,7 +80,7 @@ namespace Noxico
 			env2.RegisterPackage("Mutations", typeof(Mutations));
 			env2.RegisterPackage("Random", typeof(Random));
 			env2.RegisterPackage("Realms", typeof(Realms));
-			env2.RegisterPackage("Stat", typeof(Stat));
+			//env2.RegisterPackage("Stat", typeof(Stat));
 			env2.RegisterPackage("SceneSystem", typeof(SceneSystem));
 			env2.RegisterPackage("Tile", typeof(Tile));
 			env2.RegisterPackage("Warp", typeof(Warp));
@@ -87,6 +88,8 @@ namespace Noxico
 			//env2.RegisterPackage("TaskType", typeof(TaskType));
 			env2.RegisterPackage("Token", typeof(Token));
 			env2.RegisterPackage("Descriptions", typeof(Descriptions));
+			env2.RegisterPackage("i18n", typeof(i18n));
+			env2.RegisterPackage("Toolkit", typeof(Toolkit));
 
 			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
 			env.Message = new Action<object, object>((x, y) =>

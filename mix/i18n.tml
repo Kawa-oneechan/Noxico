@@ -191,7 +191,7 @@ Number of known items       {2}
 -- #region Messages
 	welcometonoxico: Welcome to Noxico, &#xE220;.
 	welcomeback: Welcome back, &#xE220;.
-	rememberhelp: Remember, press <cWhite>&#xE20C;<c> for help and options.
+	rememberhelp: Remember, press &#xE20C; for help and options.
 	pointatsomething: Point at an object or character.
 	pointingatdoor: Door
 	eyesinthedark: Eyes in the darkness

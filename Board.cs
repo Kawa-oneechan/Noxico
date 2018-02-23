@@ -933,14 +933,14 @@ namespace Noxico
 
 		public void AimCamera(int x, int y)
 		{
-			Program.WriteLine("AimCamera({0}, {1})", x, y);
+			//Program.WriteLine("AimCamera({0}, {1})", x, y);
 			var oldCamY = NoxicoGame.CameraY;
 			NoxicoGame.CameraY = y - 12;
 			if (NoxicoGame.CameraY < 0)
 				NoxicoGame.CameraY = 0;
-			if (NoxicoGame.CameraY > 30)
-				NoxicoGame.CameraY = 30;
-			Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
+			if (NoxicoGame.CameraY > 25)
+				NoxicoGame.CameraY = 25;
+			//Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
 			if (oldCamY < NoxicoGame.CameraY) //went down
 				Redraw();
 			else if (oldCamY > NoxicoGame.CameraY) //went up

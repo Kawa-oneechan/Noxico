@@ -1897,10 +1897,10 @@ item: really_kinky_panties
 			if cli.Value < 80 or sti.Value < 80 then
 				Message("Your panties are making you hot and bothered...")
 				if cli.Value < 80 then
-					user.Raise(Stat.Climax, 5)
+					user.Raise("climax", 5)
 				end
 				if sti.Value < 80 then
-					user.Raise(Stat.Stimulation, 5)
+					user.Raise("stimulation", 5)
 				end
 			else
 				Message("Your panties are keeping you hot and bothered...")
@@ -1922,8 +1922,8 @@ item: clit_regenring
 	script: timer
 		<[[
 			user.Heal(5)
-			user.Raise(Stat.Climax, 1)
-			user.Raise(Stat.Stimulation, 1)
+			user.Raise("climax", 1)
+			user.Raise("stimulation", 1)
 		]]>
 	script: equip
 		<[[
