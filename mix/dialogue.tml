@@ -25,7 +25,7 @@ scene: test2b
 	filter: debug
 	script
 		<[[
-			local newExpectation = PickBoard(BoardType.Town, -1, -1, thisRealm)
+			local newExpectation = Board.PickBoard(BoardType.Town, -1, -1, thisRealm)
 			if (newExpectation == nil) then
 				print("This certainly is a lonely town!")
 			elseif (newExpectation.ID == nil) then
@@ -34,7 +34,7 @@ scene: test2b
 			elseif (newExpectation.ID == thisBoard.ID) then
 				print("Hmm, let me think for a bit...")
 			else
-				MakeBoardTarget(newExpectation)
+				newExpectation.MakeTarget()
 				print("Have you heard of " .. newExpectation.Name .. "?")
 				bottom.AddToken("gavenewtown", newExpectation.BoardNum, newExpectation.Name)
 			end

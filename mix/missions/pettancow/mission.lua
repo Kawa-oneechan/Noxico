@@ -5,7 +5,7 @@
 -- 
 --[[
 -/*
--var myBoard = PickBoard(BoardType.Town, -1, -1);
+-var myBoard = Board.PickBoard(BoardType.Town, -1, -1);
 -var myChar = myBoard.PickBoardChar(Gender.Female);
 -
 -print("Picked " + myChar.Character.Name + " to replace.");
