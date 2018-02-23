@@ -1,6 +1,6 @@
 if (realm ~= "Nox") then return end
 
-local chelBoard = PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
+local chelBoard = Board.PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
 
 chelBoard.Drain()
 chelBoard.Name = "Chelsie's Lair"
@@ -9,7 +9,7 @@ chelBoard.Music = "set://Home"
 chelBoard.BoardType = BoardType.Special
 chelBoard.RemoveToken("encounters")
 chelBoard.AddToken("encounters").AddToken("stock")
-MakeBoardTarget(chelBoard)
+chelBoard.MakeTarget()
 
 chelBoard.MergeBitmap("missions\\chelsie\\lairhouse.png", "missions\\chelsie\\lairhouse.txt");
 

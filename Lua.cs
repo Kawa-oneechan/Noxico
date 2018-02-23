@@ -49,10 +49,7 @@ namespace Noxico
 				return;
 
 			env.RegisterVPTags = new Action<LuaTable>(t => i18n.RegisterVPTags(t));
-
-			Lua.RunFile("i18n.lua");
-			Lua.RunFile("stats.lua");
-			Lua.RunFile("defense.lua");
+			env.dofile = new Func<object, LuaResult>(f => RunFile(f.ToString()));
 
 			//Replace IronLua's printer with our own. Why? Because fuck you.
 			env.print = new Action<object[]>(x =>
@@ -62,6 +59,8 @@ namespace Noxico
 				else
 					Program.WriteLine(string.Join("\t", x.Select(v => v ?? "nil")));
 			});
+
+			RunFile("init.lua");
 
 			//TODO: predefine ALL THE THINGS.
 			var env2 = (LuaGlobal)env;
@@ -96,74 +95,7 @@ namespace Noxico
 				NoxicoGame.AddMessage(x, y));
 			env.Titlecase = new Func<string, string>(x => x.Titlecase());
 
-			env.FindTargetBoardByName = new Func<string, int>(x =>
-			{
-				if (!NoxicoGame.TravelTargets.ContainsValue(x))
-					return -1;
-				var i = NoxicoGame.TravelTargets.First(b => b.Value == x);
-				return i.Key;
-			});
-
-			env.MakeBoardTarget = new Action<Board>(board =>
-			{
-				if (board.Name.IsBlank())
-					throw new Exception("Board must have a name before it can be added to the target list.");
-				if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
-					return; //throw new Exception("Board is already a travel target.");
-				NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
-			});
-
-			env.PickBoard = new Func<BoardType, int, int, object, Board>((boardType, biome, maxWater, realm) =>
-			{
-				var r = Realms.Nox;
-				if (realm == null)
-				{
-					if (NoxicoGame.Me.CurrentBoard != null)
-						r = NoxicoGame.Me.CurrentBoard.Realm;
-				}
-				else
-					r = (Realms)realm;
-				var options = new List<Board>();
-			tryAgain:
-				foreach (var board in NoxicoGame.Me.Boards)
-				{
-					if (board == null)
-						continue;
-					if (board.Realm != r)
-						continue;
-					if (board.BoardType != boardType)
-						continue;
-					if (biome > 0 && board.GetToken("biome").Value != biome)
-						continue;
-					if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
-						continue;
-					if (maxWater != -1)
-					{
-						var water = 0;
-						for (var y = 0; y < 50; y++)
-							for (var x = 0; x < 80; x++)
-								if (board.Tilemap[x, y].Fluid != Fluids.Dry)
-									water++;
-						if (water > maxWater)
-							continue;
-					}
-					options.Add(board);
-				}
-				if (options.Count == 0)
-				{
-					if (maxWater < 2000)
-					{
-						maxWater *= 2;
-						goto tryAgain;
-					}
-					else
-						return null;
-				}
-				var choice = options.PickOne();
-				return choice;
-			});
-
-			env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
+			//env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
 
 			env.StartsWithVowel = new Func<string, bool>(x => x.StartsWithVowel());

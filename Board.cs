@@ -1204,7 +1204,79 @@ namespace Noxico
 			foreach (var c in this.Entities.OfType<Clutter>().Where(c => c.Life > 0))
 				this.EntitiesToRemove.Add(c);
 		}
-	
+
+		public static Board GetBoardByNumber(int index)
+		{
+			return NoxicoGame.Me.GetBoard(index);
+		}
+
+		public void MakeTarget()
+		{
+			if (Name.IsBlank())
+				throw new Exception("Board must have a name before it can be added to the target list.");
+			if (NoxicoGame.TravelTargets.ContainsKey(BoardNum))
+				return; //throw new Exception("Board is already a travel target.");
+			NoxicoGame.TravelTargets.Add(BoardNum, Name);
+		}
+
+		public static int FindTargetBoardByName(string name)
+		{
+			if (!NoxicoGame.TravelTargets.ContainsValue(name))
+				return -1;
+			var i = NoxicoGame.TravelTargets.First(b => b.Value == name);
+			return i.Key;
+		}
+
+		public static Board PickBoard(BoardType boardType, int biome, int maxWater, object realm)
+		{
+			var r = Realms.Nox;
+			if (realm == null)
+			{
+				if (NoxicoGame.Me.CurrentBoard != null)
+					r = NoxicoGame.Me.CurrentBoard.Realm;
+			}
+			else
+				r = (Realms)realm;
+			var options = new List<Board>();
+		tryAgain:
+			foreach (var board in NoxicoGame.Me.Boards)
+			{
+				if (board == null)
+					continue;
+				if (board.Realm != r)
+					continue;
+				if (board.BoardType != boardType)
+					continue;
+				if (biome > 0 && board.GetToken("biome").Value != biome)
+					continue;
+				if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
+					continue;
+				if (maxWater != -1)
+				{
+					var water = 0;
+					for (var y = 0; y < 50; y++)
+						for (var x = 0; x < 80; x++)
+							if (board.Tilemap[x, y].Fluid != Fluids.Dry)
+								water++;
+					if (water > maxWater)
+						continue;
+				}
+				options.Add(board);
+			}
+			if (options.Count == 0)
+			{
+				if (maxWater < 2000)
+				{
+					maxWater *= 2;
+					goto tryAgain;
+				}
+				else
+					return null;
+			}
+			var choice = options.PickOne();
+			return choice;
+		}
+
 		public BoardChar PickBoardChar(Gender gender)
 		{
 			Func<BoardChar, bool> isOkay = (x) => { return true; };

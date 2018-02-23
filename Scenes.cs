@@ -130,63 +130,6 @@ namespace Noxico
 				}
 				else
 				{
-					// FIXME: these Funcs are clones from elsewhere,
-					//  we could tidy these up into Lua.Ascertain eventually.
-					Func<BoardType, int, int, Realms, Board> pickBoard = (boardType, biome, maxWater, inRealm) =>
-					{
-						var options = new List<Board>();
-						var game = NoxicoGame.Me;
-						tryAgain:
-						foreach (var board in game.Boards)
-						{
-							if (board == null)
-								continue;
-							var boardRealmTxt = board.Realm.ToString().ToLower();
-							var inRealmTxt = inRealm.ToString().ToLower();
-							if (boardRealmTxt != null && inRealmTxt.ToLower() != inRealmTxt.ToLower())
-								continue;
-							if (board.BoardType != boardType)
-								continue;
-							if (biome > 0 && board.GetToken("biome").Value != biome)
-								continue;
-							if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
-								continue;
-							if (maxWater != -1)
-							{
-								var water = 0;
-								for (var y = 0; y < 50; y++)
-									for (var x = 0; x < 80; x++)
-										if (board.Tilemap[x, y].Fluid != Fluids.Dry)
-											water++;
-								if (water > maxWater)
-									continue;
-							}
-							options.Add(board);
-						}
-						if (options.Count == 0)
-						{
-							//return null;
-							if (maxWater < 2000)
-							{
-								maxWater *= 2;
-								goto tryAgain;
-							}
-							else
-								return null;
-						}
-						var choice = options.PickOne();
-						return choice;
-					};
-
-					var makeBoardTarget = new Action<Board>(board =>
-					{
-						if (board.Name.IsBlank())
-							throw new Exception("Board must have a name before it can be added to the target list.");
-						if (NoxicoGame.TravelTargets.ContainsKey(board.BoardNum))
-							return; //throw new Exception("Board is already a travel target.");
-						NoxicoGame.TravelTargets.Add(board.BoardNum, board.Name);
-					});
-
 					var buffer = new StringBuilder();
 					var env = Lua.Environment;
 					Lua.Ascertain();
@@ -194,9 +137,6 @@ namespace Noxico
 					env.bottom = bottom;
 					env.print = new Action<string>(x => buffer.Append(x));
 					env.LetBottomChoose = new Action<string>(x => letBottomChoose = true);
-					env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
-					env.PickBoard = pickBoard;
-					env.MakeBoardTarget = makeBoardTarget;
 					env.thisBoard = bottom.BoardChar.ParentBoard;
 					env.thisRealm = bottom.BoardChar.ParentBoard.Realm; 
 					Lua.Run(part.Tokens[0].Text, env);

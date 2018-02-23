@@ -1,21 +1,21 @@
 if (realm ~= "Nox") then return end
 local myBoard, town
 while 1 do
-	local t = PickBoard(BoardType.Town, -1, -1)
-	local b = GetBoard(t.ToEast)
+	local t = Board.PickBoard(BoardType.Town, -1, -1)
+	local b = Board.GetBoardByNumber(t.ToEast)
 	print("b.GetToken('Biome').Value == " .. b.GetToken("biome").Value)
 	if (b == nil) or (b.BoardType == BoardType.Town) or (b.GetToken("biome").Value == 0) then
-		b = GetBoard(t.ToWest)
+		b = Board.GetBoardByNumber(t.ToWest)
 	end
 	if (b == nil) or (b.BoardType == BoardType.Town) or (b.GetToken("biome").Value == 0) then
-		b = GetBoard(t.ToNorth)
+		b = Board.GetBoardByNumber(t.ToNorth)
 	end
 	if (b == nil) or (b.BoardType == BoardType.Town) or (b.GetToken("biome").Value == 0) then
-		b = GetBoard(t.ToSouth)
+		b = Board.GetBoardByNumber(t.ToSouth)
 	end
 	if (not (b == nil) or (b.BoardType == BoardType.Town) or (b.GetToken("biome").Value == 0)) then
 		myBoard = b
-		MakeBoardTarget(t)
+		t.MakeTarget()
 		town = t
 		break
 	end
@@ -28,7 +28,7 @@ myBoard.Music = "set://Home"
 myBoard.BoardType = BoardType.Special
 myBoard.RemoveToken("encounters")
 myBoard.AddToken("encounters").AddToken("stock")
-MakeBoardTarget(myBoard)
+myBoard.MakeTarget()
 
 myBoard.MergeBitmap("missions\\playerbase\\lv0.png", "missions\\playerbase\\lv0.txt")
 

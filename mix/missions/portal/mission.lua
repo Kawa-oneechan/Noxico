@@ -10,7 +10,7 @@ end
 if (realm == "Nox") then
 	print ("Creating portal on Nox side...");
 
-	local myBoard = PickBoard(BoardType.Wild, -1, -1);
+	local myBoard = Board.PickBoard(BoardType.Wild, -1, -1);
 	myBoard.Drain();
 	myBoard.Name = "Demon Portal, Nox Side";
 	myBoard.ID = "demonportal_nox";
@@ -24,11 +24,11 @@ if (realm == "Nox") then
 	myBoard.Entities.Add(portalE);
 	portalE.ParentBoard = myBoard;
 	
-	MakeBoardTarget(myBoard); -- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
+	myBoard.MakeTarget() -- DEBUG! Should use LearnUnknownLocation("Demon Portal, Nox Side"); in scene to unlock.
 else
 	print ("Creating portal on Seradevari side...");
 
-	myBoard = PickBoard(BoardType.Wild, -1, -1);
+	myBoard = Board.PickBoard(BoardType.Wild, -1, -1);
 	myBoard.Drain();
 	myBoard.Name = "Demon Portal, Sera Side";
 	myBoard.ID = "demonportal_sera";
@@ -52,5 +52,5 @@ else
 	otherPortalC.AddToken("otherSide", myBoard.BoardNum);
 	portalC.AddToken("otherSide", otherBoard.BoardNum);
 
-	MakeBoardTarget(myBoard); -- ALSO DEBUG!
+	myBoard.MakeTarget() -- ALSO DEBUG!
 end
