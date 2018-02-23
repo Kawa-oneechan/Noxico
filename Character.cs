@@ -729,18 +729,18 @@ namespace Noxico
 
 			var prefabTokens = new[]
 			{
-				"items", "health", "perks", "skills", "sexpreference",
-				"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",
+				"items", /*"health",*/ "perks", "skills", "sexpreference",
+				/*"charisma", "climax", "cunning", "carnality",
+				"stimulation", "sensitivity", "speed", "strength",*/
 				"money", "ships", "paragon", "renegade", 
 				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
 				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
 			};
 			var prefabTokenValues = new[]
 			{
-				0, 10, 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
-				10, 0, 10, 0,
-				10, 10, 10, 15,
+				0, /*10,*/ 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
+				/*10, 0, 10, 0,
+				10, 10, 10, 15,*/
 				100, 0, 0, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0,
@@ -749,6 +749,17 @@ namespace Noxico
 			for (var i = 0; i < prefabTokens.Length; i++)
 				if (!HasToken(prefabTokens[i]))
 					AddToken(prefabTokens[i], prefabTokenValues[i]);
+
+			var stats = Lua.Environment.stats;
+			foreach (var stat in stats)
+			{
+				var s = (Neo.IronLua.LuaTable)stat.Value;
+				var n = s["name"].ToString().ToLowerInvariant();
+				var d = (s["default"] is int) ? (float)((int)s["default"]) : (float)s["default"];
+				if (!HasToken(n))
+					AddToken(n, d);
+			}
+			//names.Add(((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant());
 
 			Health = MaximumHealth;
 		}
@@ -1886,7 +1897,7 @@ Tokens:
 
 		private void GetValidStatNames()
 		{
-			var stats = Lua.Environment.stats; //as Neo.IronLua.LuaTable;
+			var stats = Lua.Environment.stats;
 			var names = new List<string>();
 			foreach (var stat in stats)
 				names.Add(((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant());
