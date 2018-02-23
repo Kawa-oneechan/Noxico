@@ -273,7 +273,12 @@ namespace Noxico
 		/// <returns>The script's return value, or False if an error occurred.</returns>
 		public static LuaResult RunFile(string name, LuaGlobal env = null)
 		{
-			return Run(Mix.GetString(name), env);
+			var ret = Run(Mix.GetString(name), env);
+			var files = Mix.GetFilesWithPattern("*-" + name);
+			if (files.Length > 0)
+				foreach (var extra in files)
+					ret = Run(Mix.GetString(extra), env);
+			return ret;
 		}
 	}
 }
