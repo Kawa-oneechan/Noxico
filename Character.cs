@@ -16,11 +16,6 @@ namespace Noxico
 		NoReports, PlayerOnly, Anyone
 	}
 
-	public enum Stat
-	{
-		Health, Charisma, Climax, Cunning, Carnality, Stimulation, Sensitivity, Speed, Strength
-	}
-
 	public enum TeamBehaviorClass
 	{
 		Attacking, Flocking
@@ -36,6 +31,7 @@ namespace Noxico
 	{
 		public static List<Token> Bodyplans;
 		public static StringBuilder MorphBuffer = new StringBuilder();
+		public static string[] StatNames;
 
 		public Name Name { get; set; }
 		public BoardChar BoardChar { get; set; }
@@ -1862,12 +1858,12 @@ Tokens:
 
 		public void RecalculateStatBonuses()
 		{
-			var statNames = Enum.GetNames(typeof(Stat)).Select(s => s.ToLower());
-			foreach (var stat in statNames.Select(s => s + "bonus"))
+			if (StatNames == null) GetValidStatNames();
+			foreach (var stat in StatNames.Select(s => s + "bonus"))
 				if (HasToken(stat))
 					RemoveToken(stat);
 			var bonuses = new Dictionary<string, float>();
-			foreach (var stat in statNames)
+			foreach (var stat in StatNames)
 				bonuses.Add(stat, 0);
 			foreach (var carriedItem in GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
 			{
@@ -1888,15 +1884,33 @@ Tokens:
 				AddToken(stat.Key + "bonus", stat.Value, string.Empty);
 		}
 
-		public float GetStat(Stat stat)
+		private void GetValidStatNames()
 		{
-			var statName = stat.ToString().ToLower();
-			var statBonusName = statName + "bonus";
-			if (!HasToken(statBonusName))
+			var stats = Lua.Environment.stats; //as Neo.IronLua.LuaTable;
+			var names = new List<string>();
+			foreach (var stat in stats)
+				names.Add(((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant());
+			StatNames = names.ToArray();
+		}
+
+		public float GetStat(string stat)
+		{
+			if (StatNames == null) GetValidStatNames();
+			stat = stat.ToLowerInvariant();
+			if (!StatNames.Contains(stat))
+				return 0f;
+			var bonus = stat + "bonus";
+			if (!HasToken(bonus))
 				RecalculateStatBonuses();
-			var statBase = GetToken(statName);
-			var statBonus = GetToken(statBonusName);
-			return statBase.Value + statBonus.Value;
+			return GetToken(stat).Value + GetToken(bonus).Value;			
+		}
+
+		public float GetStat(int stat)
+		{
+			if (StatNames == null) GetValidStatNames();
+			if (stat < 0 || stat >= StatNames.Length)
+				return 0f;
+			return GetStat(StatNames[stat]);
 		}
 
 		public int GetSkillLevel(string skillName)
@@ -1954,7 +1968,7 @@ Tokens:
 				{ 80, 128 }, //Olympic God
 				{ 100, 256 }, //Demigod
 			};
-			var strength = GetStat(Stat.Strength);
+			var strength = GetStat("strength");
 			var capacity = 0f;
 			foreach (var s2c in strengthToCapacity)
 			{
@@ -2402,15 +2416,16 @@ Tokens:
 		{
 			var stat = GetToken(statname).Value;
 
+			//TODO: would say "make this lua" but there's supposed to be a Lua-driven "every tick" thing for stats.
 			if (statname == "climax")
 			{
 				// 0 stim gives only 50% of climax increase
 				// 50 stim gives 125% climax increase
 				// 100 stim gives 200% climax increase	 
-				var stimBonus = 0.5f + (GetStat(Stat.Stimulation) * 0.015f);
+				var stimBonus = 0.5f + (GetStat("stimulation") * 0.015f);
 
 				// same
-				var carnBonus = 0.5f + (GetStat(Stat.Carnality) * 0.015f);
+				var carnBonus = 0.5f + (GetStat("carnality") * 0.015f);
 
 				stat += (amount * stimBonus * carnBonus);
 			}

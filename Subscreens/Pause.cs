@@ -35,7 +35,7 @@ namespace Noxico
 				Subscreens.FirstDraw = false;
 				UIManager.Initialize();
 				UIManager.Elements.Add(new UIWindow(i18n.GetString("pause_title")) { Left = 3, Top = 1, Width = 22, Height = pages.Count + 2 });
-				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 28, Top = 1, Width = 49, Height = 18 });
+				UIManager.Elements.Add(new UIWindow(string.Empty) { Left = 28, Top = 1, Width = 49, Height = 23 });
 				list = new UIList() { Width = 20, Height = pages.Count, Left = 4, Top = 2, Background = UIColors.WindowBackground };
 				list.Items.AddRange(pages.Keys);
 				list.Change += (s, e) =>
@@ -122,35 +122,35 @@ namespace Noxico
 			sb.AppendLine(i18n.GetString("pause_worldtime").PadEffective(20) + NoxicoGame.InGameTime.ToString());
 			sb.AppendLine();
 
-			var statNames = Enum.GetNames(typeof(Stat));
 			player.RecalculateStatBonuses();
 			player.CheckHasteSlow();
-			foreach (var stat in statNames)
+			foreach (var stat in Lua.Environment.stats)
 			{
-				if (stat == "Health")
+				if (stat.Value.panel == null)
 					continue;
+				string statName = stat.Value.name.ToString().ToLowerInvariant();
 				var bonus = string.Empty;
-				var statBonus = player.GetToken(stat.ToLowerInvariant() + "bonus").Value;
-				var statBase = player.GetToken(stat.ToLowerInvariant()).Value;
+				var statBonus = player.GetToken(statName + "bonus").Value;
+				var statBase = player.GetToken(statName).Value;
 				var total = statBase + statBonus;
 				if (statBonus > 0)
 					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
 				else if (statBonus < 0)
 					bonus = "<cFirebrick> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
-				sb.AppendLine(stat.PadEffective(20) + total + bonus);
+				statName = stat.Value.name.ToString();
+				sb.AppendLine(statName.PadEffective(20) + total + bonus);
 			}
 
-			/* Removed for superfluousity and uglyness
 			var paragadeLength = 18;
 			var renegadeLight = (int)Math.Ceiling((player.GetToken("renegade").Value / 100) * paragadeLength);
 			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
 			var renegadeDark = paragadeLength - renegadeLight;
 			var paragonDark = paragadeLength - paragonLight;
+			sb.AppendLine();
 			sb.Append("\x06");
 			sb.Append("<cNavy>" + new string('\xDB', renegadeDark) + "<cBlue>" + new string('\xDB', renegadeLight));
 			sb.Append("<cRed>" + new string('\xDB', paragonLight) + "<cMaroon>" + new string('\xDB', paragonDark));
 			sb.AppendLine("<cSilver>\x03");
-			*/
 
 			pages[i18n.GetString("pause_charstats")] = sb.ToString();
 

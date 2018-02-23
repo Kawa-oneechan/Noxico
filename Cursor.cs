@@ -33,8 +33,8 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
-			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
-			this.ParentBoard.Draw(true);
+			//this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
+			//this.ParentBoard.Draw(true);
 			if (CanMove(targetDirection, check) != null)
 				return;
 			var newX = 0;
@@ -134,7 +134,7 @@ namespace Noxico
 				NoxicoGame.Mode = UserMode.Walkabout;
 				return;
 			}
-			this.ParentBoard.Draw(true);
+			//this.ParentBoard.Draw(true);
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
@@ -243,7 +243,7 @@ namespace Noxico
 					{
 						description = i18n.Format("action_descyou", player.Character.Name);
 						options["look"] = i18n.GetString("action_lookatyou");
-						if (player.Character.GetStat(Stat.Stimulation) >= 30)
+						if (player.Character.GetStat("stimulation") >= 30)
 							options["fuck"] = i18n.GetString("action_masturbate");
 
 						if (player.Character.HasToken("copier") && player.Character.GetToken("copier").Value == 1)
@@ -286,7 +286,7 @@ namespace Noxico
 								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt(true));
 						}
 
-						if (canSee && player.Character.GetStat(Stat.Stimulation) >= 30 && distance <= 1)
+						if (canSee && player.Character.GetStat("stimulation") >= 30 && distance <= 1)
 						{
 							if (!IniFile.GetValue("misc", "allowrape", false) && boardChar.Character.HasToken("hostile"))
 							{

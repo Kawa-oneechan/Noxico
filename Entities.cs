@@ -41,7 +41,7 @@ namespace Noxico
 		{
 			var localX = this.XPosition - NoxicoGame.CameraX;
 			var localY = this.YPosition - NoxicoGame.CameraY;
-			if (localX >= 80 || localY >= 20 || localX < 0 || localY < 0)
+			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
 				return;
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
@@ -441,7 +441,7 @@ namespace Noxico
 					var token = drop.Token;
 					drop.Take(player.Character, player.ParentBoard);
 					player.Energy -= 1000;
-					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
+					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)));//, drop.ForegroundColor);
 					NoxicoGame.Sound.PlaySound("set://GetItem"); 
 					player.ParentBoard.Redraw();
 				}

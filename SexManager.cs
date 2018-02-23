@@ -239,21 +239,15 @@ namespace Noxico
 				float a, b;
 				if (!float.TryParse(x.ToString(), out a))
 				{
-					Stat stat;
-					if (x is Stat)
-						stat = (Stat)x;
-					if (Enum.TryParse<Stat>(x.ToString(), true, out stat))
-						a = actor.GetStat(stat);
+					if (Character.StatNames.Contains(x.ToString().ToLowerInvariant()))
+						a = actor.GetStat(x.ToString());
 					else
 						a = actor.GetSkillLevel(x.ToString());
 				}
 				if (!float.TryParse(y.ToString(), out b))
 				{
-					Stat stat;
-					if (y is Stat)
-						stat = (Stat)y;
-					if (Enum.TryParse<Stat>(y.ToString(), true, out stat))
-						b = target.GetStat(stat);
+					if (Character.StatNames.Contains(x.ToString().ToLowerInvariant()))
+						b = actor.GetStat(x.ToString());
 					else
 						b = target.GetSkillLevel(y.ToString());
 				}
@@ -357,9 +351,9 @@ namespace Noxico
 			return true;
 		}
 		
-		public float Raise(Stat stat, float by)
+		public float Raise(string stat, float by)
 		{
-			return ChangeStat(stat.ToString().ToLowerInvariant(), by);
+			return ChangeStat(stat, by);
 		}
 		
 		public Token AddToken(string name, object value)
@@ -475,7 +469,7 @@ namespace Noxico
 			var everysexturn = SexManager.GetResult("everysexturn", this, sexPartner);
 			SexManager.Apply(everysexturn, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 
-			if (this.GetStat(Stat.Climax) >= 100)
+			if (this.GetStat("climax") >= 100)
 			{
 				var result = SexManager.GetResult("climax", this, sexPartner);
 				if (this.HasItemEquipped("orgasm_denial_ring"))
