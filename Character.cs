@@ -366,7 +366,7 @@ namespace Noxico
 		{
 			get
 			{
-				return GetToken("strength").Value * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
+				return GetStat("strength") * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
 			}
 		}
 
@@ -755,7 +755,7 @@ namespace Noxico
 			{
 				var s = (Neo.IronLua.LuaTable)stat.Value;
 				var n = s["name"].ToString().ToLowerInvariant();
-				var d = (s["default"] is int) ? (float)((int)s["default"]) : (float)s["default"];
+				float d = (s["default"] is int) ? (float)((int)s["default"]) : (float)s["default"];
 				if (!HasToken(n))
 					AddToken(n, d);
 			}
@@ -948,7 +948,7 @@ namespace Noxico
 				var amount = HasToken("balls") && GetToken("balls").HasToken("amount") ? GetToken("balls").GetToken("amount").Value : 2f;
 				var multiplier = HasToken("cummultiplier") ? GetToken("cummultiplier").Value : 1;
 				var hours = 1;
-				var stimulation = GetToken("stimulation").Value;
+				var stimulation = GetStat("stimulation");
 				ret = (size * amount * multiplier * 2 * (stimulation + 50) / 10 * (hours + 10) / 24) / 10;
 				if (GetToken("perks").HasToken("messyorgasms"))
 					ret *= 1.5f;
@@ -1515,8 +1515,6 @@ namespace Noxico
 			if (print == null)
 				print = new Action<string>(x => sb.Append(x.Viewpoint(null)));
 
-			//var stimulation = this.GetToken("stimulation").Value;
-
 			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
 				print(this.GetKnownName(true) + ", " + this.Title + "\n\n");
@@ -1922,6 +1920,15 @@ Tokens:
 			if (stat < 0 || stat >= StatNames.Length)
 				return 0f;
 			return GetStat(StatNames[stat]);
+		}
+
+		public void SetStat(string stat, float value)
+		{
+			if (StatNames == null) GetValidStatNames();
+			stat = stat.ToLowerInvariant();
+			if (!StatNames.Contains(stat))
+				return;
+			GetToken(stat).Value = value;
 		}
 
 		public int GetSkillLevel(string skillName)
@@ -2410,8 +2417,8 @@ Tokens:
 		/// </summary>
 		public void Orgasm()
 		{
-			GetToken("climax").Value = 0;
-			GetToken("stimulation").Value = 10;
+			SetStat("climax", 0);
+			SetStat("stimulation", 0);
 			if (HasToken("hostile"))
 				RemoveToken("hostile");
 		}
@@ -2423,12 +2430,17 @@ Tokens:
 		/// <param name="statname">The name of the stat to change the value of.</param>
 		/// <param name="amount">The amount to change the stat value by. Positive numbers increase the value, and negative numbers decrease the value.</param>
 		/// <returns>The new value of the stat.</returns>
-		public float ChangeStat(string statname, float amount)
+		public float ChangeStat(string stat, float amount)
 		{
-			var stat = GetToken(statname).Value;
+			if (StatNames == null) GetValidStatNames();
+			stat = stat.ToLowerInvariant();
+			if (!StatNames.Contains(stat))
+				return 0f;
+			var token = GetToken(stat);
+			var value = token.Value;
 
 			//TODO: would say "make this lua" but there's supposed to be a Lua-driven "every tick" thing for stats.
-			if (statname == "climax")
+			if (stat == "climax")
 			{
 				// 0 stim gives only 50% of climax increase
 				// 50 stim gives 125% climax increase
@@ -2438,19 +2450,19 @@ Tokens:
 				// same
 				var carnBonus = 0.5f + (GetStat("carnality") * 0.015f);
 
-				stat += (amount * stimBonus * carnBonus);
+				value += (amount * stimBonus * carnBonus);
 			}
 			else
 			{
-				stat += amount;
+				value += amount;
 			}
 
-			if (stat > 100)
-				stat = 100;
-			if (stat < 0)
-				stat = 0;
+			if (value > 100)
+				value = 100;
+			if (value < 0)
+				value = 0;
 
-			return GetToken(statname).Value = stat;
+			return token.Value = value;
 		}
 
 		public bool ChangeMoney(float amount)

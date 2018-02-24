@@ -1,4 +1,4 @@
-
+if (realm ~= "Nox") then return end
 -- pettancow added to playerbase for now, go the the playerbase mission
 
 -- inserted old js as a reference for new work - sparks

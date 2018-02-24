@@ -240,15 +240,13 @@ namespace Noxico
 					return;
 				if (other.Character.GetStat("charisma") >= 10)
 				{
-					var stim = this.Character.GetToken("stimulation");
+					var stim = this.Character.GetStat("stimulation");
 					var otherChar = other.Character.GetStat("charisma");
 					var distance = other.DistanceFrom(this);
 					var increase = (otherChar / 20) * (distance * 0.25);
-					stim.Value += (float)increase;
+					this.Character.Raise("stimulation", (float)increase);
 					if (distance < 2)
-						stim.Value += 1;
-					if (stim.Value > 100)
-						stim.Value = 100;
+						this.Character.Raise("stimulation", 1);
 					/*
 					if (!ogled && this != player)
 					{
@@ -596,7 +594,7 @@ namespace Noxico
 				return;
 
 			if (Character.HasToken("beast"))
-				Character.GetToken("stimulation").Value = 0;
+				Character.SetStat("stimulation", 0);
 
 			var ally = Character.HasToken("ally");
 			var hostile = ally ? Character.GetToken("ally") : Character.GetToken("hostile");
@@ -699,7 +697,7 @@ namespace Noxico
 				if (distance <= range && CanSee(bcTarget))
 				{
 					//Within attacking range.
-					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetToken("stimulation").Value > 30 && Character.Likes(bcTarget.Character))
+					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("stimulation") > 30 && Character.Likes(bcTarget.Character))
 					{
 						//WRONG KIND OF ATTACK! ABANDON SHIP!!
 						Character.AddToken("waitforplayer");
@@ -847,7 +845,7 @@ namespace Noxico
 			if (weaponData == null)
 			{
 				//Unarmed combat by default.
-				baseDamage = (float)Math.Floor(this.Character.GetToken("strength").Value);
+				baseDamage = (float)Math.Floor(this.Character.GetStat("strength"));
 			}
 			else
 			{
