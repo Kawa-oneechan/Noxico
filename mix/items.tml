@@ -49,10 +49,10 @@ item: timertest
 		evenunequipped
 	script: timer
 		<[[
-			local car = user.GetToken("carnality")
-			if car.Value < 100 then
+			local car = user.GetStat("carnality")
+			if car < 100 then
 				Message("You feel your mind going...")
-				car.Value = car.Value + 5
+				user.Raise("carnality", 5)
 			end
 		]]>
 
@@ -1892,14 +1892,14 @@ item: really_kinky_panties
 	timer: 1
 	script: timer
 		<[[
-			local cli = user.GetToken("climax")
-			local sti = user.GetToken("stimulation")
-			if cli.Value < 80 or sti.Value < 80 then
+			local cli = user.GetStat("climax")
+			local sti = user.GetStat("stimulation")
+			if cli < 80 or sti < 80 then
 				Message("Your panties are making you hot and bothered...")
-				if cli.Value < 80 then
+				if cli < 80 then
 					user.Raise("climax", 5)
 				end
-				if sti.Value < 80 then
+				if sti < 80 then
 					user.Raise("stimulation", 5)
 				end
 			else
@@ -2116,9 +2116,9 @@ item: restoration_potion
 			local half = math.ceil(missing * 0.5)
 			user.Health = user.Health + half
 
-			local car = user.GetToken("carnality")
-			if car.Value < 100 then
-				car.Value = car.Value + 5;
+			local car = user.GetStat("carnality")
+			if car < 100 then
+				user.Raise("carnality", 5)
 			end
 			Identify()
 		]]>	
@@ -2134,9 +2134,9 @@ item: greater_restoration_potion
 			Consume()
 			user.Health = user.MaximumHealth
 
-			local car = user.GetToken("carnality");
-			if car.Value < 100 then
-				car.Value = car.Value + 20
+			local car = user.GetStat("carnality");
+			if car < 100 then
+				user.Raise("carnality", 20)
 			end
 			Identify()
 		]]>	
