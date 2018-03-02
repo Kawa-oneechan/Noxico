@@ -91,7 +91,7 @@ namespace Noxico
 
 		public static int StartingOWX = -1, StartingOWY;
 		private DateTime lastUpdate;
-		public string[] Potions;
+		//public string[] Potions;
 		public static List<string> Identifications;
 		public static Dictionary<int, string> TravelTargets;
 		public static DateTime InGameTime; //public static NoxicanDate InGameTime;
@@ -255,9 +255,11 @@ namespace Noxico
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				KnownItems.Add(InventoryItem.FromToken(item));
 
+			/*
 			Program.WriteLine("Randomizing potions and rings...");
 			RollPotions();
 			ApplyRandomPotions();
+			*/
 
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
@@ -388,18 +390,22 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				var b = new BinaryWriter(f);
 				Program.WriteLine("Header...");
 				b.Write(Encoding.UTF8.GetBytes("NOXiCO"));
+				/*
 				Program.WriteLine("Potion check...");
 				if (Potions[0] == null)
 					RollPotions();
+				*/
 				b = new BinaryWriter(new CryptStream(f));
 				Program.WriteLine("Player data...");
 				Toolkit.SaveExpectation(b, "PLAY");
 				b.Write(CurrentBoard.BoardNum);
 				b.Write(Boards.Count);
+				/*
 				Program.WriteLine("Potions...");
 				Toolkit.SaveExpectation(b, "POTI");
 				for (var i = 0; i < 256; i++)
 					b.Write(Potions[i] ?? "...");
+				*/
 				Program.WriteLine("Item identification states...");
 				Toolkit.SaveExpectation(b, "ITID");
 				b.Write(Identifications.Count);
@@ -486,10 +492,26 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			Toolkit.ExpectFromFile(bin, "PLAY", "player position");
 			var currentIndex = bin.ReadInt32();
 			var boardCount = bin.ReadInt32();
+
+			//TODO: remove entirely after bumping version #
+			var poti = bin.ReadChars(4);
+			if (new string(poti) == "POTI")
+			{
+				Program.WriteLine("Ignoring POTI data...");
+				for (var i = 0; i < 256; i++)
+					bin.ReadString();
+			}
+			else
+			{
+				bin.BaseStream.Seek(-4, SeekOrigin.Current);
+			}
+			/*
 			Toolkit.ExpectFromFile(bin, "POTI", "potion and ring");
 			Potions = new string[256];
 			for (var i = 0; i < 256; i++)
 				Potions[i] = bin.ReadString();
+			*/
+
 			Toolkit.ExpectFromFile(bin, "ITID", "item identification");
 			var numIDs = bin.ReadInt32();
 			Identifications.Clear();
@@ -514,7 +536,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 						miniMap[i][y, x] = bin.ReadByte();
 			}
 
-			ApplyRandomPotions();
+			//ApplyRandomPotions();
+			ApplyRandomPotionsAndRings();
 			file.Close();
 
 			Boards = new List<Board>(boardCount);
@@ -850,6 +873,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			stopwatch.Stop();
 			SaveGame(false, true, false);
 			Program.WriteLine("Did all that and saved in {0}.", stopwatch.Elapsed.ToString());
+
+			ApplyRandomPotionsAndRings();
 
 			//setStatus(i18n.GetString("worldgen_ready"), 0, 0);
 			ClearKeys();
@@ -1271,6 +1296,36 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			return "Land of " + a + " and " + b;
 		}
 
+		public void ApplyRandomPotionsAndRings()
+		{
+			var seed = Random.ExtractSeed();
+			Random.Reseed(WorldName);
+			var done = new List<string>();
+			var colors = i18n.GetArray("potion_colors");
+			var potmods = i18n.GetArray("potion_mods");
+			var ringmods = i18n.GetArray("potion_ringmods");
+			foreach (var item in KnownItems.Where(ki => ki.HasToken("randomized")))
+			{
+				var isRing = (item.Path("equipable/ring") != null);
+				var mods = isRing ? ringmods : potmods;
+				var roll = string.Empty;
+				var color = string.Empty;
+				var mod = string.Empty;
+				while (true)
+				{
+					color = colors.PickOne();
+					mod = mods[Random.NextDouble() > 0.6 ? Random.Next(1, mods.Length) : 0];
+					roll = i18n.Format(isRing ? "potion_ringname" : "potion_name", mod, color);
+					if (!done.Contains(roll)) break;
+				}
+				item.UnknownName = roll; //item.AddToken("_u", roll);
+				item.GetToken("ascii").AddToken("color", color);
+				done.Add(roll);
+			}
+			Random.Reseed(seed);
+		}
+
+		/*
 		public void RollPotions()
 		{
 			this.Potions = new string[256];
@@ -1343,6 +1398,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				}
 			}
 		}
+		*/
 
 		public static void DrawSidebar()
 		{

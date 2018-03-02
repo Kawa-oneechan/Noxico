@@ -686,6 +686,7 @@ namespace Noxico
 				}
 
 				//Random potion identification
+				/*
 				if (this.HasToken("randomized"))
 				{
 					var rid = (int)this.GetToken("randomized").Value;
@@ -704,6 +705,7 @@ namespace Noxico
 					//runningDesc += "You have identified this as " + this.ToString(item, true) + ".";
 					//return;
 				}
+				*/
 
 				//Regular item identification
 				if (!this.UnknownName.IsBlank() && !NoxicoGame.Identifications.Contains(this.ID))

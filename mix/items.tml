@@ -2051,7 +2051,7 @@ item: regen_ring
 	randomized: 130
 	ascii
 		char: 0x1a0
-	timer: 5
+	timer: 1
 	script: timer
 		<[[
 			user.Heal(5)
