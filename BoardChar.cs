@@ -338,7 +338,7 @@ namespace Noxico
 				if (timer == null)
 					continue;
 				if (timer.Text.IsBlank())
-					continue;
+					timer.Text = NoxicoGame.InGameTime.ToBinary().ToString(); //continue;
 				var knownItem = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
 				if (knownItem == null)
 					continue;
@@ -361,7 +361,7 @@ namespace Noxico
 						carriedItem.RemoveToken("timer");
 						continue;
 					}
-					knownItem.RunScript(carriedItem, knownItem.OnTimer, this.Character, this, null);
+					knownItem.RunScript(carriedItem, knownItem.OnTimer, this.Character, this, (m => NoxicoGame.AddMessage(m)));
 				}
 			}
 		}
