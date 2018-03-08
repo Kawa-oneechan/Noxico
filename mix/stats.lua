@@ -76,23 +76,27 @@ function DrawStatus()
 	for _, stat in ipairs(stats) do
 		if (stat.panel ~= nil) then
 			local col = statCol1;
-			for _, c in ipairs(stat.panel) do
-				HostForm.SetCell(statRow, col, c, Color.Silver, Color.Transparent);
-				col = col + 1;
+			if (type(stat.panel) == "table") then
+				for _, c in ipairs(stat.panel) do
+					HostForm.SetCell(statRow, col, c, Color.Silver, Color.Transparent);
+					col = col + 1;
+				end
+			else
+				HostForm.Write(stat.panel, Color.Silver, Color.Transparent, statRow, col);
 			end
 
-			local color = "<cGray>";
+			local color = Color.Gray;
 			local total = "-?-";
 			if character.HasToken(stat.name.ToLower()) then
 				local statBonus = character.GetToken(stat.name.ToLower() .. "bonus").Value;
 				local statBase = character.GetToken(stat.name.ToLower()).Value;
 				total = math.ceil(statBase + statBonus);
-				if (statBonus > 0) then color = "<cWhite>"
-				elseif (statBonus < 0) then color = "<cMaroon>" end
+				if (statBonus > 0) then color = Color.White
+				elseif (statBonus < 0) then color = Color.Maroon end
 			end
 			
 			col = col + 1;
-			HostForm.Write(color .. total, Color.Silver, Color.Transparent, statRow, statCol2);
+			HostForm.Write(total, color, Color.Transparent, statRow, statCol2);
 			statRow = statRow + 1;
 			if (statRow == 24) then
 				statRow = 24 - statsDisplay.rows;
