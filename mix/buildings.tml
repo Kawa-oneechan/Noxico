@@ -2,6 +2,8 @@
 set: town
 	template: simple test
 		inhabitants: 1
+		flip-h
+		flip-v
 		map
 			<[[
 				'''''''''
@@ -56,6 +58,7 @@ set: town
 
 	template: simple test 3
 		inhabitants: 2
+		flip-h
 		map
 			<[[
 				'''''''''
@@ -79,6 +82,8 @@ set: town
 
 	template: wide test
 		inhabitants: 1
+		flip-h
+		flip-v
 		map
 			<[[
 				'''''''''''
@@ -116,6 +121,8 @@ set: town
 -- #region Dungeon rooms
 set: dungeon
 	template: simple dungeon cell 1
+		flip-h
+		flip-v
 		map
 			<[[
 				'''''''''
@@ -133,6 +140,7 @@ set: dungeon
 				id: chair
 
 	template: simple dungeon cell 2
+		flip-h
 		map
 			<[[
 				'''''''
@@ -148,6 +156,8 @@ set: dungeon
 				id: chair
 	
 	template: simple watery cell 1
+		flip-h
+		flip-v
 		map
 			<[[
 				''''''''
@@ -162,6 +172,8 @@ set: dungeon
 			w: water
 
 	template: simple unwalled cell 1
+		flip-h
+		flip-v
 		map
 			<[[
 				'''''''
@@ -174,6 +186,8 @@ set: dungeon
 			]]>
 
 	template: simple unwalled cell 2
+		flip-h
+		flip-v
 		map
 			<[[
 				''''''''''
@@ -186,6 +200,8 @@ set: dungeon
 			]]>
 
 	template: simple unwalled watery cell 1
+		flip-h
+		flip-v
 		map
 			<[[
 				''''##'

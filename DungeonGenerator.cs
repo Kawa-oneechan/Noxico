@@ -149,6 +149,43 @@ namespace Noxico
 		protected Building[,] plots;
 		protected bool allowCaveFloor, includeWater, includeClutter;
 
+		private void CreateRotationsAndFlips(List<Token> templateSource)
+		{
+			var nl = new[] { '\r', '\n' };
+			foreach (var set in templateSource.Where(x => x.Name == "set"))
+			{
+				for (var i = 0; i < set.Tokens.Count; i++) //can't foreach cos we're editing the list as we go :<
+				{
+					if (set.Tokens[i].Name != "template")
+						continue;
+					var template = set.Tokens[i];
+					if (template.HasToken("flip-h"))
+					{
+						template.RemoveToken("flip-h");
+						var newTemplate = template.Clone(true);
+						newTemplate.Text += " (flip-h)";
+						var map = newTemplate.GetToken("map").Tokens[0];
+						var lines = map.Text.Split(nl, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).ToArray();
+						for (var l = 0; l < lines.Length; l++)
+							lines[l] = new string(lines[l].Reverse().ToArray());
+						map.Text = string.Join("\n", lines);
+						set.Tokens.Insert(i + 1, newTemplate);
+					}
+					if (template.HasToken("flip-v"))
+					{
+						template.RemoveToken("flip-v");
+						var newTemplate = template.Clone(true);
+						newTemplate.Text += " (flip-v)";
+						var map = newTemplate.GetToken("map").Tokens[0];
+						var lines = map.Text.Split(nl, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).ToArray();
+						lines = lines.Reverse().ToArray();
+						map.Text = string.Join("\n", lines);
+						set.Tokens.Insert(i + 1, newTemplate);
+					}
+				}
+			}
+		}
+
 		public void Create(BiomeData biome, string templateSet)
 		{
 			Culture = Culture.Cultures[biome.Cultures.PickOne()];
@@ -161,6 +198,7 @@ namespace Noxico
 			{
 				templates = new Dictionary<string, List<Template>>();
 				var templateSource = Mix.GetTokenTree("buildings.tml");
+				CreateRotationsAndFlips(templateSource);
 				foreach (var set in templateSource.Where(x => x.Name == "set"))
 				{
 					var thisSet = new List<Template>();
