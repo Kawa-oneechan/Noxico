@@ -309,7 +309,7 @@ quux
 			gen.Culture = Culture.DefaultCulture;
 			gen.Create(BiomeData.Biomes[0]);
 			gen.ToTilemap(ref test.Tilemap);
-			test.DumpToHtml();
+			test.DumpToHtml("test");
 			Application.Exit();
 			return;
 			*/

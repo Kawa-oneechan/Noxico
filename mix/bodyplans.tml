@@ -251,10 +251,10 @@ bodyplan: foocubus
 	namegen: demonic
 	invisiblegender
 	terms
-		generic: "cubi"
+		generic: "concubus"
 		male: "incubus"
 		female: "succubus"
-		herm: "omnibus"
+		herm: "procubus"
 	fireproof
 	bestiary: "The children of the night -- the fun ones."
 		char: 0x166
