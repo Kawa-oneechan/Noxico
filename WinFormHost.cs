@@ -167,8 +167,8 @@ namespace Noxico
 
 		public bool Running { get; set; }
 
-		private int CellWidth, CellHeight;
-		//private int CellXoffset, CellYoffset;
+		private int cellWidth, cellHeight;
+		private bool fourThirtySeven;
 		private string pngFont = "8x16-bold";
 		private byte[,] fontData;
 
@@ -200,6 +200,7 @@ namespace Noxico
 		private System.Drawing.Color[] palette;
 
 		public bool IsMultiColor { get { return palette.Length > 2; } }
+		public bool Is437 { get { return fourThirtySeven; } }
 
 		public MainForm()
 		{
@@ -217,7 +218,7 @@ namespace Noxico
 				this.KeyPress += new KeyPressEventHandler(this.Form1_KeyPress);
 				this.KeyUp += new KeyEventHandler(this.Form1_KeyUp);
 				this.Icon = global::Noxico.Properties.Resources.app;
-				this.ClientSize = new Size(Program.Cols * CellWidth, Program.Rows * CellHeight);
+				this.ClientSize = new Size(Program.Cols * cellWidth, Program.Rows * cellHeight);
 				this.Controls.Add(new Label()
 				{
 					Text = "Loading...",
@@ -423,8 +424,8 @@ namespace Noxico
 				}
 			}
 			var fontBitmap = Mix.GetBitmap("fonts\\" + pngFont + ".png");
-			CellWidth = fontBitmap.Width / 32;
-			CellHeight = fontBitmap.Height / 32;
+			cellWidth = fontBitmap.Width / 32;
+			cellHeight = fontBitmap.Height / 32;
 
 			/*
 			if (CellWidth == 8)
@@ -439,13 +440,15 @@ namespace Noxico
 
 			CachePNGFont(fontBitmap);
 
+			fourThirtySeven = IniFile.GetValue("misc", "437", false); //TODO: add this to the settings screen.
+
 			youtube = IniFile.GetValue("misc", "youtube", false);
-			ClientSize = new Size(Program.Cols * CellWidth, Program.Rows * CellHeight);
+			ClientSize = new Size(Program.Cols * cellWidth, Program.Rows * cellHeight);
 			if (youtube)
 			{
 				//Find nearest YT size
-				var eW = Program.Cols * CellWidth;
-				var eH = Program.Rows * CellHeight;
+				var eW = Program.Cols * cellWidth;
+				var eH = Program.Rows * cellHeight;
 				if (eW <= 854 || eH <= 480)
 					ClientSize = new Size(854, 480);
 				else if (eW <= 1280 || eH <= 720)
@@ -469,8 +472,8 @@ namespace Noxico
 			Show();
 			Refresh();
 
-			backBuffer = new Bitmap(Program.Cols * CellWidth, Program.Rows * CellHeight, PixelFormat.Format24bppRgb);
-			scrollBuffer = new Bitmap(Program.Cols * CellWidth, Program.Rows * CellHeight, PixelFormat.Format24bppRgb);
+			backBuffer = new Bitmap(Program.Cols * cellWidth, Program.Rows * cellHeight, PixelFormat.Format24bppRgb);
+			scrollBuffer = new Bitmap(Program.Cols * cellWidth, Program.Rows * cellHeight, PixelFormat.Format24bppRgb);
 			for (int row = 0; row < Program.Rows; row++)
 				for (int col = 0; col < Program.Cols; col++)
 					previousImage[col, row].Character = '\uFFFE';
@@ -494,14 +497,14 @@ namespace Noxico
 				prevCursor = Cursor;
 			if (Cursor.X >= 0 && Cursor.X < Program.Cols && Cursor.Y >= 0 && Cursor.Y < Program.Rows)
 			{
-				var cSize = CellWidth;
+				var cSize = cellWidth;
 				if (Cursor.X < Program.Cols - 1 && image[Cursor.X + 1, Cursor.Y].Character == 0xE2FF)
 					cSize *= 2;
 				if (NoxicoGame.Mode == UserMode.Subscreen)
 					cSize = 1;
 
 				var pen = (uint)Environment.TickCount % 16;
-				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen], offX + (Cursor.X * CellWidth) - 1, offY + (Cursor.Y * CellHeight) - 1, cSize + 1, CellHeight + 1);
+				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen], offX + (Cursor.X * cellWidth) - 1, offY + (Cursor.Y * cellHeight) - 1, cSize + 1, cellHeight + 1);
 			}
 		}
 
@@ -542,6 +545,9 @@ namespace Noxico
 		{
 			if (col >= Program.Cols || row >= Program.Rows || col < 0 || row < 0)
 				return;
+
+			if (fourThirtySeven)
+				character = NoxicoGame.IngameTo437[character];
 
 			image[col, row].Character = character;
 			image[col, row].Foreground = foregroundColor;
@@ -665,8 +671,8 @@ namespace Noxico
 
 		private void DrawCell(byte[] scan0, int stride, int row, int col, Cell cell)
 		{
-			var sTX = col * CellWidth;
-			var sTY = row * CellHeight;
+			var sTX = col * cellWidth;
+			var sTY = row * cellHeight;
 			var b = cell.Background;
 			var f = cell.Foreground;
 			var c = cell.Character;
@@ -678,11 +684,11 @@ namespace Noxico
 				c += 0x1E0;
 			c -= 32;
 
-			var width = CellWidth;
+			var width = cellWidth;
 
-			var sSX = (c % 32) * CellWidth;
-			var sSY = (c / 32) * CellHeight;
-			for (var y = 0; y < CellHeight; y++)
+			var sSX = (c % 32) * cellWidth;
+			var sSY = (c / 32) * cellHeight;
+			for (var y = 0; y < cellHeight; y++)
 			{
 				for (var x = 0; x < width; x++)
 				{
@@ -872,8 +878,8 @@ namespace Noxico
 
 		private void MainForm_MouseUp(object x, MouseEventArgs y)
 		{
-			var tx = y.X / (CellWidth);
-			var ty = y.Y / (CellHeight);
+			var tx = y.X / (cellWidth);
+			var ty = y.Y / (cellHeight);
 			var ltx = tx - NoxicoGame.CameraX;
 			var lty = ty - NoxicoGame.CameraY;
 			var lptx = tx + NoxicoGame.CameraX;
