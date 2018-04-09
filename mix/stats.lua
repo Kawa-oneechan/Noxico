@@ -76,13 +76,18 @@ function DrawStatus()
 	for _, stat in ipairs(stats) do
 		if (stat.panel ~= nil) then
 			local col = statCol1;
-			if (type(stat.panel) == "table") then
-				for _, c in ipairs(stat.panel) do
-					HostForm.SetCell(statRow, col, c, Color.Silver, Color.Transparent);
-					col = col + 1;
-				end
+
+			if Is437 then
+				HostForm.Write(stat.short, Color.Silver, Color.Transparent, statRow, col);
 			else
-				HostForm.Write(stat.panel, Color.Silver, Color.Transparent, statRow, col);
+				if (type(stat.panel) == "table") then
+					for _, c in ipairs(stat.panel) do
+						HostForm.SetCell(statRow, col, c, Color.Silver, Color.Transparent);
+						col = col + 1;
+					end
+				else
+					HostForm.Write(stat.panel, Color.Silver, Color.Transparent, statRow, col);
+				end
 			end
 
 			local color = Color.Gray;

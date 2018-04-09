@@ -129,16 +129,21 @@ namespace Noxico
 				if (stat.Value.panel == null)
 					continue;
 				string statName = stat.Value.name.ToString().ToLowerInvariant();
-				var bonus = string.Empty;
-				var statBonus = player.GetToken(statName + "bonus").Value;
-				var statBase = player.GetToken(statName).Value;
-				var total = statBase + statBonus;
-				if (statBonus > 0)
-					bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
-				else if (statBonus < 0)
-					bonus = "<cFirebrick> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
-				statName = stat.Value.name.ToString();
-				sb.AppendLine(statName.PadEffective(20) + total + bonus);
+				if (!player.HasToken(statName))
+					sb.AppendLine(statName.PadEffective(20) + "<cGray>-?-");
+				else
+				{
+					var bonus = string.Empty;
+					var statBonus = player.GetToken(statName + "bonus").Value;
+					var statBase = player.GetToken(statName).Value;
+					var total = statBase + statBonus;
+					if (statBonus > 0)
+						bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
+					else if (statBonus < 0)
+						bonus = "<cFirebrick> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
+					statName = stat.Value.name.ToString();
+					sb.AppendLine(statName.PadEffective(20) + total + bonus);
+				}
 			}
 
 			var paragadeLength = 18;

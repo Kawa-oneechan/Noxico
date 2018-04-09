@@ -1414,6 +1414,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				DrawMessages();
 
 			Lua.Environment.player = player;
+			Lua.Environment.Is437 = HostForm.Is437;
 			Lua.Environment.DrawStatus();
 
 			if (!LookAt.IsBlank())
