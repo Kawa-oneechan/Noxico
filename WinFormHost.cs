@@ -171,6 +171,7 @@ namespace Noxico
 		private bool fourThirtySeven;
 		private string pngFont = "8x16-bold";
 		private byte[,] fontData;
+		private Dictionary<string, Tuple<int, bool>> fontVariants;
 
 		public string IniPath { get; set; }
 		public new Point Cursor { get; set; }
@@ -578,15 +579,14 @@ namespace Noxico
 				text = text.Normalize();
 			text = text.FoldEntities();
 
-			//TODO: read these from a TML file somewhere, outside of this method.
-			var fonts = new Dictionary<string, Tuple<int, bool>>()
+			if (fontVariants == null)
 			{
-				{ "Hand", Tuple.Create(0x200, true) },
-				{ "Carve", Tuple.Create(0x234, false) },
-				{ "Daedric", Tuple.Create(0x24E, false) },
-				{ "Alternian", Tuple.Create(0x268, false) },
-				{ "Felin", Tuple.Create(0x282, true) },
-			};
+				var tml = Mix.GetTokenTree("fonts\\variants.tml");
+				fontVariants = new Dictionary<string, Tuple<int, bool>>();
+				foreach (var t in tml)
+					fontVariants.Add(t.Text, Tuple.Create((int)t.GetToken("offset").Value, t.HasToken("hasLowercase")));
+			}
+
 			var font = 0;
 			var fontHasLower = true;
 
@@ -627,10 +627,10 @@ namespace Noxico
 							var face = match.Groups["face"].Value;
 							if (!string.IsNullOrEmpty(face) && face.Length > 1)
 							{
-								if (fonts.ContainsKey(face))
+								if (fontVariants.ContainsKey(face))
 								{
-									font = fonts[face].Item1;
-									fontHasLower = fonts[face].Item2;
+									font = fontVariants[face].Item1;
+									fontHasLower = fontVariants[face].Item2;
 								}
 							}
 							continue;

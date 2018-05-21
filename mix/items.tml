@@ -1667,6 +1667,28 @@ item: elegant_dress
 	colored
 	for_women
 
+item: little_black_dress
+	description: "A simple, short black dress with no trimming or decoration."
+	equipable
+		shirt
+		pants
+		reach
+		translucent
+	statbonus
+		sensitivity: 10
+		charisma: 16
+		carnality: 5
+		speed: -5
+		strength: -5
+	weight: light
+	price: 100
+	ascii
+		char: 0x19d
+	clothing
+	dress
+	for_women
+	sexy
+
 item: latex_suit
 	_n: [color ]latex suit
 	description: "A full-body suit made of skintight latex. Who cares about anachronisms, this thing's sexy!"
