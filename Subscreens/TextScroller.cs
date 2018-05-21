@@ -40,13 +40,27 @@ namespace Noxico
 			}
 			if (Subscreens.Redraw)
 			{
-				if (text.Length > 24)
+				if (text.Length > 22)
 				{
 					for (int i = 2; i < 22; i++)
 						host.SetCell(i, 76, (char)0x0B3, UIColors.Unfocused, UIColors.WindowBackground, true);
-					//TODO: needs more checking with different amounts of text.
-					var thumb = (int)(((float)scroll / (float)(text.Length - 1)) * 22);
-					host.SetCell(thumb + 2, 76, (char)0x1F2, UIColors.RegularText, UIColors.WindowBackground, true);
+
+					float contentSize = text.Length - 1, windowSize = 20, trackSize = 20;
+					float windowContentRatio = windowSize / contentSize;
+					float minimalGripSize = 1;
+					float maximumGripSize = trackSize;
+					float gripSize = trackSize * windowContentRatio;
+					if (gripSize < minimalGripSize) gripSize = minimalGripSize;
+					if (gripSize > maximumGripSize) gripSize = maximumGripSize;
+					float windowScrollAreaSize = contentSize - trackSize;
+					float windowPosition = scroll;
+					float windowPositionRatio = windowPosition / windowScrollAreaSize;
+					float trackScrollAreaSize = trackSize - gripSize;
+					float gripPositionOnTrack = trackScrollAreaSize * windowPositionRatio;
+
+					//host.SetCell((int)gripPositionOnTrack + 2, 76, (char)0x1F2, UIColors.RegularText, UIColors.WindowBackground, true);
+					for (int i = 0; i < (int)gripSize; i++)
+						host.SetCell((int)gripPositionOnTrack + 2 + i, 76, (char)0xB1, UIColors.RegularText, UIColors.WindowBackground, true);
 				}
 				Subscreens.Redraw = false;
 			}
@@ -86,8 +100,8 @@ namespace Noxico
 			{
 				slow = DateTime.Now;
 				scroll++;
-				if (scroll > text.Length - 20)
-					scroll = text.Length - 20;
+				if (scroll > text.Length - 21)
+					scroll = text.Length - 21;
 				else if (scroll < 1)
 					scroll = 1;
 				else
