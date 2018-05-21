@@ -151,7 +151,7 @@ namespace Noxico
 			var i = (int)Math.Floor(num);
 			if (i < words.Length)
 				return words[i];
-			return Ordinal(num);
+			return i18n.Ordinal(num);
 		}
 		/// <summary>
 		/// Returns the given number as a word, from "first" up to "twelfth". 13 and higher are passed to Ordinal.
@@ -161,7 +161,7 @@ namespace Noxico
 			var words = i18n.GetArray("countsordinal");
 			if (num < words.Length)
 				return words[num];
-			return Ordinal(num);
+			return i18n.Ordinal(num);
 		}
 
 		public static bool IsBlank(this string text)
@@ -735,34 +735,6 @@ namespace Noxico
 		public static bool IsNight()
 		{
 			return NoxicoGame.InGameTime.Hour < 6 || NoxicoGame.InGameTime.Hour > 21;
-		}
-
-		/// <summary>
-		/// From Nethack. Returns the ordinal suffix for the given number -- insert 4, get "th" as in "4th".
-		/// </summary>
-		public static string Ordinal(this int number)
-		{
-			var i = number;
-			var dd = i % 10;
-			return i.ToString() + ((dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd");
-		}
-		public static string Ordinal(this float number)
-		{
-			return ((int)Math.Floor(number)).Ordinal();
-		}
-
-		/// <summary>
-		///	From Nethack. Returns the possessive suffix -- "Kawa" > "Kawa's", "Chris" > "Chris'", etc...
-		/// </summary>
-		public static string Possessive(this string subject)
-		{
-			//TODO: Luafy
-			if (!subject.Equals("it", StringComparison.OrdinalIgnoreCase))
-				return subject + "s";
-			else if (subject.EndsWith("s"))
-				return subject + "'";
-			else
-				return subject + "'s";
 		}
 
 		public static void FoldCostumeRandoms(Token token)

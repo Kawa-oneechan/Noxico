@@ -441,8 +441,7 @@ namespace Noxico
 
 			CachePNGFont(fontBitmap);
 
-			fourThirtySeven = IniFile.GetValue("misc", "437", false); //TODO: add this to the settings screen.
-
+			fourThirtySeven = IniFile.GetValue("misc", "437", false);
 			youtube = IniFile.GetValue("misc", "youtube", false);
 			ClientSize = new Size(Program.Cols * cellWidth, Program.Rows * cellHeight);
 			if (youtube)

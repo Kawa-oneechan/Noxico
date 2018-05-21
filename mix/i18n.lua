@@ -147,6 +147,12 @@ function Singularize(plural)
 	return plural:sub(1, -2)
 end
 
+function Possessive(subject)
+	if subject == "it" then return "its" end
+	if subject:sub(-1) == "s" then return subject .. "'" end
+	return subject .. "'s"
+end
+
 -- NOTICE THIS: Lists and arrays passed from .Net are ZERO-INDEXED.
 RegisterVPTags(
 {

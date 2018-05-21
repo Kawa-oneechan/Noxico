@@ -10,7 +10,7 @@ namespace Noxico
 		private static UIButton saveButton, cancelButton, openButton;
 		private static UITextBox speed, musicVolume, soundVolume;
 		private static UIList font;
-		private static UIToggle skipIntro, rememberPause, vistaSaves, xInput, imperial, enableAudio;
+		private static UIToggle rememberPause, vistaSaves, xInput, imperial, fourThirtySeven, enableAudio;
 		//private static string previousFont;
 
 		public static void Handler()
@@ -64,7 +64,7 @@ namespace Noxico
 					Left = 4,
 					Top = 6,
 					Width = 20,
-					Height = 20,
+					Height = 8,
 				};
 				font.Enter = (s, e) =>
 				{
@@ -82,18 +82,10 @@ namespace Noxico
 					Height = 11,
 				};
 
-				skipIntro = new UIToggle(i18n.GetString("opt_skipintro"))
-				{
-					Left = 29,
-					Top = 3,
-					Checked = IniFile.GetValue("misc", "skipintro", false),
-					Background = Color.Transparent,
-				};
-
 				rememberPause = new UIToggle(i18n.GetString("opt_rememberpause"))
 				{
 					Left = 29,
-					Top = 5,
+					Top = 3,
 					Checked = IniFile.GetValue("misc", "rememberpause", true),
 					Background = Color.Transparent,
 				};
@@ -101,7 +93,7 @@ namespace Noxico
 				vistaSaves = new UIToggle(i18n.GetString("opt_vistasaves"))
 				{
 					Left = 29,
-					Top = 7,
+					Top = 5,
 					Checked = IniFile.GetValue("misc", "vistasaves", true),
 					Enabled = Vista.IsVista,
 					Background = Color.Transparent,
@@ -110,7 +102,7 @@ namespace Noxico
 				xInput = new UIToggle(i18n.GetString("opt_xinput"))
 				{
 					Left = 29,
-					Top = 9,
+					Top = 7,
 					Checked = IniFile.GetValue("misc", "xinput", true),
 					Enabled = Vista.IsVista,
 					Background = Color.Transparent,
@@ -119,8 +111,16 @@ namespace Noxico
 				imperial = new UIToggle(i18n.GetString("opt_imperial"))
 				{
 					Left = 29,
-					Top = 11,
+					Top = 9,
 					Checked = IniFile.GetValue("misc", "imperial", false),
+					Background = Color.Transparent,
+				};
+
+				fourThirtySeven = new UIToggle(i18n.GetString("opt_437"))
+				{
+					Left = 29,
+					Top = 11,
+					Checked = IniFile.GetValue("misc", "437", false),
 					Background = Color.Transparent,
 				};
 
@@ -170,11 +170,11 @@ namespace Noxico
 							i = 200;
 						IniFile.SetValue("misc", "speed", i);
 						IniFile.SetValue("misc", "font", font.Text);
-						IniFile.SetValue("misc", "skipintro", skipIntro.Checked);
 						IniFile.SetValue("misc", "rememberpause", rememberPause.Checked);
 						IniFile.SetValue("misc", "vistasaves", vistaSaves.Checked);
 						IniFile.SetValue("misc", "xinput", xInput.Checked);
 						IniFile.SetValue("misc", "imperial", imperial.Checked);
+						IniFile.SetValue("misc", "437", fourThirtySeven.Checked);
 						Vista.GamepadEnabled = xInput.Checked;
 
 						IniFile.SetValue("misc", "imperial", imperial.Checked);
@@ -229,11 +229,11 @@ namespace Noxico
 				UIManager.Elements.Add(fontLabel);
 				UIManager.Elements.Add(font);
 				UIManager.Elements.Add(miscWindow);
-				UIManager.Elements.Add(skipIntro);
 				UIManager.Elements.Add(rememberPause);
 				UIManager.Elements.Add(vistaSaves);
 				UIManager.Elements.Add(xInput);
 				UIManager.Elements.Add(imperial);
+				UIManager.Elements.Add(fourThirtySeven);
 				UIManager.Elements.Add(audioWindow);
 				UIManager.Elements.Add(enableAudio);
 				UIManager.Elements.Add(musicVolumeLabel);
