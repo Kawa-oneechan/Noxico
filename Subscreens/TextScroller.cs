@@ -42,14 +42,11 @@ namespace Noxico
 			{
 				if (text.Length > 24)
 				{
-					//TODO: Fix scrollbar, use better math. Perhaps the SCI Setup/Install code can help?
-					/*
 					for (int i = 2; i < 22; i++)
-						host.SetCell(i, 74, (char)0x0ba, UIColors.Unfocused, UIColors.SelectedBackUnfocused, true);
-					float pct = (float)(scroll - 1) / (float)((text.Length - 23 < 0) ? 1 : text.Length - 23);
-					int tp = (int)(pct * 18) + 2;
-					host.SetCell(tp, 74, (char)0x1f2, Color.Black, Color.Silver, true);
-					*/
+						host.SetCell(i, 76, (char)0x0B3, UIColors.Unfocused, UIColors.WindowBackground, true);
+					//TODO: needs more checking with different amounts of text.
+					var thumb = (int)(((float)scroll / (float)(text.Length - 1)) * 22);
+					host.SetCell(thumb + 2, 76, (char)0x1F2, UIColors.RegularText, UIColors.WindowBackground, true);
 				}
 				Subscreens.Redraw = false;
 			}
