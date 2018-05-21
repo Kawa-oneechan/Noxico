@@ -76,6 +76,9 @@ namespace Noxico
 				"P|alga|algæ",
 				"S|kunai|kunai",
 				"P|kunai of the dawn|kunai of the dawn",
+				"p|Kawa|Kawa's",
+				"p|it|its",
+				"p|Sassafrass|Sassafrass'",
 			};
 			foreach (var test in sanityCheck.Select(t => t.Split('|')))
 			{
@@ -88,6 +91,8 @@ namespace Noxico
 					result = Singularize(checkFrom);
 				else if (test[0] == "A")
 					result = GetArticle(checkFrom);
+				else if (test[0] == "p")
+					result = Possessive(checkFrom);
 				if (result != checkTo)
 					throw new Exception(string.Format("Sanity check on pluralizer failed. Expected \"{0}\" but got \"{1}\".", checkTo, result));
 			}
@@ -158,6 +163,27 @@ namespace Noxico
 			if (words.ContainsKey(plural))
 				plural = words[plural];
 			var result = Lua.Environment.Singularize(plural);
+			return result.ToString();
+		}
+
+		/// <summary>
+		/// From Nethack. Returns the ordinal suffix for the given number -- insert 4, get "th" as in "4th".
+		/// </summary>
+		public static string Ordinal(this int number)
+		{
+			//TODO: Luafy
+			var i = number;
+			var dd = i % 10;
+			return i.ToString() + ((dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd");
+		}
+		public static string Ordinal(this float number)
+		{
+			return ((int)Math.Floor(number)).Ordinal();
+		}
+
+		public static string Possessive(this string subject)
+		{
+			var result = Lua.Environment.Possessive(subject);
 			return result.ToString();
 		}
 

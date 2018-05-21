@@ -1,0 +1,12 @@
+variant: Hand
+	offset: 0x200
+	hasLowercase
+variant: Carve
+	offset: 0x234
+variant: Daedric
+	offset: 0x24E
+variant: Alternian
+	offset: 0x268
+variant: Felin
+	offset: 0x282
+	hasLowercase
