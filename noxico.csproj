@@ -127,6 +127,7 @@
     <Content Include="mix\missions\chelsie\lairhouse.txt" />
     <Content Include="mix\missions\consentaclepit\uniques.tml.patch" />
     <None Include="mix\defense.lua" />
+    <None Include="mix\fonts\variants.tml" />
     <None Include="mix\i18n.lua" />
     <None Include="mix\missions\consentaclepit\dialogue.tml.patch" />
     <None Include="mix\missions\consentaclepit\mission.lua" />
