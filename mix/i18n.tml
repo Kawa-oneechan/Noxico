@@ -608,6 +608,14 @@ Equipment
 	morphpart_tail_: [views] tail becomes -like
 	morphpart_gettail_: [views] tail becomes -like
 	morphpart_tail_lose: [views] tail disappears
+-- Wing changes
+	morphpart_getsmallwings: [view] grow{s} a pair of small {0} wings
+	morphpart_getwings: [view] grow{s} a pair of {0} wings
+	morphpart_losewings: [view] lose{s} [his] wings
+	morphpart_shrinkwings: [views] wings shrink
+	morphpart_growwings: [views] wings grow larger
+-- see tail
+	morphpart_wings_: [views] wings become -like
 -- Pussy changes
 	morphpart_grow_pussy: [view] grow{s} a {0} [?:pussy]
 	morphpart_pussy_split: [views] [?:pussy] splits in two
