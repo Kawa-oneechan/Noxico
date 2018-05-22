@@ -301,7 +301,6 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: i18n this.
 			#region Wings
 			{
 				var wingsNow = this.GetToken("wings");
@@ -320,10 +319,10 @@ namespace Noxico
 					if (wingsThen.HasToken("small"))
 					{
 						change.AddToken("_addto/wings", "small");
-						change.AddToken("$", "[view] grow{s} a pair of small " + wingsThen.Text + " wings");
+						change.AddToken("$", i18n.Format("morphpart_getsmallwings", wingsThen.Text));
 					}
 					else
-						change.AddToken("$", "[view] grow{s} a pair of " + wingsThen.Text + " wings");
+						change.AddToken("$", i18n.Format("morphpart_getwings", wingsThen.Text));
 					possibleChanges.Add(change);
 				}
 				else if (wingsNow != null && wingsThen == null)
@@ -331,13 +330,13 @@ namespace Noxico
 					if (wingsNow.HasToken("small"))
 					{
 						var change = new Token("_remove", "wings");
-						change.AddToken("$", "[view] lose{s} [his] wings");
+						change.AddToken("$", i18n.GetString("morphpart_losewings"));
 						possibleChanges.Add(change);
 					}
 					else
 					{
 						var change = new Token("_addto/wings", "small");
-						change.AddToken("$", "[views] wings shrink");
+						change.AddToken("$", i18n.GetString("morphpart_shrinkwings"));
 						possibleChanges.Add(change);
 					}
 				}
@@ -346,19 +345,19 @@ namespace Noxico
 					if (wingsNow.Text != wingsThen.Text)
 					{
 						var change = new Token("wings", wingsThen.Text);
-						change.AddToken("$", "[views] wings become " + wingsThen.Text + "-like");
+						change.AddToken("$", i18n.GetString("morphpart_gettail_" + wingsThen.Text));
 						possibleChanges.Add(change);
 					}
 					else if (wingsNow.HasToken("small") && !wingsThen.HasToken("small"))
 					{
 						var change = new Token("_remove", "wings/small");
-						change.AddToken("$", "[views] wings grow larger");
+						change.AddToken("$", i18n.GetString("morphpart_growwings"));
 						possibleChanges.Add(change);
 					}
 					else if (!wingsNow.HasToken("small") && wingsThen.HasToken("small"))
 					{
 						var change = new Token("_addto/wings", "small");
-						change.AddToken("$", "[views] wings shrink");
+						change.AddToken("$", i18n.GetString("morphpart_shrinkwings"));
 						possibleChanges.Add(change);
 					}
 				}
@@ -476,7 +475,6 @@ namespace Noxico
 
 			//TODO: Vaginas
 
-			//TODO: Rewrite this to simplify into a single penis token, assuming a dualcock has two identical ones.
 			#region Penis
 			//if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
 			if (targetGender == Noxico.Gender.Male || targetGender == Noxico.Gender.Herm)

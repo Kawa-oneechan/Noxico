@@ -153,6 +153,15 @@ function Possessive(subject)
 	return subject .. "'s"
 end
 
+function Ordinal(number)
+	local i = tonumber(number)
+	local dd = i % 10
+	if (dd == 0) or (dd > 3) or ((i % 100) / 10 == 1) then return i .. "th" end
+	if (dd == 1) then return i .. "st" end
+	if (dd == 2) then return i .. "nd" end
+	return i .. "rd"
+end
+
 -- NOTICE THIS: Lists and arrays passed from .Net are ZERO-INDEXED.
 RegisterVPTags(
 {

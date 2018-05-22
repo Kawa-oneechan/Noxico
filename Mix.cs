@@ -21,6 +21,7 @@ namespace Noxico
 		private static Dictionary<string, MixFileEntry> fileList;
 
 		private static Dictionary<string, string> stringCache;
+		private static Dictionary<string, Bitmap> bitmapCache;
 
 		/// <summary>
 		/// Populates the Mix database for usage
@@ -31,6 +32,7 @@ namespace Noxico
 			Program.WriteLine("Mix.Initialize()");
 			fileList = new Dictionary<string, MixFileEntry>();
 			stringCache = new Dictionary<string, string>();
+			bitmapCache = new Dictionary<string, Bitmap>();
 			var mixfiles = new List<string>() { mainFile + ".nox" };
 			mixfiles.AddRange(Directory.EnumerateFiles(".", "*.nox").Select(x => x.Substring(2)).Where(x => !x.Equals(mainFile + ".nox", StringComparison.OrdinalIgnoreCase)));
 			Program.WriteLine("Mixfiles enumerated. Indexing contents...");
@@ -172,16 +174,20 @@ namespace Noxico
 		/// </summary>
 		/// <param name="fileName">The file to find.</param>
 		/// <returns>Returns a <see cref="Bitmap"/> with the file's contents if found, null otherwise.</returns>
-		//TODO: cache the returns.
-		public static Bitmap GetBitmap(string fileName)
+		public static Bitmap GetBitmap(string fileName, bool cache = true)
 		{
+			if (cache && bitmapCache.ContainsKey(fileName))
+				return bitmapCache[fileName];
 			Program.WriteLine("Mix.GetBitmap({0})", fileName);
 			if (File.Exists(Path.Combine("data", fileName)))
 				return new Bitmap(Path.Combine("data", fileName));
 			var raw = GetBytes(fileName);
 			using (var str = new MemoryStream(raw))
 			{
-				return (Bitmap)Bitmap.FromStream(str);
+				var ret = (Bitmap)Bitmap.FromStream(str);
+				if (cache)
+					bitmapCache[fileName] = ret;
+				return ret;
 			}
 		}
 

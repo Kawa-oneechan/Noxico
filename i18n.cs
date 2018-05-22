@@ -171,10 +171,8 @@ namespace Noxico
 		/// </summary>
 		public static string Ordinal(this int number)
 		{
-			//TODO: Luafy
-			var i = number;
-			var dd = i % 10;
-			return i.ToString() + ((dd == 0 || dd > 3 || (i % 100) / 10 == 1) ? "th" : (dd == 1) ? "st" : (dd == 2) ? "nd" : "rd");
+			var result = Lua.Environment.Ordinal(number);
+			return result.ToString();
 		}
 		public static string Ordinal(this float number)
 		{
