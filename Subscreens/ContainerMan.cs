@@ -90,8 +90,7 @@ namespace Noxico
 				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
 				containerList = new UIList(string.Empty, null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(containerWindow);
-				//TODO: i18n
-				var emptyMessage = mode == ContainerMode.Vendor ? vendorChar.Name.ToString() + " has nothing." : mode == ContainerMode.Corpse ? "Nothing left to loot." : "It's empty.";
+				var emptyMessage = mode == ContainerMode.Vendor ? i18n.Format("inventory_x_hasnothing", vendorChar.Name.ToString()) : mode == ContainerMode.Corpse ? i18n.GetString("inventory_nothingleft") : i18n.GetString("inventory_empty");
 				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = 36, Height = 1 });
 				UIManager.Elements.Add(containerList);
 

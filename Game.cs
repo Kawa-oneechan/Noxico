@@ -1287,13 +1287,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 		public static string RollWorldName()
 		{
-			//TODO: Luafy
-			var x = Mix.GetString("Homestuck.txt").Split(new[] { '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			var a = x.PickOne();
-			var b = x.PickOne();
-			while (b == a)
-				b = x.PickOne();
-			return "Land of " + a + " and " + b;
+			var result = Lua.Environment.GetWorldName();
+			return result.ToString();
 		}
 
 		public void ApplyRandomPotionsAndRings()

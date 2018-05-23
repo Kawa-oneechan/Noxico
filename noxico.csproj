@@ -129,6 +129,7 @@
     <None Include="mix\defense.lua" />
     <None Include="mix\fonts\variants.tml" />
     <None Include="mix\i18n.lua" />
+    <None Include="mix\init.lua" />
     <None Include="mix\missions\consentaclepit\dialogue.tml.patch" />
     <None Include="mix\missions\consentaclepit\mission.lua" />
     <None Include="mix\missions\introdream\dialogue.tml.patch.inprogress" />
