@@ -252,7 +252,7 @@ namespace Noxico
 		{
 			if (earToken == null)
 				return "glitch";
-			return GetPartDescription("ears/" + earToken.Text, "indescribable", "unusual");
+			return GetPartDescription("ears/" + earToken.Text, i18n.GetArray("unusual"));
 		}
 
 		/// <summary>
@@ -264,7 +264,7 @@ namespace Noxico
 		{
 			if (faceToken == null)
 				return "glitch";
-			return GetPartDescription("face/" + faceToken.Text, "indescribable", "strange");
+			return GetPartDescription("face/" + faceToken.Text, i18n.GetArray("unusual_odd"));
 		}
 
 		/// <summary>
@@ -321,7 +321,7 @@ namespace Noxico
 		{
 			if (teethToken == null)
 				return "glitch";
-			return GetPartDescription("teeth/" + teethToken.Text, "indescribable", "unusual");
+			return GetPartDescription("teeth/" + teethToken.Text, i18n.GetArray("unusual"));
 		}
 
 		/// <summary>
@@ -333,9 +333,13 @@ namespace Noxico
 		{
 			if (tongueToken == null)
 				return "glitch";
-			return GetPartDescription("tongue/" + tongueToken.Text, "indescribable", "unusual");
+			return GetPartDescription("tongue/" + tongueToken.Text, i18n.GetArray("unusual"));
 		}
 
+		public static string HairMaterial(string skinType)
+		{
+			return GetPartDescription("skintohair/" + skinType, new string[] { null });
+		}
 		#endregion
 
 		#region Upperbody descriptions
@@ -371,7 +375,7 @@ namespace Noxico
 		{
 			if (wingToken == null)
 				return "glitch";
-			return GetPartDescription("wings/" + wingToken.Text, "indescribable", "unusual");
+			return GetPartDescription("wings/" + wingToken.Text, i18n.GetArray("unusual"));
 		}
 
 		#endregion
@@ -387,7 +391,7 @@ namespace Noxico
 		{
 			if (cockToken == null)
 				return "glitch";
-			return GetPartDescription("penis/" + cockToken.Text, "indescribable", "unusual", "oddly shaped");
+			return GetPartDescription("penis/" + cockToken.Text, i18n.GetArray("unusual_odd"));
 		}
 
 		/// <summary>
@@ -447,7 +451,7 @@ namespace Noxico
 		{
 			if (tailToken == null)
 				return "glitch";
-			return GetPartDescription("tail", tailToken.Text, "indescribable", "unusual");
+			return GetPartDescription("tail", i18n.GetArray("unusual"));
 		}
 
 		#endregion

@@ -430,17 +430,22 @@ namespace Noxico
 					if (this.HasToken("oldhips"))
 						this.GetToken("oldhips").Name = "hips";
 					else
-						//TODO: Make this add reasonably-sized hips.
-						//KAWA SEZ: I have nothing to say about this at this time.
-						throw new NotImplementedException();
+					{
+						if (this.HasToken("waist"))
+							this.AddToken("hips", this.GetToken("waist").Value);
+						else
+							this.AddToken("hips", 4); //chosen by fair dice roll
+					}
 				}
 				if (!this.HasToken("waist"))
 				{
 					if (this.HasToken("oldwaist"))
 						this.GetToken("oldwaist").Name = "waist";
 					else
-						//TODO: see above.
-						throw new NotImplementedException();
+						if (this.HasToken("hips"))
+							this.AddToken("waist", this.GetToken("hips").Value);
+						else
+							this.AddToken("waist", 4); //guaranteed to be random
 				}
 			}
 			else
@@ -1295,16 +1300,14 @@ namespace Noxico
 			{
 				var hair = this.GetToken("hair");
 				hairThings.Add(Descriptions.HairLength(hair));
-				if (this.Path("skin/type").Text != "slime")
+				var skinType = this.Path("skin/type").Text;
+				if (skinType != "slime")
 					hairThings.Add(Descriptions.HairColor(hair));
 				if (this.Path("hair/style") != null)
 					hairThings.Add(Descriptions.HairStyle(hair));
-				if (this.Path("skin/type").Text == "slime")
-					hairThings.Add("goopy");
-				if (this.Path("skin/type").Text == "rubber")
-					hairThings.Add("rubbery");
-				if (this.Path("skin/type").Text == "metal")
-					hairThings.Add("cord-like");
+				var hairMaterial = Descriptions.HairMaterial(skinType);
+				if (hairMaterial != null)
+					hairThings.Add(hairMaterial);
 			}
 
 			if (this.HasToken("monoceros"))

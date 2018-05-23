@@ -378,6 +378,8 @@ Would you like an infodump on the way out?
 -- #endregion
 -- #endregion
 -- #region Look At...
+	unusual: indescribable, unusual
+	unusual_odd: indescribable, unusual, oddly-shaped
 	color_eyes: {0} {1}
 	glowing_x: glowing {0}
 	x_ears: {0} ears
