@@ -287,6 +287,8 @@ This book, we're sorry to say, has a broken reference.
 	corpse_description: These are the remains of {0}, who {1}.
 	corpse_xed_by_y: {0} by {1}
 	generic_description: Nothing special about it.
+	freebed: This is a free bed. Position yourself over it and press &#xE205; to use it.
+	someonesbed: This is {0}'s bed. Position yourself over it and press &#xE205; to use it.
 	gameover_title: GAME OVER
 	youdied
 	<[[
@@ -343,6 +345,9 @@ Would you like an infodump on the way out?
 	inventory_cursed_singular: You can't unequip {0}; it is cursed.
 	inventory_cursed_plural: You can't unequip {0}; they are cursed.
 	inventory_identify_as_x: You've identified this as {0}.
+	inventory_x_hasnothing: {0} has nothing.
+	inventory_nothingleft: Nothing left to loot.
+	inventory_empty: It's empty.
 -- #region Sigils
 	sigil_weapon: weapon
 	sigil_fullmask: full mask
