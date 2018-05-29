@@ -40,28 +40,9 @@ namespace Noxico
 			}
 			if (Subscreens.Redraw)
 			{
-				if (text.Length > 22)
-				{
-					for (int i = 2; i < 22; i++)
-						host.SetCell(i, 76, (char)0x0B3, UIColors.Unfocused, UIColors.WindowBackground, true);
-
-					float contentSize = text.Length - 1, windowSize = 20, trackSize = 20;
-					float windowContentRatio = windowSize / contentSize;
-					float minimalGripSize = 1;
-					float maximumGripSize = trackSize;
-					float gripSize = trackSize * windowContentRatio;
-					if (gripSize < minimalGripSize) gripSize = minimalGripSize;
-					if (gripSize > maximumGripSize) gripSize = maximumGripSize;
-					float windowScrollAreaSize = contentSize - trackSize;
-					float windowPosition = scroll;
-					float windowPositionRatio = windowPosition / windowScrollAreaSize;
-					float trackScrollAreaSize = trackSize - gripSize;
-					float gripPositionOnTrack = trackScrollAreaSize * windowPositionRatio;
-
-					//host.SetCell((int)gripPositionOnTrack + 2, 76, (char)0x1F2, UIColors.RegularText, UIColors.WindowBackground, true);
-					for (int i = 0; i < (int)gripSize; i++)
-						host.SetCell((int)gripPositionOnTrack + 2 + i, 76, (char)0xB1, UIColors.RegularText, UIColors.WindowBackground, true);
-				}
+				host.Write(string.Format("scroll {0}, length {1}", scroll, text.Length), Color.White, Color.Black, 0, 0);
+				NoxicoGame.HostForm.SetCell(2, 76, (scroll > 1) ? '\x1E' : '\xBA', (scroll > 1) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
+				NoxicoGame.HostForm.SetCell(21, 76, (scroll + 21 < text.Length) ? '\x1F' : '\xBA', (scroll + 21 < text.Length) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
 				Subscreens.Redraw = false;
 			}
 
