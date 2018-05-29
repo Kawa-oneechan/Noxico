@@ -242,7 +242,6 @@
     <Content Include="mix\missions\portal\platform2.png" />
     <Content Include="mix\missions\urta\manifest.txt" />
     <Content Include="mix\noxico.ini" />
-    <Content Include="mix\Homestuck.txt" />
     <Content Include="mix\knowncolors.tml" />
     <Content Include="mix\makecave.png" />
     <Content Include="mix\makedemonrealm.png" />

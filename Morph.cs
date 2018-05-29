@@ -843,12 +843,12 @@ namespace Noxico
 							if (this.HasToken(snakeSlime))
 							{
 								var change = new Token("_remove", snakeSlime);
-								change.AddToken("$", i18n.Format("morph_lose_x_and_gain_y_legs", i18n.GetString("morph_lose" + snakeSlime)));
-								change.AddToken("_add", "legs");
+								var newLegs = "human";
 								if (closestBodyplan.HasToken("legs"))
-									change.AddToken("legs", closestBodyplan.GetToken("legs").Text);
-								else
-									change.AddToken("legs", "human");
+									newLegs = closestBodyplan.GetToken("legs").Text;
+								change.AddToken("$", i18n.Format("morph_lose_x_and_gain_y_legs", i18n.GetString("morph_lose" + snakeSlime), newLegs));
+								change.AddToken("_add", "legs");
+								change.AddToken("legs", newLegs);
 								possibleChanges.Add(change);
 								return possibleChanges;
 							}
