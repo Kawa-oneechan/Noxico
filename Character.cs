@@ -1910,7 +1910,9 @@ Tokens:
 			if (StatNames == null) GetValidStatNames();
 			stat = stat.ToLowerInvariant();
 			if (!StatNames.Contains(stat))
-				return 0f;
+				return 1f;
+			if (!HasToken(stat))
+				return 1f;
 			var bonus = stat + "bonus";
 			if (!HasToken(bonus))
 				RecalculateStatBonuses();
@@ -1921,7 +1923,7 @@ Tokens:
 		{
 			if (StatNames == null) GetValidStatNames();
 			if (stat < 0 || stat >= StatNames.Length)
-				return 0f;
+				return 1f;
 			return GetStat(StatNames[stat]);
 		}
 
@@ -1931,6 +1933,8 @@ Tokens:
 			stat = stat.ToLowerInvariant();
 			if (!StatNames.Contains(stat))
 				return;
+			if (!HasToken(stat))
+				AddToken(stat);
 			GetToken(stat).Value = value;
 		}
 

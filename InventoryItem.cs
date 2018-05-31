@@ -87,7 +87,7 @@ namespace Noxico
 			}
 			if (isIdentified)
 				return string.Format("{0} {1}", the ? Definite : Indefinite, name).Trim();
-			return string.Format("{0} {1}", the ? Definite : (Toolkit.StartsWithVowel(UnknownName) ? "an" : "a"), name).Trim();
+			return string.Format("{0} {1}", the ? Definite : i18n.GetArticle(UnknownName), name).Trim();
 		}
 
 		//Added for Jint's sake.
@@ -712,7 +712,7 @@ namespace Noxico
 				{
 					NoxicoGame.Identifications.Add(this.ID);
 					if (running != null)
-						running(i18n.Format("inventory_identified_as_x", this.ToString(item, true)));
+						running(i18n.Format("inventory_identify_as_x", this.ToString(item, true)));
 				}
 			});
 			//var ret = env.DoChunk(script, "lol.lua");
