@@ -1,6 +1,0 @@
-Demon Portal
-Kawa
-fission.lua
-uniques.tml.patch
-platform1.png
-platform2.png

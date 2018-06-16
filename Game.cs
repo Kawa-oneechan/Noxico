@@ -351,7 +351,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			TextScroller.Plain(testChar.LookAt(null), testChar.GetKnownName(), false, true);
 			return;
 			*/
-
+			
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
@@ -1111,10 +1111,11 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			});
 			//Board.DrawEnv = env;
 
-			var missionDirs = Mix.GetFilesInPath("missions");
-			foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
+			//var missionDirs = Mix.GetFilesInPath("missions");
+			//foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
+			foreach (var missionFile in Mix.GetFilesWithPattern("mission-*.lua"))
 			{
-				var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				/* var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				var path = Path.GetDirectoryName(missionDir);
 				var okay = true;
 				for (var i = 2; i < manifest.Length; i++)
@@ -1131,7 +1132,9 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				if (!Mix.FileExists(luaFile))
 					continue;
 				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				Lua.RunFile(luaFile, env);
+				Lua.RunFile(luaFile, env); */
+				Program.WriteLine("Applying \"{0}\"...", missionFile);
+				Lua.RunFile(missionFile.Substring(missionFile.LastIndexOf('\\') + 1), env);
 			}
 		}
 

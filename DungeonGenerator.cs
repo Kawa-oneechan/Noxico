@@ -242,7 +242,6 @@ namespace Noxico
 						continue;
 
 					//Later on, we might be able to wiggle them out of their assigned plot a bit.
-					//TODO: determine baseID from the first inhabitant's name.
 					var newBuilding = new Building(string.Format("house{0}x{1}", row, col), newTemplate, sX, sY, Culture);
 					plots[col, row] = newBuilding;
 					//justPlaced = true;

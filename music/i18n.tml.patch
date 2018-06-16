@@ -1,0 +1,17 @@
+add: words/-
+	fmod_genericerror: An error occurred in FMOD that's not further explained. The error code is "{0}".
+	fmod_error: An error occurred in FMOD: {0}
+	fmod_ok: Nothing happened! Everything supposedly went right, but you got this message anyway. Contact Kawa.
+	fmod_badcommand: Tried to call a function on a data type that doesn't allow that type of functionality. For example, calling Sound::lock on a streaming sound.
+	fmod_channelalloc: Error trying to allocate a channel.
+	fmod_channelstolen: The specified channel has been reused to play another sound.
+	fmod_filebad: Error loading file.
+	fmod_fileeof: End of file unexpectedly reached while trying to read essential data.
+	fmod_fileendofdata: End of current chunk reached while trying to read data.
+	fmod_filenotfound: File not found.
+	fmod_unknownformat: Unsupported file or audio format.
+	fmod_initialization: FMOD was not initialized correctly to support this function.
+	fmod_notenoughmemory: Not enough memory or resources.
+	fmod_notready: Operation could not be performed because specified sound is not ready.
+	fmod_outputallocated: Error initializing output device, but more specifically, the output device is already in use and cannot be reused.
+	fmod_outputinit: Error initializing output device.

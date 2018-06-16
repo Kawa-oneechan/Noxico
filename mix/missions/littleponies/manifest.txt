@@ -1,8 +1,0 @@
-Pony Must Pony Pony
-Kawa
-mission.lua
-buildings.tml.patch
-loot.tml.patch
-culture.tml.patch
-bodyplans.tml.patch
-uniques.tml.patch

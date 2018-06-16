@@ -269,7 +269,6 @@ namespace Noxico
 			}
 			text = newText.ToString();
 			text = text.Replace("\u00AD\u00AD", "\u00AD");
-			//todo: remove shys from tags
 			text = Regex.Replace(text, "<(?:[\\w^­]+)(\u00AD)(?:[\\w^­]+)>", (m => m.Captures[0].Value.Replace("\u00AD", string.Empty)));
 			#endregion
 

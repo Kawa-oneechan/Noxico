@@ -70,6 +70,8 @@ namespace Noxico
 						mStream.BaseStream.Seek(compressedSize, SeekOrigin.Current);
 						if (filename.EndsWith("\\"))
 							continue;
+						if (filename.Contains("missions"))
+							continue;
 						var entry = new MixFileEntry()
 						{
 							Offset = offset,
@@ -78,8 +80,28 @@ namespace Noxico
 							Filename = filename,
 							MixFile = mixfile,
 						};
+						if (filename.EndsWith(".patch"))
+							filename = mixfile.GetHashCode() + filename;
 						fileList[filename] = entry;
 					}
+				}
+			}
+			foreach (var dataDir in Directory.EnumerateDirectories("mods"))
+			{
+				foreach (var dataFile in Directory.EnumerateFiles(dataDir))
+				{
+					var baseName = dataFile.Remove(0, dataDir.Length + 1);
+					var entry = new MixFileEntry()
+					{
+						Offset = -1,
+						Length = -1,
+						IsCompressed = false,
+						Filename = dataFile,
+						MixFile = null,
+					};
+					if (baseName.EndsWith(".patch"))
+						baseName = dataFile;
+					fileList[baseName] = entry;
 				}
 			}
 		}
@@ -91,8 +113,8 @@ namespace Noxico
 		/// <returns>True if the file exists.</returns>
 		public static bool FileExists(string fileName)
 		{
-			if (File.Exists(Path.Combine("data", fileName)))
-				return true;
+			//if (File.Exists(Path.Combine("data", fileName)))
+			//	return true;
 			return (fileList.ContainsKey(fileName));
 		}
 
@@ -104,12 +126,14 @@ namespace Noxico
 		public static Stream GetStream(string fileName)
 		{
 			Program.WriteLine("Mix.GetStream({0})", fileName);
-			if (File.Exists(Path.Combine("data", fileName)))
-				return new MemoryStream(File.ReadAllBytes(Path.Combine("data", fileName)));
+			//if (File.Exists(Path.Combine("data", fileName)))
+			//	return new MemoryStream(File.ReadAllBytes(Path.Combine("data", fileName)));
 			if (!fileList.ContainsKey(fileName))
 				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			MemoryStream ret;
 			var entry = fileList[fileName];
+			if (entry.MixFile == null)
+				return new MemoryStream(File.ReadAllBytes(entry.Filename));
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 			{
 				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
@@ -129,8 +153,8 @@ namespace Noxico
 			if (cache && stringCache.ContainsKey(fileName))
 				return stringCache[fileName];
 			Program.WriteLine("Mix.GetString({0})", fileName);
-			if (File.Exists(Path.Combine("data", fileName)))
-				return File.ReadAllText(Path.Combine("data", fileName));
+			//if (File.Exists(Path.Combine("data", fileName)))
+			//	return File.ReadAllText(Path.Combine("data", fileName));
 			if (!fileList.ContainsKey(fileName))
 				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			var bytes = GetBytes(fileName);
@@ -152,11 +176,11 @@ namespace Noxico
 			var carrier = new TokenCarrier();
 			carrier.Tokenize(tml);
 			var patches = fileList.Keys.Where(e => e.EndsWith(fileName + ".patch")).ToList();
-			if (Directory.Exists("data"))
+			/* if (Directory.Exists("data"))
 			{
 				var externals = Directory.GetFiles("data", "*.tml.patch", SearchOption.AllDirectories).Select(e => e.Substring(5)).Where(e => e.EndsWith(fileName + ".patch"));
 				patches.AddRange(externals);
-			}
+			} */
 			if (patches.Count > 0)
 			{
 				Program.WriteLine("{0} has patches!", fileName);
@@ -179,8 +203,8 @@ namespace Noxico
 			if (cache && bitmapCache.ContainsKey(fileName))
 				return bitmapCache[fileName];
 			Program.WriteLine("Mix.GetBitmap({0})", fileName);
-			if (File.Exists(Path.Combine("data", fileName)))
-				return new Bitmap(Path.Combine("data", fileName));
+			//if (File.Exists(Path.Combine("data", fileName)))
+			//	return new Bitmap(Path.Combine("data", fileName));
 			var raw = GetBytes(fileName);
 			using (var str = new MemoryStream(raw))
 			{
@@ -199,12 +223,14 @@ namespace Noxico
 		public static byte[] GetBytes(string fileName)
 		{
 			Program.WriteLine("Mix.GetBytes({0})", fileName);
-			if (File.Exists(Path.Combine("data", fileName)))
-				return File.ReadAllBytes(Path.Combine("data", fileName));
+			//if (File.Exists(Path.Combine("data", fileName)))
+			//	return File.ReadAllBytes(Path.Combine("data", fileName));
 			if (!fileList.ContainsKey(fileName))
 				throw new FileNotFoundException("File " + fileName + " was not found in the MIX files.");
 			byte[] ret;
 			var entry = fileList[fileName];
+			if (entry.MixFile == null)
+				return File.ReadAllBytes(entry.Filename);
 			using (var mStream = new BinaryReader(File.Open(entry.MixFile, FileMode.Open)))
 			{
 				mStream.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
@@ -242,11 +268,11 @@ namespace Noxico
 			var ret = new List<string>();
 			foreach (var entry in fileList.Values.Where(x => x.Filename.StartsWith(path)))
 				ret.Add(entry.Filename);
-			if (Directory.Exists(Path.Combine("data", path)))
+			/* if (Directory.Exists(Path.Combine("data", path)))
 			{
 				var getFiles = Directory.GetFiles(Path.Combine("data", path), "*", SearchOption.AllDirectories);
 				ret.AddRange(getFiles.Select(x => x.Substring("data\\".Length)).Where(x => !ret.Contains(x)));
-			}
+			} */
 			return ret.ToArray();
 		}
 		
@@ -269,7 +295,7 @@ namespace Noxico
 			var regex = new System.Text.RegularExpressions.Regex(pattern.Replace("*", "(.*)").Replace("\\", "\\\\"));
 			foreach (var entry in fileList.Values.Where(x => regex.IsMatch(x.Filename)))
 				ret.Add(entry.Filename);
-			if (Directory.Exists("data"))
+			/* if (Directory.Exists("data"))
 			{
 				if (pattern.Contains('\\'))
 				{
@@ -278,7 +304,7 @@ namespace Noxico
 				}
 				var getFiles = Directory.GetFiles("data", pattern, SearchOption.AllDirectories);
 				ret.AddRange(getFiles.Select(f => f.Substring(5)).Where(f => !ret.Contains(f)));
-			}
+			} */
 			return ret.ToArray();
 		}
 

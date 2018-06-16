@@ -375,7 +375,6 @@ namespace Noxico
 			if (!entity.Character.HasToken("sectorlock"))
 				entity.Character.AddToken("sectorlock");
 			entity.Character.RemoveToken("sectoravoid");
-			//TODO: set the sector somehow.
 
 			if (task.timer != -1)
 			{

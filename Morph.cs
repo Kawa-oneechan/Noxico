@@ -1018,7 +1018,6 @@ namespace Noxico
 			if (GetToken("perks").HasToken("formlock"))
 				return new List<string>() { i18n.GetString("formlock").Viewpoint(this) };
 
-			//TODO: use Morph Deltas, like GetTargetedMorphDeltas returns.
 			var randomize = false;
 			if (mutation == Mutations.Random)
 				randomize = true;
