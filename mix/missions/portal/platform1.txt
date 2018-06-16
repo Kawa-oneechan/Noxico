@@ -1,3 +1,0 @@
-﻿FFFFFF	stoneWall
-808080	stoneFloor
-404040	vague

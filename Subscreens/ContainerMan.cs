@@ -278,7 +278,7 @@ namespace Noxico
 						}
 					};
 				}
-				//TODO: same with this check.
+				//FIXME: same with this check.
 				if (playerList != null)
 				{
 					//We do basically the same thing as above in reverse.

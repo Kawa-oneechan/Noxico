@@ -158,7 +158,6 @@ namespace Noxico
 			return true;
 		}
 
-		//TODO: rewrite to use Lua, like sex.tml's
 		private static bool FiltersOkay(Token filter)
 		{
 			if (filter.Name == "debug")
