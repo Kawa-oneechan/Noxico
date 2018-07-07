@@ -246,6 +246,17 @@ namespace Noxico
 			Program.WriteLine("----------------");
 #endif
 
+			Program.WriteLine("Loading special powers...");
+			Character.Powers = new Dictionary<string, List<string>>();
+			var powers = Mix.GetTokenTree("powers.tml");
+			foreach (var power in new[] { "fullCopy", "sexCopy", "hover" })
+			{
+				Character.Powers[power] = new List<string>();
+				var powerToken = powers.FirstOrDefault(t => t.Name == power);
+				if (powerToken == null)
+					continue;
+				Character.Powers[power].AddRange(powerToken.Tokens.Select(t => t.Name));
+			}
 
 			Program.WriteLine("Loading items...");
 			Identifications = new List<string>();

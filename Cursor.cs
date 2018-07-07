@@ -304,7 +304,8 @@ namespace Noxico
 
 						if (canSee && !boardChar.Character.HasToken("beast") && player.Character.HasToken("copier") && player.Character.Path("copier/timeout") == null)
 						{
-							if (player.Character.UpdateCopier())
+							//if (player.Character.UpdateCopier())
+							if (player.Character.HasToken("fullCopy") || player.Character.HasToken("sexCopy"))
 								options["copy"] = i18n.Format("action_copyhim", boardChar.Character.HimHerIt(true));
 						}
 
@@ -396,14 +397,14 @@ namespace Noxico
 									player.Character.Copy(((BoardChar)PointingAt).Character);
 									player.AdjustView();
 									//NoxicoGame.AddMessage(i18n.Format((player.Character.Path("copier/full") == null) ? "youimitate_x" : "become_x", ((BoardChar)PointingAt).Character.GetKnownName(false, false, true)));
-									NoxicoGame.AddMessage(i18n.Format(player.Character.Path("copier/full") != null ? "x_becomes_y" : "x_imitates_y").Viewpoint(player.Character, ((BoardChar)PointingAt).Character));
+									NoxicoGame.AddMessage(i18n.Format(player.Character.HasToken("fullCopy") ? "x_becomes_y" : "x_imitates_y").Viewpoint(player.Character, ((BoardChar)PointingAt).Character));
 									player.Energy -= 2000;
 									break;
 
 								case "revert":
 									player.Character.Copy(null);
 									player.AdjustView();
-									NoxicoGame.AddMessage(i18n.GetString((player.Character.Path("copier/full") == null) ? "youmelt" : "yourevert"));
+									NoxicoGame.AddMessage(i18n.GetString((player.Character.HasToken("fullCopy")) ? "youmelt" : "yourevert"));
 									player.Energy -= 1000;
 									break;
 

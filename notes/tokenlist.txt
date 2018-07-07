@@ -93,12 +93,6 @@ bodyplan: <id>
 	tattoos
 		<location>: <string>	Location can be hip, smallofback, or buttcheek. Should be encoded into bodyparts.tml.
 
-	copier: <state>		Character can copy others' sexy bits.
-		full		Character can copy others' full appearance.
-		backup		Added when needed, used to store the character's true appearance.
-		timeout: <ticks>	Added when needed, used to determine when a full copier reverts.
-			minute: <time>
-
 	beast			Turns this character into a mindless beast that can't be interacted with much.
 		role		Will be replaced by team membership.
 			predator
@@ -159,6 +153,15 @@ Extras for characters:		Use them as you wish in a bodyplan or unique.
 	sensitivitybonus: <stat>
 	speedbonus: <stat>
 	strengthbonus: <stat>
+
+	fullCopy		Character can copy others' appearances (Power only)
+	sexCopy			Character can copy others' sexy bits (Power or be a slime)
+	hover			Character can hover (Power or have non-small wings)
+	copier: <state>		State bucket for fullCopy Power
+		backup		Added when needed, used to store the character's true appearance.
+		timeout: <ticks>	Added when needed, used to determine when a full copier reverts.
+			minute: <time>
+
 
 ITEMS.TML
 ---------
