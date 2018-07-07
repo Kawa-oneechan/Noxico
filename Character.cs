@@ -29,6 +29,7 @@ namespace Noxico
 
 	public partial class Character : TokenCarrier
 	{
+		public static Dictionary<string, List<string>> Powers;
 		public static List<Token> Bodyplans;
 		public static StringBuilder MorphBuffer = new StringBuilder();
 		public static string[] StatNames;
@@ -538,6 +539,7 @@ namespace Noxico
 				if (Culture.Cultures.ContainsKey(culture))
 					newChar.Culture = Culture.Cultures[culture];
 			}
+			newChar.UpdatePowers();
 
 			Program.WriteLine("Retrieved unique character {0}.", newChar);
 			return newChar;
@@ -706,6 +708,7 @@ namespace Noxico
 			newChar.ResolveMetaTokens();
             newChar.StripInvalidItems();
 			newChar.CheckHasteSlow();
+			newChar.UpdatePowers();
 
 /* Disabled for now pending Mutate rewrite.
 			// because: "why the hell did I pick a male human and get herm centaur?"
@@ -2628,7 +2631,7 @@ Tokens:
 			var copier = GetToken("copier");
 			if (copier == null)
 				throw new InvalidOperationException("Tried to copy, but is not a copier.");
-			var full = copier.HasToken("full");
+			var full = source.HasToken("fullCopy");
 			var toCopyForFull = new[]
 			{
 				"balls", "penis", "breasts", "ass", "hips", "waist", "vagina",
@@ -2716,6 +2719,78 @@ Tokens:
 			}
 		}
 
+		public void UpdatePowers()
+		{
+			var myHash = this.GetBodyComparisonHash();
+
+			//do trivial powers first
+			foreach (var power in Powers)
+			{
+				if (power.Key == "fullCopy")
+					continue; //skip this so we don't mistake fake forms for real.
+
+				foreach (var plan in power.Value)
+				{
+					var distance = myHash.GetHammingDistance(NoxicoGame.BodyplanHashes[plan]);
+					if (distance >= 3 && HasToken(power.Key))
+					{
+						//We are NOT supposed to have this ability!
+						RemoveToken(power.Key);
+					}
+					else if (distance < 3 && !HasToken(power.Key))
+					{
+						AddToken(power.Key);
+					}
+				}
+			}
+
+			if (HasToken("fullCopy"))
+			{
+				if (Path("copier/full") != null && GetToken("copier").Value == 0) //we are a fullcopier in our true form
+				{
+					//Gotta do that check so we don't mistake our fake form for a noncopier.
+					//Only lose the ability *after* reverting.
+					foreach (var plan in Powers["fullCopy"])
+					{
+						if (myHash.GetHammingDistance(NoxicoGame.BodyplanHashes[plan]) >= 2)
+						{
+							//We are NOT supposed to have this ability!
+							RemoveToken("fullCopy");
+							RemoveToken("copier");
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				foreach (var plan in Powers["fullCopy"])
+				{
+					if (myHash.GetHammingDistance(NoxicoGame.BodyplanHashes[plan]) < 2)
+					{
+						AddToken("fullCopy");
+						AddToken("copier");
+						break;
+					}
+				}
+			}
+
+			//handle slime-based sexCopy too
+			var isSlime = Path("skin/type").Text == "slime" || HasToken("slimeblob");
+			//if (HasToken("sexCopy") && !isSlime)
+			//	RemoveToken("sexCopy");
+			if (!HasToken("sexCopy") && isSlime)
+				AddToken("sexCopy");
+
+			var hasWings = HasToken("wings") || Path("wings/small") != null;
+			//if (HasToken("hover") && !hasWings)
+			//	RemoveToken("hover");
+			if (!HasToken("hover") && hasWings)
+				AddToken("hover");
+
+		}
+
+		/*
 		public bool UpdateCopier()
 		{
 			if (!HasToken("copier"))
@@ -2723,11 +2798,12 @@ Tokens:
 			if (Path("copier/full") != null && GetToken("copier").Value == 0)
 			{
 				//Should be a Changeling. Distance should be < 2.
-				//TODO: make this more generic, uncoupling from what should be a modpak's bodyplan.
+				//TODO: *give* the copier token if we have the requisite Power?
 				var myHash = this.GetBodyComparisonHash();
-				var changeling = NoxicoGame.BodyplanHashes["mlp_changeling"];
-				if (myHash.GetHammingDistance(changeling) >= 2)
-					return false;
+				var fullCopiers = Powers["fullCopy"];
+				foreach (var copier in fullCopiers)
+					if (myHash.GetHammingDistance(NoxicoGame.BodyplanHashes[copier]) >= 2)
+						return false;
 			}
 			else
 			{
@@ -2738,6 +2814,7 @@ Tokens:
 			//Regain copying power by TF scripts or Morph().
 			return true;
 		}
+		*/
 
 		public bool IsSlime
 		{

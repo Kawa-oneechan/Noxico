@@ -1300,6 +1300,7 @@ namespace Noxico
 					myTerms.Tokens[i].Text = closestTerms.Tokens[i].Text;
 				UpdateTitle();
 			}
+			UpdatePowers();
 
 			SpeechFilter = null; //invalidate here -- we don't necessarily have this character speak right away and need to adjust for new impediments.
 
@@ -1337,6 +1338,7 @@ namespace Noxico
 					myTerms.Tokens[i].Text = closestTerms.Tokens[i].Text;
 				UpdateTitle();
 			}
+			UpdatePowers();
 
 			SpeechFilter = null; //invalidate here -- we don't necessarily have this character speak right away and need to adjust for new impediments.
 
