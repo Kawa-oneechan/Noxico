@@ -1,0 +1,6 @@
+add: -
+	playerbase
+		name: Player's house
+		author: Kawa
+		required
+-- this should probably be integrated.

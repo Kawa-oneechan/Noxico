@@ -1,4 +1,4 @@
-if (realm ~= "Nox") then return end
+if (Realm ~= "Nox") then return end
 
 local chelBoard = Board.PickBoard(BoardType.Wild, GetBiomeByName("Woods"), -1);
 
@@ -11,7 +11,7 @@ chelBoard.RemoveToken("encounters")
 chelBoard.AddToken("encounters").AddToken("stock")
 chelBoard.MakeTarget()
 
-chelBoard.MergeBitmap("missions\\chelsie\\lairhouse.png", "missions\\chelsie\\lairhouse.txt");
+chelBoard.MergeBitmap("lairhouse.png", "lairhouse.txt");
 
 --local Chelsie = BoardChar(Character.GetUnique("chelsie"))
 --Chelsie.XPosition = 36;

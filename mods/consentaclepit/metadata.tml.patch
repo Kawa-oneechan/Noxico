@@ -1,0 +1,4 @@
+add: -
+	consentacle_pit
+		author: Sparks
+		script: consentaclepit.lua

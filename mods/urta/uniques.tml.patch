@@ -38,3 +38,5 @@ add: -
 		balls
 			amount: 2
 			size: 1.4
+
+-- The "add: -" line makes the patch system add all child tokens to the bottom of the target file so far.

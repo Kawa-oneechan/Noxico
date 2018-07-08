@@ -1111,7 +1111,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 			dynamic env = Lua.IronLua.CreateEnvironment();
 			Lua.Ascertain(env);
-			env.Realm = realm;
+			env.Realm = realm.ToString();
 			env.GetBoard = new Func<int, Board>(x => GetBoard(x));
 			env.FindBoardByID = findBoardByID;
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
@@ -1122,30 +1122,14 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			});
 			//Board.DrawEnv = env;
 
-			//var missionDirs = Mix.GetFilesInPath("missions");
-			//foreach (var missionDir in missionDirs.Where(x => x.EndsWith("\\manifest.txt")))
-			foreach (var missionFile in Mix.GetFilesWithPattern("mission-*.lua"))
+			var metadata = Mix.GetTokenTree("metadata.tml");
+			foreach (var meta in metadata)
 			{
-				/* var manifest = Mix.GetString(missionDir).Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-				var path = Path.GetDirectoryName(missionDir);
-				var okay = true;
-				for (var i = 2; i < manifest.Length; i++)
-				{
-					if (!Mix.FileExists(Path.Combine(path, manifest[i])))
-						okay = false;
-				}
-				if (!okay)
-				{
-					Program.WriteLine("Mission \"{0}\" by {1} is missing files.", manifest[0], manifest[1]);
-					continue;
-				}
-				var luaFile = Path.Combine(path, "mission.lua");
-				if (!Mix.FileExists(luaFile))
-					continue;
-				Program.WriteLine("Applying mission \"{0}\" by {1}...", manifest[0], manifest[1]);
-				Lua.RunFile(luaFile, env); */
-				Program.WriteLine("Applying \"{0}\"...", missionFile);
-				Lua.RunFile(missionFile.Substring(missionFile.LastIndexOf('\\') + 1), env);
+				var name = meta.HasToken("name") ? meta.GetToken("name").Text : meta.Name.Replace('_', ' ').Titlecase();
+				var author = meta.HasToken("author") ? meta.GetToken("author").Text : "Anonymous";
+				var scriptFile = meta.HasToken("script") ? meta.GetToken("script").Text : ("mission-" + meta.Name + ".lua");
+				Console.WriteLine("Applying \"{0}\" by {1}...", name, author);
+				Lua.RunFile(scriptFile, env);
 			}
 		}
 

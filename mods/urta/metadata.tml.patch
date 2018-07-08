@@ -1,0 +1,11 @@
+add: -
+	urta
+		author: Kawa
+		thanks: Fenoxo
+
+-- Metadata format:
+-- add: -          to patch it in
+--     <ID>        mod ID, should match folder name
+--         name:   mod friendly name, generated from ID if missing
+--         author: author's name, "Anonymous" if missing
+--         script: script to run once per realm, "mission-<ID>.lua" if missing
