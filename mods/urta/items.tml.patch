@@ -17,3 +17,8 @@ add: -
 		colored
 		sexy
 		kinky
+
+-- The "add: -" line makes the patch system add all child tokens to the bottom of the target file so far.
+-- "__marker: Urta" is for the Reference generator and such to use, causes it to emit a separating header.
+-- "fishnets" are the item ID, but "_n" species a *written* name. If missing, it'd just use "fishnets", replacing any "_" with spaces.
+-- "_ia" is "indefinite article". Thus the "fishnets" item is written as "a pair of silk fishnet stockings", possibly with a color added if dyed, and possibly disemvoweled if pushed for space.

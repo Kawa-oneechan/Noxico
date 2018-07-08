@@ -1,4 +1,4 @@
-if (realm ~= "Nox") then return end
+if (Realm ~= "Nox") then return end
 local myBoard, town
 while 1 do
 	local t = Board.PickBoard(BoardType.Town, -1, -1)
@@ -30,7 +30,7 @@ myBoard.RemoveToken("encounters")
 myBoard.AddToken("encounters").AddToken("stock")
 myBoard.MakeTarget()
 
-myBoard.MergeBitmap("missions\\playerbase\\lv0.png", "missions\\playerbase\\lv0.txt")
+myBoard.MergeBitmap("lv0.png", "lv0.txt")
 
 local bed = Clutter()
 bed.Glyph = 0x147

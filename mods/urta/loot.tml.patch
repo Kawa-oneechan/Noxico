@@ -18,7 +18,6 @@ add: -
 		final
 		filter
 			id: urta
-	-- EMPTY
 	lootset
 		target: npc
 		type: arms
@@ -27,3 +26,8 @@ add: -
 			id: urta
 		oneof
 			halberd
+
+-- The "add: -" line makes the patch system add all child tokens to the bottom of the target file so far.
+-- The "final" tokens make the character generator not consider anything else, instead of picking a random set from whatever passed the filters.
+-- The underwear lootset has nothing in it so Urta goes commando.
+
