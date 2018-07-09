@@ -32,29 +32,21 @@ myBoard.MakeTarget()
 
 myBoard.MergeBitmap("lv0.png", "lv0.txt")
 
-local bed = Clutter()
+local bed = myBoard.PlaceEntity(Clutter(), 31, 16)
 bed.Glyph = 0x147
-bed.XPosition = 31
-bed.YPosition = 16
 bed.ForegroundColor = Color.Black
 bed.BackgroundColor = Color.FromArgb(86, 63, 44)
 bed.ID = "Bed_playerRespawn"
 bed.Name = "Bed"
 bed.Description = "This is your bed. Position yourself over it and press Enter to use it."
-bed.ParentBoard = myBoard
-myBoard.Entities.Add(bed)
 
-local candle = Clutter()
+local candle = myBoard.PlaceEntity(Clutter(), 33, 19)
 candle.Glyph = 0xAD
-candle.XPosition = 33
-candle.YPosition = 19
 candle.ForegroundColor = Color.White
 candle.BackgroundColor = Color.FromArgb(86, 63, 44)
 candle.ID = "lifeCandle"
 candle.Name = "Life candle"
 candle.Description = "If you can read this, the candle wasn't reset."
-candle.ParentBoard = myBoard
-myBoard.Entities.Add(candle)
 
 print("Carpenter time!")
 local carpenter = town.PickBoardChar(Gender.Male)
@@ -67,9 +59,5 @@ carpenter.Character.AddToken("role").AddToken("vendor").AddToken("class", 0, "ca
 print("we're done here.")
  
 -- add pettancow here for simplicity
-local pettancow = BoardChar(Character.GetUnique("pettancow"))
-pettancow.XPosition = 57;
-pettancow.YPosition = 16;
-myBoard.Entities.Add(pettancow);
-pettancow.ParentBoard = myBoard;
+local pettancow = myBoard.PlaceCharacter(Character.GetUnique("pettancow"), 57, 16)
 pettancow.AdjustView();
