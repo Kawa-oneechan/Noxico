@@ -8,13 +8,6 @@ print("Hello, world!");
 
 -- Pick out a Town board. Don't care about the biome, or max water.
 local urtaBoard = Board.PickBoard(BoardType.Town, -1, -1);
-
 -- Generate our character and incorporate them.
-local urta = BoardChar(Character.GetUnique("urta"))
-
--- Set them up in the town we picked earlier.
--- (TODO: PlaceCharacter function? -- Kawa)
-urta.XPosition = 40;
-urta.YPosition = 25;
-urtaBoard.Entities.Add(urta);
-urta.ParentBoard = urtaBoard;
+urtaBoard.PlaceCharacter(Character.GetUnique("urta"), 40, 25);
+-- Maps are 80x50, so this is right in the middle, damn the barriers.

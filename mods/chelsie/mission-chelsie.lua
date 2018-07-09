@@ -19,29 +19,21 @@ chelBoard.MergeBitmap("lairhouse.png", "lairhouse.txt");
 --chelBoard.Entities.Add(Chelsie);
 --Chelsie.ParentBoard = chelBoard;
 
-local bed = Clutter()
+local bed = chelBoard.PlaceEntity(Clutter(), 53, 27)
 bed.Glyph = 0x147
-bed.XPosition = 53
-bed.YPosition = 27
 bed.ForegroundColor = Color.Black
 bed.BackgroundColor = Color.FromArgb(86, 63, 44)
 bed.ID = "Bed_Chelsie"
 bed.Name = "Bed"
 bed.Description = "This is Chelsie's bed. Position yourself over it and press Enter to use it."
-bed.ParentBoard = chelBoard
-chelBoard.Entities.Add(bed)
 
-local table = Clutter()
+local table = chelBoard.PlaceEntity(Clutter(), 50, 22)
 table.Glyph = 0x148
-table.XPosition = 50
-table.YPosition = 22
 table.ForegroundColor = Color.Black
 table.BackgroundColor = Color.FromArgb(86, 63, 44)
 table.ID = "Table_Chelsie"
 table.Name = "Table"
 table.Description = "This is Chelsie's table."
-table.ParentBoard = chelBoard
-chelBoard.Entities.Add(table)
 
 -- needs more furniture
 -- todo 0x149 seat

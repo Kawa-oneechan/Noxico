@@ -1525,6 +1525,25 @@ namespace Noxico
 				}
 			}
 		}
+
+		public Entity PlaceEntity(Entity e, int x, int y)
+		{
+			if (e.ParentBoard != null)
+			{
+				e.ParentBoard.EntitiesToRemove.Add(e);
+				e.ParentBoard = null;
+			}
+			e.XPosition = x;
+			e.YPosition = y;
+			e.ParentBoard = this;
+			this.EntitiesToAdd.Add(e);
+			return e;
+		}
+
+		public BoardChar PlaceCharacter(Character ch, int x, int y)
+		{
+			return (BoardChar)PlaceEntity(new BoardChar(ch), x, y);
+		}
 	}
 
 
