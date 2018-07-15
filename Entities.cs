@@ -81,7 +81,7 @@ namespace Noxico
 
 		public virtual object CanMove(Board board, int x, int y, SolidityCheck check = SolidityCheck.Walker)
 		{
-			if (x < 0 || y < 0 || x > 79 || y > 49)
+			if (x < 0 || y < 0 || x >= this.ParentBoard.Width || y >= this.ParentBoard.Height)
 				return false;
 
 			foreach (var entity in board.Entities)

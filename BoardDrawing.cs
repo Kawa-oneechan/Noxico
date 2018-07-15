@@ -15,9 +15,9 @@ namespace Noxico
 
 			var ground = TileDefinition.Find(BiomeData.Biomes[biomeID].GroundTile, true);
 
-			for (int row = 0; row < 50; row++)
+			for (int row = 0; row < Height; row++)
 			{
-				for (int col = 0; col < 80; col++)
+				for (int col = 0; col < Width; col++)
 				{
 					var def = ground;
 					if (Random.Flip() && def.Variants.Tokens.Count > 0)
@@ -51,12 +51,14 @@ namespace Noxico
 			if (biomeID == -1)
 				return;
 			this.Entities.Clear();
+			this.Width = 80; //TODO: determine better overworld board size?
+			this.Height = 50;
 			this.GetToken("biome").Value = biomeID;
-			var worldMapX = x * 80;
-			var worldMapY = y * 50;
-			for (int row = 0; row < 50; row++)
+			var worldMapX = x * Width;
+			var worldMapY = y * Height;
+			for (int row = 0; row < Height; row++)
 			{
-				for (int col = 0; col < 80; col++)
+				for (int col = 0; col < Width; col++)
 				{
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
 					var h = generator.WaterMap[worldMapY + row, worldMapX + col];
@@ -118,9 +120,9 @@ namespace Noxico
 				withThis = ((TileDefinition)withThis).Index;
 			else if (withThis is string)
 				withThis = TileDefinition.Find((string)withThis).Index;
-			for (var y = 0; y < 80; y++)
+			for (var y = 0; y < Width; y++)
 			{
-				for (var x = 0; x < 50; x++)
+				for (var x = 0; x < Height; x++)
 				{
 					if (replaceThis is int)
 					{
@@ -179,7 +181,7 @@ namespace Noxico
 				var point = stack.Pop();
 				var x = point.X;
 				var y = point.Y;
-				if (x < 0 || y < 0 || x >= 50 || y >= 80)
+				if (x < 0 || y < 0 || x >= Height || y >= Width)
 					continue;
 
 				if (replaceThis is int)
@@ -254,9 +256,9 @@ namespace Noxico
 				else
 					tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
 			}
-			for (var y = 0; y < 50; y++)
+			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < 80; x++)
+				for (var x = 0; x < Width; x++)
 				{
 					var color = bitmap.GetPixel(x, y);
 					if (color.Name == "ff000000" || color.A == 0)
@@ -424,12 +426,12 @@ namespace Noxico
 				}
 			}
 
-			var bitmap = new float[50, 80];
+			var bitmap = new float[Height, Width];
 			var sum = 0.0;
 			var radius = 0.4;
-			for (var y = 0; y < 50; y++)
+			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < 80; x++)
+				for (var x = 0; x < Width; x++)
 				{
 					sum = 0;
 					foreach (var point in points)
@@ -444,9 +446,9 @@ namespace Noxico
 				}
 			}
 
-			for (var y = 0; y < 50; y++)
+			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < 80; x++)
+				for (var x = 0; x < Width; x++)
 				{
 					if (bitmap[y, x] < threshold || Tilemap[x, y].SolidToWalker)
 						continue;
@@ -470,8 +472,8 @@ namespace Noxico
 
 		public void Drain()
 		{
-			for (var y = 0; y < 50; y++)
-				for (var x = 0; x < 80; x++)
+			for (var y = 0; y < Height; y++)
+				for (var x = 0; x < Width; x++)
 					Tilemap[x, y].Fluid = Fluids.Dry;
 		}
 	}

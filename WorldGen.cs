@@ -45,8 +45,8 @@ namespace Noxico
 					if (attempts == 10)
 						minSides = 0;
 
-					eX = Random.Next(1, 79);
-					eY = Random.Next(1, 49);
+					eX = Random.Next(1, b.Width - 1);
+					eY = Random.Next(1, b.Height - 1);
 
 					//2013-03-07: prevent placing warps on same tile as clutter
 					//<Ragath> Kawa, this is bad
@@ -256,8 +256,8 @@ namespace Noxico
 			var treasureY = 0;
 			while (true)
 			{
-				treasureX = Random.Next(1, 79);
-				treasureY = Random.Next(1, 49);
+				treasureX = Random.Next(1, goalBoard.Width - 1);
+				treasureY = Random.Next(1, goalBoard.Height - 1);
 
 				//2013-03-07: prevent treasure from spawning inside a wall
 				if (goalBoard.IsSolid(treasureY, treasureX))

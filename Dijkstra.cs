@@ -14,7 +14,8 @@ namespace Noxico
 
 	public class Dijkstra
 	{
-		private const int mapRows = 50, mapCols = 80, vhn = 9000;
+		private int mapRows = 50, mapCols = 80;
+		private const int vhn = 9000;
 
 		private int[,] map;
 		private bool[,] walls;
@@ -24,15 +25,17 @@ namespace Noxico
 		public Type IgnoreType { get; set; }
 		public Entity IgnoreObject { get; set; }
 
-		public Dijkstra(bool allowSwimming = true, Board board = null)
+		public Dijkstra(Board board, bool allowSwimming = true)
 		{
+			mapRows = board.Height;
+			mapCols = board.Width;
 			map = new int[mapRows, mapCols];
 			walls = new bool[mapRows, mapCols];
-			UpdateWalls(allowSwimming, board);
+			UpdateWalls(board, allowSwimming);
 			Hotspots = new List<Point>();
 		}
 
-		public void UpdateWalls(bool allowSwimming = true, Board board = null)
+		public void UpdateWalls(Board board, bool allowSwimming = true)
 		{
 			if (board == null)
 				board = NoxicoGame.Me.CurrentBoard;
