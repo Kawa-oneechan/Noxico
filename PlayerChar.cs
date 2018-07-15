@@ -173,12 +173,12 @@ namespace Noxico
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
-				if (this.CanMove(otherBoard, lx, 49, check) != null)
+				if (this.CanMove(otherBoard, lx, otherBoard.Height, check) != null)
 					return;
-				this.YPosition = 50;
+				this.YPosition = otherBoard.Height;
 				OpenBoard(this.ParentBoard.ToNorth);
 			}
-			else if (ly == 49 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
+			else if (ly == ParentBoard.Height - 1 && targetDirection == Direction.South && this.ParentBoard.ToSouth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToSouth);
 				if (this.CanMove(otherBoard, lx, 0, check) != null)
@@ -189,12 +189,12 @@ namespace Noxico
 			else if (lx == 0 && targetDirection == Direction.West && this.ParentBoard.ToWest > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToWest);
-				if (this.CanMove(otherBoard, 79, ly, check) != null)
+				if (this.CanMove(otherBoard, otherBoard.Width - 1, ly, check) != null)
 					return;
-				this.XPosition = 80;
+				this.XPosition = otherBoard.Width;
 				OpenBoard(this.ParentBoard.ToWest);
 			}
-			else if (lx == 79 && targetDirection == Direction.East && this.ParentBoard.ToEast > -1)
+			else if (lx == ParentBoard.Width - 1 && targetDirection == Direction.East && this.ParentBoard.ToEast > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToEast);
 				if (this.CanMove(otherBoard, 0, ly, check) != null)

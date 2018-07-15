@@ -191,7 +191,7 @@ namespace Noxico
 			Culture = Culture.Cultures[biome.Cultures.PickOne()];
 			DungeonGenerator.DungeonGeneratorBiome = BiomeData.Biomes.IndexOf(biome);
 			this.biome = biome;
-			map = new int[80, 50];
+			map = new int[Board.Width, Board.Height];
 			plots = new Building[6, 3];
 
 			if (templates == null)
@@ -589,8 +589,8 @@ namespace Noxico
 
 			//Base fill
 			var baseFill = TileDefinition.Find("stoneWall").Index;
-			for (var row = 0; row < 50; row++)
-				for (var col = 0; col < 80; col++)
+			for (var row = 0; row < Board.Height; row++)
+				for (var col = 0; col < Board.Width; col++)
 					map[col, row].Index = baseFill;
 
 			//TODO: add clutter.
@@ -671,10 +671,10 @@ namespace Noxico
 			Board.ResolveVariableWalls();
 
 			#region Fade out the walls
-			var dijkstra = new int[80, 50];
-			for (var col = 0; col < 80; col++)
+			var dijkstra = new int[Board.Width, Board.Height];
+			for (var col = 0; col < Board.Width; col++)
 			{
-				for (var row = 0; row < 50; row++)
+				for (var row = 0; row < Board.Height; row++)
 				{
 					if (!map[col, row].SolidToWalker)
 						continue;
@@ -682,11 +682,11 @@ namespace Noxico
 				}
 			}
 
-			Dijkstra.JustDoIt(ref dijkstra);
+			Dijkstra.JustDoIt(ref dijkstra, Board.Height, Board.Width);
 
-			for (var row = 0; row < 50; row++)
+			for (var row = 0; row < Board.Height; row++)
 			{
-				for (var col = 0; col < 80; col++)
+				for (var col = 0; col < Board.Width; col++)
 				{
 					//if (map[col, row].Fluid != Fluids.Dry)
 					//	continue;
@@ -738,34 +738,34 @@ namespace Noxico
 			this.biome = biome;
 
 			//Do NOT use BaseDungeon.Create() -- we want a completely different method here.
-			map = new int[80, 50];
+			map = new int[Board.Width, Board.Height];
 
 			//Draw a nice border for the passes to work within
-			for (var i = 0; i < 80; i++)
+			for (var i = 0; i < Board.Width; i++)
 			{
 				map[i, 0] = 1;
-				map[i, 49] = 1;
+				map[i, Board.Height - 1] = 1;
 			}
-			for (var i = 0; i < 50; i++)
+			for (var i = 0; i < Board.Width; i++)
 			{
 				map[0, i] = 1;
 				map[1, i] = 1;
-				map[78, i] = 1;
-				map[79, i] = 1;
+				map[Board.Width - 2, i] = 1;
+				map[Board.Width - 1, i] = 1;
 			}
 
 			//Scatter some seed tiles
-			for (var i = 0; i < 50; i++)
-				for (var j = 0; j < 80; j++)
+			for (var i = 0; i < Board.Height; i++)
+				for (var j = 0; j < Board.Width; j++)
 					if (Random.NextDouble() < 0.25)
 						map[j, i] = 1;
 
 			//Melt the cave layout with a cellular automata system.
 			for (var pass = 0; pass < 5; pass++)
 			{
-				for (var i = 1; i < 49; i++)
+				for (var i = 1; i < Board.Height - 1; i++)
 				{
-					for (var j = 1; j < 79; j++)
+					for (var j = 1; j < Board.Width - 1; j++)
 					{
 						//Count the neighboring live cells
 						var neighbors = 0;
@@ -809,15 +809,15 @@ namespace Noxico
 
 			var tiles = new[] { "stoneFloor", "stoneWall" };
 
-			for (var row = 0; row < 50; row++)
-				for (var col = 0; col < 80; col++)
+			for (var row = 0; row < Board.Height; row++)
+				for (var col = 0; col < Board.Width; col++)
 					map[col, row].Index = TileDefinition.Find(tiles[this.map[col, row]]).Index;
 
 			#region Fade out the walls
-			var dijkstra = new int[80, 50];
-			for (var col = 0; col < 80; col++)
+			var dijkstra = new int[Board.Width, Board.Height];
+			for (var col = 0; col < Board.Width; col++)
 			{
-				for (var row = 0; row < 50; row++)
+				for (var row = 0; row < Board.Height; row++)
 				{
 					if (!map[col, row].SolidToWalker)
 						continue;
@@ -827,9 +827,9 @@ namespace Noxico
 
 			Dijkstra.JustDoIt(ref dijkstra);
 
-			for (var row = 0; row < 50; row++)
+			for (var row = 0; row < Board.Height; row++)
 			{
-				for (var col = 0; col < 80; col++)
+				for (var col = 0; col < Board.Width; col++)
 				{
 					//if (map[col, row].Fluid != Fluids.Dry)
 					//	continue;
