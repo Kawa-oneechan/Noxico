@@ -43,7 +43,7 @@ namespace Noxico
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
 
-			this.DijkstraMap = new Dijkstra();
+			this.DijkstraMap = new Dijkstra(this.ParentBoard);
 			this.DijkstraMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 		}
 
@@ -570,7 +570,7 @@ namespace Noxico
 				{
 					if (this.GuardMap == null)
 					{
-						GuardMap = new Dijkstra(!Character.IsSlime, ParentBoard);
+						GuardMap = new Dijkstra(ParentBoard, !Character.IsSlime);
 						GuardMap.Hotspots.Add(new Point(guardX, guardY));
 						GuardMap.Update();
 						GuardMap.Ignore = DijkstraIgnore.Type;
@@ -737,7 +737,7 @@ namespace Noxico
 				if (ScriptPathTarget == null)
 				{
 					var lastPos = Character.GetToken("targetlastpos");
-					ScriptPathTarget = new Dijkstra(!Character.IsSlime, this.ParentBoard);
+					ScriptPathTarget = new Dijkstra(this.ParentBoard, !Character.IsSlime);
 					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
 					ScriptPathTarget.Update();
 				}
@@ -773,7 +773,7 @@ namespace Noxico
 				lastPos.GetToken("y").Value = target.YPosition;
 				if (ScriptPathTarget == null)
 				{
-					ScriptPathTarget = new Dijkstra(!Character.IsSlime, this.ParentBoard);
+					ScriptPathTarget = new Dijkstra(this.ParentBoard, !Character.IsSlime);
 				}
 				ScriptPathTarget.Hotspots.Clear();
 				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
@@ -1101,7 +1101,7 @@ namespace Noxico
 
 		public void MoveTo(int x, int y, string target)
 		{
-			ScriptPathTarget = new Dijkstra(!Character.IsSlime, this.ParentBoard);
+			ScriptPathTarget = new Dijkstra(this.ParentBoard, !Character.IsSlime);
 			ScriptPathTarget.Hotspots.Add(new Point(x, y));
 			ScriptPathTarget.Update();
 			ScriptPathID = target;

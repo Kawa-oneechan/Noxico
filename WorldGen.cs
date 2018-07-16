@@ -684,6 +684,7 @@ namespace Noxico
 		public Board[,] BoardMap;
 		public int MapSizeX, MapSizeY, TownMarkers, WaterBiome;
 		public Realms Realm;
+		private const int tileWidth = 80, tileHeight = 50;
 
 		private byte[,] CreateHeightMap(int reach)
 		{
@@ -760,8 +761,8 @@ namespace Noxico
 
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
-			var cols = (int)Math.Floor(reach / 80.0) * 80;
-			var rows = (int)Math.Floor(reach / 50.0) * 50;
+			var cols = (int)Math.Floor(reach / (float)tileWidth) * tileWidth;
+			var rows = (int)Math.Floor(reach / (float)tileHeight) * tileHeight;
 			var map = new byte[rows, cols];
 			for (var row = 0; row < rows; row++)
 			{
@@ -787,8 +788,8 @@ namespace Noxico
 		private byte[,] CreateWaterMap(int reach, byte[,] height)
 		{
 			var waterLevel = BiomeData.WaterLevels[(int)Realm];
-			var cols = (int)Math.Floor(reach / 80.0) * 80;
-			var rows = (int)Math.Floor(reach / 50.0) * 50;
+			var cols = (int)Math.Floor(reach / (float)tileWidth) * tileWidth;
+			var rows = (int)Math.Floor(reach / (float)tileHeight) * tileHeight;
 			var map = new byte[rows, cols];
 			for (var row = 0; row < rows; row++)
 			{
@@ -828,11 +829,11 @@ namespace Noxico
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 			Program.WriteLine("{0} -- Create biome map.", stopwatch.Elapsed);
 
-			MapSizeX = (int)Math.Floor(reach / 80.0);
-			MapSizeY = (int)Math.Floor(reach / 50.0);
+			MapSizeX = (int)Math.Floor(reach / (float)tileWidth);
+			MapSizeY = (int)Math.Floor(reach / (float)tileHeight);
 
-			var bmpWidth = MapSizeX * 80;
-			var bmpHeight = MapSizeY * 50; //reach / 1;
+			var bmpWidth = MapSizeX * tileWidth;
+			var bmpHeight = MapSizeY * tileHeight; //reach / 1;
 			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
 			for (var row = 0; row < bmpHeight; row++)
 			{
@@ -855,12 +856,12 @@ namespace Noxico
 					var oceanTreshold = 4000 - 32;
 					var waterCount = 0;
 					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
-					for (var pRow = 0; pRow < 50; pRow++)
+					for (var pRow = 0; pRow < tileHeight; pRow++)
 					{
-						for (var pCol = 0; pCol < 80; pCol++)
+						for (var pCol = 0; pCol < tileWidth; pCol++)
 						{
-							var b = biome[(bRow * 50) + pRow, (bCol * 80) + pCol];
-							var h = water[(bRow * 50) + pRow, (bCol * 80) + pCol];
+							var b = biome[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol];
+							var h = water[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol];
 							if (h > 0)
 								waterCount++;
 							counts[b]++;
@@ -904,9 +905,9 @@ namespace Noxico
 					var waterAmount = 0;
 					var waterMin = 1500;
 					var waterMax = 2500;
-					for (var pRow = 0; pRow < 50; pRow++)
-						for (var pCol = 0; pCol < 80; pCol++)
-							if (water[(bRow * 50) + pRow, (bCol * 80) + pCol] == 1)
+					for (var pRow = 0; pRow < tileHeight; pRow++)
+						for (var pCol = 0; pCol < tileWidth; pCol++)
+							if (water[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol] == 1)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -937,9 +938,9 @@ namespace Noxico
 									continue;
 								var waterAmount = 0;
 								var waterMax = 500;
-								for (var pRow = 0; pRow < 50; pRow++)
-									for (var pCol = 0; pCol < 80; pCol++)
-										if (water[(row * 50) + pRow, (col * 80) + pCol] == 1)
+								for (var pRow = 0; pRow < tileHeight; pRow++)
+									for (var pCol = 0; pCol < tileWidth; pCol++)
+										if (water[(row * tileHeight) + pRow, (col * tileWidth) + pCol] == 1)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -976,9 +977,9 @@ namespace Noxico
 						}
 					}
 				}
-				for (var pRow = 0; pRow < 50; pRow++)
-					for (var pCol = 0; pCol < 80; pCol++)
-						DetailedMap[(ty * 50) + pRow, (tx * 80) + pCol] = RoughBiomeMap[ty, tx];
+				for (var pRow = 0; pRow < tileHeight; pRow++)
+					for (var pCol = 0; pCol < tileWidth; pCol++)
+						DetailedMap[(ty * tileHeight) + pRow, (tx * tileWidth) + pCol] = RoughBiomeMap[ty, tx];
 			}
 
 			TownMarkers = towns;
