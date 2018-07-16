@@ -43,6 +43,8 @@ namespace Noxico
 			this.BackgroundColor = Color.Gray;
 			this.Blocking = true;
 
+			if (this.ParentBoard == null)
+				return;
 			this.DijkstraMap = new Dijkstra(this.ParentBoard);
 			this.DijkstraMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 		}
@@ -158,6 +160,12 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
+			if (this.DijkstraMap == null)
+			{
+				this.DijkstraMap = new Dijkstra(this.ParentBoard);
+				this.DijkstraMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+			}
+
 			if (Character.HasToken("slimeblob"))
 				ParentBoard.TrailSlime(YPosition, XPosition, ForegroundColor);
 			if (ParentBoard.IsWater(YPosition, XPosition))
