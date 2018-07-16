@@ -112,6 +112,7 @@ namespace Noxico
 					return i18n.Format("ts_startoverinx", Path.GetFileName(s));
 				}));
 				options.Add("~", i18n.GetString("ts_startnewgame"));
+				options.Add("~~", i18n.GetString("ts_testingarena"));
 				//Display our list of saves.
 				MessageBox.List(saves.Count == 0 ? i18n.GetString("ts_welcometonoxico") : i18n.GetString(saves.Count == 1 ? "ts_thereisasave" : "ts_therearesaves"), options,
 					() =>
@@ -133,6 +134,29 @@ namespace Noxico
 									NoxicoGame.Immediate = true;
 								}
 							);
+						}
+						else if ((string)MessageBox.Answer == "~~")
+						{
+							NoxicoGame.WorldName = "<Testing Arena>";
+							var env = Lua.Environment;
+							Lua.RunFile("testarena.lua");
+							var testBoard = new Board(env.TestArena.ArenaWidth, env.TestArena.ArenaHeight);
+							var me = NoxicoGame.Me;
+							me.Boards.Add(testBoard);
+							me.CurrentBoard = testBoard;
+							me.CreatePlayerCharacter(env.TestArena.Name, env.TestArena.BioGender, env.TestArena.IdentifyAs, env.TestArena.Preference, env.TestArena.Bodyplan, new Dictionary<string, string>(), env.TestArena.BonusTrait);
+							env.BuildTestArena(testBoard);
+							me.Player.ParentBoard = testBoard;
+							testBoard.EntitiesToAdd.Add(me.Player);
+							NoxicoGame.InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, 12, 0, 0);
+							testBoard.UpdateLightmap(null, true);
+							testBoard.Redraw();
+							testBoard.Draw();
+							Subscreens.FirstDraw = true;
+							NoxicoGame.Immediate = true;
+							NoxicoGame.AddMessage(i18n.GetString("welcometest"), Color.Yellow);
+							NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
+							NoxicoGame.Mode = UserMode.Walkabout;
 						}
 						else
 						{

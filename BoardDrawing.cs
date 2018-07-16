@@ -53,6 +53,11 @@ namespace Noxico
 			this.Entities.Clear();
 			this.Width = 80; //TODO: determine better overworld board size?
 			this.Height = 50;
+			this.Tilemap = new Tile[this.Width, this.Height];
+			this.Lightmap = new bool[this.Width, this.Height];
+			for (int row = 0; row < Height; row++)
+				for (int col = 0; col < Width; col++)
+					this.Tilemap[col, row] = new Tile();
 			this.GetToken("biome").Value = biomeID;
 			var worldMapX = x * Width;
 			var worldMapY = y * Height;

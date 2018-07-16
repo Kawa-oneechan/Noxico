@@ -361,7 +361,7 @@ namespace Noxico
 			var t = new Token(name);
 			if (value != null)
 			{
-				if (value is double)
+				if (value is double || value is float)
 					t.Value = (float)value;
 				else if (value is int)
 					t.Value = (float)((int)value);

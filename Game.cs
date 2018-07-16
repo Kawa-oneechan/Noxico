@@ -366,7 +366,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
-			CurrentBoard = new Board();
+			CurrentBoard = new Board(80, 50);
 			this.Player = new Player();
 			Introduction.Title();
 		}
@@ -711,7 +711,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 							var board = Boards[i];
 							if (board == null)
 								continue;
-							if (board.HasToken("dungeon"))
+							if (board.HasToken("dungeon") || WorldName == "<Testing Arena>")
 								continue; //Don't autoflush dungeons. Use FlushDungeons() for that.
 							board.Lifetime++;
 							if (board.Lifetime == 1000)
@@ -909,7 +909,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				{
 					if (generator.RoughBiomeMap[y, x] == -1)
 						continue;
-					var newBoard = new Board();
+					var newBoard = new Board(1, 1);
 					newBoard.Coordinate = new Point(x, y);
 					newBoard.BoardNum = this.Boards.Count;
 					generator.BoardMap[y, x] = newBoard;
