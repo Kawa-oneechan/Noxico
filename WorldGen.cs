@@ -95,7 +95,7 @@ namespace Noxico
 				var length = Random.Next(2, 5);
 				for (var j = 0; j < length; j++)
 				{
-					var board = new Board();
+					var board = new Board(80, 50); //TODO: allow weird sizes
 					board.AllowTravel = false;
 					board.Clear(DungeonGeneratorBiome);
 					board.BoardNum = nox.Boards.Count;

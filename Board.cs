@@ -438,7 +438,7 @@ namespace Noxico
 			return string.Format("#{0} {1} - \"{2}\"", BoardNum, ID, Name);
 		}
 
-		public Board()
+		public Board(int width, int height)
 		{
 			foreach (var t in new[] { "name", "id", "type", "music", "realm", "biome", "encounters" })
 				this.AddToken(t);
@@ -452,6 +452,10 @@ namespace Noxico
 			this.Warps = new List<Warp>();
 			this.Sectors = new Dictionary<string, Rectangle>();
 			this.DirtySpots = new List<Point>();
+			this.Width = width;
+			this.Height = height;
+			this.Tilemap = new Tile[this.Width, this.Height];
+			this.Lightmap = new bool[this.Width, this.Height];
 			for (int row = 0; row < Height; row++)
 				for (int col = 0; col < Width; col++)
 					this.Tilemap[col, row] = new Tile();
@@ -468,6 +472,9 @@ namespace Noxico
 
 		public void SaveToFile(int index)
 		{
+			if (NoxicoGame.WorldName == "<Testing Arena>")
+				return;
+
 			var realm = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "boards");
 			if (!Directory.Exists(realm))
 				Directory.CreateDirectory(realm);
@@ -526,7 +533,7 @@ namespace Noxico
 			var file = System.IO.Path.Combine(realm, "Board" + index + ".brd");
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Board #" + index + " not found!");
-			var newBoard = new Board();
+			var newBoard = new Board(1, 1);
 			using (var stream = new BinaryReader(File.Open(file, FileMode.Open)))
 			{
 				Toolkit.ExpectFromFile(stream, "BORD", "board description");
@@ -893,17 +900,31 @@ namespace Noxico
 
 		public void AimCamera(int x, int y)
 		{
-			//Program.WriteLine("AimCamera({0}, {1})", x, y);
+			var oldCamX = NoxicoGame.CameraX;
+			if (this.Width == 80)
+				NoxicoGame.CameraX = 0;
+			else
+			{
+				NoxicoGame.CameraX = x - 40;
+				if (NoxicoGame.CameraX < 0)
+					NoxicoGame.CameraX = 0;
+				if (NoxicoGame.CameraX > this.Width - 80)
+					NoxicoGame.CameraX = this.Width - 80;
+			}
+
 			var oldCamY = NoxicoGame.CameraY;
-			NoxicoGame.CameraY = y - 12;
-			if (NoxicoGame.CameraY < 0)
+			if (this.Height == 25)
 				NoxicoGame.CameraY = 0;
-			if (NoxicoGame.CameraY > 25)
-				NoxicoGame.CameraY = 25;
-			//Program.WriteLine("AimCamera: old {0}, new {1}", oldCamY, NoxicoGame.CameraY);
-			if (oldCamY < NoxicoGame.CameraY) //went down
-				Redraw();
-			else if (oldCamY > NoxicoGame.CameraY) //went up
+			else
+			{
+				NoxicoGame.CameraY = y - 12;
+				if (NoxicoGame.CameraY < 0)
+					NoxicoGame.CameraY = 0;
+				if (NoxicoGame.CameraY > this.Height - 25)
+					NoxicoGame.CameraY = this.Height - 25;
+			}
+
+			if (oldCamX != NoxicoGame.CameraX || oldCamY != NoxicoGame.CameraY)
 				Redraw();
 		}
 
@@ -1021,9 +1042,9 @@ namespace Noxico
 			}
 		}
 
-		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music)
+		public static Board CreateBasicOverworldBoard(int biomeID, string id, string name, string music, int width, int height)
 		{
-			var newBoard = new Board();
+			var newBoard = new Board(width, height);
 			newBoard.Clear(biomeID);
 			newBoard.Tokenize("name: \"" + name + "\"\nid: \"" + id + "\"\ntype: 3\nbiome: " + biomeID + "\nmusic: \"" + music + "\"\nrealm: 0\nencounters: 0\n\tstock: 0\nnorth: -1\nsouth: -1\neast: -1\nwest: -1\n");
 			newBoard.ID = id;
