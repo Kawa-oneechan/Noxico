@@ -32,14 +32,14 @@ namespace Noxico
 
         public Player()
         {
-			this.AutoTravelMap = new Dijkstra();
+			this.AutoTravelMap = new Dijkstra(this.ParentBoard);
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 			this.Energy = 5000;
 		}
 
 		public Player(Character character) : base(character)
 		{
-			this.AutoTravelMap = new Dijkstra();
+			this.AutoTravelMap = new Dijkstra(this.ParentBoard);
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 			this.Energy = 5000;
 		}
@@ -140,9 +140,9 @@ namespace Noxico
 
 			this.ParentBoard.AimCamera(XPosition, YPosition);
 
-			this.DijkstraMap.UpdateWalls(!Character.IsSlime, ParentBoard);
+			this.DijkstraMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 			this.DijkstraMap.Update();
-			this.AutoTravelMap.UpdateWalls(!Character.IsSlime, ParentBoard);
+			this.AutoTravelMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 		}
 
 		public override bool MeleeAttack(BoardChar target)
@@ -710,7 +710,7 @@ namespace Noxico
 		public void AutoTravelTo(int x, int y)
 		{
 			AutoTravelMap.Hotspots[0] = new Point(x, y);
-			AutoTravelMap.UpdateWalls(!Character.IsSlime);
+			AutoTravelMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 			AutoTravelMap.Update();
 			AutoTravelling = true;
 			AutoTravelLeave = (Direction)(-1);
