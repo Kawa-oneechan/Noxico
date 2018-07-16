@@ -566,8 +566,13 @@ namespace Noxico
 
 				Toolkit.ExpectFromFile(stream, "TMAP", "tile map");
 				for (int row = 0; row < newBoard.Height; row++)
+				{
 					for (int col = 0; col < newBoard.Width; col++)
+					{
+						newBoard.Tilemap[col, row] = new Tile();
 						newBoard.Tilemap[col, row].LoadFromFile(stream);
+					}
+				}
 
 				Toolkit.ExpectFromFile(stream, "SECT", "sector");
 				for (int i = 0; i < secCt; i++)

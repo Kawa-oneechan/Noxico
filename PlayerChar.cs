@@ -32,16 +32,20 @@ namespace Noxico
 
         public Player()
         {
+			this.Energy = 5000;
+			if (this.ParentBoard == null)
+				return;
 			this.AutoTravelMap = new Dijkstra(this.ParentBoard);
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
-			this.Energy = 5000;
 		}
 
 		public Player(Character character) : base(character)
 		{
+			this.Energy = 5000;
+			if (this.ParentBoard == null)
+				return;
 			this.AutoTravelMap = new Dijkstra(this.ParentBoard);
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
-			this.Energy = 5000;
 		}
 
 		/*
@@ -142,6 +146,11 @@ namespace Noxico
 
 			this.DijkstraMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 			this.DijkstraMap.Update();
+			if (this.AutoTravelMap == null)
+			{
+				this.AutoTravelMap = new Dijkstra(this.ParentBoard);
+				this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+			}
 			this.AutoTravelMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 		}
 
@@ -173,7 +182,7 @@ namespace Noxico
 			if (ly == 0 && targetDirection == Direction.North && this.ParentBoard.ToNorth > -1)
 			{
 				otherBoard = n.GetBoard(this.ParentBoard.ToNorth);
-				if (this.CanMove(otherBoard, lx, otherBoard.Height, check) != null)
+				if (this.CanMove(otherBoard, lx, otherBoard.Height - 1, check) != null)
 					return;
 				this.YPosition = otherBoard.Height;
 				OpenBoard(this.ParentBoard.ToNorth);
@@ -709,6 +718,11 @@ namespace Noxico
 
 		public void AutoTravelTo(int x, int y)
 		{
+			if (AutoTravelMap == null)
+			{
+				this.AutoTravelMap = new Dijkstra(this.ParentBoard);
+				this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
+			}
 			AutoTravelMap.Hotspots[0] = new Point(x, y);
 			AutoTravelMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 			AutoTravelMap.Update();
