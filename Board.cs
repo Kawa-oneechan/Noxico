@@ -1523,7 +1523,9 @@ namespace Noxico
 
 		public BoardChar PlaceCharacter(Character ch, int x, int y)
 		{
-			return (BoardChar)PlaceEntity(new BoardChar(ch), x, y);
+			var bc = (BoardChar)PlaceEntity(new BoardChar(ch), x, y);
+			bc.AdjustView();
+			return bc;
 		}
 	}
 
