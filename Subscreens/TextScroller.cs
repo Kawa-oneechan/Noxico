@@ -40,7 +40,6 @@ namespace Noxico
 			}
 			if (Subscreens.Redraw)
 			{
-				host.Write(string.Format("scroll {0}, length {1}", scroll, text.Length), Color.White, Color.Black, 0, 0);
 				NoxicoGame.HostForm.SetCell(2, 76, (scroll > 1) ? '\x1E' : '\xBA', (scroll > 1) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
 				NoxicoGame.HostForm.SetCell(21, 76, (scroll + 21 < text.Length) ? '\x1F' : '\xBA', (scroll + 21 < text.Length) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
 				Subscreens.Redraw = false;

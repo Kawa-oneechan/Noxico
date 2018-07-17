@@ -13,4 +13,9 @@ TestArena = {
 function BuildTestArena(center)
 	print ("lol")
 	center.Clear("Grassland");
+	local vendor = Character.Generate("felin", Gender.RollDice);
+	local vendorbc = center.PlaceCharacter(vendor, 4, 4);
+	vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, "clothier");
+	vendor.GetToken("money").Value = 1000;
+	vendorbc.RestockVendor();
 end

@@ -1403,7 +1403,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			var character = player.Character;
 
 			Me.CurrentBoard.Redraw();
-			if (Mode == UserMode.Walkabout)
+			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
 				DrawMessages();
 
 			Lua.Environment.player = player;
@@ -1411,7 +1411,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			Lua.Environment.DrawStatus();
 
 			if (!LookAt.IsBlank())
-				HostForm.Write(LookAt, Color.Silver, Color.Transparent, 0, 0, true);
+				HostForm.Write(LookAt, Color.Silver, Color.Transparent, Messages.Count, 0, true);
 
 			if (!ContextMessage.IsBlank())
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Transparent, 0, 80 - ContextMessage.Length() - 2, true);

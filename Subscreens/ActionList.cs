@@ -60,8 +60,8 @@ namespace Noxico
 			//If we go off the left or top, fuck it -- overlap the target.
 			if (x < 0)
 				x = 0;
-			if (y < 0)
-				y = 0;
+			if (y < NoxicoGame.Messages.Count)
+				y = NoxicoGame.Messages.Count;
 
 			UIManager.Initialize();
 			win = new UIWindow(title) { Left = x, Top = y, Width = width, Height = height };
@@ -93,6 +93,7 @@ namespace Noxico
 			if (Subscreens.Redraw)
 			{
 				Subscreens.Redraw = false;
+				NoxicoGame.DrawMessages();
 				NoxicoGame.DrawSidebar();
 				UIManager.Draw();
 			}
