@@ -89,14 +89,7 @@ namespace Noxico
 				return string.Format("{0} {1}", the ? Definite : Indefinite, name).Trim();
 			return string.Format("{0} {1}", the ? Definite : i18n.GetArticle(UnknownName), name).Trim();
 		}
-
-		//Added for Jint's sake.
-		//TODO: do we still need this now that we don't USE Jint anymore?
-		public string ToString(Token token)
-		{
-			return this.ToString(token, false, true);
-		}
-
+		
 		public string GetDescription(Token token)
 		{
 			var canBeIdentified = !UnknownName.IsBlank();
