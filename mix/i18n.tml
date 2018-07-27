@@ -10,6 +10,7 @@ words
 	ts_startoverinx: Start over in "{0}"...
 	ts_startnewgame: Start new game...
 	ts_enterworldname: Enter a name for the new world:
+	ts_testingarena: Visit the Testing Arena
 -- #endregion
 -- #region Character Creator
 -- #region Labels
@@ -191,6 +192,7 @@ Number of known items       {2}
 -- #region Messages
 	welcometonoxico: Welcome to Noxico, &#xE220;.
 	welcomeback: Welcome back, &#xE220;.
+	welcometest: Welcome to the Testing Arena, &#xE220;.
 	rememberhelp: Remember, press &#xE20C; for help and options.
 	pointatsomething: Point at an object or character.
 	pointingatdoor: Door
