@@ -481,7 +481,251 @@ namespace Noxico
 			if (this.Character.HasToken("sleeping") || Character.HasToken("anchored"))
 				return;
 
+			if (this.Character.HasToken("teambehavior"))
+			{
+				NewMove();
+				return;
+			}
+
 			ActuallyMove();
+		}
+
+		private void NewMove()
+		{
+			var solidity = SolidityCheck.Walker;
+			//if (Character.IsSlime)
+			solidity = SolidityCheck.DryWalker;
+			if (Character.HasToken("flying"))
+				solidity = SolidityCheck.Flyer;
+
+			if (ScriptPathing)
+			{
+				var dir = Direction.North;
+				ScriptPathTarget.Ignore = DijkstraIgnore.Type;
+				ScriptPathTarget.IgnoreType = typeof(BoardChar);
+				if (ScriptPathTarget.RollDown(this.YPosition, this.XPosition, ref dir))
+					Move(dir, solidity);
+				if (this.XPosition == ScriptPathTargetX && this.YPosition == ScriptPathTargetY)
+				{
+					ScriptPathing = false;
+					RunScript(OnPathFinish);
+				}
+				return;
+			}
+
+			var target = (BoardChar)null;
+			var preferredTarget = (BoardChar)null;
+
+			if (Character.HasToken("huntingtarget"))
+				preferredTarget = ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.ID == Character.GetToken("huntingtarget").Text);
+
+			if (preferredTarget == null)
+			{
+				foreach (var other in this.ParentBoard.Entities.OfType<BoardChar>())
+				{
+					if (other == this)
+						continue;
+					if (!CanSee(other))
+						continue;
+
+					var action = this.Character.DecideTeamBehavior(other.Character, TeamBehaviorClass.Attacking);
+					switch (action)
+					{
+						case TeamBehaviorAction.Nothing:
+							continue;
+						case TeamBehaviorAction.Attack:
+							if (preferredTarget == null)
+								target = other;
+							break;
+						case TeamBehaviorAction.PreferentialAttack:
+							preferredTarget = target = other;
+							break;
+						//case TeamBehaviorAction.CloseByAttack:
+						//	if (this.DistanceFrom(other) < 3)
+						//		target = other;
+						//	break;
+						case TeamBehaviorAction.ThiefingPlayer:
+							if (other is Player && other.Character.HasToken("criminal"))
+								target = other;
+							break;
+					}
+				}
+			}
+
+			if (target == null && preferredTarget != null)
+				target = preferredTarget;
+
+			if (target == null)
+				if (Random.Flip())
+					this.Move((Direction)Random.Next(4), solidity);
+
+			//Update our token
+			if (target == null && preferredTarget == null)
+			{
+				Character.RemoveToken("huntingtarget");
+				return;
+			}
+
+			if (!Character.HasToken("huntingtarget"))
+				Character.AddToken("huntingtarget", target.ID);
+			else
+				Character.GetToken("huntingtarget").Text = target.ID;
+
+
+
+			var distance = DistanceFrom(target);
+
+			if (target is BoardChar)
+			{
+				var weapon = this.Character.GetEquippedItemBySlot("hand");
+				if (weapon != null && !weapon.HasToken("weapon"))
+					weapon = null;
+				var range = (weapon == null || weapon.Path("weapon/range") == null) ? 1 : (int)weapon.Path("weapon/range").Value;
+
+				//Determine best weapon for the job.
+				if ((distance <= 2 && range > 2) || weapon == null)
+				{
+					//Close by, could be better to use short-range weapon, or unarmed.
+					foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+					{
+						if (carriedItem.HasToken("equipped"))
+							continue;
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						if (find.HasToken("equipable") && find.HasToken("weapon"))
+						{
+							var r = find.Path("weapon/range");
+							if (r == null || r.Value == 1)
+							{
+								try
+								{
+									if (find.Equip(this.Character, carriedItem))
+									{
+										Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+										Energy -= 1000;
+										return; //end turn
+									}
+								}
+								catch (ItemException)
+								{ }
+							}
+						}
+					}
+				}
+				if ((distance > 2 && range == 1) || weapon == /* still */ null)
+				{
+					//Far away, could be better to use long-range weapon, or unarmed
+					foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+					{
+						if (carriedItem.HasToken("equipped"))
+							continue;
+						var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+						if (find == null)
+							continue;
+						if (find.HasToken("equipable") && find.HasToken("weapon"))
+						{
+							var r = find.Path("weapon/range");
+							if (r != null && r.Value > 3)
+							{
+								try
+								{
+									if (find.Equip(this.Character, carriedItem))
+									{
+										Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+										Energy -= 1000;
+										return; //end turn
+									}
+								}
+								catch (ItemException)
+								{ }
+							}
+						}
+					}
+				}
+
+				var bcTarget = target as BoardChar;
+				if (distance <= range && CanSee(bcTarget))
+				{
+					//Within attacking range.
+					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("stimulation") > 30 && Character.Likes(bcTarget.Character))
+					{
+						//WRONG KIND OF ATTACK! ABANDON SHIP!!
+						Character.AddToken("waitforplayer");
+						SexManager.Engage(this.Character, bcTarget.Character);
+						return;
+					}
+					if (range == 1 && (target.XPosition == this.XPosition || target.YPosition == this.YPosition))
+					{
+						//Melee attacks can only be orthogonal.
+						MeleeAttack(bcTarget);
+						if (Character.Path("prefixes/infectious") != null && Random.NextDouble() > 0.25)
+							bcTarget.Character.Morph(Character.GetToken("infectswith").Text);
+						return;
+					}
+					else if (weapon != null)
+					{
+						AimShot(target);
+					}
+				}
+			}
+
+			if (!CanSee(target) && Character.HasToken("targetlastpos"))
+			{
+				if (ScriptPathTarget == null)
+				{
+					var lastPos = Character.GetToken("targetlastpos");
+					ScriptPathTarget = new Dijkstra(this.ParentBoard, !Character.IsSlime);
+					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
+					ScriptPathTarget.Update();
+				}
+				Program.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				var map = ScriptPathTarget;
+				var dir = Direction.North;
+				map.Ignore = DijkstraIgnore.Type;
+				map.IgnoreType = typeof(BoardChar);
+				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
+					Move(dir);
+				else
+				{
+					Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+					this.Move((Direction)Random.Next(4), solidity);
+				}
+				if (CanSee(target))
+				{
+					var lastPos = Character.Path("targetlastpos");
+					lastPos.GetToken("x").Value = target.XPosition;
+					lastPos.GetToken("y").Value = target.YPosition;
+				}
+			}
+			else if (distance <= 20 && CanSee(target))
+			{
+				var lastPos = Character.Path("targetlastpos");
+				if (lastPos == null)
+				{
+					lastPos = Character.AddToken("targetlastpos");
+					lastPos.AddToken("x");
+					lastPos.AddToken("y");
+				}
+				lastPos.GetToken("x").Value = target.XPosition;
+				lastPos.GetToken("y").Value = target.YPosition;
+				if (ScriptPathTarget == null)
+				{
+					ScriptPathTarget = new Dijkstra(this.ParentBoard, !Character.IsSlime);
+				}
+				ScriptPathTarget.Hotspots.Clear();
+				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
+				ScriptPathTarget.Update();
+				Program.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+
+				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
+				var map = ScriptPathTarget; //target.DijkstraMap;
+				var dir = Direction.North;
+				map.Ignore = DijkstraIgnore.Type;
+				map.IgnoreType = typeof(BoardChar);
+				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
+					Move(dir);
+			}
 		}
 
 		private void ActuallyMove()

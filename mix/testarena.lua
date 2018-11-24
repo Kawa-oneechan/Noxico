@@ -13,9 +13,20 @@ TestArena = {
 function BuildTestArena(center)
 	print ("lol")
 	center.Clear("Grassland");
-	local vendor = Character.Generate("felin", Gender.RollDice);
-	local vendorbc = center.PlaceCharacter(vendor, 4, 4);
-	vendor.AddToken("role").AddToken("vendor").AddToken("class", 0, "clothier");
-	vendor.GetToken("money").Value = 1000;
-	vendorbc.RestockVendor();
+
+	local hostile = Character.Generate("imp", Gender.RollDice);
+	local hostilebc = center.PlaceCharacter(hostile, 35, 15);
+	hostile.AddToken("team", 2, "");
+	hostile.AddToken("teambehavior");
+
+	local neutral = Character.Generate("kitsune", Gender.RollDice);
+	local neutralbc = center.PlaceCharacter(neutral, 45, 15);
+	neutral.AddToken("team", 0, "");
+	neutral.AddToken("teambehavior");
+
+	local guard = Character.Generate("naga", Gender.RollDice);
+	local guardbc = center.PlaceCharacter(guard, 60, 15);
+	guard.AddToken("team", 4, "");
+	guard.AddToken("teambehavior");
+
 end

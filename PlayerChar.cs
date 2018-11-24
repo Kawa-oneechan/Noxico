@@ -227,7 +227,7 @@ namespace Noxico
 					if (entity is BoardChar)
 					{
 						var bc = (BoardChar)entity;
-						if (bc.Character.HasToken("hostile"))
+						if (bc.Character.HasToken("hostile") || (bc.Character.HasToken("teambehavior") && bc.Character.DecideTeamBehavior(Character, TeamBehaviorClass.Attacking) != TeamBehaviorAction.Nothing))
 						{
 							//Strike at your foes!
 							AutoTravelling = false;
@@ -817,7 +817,9 @@ namespace Noxico
 					NoxicoGame.AddMessage(i18n.GetString("gameover_title"), Color.Red);
 					//var playerFile = Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName, "player.bin");
 					//File.Delete(playerFile);
-					var world = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
+					var world = string.Empty;
+					if (NoxicoGame.WorldName != "<Testing Arena>")
+						world = System.IO.Path.Combine(NoxicoGame.SavePath, NoxicoGame.WorldName);
 					NoxicoGame.Sound.PlayMusic("set://Death");
 					NoxicoGame.InGame = false;
 					var c = i18n.GetString(cause + "_player");
@@ -828,12 +830,14 @@ namespace Noxico
 						() =>
 						{
 							Character.CreateInfoDump();
-							Directory.Delete(world, true);
+							if (NoxicoGame.WorldName != "<Testing Arena>")
+								Directory.Delete(world, true);
 							NoxicoGame.HostForm.Close();
 						},
 						() =>
 						{
-							Directory.Delete(world, true);
+							if (NoxicoGame.WorldName != "<Testing Arena>")
+								Directory.Delete(world, true);
 							NoxicoGame.HostForm.Close();
 						}
 						);

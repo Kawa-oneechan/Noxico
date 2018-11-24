@@ -86,6 +86,8 @@ namespace Noxico
 					}
 				}
 			}
+			if (!Directory.Exists("mods"))
+				return;
 			foreach (var dataDir in Directory.EnumerateDirectories("mods"))
 			{
 				foreach (var dataFile in Directory.EnumerateFiles(dataDir))

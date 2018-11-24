@@ -2856,7 +2856,7 @@ Tokens:
 		 * ATTACK GRID -- members of one team will hunt down and attack members of the other when spotted.
 		 *   0 1 2 3 4 5 6 7 8 <-- the other
 		 * 0 - - - - - - - - - <-- neutrals don't attack
-		 * 1 - - - - - - - - - <-- the player is not automatically controlled at all
+		 * 1 - - Y - - Y - Y Y <-- the player is not automatically controlled at all
 		 * 2 Y P - Y Y - - Y - <-- hostiles attack neutrals, players, their possse and guards, but prefer the player
 		 * 3 - - Y - - Y - Y - <-- posse attacks hostiles, predators, and angry neutrals (allow tactics control?)
 		 * 4 - T Y - - C - - - <-- guards attack hostiles, thiefing players, and any predators that come too close
@@ -2924,7 +2924,7 @@ Tokens:
 				var grid = new[]
 				{
 					0, 0, 0, 0, 0, 0, 0, 0, 0,
-					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 1, 0, 0, 1, 0, 1, 1,
 					1, 2, 0, 1, 1, 0, 0, 1, 0,
 					0, 0, 1, 0, 0, 1, 0, 1, 0,
 					0, 9, 1, 0, 0, 8, 0, 0, 0,
