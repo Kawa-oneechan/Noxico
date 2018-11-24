@@ -11,3 +11,6 @@ diffs.txt
 desktop.ini
 Japanese
 Dutch
+.git
+.gitignore
+.gitattributes

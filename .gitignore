@@ -1,0 +1,14 @@
+obj/
+bin/
+nsis/
+diffs.txt
+*.suo
+*.cachefile
+*.mix
+*.nox
+*.user
+desktop.ini
+Japanese/
+Dutch/
+.hgignore
+.hg/
