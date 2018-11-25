@@ -2936,7 +2936,8 @@ Tokens:
 				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
 				if (action == TeamBehaviorAction.CloseByAttack)
 					action = (BoardChar.DistanceFrom(other.BoardChar) > 4) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Attack;
-				//TODO: check for thieving players
+				if (action == TeamBehaviorAction.ThiefingPlayer)
+					action = (other.BoardChar is Player && other.HasToken("criminal")) ? TeamBehaviorAction.Attack : TeamBehaviorAction.Nothing;
 				//TODO: consider running away at low health, returning TBA.Avoid.
 				return action;
 			}

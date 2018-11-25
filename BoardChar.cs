@@ -516,8 +516,14 @@ namespace Noxico
 			var target = (BoardChar)null;
 			var preferredTarget = (BoardChar)null;
 
+			var action = TeamBehaviorAction.Nothing;
+
 			if (Character.HasToken("huntingtarget"))
+			{
 				preferredTarget = ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => x.ID == Character.GetToken("huntingtarget").Text);
+				if (preferredTarget != null && (int)Character.GetToken("huntingtarget").Value > 0)
+					action = (TeamBehaviorAction)((int)Character.GetToken("huntingtarget").Value);
+			}
 
 			if (preferredTarget == null)
 			{
@@ -525,30 +531,49 @@ namespace Noxico
 				{
 					if (other == this)
 						continue;
-					if (!CanSee(other))
+					if (!CanSee(other) || DistanceFrom(other) > 20)
 						continue;
 
-					var action = this.Character.DecideTeamBehavior(other.Character, TeamBehaviorClass.Attacking);
+					var newAction = this.Character.DecideTeamBehavior(other.Character, TeamBehaviorClass.Attacking);
+					switch (newAction)
+					{
+						case TeamBehaviorAction.Nothing:
+							break;
+						case TeamBehaviorAction.Attack:
+							if (preferredTarget == null)
+							{
+								target = other;
+								action = TeamBehaviorAction.Attack;
+							}
+							break;
+						case TeamBehaviorAction.PreferentialAttack:
+							preferredTarget = target = other;
+							action = TeamBehaviorAction.Attack;
+							break;
+					}
+
+					if (action == TeamBehaviorAction.Attack && preferredTarget == null)
+						continue;
+					if (action != TeamBehaviorAction.Nothing)
+						break;
+
+					action = this.Character.DecideTeamBehavior(other.Character, TeamBehaviorClass.Flocking);
 					switch (action)
 					{
 						case TeamBehaviorAction.Nothing:
 							continue;
-						case TeamBehaviorAction.Attack:
-							if (preferredTarget == null)
-								target = other;
+						case TeamBehaviorAction.Avoid:
+							target = other;
 							break;
-						case TeamBehaviorAction.PreferentialAttack:
-							preferredTarget = target = other;
-							break;
-						//case TeamBehaviorAction.CloseByAttack:
-						//	if (this.DistanceFrom(other) < 3)
-						//		target = other;
-						//	break;
-						case TeamBehaviorAction.ThiefingPlayer:
-							if (other is Player && other.Character.HasToken("criminal"))
-								target = other;
+						case TeamBehaviorAction.Flock:
+						//No need to check for FlockAlike -- is collapsed into Attack by DecideTeamBehavior
+						//case TeamBehaviorAction.FlockAlike:
+							target = other;
 							break;
 					}
+
+					if (action != TeamBehaviorAction.Nothing)
+						break;
 				}
 			}
 
@@ -567,15 +592,18 @@ namespace Noxico
 			}
 
 			if (!Character.HasToken("huntingtarget"))
-				Character.AddToken("huntingtarget", target.ID);
+				Character.AddToken("huntingtarget", (int)action, target.ID);
 			else
+			{
 				Character.GetToken("huntingtarget").Text = target.ID;
+				Character.GetToken("huntingtarget").Value = (int)action;
+			}
 
-
+			Program.WriteLine("{0}, team {1}, action {2}, target {3}", this.ID, this.Character.Team, action, target != null ? target.ID : "<null>");
 
 			var distance = DistanceFrom(target);
 
-			if (target is BoardChar)
+			if (target is BoardChar && action == TeamBehaviorAction.Attack)
 			{
 				var weapon = this.Character.GetEquippedItemBySlot("hand");
 				if (weapon != null && !weapon.HasToken("weapon"))
@@ -685,10 +713,27 @@ namespace Noxico
 				map.Ignore = DijkstraIgnore.Type;
 				map.IgnoreType = typeof(BoardChar);
 				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
-					Move(dir);
+				{
+					switch (action)
+					{
+						case TeamBehaviorAction.Attack:
+							this.Move(dir);
+							break;
+						case TeamBehaviorAction.Flock:
+							if (DistanceFrom(target) > 10)
+								this.Move(dir);
+							else
+								this.Move((Direction)Random.Next(4), solidity);
+							break;
+						case TeamBehaviorAction.Avoid:
+							dir = (Direction)(((int)dir + 2) % 4);
+							this.Move(dir);
+							break;
+					}
+				}
 				else
 				{
-					Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+					//Program.WriteLine("{0} couldn't find target at LKP {1}, wandering...", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 					this.Move((Direction)Random.Next(4), solidity);
 				}
 				if (CanSee(target))
@@ -716,7 +761,7 @@ namespace Noxico
 				ScriptPathTarget.Hotspots.Clear();
 				ScriptPathTarget.Hotspots.Add(new Point(target.XPosition, target.YPosition));
 				ScriptPathTarget.Update();
-				Program.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				//Program.WriteLine("{0} updates LKP to {1} (can see)", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 
 				//Try to move closer. I WANT TO HIT THEM WITH MY SWORD!
 				var map = ScriptPathTarget; //target.DijkstraMap;
@@ -724,7 +769,24 @@ namespace Noxico
 				map.Ignore = DijkstraIgnore.Type;
 				map.IgnoreType = typeof(BoardChar);
 				if (map.RollDown(this.YPosition, this.XPosition, ref dir))
-					Move(dir);
+				{
+					switch (action)
+					{
+						case TeamBehaviorAction.Attack:
+							this.Move(dir);
+							break;
+						case TeamBehaviorAction.Flock:
+							if (DistanceFrom(target) > 10)
+								this.Move(dir);
+							else
+								this.Move((Direction)Random.Next(4), solidity);
+							break;
+						case TeamBehaviorAction.Avoid:
+							dir = (Direction)(((int)dir + 2) % 4);
+							this.Move(dir);
+							break;
+					}
+				}
 			}
 		}
 
