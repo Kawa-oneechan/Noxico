@@ -142,16 +142,15 @@ namespace Noxico
 		/// </summary>
 		public override string ToString()
 		{
+			var ret = Title;
 			if (HasToken("title"))
-				return GetToken("title").Text;
-			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
-			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
-				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
-				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Invisible;
-			if (IsProperNamed)
-				return string.Format("{0}, {1} {3}", Name.ToString(true), A, (g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ', Title);
-			return string.Format("{0} {1}", A, Title);
+				ret = GetToken("title").Text;
+			else if (IsProperNamed)
+			{
+				//TODO: I18N
+				ret = string.Format("{0}, {1} {2}", Name.ToString(true), A, Title);
+			}
+			return ret;
 		}
 
 		public string GetKnownName(bool fullName = false, bool appendTitle = false, bool the = false, bool initialCaps = false)
@@ -164,28 +163,19 @@ namespace Noxico
 				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
 
 			var player = NoxicoGame.Me.Player.Character;
-			var g = HasToken("invisiblegender") ? Gender.Invisible : Gender;
 
 			//TODO: logic duplicated from UpdateTitle()
-			if ((g == Gender.Male && (HasToken("maleonly") || GetToken("terms").HasToken("male"))) ||
-				(g == Gender.Female && (HasToken("femaleonly") || GetToken("terms").HasToken("female"))) ||
-				(g == Gender.Herm && HasToken("hermonly")))
-				g = Gender.Invisible;
-
 			if (player != null && player.Path("ships/" + ID) != null)
 			{
 				if (appendTitle)
-					return string.Format("{0}, {1} {2}{3}",
-						Name.ToString(fullName), (the ? "the" : A),
-						(g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ',
+					return string.Format("{0}, {1} {2}",
+						Name.ToString(fullName),
+						(the ? "the" : A),
 						Title);
 				return Name.ToString(fullName);
 			}
 
-			return string.Format("{0} {1}{2}",
-				initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A),
-				(g == Gender.Invisible) ? string.Empty : g.ToString().ToLowerInvariant() + ' ',
-				Title);
+			return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Title);
 		}
 
 		/// <summary>
@@ -308,33 +298,17 @@ namespace Noxico
 			// Invisible: "felir"
 			// -- K
 
+			//Okay fuck this, new rule. If we have a terms token, it must contain all four options spelled out verbatim.
+			//Alternatively, if it *only* contains a generic, we use that.
+
 			var pg = PercievedGender; //cache the value -- K
 			Title = null; // start fresh
-			if (HasToken("invisiblegender")) // attempt to find a custom term for this race & gender combo eg "felir"
-			{
-				if (pg == Gender.Male && GetToken("terms").HasToken("male"))
-					Title = GetToken("terms").GetToken("male").Text;
 
-				if (pg == Gender.Female && GetToken("terms").HasToken("female"))
-					Title = GetToken("terms").GetToken("female").Text;
-
-				if (pg == Gender.Herm && GetToken("terms").HasToken("herm"))
-					Title = GetToken("terms").GetToken("herm").Text;
-
-				if (pg == Gender.Neuter && GetToken("terms").HasToken("neuter"))
-					Title = GetToken("terms").GetToken("neuter").Text;
-
-				if (Title == null) // fix to catch missing invisiblegenders
-					Title = pg.ToString().ToLowerInvariant() + " " + GetToken("terms").GetToken("generic").Text;
-			}
-			else if (HasToken("explicitgender") || Title == null) // eg "male felin"
-			{
-				Title = pg.ToString().ToLowerInvariant() + " " + GetToken("terms").GetToken("generic").Text;
-			}
-			else // just "felin"
-			{
-				Title = GetToken("terms").GetToken("generic").Text;
-			}
+			var terms = GetToken("terms");
+			if (terms.HasToken("generic"))
+				Title = terms.GetToken("generic").Text;
+			else
+				Title = terms.GetToken(pg.ToString().ToLowerInvariant()).Text;
 
 			if (HasToken("prefixes")) // add prefixes, 'vorpal', 'dire' etc
 			{
@@ -2080,12 +2054,13 @@ Tokens:
 				paragon.Value = 100;
 		}
 
-		public void SetTerms(string generic, string male, string female, string herm)
+		public void SetTerms(string generic, string male, string female, string herm, string neuter)
 		{
 			var g = this.Path("terms/generic");
 			var m = this.Path("terms/male");
 			var f = this.Path("terms/female");
 			var h = this.Path("terms/herm");
+			var n = this.Path("terms/neuter");
 			if (g == null)
 				g = this.GetToken("terms").AddToken("generic");
 			if (m == null)
@@ -2094,10 +2069,13 @@ Tokens:
 				f = this.GetToken("terms").AddToken("female");
 			if (h == null)
 				h = this.GetToken("terms").AddToken("herm");
+			if (n == null)
+				n = this.GetToken("terms").AddToken("neuter");
 			g.Text = generic;
 			m.Text = male;
 			f.Text = female;
 			h.Text = herm;
+			n.Text = neuter;
 		}
 
 		public void EnsureColor(Token colorToken, string options)

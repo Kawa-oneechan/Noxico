@@ -3,11 +3,11 @@ bodyplan: human
 	culture: human
 	namegen: oneof norse, germanic
 	normalgenders
-	explicitgender
 	terms
-		generic: "human"
 		male: "man"
 		female: "woman"
+		herm: "human herm"
+		neuter: "human"
 	bestiary: "A typical human of northern stock."
 		char: 0x160
 	tallness: roll 1d50+150
@@ -57,7 +57,6 @@ bodyplan: imp
 	culture: seradevar
 	namegen: demonic
 	maleonly
-	invisiblegender
 	terms
 		generic: "imp"
 	bestiary: "A disgusting little devil that rapes and destroys whatever tickles its fancy."
@@ -98,7 +97,6 @@ bodyplan: goblin
 	culture: seradevar
 	namegen: demonic
 	femaleonly
-	invisiblegender
 	terms
 		generic: "goblin"
 	bestiary: "Originally great engineers, now fallen into an orgasmic frenzy."
@@ -156,11 +154,11 @@ bodyplan: bee
 	culture: human
 	namegen: arabic
 	femaleonly
-	invisiblegender
 	terms
-		generic: "bee"
 		male: "bee drone"
 		female: "bee girl"
+		herm: "herm bee"
+		neuter: "bee"
 	bestiary: "A man-sized bee, basically."
 		char: 0x166
 	tallness: roll 1d20+140
@@ -249,7 +247,6 @@ bodyplan: foocubus
 	playable
 	culture: seradevar
 	namegen: demonic
-	invisiblegender
 	terms
 		generic: "concubus"
 		male: "incubus"
@@ -303,13 +300,11 @@ bodyplan: felin
 	playable
 	culture: felin
 	namegen: felin
---	normalgenders
-	invisiblegender
 	terms
-		generic: "felin"
 		male: "felir"
 		female: "fela"
 		herm: "felhru"
+		neuter: "felin"
 	bestiary: "Lost interstellar colonists."
 		char: 0x167
 	tallness: roll 1d40+150
@@ -364,12 +359,11 @@ bodyplan: kitsune
 	culture: human
 	namegen: japanese
 	normalgenders
-	invisiblegender
 	terms
-		generic: "kitsune"
 		male: "foxboy"
 		female: "foxgirl"
 		herm: "foxherm"
+		neuter: "kitsune"
 	bestiary: "Cunning tricksters and well-versed bards."
 		char: 0x167
 	tallness: roll 1d20+150
@@ -419,7 +413,6 @@ bodyplan: slime
 	culture: seradevar
 	namegen: japanese
 	allowneuter
-	invisiblegender
 	copier
 	terms
 		generic: "slime"
@@ -470,13 +463,12 @@ bodyplan: ursidae
 	culture: ursidous
 	namegen: bears
 	normalgenders
-	invisiblegender
 	fearless
 	terms
-		generic: "ursidae"
 		male: "ursidae"
 		female: "ursavus"
 		herm: "ursus"
+		neuter: "ursidae"
 	tallness: roll 1d150+150
 	bestiary: "They're big, they're burly, they're gonna getcha!"
 		char: 0x171
@@ -525,12 +517,11 @@ bodyplan: canine
 	culture: human
 	namegen: germanic
 	normalgenders
-	invisiblegender
 	terms
-		generic: "canine"
 		male: "dogboy"
 		female: "doggirl"
 		herm: "dogherm"
+		neuter: "canine"
 	hair
 		length: roll 1d6+3
 		color: oneof blond, brown, black, red
@@ -579,12 +570,11 @@ bodyplan: draig
 	culture: human
 	namegen: welsh
 	allowneuter
-	invisiblegender
 	terms
-		generic: "draig"
 		male: "draign"
 		female: "draiga"
 		herm: "dragwn"
+		neuter: "draig"
 	bestiary: "A proud race from the far West, thought by some to be related somehow to the demons."
 		char: 0x166
 	tallness: roll 1d30+200
@@ -639,12 +629,8 @@ bodyplan: xenon
 	playable
 	culture: felin
 	namegen: norse
-	invisiblegender
 	terms
 		generic: "xenon"
-		male: "xenon"
-		female: "xenon"
-		herm: "xenon"
 	bestiary: "Not argonians."
 		char: 0x160
 	tallness: roll 1d30+200

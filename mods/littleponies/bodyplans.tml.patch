@@ -4,11 +4,11 @@ add: -
 		culture: mlp_equestrian
 		namegen: mlp_pony
 		normalgenders
-		invisiblegender
 		terms
-			generic: "little pony"
 			male: "stallion"
 			female: "mare"
+			neuter: "little pony"
+			herm: "little pony"
 		bestiary: "I used to wonder what erotic adventure games could be."
 			char: 0x163
 		-- marshmallow adjusts the way hooves are described.
