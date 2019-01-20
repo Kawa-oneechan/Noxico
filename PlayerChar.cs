@@ -30,7 +30,7 @@ namespace Noxico
 			}
 		}
 
-        public Player()
+        public Player() : base()
         {
 			this.Energy = 5000;
 			if (this.ParentBoard == null)
@@ -144,8 +144,11 @@ namespace Noxico
 
 			this.ParentBoard.AimCamera(XPosition, YPosition);
 
-			this.DijkstraMap.UpdateWalls(ParentBoard, !Character.IsSlime);
-			this.DijkstraMap.Update();
+			if (this.DijkstraMap != null)
+			{
+				this.DijkstraMap.UpdateWalls(ParentBoard, !Character.IsSlime);
+				this.DijkstraMap.Update();
+			}
 			if (this.AutoTravelMap == null)
 			{
 				this.AutoTravelMap = new Dijkstra(this.ParentBoard);
@@ -979,6 +982,7 @@ namespace Noxico
 		{
 			var game = NoxicoGame.Me;
 			var homeBoard = game.GetBoard((int)Character.GetToken("homeboard").Value);
+			homeBoard.Update();
 			var bed = homeBoard.Entities.First(e => e is Clutter && e.ID == "Bed_playerRespawn");
 			if (ParentBoard != homeBoard)
 				OpenBoard(homeBoard.BoardNum);

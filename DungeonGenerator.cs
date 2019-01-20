@@ -746,7 +746,7 @@ namespace Noxico
 				map[i, 0] = 1;
 				map[i, Board.Height - 1] = 1;
 			}
-			for (var i = 0; i < Board.Width; i++)
+			for (var i = 0; i < Board.Height; i++)
 			{
 				map[0, i] = 1;
 				map[1, i] = 1;
