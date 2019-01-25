@@ -553,6 +553,7 @@ gesture-flirty-female
 	- bite{s} [t:his] knuckles
 
 hostile-callout
+	- There [b:he] [b:is]!
 	- I see you!
 	- I see you, you [?:hostile-callout-insult]!
 	- There you are!

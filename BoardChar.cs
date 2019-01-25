@@ -204,16 +204,30 @@ namespace Noxico
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
-				base.Draw();
+				var c = this.Glyph;
+				if (NoxicoGame.HostForm.Is437)
+				{
+					if (this is Player)
+						c = '@';
+					else
+					{
+						var title = this.Character.Title;
+						if (this.Character.IsShort)
+							c = title.ToLowerInvariant()[0];
+						else
+							c = title.ToUpperInvariant()[0];
+					}
+				}
 				if (Environment.TickCount % blinkRate * 2 < blinkRate)
 				{
 					if (Character.HasToken("sleeping"))
-						NoxicoGame.HostForm.SetCell(localY, localX, 'Z', this.ForegroundColor, b);
+						c = 'Z';
 					else if (Character.HasToken("flying"))
-						NoxicoGame.HostForm.SetCell(localY, localX, '^', this.ForegroundColor, b);
+						c = '^';
 					else if (Character.Path("role/vendor") != null)
-						NoxicoGame.HostForm.SetCell(localY, localX, '$', this.ForegroundColor, b);
+						c = '$';
 				}
+				NoxicoGame.HostForm.SetCell(localY, localX, c, this.ForegroundColor, b);
 			}
 			else if (Eyes > 0 && Character.Path("eyes/glow") != null && !Character.HasToken("sleeping"))
 				NoxicoGame.HostForm.SetCell(localY, localX, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());

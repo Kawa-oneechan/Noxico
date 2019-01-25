@@ -304,6 +304,7 @@ namespace Noxico
 				}
 
 				RestartGraphics();
+				fourThirtySeven = IniFile.GetValue("misc", "437", false);
 
 				Noxico = new NoxicoGame();
 				Noxico.Initialize(this);

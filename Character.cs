@@ -2802,6 +2802,16 @@ Tokens:
 			}
 		}
 
+		public bool IsShort
+		{
+			get
+			{
+				if (!HasToken("tallness"))
+					return false;
+				return (GetToken("tallness").Value < 140);
+			}
+		}
+
 		public void ResetEquipmentCarries()
 		{
 			var carriedItems = this.GetToken("items");
