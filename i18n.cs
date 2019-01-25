@@ -1,4 +1,4 @@
-﻿/* Some rules on Private Use characters
+/* Some rules on Private Use characters
  * ------------------------------------
  * U+E200 to U+E3FF are considered controllers.
  * They do not represent printable characters.
@@ -290,7 +290,7 @@ namespace Noxico
 			#region [] Parser
 			var regex = new Regex(@"
 \[
-	(?:(?<target>[tb\?]):)?		#Optional target and :
+	(?:(?<target>[tb\?]{1,2}):)?	#Optional target and :
 
 	(?:							#One or more subcommands
 		(?:\:?)					#Separating :, optional in case target already had one
@@ -314,6 +314,11 @@ namespace Noxico
 
 						if (targetGroup.Length == 2 && "tb".Contains(targetGroup[1]))
 							target = (targetGroup[1] == 't' ? top : bottom);
+
+						Lua.Environment.top = top;
+						Lua.Environment.bottom = bottom;
+						Lua.Environment.target = target;
+
 						var pToks = wordStructor.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
 						if (pToks.Count == 0)
 							return string.Format("<WordStructor fail: {0}>", match.Groups["subcom"].Value);
@@ -330,6 +335,7 @@ namespace Noxico
 					}
 
 					Lua.Environment.isPlayer = (target == player);
+					Lua.Environment.target = target;
 
 					//subcom = targetGroup;
 					//subcom = match.Groups["subcom"].Captures[0].Value;

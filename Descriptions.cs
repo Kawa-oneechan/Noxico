@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -343,6 +343,10 @@ namespace Noxico
 		#endregion
 
 		#region Upperbody descriptions
+		public static string BodyMaterial(string skinType)
+		{
+			return GetPartDescription("skin/" + skinType, new string[] { null });
+		}
 
 		/// <summary>
 		/// Returns a string containing a description of the passed 'nipple' token's size.

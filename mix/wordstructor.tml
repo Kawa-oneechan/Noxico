@@ -551,3 +551,24 @@ gesture-flirty-female
 	- blush{es}
 	- bite{s} [t:his] finger
 	- bite{s} [t:his] knuckles
+
+hostile-callout
+	- I see you!
+	- I see you, you [?:hostile-callout-insult]!
+	- There you are!
+	- There you are, you [?:hostile-callout-insult]!
+hostile-callout-insult
+	- [b:bodymat] [?b:insult]
+		filter: (bottom.Path("skin/type").Text ~= "skin")
+	- [?b:insult]
+
+insult
+	- cocksucker
+	- asshole
+	- worm
+	- motherfucker
+	- shithead
+	- shit
+	- cocksleeve
+	- football fan
+	- turd

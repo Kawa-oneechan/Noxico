@@ -254,7 +254,7 @@ This book, we're sorry to say, has a broken reference.
 	eat_toyourhips: That went right to your hips!
 	eat_toyourwaist: That went right to your waist!
 	eat_toyourbutt: That went right to your [t:buttsize] [?:butt]!
-	call_out: {0}: "There [b:he] [b:is]!"
+	call_out: {0}: "[?:hostile-callout]"
 	call_out_animal: The [t:title] vocalizes an alert!
 -- #endregion
 -- #region Causes of death

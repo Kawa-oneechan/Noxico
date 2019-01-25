@@ -266,6 +266,8 @@ RegisterVPTags(
 	hipsize = function(c, s) return Descriptions.HipSize(c.GetToken("hips")) end,
 	haircolor = function(c, s) return Descriptions.HairColor(c.GetToken("hair")) end,
 	hairlength = function(c, s) return Descriptions.HairLength(c.GetToken("hair")) end,
+	hairmat = function(c, s) return Descriptions.HairMaterial(c.Path("skin/type").Text) end,	
+	bodymat = function(c, s) return Descriptions.BodyMaterial(c.Path("skin/type").Text) end,	
 	ballsize = function(c, s) return Descriptions.BallSize(c.GetToken("balls")) end,
 	-- End of PillowShout's stuff
 
