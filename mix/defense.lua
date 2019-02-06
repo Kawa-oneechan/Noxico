@@ -15,6 +15,8 @@ function GetDefenseFactor(weapon, target)
 	local skinType = 1 --regular skin
 
 	if weapon == nil then
+		-- TODO: should use the attacker's stats instead...
+		-- ...create a weapon token from scratch in MeleeAttack?
 		if target.Path("skin/type").Text == "fur" then --or perhaps they have nails?
 			attackType = 2 --tear
 		elseif target.HasToken("snaketail") then
@@ -50,5 +52,3 @@ function GetDefenseFactor(weapon, target)
 
 	return ret
 end
-
-
