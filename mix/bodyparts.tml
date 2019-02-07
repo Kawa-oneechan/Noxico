@@ -208,30 +208,52 @@ breasts
 	size
 		upto: 0
 			flat
+			tight
+			manly
 		upto: 0.5
 			tiny
+			cute
 		upto: 1
 			small
+			soft
+			cute
 		upto: 2.5
 			fair
+			palmable
+			perky
 		upto: 3.5
+			tight
 			appreciable
+			nice
 		upto: 4.5
 			ample
+			supple
+			well-rounded
 		upto: 6
 			pillowy
+			large
+			jiggly
 		upto: 7
 			large
+			generous
+			jiggling
 		upto: 8
 			ridiculously large
+			cushiony
+			wobbly
 		upto: 9
 			huge
+			whorish
+			prodigious
 		upto: 10
 			spacious
+			immense
 		upto: 12
 			back-breaking
+			massive
 		upto: 13
 			mountainous
+			monumental
 		upto: 14
 			ludicrous
 		upto: 15
@@ -241,16 +263,27 @@ breasts
 	nipples
 		upto: 0.25
 			dainty
+			teeny-tiny
+			itty-bitty
 		upto: 0.5
 			perky
+			tiny
 		upto: 1
 			prominent
+			pronounced
+			eye-catching
 		upto: 2
 			fleshy
+			jutting
+			protruding
 		upto: 3.2
 			hefty
+			massive
+			awkward
 		upto: 100
 			bulky
+			cow-like
+			ponderous
 waist
 	upto: 1
 		emaciated
