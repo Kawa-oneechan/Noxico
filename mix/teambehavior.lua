@@ -61,6 +61,11 @@ function DecideTeamBehavior(me, other, whatFor)
 			-- end
 		end
 		-- TODO: consider running away at low health, returning TBA.Avoid.
+		if action == 1 then -- attacking... but consider the ramifications for a moment here.
+			if (not me.BoardChar.ConsiderAttack(other.BoardChar)) then
+				action = 3 -- get away
+			end
+		end
 	else
 		action = teamBehaviorForFlocking[myTeam][theirTeam]
 		if action == 5 then -- flock to like -- TODO: check if >= 3 is any good.

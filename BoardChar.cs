@@ -613,7 +613,7 @@ namespace Noxico
 				Character.GetToken("huntingtarget").Value = (int)action;
 			}
 
-			Program.WriteLine("{0}, team {1}, action {2}, target {3}", this.ID, this.Character.Team, action, target != null ? target.ID : "<null>");
+			//Program.WriteLine("{0}, team {1}, action {2}, target {3}", this.ID, this.Character.Team, action, target != null ? target.ID : "<null>");
 
 			var distance = DistanceFrom(target);
 
@@ -644,7 +644,7 @@ namespace Noxico
 								{
 									if (find.Equip(this.Character, carriedItem))
 									{
-										Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
+										//Program.WriteLine("{0} switches to {1} (SR)", this.Character.Name, find);
 										Energy -= 1000;
 										return; //end turn
 									}
@@ -674,7 +674,7 @@ namespace Noxico
 								{
 									if (find.Equip(this.Character, carriedItem))
 									{
-										Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
+										//Program.WriteLine("{0} switches to {1} (LR)", this.Character.Name, find);
 										Energy -= 1000;
 										return; //end turn
 									}
@@ -721,7 +721,7 @@ namespace Noxico
 					ScriptPathTarget.Hotspots.Add(new Point((int)lastPos.GetToken("x").Value, (int)lastPos.GetToken("y").Value));
 					ScriptPathTarget.Update();
 				}
-				Program.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
+				//Program.WriteLine("{0} can't see, looks for {1}", this.ID, ScriptPathTarget.Hotspots[0].ToString());
 				var map = ScriptPathTarget;
 				var dir = Direction.North;
 				map.Ignore = DijkstraIgnore.Type;
@@ -1142,50 +1142,16 @@ namespace Noxico
 
 		public virtual bool MeleeAttack(BoardChar target)
 		{
-			//First we need to figure out if we're armed.
+			var dodged = false;
+			var skill = string.Empty;
+			var verb = string.Empty;
+			var cause = string.Empty;
 			Token weaponData = null;
 			Token carriedWeapon = null;
-			foreach (var carriedItem in this.Character.GetToken("items").Tokens)
-			{
-				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
-				if (find == null)
-					continue;
-				if (find.HasToken("equipable") && carriedItem.HasToken("equipped") && find.HasToken("weapon"))
-				{
-					weaponData = find.GetToken("weapon");
-					carriedWeapon = carriedItem;
-					break;
-				}
-			}
-
-			Energy -= 500;
-
-			var damage = 0.0f;
-			var baseDamage = 0.0f;
-			var dodged = false;
-			var skill = "unarmed_combat";
-			var verb = "strike{s}"; //TODO: i18n
-			var cause = "death_struckdown";
-			var attackerName = this.Character.GetKnownName(false, false, true);
-			var attackerFullName = this.Character.GetKnownName(true, true, true);
-			var targetName = target.Character.GetKnownName(false, false, true);
-			var targetFullName = target.Character.GetKnownName(true, true, true);
-			if (weaponData == null)
-			{
-				//Unarmed combat by default.
-				baseDamage = (float)Math.Floor(this.Character.GetStat("strength"));
-			}
-			else
-			{
-				//Armed combat, yeah!
-				skill = weaponData.GetToken("skill").Text;
-				baseDamage = weaponData.GetToken("damage").Value;
-				if (carriedWeapon.HasToken("bonus"))
-					baseDamage = (float)Math.Ceiling(baseDamage * ((carriedWeapon.GetToken("bonus").Value + 1) * 0.75f));
-				//TODO: if it's a crushing weapon, use strength stat.
-			}
+			var baseDamage = GetPotentialDamage(target, out skill, out verb, out cause, out weaponData, out carriedWeapon);
 
 			var level = (this.Character.Path("skills/" + skill) == null) ? 0 : (int)this.Character.Path("skills/" + skill).Value;
+			var damage = 0.0f;
 
 			if (level == 5)
 				damage = baseDamage;
@@ -1201,31 +1167,10 @@ namespace Noxico
 				damage = baseDamage;
 			}
 
-			if (this.Character.Path("prefixes/vorpal") != null)
-				damage *= 1.5f;
-			if (this.Character.Path("prefixes/underfed") != null)
-				damage *= 0.25f;
-
-			damage *= GetDefenseFactor(weaponData, target.Character);
-
-			//Find the best overall "generic" armor defense and apply it.
-			var overallArmor = 0f;
-			foreach (var targetArmor in target.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
-			{
-				var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
-				if (targetArmorItem == null)
-					continue;
-				if (!targetArmorItem.HasToken("armor"))
-					continue;
-				if (targetArmorItem.GetToken("armor").Value > overallArmor)
-					overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
-			}
-			if (overallArmor != 0)
-				damage /= overallArmor;
-			//Account for armor materials?
-
 			//Add some randomization
 			//Determine dodges
+
+			Energy -= 500;
 
 			if (target.Character.HasToken("helpless"))
 			{
@@ -1252,10 +1197,122 @@ namespace Noxico
 			return false;
 		}
 
+		public float GetPotentialDamage(BoardChar target, out string skill, out string verb, out string cause, out Token weaponData, out Token carriedWeapon)
+		{
+			weaponData = null;
+			carriedWeapon = null;
+			//First we need to figure out if we're armed.
+			foreach (var carriedItem in this.Character.GetToken("items").Tokens)
+			{
+				var find = NoxicoGame.KnownItems.Find(x => x.ID == carriedItem.Name);
+				if (find == null)
+					continue;
+				if (find.HasToken("equipable") && carriedItem.HasToken("equipped") && find.HasToken("weapon"))
+				{
+					weaponData = find.GetToken("weapon");
+					carriedWeapon = carriedItem;
+					break;
+				}
+			}
+
+			var baseDamage = 0.0f;
+			skill = "unarmed_combat";
+			verb = "strike{s}"; //TODO: i18n
+			cause = "death_struckdown";
+			var attackerName = this.Character.GetKnownName(false, false, true);
+			var attackerFullName = this.Character.GetKnownName(true, true, true);
+			var targetName = target.Character.GetKnownName(false, false, true);
+			var targetFullName = target.Character.GetKnownName(true, true, true);
+			if (weaponData == null)
+			{
+				//Unarmed combat by default.
+				baseDamage = (float)Math.Floor(this.Character.GetStat("strength"));
+			}
+			else
+			{
+				//Armed combat, yeah!
+				skill = weaponData.GetToken("skill").Text;
+				baseDamage = weaponData.GetToken("damage").Value;
+				if (carriedWeapon.HasToken("bonus"))
+					baseDamage = (float)Math.Ceiling(baseDamage * ((carriedWeapon.GetToken("bonus").Value + 1) * 0.75f));
+				//TODO: if it's a crushing weapon, use strength stat.
+			}
+
+			if (this.Character.Path("prefixes/vorpal") != null)
+				baseDamage *= 1.5f;
+			if (this.Character.Path("prefixes/underfed") != null)
+				baseDamage *= 0.25f;
+
+			baseDamage *= GetDefenseFactor(weaponData, target.Character);
+
+			//Find the best overall "generic" armor defense and apply it.
+			var overallArmor = 0f;
+			foreach (var targetArmor in target.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
+			{
+				var targetArmorItem = NoxicoGame.KnownItems.FirstOrDefault(i => i.Name == targetArmor.Name);
+				if (targetArmorItem == null)
+					continue;
+				if (!targetArmorItem.HasToken("armor"))
+					continue;
+				if (targetArmorItem.GetToken("armor").Value > overallArmor)
+					overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
+			}
+			if (overallArmor != 0)
+				baseDamage /= overallArmor;
+			//Account for armor materials?
+
+			return baseDamage;
+		}
+
 		public float GetDefenseFactor(Token weaponToken, Noxico.Character target)
 		{
 			var r = Lua.Environment.GetDefenseFactor(weaponToken, target);
 			return (float)r;
+		}
+
+		public bool ConsiderAttack(BoardChar target)
+		{
+			if (this.Character.HasToken("beast"))
+				return true;
+
+			//Program.WriteLine("Consideration: should {0} attack {1}?", this, target);
+
+			var skill = string.Empty;
+			var verb = string.Empty;
+			var cause = string.Empty;
+			Token weaponData = null;
+			Token carriedWeapon = null;
+			var myDamage = GetPotentialDamage(target, out skill, out verb, out cause, out weaponData, out carriedWeapon);
+			//Program.WriteLine("» {0} has a {1}, base damage {2}.", this, carriedWeapon.Name, myDamage);
+			var theirDamage = target.GetPotentialDamage(this, out skill, out verb, out cause, out weaponData, out carriedWeapon);
+			//Program.WriteLine("» {0} has a {1}, base damage {2}.", target, carriedWeapon.Name, theirDamage);
+			
+			var consideration = 0.5f;
+
+			//Who would cause more damage?
+			if (myDamage > theirDamage)
+				consideration += 0.25f;
+			else if (theirDamage > myDamage)
+				consideration -= 0.25f;
+			else
+				consideration += 0;
+			//Program.WriteLine("» Who would cause more? Consideration is now {0}", consideration);
+
+			//Will this hurt more than 25% of max?
+			if (target.Character.Health - myDamage < target.Character.MaximumHealth / 4)
+				consideration += 0.25f;
+			if (this.Character.Health - theirDamage < this.Character.MaximumHealth / 4)
+				consideration -= 0.25f;
+			//Program.WriteLine("» Quarter of max? Consideration is now {0}", consideration);
+
+			//Will this hurt more than half of current?
+			if (target.Character.Health - myDamage < target.Character.Health / 2)
+				consideration += 0.25f;
+			if (this.Character.Health - theirDamage < this.Character.Health / 2)
+				consideration -= 0.25f;
+			//Program.WriteLine("» Half of current? Final consideration is now {0}", consideration);
+
+			return (consideration >= 0.5);
 		}
 
 		public virtual bool Hurt(float damage, string cause, object aggressor, bool finishable = false, bool leaveCorpse = true)
