@@ -1332,13 +1332,6 @@ namespace Noxico
 				}
 				//Dead, but how?
 				Character.Health = 0;
-				if (aggressor != null && aggressor is BoardChar)
-				{
-					if (Character.HasToken("stolenfrom") && aggressor is Player)
-					{
-						((BoardChar)aggressor).Character.GiveRenegadePoints(10);
-					}
-				}
 				if (leaveCorpse)
 					LeaveCorpse(cause, aggressor);
 				this.ParentBoard.CheckCombatFinish();

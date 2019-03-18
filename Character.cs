@@ -714,7 +714,7 @@ namespace Noxico
 				"items", /*"health",*/ "perks", "skills", "sexpreference",
 				/*"charisma", "climax", "cunning", "carnality",
 				"stimulation", "sensitivity", "speed", "strength",*/
-				"money", "ships", "paragon", "renegade", 
+				"money", "ships", 
 				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
 				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
 			};
@@ -723,7 +723,7 @@ namespace Noxico
 				0, /*10,*/ 0, 0, (Random.Flip() ? 2 : Random.Next(0, 3)),
 				/*10, 0, 10, 0,
 				10, 10, 10, 15,*/
-				100, 0, 0, 0,
+				100, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0,
 			};
@@ -2038,22 +2038,6 @@ Tokens:
 
 		}
 
-		public void GiveRenegadePoints(int points)
-		{
-			var renegade = this.GetToken("renegade");
-			renegade.Value += points;
-			if (renegade.Value > 100)
-				renegade.Value = 100;
-		}
-
-		public void GiveParagonPoints(int points)
-		{
-			var paragon = this.GetToken("paragon");
-			paragon.Value += points;
-			if (paragon.Value > 100)
-				paragon.Value = 100;
-		}
-
 		public void SetTerms(string generic, string male, string female, string herm, string neuter)
 		{
 			var g = this.Path("terms/generic");
@@ -2191,28 +2175,6 @@ Tokens:
 				}
 			}
 			return;
-		}
-
-		public void GiveRapistPoints(Character bottom)
-		{
-			var points = Random.Next(4, 8);
-			if (!bottom.HasToken("hostile"))
-				points *= 2;
-			ChangeStat("renegade", points);
-			ChangeStat("carnality", Random.Next(5, 15));
-			
-			//TODO: more effects?
-		}
-
-		public void GiveRapeVictimPoints(Character top)
-		{
-			//TODO: change a couple stats that fit the bill
-		}
-
-		public void GiveConsentualPoints(Character bottom)
-		{
-			ChangeStat("paragon", Random.Next(1, 4));
-			//TODO: more effects?
 		}
 
 		#region PillowShout's additions

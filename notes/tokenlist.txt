@@ -128,8 +128,6 @@ Extras for characters:		Use them as you wish in a bodyplan or unique.
 
 	money: <amount>
 	ships			TODO: DESCRIBE THIS
-	paragon: <stat>
-	renegade: <stat>
 
 	capacity: <amount>	Carrying capacity, determined from strength.
 	carried: <amount>	Carrying weight.
