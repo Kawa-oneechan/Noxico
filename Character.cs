@@ -57,12 +57,12 @@ namespace Noxico
 		{
 			get
 			{
-				if (!HasToken("title")) AddToken("title").Text = "a";
+				if (!HasToken("title")) AddToken("title").Text = "thing";
 				return GetToken("title").Text;
 			}
 			set
 			{
-				if (!HasToken("title")) AddToken("title").Text = "a";
+				if (!HasToken("title")) AddToken("title").Text = "thing";
 				GetToken("title").Text = value;
 			}
 		}

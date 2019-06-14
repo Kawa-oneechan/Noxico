@@ -99,7 +99,9 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						NoxicoGame.LookAt = "<c" + ((BoardChar)entity).Character.Path("skin/color").Text + ">" + ((BoardChar)PointingAt).Character.GetKnownName(true, true); 
+						NoxicoGame.LookAt = string.Format("<c{0}>{1}<c> ({2}/{3})", ((BoardChar)entity).Character.Path("skin/color").Text,
+							((BoardChar)PointingAt).Character.GetKnownName(true, true),
+							((BoardChar)PointingAt).Character.Health, ((BoardChar)PointingAt).Character.MaximumHealth);
 						//return;
 					}
 					else if (entity is DroppedItem)
