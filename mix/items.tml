@@ -781,8 +781,8 @@ __marker: <small>Spandex fun</small>
 item: spandex_suit
 	_n: [color ]spandex bodysuit
 	equipable
-		shirt
-		pants
+		undershirt
+		underpants
 	weight: medium
 	statbonus
 		charisma: 18
@@ -1318,81 +1318,6 @@ item: protection_bikini_bottom
 
 -- #region Clothes from jsNoxico
 __marker: Clothes from jsNoxico
-item: tatteredshreds_shirt
-	_n: tattered shreds
-	_ia: ""
-	description: "You would feel more comfortable wearing this if you were a rockstar."
-	plural
-	equipable
-		shirt
-		translucent
-	weight: light
-	ascii
-		char: 0x18d
-
-item: tatteredshreds_undershirt
-	_n: tattered shreds
-	_ia: ""
-	description: "You wouldn't wear this, if you had a choice."
-	plural
-	equipable
-		undershirt
-		translucent
-	weight: light
-	ascii
-		char: 0x18d
-
-item: tatteredshreds_pants
-	_n: tattered shreds
-	_ia: ""
-	description: "You wouldn't wear this, if you had a choice."
-	plural
-	equipable
-		pants
-		translucent
-	weight: light
-	ascii
-		char: 0x18D
-
-item: tatteredshreds_underpants
-	_n: tattered shreds
-	_ia: ""
-	description: "Underwear can only take so much. This is what you get when you give them too much."
-	plural
-	equipable
-		underpants
-		translucent
-	weight: light
-	ascii
-		char: 0x18d
-
--- Should be used if a bodysuit is torn apart.
-item: tatteredshreds_under
-	_n: tattered shreds
-	_ia: ""
-	description: "You wouldn't wear this, if you had a choice."
-	plural
-	equipable
-		undershirt
-		underpants
-		translucent
-	weight: light
-	ascii
-		char: 0x18d
--- Should be used if a dress is torn apart.
-item: tatteredshreds_over
-	_n: tattered shreds
-	_ia: ""
-	description: "You wouldn't wear this, if you had a choice."
-	plural
-	equipable
-		shirt
-		pants
-		translucent
-	weight: light
-	ascii
-		char: 0x18d
-
 item: shirt
 	_n: plain [color ]shirt
 	description: "A piece of [color] cloth, expertly sewn into a comfortable shirt. One size fits all."
@@ -1688,6 +1613,21 @@ item: little_black_dress
 	dress
 	for_women
 	sexy
+
+item: cat_keyhole_bra
+	description: "A mildly foofy bra with a cat-shaped hole in the front"
+	equipable
+		female
+		undershirt
+	weight: feather
+	price: 100
+	ascii
+		char: 0x19B
+	clothing
+	underwear
+	bra
+	sexy
+	for_women
 
 item: latex_suit
 	_n: [color ]latex suit
