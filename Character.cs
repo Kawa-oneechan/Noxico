@@ -2420,37 +2420,13 @@ Tokens:
 		/// <returns>The new value of the stat.</returns>
 		public float ChangeStat(string stat, float amount)
 		{
-			if (StatNames == null) GetValidStatNames();
-			stat = stat.ToLowerInvariant();
-			if (!StatNames.Contains(stat))
-				return 0f;
-			var token = GetToken(stat);
-			var value = token.Value;
+			var r = Lua.Environment.ChangeStat(this, stat, amount);
+			return (float)r;
+		}
 
-			//TODO: would say "make this lua" but there's supposed to be a Lua-driven "every tick" thing for stats.
-			if (stat == "climax")
-			{
-				// 0 stim gives only 50% of climax increase
-				// 50 stim gives 125% climax increase
-				// 100 stim gives 200% climax increase	 
-				var stimBonus = 0.5f + (GetStat("stimulation") * 0.015f);
-
-				// same
-				var carnBonus = 0.5f + (GetStat("carnality") * 0.015f);
-
-				value += (amount * stimBonus * carnBonus);
-			}
-			else
-			{
-				value += amount;
-			}
-
-			if (value > 100)
-				value = 100;
-			if (value < 0)
-				value = 0;
-
-			return token.Value = value;
+		public void TickStats()
+		{
+			Lua.Environment.TickStats(this);
 		}
 
 		public bool ChangeMoney(float amount)

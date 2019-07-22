@@ -463,6 +463,8 @@ namespace Noxico
 					return;
 			}
 
+			Character.TickStats();
+
 			if (!RunScript(OnTick))
 				return;
 			

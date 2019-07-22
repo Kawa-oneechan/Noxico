@@ -111,3 +111,38 @@ function DrawStatus()
 		end
 	end
 end
+
+function ChangeStat(character, stat, amount);
+	stat = stat.ToLower();
+	if not character.HasToken(stat) then
+		return 0;
+	end
+	local token = character.GetToken(stat);
+	local value = token.Value;
+
+	if stat == "climax" then
+		-- 0 stim gives only 50% of climax increase
+		-- 50 stim gives 125% climax increase
+		-- 100 stim gives 200% climax increase	 
+		local stimBonus = 0.5 + (character.GetStat("stimulation") * 0.015);
+		local carnBonus = 0.5 + (character.GetStat("carnality")   * 0.015);
+		value = value + (amount * stimBonus * carnBonus);
+	else
+		value = value + amount;
+	end
+	if value > 100 then
+		value = 100;
+	end
+	if value < 0 then
+		value = 0;
+	end
+	token.Value = value;
+	return value;
+end
+
+function TickStats(character)
+	--[[ TODO I guess. The original C# version of ChangeStat had
+	"there's supposed to be a Lua-driven "every tick" thing for
+	stats." and to be honest I can't remember what should happen
+	so I'mma leave this empty for now. ]]--
+end
