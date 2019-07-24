@@ -647,7 +647,154 @@ namespace Noxico
 			}
 			#endregion
 
-			//TODO: Balls
+			#region Balls
+			if (targetGender == Noxico.Gender.Male || targetGender == Noxico.Gender.Herm)
+			{
+				if (target.HasToken("balls") && !this.HasToken("balls"))
+				{
+					//Grow a pair, since we have none.
+
+					var targetBalls = target.GetToken("balls");
+					var change = new Token("_add", "balls");
+					change.AddToken("_addto/balls", "amount");
+					var targetAmount = targetBalls.GetToken("amount");
+					if (targetAmount.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetAmount.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetAmount.Value = min;
+					}
+					change.AddToken("balls/amount", targetAmount.Value);
+					var targetSize = targetBalls.GetToken("size");
+					if (targetSize.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetSize.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetSize.Value = min;
+					}
+					change.AddToken("_addto/balls", "size");
+					change.AddToken("balls/size", targetSize.Value / 2);
+					change.AddToken("$", i18n.Format("morphpart_grow_balls", targetBalls.Text));
+					possibleChanges.Add(change);
+				}
+				else
+				{
+					//Change a pair.
+
+					var sourceBalls = this.GetToken("penis");
+					var targetBalls = target.GetToken("penis");
+					var targetAmount = targetBalls.GetToken("amount");
+					var targetSize = targetBalls.GetToken("size");
+					var addOrRemove = 0;
+					var growOrShrink = 0;
+
+					var now = sourceBalls.GetToken("amount").Value;
+					if (!targetAmount.Text.IsBlank() && targetAmount.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetAmount.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							addOrRemove = 1;
+						else if (now > max)
+							addOrRemove = -1;
+					}
+					else
+					{
+						var then = targetAmount.Value;
+						if (now < then)
+							addOrRemove = 1;
+						else if (now > then)
+							addOrRemove = -1;
+					}
+					if (targetGender == Noxico.Gender.Female || targetGender == Noxico.Gender.Neuter)
+						addOrRemove = -1;
+
+					now = sourceBalls.GetToken("size").Value;
+					if (!targetSize.Text.IsBlank() && targetSize.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetSize.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							growOrShrink = 1;
+						else if (now > max)
+							growOrShrink = -1;
+					}
+					else
+					{
+						var then = targetSize.Value;
+						if (now < then)
+							growOrShrink = 1;
+						else if (now > then)
+							growOrShrink = -1;
+					}
+
+					Token change = null;
+
+					var newBalls = sourceBalls.GetToken("amount").Value + addOrRemove;
+					if (addOrRemove != 0)
+					{
+						change = new Token("balls/amount", newBalls);
+					}
+					if (growOrShrink != 0)
+					{
+						if (change == null)
+							change = new Token("balls/size", sourceBalls.GetToken("size").Value + (growOrShrink * 0.25f));
+						else
+							change.AddToken("balls/size", sourceBalls.GetToken("size").Value + (growOrShrink * 0.25f));
+					}
+					if (newBalls == 0)
+					{
+						change = new Token("_remove", "balls");
+						change.AddToken("$", i18n.GetString("morphpart_lose_balls"));
+					}
+					else
+					{
+						//I18N this with morphpart_balls_-1_-1 etc
+						change.AddToken("$", i18n.GetString("morphpart_balls_" + addOrRemove + "_" + growOrShrink));
+					}
+
+					if (change != null)
+						possibleChanges.Add(change);
+				}
+			}
+			else if (target.HasToken("femaleonly") || targetGender == Gender.Female)
+			{
+				if (this.HasToken("balls"))
+				{
+					var sourceBalls = this.GetToken("balls");
+					if (sourceBalls.GetToken("amount").Value > 1)
+					{
+						var change = new Token("balls/amount", sourceBalls.GetToken("amount").Value - 1);
+						change.AddToken("$", i18n.GetString("morphpart_balls_-1_0"));
+						possibleChanges.Add(change);
+					}
+					else
+					{
+						var change = new Token("_remove", "balls");
+						change.AddToken(new Token("_remove", "balls"));
+						change.AddToken("$", i18n.GetString("morphpart_lose_balls"));
+					}
+				}
+			}
+			#endregion
 
 			return possibleChanges;
 		}
