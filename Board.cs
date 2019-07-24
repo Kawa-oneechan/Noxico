@@ -16,7 +16,7 @@ namespace Noxico
 	/// Stores a set of four integers that represent the location and size of a rectangle.
 	/// Basically a version of <see cref="System.Drawing.Rectangle"/> that replaces the extra stuff with a single feature.
 	/// </summary>
-	public struct Rectangle
+	public struct Rectangle : IEquatable<Rectangle>
 	{
 		/// <summary>
 		/// Gets the x-coordinate of the left edge of this <see cref="Noxico.Rectangle"/> structure.
@@ -49,7 +49,12 @@ namespace Noxico
 			var t = stream.ReadInt32();
 			var r = stream.ReadInt32();
 			var b = stream.ReadInt32();
-			return new Rectangle() { Left = l, Top = t, Right = r, Bottom = b };
+			return new Rectangle { Left = l, Top = t, Right = r, Bottom = b };
+		}
+
+		public bool Equals(Rectangle other)
+		{
+			return other.Top == Top && other.Left == Left && other.Bottom == Bottom && other.Right == Right;
 		}
 	}
 
@@ -57,7 +62,7 @@ namespace Noxico
 	/// Represents an ordered pair of integer x- and y-coordinates that defines a point in a two-dimensional plane.
 	/// Basically a version of <see cref="System.Drawing.Point"/> without the extra stuff.
 	/// </summary>
-	public struct Point
+	public struct Point : IEquatable<Point>
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
@@ -127,6 +132,11 @@ namespace Noxico
 		{
 			return string.Format("{0}x{1}", X, Y);
 		}
+
+		public bool Equals(Point other)
+		{
+			return other.X == X && other.Y == Y;
+		}
 	}
 
 	/// <summary>
@@ -179,7 +189,7 @@ namespace Noxico
 			foreach (var tile in tml.Where(t => t.Name == "tile"))
 			{
 				var i = (int)tile.Value;
-				var def = new TileDefinition()
+				var def = new TileDefinition
 				{
 					Index = i,
 					Name = tile.GetToken("id").Text,
@@ -202,7 +212,7 @@ namespace Noxico
 			}
 		}
 
-		public static TileDefinition Find(string tileName, bool noVariants = false)
+		public static TileDefinition Find(string tileName, bool noVariants)
 		{
 			var def = defs.FirstOrDefault(t => t.Value.Name.Equals(tileName, StringComparison.InvariantCultureIgnoreCase)).Value;
 			if (def == null)
@@ -211,12 +221,17 @@ namespace Noxico
 			{
 				var iant = def.Variants.Tokens.PickOne();
 				if (Random.NextDouble() > iant.Value)
-					def = TileDefinition.Find(iant.Name);
+					def = TileDefinition.Find(iant.Name, false);
 			}
 			return def;
 		}
 
-		public static TileDefinition Find(int index, bool noVariants = false)
+		public static TileDefinition Find(string tileName)
+		{
+			return Find(tileName, false);
+		}
+
+		public static TileDefinition Find(int index, bool noVariants)
 		{
 			if (defs.ContainsKey(index))
 			{
@@ -231,6 +246,11 @@ namespace Noxico
 			}
 			else
 				return null;
+		}
+
+		public static TileDefinition Find(int index)
+		{
+			return Find(index, false);
 		}
 
 		public override string ToString()
@@ -266,7 +286,7 @@ namespace Noxico
 			}
 			set
 			{
-				Index = Definition.Index; 
+				Index = value.Index; 
 			}
 		}
 
@@ -279,12 +299,10 @@ namespace Noxico
 			bits[64] = (InherentLight > 0);
 			bits[128] = Seen;
 			stream.Write((byte)((byte)bits.Data | (byte)Fluid));
-			//if (BurnTimer > 0)
-				stream.Write((byte)BurnTimer);
-			//if (Fluid == Fluids.Slime)
-				if (SlimeColor == null)
-					SlimeColor = Color.Transparent;
-				SlimeColor.SaveToFile(stream);
+			stream.Write((byte)BurnTimer);
+			if (SlimeColor == null)
+				SlimeColor = Color.Transparent;
+			SlimeColor.SaveToFile(stream);
 			if (InherentLight > 0)
 				stream.Write((byte)InherentLight);
 		}
@@ -299,15 +317,14 @@ namespace Noxico
 			Seen = bits[128];
 			BurnTimer = stream.ReadByte();
 			Fluid = (Fluids)(set & 7);
-			//if (Fluid == Fluids.Slime)
-				SlimeColor = Toolkit.LoadColorFromFile(stream);
-				if (bits[64])
-					InherentLight = stream.ReadByte();
+			SlimeColor = Toolkit.LoadColorFromFile(stream);
+			if (bits[64])
+				InherentLight = stream.ReadByte();
 		}
 
 		public Tile Clone()
 		{
-			return new Tile()
+			return new Tile
 			{
 				Index = this.Index,
 				Fluid = this.Fluid,
@@ -379,7 +396,7 @@ namespace Noxico
 
 	public partial class Board : TokenCarrier
 	{
-		public static int GeneratorCount = 0;
+		public static int GeneratorCount;
 		public static string HackishBoardTypeThing = "wild";
 
 		public int BoardNum { get; set; }

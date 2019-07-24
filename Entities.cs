@@ -50,7 +50,7 @@ namespace Noxico
 			//	NoxicoGame.HostForm.SetCell(localY, localX, this.Glyph, this.ForegroundColor.Night(), b.Night());
 		}
 
-		public virtual void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
+		public virtual void Move(Direction targetDirection, SolidityCheck check)
         {
             var touched = this.CanMove(targetDirection, check);
 			if (touched is Door)
@@ -79,7 +79,12 @@ namespace Noxico
 			YPosition = newY;
         }
 
-		public virtual object CanMove(Board board, int x, int y, SolidityCheck check = SolidityCheck.Walker)
+		public virtual void Move(Direction targetDirection)
+		{
+			Move(targetDirection, SolidityCheck.Walker);
+		}
+
+		public virtual object CanMove(Board board, int x, int y, SolidityCheck check)
 		{
 			if (x < 0 || y < 0 || x >= this.ParentBoard.Width || y >= this.ParentBoard.Height)
 				return false;
@@ -103,13 +108,23 @@ namespace Noxico
 			return null;
 		}
 
-		public virtual object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
+		public virtual object CanMove(Board board, int x, int y)
+		{
+			return CanMove(board, x, y, SolidityCheck.Walker);
+		}
+
+		public virtual object CanMove(Direction targetDirection, SolidityCheck check)
         {
             var newX = this.XPosition;
             var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
 			return CanMove(this.ParentBoard, newX, newY, check);
         }
+
+		public virtual object CanMove(Direction targetDirection)
+		{
+			return CanMove(targetDirection, SolidityCheck.Walker);
+		}
  
 		public virtual void Update()
 		{

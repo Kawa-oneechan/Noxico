@@ -10,7 +10,7 @@ using Keys = System.Windows.Forms.Keys;
 namespace Noxico
 {
 
-	public partial class BoardChar : Entity
+	public class BoardChar : Entity
 	{
 		private static int blinkRate = 1000;
 
@@ -30,7 +30,6 @@ namespace Noxico
 		public int ScriptPathTargetX { get; private set; }
 		public int ScriptPathTargetY { get; private set; }
 		public string ScriptPathID { get; set; }
-		//private Scheduler scheduler;
 		public Dijkstra GuardMap { get; private set; }
 		public int Eyes { get; private set; }
 		public int SightRadius { get; private set; }
@@ -105,13 +104,6 @@ namespace Noxico
 				Glyph = judgment;
 			}
 
-			/*
-			if (Character.HasToken("copier") && Character.GetToken("copier").Value == 1 && Character.GetToken("copier").HasToken("full"))
-			{
-				Glyph = '@'; //not sure about this one, what if they copy someone who's not the player?
-			}
-			*/
-
 			Eyes = 0;
 			SightRadius = 1;
 			GlowGlyph = ' ';
@@ -136,7 +128,7 @@ namespace Noxico
 			}
 		}
 
-		public override object CanMove(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
+		public override object CanMove(Direction targetDirection, SolidityCheck check)
 		{
 			var canMove = base.CanMove(targetDirection, check);
 			if (canMove != null && canMove is bool && !(bool)canMove)
@@ -158,7 +150,12 @@ namespace Noxico
 			return canMove;
 		}
 
-		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
+		public override object CanMove(Direction targetDirection)
+		{
+			return CanMove(targetDirection, SolidityCheck.Walker);
+		}
+
+		public override void Move(Direction targetDirection, SolidityCheck check)
 		{
 			if (this.DijkstraMap == null)
 			{
@@ -183,7 +180,7 @@ namespace Noxico
 						swimming = Character.AddToken("swimming", 20);
 					swimming.Value -= 1;
 					if (swimming.Value == 0)
-						Hurt(9999, "death_drowned", null, false);
+						Hurt(9999, "death_drowned", null);
 					Energy -= 1750;
 				}
 			}
@@ -193,6 +190,11 @@ namespace Noxico
 				Energy -= 1000;
 			}
 			base.Move(targetDirection, check);
+		}
+
+		public override void Move(Direction targetDirection)
+		{
+			Move(targetDirection, SolidityCheck.Walker);
 		}
 
 		public override void Draw()
@@ -481,18 +483,6 @@ namespace Noxico
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "death_burned", null))
 					return;
-
-			//Pillowshout added this.
-			/*
-			if (!(this is Player) && !this.Character.HasToken("hostile") && this.ParentBoard.BoardType == BoardType.Town)
-			{
-				if (scheduler == null)
-					scheduler = new Scheduler(this);
-
-				scheduler.RunSchedule();
-			}
-			*/
-			//Disabled for the sake of the Lua overhaul and possible replacement.
 
 			if (this.Character.HasToken("sleeping") || Character.HasToken("anchored"))
 				return;
