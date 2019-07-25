@@ -473,10 +473,219 @@ namespace Noxico
 
 			//TODO: Breasts
 
-			//TODO: Vaginas
+			#region Vagina
+			if (targetGender == Noxico.Gender.Female || targetGender == Noxico.Gender.Herm)
+			{
+				if (target.HasToken("vagina") && !this.HasToken("vagina"))
+				{
+					//Grow a dick, since we have none.
+
+					var targetVagina = target.GetToken("vagina");
+					var change = new Token("_add", "vagina");
+					change.AddToken("vagina", targetVagina.Text);
+					change.AddToken("_addto/vagina", "virgin");
+					change.AddToken("_addto/vagina", "looseness");
+					var targetLooseness = targetVagina.GetToken("looseness");
+					if (targetLooseness.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetLooseness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetLooseness.Value = min;
+					}
+					change.AddToken("vagina/looseness", targetLooseness.Value);
+					var targetWetness = targetVagina.GetToken("wetness");
+					if (targetWetness.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetWetness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetWetness.Value = min;
+					}
+					change.AddToken("_addto/vagina", "wetness");
+					change.AddToken("vagina/wetness", targetWetness.Value / 2);
+					change.AddToken("_addto/vagina", "clit");
+					var targetClit = targetVagina.GetToken("clit");
+					if (targetClit.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetClit.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						targetClit.Value = min;
+					}
+					change.AddToken("vagina/clit", targetClit.Value);
+					change.AddToken("$", i18n.Format("morphpart_grow_pussy", targetVagina.Text));
+					possibleChanges.Add(change);
+				}
+				else
+				{
+					//Change a pussy.
+
+					var sourceVagina = this.GetToken("vagina");
+					var targetVagina = target.GetToken("vagina");
+					var targetLooseness = targetVagina.GetToken("looseness");
+					var targetWetness = targetVagina.GetToken("wetness");
+					var targetClit = targetVagina.GetToken("clit");
+					var splitOrJoin = 0;
+					var loosenOrTighten = 0;
+					var wettenOrDry = 0;
+					var growOrShrink = 0;
+
+					if (targetVagina.HasToken("dual") && !sourceVagina.HasToken("dual"))
+						splitOrJoin = 1;
+					else if (!targetVagina.HasToken("dual") && sourceVagina.HasToken("dual"))
+						splitOrJoin = -1;
+
+					var now = sourceVagina.GetToken("looseness").Value;
+					if (!targetLooseness.Text.IsBlank() && targetLooseness.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetLooseness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							loosenOrTighten = 1;
+						else if (now > max)
+							loosenOrTighten = -1;
+					}
+					else
+					{
+						var then = targetLooseness.Value;
+						if (now < then)
+							loosenOrTighten = 1;
+						else if (now > then)
+							loosenOrTighten = -1;
+					}
+					if (targetGender == Noxico.Gender.Male || targetGender == Noxico.Gender.Neuter)
+						loosenOrTighten = -1;
+
+					now = sourceVagina.GetToken("wetness").Value;
+					if (!targetWetness.Text.IsBlank() && targetWetness.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetWetness.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							wettenOrDry = 1;
+						else if (now > max)
+							wettenOrDry = -1;
+					}
+					else
+					{
+						var then = targetWetness.Value;
+						if (now < then)
+							wettenOrDry = 1;
+						else if (now > then)
+							wettenOrDry = -1;
+					}
+
+					now = sourceVagina.GetToken("clit").Value;
+					if (!targetClit.Text.IsBlank() && targetClit.Text.StartsWith("roll"))
+					{
+						var xDyPz = targetClit.Text;
+						var range = 0;
+						var plus = 0;
+						xDyPz = xDyPz.Substring(xDyPz.LastIndexOf(' ') + 1);
+						ParseRoll(xDyPz, out range, out plus);
+						var min = plus;
+						var max = min + range;
+						if (now < min)
+							growOrShrink = 1;
+						else if (now > max)
+							growOrShrink = -1;
+					}
+					else
+					{
+						var then = targetClit.Value;
+						if (now < then)
+							growOrShrink = 1;
+						else if (now > then)
+							growOrShrink = -1;
+					}
+
+					Token change = null;
+
+					if (splitOrJoin != 0 && Random.Flip())
+					{
+						if (splitOrJoin == 1)
+						{
+							change = new Token("_addto/vagina", "dual");
+							change.AddToken("$", i18n.GetString("morphpart_pussy_split"));
+						}
+						else
+						{
+							if (splitOrJoin == -1)
+							{
+								change = new Token("_removefrom/vagina", "dual");
+								change.AddToken("$", i18n.GetString("morphpart_pussy_join"));
+							}
+						}
+					}
+					else
+					{
+						if (loosenOrTighten != 0)
+							change = new Token("vagina/looseness", sourceVagina.GetToken("looseness").Value + loosenOrTighten);
+						if (wettenOrDry != 0)
+						{
+							if (change == null)
+								change = new Token("vagina/wetness", sourceVagina.GetToken("wetness").Value + (wettenOrDry * 0.25f));
+							else
+								change.AddToken("vagina/wetness", sourceVagina.GetToken("wetness").Value + (wettenOrDry * 0.25f));
+						}
+
+						//I18N this with morphpart_pussy_-1_-1 etc
+						change.AddToken("$", i18n.GetString("morphpart_pussy_" + loosenOrTighten + "_" + wettenOrDry));
+					}
+
+					if (change != null)
+						possibleChanges.Add(change);
+
+
+					if (growOrShrink != 0)
+					{
+						change = new Token("vagina/clit", sourceVagina.GetToken("clit").Value + (growOrShrink * 0.25f));
+						change.AddToken("$", i18n.GetString("morphpart_clit_" + growOrShrink));
+						possibleChanges.Add(change);
+					}
+				}
+			}
+			else if (target.HasToken("maleonly") || targetGender == Gender.Male)
+			{
+				if (this.HasToken("vagina"))
+				{
+					var sourceVagina = this.GetToken("vagina");
+					if (sourceVagina.HasToken("dual"))
+					{
+						var change = new Token("_removefrom/vagina", "dual");
+						change.AddToken("$", i18n.GetString("morphpart_pussy_join"));
+						possibleChanges.Add(change);
+					}
+					else
+					{
+						var change = new Token("_remove", "vagina");
+						change.AddToken("$", i18n.GetString("morphpart_lose_pussy"));
+					}
+				}
+			}
+			#endregion
 
 			#region Penis
-			//if (target.HasToken("maleonly") || (this.ActualGender == Gender.Male || this.ActualGender == Gender.Herm) || (!target.HasToken("femaleonly") && targetGender == Gender.Male) || targetGender == Gender.Herm)
 			if (targetGender == Noxico.Gender.Male || targetGender == Noxico.Gender.Herm)
 			{
 				if (target.HasToken("penis") && !this.HasToken("penis"))
@@ -1081,6 +1290,34 @@ namespace Noxico
 					}
 					break;
 				case Mutations.AddVagina:
+					if (!this.HasToken("vagina"))
+					{
+						var change = new Token("_add", "vagina");
+						change.AddToken("_addto/vagina", "virgin");
+						change.AddToken("_addto/vagina", "looseness");
+						change.AddToken("vagina/looseness", (float)Random.NextDouble() * intensity);
+						change.AddToken("_addto/vagina", "wetness");
+						change.AddToken("vagina/wetness", (float)Random.NextDouble() * intensity);
+						change.AddToken("$", i18n.GetString("morph_growpussy"));
+						possibleChanges.Add(change);
+					}
+					else
+					{
+						if (Random.Flip() && !this.GetToken("vagina").HasToken("dual"))
+						{
+							var change = new Token("_addto/vagina", "dual");
+							change.AddToken("$", i18n.GetString("morph_splitpussy"));
+							possibleChanges.Add(change);
+						}
+						else
+						{
+							var change = new Token("vagina/looseness", this.Path("vagina/looseness").Value + (float)Random.NextDouble() * intensity);
+							change.AddToken("vagina/wetness", this.Path("vagina/wetness").Value + (float)Random.NextDouble() * intensity);
+							change.AddToken("$", i18n.GetString("morphpart_pussy_1_1"));
+							possibleChanges.Add(change);
+						}
+					}
+					break;
 				case Mutations.AddTesticle:
 					break; //throw new NotImplementedException();
 				#endregion
