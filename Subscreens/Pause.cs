@@ -146,17 +146,6 @@ namespace Noxico
 				}
 			}
 
-			var paragadeLength = 18;
-			var renegadeLight = (int)Math.Ceiling((player.GetToken("renegade").Value / 100) * paragadeLength);
-			var paragonLight = (int)Math.Ceiling((player.GetToken("paragon").Value / 100) * paragadeLength);
-			var renegadeDark = paragadeLength - renegadeLight;
-			var paragonDark = paragadeLength - paragonLight;
-			sb.AppendLine();
-			sb.Append("\x06");
-			sb.Append("<cNavy>" + new string('\xDB', renegadeDark) + "<cBlue>" + new string('\xDB', renegadeLight));
-			sb.Append("<cRed>" + new string('\xDB', paragonLight) + "<cMaroon>" + new string('\xDB', paragonDark));
-			sb.AppendLine("<cSilver>\x03");
-
 			pages[i18n.GetString("pause_charstats")] = sb.ToString();
 
 			sb.Clear();
