@@ -246,6 +246,7 @@ namespace Noxico
 			return true;
 		}
 
+		//TODO: put this in a once-a-cycle Lua function.
 		public void Excite()
 		{
 			if (this.Character.HasToken("beast") || this.Character.HasToken("sleeping"))
@@ -277,7 +278,6 @@ namespace Noxico
 						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
 						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
 						{
-							//TODO: i18n - needs reworking to translate better.
 							NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
 							if (!this.Character.HasToken("oglestim"))
 								this.Character.AddToken("oglestim");
@@ -290,11 +290,9 @@ namespace Noxico
 			}
 		}
 
-		//TODO: rework ogling.
 		/*
 		public string Ogle(Character otherChar)
 		{
-			//TODO: i18n - all reactions should be in i18n.tml, and more should be added.
 			if (this.Character.HasToken("sleeping"))
 				return null;
 			var stim = this.Character.GetStat("stimulation");
@@ -315,7 +313,6 @@ namespace Noxico
 						return "Woah, momma.";
 				}
 			}
-			//TODO: add more reactions.
 			{
 				var cha = otherChar.GetStat("charisma");
 				if (cha > 0)

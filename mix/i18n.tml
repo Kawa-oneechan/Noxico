@@ -477,6 +477,8 @@ Would you like an infodump on the way out?
 	x_horntype_big_straight: {0} {1} of long horns
 	horntype_monoceros: A single horn on [t:his] forehead
 -- #endregion
+-- Character.ToString(): string.Format("{0}, {1} {2}", Name.ToString(true), A, Title);
+	lookat_character_tostring: [t:fullname2], [t:a] [t:title]
 	lookat_name_type
 	<[[
 Name: {0}Type: {1}{2}

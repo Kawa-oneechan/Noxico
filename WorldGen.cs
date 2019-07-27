@@ -89,13 +89,17 @@ namespace Noxico
 			*/
 			var levels = new List<List<Board>>();
 			var depth = Random.Next(3, 6);
+
+			var boardWidths = new[] { 80, 80, 80, 40, 160, 120 };
+			var boardHeights = new[] { 50, 50, 50, 25, 100, 75 };
+
 			for (var i = 0; i < depth; i++)
 			{
 				levels.Add(new List<Board>());
 				var length = Random.Next(2, 5);
 				for (var j = 0; j < length; j++)
 				{
-					var board = new Board(80, 50); //TODO: allow weird sizes
+					var board = new Board(boardWidths.PickOne(), boardHeights.PickOne());
 					board.AllowTravel = false;
 					board.Clear(DungeonGeneratorBiome);
 					board.BoardNum = nox.Boards.Count;

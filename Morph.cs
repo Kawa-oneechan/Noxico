@@ -236,7 +236,6 @@ namespace Noxico
 
 			#region Hair
 			{
-				//TODO: If the target has no hair token or zero length, decrease the length. When near-zero, remove it entirely.
 				//Leave the style alone, even if the target's styles don't include it!
 				var hairNow = this.GetToken("hair");
 				var hairThen = target.GetToken("hair");
@@ -257,6 +256,20 @@ namespace Noxico
 						var change = new Token("hair/color", hairColorThen);
 						change.AddToken("$", 0, i18n.Format("morphpart_hair_color", hairColorThen));
 						possibleChanges.Add(change);
+					}
+				}
+				else if (hairThen == null || hairThen.GetToken("length").Value == 0)
+				{
+					var hairLengthNow = hairNow.GetToken("length").Value;
+					if (hairLengthNow > 0.25f)
+					{
+						var change = new Token("hair/length", hairLengthNow - (hairLengthNow / 2));
+						change.AddToken("$", 0, i18n.GetString("morphpart_hair_shorten"));
+					}
+					else
+					{
+						var change = new Token("_remove", "hair");
+						change.AddToken("$", 0, i18n.GetString("morphpart_hair_embalden"));
 					}
 				}
 			}
@@ -1232,7 +1245,12 @@ namespace Noxico
 					{
 						//already have at least one! YAY!
 						var change = new Token("breasts/nipples", this.Path("breasts/nipples").Value + 1);
-						change.AddToken("$", i18n.GetString("morph_gainnipple")); //TODO: use morph_gaindicknipple and morph_gainnipplecunt.
+						if (this.Path("breasts/nipples/canfuck") != null)
+							change.AddToken("$", i18n.GetString("morph_gaindicknipple"));
+						else if (this.Path("breasts/nipples/fuckable") != null)
+							change.AddToken("$", i18n.GetString("morph_gainnipplecunt"));
+						else
+							change.AddToken("$", i18n.GetString("morph_gainnipple"));
 						possibleChanges.Add(change);
 
 					}

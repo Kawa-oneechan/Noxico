@@ -214,7 +214,9 @@ RegisterVPTags(
 
 	name = function(c, s) return c.GetKnownName(false, false, true) end,
 	fullname = function(c, s) return c.GetKnownName(true, false, true) end,
+	fullname2 = function(c, s) return c.GetKnownName(true, false, false) end,
 	title = function(c, s) return c.Title end,
+	a = function(c, s) return c.A end,
 	gender = function(c, s) return c.Gender.ToString().ToLowerInvariant() end,
 	His = function(c, s) if isPlayer then return "Your" else return c.HisHerIts() end end,	
 	He = function(c, s) if isPlayer then return "You" else return c.HeSheIt() end end,	
@@ -225,7 +227,6 @@ RegisterVPTags(
 	is = function(c, s) if isPlayer then return "are" else return "is" end end,	
 	has = function(c, s) if isPlayer then return "have" else return "has" end end,	
 	does = function(c, s) if isPlayer then return "do" else return "does" end end,	
-
 
 	breastsize = function(c, s) return Descriptions.BreastSize(c.GetToken("breasts")) end,
 	breastcupsize = function(c, s) return Descriptions.BreastSize(c.GetToken("breasts"), true) end,

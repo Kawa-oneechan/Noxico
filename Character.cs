@@ -147,8 +147,7 @@ namespace Noxico
 				ret = GetToken("title").Text;
 			else if (IsProperNamed)
 			{
-				//TODO: I18N
-				ret = string.Format("{0}, {1} {2}", Name.ToString(true), A, Title);
+				return i18n.GetString("lookat_character_tostring").Viewpoint(this);
 			}
 			return ret;
 		}
@@ -286,9 +285,6 @@ namespace Noxico
 
 		public void UpdateTitle()
 		{
-			//TODO: clean up
-			//TODO: i18n the lot of this. Could take rewrite cleanup to handle.
-
 			// enums (being ints in disguise) compare better than strings. -- K
 			// yeah, I know that, it was like that when I got here -- sparks
 
@@ -1421,7 +1417,6 @@ namespace Noxico
 				print("\n");
 				if (vagina != null)
 				{
-					//TODO: allow dual vaginas and cocks
 					var loose = Descriptions.Looseness(vagina.GetToken("looseness"), false);
 					var wet = Descriptions.Wetness(vagina.GetToken("wetness"));
 					if (wet != null && loose != null)
