@@ -429,12 +429,11 @@ namespace Noxico
 					break;
 				lives--;
 			}
+			var tile = boardChar.ParentBoard.Tilemap[x, y];
+			if (tile.Fluid != Fluids.Dry || tile.Definition.Cliff)
+				NoxicoGame.AddMessage(i18n.Format(tile.Definition.Cliff ? "x_dropped_y_inthedepths" : ("x_dropped_y_inthe_" + tile.Fluid.ToString().ToLowerInvariant(), this.ToString(item, true, false)).Viewpoint(boardChar.Character));
 			if (lives == 0)
 			{
-				var tile = boardChar.ParentBoard.Tilemap[x, y];
-				//TODO: that might not be water they're dropping in...
-				if (tile.Fluid != Fluids.Dry || tile.Definition.Cliff)
-					NoxicoGame.AddMessage(i18n.Format(tile.Definition.Cliff ? "x_dropped_y_inthedepths" : "x_dropped_y_inthewater", this.ToString(item, true, false)).Viewpoint(boardChar.Character));
 				boardChar.Character.GetToken("items").Tokens.Remove(item);
 				boardChar.Character.CheckHasteSlow();
 				return;

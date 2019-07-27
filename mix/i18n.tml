@@ -248,7 +248,11 @@ This book, we're sorry to say, has a broken reference.
 	x_is_helpless: [t:Youorname] [is] helpless!
 	x_equiped_y: [Youorname] equip{{s}} {0}.
 	x_unequiped_y: [Youorname] unequip{{s}} {0}.
-	x_dropped_y_inthewater: [Youorname] drop{{s}} {0} in the water!
+	x_dropped_y_inthe_water: [Youorname] drop{{s}} {0} in the water!
+	x_dropped_y_inthe_koolaid: [Youorname] drop{{s}} {0} in the kool-aid!
+	x_dropped_y_inthe_slime: [Youorname] drop{{s}} {0} in the slime pool!
+	x_dropped_y_inthe_blood: [Youorname] drop{{s}} {0} into the blood!
+	x_dropped_y_inthe_semen: [Youorname] drop{{s}} {0} into the pool of semen!
 	x_dropped_y_inthedepths: [Youorname] drop{{s}} {0} in the depths!
 	item_changeling_disguise: This is part of your changeling disguise.
 	formlock: [Yourornames] skin crawls as it resists change.
