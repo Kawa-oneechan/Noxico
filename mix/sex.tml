@@ -5,7 +5,7 @@
 --   the places where someones bit of anatomy might be
 -- we'll do the same with other organs (vagina anus mouth etc)
 -- called "vaginabusy", "anusbusy", "mouthbusy", "fingersbusy"
--- this double tagging is ineffecient but at the moment I
+-- this double tagging is inefficient but at the moment I
 -- can't think of a better way - sparks
 
 -- todo make use of use tonguetype
@@ -336,7 +336,7 @@ group: consentual
 							Message({"[t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit]."})
 						]]>
 			-- endgroup top vagina bottom penis
-			group: top.HasPenis() and (not top.HasSexFlag('anusbusy')) -- and bottom has an anus but everbody has an anus right?
+			group: top.HasPenis() and (not top.HasSexFlag('anusbusy')) -- and bottom has an anus but everybody has an anus right?
 				choice: start_fucking_ass
 					_n: Fuck [b:his] ass
 					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("anusbusy")) and (not top.HasSexFlag("givingvaginal")) and top.CanReachCrotch('penis') and bottom.CanReachCrotch('anus')
@@ -385,7 +385,7 @@ group: consentual
 			-- endgroup top penis, anal
 		-- endgroup reach both crotches
 
-		group: top.CanReachCrotch() and top.HasPenis() and (not masturbating) -- recieving blowjobs (reciever is the very happy one)
+		group: top.CanReachCrotch() and top.HasPenis() and (not masturbating) -- receiving blowjobs (receiver is the very happy one)
 			choice: make_them_suck_it
 				filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("mouthbusy")) and top.CanReachCrotch('penis')
 				_n: Make [b:him] suck your dick

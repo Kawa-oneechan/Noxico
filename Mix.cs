@@ -40,7 +40,7 @@ namespace Noxico
 			{
 				if (!File.Exists(mixfile))
 				{
-					Program.WriteLine("Mixfile \"{0}\" in list but nonexistant.", mixfile);
+					Program.WriteLine("Mixfile \"{0}\" in list but nonexistent.", mixfile);
 					continue;
 				}
 				using (var mStream = new BinaryReader(File.Open(mixfile, FileMode.Open)))

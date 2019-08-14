@@ -237,7 +237,7 @@ namespace Noxico
 				var scoreF = 0.0f;
 
 				// calibrated using felin min. penis size
-				// size 13 or more guarentees masculine looks
+				// size 13 or more guarantees masculine looks
 				scoreM += dickSize * 0.0425f;
 
 				// calibrated using human min. breast size
@@ -256,7 +256,7 @@ namespace Noxico
 
 				// decide what to return based on quadrants
 				// currently not good with flat chested fela and long haired male naga, however,
-				// since nagas are not invisible or explit gender, they'll just get called "naga", so that's ok for them
+				// since nagas are not invisible or explicit gender, they'll just get called "naga", so that's ok for them
 
 				var decision = Noxico.Gender.Female; // default. never trust floating point
 				if (scoreM > 0.5f && scoreF > 0.5f) decision = Gender.Herm;
@@ -265,7 +265,7 @@ namespace Noxico
 				if (scoreM < 0.5f && scoreF > 0.5f) decision = Gender.Female;
 
 				// felin are invisiblegender and more of a problem.
-				// fela get an exeption because I can't think of a better way to do it
+				// fela get an exception because I can't think of a better way to do it
 				if (decision == Gender.Neuter && HasToken("culture") && GetToken("culture").Text == "felin")
 					decision = Gender.Female;
 
@@ -1530,7 +1530,7 @@ Milk amount: {16}
 Name: {17}
 Penis (length only): {26}
 Penis (length * thickness): {27}
-Percieved gender: {18} (what they seem to be)
+Perceived gender: {18} (what they seem to be)
 Preferred gender: {19} (what to call them)
 Spouse: {20}
 Team: {21}
@@ -2778,7 +2778,7 @@ Tokens:
 		 *   0 1 2 3 4 5 6 7 8 <-- the other
 		 * 0 - - - - - - - - - <-- neutrals don't attack
 		 * 1 - - Y - - Y - Y Y <-- the player is not automatically controlled at all
-		 * 2 Y P - Y Y - - Y - <-- hostiles attack neutrals, players, their possse and guards, but prefer the player
+		 * 2 Y P - Y Y - - Y - <-- hostiles attack neutrals, players, their posse and guards, but prefer the player
 		 * 3 - - Y - - Y - Y - <-- posse attacks hostiles, predators, and angry neutrals (allow tactics control?)
 		 * 4 - T Y - - C - - - <-- guards attack hostiles, thiefing players, and any predators that come too close
 		 * 5 ? Y Y Y Y ? P Y P <-- predators attack basically everyone, but prefer prey

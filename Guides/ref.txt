@@ -289,7 +289,7 @@
 136		ground transition inverted bottom right
 137	2026	horizontal ellipsis
 138	201c	left double quotation mark
-139	201d	right double qoutation mark
+139	201d	right double quotation mark
 13a		level mark
 13b		zenny
 13c	2610	ballot box

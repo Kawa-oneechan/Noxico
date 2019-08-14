@@ -88,7 +88,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(118, 13);
 			this.label1.TabIndex = 7;
-			this.label1.Text = "An error has occured.";
+			this.label1.Text = "An error has occurred.";
 			// 
 			// label2
 			// 
