@@ -585,7 +585,7 @@ namespace Noxico
 
 		public override void ToTilemap(ref Tile[,] map)
 		{
-			//TODO: make these biome-dependant (use this.biome)
+			//TODO: make these biome-dependent (use this.biome)
 
 			//Base fill
 			var baseFill = TileDefinition.Find("stoneWall").Index;
@@ -801,7 +801,7 @@ namespace Noxico
 
 		public override void ToTilemap(ref Tile[,] map)
 		{
-			//TODO: make these biome-dependant (use this.biome)
+			//TODO: make these biome-dependent (use this.biome)
 			//var stoneFloor = Color.FromArgb(65, 66, 87);
 			//var wallStart = Color.FromArgb(119, 120, 141);
 			//var wallEnd = Color.FromArgb(144, 144, 158);

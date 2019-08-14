@@ -177,7 +177,7 @@ namespace Noxico
 		/// <summary>
 		/// Chooses a random euphemism for breast and returns it as a string.
 		/// </summary>
-		/// <param name="plural">Flag for returning a plural euphmism insead of a singular.</param>
+		/// <param name="plural">Flag for returning a plural euphemism instead of a singular.</param>
 		/// <returns>A string containing a euphemism for breast(s).</returns>
 		public static string BreastRandom(bool plural = false)
 		{
@@ -278,7 +278,7 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Returns a string describing the length of a the passed hair token in plain english.
+		/// Returns a string describing the length of a the passed hair token in plain English.
 		/// </summary>
 		/// <param name="hairToken">A character's hair token.</param>
 		/// <returns>An all lower case string describing the hair's length.</returns>
@@ -316,7 +316,7 @@ namespace Noxico
 		/// Returns a string describing the teeth token passed to the function.
 		/// </summary>
 		/// <param name="teethToken">The 'teeth' token to be evaluated.</param>
-		/// <returns>A string containing a description of the teeth type. Return's 'glitch' if 'teeth' is null.</returns>
+		/// <returns>A string containing a description of the teeth type. Returns 'glitch' if 'teeth' is null.</returns>
 		public static string TeethType(Token teethToken)
 		{
 			if (teethToken == null)
@@ -352,7 +352,7 @@ namespace Noxico
 		/// Returns a string containing a description of the passed 'nipple' token's size.
 		/// </summary>
 		/// <param name="nipplesToken">The 'nipple' token of a character.</param>
-		/// <returns>A string containging the description of the 'nipple' token's size.</returns>
+		/// <returns>A string containing the description of the 'nipple' token's size.</returns>
 		public static string NippleSize(Token nipplesToken)
 		{
 			if (nipplesToken == null)
@@ -374,7 +374,7 @@ namespace Noxico
 		/// Takes a wing type token from a character and returns a string describing that wing's type.
 		/// </summary>
 		/// <param name="wingToken">The 'wings' token to be evaluated.</param>
-		/// <returns>A string containing a description of the wings' type. Return's 'glitch' if 'tail is null.</returns>
+		/// <returns>A string containing a description of the wings' type. Returns 'glitch' if 'tail is null.</returns>
 		public static string WingType(Token wingToken)
 		{
 			if (wingToken == null)
@@ -402,7 +402,7 @@ namespace Noxico
 		/// Returns a string containing a description of the passed 'balls' token size.
 		/// </summary>
 		/// <param name="ballsToken">The 'balls' token of a character.</param>
-		/// <returns>A string containging the description of the 'balls' token's size.</returns>
+		/// <returns>A string containing the description of the 'balls' token's size.</returns>
 		public static string BallSize(Token ballsToken)
 		{
 			if (ballsToken == null)
@@ -414,7 +414,7 @@ namespace Noxico
 		/// Returns a string containing a description of the passed 'ass' token size.
 		/// </summary>
 		/// <param name="buttToken">The 'ass' token of a character.</param>
-		/// <returns>A string containging the description of the 'ass' token's size.</returns>
+		/// <returns>A string containing the description of the 'ass' token's size.</returns>
 		public static string ButtSize(Token buttToken)
 		{
 			if (buttToken == null)
@@ -438,7 +438,7 @@ namespace Noxico
 		/// Returns a string containing a description of the passed 'hips' token size.
 		/// </summary>
 		/// <param name="hipToken">The 'hips' token of a character.</param>
-		/// <returns>A string containging a description based on the hipToken's value.</returns>
+		/// <returns>A string containing a description based on the hipToken's value.</returns>
 		public static string HipSize(Token hipToken)
 		{
 			if (hipToken == null)
@@ -450,7 +450,7 @@ namespace Noxico
 		/// Takes a tail type token from a character and returns a string describing that tail's type.
 		/// </summary>
 		/// <param name="tailToken">The tail token to be evaluated.</param>
-		/// <returns>A string containing a description of the tail's type. Return's 'glitch' if 'tail is null.</returns>
+		/// <returns>A string containing a description of the tail's type. Returns 'glitch' if 'tail is null.</returns>
 		public static string TailType(Token tailToken)
 		{
 			if (tailToken == null)
