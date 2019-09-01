@@ -400,8 +400,8 @@ namespace Noxico
 		public static string HackishBoardTypeThing = "wild";
 
 		public int BoardNum { get; set; }
-		public int Width { get; private set; }
-		public int Height { get; private set; }
+		public int Width { get { return (int)GetToken("width").Value; } set { GetToken("width").Value = value; } }
+		public int Height { get { return (int)GetToken("height").Value; } set { GetToken("height").Value = value; } }
 
 		public int Lifetime { get; set; }
 		public string Name { get { return GetToken("name").Text; } set { GetToken("name").Text = value; } }
@@ -463,14 +463,14 @@ namespace Noxico
 			this.GetToken("encounters").AddToken("stock", 0);
 			foreach (var t in new[] { "north", "south", "east", "west" })
 				this.AddToken(t, -1, string.Empty);
+			this.AddToken("width", width);
+			this.AddToken("height", height);
 			this.Entities = new List<Entity>();
 			this.EntitiesToRemove = new List<Entity>();
 			this.EntitiesToAdd = new List<Entity>();
 			this.Warps = new List<Warp>();
 			this.Sectors = new Dictionary<string, Rectangle>();
 			this.DirtySpots = new List<Point>();
-			this.Width = width;
-			this.Height = height;
 			this.Tilemap = new Tile[this.Width, this.Height];
 			this.Lightmap = new bool[this.Width, this.Height];
 			for (int row = 0; row < Height; row++)
@@ -1508,11 +1508,11 @@ namespace Noxico
 						newTile.Append(baseName);
 						if (row > 0 && (Tilemap[col, row - 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row - 1].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Top");
-						if (row < 49 && (Tilemap[col, row + 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row + 1].Definition.Name.StartsWith("doorway")))
+						if (row < Height - 1 && (Tilemap[col, row + 1].Definition.Name.StartsWith(baseName) || Tilemap[col, row + 1].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Bottom");
 						if (col > 0 && (Tilemap[col - 1, row].Definition.Name.StartsWith(baseName) || Tilemap[col - 1, row].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Left");
-						if (col < 79 && (Tilemap[col + 1, row].Definition.Name.StartsWith(baseName) || Tilemap[col + 1, row].Definition.Name.StartsWith("doorway")))
+						if (col < Width - 1 && (Tilemap[col + 1, row].Definition.Name.StartsWith(baseName) || Tilemap[col + 1, row].Definition.Name.StartsWith("doorway")))
 							newTile.Append("Right");
 						var newDef = TileDefinition.Find(newTile.ToString());
 						if (newDef.Index == 0)

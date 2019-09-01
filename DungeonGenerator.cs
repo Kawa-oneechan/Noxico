@@ -522,9 +522,6 @@ namespace Noxico
 		private const int ROOM_MAX_Y = 6;
 		private const int ROOM_MIN_Y = 3;
 
-		private const int DIM_X = 79;
-		private const int DIM_Y = 49;
-		
 		private static Point Center(Room rect)
 		{
 			return new Point((int)(rect.Bounds.X + 0.5 * rect.Bounds.Width), (int)(rect.Bounds.Y + 0.5 * rect.Bounds.Height));
@@ -542,7 +539,11 @@ namespace Noxico
 			{
 				var w = Random.Next(ROOM_MIN_X, ROOM_MAX_X - 2);
 				var h = Random.Next(ROOM_MIN_Y, ROOM_MAX_Y - 2);
-				var room = new Room(new SysRectangle(Random.Next(1, DIM_X - w), Random.Next(1, DIM_Y - h), w, h), (RoomMaterials)Random.Next(Enum.GetValues(typeof(RoomMaterials)).Length));
+				var l = Random.Next(1, Board.Width - w);
+				var t = Random.Next(1, Board.Height - h);
+				if (l + w >= Board.Width - 1) w = Board.Width - l - 2;
+				if (t + h >= Board.Height - 1) h = Board.Height - t - 2;
+				var room = new Room(new SysRectangle(l, t, w, h), (RoomMaterials)Random.Next(Enum.GetValues(typeof(RoomMaterials)).Length));
 				var pass = false;
 				if (i > 0)
 				{
@@ -601,22 +602,12 @@ namespace Noxico
 			foreach (var room in rooms)
 			{
 				var bounds = room.Bounds;
-				if (room.Material == RoomMaterials.Wood)
-				{
-					for (var row = bounds.Top; row <= bounds.Bottom; row++)
-						for (var col = bounds.Left; col <= bounds.Right; col++)
-							map[col, row].Index = TileDefinition.Find("woodFloor").Index;
-				}
-				else if (room.Material == RoomMaterials.Stone)
-				{
-					for (var row = bounds.Top; row <= bounds.Bottom; row++)
-					{
-						for (var col = bounds.Left; col <= bounds.Right; col++)
-						{
-							map[col, row].Index = TileDefinition.Find("stoneFloor").Index;
-						}
-					}		
-				}
+				var tileType = "woodFloor";
+				if (room.Material == RoomMaterials.Stone)
+					tileType = "stoneFloor";
+				for (var row = bounds.Top; row <= bounds.Bottom; row++)
+					for (var col = bounds.Left; col <= bounds.Right; col++)
+						map[col, row].Index = TileDefinition.Find(tileType).Index;
 			}
 
 			foreach (var room in rooms)
@@ -825,7 +816,7 @@ namespace Noxico
 				}
 			}
 
-			Dijkstra.JustDoIt(ref dijkstra);
+			Dijkstra.JustDoIt(ref dijkstra, Board.Height, Board.Width);
 
 			for (var row = 0; row < Board.Height; row++)
 			{
