@@ -101,6 +101,7 @@ namespace Noxico
 					XPosition = twarp.XPosition;
 					YPosition = twarp.YPosition;
 				}
+				ParentBoard.AimCamera();
 				ParentBoard.UpdateLightmap(this, true);
 				ParentBoard.Redraw();
 				ParentBoard.PlayMusic();

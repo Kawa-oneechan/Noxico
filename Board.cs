@@ -559,8 +559,14 @@ namespace Noxico
 				newBoard.Tokens.Clear();
 				for (var i = 0; i < numTokens; i++)
 					newBoard.Tokens.Add(Token.LoadFromFile(stream));
-				newBoard.Width = newBoard.HasToken("width") ? (int)newBoard.GetToken("width").Value : 80;
-				newBoard.Height = newBoard.HasToken("height") ? (int)newBoard.GetToken("height").Value : 50;
+				if (newBoard.HasToken("width"))
+					newBoard.Width = (int)newBoard.GetToken("width").Value;
+				else
+					newBoard.AddToken("width", 80);
+				if (newBoard.HasToken("height"))
+					newBoard.Height = (int)newBoard.GetToken("height").Value;
+				else
+					newBoard.AddToken("height", 50);
 				newBoard.Tilemap = new Tile[newBoard.Width, newBoard.Height];
 				newBoard.Lightmap = new bool[newBoard.Width, newBoard.Height];
 				newBoard.Name = newBoard.GetToken("name").Text;
@@ -920,7 +926,7 @@ namespace Noxico
 			var oldCamX = NoxicoGame.CameraX;
 			if (this.Width == 80)
 				NoxicoGame.CameraX = 0;
-			else
+			else if (this.Width > 80)
 			{
 				NoxicoGame.CameraX = x - 40;
 				if (NoxicoGame.CameraX < 0)
@@ -928,11 +934,13 @@ namespace Noxico
 				if (NoxicoGame.CameraX > this.Width - 80)
 					NoxicoGame.CameraX = this.Width - 80;
 			}
+			else
+				NoxicoGame.CameraX = -(this.Width / 2);
 
 			var oldCamY = NoxicoGame.CameraY;
 			if (this.Height == 25)
 				NoxicoGame.CameraY = 0;
-			else
+			else if (this.Height > 25)
 			{
 				NoxicoGame.CameraY = y - 12;
 				if (NoxicoGame.CameraY < 0)
@@ -940,6 +948,8 @@ namespace Noxico
 				if (NoxicoGame.CameraY > this.Height - 25)
 					NoxicoGame.CameraY = this.Height - 25;
 			}
+			else
+				NoxicoGame.CameraY = -(this.Height / 2);
 
 			if (oldCamX != NoxicoGame.CameraX || oldCamY != NoxicoGame.CameraY)
 				Redraw();
@@ -954,6 +964,13 @@ namespace Noxico
 
 		public void Draw(bool force = false)
 		{
+			if (Height < 25 || Width < 80)
+			{
+				for (var r = 0; r < 25; r++)
+					for (var c = 0; c < 80; c++)
+						NoxicoGame.HostForm.SetCell(r, c, '~', Color.DarkGray, Color.Black);
+			}
+
 			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 			foreach (var l in this.DirtySpots)
@@ -961,6 +978,8 @@ namespace Noxico
 				var localX = l.X - NoxicoGame.CameraX;
 				var localY = l.Y - NoxicoGame.CameraY;
 				if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+					continue;
+				if (l.X >= this.Width || l.Y >= this.Height)
 					continue;
 				var t = this.Tilemap[l.X, l.Y];
 				var def = t.Definition;

@@ -45,7 +45,14 @@ namespace Noxico
 				for (var col = 0; col < mapCols; col++)
 					walls[row, col] = board.IsSolid(row, col, allowSwimming ? SolidityCheck.Walker : SolidityCheck.DryWalker);
 			foreach (var door in board.Entities.OfType<Door>().Where(d => !d.Locked))
+			{
+				if (door.YPosition >= board.Height || door.XPosition >= board.Width)
+				{
+					Program.WriteLine("Warning: invalid door position {0}x{1}", door.XPosition, door.YPosition);
+					continue;
+				}
 				walls[door.YPosition, door.XPosition] = false;
+			}
 		}
 
 		public bool RollDown(int row, int col, ref Direction dir)
@@ -117,7 +124,15 @@ namespace Noxico
 				for (var col = 0; col < mapCols; col++)
 					map[row, col] = vhn;
 			foreach (var hotspot in Hotspots)
+			{
+				if (hotspot.Y >= mapRows || hotspot.X >= mapCols)
+				{
+					Program.WriteLine("Bad dijkstra hotspot {0}x{1}", hotspot.X, hotspot.Y);
+					map[0, 0] = 0;
+					continue;
+				}
 				map[hotspot.Y, hotspot.X] = 0;
+			}
 
 			var change = false;
 			do
