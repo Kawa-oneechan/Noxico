@@ -90,7 +90,7 @@ bodyplan: imp
 	balls
 		amount: 2
 		size: 1
-	carnality: 50
+	vice: 50
 
 
 bodyplan: goblin
@@ -137,17 +137,17 @@ bodyplan: goblin
 			addict
 			overwrite: "vagina/looseness: roll 1d2+3"
 			overwrite: "ass/looseness: roll 1d2+2"
-			carnality: 70
+			vice: 70
 		set: 0.1
 			drugist
-			carnality: 50
+			vice: 50
 			addto: ass
 				virgin
 			overwrite: ass/looseness: 0
 			addto: items
 				gExtractor					
 		set: 0.6
-			carnality: 60
+			vice: 60
 
 
 bodyplan: bee
@@ -405,7 +405,7 @@ bodyplan: kitsune
 	balls
 		amount: 2
 		size: 0.6
-	cunning: 20
+	mind: 20
 
 
 bodyplan: slime
@@ -701,7 +701,7 @@ bodyplan: bear
 		meatchunk
 		meatchunk
 	speed: 30
-	strength: 40
+	body: 40
 
 
 bodyplan: wild_dog
@@ -721,7 +721,7 @@ bodyplan: wild_dog
 		meatchunk
 		meatchunk
 	speed: 40
-	strength: 25
+	body: 25
 	infectswith: canine
 
 
@@ -741,7 +741,7 @@ bodyplan: tame_dog
 		meatchunk
 		meatchunk
 	speed: 40
-	strength: 25
+	body: 25
 	neverprefix
 
 bodyplan: rat
@@ -760,7 +760,7 @@ bodyplan: rat
 	drops
 		meatgiblet
 	speed: 30
-	strength: 5
+	body: 5
 
 
 bodyplan: snake
@@ -780,7 +780,7 @@ bodyplan: snake
 		meatgiblet
 		meatgiblet
 	speed: 30
-	strength: 5
+	body: 5
 
 
 bodyplan: horse
@@ -800,7 +800,7 @@ bodyplan: horse
 		meatchunk
 		meatchunk
 	speed: 30
-	strength: 50
+	body: 50
 
 bodyplan: spider
 	culture: human

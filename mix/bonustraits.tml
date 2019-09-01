@@ -6,9 +6,9 @@ trait: charismatic
 	description: Gives a 15% bonus on Charisma, and a level in bartering.
 trait: cunning_bastard
 	display: Cunning Bastard
-	stat: cunning
+	stat: mind
 	skill: trap_disarming
-	description: Gives a 20% bonus on Cunning, and a level in trap disarming.
+	description: Gives a 20% bonus on Mind, and a level in trap disarming.
 trait: fast_food
 	display: Fast Food
 	stat: speed
@@ -16,9 +16,9 @@ trait: fast_food
 	description: Gives a 20% bonus on Speed, and a level in swimming.
 trait: olympian
 	display: Olympian
-	stat: strength
+	stat: body
 	skill: acrobatics
-	description: Gives a 20% bonus on Strength, and a level in acrobatics.
+	description: Gives a 20% bonus on Body, and a level in acrobatics.
 trait: smooth_operator
 	display: Smooth Operator
 	stat: charisma
@@ -28,8 +28,8 @@ trait: smooth_operator
 	description: Gives a 20% bonus on Charisma, levels in sweet talking and kissing, and half a level in bartering.
 trait: pervert
 	display: Pervert
-	stat: carnality
-	stat: stimulation
+	stat: vice
+	stat: excitement
 	skill: sweet_talking
 		level: 0.5
 	skill: blowjobs
@@ -38,7 +38,7 @@ trait: pervert
 	skill: vaginal_masturbation
 		women_only
 	skill: anal_play
-	description: Gives a 20% bonus on Carnality and Stimulation, levels in blowjobs, masturbation, and anal play, and half a level in sweet talking.
+	description: Gives a 20% bonus on Vice and Excitement, levels in blowjobs, masturbation, and anal play, and half a level in sweet talking.
 trait: large
 	display: Large
 	rating: breasts/size

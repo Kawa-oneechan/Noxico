@@ -49,10 +49,10 @@ item: timertest
 		evenunequipped
 	script: timer
 		<[[
-			local car = user.GetStat("carnality")
-			if car < 100 then
+			local vic = user.GetStat("vice")
+			if vic < 100 then
 				Message("You feel your mind going...")
-				user.Raise("carnality", 5)
+				user.Raise("vice", 5)
 			end
 		]]>
 
@@ -763,7 +763,7 @@ item: whip
 	weapon
 		damage: 40
 		skill: whip
-		increase: climax
+		increase: pleasure
 	-- Increase token doesn't do shit without some extra code but it can be here anyway.
 	price: 200
 	description: "An ordinary but nevertheless slightly kinky whip."
@@ -821,7 +821,7 @@ item: sentai_suit
 	identify: pop_culture
 	statbonus
 		charisma: 16
-		strength: 16
+		body: 16
 	description: "Shapes your cool body in a superhero style."
 	price: 300
 	ascii
@@ -841,7 +841,7 @@ item: sentai_helmet
 	identify: pop_culture
 	statbonus
 		charisma: 16
-		strength: 16
+		body: 16
 	description: "todo"
 	price: 300
 	ascii
@@ -1224,8 +1224,8 @@ item: chainmail_bikini_top
 		undershirt
 	statbonus
 		charisma: 5
-		sensitivity: 10
-		cunning: -5
+		libido: 10
+		mind: -5
 	weight: light
 	price: 200
 	description: "Now with even less chain!"
@@ -1241,8 +1241,8 @@ item: chainmail_bikini_bottom
 		underpants
 	statbonus
 		charisma: 5
-		sensitivity: 10
-		cunning: -5
+		libido: 10
+		mind: -5
 	weight: light
 	description: "Now with even less chain!"
 	price: 200
@@ -1289,7 +1289,7 @@ item: protection_bikini_top
 		undershirt
 	statbonus
 		charisma: 20
-		sensitivity: 15
+		libido: 15
 	weight: light
 	price: 200
 	description: "How does this even work?"
@@ -1305,7 +1305,7 @@ item: protection_bikini_bottom
 		underpants
 	statbonus
 		charisma: 20
-		sensitivity: 15
+		libido: 15
 	weight: light
 	description: "How does this even work?"
 	price: 200
@@ -1338,9 +1338,9 @@ item: blouse
 		shirt
 	weight: light
 	statbonus
-		cunning: 5
-		strength: -5
-		carnality: -5
+		mind: 5
+		body: -5
+		vice: -5
 	price: 15
 	ascii
 		char: 0x198
@@ -1386,8 +1386,8 @@ item: bikini_top
 		undershirt
 	statbonus
 		charisma: 5
-		sensitivity: 5
-		cunning: -5
+		libido: 5
+		mind: -5
 	weight: feather
 	price: 100
 	ascii
@@ -1406,8 +1406,8 @@ item: bikini_bottom
 		underpants
 	statbonus
 		charisma: 5
-		sensitivity: 5
-		cunning: -5
+		libido: 5
+		mind: -5
 	weight: feather
 	price: 50
 	ascii
@@ -1442,8 +1442,8 @@ item: skirt
 		pants
 		reach
 	statbonus
-		strength: 5
-		cunning: -5
+		body: 5
+		mind: -5
 	weight: light
 	price: 20
 	ascii
@@ -1478,8 +1478,8 @@ item: shorts
 	equipable
 		pants
 	statbonus
-		strength: 5
-		carnality: -5
+		body: 5
+		vice: -5
 	weight: light
 	price: 50
 	ascii
@@ -1497,8 +1497,8 @@ item: short_shorts
 	statbonus
 		speed: 5
 		charisma: 5
-		cunning: -5
-		strength: -5
+		mind: -5
+		body: -5
 	weight: light
 	price: 50
 	ascii
@@ -1514,9 +1514,9 @@ item: short_skirt
 		pants
 		reach
 	statbonus
-		sensitivity: 10
+		libido: 10
 		charisma: 10
-		cunning: -10
+		mind: -10
 	weight: light
 	price: 70
 	ascii
@@ -1535,10 +1535,10 @@ item: sundress
 		pants
 		reach
 	statbonus
-		sensitivity: 10
-		carnality: 10
+		libido: 10
+		vice: 10
 		speed: -10
-		strength: -10
+		body: -10
 	weight: light
 	price: 60
 	ascii
@@ -1558,11 +1558,11 @@ item: skimpy_dress
 		reach
 		translucent
 	statbonus
-		sensitivity: 10
+		libido: 10
 		charisma: 10
-		carnality: 10
+		vice: 10
 		speed: -10
-		strength: -10
+		body: -10
 	weight: light
 	price: 60
 	ascii
@@ -1581,8 +1581,8 @@ item: elegant_dress
 		pants
 	statbonus
 		charisma: 10
-		cunning: 10
-		strength: -10
+		mind: 10
+		body: -10
 	weight: medium
 	price: 300
 	ascii
@@ -1600,11 +1600,11 @@ item: little_black_dress
 		reach
 		translucent
 	statbonus
-		sensitivity: 10
+		libido: 10
 		charisma: 16
-		carnality: 5
+		vice: 5
 		speed: -5
-		strength: -5
+		body: -5
 	weight: light
 	price: 100
 	ascii
@@ -1638,8 +1638,8 @@ item: latex_suit
 	weight: medium
 	statbonus
 		charisma: 20
-		sensitivity: 15
-		cunning: 10
+		libido: 15
+		mind: 10
 	price: 100
 	ascii
 		char: 0x19c
@@ -1658,8 +1658,8 @@ item: latex_dress
 	weight: medium
 	statbonus
 		charisma: 20
-		sensitivity: 15
-		cunning: 10
+		libido: 15
+		mind: 10
 	price: 100
 	ascii
 		char: 0x19c
@@ -1691,7 +1691,7 @@ item: leather_corset
 	weight: medium
 	statbonus
 		charisma: 10
-		sensitivity: 10
+		libido: 10
 	price: 150
 	ascii
 		char: 0x19b
@@ -1708,7 +1708,7 @@ item: rubber_corset
 	weight: medium
 	statbonus
 		charisma: 14
-		sensitivity: 16
+		libido: 16
 	price: 150
 	ascii
 		char: 0x19b
@@ -1723,7 +1723,7 @@ item: leather_bustier
 	weight: medium
 	statbonus
 		charisma: 14
-		sensitivity: 16
+		libido: 16
 	price: 150
 	ascii
 		char: 0x19b
@@ -1738,7 +1738,7 @@ item: rubber_bustier
 	weight: medium
 	statbonus
 		charisma: 14
-		sensitivity: 16
+		libido: 16
 	price: 150
 	ascii
 		char: 0x19b
@@ -1854,15 +1854,15 @@ item: really_kinky_panties
 	timer: 1
 	script: timer
 		<[[
-			local cli = user.GetStat("climax")
-			local sti = user.GetStat("stimulation")
+			local cli = user.GetStat("pleasure")
+			local sti = user.GetStat("excitement")
 			if cli < 80 or sti < 80 then
 				Message("Your panties are making you hot and bothered...")
 				if cli < 80 then
-					user.Raise("climax", 5)
+					user.Raise("pleasure", 5)
 				end
 				if sti < 80 then
-					user.Raise("stimulation", 5)
+					user.Raise("excitement", 5)
 				end
 			else
 				Message("Your panties are keeping you hot and bothered...")
@@ -1884,8 +1884,8 @@ item: clit_regenring
 	script: timer
 		<[[
 			user.Heal(5)
-			user.Raise("climax", 1)
-			user.Raise("stimulation", 1)
+			user.Raise("pleasure", 1)
+			user.Raise("excitement", 1)
 		]]>
 	script: equip
 		<[[
@@ -2078,9 +2078,9 @@ item: restoration_potion
 			local half = math.ceil(missing * 0.5)
 			user.Health = user.Health + half
 
-			local car = user.GetStat("carnality")
-			if car < 100 then
-				user.Raise("carnality", 5)
+			local vic = user.GetStat("vice")
+			if vic < 100 then
+				user.Raise("vice", 5)
 			end
 			Identify()
 		]]>	
@@ -2096,9 +2096,9 @@ item: greater_restoration_potion
 			Consume()
 			user.Health = user.MaximumHealth
 
-			local car = user.GetStat("carnality");
-			if car < 100 then
-				user.Raise("carnality", 20)
+			local vic = user.GetStat("vice");
+			if vic < 100 then
+				user.Raise("vice", 20)
 			end
 			Identify()
 		]]>	

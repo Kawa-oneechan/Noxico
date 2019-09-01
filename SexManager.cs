@@ -469,9 +469,9 @@ namespace Noxico
 			var everysexturn = SexManager.GetResult("everysexturn", this, sexPartner);
 			SexManager.Apply(everysexturn, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 
-			if (this.GetStat("climax") >= 100)
+			if (this.GetStat("pleasure") >= 100)
 			{
-				var result = SexManager.GetResult("climax", this, sexPartner);
+				var result = SexManager.GetResult("pleasure", this, sexPartner);
 				if (this.HasItemEquipped("orgasm_denial_ring"))
 					result = SexManager.GetResult("orgasm_denial_ring", this, sexPartner);
 				SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));

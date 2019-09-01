@@ -128,9 +128,10 @@ namespace Noxico
 			{
 				if (stat.Value.panel == null)
 					continue;
-				string statName = stat.Value.name.ToString().ToLowerInvariant();
+				string properName = stat.Value.name.ToString();
+				string statName = properName.ToLowerInvariant();
 				if (!player.HasToken(statName))
-					sb.AppendLine(statName.PadEffective(20) + "<cGray>-?-");
+					sb.AppendLine(properName.PadEffective(20) + "<cGray>-?-");
 				else
 				{
 					var bonus = string.Empty;
@@ -141,8 +142,7 @@ namespace Noxico
 						bonus = "<cGray> (" + statBase + "+" + statBonus + ")<cSilver>";
 					else if (statBonus < 0)
 						bonus = "<cFirebrick> (" + statBase + "-" + (-statBonus) + ")<cSilver>";
-					statName = stat.Value.name.ToString();
-					sb.AppendLine(statName.PadEffective(20) + total + bonus);
+					sb.AppendLine(properName.PadEffective(20) + total + bonus);
 				}
 			}
 

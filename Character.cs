@@ -337,7 +337,7 @@ namespace Noxico
 		{
 			get
 			{
-				return GetStat("strength") * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
+				return GetStat("body") * 2 + 50 + (HasToken("healthbonus") ? GetToken("healthbonus").Value : 0);
 			}
 		}
 
@@ -708,11 +708,10 @@ namespace Noxico
 			var prefabTokens = new[]
 			{
 				"items", /*"health",*/ "perks", "skills", "sexpreference",
-				/*"charisma", "climax", "cunning", "carnality",
-				"stimulation", "sensitivity", "speed", "strength",*/
 				"money", "ships", 
-				"charismabonus", "climaxbonus", "cunningbonus", "carnalitybonus",
-				"stimulationbonus", "sensitivitybonus", "speedbonus", "strengthbonus",
+				//TODO: have the ___bonus tokens only appear when first set.
+				/* "charismabonus", "pleasurebonus", "mindbonus", "vicebonus",
+				"excitementbonus", "libidobonus", "speedbonus", "bodybonus", */
 			};
 			var prefabTokenValues = new[]
 			{
@@ -720,8 +719,8 @@ namespace Noxico
 				/*10, 0, 10, 0,
 				10, 10, 10, 15,*/
 				100, 0,
-				0, 0, 0, 0,
-				0, 0, 0, 0,
+				/* 0, 0, 0, 0,
+				0, 0, 0, 0, */
 			};
 
 			for (var i = 0; i < prefabTokens.Length; i++)
@@ -926,8 +925,8 @@ namespace Noxico
 				var amount = HasToken("balls") && GetToken("balls").HasToken("amount") ? GetToken("balls").GetToken("amount").Value : 2f;
 				var multiplier = HasToken("cummultiplier") ? GetToken("cummultiplier").Value : 1;
 				var hours = 1;
-				var stimulation = GetStat("stimulation");
-				ret = (size * amount * multiplier * 2 * (stimulation + 50) / 10 * (hours + 10) / 24) / 10;
+				var excitement = GetStat("excitement");
+				ret = (size * amount * multiplier * 2 * (excitement + 50) / 10 * (hours + 10) / 24) / 10;
 				if (GetToken("perks").HasToken("messyorgasms"))
 					ret *= 1.5f;
 				return ret;
@@ -1351,7 +1350,7 @@ namespace Noxico
 			var ballCount = 0;
 			var ballSize = 0.25f;
 			//var slit = this.HasToken("snaketail");
-			//var aroused = stimulation > 50;
+			//var aroused = excitement > 50;
 			if (nuts != null)
 			{
 				ballCount = nuts.HasToken("amount") ? (int)nuts.GetToken("amount").Value : 2;
@@ -1955,7 +1954,7 @@ Tokens:
 				{ "heavy", 4 },
 				{ "immense", 16 },
 			};
-			var strengthToCapacity = new Dictionary<int, int>()
+			var bodyToCapacity = new Dictionary<int, int>()
 			{
 				{ 0, 1 }, //Boneless Chicken
 				{ 10, 8 }, //Picked Last at P.E.
@@ -1965,12 +1964,12 @@ Tokens:
 				{ 80, 128 }, //Olympic God
 				{ 100, 256 }, //Demigod
 			};
-			var strength = GetStat("strength");
+			var body = GetStat("body");
 			var capacity = 0f;
-			foreach (var s2c in strengthToCapacity)
+			foreach (var s2c in bodyToCapacity)
 			{
 				capacity = s2c.Value;
-				if (s2c.Key > strength)
+				if (s2c.Key > body)
 					break;
 			}
 
@@ -2358,12 +2357,13 @@ Tokens:
 		}
 
 		/// <summary>
-		/// Resets the values of climax and stimulation.
+		/// Resets the values of pleasure and excitement.
 		/// </summary>
+		//TODO: make this a scripted thing, definitely.
 		public void Orgasm()
 		{
-			SetStat("climax", 0);
-			SetStat("stimulation", 0);
+			SetStat("pleasure", 0);
+			SetStat("excitement", 0);
 			if (HasToken("hostile"))
 				RemoveToken("hostile");
 		}

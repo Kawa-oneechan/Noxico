@@ -1,13 +1,13 @@
 stats = {
 	{ name = "Health",		short = "HP",	default = 10,	panel = nil },
 	{ name = "Charisma",	short = "CHA",	default = 10,	panel = { 0x2C0, 0x2C1 } },
-	{ name = "Climax",		short = "CLI",	default = 0,	panel = { 0x2C2, 0x2C3 } },
-	{ name = "Cunning",		short = "CUN",	default = 10,	panel = { 0x2C4, 0x2C5 } },
-	{ name = "Carnality",	short = "CAR",	default = 0,	panel = { 0x2C6, 0x2C7 } },
-	{ name = "Stimulation",	short = "STI",	default = 10,	panel = { 0x2C8, 0x2C9 } },
-	{ name = "Sensitivity",	short = "SEN",	default = 10,	panel = { 0x2CA, 0x2CB } },
-	{ name = "Speed",		short = "SPE",	default = 10,	panel = { 0x2CA, 0x2CC } },
-	{ name = "Strength",	short = "STR",	default = 15,	panel = { 0x2CD, 0x2CE } }
+	{ name = "Pleasure",	short = "PLS",	default = 0,	panel = { 0x2C2, 0x2C3 } },
+	{ name = "Mind",		short = "MIN",	default = 10,	panel = { 0x2C4, 0x2C5 } },
+	{ name = "Vice",		short = "VIC",	default = 0,	panel = { 0x2C6, 0x2C7 } },
+	{ name = "Excitement",	short = "EXC",	default = 10,	panel = { 0x2C8, 0x2C9 } },
+	{ name = "Libido",		short = "LIB",	default = 10,	panel = { 0x2CA, 0x2CB } },
+	{ name = "Speed",		short = "SPE",	default = 10,	panel = { 0x2CC, 0x2CD } },
+	{ name = "Body",		short = "BOD",	default = 15,	panel = { 0x2CE, 0x2CF } }
 }
 statsDisplay = {
 	rows = 4, cols = 2,
@@ -15,7 +15,7 @@ statsDisplay = {
 	valueWidth = 3,
 	sidePadding = 1
 }
--- Character.GetStat() would take a string or int ("climax" or 2 (3?)) instead of a Stat enum.
+-- Character.GetStat() would take a string or int ("pleasure" or 2 (3?)) instead of a Stat enum.
 -- Anything out of band simply returns 0 and maybe whines a little.
 -- Add Character.SetStat() and IncreaseStat(), which whine and set nothing if out of band.
 -- Keep the Stat enum version around for now but have it redirect to the string version. And whine.
@@ -26,7 +26,7 @@ stats = {
     { name = "Health",		short = "HP",	default = 10,	panel = nil },
     { name = "Charisma",	short = "CHA",	default = 10,	panel = { 0x2C0, 0x2C1 } },
     { name = "Speed",		short = "SPE",	default = 10,	panel = { 0x2CA, 0x2CC } },
-    { name = "Strength",	short = "STR",	default = 15,	panel = { 0x2CD, 0x2CE } }
+    { name = "Body",		short = "BOD",	default = 15,	panel = { 0x2CD, 0x2CE } }
 }
 statsDisplay.rows = 3;
 statsDisplay.cols = 1;
@@ -120,13 +120,13 @@ function ChangeStat(character, stat, amount);
 	local token = character.GetToken(stat);
 	local value = token.Value;
 
-	if stat == "climax" then
-		-- 0 stim gives only 50% of climax increase
-		-- 50 stim gives 125% climax increase
-		-- 100 stim gives 200% climax increase	 
-		local stimBonus = 0.5 + (character.GetStat("stimulation") * 0.015);
-		local carnBonus = 0.5 + (character.GetStat("carnality")   * 0.015);
-		value = value + (amount * stimBonus * carnBonus);
+	if stat == "pleasure" then
+		-- 0 stim gives only 50% of pleasure increase
+		-- 50 stim gives 125% pleasure increase
+		-- 100 stim gives 200% pleasure increase	 
+		local exciteBonus = 0.5 + (character.GetStat("excitement") * 0.015);
+		local viceBonus = 0.5 + (character.GetStat("vice")   * 0.015);
+		value = value + (amount * exciteBonus * viceBonus);
 	else
 		value = value + amount;
 	end
@@ -141,8 +141,6 @@ function ChangeStat(character, stat, amount);
 end
 
 function TickStats(character)
-	--[[ TODO I guess. The original C# version of ChangeStat had
-	"there's supposed to be a Lua-driven "every tick" thing for
-	stats." and to be honest I can't remember what should happen
-	so I'mma leave this empty for now. ]]--
+	-- TODO: Every tick, have a fraction of Libido added to Excitement.
+	-- TODO: Sufficiently high Excitement should add to Pleasure
 end

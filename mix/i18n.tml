@@ -162,16 +162,6 @@ Number of known items       {2}
 	action_pickup_cancel: Cancel
 -- #endregion
 -- #region Sidebar
--- #region Stat shorthands
-	shortstat_Charisma: CHA
-	shortstat_Climax: CLI
-	shortstat_Cunning: CUN
-	shortstat_Carnality: CAR
-	shortstat_Stimulation: STI
-	shortstat_Sensitivity: SEN
-	shortstat_Speed: SPE
-	shortstat_Strength: STR
--- #endregion
 -- #region Mods
 	mod_haste: Haste 
 	mod_slow: Slow 
@@ -575,7 +565,7 @@ Equipment
 	morph_nipplefail: [views] chest tingles, but nothing happens
 -- #endregion
 -- #region Morph delta descriptions
--- Metrics: tallness hips waist ass_size charisma cunning carnality sensitivity speed strength
+-- Metrics: tallness hips waist ass_size charisma mind vice excitement speed body
 	morphpart_tallness_-1: [view] grow{s} a bit shorter
 	morphpart_tallness_1: [view] grow{s} a bit taller
 	morphpart_hips_-1: [views] hips	become smaller
@@ -587,16 +577,16 @@ Equipment
 -- Vary that up a bit, yo!
 	morphpart_charisma_-1: [views] charisma decreases
 	morphpart_charisma_1: [views] charisma increases
-	morphpart_cunning_-1: [views] cunning decreases
-	morphpart_cunning_1: [views] cunning increases
-	morphpart_carnality_-1: [views] carnality decreases
-	morphpart_carnality_1: [views] carnality increases
-	morphpart_sensitivity_-1: [views] sensitivity decreases
-	morphpart_sensitivity_1: [views] sensitivity increases
+	morphpart_mind_-1: [views] cunning decreases
+	morphpart_mind_1: [views] cunning increases
+	morphpart_vice_-1: [views] carnality decreases
+	morphpart_vice_1: [views] carnality increases
+	morphpart_libido_-1: [views] libido decreases
+	morphpart_libido_1: [views] libido increases
 	morphpart_speed_-1: [views] speed decreases
 	morphpart_speed_1: [views] speed increases
-	morphpart_strength_-1: [views] strength decreases
-	morphpart_strength_1: [views] strength increases
+	morphpart_body_-1: [views] strength decreases
+	morphpart_body_1: [views] strength increases
 -- Trivial kinds: face teeth tongue ears legs --> things listed in bodyparts.tml
 -- for now, let's just let it return "[morphpart_face_cat]"...
 -- Trivial colors: eyes only for now, to any known color.

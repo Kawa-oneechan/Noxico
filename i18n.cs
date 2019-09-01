@@ -263,14 +263,6 @@ namespace Noxico
 				env.cultureID = who.Culture.ID;
 				env.culture = who.Culture;
 				env.gender = who.Gender;
-				/*
-				env.carnality = who.GetStat("carnality");
-				env.charisma = who.GetStat("charisma");
-				env.climax = who.GetStat("climax");
-				env.cunning = who.GetStat("cunning");
-				env.sensitivity = who.GetStat("sensitivity");
-				env.stimulation = who.GetStat("stimulation");
-				*/
 				foreach (var stat in env.stats)
 				{
 					var statName = ((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant();

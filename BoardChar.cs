@@ -265,13 +265,13 @@ namespace Noxico
 					return;
 				if (other.Character.GetStat("charisma") >= 10)
 				{
-					var stim = this.Character.GetStat("stimulation");
+					var stim = this.Character.GetStat("excitement");
 					var otherChar = other.Character.GetStat("charisma");
 					var distance = other.DistanceFrom(this);
 					var increase = (otherChar / 20) * (distance * 0.25);
-					this.Character.Raise("stimulation", (float)increase);
+					this.Character.Raise("excitement", (float)increase);
 					if (distance < 2)
-						this.Character.Raise("stimulation", 1);
+						this.Character.Raise("excitement", 1);
 					/*
 					if (!ogled && this != player)
 					{
@@ -295,8 +295,8 @@ namespace Noxico
 		{
 			if (this.Character.HasToken("sleeping"))
 				return null;
-			var stim = this.Character.GetStat("stimulation");
-			var carn = this.Character.GetStat("carnality");
+			var stim = this.Character.GetStat("excitement");
+			var carn = this.Character.GetStat("vice");
 			var r = Random.Next(4);
 			if (r == 0)
 			{
@@ -679,7 +679,7 @@ namespace Noxico
 				if (distance <= range && CanSee(bcTarget))
 				{
 					//Within attacking range.
-					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("stimulation") > 30 && Character.Likes(bcTarget.Character))
+					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("excitement") > 30 && Character.Likes(bcTarget.Character))
 					{
 						//WRONG KIND OF ATTACK! ABANDON SHIP!!
 						Character.AddToken("waitforplayer");
@@ -849,7 +849,7 @@ namespace Noxico
 							}
 
 							//If we're gonna rape the target, we'd want them for ourself. Otherwise...
-							if (Character.GetStat("stimulation") < 30)
+							if (Character.GetStat("excitement") < 30)
 							{
 								//...we call out to nearby hostiles
 								var called = 0;
@@ -911,7 +911,7 @@ namespace Noxico
 				return;
 
 			if (Character.HasToken("beast"))
-				Character.SetStat("stimulation", 0);
+				Character.SetStat("excitement", 0);
 
 			var ally = Character.HasToken("ally");
 			var hostile = ally ? Character.GetToken("ally") : Character.GetToken("hostile");
@@ -1014,7 +1014,7 @@ namespace Noxico
 				if (distance <= range && CanSee(bcTarget))
 				{
 					//Within attacking range.
-					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("stimulation") > 30 && Character.Likes(bcTarget.Character))
+					if (IniFile.GetValue("misc", "allowrape", false) && distance == 1 && bcTarget.Character.HasToken("helpless") && Character.GetStat("excitement") > 30 && Character.Likes(bcTarget.Character))
 					{
 						//WRONG KIND OF ATTACK! ABANDON SHIP!!
 						Character.AddToken("waitforplayer");
@@ -1215,7 +1215,7 @@ namespace Noxico
 			if (weaponData == null)
 			{
 				//Unarmed combat by default.
-				baseDamage = (float)Math.Floor(this.Character.GetStat("strength"));
+				baseDamage = (float)Math.Floor(this.Character.GetStat("body"));
 			}
 			else
 			{
@@ -1224,7 +1224,7 @@ namespace Noxico
 				baseDamage = weaponData.GetToken("damage").Value;
 				if (carriedWeapon.HasToken("bonus"))
 					baseDamage = (float)Math.Ceiling(baseDamage * ((carriedWeapon.GetToken("bonus").Value + 1) * 0.75f));
-				//TODO: if it's a crushing weapon, use strength stat.
+				//TODO: if it's a crushing weapon, use body stat.
 			}
 
 			if (this.Character.Path("prefixes/vorpal") != null)

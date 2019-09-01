@@ -66,7 +66,8 @@ namespace Noxico
 			var trivialSizes = new[]
 			{
 				"tallness", "hips", "waist", "ass/size",
-				"charisma", "cunning", "carnality", "sensitivity", "speed", "strength"
+				//TODO: take these from stats.lua?
+				"charisma", "mind", "vice", "libido", "speed", "body"
 			};
 			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };
 			var trivialColors = new[] { "eyes" };

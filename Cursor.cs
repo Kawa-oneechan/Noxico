@@ -245,7 +245,7 @@ namespace Noxico
 					{
 						description = i18n.Format("action_descyou", player.Character.Name);
 						options["look"] = i18n.GetString("action_lookatyou");
-						if (player.Character.GetStat("stimulation") >= 30)
+						if (player.Character.GetStat("excitement") >= 30)
 							options["fuck"] = i18n.GetString("action_masturbate");
 
 						if (player.Character.HasToken("copier") && player.Character.GetToken("copier").Value == 1)
@@ -288,7 +288,7 @@ namespace Noxico
 								options["trade"] = i18n.Format("action_trade", boardChar.Character.HimHerIt(true));
 						}
 
-						if (canSee && player.Character.GetStat("stimulation") >= 30 && distance <= 1)
+						if (canSee && player.Character.GetStat("excitement") >= 30 && distance <= 1)
 						{
 							if (!IniFile.GetValue("misc", "allowrape", false) && boardChar.Character.HasToken("hostile"))
 							{
@@ -299,7 +299,7 @@ namespace Noxico
 							{
 								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
 									options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
-								else if (boardChar.Character.HasToken("willing")) //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's stimulation or whatever.
+								else if (boardChar.Character.HasToken("willing")) //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's excitement or whatever.
 									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
 							}
 						}
@@ -367,7 +367,7 @@ namespace Noxico
 									if (PointingAt is Player)
 									{
 										//if (Culture.CheckSummoningDay()) return;
-										if (player.Character.Path("cunning").Value >= 10)
+										if (player.Character.Path("mind").Value >= 10)
 											MessageBox.Notice(i18n.GetString("talkingotyourself"), true);
 										else
 											MessageBox.Notice(i18n.GetString("talkingtoyourself_nutso"), true);

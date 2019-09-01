@@ -2,11 +2,11 @@
 			<[[
 				var ret = "You apply the fox morph potion.";
 
-				//Always boost cunning.
-				var cunning = user.GetToken("cunning");
-				if (cunning.Value < 50)
+				//Always boost mind.
+				var mind = user.GetToken("mind");
+				if (mind.Value < 50)
 				{
-					cunning.Value += 2;
+					mind.Value += 2;
 					ret += "\n\nYou feel more cunning.";
 				}
 
@@ -165,11 +165,11 @@ dummy
 
 				var ret = "The pepper is strangely spicy but very tasty.";
 
-				//Always boost strength.
-				var strength = user.GetToken("strength");
-				if (strength.Value < 50)
+				//Always boost body.
+				var body = user.GetToken("body");
+				if (body.Value < 50)
 				{
-					strength.Value += 2;
+					body.Value += 2;
 					ret += "\n\nYour muscles feel more toned.";
 				}
 
@@ -236,10 +236,10 @@ dummy
 				var ret = "You apply the bunny morph potion.";
 
 				//Always boost libido.
-				var sensitivity = user.GetToken("sensitivity");
-				if (sensitivity.Value < 80)
+				var libido = user.GetToken("libido");
+				if (libido.Value < 80)
 				{
-					sensitivity.Value += 4;
+					libido.Value += 4;
 					ret += "\n\nYou feel hornier.";
 				}
 
@@ -323,9 +323,9 @@ dummy
 			
 				--user.Morph("foocubus")
 				local ret = ""
-				local carnality = user.GetToken("carnality")
-				if carnality.Value < 80 then
-					carnality.Value = carnality.Value + 4
+				local vice = user.GetToken("vice")
+				if vice.Value < 80 then
+					vice.Value = vice.Value + 4
 					ret = ret .. "You feel hornier.  "
 				end
 

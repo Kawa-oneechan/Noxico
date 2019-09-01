@@ -670,7 +670,7 @@ namespace Noxico
 			});
 			env.Identify = new Action<string>(x =>
 			{
-				if (character.GetStat("cunning") < 10)
+				if (character.GetStat("mind") < 10)
 				{
 					//Dumb characters can't identify as well.
 					if (Random.NextDouble() < 0.5)

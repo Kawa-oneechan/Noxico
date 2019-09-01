@@ -578,8 +578,8 @@ namespace Noxico
 						var tile = ParentBoard.Tilemap[XPosition, YPosition];
 						if (tile.Definition.Ceiling)
 						{
-							if (Character.GetStat("cunning") < 10 ||
-								(Character.GetStat("cunning") < 20 && Random.NextDouble() < 0.5))
+							if (Character.GetStat("mind") < 10 ||
+								(Character.GetStat("mind") < 20 && Random.NextDouble() < 0.5))
 							{
 								Hurt(2, "death_crackedagainstceiling", null, false);
 								NoxicoGame.AddMessage(i18n.GetString("hittheceiling"));
