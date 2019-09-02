@@ -935,7 +935,7 @@ namespace Noxico
 					NoxicoGame.CameraX = this.Width - 80;
 			}
 			else
-				NoxicoGame.CameraX = -(this.Width / 2);
+				NoxicoGame.CameraX = -(40 - (this.Width / 2));
 
 			var oldCamY = NoxicoGame.CameraY;
 			if (this.Height == 25)
@@ -949,7 +949,7 @@ namespace Noxico
 					NoxicoGame.CameraY = this.Height - 25;
 			}
 			else
-				NoxicoGame.CameraY = -(this.Height / 2);
+				NoxicoGame.CameraY = -(12 - (this.Height / 2));
 
 			if (oldCamX != NoxicoGame.CameraX || oldCamY != NoxicoGame.CameraY)
 				Redraw();
@@ -968,7 +968,21 @@ namespace Noxico
 			{
 				for (var r = 0; r < 25; r++)
 					for (var c = 0; c < 80; c++)
-						NoxicoGame.HostForm.SetCell(r, c, '~', Color.DarkGray, Color.Black);
+						NoxicoGame.HostForm.SetCell(r, c, (char)0xB0, Color.DarkGray, Color.Black);
+				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX - 1, (char)0xC9, Color.DarkGray, Color.Black);
+				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX + Width, (char)0xBB, Color.DarkGray, Color.Black);
+				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY + Height, -NoxicoGame.CameraX - 1, (char)0xC8, Color.DarkGray, Color.Black);
+				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY + Height, -NoxicoGame.CameraX + Width, (char)0xBC, Color.DarkGray, Color.Black);
+				for (var c = -NoxicoGame.CameraX; c < -NoxicoGame.CameraX + Width; c++)
+				{
+					NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, c, (char)0xCD, Color.DarkGray, Color.Black);
+					NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY + Height, c, (char)0xCD, Color.DarkGray, Color.Black);
+				}
+				for (var r = -NoxicoGame.CameraY; r < -NoxicoGame.CameraY + Height; r++)
+				{
+					NoxicoGame.HostForm.SetCell(r, -NoxicoGame.CameraX - 1, (char)0xBA, Color.DarkGray, Color.Black);
+					NoxicoGame.HostForm.SetCell(r, -NoxicoGame.CameraX + Width, (char)0xBA, Color.DarkGray, Color.Black);
+				}
 			}
 
 			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };

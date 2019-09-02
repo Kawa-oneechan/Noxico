@@ -150,6 +150,7 @@ namespace Noxico
 							testBoard.EntitiesToAdd.Add(me.Player);
 							NoxicoGame.InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, 12, 0, 0);
 							testBoard.UpdateLightmap(null, true);
+							testBoard.AimCamera();
 							testBoard.Redraw();
 							testBoard.Draw();
 							Subscreens.FirstDraw = true;
