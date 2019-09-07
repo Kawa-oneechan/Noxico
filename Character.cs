@@ -159,7 +159,7 @@ namespace Noxico
 				return Name.ToString(fullName);
 
 			if (HasToken("beast"))
-				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Path("terms/generic").Text);
+				return string.Format("{0} {1}", initialCaps ? (the ? "The" : A.ToUpperInvariant()) : (the ? "the" : A), Title); //Path("terms/generic").Text);
 
 			var player = NoxicoGame.Me.Player.Character;
 
@@ -653,13 +653,20 @@ namespace Noxico
 					newChar.Culture = Culture.Cultures[culture];
 			}
 
-			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix") && Random.NextDouble() > 0.5)
+			if (newChar.HasToken("beast") && !newChar.HasToken("neverprefix")) // && Random.Flip())
 			{
-				var prefixes = new[] { "vorpal", "poisonous", "infectious", "dire", "underfed" };
+				var prefixes = new[] { "vorpal", "venomous", "infectious", "dire", "underfed", "burning" };
 				var chosen = prefixes.PickOne();
+				if (chosen == "burning" && Random.Flip())
+					chosen = string.Empty;
 				if (!newChar.HasToken("infectswith"))
 					while (chosen == "infectious")
 						chosen = prefixes.PickOne();
+				if (chosen != string.Empty)
+				{
+					var p = newChar.Path("prefixes") ?? newChar.AddToken("prefixes");
+					p.AddToken(chosen);
+				}
 				newChar.UpdateTitle();
 			}
 
@@ -1583,7 +1590,7 @@ Tokens:
 			{
 				if (x.Contains(' ' + i18n.GetString("none") + '\n') || x.Contains(i18n.GetString("lookat_column_clothing")) || x.Contains(i18n.GetString("lookat_header_items")))
 					return;
-				x = x.Replace("\xC3", "&#x251C;").Replace("\xC0", "&#x2514;").Replace("&#xc4;", "&#x2500;");
+				x = x.Replace("\xC3", "&#x251C;").Replace("\xC0", "&#x2514;").Replace("&#xc4;", "&#x2500;").Replace("\xC4", "&#x2500;");
 				dump.Write(x.Viewpoint(null));
 			});
 			var lookAt = LookAt(null, print);
@@ -1678,6 +1685,7 @@ Tokens:
 		}
 
 		// stuff useful for sex.tml starts here 
+		//TODO: split all that off into Lua functions
 
 		public bool HasPenis()
 		{

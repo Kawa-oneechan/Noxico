@@ -16,7 +16,7 @@ function BuildTestArena(center)
 
 	local beastie = Character.Generate("bear", Gender.RollDice);
 	local beastebc = center.PlaceCharacter(beastie, 35, 10);
-	beastie.AddToken("burning");
+	-- beastie.AddToken("burning");
 
 	--[[
 	local hostile = Character.Generate("imp", Gender.RollDice);

@@ -464,7 +464,7 @@ namespace Noxico
 
 			Character.TickStats();
 
-			if (Character.HasToken("burning"))
+			if (Character.Path("prefixes/burning") != null)
 			{
 				if (!Character.HasToken("fireproof"))
 					Character.AddToken("fireproof");
