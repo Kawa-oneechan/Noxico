@@ -545,27 +545,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				if (Character.HasToken("flying"))
 				{
-					//Land
-					NoxicoGame.AddMessage(i18n.GetString("youland"));
-					Character.RemoveToken("flying");
-					//add swim capability?
-					var tile = ParentBoard.Tilemap[XPosition, YPosition];
-					if (tile.Fluid != Fluids.Dry && !tile.Shallow && Character.IsSlime)
-						Hurt(9999, "death_doveinanddrowned", null, false);
-					else if (tile.Definition.Cliff)
-						Hurt(9999, "death_doveintodepths", null, false, false);
-					else if (tile.Definition.Fence)
-					{
-						//I guess I'm still a little... on the fence.
-						/*
-						var tileDesc = tile.GetDescription();
-						if (!tileDesc.HasValue)
-							tileDesc = new TileDescription() { Color = Color.Silver, Name = "obstacle" };
-						NoxicoGame.AddMessage("You fall off the " + tileDesc.Value.Name + ".", tileDesc.Value.Color);
-						Hurt(5, "landed on " + (tileDesc.Value.Name.StartsWithVowel() ? "an" : "a") + ' ' + tileDesc.Value.Name, null, false, true);
-						*/
-						//YEEEEAAAAH!!!!!!!!
-					}
+					LandFromFlight();
 				}
 				else
 				{
@@ -750,7 +730,7 @@ namespace Noxico
 					f.Value = -10;
 				}
 				if (f.Value <= 0)
-					NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Fly]] = true; //force a landing
+					LandFromFlight(true);
 			}
 
 			if (ParentBoard == null)
@@ -1016,6 +996,30 @@ namespace Noxico
 				candle.Description = i18n.GetString("candle_6");
 			else
 				candle.Description = i18n.GetString("candle_X");
+		}
+
+		public void LandFromFlight(bool forced = false)
+		{
+			NoxicoGame.AddMessage(i18n.GetString("youland"));
+			Character.RemoveToken("flying");
+			//add swim capability?
+			var tile = ParentBoard.Tilemap[XPosition, YPosition];
+			if (tile.Fluid != Fluids.Dry && !tile.Shallow && Character.IsSlime)
+				Hurt(9999, "death_doveinanddrowned", null, false);
+			else if (tile.Definition.Cliff)
+				Hurt(9999, "death_doveintodepths", null, false, false);
+			else if (tile.Definition.Fence)
+			{
+				//I guess I'm still a little... on the fence.
+				/*
+				var tileDesc = tile.GetDescription();
+				if (!tileDesc.HasValue)
+					tileDesc = new TileDescription() { Color = Color.Silver, Name = "obstacle" };
+				NoxicoGame.AddMessage("You fall off the " + tileDesc.Value.Name + ".", tileDesc.Value.Color);
+				Hurt(5, "landed on " + (tileDesc.Value.Name.StartsWithVowel() ? "an" : "a") + ' ' + tileDesc.Value.Name, null, false, true);
+				*/
+				//YEEEEAAAAH!!!!!!!!
+			}
 		}
 	}
 }

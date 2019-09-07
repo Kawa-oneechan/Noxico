@@ -802,14 +802,15 @@ namespace Noxico
 				if (binding == KeyBinding.Pause)
 					return "Start";
 			}
-			return TranslateKey(NoxicoGame.RawBindings[binding], longhand);
+			return TranslateKey(NoxicoGame.RawBindings[binding], longhand, shifted: NoxicoGame.KeyBindingMods[binding]);
 		}
-		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false)
+		public static string TranslateKey(System.Windows.Forms.Keys key, bool longhand = false, bool shifted = false)
 		{
-			return TranslateKey(key.ToString());
+			return TranslateKey(key.ToString(), longhand, shifted);
 		}
-		public static string TranslateKey(string key, bool longhand = false)
+		public static string TranslateKey(string key, bool longhand = false, bool shifted = false)
 		{
+			var shift = shifted ? "Shift+" : string.Empty;
 			key = key.ToUpperInvariant();
 			if (key.StartsWith("OEM"))
 				key = key.Substring(3);
@@ -839,8 +840,8 @@ namespace Noxico
 				};
 			}
 			if (specials.ContainsKey(key))
-				return specials[key].Titlecase();
-			return key.Titlecase();
+				return shift + specials[key].Titlecase();
+			return shift + key.Titlecase();
 		}
 
 		public static string InitialCase(this string text)

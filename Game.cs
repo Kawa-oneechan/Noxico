@@ -72,6 +72,7 @@ namespace Noxico
 
 		public static Dictionary<KeyBinding, Keys> KeyBindings { get; private set; }
 		public static Dictionary<KeyBinding, string> RawBindings { get; private set; }
+		public static Dictionary<KeyBinding, bool> KeyBindingMods { get; private set; }
 
 		public static List<InventoryItem> KnownItems { get; private set; }
 		public List<Board> Boards { get; private set; }
@@ -111,6 +112,8 @@ namespace Noxico
 		{
 			if (KeyBindings[binding] == 0)
 				return false;
+			if (NoxicoGame.Modifiers[0] != KeyBindingMods[binding])
+				return false;
 			return (NoxicoGame.KeyMap[KeyBindings[binding]]);
 		}
 
@@ -124,6 +127,7 @@ namespace Noxico
 
 			KeyBindings = new Dictionary<KeyBinding, Keys>();
 			RawBindings = new Dictionary<KeyBinding, string>();
+			KeyBindingMods = new Dictionary<KeyBinding, bool>();
 			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
 			//Keep this array in synch with KeyBinding.
 			var defaults = new[]
@@ -134,10 +138,24 @@ namespace Noxico
 				Keys.F1, Keys.F12, Keys.Tab,
 				Keys.Up, Keys.Down
 			};
+			var defaultMods = new[]
+			{
+				false, false, false, false,
+				false, false, false, false,
+				true, false, false, false,
+				false, false, false,
+				false, false
+			};
 			for (var i = 0; i < defaults.Length; i++)
 			{
 				var iniKey = ((KeyBinding)i).ToString().ToLowerInvariant();
 				var iniValue = IniFile.GetValue("keymap", iniKey, Enum.GetName(typeof(Keys), defaults[i])).ToUpperInvariant();
+				var iniMod = false;
+				if (iniValue.StartsWith("^"))
+				{
+					iniMod = true;
+					iniValue = iniValue.Substring(1);
+				}
 				if (keyNames.Contains(iniValue))
 				{
 					KeyBindings[(KeyBinding)i] = (Keys)Enum.Parse(typeof(Keys), iniValue, true);
@@ -152,9 +170,11 @@ namespace Noxico
 					{
 						//Give up, use default
 						KeyBindings[(KeyBinding)i] = defaults[i];
+						iniMod = defaultMods[i];
 						iniValue = defaults[i].ToString().ToUpperInvariant();
 					}
 				}
+				KeyBindingMods[(KeyBinding)i] = iniMod;
 				RawBindings[(KeyBinding)i] = iniValue;
 			}
 
