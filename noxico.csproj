@@ -138,6 +138,7 @@
     <Compile Include="SexManager.cs" />
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens\ActionList.cs" />
+    <Compile Include="Subscreens\Controls.cs" />
     <Compile Include="Subscreens\Crafting.cs" />
     <Compile Include="Subscreens\Options.cs" />
     <Compile Include="UpdateForm.cs">

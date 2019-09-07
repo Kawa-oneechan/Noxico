@@ -828,6 +828,19 @@ namespace Noxico
 				{ "QUOTES", "'" },
 				{ "SEMICOLON", ";" },
 				{ "ESCAPE", "Esc." },
+				{ "OPENBRACKETS", "[" },
+				{ "1", ";" },
+				{ "5", "\\" },
+				{ "6", "]" },
+				{ "7", "'" },
+				{ "MINUS", "-" },
+				{ "PLUS", "+" },
+				{ "TILDE", "`" },
+				{ "BACKSLASH", "\\" },
+				{ "DIVIDE", "/" },
+				{ "MULTIPLY", "*" },
+				{ "SUBTRACT", "-" },
+				{ "ADD", "+" }
 			};
 			if (longhand)
 			{
@@ -837,8 +850,16 @@ namespace Noxico
 					{ "COMMA", "," },
 					{ "QUOTES", "'" },
 					{ "SEMICOLON", ";" },
+					{ "1", ";" },
+					{ "5", "'\\" },
+					{ "6", "]" },
+					{ "7", "'" },
+					{ "RETURN", "Return" },
+					{ "ENTER", "Return" }
 				};
 			}
+			if (key.Length == 2 && key[0] == 'D' && char.IsDigit(key[1]))
+				return shift + key.Substring(1);
 			if (specials.ContainsKey(key))
 				return shift + specials[key].Titlecase();
 			return shift + key.Titlecase();

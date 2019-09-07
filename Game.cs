@@ -117,18 +117,8 @@ namespace Noxico
 			return (NoxicoGame.KeyMap[KeyBindings[binding]]);
 		}
 
-		public void Initialize(IGameHost hostForm)
+		public static void ResetKeymap()
 		{
-			Program.WriteLine("IT BEGINS...");
-
-			Random.Reseed();
-
-			Lua.Create();
-
-			KeyBindings = new Dictionary<KeyBinding, Keys>();
-			RawBindings = new Dictionary<KeyBinding, string>();
-			KeyBindingMods = new Dictionary<KeyBinding, bool>();
-			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
 			//Keep this array in synch with KeyBinding.
 			var defaults = new[]
 			{
@@ -148,9 +138,33 @@ namespace Noxico
 			};
 			for (var i = 0; i < defaults.Length; i++)
 			{
+				KeyBindings[(KeyBinding)i] = defaults[i];
+				KeyBindingMods[(KeyBinding)i] = defaultMods[i];
+				RawBindings[(KeyBinding)i] = defaults[i].ToString().ToUpperInvariant();;
+			}
+		}
+
+		public void Initialize(IGameHost hostForm)
+		{
+			Program.WriteLine("IT BEGINS...");
+
+			Random.Reseed();
+
+			Lua.Create();
+
+			KeyBindings = new Dictionary<KeyBinding, Keys>();
+			RawBindings = new Dictionary<KeyBinding, string>();
+			KeyBindingMods = new Dictionary<KeyBinding, bool>();
+			var keyNames = Enum.GetNames(typeof(Keys)).Select(x => x.ToUpperInvariant());
+			var numKeys = Enum.GetNames(typeof(KeyBinding)).Length;
+			ResetKeymap();
+			for (var i = 0; i < numKeys; i++)
+			{
 				var iniKey = ((KeyBinding)i).ToString().ToLowerInvariant();
-				var iniValue = IniFile.GetValue("keymap", iniKey, Enum.GetName(typeof(Keys), defaults[i])).ToUpperInvariant();
+				var iniValue = IniFile.GetValue("keymap", iniKey, string.Empty).ToUpperInvariant();
 				var iniMod = false;
+				if (iniValue == string.Empty)
+					continue;
 				if (iniValue.StartsWith("^"))
 				{
 					iniMod = true;
@@ -166,13 +180,6 @@ namespace Noxico
 					iniValue = "OEM" + iniValue;
 					if (keyNames.Contains(iniValue))
 						KeyBindings[(KeyBinding)i] = (Keys)Enum.Parse(typeof(Keys), iniValue, true);
-					else
-					{
-						//Give up, use default
-						KeyBindings[(KeyBinding)i] = defaults[i];
-						iniMod = defaultMods[i];
-						iniValue = defaults[i].ToString().ToUpperInvariant();
-					}
 				}
 				KeyBindingMods[(KeyBinding)i] = iniMod;
 				RawBindings[(KeyBinding)i] = iniValue;

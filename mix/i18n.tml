@@ -142,6 +142,29 @@ Number of known items       {2}
 	opt_save: OK
 	opt_cancel: Cancel
 	opt_open: Open INI
+	opt_keys: Remap keys
+-- #endregion
+-- #region Keymapper
+	key_Title: Key Bindings
+	key_Save: Save
+	key_Reset: Reset
+	key_Left: Left
+	key_Right: Right
+	key_Up: Up
+	key_Down: Down
+	key_Rest: Wait
+	key_Activate: Activate
+	key_Items: Items
+	key_Interact: Interact
+	key_Fly: Fly
+	key_Travel: Travel
+	key_Accept: Accept
+	key_Back: Back
+	key_Pause: Pause
+	key_Screenshot: F12
+	key_TabFocus: Tab Focus
+	key_ScrollUp: Scroll Up
+	key_ScrollDown: Scroll Down
 -- #endregion
 -- #region Actions
 	action_descyou: you, {0}

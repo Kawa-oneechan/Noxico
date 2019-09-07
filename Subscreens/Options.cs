@@ -7,7 +7,7 @@ namespace Noxico
 {
 	public static class Options
 	{
-		private static UIButton saveButton, cancelButton, openButton;
+		private static UIButton saveButton, cancelButton, keysButton, openButton;
 		private static UITextBox speed, musicVolume, soundVolume;
 		private static UIList font;
 		private static UIToggle rememberPause, vistaSaves, xInput, imperial, fourThirtySeven, enableAudio;
@@ -209,10 +209,14 @@ namespace Noxico
 						IniFile.Save(string.Empty);
 						cancelButton.DoEnter();
 					}) { Left = 60, Top = 16, Width = 16 };
+				keysButton = new UIButton(i18n.GetString("opt_keys"), (s, e) =>
+				{
+					Controls.Open();
+				}) { Left = 60, Top = 18, Width = 16 };
 				openButton = new UIButton(i18n.GetString("opt_open"), (s, e) =>
 					{
 						System.Diagnostics.Process.Start(NoxicoGame.HostForm.IniPath);
-					}) { Left = 60, Top = 18, Width = 16 };
+					}) { Left = 60, Top = 20, Width = 16 };
 				cancelButton = new UIButton(i18n.GetString("opt_cancel"), (s, e) =>
 					{
 						UIManager.Elements.Clear();
@@ -222,7 +226,7 @@ namespace Noxico
 						NoxicoGame.Me.CurrentBoard.Draw(true);
 						NoxicoGame.Mode = UserMode.Walkabout;
 						Subscreens.FirstDraw = true;
-					}) { Left = 60, Top = 20, Width = 16 };
+					}) { Left = 60, Top = 22, Width = 16 };
 				UIManager.Elements.Add(window);
 				UIManager.Elements.Add(speedLabel);
 				UIManager.Elements.Add(speed);
@@ -241,6 +245,7 @@ namespace Noxico
 				UIManager.Elements.Add(soundVolumeLabel);
 				UIManager.Elements.Add(soundVolume); 
 				UIManager.Elements.Add(saveButton);
+				UIManager.Elements.Add(keysButton);
 				UIManager.Elements.Add(openButton);
 				UIManager.Elements.Add(cancelButton);
 
