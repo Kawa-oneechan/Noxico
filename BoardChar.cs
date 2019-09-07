@@ -464,6 +464,14 @@ namespace Noxico
 
 			Character.TickStats();
 
+			if (Character.HasToken("burning"))
+			{
+				if (!Character.HasToken("fireproof"))
+					Character.AddToken("fireproof");
+				if (Random.NextDouble() > 0.80)
+					this.ParentBoard.Immolate(this.YPosition, this.XPosition);
+			}
+
 			if (!RunScript(OnTick))
 				return;
 			

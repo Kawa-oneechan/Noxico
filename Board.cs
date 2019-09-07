@@ -751,7 +751,7 @@ namespace Noxico
 			var tile = Tilemap[col, row];
 			if (tile.Definition.CanBurn && tile.Fluid == Fluids.Dry)
 			{
-				tile.BurnTimer = Random.Next(20, 23) * 100;
+				tile.BurnTimer = Random.Next(20, 23) * 3;
 				DirtySpots.Add(new Point(col, row));
 			}
 		}
@@ -778,7 +778,6 @@ namespace Noxico
 
 		public void Burn(bool spread)
 		{
-			//var flameColors = new[] { Color.Yellow, Color.Red, Color.Brown, Color.Maroon };
 			for (int row = 0; row < Height; row++)
 			{
 				for (int col = 0; col < Width; col++)
@@ -787,8 +786,6 @@ namespace Noxico
 					{
 						if (Tilemap[col, row].Fluid == Fluids.Dry)
 						{
-							//Tilemap[col, row].Foreground = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
-							//Tilemap[col, row].Background = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
 							DirtySpots.Add(new Point(col, row));
 							if (!spread)
 								continue;
@@ -798,7 +795,7 @@ namespace Noxico
 								Tilemap[col, row].Definition = TileDefinition.Find("ash");
 								DirtySpots.Add(new Point(col, row));
 							}
-							else if (Tilemap[col, row].BurnTimer == 10)
+							else if (Tilemap[col, row].BurnTimer == 10 && Random.Flip())
 							{
 								Immolate(row - 1, col);
 								Immolate(row, col - 1);
@@ -1007,6 +1004,11 @@ namespace Noxico
 					if (t.Fluid == Fluids.Slime)
 						fore = t.SlimeColor;
 					back = fore.Darken();
+				}
+				if (t.BurnTimer > 0)
+				{
+					fore = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
+					back = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
 				}
 				if (t.InherentLight > 0)
 				{

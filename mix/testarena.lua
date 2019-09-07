@@ -13,6 +13,11 @@ TestArena = {
 function BuildTestArena(center)
 	print ("lol")
 	center.Clear("Grassland");
+
+	local beastie = Character.Generate("bear", Gender.RollDice);
+	local beastebc = center.PlaceCharacter(beastie, 35, 10);
+	beastie.AddToken("burning");
+
 	--[[
 	local hostile = Character.Generate("imp", Gender.RollDice);
 	local hostilebc = center.PlaceCharacter(hostile, 35, 10);
