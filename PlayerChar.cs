@@ -48,14 +48,6 @@ namespace Noxico
 			this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 		}
 
-		/*
-		public override void AdjustView()
-		{
-			base.AdjustView();
-			Glyph = '@';
-		}
-		*/
-
 		public bool OnWarp()
 		{
 			var warp = ParentBoard.Warps.Find(w => w.XPosition == XPosition && w.YPosition == YPosition);

@@ -131,6 +131,7 @@ namespace Noxico
 		public override void Update()
 		{
 			base.Update();
+			NoxicoGame.ContextMessage = i18n.GetString("context_interactmode");
 			if (this.ParentBoard == null)
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
@@ -138,9 +139,11 @@ namespace Noxico
 			}
 			//this.ParentBoard.Draw(true);
 
-			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
+			if (NoxicoGame.IsKeyDown(KeyBinding.Interact) || NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
 				NoxicoGame.Mode = UserMode.Walkabout;
+				NoxicoGame.ClearKeys();
+				NoxicoGame.ContextMessage = string.Empty;
 				Hide();
 				return;
 			}

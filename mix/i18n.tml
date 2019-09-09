@@ -321,6 +321,7 @@ Would you like an infodump on the way out?
 	context_container: open
 	context_corpse: loot
 	context_bed: sleep
+	context_interactmode: -- Interact Mode --
 	a: a
 	an: an
 	the: the
