@@ -182,6 +182,7 @@ Number of known items       {2}
 	action_revert: Release shape
 	action_craft: Craft
 	action_pickup_window: Pick up...
+	action_pickup_all: Everything here
 	action_pickup_cancel: Cancel
 -- #endregion
 -- #region Sidebar
@@ -212,6 +213,7 @@ Number of known items       {2}
 	pointingatdoor: Door
 	eyesinthedark: Eyes in the darkness
 	youpickup_x: You pick up {0}.
+	youpickup_all: You pick everything up.
 	yougetup: You get back up.
 	youfly: You take off.
 	youland: You land.

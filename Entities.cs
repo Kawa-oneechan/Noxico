@@ -439,24 +439,40 @@ namespace Noxico
 			var itemDict = new Dictionary<object, string>();
 			foreach (var item in items)
 			{
-				itemDict.Add(item, item.Name);
+				var name = item.Item.ToString(item.Token, false, false);
+				name = name.Substring(0, 1).ToUpperInvariant() + name.Substring(1);
+				itemDict.Add(item, name);
 			}
+			itemDict.Add(-2, i18n.GetString("action_pickup_all"));
 			itemDict.Add(-1, i18n.GetString("action_pickup_cancel")); //"...nothing"
 			ActionList.Show(i18n.GetString("action_pickup_window") /* "Pick up..." */, items[0].XPosition, items[0].YPosition, itemDict,
 				() =>
 				{
+					var player = NoxicoGame.Me.Player;
 					if (ActionList.Answer is int && (int)ActionList.Answer == -1)
 					{
 						//Cancelled.
 						return;
 					}
-					var drop = ActionList.Answer as DroppedItem;
-					var player = NoxicoGame.Me.Player;
-					var item = drop.Item;
-					var token = drop.Token;
-					drop.Take(player.Character, player.ParentBoard);
-					player.Energy -= 1000;
-					NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)));//, drop.ForegroundColor);
+					else if (ActionList.Answer is int && (int)ActionList.Answer == -2)
+					{
+						//All
+						foreach (var d in items)
+						{
+							d.Take(player.Character, player.ParentBoard);
+							player.Energy -= 1000;
+						}
+						NoxicoGame.AddMessage(i18n.Format("youpickup_all"));
+					}
+					else
+					{
+						var drop = ActionList.Answer as DroppedItem;
+						var item = drop.Item;
+						var token = drop.Token;
+						drop.Take(player.Character, player.ParentBoard);
+						player.Energy -= 1000;
+						NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)));//, drop.ForegroundColor);
+					}
 					NoxicoGame.Sound.PlaySound("set://GetItem"); 
 					player.ParentBoard.Redraw();
 				}
