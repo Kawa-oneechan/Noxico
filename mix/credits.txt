@@ -1,14 +1,14 @@
 
-<cCornflowerBlue>              <gDB><gDB><g11D>  <gDB><gDB> <g11C><gDB><gDB><gDB><gDB><g11D> <gDB><g11D>  <g11C><gDB> <gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB> <g11C><gDB><gDB><gDB><gDB><gDB><g11D>
-<cCornflowerBlue>              <gDB><gDB><gDB><g11D> <gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11E><gDB><g11D><g11C><gDB><g11F>  <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB><g11E><gDB><g11D><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11E><gDB><gDB><g11F>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB> <g11E><gDB><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g11C><gDB><gDB><g11D>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB>  <g11E><gDB><gDB> <gDB><gDB>  <gDB><gDB> <g11C><gDB><g11F><g11E><gDB><g11D>  <gDB><gDB>  <gDB><gDB>  <g11C><gDB> <gDB><gDB>   <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB>   <g11E><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <gDB><g11F>  <g11E><gDB> <gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><gDB><g11F> <g11E><gDB><g11D>  <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB>    <g11E>                            <g11E><gDB><g11D> <gDB><gDB>
-<cCornflowerBlue>              <gDB><gDB> <gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB> <g11E><gDB><gDB><gDB><g11F>
-<cCornflowerBlue>              <gDB><g11F> 
-<cCornflowerBlue>              <g11F>  <cSilver> Erotic Roguelike Misadventures
+<cCornflowerBlue>              <gDB><gDB><g2FD>  <gDB><gDB> <g2FC><gDB><gDB><gDB><gDB><g2FD> <gDB><g2FD>  <g2FC><gDB> <gDB><gDB><gDB><gDB> <g2FC><gDB><gDB><gDB><gDB><gDB> <g2FC><gDB><gDB><gDB><gDB><gDB><g2FD>
+<cCornflowerBlue>              <gDB><gDB><gDB><g2FD> <gDB><gDB> <gDB><gDB>  <gDB><gDB> <g2FE><gDB><g2FD><g2FC><gDB><g2FF>  <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB><g2FE><gDB><g2FD><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g2FE><gDB><gDB><g2FF>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <g2FE><gDB><gDB><gDB> <gDB><gDB>  <gDB><gDB>  <g2FC><gDB><gDB><g2FD>   <gDB><gDB>  <gDB><gDB>     <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>  <g2FE><gDB><gDB> <gDB><gDB>  <gDB><gDB> <g2FC><gDB><g2FF><g2FE><gDB><g2FD>  <gDB><gDB>  <gDB><gDB>  <g2FC><gDB> <gDB><gDB>   <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>   <g2FE><gDB> <g2FE><gDB><gDB><gDB><gDB><g2FF> <gDB><g2FF>  <g2FE><gDB> <gDB><gDB><gDB><gDB> <g2FE><gDB><gDB><gDB><gDB><g2FF> <g2FE><gDB><g2FD>  <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB>    <g2FE>                            <g2FE><gDB><g2FD> <gDB><gDB>
+<cCornflowerBlue>              <gDB><gDB> <gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB><gDB> <g2FE><gDB><gDB><gDB><g2FF>
+<cCornflowerBlue>              <gDB><g2FF> 
+<cCornflowerBlue>              <g2FF>  <cSilver> Erotic Roguelike Misadventures
 
 
             Programming and idea                      Kawa
@@ -23,28 +23,26 @@
                                           The NetHack team
 
 
-                               Writers
-                              ---------
+                             Contributors
+                            <gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4>
 
-           TheDarkMaster      NVos          ScourgeScarfould
-           DecidedlyDevious   demidenizen   Bodshivita
-           Hassin             noego         morrogoth
-           PillowShout
-
-
-          http://helmet.kafuka.org/noxico
-
-
-                              Thanks to
-                             -----------
-
-Hammy, Nicole, Seru-kun, CyclopsCaveman, Mega-Mario, all #rgrd and
-RogueBasin coolkids, all GameDev.StackExchange.com users...
-
-                             and mom for not making a fuss over it.
+         AcetheSuperVillain AmyBSOD       BirdoPrey
+         Bodshivita         Crissa        CyclopsCaveman
+         DecidedlyDevious   demidenizen   dgrey0
+         HammyHammerGuy     Hassin        KawaiiDragoness
+         mazterlith         morrogoth     Nicole
+         noego              NVos          ScourgeScarfould
+         Seru<gC4>kun           StapleButter  super_snake
+         TheDarkMaster      Wibble
 
 
+                          Further thanks to
+                         <gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4><gC4>
 
+                  All #rgrd and RogueBasin coolkids,
+                All GameDev.StackExchange.com users...
+
+                And mom for not making a fuss over it.
 
 
 
