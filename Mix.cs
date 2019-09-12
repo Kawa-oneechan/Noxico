@@ -90,7 +90,7 @@ namespace Noxico
 				return;
 			foreach (var dataDir in Directory.EnumerateDirectories("mods"))
 			{
-				foreach (var dataFile in Directory.EnumerateFiles(dataDir))
+				foreach (var dataFile in Directory.EnumerateFiles(dataDir, "*.*", SearchOption.AllDirectories))
 				{
 					var baseName = dataFile.Remove(0, dataDir.Length + 1);
 					var entry = new MixFileEntry()
@@ -295,8 +295,13 @@ namespace Noxico
 		{
 			var ret = new List<string>();
 			var regex = new System.Text.RegularExpressions.Regex(pattern.Replace("*", "(.*)").Replace("\\", "\\\\"));
-			foreach (var entry in fileList.Values.Where(x => regex.IsMatch(x.Filename)))
-				ret.Add(entry.Filename);
+			foreach (var entry in fileList)
+			{
+				if (regex.IsMatch(entry.Value.Filename))
+					ret.Add(entry.Key);
+			}
+			//foreach (var entry in fileList.Values.Where(x => regex.IsMatch(x.Filename)))
+			//	ret.Add(entry.Filename);
 			/* if (Directory.Exists("data"))
 			{
 				if (pattern.Contains('\\'))

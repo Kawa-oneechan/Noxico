@@ -431,8 +431,11 @@ namespace Noxico
 
 			Program.Cols = IniFile.GetValue("misc", "screencols", Program.Cols);
 			Program.Rows = IniFile.GetValue("misc", "screenrows", Program.Rows);
-			image = new Cell[Program.Cols, Program.Rows];
-			previousImage = new Cell[Program.Cols, Program.Rows];
+			if (image == null)
+			{
+				image = new Cell[Program.Cols, Program.Rows];
+				previousImage = new Cell[Program.Cols, Program.Rows];
+			}
 
 			CachePNGFont(fontBitmap);
 
