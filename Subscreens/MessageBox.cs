@@ -38,13 +38,13 @@ namespace Noxico
 				if (type == BoxType.List)
 				{
 					listHeight = options.Count;
-					if (listHeight > 16)
-						listHeight = 16;
+					if (listHeight > Program.Rows - 9)
+						listHeight = Program.Rows - 9;
 					height += 1 + listHeight;
 				}
 				else if (type == BoxType.Input)
 					height += 2;
-				var top = 12 - (height / 2);
+				var top = (Program.Rows / 2) - (height / 2);
 				if (top < 0)
 					top = 0;
 				if (UIManager.Elements == null || fromWalkaround)
@@ -56,7 +56,7 @@ namespace Noxico
 					icon.Top = Program.Rows - icon.Bitmap.Height;
 					UIManager.Elements.Add(icon);
 				}
-				var left = 40 - (width / 2);
+				var left = (Program.Cols / 2) - (width / 2);
 
 				win = new UIWindow(type == BoxType.Question ? i18n.GetString("msgbox_question") : title) { Left = left, Top = top, Width = width + 4, Height = height };
 				UIManager.Elements.Add(win);

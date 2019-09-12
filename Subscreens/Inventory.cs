@@ -210,18 +210,18 @@ namespace Noxico
 					}))); */
 				}
 				var height = inventoryItems.Count;
-				if (height > 10)
-					height = 10;
+				if (height > Program.Rows - 15)
+					height = Program.Rows - 15;
 				if (selection >= inventoryItems.Count)
 					selection = inventoryItems.Count - 1;
 
 				if (UIManager.Elements.Count < 2)
 				{
-					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
+					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 8, Width = Program.Cols - 4, Height = 6, Title = UIColors.RegularText };
 					howTo = new UILabel(string.Empty) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-					itemDesc = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
+					itemDesc = new UILabel(string.Empty) { Left = 4, Top = Program.Rows - 7, Width = Program.Cols - 8, Height = 5 };
 					sigilView = new UILabel(string.Empty) { Left = 35, Top = 2, Width = 60, Height = height };
-					itemList = new UIList(string.Empty, null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection, Background = UIColors.WindowBackground };
+					itemList = new UIList(string.Empty, null, itemTexts) { Left = 2, Top = 2, Width = Program.Cols - 4, Height = height, Index = selection, Background = UIColors.WindowBackground };
 					itemList.Change = (s, e) =>
 					{
 						selection = itemList.Index;
@@ -279,8 +279,8 @@ namespace Noxico
 					{
 						TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 					};
-					capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
-					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height };
+					capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity)) { Left = 6, Top = Program.Rows - 3 };
+					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = Program.Cols - 2, Height = 2 + height };
 					UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = Program.Rows - 1, Background = UIColors.StatusBackground });
 					UIManager.Elements.Add(yourWindow);
 					UIManager.Elements.Add(descriptionWindow);
@@ -289,7 +289,7 @@ namespace Noxico
 					UIManager.Elements.Add(sigilView);
 					UIManager.Elements.Add(itemDesc);
 					UIManager.Elements.Add(capacity);
-					UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = 76 - i18n.GetString("inventory_drop").Length() - 2, Top = 1 });
+					UIManager.Elements.Add(new UIButton(' ' + i18n.GetString("inventory_drop") + ' ', (s, e) => { TryDrop(player, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]); }) { Left = Program.Cols - 4 - i18n.GetString("inventory_drop").Length() - 2, Top = 1 });
 					UIManager.Highlight = itemList;
 				}
 				else

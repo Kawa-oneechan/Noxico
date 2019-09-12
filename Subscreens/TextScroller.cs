@@ -17,31 +17,31 @@ namespace Noxico
 		{
 			var host = NoxicoGame.HostForm;
 			var keys = NoxicoGame.KeyMap;
+			var left = (Program.Cols / 2) - (72 / 2);
 			if (Subscreens.FirstDraw)
 			{
 				scroll = 1;
 				Subscreens.FirstDraw = false;
 
-				window = new UIWindow(text[0]) { Left = 3, Top = 1, Width = 74, Height = 22 };
+				window = new UIWindow(text[0]) { Left = left, Top = 1, Width = 74, Height = Program.Rows - 3 };
 				window.Draw();
-				//Toolkit.DrawWindow(5, 3, 69, 18, text[0], Color.Navy, Color.Black, Color.Yellow);
 				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
-				host.Write(help, UIColors.WindowBorder, Color.Transparent, 22, 40 - (help.Length() / 2));
+				host.Write(help, UIColors.WindowBorder, Color.Transparent, Program.Rows - 3, (Program.Cols / 2) - (help.Length() / 2));
 				var empty = new string(' ', 70);
-				for (int i = 1; i < 20; i++)
-					host.Write(empty, UIColors.RegularText, UIColors.WindowBackground, 1 + i, 6);
-				for (int i = scroll; i < text.Length && i - scroll < 20; i++)
+				for (int i = 1; i < Program.Rows - 5; i++)
+					host.Write(empty, UIColors.RegularText, UIColors.WindowBackground, 1 + i, left + 2);
+				for (int i = scroll; i < text.Length && i - scroll < Program.Rows - 5; i++)
 				{
 					if (i < 1)
 						continue;
-					host.Write(' ' + text[i].PadEffective(70), UIColors.RegularText, UIColors.WindowBackground, 1 + i, 4);
+					host.Write(' ' + text[i].PadEffective(70), UIColors.RegularText, UIColors.WindowBackground, 1 + i, left + 2);
 				}
 				Subscreens.Redraw = true;
 			}
 			if (Subscreens.Redraw)
 			{
-				NoxicoGame.HostForm.SetCell(2, 76, (scroll > 1) ? '\x1E' : '\xBA', (scroll > 1) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
-				NoxicoGame.HostForm.SetCell(21, 76, (scroll + 21 < text.Length) ? '\x1F' : '\xBA', (scroll + 21 < text.Length) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
+				NoxicoGame.HostForm.SetCell(2, left + 73, (scroll > 1) ? '\x1E' : '\xBA', (scroll > 1) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
+				NoxicoGame.HostForm.SetCell(Program.Rows - 4, left + 73, (scroll + 21 < text.Length) ? '\x1F' : '\xBA', (scroll + 21 < text.Length) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
 				Subscreens.Redraw = false;
 			}
 
@@ -69,10 +69,10 @@ namespace Noxico
 					scroll = 1;
 				else
 				{
-					host.ScrollDown(2, 21, 4, 76, UIColors.DarkBackground);
+					host.ScrollDown(2, Program.Rows - 4, left + 1, left + 72, UIColors.DarkBackground);
 					var i = scroll;
-					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 2, 4);
-					host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 2, 5);
+					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 2, left + 1);
+					host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 2, left + 2);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -80,17 +80,17 @@ namespace Noxico
 			{
 				slow = DateTime.Now;
 				scroll++;
-				if (scroll > text.Length - 21)
-					scroll = text.Length - 21;
+				if (scroll > text.Length - Program.Rows + 4)
+					scroll = text.Length - Program.Rows + 4;
 				else if (scroll < 1)
 					scroll = 1;
 				else
 				{
-					host.ScrollUp(2, 21, 4, 76, UIColors.DarkBackground);
-					var i = scroll + 19;
-					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, 21, 4);
+					host.ScrollUp(2, Program.Rows - 4, left + 1, left + 72, UIColors.DarkBackground);
+					var i = scroll + Program.Rows - 6;
+					host.Write(new string(' ', 72), UIColors.RegularText, UIColors.WindowBackground, Program.Rows - 4, left + 1);
 					if (i < text.Length)
-						host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, 21, 5);
+						host.Write(text[i], UIColors.RegularText, UIColors.WindowBackground, Program.Rows - 4, left + 2);
 					Subscreens.Redraw = true;
 				}
 			}
@@ -104,7 +104,7 @@ namespace Noxico
 				text = (header + '\n' + message).SmartQuote().Split('\n');
 
 			//If it's not worth a scroller, pass it through to a messagebox instead.
-			if (text.Length < 40 && !forceScroller)
+			if (text.Length < Program.Rows - 10 && !forceScroller)
 			{
 				MessageBox.Notice(message.SmartQuote(), true, header);
 				return;

@@ -74,6 +74,7 @@ namespace Noxico
 		{
 			var keys = NoxicoGame.KeyMap;
 			var player = NoxicoGame.Me.Player;
+			var width = (Program.Cols / 2) - 3;
 
 			if (Subscreens.FirstDraw)
 			{
@@ -87,11 +88,11 @@ namespace Noxico
 				containerList = null;
 				var containerTexts = new List<string>();
 
-				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = 39, Height = 2 + height };
-				containerList = new UIList(string.Empty, null, containerTexts) { Left = 2, Top = 2, Width = 37, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
+				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = width, Height = 2 + height };
+				containerList = new UIList(string.Empty, null, containerTexts) { Left = 2, Top = 2, Width = width - 2, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(containerWindow);
 				var emptyMessage = mode == ContainerMode.Vendor ? i18n.Format("inventory_x_hasnothing", vendorChar.Name.ToString()) : mode == ContainerMode.Corpse ? i18n.GetString("inventory_nothingleft") : i18n.GetString("inventory_empty");
-				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = 36, Height = 1 });
+				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = width - 3, Height = 1 });
 				UIManager.Elements.Add(containerList);
 
 				if (other.Tokens.Count == 0)
@@ -116,19 +117,19 @@ namespace Noxico
 
 						var item = find;
 						var itemString = item.ToString(carriedItem, false, false);
-						if (itemString.Length > 33)
+						if (itemString.Length > width - 5)
 							itemString = itemString.Disemvowel();
-						itemString = itemString.PadEffective(33);
+						itemString = itemString.PadEffective(width - 5);
 						//Add any extra sigils.
 						if (mode == ContainerMode.Vendor && carriedItem.HasToken("equipped"))
-							itemString = itemString.Remove(32) + i18n.GetString("sigil_short_worn");
+							itemString = itemString.Remove(width - 6) + i18n.GetString("sigil_short_worn");
 						if (carriedItem.Path("cursed/known") != null)
-							itemString = itemString.Remove(32) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
+							itemString = itemString.Remove(width - 6) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						containerTexts.Add(itemString);
 					}
 					height = containerItems.Count;
-					if (height > 10)
-						height = 10;
+					if (height > Program.Rows - 15)
+						height = Program.Rows - 15;
 					if (indexLeft >= containerItems.Count)
 						indexLeft = containerItems.Count - 1;
 
@@ -144,10 +145,10 @@ namespace Noxico
 				playerList = null;
 				var playerTexts = new List<string>();
 
-				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 42, Top = 1, Width = 37, Height = 3 };
-				playerList = new UIList(string.Empty, null, playerTexts) { Left = 43, Top = 2, Width = 35, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
+				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = width + 4, Top = 1, Width = width, Height = 3 };
+				playerList = new UIList(string.Empty, null, playerTexts) { Left = width + 5, Top = 2, Width = width - 2, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
 				UIManager.Elements.Add(playerWindow);
-				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = 44, Top = 2, Width = 36, Height = 1 });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = width + 5, Top = 2, Width = width - 3, Height = 1 });
 				UIManager.Elements.Add(playerList);
 
 				if (player.Character.GetToken("items").Tokens.Count == 0)
@@ -168,20 +169,20 @@ namespace Noxico
 
 						var item = find;
 						var itemString = item.ToString(carriedItem, false, false);
-						if (itemString.Length > 33)
+						if (itemString.Length > width - 5)
 							itemString = itemString.Disemvowel();
-						itemString = itemString.PadEffective(33);
+						itemString = itemString.PadEffective(width - 5);
 						if (carriedItem.HasToken("equipped"))
-							itemString = itemString.Remove(32) + i18n.GetString("sigil_short_worn");
+							itemString = itemString.Remove(width - 6) + i18n.GetString("sigil_short_worn");
 						if (carriedItem.Path("cursed/known") != null)
-							itemString = itemString.Remove(32) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
+							itemString = itemString.Remove(width - 6) + "C"; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						playerTexts.Add(itemString); 
 					}
 					var height2 = playerItems.Count;
 					if (height2 == 0)
 						height2 = 1;
-					if (height2 > 10)
-						height2 = 10;
+					if (height2 > Program.Rows - 15)
+						height2 = Program.Rows - 15;
 					if (indexRight >= playerItems.Count)
 						indexRight = playerItems.Count - 1;
 
@@ -197,9 +198,9 @@ namespace Noxico
 				//Build the bottom window.
 				UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
-				description = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
-				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 8, Width = Program.Cols - 4, Height = 6, Title = UIColors.RegularText };
+				description = new UILabel(string.Empty) { Left = 4, Top = Program.Rows - 7, Width = Program.Cols - 8, Height = 5 };
+				capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity)) { Left = 6, Top = Program.Rows - 3 };
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);

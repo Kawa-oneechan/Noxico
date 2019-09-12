@@ -112,9 +112,16 @@ namespace Noxico
 
 	public class UIPNGBackground : UIPNG
 	{
-		public UIPNGBackground(Bitmap bitmap)
-			: base(bitmap)
+		public UIPNGBackground(Bitmap bitmap) : base(bitmap)
 		{
+			var actualBitmap = new Bitmap(Program.Cols, Program.Rows * 2);
+			using (var g = System.Drawing.Graphics.FromImage(actualBitmap))
+			{
+				g.DrawImage(bitmap, 0, 0, Program.Cols, Program.Rows * 2);
+			}
+			Bitmap = actualBitmap;
+			Width = Bitmap.Width;
+			Height = Bitmap.Height;
 		}
 
 		public override void Draw()

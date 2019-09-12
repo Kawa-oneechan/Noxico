@@ -52,8 +52,8 @@ namespace Noxico
 			else
 				x++;
 			var height = options.Count + 2;
-			if (height > 20)
-				height = 20;
+			if (height > Program.Rows - 5)
+				height = Program.Rows - 5;
 			//Check if we're going off the bottom of the screen and correct.
 			if (y + height >= Program.Rows - 5)
 				y = Program.Rows - height - 5;
