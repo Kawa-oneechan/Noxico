@@ -303,7 +303,7 @@ namespace Noxico
 					IniFile.SetValue("misc", "shotpath", "./screenshots");
 				}
 
-				RestartGraphics();
+				RestartGraphics(true);
 				fourThirtySeven = IniFile.GetValue("misc", "437", false);
 
 				Noxico = new NoxicoGame();
@@ -412,7 +412,7 @@ namespace Noxico
 #endif
 		}
 
-		public void RestartGraphics()
+		public void RestartGraphics(bool full)
 		{
 			pngFont = IniFile.GetValue("misc", "font", "8x16-bold");
 			if (!Mix.FileExists("fonts\\" + pngFont + ".png"))
@@ -431,7 +431,7 @@ namespace Noxico
 
 			Program.Cols = IniFile.GetValue("misc", "screencols", Program.Cols);
 			Program.Rows = IniFile.GetValue("misc", "screenrows", Program.Rows);
-			if (image == null)
+			if (full)
 			{
 				image = new Cell[Program.Cols, Program.Rows];
 				previousImage = new Cell[Program.Cols, Program.Rows];

@@ -128,6 +128,8 @@ Number of known items       {2}
 	opt_title: Options
 	opt_speed: Speed (lower = faster)
 	opt_font: Font
+	opt_screencols: Screen columns
+	opt_screenrows: Screen rows
 	opt_misc: Various
 	opt_skipintro: Skip dream on new game
 	opt_rememberpause: Remember page in pause menu

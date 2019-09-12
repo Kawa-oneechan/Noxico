@@ -8,7 +8,7 @@ namespace Noxico
 	public static class Options
 	{
 		private static UIButton saveButton, cancelButton, keysButton, openButton;
-		private static UITextBox speed, musicVolume, soundVolume;
+		private static UITextBox speed, musicVolume, soundVolume, screenCols, screenRows;
 		private static UIList font;
 		private static UIToggle rememberPause, vistaSaves, xInput, imperial, fourThirtySeven, enableAudio;
 		//private static string previousFont;
@@ -70,10 +70,63 @@ namespace Noxico
 				{
 					var previousFont = font.Text;
 					IniFile.SetValue("misc", "font", font.Text);
-					NoxicoGame.HostForm.RestartGraphics();
+					NoxicoGame.HostForm.RestartGraphics(false);
 					IniFile.SetValue("misc", "font", previousFont);
 				};
+				font.EnsureVisible();
 
+				var screenColsLabel = new UILabel(i18n.GetString("opt_screencols"))
+				{
+					Left = 3,
+					Top = 15,
+				};
+				screenCols = new UITextBox(IniFile.GetValue("misc", "screencols", "80"))
+				{
+					Left = 4,
+					Top = 16,
+					Width = 4,
+					Numeric = true
+				};
+				var screenRowsLabel = new UILabel(i18n.GetString("opt_screenrows"))
+				{
+					Left = 3,
+					Top = 17,
+				};
+				screenRows = new UITextBox(IniFile.GetValue("misc", "screenrows", "25"))
+				{
+					Left = 4,
+					Top = 18,
+					Width = 4,
+					Numeric = true
+				};
+				screenCols.Enter = screenRows.Enter = (s, e) =>
+				{
+					var resetGraphics = false;
+					var i = int.Parse(screenCols.Text);
+					if (i < 80)
+						i = 80;
+					if (i > 300)
+						i = 300;
+					if (i != Program.Cols)
+						resetGraphics = true;
+					Program.Cols = i;
+					IniFile.SetValue("misc", "screencols", i);
+					i = int.Parse(screenRows.Text);
+					if (i < 25)
+						i = 25;
+					if (i > 100)
+						i = 100;
+					if (i != Program.Rows)
+						resetGraphics = true;
+					Program.Rows = i;
+					IniFile.SetValue("misc", "screenrows", i);
+					if (resetGraphics)
+						NoxicoGame.HostForm.RestartGraphics(true);
+					Subscreens.Redraw = true;
+					NoxicoGame.Me.CurrentBoard.Redraw();
+					NoxicoGame.Me.CurrentBoard.Draw();
+				};
+	
 				var miscWindow = new UIWindow(i18n.GetString("opt_misc"))
 				{
 					Left = 27,
@@ -126,7 +179,7 @@ namespace Noxico
 
 				var audioWindow = new UIWindow(i18n.GetString("opt_audio"))
 				{
-					Left = 3,
+					Left = 27,
 					Top = 15,
 					Width = 32,
 					Height = 8,
@@ -134,7 +187,7 @@ namespace Noxico
 
 				enableAudio = new UIToggle(i18n.GetString("opt_enableaudio"))
 				{
-					Left = 5,
+					Left = 29,
 					Top = 16,
 					Checked = IniFile.GetValue("audio", "enabled", true),
 					Background = Color.Transparent,
@@ -142,22 +195,22 @@ namespace Noxico
 
 				var musicVolumeLabel = new UILabel(i18n.GetString("opt_musicvolume"))
 				{
-					Left = 5,
+					Left = 29,
 					Top = 18
 				};
 				musicVolume = new UITextBox(IniFile.GetValue("audio", "musicvolume", "100"))
 				{
-					Left = 6,
+					Left = 30,
 					Top = 19,
 				};
 				var soundVolumeLabel = new UILabel(i18n.GetString("opt_soundvolume"))
 				{
-					Left = 5,
+					Left = 29,
 					Top = 20,
 				};
 				soundVolume = new UITextBox(IniFile.GetValue("audio", "soundvolume", "100"))
 				{
-					Left = 6,
+					Left = 30,
 					Top = 21,
 				};
 
@@ -176,6 +229,26 @@ namespace Noxico
 						IniFile.SetValue("misc", "imperial", imperial.Checked);
 						IniFile.SetValue("misc", "437", fourThirtySeven.Checked);
 						Vista.GamepadEnabled = xInput.Checked;
+
+						var resetGraphics = false;
+						i = int.Parse(screenCols.Text);
+						if (i < 80)
+							i = 80;
+						if (i > 300)
+							i = 300;
+						if (i != Program.Cols)
+							resetGraphics = true;
+						Program.Cols = i;
+						IniFile.SetValue("misc", "screencols", i);
+						i = int.Parse(screenRows.Text);
+						if (i < 25)
+							i = 25;
+						if (i > 100)
+							i = 100;
+						if (i != Program.Rows)
+							resetGraphics = true;
+						Program.Rows = i;
+						IniFile.SetValue("misc", "screenrows", i);
 
 						IniFile.SetValue("misc", "imperial", imperial.Checked);
 						IniFile.SetValue("audio", "enabled", enableAudio.Checked);
@@ -203,8 +276,8 @@ namespace Noxico
 								NoxicoGame.Me.CurrentBoard.PlayMusic();
 						}
 
-						//if (previousFont != font.Text)
-						NoxicoGame.HostForm.RestartGraphics();
+						if (resetGraphics)
+							NoxicoGame.HostForm.RestartGraphics(true);
 
 						IniFile.Save(string.Empty);
 						cancelButton.DoEnter();
@@ -232,6 +305,10 @@ namespace Noxico
 				UIManager.Elements.Add(speed);
 				UIManager.Elements.Add(fontLabel);
 				UIManager.Elements.Add(font);
+				UIManager.Elements.Add(screenColsLabel);
+				UIManager.Elements.Add(screenCols);
+				UIManager.Elements.Add(screenRowsLabel);
+				UIManager.Elements.Add(screenRows);
 				UIManager.Elements.Add(miscWindow);
 				UIManager.Elements.Add(rememberPause);
 				UIManager.Elements.Add(vistaSaves);

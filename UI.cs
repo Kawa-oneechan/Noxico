@@ -370,7 +370,7 @@ namespace Noxico
 				return;
 			var top = scroll;
 			var bottom = scroll + Height;
-			if (_index > bottom)
+			if (_index >= bottom)
 				scroll = _index - Height + 1;
 			else if (_index < top)
 				scroll = _index;
