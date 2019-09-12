@@ -40,7 +40,7 @@ namespace Noxico
 				};
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_header")) { Left = 1, Top = 0, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = 24, Foreground = Color.Silver });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = Program.Rows - 1, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere")) { Left = 44, Top = 3, Width = 40, Foreground = Color.Teal });
 				UIManager.Elements.Add(list);
 				

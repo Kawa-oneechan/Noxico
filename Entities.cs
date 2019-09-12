@@ -41,7 +41,7 @@ namespace Noxico
 		{
 			var localX = this.XPosition - NoxicoGame.CameraX;
 			var localY = this.YPosition - NoxicoGame.CameraY;
-			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+			if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)
 				return;
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
@@ -70,7 +70,7 @@ namespace Noxico
             {
                 return;
             }
-			if (XPosition >= 0 && YPosition >= 0 && XPosition < 80 && YPosition < 50)
+			if (XPosition >= 0 && YPosition >= 0 && XPosition < this.ParentBoard.Width && YPosition < this.ParentBoard.Height)
 	            this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			var newX = 0;
 			var newY = 0;

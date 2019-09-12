@@ -921,32 +921,32 @@ namespace Noxico
 		public void AimCamera(int x, int y)
 		{
 			var oldCamX = NoxicoGame.CameraX;
-			if (this.Width == 80)
+			if (this.Width == Program.Cols)
 				NoxicoGame.CameraX = 0;
-			else if (this.Width > 80)
+			else if (this.Width > Program.Cols)
 			{
-				NoxicoGame.CameraX = x - 40;
+				NoxicoGame.CameraX = x - (Program.Cols / 2);
 				if (NoxicoGame.CameraX < 0)
 					NoxicoGame.CameraX = 0;
-				if (NoxicoGame.CameraX > this.Width - 80)
-					NoxicoGame.CameraX = this.Width - 80;
+				if (NoxicoGame.CameraX > this.Width - Program.Cols)
+					NoxicoGame.CameraX = this.Width - Program.Cols;
 			}
 			else
-				NoxicoGame.CameraX = -(40 - (this.Width / 2));
+				NoxicoGame.CameraX = -((Program.Cols / 2) - (this.Width / 2));
 
 			var oldCamY = NoxicoGame.CameraY;
-			if (this.Height == 25)
+			if (this.Height == Program.Rows)
 				NoxicoGame.CameraY = 0;
-			else if (this.Height > 25)
+			else if (this.Height > Program.Rows)
 			{
-				NoxicoGame.CameraY = y - 12;
+				NoxicoGame.CameraY = y - (Program.Rows/ 2);
 				if (NoxicoGame.CameraY < 0)
 					NoxicoGame.CameraY = 0;
-				if (NoxicoGame.CameraY > this.Height - 25)
-					NoxicoGame.CameraY = this.Height - 25;
+				if (NoxicoGame.CameraY > this.Height - Program.Rows)
+					NoxicoGame.CameraY = this.Height - Program.Rows;
 			}
 			else
-				NoxicoGame.CameraY = -(12 - (this.Height / 2));
+				NoxicoGame.CameraY = -((Program.Rows / 2) - (this.Height / 2));
 
 			if (oldCamX != NoxicoGame.CameraX || oldCamY != NoxicoGame.CameraY)
 				Redraw();
@@ -961,10 +961,10 @@ namespace Noxico
 
 		public void Draw(bool force = false)
 		{
-			if (Height < 25 || Width < 80)
+			if (Height < Program.Rows || Width < Program.Cols)
 			{
-				for (var r = 0; r < 25; r++)
-					for (var c = 0; c < 80; c++)
+				for (var r = 0; r < Program.Rows; r++)
+					for (var c = 0; c < Program.Cols; c++)
 						NoxicoGame.HostForm.SetCell(r, c, (char)0xB0, Color.DarkGray, Color.Black);
 				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX - 1, (char)0xC9, Color.DarkGray, Color.Black);
 				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX + Width, (char)0xBB, Color.DarkGray, Color.Black);
@@ -988,7 +988,7 @@ namespace Noxico
 			{
 				var localX = l.X - NoxicoGame.CameraX;
 				var localY = l.Y - NoxicoGame.CameraY;
-				if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+				if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)
 					continue;
 				if (l.X >= this.Width || l.Y >= this.Height)
 					continue;

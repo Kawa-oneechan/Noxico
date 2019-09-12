@@ -360,7 +360,7 @@ namespace Noxico
 
 			if (targetDirection == Direction.East)
 			{
-				for (x++; x < 80 && distance < range; x++, distance++)
+				for (x++; x < this.ParentBoard.Width && distance < range; x++, distance++) //TODO: confirm if boardspace or screenspace
 					if (gotHit(x, y))
 						break;
 			}
@@ -372,7 +372,7 @@ namespace Noxico
 			}
 			else if (targetDirection == Direction.South)
 			{
-				for (y++; y < 50 && distance < range; y++, distance++)
+				for (y++; y < this.ParentBoard.Height && distance < range; y++, distance++) //TODO: confirm if boardspace or screenspace
 					if (gotHit(x, y))
 						break;
 			}

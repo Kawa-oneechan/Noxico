@@ -1435,13 +1435,15 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 			Lua.Environment.player = player;
 			Lua.Environment.Is437 = HostForm.Is437;
+			Lua.Environment.ScreenCols = Program.Cols;
+			Lua.Environment.ScreenRows = Program.Rows;
 			Lua.Environment.DrawStatus();
 
 			if (!LookAt.IsBlank())
 				HostForm.Write(LookAt, Color.Silver, Color.Transparent, Messages.Count, 0, true);
 
 			if (!ContextMessage.IsBlank())
-				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Transparent, 0, 80 - ContextMessage.Length() - 2, true);
+				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Transparent, 0, Program.Cols - ContextMessage.Length() - 2, true);
 		}
 
 		public static void CheckForTutorialStuff()

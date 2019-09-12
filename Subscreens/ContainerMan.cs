@@ -195,8 +195,8 @@ namespace Noxico
 				}
 
 				//Build the bottom window.
-				UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
+				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
 				description = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
 				capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };

@@ -159,8 +159,8 @@ namespace Noxico
 				this.Background = source.Background;
 			}
 		}
-		private Cell[,] image = new Cell[Program.Cols, Program.Rows];
-		private Cell[,] previousImage = new Cell[Program.Cols, Program.Rows];
+		private Cell[,] image;
+		private Cell[,] previousImage;
 		private Bitmap backBuffer;
 		private Bitmap scrollBuffer;
 		private bool starting = true, fatal = false;
@@ -429,16 +429,10 @@ namespace Noxico
 			cellWidth = fontBitmap.Width / 32;
 			cellHeight = fontBitmap.Height / 32;
 
-			/*
-			if (CellWidth == 8)
-			{
-				CellXoffset = -3; CellYoffset = 0;
-			}
-			else if (CellWidth == 16)
-			{
-				CellXoffset = -10; CellYoffset = -4;
-			}
-			*/
+			Program.Cols = IniFile.GetValue("misc", "screencols", Program.Cols);
+			Program.Rows = IniFile.GetValue("misc", "screenrows", Program.Rows);
+			image = new Cell[Program.Cols, Program.Rows];
+			previousImage = new Cell[Program.Cols, Program.Rows];
 
 			CachePNGFont(fontBitmap);
 
@@ -911,9 +905,9 @@ namespace Noxico
 							Noxico.Player.AutoTravelTo(lptx, 0);
 							Noxico.Player.AutoTravelLeave = Direction.North;
 						}
-						else if (lpty > 34)
+						else if (lpty > Noxico.CurrentBoard.Height - 8)
 						{
-							Noxico.Player.AutoTravelTo(lptx, 49);
+							Noxico.Player.AutoTravelTo(lptx, Noxico.CurrentBoard.Height - 1);
 							Noxico.Player.AutoTravelLeave = Direction.South;
 						}
 						else if (lptx < 4)
@@ -921,9 +915,9 @@ namespace Noxico
 							Noxico.Player.AutoTravelTo(0, lpty);
 							Noxico.Player.AutoTravelLeave = Direction.West;
 						}
-						else if (lptx > 72)
+						else if (lptx > Noxico.CurrentBoard.Width - 4)
 						{
-							Noxico.Player.AutoTravelTo(79, lpty);
+							Noxico.Player.AutoTravelTo(Noxico.CurrentBoard.Width - 1, lpty);
 							Noxico.Player.AutoTravelLeave = Direction.East;
 						}
 					}

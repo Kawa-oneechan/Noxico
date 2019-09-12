@@ -375,7 +375,7 @@ namespace Noxico
 
 					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White, Darken = true } },
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
-					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = 24, Foreground = Color.Silver } },
+					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = Program.Rows - 1, Foreground = Color.Silver } },
 				};
 				//Map the controls to pages.
 				pages = new List<UIElement>[]

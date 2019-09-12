@@ -400,7 +400,7 @@ namespace Noxico
 		}
 		public void AddClutter()
 		{
-			AddClutter(0, 0, 79, 49);
+			AddClutter(0, 0, this.Width - 1, this.Height - 1);
 		}
 
 		public void AddWater(List<Rectangle> safeZones)
@@ -412,7 +412,7 @@ namespace Noxico
 			var points = new List<Point>();
 			var pointsPerZone = 4;
 			var threshold = 0.66f;
-			if (safeZones.Count == 1 && safeZones[0].Left == 0 && safeZones[0].Right == 79)
+			if (safeZones.Count == 1 && safeZones[0].Left == 0 && safeZones[0].Right == this.Width - 1)
 			{
 				safeZones.Clear();
 				pointsPerZone = 8;
@@ -472,7 +472,7 @@ namespace Noxico
 		}
 		public void AddWater()
 		{
-			AddWater(new List<Rectangle>() { new Rectangle() { Left = 0, Top = 0, Right = 79, Bottom = 24 } });
+			AddWater(new List<Rectangle>() { new Rectangle() { Left = 0, Top = 0, Right = this.Width - 1, Bottom = this.Height - 1 } });
 		}
 
 		public void Drain()

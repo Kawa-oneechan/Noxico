@@ -33,25 +33,25 @@ statsDisplay.cols = 1;
 ]]--
 
 function DrawStatus()
-	HostForm.Write(string.rep(" ", 80), Color.Silver, Color.Transparent, 24, 0, true);
+	HostForm.Write(string.rep(" ", ScreenCols), Color.Silver, Color.Transparent, ScreenRows - 1, 0, true);
 	
 	local character = player.Character;
 	local hpNow = character.Health;
 	local hpMax = character.MaximumHealth;
 	local hpBarLength = math.ceil((hpNow / hpMax) * 18);
-	HostForm.Write(string.rep(" ", 18), Color.White, Color.FromArgb(9, 21, 39), 24, 0);
-	HostForm.Write(string.rep(" ", hpBarLength), Color.White, Color.FromArgb(30, 54, 90), 24, 0);
-	HostForm.Write(hpNow .. " / " .. hpMax, Color.White, Color.Transparent, 24, 1);
+	HostForm.Write(string.rep(" ", 18), Color.White, Color.FromArgb(9, 21, 39), ScreenRows - 1, 0);
+	HostForm.Write(string.rep(" ", hpBarLength), Color.White, Color.FromArgb(30, 54, 90), ScreenRows - 1, 0);
+	HostForm.Write(hpNow .. " / " .. hpMax, Color.White, Color.Transparent, ScreenRows - 1, 1);
 	
-	HostForm.SetCell(24, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
+	HostForm.SetCell(ScreenRows - 1, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
 	if (character.Gender == Gender.Male) then
-		HostForm.SetCell(24, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent)
+		HostForm.SetCell(ScreenRows - 1, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent)
 	elseif (character.Gender == Gender.Female) then
-		HostForm.SetCell(24, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent)
+		HostForm.SetCell(ScreenRows - 1, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent)
 	else
-		HostForm.SetCell(24, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent)
+		HostForm.SetCell(ScreenRows - 1, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent)
 	end
-	HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, 24, 23);
+	HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, ScreenRows - 1, 23);
 	
 	local mods = "";
 	if (character.HasToken("haste")) then mods = mods .. i18n.GetString("mod_haste") end
@@ -64,13 +64,13 @@ function DrawStatus()
 			mods = mods .. i18n.Format("mod_swimming", (character.GetToken("swimming").Value / 100) * 100)
 		end
 	end
-	HostForm.Write(mods, Color.Silver, Color.Transparent, 24, 79 - mods:len());
+	HostForm.Write(mods, Color.Silver, Color.Transparent, ScreenRows - 1, ScreenCols - mods:len());
 	
 	local statsLength = ((statsDisplay.labelWidth + statsDisplay.valueWidth) * statsDisplay.cols) + (statsDisplay.sidePadding * (statsDisplay.cols + 1));
 	local statsBack = string.rep(" ", statsLength);
-	local statRow = 24 - statsDisplay.rows;
-	local statCol = 80 - statsLength;
-	for i = statRow, 23 do HostForm.Write(statsBack, Color.Silver, Color.Transparent, i, statCol, true) end
+	local statRow = ScreenRows - 1 - statsDisplay.rows;
+	local statCol = ScreenCols - statsLength;
+	for i = statRow, ScreenRows - 2 do HostForm.Write(statsBack, Color.Silver, Color.Transparent, i, statCol, true) end
 	local statCol1 = statCol + 1;
 	local statCol2 = statCol1 + statsDisplay.labelWidth;
 	for _, stat in ipairs(stats) do
@@ -103,8 +103,8 @@ function DrawStatus()
 			col = col + 1;
 			HostForm.Write(total, color, Color.Transparent, statRow, statCol2);
 			statRow = statRow + 1;
-			if (statRow == 24) then
-				statRow = 24 - statsDisplay.rows;
+			if (statRow == ScreenRows - 1) then
+				statRow = ScreenRows - 1 - statsDisplay.rows;
 				statCol1 = statCol2 + statsDisplay.valueWidth + 1;
 				statCol2 = statCol1 + statsDisplay.labelWidth;
 			end

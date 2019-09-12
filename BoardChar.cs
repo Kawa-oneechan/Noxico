@@ -201,7 +201,7 @@ namespace Noxico
 		{
 			var localX = this.XPosition - NoxicoGame.CameraX;
 			var localY = this.YPosition - NoxicoGame.CameraY;
-			if (localX >= 80 || localY >= 25 || localX < 0 || localY < 0)
+			if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)
 				return;
 			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))

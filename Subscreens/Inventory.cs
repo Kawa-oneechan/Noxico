@@ -218,7 +218,7 @@ namespace Noxico
 				if (UIManager.Elements.Count < 2)
 				{
 					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = 14, Width = 76, Height = 6, Title = UIColors.RegularText };
-					howTo = new UILabel(string.Empty) { Left = 0, Top = 0, Width = 79, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
+					howTo = new UILabel(string.Empty) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
 					itemDesc = new UILabel(string.Empty) { Left = 4, Top = 15, Width = 72, Height = 5 };
 					sigilView = new UILabel(string.Empty) { Left = 35, Top = 2, Width = 60, Height = height };
 					itemList = new UIList(string.Empty, null, itemTexts) { Left = 2, Top = 2, Width = 76, Height = height, Index = selection, Background = UIColors.WindowBackground };
@@ -267,7 +267,7 @@ namespace Noxico
 						else
 							r = i18n.GetString("inventory_pressenter_use");
 
-						howTo.Text = (' ' + r).PadEffective(80);
+						howTo.Text = (' ' + r).PadEffective(Program.Cols);
 						itemDesc.Text = d;
 						descriptionWindow.Text = i.ToString(t, false, false);
 						//howTo.Draw();
@@ -281,7 +281,7 @@ namespace Noxico
 					};
 					capacity = new UILabel(player.Character.Carried + "/" + player.Character.Capacity) { Left = 6, Top = 19 };
 					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = 78, Height = 2 + height };
-					UIManager.Elements.Add(new UILabel(new string(' ', 80)) { Left = 0, Top = 49, Background = UIColors.StatusBackground });
+					UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = Program.Rows - 1, Background = UIColors.StatusBackground });
 					UIManager.Elements.Add(yourWindow);
 					UIManager.Elements.Add(descriptionWindow);
 					UIManager.Elements.Add(howTo);
