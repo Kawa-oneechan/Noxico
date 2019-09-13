@@ -385,7 +385,7 @@ namespace Noxico
 				var cntrlL = labelL + 2;
 				var header = (pageTop / 2) + 3;
 				var top = header + 2;
-				var buttons = pageTop + 11;
+				var buttons = (pageTop / 2) + 20;
 
 				controls = new Dictionary<string, UIElement>()
 				{
