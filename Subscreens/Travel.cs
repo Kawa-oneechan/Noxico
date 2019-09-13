@@ -29,19 +29,28 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				Subscreens.Redraw = true;
 
+				var xScale = Program.Cols / 80f;
+				var yScale = Program.Rows / 25f;
+
 				var list = new UIList()
 				{
-					Left = 4,
-					Top = 3,
-					Width = 36,
-					Height = 18,
+					Left = (int)(4 * xScale),
+					Top = (int)(3 * yScale),
+					Width = (int)(36 * xScale),
+					Height = (int)(18 * yScale),
 					Background = Color.White,
 					Foreground = Color.Black,
 				};
 				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_header")) { Left = 1, Top = 0, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = Program.Rows - 1, Foreground = Color.Silver });
-				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere")) { Left = 44, Top = 3, Width = 40, Foreground = Color.Teal });
+				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere"))
+				{
+					Left = (int)(44 * xScale),
+					Top = (int)(3 * yScale),
+					Width = (int)(40 * xScale),
+					Foreground = Color.Teal
+				});
 				UIManager.Elements.Add(list);
 				
 				var targets = new List<int>();

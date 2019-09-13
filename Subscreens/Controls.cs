@@ -37,13 +37,20 @@ namespace Noxico
 				var items = Enum.GetNames(typeof(KeyBinding));
 				numControls = items.Length;
 				var numShown = numControls > 17 ? 17 : numControls;
+
+				var window = new UIWindow(i18n.GetString("key_Title"))
+				{
+					Width = 44,
+					Height = numShown + 6
+				};
+				window.Center();
+
 				controlList = new UIList(string.Empty, null, items)
 				{
-					Left = 6,
-					Top = 3,
 					Width = 40,
 					Height = numShown
 				};
+				controlList.Move(2, 2, window);
 				controlList.Enter = (s, e) =>
 				{
 					waitingForKey = true;
@@ -58,10 +65,9 @@ namespace Noxico
 					Options.Open();
 				})
 				{
-					Left = 6,
-					Top = 4 + numShown,
 					Width = 12
 				};
+				saveButton.MoveBelow(0, 1, controlList);
 
 				resetButton = new UIButton(i18n.GetString("key_Reset"), (s, e) =>
 				{
@@ -71,18 +77,9 @@ namespace Noxico
 					UIManager.Draw();
 				})
 				{
-					Left = 20,
-					Top = 4 + numShown,
 					Width = 12
 				};
-
-				var window = new UIWindow(i18n.GetString("key_Title"))
-				{
-					Left = 4,
-					Top = 1,
-					Width = 44,
-					Height = numShown + 6
-				};
+				resetButton.MoveBeside(2, 0, saveButton);
 
 				UpdateItems();
 				UIManager.Elements.Add(window);

@@ -64,10 +64,13 @@ namespace Noxico
 				UIManager.Initialize();
 				titleBack = new UIPNGBackground(background);
 
+				var xScale = Program.Cols / 80f;
+				var yScale = Program.Rows / 25f;
+				
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
-				titleCaption = new UILabel(subtitle) { Top = 10, Left = 25 - subtitle.Length() / 2, Foreground = Color.Teal, Darken = true };
-				titlePressEnter = new UILabel(pressEnter) { Top = 12, Left = 25 - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
+				titleCaption = new UILabel(subtitle) { Top = (int)(10 * xScale), Left = (int)(25 * yScale) - subtitle.Length() / 2, Foreground = Color.Teal, Darken = true };
+				titlePressEnter = new UILabel(pressEnter) { Top = (int)(12 * xScale), Left = (int)(25 * yScale) - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
@@ -250,7 +253,14 @@ namespace Noxico
 				var editables = "skin/color|Skin color, hair/color|Hair color"; //path|Label, path|Label...
 				if (bodyPlan.HasToken("editable"))
 					editables = bodyPlan.GetToken("editable").Text;
-				var top = 5;
+
+				var xScale = Program.Cols / 80f;
+				var yScale = Program.Rows / 25f;
+				var labelL = (int)(42 * xScale);
+				var cntrlL = labelL + 2;
+				var top = (int)(5 * yScale);
+				var width = (int)(26 * xScale);
+
 				foreach (var aspect in editables.Split(','))
 				{
 					if (aspect.IsBlank())
@@ -263,7 +273,7 @@ namespace Noxico
 						t = t.Substring(6);
 					var oneof = t.Split(',').ToList();
 					var items = new List<string>();
-					colorItems.Add("lbl-" + path, new UILabel(label) { Left = 42, Top = top, Foreground = Color.Gray });
+					colorItems.Add("lbl-" + path, new UILabel(label) { Left = labelL, Top = top, Foreground = Color.Gray });
 					foreach (var i in oneof)
 					{
 						var iT = i.Trim();
@@ -275,10 +285,10 @@ namespace Noxico
 					{
 						for (var i = 0; i < items.Count; i++)
 							items[i] = Color.NameColor(items[i]).Titlecase();
-						colorItems.Add(path, new UIColorList() { Items = items, Left = 44, Top = top + 1, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
+						colorItems.Add(path, new UIColorList() { Items = items, Left = cntrlL, Top = top + 1, Width = width, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					}
 					else
-						colorItems.Add(path, new UISingleList() { Items = items, Left = 44, Top = top + 1, Width = 26, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
+						colorItems.Add(path, new UISingleList() { Items = items, Left = cntrlL, Top = top + 1, Width = width, Foreground = Color.Black, Background = Color.Transparent, Index = 0 });
 					top += 2;
 				}
 
@@ -345,35 +355,44 @@ namespace Noxico
 				var bar = new string('\xC4', 33);
 				string[] sexoptions = {i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Herm"), i18n.GetString("Neuter")};
 				string[] prefoptions = { i18n.GetString("Male"), i18n.GetString("Female"), i18n.GetString("Either") };
+
+				var xScale = Program.Cols / 80f;
+				var yScale = Program.Rows / 25f;
+				var labelL = (int)(42 * xScale);
+				var cntrlL = labelL + 2;
+				var top = (int)(5 * yScale);
+				var header = (int)(3 * yScale);
+				var buttons = (int)(20 * yScale);
+
 				controls = new Dictionary<string, UIElement>()
 				{
 					{ "backdrop", new UIPNGBackground(backdrop) }, //backWithPortrait) },
-					{ "headerline", new UILabel(bar) { Left = 42, Top = 3, Foreground = Color.Black } },
-					{ "header", new UILabel(title) { Left = 58 - (title.Length() / 2), Top = 3, Width = title.Length(), Foreground = Color.Black } },
-					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = 42, Top = 20, Width = 10, Height = 1 } },
-					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = 64, Top = 20, Width = 10, Height = 1 } },
-					{ "wait", new UILabel(i18n.GetString("cc_wait")) { Left = 64, Top = 20, Foreground = Color.Silver } },
-					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = 64, Top = 20, Width = 10, Height = 1, Hidden = true } },
+					{ "headerline", new UILabel(bar) { Left = (int)(42 * xScale), Top = header, Foreground = Color.Black } },
+					{ "header", new UILabel(title) { Left = (int)(58 * xScale) - (title.Length() / 2), Top = header, Width = title.Length(), Foreground = Color.Black } },
+					{ "back", new UIButton(i18n.GetString("cc_back"), null) { Left = (int)(42 * xScale), Top = buttons, Width = 10, Height = 1 } },
+					{ "next", new UIButton(i18n.GetString("cc_next"), null) { Left = (int)(64 * xScale), Top = buttons, Width = 10, Height = 1 } },
+					{ "wait", new UILabel(i18n.GetString("cc_wait")) { Left = (int)(64 * xScale), Top = buttons, Foreground = Color.Silver } },
+					{ "play", new UIButton(i18n.GetString("cc_play"), null) { Left = (int)(64 * xScale), Top = buttons, Width = 10, Height = 1, Hidden = true } },
 
-					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = 42, Top = 5, Foreground = Color.Gray } },
-					{ "name", new UITextBox(string.Empty) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = 46, Top = 6, Foreground = Color.Gray } },
-					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = 42, Top = 8, Foreground = Color.Gray } },
-					{ "species", new UISingleList() { Left = 44, Top = 9, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = 42, Top = 11, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = 42, Top = 12, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameLabel", new UILabel(i18n.GetString("cc_name")) { Left = labelL, Top = top, Foreground = Color.Gray } },
+					{ "name", new UITextBox(string.Empty) { Left = cntrlL, Top = top + 1, Width = (int)(24 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
+					{ "nameRandom", new UILabel(i18n.GetString("cc_random")) { Left = cntrlL + 2, Top = top + 1, Foreground = Color.Gray } },
+					{ "speciesLabel", new UILabel(i18n.GetString("cc_species")) { Left = labelL, Top = top + 3, Foreground = Color.Gray } },
+					{ "species", new UISingleList() { Left = cntrlL, Top = top + 4, Width = (int)(26 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
+					{ "tutorial", new UIToggle(i18n.GetString("cc_tutorial")) { Left = labelL, Top = top + 6, Width = (int)(24 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
+					{ "easy", new UIToggle(i18n.GetString("cc_easy")) { Left = labelL, Top = top + 7, Width = (int)(24 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = 42, Top = 5, Foreground = Color.Gray } },
-					{ "sex", new UIRadioList(sexoptions) { Left = 44, Top = 6, Width = 24, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = 42, Top = 11, Foreground = Color.Gray } },
-					{ "gid", new UISingleList(string.Empty, null, sexoptions.ToList(), 0) { Left = 44, Top = 12, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
-					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = 42, Top = 14, Foreground = Color.Gray } },
-					{ "pref", new UISingleList(string.Empty, null, prefoptions.ToList(), 1) { Left = 44, Top = 15, Width = 26, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "sexLabel", new UILabel(i18n.GetString("cc_sex")) { Left = labelL, Top = top, Foreground = Color.Gray } },
+					{ "sex", new UIRadioList(sexoptions) { Left = cntrlL, Top = top + 1, Width = (int)(24 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
+					{ "gidLabel", new UILabel(i18n.GetString("cc_gid")) { Left = labelL, Top = top + 6, Foreground = Color.Gray } },
+					{ "gid", new UISingleList(string.Empty, null, sexoptions.ToList(), 0) { Left = cntrlL, Top = top + 7, Width = (int)(26 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
+					{ "prefLabel", new UILabel(i18n.GetString("cc_pref")) { Left = labelL, Top = top + 9, Foreground = Color.Gray } },
+					{ "pref", new UISingleList(string.Empty, null, prefoptions.ToList(), 1) { Left = cntrlL, Top = top + 10, Width = (int)(26 * xScale), Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = 42, Top = 5, Foreground = Color.Gray } },
-					{ "gift", new UIList(string.Empty, null, traits) { Left = 44, Top = 6, Width = 30, Height = 24, Foreground = Color.Black, Background = Color.Transparent } },
+					{ "giftLabel", new UILabel(i18n.GetString("cc_gift")) { Left = labelL, Top = top, Foreground = Color.Gray } },
+					{ "gift", new UIList(string.Empty, null, traits) { Left = cntrlL, Top = top + 1, Width = (int)(30 * xScale), Height = (int)(24 * yScale), Foreground = Color.Black, Background = Color.Transparent } },
 
-					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = 8, Width = 36, Height = 4, Foreground = Color.White, Darken = true } },
+					{ "controlHelp", new UILabel(traitHelps[0]) { Left = 1, Top = (int)(8 * yScale), Width = (int)(36 * xScale), Height = 4, Foreground = Color.White, Darken = true } },
 					{ "topHeader", new UILabel(i18n.GetString("cc_header")) { Left = 1, Top = 0, Foreground = Color.Silver } },
 					{ "helpLine", new UILabel(i18n.GetString("cc_footer")) { Left = 1, Top = Program.Rows - 1, Foreground = Color.Silver } },
 				};
