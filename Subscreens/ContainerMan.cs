@@ -74,7 +74,7 @@ namespace Noxico
 		{
 			var keys = NoxicoGame.KeyMap;
 			var player = NoxicoGame.Me.Player;
-			var width = (Program.Cols / 2) - 3;
+			var width = (Program.Cols / 2) - 2;
 
 			if (Subscreens.FirstDraw)
 			{
@@ -89,10 +89,13 @@ namespace Noxico
 				var containerTexts = new List<string>();
 
 				containerWindow = new UIWindow(title) { Left = 1, Top = 1, Width = width, Height = 2 + height };
-				containerList = new UIList(string.Empty, null, containerTexts) { Left = 2, Top = 2, Width = width - 2, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
+				containerList = new UIList(string.Empty, null, containerTexts) { Width = width - 2, Height = height, Index = indexLeft, Background = UIColors.WindowBackground };
+				containerList.Move(1, 1, containerWindow);
 				UIManager.Elements.Add(containerWindow);
 				var emptyMessage = mode == ContainerMode.Vendor ? i18n.Format("inventory_x_hasnothing", vendorChar.Name.ToString()) : mode == ContainerMode.Corpse ? i18n.GetString("inventory_nothingleft") : i18n.GetString("inventory_empty");
-				UIManager.Elements.Add(new UILabel(emptyMessage) { Left = 3, Top = 2, Width = width - 3, Height = 1 });
+				var emptyMessageC = new UILabel(emptyMessage) { Width = width - 3, Height = 1 };
+				emptyMessageC.Move(2, 1, containerWindow);
+				UIManager.Elements.Add(emptyMessageC);
 				UIManager.Elements.Add(containerList);
 
 				if (other.Tokens.Count == 0)
@@ -145,10 +148,14 @@ namespace Noxico
 				playerList = null;
 				var playerTexts = new List<string>();
 
-				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = width + 4, Top = 1, Width = width, Height = 3 };
-				playerList = new UIList(string.Empty, null, playerTexts) { Left = width + 5, Top = 2, Width = width - 2, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
+				playerWindow = new UIWindow(i18n.GetString("inventory_yours")) { Width = width, Height = 3 };
+				playerWindow.MoveBeside(2, 0, containerWindow);
+				playerList = new UIList(string.Empty, null, playerTexts) { Width = width - 2, Height = 1, Index = indexRight, Background = UIColors.WindowBackground };
+				playerList.Move(1, 1, playerWindow);
 				UIManager.Elements.Add(playerWindow);
-				UIManager.Elements.Add(new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = width + 5, Top = 2, Width = width - 3, Height = 1 });
+				var playerNothing = new UILabel(i18n.GetString("inventory_youhavenothing")) { Left = width + 5, Top = 2, Width = width - 3, Height = 1 };
+				playerNothing.Move(2, 1, playerWindow);
+				UIManager.Elements.Add(playerNothing);
 				UIManager.Elements.Add(playerList);
 
 				if (player.Character.GetToken("items").Tokens.Count == 0)
@@ -198,9 +205,11 @@ namespace Noxico
 				//Build the bottom window.
 				UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
 				UIManager.Elements.Add(new UILabel(i18n.GetString(mode == ContainerMode.Vendor ? "inventory_pressenter_vendor" : "inventory_pressenter_container")) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground });
-				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 8, Width = Program.Cols - 4, Height = 6, Title = UIColors.RegularText };
-				description = new UILabel(string.Empty) { Left = 4, Top = Program.Rows - 7, Width = Program.Cols - 8, Height = 5 };
-				capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity)) { Left = 6, Top = Program.Rows - 3 };
+				descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 10, Width = Program.Cols - 4, Height = 8, Title = UIColors.RegularText };
+				description = new UILabel(string.Empty) { Width = Program.Cols - 8, Height = 5 };
+				description.Move(2, 1, descriptionWindow);
+				capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity));
+				capacity.MoveBelow(4, -1, descriptionWindow);
 				UIManager.Elements.Add(descriptionWindow);
 				UIManager.Elements.Add(description);
 				UIManager.Elements.Add(capacity);
@@ -229,7 +238,7 @@ namespace Noxico
 						}
 						if (mode == ContainerMode.Vendor && i.HasToken("equipable") && t.HasToken("equipped"))
 							desc += "\n" + i18n.Format("inventory_vendorusesthis", vendorChar.Name.ToString());
-						description.Text = Toolkit.Wordwrap(desc, description.Width);
+						description.Text = Toolkit.Wordwrap(desc.SmartQuote(), description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
 						capacity.Draw();
@@ -303,7 +312,7 @@ namespace Noxico
 							desc += "\nThis item is cursed and can't be removed."; //DO NOT TRANSLATE -- Curses will be replaced with better terms and variants such as "Slippery" or "Sticky".
 						else if (i.HasToken("equipable") && t.HasToken("equipped"))
 							desc += "\n" + i18n.GetString("inventory_youusethis");
-						description.Text = Toolkit.Wordwrap(desc, description.Width);
+						description.Text = Toolkit.Wordwrap(desc.SmartQuote(), description.Width);
 						descriptionWindow.Draw();
 						description.Draw();
 						capacity.Draw();

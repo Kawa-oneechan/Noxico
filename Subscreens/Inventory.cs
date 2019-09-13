@@ -187,7 +187,7 @@ namespace Noxico
 					var sigilComma = string.Empty;
 					for (var i = 0; i < sigils.Count; i++)
 					{
-						if (sigilText.Length < 30)
+						if (sigilText.Length < Program.Cols - 40)
 						{
 							sigilText.Append(sigilComma);
 							sigilText.Append((sigils[i][0] == '\uE300') ? sigils[i].Substring(1) : i18n.GetString("sigil_" + sigils[i]));
@@ -217,11 +217,15 @@ namespace Noxico
 
 				if (UIManager.Elements.Count < 2)
 				{
-					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 8, Width = Program.Cols - 4, Height = 6, Title = UIColors.RegularText };
+					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = Program.Cols - 2, Height = 2 + height };
+					descriptionWindow = new UIWindow(string.Empty) { Left = 2, Top = Program.Rows - 10, Width = Program.Cols - 4, Height = 8, Title = UIColors.RegularText };
 					howTo = new UILabel(string.Empty) { Left = 0, Top = 0, Width = Program.Cols - 1, Height = 1, Background = UIColors.StatusBackground, Foreground = UIColors.StatusForeground };
-					itemDesc = new UILabel(string.Empty) { Left = 4, Top = Program.Rows - 7, Width = Program.Cols - 8, Height = 5 };
-					sigilView = new UILabel(string.Empty) { Left = 35, Top = 2, Width = 60, Height = height };
-					itemList = new UIList(string.Empty, null, itemTexts) { Left = 2, Top = 2, Width = Program.Cols - 4, Height = height, Index = selection, Background = UIColors.WindowBackground };
+					itemDesc = new UILabel(string.Empty) { Width = Program.Cols - 8, Height = 5 };
+					itemDesc.Move(2, 1, descriptionWindow);
+					itemList = new UIList(string.Empty, null, itemTexts) { Width = Program.Cols - 4, Height = height, Index = selection, Background = UIColors.WindowBackground };
+					itemList.Move(1, 1, yourWindow);
+					sigilView = new UILabel(string.Empty) { Width = 60, Height = height };
+					sigilView.Move(33, 0, itemList);
 					itemList.Change = (s, e) =>
 					{
 						selection = itemList.Index;
@@ -246,7 +250,7 @@ namespace Noxico
 							d += i18n.Format("inventory_modifiers", mods.Join());
 						}
 
-						d = Toolkit.Wordwrap(d, itemDesc.Width);
+						d = Toolkit.Wordwrap(d.SmartQuote(), itemDesc.Width);
 
 						if (i.ID == "book")
 							r = i18n.GetString("inventory_pressenter_book");
@@ -279,8 +283,8 @@ namespace Noxico
 					{
 						TryUse(player.Character, inventoryTokens[itemList.Index], inventoryItems[itemList.Index]);
 					};
-					capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity)) { Left = 6, Top = Program.Rows - 3 };
-					yourWindow = new UIWindow(i18n.GetString("inventory_yours")) { Left = 1, Top = 1, Width = Program.Cols - 2, Height = 2 + height };
+					capacity = new UILabel(string.Format("{0:F2}/{1:F2}", player.Character.Carried, player.Character.Capacity));
+					capacity.MoveBelow(4, -1, descriptionWindow);
 					UIManager.Elements.Add(new UILabel(new string(' ', Program.Cols)) { Left = 0, Top = Program.Rows - 1, Background = UIColors.StatusBackground });
 					UIManager.Elements.Add(yourWindow);
 					UIManager.Elements.Add(descriptionWindow);

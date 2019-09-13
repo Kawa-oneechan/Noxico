@@ -432,6 +432,7 @@ namespace Noxico
 			var ret = new StringBuilder();
 			var open = false;
 			var quoted = new StringBuilder();
+			text = text.Replace("...", "\x137");
 			foreach (var ch in text)
 			{
 				if (ch == '\"')

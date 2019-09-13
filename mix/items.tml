@@ -192,7 +192,7 @@ item: rope
 
 item: baseballbat
 	_n: baseball bat
-	description: "A heavy wooden bat. Would make a good weapon, but its phallic shape gives you other ideas...."
+	description: "A heavy wooden bat. Would make a good weapon, but its phallic shape gives you other ideas..."
 	equipable
 		hand
 	canfuck
