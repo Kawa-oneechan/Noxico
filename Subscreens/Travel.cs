@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Noxico
@@ -29,26 +30,42 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				Subscreens.Redraw = true;
 
-				var xScale = Program.Cols / 80f;
-				var yScale = Program.Rows / 25f;
+				var backdrop = new Bitmap(Program.Cols, Program.Rows * 2, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				var ccback = Mix.GetBitmap("travelback.png");
+				var ccpage = Mix.GetBitmap("ccpage.png");
+				var ccbars = Mix.GetBitmap("ccbars.png");
+				var pageTop = Program.Rows - (ccpage.Height / 2);
+				using (var gfx = Graphics.FromImage(backdrop))
+				{
+					gfx.Clear(Color.Black);
+					gfx.DrawImage(ccback, 0, 0, Program.Cols, Program.Rows * 2);
+					gfx.DrawImage(ccpage, 0, pageTop, ccpage.Width, ccpage.Height);
+					var barsSrc = new System.Drawing.Rectangle(0, 3, ccbars.Width, 7);
+					var barsDst = new System.Drawing.Rectangle(0, 0, Program.Cols, 7);
+					gfx.DrawImage(ccbars, barsDst, barsSrc, GraphicsUnit.Pixel);
+					barsSrc = new System.Drawing.Rectangle(0, 0, ccbars.Width, 5);
+					barsDst = new System.Drawing.Rectangle(0, (Program.Rows * 2) - 5, Program.Cols, 5);
+					gfx.DrawImage(ccbars, barsDst, barsSrc, GraphicsUnit.Pixel);
+				}
 
 				var list = new UIList()
 				{
-					Left = (int)(4 * xScale),
-					Top = (int)(3 * yScale),
-					Width = (int)(36 * xScale),
-					Height = (int)(18 * yScale),
+					Left = 4,
+					Top = (pageTop / 2) + 4,
+					Width = 34,
+					Height = (ccpage.Height / 2) - 6,
 					Background = Color.White,
 					Foreground = Color.Black,
 				};
-				UIManager.Elements.Add(new UIPNGBackground(Mix.GetBitmap("travel.png")));
+
+				UIManager.Elements.Add(new UIPNGBackground(backdrop));
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_header")) { Left = 1, Top = 0, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_footer")) { Left = 1, Top = Program.Rows - 1, Foreground = Color.Silver });
 				UIManager.Elements.Add(new UILabel(i18n.GetString("travel_current") + "\n \x07<cCyan> " + (host.Noxico.CurrentBoard.Name ?? "Somewhere"))
 				{
-					Left = (int)(44 * xScale),
-					Top = (int)(3 * yScale),
-					Width = (int)(40 * xScale),
+					Left = 44,
+					Top = (pageTop / 2) + 4,
+					Width = Program.Cols - 46,
 					Foreground = Color.Teal
 				});
 				UIManager.Elements.Add(list);
