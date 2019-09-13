@@ -72,6 +72,68 @@ namespace Noxico
 			DoEnter();
 		}
 
+		private int relMode, relLeft, relTop;
+		private UIElement relTo;
+
+		public void Move(int left, int top, UIElement relativeTo)
+		{
+			if (relativeTo == null)
+			{
+				Left = left;
+				Top = top;
+
+				relMode = 0;
+			}
+			else
+			{
+				Left = relativeTo.Left + left;
+				Top = relativeTo.Top + top;
+
+				relMode = 1;
+				relLeft = left;
+				relTop = top;
+				relTo = relativeTo;
+			}
+		}
+
+		public void Move(int left, int top)
+		{
+			Move(left, top, null);
+		}
+
+		public void MoveBelow(int left, int top, UIElement relativeTo)
+		{
+			Left = relativeTo.Left + left;
+			Top = relativeTo.Top + relativeTo.Height + top;
+
+			relMode = 2;
+			relLeft = left;
+			relTop = top;
+			relTo = relativeTo;
+		}
+
+		public void MoveBeside(int left, int top, UIElement relativeTo)
+		{
+			Left = relativeTo.Left + relativeTo.Width + left;
+			Top = relativeTo.Top + top;
+
+			relMode = 3;
+			relLeft = left;
+			relTop = top;
+			relTo = relativeTo;
+		}
+
+		public void ReMove()
+		{
+			switch (relMode)
+			{
+				case 0: return;
+				case 1: Move(relLeft, relTop, relTo); return;
+				case 2: MoveBelow(relLeft, relTop, relTo); return;
+				case 3: MoveBeside(relLeft, relTop, relTo); return;
+			}
+		}
+
 		public abstract void Draw();
 	}
 
@@ -172,6 +234,12 @@ namespace Noxico
 			}
 			NoxicoGame.HostForm.Write(bottom, Foreground, bg, Top + Height - 1, Left);
 		}
+
+		public void Center()
+		{
+			Left = (Program.Cols / 2) - (Width / 2);
+			Top = (Program.Rows / 2) - (Height / 2);
+		}
 	}
 
 	public class UILabel : UIElement
@@ -187,6 +255,7 @@ namespace Noxico
 			Text = text;
 			Foreground = UIColors.RegularText;
 			Background = Color.Transparent;
+			Width = Text.Length;
 		}
 
 		public override void Draw()
@@ -943,6 +1012,12 @@ namespace Noxico
 				highlight = Elements[0]; //Fuck it.
 
 			Elements.ForEach(x => { if (!x.Hidden) x.Draw(); });
+		}
+
+		public static void ReMove()
+		{
+			foreach (var e in Elements)
+				e.ReMove();
 		}
 	}
 }
