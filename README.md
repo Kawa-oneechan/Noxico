@@ -9,7 +9,7 @@ This was made in and for Visual Studio 2010. The free Express edition is fine. I
 If you'd rather use a more recent version of Visual Studio, that's perfectly fine too. It *should* by all means compile just fine from the IDE, and `buildall.bat` has just the one line to adapt.
 
 ## Controls
-Keyboard controls can be changed by editing `Noxico.ini`, or from the setting screen.
+Keyboard controls can be changed by editing `Noxico.ini`, or from the settings screen.
 
 ### Always
 * (Debug only) <kbd>F3</kbd> dumps the current board to HTML for investigation.
@@ -19,7 +19,7 @@ Keyboard controls can be changed by editing `Noxico.ini`, or from the setting sc
 * Arrow keys move the player character. Bumping into a friendly or neutral character displaces them. Bumping into a hostile attacks them.
 * <kbd>Shift</kbd>-arrows with a long-range weapon equipped fires in that direction.
 * Period (<kbd>.</kbd>) makes the PC rest for a turn.
-* Enter activates things underneath the PC — there'll be a little popup in the corner if this is something you can do at the time. Activation could involve picking up dropped loot, looking into a container, taking a nap in a bed, or using an exit.
+* <kbd>Enter</kbd> activates things underneath the PC — there'll be a little popup in the corner if this is something you can do at the time. Activation could involve picking up dropped loot, looking into a container, taking a nap in a bed, or using an exit.
 * Quotes (<kbd>'</kbd>) opens the inventory screen.
 * Slash (<kbd>/</kbd>) switches to *Interact* mode.
 * Comma (<kbd>,</kbd>) causes the PC to take off in flight or land again, if they have wings.
