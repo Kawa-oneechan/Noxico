@@ -497,6 +497,7 @@ namespace Noxico
 					NoxicoGame.Me.CurrentBoard.UpdateLightmap(NoxicoGame.Me.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;
+					/*
 #if DEBUG
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("orgasm_denial_ring");
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("baseballbat");
@@ -521,6 +522,7 @@ namespace Noxico
 					NoxicoGame.Me.Player.Character.GetToken("items").AddToken("spidermorph");
 #endif
 #endif
+					*/
 					NoxicoGame.AddMessage(i18n.GetString("welcometonoxico"), Color.Yellow);
 					NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 					
