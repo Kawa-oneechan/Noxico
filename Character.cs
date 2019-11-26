@@ -220,7 +220,7 @@ namespace Noxico
 					return Gender.Neuter;
 
 				if (HasToken("player"))
-					return (Gender)(PreferredGender + 1);
+					return (Gender)(PreferredGender);
 				//TODO: detect a relationship token and return the preferred gender if known.
 
 				var pants = GetEquippedItemBySlot("pants");
@@ -278,7 +278,13 @@ namespace Noxico
 			get
 			{
 				if (HasToken("preferredgender"))
-					return (Gender)((int)GetToken("preferredgender").Value);
+				{
+					var token = GetToken("preferredgender");
+					if (token.Text.IsBlank())
+						return (Gender)((int)GetToken("preferredgender").Value);
+					else
+						return (Gender)Enum.Parse(typeof(Gender), token.Text, true);
+				}
 				return BiologicalGender; //stopgap
 			}
 		}

@@ -21,9 +21,9 @@ md Noxico
 copy Release\Neo.Lua.dll Noxico > nul
 copy Release\Noxico.nox Noxico > nul
 copy Release\Noxico.exe Noxico > nul
-..\7za.exe u noxico-0.1.6.7z Noxico > nul
+..\7za.exe u noxico-0.1.6.1.7z Noxico > nul
 copy /y Release32\Noxico.exe Noxico > nul
-..\7za.exe u  noxico-0.1.6-32.7z Noxico > nul
+..\7za.exe u  noxico-0.1.6.1-32.7z Noxico > nul
 rd Noxico /s /q
 cd ..
 pause

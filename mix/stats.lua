@@ -44,10 +44,10 @@ function DrawStatus()
 	HostForm.Write(hpNow .. " / " .. hpMax, Color.White, Color.Transparent, ScreenRows - 1, 1);
 	
 	HostForm.SetCell(ScreenRows - 1, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
-	if (character.Gender == Gender.Male) then
-		HostForm.SetCell(ScreenRows - 1, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent)
-	elseif (character.Gender == Gender.Female) then
+	if (character.Gender == "Female") then
 		HostForm.SetCell(ScreenRows - 1, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent)
+	elseif (character.Gender == "Male") then
+		HostForm.SetCell(ScreenRows - 1, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent)
 	else
 		HostForm.SetCell(ScreenRows - 1, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent)
 	end

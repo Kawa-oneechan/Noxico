@@ -1,8 +1,8 @@
 TestArena = {
 -- env.TestArena.Name, env.TestArena.BioGender, env.TestArena.IdentifyAs, env.TestArena.Preference, env.TestArena.Bodyplan, new Dictionary<string, string>(), env.TestArena.BonusTrait
 	Name = "Testy McTestface",
-	BioGender = Gender.Herm,
-	IdentifyAs = Gender.Female,
+	BioGender = Gender.Male,
+	IdentifyAs = Gender.Male,
 	Preference = 0,
 	Bodyplan = "felin",
 	BonusTrait = "charismatic",
