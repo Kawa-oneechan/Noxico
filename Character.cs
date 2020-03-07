@@ -1387,8 +1387,7 @@ namespace Noxico
 					print("s");
 				if (!breastsVisible || (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
 					print("\n");
-
-				if (!(boob.Path("nipples") == null) && !(boob.Path("nipples").Value == 0))
+				else if (!(boob.Path("nipples") == null) && !(boob.Path("nipples").Value == 0))
 				{
 					var nipSize = 0.5f;
 					if (boob.Path("nipples/size") != null)
@@ -1414,19 +1413,9 @@ namespace Noxico
 			}
 			print("\n");
 
-			print("Genitals: ");
-			if (!crotchVisible)
+			if (crotchVisible)
 			{
-				if (this.PercievedGender == Gender.Male)
-					print("a [?:cock]?\n");
-				else if (this.PercievedGender == Gender.Female)
-					print("a [?:pussy]?\n");
-				else
-					print("can't tell!\n");
-			}
-			else
-			{
-				print("\n");
+				print("Genitals:\n");
 				if (vagina != null)
 				{
 					var loose = Descriptions.Looseness(vagina.GetToken("looseness"), false);

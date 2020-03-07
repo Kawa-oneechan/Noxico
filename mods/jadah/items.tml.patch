@@ -1,0 +1,37 @@
+add: -
+	__marker: Jadah
+	item: jadah_top
+		_n: Jadah's top
+		unique
+		equipable
+			shirt
+		weight: medium
+		price: 20
+		ascii
+			char: 0x18d
+			fore: saddlebrown
+		clothing
+	item: jadah_skirt
+		_n: Jadah's skirt
+		unique
+		equipable
+			pants
+			reach
+		weight: medium
+		price: 20
+		ascii
+			char: 0x1a1
+			fore: saddlebrown
+		clothing
+		skirt
+	item: jadah_shoes
+		_n: Jadah's shoes
+		equipable
+			shoes
+		weight: light
+		price: 30
+		ascii
+			char: 0x1A3
+			fore: saddlebrown
+		clothing
+		shoes

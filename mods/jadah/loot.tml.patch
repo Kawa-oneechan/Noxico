@@ -1,0 +1,26 @@
+add: -
+	lootset
+		target: npc
+		type: clothing
+		final
+		filter
+			id: jadah
+		oneofeach
+			jadah_top
+			jadah_skirt
+			jadah_shoes
+	lootset
+		target: npc
+		type: underwear
+		final
+		filter
+			id: jadah
+		-- EMPTY
+	lootset
+		target: npc
+		type: arms
+		final
+		filter
+			id: jadah
+		oneof
+			katana

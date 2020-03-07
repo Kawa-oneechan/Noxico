@@ -1,0 +1,41 @@
+add: -
+	character: jadah
+		culture: felin
+		invisiblegender
+		femaleonly
+		bestiary: "This game's mascot. Very clingy."
+		terms
+			male: "felir"
+			female: "fela"
+			herm: "felhru"
+			neuter: "felin"
+		tallness: 182
+		hair
+			length: 12
+			color: brown
+			style: straight
+		skin
+			type: fur
+			color: brown
+			pattern: spots
+				color: black
+		eyes: purple
+			glow
+		face: cat
+		teeth: fangs
+		tongue: normal
+		ears: cat
+		legs: human
+		tail: cat
+		ass
+			looseness: 0
+			size: 5
+		hips: 6
+		waist: 4
+		breasts
+			amount: 2
+			size: 2.0
+			nipples: 1
+				size: 1.2
+		vagina
+			clit: 0.3
