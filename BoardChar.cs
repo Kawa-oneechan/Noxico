@@ -246,50 +246,6 @@ namespace Noxico
 			return true;
 		}
 
-		//TODO: put this in a once-a-cycle Lua function.
-		public void Excite()
-		{
-			if (this.Character.HasToken("beast") || this.Character.HasToken("sleeping"))
-				return;
-			var player = NoxicoGame.Me.Player;
-			if (player.ParentBoard != this.ParentBoard)
-				player = null;
-			//var ogled = false;
-			foreach (var other in ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < 3))
-			{
-				if (other.Character.HasToken("beast"))
-					continue;
-				if (!CanSee(other))
-					continue;
-				if (!this.Character.Likes(other.Character))
-					return;
-				if (other.Character.GetStat("charisma") >= 10)
-				{
-					var stim = this.Character.GetStat("excitement");
-					var otherChar = other.Character.GetStat("charisma");
-					var distance = other.DistanceFrom(this);
-					var increase = (otherChar / 20) * (distance * 0.25);
-					this.Character.Raise("excitement", (float)increase);
-					if (distance < 2)
-						this.Character.Raise("excitement", 1);
-					/*
-					if (!ogled && this != player)
-					{
-						var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
-						if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
-						{
-							NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
-							if (!this.Character.HasToken("oglestim"))
-								this.Character.AddToken("oglestim");
-							this.Character.GetToken("oglestim").Value = stim.Value;
-							ogled = true;
-						}
-					}
-					*/
-				}
-			}
-		}
-
 		/*
 		public string Ogle(Character otherChar)
 		{
@@ -387,6 +343,7 @@ namespace Noxico
 			}
 		}
 
+		//TODO: fold this into EachBoardCharTick.
 		public void CheckForCopiers()
 		{
 			if (Character.HasToken("copier"))
@@ -482,7 +439,7 @@ namespace Noxico
 				return;
 
 			base.Update();
-			Excite();
+			var r = Lua.Environment.EachBoardCharTick(this, this.Character);
 			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
@@ -1655,6 +1612,11 @@ namespace Noxico
 		public Color GetEffectiveColor()
 		{
 			return Color.FromName(Character.Path("skin/color"));
+		}
+
+		public List<BoardChar> GetCharsWithin(int range)
+		{
+			return this.ParentBoard.Entities.OfType<BoardChar>().Where(e => e != this && e.DistanceFrom(this) < range).ToList();
 		}
 	}
 }

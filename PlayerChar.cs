@@ -708,7 +708,8 @@ namespace Noxico
 
 		public void EndTurn()
 		{
-			Excite();
+			var r = Lua.Environment.EndPlayerTurn();
+			//Excite();
 
 			NoxicoGame.PlayerReady = false;
 

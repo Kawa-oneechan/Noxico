@@ -3,6 +3,7 @@ dofile("i18n.lua");
 dofile("stats.lua");
 dofile("defense.lua");
 dofile("teambehavior.lua");
+dofile("eachtick.lua");
 
 function PickOne(list)
 	return list[math.random(#list)]

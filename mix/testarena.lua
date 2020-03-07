@@ -14,8 +14,8 @@ function BuildTestArena(center)
 	print ("lol")
 	center.Clear("Grassland");
 
-	local beastie = Character.Generate("bear", Gender.RollDice);
-	local beastebc = center.PlaceCharacter(beastie, 35, 10);
+	-- local beastie = Character.Generate("bear", Gender.RollDice);
+	-- local beastebc = center.PlaceCharacter(beastie, 35, 10);
 	-- beastie.AddToken("burning");
 
 	--[[
@@ -23,12 +23,14 @@ function BuildTestArena(center)
 	local hostilebc = center.PlaceCharacter(hostile, 35, 10);
 	hostile.AddToken("team", 2, "");
 	hostile.AddToken("teambehavior");
+	]]--
 
 	local neutral = Character.Generate("kitsune", Gender.RollDice);
 	local neutralbc = center.PlaceCharacter(neutral, 45, 10);
 	neutral.AddToken("team", 0, "");
 	neutral.AddToken("teambehavior");
 
+	--[[
 	local guard = Character.Generate("naga", Gender.RollDice);
 	local guardbc = center.PlaceCharacter(guard, 60, 10);
 	guard.AddToken("team", 4, "");

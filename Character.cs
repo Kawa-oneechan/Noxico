@@ -2159,6 +2159,7 @@ Tokens:
 		}
 		//can double as GetNipplecuntCapacity yay
 
+		//TODO: fold this into EachBoardCharTick.
 		public void UpdateOviposition()
 		{
 			if (BoardChar == null)
@@ -2395,6 +2396,7 @@ Tokens:
 			return (float)r;
 		}
 
+		//TODO: fold this into EachBoardCharTick.
 		public void TickStats()
 		{
 			Lua.Environment.TickStats(this);

@@ -454,6 +454,7 @@ namespace Noxico
 			return true;
 		}
 
+		//TODO: fold this into EachBoardCharTick?
 		public bool UpdateSex()
 		{
 			if (!EnsureSexPartner())
