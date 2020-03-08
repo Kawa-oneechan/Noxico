@@ -343,35 +343,6 @@ namespace Noxico
 			}
 		}
 
-		//TODO: fold this into EachBoardCharTick.
-		public void CheckForCopiers()
-		{
-			if (Character.HasToken("copier"))
-			{
-				var copier = Character.GetToken("copier");
-				var timeout = copier.GetToken("timeout");
-				if (timeout != null && timeout.Value > 0)
-				{
-					if (!timeout.HasToken("minute"))
-						timeout.AddToken("minute", NoxicoGame.InGameTime.Minute);
-					if (timeout.GetToken("minute").Value == NoxicoGame.InGameTime.Minute)
-						return;
-					timeout.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
-					timeout.Value--;
-					if (timeout.Value == 0)
-					{
-						copier.RemoveToken(timeout);
-						if (copier.HasToken("full") && copier.HasToken("backup"))
-						{
-							Character.Copy(null); //force revert
-							AdjustView();
-							NoxicoGame.AddMessage(i18n.GetString("x_reverts").Viewpoint(Character));
-						}
-					}
-				}
-			}
-		}
-
 		public override void Update()
 		{
 			if (Character.Health <= 0)
@@ -434,13 +405,11 @@ namespace Noxico
 			
 			CheckForTimedItems();
 			CheckForCriminalScum();
-			CheckForCopiers();
 			if (Character.UpdateSex())
 				return;
 
 			base.Update();
 			var r = Lua.Environment.EachBoardCharTick(this, this.Character);
-			Character.UpdateOviposition();
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "death_burned", null))

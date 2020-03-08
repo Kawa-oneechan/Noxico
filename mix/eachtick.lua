@@ -15,15 +15,15 @@ function Excite(this)
 		elseif not this.Character.Likes(other.Character) then
 			return -- wait
 		elseif other.Character.GetStat("charisma") >= 10 then
-			--print(this.ToString() .. " is maybe excited by " .. other.ToString())
+			-- print(this.ToString() .. " is maybe excited by " .. other.ToString())
 			local stim = this.Character.GetStat("excitement")
 			local theirChar = other.Character.GetStat("charisma")
 			local distance = other.DistanceFrom(this)
 			local increase = (theirChar / 20) * (distance * 0.25)
-			print(this.ToString() .. " is excited for " .. increase .. " points by " .. other.ToString())
+			-- print(this.ToString() .. " is excited for " .. increase .. " points by " .. other.ToString())
 			this.Character.Raise("excitement", increase)
 			if distance < 2 then
-				print(this.ToString() .. " is proximity-excited for 0.25 points by " .. other.ToString())
+				-- print(this.ToString() .. " is proximity-excited for 0.25 points by " .. other.ToString())
 				this.Character.Raise("excitement", 0.25)
 			end
 			-- TODO: ogle
@@ -32,31 +32,66 @@ function Excite(this)
 end
 
 --[[
-public void Excite()
+public void CheckForCopiers()
 {
-		if (other.Character.GetStat("charisma") >= 10)
+	if (Character.HasToken("copier"))
+	{
+		var copier = Character.GetToken("copier");
+		var timeout = copier.GetToken("timeout");
+		if (timeout != null && timeout.Value > 0)
 		{
-			/*
-			if (!ogled && this != player)
+			if (!timeout.HasToken("minute"))
+				timeout.AddToken("minute", NoxicoGame.InGameTime.Minute);
+			if (timeout.GetToken("minute").Value == NoxicoGame.InGameTime.Minute)
+				return;
+			timeout.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
+			timeout.Value--;
+			if (timeout.Value == 0)
 			{
-				var oldStim = this.Character.HasToken("oglestim") ? this.Character.GetToken("oglestim").Value : 0;
-				if (stim.Value >= oldStim + 20 && player != null && this != player && player.DistanceFrom(this) < 4 && player.CanSee(this))
+				copier.RemoveToken(timeout);
+				if (copier.HasToken("full") && copier.HasToken("backup"))
 				{
-					NoxicoGame.AddMessage(string.Format("{0} to {1}: \"{2}\"", this.Character.Name, (other == player ? "you" : other.Character.Name.ToString()), Ogle(other.Character)).SmartQuote(this.Character.GetSpeechFilter()), GetEffectiveColor());
-					if (!this.Character.HasToken("oglestim"))
-						this.Character.AddToken("oglestim");
-					this.Character.GetToken("oglestim").Value = stim.Value;
-					ogled = true;
+					Character.Copy(null); //force revert
+					AdjustView();
+					NoxicoGame.AddMessage(i18n.GetString("x_reverts").Viewpoint(Character));
 				}
 			}
-			*/
 		}
 	}
+}
+
+(When porting this to Lua, note that this came from the Character class, not BoardChar.
+public void UpdateOviposition()
+{
+	if (BoardChar == null)
+		return;
+	if (this.HasToken("egglayer") && this.HasToken("vagina"))
+	{
+		var eggToken = this.GetToken("egglayer");
+		eggToken.Value++;
+		if (eggToken.Value == 500)
+		{
+			eggToken.Value = 0;
+			var egg = new DroppedItem("egg")
+			{
+				XPosition = BoardChar.XPosition,
+				YPosition = BoardChar.YPosition,
+				ParentBoard = BoardChar.ParentBoard,
+			};
+			egg.Take(this, BoardChar.ParentBoard);
+			if (BoardChar is Player)
+				NoxicoGame.AddMessage(i18n.GetString("youareachicken").Viewpoint(this));
+			return;
+		}
+	}
+	return;
 }
 ]]--
 
 function EachBoardCharTick(who, char)
 	Excite(who)
+--	CheckForCopiers(who)
+--	UpdateOviposition(who)
 end
 
 function EndPlayerTurn()

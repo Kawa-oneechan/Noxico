@@ -2148,33 +2148,6 @@ Tokens:
 		}
 		//can double as GetNipplecuntCapacity yay
 
-		//TODO: fold this into EachBoardCharTick.
-		public void UpdateOviposition()
-		{
-			if (BoardChar == null)
-				return;
-			if (this.HasToken("egglayer") && this.HasToken("vagina"))
-			{
-				var eggToken = this.GetToken("egglayer");
-				eggToken.Value++;
-				if (eggToken.Value == 500)
-				{
-					eggToken.Value = 0;
-					var egg = new DroppedItem("egg")
-					{
-						XPosition = BoardChar.XPosition,
-						YPosition = BoardChar.YPosition,
-						ParentBoard = BoardChar.ParentBoard,
-					};
-					egg.Take(this, BoardChar.ParentBoard);
-					if (BoardChar is Player)
-						NoxicoGame.AddMessage(i18n.GetString("youareachicken").Viewpoint(this));
-					return;
-				}
-			}
-			return;
-		}
-
 		#region PillowShout's additions
 		/// <summary>
         /// Checks the character's inventory to see if it contains at least one item with a matching ID.
