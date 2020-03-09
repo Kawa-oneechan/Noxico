@@ -1454,18 +1454,18 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (tutorial.HasToken("dointeractmode"))
 			{
 				tutorial.AddToken("interactmode");
-				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_interactmode"), true, i18n.GetString("tutorial_title"));
 			}
 			else if (!tutorial.HasToken("firstmoves") && tutorial.Value > 5)
 			{
 				tutorial.Value = 0;
 				tutorial.AddToken("firstmoves");
-				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_firstmoves"), true, i18n.GetString("tutorial_title"));
 			}
 			else if (!tutorial.HasToken("flying") && player.HasToken("wings") && !player.GetToken("wings").HasToken("small"))
 			{
 				tutorial.AddToken("flying");
-				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, i18n.GetString("tutorial_title")); //, "tutorichel.png");
+				MessageBox.Notice(i18n.GetString("tutorial_flying"), true, i18n.GetString("tutorial_title"));
 			}
 		}
 	}

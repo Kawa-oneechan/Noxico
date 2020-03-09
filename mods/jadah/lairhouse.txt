@@ -7,5 +7,5 @@ FF00FF	stoneFloor
 DC703D	campfire
 168416	woods_tree1
 0A3D0A	woods_tree2
-0000FF	woodFloor +clut[id:"chels_craftstation" glyph:0x148 fg:"Black" bg:"Auburn" block:1 name:"Crafting table" desc:"You can use this to make stuff."]
+0000FF	woodFloor +clut[id:"jadah_craftstation" glyph:0x148 fg:"Black" bg:"Auburn" block:1 name:"Crafting table" desc:"You can use this to make stuff."]
 BEBEDC	swamp_wavey +unique[id:"chelsie"]
