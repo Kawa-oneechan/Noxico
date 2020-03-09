@@ -984,8 +984,10 @@ namespace Noxico
 
 			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
-			foreach (var l in this.DirtySpots)
+			while (this.DirtySpots.Count > 0)
 			{
+				var l = this.DirtySpots[0];
+				this.DirtySpots.RemoveAt(0);
 				var localX = l.X - NoxicoGame.CameraX;
 				var localY = l.Y - NoxicoGame.CameraY;
 				if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)

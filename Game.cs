@@ -1139,7 +1139,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			dynamic env = Lua.IronLua.CreateEnvironment();
 			Lua.Ascertain(env);
 			env.Realm = realm.ToString();
-			env.GetBoard = new Func<int, Board>(x => GetBoard(x));
+			//env.GetBoard = new Func<int, Board>(x => GetBoard(x));
 			env.FindBoardByID = findBoardByID;
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
 			env.MakeTown = makeTown;

@@ -2,7 +2,7 @@ add: top
 	scene: CarpenterStart
 		name: (start)
 		filter: bottom.HasRole("carpenter")
-		- ""Hello, what can I do for you?" [b:name] asks"
+		- ""Hello, what can I do for you?" [b:name] asks."
 		action: carpenter toolshed
 		action: carpenter upgrade
 		action: carpenter nothing
@@ -15,8 +15,7 @@ add: top
 	scene: CarpenterToolshed
 		name: carpenter toolshed
 		list: Asks about tool sheds
-		filters
-			top: hasnot homeboardhasshed
+		filter: not top.HasToken("homeboardhasshed")
 		- ""Ah yes, a tool shed. A nice little place to work your manual creativity. If you want one, I can come over and build one for you.""
 		action: carpenter toolshed okay
 		action: carpenter upgrade
@@ -31,7 +30,7 @@ add: top
 			<[[
 				top.ChangeMoney(-20);
 				local homeBoard = GetBoard(top.GetToken("homeboard").Value);
-				homeBoard.MergeBitmap("mods\\playerbase\\toolshed.png", "mods\\playerbase\\lv0.tml");
+				homeBoard.MergeBitmap("toolshed.png", "lv0.tml");
 				top.AddToken("homeboardhasshed");
 			]]>
 		action: carpenter upgrade
@@ -64,7 +63,7 @@ add: top
 				local homeBoard = GetBoard(top.GetToken("homeboard").Value);
 				local level = top.GetToken("homeboardlevel").Value + 1;
 				top.GetToken("homeboardlevel").Value = level;
-				homeBoard.MergeBitmap("mods\\playerbase\\lv" .. level .. ".png", "mods\\playerbase\\lv0.tml");
+				homeBoard.MergeBitmap("lv" .. level .. ".png", "lv0.tml");
 				-- TODO: add furniture
 			]]>
 		action: carpenter toolshed

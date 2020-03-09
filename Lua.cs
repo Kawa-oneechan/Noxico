@@ -95,7 +95,7 @@ namespace Noxico
 				NoxicoGame.AddMessage(x, y));
 			env.Titlecase = new Func<string, string>(x => x.Titlecase());
 
-			//env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
+			env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
 			env.GetBiomeByName = new Func<string, int>(BiomeData.ByName);
 
 			env.StartsWithVowel = new Func<string, bool>(x => x.StartsWithVowel());

@@ -55,7 +55,8 @@ character: squeaky
 		rope
 	excitementbonus: 100
 
-character: TRS-180
+character: trs180
+	_n: TRS-180
 	culture: human
 	special
 	terms

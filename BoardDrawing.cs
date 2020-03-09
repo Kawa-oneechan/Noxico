@@ -299,14 +299,15 @@ namespace Noxico
 
 					if (tile.HasToken("unique"))
 					{
-						var newChar = new BoardChar(Character.GetUnique(tile.Text))
+						var unique = tile.GetToken("unique");
+						var newChar = new BoardChar(Character.GetUnique(unique.Text))
 						{
 							XPosition = x,
 							YPosition = y,
 							ParentBoard = this
 						};
 						this.Entities.Add(newChar);
-						newChar.AssignScripts(tile.Text);
+						newChar.AssignScripts(unique.Text);
 						newChar.ReassignScripts();
 					}
 				}
