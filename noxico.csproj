@@ -191,7 +191,6 @@
     <Content Include="mix\bodyplans.tml" />
     <Content Include="mix\bonustraits.tml" />
     <Content Include="mix\buildings.tml" />
-    <Content Include="mix\chargen.png" />
     <Content Include="mix\credits.txt" />
     <Content Include="mix\culture.tml" />
     <Content Include="mix\loot.tml" />
@@ -204,8 +203,6 @@
     <Content Include="mix\schedule.tml" />
     <Content Include="mix\sex.tml" />
     <Content Include="Guides\Tokeninfo.txt" />
-    <Content Include="mix\title.png" />
-    <Content Include="mix\travel.png" />
     <Content Include="notes\oldScriptsStorage.txt" />
     <Content Include="notes\Sparks%27 notes.txt" />
     <Content Include="notes\unformatted books.txt" />

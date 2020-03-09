@@ -10,4 +10,4 @@ tentaBoard.RemoveToken("encounters")
 tentaBoard.AddToken("encounters").AddToken("stock")
 tentaBoard.MakeTarget()
 
-tentaBoard.MergeBitmap("thepit.png", "thepit.txt");
+tentaBoard.MergeBitmap("thepit.png", "thepit.tml");

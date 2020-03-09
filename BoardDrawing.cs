@@ -230,37 +230,8 @@ namespace Noxico
 		public void MergeBitmap(string fileName, string tiledefs)
 		{
 			var bitmap = Mix.GetBitmap(fileName);
-			var tileset = Mix.GetString(tiledefs).Split('\n');
-			var tiles = new Dictionary<string, string>();
-			var clutter = new Dictionary<string, string>();
-			var unique = new Dictionary<string, string>();
-			foreach (var tile in tileset)
-			{
-				if (tile.IsBlank())
-					continue;
-				var t = tile.Trim().Split('\t');
-				if (t[1].Contains('+')) //tileID +clut[prop:val, ...]
-				{
-					var t1 = t[1];
-					tiles.Add("ff" + t[0].ToLowerInvariant(), t1.Remove(t1.IndexOf('+')).Trim());
-					t1 = t1.Substring(t1.IndexOf('+'));
-					while (t1.StartsWith('+'))
-					{
-						var skip = t1.Substring(t1.IndexOf("[") + 1); //skip to after the [
-						var key = "ff" + t[0].ToLowerInvariant();
-						var value = skip.Substring(0, skip.IndexOf(']'));
-
-						if (t1.StartsWith("+clut"))
-							clutter.Add(key,value);
-						else if (t1.StartsWith("+unique"))
-							unique.Add(key, value);
-						t1 = t1.Substring(t1.IndexOf(']') + 1).Trim(); // loop other possible '+'es
-						//TODO: allow other kinds of entities such as dropped items, generic npcs, etc
-					}
-				}
-				else
-					tiles.Add("ff" + t[0].ToLowerInvariant(), t[1]);
-			}
+			var tileset = new Token();
+			tileset.AddSet(Mix.GetTokenTree(tiledefs, true));
 			for (var y = 0; y < Height; y++)
 			{
 				for (var x = 0; x < Width; x++)
@@ -268,11 +239,13 @@ namespace Noxico
 					var color = bitmap.GetPixel(x, y);
 					if (color.Name == "ff000000" || color.A == 0)
 						continue;
-					if (!tiles.ContainsKey(color.Name))
+					var key = color.Name.Substring(2).ToUpperInvariant();
+					if (!tileset.HasToken(key))
 						continue;
-					this.Tilemap[x, y].Index = TileDefinition.Find(tiles[color.Name]).Index;
+					var tile = tileset.GetToken(key);
+					this.Tilemap[x, y].Index = TileDefinition.Find(tile.Text).Index;
 
-					if (tiles[color.Name].StartsWith("doorway"))
+					if (tile.Text.StartsWith("doorway"))
 					{
 						var door = new Door()
 						{
@@ -282,13 +255,13 @@ namespace Noxico
 							BackgroundColor = this.Tilemap[x, y].Definition.Background.Darken(),
 							ID = "mergeBitmap_Door" + x + "_" + y,
 							ParentBoard = this,
-							Closed = tiles[color.Name].EndsWith("Closed"),
+							Closed = tile.Text.EndsWith("Closed"),
 							Glyph = '+'
 						};
 						this.Entities.Add(door);
 					}
 
-					if (clutter.ContainsKey(color.Name))
+					if (tile.HasToken("clutter"))
 					{
 						var nc = new Clutter()
 						{
@@ -297,33 +270,26 @@ namespace Noxico
 							ParentBoard = this
 						};
 						this.Entities.Add(nc);
-						var properties = clutter[color.Name].SplitQ();
-						foreach (var property in properties)
+						var properties = tile.GetToken("clutter");
+						foreach (var property in properties.Tokens)
 						{
-							var key = property.Substring(0, property.IndexOf(':'));
-							var value = property.Substring(property.IndexOf(':') + 1);
-							switch (key.ToLowerInvariant())
+							switch (property.Name)
 							{
-								case "id": nc.ID = value; break;
-								case "name": nc.Name = value; break;
-								case "desc": nc.Description = value; break;
-								case "glyph":
-									if (value.StartsWith("0x"))
-										nc.Glyph = int.Parse(value.Substring(2), System.Globalization.NumberStyles.HexNumber);
-									else
-										nc.Glyph = int.Parse(value);
-									break;
+								case "id": nc.ID = property.Text; break;
+								case "name": nc.Name = property.Text; break;
+								case "desc": nc.Description = property.Text; break;
+								case "glyph": nc.Glyph = (int)property.Value; break;
 								case "fg":
-									if (value.StartsWith('#'))
-										nc.ForegroundColor = Color.FromCSS(value);
+									if (property.Text.StartsWith('#'))
+										nc.ForegroundColor = Color.FromCSS(property.Text);
 									else
-										nc.ForegroundColor = Color.FromName(value);
+										nc.ForegroundColor = Color.FromName(property.Text);
 									break;
 								case "bg":
-									if (value.StartsWith('#'))
-										nc.BackgroundColor = Color.FromCSS(value);
+									if (property.Text.StartsWith('#'))
+										nc.BackgroundColor = Color.FromCSS(property.Text);
 									else
-										nc.BackgroundColor = Color.FromName(value);
+										nc.BackgroundColor = Color.FromName(property.Text);
 									break;
 								case "block": nc.Blocking = true; break;
 								case "burns": nc.CanBurn = true; break;
@@ -331,32 +297,17 @@ namespace Noxico
 						}
 					}
 
-					if (unique.ContainsKey(color.Name))
+					if (tile.HasToken("unique"))
 					{
-						var properties = unique[color.Name].SplitQ();
-						string uniquename = string.Empty;
-						foreach (var property in properties)
+						var newChar = new BoardChar(Character.GetUnique(tile.Text))
 						{
-							var key = property.Substring(0, property.IndexOf(':'));
-							var value = property.Substring(property.IndexOf(':') + 1);
-							switch (key.ToLowerInvariant())
-							{
-								case "id":
-									uniquename = value; break;
-							}
-						}
-						if (uniquename != string.Empty)
-						{
-							var newChar = new BoardChar(Character.GetUnique(uniquename))
-							{
-								XPosition = x,
-								YPosition = y,
-								ParentBoard = this
-							};
-							this.Entities.Add(newChar);
-							newChar.AssignScripts(uniquename);
-							newChar.ReassignScripts();
-						}
+							XPosition = x,
+							YPosition = y,
+							ParentBoard = this
+						};
+						this.Entities.Add(newChar);
+						newChar.AssignScripts(tile.Text);
+						newChar.ReassignScripts();
 					}
 				}
 			}

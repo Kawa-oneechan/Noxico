@@ -30,7 +30,7 @@ myBoard.RemoveToken("encounters")
 myBoard.AddToken("encounters").AddToken("stock")
 myBoard.MakeTarget()
 
-myBoard.MergeBitmap("lv0.png", "lv0.txt")
+myBoard.MergeBitmap("lv0.png", "lv0.tml")
 
 local bed = myBoard.PlaceEntity(Clutter(), 31, 16)
 bed.Glyph = 0x147

@@ -1,0 +1,15 @@
+0000FF: woodFloor
+	clutter
+		id: craftstation
+		glyph: 0x148
+		fg: black
+		bg: auburn
+		block
+		name: Crafting table
+		desc: You can use this to make stuff.
+FF0000: outerWoodWall
+800000: woodFloor
+808080: fence
+5F560B: swamp_wavey
+FF00FF: stoneFloor
+00C0C0: doorwayClosed

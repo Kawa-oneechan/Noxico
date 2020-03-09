@@ -11,7 +11,7 @@ jadaBoard.RemoveToken("encounters")
 jadaBoard.AddToken("encounters").AddToken("stock")
 jadaBoard.MakeTarget()
 
-jadaBoard.MergeBitmap("lairhouse.png", "lairhouse.txt");
+jadaBoard.MergeBitmap("lairhouse.png", "lairhouse.tml");
 
 --local Jadah = BoardChar(Character.GetUnique("jadah"))
 --Jadah.XPosition = 36;

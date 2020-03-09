@@ -1,0 +1,20 @@
+FF0000: outerWoodWall
+800080: woodFloor
+808080: fence
+5F560B: swamp_wavey
+FF00FF: stoneFloor
+00C0C0: doorwayClosed
+DC703D: campfire
+168416: woods_tree1
+0A3D0A: woods_tree2
+0000FF: woodFloor
+	clutter
+		id: jadah_craftstation
+		glyph: 0x148
+		fg: black
+		bg: auburn
+		block
+		name: Crafting table
+		desc: You can use this to make stuff.
+BEBEDC: swamp_wavey
+	unique: jadah
