@@ -26,7 +26,7 @@ function GetDefenseFactor(weapon, target)
 		end
 		--monoceros check?
 	else
-		local what = weapon.Path("attackType") and weapon.Path("attackType").Text or "strike"
+		local what = weapon.Path("attacktype") and weapon.Path("attacktype").Text or "strike"
 		local attackTypes = { "punch", "tear", "strike", "kick", "stab", "pierce", "crush" }
 		for i,t in ipairs(attackTypes) do
 			if what == t then

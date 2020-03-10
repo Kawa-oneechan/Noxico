@@ -849,6 +849,9 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * 80, (generator.MapSizeY - 1) * 50);
 				var gfx = System.Drawing.Graphics.FromImage(png);
 				var font = new System.Drawing.Font("Silkscreen", 7);
+
+				var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
+
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
 				{
 					setStatus("Drawing actual bitmap...", y, generator.MapSizeY);
@@ -863,6 +866,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 							{
 								var tile = thisBoard.Tilemap[tx, ty];
 								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Definition.Background);
+								if (tile.Fluid != Fluids.Dry)
+									png.SetPixel((x * 80) + tx, (y * 50) + ty, waterColors[(int)tile.Fluid]);
 							}
 						}
 						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.Red, (x * 80) + 1, (y * 50) + 1);

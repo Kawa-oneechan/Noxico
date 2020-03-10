@@ -1158,7 +1158,12 @@ namespace Noxico
 				baseDamage = weaponData.GetToken("damage").Value;
 				if (carriedWeapon.HasToken("bonus"))
 					baseDamage = (float)Math.Ceiling(baseDamage * ((carriedWeapon.GetToken("bonus").Value + 1) * 0.75f));
-				//TODO: if it's a crushing weapon, use body stat.
+
+				var attackType = weaponData.HasToken("attacktype") ? weaponData.GetToken("attacktype").Text : "strike";
+
+				//If it's a crushing weapon, use body stat.
+				if (attackType == "crush")
+					baseDamage = (float)Math.Floor(this.Character.GetStat("body"));
 			}
 
 			if (this.Character.Path("prefixes/vorpal") != null)

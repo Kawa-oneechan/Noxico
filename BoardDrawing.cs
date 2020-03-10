@@ -232,9 +232,13 @@ namespace Noxico
 			var bitmap = Mix.GetBitmap(fileName);
 			var tileset = new Token();
 			tileset.AddSet(Mix.GetTokenTree(tiledefs, true));
-			for (var y = 0; y < Height; y++)
+			var width = Width;
+			var height = Height;
+			if (width > bitmap.Width) width = bitmap.Width;
+			if (height > bitmap.Height) height = bitmap.Height;
+			for (var y = 0; y < height; y++)
 			{
-				for (var x = 0; x < Width; x++)
+				for (var x = 0; x < width; x++)
 				{
 					var color = bitmap.GetPixel(x, y);
 					if (color.Name == "ff000000" || color.A == 0)
