@@ -687,12 +687,13 @@ namespace Noxico
 
 	public class WorldMapGenerator
 	{
+		public const int TileWidth = 80, TileHeight = 50;
+
 		public int[,] RoughBiomeMap, TownMap, DetailedMap;
 		public byte[,] WaterMap;
 		public Board[,] BoardMap;
 		public int MapSizeX, MapSizeY, TownMarkers, WaterBiome;
 		public Realms Realm;
-		private const int tileWidth = 80, tileHeight = 50;
 
 		private byte[,] CreateHeightMap(int reach)
 		{
@@ -769,8 +770,8 @@ namespace Noxico
 
 		private byte[,] CreateBiomeMap(int reach, byte[,] height, byte[,] precip, byte[,] temp)
 		{
-			var cols = (int)Math.Floor(reach / (float)tileWidth) * tileWidth;
-			var rows = (int)Math.Floor(reach / (float)tileHeight) * tileHeight;
+			var cols = (int)Math.Floor(reach / (float)TileWidth) * TileWidth;
+			var rows = (int)Math.Floor(reach / (float)TileHeight) * TileHeight;
 			var map = new byte[rows, cols];
 			for (var row = 0; row < rows; row++)
 			{
@@ -796,8 +797,8 @@ namespace Noxico
 		private byte[,] CreateWaterMap(int reach, byte[,] height)
 		{
 			var waterLevel = BiomeData.WaterLevels[(int)Realm];
-			var cols = (int)Math.Floor(reach / (float)tileWidth) * tileWidth;
-			var rows = (int)Math.Floor(reach / (float)tileHeight) * tileHeight;
+			var cols = (int)Math.Floor(reach / (float)TileWidth) * TileWidth;
+			var rows = (int)Math.Floor(reach / (float)TileHeight) * TileHeight;
 			var map = new byte[rows, cols];
 			for (var row = 0; row < rows; row++)
 			{
@@ -819,7 +820,7 @@ namespace Noxico
 			var demon = realm == Realms.Seradevari;
 
 			Realm = realm;
-			var reach = 600; //1200;
+			var reach = 1200;
 
 			setStatus(i18n.Format("worldgen_heightmap", realm), 0, 0); //"Creating heightmap..."
 			var height = CreateHeightMap(reach);
@@ -837,11 +838,11 @@ namespace Noxico
 			var biome = CreateBiomeMap(reach, height, precip, temp);
 			Program.WriteLine("{0} -- Create biome map.", stopwatch.Elapsed);
 
-			MapSizeX = (int)Math.Floor(reach / (float)tileWidth);
-			MapSizeY = (int)Math.Floor(reach / (float)tileHeight);
+			MapSizeX = (int)Math.Floor(reach / (float)TileWidth);
+			MapSizeY = (int)Math.Floor(reach / (float)TileHeight);
 
-			var bmpWidth = MapSizeX * tileWidth;
-			var bmpHeight = MapSizeY * tileHeight; //reach / 1;
+			var bmpWidth = MapSizeX * TileWidth;
+			var bmpHeight = MapSizeY * TileHeight; //reach / 1;
 			var bmp = new int[bmpHeight + 1, bmpWidth + 1];
 			for (var row = 0; row < bmpHeight; row++)
 			{
@@ -861,15 +862,15 @@ namespace Noxico
 				for (var bCol = 0; bCol < MapSizeX; bCol++)
 				{
 					var counts = new int[256];
-					var oceanTreshold = 4000 - 32;
+					var oceanTreshold = (TileWidth * TileHeight) - 32;
 					var waterCount = 0;
 					//Count the colors, 1 2 and 3. Everything goes, coming up OOO!
-					for (var pRow = 0; pRow < tileHeight; pRow++)
+					for (var pRow = 0; pRow < TileHeight; pRow++)
 					{
-						for (var pCol = 0; pCol < tileWidth; pCol++)
+						for (var pCol = 0; pCol < TileWidth; pCol++)
 						{
-							var b = biome[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol];
-							var h = water[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol];
+							var b = biome[(bRow * TileHeight) + pRow, (bCol * TileWidth) + pCol];
+							var h = water[(bRow * TileHeight) + pRow, (bCol * TileWidth) + pCol];
 							if (h > 0)
 								waterCount++;
 							counts[b]++;
@@ -911,11 +912,11 @@ namespace Noxico
 					if (RoughBiomeMap[bRow, bCol] == -1)
 						continue;
 					var waterAmount = 0;
-					var waterMin = 1500;
-					var waterMax = 2500;
-					for (var pRow = 0; pRow < tileHeight; pRow++)
-						for (var pCol = 0; pCol < tileWidth; pCol++)
-							if (water[(bRow * tileHeight) + pRow, (bCol * tileWidth) + pCol] == 1)
+					var waterMin = (TileWidth * TileHeight) / 4; //1500;
+					var waterMax = (TileWidth * TileHeight) / 2; //2500;
+					for (var pRow = 0; pRow < TileHeight; pRow++)
+						for (var pCol = 0; pCol < TileWidth; pCol++)
+							if (water[(bRow * TileHeight) + pRow, (bCol * TileWidth) + pCol] == 1)
 								waterAmount++;
 					if (waterAmount >= waterMin && waterAmount <= waterMax)
 					{
@@ -945,10 +946,10 @@ namespace Noxico
 								if (TownMap[row, col] != 0)
 									continue;
 								var waterAmount = 0;
-								var waterMax = 500;
-								for (var pRow = 0; pRow < tileHeight; pRow++)
-									for (var pCol = 0; pCol < tileWidth; pCol++)
-										if (water[(row * tileHeight) + pRow, (col * tileWidth) + pCol] == 1)
+								var waterMax = (TileWidth * TileHeight) / 16; //500;
+								for (var pRow = 0; pRow < TileHeight; pRow++)
+									for (var pCol = 0; pCol < TileWidth; pCol++)
+										if (water[(row * TileHeight) + pRow, (col * TileWidth) + pCol] == 1)
 											waterAmount++;
 								if (waterAmount < waterMax)
 								{
@@ -985,9 +986,9 @@ namespace Noxico
 						}
 					}
 				}
-				for (var pRow = 0; pRow < tileHeight; pRow++)
-					for (var pCol = 0; pCol < tileWidth; pCol++)
-						DetailedMap[(ty * tileHeight) + pRow, (tx * tileWidth) + pCol] = RoughBiomeMap[ty, tx];
+				for (var pRow = 0; pRow < TileHeight; pRow++)
+					for (var pCol = 0; pCol < TileWidth; pCol++)
+						DetailedMap[(ty * TileHeight) + pRow, (tx * TileWidth) + pCol] = RoughBiomeMap[ty, tx];
 			}
 
 			TownMarkers = towns;

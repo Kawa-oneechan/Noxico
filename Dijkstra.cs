@@ -14,7 +14,7 @@ namespace Noxico
 
 	public class Dijkstra
 	{
-		private int mapRows = 50, mapCols = 80;
+		private int mapRows = WorldMapGenerator.TileWidth, mapCols = WorldMapGenerator.TileHeight;
 		private const int vhn = 9000;
 
 		private int[,] map;
@@ -178,8 +178,10 @@ namespace Noxico
 			
 		}
 
-		public static void JustDoIt(ref int[,] map, int mapRows = 50, int mapCols = 80, bool diagonals = true)
+		public static void JustDoIt(ref int[,] map, int mapRows = -1, int mapCols = -1, bool diagonals = true)
 		{
+			if (mapRows == -1) mapRows = WorldMapGenerator.TileHeight;
+			if (mapCols == -1) mapCols = WorldMapGenerator.TileWidth;
 			var vhn = 9000;
 
 			//Basically the same as Update but without the hotspots and shit, and adapted for less conksuck definitions of "row" and "column".

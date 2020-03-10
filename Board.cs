@@ -452,7 +452,7 @@ namespace Noxico
 
 		public override string ToString()
 		{
-			return string.Format("#{0} {1} - \"{2}\"", BoardNum, ID, Name);
+			return string.Format("#{0} {1} - \"{2}\" ({3})", BoardNum, ID, Name, BoardType);
 		}
 
 		public Board(int width, int height)
@@ -562,11 +562,11 @@ namespace Noxico
 				if (newBoard.HasToken("width"))
 					newBoard.Width = (int)newBoard.GetToken("width").Value;
 				else
-					newBoard.AddToken("width", 80);
+					newBoard.AddToken("width", WorldMapGenerator.TileWidth);
 				if (newBoard.HasToken("height"))
 					newBoard.Height = (int)newBoard.GetToken("height").Value;
 				else
-					newBoard.AddToken("height", 50);
+					newBoard.AddToken("height", WorldMapGenerator.TileHeight);
 				newBoard.Tilemap = new Tile[newBoard.Width, newBoard.Height];
 				newBoard.Lightmap = new bool[newBoard.Width, newBoard.Height];
 				newBoard.Name = newBoard.GetToken("name").Text;

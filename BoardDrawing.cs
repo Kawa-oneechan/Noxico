@@ -51,8 +51,8 @@ namespace Noxico
 			if (biomeID == -1)
 				return;
 			this.Entities.Clear();
-			this.Width = 80; //TODO: determine better overworld board size?
-			this.Height = 50;
+			this.Width = WorldMapGenerator.TileWidth;
+			this.Height = WorldMapGenerator.TileHeight;
 			this.Tilemap = new Tile[this.Width, this.Height];
 			this.Lightmap = new bool[this.Width, this.Height];
 			for (int row = 0; row < Height; row++)
@@ -248,12 +248,12 @@ namespace Noxico
 						continue;
 					var tile = tileset.GetToken(key);
 
+					//Keep the original tile, but drain it.
 					if (tile.Text == "drain")
 					{
 						this.Tilemap[x,y].Fluid = Fluids.Dry;
 						continue;
 					}
-					//TODO: add *setting* fluids.
 
 					this.Tilemap[x, y].Index = TileDefinition.Find(tile.Text).Index;
 						
@@ -322,6 +322,10 @@ namespace Noxico
 						newChar.AssignScripts(unique.Text);
 						newChar.ReassignScripts();
 					}
+
+					//TODO: allow *setting* the fluid.
+					if (!tile.HasToken("fluid"))
+						this.Tilemap[x, y].Fluid = Fluids.Dry;
 				}
 			}
 			this.ResolveVariableWalls();

@@ -396,7 +396,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
-			CurrentBoard = new Board(80, 50);
+			CurrentBoard = new Board(WorldMapGenerator.TileWidth, WorldMapGenerator.TileHeight);
 			this.Player = new Player();
 			Introduction.Title();
 		}
@@ -849,7 +849,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				miniMap[i] = generator.RoughBiomeMap;
 
 #if DEBUG
-				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * 80, (generator.MapSizeY - 1) * 50);
+				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * WorldMapGenerator.TileWidth, (generator.MapSizeY - 1) * WorldMapGenerator.TileHeight);
 				var gfx = System.Drawing.Graphics.FromImage(png);
 				gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 				var font = new System.Drawing.Font("Silkscreen", 7);
@@ -864,17 +864,17 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 						var thisBoard = generator.BoardMap[y, x];
 						if (thisBoard == null)
 							continue; //draw empty spot?
-						for (var ty = 0; ty < 50; ty++)
+						for (var ty = 0; ty < WorldMapGenerator.TileHeight; ty++)
 						{
-							for (var tx = 0; tx < 80; tx++)
+							for (var tx = 0; tx < WorldMapGenerator.TileWidth; tx++)
 							{
 								var tile = thisBoard.Tilemap[tx, ty];
-								png.SetPixel((x * 80) + tx, (y * 50) + ty, tile.Definition.Background);
+								png.SetPixel((x * WorldMapGenerator.TileWidth) + tx, (y * WorldMapGenerator.TileHeight) + ty, tile.Definition.Background);
 								if (tile.Fluid != Fluids.Dry)
-									png.SetPixel((x * 80) + tx, (y * 50) + ty, waterColors[(int)tile.Fluid]);
+									png.SetPixel((x * WorldMapGenerator.TileWidth) + tx, (y * WorldMapGenerator.TileHeight) + ty, waterColors[(int)tile.Fluid]);
 							}
 						}
-						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.Red, (x * 80) + 1, (y * 50) + 1);
+						gfx.DrawString(thisBoard.GetToken("biome").Value.ToString(), font, System.Drawing.Brushes.White, (x * WorldMapGenerator.TileWidth) + 1, (y * WorldMapGenerator.TileHeight) + 1);
 					}
 				}
 				png.Save("world_" + realm.ToString() + ".png");
@@ -945,7 +945,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				setStatus(i18n.GetString("worldgen_createboards"), y, generator.MapSizeY);
 				for (var x = 0; x < generator.MapSizeX - 1; x++)
 				{
-					if (generator.RoughBiomeMap[y, x] == -1)
+					var roughBiome = generator.RoughBiomeMap[y, x];
+					if (roughBiome == -1)
 						continue;
 					var newBoard = new Board(1, 1);
 					newBoard.Coordinate = new Point(x, y);
@@ -962,7 +963,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					newBoard.Realm = realm;
 					newBoard.ClearToWorld(generator);
 					newBoard.AddClutter();
-					var biome = BiomeData.Biomes[generator.RoughBiomeMap[y, x]];
+					var biome = BiomeData.Biomes[roughBiome];
 					if (biome.Encounters.Length > 0)
 					{
 						var encounters = newBoard.GetToken("encounters");

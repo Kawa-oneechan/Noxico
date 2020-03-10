@@ -7,14 +7,31 @@ FF00FF: stoneFloor
 DC703D: campfire
 168416: woods_tree1
 0A3D0A: woods_tree2
+202020: drain
 0000FF: woodFloor
 	clutter
-		id: jadah_craftstation
+		id: craftstation
 		glyph: 0x148
 		fg: black
 		bg: auburn
 		block
 		name: Crafting table
 		desc: You can use this to make stuff.
+016DFF: woodFloor
+	clutter
+		id: Bed_Jadah
+		glyph: 0x147
+		fg: black
+		bg: #866344
+		name: Bed
+		desc: This is Jadah's bed.
+02C6FE: woodFloor
+	clutter
+		id: Table_Jadah
+		glyph: 0x148
+		fg: black
+		bg: #866344
+		name: Table
+		desc: This is Jadah's table.
 BEBEDC: swamp_wavey
 	unique: jadah
