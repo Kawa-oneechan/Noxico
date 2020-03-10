@@ -851,6 +851,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 #if DEBUG
 				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * WorldMapGenerator.TileWidth, (generator.MapSizeY - 1) * WorldMapGenerator.TileHeight);
 				var gfx = System.Drawing.Graphics.FromImage(png);
+				gfx.Clear(System.Drawing.Color.Black);
 				gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 				var font = new System.Drawing.Font("Silkscreen", 7);
 				

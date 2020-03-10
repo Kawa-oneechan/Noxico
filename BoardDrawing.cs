@@ -323,9 +323,10 @@ namespace Noxico
 						newChar.ReassignScripts();
 					}
 
-					//TODO: allow *setting* the fluid.
 					if (!tile.HasToken("fluid"))
 						this.Tilemap[x, y].Fluid = Fluids.Dry;
+					else
+						this.Tilemap[x, y].Fluid = (Fluids)Enum.Parse(typeof(Fluids), tile.GetToken("fluid").Text, true);
 				}
 			}
 			this.ResolveVariableWalls();
