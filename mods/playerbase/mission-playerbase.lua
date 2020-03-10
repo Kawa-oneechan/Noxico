@@ -21,7 +21,7 @@ while 1 do
 	end
 end
 
-myBoard.Drain()
+-- myBoard.Drain()
 myBoard.Name = "Home"
 myBoard.ID = "home"
 myBoard.Music = "set://Home"
@@ -30,7 +30,8 @@ myBoard.RemoveToken("encounters")
 myBoard.AddToken("encounters").AddToken("stock")
 myBoard.MakeTarget()
 
-myBoard.MergeBitmap("lv0.png", "lv0.tml")
+myBoard.MergeBitmap("playerbase_d.png", "playerbase.tml") -- drain an island if needed
+myBoard.MergeBitmap("playerbase_0.png", "playerbase.tml")
 
 local bed = myBoard.PlaceEntity(Clutter(), 31, 16)
 bed.Glyph = 0x147

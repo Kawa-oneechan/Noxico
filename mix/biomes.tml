@@ -1,6 +1,6 @@
 realm: Nox
 	waterlevel: 64
---	waterColor: #00007F
+	watertype: Water
 	biome: Grassland
 		rect: 48 0 184 96
 		ground: grassland
@@ -50,7 +50,7 @@ realm: Nox
 		ground: rainforest
 realm: Seradevari
 	waterlevel: 64
---	waterColor: #B22222
+	watertype: KoolAid
 	biome: Nether
 		rect: 0 0 256 256
 		ground: nether

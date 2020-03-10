@@ -848,8 +848,9 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 #if DEBUG
 				var png = new System.Drawing.Bitmap((generator.MapSizeX - 1) * 80, (generator.MapSizeY - 1) * 50);
 				var gfx = System.Drawing.Graphics.FromImage(png);
+				gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 				var font = new System.Drawing.Font("Silkscreen", 7);
-
+				
 				var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
@@ -885,6 +886,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			while (this.Player.Character == null)
 			{
 				System.Threading.Thread.Sleep(50);
+				if (!((MainForm)NoxicoGame.HostForm).Running)
+					return;
 			}
 
 			var homeBase = Boards.FirstOrDefault(b => b != null && b.ID == "home");
@@ -953,8 +956,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 						newBoard.Connect(Direction.North, generator.BoardMap[y - 1, x]);
 					if (y < generator.MapSizeY - 1)
 						newBoard.Connect(Direction.South, generator.BoardMap[y + 1, x]);
-					newBoard.ClearToWorld(generator);
 					newBoard.Realm = realm;
+					newBoard.ClearToWorld(generator);
 					newBoard.AddClutter();
 					var biome = BiomeData.Biomes[generator.RoughBiomeMap[y, x]];
 					if (biome.Encounters.Length > 0)

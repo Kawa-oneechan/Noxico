@@ -391,6 +391,7 @@ namespace Noxico
 		{
 			if (!fatal)
 				Noxico.SaveGame();
+			Running = false;
 		}
 
 		void timer_Tick(object sender, EventArgs e)

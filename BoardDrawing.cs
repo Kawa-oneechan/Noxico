@@ -68,7 +68,7 @@ namespace Noxico
 					var b = generator.DetailedMap[worldMapY + row, worldMapX + col];
 					var h = generator.WaterMap[worldMapY + row, worldMapX + col];
 					this.Tilemap[col, row].Index = TileDefinition.Find(BiomeData.Biomes[b].GroundTile).Index;
-					this.Tilemap[col, row].Fluid = h == 1 ? Fluids.Water : Fluids.Dry;
+					this.Tilemap[col, row].Fluid = h == 1 ? BiomeData.WaterTypes[(int)Realm] : Fluids.Dry;
 				}
 			}
 		}
@@ -247,8 +247,16 @@ namespace Noxico
 					if (!tileset.HasToken(key))
 						continue;
 					var tile = tileset.GetToken(key);
-					this.Tilemap[x, y].Index = TileDefinition.Find(tile.Text).Index;
 
+					if (tile.Text == "drain")
+					{
+						this.Tilemap[x,y].Fluid = Fluids.Dry;
+						continue;
+					}
+					//TODO: add *setting* fluids.
+
+					this.Tilemap[x, y].Index = TileDefinition.Find(tile.Text).Index;
+						
 					if (tile.Text.StartsWith("doorway"))
 					{
 						var door = new Door()

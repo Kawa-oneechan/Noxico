@@ -30,7 +30,7 @@ add: top
 			<[[
 				top.ChangeMoney(-20);
 				local homeBoard = GetBoard(top.GetToken("homeboard").Value);
-				homeBoard.MergeBitmap("toolshed.png", "lv0.tml");
+				homeBoard.MergeBitmap("playerbase_shed.png", "playerbase.tml");
 				top.AddToken("homeboardhasshed");
 			]]>
 		action: carpenter upgrade
@@ -63,7 +63,7 @@ add: top
 				local homeBoard = GetBoard(top.GetToken("homeboard").Value);
 				local level = top.GetToken("homeboardlevel").Value + 1;
 				top.GetToken("homeboardlevel").Value = level;
-				homeBoard.MergeBitmap("lv" .. level .. ".png", "lv0.tml");
+				homeBoard.MergeBitmap("playerbase_" .. level .. ".png", "playerbase.tml");
 				-- TODO: add furniture
 			]]>
 		action: carpenter toolshed

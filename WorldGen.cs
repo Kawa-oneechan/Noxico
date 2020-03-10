@@ -547,17 +547,21 @@ namespace Noxico
 	{
 		public static List<BiomeData> Biomes;
 		public static List<int> WaterLevels;
+		public static List<Fluids> WaterTypes;
 
 		public static void LoadBiomes()
 		{
 			Biomes = new List<BiomeData>();
 			WaterLevels = new List<int>();
+			WaterTypes = new List<Fluids>();
 			var biomeData = Mix.GetTokenTree("biomes.tml");
 			var i = 0;
 			foreach (var realm in biomeData.Where(x => x.Name == "realm"))
 			{
 				var waterLevel = (int)realm.GetToken("waterlevel").Value;
 				WaterLevels.Add(waterLevel);
+				var waterType = (Fluids)Enum.Parse(typeof(Fluids), realm.GetToken("watertype").Text, true);
+				WaterTypes.Add(waterType);
 				foreach (var biome in realm.Tokens.Where(x => x.Name == "biome"))
 					Biomes.Add(BiomeData.FromToken(biome, i));
 				i++;
