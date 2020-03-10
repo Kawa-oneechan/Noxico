@@ -646,29 +646,23 @@ namespace Noxico
 
 			if (!AutoTravelling)
 			{
-				if (!NoxicoGame.Modifiers[0])
-				{
-					if (NoxicoGame.IsKeyDown(KeyBinding.Left) || Vista.DPad == XInputButtons.Left)
-						this.Move(Direction.West);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Right) || Vista.DPad == XInputButtons.Right)
-						this.Move(Direction.East);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Up) || Vista.DPad == XInputButtons.Up)
-						this.Move(Direction.North);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Down) || Vista.DPad == XInputButtons.Down)
-						this.Move(Direction.South);
-				}
-				else if(NoxicoGame.Modifiers[0])
-				{
-					//Program.WriteLine("shift");
-					if (NoxicoGame.IsKeyDown(KeyBinding.Left))
-						this.QuickFire(Direction.West);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Right))
-						this.QuickFire(Direction.East);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Up))
-						this.QuickFire(Direction.North);
-					else if (NoxicoGame.IsKeyDown(KeyBinding.Down))
-						this.QuickFire(Direction.South);
-				}
+				if (NoxicoGame.IsKeyDown(KeyBinding.Left) || Vista.DPad == XInputButtons.Left)
+					this.Move(Direction.West);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.Right) || Vista.DPad == XInputButtons.Right)
+					this.Move(Direction.East);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.Up) || Vista.DPad == XInputButtons.Up)
+					this.Move(Direction.North);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.Down) || Vista.DPad == XInputButtons.Down)
+					this.Move(Direction.South);
+				//And now, attempting to fire a long range weapon in a cardinal.
+				else if (NoxicoGame.IsKeyDown(KeyBinding.ShootLeft))
+					this.QuickFire(Direction.West);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.ShootRight))
+					this.QuickFire(Direction.East);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.ShootUp))
+					this.QuickFire(Direction.North);
+				else if (NoxicoGame.IsKeyDown(KeyBinding.ShootDown))
+					this.QuickFire(Direction.South);
 			}
 			else
 			{

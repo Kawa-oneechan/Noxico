@@ -11,7 +11,8 @@ namespace Noxico
 	public enum KeyBinding
 	{
 		Left, Right, Up, Down, Rest, Activate, Items, Interact, Fly, Travel,
-		Accept, Back, Pause, Screenshot, TabFocus, ScrollUp, ScrollDown
+		Accept, Back, Pause, Screenshot, TabFocus, ScrollUp, ScrollDown,
+		ShootLeft, ShootRight, ShootUp, ShootDown
 	}
 
 	public class Message
@@ -126,7 +127,8 @@ namespace Noxico
 				Keys.OemPeriod, Keys.Enter, Keys.OemQuotes, Keys.OemQuestion,
 				Keys.Oemcomma, Keys.OemSemicolon, Keys.Enter, Keys.Escape,
 				Keys.F1, Keys.F12, Keys.Tab,
-				Keys.Up, Keys.Down
+				Keys.Up, Keys.Down,
+				Keys.Left, Keys.Right, Keys.Up, Keys.Down,
 			};
 			var defaultMods = new[]
 			{
@@ -134,7 +136,8 @@ namespace Noxico
 				false, false, false, false,
 				true, false, false, false,
 				false, false, false,
-				false, false
+				false, false,
+				true, true, true, true,
 			};
 			for (var i = 0; i < defaults.Length; i++)
 			{

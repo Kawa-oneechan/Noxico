@@ -167,6 +167,10 @@ Number of known items       {2}
 	key_TabFocus: Tab Focus
 	key_ScrollUp: Scroll Up
 	key_ScrollDown: Scroll Down
+	key_ShootLeft: Shoot Left
+	key_ShootRight: Shoot Right
+	key_ShootUp: Shoot Up
+	key_ShootDown: Shoot Down
 -- #endregion
 -- #region Actions
 	action_descyou: you, {0}
