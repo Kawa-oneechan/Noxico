@@ -602,21 +602,47 @@ hostile-callout
 hostile-callout-insult
 	- [b:bodymat] [?b:insult]
 		filter: (bottom.Path("skin/type").Text ~= "skin")
-	- [?b:insult]
+	- [?b:full-insult]
 
 insult
-	- cocksucker
 	- asshole
-	- worm
-	- motherfucker
-	- shithead
-	- shit
-	- cocksleeve
-	- football fan
-	- turd
-	- pisswad
-	- fuckwit
 	- cockmongler
-	- pissstain
+	- cocksleeve
+	- cocksucker
 	- cumstain
+	- dickhead
 	- dickwarbler
+	- douchecanoe
+	- football fan
+	- fuckwit
+	- motherfucker
+	- piece of shit
+	- piece of trash
+	- pissstain
+	- pisswad
+	- shit
+	- shitblimp
+	- shithead
+	- shit-for-breath
+	- turd
+	- waste of space
+	- whore
+	- worm
+insult-adjective
+	- annoying
+	- braindead
+	- cock-gobbling
+	- cum-slurping
+	- fucking
+	- goddamn
+	- goddamned
+	- gutter-crawling
+	- idiotic
+	- lame-ass
+	- motherfucking
+	- shitty
+	- stupid
+	- worthless
+full-insult
+	- [?:insult-adjective] [?:insult]
+
