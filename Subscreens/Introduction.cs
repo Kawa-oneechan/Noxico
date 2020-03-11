@@ -49,6 +49,9 @@ namespace Noxico
 			{
 				Subscreens.FirstDraw = false;
 				host.Clear();
+				var xScale = Program.Cols / 80f;
+				var yScale = Program.Rows / 25f;
+
 				var background = new Bitmap(Program.Cols, Program.Rows * 2, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				var logo = Mix.GetBitmap("logo.png");
 				var titleOptions = Mix.GetFilesWithPattern("titles\\*.png");
@@ -57,20 +60,19 @@ namespace Noxico
 				//because we can't -just- display alpha-blended PNGs.
 				using (var gfx = Graphics.FromImage(background))
 				{
+					gfx.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
 					gfx.Clear(Color.Black);
 					gfx.DrawImage(chosen, 0, 0, Program.Cols, Program.Rows * 2);
-					gfx.DrawImage(logo, 0, 0, logo.Width, logo.Height);
+					gfx.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+					gfx.DrawImage(logo, 0, 0, logo.Width * xScale, logo.Height * yScale);
 				}
 				UIManager.Initialize();
 				titleBack = new UIPNGBackground(background);
 
-				var xScale = Program.Cols / 80f;
-				var yScale = Program.Rows / 25f;
-				
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
 				titleCaption = new UILabel(subtitle) { Top = (int)(10 * xScale), Left = (int)(25 * yScale) - subtitle.Length() / 2, Foreground = Color.Teal, Darken = true };
-				titlePressEnter = new UILabel(pressEnter) { Top = (int)(12 * xScale), Left = (int)(25 * yScale) - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
+				titlePressEnter = new UILabel(pressEnter) { Top = (int)(10 * xScale) + 2, Left = (int)(25 * yScale) - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
