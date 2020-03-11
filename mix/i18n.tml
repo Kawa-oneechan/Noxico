@@ -417,32 +417,17 @@ Would you like an infodump on the way out?
 	color_eyes: {0} {1}
 	glowing_x: glowing {0}
 	x_ears: {0} ears
-	x_skin: {0} {1}
+	x_skin: {0} {1} skin
 	x_pattern: {0} {1}
 	x_legs: {0} legs
 	x_wings: {0} wings
-	small_wings: small {0}
+	small_x_wings: small {0} wings
 	x_tail: {0} tail
 	x_face: {0} face
-	face_xlike: {0}-like
+	x_teeth: {0} teeth
+	x_tongue: {0} tongue
 	single_taur: centaur-like
 	multi_taur: multi-taur ({0} pairs)
--- #region Leg types
-	legtype_human: human
-	legtype_genbeast: digitigrade
-	legtype_stiletto: stiletto-heeled
-	legtype_claws: clawed
-	legtype_insect: insectoid
-	legtype_dog: digitigrade
-	legtype_cat: feline
-	legtype_horse: horse-like
-	legtype_bear: ursine
--- #endregion
--- #region Wing types
-	wingtype_feather: feather-covered
-	wingtype_bat: leathery
-	wingtype_insect: thin, translucent
--- #endregion
 -- #region Tail types
 	tailtype_genbeast: beastly
 	tailtype_demon: spaded demon
@@ -456,39 +441,6 @@ Would you like an infodump on the way out?
 	tailtype_dragon: spined reptilian
 	tailtype_horse: equine
 	tailtyle_webber: spinnerets
--- #endregion
--- #region Face types
-	facetype_normal: human
-	facetype_genbeast: beastly
-	facetype_cow: bovine
-	facetype_reptile: reptilian
-	facetype_fox: vulpine
-	facetype_horse: equine
-	facetype_spider: six-eyed
--- #endregion
--- #region Teeth types
-	teethtype_fangs: fangs
-	teethtype_sharp: sharp teeth
-	teethtype_osmond: fearsome teeth
-	teethtype_herbivore: herbivore
--- #endregion
--- #region Tongue types
-	tonguetype_forked: forked tongue
-	tonguetype_barbed: barbed tongue
-	tonguetype_long: long tongue
-	tonguetype_cock: cock tongue
--- #endregion
--- #region Ear types
-	eartype_flat: unremarkable earholes
-	eartype_elfin: lightly pointed ears
-	eartype_pointed: large pointed ears
-	eartype_genbeast: animal ears
-	eartype_cat: feline ears
-	eartype_fox: vulpine ears
-	eartype_bear: ursine ears
-	eartype_dog: canine ears
-	eartype_horse: equine ears
-	eartype_bunny: bunny ears
 -- #endregion
 -- #region Tattoo locations
 	tat_x_on_y: {0} on {1}

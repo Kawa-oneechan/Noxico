@@ -453,9 +453,17 @@ namespace Noxico
 		/// <returns>A string containing a description of the tail's type. Returns 'glitch' if 'tail is null.</returns>
 		public static string TailType(Token tailToken)
 		{
+			//TODO: allow cock-ends
 			if (tailToken == null)
 				return "glitch";
-			return GetPartDescription("tail", i18n.GetArray("unusual"));
+			return GetPartDescription("tail/" + tailToken.Text, i18n.GetArray("unusual"));
+		}
+
+		public static string Leg(Token legsToken)
+		{
+			if (legsToken == null)
+				return "glitch";
+			return GetPartDescription("legs/" + legsToken.Text, i18n.GetArray("unusual"));
 		}
 
 		#endregion

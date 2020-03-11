@@ -1162,18 +1162,18 @@ namespace Noxico
 			else
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
 
-			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), i18n.GetString(this.Path("skin/type").Text, false)));
+			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), Descriptions.BodyMaterial(this.Path("skin/type").Text)));
+				//i18n.GetString(this.Path("skin/type").Text, false)));
 			if (this.Path("skin/pattern") != null)
 				bodyThings.Add(i18n.Format("x_pattern", Color.Translate(Color.NameColor(this.Path("skin/pattern/color").Text)), i18n.GetString(this.Path("skin/pattern").Text, false)));
 
 			if (this.HasToken("legs"))
 			{
-				var lt = this.GetToken("legs").Text;
-				var legs = lt.IsBlank("human", lt);
+				var lt = this.GetToken("legs");
 				var count = 0;
 				var numberOrPair = "counts";
-				if (this.GetToken("legs").GetToken("amount") != null)
-					count = (int)this.GetToken("legs").GetToken("amount").Value;
+				if (lt.GetToken("amount") != null)
+					count = (int)lt.GetToken("amount").Value;
 				else
 					count = 2;
 				if (this.HasToken("quadruped") || this.HasToken("taur"))
@@ -1190,7 +1190,7 @@ namespace Noxico
 				}
 				if (count < 6)
 					numberOrPair = "setbymeasure";
-				bodyThings.Add(i18n.GetArray(numberOrPair)[count] + " " + i18n.Format("x_legs", i18n.GetString("legtype_" + legs)));
+				bodyThings.Add(i18n.GetArray(numberOrPair)[count] + " " + i18n.Format("x_legs", Descriptions.Leg(lt)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
@@ -1205,32 +1205,13 @@ namespace Noxico
 
 			if (this.HasToken("wings"))
 			{
-				var wingType = this.GetToken("wings").Text;
-				if (wingType.IsBlank())
-					wingType = "feather"; //TODO: different "undefined" fallback?
-				var wt = i18n.Format("x_wings", i18n.GetString("wingtype_" + wingType));
-				if (this.Path("wings/small") != null)
-					wt = i18n.Format("small_wings", wt);
-				bodyThings.Add(wt);
+				var wingType = this.GetToken("wings");
+				bodyThings.Add(i18n.Format(wingType.HasToken("small") ? "small_x_wings" : "x_wings", Descriptions.WingType(wingType)));
 			}
 
 			//tone
 
-
-			var faceType = this.GetToken("face").Text;
-			if (new[] { "normal", "genbeast", "cow", "reptile" }.Contains(faceType))
-				faceType = i18n.GetString("facetype_" + faceType);
-			else if (faceType == "normal")
-				faceType = "human";
-			else if (faceType == "genbeast")
-				faceType = "beastly";
-			else if (faceType == "cow")
-				faceType = "bovine";
-			else if (faceType == "reptile")
-				faceType = "reptilian";
-			else
-				faceType = i18n.Format("face_xlike", faceType);
-			headThings.Add(i18n.Format("x_face", faceType));
+			headThings.Add(i18n.Format("x_face", Descriptions.FaceType(this.Path("face"))));
 
 			if (this.HasToken("eyes"))
 			{
@@ -1258,17 +1239,13 @@ namespace Noxico
 			{
 				var teeth = this.Path("teeth");
 				if (teeth != null && !teeth.Text.IsBlank() && teeth.Text != "normal")
-					headThings.Add(i18n.GetString("teethtype_" + teeth.Text));
+					headThings.Add(i18n.Format("x_teeth", Descriptions.TeethType(teeth)));
 				var tongue = this.Path("tongue");
 				if (tongue != null && !tongue.Text.IsBlank() && tongue.Text != "normal")
-					headThings.Add(i18n.GetString("tonguetype_" + teeth.Text));
+					headThings.Add(i18n.Format("x_tongue", Descriptions.TongueType(tongue)));
 			}
 
-			var ears = "human";
-			if (this.HasToken("ears"))
-				ears = this.GetToken("ears").Text;
-			if (ears != "human")
-				headThings.Add(i18n.GetString("eartype_" + ears));
+			headThings.Add(i18n.Format("x_ears", Descriptions.EarType(this.Path("ears"))));
 
 			//femininity slider
 
@@ -1321,6 +1298,7 @@ namespace Noxico
 
 			if (this.HasToken("tail"))
 			{
+				//TODO: work these into Description.
 				var tt = this.GetToken("tail").Text;
 				var tail = tt.IsBlank("genbeast", tt);
 				if (tail == "bunny")

@@ -152,6 +152,10 @@ teeth
 		sharp
 		carnivorous
 		_hash: s
+	herbivore
+		herbivorous
+		flat
+		_hash: h
 	soft
 		gummy
 		_hash: w
@@ -171,6 +175,11 @@ tongue
 		forked
 		serpentine
 		_hash: f
+	cock
+		cock-ended
+		penile
+		phallic
+		_hash: p
 breasts
 	cupsize
 		upto: 0
@@ -413,6 +422,10 @@ legs
 	human
 		humanoid
 		human-like
+	cat
+		feline
+		cat-like
+		_hash: f
 	dog
 		canine
 		dog-like
@@ -427,6 +440,7 @@ legs
 		_hash: i
 	claws
 		claw-footed
+		clawed
 		_hash: c
 	stiletto
 		stiletto-heeled
@@ -434,6 +448,10 @@ legs
 	genbeast
 		digitigrade
 		_hash: g
+	plush
+		simplistic
+		plush
+		_hash: p
 	bear
 		ursine
 		bear-like
@@ -592,6 +610,7 @@ feet
 	insect: claw
 	default: foot
 	dragon: claw
+	plush: pad
 hand
 	default: hand
 skin
@@ -620,6 +639,12 @@ skin
 		carapace-covered
 		thick
 		_hash: c
+	plush
+		plushy
+		plush
+		velvety
+		velvet
+		_hash: p
 skintohair
 	slime
 		goopy
@@ -627,3 +652,5 @@ skintohair
 		rubbery
 	metal
 		cord-like
+	plush
+		velveteen
