@@ -387,6 +387,26 @@ verb-inserting
 	- shoving
 	- sliding
 	- stuffing
+verb-orgasm
+	- climax
+	- come
+	- cum
+	- finish
+	- orgasm
+	- peak
+verb-orgasmed
+	- came
+	- climaxed
+	- finished
+	- orgasmed
+	- peaked
+verb-orgasming
+	- climaxing
+	- coming
+	- cumming
+	- finishing
+	- orgasming
+	- peaking
 verb-squirt
 	- eject
 	- flood
@@ -573,6 +593,49 @@ verb-struck
 verb-striking
 	- striking
 	- hitting
+
+verb-grunt
+	- groan
+	- growl
+	- pant softly
+	- sigh
+verb-grunted
+	- groaned
+	- growled
+	- panted softly
+	- sighed
+verb-grunts
+	- groans
+	- growls
+	- pants softly
+	- sighs
+verb-scream
+	- cry out
+	- scream
+verb-screamed
+	- cried out
+	- screamed
+verb-screams
+	- cries out
+	- screams
+verb-whimper
+	- softly whine
+	- whimper
+verb-whimpered
+	- softly whined
+	- whimpered
+verb-whimpers
+	- softly whines
+	- whimpers
+verb-murmur
+	- mumble
+	- murmur
+verb-murmured
+	- mumbled
+	- murmured
+verb-murmurs
+	- mumbles
+	- murmurs
 -- #endregion
 
 gesture-t-flirty
@@ -645,4 +708,3 @@ insult-adjective
 	- worthless
 full-insult
 	- [?:insult-adjective] [?:insult]
-

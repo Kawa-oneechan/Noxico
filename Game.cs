@@ -382,7 +382,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			/*
 			var testChar = Character.Generate("naga", Gender.Female);
 			testChar.Culture = Culture.FindCultureByName("felin");
-			var testLine = "[t:He] says, \"[?:Hello], my good [?:friend]! So much joy seeing you, it's great!\"".Viewpoint(testChar);
+			var testLine = "[t:He] [?t:whimper{s}] as [t:he] almost, but not quite, orgasm{s}.".Viewpoint(testChar);
 			var testLine2 = "g test: [hairlength]".Viewpoint(testChar);
 			*/
 			/*

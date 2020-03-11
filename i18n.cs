@@ -279,16 +279,23 @@ namespace Noxico
 			});
 			#endregion
 
-			#region [] Parser
-			var regex = new Regex(@"
+			#region {} parser
+			var regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+			message = regex.Replace(message, (match => top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value));
+			#endregion
+			#region [] parser
+			regex = new Regex(@"
 \[
 	(?:(?<target>[tb\?]{1,2}):)?	#Optional target and :
 
-	(?:							#One or more subcommands
-		(?:\:?)					#Separating :, optional in case target already had one
-		(?<subcom>[\w\/\-_]+)	#Command
+	(?:								#One or more subcommands
+		(?:\:?)						#Separating :, optional in case target already had one
+		(?<subcom>[\w\/\-_\{\}]+)	#Command
 	)*
 \]", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+
+			var allMatches = regex.Matches(message);
+
 			while (regex.IsMatch(message))
 			{
 				message = regex.Replace(message, (match =>
@@ -347,11 +354,9 @@ namespace Noxico
 					return string.Format("(?{0}?)", subcom);
 				}));
 			}
+			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
 			#endregion
 			
-			regex = new Regex(@"{(?:{)? (?<first>\w*)   (?: \| (?<second>\w*) )? }(?:})?", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
-			message = regex.Replace(message, (match => top == player ? (match.Groups["second"].Success ? match.Groups["second"].Value : string.Empty) : match.Groups["first"].Value));
-			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
 
 			if (!message.Contains('"'))
 				return message;

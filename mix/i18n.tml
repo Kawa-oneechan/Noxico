@@ -501,12 +501,6 @@ Equipment
 	craft_consume_x: Destroy {0}
 	craft_dye_x_y: Dye {0} {1}
 -- #endregion
--- #region Vocalizations
-	vocalize_grunt: growl, groan, sigh, pant softly
-	vocalize_grunts: growls, groans, sighs, pants softly
-	vocalize_cryout: cry out, scream
-	vocalize_cryouts: cries out, screams
--- #endregion
 -- #region Morph
 	morph_growcock: [view] [has] grown a brand new [?:cock]
 	morph_growpussy: [view] [has] grown a brand new, [pussywetness] [?:pussy]
