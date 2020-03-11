@@ -199,6 +199,7 @@ anus
 	- asshole
 		weight: 0.6
 	- back door
+	- black hole
 	- butthole
 	- cornhole
 	- dock
@@ -293,6 +294,22 @@ labia
 	- lips
 	- petals
 		weight: 0.3
+testicle
+	- ball
+	- berry
+	- goolie
+	- marble
+	- nad
+	- nut
+	- testicle
+testicles
+	- balls
+	- berries
+	- goolies
+	- marbles
+	- nads
+	- nuts
+	- testicles
 cum
 	- cream
 	- cum
@@ -371,6 +388,8 @@ verb-inserting
 	- sliding
 	- stuffing
 verb-squirt
+	- eject
+	- flood
 	- flow
 	- gush
 	- pour
@@ -380,6 +399,8 @@ verb-squirt
 	- spritz
 	- squirt
 verb-squirted
+	- ejected
+	- flooded
 	- flowed
 	- gushed
 	- poured
@@ -389,6 +410,8 @@ verb-squirted
 	- spritzed
 	- squirted
 verb-squirting
+	- ejecting
+	- flooding
 	- flowing
 	- gushing
 	- pouring
@@ -469,6 +492,24 @@ verb-dribbling
 	- slobbering
 	- trickling
 	- weeping
+verb-suck
+	- consume
+	- devour
+	- gobble
+	- lap
+	- suck
+verb-sucked
+	- consumed
+	- devoured
+	- gobbled
+	- lapped
+	- sucked
+verb-sucking
+	- consuming
+	- devouring
+	- gobbling
+	- lapping
+	- sucking
 verb-shake
 	- shake
 	- tremble
