@@ -775,6 +775,7 @@ namespace Noxico
 			Text = text;
 			Width = text.Length() + 3;
 			Height = 1;
+			Left = -1; //prevent checking before positioning from drawing in the corner
 			Foreground = UIColors.RegularText;
 			Background = UIColors.DarkBackground;
 			Enabled = true;
@@ -787,6 +788,7 @@ namespace Noxico
 
 		public override void Draw()
 		{
+			if (Left == -1) return; //prevent checking before positioning from drawing in the corner
 			var off = "\x13C";
 			var on = "\x13D";
 			var c = (val ? on : off) + ' ' + Text; 
