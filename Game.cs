@@ -392,6 +392,12 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			TextScroller.Plain(testChar.LookAt(null), testChar.GetKnownName(), false, true);
 			return;
 			*/
+			/*
+			var testChar = Character.Generate("naga", Gender.Female);
+			//testChar.GetToken("items").Tokens.Clear();
+			Lua.Environment["testChar"] = testChar;
+			var lres = Lua.Run("return VaginalPlug(testChar)").ToBoolean();
+			*/
 			
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();

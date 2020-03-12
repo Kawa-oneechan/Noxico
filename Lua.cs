@@ -60,8 +60,6 @@ namespace Noxico
 					Program.WriteLine(string.Join("\t", x.Select(v => v ?? "nil")));
 			});
 
-			RunFile("init.lua");
-
 			//TODO: predefine ALL THE THINGS.
 			var env2 = (LuaGlobal)env;
 			env2.RegisterPackage("Board", typeof(Board));
@@ -120,6 +118,7 @@ namespace Noxico
 			});
 			*/
 
+			RunFile("init.lua");
 
 			env.ascertained = true;
 		}

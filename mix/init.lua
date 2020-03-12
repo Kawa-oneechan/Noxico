@@ -46,3 +46,43 @@ function GetWorldName()
 	end
 	return "Land of " .. a .. " and " .. b
 end
+
+-- TODO: put these in their own file
+function HasPenis(who)
+	return who.HasToken("penis")
+end
+function HasVagina(who)
+	return who.HasToken("vagina")
+end
+function HasClit(who)
+	return who.HasToken("vagina") and who.GetToken("vagina").HasToken("clit")
+end
+
+function CanReachBreasts(who)
+	local undershirt = who.GetEquippedItemBySlot("undershirt")
+	local shirt = who.GetEquippedItemBySlot("shirt")
+	local jacket = who.GetEquippedItemBySlot("jacket")
+	local cloak = who.GetEquippedItemBySlot("cloak")
+	return ((cloak == nil or cloak.CanReachThrough(who)) and
+		(jacket == nil or jacket.CanReachThrough(who)) and
+		(shirt == nil or shirt.CanReachThrough(who)) and
+		(undershirt == nil or undershirt.CanReachThrough(who)))
+end
+
+function CanReachCrotch(who, part)
+	part = part or nil
+	local underpants = who.GetEquippedItemBySlot("underpants")
+	local pants = who.GetEquippedItemBySlot("pants")
+	local socks = who.GetEquippedItemBySlot("socks")
+	return ((pants == nil or pants.CanReachThrough(who, part)) and
+		(underpants == nil or underpants.CanReachThrough(who, part)) and
+		(socks == nil or socks.CanReachThrough(who, part)))
+end
+
+function VaginalPlug(who)
+	return who.GetEquippedItemBySlot("vagina") ~= nil
+end
+
+function AnalPlug(who)
+	return who.GetEquippedItemBySlot("anus") ~= nil
+end

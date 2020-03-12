@@ -1657,57 +1657,6 @@ Tokens:
 			System.Diagnostics.Process.Start(Name + " info.html");
 		}
 
-		// stuff useful for sex.tml starts here 
-		//TODO: split all that off into Lua functions
-
-		public bool HasPenis()
-		{
-			return HasToken("penis");
-		}
-
-		public bool HasVagina()
-		{
-			return HasToken("vagina");
-		}
-
-		public bool HasClit()
-		{
-			return (HasToken("vagina") && GetToken("vagina").HasToken("clit"));
-		}
-
-		public bool CanReachBreasts()
-		{
-			var undershirt = GetEquippedItemBySlot("undershirt");
-			var shirt = GetEquippedItemBySlot("shirt");
-			var jacket = GetEquippedItemBySlot("jacket");
-			var cloak = GetEquippedItemBySlot("cloak");
-			return ((cloak == null || cloak.CanReachThrough(this)) &&
-				(jacket == null || jacket.CanReachThrough(this)) &&
-				(shirt == null || shirt.CanReachThrough(this)) &&
-				(undershirt == null || undershirt.CanReachThrough(this)));
-		}
-
-		public bool CanReachCrotch(string part = null)
-		{
-			var underpants = GetEquippedItemBySlot("underpants");
-			var pants = GetEquippedItemBySlot("pants");
-			var socks = GetEquippedItemBySlot("socks");
-			return ((pants == null || pants.CanReachThrough(this, part)) &&
-				(underpants == null || underpants.CanReachThrough(this, part)) &&
-				(socks == null || socks.CanReachThrough(this, part)));
-		}
-
-		//// sparks sex.tml helper functions
-		public bool VaginalPlug()
-		{
-			return (GetEquippedItemBySlot("vagina") != null);
-		}
-
-		public bool AnalPlug()
-		{
-			return (GetEquippedItemBySlot("anus") != null);
-		}
-
 		public void CheckPants(MorphReportLevel reportLevel = MorphReportLevel.PlayerOnly, bool reportAsMessages = false)
 		{
 			var doReport = new Action<string>(s =>
@@ -2586,6 +2535,7 @@ Tokens:
 			}
 		}
 
+		//TODO: luafy this
 		public void UpdatePowers()
 		{
 			var myHash = this.GetBodyComparisonHash();
