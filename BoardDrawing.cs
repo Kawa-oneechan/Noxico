@@ -450,5 +450,67 @@ namespace Noxico
 				for (var x = 0; x < Width; x++)
 					Tilemap[x, y].Fluid = Fluids.Dry;
 		}
+
+		//TODO: This is copied from Game::PlaceTowns. I think the other one could go, call this from there.
+		public void GenerateTown(bool rename, bool vendors)
+		{
+			this.BoardType = BoardType.Town;
+			this.GetToken("encounters").Value = 0;
+			this.GetToken("encounters").Tokens.Clear();
+			var townGen = new TownGenerator();
+			townGen.Board = this;
+			var biome = BiomeData.Biomes[(int)this.GetToken("biome").Value];
+			var cultureName = biome.Cultures.PickOne();
+			townGen.Culture = Culture.Cultures[cultureName];
+			townGen.Create(biome);
+			townGen.ToTilemap(ref this.Tilemap);
+			townGen.ToSectorMap(this.Sectors);
+			this.Music = biome.Realm == Realms.Nox ? "set://Town" : "set://Dungeon";
+			this.AddToken("culture", 0, cultureName);
+
+			if (rename)
+			{
+				while (true)
+				{
+					var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
+					if (NoxicoGame.Me.Boards.Find(b => b != null && b.Name == newName) == null)
+					{
+						this.Name = newName;
+						break;
+					}
+				}
+				//this.ID = string.Format("{0}x{1}-{2}", this.cx, y, this.Name.ToID());
+			}
+
+			if (vendors)
+			{
+				var vendorTypes = new List<string>();
+				var lootData = Mix.GetTokenTree("loot.tml", true);
+				foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
+					if (!vendorTypes.Contains(filter.Text))
+						vendorTypes.Add(filter.Text);
+
+				var citizens = this.Entities.OfType<BoardChar>().Where(e => e.Character.Path("role/vendor") == null).ToList();
+				foreach (var vendorType in vendorTypes)
+				{
+					if (Random.Flip())
+						continue;
+					if (citizens.Count == 0) //Shouldn't happen, but who knows.
+						break;
+					var chosenCitizen = citizens.PickOne();
+					citizens.Remove(chosenCitizen);
+					var spouse = chosenCitizen.Character.Spouse;
+					if (spouse != null)
+						citizens.Remove(spouse.BoardChar);
+					var newVendor = chosenCitizen.Character;
+					var vendorStock = newVendor.GetToken("items");
+					newVendor.RemoveAll("role");
+					newVendor.AddToken("role").AddToken("vendor").AddToken("class", 0, vendorType);
+					newVendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
+					Program.WriteLine("*** {0} of {2} is now a {1} ***", newVendor.Name.ToString(true), vendorType, this.Name);
+					chosenCitizen.RestockVendor();
+				}
+			}
+		}
 	}
 }

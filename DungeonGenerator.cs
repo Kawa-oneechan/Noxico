@@ -149,6 +149,9 @@ namespace Noxico
 		protected Building[,] plots;
 		protected bool allowCaveFloor, includeWater, includeClutter;
 
+		private int plotWidth = 13, plotHeight = 16;
+		private int plotCols, plotRows;
+
 		private void CreateRotationsAndFlips(List<Token> templateSource)
 		{
 			var nl = new[] { '\r', '\n' };
@@ -192,7 +195,13 @@ namespace Noxico
 			DungeonGenerator.DungeonGeneratorBiome = BiomeData.Biomes.IndexOf(biome);
 			this.biome = biome;
 			map = new int[Board.Width, Board.Height];
-			plots = new Building[6, 3];
+
+			plotCols = Board.Width / plotWidth;
+			plotRows = Board.Height / plotHeight;
+			if (plotCols * plotWidth < Board.Width) plotWidth = Board.Width / plotCols;
+			if (plotRows * plotHeight < Board.Height) plotHeight = Board.Height / plotRows;
+
+			plots = new Building[plotCols, plotRows];
 
 			if (templates == null)
 			{
@@ -210,9 +219,10 @@ namespace Noxico
 
 			var spill = new Building("<spillover>", null, 0, 0, Culture.DefaultCulture);
 			//var justPlaced = false;
-			for (var row = 0; row < 3; row++)
+
+			for (var row = 0; row < plotRows; row++)
 			{
-				for (var col = 0; col < 6; col++)
+				for (var col = 0; col < plotCols; col++)
 				{
 					if (plots[col, row].BaseID == "<spillover>")
 						continue;
@@ -225,8 +235,8 @@ namespace Noxico
 					var newTemplate = templates[templateSet].PickOne();
 					//TODO: check if chosen template spills over and if so, if there's room. For now, assume all templates are <= 8
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
-					var sX = newTemplate.Width < 13 ? Random.Next(1, 13 - newTemplate.Width) : 0;
-					var sY = newTemplate.Height < 16 ? Random.Next(1, 16 - newTemplate.Height) : 0;
+					var sX = newTemplate.Width < plotWidth ? Random.Next(1, plotWidth - newTemplate.Width) : 0;
+					var sY = newTemplate.Height < plotHeight ? Random.Next(1, plotHeight - newTemplate.Height) : 0;
 					
 					//NEW: check for water in this plot.
 					var water = 0;
@@ -234,7 +244,7 @@ namespace Noxico
 					{
 						for (var x = 0; x < newTemplate.Width; x++)
 						{
-							if (Board.Tilemap[(col * 13) + x, (row * 16) + y].Fluid != Fluids.Dry)
+							if (Board.Tilemap[(col * plotWidth) + x, (row * plotHeight) + y].Fluid != Fluids.Dry)
 								water++;
 						}
 					}
@@ -263,17 +273,17 @@ namespace Noxico
 
 			var safeZones = new List<Rectangle>();
 
-			for (var row = 0; row < 3; row++)
+			for (var row = 0; row < plotRows; row++)
 			{
-				for (var col = 0; col < 6; col++)
+				for (var col = 0; col < plotCols; col++)
 				{
 					if (plots[col, row].BaseID == null)
 					{
 						//Can clutter this up!
 						if (includeClutter && Random.Flip())
-							Board.AddClutter(col * 13, row * 16, (col * 13) + 13, (row * 16) + 16 + row);
+							Board.AddClutter(col * plotWidth, row * plotHeight, (col * plotWidth) + plotWidth, (row * plotHeight) + plotHeight + row);
 						else
-							safeZones.Add(new Rectangle() { Left = col * 13, Top = row * 16, Right = (col * 13) + 13, Bottom = (row * 16) + 16 + row });
+							safeZones.Add(new Rectangle() { Left = col * plotWidth, Top = row * plotHeight, Right = (col * plotWidth) + plotWidth, Bottom = (row * plotHeight) + plotHeight + row });
 						continue;
 					}
 
@@ -281,8 +291,8 @@ namespace Noxico
 						continue;
 					var building = plots[col, row];
 					var template = building.Template;
-					var sX = (col * 13) + building.XShift;
-					var sY = (row * 16) + building.YShift;
+					var sX = (col * plotWidth) + building.XShift;
+					var sY = (row * plotHeight) + building.YShift;
 					for (var y = 0; y < template.Height; y++)
 					{
 						for (var x = 0; x < template.Width; x++)
@@ -466,8 +476,8 @@ namespace Noxico
 							while (lives > 0)
 							{
 								lives--;
-								x = (col * 13) + Random.Next(13);
-								y = (row * 16) + Random.Next(16);
+								x = (col * plotWidth) + Random.Next(plotWidth);
+								y = (row * plotHeight) + Random.Next(plotHeight);
 								if (!map[x, y].Definition.Wall &&
 									(!template.AllowOutside && map[x, y].Definition.Ceiling) &&
 									Board.Entities.FirstOrDefault(e => e.XPosition == x && e.YPosition == y) == null)
