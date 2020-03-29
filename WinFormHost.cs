@@ -887,12 +887,17 @@ namespace Noxico
 
 			if (tx < 0 || ty < 0 || tx > Program.Cols - 1 || ty > Program.Rows - 1)
 				return;
+
+			var outside = (lptx < 0 || lpty < 0 || lptx > Noxico.CurrentBoard.Width || lpty > Noxico.CurrentBoard.Height);
+
 			if (NoxicoGame.Mode == UserMode.Walkabout)
 			{
 				if (tx < Program.Cols && ty < Program.Rows)
 				{
-					if (y.Button == MouseButtons.Left)
+					if (y.Button == MouseButtons.Left && !outside)
+					{
 						Noxico.Player.AutoTravelTo(lptx, lpty);
+					}
 					else if (y.Button == MouseButtons.Right)
 					{
 						NoxicoGame.Cursor.ParentBoard = Noxico.CurrentBoard;
@@ -902,7 +907,7 @@ namespace Noxico
 						NoxicoGame.KeyMap[NoxicoGame.KeyBindings[KeyBinding.Accept]] = true;
 						NoxicoGame.Cursor.Update();
 					}
-					else if (y.Button == System.Windows.Forms.MouseButtons.Middle)
+					else if ((y.Button == System.Windows.Forms.MouseButtons.Middle) || (y.Button == System.Windows.Forms.MouseButtons.Left && outside))
 					{
 						if (lpty < 8)
 						{
