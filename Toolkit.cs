@@ -697,6 +697,19 @@ namespace Noxico
 			return (dX < dY) ? dY : dX;
 		}
 
+		public static int Clamp(this int v, int min, int max)
+		{
+			if (v < min) return min;
+			if (v > max) return max;
+			return v;
+		}
+		public static double Clamp(this double v, double min, double max)
+		{
+			if (v < min) return min;
+			if (v > max) return max;
+			return v;
+		}
+
 		/// <summary>
 		/// From Nethack. True if it's Friday the 13th.
 		/// </summary>

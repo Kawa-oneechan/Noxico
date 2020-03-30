@@ -692,10 +692,8 @@ namespace Noxico
 				this.AutoTravelMap = new Dijkstra(this.ParentBoard);
 				this.AutoTravelMap.Hotspots.Add(new Point(this.XPosition, this.YPosition));
 			}
-			if (x < 0) x = 0;
-			if (y < 0) y = 0;
-			if (x > ParentBoard.Width) x = ParentBoard.Width;
-			if (y > ParentBoard.Height) y = ParentBoard.Height;
+			x = x.Clamp(0, ParentBoard.Width);
+			y = y.Clamp(0, ParentBoard.Height);
 			AutoTravelMap.Hotspots[0] = new Point(x, y);
 			AutoTravelMap.UpdateWalls(ParentBoard, !Character.IsSlime);
 			AutoTravelMap.Update();
