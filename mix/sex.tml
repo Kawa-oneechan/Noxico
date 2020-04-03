@@ -396,7 +396,7 @@ group: consentual
 						top.AddSexFlag("penisbusy")
 						bottom.AddSexFlag("givingoral")
 						bottom.AddSexFlag("mouthbusy")
-						Message({"[t:Youorname] push{es} your [?:cock] into [b:yourornames] mouth."})
+						Message({"[t:Youorname] shove{s} [t:your] [?:cock] into [b:yourornames] mouth."})
 					]]>
 
 			choice: make_them_suck_more
