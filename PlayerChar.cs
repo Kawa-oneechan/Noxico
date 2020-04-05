@@ -433,19 +433,13 @@ namespace Noxico
 			var sleeping = Character.Path("sleeping");
 			if (sleeping != null)
 			{
-				var hp = Character.GetToken("health");
-				var hpMax = Character.MaximumHealth;
-				hp.Value += 2;
-				if (hp.Value > hpMax)
-					hp.Value = hpMax;
+				Character.Heal(2);
 				sleeping.Value--;
 				if (sleeping.Value <= 0)
 				{
 					Character.RemoveToken("sleeping");
 					Character.RemoveToken("helpless");
 					NoxicoGame.AddMessage(i18n.GetString("yougetup"));
-					if (Character.Health > Character.MaximumHealth)
-						Character.Health = Character.MaximumHealth;
 				}
 				NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddMinutes(5);
 				EndTurn();
@@ -457,7 +451,7 @@ namespace Noxico
 			{
 				if (Random.NextDouble() < 0.05)
 				{
-					Character.Health += 2;
+					Character.Heal(2);
 					NoxicoGame.AddMessage(i18n.GetString("yougetup"));
 					Character.RemoveToken("helpless");
 					helpless = false;

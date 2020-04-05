@@ -105,7 +105,7 @@ namespace Noxico
 			var nox = host.Noxico;
 			var player = nox.Player.Character;
 
-			var hpNow = player.GetToken("health").Value;
+			var hpNow = player.Health;
 			var hpMax = player.MaximumHealth;
 			var health = hpNow + " / " + hpMax;
 			if (hpNow <= hpMax / 4)

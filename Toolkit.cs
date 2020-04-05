@@ -130,7 +130,6 @@ namespace Noxico
 			return tokens.PickOne();
 		}
 
-
 		/// <summary>
 		/// Returns the given number as a word, from "one" up to "twelve". 13 and higher are returned as-is.
 		/// </summary>
@@ -704,6 +703,12 @@ namespace Noxico
 			return v;
 		}
 		public static double Clamp(this double v, double min, double max)
+		{
+			if (v < min) return min;
+			if (v > max) return max;
+			return v;
+		}
+		public static float Clamp(this float v, float min, float max)
 		{
 			if (v < min) return min;
 			if (v > max) return max;
