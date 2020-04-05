@@ -493,9 +493,9 @@ namespace Noxico
 						NoxicoGame.Me.Player.Character.AddToken("tutorial");
 					if (easy)
 						NoxicoGame.Me.Player.Character.AddToken("easymode");
-					NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
-					NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
-					NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddYears(Random.Next(0, 10));
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddDays(Random.Next(20, 340));
+					NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddHours(Random.Next(10, 54));
 					NoxicoGame.Me.CurrentBoard.UpdateLightmap(NoxicoGame.Me.Player, true);
 					Subscreens.FirstDraw = true;
 					NoxicoGame.Immediate = true;

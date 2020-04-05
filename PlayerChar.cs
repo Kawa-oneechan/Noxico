@@ -408,9 +408,7 @@ namespace Noxico
 			{
 				var wasNight = Toolkit.IsNight();
 
-				// kawa, DateTime is immutable now, you have to make a new one - sparks
-				DateTime newTime = NoxicoGame.InGameTime.AddMilliseconds(increase);
-				NoxicoGame.InGameTime = newTime;
+				NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddMilliseconds(increase);
 
 				if (wasNight && !Toolkit.IsNight())
 				{
@@ -449,7 +447,7 @@ namespace Noxico
 					if (Character.Health > Character.MaximumHealth)
 						Character.Health = Character.MaximumHealth;
 				}
-				NoxicoGame.InGameTime.AddMinutes(5);
+				NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddMinutes(5);
 				EndTurn();
 				return; //07-04-13 no more sleepwalking
 			}
@@ -471,7 +469,7 @@ namespace Noxico
 			if (NoxicoGame.KeyMap[Keys.Z])
 			{
 				NoxicoGame.ClearKeys();
-				NoxicoGame.InGameTime.AddMinutes(30);
+				NoxicoGame.InGameTime = NoxicoGame.InGameTime.AddMinutes(30);
 			}
 #endif
 			//Pause menu moved up so you can pause while <5000.
