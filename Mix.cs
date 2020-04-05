@@ -277,7 +277,7 @@ namespace Noxico
 			} */
 			return ret.ToArray();
 		}
-		
+
 		public static void GetFileRange(string fileName, out int offset, out int length, out string mixFile)
 		{
 			offset = -1;
@@ -354,7 +354,7 @@ namespace Noxico
 						outStream.Seek(0, SeekOrigin.Begin);
 						outStream.Read(unpacked, 0, unpacked.Length);
 						File.WriteAllBytes(targetPath, unpacked);
-					} 
+					}
 				}
 			}
 			Program.WriteLine("All entries in mix files extracted. Happy Hacking.");

@@ -9,7 +9,7 @@ using Keys = System.Windows.Forms.Keys;
 
 namespace Noxico
 {
-  	public class Cursor : Entity
+	public class Cursor : Entity
 	{
 		public static Entity LastTarget { get; set; }
 		public Entity PointingAt { get; private set; }
@@ -298,13 +298,13 @@ namespace Noxico
 								//Eat the option, because rape is bad m'kay?
 							}
 							else
-							if (!boardChar.Character.HasToken("beast"))
-							{
-								if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
-									options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
-								else if (boardChar.Character.HasToken("willing")) //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's excitement or whatever.
-									options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
-							}
+								if (!boardChar.Character.HasToken("beast"))
+								{
+									if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
+										options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
+									else if (boardChar.Character.HasToken("willing")) //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's excitement or whatever.
+										options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
+								}
 						}
 
 						if (canSee && !boardChar.Character.HasToken("beast") && player.Character.HasToken("copier") && player.Character.Path("copier/timeout") == null)
@@ -322,7 +322,7 @@ namespace Noxico
 
 #if DEBUG
 					if (PointingAt is BoardChar)
-                        options["mutate"] = "(debug) Random mutate";
+						options["mutate"] = "(debug) Random mutate";
 					if (PointingAt is BoardChar)
 						options["turbomutate"] = "(debug) Apply LOTS of mutations!";
 #endif
@@ -458,11 +458,11 @@ namespace Noxico
 									((BoardChar)PointingAt).Character.RecalculateStatBonuses();
 									((BoardChar)PointingAt).Character.CheckHasteSlow();
 									break;
-                                
-                                case "mutate":
-                                    var result = ((BoardChar)PointingAt).Character.Mutate(1, 30);
+
+								case "mutate":
+									var result = ((BoardChar)PointingAt).Character.Mutate(1, 30);
 									NoxicoGame.AddMessage(result);
-                                    break;
+									break;
 
 								case "turbomutate":
 									result = ((BoardChar)PointingAt).Character.Mutate(2500, 30);

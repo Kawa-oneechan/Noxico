@@ -143,7 +143,7 @@ namespace Noxico
 			{
 				KeyBindings[(KeyBinding)i] = defaults[i];
 				KeyBindingMods[(KeyBinding)i] = defaultMods[i];
-				RawBindings[(KeyBinding)i] = defaults[i].ToString().ToUpperInvariant();;
+				RawBindings[(KeyBinding)i] = defaults[i].ToString().ToUpperInvariant(); ;
 			}
 		}
 
@@ -398,7 +398,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			Lua.Environment["testChar"] = testChar;
 			var lres = Lua.Run("return VaginalPlug(testChar)").ToBoolean();
 			*/
-			
+
 			InGameTime = new DateTime(740 + Random.Next(0, 20), 6, 26, DateTime.Now.Hour, 0, 0);
 			TravelTargets = new Dictionary<int, string>();
 
@@ -652,7 +652,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			for (var i = from; i < Messages.Count; i++, line++)
 				HostForm.Write(Messages[i].Text, Messages[i].Color, Color.Transparent, line, 0, true);
 		}
-	
+
 		public static void ClearMessages()
 		{
 			Messages.Clear();
@@ -860,7 +860,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				gfx.Clear(System.Drawing.Color.Black);
 				gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 				var font = new System.Drawing.Font("Silkscreen", 7);
-				
+
 				var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
 
 				for (var y = 0; y < generator.MapSizeY - 1; y++)
@@ -1223,7 +1223,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					colorToken.Text = string.Empty;
 			}
 			Action<TokenCarrier> removeBlanks = null;
-			removeBlanks= new Action<TokenCarrier>(t =>
+			removeBlanks = new Action<TokenCarrier>(t =>
 			{
 				foreach (var token in t.Tokens)
 				{

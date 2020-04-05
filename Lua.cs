@@ -168,7 +168,7 @@ namespace Noxico
 				// Attempt to compile and add it to the cache.
 				try
 				{
-					compiledChunk = IronLua.CompileChunk(block, "lol.lua" , null);
+					compiledChunk = IronLua.CompileChunk(block, "lol.lua", null);
 					useCache = true;
 					LuaCache.Add(hash, compiledChunk);
 				}

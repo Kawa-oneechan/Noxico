@@ -732,7 +732,7 @@ namespace Noxico
 			Marshal.Copy(scan0, 0, lockData.Scan0, size);
 			backBuffer.UnlockBits(lockData);
 			Frames++;
-				this.Refresh();
+			this.Refresh();
 		}
 
 		public void ScrollUp(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal)
@@ -970,5 +970,4 @@ namespace Noxico
 			}
 		}
 	}
-
 }

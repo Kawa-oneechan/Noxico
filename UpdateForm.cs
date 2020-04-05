@@ -27,7 +27,6 @@ namespace Noxico
 			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadFileCompleted);
 			label1.Text = "Downloading executable...";
 			wc.DownloadFileAsync(new Uri(server + "Noxico.exe"), "Noxico._xe");
-						
 		}
 
 		void wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)

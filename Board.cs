@@ -286,7 +286,7 @@ namespace Noxico
 			}
 			set
 			{
-				Index = value.Index; 
+				Index = value.Index;
 			}
 		}
 
@@ -738,7 +738,7 @@ namespace Noxico
 		{
 			SetTile(row, col, TileDefinition.Find(tileName).Index);
 		}
-		public void SetTile(int row, int col, TileDefinition def)	
+		public void SetTile(int row, int col, TileDefinition def)
 		{
 			if (def == null)
 				return;
@@ -939,7 +939,7 @@ namespace Noxico
 				NoxicoGame.CameraY = 0;
 			else if (this.Height > Program.Rows)
 			{
-				NoxicoGame.CameraY = y - (Program.Rows/ 2);
+				NoxicoGame.CameraY = y - (Program.Rows / 2);
 				if (NoxicoGame.CameraY < 0)
 					NoxicoGame.CameraY = 0;
 				if (NoxicoGame.CameraY > this.Height - Program.Rows)
@@ -1047,7 +1047,7 @@ namespace Noxico
 						Lightmap[col, row] = Tilemap[col, row].Seen = true;
 				return;
 			}
-			
+
 			var previousMap = new bool[Width, Height];
 			for (int row = 0; row < Height; row++)
 			{
@@ -1582,6 +1582,4 @@ namespace Noxico
 			return bc;
 		}
 	}
-
-
 }

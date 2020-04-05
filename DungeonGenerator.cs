@@ -99,9 +99,9 @@ namespace Noxico
 				Realms world;
 				switch (culture.ID)
 				{
-					case "human" : world = Realms.Nox; break;
-					case "seradevar" : world = Realms.Seradevari; break;
-					default : world = Realms.Nox; break;
+					case "human": world = Realms.Nox; break;
+					case "seradevar": world = Realms.Seradevari; break;
+					default: world = Realms.Nox; break;
 				}
 				var myGender = count == 1 ? Gender.RollDice : (i == 0 ? Gender.Male : Gender.Female);
 				c = Character.Generate(plan, myGender, myGender, world);
@@ -237,7 +237,7 @@ namespace Noxico
 					//Each plot is 8x8. Given that and the template size, we can wiggle them around a bit from 0 to (8 - tSize).
 					var sX = newTemplate.Width < plotWidth ? Random.Next(1, plotWidth - newTemplate.Width) : 0;
 					var sY = newTemplate.Height < plotHeight ? Random.Next(1, plotHeight - newTemplate.Height) : 0;
-					
+
 					//NEW: check for water in this plot.
 					var water = 0;
 					for (var y = 0; y < newTemplate.Height; y++)
@@ -393,7 +393,7 @@ namespace Noxico
 												{
 													foreach (var content in contents)
 														content.AddToken("owner", 0, owner.ID);
-												}	
+												}
 												var newContainer = new Container(type, contents) //owner == null ? type.Titlecase() : owner.Name.ToString(true) + "'s " + type, contents)
 												{
 													XPosition = sX + x,
@@ -663,7 +663,7 @@ namespace Noxico
 						{
 							map[point.X, point.Y].Index = TileDefinition.Find("woodFloor").Index;
 							inRoom = true;
-						}	
+						}
 					}
 					there = here;
 				}
@@ -837,7 +837,7 @@ namespace Noxico
 					//if (map[col, row].Definition.Wall && !map[col, row].Definition.CanBurn)
 					{
 						//if (dijkstra[col, row] > 1)
-							map[col, row].InherentLight = dijkstra[col, row];
+						map[col, row].InherentLight = dijkstra[col, row];
 					}
 				}
 			}

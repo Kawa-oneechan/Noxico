@@ -57,7 +57,7 @@ namespace Noxico
 						Program.WriteLine("Tried to place a warp below an entity -- rerolling...");
 						continue;
 					}
-					
+
 					var sides = 0;
 					if (b.IsSolid(eY - 1, eX))
 						sides++;
@@ -357,7 +357,7 @@ namespace Noxico
 					if (!isOkay)
 						continue;
 				}
-				
+
 				//if we're looking for lootsets applying to a particular character, toss any non-character-specific potentials.
 				if (setsFilters != null && setsFilters.HasToken("id"))
 					lootsets.RemoveAll(set => !set.GetToken("filter").HasToken("id"));
@@ -752,16 +752,15 @@ namespace Noxico
 					var v = overall;
 
 					if (poles)
- 					{
+					{
 						v += 0.04;
 						if (row < dist) v -= 2 - ((distMod * row) * 2);
 						if (row > reach - dist) v -= 2 - ((distMod * (reach - row)) * 2);
- 					}
- 
-					if (v < 0) v = 0;
-					if (v > 1) v = 1;
+					}
+
+					v = v.Clamp(0, 1);
 					var b = (byte)(v * 255);
- 
+
 					map[row, col] = b;
 				}
 			}
@@ -788,9 +787,9 @@ namespace Noxico
 							map[row, col] = (byte)i;
 							continue;
 						}
- 					}
- 				}
- 			}
+					}
+				}
+			}
 			return map;
 		}
 

@@ -8,7 +8,7 @@ namespace Noxico
 {
 	public static class IniFile
 	{
-		private static Dictionary<string, Dictionary<string, string>> settings = new Dictionary<string,Dictionary<string,string>>();
+		private static Dictionary<string, Dictionary<string, string>> settings = new Dictionary<string, Dictionary<string, string>>();
 		private static string lastFileName;
 
 		public static void Load(string fileName)
@@ -139,7 +139,7 @@ namespace Noxico
 		public static void SetValue(string section, string key, object value)
 		{
 			if (!settings.ContainsKey(section))
-				settings.Add(section, new Dictionary<string,string>());
+				settings.Add(section, new Dictionary<string, string>());
 			if (!settings[section].ContainsKey(key))
 				settings[section].Add(key, value.ToString());
 			else

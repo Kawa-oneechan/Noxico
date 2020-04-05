@@ -1006,7 +1006,7 @@ namespace Noxico
 
 			if (missing.Count > 0)
 				throw new Exception(string.Format("The \"\" bodyplan is missing the following token(s):\r\n * {1}", name, string.Join("\r\n * ", missing)));
-        }
+		}
 		#endregion
 
 		#region Stolen from MSCorLib
@@ -1094,4 +1094,3 @@ namespace Noxico
 		}
 	}
 }
-

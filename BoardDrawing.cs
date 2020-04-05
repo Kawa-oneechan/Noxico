@@ -153,7 +153,7 @@ namespace Noxico
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Replaces every tile found in a floodfill with another.
 		/// </summary>
@@ -201,7 +201,7 @@ namespace Noxico
 					if (!(bool)callback(tileHere.Index, tileHere.Definition, x, y)[0])
 						continue;
 				}
-				
+
 				{
 					var w = withThis;
 					if (w is Func<object, object, object, object, Neo.IronLua.LuaResult>)
@@ -251,12 +251,12 @@ namespace Noxico
 					//Keep the original tile, but drain it.
 					if (tile.Text == "drain")
 					{
-						this.Tilemap[x,y].Fluid = Fluids.Dry;
+						this.Tilemap[x, y].Fluid = Fluids.Dry;
 						continue;
 					}
 
 					this.Tilemap[x, y].Index = TileDefinition.Find(tile.Text).Index;
-						
+
 					if (tile.Text.StartsWith("doorway"))
 					{
 						var door = new Door()

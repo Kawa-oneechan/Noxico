@@ -8,7 +8,7 @@ namespace Noxico
 		string IniPath { get; }
 		bool Is437 { get; }
 		bool IsMultiColor { get; }
-	
+
 		/// <summary>
 		/// Sets the content of the cell at the given location to the specified character and colors.
 		/// The change will be made visible the next time <see cref="IGameHost.Draw"/> is invoked.
@@ -21,7 +21,7 @@ namespace Noxico
 		/// <param name="backgroundColor">A <see cref="Noxico.Color"/> specifying the background color of the new cell.</param>
 		/// <param name="forceRedraw">If true, ensures that the new cell is drawn, even if nothing changed.</param>
 		void SetCell(int row, int col, int character, Color foregroundColor, Color backgroundColor, bool forceRedraw = false);
-		
+
 		/// <summary>
 		/// Clears the entire screen buffer to the given character and <see cref="Noxico.Color"/> values.
 		/// </summary>
@@ -29,7 +29,7 @@ namespace Noxico
 		/// <param name="foregroundColor">A <see cref="Noxico.Color"/> specifying the foreground color to clear with.</param>
 		/// <param name="backgroundColor">A <see cref="Noxico.Color"/> specifying the background color to clear with.</param>
 		void Clear(char character, Color foregroundColor, Color backgroundColor);
-		
+
 		/// <summary>
 		/// Clears the entire screen with a default character and color.
 		/// </summary>
@@ -37,7 +37,7 @@ namespace Noxico
 		/// Preferably, this is done with U+0020 SPACE, in white on black.
 		/// </remarks>
 		void Clear();
-		
+
 		/// <summary>
 		/// Draws the screen buffer for immediate display.
 		/// </summary>
@@ -46,7 +46,7 @@ namespace Noxico
 		/// are drawn. That is what the final parameter of <see cref="IGameHost.SetCell"/> is for.
 		/// </remarks>
 		void Draw();
-		
+
 		/// <summary>
 		/// Writes a text string to the screen buffer, at the specified location and in the given <see cref="Noxico.Color"/> values.
 		/// </summary>
@@ -62,7 +62,7 @@ namespace Noxico
 		/// To change drawing color, use the &lt;cFore,Back&gt; tag.
 		/// </remarks>
 		void Write(string text, Color foregroundColor, Color backgroundColor, int row = 0, int col = 0, bool darken = false);
-		
+
 		/// <summary>
 		/// Moves an entire block of cells in the screen buffer up one row, to make space for new stuff below.
 		/// </summary>
@@ -90,7 +90,7 @@ namespace Noxico
 		/// without having to redraw the entire block from scratch.
 		/// </remarks>
 		void ScrollDown(int topRow, int bottomRow, int leftCol, int rightCol, Color reveal);
-		
+
 		/// <summary>
 		/// Causes the host window to close.
 		/// </summary>

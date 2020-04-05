@@ -9,8 +9,8 @@ using Keys = System.Windows.Forms.Keys;
 
 namespace Noxico
 {
-    public class Player : BoardChar
-    {
+	public class Player : BoardChar
+	{
 		public bool AutoTravelling { get; set; }
 		private Dijkstra AutoTravelMap;
 		public Direction AutoTravelLeave { get; set; }
@@ -30,8 +30,8 @@ namespace Noxico
 			}
 		}
 
-        public Player() : base()
-        {
+		public Player() : base()
+		{
 			this.Energy = 5000;
 			if (this.ParentBoard == null)
 				return;
@@ -252,7 +252,7 @@ namespace Noxico
 				NoxicoGame.Sound.PlaySound("set://Squish");
 			else
 				NoxicoGame.Sound.PlaySound("set://Step");
-			
+
 			if (lx != XPosition || ly != YPosition)
 			{
 				ParentBoard.UpdateLightmap(this, true);
@@ -385,8 +385,8 @@ namespace Noxico
 		}
 
 		public override void Update()
-        {
-            //base.Update();
+		{
+			//base.Update();
 			if (NoxicoGame.Mode != UserMode.Walkabout)
 				return;
 
@@ -519,7 +519,7 @@ namespace Noxico
 				}
 				return;
 			}
-			
+
 			//BLUE
 			if (NoxicoGame.IsKeyDown(KeyBinding.Items) || Vista.Triggers == XInputButtons.X)
 			{
@@ -596,7 +596,7 @@ namespace Noxico
 						drop.Take(this.Character, ParentBoard);
 						NoxicoGame.Me.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
-						NoxicoGame.Sound.PlaySound("set://GetItem"); 
+						NoxicoGame.Sound.PlaySound("set://GetItem");
 						ParentBoard.Redraw();
 						return;
 					}
@@ -683,7 +683,7 @@ namespace Noxico
 						this.Move(AutoTravelLeave);
 				}
 			}
-        }
+		}
 
 		public void AutoTravelTo(int x, int y)
 		{
@@ -745,7 +745,7 @@ namespace Noxico
 				var today = NoxicoGame.InGameTime.DayOfYear;
 				if (!brooch.HasToken("lastTrigger"))
 					brooch.AddToken("lastTrigger", today - 2);
-				if (Math.Abs(brooch.GetToken("lastTrigger").Value - today) >= 2 && Character.Health - damage <= 0) 
+				if (Math.Abs(brooch.GetToken("lastTrigger").Value - today) >= 2 && Character.Health - damage <= 0)
 				{
 					brooch.GetToken("lastTrigger").Value = today;
 					NoxicoGame.AddMessage(i18n.GetString("eternitybrooched"));
@@ -835,8 +835,13 @@ namespace Noxico
 			var e = BoardChar.LoadFromFile(stream);
 			var newChar = new Player()
 			{
-				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
-				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking,
+				ID = e.ID,
+				Glyph = e.Glyph,
+				ForegroundColor = e.ForegroundColor,
+				BackgroundColor = e.BackgroundColor,
+				XPosition = e.XPosition,
+				YPosition = e.YPosition,
+				Blocking = e.Blocking,
 				Character = e.Character,
 			};
 			newChar.PlayingTime = new TimeSpan(stream.ReadInt64());
@@ -891,7 +896,7 @@ namespace Noxico
 				{
 					var hit = target as BoardChar;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					
+
 					var overallArmor = 0f;
 					foreach (var targetArmor in hit.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
 					{
@@ -904,7 +909,7 @@ namespace Noxico
 							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
 					}
 					if (overallArmor != 0)
-						damage /= overallArmor;					
+						damage /= overallArmor;
 
 					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)damage)));
 					hit.Hurt(damage, "death_shot", this, false);

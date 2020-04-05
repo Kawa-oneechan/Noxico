@@ -1621,7 +1621,7 @@ namespace Noxico
 					isStart[i] = true;
 
 			var fragmentEnd = new int[feedbacks.Count];
-			fragmentEnd[feedbacks.Count-1] = 4; //"."
+			fragmentEnd[feedbacks.Count - 1] = 4; //"."
 			var fragmentLength = 0;
 			for (var i = 0; i < feedbacks.Count - 1; i++)
 			{
@@ -1676,7 +1676,7 @@ namespace Noxico
 					feedbackBuilder.Append(feedbacks[i].Replace("[views]", "[his]").Replace("[view]", "[he]"));
 				feedbackBuilder.Append(i18n.GetString("morphfinal_" + fragmentEnd[i]));
 			}
-			
+
 			//Perhaps have a case for extreme amounts where it splits up into various sentences and ends with a "finally"?
 			return feedbackBuilder.ToString().Viewpoint(this);
 		}

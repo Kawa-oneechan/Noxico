@@ -135,7 +135,6 @@
     <Compile Include="Morph.cs" />
     <Compile Include="Name.cs" />
     <Compile Include="PlayerChar.cs" />
-    <Compile Include="Scheduler.cs" />
     <Compile Include="SexManager.cs" />
     <Compile Include="SoundSystem.cs" />
     <Compile Include="Subscreens\ActionList.cs" />

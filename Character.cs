@@ -42,8 +42,8 @@ namespace Noxico
 		{
 			get
 			{
-				return (!HasToken("culture")) ? 
-					Culture.DefaultCulture : 
+				return (!HasToken("culture")) ?
+					Culture.DefaultCulture :
 					Culture.FindCultureByName(GetToken("culture").Text);
 			}
 			set
@@ -562,7 +562,7 @@ namespace Noxico
 
 		}
 
-        public static Character Generate(string bodyPlan, Gender bioGender, Gender idGender = Gender.RollDice, Realms world = Realms.Nox)
+		public static Character Generate(string bodyPlan, Gender bioGender, Gender idGender = Gender.RollDice, Realms world = Realms.Nox)
 		{
 			var newChar = new Character();
 			var planSource = Bodyplans.FirstOrDefault(t => t.Name == "bodyplan" && t.Text == bodyPlan);
@@ -571,7 +571,7 @@ namespace Noxico
 
 			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
-			
+
 			if (newChar.HasToken("editable"))
 				newChar.RemoveToken("editable");
 
@@ -644,10 +644,10 @@ namespace Noxico
 				newChar.IsProperNamed = true;
 			}
 
-            newChar.AddToken("preferredgender", 0, idGender.ToString());
-            newChar.EnsureDefaultTokens();
-            newChar.UpdateTitle();
-            newChar.ApplyCostume();
+			newChar.AddToken("preferredgender", 0, idGender.ToString());
+			newChar.EnsureDefaultTokens();
+			newChar.UpdateTitle();
+			newChar.ApplyCostume();
 			foreach (var item in newChar.GetToken("items").Tokens)
 				item.AddToken("owner", 0, newChar.ID);
 
@@ -689,15 +689,15 @@ namespace Noxico
 				newChar.GetToken("skin").RemoveToken("pattern");
 
 			newChar.ResolveMetaTokens();
-            newChar.StripInvalidItems();
+			newChar.StripInvalidItems();
 			newChar.CheckHasteSlow();
 			newChar.UpdatePowers();
 
-/* Disabled for now pending Mutate rewrite.
-			// because: "why the hell did I pick a male human and get herm centaur?"
-			if (!newChar.HasToken("beast") && !newChar.HasToken("player") && world == Realms.Seradevari) 
-                newChar.Mutate(2, 20);
-*/
+			/* Disabled for now pending Mutate rewrite.
+						// because: "why the hell did I pick a male human and get herm centaur?"
+						if (!newChar.HasToken("beast") && !newChar.HasToken("player") && world == Realms.Seradevari) 
+							newChar.Mutate(2, 20);
+			*/
 
 			return newChar;
 		}
@@ -772,9 +772,12 @@ namespace Noxico
 			var newChar = new Character();
 			Toolkit.ExpectFromFile(stream, "CHAR", "character");
 			newChar.Name = Name.LoadFromFile(stream);
-			/* newChar.IsProperNamed = */ stream.ReadBoolean();
-			/* newChar.A = */ stream.ReadString();
-			/* var culture = */ stream.ReadString();
+			/* newChar.IsProperNamed = */
+			stream.ReadBoolean();
+			/* newChar.A = */
+			stream.ReadString();
+			/* var culture = */
+			stream.ReadString();
 			/* newChar.Culture = Culture.DefaultCulture;
 			if (Culture.Cultures.ContainsKey(culture))
 				newChar.Culture = Culture.Cultures[culture]; */
@@ -1049,7 +1052,7 @@ namespace Noxico
 					{
 						shoes = foundItem;
 						shoes.CarriedToken[this.ID] = carriedItem;
-					} 
+					}
 					if (eq.HasToken("hat"))
 					{
 						hat = foundItem;
@@ -1163,7 +1166,7 @@ namespace Noxico
 				bodyThings.Add(Descriptions.Length(this.GetToken("tallness").Value) + " tall");
 
 			bodyThings.Add(i18n.Format("x_skin", Color.Translate(Color.NameColor(this.Path("skin/color").Text)), Descriptions.BodyMaterial(this.Path("skin/type").Text)));
-				//i18n.GetString(this.Path("skin/type").Text, false)));
+			//i18n.GetString(this.Path("skin/type").Text, false)));
 			if (this.Path("skin/pattern") != null)
 				bodyThings.Add(i18n.Format("x_pattern", Color.Translate(Color.NameColor(this.Path("skin/pattern/color").Text)), i18n.GetString(this.Path("skin/pattern").Text, false)));
 
@@ -1273,7 +1276,7 @@ namespace Noxico
 			}
 
 			if (this.HasToken("monoceros"))
-				hairThings.Add(i18n.GetString("horntype_monoceros"));			
+				hairThings.Add(i18n.GetString("horntype_monoceros"));
 			if (this.HasToken("horns") && this.Path("horns").Value > 0)
 			{
 				var count = GetToken("horns").Value;
@@ -1347,7 +1350,7 @@ namespace Noxico
 				ballCount = nuts.HasToken("amount") ? (int)nuts.GetToken("amount").Value : 2;
 				ballSize = nuts.HasToken("size") ? nuts.GetToken("size").Value : 0.25f;
 			}
-			
+
 			print("Breasts: ");
 			if (breasts == null)
 				print("none\n");
@@ -1426,7 +1429,7 @@ namespace Noxico
 
 		private void LookAtClothing(Entity pa, Action<string> print, List<string> worn)
 		{
-			print(i18n.GetString("lookat_header_items")); 
+			print(i18n.GetString("lookat_header_items"));
 			print(i18n.GetString("lookat_column_clothing"));
 			if (worn.Count == 0)
 				print("\xC0 " + i18n.GetString("none") + "\n");
@@ -1487,7 +1490,7 @@ namespace Noxico
 			LookAtEquipment2(pa, print, hands, fingers);
 			LookAtSexual(pa, print, breastsVisible, crotchVisible);
 
-			#if DEBUG
+#if DEBUG
 			print(string.Format(@"
 Debug
 -------
@@ -1530,7 +1533,7 @@ Tokens:
 				   this.GetPenisSize(false), this.GetPenisSize(true),
 				   this.GetVaginaCapacity()
 				   ));
-			#endif
+#endif
 
 			return sb.ToString();
 		}
@@ -1690,11 +1693,11 @@ Tokens:
 					}
 					else
 					{
-                        if (this == NoxicoGame.Me.Player.Character)
-                            doReport(string.Format("[Youorname] slip{{s}} out of [his] {0}.", originalname).Viewpoint(this));
-                        //mention for others?  Less dramatic than tearing out
-                        //else
-                        //    doReport(this.Name.ToString() + " slips out of " + HisHerIts(true) + " " + originalname + ".");
+						if (this == NoxicoGame.Me.Player.Character)
+							doReport(string.Format("[Youorname] slip{{s}} out of [his] {0}.", originalname).Viewpoint(this));
+						//mention for others?  Less dramatic than tearing out
+						//else
+						//    doReport(this.Name.ToString() + " slips out of " + HisHerIts(true) + " " + originalname + ".");
 					}
 				}
 			}
@@ -1817,7 +1820,7 @@ Tokens:
 			var bonus = stat + "bonus";
 			if (!HasToken(bonus))
 				RecalculateStatBonuses();
-			return GetToken(stat).Value + GetToken(bonus).Value;			
+			return GetToken(stat).Value + GetToken(bonus).Value;
 		}
 
 		public float GetStat(int stat)
@@ -1992,7 +1995,7 @@ Tokens:
 			if (!o.Contains(colorToken.Text))
 				colorToken.Text = o.PickOne();
 		}
-		
+
 		public float GetBreastSize()
 		{
 			if (!this.HasToken("breasts"))
@@ -2017,7 +2020,7 @@ Tokens:
 			if (!this.HasToken("penis"))
 				return -1;
 			var penis = this.GetToken("penis");
-			var ret =  penis.GetToken("length").Value;
+			var ret = penis.GetToken("length").Value;
 			if (withThickness)
 				ret *= penis.GetToken("thickness").Value;
 			return ret;
@@ -2077,28 +2080,28 @@ Tokens:
 
 		#region PillowShout's additions
 		/// <summary>
-        /// Checks the character's inventory to see if it contains at least one item with a matching ID.
-        /// </summary>
-        /// <param name="itemID">The ID of the item to search for.</param>
-        /// <returns>True if an item with a matching ID is found or false if not.</returns>
-        public bool HasItem(string itemID)
-        {
-            return (GetInventoryItems(itemID).Length > 0);
-        }
+		/// Checks the character's inventory to see if it contains at least one item with a matching ID.
+		/// </summary>
+		/// <param name="itemID">The ID of the item to search for.</param>
+		/// <returns>True if an item with a matching ID is found or false if not.</returns>
+		public bool HasItem(string itemID)
+		{
+			return (GetInventoryItems(itemID).Length > 0);
+		}
 
-        /// <summary>
-        /// Checks the character's inventory to see if it contains an item with a matching ID,
-        /// and if that item has been equipped by the character.
-        /// </summary>
-        /// <param name="itemID">The ID of the item to search for.</param>
-        /// <returns>True if an item with a matching ID is equipped or or false if not.</returns>
-        public bool HasItemEquipped(string itemID)
-        {
-            var itemList = GetInventoryItems(itemID);
-            var item = itemList.FirstOrDefault(y => y.CarriedToken.ContainsKey(this.ID) && y.CarriedToken[this.ID].HasToken("equipped"));
+		/// <summary>
+		/// Checks the character's inventory to see if it contains an item with a matching ID,
+		/// and if that item has been equipped by the character.
+		/// </summary>
+		/// <param name="itemID">The ID of the item to search for.</param>
+		/// <returns>True if an item with a matching ID is equipped or or false if not.</returns>
+		public bool HasItemEquipped(string itemID)
+		{
+			var itemList = GetInventoryItems(itemID);
+			var item = itemList.FirstOrDefault(y => y.CarriedToken.ContainsKey(this.ID) && y.CarriedToken[this.ID].HasToken("equipped"));
 
-            return (item != null);
-        }
+			return (item != null);
+		}
 
 		/// <summary>
 		/// Checks the character's inventory to see if the character has an item equipped in a particular item slot.
@@ -2108,19 +2111,19 @@ Tokens:
 		/// nipple, clit, labia, vagina, anus, cockring, frenulum</param>
 		/// <returns>True if the character has an item equipped to the specified slot, or false if not.</returns>
 		public bool HasItemInSlot(string itemSlot)
-        {
-            return (GetEquippedItemBySlot(itemSlot) != null);
-        }
+		{
+			return (GetEquippedItemBySlot(itemSlot) != null);
+		}
 
-        /// <summary>
-        /// Checks if a character has an item with the specified ID in their inventory, and returns a list containing all matching items.
-        /// </summary>
-        /// <param name="itemID">The ID of the item to search for.</param>
+		/// <summary>
+		/// Checks if a character has an item with the specified ID in their inventory, and returns a list containing all matching items.
+		/// </summary>
+		/// <param name="itemID">The ID of the item to search for.</param>
 		/// <returns>A list containing all the items in the character's inventory with matching IDs. Each element is an <see cref="InventoryItem"/> from
 		/// <see cref="NoxicoGame.KnownItems"/> that matches the item held by the character. A reference to the character held item itself is stored in
 		/// <see cref="InventoryItem.CarriedToken"/>. If no matching items are found, returns an empty list.</returns>
-        public InventoryItem[] GetInventoryItems(string itemID)
-        {
+		public InventoryItem[] GetInventoryItems(string itemID)
+		{
 			var carriedItems = this.GetToken("items");
 			var carried = new List<InventoryItem>();
 			foreach (var carriedItem in carriedItems.Tokens)
@@ -2129,24 +2132,24 @@ Tokens:
 				if (foundItem == null)
 					continue;
 				if (foundItem.ID == itemID)
-                {
-                    foundItem.CarriedToken[this.ID] = carriedItem;
-                    carried.Add(foundItem);
-                }
-            }
-            return carried.ToArray();
-        }
+				{
+					foundItem.CarriedToken[this.ID] = carriedItem;
+					carried.Add(foundItem);
+				}
+			}
+			return carried.ToArray();
+		}
 
-        /// <summary>
-        /// Checks if a character has an item with the specified ID in their inventory, and returns the first encountered instance of that item.
-        /// </summary>
-        /// <param name="itemID">The ID of the item to search for.</param>
-        /// <returns>The first matching item or if no matching items are found, then null.</returns>
-        public InventoryItem GetFirstInventoryItem(string itemID)
-        {
-            var itemList = GetInventoryItems(itemID);
-            return itemList.Length > 0 ? itemList[0] : null;
-        }
+		/// <summary>
+		/// Checks if a character has an item with the specified ID in their inventory, and returns the first encountered instance of that item.
+		/// </summary>
+		/// <param name="itemID">The ID of the item to search for.</param>
+		/// <returns>The first matching item or if no matching items are found, then null.</returns>
+		public InventoryItem GetFirstInventoryItem(string itemID)
+		{
+			var itemList = GetInventoryItems(itemID);
+			return itemList.Length > 0 ? itemList[0] : null;
+		}
 
 		/// <summary>
 		/// Checks if the character has an item equipped to the specified item slot and returns the item.
@@ -2157,26 +2160,26 @@ Tokens:
 		/// <returns>Returns an InventoryItem from <see cref="NoxicoGame.KnownItems"/> matching the item held by the character. A reference to the character
 		/// held item itself is stored in <see cref="InventoryItem.CarriedToken"/>. If there is no item in the character slot, then null is returned. </returns>
 		public InventoryItem GetEquippedItemBySlot(string itemSlot)
-        {
+		{
 			var carriedItems = this.GetToken("items");
 			foreach (var carriedItem in carriedItems.Tokens)
 			{
-                var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
-                if (foundItem == null)
-                    continue;
-                if (foundItem.HasToken("equipable") && carriedItem.HasToken("equipped"))
-                {
-                    var eq = foundItem.GetToken("equipable");
-                    if (eq.HasToken(itemSlot))
-                    {
-                        foundItem.CarriedToken[this.ID] = carriedItem;
-                        return foundItem;
-                    }
-                }
-            }
+				var foundItem = NoxicoGame.KnownItems.Find(y => y.ID == carriedItem.Name);
+				if (foundItem == null)
+					continue;
+				if (foundItem.HasToken("equipable") && carriedItem.HasToken("equipped"))
+				{
+					var eq = foundItem.GetToken("equipable");
+					if (eq.HasToken(itemSlot))
+					{
+						foundItem.CarriedToken[this.ID] = carriedItem;
+						return foundItem;
+					}
+				}
+			}
 
-            return null;
-        }
+			return null;
+		}
 
 		/// <summary>
 		/// If the passed body part has the "virgin" token, it is removed.
@@ -2212,7 +2215,7 @@ Tokens:
 		{
 			if (hole == null || penis == null)
 				return false;
- 
+
 			var dickSize = 0f;
 			var holeSize = 0f;
 
@@ -2650,7 +2653,7 @@ Tokens:
 				return (GetToken("tallness").Value < 140);
 			}
 		}
-			
+
 		public void ResetEquipmentCarries()
 		{
 			var carriedItems = this.GetToken("items");

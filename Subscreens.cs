@@ -16,10 +16,4 @@ namespace Noxico
 		public static int MouseX = -1;
 		public static int MouseY = -1;
 	}
-
-	public static class UnsortedSubscreens
-	{
-		//HAHA
-	}
-
 }

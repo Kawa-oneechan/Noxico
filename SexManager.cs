@@ -54,7 +54,7 @@ namespace Noxico
                 if (!(actors[0].BoardChar is Player) && choice.HasToken("ai_cant"))
                     continue;
 				*/
-                if (LimitsOkay(actors, choice))
+				if (LimitsOkay(actors, choice))
 					possibilities.Add(choice);
 			}
 			return possibilities;
@@ -230,7 +230,7 @@ namespace Noxico
 				NoxicoGame.AddMessage(ApplyMemory(x.ToString()).Viewpoint(actor, target), y);
 			});
 			env.Stop = new Action(() =>
-			{ 
+			{
 				actor.RemoveAll("havingsex");
 				target.RemoveAll("havingsex");
 			});
@@ -328,34 +328,34 @@ namespace Noxico
 		{
 			return HasSexFlag("restrained");
 		}
-		
+
 		public bool Restraining()
 		{
 			return HasSexFlag("restraining");
 		}
-		
+
 		public bool HasNipples()
 		{
 			var boobs = this.GetToken("breasts");
 			if (boobs == null)
 				return false;
 			if (boobs.HasToken("nipples") && boobs.GetToken("nipples").Value >= 1)
-					return true;
+				return true;
 			return false;
 		}
-		
+
 		public bool HasBreasts()
 		{
 			if (this.GetBreastSize() < 0.2)
 				return false;
 			return true;
 		}
-		
+
 		public float Raise(string stat, float by)
 		{
 			return ChangeStat(stat, by);
 		}
-		
+
 		public Token AddToken(string name, object value)
 		{
 			var t = new Token(name);
@@ -371,24 +371,24 @@ namespace Noxico
 			AddToken(t);
 			return t;
 		}
-		
+
 		public Token AddSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.AddToken(name);
 		}
-		
+
 		public Token RemoveSexFlag(string name)
 		{
 			var havingSex = GetToken("havingsex");
 			return havingSex.RemoveToken(name);
 		}
-		
+
 		public bool HasSexFlag(string name)
 		{
 			return Path("havingsex/" + name) != null;
 		}
-	
+
 		public bool Disrobe(string clothClass, bool tear)
 		{
 			InventoryItem cloth = null;
@@ -466,7 +466,7 @@ namespace Noxico
 				SexManager.Apply(runinit, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 				RemoveToken("havingsex_initsex");
 			}
-			
+
 			var everysexturn = SexManager.GetResult("everysexturn", this, sexPartner);
 			SexManager.Apply(everysexturn, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 

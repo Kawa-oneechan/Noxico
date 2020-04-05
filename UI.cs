@@ -504,7 +504,7 @@ namespace Noxico
 				NoxicoGame.HostForm.Cursor = new Point(Left + caret, Top);
 			else if (!(UIManager.Highlight is UITextBox))
 				NoxicoGame.HostForm.Cursor = new Point(-1, -1);
-				//NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
+			//NoxicoGame.HostForm.SetCell(Top, Left + caret, ' ', UIColors.RegularText, UIColors.SelectedBackground);
 		}
 	}
 
@@ -584,7 +584,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Write("\xDB\xDD", Color.FromName(Text), Background, Top, Left);
 			NoxicoGame.HostForm.Write(Text.PadEffective(Width - 4) + "<cBlack,Gray>\x11\x10", UIManager.Highlight == this ? Foreground : UIColors.Unfocused, Background, Top, Left + 2);
 		}
-	
+
 		public UIColorList() : base()
 		{
 		}
@@ -592,7 +592,7 @@ namespace Noxico
 		public UIColorList(string text, EventHandler enter, IEnumerable<string> items, int index = 0) : base(text, enter, items, index)
 		{
 		}
-}
+	}
 
 	public class UIBinary : UIElement
 	{
@@ -609,7 +609,7 @@ namespace Noxico
 				val = value > 0 ? 1 : 0;
 				Draw();
 				if (Change != null)
-					Change(this, null);				
+					Change(this, null);
 			}
 		}
 
@@ -769,8 +769,7 @@ namespace Noxico
 			Checked = !Checked;
 		}
 
-		public UIToggle(string text)
-			: base()
+		public UIToggle(string text) : base()
 		{
 			Text = text;
 			Width = text.Length() + 3;
@@ -791,7 +790,7 @@ namespace Noxico
 			if (Left == -1) return; //prevent checking before positioning from drawing in the corner
 			var off = "\x13C";
 			var on = "\x13D";
-			var c = (val ? on : off) + ' ' + Text; 
+			var c = (val ? on : off) + ' ' + Text;
 			NoxicoGame.HostForm.Write(c, UIManager.Highlight == this ? Foreground : Color.Gray, Background, Top, Left);
 		}
 

@@ -14,7 +14,7 @@ namespace Noxico
 
 	public class Dijkstra
 	{
-		private int mapRows = WorldMapGenerator.TileWidth, mapCols = WorldMapGenerator.TileHeight;
+		private int mapRows = WorldMapGenerator.TileHeight, mapCols = WorldMapGenerator.TileWidth;
 		private const int vhn = 9000;
 
 		private int[,] map;
@@ -119,7 +119,7 @@ namespace Noxico
 		{
 			if (Hotspots.Count == 0)
 				return;
-			
+
 			for (var row = 0; row < mapRows; row++)
 				for (var col = 0; col < mapCols; col++)
 					map[row, col] = vhn;
@@ -175,7 +175,6 @@ namespace Noxico
 					}
 				}
 			} while (change);
-			
 		}
 
 		public static void JustDoIt(ref int[,] map, int mapRows = -1, int mapCols = -1, bool diagonals = true)

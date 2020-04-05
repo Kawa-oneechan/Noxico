@@ -8,23 +8,25 @@ using Keys = System.Windows.Forms.Keys;
 
 namespace Noxico
 {
-    public enum Direction
-    {
-        North, East, South, West,
-    }
+	public enum Direction
+	{
+		North, East, South, West,
+	}
 
-    public class Entity
-    {
-        public Board ParentBoard { get; set; }
-       public string ID { get; set; }
+	public class Entity
+	{
+		public Board ParentBoard { get; set; }
+		public string ID { get; set; }
 #if DEBUG
 		[System.ComponentModel.Editor(typeof(GlyphSelector), typeof(System.Drawing.Design.UITypeEditor))]
 #endif
 		public int Glyph { get; set; }
 		public Color ForegroundColor { get; set; }
-        public Color BackgroundColor { get; set; }
-        public int XPosition { get; set; }
-        public int YPosition { get; set; }
+		public Color BackgroundColor { get; set; }
+		/// <summary>The Entity's position in columns, from left to right.</summary>
+		public int XPosition { get; set; }
+		/// <summary>The Entity's position in rows, from top to bottom.</summary>
+		public int YPosition { get; set; }
 		///<summary>For Entities, indicates whether a BoardChar can walk into this Entity's Tile. For BoardChars, indicates whether other BoardChars can switch positions into this Tile.</summary>
 		public bool Blocking { get; set; }
 		public bool Passive { get; set; }
@@ -51,8 +53,8 @@ namespace Noxico
 		}
 
 		public virtual void Move(Direction targetDirection, SolidityCheck check)
-        {
-            var touched = this.CanMove(targetDirection, check);
+		{
+			var touched = this.CanMove(targetDirection, check);
 			if (touched is Door)
 			{
 				var door = touched as Door;
@@ -67,17 +69,17 @@ namespace Noxico
 				}
 			}
 			else if (touched != null)
-            {
-                return;
-            }
+			{
+				return;
+			}
 			if (XPosition >= 0 && YPosition >= 0 && XPosition < this.ParentBoard.Width && YPosition < this.ParentBoard.Height)
-	            this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
+				this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
 			var newX = 0;
 			var newY = 0;
 			Toolkit.PredictLocation(XPosition, YPosition, targetDirection, ref newX, ref newY);
 			XPosition = newX;
 			YPosition = newY;
-        }
+		}
 
 		public virtual void Move(Direction targetDirection)
 		{
@@ -114,21 +116,21 @@ namespace Noxico
 		}
 
 		public virtual object CanMove(Direction targetDirection, SolidityCheck check)
-        {
-            var newX = this.XPosition;
-            var newY = this.YPosition;
+		{
+			var newX = this.XPosition;
+			var newY = this.YPosition;
 			Toolkit.PredictLocation(newX, newY, targetDirection, ref newX, ref newY);
 			return CanMove(this.ParentBoard, newX, newY, check);
-        }
+		}
 
 		public virtual object CanMove(Direction targetDirection)
 		{
 			return CanMove(targetDirection, SolidityCheck.Walker);
 		}
- 
+
 		public virtual void Update()
 		{
-        }
+		}
 
 		public virtual void SaveToFile(BinaryWriter stream)
 		{
@@ -405,7 +407,6 @@ namespace Noxico
 				else
 					id = NoxicoGame.KnownItems[0].ID; //Fallback.
 			}
-				
 
 			var newItem = new DroppedItem(id)
 			{
@@ -423,11 +424,11 @@ namespace Noxico
 		public void Take(Character taker, Board ParentBoard)
 		{
 			if (!taker.HasToken("items"))
-				taker.Tokens.Add(new Noxico.Token() { Name = "items" });
+				taker.Tokens.Add(new Token("items"));
 			taker.GetToken("items").Tokens.Add(Token);
 			taker.CheckHasteSlow();
-            ParentBoard.EntitiesToRemove.Add(this);
-        }
+			ParentBoard.EntitiesToRemove.Add(this);
+		}
 
 		public static List<DroppedItem> GetItemsAt(Board board, int x, int y)
 		{
@@ -473,7 +474,7 @@ namespace Noxico
 						player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)));//, drop.ForegroundColor);
 					}
-					NoxicoGame.Sound.PlaySound("set://GetItem"); 
+					NoxicoGame.Sound.PlaySound("set://GetItem");
 					player.ParentBoard.Redraw();
 				}
 			);

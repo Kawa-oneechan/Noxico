@@ -9,7 +9,6 @@ using Keys = System.Windows.Forms.Keys;
 
 namespace Noxico
 {
-
 	public class BoardChar : Entity
 	{
 		private static int blinkRate = 1000;
@@ -203,7 +202,7 @@ namespace Noxico
 			var localY = this.YPosition - NoxicoGame.CameraY;
 			if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)
 				return;
-			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;			
+			var b = ((MainForm)NoxicoGame.HostForm).IsMultiColor ? TileDefinition.Find(this.ParentBoard.Tilemap[this.XPosition, this.YPosition].Index, true).Background : this.BackgroundColor;
 			if (ParentBoard.IsLit(this.YPosition, this.XPosition))
 			{
 				var c = this.Glyph;
@@ -402,7 +401,7 @@ namespace Noxico
 
 			if (!RunScript(OnTick))
 				return;
-			
+
 			CheckForTimedItems();
 			CheckForCriminalScum();
 			if (Character.UpdateSex())
@@ -503,8 +502,8 @@ namespace Noxico
 							target = other;
 							break;
 						case TeamBehaviorAction.Flock:
-						//No need to check for FlockAlike -- is collapsed into Attack by DecideTeamBehavior
-						//case TeamBehaviorAction.FlockAlike:
+							//No need to check for FlockAlike -- is collapsed into Attack by DecideTeamBehavior
+							//case TeamBehaviorAction.FlockAlike:
 							target = other;
 							break;
 					}
@@ -731,7 +730,7 @@ namespace Noxico
 		{
 			var solidity = SolidityCheck.Walker;
 			//if (Character.IsSlime)
-				solidity = SolidityCheck.DryWalker;
+			solidity = SolidityCheck.DryWalker;
 			if (Character.HasToken("flying"))
 				solidity = SolidityCheck.Flyer;
 
@@ -763,7 +762,7 @@ namespace Noxico
 				{
 					if (target != null && DistanceFrom(target) <= SightRadius && CanSee(target))
 					{
-						NoxicoGame.Sound.PlaySound("set://Alert"); 
+						NoxicoGame.Sound.PlaySound("set://Alert");
 						hostile.Value = 1; //Switch to active hunting.
 						Energy -= 500;
 
@@ -1214,7 +1213,7 @@ namespace Noxico
 			//Program.WriteLine("» {0} has a {1}, base damage {2}.", this, carriedWeapon.Name, myDamage);
 			var theirDamage = target.GetPotentialDamage(this, out skill, out verb, out cause, out weaponData, out carriedWeapon);
 			//Program.WriteLine("» {0} has a {1}, base damage {2}.", target, carriedWeapon.Name, theirDamage);
-			
+
 			var consideration = 0.5f;
 
 			//Who would cause more damage?
@@ -1254,7 +1253,7 @@ namespace Noxico
 					if (!Character.HasToken("helpless"))
 					{
 						NoxicoGame.AddMessage(i18n.Format("x_is_helpless").Viewpoint(Character), this.GetEffectiveColor());
-						Character.Tokens.Add(new Token() { Name = "helpless" } );
+						Character.Tokens.Add(new Token("helpless"));
 						return false;
 					}
 				}
@@ -1338,8 +1337,13 @@ namespace Noxico
 			var e = Entity.LoadFromFile(stream);
 			var newChar = new BoardChar()
 			{
-				ID = e.ID, Glyph = e.Glyph, ForegroundColor = e.ForegroundColor, BackgroundColor = e.BackgroundColor,
-				XPosition = e.XPosition, YPosition = e.YPosition, Blocking = e.Blocking,
+				ID = e.ID,
+				Glyph = e.Glyph,
+				ForegroundColor = e.ForegroundColor,
+				BackgroundColor = e.BackgroundColor,
+				XPosition = e.XPosition,
+				YPosition = e.YPosition,
+				Blocking = e.Blocking,
 			};
 			newChar.Sector = stream.ReadString();
 			newChar.Pairing = stream.ReadString();
@@ -1502,7 +1506,7 @@ namespace Noxico
 				{
 					var hit = (BoardChar)target;
 					var damage = weap.Path("damage").Value * GetDefenseFactor(weap, hit.Character);
-					
+
 					var overallArmor = 0f;
 					//TODO: split this into a GetArmorValue method
 					foreach (var targetArmor in hit.Character.GetToken("items").Tokens.Where(t => t.HasToken("equipped")))
@@ -1517,7 +1521,7 @@ namespace Noxico
 					}
 					if (overallArmor != 0)
 						damage /= overallArmor;
-					
+
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());
 					hit.Hurt(damage, "death_shot", this, false);
 					Energy -= 500; //fixed: succesful shots didn't take time
@@ -1553,7 +1557,7 @@ namespace Noxico
 			if (effect != null)
 				FireLine(effect, target.XPosition, target.YPosition);
 		}
-		
+
 		public void RestockVendor()
 		{
 			var vendor = Character.Path("role/vendor");

@@ -89,7 +89,7 @@ namespace Noxico
 				return string.Format("{0} {1}", the ? Definite : Indefinite, name).Trim();
 			return string.Format("{0} {1}", the ? Definite : i18n.GetArticle(UnknownName), name).Trim();
 		}
-		
+
 		public string GetDescription(Token token)
 		{
 			var canBeIdentified = !UnknownName.IsBlank();
@@ -238,7 +238,7 @@ namespace Noxico
 				return true;
 			return this.GetToken("equipable").HasToken("translucent");
 		}
-		
+
 		public bool CanReachThrough(Character who, string part = null)
 		{
 			if (!HasToken("equipable"))
@@ -246,14 +246,14 @@ namespace Noxico
 			if (CarriedToken.ContainsKey(who.ID) && CarriedToken[who.ID].HasToken("torn"))
 				return true;
 			if (part.IsBlank())
-                return this.GetToken("equipable").HasToken("reach");
-            else if (this.GetToken("equipable").HasToken("reach"))
-            {
-                if (this.GetToken("equipable").GetToken("reach").Count() == 0)
-                    return true;
-                return this.GetToken("equipable").GetToken("reach").HasToken(part);
-            }
-            return false;
+				return this.GetToken("equipable").HasToken("reach");
+			else if (this.GetToken("equipable").HasToken("reach"))
+			{
+				if (this.GetToken("equipable").GetToken("reach").Count() == 0)
+					return true;
+				return this.GetToken("equipable").GetToken("reach").HasToken(part);
+			}
+			return false;
 		}
 
 		public bool Equip(Character character, Token item)
@@ -368,7 +368,7 @@ namespace Noxico
 
 			if (item.HasToken("cursed"))
 			{
-				item.GetToken("cursed").Tokens.Add(new Token() { Name = "known" });
+				item.GetToken("cursed").Tokens.Add(new Token("known"));
 				throw new ItemException(i18n.Format("surprise_its_sticky", this.ToString(item, true)));
 			}
 
@@ -383,7 +383,7 @@ namespace Noxico
 
 			//Not sure about automatically putting pants back on after taking them off to take off underpants...
 			//while (tempRemove.Count > 0)
-			//	tempRemove.Pop().Tokens.Add(new Token() { Name = "equipped" });
+			//	tempRemove.Pop().Tokens.Add(new Token("equipped"));
 
 			character.RecalculateStatBonuses();
 			character.CheckHasteSlow();
@@ -712,15 +712,15 @@ namespace Noxico
 		}
 
 		#region PillowShout's additions
-        public bool IsSuit()
-        {
-            var eq = this.GetToken("equipable");
+		public bool IsSuit()
+		{
+			var eq = this.GetToken("equipable");
 
-            if (eq != null)
-                return eq.HasToken("pants") && eq.HasToken("shirt");
+			if (eq != null)
+				return eq.HasToken("pants") && eq.HasToken("shirt");
 
-            return false;
-        }
+			return false;
+		}
 		#endregion
 
 		public List<string> GetModifiers(Token token)

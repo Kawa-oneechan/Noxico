@@ -356,7 +356,6 @@ namespace Noxico
 			}
 			message = Regex.Replace(message, @"\[\!(?<keybinding>.+?)\]", (match => Toolkit.TranslateKey(match.Groups["keybinding"].Value)));
 			#endregion
-			
 
 			if (!message.Contains('"'))
 				return message;
