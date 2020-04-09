@@ -124,6 +124,8 @@ namespace Noxico
 					SightRadius = 4 + (int)(Math.Log(Eyes + 3) * 4);
 					GlowGlyph = '\xF8';
 				}
+				if (Character.Path("eyes/glow") != null)
+					SightRadius *= 2;
 			}
 		}
 
@@ -234,6 +236,7 @@ namespace Noxico
 				NoxicoGame.HostForm.SetCell(localY, localX, GlowGlyph, Color.FromName(Character.Path("eyes").Text), ParentBoard.Tilemap[XPosition, YPosition].Definition.Background.Night());
 		}
 
+		/*
 		public override bool CanSee(Entity other)
 		{
 			if (Character.Path("eyes/glow") == null)
@@ -244,6 +247,7 @@ namespace Noxico
 					return false;
 			return true;
 		}
+		*/
 
 		/*
 		public string Ogle(Character otherChar)

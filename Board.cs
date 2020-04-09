@@ -1040,7 +1040,7 @@ namespace Noxico
 
 		public void UpdateLightmap(Entity source, bool torches)
 		{
-			if ((source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || (!HasToken("dark") && !Toolkit.IsNight()))
+			if (/* (source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || */ (!HasToken("dark") && !Toolkit.IsNight()))
 			{
 				for (int row = 0; row < Height; row++)
 					for (int col = 0; col < Width; col++)

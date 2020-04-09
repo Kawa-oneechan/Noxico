@@ -156,16 +156,33 @@ namespace Noxico
 						if (col < mapCols - 1 && map[row, col + 1] < lowest)
 							lowest = map[row, col + 1];
 
-						/*
-						if (row > 0 && col > 0 && map[row - 1, col - 1] < lowest)
-							lowest = map[row - 1, col - 1];
-						if (row > 0 && col < mapCols - 1 && map[row - 1, col + 1] < lowest)
-							lowest = map[row - 1, col + 1];
-						if (row < mapRows - 1 && col > 0 && map[row + 1, col - 1] < lowest)
-							lowest = map[row + 1, col - 1];
-						if (row < mapRows - 1 && col < mapCols - 1 && map[row + 1, col + 1] < lowest)
-							lowest = map[row + 1, col + 1];
-						*/
+						if (map[row, col] > lowest + 1)
+						{
+							map[row, col] = lowest + 1;
+							change = true;
+						}
+					}
+				}
+
+				if (!change) break;
+
+				//Now do it again in the other direction.
+				for (var row = mapRows - 1; row >= 0; row--)
+				{
+					for (var col = mapCols - 1; col >= 0; col--)
+					{
+						if (walls[row, col])
+							continue;
+
+						var lowest = vhn;
+						if (row > 0 && map[row - 1, col] < lowest)
+							lowest = map[row - 1, col];
+						if (row < mapRows - 1 && map[row + 1, col] < lowest)
+							lowest = map[row + 1, col];
+						if (col > 0 && map[row, col - 1] < lowest)
+							lowest = map[row, col - 1];
+						if (col < mapCols - 1 && map[row, col + 1] < lowest)
+							lowest = map[row, col + 1];
 
 						if (map[row, col] > lowest + 1)
 						{
