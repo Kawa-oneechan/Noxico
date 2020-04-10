@@ -160,13 +160,27 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			for (var row = 0; row < Height / 2; row++)
+			if (!NoxicoGame.HostForm.IsSquare)
 			{
-				for (var col = 0; col < Width; col++)
+				for (var row = 0; row < Height / 2; row++)
 				{
-					var colorT = Bitmap.GetPixel(col, (row * 2) + 0);
-					var colorB = Bitmap.GetPixel(col, (row * 2) + 1);
-					NoxicoGame.HostForm.SetCell(Top + row, Left + col, '\xDF', colorT, colorB);
+					for (var col = 0; col < Width; col++)
+					{
+						var colorT = Bitmap.GetPixel(col, (row * 2) + 0);
+						var colorB = Bitmap.GetPixel(col, (row * 2) + 1);
+						NoxicoGame.HostForm.SetCell(Top + row, Left + col, '\xDF', colorT, colorB);
+					}
+				}
+			}
+			else
+			{
+				for (var row = 0; row < Height; row++)
+				{
+					for (var col = 0; col < Width; col++)
+					{
+						var color = Bitmap.GetPixel(col, row);
+						NoxicoGame.HostForm.SetCell(Top + row, Left + col, ' ', Color.Black, color);
+					}
 				}
 			}
 		}
@@ -176,10 +190,10 @@ namespace Noxico
 	{
 		public UIPNGBackground(Bitmap bitmap) : base(bitmap)
 		{
-			var actualBitmap = new Bitmap(Program.Cols, Program.Rows * 2);
+			var actualBitmap = new Bitmap(Program.Cols, Program.Rows * (NoxicoGame.HostForm.IsSquare ? 1 : 2));
 			using (var g = System.Drawing.Graphics.FromImage(actualBitmap))
 			{
-				g.DrawImage(bitmap, 0, 0, Program.Cols, Program.Rows * 2);
+				g.DrawImage(bitmap, 0, 0, Program.Cols, Program.Rows * (NoxicoGame.HostForm.IsSquare ? 1 : 2));
 			}
 			Bitmap = actualBitmap;
 			Width = Bitmap.Width;

@@ -8,6 +8,7 @@ namespace Noxico
 		string IniPath { get; }
 		bool Is437 { get; }
 		bool IsMultiColor { get; }
+		bool IsSquare { get; }
 
 		/// <summary>
 		/// Sets the content of the cell at the given location to the specified character and colors.

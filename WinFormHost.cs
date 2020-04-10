@@ -202,6 +202,7 @@ namespace Noxico
 
 		public bool IsMultiColor { get { return palette.Length > 2; } }
 		public bool Is437 { get { return fourThirtySeven; } }
+		public bool IsSquare { get; private set; }
 
 		public MainForm()
 		{
@@ -429,6 +430,8 @@ namespace Noxico
 			var fontBitmap = Mix.GetBitmap("fonts\\" + pngFont + ".png");
 			cellWidth = fontBitmap.Width / 32;
 			cellHeight = fontBitmap.Height / 32;
+
+			IsSquare = cellWidth == cellHeight;
 
 			Program.Cols = IniFile.GetValue("misc", "screencols", Program.Cols);
 			Program.Rows = IniFile.GetValue("misc", "screenrows", Program.Rows);

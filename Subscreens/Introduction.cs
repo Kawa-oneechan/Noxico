@@ -69,10 +69,13 @@ namespace Noxico
 				UIManager.Initialize();
 				titleBack = new UIPNGBackground(background);
 
+				var subtitleLeft = (int)(10 * xScale);
+				var subtitleTop = (int)((logo.Height * yScale) / 2) + 1;
+
 				var subtitle = i18n.GetString("ts_subtitle");
 				var pressEnter = "\xC4\xC4\xC4\xC4\xB4 " + i18n.GetString("ts_pressentertobegin") + " <cGray>\xC3\xC4\xC4\xC4\xC4";
-				titleCaption = new UILabel(subtitle) { Top = (int)(25 * xScale), Left = (int)(10 * yScale) - subtitle.Length() / 2, Foreground = Color.Teal, Darken = true };
-				titlePressEnter = new UILabel(pressEnter) { Top = (int)(25 * xScale) + 2, Left = (int)(10 * yScale) - pressEnter.Length() / 2, Foreground = Color.Gray, Darken = true };
+				titleCaption = new UILabel(subtitle) { Top = subtitleTop, Left = subtitleLeft + 2, Foreground = Color.Teal, Darken = true };
+				titlePressEnter = new UILabel(pressEnter) { Top = subtitleTop + 2, Left = subtitleLeft, Foreground = Color.Gray, Darken = true };
 				UIManager.Elements.Add(titleBack);
 				UIManager.Elements.Add(titleCaption);
 				UIManager.Elements.Add(titlePressEnter);
