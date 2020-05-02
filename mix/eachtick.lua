@@ -32,34 +32,6 @@ function Excite(this)
 end
 
 --[[
-public void CheckForCopiers()
-{
-	if (Character.HasToken("copier"))
-	{
-		var copier = Character.GetToken("copier");
-		var timeout = copier.GetToken("timeout");
-		if (timeout != null && timeout.Value > 0)
-		{
-			if (!timeout.HasToken("minute"))
-				timeout.AddToken("minute", NoxicoGame.InGameTime.Minute);
-			if (timeout.GetToken("minute").Value == NoxicoGame.InGameTime.Minute)
-				return;
-			timeout.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
-			timeout.Value--;
-			if (timeout.Value == 0)
-			{
-				copier.RemoveToken(timeout);
-				if (copier.HasToken("full") && copier.HasToken("backup"))
-				{
-					Character.Copy(null); //force revert
-					AdjustView();
-					NoxicoGame.AddMessage(i18n.GetString("x_reverts").Viewpoint(Character));
-				}
-			}
-		}
-	}
-}
-
 (When porting this to Lua, note that this came from the Character class, not BoardChar.
 public void UpdateOviposition()
 {
@@ -90,7 +62,6 @@ public void UpdateOviposition()
 
 function EachBoardCharTick(who, char)
 	Excite(who)
---	CheckForCopiers(who)
 --	UpdateOviposition(who)
 end
 

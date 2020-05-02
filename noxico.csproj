@@ -215,7 +215,6 @@
     <None Include="mix\items.tml" />
     <None Include="mix\powers.tml" />
     <None Include="mix\stats.lua" />
-    <None Include="mix\teambehavior.lua" />
     <None Include="mix\testarena.lua" />
     <None Include="mix\tiles.tml" />
     <Content Include="Music.nox">

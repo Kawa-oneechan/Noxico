@@ -427,6 +427,7 @@ namespace Noxico
 			}
 
 			CheckForTimedItems();
+			CheckForCopiers();
 			if (Character.UpdateSex())
 				return;
 

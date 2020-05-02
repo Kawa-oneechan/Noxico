@@ -2733,10 +2733,63 @@ Tokens:
 
 		public TeamBehaviorAction DecideTeamBehavior(Character other, TeamBehaviorClass whatFor)
 		{
-			var r = Lua.Environment.DecideTeamBehavior(this, other, (int)whatFor);
-			if (r == null)
+			var myTeam = this.Team;
+			var theirTeam = other.Team;
+			if (myTeam == 1) //We are the player
 				return TeamBehaviorAction.Nothing;
-			return (TeamBehaviorAction)(float)r;
+			//TODO: handle team 3 with player-decided tactics?
+			/* ACTIONS -- using ints instead of enums to make it shorter
+			 * 0 - do nothing
+			 * 1 - attack
+			 * 2 - preferential attack
+			 * 3 - avoid
+			 * 4 - flock
+			 * 5 - flock to similar
+			 * ...
+			 * 8 - close-by attack -- collapses to "nothing" or "preferential". IF RETURNED, SHIT'S FUCKED.
+			 * 9 - thiefing player check -- collapses like #8.
+			 */
+			if (whatFor == TeamBehaviorClass.Attacking)
+			{
+				var grid = new[]
+				{
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 1, 0, 0, 1, 0, 1, 1,
+					1, 2, 0, 1, 1, 0, 0, 1, 0,
+					0, 0, 1, 0, 0, 1, 0, 1, 0,
+					0, 9, 1, 0, 0, 8, 0, 0, 0,
+					0, 1, 1, 1, 1, 0, 2, 1, 2,
+					0, 0, 0, 0, 0, 8, 0, 0, 0,
+					0, 1, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+				};
+				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
+				if (action == TeamBehaviorAction.CloseByAttack)
+					action = (BoardChar.DistanceFrom(other.BoardChar) > 4) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Attack;
+				if (action == TeamBehaviorAction.ThiefingPlayer)
+					action = (other.BoardChar is Player && other.HasToken("criminal")) ? TeamBehaviorAction.Attack : TeamBehaviorAction.Nothing;
+				//TODO: consider running away at low health, returning TBA.Avoid.
+				return action;
+			}
+			else
+			{
+				var grid = new[]
+				{
+					0, 0, 3, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 5, 0, 0, 0, 0, 0, 5,
+					0, 4, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 5, 0, 0, 0,
+					0, 0, 3, 0, 0, 3, 5, 0, 0,
+					0, 0, 3, 0, 0, 0, 0, 0, 0,
+					0, 3, 0, 3, 3, 3, 0, 3, 4,
+				};
+				var action = (TeamBehaviorAction)grid[(myTeam * 9) + theirTeam];
+				if (action == TeamBehaviorAction.FlockAlike) //TODO: check if >= 3 is any good.
+					action = (this.GetClosestBodyplanMatch().GetHammingDistance(other.GetClosestBodyplanMatch()) >= 3) ? TeamBehaviorAction.Nothing : TeamBehaviorAction.Flock;
+				return action;
+			}
 		}
 	}
 }
