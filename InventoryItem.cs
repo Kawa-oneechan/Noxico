@@ -457,7 +457,7 @@ namespace Noxico
 
 			Action<string> showDesc = new Action<string>(d =>
 			{
-				NoxicoGame.DrawSidebar();
+				NoxicoGame.DrawStatus();
 				if (d.Contains('\n'))
 					MessageBox.Notice(runningDesc.Viewpoint(boardchar.Character, null));
 				else

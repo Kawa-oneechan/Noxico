@@ -1802,11 +1802,14 @@ Tokens:
 
 		private void GetValidStatNames()
 		{
+			StatNames = StatusDisplay.Stats.Select(s => s.Name.ToLowerInvariant()).ToArray();
+			/*
 			var stats = Lua.Environment.stats;
 			var names = new List<string>();
 			foreach (var stat in stats)
 				names.Add(((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant());
 			StatNames = names.ToArray();
+			*/
 		}
 
 		public float GetStat(string stat)
@@ -2284,11 +2287,10 @@ Tokens:
 		/// <returns>The new value of the stat.</returns>
 		public float ChangeStat(string stat, float amount)
 		{
-			var r = Lua.Environment.ChangeStat(this, stat, amount);
-			return (float)r;
+			SetStat(stat, GetStat(stat) + StatusDisplay.Adjust(stat, amount));
+			return GetStat(stat);
 		}
 
-		//TODO: fold this into EachBoardCharTick.
 		public void TickStats()
 		{
 			Lua.Environment.TickStats(this);

@@ -305,7 +305,7 @@ namespace Noxico
 				}
 				itemList.Index = selection;
 
-				NoxicoGame.DrawSidebar();
+				NoxicoGame.DrawStatus();
 				UIManager.Draw();
 			}
 

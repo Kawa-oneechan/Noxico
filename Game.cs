@@ -45,6 +45,70 @@ namespace Noxico
 		}
 	}
 
+	public static class StatusDisplay
+	{
+		public class Stat
+		{
+			public string Name;
+			public string Shorthand;
+			public float Default;
+			public bool OnChange;
+			public List<int> Panel;
+		}
+		public static List<Stat> Stats;
+		public static int Rows;
+		public static int Columns;
+		public static int LabelWidth;
+		public static int ValueWidth;
+		public static int SidePadding;
+
+		public static float Adjust(string stat, float amount)
+		{
+			foreach (var s in Stats)
+			{
+				if (s.Name.Equals(stat, StringComparison.InvariantCultureIgnoreCase))
+				{
+					if (s.OnChange)
+						return Lua.Environment.AdjustStat(stat, amount);
+					return amount;
+				}
+			}
+			return amount;
+		}
+
+		public static void DefineStats(object stats, object display)
+		{
+			Stats = new List<Stat>();
+			var s = (Neo.IronLua.LuaTable)stats;
+			var d = (Neo.IronLua.LuaTable)display;
+			foreach (var x in s)
+			{
+				var ns = (Neo.IronLua.LuaTable)x.Value;
+				var newStat = new Stat();
+				newStat.Name = ns["name"].ToString();
+				newStat.Shorthand = ns["short"].ToString();
+				if (ns["default"] is int)
+					newStat.Default = (float)(int)ns["default"];
+				else
+					newStat.Default = (float)(double)ns["default"];
+				newStat.OnChange = (bool)ns["onchange"];
+				if (ns["panel"] != null)
+				{
+					newStat.Panel = new List<int>();
+					var p = (Neo.IronLua.LuaTable)ns["panel"];
+					foreach (var pp in p)
+						newStat.Panel.Add((int)pp.Value);
+				}
+				Stats.Add(newStat);
+			}
+			Rows = (int)d["rows"];
+			Columns = (int)d["cols"];
+			LabelWidth = (int)d["labelWidth"];
+			ValueWidth = (int)d["valueWidth"];
+			SidePadding = (int)d["sidePadding"];
+		}
+	}
+
 	public class NoxicoGame
 	{
 		public static NoxicoGame Me
@@ -756,7 +820,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					}
 				}
 				CurrentBoard.Draw();
-				DrawSidebar();
+				DrawStatus();
 
 				if (Mode == UserMode.Aiming)
 				{
@@ -1439,7 +1503,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 		}
 		*/
 
-		public static void DrawSidebar()
+		public static void DrawStatus()
 		{
 			var player = HostForm.Noxico.Player;
 			if (NoxicoGame.Subscreen == Introduction.CharacterCreator)
@@ -1452,11 +1516,92 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
 				DrawMessages();
 
-			Lua.Environment.player = player;
-			Lua.Environment.Is437 = HostForm.Is437;
-			Lua.Environment.ScreenCols = Program.Cols;
-			Lua.Environment.ScreenRows = Program.Rows;
-			Lua.Environment.DrawStatus();
+			//TODO: detect if the player if standing in the lower part of the screen and flip it topwise.
+			var statLine = Program.Rows - 1;
+
+			HostForm.Write(new string(' ', Program.Cols), Color.Silver, Color.Transparent, Program.Rows - 1, 0, true);
+
+			var hpNow = character.Health;
+			var hpMax = character.MaximumHealth;
+			var hpBarLength = (int)Math.Ceiling((Math.Min(hpNow, hpMax) / hpMax) * 18);
+			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), statLine, 0);
+			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), statLine, 0);
+			HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, statLine, 1);
+			HostForm.SetCell(statLine, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
+			if (character.Gender == Gender.Female)
+				HostForm.SetCell(statLine, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent);
+			else if (character.Gender == Gender.Male)
+				HostForm.SetCell(statLine, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent);
+			else
+				HostForm.SetCell(statLine, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent);
+			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, statLine, 23);
+			var mods = "";
+			if (character.HasToken("haste")) mods += i18n.GetString("mod_haste");
+			if (character.HasToken("slow")) mods += i18n.GetString("mod_slow");
+			if (character.HasToken("flying")) mods += i18n.Format("mod_flying", (character.GetToken("flying").Value / 100.0f) * 100.0f);
+			if (character.HasToken("swimming"))
+			{
+				if (character.GetToken("swimming").Value == -1)
+					mods += i18n.GetString("mod_swimmingunl");
+				else
+					mods += i18n.Format("mod_swimming", (character.GetToken("swimming").Value / 100.0f) * 100.0f);
+			}
+			HostForm.Write(mods, Color.Silver, Color.Transparent, statLine, Program.Cols - mods.Length);
+
+			var statsLength = ((StatusDisplay.LabelWidth + StatusDisplay.ValueWidth) * StatusDisplay.Columns) + (StatusDisplay.SidePadding * (StatusDisplay.Columns + 1));
+			var statsBack = new string(' ', statsLength);
+			var statTop = statLine - StatusDisplay.Rows; //TODO: + if on top
+			var statBottom = statTop + StatusDisplay.Rows;
+			var statRow = statTop;
+			var statCol = Program.Cols - statsLength;
+
+			for (var i = statRow; i < statBottom; i++)
+				HostForm.Write(statsBack, Color.Silver, Color.Transparent, i, statCol, true);
+			var statCol1 = statCol + 1;
+			var statCol2 = statCol1 + StatusDisplay.LabelWidth;
+
+			foreach (var stat in StatusDisplay.Stats)
+			{
+				if (stat.Panel == null)
+					continue;
+
+				var col = statCol1;
+
+				if (HostForm.Is437)
+					HostForm.Write(stat.Shorthand, Color.Silver, Color.Transparent, statRow, col);
+				else
+				{
+					foreach (var c in stat.Panel)
+					{
+						HostForm.SetCell(statRow, col, c, Color.Silver, Color.Transparent);
+						col = col + 1;
+					}
+				}
+
+				var color = Color.Gray;
+				var total = "-?-";
+				if (character.HasToken(stat.Name.ToLowerInvariant()))
+				{
+					var statBonus = character.GetToken(stat.Name.ToLowerInvariant() + "bonus").Value;
+					var statBase = character.GetToken(stat.Name.ToLowerInvariant()).Value;
+					total = ((int)statBase + statBonus).ToString();
+					if (statBonus > 0)
+						color = Color.White;
+					else if (statBonus < 0)
+						color = Color.Maroon;
+				}
+				col = col + 1;
+				HostForm.Write(total, color, Color.Transparent, statRow, statCol2);
+
+				statRow++;
+				if (statRow == statBottom)
+				{
+					statRow = statTop;
+					statCol1 = statCol2 + StatusDisplay.ValueWidth + 1;
+					statCol2 = statCol1 + StatusDisplay.LabelWidth;
+				}
+			}
+
 
 			if (!LookAt.IsBlank())
 				HostForm.Write(LookAt, Color.Silver, Color.Transparent, Messages.Count, 0, true);

@@ -117,6 +117,7 @@ namespace Noxico
 				return Color.Black;
 			});
 			*/
+			env.DefineStats = new Action<object, object>((x, y) => StatusDisplay.DefineStats(x, y));
 
 			RunFile("init.lua");
 

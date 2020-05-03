@@ -278,7 +278,7 @@ namespace Noxico
 							if (mode == ContainerMode.Vendor)
 								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							containerList.Change(s, e);
-							NoxicoGame.DrawSidebar(); 
+							NoxicoGame.DrawStatus(); 
 							UIManager.Draw();
 						}
 						else
@@ -348,7 +348,7 @@ namespace Noxico
 							if (mode == ContainerMode.Vendor)
 								capacity.Text = i18n.Format("inventory_money", vendorChar.Name.ToString(), vendorChar.GetToken("money").Value, player.Character.GetToken("money").Value);
 							playerList.Change(s, e);
-							NoxicoGame.DrawSidebar();
+							NoxicoGame.DrawStatus();
 							UIManager.Draw();
 						}
 						else
