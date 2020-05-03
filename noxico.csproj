@@ -128,6 +128,7 @@
     <None Include="mix\eachtick.lua" />
     <None Include="mix\fonts\variants.tml" />
     <None Include="mix\i18n.lua" />
+    <None Include="mix\impediments.tml" />
     <None Include="mix\init.lua" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
