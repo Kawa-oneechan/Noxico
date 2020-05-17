@@ -1759,7 +1759,7 @@ item: useless_rubber_panties
 	price: 40
 	ascii
 		char: 0x19A
-	description: "These [color ]leather panties have holes in them, serving no purpose but to tittilate."	
+	description: "These [color ]leather panties have holes in them, serving no purpose but to tittilate."
 	clothing
 	underwear
 	colored
@@ -2003,6 +2003,11 @@ item: dye
 		char: 0x180
 	dye
 	colored
+
+item: rubber_scraps
+	description: "Some rubber scraps that you can use as a crafting material."
+	ascii
+		char: 0x1A9
 -- #endregion
 
 item: regen_ring

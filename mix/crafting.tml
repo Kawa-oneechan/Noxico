@@ -11,6 +11,34 @@ craft
 		consume: 2
 		produce: spiked_bat
 
+craft
+	key
+		rubber_scraps
+	require
+		rubber_scraps
+	actions
+		consume: 1
+		produce: useless_rubber_panties
+
+craft
+	key
+		rubber_scraps
+	require
+		rubber_scraps
+	actions
+		consume: 1
+		produce: rubber_corset
+
+craft
+	key
+		rubber_scraps
+	require
+		rubber_scraps
+	actions
+		consume: 1
+		produce: rubber_bustier
+
+
 -- This one requires two "Leather Strips" items and, if
 -- uncommented, a specific book. It consumes the leather
 -- strips, increases the Leatherworking skill, and

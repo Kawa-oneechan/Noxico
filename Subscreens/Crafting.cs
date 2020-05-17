@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+//TODO: Rework with a less dumb format, allow requiring more of the same item (several instances/charges)
+
 namespace Noxico
 {
 	/// <summary>
