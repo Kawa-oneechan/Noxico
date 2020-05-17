@@ -150,8 +150,8 @@ namespace Noxico
 								var itemMade = new Token(action.Text);
 								itemMade.Tokens.AddRange(action.Tokens);
 								recipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
-								knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
-								recipe.Display = i18n.Format("craft_produce_x", knownItem.ToString(itemMade));
+								var resultingKnownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
+								recipe.Display = i18n.Format("craft_produce_x", resultingKnownItem.ToString(itemMade));
 							}
 							else if (action.Name == "dye")
 							{
