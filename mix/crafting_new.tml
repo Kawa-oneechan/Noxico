@@ -1,0 +1,34 @@
+recipe
+	consume: scrap_metal
+	consume: baseballbat
+	produce: spiked_bat
+
+recipe
+	consume: rubber_scraps
+		amount: 2
+	produce: useless_rubber_panties
+
+recipe
+	consume: rubber_scraps
+		amount: 3
+	produce: rubber_bustier
+
+recipe
+	consume: rubber_scraps
+		amount: 4
+	produce: rubber_corset
+
+recipe
+	consume: leather_strips
+	require: book
+		id: 4
+	produce: leather_armor
+	train: leatherworking
+
+recipe
+	require: <anything>
+		with: dye
+	require: <anything>
+		with: colored
+		without: dye
+	dye
