@@ -498,6 +498,7 @@ Equipment
 	craft_results: Results
 	craft_nothing: You can do nothing.
 	craft_produce_x: Create {0}
+	craft_produce_x_from_y: Create {0} from {1}
 	craft_consume_x: Destroy {0}
 	craft_dye_x_y: Dye {0} {1}
 -- #endregion

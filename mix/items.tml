@@ -1647,6 +1647,7 @@ item: latex_suit
 	bodysuit
 	colored
 	sexy
+	rubber
 
 item: latex_dress
 	_n: [color ]latex dress
@@ -1667,6 +1668,7 @@ item: latex_dress
 	bodysuit
 	colored
 	sexy
+	rubber
 
 item: stylish_cloak
 	_n: stylish [color ]cloak
@@ -1697,6 +1699,7 @@ item: leather_corset
 		char: 0x19b
 	clothing
 	colored
+	leather
 
 item: rubber_corset
 	_n: [color ]rubber corset
@@ -1714,6 +1717,7 @@ item: rubber_corset
 		char: 0x19b
 	clothing
 	colored
+	rubber
 
 item: leather_bustier
 	_n: [color ]leather bustier
@@ -1729,6 +1733,7 @@ item: leather_bustier
 		char: 0x19b
 	clothing
 	colored
+	leather
 
 item: rubber_bustier
 	_n: [color ]rubber bustier
@@ -1744,6 +1749,7 @@ item: rubber_bustier
 		char: 0x19b
 	clothing
 	colored
+	rubber
 
 item: useless_rubber_panties
 	_n: useless [color ]rubber panties
@@ -1764,6 +1770,7 @@ item: useless_rubber_panties
 	underwear
 	colored
 	sexy
+	rubber
 
 item: vault_jumpsuit
 	_n: Vault Dweller jumpsuit
@@ -2005,7 +2012,9 @@ item: dye
 	colored
 
 item: rubber_scraps
+	_ia: some
 	description: "Some rubber scraps that you can use as a crafting material."
+	plural
 	ascii
 		char: 0x1A9
 -- #endregion

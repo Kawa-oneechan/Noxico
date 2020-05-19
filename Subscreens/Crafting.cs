@@ -36,6 +36,7 @@ namespace Noxico
 				var resultName = "?";
 				if (recipe.HasToken("produce"))
 					resultName = recipe.GetToken("produce").Text;
+				var resultingSourceItem = default(InventoryItem);
 
 				var steps = recipe.Tokens;
 				var stepRefs = new Token[steps.Count()];
@@ -52,7 +53,40 @@ namespace Noxico
 						var numFound = 0;
 						if (step.Text == "<anything>")
 						{
-							//TODO: find carried items whose known items have the tokens requested in "with" and "without".							
+							foreach (var carriedItem in ItemsToWorkWith.Tokens)
+							{
+								var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
+								if (knownItem == null)
+								{
+									Program.WriteLine("Crafting: don't know what a {0} is.", carriedItem.Name);
+									continue;
+								}
+
+								var withs = step.GetAll("with");
+								var withouts = step.GetAll("withouts");
+								var okay = 0;
+								foreach (var with in withs)
+								{
+									if (knownItem.HasToken(with.Text))
+										okay++;
+								}
+								foreach (var without in withouts)
+								{
+									if (knownItem.HasToken(without.Text))
+										okay = 0;
+								}
+								if (okay < withs.Count())
+									continue;
+
+								if (carriedItem.HasToken("charge"))
+									numFound += (int)carriedItem.GetToken("charge").Value;
+								else
+									numFound++;
+								stepRefs[i] = carriedItem;
+
+								if (i == 0)
+									resultingSourceItem = knownItem;
+							}
 						}
 						else if (step.Text == "book")
 						{
@@ -74,6 +108,9 @@ namespace Noxico
 								else
 									numFound++;
 								stepRefs[i] = carriedItem;
+
+								if (i == 0)
+									resultingSourceItem = knownItem;
 							}
 						}
 
@@ -91,7 +128,7 @@ namespace Noxico
 						itemMade.Tokens.AddRange(step.Tokens);
 						newRecipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
 						var resultingKnownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
-						newRecipe.Display = i18n.Format("craft_produce_x", resultingKnownItem.ToString(itemMade));
+						newRecipe.Display = i18n.Format("craft_produce_x_from_y", resultingKnownItem.ToString(itemMade), resultingSourceItem.ToString(stepRefs[0]));
 					}
 					else if (step.Name == "train")
 					{
