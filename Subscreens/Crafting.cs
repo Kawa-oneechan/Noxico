@@ -29,39 +29,37 @@ namespace Noxico
 			Carrier = carrier;
 			ItemsToWorkWith = Carrier.GetToken("items");
 			var results = new List<Recipe>();
-			var tml = Mix.GetTokenTree("crafting_new.tml");
+			var tml = Mix.GetTokenTree("crafting.tml");
 			foreach (var recipe in tml)
 			{
 				var considered = new List<Token>();
-				var weGoOn = true;
-				while (weGoOn)
+				var resultName = "?";
+				if (recipe.HasToken("produce"))
+					resultName = recipe.GetToken("produce").Text;
+
+				var steps = recipe.Tokens;
+				var stepRefs = new Token[steps.Count()];
+				var i = 0;
+				var newRecipe = new Recipe();
+				foreach (var step in steps)
 				{
-					var resultName = "?";
-					if (recipe.HasToken("produce"))
-						resultName = recipe.GetToken("produce").Text;
-					else if (recipe.HasToken("dye"))
-						resultName = "<dye>";
-
-					var steps = recipe.Tokens;
-					var stepRefs = new Token[steps.Count()];
-					var i = 0;
-					var newRecipe = new Recipe();
-					foreach (var step in steps)
+					if (step.Name == "consume" || step.Name == "require")
 					{
-						if (step.Name == "consume" || step.Name == "require")
+						var amount = 1;
+						if (step.HasToken("amount"))
+							amount = (int)step.GetToken("amount").Value;
+
+						var numFound = 0;
+						if (step.Text == "<anything>")
 						{
-							var amount = 1;
-							if (step.HasToken("amount"))
-								amount = (int)step.GetToken("amount").Value;
-
-							//TODO
-							if (step.Text == "<anything>")
-							{
-								weGoOn = false;
-								break;
-							}
-
-							var numFound = 0;
+							//TODO: find carried items whose known items have the tokens requested in "with" and "without".							
+						}
+						else if (step.Text == "book")
+						{
+							//TODO: see if a book with the given ID is marked as read.
+						}
+						else
+						{
 							foreach (var carriedItem in ItemsToWorkWith.Tokens.Where(t => t.Name == step.Text))
 							{
 								var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
@@ -77,204 +75,74 @@ namespace Noxico
 									numFound++;
 								stepRefs[i] = carriedItem;
 							}
-							if (numFound < amount)
-							{
-								Program.WriteLine("Crafting: not enough {0} to craft {1}.", step.Text, resultName);
-								weGoOn = false;
-								break;
-							}
-							if (step.Name == "consume")
-								newRecipe.Actions.Add(new CraftConsumeItemAction() { Target = stepRefs[i] });
 						}
-						else if (step.Name == "produce")
+
+						if (numFound < amount)
 						{
-							var itemMade = new Token(step.Text);
-							itemMade.Tokens.AddRange(step.Tokens);
-							newRecipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
-							var resultingKnownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
-							newRecipe.Display = i18n.Format("craft_produce_x", resultingKnownItem.ToString(itemMade));
-							weGoOn = false;
+							Program.WriteLine("Crafting: not enough {0} to craft {1}.", step.Text, resultName);
+							break;
 						}
-						else if (step.Name == "dye")
-						{
-							var color = stepRefs[0].GetToken("color").Text;
-							var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == stepRefs[1].Name);
-							newRecipe.Display = i18n.Format("craft_dye_x_y", knownItem.ToString(stepRefs[1]), color);
-							if (!stepRefs[1].HasToken("color"))
-								newRecipe.Actions.Add(new CraftAddTokenAction() { Target = stepRefs[1], Add = new Token("color", 0, color) });
-							else if (stepRefs[1].GetToken("color").Text == color)
-								newRecipe.Display = null;
-							else
-								newRecipe.Actions.Add(new CraftChangeTokenAction() { Target = stepRefs[1].GetToken("color"), NewText = color, NewValue = stepRefs[1].Value });
-						}
+						if (step.Name == "consume")
+							newRecipe.Actions.Add(new CraftConsumeItemAction() { Target = stepRefs[i] });
 					}
-					if (newRecipe.Display.IsBlank())
+					else if (step.Name == "produce")
 					{
-						weGoOn = false;
-						break;
+						var itemMade = new Token(step.Text);
+						itemMade.Tokens.AddRange(step.Tokens);
+						newRecipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
+						var resultingKnownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
+						newRecipe.Display = i18n.Format("craft_produce_x", resultingKnownItem.ToString(itemMade));
 					}
-					if (results.Exists(x => x.Display == newRecipe.Display))
+					else if (step.Name == "train")
 					{
-						weGoOn = false;
-						break;
+						newRecipe.Actions.Add(new CraftTrainAction() { Trainee = carrier, Target = step });
 					}
-					results.Add(newRecipe);
 				}
-			}
-	
-			/*
-			Carrier = carrier;
-			ItemsToWorkWith = Carrier.GetToken("items");
-			var results = new List<Recipe>();
-			var tml = Mix.GetTokenTree("crafting.tml");
-			foreach (var carriedItem in ItemsToWorkWith.Tokens)
-			{
-				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
-				if (knownItem == null)
+				if (newRecipe.Display.IsBlank())
 					continue;
-				foreach (var craft in tml.Where(t => t.Name == "craft"))
+				if (results.Exists(x => x.Display == newRecipe.Display))
+					continue;
+				results.Add(newRecipe);
+			}
+			
+			//Find dyes
+			foreach (var maybeDye in ItemsToWorkWith.Tokens)
+			{
+				var knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == maybeDye.Name);
+				if (knownItem == null)
 				{
-					var requirements = new List<Token>();
-					var key = craft.GetToken("key").Tokens[0];
-					var craftOkay = true;
-					var considerations = new List<Token>();
-					if (key.Name.StartsWith('@'))
-					{
-						var r = key.Name.Substring(1);
-						if (!knownItem.HasToken(r))
-							continue;
-					}
-					else if (key.Name != knownItem.ID)
-						continue;
+					Program.WriteLine("Crafting: don't know what a {0} is.", maybeDye.Name);
+					continue;
+				}
 
-					var repeat = false;
-					do
+				if (knownItem.HasToken("dye"))
+				{
+					var dyeItem = maybeDye;
+					var color = dyeItem.GetToken("color").Text;
+					foreach (var carriedItem in ItemsToWorkWith.Tokens)
 					{
-						requirements.Clear();
-						requirements.Add(carriedItem);
-						repeat = false;
-						foreach (var requirement in craft.GetToken("require").Tokens)
+						knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == carriedItem.Name);
+						if (knownItem == null)
 						{
-							if (requirement.Name.StartsWith('@'))
-							{
-								var r = requirement.Name.Substring(1);
-								if (r[0] == '-')
-								{
-									//simple negatory token check
-									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == i2ww.Name && !ki.HasToken(r)) != null && !considerations.Contains(i2ww));
-									if (firstValidItem == null)
-									{
-										craftOkay = false;
-										break;
-									}
-									requirements.Add(firstValidItem);
-									considerations.Add(firstValidItem);
-									repeat = true;
-								}
-								else if (r.Contains('-') || r.Contains('+'))
-								{
-									//complicated token check
-									var fuckery = r.Replace("+", ",").Replace("-", ",-").Split(',');
-									var checkedKnowns = new List<InventoryItem>();
-									foreach (var ki in NoxicoGame.KnownItems)
-									{
-										var includeThis = false;
-										foreach (var fucking in fuckery)
-										{
-											if (fucking[0] != '-' && ki.HasToken(fucking))
-												includeThis = true;
-											else if (ki.HasToken(fucking.Substring(1)))
-											{
-												includeThis = false;
-												break;
-											}
-										}
-										if (includeThis)
-											checkedKnowns.Add(ki);
-									}
-									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => checkedKnowns.FirstOrDefault(ki => ki.ID == i2ww.Name) != null && !considerations.Contains(i2ww));
-									if (firstValidItem == null)
-									{
-										craftOkay = false;
-										break;
-									}
-									requirements.Add(firstValidItem);
-									considerations.Add(firstValidItem);
-									repeat = true;
-								}
-								else
-								{
-									//simple token check
-									var firstValidItem = ItemsToWorkWith.Tokens.Find(i2ww => NoxicoGame.KnownItems.FirstOrDefault(ki => ki.ID == i2ww.Name && ki.HasToken(r)) != null && !considerations.Contains(i2ww));
-									if (firstValidItem == null)
-									{
-										craftOkay = false;
-										break;
-									}
-									requirements.Add(firstValidItem);
-									considerations.Add(firstValidItem);
-									repeat = true;
-								}
-							}
+							Program.WriteLine("Crafting: don't know what a {0} is.", carriedItem.Name);
+							continue;
+						}
+
+						if (knownItem.HasToken("colored") && !knownItem.HasToken("dye"))
+						{
+							var newRecipe = new Recipe();
+							newRecipe.Display = i18n.Format("craft_dye_x_y", knownItem.ToString(carriedItem), color);
+							if (!carriedItem.HasToken("color"))
+								newRecipe.Actions.Add(new CraftAddTokenAction() { Target = carriedItem, Add = new Token("color", 0, color) });
+							else if (carriedItem.GetToken("color").Text == color)
+								continue;
 							else
-							{
-								if (!ItemsToWorkWith.HasToken(requirement.Name))
-								{
-									craftOkay = false;
-									break;
-								}
-								requirements.Add(ItemsToWorkWith.GetToken(requirement.Name));
-							}
+								newRecipe.Actions.Add(new CraftChangeTokenAction() { Target = carriedItem.GetToken("color"), NewText = color, NewValue = 0 });
+							results.Add(newRecipe);
 						}
-
-						if (!craftOkay)
-							continue;
-
-						var recipe = new Recipe();
-						var actions = craft.GetToken("actions");
-						foreach (var action in actions.Tokens)
-						{
-							if (action.Name == "consume")
-							{
-								var itemIndex = (int)action.Value - 1;
-								if (itemIndex >= requirements.Count)
-								{
-									Program.WriteLine("Warning: recipe wants to consume out-of-bounds requirement.");
-									continue;
-								}
-								recipe.Actions.Add(new CraftConsumeItemAction() { Target = requirements[itemIndex] });
-							}
-							else if (action.Name == "produce")
-							{
-								var itemMade = new Token(action.Text);
-								itemMade.Tokens.AddRange(action.Tokens);
-								recipe.Actions.Add(new CraftProduceItemAction() { Target = itemMade });
-								var resultingKnownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == itemMade.Name);
-								recipe.Display = i18n.Format("craft_produce_x", resultingKnownItem.ToString(itemMade));
-							}
-							else if (action.Name == "dye")
-							{
-								//var color = NoxicoGame.KnownItems.Find(ki => ki.ID == requirements[0].Name).GetToken("color").Text;
-								var color = requirements[0].GetToken("color").Text;
-								knownItem = NoxicoGame.KnownItems.Find(ki => ki.ID == requirements[1].Name);
-								recipe.Display = i18n.Format("craft_dye_x_y", knownItem.ToString(requirements[1]), color);
-								if (!requirements[1].HasToken("color"))
-									recipe.Actions.Add(new CraftAddTokenAction() { Target = requirements[1], Add = new Token("color", 0, color) });
-								else if (requirements[1].GetToken("color").Text == color)
-									recipe.Display = null;
-								else
-									recipe.Actions.Add(new CraftChangeTokenAction() { Target = requirements[1].GetToken("color"), NewText = color, NewValue = requirements[1].Value });
-							}
-						}
-						if (recipe.Display.IsBlank())
-							continue;
-						if (results.Exists(x => x.Display == recipe.Display))
-							continue;
-						results.Add(recipe);
-					} while (repeat);
+					}
 				}
 			}
-			*/
 			return results;
 		}
 
@@ -463,6 +331,17 @@ namespace Noxico
 		public override void Apply()
 		{
 			Target.AddToken(Add);
+		}
+	}
+	/// <summary>
+	/// Trains the crafter in a skill
+	/// </summary>
+	public class CraftTrainAction : CraftAction
+	{
+		public Character Trainee { get; set; }
+		public override void Apply()
+		{
+			Trainee.IncreaseSkill(Target.Text);
 		}
 	}
 }

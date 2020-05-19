@@ -1,75 +1,26 @@
--- This one's a straight-up A+B=C recipe. The consume action
--- takes the Nth requirement and invokes Consume() on it.
--- The produce action gives the player the specified item.
-craft
-	key
-		scrap_metal
-	require
-		baseballbat
-	actions
-		consume: 1
-		consume: 2
-		produce: spiked_bat
+recipe
+	consume: scrap_metal
+	consume: baseballbat
+	produce: spiked_bat
 
-craft
-	key
-		rubber_scraps
-	require
-		rubber_scraps
-	actions
-		consume: 1
-		produce: useless_rubber_panties
+recipe
+	consume: rubber_scraps
+		amount: 2
+	produce: useless_rubber_panties
 
-craft
-	key
-		rubber_scraps
-	require
-		rubber_scraps
-	actions
-		consume: 1
-		produce: rubber_corset
+recipe
+	consume: rubber_scraps
+		amount: 3
+	produce: rubber_bustier
 
-craft
-	key
-		rubber_scraps
-	require
-		rubber_scraps
-	actions
-		consume: 1
-		produce: rubber_bustier
+recipe
+	consume: rubber_scraps
+		amount: 4
+	produce: rubber_corset
 
-
--- This one requires two "Leather Strips" items and, if
--- uncommented, a specific book. It consumes the leather
--- strips, increases the Leatherworking skill, and
--- produces some leather armor which, if the crafter's
--- Leatherworking skill is high enough, may get a
--- bonus modifier.
-craft
-	key
-		leather_strips
-	require
-		leather_strips
---		book
---			id: 4
-	actions
-		consume: 1
-		produce: leather_armor
-			bonus: leatherworking
-		skill: leatherworking
-
--- This one should appear once for every possible combination.
--- It takes one item with a dye token (see lootsets for syntax)
--- and one item with a colored token, which as you know
--- indicates that it spawns with a random color.
--- The dye action is hardcoded to take the color of the first
--- requirement and set the second requirement's color token
--- accordingly.
-craft
-	key
-		@dye
-	require
-		@colored-dye
-	actions
-		dye
-		consume: 1
+recipe
+	consume: leather_strips
+	require: book
+		id: 4
+	produce: leather_armor
+	train: leatherworking
