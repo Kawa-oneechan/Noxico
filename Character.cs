@@ -974,11 +974,11 @@ namespace Noxico
 			for (var i = 0; i < totalRows; i++)
 			{
 				if (i < col1.Count)
-					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col1[i], false)).ToLowerInvariant()).PadEffective(pad));
+					print(((i < col1.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col1[i], false)).Lowercase()).PadEffective(pad));
 				else
 					print(string.Empty.PadEffective(pad));
 				if (i < col2.Count)
-					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col2[i], false).ToLowerInvariant()));
+					print((i < col2.Count - 1 ? "\xC3 " : "\xC0 ") + (i18n.GetString(col2[i], false).Lowercase()));
 				print("\n");
 			}
 			print("\n");

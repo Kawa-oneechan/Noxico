@@ -55,28 +55,6 @@ namespace Noxico
 		}
 
 		/// <summary>
-		/// Grabs the content for a token from a raw textual token tree, for analysis outside of character creation.
-		/// </summary>
-		public static string GrabToken(string input, string token)
-		{
-			var start = input.IndexOf(token);
-			if (start == 0)
-				return null;
-			start += token.Length + 1;
-			if (input[start] != '\t')
-				return null;
-			for (var i = start; i < input.Length; i++)
-			{
-				if (input[i] == '\n' && input[i + 1] != '\t')
-				{
-					var ret = input.Substring(start, i - start);
-					return ret + "\n<end>";
-				}
-			}
-			return null;
-		}
-
-		/// <summary>
 		/// Picks a single item from an array, at random.
 		/// </summary>
 		public static T PickOne<T>(this T[] options)
@@ -209,6 +187,19 @@ namespace Noxico
 		public static string Titlecase(this string text)
 		{
 			return ti.ToTitleCase(text.ToLowerInvariant());
+		}
+
+		public static string Lowercase(this string text)
+		{
+			var ret = new StringBuilder();
+			foreach (var ch in text)
+			{
+				if (ch >= 0x41 && ch <= 0xA5)
+					ret.Append(ch.ToString().ToLowerInvariant());
+				else
+					ret.Append(ch);
+			}
+			return ret.ToString();
 		}
 
 		public static string Disemvowel(this string text)
