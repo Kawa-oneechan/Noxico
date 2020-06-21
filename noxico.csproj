@@ -125,7 +125,7 @@
     <Content Include="Guides\ref.txt" />
     <Content Include="mix\fonts\8x16-bold.png" />
     <None Include="mix\defense.lua" />
-    <None Include="mix\eachtick.lua" />
+    <None Include="mix\eachturn.lua" />
     <None Include="mix\fonts\variants.tml" />
     <None Include="mix\i18n.lua" />
     <None Include="mix\impediments.tml" />

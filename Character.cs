@@ -2287,7 +2287,7 @@ Tokens:
 		/// <returns>The new value of the stat.</returns>
 		public float ChangeStat(string stat, float amount)
 		{
-			SetStat(stat, GetStat(stat) + StatusDisplay.Adjust(stat, amount));
+			SetStat(stat, GetStat(stat) + StatusDisplay.Adjust(this, stat, amount));
 			return GetStat(stat);
 		}
 

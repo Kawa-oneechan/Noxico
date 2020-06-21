@@ -2,7 +2,7 @@ print("Running init scripts...");
 dofile("i18n.lua");
 dofile("stats.lua");
 dofile("defense.lua");
-dofile("eachtick.lua");
+dofile("eachturn.lua");
 
 function PickOne(list)
 	return list[math.random(#list)]

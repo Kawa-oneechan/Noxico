@@ -1,4 +1,9 @@
 function Excite(this)
+	print(this.ToString() .. " is at " .. this.Energy)
+	if this.Energy < 5000 then
+		print(this.ToString() .. " is an idle fucker")
+		return
+	end
 	local char = this.Character
 	if char.HasToken("beast") or char.HasToken("sleeping") then return end
 --	if player.ParentBoard ~= this.ParentBoard
@@ -60,11 +65,7 @@ public void UpdateOviposition()
 }
 ]]--
 
-function EachBoardCharTick(who, char)
+function EachBoardCharTurn(who, char)
 	Excite(who)
 --	UpdateOviposition(who)
-end
-
-function EndPlayerTurn()
-	Excite(player)
 end

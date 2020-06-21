@@ -62,14 +62,14 @@ namespace Noxico
 		public static int ValueWidth;
 		public static int SidePadding;
 
-		public static float Adjust(string stat, float amount)
+		public static float Adjust(Character character, string stat, float amount)
 		{
 			foreach (var s in Stats)
 			{
 				if (s.Name.Equals(stat, StringComparison.InvariantCultureIgnoreCase))
 				{
 					if (s.OnChange)
-						return Lua.Environment.AdjustStat(stat, amount);
+						return Lua.Environment.AdjustStat(character, stat, amount);
 					return amount;
 				}
 			}

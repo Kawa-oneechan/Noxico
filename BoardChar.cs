@@ -441,7 +441,7 @@ namespace Noxico
 				return;
 
 			base.Update();
-			var r = Lua.Environment.EachBoardCharTick(this, this.Character);
+			var r = Lua.Environment.EachBoardCharTurn(this, this.Character);
 
 			if (!Character.HasToken("fireproof") && ParentBoard.IsBurning(YPosition, XPosition))
 				if (Hurt(10, "death_burned", null))
