@@ -427,6 +427,7 @@ namespace Noxico
 			}
 
 			CheckForTimedItems();
+			CheckForCopiers();
 			if (Character.UpdateSex())
 				return;
 
@@ -695,8 +696,10 @@ namespace Noxico
 
 		public void EndTurn()
 		{
-			var r = Lua.Environment.EndPlayerTurn();
-			//Excite();
+			var nrg = Energy;
+			Energy = 5000;
+			var r = Lua.Environment.EachBoardCharTurn(this, this.Character);
+			Energy = nrg;
 
 			NoxicoGame.PlayerReady = false;
 

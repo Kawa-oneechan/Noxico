@@ -320,6 +320,7 @@ namespace Noxico
 		}
 	}
 
+	//TODO: Luafy basically all of this... somehow.
 	public partial class Character
 	{
 		private Character sexPartner;
@@ -454,7 +455,6 @@ namespace Noxico
 			return true;
 		}
 
-		//TODO: fold this into EachBoardCharTick?
 		public bool UpdateSex()
 		{
 			if (!EnsureSexPartner())

@@ -125,9 +125,10 @@
     <Content Include="Guides\ref.txt" />
     <Content Include="mix\fonts\8x16-bold.png" />
     <None Include="mix\defense.lua" />
-    <None Include="mix\eachtick.lua" />
+    <None Include="mix\eachturn.lua" />
     <None Include="mix\fonts\variants.tml" />
     <None Include="mix\i18n.lua" />
+    <None Include="mix\impediments.tml" />
     <None Include="mix\init.lua" />
     <Content Include="mix\lookup.txt" />
     <Compile Include="Lua.cs" />
@@ -215,7 +216,6 @@
     <None Include="mix\items.tml" />
     <None Include="mix\powers.tml" />
     <None Include="mix\stats.lua" />
-    <None Include="mix\teambehavior.lua" />
     <None Include="mix\testarena.lua" />
     <None Include="mix\tiles.tml" />
     <Content Include="Music.nox">
