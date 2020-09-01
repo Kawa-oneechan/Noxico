@@ -293,18 +293,22 @@ namespace Noxico
 
 						if (canSee && player.Character.GetStat("excitement") >= 30 && distance <= 1)
 						{
-							if (!IniFile.GetValue("misc", "allowrape", false) && boardChar.Character.HasToken("hostile"))
+							var mayFuck = boardChar.Character.HasToken("willing");
+							var willRape = boardChar.Character.HasToken("helpless");
+
+							if (!IniFile.GetValue("misc", "allowrape", false) && willRape)
+								mayFuck = false;
+							//but DO allow it if they're helpless but willing
+							if (boardChar.Character.HasToken("willing") && willRape)
 							{
-								//Eat the option, because rape is bad m'kay?
+								mayFuck = true;
+								willRape = false;
 							}
-							else
-								if (!boardChar.Character.HasToken("beast"))
-								{
-									if ((boardChar.Character.HasToken("hostile") && boardChar.Character.HasToken("helpless")))
-										options["fuck"] = i18n.Format("action_rapehim", boardChar.Character.HimHerIt(true));
-									else if (boardChar.Character.HasToken("willing")) //TODO: Look up in the bitbucket if there's supposed to be a check on the other person's excitement or whatever.
-										options["fuck"] = i18n.Format("action_fuckhim", boardChar.Character.HimHerIt(true));
-								}
+							if (boardChar.Character.HasToken("beast"))
+								mayFuck = false;
+
+							if (mayFuck)
+								options["fuck"] = i18n.Format(willRape ? "action_rapehim" : "action_fuckhim", boardChar.Character.HimHerIt(true));
 						}
 
 						if (canSee && !boardChar.Character.HasToken("beast") && player.Character.HasToken("copier") && player.Character.Path("copier/timeout") == null)
@@ -378,7 +382,7 @@ namespace Noxico
 									else if (PointingAt is BoardChar)
 									{
 										var boardChar = PointingAt as BoardChar;
-										if (boardChar.Character.HasToken("hostile"))
+										if (boardChar.Character.HasToken("hostile") && !boardChar.Character.HasToken("helpless"))
 											MessageBox.Notice(i18n.Format("nothingtosay", boardChar.Character.GetKnownName(false, false, true, true)), true);
 										else
 											SceneSystem.Engage(player.Character, boardChar.Character);

@@ -413,7 +413,25 @@ namespace Noxico
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
 		public int ToWest { get { return (int)GetToken("west").Value; } set { GetToken("west").Value = value; } }
 		public bool AllowTravel { get { return !HasToken("noTravel"); } set { RemoveToken("noTravel"); if (!value)  AddToken("noTravel"); } }
-		public int Stock { get { return (int)Path("encounters/stock").Value; } set { Path("encounters/stock").Value = value; } }
+		public int Stock
+		{
+			//Why does encounters/stock disappear?
+			get
+			{
+				return Path("encounters/stock") != null ? (int)Path("encounters/stock").Value : 0;
+			}
+			set
+			{
+				var stock = Path("encounters/stock");
+				if (stock == null)
+				{
+					AddToken("encounters");
+					GetToken("encounters").AddToken("stock");
+					stock = Path("encounters/stock");
+				}
+				stock.Value = value;				
+			}
+		}
 		public Realms Realm { get { return (Realms)GetToken("realm").Value; } set { GetToken("realm").Value = (float)value; } }
 		public Point Coordinate
 		{
