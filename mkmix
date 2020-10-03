@@ -1,0 +1,13 @@
+#! /bin/sh
+rm *.nox
+cd mix
+7z u -r ../Noxico.zip *
+cd ../music
+7z u -r ../Music.zip *
+cd ../sound
+7z u -r ../Sound.zip *
+cd ..
+for file in *.zip; do
+  ZIPPREFIX="$(basename "$file" '.zip')"
+  mv "$file" "$ZIPPREFIX"'.nox'
+done
