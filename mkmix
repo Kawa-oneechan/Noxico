@@ -1,3 +1,4 @@
+#! /bin/sh
 rm *.nox
 cd mix
 7z u -r ../Noxico.zip *
@@ -6,5 +7,7 @@ cd ../music
 cd ../sound
 7z u -r ../Sound.zip *
 cd ..
-# non-standard command; available in debian in the mmv package.
-mmv '*.zip' '#1.nox'
+for file in *.zip; do
+  ZIPPREFIX="$(basename "$file" '.zip')"
+  mv "$file" "$ZIPPREFIX"'.nox'
+done
