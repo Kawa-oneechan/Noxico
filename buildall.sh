@@ -41,7 +41,7 @@ good()
   7z u noxico-0.1.6.1.7z Noxico/
   cp Release32/Noxico.exe Noxico/
   7z u noxico-0.1.6.1-32.7z Noxico/
-  # rm -rf Noxico
+  rm -rf Noxico/
 }
 
 nogood()
