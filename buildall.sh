@@ -12,21 +12,6 @@ if [ -z "$BUILDTOOL" ]; then # if BUILDTOOL is not already set or is empty
 fi
 SLNFILE="noxico.sln"
 
-# some things use the wrong casings, which is not a problem in Windows, but
-# can be an issue with (non-Apple) POSIX systems.
-# this just works around that issue.
-if [ ! -e "Noxico.sln" ]; then
-  if [ -e "noxico.sln" ]; then
-    ln -s noxico.sln Noxico.sln
-  fi
-fi
-
-if [ ! -e "Noxico.csproj" ]; then
-  if [ -e "noxico.csproj" ]; then
-    ln -s noxico.csproj Noxico.csproj
-  fi
-fi
-
 good()
 {
   echo ---------------
