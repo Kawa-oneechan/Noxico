@@ -2141,3 +2141,170 @@ item: bfg9000
 		fore: yellow
 		back: lime
 	rareweapon
+
+-- #region: NetHack clothing
+__marker: NetHack clothing
+item: hawaiian_shirt
+	_n: Hawaiian shirt
+	equipable
+		shirt
+	weight: light
+	price: 10
+	ascii
+		char: 0x198
+	clothing
+	overwear
+	colored
+
+item: leather_jacket
+	equipable
+		jacket
+	weight: light
+	price: 10
+	ascii
+		char: 0x198
+		fore: brown
+	clothing
+	overwear
+
+item: leather_armor
+	equipable
+		shirt
+	weight: light
+	price: 30
+	ascii
+		char: 0x198
+		fore: brown
+	clothing
+	armor
+	overwear
+
+item: ring_mail
+	equipable
+		shirt
+	weight: light
+	price: 30
+	ascii
+		char: 0x198
+		fore: silver
+	clothing
+	armor
+	overwear
+
+item: scale_mail
+	equipable
+		shirt
+	weight: medium
+	price: 20
+	ascii
+		char: 0x198
+		fore: brown
+	clothing
+	armor
+	overwear
+
+item: chain_armor
+	equipable
+		shirt
+	weight: medium
+	price: 10
+	ascii
+		char: 0x198
+		fore: silver
+	clothing
+	armor
+	overwear
+
+item: mithril_coat
+	equipable
+		shirt
+	weight: feather
+	price: 100
+	ascii
+		char: 0x198
+		fore: silver
+	clothing
+	armor
+	overwear
+
+item: plate_mail
+	equipable
+		shirt
+	weight: heavy
+	price: 50
+	ascii
+		char: 0x198
+		fore: silver
+	clothing
+	armor
+	overwear
+
+item: leather_cloak
+	equipable
+		cloak
+	weight: medium
+	price: 30
+	ascii
+		char: 0x198
+		fore: brown
+	clothing
+	armor
+	overwear
+
+item: fedora
+	equipable
+		hat
+	weight: light
+	price: 40
+	ascii
+		char: 0x19E
+		fore: gray
+	clothing
+
+item: dented_pot
+	equipable
+		hat
+	weight: light
+	price: 10
+	ascii
+		char: 0x19E
+		fore: silver
+	clothing
+	armor
+
+item: leather_helm
+	equipable
+		hat
+	weight: light
+	price: 20
+	ascii
+		char: 0x19E
+		fore: brown
+	clothing
+	armor
+
+item: kabuto
+	_u: plumed helmet
+	equipable
+		hat
+	weight: light
+	price: 40
+	ascii
+		char: 0x19E
+		fore: silver
+	clothing
+	armor
+
+item: leather_gloves
+	equipable
+		gloves
+	weight: light
+	price: 10
+	ascii
+		char: 0x1AD
+		fore: brown
+	clothing
+	armor
+
+
+-- #endregion

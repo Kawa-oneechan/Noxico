@@ -1,25 +1,37 @@
 add: -
 	__marker: Homestuck <small>(way outdated and incomplete)</small>
-	-- Dirk Strider
-	item: fancysanta
-		_n: fancy Santa
-		fireproof
-		fearsome
+
+	-- John Egbert
+	item: claw_hammer
+		equipable
+			hand
+		weight: light
+		weapon
+			damage: 20
+			skill: hammer
+			attacktype: crush
+		description: "A simple hammer with a claw at the other end."
+		ascii
+			char: 0x192
+			fore: silver
+
+	-- John Egbert
+	item: sledgehammer
 		equipable
 			hand
 		weight: medium
 		weapon
-			damage: 30
-			skill: club
+			damage: 50
+			skill: warhammer
 			attacktype: crush
-		description: "A smallish but ornate statue of a festive holiday character."
+		description: "A solid hammer with a long handle for extra impact."
 		ascii
-			char: 0x165
-			fore: red
-		rareweapon
+			char: 0x192
+			fore: silver
 
 	-- John Egbert
 	item: wrinklefucker
+		_n: Wrinklefucker&#x15c;
 		_u: appliance-headed warhammer
 		fireproof
 		unique
@@ -38,6 +50,26 @@ add: -
 		rareweapon
 
 	-- John Egbert
+	item: fear_no_anvil
+		_n: Fear No Anvil&#x15c;
+		_u: anvil-headed warhammer
+		fireproof
+		unique
+		equipable
+			hand
+			twohanded
+		weight: heavy
+		weapon
+			damage: 100
+			skill: warhammer
+			attacktype: crush
+		description: "A warhammer with small anvils as the heads."
+		ascii
+			char: 0x192
+			fore: red
+		rareweapon
+
+	-- John Egbert
 	item: zillyhoo
 		_n: Warhammer of Zillyhoo&#x15c;
 		fireproof
@@ -49,9 +81,90 @@ add: -
 			damage: 300
 			skill: warhammer
 			attacktype: crush
-		description: "Behold the glory of Zillyhoo!"
+		description: "Forged in fire by the smiths of Pipplemop, commissioned by the sage Lord of the Wozzinjay Fiefdom in the Realm of the Snargly Fruzmigbubbins."
 		ascii
 			char: 0x192
+			fore: blue
+		rareweapon
+
+	-- Rose and Roxy
+	item: knitting_needles
+		equipable
+			hand
+		weight: feather
+		weapon
+			damage: 5
+			skill: needles
+			attacktype: stab
+		description: "Perfectly normal knitting needles."
+		ascii
+			char: 0x194
+			fore: white
+
+	-- Rose and Roxy
+	item: needlewands
+		equipable
+			hand
+		weight: feather
+		weapon
+			damage: 15
+			skill: needles
+			attacktype: stab
+		description: "Fancy knitting needles that sparkle lightly."
+		ascii
+			char: 0x194
+			fore: blue
+
+	-- Rose and Roxy
+	item: oglogoth
+		_n: Thorns of Oglogoth&#x15c;
+		_u: grim needles
+		equipable
+			hand
+		weight: feather
+		weapon
+			damage: 30
+			skill: needles
+			attacktype: stab
+		description: "Grim-looking knitting needles with little skulls on the ends."
+		ascii
+			char: 0x194
+			fore: white
+		rareweapon
+
+	-- Rose and Roxy
+	item: echidna
+		_n: Quills of Echidna&#x15c;
+		fireproof
+		unique
+		equipable
+			hand
+		weight: medium
+		weapon
+			damage: 100
+			skill: needles
+			attacktype: stab
+		description: "At first glance they look like over-sized knitting needles, but these are literally quills off a monster's back."
+		ascii
+			char: 0x194
+			fore: white
+		rareweapon
+
+	-- Rose and Roxy
+	item: zillywich
+		_n: Thistles of Zillywich&#x15c;
+		fireproof
+		unique
+		equipable
+			hand
+		weight: light
+		weapon
+			damage: 300
+			skill: needles
+			attacktype: stab
+		description: "Flippety dippety doo bup bup shrubber double floppy mumblescurry noodlescoop pizzabubble pizzabubble mip mip mip mip mip mip."
+		ascii
+			char: 0x194
 			fore: blue
 		rareweapon
 
@@ -114,6 +227,24 @@ add: -
 			char: 0x190
 			fore: goldenrod
 		price: 1000
+		rareweapon
+
+	-- Dirk Strider
+	item: fancysanta
+		_n: fancy Santa
+		fireproof
+		fearsome
+		equipable
+			hand
+		weight: medium
+		weapon
+			damage: 30
+			skill: club
+			attacktype: crush
+		description: "A smallish but ornate statue of a festive holiday character."
+		ascii
+			char: 0x165
+			fore: red
 		rareweapon
 
 	-- Caledflwch, regisickle, Quills of Echidna, SORD.....
