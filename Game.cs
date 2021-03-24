@@ -561,7 +561,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				CurrentBoard.SaveToFile(CurrentBoard.BoardNum);
 
 			var verCheck = Path.Combine(SavePath, WorldName, "version");
-			File.WriteAllText(verCheck, "20");
+			File.WriteAllText(verCheck, "21");
 			Program.WriteLine("Done.");
 			Program.WriteLine("--------------------------");
 		}
@@ -572,7 +572,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (!File.Exists(verCheck))
 				throw new Exception("Tried to open an old worldsave.");
 			WorldVersion = int.Parse(File.ReadAllText(verCheck));
-			if (WorldVersion < 20)
+			if (WorldVersion < 21)
 				throw new Exception("Tried to open an old worldsave.");
 
 			HostForm.Clear();
@@ -603,25 +603,6 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			Toolkit.ExpectFromFile(bin, "PLAY", "player position");
 			var currentIndex = bin.ReadInt32();
 			var boardCount = bin.ReadInt32();
-
-			//TODO: remove entirely after bumping version #
-			var poti = bin.ReadChars(4);
-			if (new string(poti) == "POTI")
-			{
-				Program.WriteLine("Ignoring POTI data...");
-				for (var i = 0; i < 256; i++)
-					bin.ReadString();
-			}
-			else
-			{
-				bin.BaseStream.Seek(-4, SeekOrigin.Current);
-			}
-			/*
-			Toolkit.ExpectFromFile(bin, "POTI", "potion and ring");
-			Potions = new string[256];
-			for (var i = 0; i < 256; i++)
-				Potions[i] = bin.ReadString();
-			*/
 
 			Toolkit.ExpectFromFile(bin, "ITID", "item identification");
 			var numIDs = bin.ReadInt32();

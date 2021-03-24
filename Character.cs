@@ -787,34 +787,6 @@ namespace Noxico
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
 			newChar.UpdateTitle();
 
-			//Fix the results of a bug that caused multiple a, ispropernamed, and culture tokens to appear, namely the above-commented.
-			//TODO: bump world version, remove that shit.
-			var a = false;
-			var p = false;
-			var c = false;
-			foreach (var token in newChar.Tokens)
-			{
-				if (token.Name == "a")
-				{
-					if (a)
-						token.Name = "__kill";
-					a = true;
-				}
-				else if (token.Name == "ispropernamed")
-				{
-					if (p)
-						token.Name = "__kill";
-					p = true;
-				}
-				else if (token.Name == "culture")
-				{
-					if (c)
-						token.Name = "__kill";
-					c = true;
-				}
-			}
-			newChar.Tokens.RemoveAll(t => t.Name == "__kill");
-
 			return newChar;
 		}
 
