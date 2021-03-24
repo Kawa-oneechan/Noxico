@@ -451,8 +451,7 @@ namespace Noxico
 					Tilemap[x, y].Fluid = Fluids.Dry;
 		}
 
-		//TODO: This is copied from Game::PlaceTowns. I think the other one could go, call this from there.
-		public void GenerateTown(bool rename, bool vendors)
+		public void GenerateTown(bool rename, bool vendors, List<string> vendorTypes)
 		{
 			this.BoardType = BoardType.Town;
 			this.GetToken("encounters").Value = 0;
@@ -484,11 +483,14 @@ namespace Noxico
 
 			if (vendors)
 			{
-				var vendorTypes = new List<string>();
-				var lootData = Mix.GetTokenTree("loot.tml", true);
-				foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
-					if (!vendorTypes.Contains(filter.Text))
-						vendorTypes.Add(filter.Text);
+				if (vendorTypes == null)
+				{
+					vendorTypes = new List<string>();
+					var lootData = Mix.GetTokenTree("loot.tml", true);
+					foreach (var filter in lootData.Where(t => t.Path("filter/vendorclass") != null).Select(t => t.Path("filter/vendorclass")))
+						if (!vendorTypes.Contains(filter.Text))
+							vendorTypes.Add(filter.Text);
+				}
 
 				var citizens = this.Entities.OfType<BoardChar>().Where(e => e.Character.Path("role/vendor") == null).ToList();
 				foreach (var vendorType in vendorTypes)

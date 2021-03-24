@@ -1065,57 +1065,8 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					{
 						if (generator.TownMap[y, x] > 0)
 						{
-							var townGen = new TownGenerator();
 							var thisBoard = generator.BoardMap[y, x];
-							if (thisBoard.BoardType == BoardType.Town)
-								continue;
-
-							thisBoard.BoardType = BoardType.Town;
-							thisBoard.ClearToWorld(generator);
-							thisBoard.GetToken("encounters").Value = 0;
-							thisBoard.GetToken("encounters").Tokens.Clear();
-							townGen.Board = thisBoard;
-							var biome = BiomeData.Biomes[(int)thisBoard.GetToken("biome").Value];
-							var cultureName = biome.Cultures.PickOne();
-							townGen.Culture = Culture.Cultures[cultureName];
-							townGen.Create(biome);
-							townGen.ToTilemap(ref thisBoard.Tilemap);
-							townGen.ToSectorMap(thisBoard.Sectors);
-							thisBoard.Music = biome.Realm == Realms.Nox ? "set://Town" : "set://Dungeon";
-							thisBoard.AddToken("culture", 0, cultureName);
-
-							while (true)
-							{
-								var newName = Culture.GetName(townGen.Culture.TownName, Culture.NameType.Town);
-								if (Boards.Find(b => b != null && b.Name == newName) == null)
-								{
-									thisBoard.Name = newName;
-									break;
-								}
-							}
-							thisBoard.ID = string.Format("{0}x{1}-{2}", x, y, thisBoard.Name.ToID());
-
-							var citizens = thisBoard.Entities.OfType<BoardChar>().Where(e => e.Character.Path("role/vendor") == null).ToList();
-							foreach (var vendorType in vendorTypes)
-							{
-								if (Random.Flip())
-									continue;
-								if (citizens.Count == 0) //Shouldn't happen, but who knows.
-									break;
-								var chosenCitizen = citizens.PickOne();
-								citizens.Remove(chosenCitizen);
-								var spouse = chosenCitizen.Character.Spouse;
-								if (spouse != null)
-									citizens.Remove(spouse.BoardChar);
-								var newVendor = chosenCitizen.Character;
-								var vendorStock = newVendor.GetToken("items");
-								newVendor.RemoveAll("role");
-								newVendor.AddToken("role").AddToken("vendor").AddToken("class", 0, vendorType);
-								newVendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
-								Program.WriteLine("*** {0} of {2} is now a {1} ***", newVendor.Name.ToString(true), vendorType, thisBoard.Name);
-								chosenCitizen.RestockVendor();
-							}
-
+							thisBoard.GenerateTown(true, true, vendorTypes);
 							townBoards.Add(thisBoard);
 						}
 					}
