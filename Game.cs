@@ -1047,6 +1047,11 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 						if (generator.TownMap[y, x] > 0)
 						{
 							var thisBoard = generator.BoardMap[y, x];
+
+							//This check was accidentally removed in commit #747daf75aa58ab7066d65460b93b4bb6f43712d8
+							if (thisBoard.BoardType == BoardType.Town)
+								continue;
+
 							thisBoard.GenerateTown(true, true, vendorTypes);
 							townBoards.Add(thisBoard);
 						}
