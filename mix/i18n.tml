@@ -11,6 +11,7 @@ words
 	ts_startnewgame: Start new game...
 	ts_enterworldname: Enter a name for the new world:
 	ts_testingarena: Visit the Testing Arena
+	ts_options: Change options
 -- #endregion
 -- #region Character Creator
 -- #region Labels

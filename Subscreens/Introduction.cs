@@ -81,6 +81,7 @@ namespace Noxico
 				UIManager.Elements.Add(titlePressEnter);
 				//UIManager.Elements.Add(new UILabel("\u015c") { Top = 6, Left = 50, Foreground = Color.Gray });
 				UIManager.Draw();
+				Options.FromTitle = true;
 			}
 			if (NoxicoGame.IsKeyDown(KeyBinding.Accept) || Subscreens.Mouse || Vista.Triggers != 0)
 			{
@@ -121,6 +122,7 @@ namespace Noxico
 				}));
 				options.Add("~", i18n.GetString("ts_startnewgame"));
 				options.Add("~~", i18n.GetString("ts_testingarena"));
+				options.Add("~~~", i18n.GetString("ts_options"));
 				//Display our list of saves.
 				MessageBox.List(saves.Count == 0 ? i18n.GetString("ts_welcometonoxico") : i18n.GetString(saves.Count == 1 ? "ts_thereisasave" : "ts_therearesaves"), options,
 					() =>
@@ -166,6 +168,16 @@ namespace Noxico
 							NoxicoGame.AddMessage(i18n.GetString("welcometest"), Color.Yellow);
 							NoxicoGame.AddMessage(i18n.GetString("rememberhelp"));
 							NoxicoGame.Mode = UserMode.Walkabout;
+						}
+						else if ((string)MessageBox.Answer == "~~~")
+						{
+							Options.FromTitle = true;
+							//Restore our title screen backdrop, since the MessageBox subscreen purged it.
+							UIManager.Initialize();
+							UIManager.Elements.Add(titleBack);
+							UIManager.Elements.Add(titleCaption);
+							UIManager.Elements.Add(titlePressEnter);
+							Options.Open();
 						}
 						else
 						{

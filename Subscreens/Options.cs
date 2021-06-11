@@ -13,13 +13,24 @@ namespace Noxico
 		private static UIList font;
 		private static UIToggle rememberPause, vistaSaves, xInput, imperial, fourThirtySeven, enableAudio;
 
+		public static bool FromTitle;
+
 		public static void Handler()
 		{
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
-				UIManager.Initialize();
-				UIManager.Elements.Clear();
+				if (!FromTitle)
+				{
+					UIManager.Initialize();
+					UIManager.Elements.Clear();
+				}
+				else
+				{
+					//Leave the title screen background
+					UIManager.Highlight = UIManager.Elements[0];
+					UIManager.Elements.RemoveRange(3, UIManager.Elements.Count - 3);
+				}
 
 				window = new UIWindow(i18n.GetString("opt_title"))
 				{
@@ -270,6 +281,8 @@ namespace Noxico
 						NoxicoGame.Me.CurrentBoard.Redraw();
 						NoxicoGame.Me.CurrentBoard.Draw(true);
 						NoxicoGame.Mode = UserMode.Walkabout;
+						if (FromTitle)
+							Introduction.Title();
 						Subscreens.FirstDraw = true;
 					}) { Width = 16 };
 				cancelButton.MoveBelow(0, 1, openButton);

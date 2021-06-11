@@ -27,8 +27,16 @@ namespace Noxico
 			if (Subscreens.FirstDraw)
 			{
 				Subscreens.FirstDraw = false;
-				UIManager.Initialize();
-				UIManager.Elements.Clear();
+				if (!Options.FromTitle)
+				{
+					UIManager.Initialize();
+					UIManager.Elements.Clear();
+				}
+				else
+				{
+					UIManager.Highlight = UIManager.Elements[0];
+					UIManager.Elements.RemoveRange(3, UIManager.Elements.Count - 3);
+				}
 
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
