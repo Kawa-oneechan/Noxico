@@ -2421,10 +2421,11 @@ Tokens:
 
 		public void Copy(Character source)
 		{
+			//TODO: This needs to be updated to work with Powers.
 			var copier = GetToken("copier");
 			if (copier == null)
 				throw new InvalidOperationException("Tried to copy, but is not a copier.");
-			var full = source.HasToken("fullCopy");
+			var full = copier.HasToken("full");
 			var toCopyForFull = new[]
 			{
 				"balls", "penis", "breasts", "ass", "hips", "waist", "vagina",

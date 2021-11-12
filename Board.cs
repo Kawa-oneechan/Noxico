@@ -1025,7 +1025,7 @@ namespace Noxico
 						fore = t.SlimeColor;
 					back = fore.Darken();
 				}
-				if (t.BurnTimer > 0)
+				if ((t.Fluid == Fluids.Dry || t.Fluid == Fluids.KoolAid) && t.BurnTimer > 0)
 				{
 					fore = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];
 					back = Color.FromArgb(Random.Next(20, 25) * 10, Random.Next(5, 25) * 10, 0); //flameColors[Randomizer.Next(flameColors.Length)];

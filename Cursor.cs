@@ -311,6 +311,7 @@ namespace Noxico
 								options["fuck"] = i18n.Format(willRape ? "action_rapehim" : "action_fuckhim", boardChar.Character.HimHerIt(true));
 						}
 
+						//TODO: This needs to be updated to work with Powers.
 						if (canSee && !boardChar.Character.HasToken("beast") && player.Character.HasToken("copier") && player.Character.Path("copier/timeout") == null)
 						{
 							//if (player.Character.UpdateCopier())
