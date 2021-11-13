@@ -786,6 +786,7 @@ namespace Noxico
 			for (var i = 0; i < numTokens; i++)
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
 			newChar.UpdateTitle();
+			newChar.UpdatePowers();
 
 			return newChar;
 		}
@@ -1146,7 +1147,6 @@ namespace Noxico
 			{
 				var lt = this.GetToken("legs");
 				var count = 0;
-				var numberOrPair = "counts";
 				if (lt.GetToken("amount") != null)
 					count = (int)lt.GetToken("amount").Value;
 				else
@@ -1164,8 +1164,9 @@ namespace Noxico
 					}
 				}
 				if (count < 6)
-					numberOrPair = "setbymeasure";
-				bodyThings.Add(i18n.GetArray(numberOrPair)[count] + " " + i18n.Format("x_legs", Descriptions.Leg(lt)));
+					bodyThings.Add(i18n.GetArray("setbymeasure")[count] + " " + i18n.Format("x_legs", Descriptions.Leg(lt)));
+				else
+					bodyThings.Add(Toolkit.Count(count) + " " + i18n.Format("x_legs", Descriptions.Leg(lt)));
 				if (this.HasToken("quadruped"))
 					bodyThings.Add("quadruped");
 				else if (this.HasToken("taur"))
@@ -1356,11 +1357,11 @@ namespace Noxico
 							wet = " and " + wet;
 						else if (wet == null && loose == null)
 							loose = "";
-						nipType += (" " + loose + wet + " " + "nipplecunt".Pluralize((int)boob.GetToken("nipples").Value)).Trim();
+						nipType += " " + loose + wet + " " + "nipplecunt".Pluralize((int)boob.GetToken("nipples").Value);
 					}
 					else
 						nipType += " [?:" + "nipple".Pluralize((int)boob.GetToken("nipples").Value) + "]";
-					print(", " + Toolkit.Count(boob.GetToken("nipples").Value) + " " + nipType);
+					print(", " + Toolkit.Count(boob.GetToken("nipples").Value) + " " + nipType.Replace("  ", " "));
 					print(" on each\n");
 				}
 			}
@@ -2425,7 +2426,7 @@ Tokens:
 			var copier = GetToken("copier");
 			if (copier == null)
 				throw new InvalidOperationException("Tried to copy, but is not a copier.");
-			var full = copier.HasToken("full");
+			var full = HasToken("fullCopy");
 			var toCopyForFull = new[]
 			{
 				"balls", "penis", "breasts", "ass", "hips", "waist", "vagina",
@@ -2550,6 +2551,7 @@ Tokens:
 						if (myHash.GetHammingDistance(NoxicoGame.BodyplanHashes[plan]) >= 2)
 						{
 							//We are NOT supposed to have this ability!
+							//TODO: lock copiers or force a release?
 							RemoveToken("fullCopy");
 							RemoveToken("copier");
 							break;
@@ -2573,14 +2575,14 @@ Tokens:
 			//handle slime-based sexCopy too
 			var isSlime = Path("skin/type").Text == "slime" || HasToken("slimeblob");
 			//if (HasToken("sexCopy") && !isSlime)
-			//	RemoveToken("sexCopy");
+				RemoveToken("sexCopy");
 			if (!HasToken("sexCopy") && isSlime)
 				AddToken("sexCopy");
 
 			var hasWings = HasToken("wings") || Path("wings/small") != null;
-			//if (HasToken("hover") && !hasWings)
-			//	RemoveToken("hover");
-			if (!HasToken("hover") && hasWings)
+			if (HasToken("hover") && !hasWings)
+				RemoveToken("hover");
+			else if (!HasToken("hover") && hasWings)
 				AddToken("hover");
 
 		}

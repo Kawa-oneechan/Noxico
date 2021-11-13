@@ -363,7 +363,7 @@ namespace Noxico
 					if (timeout.Value == 0)
 					{
 						copier.RemoveToken(timeout);
-						if (copier.HasToken("full") && copier.HasToken("backup"))
+						if (Character.HasToken("fullCopy") && copier.HasToken("backup"))
 						{
 							Character.Copy(null); //force revert
 							AdjustView();
@@ -808,7 +808,7 @@ namespace Noxico
 								{
 									Character.Copy(target.Character);
 									AdjustView();
-									NoxicoGame.AddMessage(i18n.Format(copier.HasToken("full") ? "x_becomes_y" : "x_imitates_y").Viewpoint(Character, target.Character));
+									NoxicoGame.AddMessage(i18n.Format(Character.HasToken("fullCopy") ? "x_becomes_y" : "x_imitates_y").Viewpoint(Character, target.Character));
 									Energy -= 2000;
 									return;
 								}
@@ -1303,7 +1303,7 @@ namespace Noxico
 
 		private void LeaveCorpse(string cause, object aggressor)
 		{
-			if (Character.HasToken("copier") && Character.GetToken("copier").Value > 0 && Character.GetToken("copier").HasToken("full"))
+			if (Character.HasToken("copier") && Character.GetToken("copier").Value > 0 && Character.HasToken("fullCopy"))
 			{
 				//Revert changelings to their true form first.
 				Character.Copy(null);

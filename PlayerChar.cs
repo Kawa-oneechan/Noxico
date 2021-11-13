@@ -533,7 +533,7 @@ namespace Noxico
 				}
 				else
 				{
-					if (Character.HasToken("wings"))
+					if (Character.HasToken("hover"))
 					{
 						if (Character.GetToken("wings").HasToken("small"))
 						{

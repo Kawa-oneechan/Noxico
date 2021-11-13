@@ -1582,7 +1582,7 @@ namespace Noxico
 					this.RemoveToken(change.Text);
 					continue;
 				}
-				if (change.Name == "_removefrom/")
+				if (change.Name.StartsWith("_removefrom/"))
 				{
 					var path = this.Path(change.Name.Substring(12));
 					if (path != null)

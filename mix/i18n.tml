@@ -513,6 +513,7 @@ Equipment
 	morph_bipedify: [views] body has returned to a normal bipedal shape
 	morph_taurify: [view] grow{s} a second pair of legs as a taurbody extends from [his] rear
 	morph_quadrify: [view] fall{s} down on all fours as [his] body rearranges itself to a quadrupedal form
+	-- Rework this to put [view(s)] in front?
 	morph_taurtrain: Another taurbody extends out behind [views] [?:butt] as [he] grow{s} another pair of legs
 	morph_untaurtrain: [view] lose{s} a pair of legs as one of [his] taurbodies shrinks into [his] [?:butt]
 	morph_lose_x_and_gain_y_legs: [view] [has] {0} and gained a pair of {1} legs
@@ -528,8 +529,8 @@ Equipment
 	morph_gainballs: [view] [has] gained a set of {0} {1} balls
 	morph_loselastnut: [view] [has] lost [his] last remaining testicle
 	morph_loseonenut: [view] [has] lost one of [his] balls, bringing [him] down to only {0}
-	morph_gaindicknipples: The nipples on [views] [?:breasts] have grown out and become phallic
-	morph_gainnipplecunts: The nipples on [views] [?:breasts] have inverted and taken on a distinctly vaginal appearance
+	morph_gaindicknipples: [views] nipples have grown out and become phallic
+	morph_gainnipplecunts: [views] nipples have inverted and taken on a distinctly vaginal appearance
 	morph_gainonenipple: [views] [?:breasts] have gained a nipple
 	morph_gainnipple: [views] [?:breasts] have gained another nipple
 	morph_gaindicknipple: [views] [?:breasts] have gained another dicknipple
@@ -540,8 +541,8 @@ Equipment
 	morph_losenipple: [views] [?:breasts] have each lost a nipple
 	morph_losedicknipple: [views] [?:breasts] have each lost a dicknipple
 	morph_losenipplecunts: [views] [?:breasts] have each lost a nipplecunt
-	morph_revertdicknipples: The dicknipples on [views] [?:breasts] have become normal nipples
-	morph_revertnipplecunts: The nipplecunts on [views] [?:breasts] have become normal nipples
+	morph_revertdicknipples: [views] dicknipples have reverted to normal
+	morph_revertnipplecunts: [views] nipplecunts have reverted to normal
 	morph_nipplefail: [views] chest tingles, but nothing happens
 -- #endregion
 -- #region Morph delta descriptions
