@@ -269,7 +269,7 @@ namespace Noxico
 
 				var portable = false;
 				IniPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "noxico.ini");
-				if (File.Exists("portable"))
+				if (File.Exists("noxico.ini"))
 				{
 					portable = true;
 					var oldIniPath = IniPath;
@@ -293,7 +293,7 @@ namespace Noxico
 					*/
 				}
 
-				if (!File.Exists(IniPath))
+				if (!File.Exists(IniPath) || (new FileInfo(IniPath)).Length < 4)
 					File.WriteAllText(IniPath, Mix.GetString("noxico.ini"));
 				IniFile.Load(IniPath);
 
