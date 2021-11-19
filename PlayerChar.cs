@@ -163,6 +163,14 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check = SolidityCheck.Walker)
 		{
+			if (Posture != Posture.Upright)
+			{
+				NoxicoGame.AddMessage(i18n.GetString("yougetup"));
+				Energy -= Posture == Posture.Seated ? 1200 : 2000;
+				Posture = Posture.Upright;
+				return;
+			}
+	
 			var lx = XPosition;
 			var ly = YPosition;
 
@@ -605,6 +613,7 @@ namespace Noxico
 				var bed = ParentBoard.Entities.OfType<Clutter>().FirstOrDefault(c => c.XPosition == XPosition && c.YPosition == YPosition && c.DBRole == "bed");
 				if (bed != null)
 				{
+					Character.Posture = Posture.Prone;
 					var prompt = "It's " + NoxicoGame.InGameTime.ToShortTimeString() + ", " + NoxicoGame.InGameTime.ToLongDateString() + ". Sleep for how long?";
 					var options = new Dictionary<object, string>();
 					foreach (var interval in new[] { 1, 2, 4, 8, 12 })
@@ -619,6 +628,8 @@ namespace Noxico
 						}
 					}, true, true, i18n.GetString("Bed"));
 				}
+
+				//TODO: find chair, allow sitting in 'em.
 				return;
 			}
 

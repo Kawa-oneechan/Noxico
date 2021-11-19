@@ -26,6 +26,10 @@ namespace Noxico
 		CloseByAttack = 8, ThiefingPlayer
 	}
 
+	public enum Posture
+	{
+		Upright, Prone, Seated
+	}
 
 	public partial class Character : TokenCarrier
 	{
@@ -288,6 +292,8 @@ namespace Noxico
 				return BiologicalGender; //stopgap
 			}
 		}
+
+		public Posture Posture { get { return BoardChar.Posture; } set { BoardChar.Posture = value; } }
 
 		public void UpdateTitle()
 		{
@@ -750,6 +756,7 @@ namespace Noxico
 					AddToken(n, d);
 			}
 			//names.Add(((Neo.IronLua.LuaTable)stat.Value)["name"].ToString().ToLowerInvariant());
+			if (!HasToken("posture")) AddToken("posture", 0);
 
 			Health = MaximumHealth;
 		}
@@ -787,6 +794,7 @@ namespace Noxico
 				newChar.Tokens.Add(Token.LoadFromFile(stream));
 			newChar.UpdateTitle();
 			newChar.UpdatePowers();
+			if (!newChar.HasToken("posture")) newChar.AddToken("posture", 0);
 
 			return newChar;
 		}

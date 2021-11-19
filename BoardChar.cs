@@ -34,6 +34,8 @@ namespace Noxico
 		public int SightRadius { get; private set; }
 		public char GlowGlyph { get; private set; }
 
+		public Posture Posture { get { return (Posture)Character.GetToken("posture").Value; } set { Character.GetToken("posture").Value = (float)value; } }
+
 		public BoardChar()
 		{
 			this.Glyph = (char)255;
@@ -158,6 +160,13 @@ namespace Noxico
 
 		public override void Move(Direction targetDirection, SolidityCheck check)
 		{
+			if (Posture != Posture.Upright)
+			{
+				Energy -= Posture == Posture.Seated ? 1200 : 2000;
+				Posture = Posture.Upright;
+				return;
+			}
+
 			if (this.DijkstraMap == null)
 			{
 				this.DijkstraMap = new Dijkstra(this.ParentBoard);
