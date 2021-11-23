@@ -778,13 +778,20 @@ namespace Noxico
 		{
 			ClampCoord(ref row, ref col);
 			var tile = Tilemap[col, row];
+			var newColor = color.Darken(1.4);
 			if (tile.Fluid == Fluids.Dry)
 			{
 				tile.Fluid = Fluids.Slime;
-				tile.SlimeColor = color.Darken(1.4);
+				tile.SlimeColor = newColor;
 				tile.Shallow = true;
 				tile.BurnTimer = (Random.Next(0, 4) * 10) + 100;
 				DirtySpots.Add(new Point(row, col));
+			}
+			else if (tile.Fluid == Fluids.Slime)
+			{
+				tile.SlimeColor = Toolkit.Lerp(tile.SlimeColor, newColor, 0.5);
+				tile.BurnTimer += (Random.Next(0, 4) * 10) + 100;
+				DirtySpots.Add(new Point(row, col));				
 			}
 		}
 
@@ -830,7 +837,8 @@ namespace Noxico
 						}
 						else if (Tilemap[col, row].Fluid == Fluids.Slime && Tilemap[col, row].Shallow)
 						{
-							Tilemap[col, row].BurnTimer--;
+							if (spread)
+								Tilemap[col, row].BurnTimer--;
 							if (Tilemap[col, row].BurnTimer == 0)
 							{
 								Tilemap[col, row].Fluid = Fluids.Dry;
