@@ -163,6 +163,7 @@ namespace Noxico
 							testBoard.AimCamera();
 							testBoard.Redraw();
 							testBoard.Draw();
+							Options.FromTitle = false;
 							Subscreens.FirstDraw = true;
 							NoxicoGame.Immediate = true;
 							NoxicoGame.AddMessage(i18n.GetString("welcometest"), Color.Yellow);
@@ -181,6 +182,7 @@ namespace Noxico
 						}
 						else
 						{
+							Options.FromTitle = false;
 							NoxicoGame.WorldName = (string)MessageBox.Answer;
 							host.Noxico.LoadGame();
 							NoxicoGame.Me.CurrentBoard.Draw();
