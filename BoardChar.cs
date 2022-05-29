@@ -1123,7 +1123,10 @@ namespace Noxico
 			{
 				var gradient = (baseDamage - 1) / 5;
 				var minimalDamage = (gradient * level + 1) + 1;
-				damage = (float)Random.Next((int)minimalDamage, (int)baseDamage);
+				if (minimalDamage > baseDamage)
+					damage = minimalDamage;
+				else
+					damage = (float)Random.Next((int)minimalDamage, (int)baseDamage);
 			}
 			else
 			{

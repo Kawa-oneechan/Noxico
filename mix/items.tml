@@ -499,6 +499,19 @@ item: hammer
 		char: 0x192
 		fore: silver
 
+item: blahaj
+	_n: bl&#x86;haj
+	equipable
+		hand
+	weight: light
+	weapon
+		damage: 2
+		skill: club
+		attacktype: crush
+	description: "A plush shark."
+	ascii
+		char: 0x184
+		fore: blue
 
 -- #region Nethack weapons
 __marker: Nethack weapons
