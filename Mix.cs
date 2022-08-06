@@ -38,6 +38,7 @@ namespace Noxico
 			Program.WriteLine("Mixfiles enumerated. Indexing contents...");
 			foreach (var mixfile in mixfiles)
 			{
+				var mixHash = mixfile.GetHashCode();
 				if (!File.Exists(mixfile))
 				{
 					Program.WriteLine("Mixfile \"{0}\" in list but nonexistent.", mixfile);
@@ -81,7 +82,7 @@ namespace Noxico
 							MixFile = mixfile,
 						};
 						if (filename.EndsWith(".patch"))
-							filename = mixfile.GetHashCode() + filename;
+							filename = mixHash + "#" + filename;
 						fileList[filename] = entry;
 					}
 				}
