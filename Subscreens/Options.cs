@@ -50,7 +50,12 @@ namespace Noxico
 				};
 				speed.Move(1, 1, speedLabel);
 
-				var fonts = Mix.GetFilesWithPattern("fonts\\*.png").Select(x => System.IO.Path.GetFileNameWithoutExtension(x)).ToArray();
+				var fontsExt = Mix.GetFilesWithPattern("fonts\\*.png");
+				string[] fonts;
+				if (NoxicoGame.Mono)
+					fonts = fontsExt.Select(x => System.IO.Path.GetFileNameWithoutExtension(x.Replace("\\", "/"))).ToArray();
+				else
+					fonts = fontsExt.Select(x => System.IO.Path.GetFileNameWithoutExtension(x)).ToArray();
 				var currentFont = IniFile.GetValue("misc", "font", "8x8-thin");
 				var currentFontIndex = 0;
 				if (fonts.Contains(currentFont))
