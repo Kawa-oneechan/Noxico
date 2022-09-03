@@ -369,10 +369,13 @@ namespace Noxico
 			Program.WriteLine("Preloading book info...");
 			BookTitles = new Dictionary<string, string[]>();
 			//Use GetFilesWithPattern to allow books in mission folders -- /missions/homestuck/books/legendbullshit.txt
-			foreach (var book in Mix.GetFilesWithPattern("\\books\\*.txt"))
+			foreach (var book in Mix.GetFilesWithPattern("(^|\\|/)books(\\|/)*.txt"))
 			{
 				var bookFile = Mix.GetString(book, false).Split('\n');
-				var bookID = Path.GetFileNameWithoutExtension(book);
+				var bookExt = book;
+				if (Environment.OSVersion.Platform == PlatformID.Unix)
+					bookExt = bookExt.Replace("\\", "/");
+				var bookID = Path.GetFileNameWithoutExtension(bookExt);
 				var bookName = bookFile[0].Substring(3).Trim();
 				var bookAuthor = bookFile[1].StartsWith("## ") ? bookFile[1].Substring(3).Trim() : i18n.GetString("book_unknownauthor");
 				BookTitles.Add(bookID, new[] { bookName, bookAuthor });
