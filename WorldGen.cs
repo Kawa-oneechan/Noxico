@@ -803,7 +803,7 @@ namespace Noxico
 			{
 				for (var col = 0; col < cols; col++)
 				{
-					var h = height[row * 1, col];
+					var h = height[row, col];
 					if (h < waterLevel)
 						map[row, col] = 1;
 				}

@@ -68,7 +68,30 @@ namespace Noxico
 
 				saveButton = new UIButton(i18n.GetString("key_Save"), (s, e) =>
 				{
-					//TODO: set values
+					var tmap = new Dictionary<string, string>()
+					{
+						{  "return", "enter" },
+						{  "oem1", "semicolon" },
+						{  "oem2", "question" },
+						{  "oem3", "tilde" },
+						{  "oem4", "openbrackets" },
+						{  "oem5", "pipe" },
+						{  "oem6", "closebrackets" },
+						{  "oem7", "quotes" },
+						{  "oem8", "backslash" },
+					};
+					var bindingNames = Enum.GetNames(typeof(KeyBinding)).Select(c => c.ToLowerInvariant()).ToArray();
+					for (var i = 0; i < numControls; i++)
+					{
+						var v = NoxicoGame.KeyBindings[(KeyBinding)i].ToString().ToLowerInvariant();
+						if (tmap.ContainsKey(v)) v = tmap[v];
+						if (v.StartsWith("oem")) v = v.Substring(3);
+						if (NoxicoGame.KeyBindingMods[(KeyBinding)i])
+							v = "^" + v;
+						IniFile.SetValue("keymap", bindingNames[i], v);
+					}
+
+
 					IniFile.Save("noxico.ini");
 					Options.Open();
 				})
