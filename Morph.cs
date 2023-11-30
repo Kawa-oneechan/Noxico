@@ -63,12 +63,12 @@ namespace Noxico
 
 			var meta = new[] { "playable", "culture", "namegen", "bestiary", "femalesmaller", "costume", "_either", "items" };
 			var simpleTraits = new[] { "fireproof", "aquatic" };
-			var trivialSizes = new[]
+			var trivialSizes = new List<string>()
 			{
 				"tallness", "hips", "waist", "ass/size",
-				//TODO: take these from stats.lua?
-				"charisma", "mind", "vice", "libido", "speed", "body"
 			};
+			trivialSizes.AddRange(StatusDisplay.Stats.Select(s => s.Name.ToLowerInvariant()));
+
 			var trivialKinds = new[] { "face", "teeth", "tongue", "ears", "legs" };
 			var trivialColors = new[] { "eyes" };
 			var possibleChanges = new List<Token>();
