@@ -85,3 +85,11 @@ end
 function AnalPlug(who)
 	return who.GetEquippedItemBySlot("anus") ~= nil
 end
+
+function TalkToSelf(who)
+	if (who.GetStat("Mind") >= 10) then
+		Notice(i18n.GetString("talkingtoyourself"), true)
+	else
+		Notice(i18n.GetString("talkingtoyourself_nutso"), true)
+	end
+end

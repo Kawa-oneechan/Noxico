@@ -248,6 +248,7 @@ namespace Noxico
 					{
 						description = i18n.Format("action_descyou", player.Character.Name);
 						options["look"] = i18n.GetString("action_lookatyou");
+						options["talk"] = i18n.GetString("action_talktoyou");
 						if (player.Character.GetStat("excitement") >= 30)
 							options["fuck"] = i18n.GetString("action_masturbate");
 
@@ -374,11 +375,7 @@ namespace Noxico
 								case "talk":
 									if (PointingAt is Player)
 									{
-										//if (Culture.CheckSummoningDay()) return;
-										if (player.Character.Path("mind").Value >= 10)
-											MessageBox.Notice(i18n.GetString("talkingotyourself"), true);
-										else
-											MessageBox.Notice(i18n.GetString("talkingtoyourself_nutso"), true);
+										Lua.Environment.TalkToSelf(((Player)PointingAt).Character);
 									}
 									else if (PointingAt is BoardChar)
 									{

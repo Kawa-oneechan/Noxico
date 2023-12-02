@@ -91,6 +91,8 @@ namespace Noxico
 			env.PlaySound = new Action<string>(x => NoxicoGame.Sound.PlaySound(x));
 			env.Message = new Action<object, object>((x, y) =>
 				NoxicoGame.AddMessage(x, y));
+			env.Notice = new Action<string, bool>((x, y) =>
+				MessageBox.Notice(x, y));
 			env.Titlecase = new Func<string, string>(x => x.Titlecase());
 
 			env.GetBoard = new Func<int, Board>(x => NoxicoGame.Me.GetBoard(x));
