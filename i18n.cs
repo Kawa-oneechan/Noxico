@@ -320,7 +320,7 @@ namespace Noxico
 
 						var pToks = wordStructor.Where(x => x.Name == match.Groups["subcom"].Value).ToList();
 						if (pToks.Count == 0)
-							return string.Format("<WordStructor fail: {0}>", match.Groups["subcom"].Value);
+							return string.Format("[[WordStructor fail: {0}]]", match.Groups["subcom"].Value);
 						var pTok = pToks.PickWeighted(); //pToks[Random.Next(pToks.Count)];
 						var pRes = pTok.Tokens.Where(x => !x.HasToken("filter") || wordStructFilter(x.GetToken("filter"), target)).ToList();
 						//Remove all less-specific options if any specific are found.

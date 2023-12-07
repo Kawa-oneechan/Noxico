@@ -68,15 +68,15 @@ group: HasPenis(top) and (not HasVagina(top)) and top.GetToken('penis').Text ~= 
 			<[[
 				top.Orgasm()
 				if masturbating then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} all over [t:Him]self."}, Color.Orange)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} all over [t:Him]self."}, Color.Orange)
 				elseif top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
 				elseif top.HasSexFlag("givingvaginal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
 				elseif top.HasSexFlag("givinganal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
 				else
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} all over [b:him]."}, Color.Orange)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} all over [b:him]."}, Color.Orange)
 				end
 			]]>
 -- endgroup penis climax
@@ -117,15 +117,15 @@ group: HasVagina(top) and HasPenis(top) and top.GetToken('penis').Text ~= 'strap
 				--	-- todo add potion? :-D
 				---- add masturbating
 				if top.HasSexFlag("givingvaginal") and top.HasSexFlag("givinganal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy] and [?:anus]."}, Color.Red)
 				elseif top.HasSexFlag("givingvaginal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:pussy]."}, Color.Red)
 				elseif top.HasSexFlag("givinganal") then
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} deep inside [b:yourornames] [?:anus]."}, Color.Orange)
 				elseif top.HasSexFlag("fingeringvaginal") then
 					Message({"[t:Youorname] squirt{s} all over [b:yourornames] [b:hand]."}, Color.Orange)
 				else
-					Message({"[t:Youorname] [?t:scream{s}] as [t:he] come{s} all over [b:him]."}, Color.Orange)
+					Message({"[t:Youorname] [?t:verb-scream{s}] as [t:he] come{s} all over [b:him]."}, Color.Orange)
 				end
 			]]>
 -- endgroup herm climax
@@ -153,7 +153,7 @@ choice: orgasm_denial_ring
 	effect
 		<[[
 			top.Raise("pleasure", -15)
-			Message({"[t:Youorname] [?t:whimper{s}] as [t:he] almost, but not quite, orgasm{s}."}, Color.Orange)
+			Message({"[t:Youorname] [?t:verb-whimper{s}] as [t:he] almost, but not quite, orgasm{s}."}, Color.Orange)
 		]]>
 
 -- endgroup climaxes
