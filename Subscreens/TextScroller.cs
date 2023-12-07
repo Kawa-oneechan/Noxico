@@ -25,7 +25,7 @@ namespace Noxico
 
 				window = new UIWindow(text[0]) { Left = left, Top = 1, Width = 74, Height = Program.Rows - 3 };
 				window.Draw();
-				var help = ' ' + i18n.GetString("textscroller_help") + ' ';
+				var help = "\u0328 " + i18n.GetString("textscroller_help") + " \u0329";
 				host.Write(help, UIColors.WindowBorder, Color.Transparent, Program.Rows - 3, (Program.Cols / 2) - (help.Length() / 2));
 				var empty = new string(' ', 70);
 				for (int i = 1; i < Program.Rows - 5; i++)
@@ -40,8 +40,8 @@ namespace Noxico
 			}
 			if (Subscreens.Redraw)
 			{
-				NoxicoGame.HostForm.SetCell(2, left + 73, (scroll > 1) ? '\x1E' : '\xBA', (scroll > 1) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
-				NoxicoGame.HostForm.SetCell(Program.Rows - 4, left + 73, (scroll + 21 < text.Length) ? '\x1F' : '\xBA', (scroll + 21 < text.Length) ? UIColors.RegularText : UIColors.WindowBorder, UIColors.WindowBackground);
+				NoxicoGame.HostForm.SetCell(2, left + 73, (scroll > 1) ? '\u030A' : '\u0302', UIColors.WindowBorder, UIColors.WindowBackground);
+				NoxicoGame.HostForm.SetCell(Program.Rows - 4, left + 73, (scroll + 21 < text.Length) ? '\u032A' : '\u0302', UIColors.WindowBorder, UIColors.WindowBackground);
 				Subscreens.Redraw = false;
 			}
 

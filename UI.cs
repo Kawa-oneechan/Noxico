@@ -228,10 +228,10 @@ namespace Noxico
 
 		public override void Draw()
 		{
-			var top = (char)0xC9 + new string((char)0xCD, Width - 2) + (char)0xBB;
-			var line = (char)0xBA + new string(' ', Width - 2) + (char)0xBA;
-			var bottom = (char)0xC8 + new string((char)0xCD, Width - 2) + (char)0xBC;
-			var caption = ' ' + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text) + "  ";
+			var top = (char)0x306 + new string((char)0x2E1, Width - 2) + (char)0x307;
+			var line = (char)0x300 + new string(' ', Width - 2) + (char)0x302;
+			var bottom = new string((char)0x321, Width - 2); //(char)0x326 + new string((char)0x321, Width - 2) + (char)0x327;
+			var caption = "\u0308 " + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text) + " \u0309";
 
 			NoxicoGame.HostForm.Write(top, Foreground, Background, Top, Left);
 			if (!Text.IsBlank())
@@ -240,13 +240,17 @@ namespace Noxico
 			var bg = Background;
 			if (Gradient)
 				bg = bg.Darken(2 * Height);
-			for (var i = Top + 1; i < Top + Height; i++)
+			for (var i = Top + 1; i < Top + Height - 1; i++)
 			{
 				NoxicoGame.HostForm.Write(line, Foreground, bg, i, Left);
 				if (Gradient)
 					bg = bg.Darken(2 * Height);
 			}
-			NoxicoGame.HostForm.Write(bottom, Foreground, bg, Top + Height - 1, Left);
+			//NoxicoGame.HostForm.Write(bottom, Foreground, bg, Top + Height - 1, Left);
+			//weird bug causes fancy bottom to render as ____\/ instead of \____/
+			NoxicoGame.HostForm.Write(bottom, Foreground, bg, Top + Height - 1, Left + 1);
+			NoxicoGame.HostForm.SetCell(Top + Height - 1, Left, 0x326, Foreground, bg);
+			NoxicoGame.HostForm.SetCell(Top + Height - 1, Left + Width - 1, 0x327, Foreground, bg);
 		}
 
 		public void Center()

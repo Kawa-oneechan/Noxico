@@ -87,6 +87,8 @@ namespace Noxico
 					keys = " " + Toolkit.TranslateKey(KeyBinding.Accept) + "/" + Toolkit.TranslateKey(KeyBinding.Back) + " ";
 				else if (type == BoxType.List)
 					keys = " \x18/\x19 ";
+				if (!keys.IsBlank())
+					keys = "\u0328 " + keys + " \u0329";
 				key = new UILabel(keys) { Top = top + height - 1, Left = left + width - 2 - keys.Length() };
 				UIManager.Elements.Add(key);
 				
