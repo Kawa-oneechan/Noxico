@@ -231,11 +231,17 @@ namespace Noxico
 			var top = (char)0x306 + new string((char)0x2E1, Width - 2) + (char)0x307;
 			var line = (char)0x300 + new string(' ', Width - 2) + (char)0x302;
 			var bottom = new string((char)0x321, Width - 2); //(char)0x326 + new string((char)0x321, Width - 2) + (char)0x327;
-			var caption = "\u0308 " + (Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text) + " \u0309";
+			var caption = Text.Length() > Width - 8 ? Text.Remove(Width - 8) + (char)0x137 : Text;
 
-			NoxicoGame.HostForm.Write(top, Foreground, Background, Top, Left);
 			if (!Text.IsBlank())
-				NoxicoGame.HostForm.Write(caption, Title.A > 0 ? Title : Foreground, Background, Top, Left + (Width / 2) - (caption.Length() / 2));
+			{
+				NoxicoGame.HostForm.Write(new string(' ', Width), Background, Foreground, Top, Left);
+				NoxicoGame.HostForm.Write(caption, Title.A > 0 ? Title : Background, Foreground, Top, Left + (Width / 2) - (caption.Length() / 2));
+			}
+			else
+			{
+				NoxicoGame.HostForm.Write(top, Foreground, Background, Top, Left);
+			}
 
 			var bg = Background;
 			if (Gradient)
@@ -243,6 +249,11 @@ namespace Noxico
 			for (var i = Top + 1; i < Top + Height - 1; i++)
 			{
 				NoxicoGame.HostForm.Write(line, Foreground, bg, i, Left);
+				if (i == Top + 1 && !Text.IsBlank())
+				{
+					NoxicoGame.HostForm.SetCell(i, Left, 0x306, Foreground, bg);
+					NoxicoGame.HostForm.SetCell(i, Left + Width - 1, 0x307, Foreground, bg);
+				}
 				if (Gradient)
 					bg = bg.Darken(2 * Height);
 			}

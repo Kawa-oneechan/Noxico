@@ -89,7 +89,7 @@ namespace Noxico
 					keys = " \x18/\x19 ";
 				if (!keys.IsBlank())
 					keys = "\u0328 " + keys + " \u0329";
-				key = new UILabel(keys) { Top = top + height - 1, Left = left + width - 2 - keys.Length() };
+				key = new UILabel(keys) { Top = top + height - 1, Left = left + width - 2 - keys.Length(), Foreground = UIColors.WindowBorder };
 				UIManager.Elements.Add(key);
 				
 				Subscreens.Redraw = true;
