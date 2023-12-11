@@ -321,7 +321,7 @@ namespace Noxico
 
 			if (this.HasToken("timer") && !this.OnTimer.IsBlank() && !item.HasToken("timer"))
 			{
-				item.AddToken("timer").Value = (this.GetToken("timer").Value == 0) ? 60 : this.GetToken("timer").Value;
+				item.AddToken("timer").Value = (this.GetToken("timer").IntValue == 0) ? 60 : this.GetToken("timer").Value;
 				item.GetToken("timer").Text = NoxicoGame.InGameTime.ToBinary().ToString();
 			}
 
@@ -610,7 +610,7 @@ namespace Noxico
 				var charge = carriedItem.Path("charge");
 				if (charge == null && carriedItem.Name == "charge")
 					charge = carriedItem;
-				if (charge == null || charge.Value == 1)
+				if (charge == null || charge.IntValue == 1)
 				{
 					if (HasToken("revert"))
 					{

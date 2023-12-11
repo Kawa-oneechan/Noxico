@@ -81,7 +81,7 @@ set: town
 				owner: 2
 
 	template: wide test
-		inhabitants: 1
+		inhabitants: 2
 		flip-h
 		flip-v
 		map

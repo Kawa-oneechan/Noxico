@@ -94,7 +94,7 @@ namespace Noxico
 			var totalWithWeights = weights.Where(x => x > -1).Sum();
 			var defaultWeight = (1.0f - totalWithWeights) / numWithWeigths;
 			for (var i = 0; i < weights.Length; i++)
-				if (weights[i] == -1)
+				if (weights[i] < 0) //== -1)
 					weights[i] = defaultWeight;
 			var w = weights.Sum();
 			var r = (float)(Random.NextDouble() * w);
@@ -626,7 +626,7 @@ namespace Noxico
 		/// </summary>
 		public static Color Darken(this Color color, double divisor = 2)
 		{
-			if (divisor == 0)
+			if ((int)divisor == 0)
 				divisor = 1;
 			var rD = color.R / divisor;
 			var gD = color.G / divisor;
@@ -1001,7 +1001,7 @@ namespace Noxico
 			}
 
 			if (missing.Count > 0)
-				throw new Exception(string.Format("The \"\" bodyplan is missing the following token(s):\r\n * {1}", name, string.Join("\r\n * ", missing)));
+				throw new Exception(string.Format("The \"{0}\" bodyplan is missing the following token(s):\r\n * {1}", name, string.Join("\r\n * ", missing)));
 		}
 		#endregion
 

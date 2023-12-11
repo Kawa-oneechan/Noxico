@@ -100,7 +100,7 @@ namespace Noxico
 				NoxicoGame.Immediate = true;
 
 				//Going from a dungeon to a wild board?
-				if (targetBoard.GetToken("type").Value == 0 && sourceBoard.GetToken("type").Value == 2)
+				if (targetBoard.BoardType == BoardType.Wild && sourceBoard.BoardType == BoardType.Dungeon)
 					game.FlushDungeons();
 
 			}
@@ -174,6 +174,7 @@ namespace Noxico
 			var lx = XPosition;
 			var ly = YPosition;
 
+			//TODO: look into this
 			check = SolidityCheck.Walker;
 			if (Character.IsSlime)
 				check = SolidityCheck.DryWalker;
@@ -354,7 +355,7 @@ namespace Noxico
 						if (targetArmorItem.GetToken("armor").Value > overallArmor)
 							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
 					}
-					if (overallArmor != 0)
+					if (overallArmor > 0)
 						damage /= overallArmor;
 
 					FireLine(weapon.Path("effect"), x, y);
@@ -914,7 +915,7 @@ namespace Noxico
 						if (targetArmorItem.GetToken("armor").Value > overallArmor)
 							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
 					}
-					if (overallArmor != 0)
+					if (overallArmor > 0)
 						damage /= overallArmor;
 
 					NoxicoGame.AddMessage(i18n.Format("youhitxfory", hit.Character.GetKnownName(false, false, true), damage, i18n.Pluralize("point", (int)damage)));

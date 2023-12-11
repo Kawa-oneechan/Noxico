@@ -243,7 +243,7 @@ namespace Noxico
 			if (clutterDB == null)
 				clutterDB = Mix.GetTokenTree("clutter.tml", true);
 			var knownThing = clutterDB.FirstOrDefault(kc =>
-				thing.Glyph == kc.GetToken("char").Value ||
+				thing.Glyph == kc.GetToken("char").IntValue ||
 				(!name.IsBlank() && name.Equals(kc.Text, StringComparison.InvariantCultureIgnoreCase)) ||
 				thing.ID.StartsWith(kc.Text, StringComparison.InvariantCultureIgnoreCase));
 			if (knownThing != null)

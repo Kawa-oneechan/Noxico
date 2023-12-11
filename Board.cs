@@ -407,7 +407,7 @@ namespace Noxico
 		public string Name { get { return GetToken("name").Text; } set { GetToken("name").Text = value; } }
 		public string ID { get { return GetToken("id").Text; } set { GetToken("id").Text = value; } }
 		public string Music { get { return GetToken("music").Text; } set { GetToken("music").Text = value; } }
-		public BoardType BoardType { get { return (BoardType)GetToken("type").Value; } set { GetToken("type").Value = (float)value; } }
+		public BoardType BoardType { get { return (BoardType)GetToken("type").IntValue; } set { GetToken("type").IntValue = (int)value; } }
 		public int ToNorth { get { return (int)GetToken("north").Value; } set { GetToken("north").Value = value; } }
 		public int ToSouth { get { return (int)GetToken("south").Value; } set { GetToken("south").Value = value; } }
 		public int ToEast { get { return (int)GetToken("east").Value; } set { GetToken("east").Value = value; } }
@@ -596,7 +596,7 @@ namespace Noxico
 					var music = BiomeData.Biomes[(int)newBoard.GetToken("biome").Value].Music;
 					if (newBoard.BoardType == BoardType.Town)
 						music = "set://Town";
-					else if (newBoard.BoardType == BoardType.Town)
+					else if (newBoard.BoardType == BoardType.Dungeon)
 						music = "set://Dungeon";
 					newBoard.AddToken("music", music);
 				}
@@ -1066,9 +1066,10 @@ namespace Noxico
 
 		public void UpdateLightmap(Entity source, bool torches)
 		{
-			if (/* (source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || */ (!HasToken("dark") && !Toolkit.IsNight()))
-			{
-				for (int row = 0; row < Height; row++)
+			//if ((source != null && source is BoardChar && ((BoardChar)source).Character.Path("eyes/glow") != null) || (!HasToken("dark") && !Toolkit.IsNight()))
+			if (!HasToken("dark") && !Toolkit.IsNight())
+				{
+					for (int row = 0; row < Height; row++)
 					for (int col = 0; col < Width; col++)
 						Lightmap[col, row] = Tilemap[col, row].Seen = true;
 				return;
@@ -1088,7 +1089,7 @@ namespace Noxico
 			var doingTorches = false;
 			Func<int, int, bool> f = (x1, y1) =>
 			{
-				if (y1 < 0 || y1 >= Height | x1 < 0 || x1 >= Width)
+				if (y1 < 0 || y1 >= Height || x1 < 0 || x1 >= Width)
 					return true;
 				if (!doingTorches)
 					Tilemap[x1, y1].Seen = true;
@@ -1096,7 +1097,7 @@ namespace Noxico
 			};
 			Action<int, int> a = (x2, y2) =>
 			{
-				if (y2 < 0 || y2 >= Height | x2 < 0 || x2 >= Width)
+				if (y2 < 0 || y2 >= Height || x2 < 0 || x2 >= Width)
 					return;
 				Lightmap[x2, y2] = true;
 			};
@@ -1221,13 +1222,13 @@ namespace Noxico
 
 		public void RespawnEncounters()
 		{
-			if (GetToken("encounters").Value == 0 || BoardType != BoardType.Dungeon && BoardType != BoardType.Wild)
+			if (GetToken("encounters").IntValue == 0 || BoardType != BoardType.Dungeon && BoardType != BoardType.Wild)
 				return;
 			if (Stock == 0)
 				return;
 			var encData = GetToken("encounters");
 			var count = Entities.OfType<BoardChar>().Count();
-			var toAdd = (int)encData.Value - count;
+			var toAdd = encData.IntValue - count;
 			if (toAdd <= 0)
 				return;
 			if (toAdd > Stock)
@@ -1308,9 +1309,11 @@ namespace Noxico
 					continue;
 				if (board.BoardType != boardType)
 					continue;
-				if (biome > 0 && board.GetToken("biome").Value != biome)
+				if (biome > 0 && board.GetToken("biome").IntValue != biome)
 					continue;
-				if (board.GetToken("biome").Value == 0 || board.GetToken("biome").Value == 9)
+				//TODO: WHAT DO THE NUMBERS MEAN MASON
+				//(I mean, besides "Grassland" and "something out-of-band that USED to exist" but was probably "Ocean"...)
+				if (board.GetToken("biome").IntValue == 0 || board.GetToken("biome").IntValue == 9)
 					continue;
 				if (maxWater != -1)
 				{

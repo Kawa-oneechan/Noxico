@@ -252,7 +252,7 @@ namespace Noxico
 						if (player.Character.GetStat("excitement") >= 30)
 							options["fuck"] = i18n.GetString("action_masturbate");
 
-						if (player.Character.HasToken("copier") && player.Character.GetToken("copier").Value == 1)
+						if (player.Character.HasToken("copier") && player.Character.GetToken("copier").IntValue == 1)
 						{
 							if (player.Character.Path("copier/backup") != null || player.Character.Path("copier/full") == null)
 								options["revert"] = i18n.GetString("action_revert");
@@ -328,9 +328,10 @@ namespace Noxico
 
 #if DEBUG
 					if (PointingAt is BoardChar)
+					{
 						options["mutate"] = "(debug) Random mutate";
-					if (PointingAt is BoardChar)
 						options["turbomutate"] = "(debug) Apply LOTS of mutations!";
+					}
 #endif
 
 					ActionList.Show(description, PointingAt.XPosition - NoxicoGame.CameraX, PointingAt.YPosition - NoxicoGame.CameraY, options,

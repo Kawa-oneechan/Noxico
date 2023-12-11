@@ -242,14 +242,16 @@ namespace Noxico
 							i = 0;
 						if (i > 100)
 							i = 100;
-						NoxicoGame.Sound.MusicVolume = i / 100f;
+						if (NoxicoGame.Sound != null)
+							NoxicoGame.Sound.MusicVolume = i / 100f;
 						IniFile.SetValue("audio", "musicvolume", i);
 						i = int.Parse(soundVolume.Text);
 						if (i < 0)
 							i = 0;
 						if (i > 100)
 							i = 100;
-						NoxicoGame.Sound.SoundVolume = i / 100f;
+						if (NoxicoGame.Sound != null)
+							NoxicoGame.Sound.SoundVolume = i / 100f;
 						IniFile.SetValue("audio", "soundvolume", i);
 
 						if (!enableAudio.Checked && NoxicoGame.Sound != null)

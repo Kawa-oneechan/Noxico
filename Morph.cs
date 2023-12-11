@@ -259,7 +259,7 @@ namespace Noxico
 						possibleChanges.Add(change);
 					}
 				}
-				else if (hairThen == null || hairThen.GetToken("length").Value == 0)
+				else if (hairThen == null || hairThen.GetToken("length").IntValue == 0)
 				{
 					var hairLengthNow = hairNow.GetToken("length").Value;
 					if (hairLengthNow > 0.25f)
@@ -1115,7 +1115,7 @@ namespace Noxico
 
 					Token change = null;
 
-					var newBalls = sourceBalls.GetToken("amount").Value + addOrRemove;
+					var newBalls = sourceBalls.GetToken("amount").IntValue + addOrRemove;
 					if (addOrRemove != 0)
 					{
 						change = new Token("balls/amount", newBalls);
@@ -1195,7 +1195,7 @@ namespace Noxico
 							foreach (var nipTok in nips.Tokens)
 							{
 								change.AddToken("_addto/breasts/nipples", nipTok.Name);
-								if (nipTok.Value != 0) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Value);
+								if (nipTok.IntValue != 0) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Value);
 								if (!nipTok.Text.IsBlank()) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Text);
 							}
 						}
@@ -1227,7 +1227,7 @@ namespace Noxico
 							foreach (var nipTok in nips.Tokens)
 							{
 								change.AddToken("_addto/breasts/nipples", nipTok.Name);
-								if (nipTok.Value != 0) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Value);
+								if (nipTok.IntValue != 0) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Value);
 								if (!nipTok.Text.IsBlank()) change.AddToken("breasts/nipples/" + nipTok.Name, nipTok.Text);
 							}
 							change.AddToken("$", i18n.GetString("morph_gainonenipple"));
@@ -1798,9 +1798,9 @@ namespace Noxico
 				ret.Append(' ');
 			else
 			{
-				var t = tallness.Value;
+				var t = tallness.IntValue;
 				if (t == 0 && tallness.Text.StartsWith("roll"))
-					t = float.Parse(tallness.Text.Substring(tallness.Text.IndexOf('+') + 1));
+					t = int.Parse(tallness.Text.Substring(tallness.Text.IndexOf('+') + 1));
 				if (t < 140)
 					ret.Append('_');
 				else if (t > 180)

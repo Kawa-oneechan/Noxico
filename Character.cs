@@ -545,7 +545,7 @@ namespace Noxico
 				if (token.HasToken("_maybe"))
 				{
 					float value = token.GetToken("_maybe").Value;
-					if (value == 0.0f)
+					if ((int)value == 0)
 						value = 0.5f;
 					if (Random.NextDouble() >= value)
 						removeThese.Add(token);
@@ -909,8 +909,8 @@ namespace Noxico
 
 			var s = skills.GetToken(skill);
 			var l = (int)s.Value;
-			var i = 0.0349 / (1 + (l / 2));
-			s.Value += (float)i;
+			var i = 0.0349f / (1 + (l / 2f));
+			s.Value += i;
 		}
 
 		public float CumAmount
@@ -936,7 +936,7 @@ namespace Noxico
 			{
 				var size = GetBreastSize();
 				var amount = GetBreastAmount();
-				if (amount == 0)
+				if ((int)amount == 0)
 					return 0;
 				var effectiveAmount = size * amount;
 				if (this.GetToken("breasts").HasToken("lactation"))
@@ -1182,7 +1182,7 @@ namespace Noxico
 					var taur = (int)this.GetToken("taur").Value + 1;
 					if (taur < 2)
 						bodyThings.Add(i18n.GetString("single_taur"));
-					else if (taur > 1)
+					else //if (taur > 1)
 						bodyThings.Add(i18n.Format("multi_taur", taur + 1));
 				}
 			}
@@ -1260,7 +1260,7 @@ namespace Noxico
 				hairThings.Add(i18n.GetString("horntype_monoceros"));
 			if (this.HasToken("horns") && this.Path("horns").Value > 0)
 			{
-				var count = GetToken("horns").Value;
+				var count = GetToken("horns").IntValue;
 				Token horns = GetToken("horns");
 				string size = horns.HasToken("big") ? "big" : "small";
 				string style = horns.HasToken("curled") ? "curled" : "straight";
@@ -1342,14 +1342,14 @@ namespace Noxico
 				//if (HasToken("quadruped") && GetBreastRowSize(i) < 0.5)
 				//	continue;
 				print("\xC0 " + Toolkit.Count(boob.GetToken("amount").Value) + " " + Descriptions.GetSizeDescription("breasts/size", GetBreastSize()));
-				if (breastsVisible && (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
+				if (breastsVisible && (boob.Path("nipples") == null || boob.Path("nipples").IntValue == 0))
 					print(" nippleless");
 				print(" breast");
 				if (boob.GetToken("amount").Value > 1)
 					print("s");
-				if (!breastsVisible || (boob.Path("nipples") == null || boob.Path("nipples").Value == 0))
+				if (!breastsVisible || (boob.Path("nipples") == null || boob.Path("nipples").IntValue == 0))
 					print("\n");
-				else if (!(boob.Path("nipples") == null) && !(boob.Path("nipples").Value == 0))
+				else if (!(boob.Path("nipples") == null) && !(boob.Path("nipples").IntValue == 0))
 				{
 					var nipSize = 0.5f;
 					if (boob.Path("nipples/size") != null)
@@ -1944,7 +1944,7 @@ Tokens:
 			//apply
 			if (score < 0)
 				this.AddToken("slow");
-			else if (score > 0)
+			else //if (score > 0)
 				this.AddToken("haste");
 
 		}
@@ -2400,7 +2400,7 @@ Tokens:
 			{
 				if (!HasToken("sexpreference"))
 					return true;
-				var pref = GetToken("sexpreference").Value;
+				var pref = GetToken("sexpreference").IntValue;
 				return pref == 0 || pref == 2;
 			}
 		}
@@ -2411,7 +2411,7 @@ Tokens:
 			{
 				if (!HasToken("sexpreference"))
 					return true;
-				var pref = GetToken("sexpreference").Value;
+				var pref = GetToken("sexpreference").IntValue;
 				return pref == 1 || pref == 2;
 			}
 		}
@@ -2420,7 +2420,7 @@ Tokens:
 		{
 			if (!HasToken("sexpreference"))
 				return true;
-			var pref = GetToken("sexpreference").Value;
+			var pref = GetToken("sexpreference").IntValue;
 			if (other.PercievedGender == Noxico.Gender.Herm)
 				return true;
 			if (other.PercievedGender == Noxico.Gender.Neuter)
@@ -2550,7 +2550,7 @@ Tokens:
 
 			if (HasToken("fullCopy"))
 			{
-				if (Path("copier/full") != null && GetToken("copier").Value == 0) //we are a fullcopier in our true form
+				if (Path("copier/full") != null && GetToken("copier").IntValue == 0) //we are a fullcopier in our true form
 				{
 					//Gotta do that check so we don't mistake our fake form for a noncopier.
 					//Only lose the ability *after* reverting.

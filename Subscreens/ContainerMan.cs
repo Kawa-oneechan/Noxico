@@ -440,7 +440,7 @@ namespace Noxico
 				*/
 				token.RemoveToken("equipped");
 			}
-			if (mode == ContainerMode.Vendor && price != 0)
+			if (mode == ContainerMode.Vendor && price > 0)
 			{
 				//Handle the transaction.
 				var pMoney = boardchar.Character.GetToken("money");
@@ -492,7 +492,7 @@ namespace Noxico
 				return i18n.Format("inventory_vendorcaughtyou", vendorChar.Name.ToString()).Viewpoint(vendorChar);
 			}
 			if (token.HasToken("torn")) price = (float)Math.Ceiling(price * 0.25f); //this ain't worth shit, bruh.
-			if (mode == ContainerMode.Vendor && price != 0)
+			if (mode == ContainerMode.Vendor && price > 0)
 			{
 				//Handle the transaction.
 				var pMoney = boardchar.Character.GetToken("money");

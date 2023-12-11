@@ -140,7 +140,7 @@ namespace Noxico
 
 		public void PlayMusic(string name, bool fade = true)
 		{
-			if (!Enabled || musicVolume == 0)
+			if (!Enabled || musicVolume < float.Epsilon)
 				return;
 
 			var set = targetSet;
@@ -231,7 +231,7 @@ namespace Noxico
 
 		public void PlaySound(string name)
 		{
-			if (!Enabled || musicVolume == 0)
+			if (!Enabled || musicVolume < float.Epsilon)
 				return;
 
 			if (name.StartsWith("set://"))

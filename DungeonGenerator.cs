@@ -89,7 +89,7 @@ namespace Noxico
 			//var dontShareSurname = true;
 			var areMarried = Random.NextDouble() > 0.7;
 			var firstPlan = string.Empty;
-			count = 2;
+			//count = 2;
 			for (var i = 0; i < count; i++)
 			{
 				Character c;
@@ -363,7 +363,12 @@ namespace Noxico
 											//var owner = m.Owner == 0 ? null : building.Inhabitants[m.Owner - 1];
 											var owner = (Character)null;
 											if (m.HasToken("owner"))
-												owner = building.Inhabitants[(int)m.GetToken("owner").Value - 1];
+											{
+												var ot = m.GetToken("owner");
+												if (ot.IntValue > building.Inhabitants.Count)
+													ot.IntValue = building.Inhabitants.Count;
+												owner = building.Inhabitants[ot.IntValue - 1];
+											}
 											if (m.Text == "bed")
 											{
 												var newBed = new Clutter()

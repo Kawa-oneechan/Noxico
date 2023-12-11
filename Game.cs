@@ -767,7 +767,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					continue;
 				if (board == CurrentBoard)
 					continue; //Shouldn't have to happen.
-				if (board.GetToken("type").Value == (float)BoardType.Dungeon)
+				if (board.GetToken("type").IntValue == (int)BoardType.Dungeon)
 					board.Flush();
 			}
 		}
@@ -1481,7 +1481,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			if (character.HasToken("flying")) mods += i18n.Format("mod_flying", (character.GetToken("flying").Value / 100.0f) * 100.0f);
 			if (character.HasToken("swimming"))
 			{
-				if (character.GetToken("swimming").Value == -1)
+				if (character.GetToken("swimming").IntValue == -1)
 					mods += i18n.GetString("mod_swimmingunl");
 				else
 					mods += i18n.Format("mod_swimming", (character.GetToken("swimming").Value / 100.0f) * 100.0f);

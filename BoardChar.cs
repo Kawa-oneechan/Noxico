@@ -189,7 +189,7 @@ namespace Noxico
 					if (swimming == null)
 						swimming = Character.AddToken("swimming", 20);
 					swimming.Value -= 1;
-					if (swimming.Value == 0)
+					if (swimming.IntValue == 0)
 						Hurt(9999, "death_drowned", null);
 					Energy -= 1750;
 				}
@@ -343,7 +343,7 @@ namespace Noxico
 				}
 				if (timer.Value <= 0)
 				{
-					timer.Value = (knownItem.GetToken("timer").Value == 0) ? 60 : knownItem.GetToken("timer").Value;
+					timer.Value = (knownItem.GetToken("timer").IntValue == 0) ? 60 : knownItem.GetToken("timer").Value;
 					if (knownItem.OnTimer.IsBlank())
 					{
 						Program.WriteLine("Warning: {0} has a timer, but no OnTimer script! Timer token removed.", carriedItem.Name);
@@ -365,11 +365,11 @@ namespace Noxico
 				{
 					if (!timeout.HasToken("minute"))
 						timeout.AddToken("minute", NoxicoGame.InGameTime.Minute);
-					if (timeout.GetToken("minute").Value == NoxicoGame.InGameTime.Minute)
+					if (timeout.GetToken("minute").IntValue == NoxicoGame.InGameTime.Minute)
 						return;
 					timeout.GetToken("minute").Value = NoxicoGame.InGameTime.Minute;
 					timeout.Value--;
-					if (timeout.Value == 0)
+					if (timeout.IntValue == 0)
 					{
 						copier.RemoveToken(timeout);
 						if (Character.HasToken("fullCopy") && copier.HasToken("backup"))
@@ -424,7 +424,7 @@ namespace Noxico
 			if (Character.HasToken("cooldown"))
 			{
 				Character.GetToken("cooldown").Value--;
-				if (Character.GetToken("cooldown").Value == 0)
+				if (Character.GetToken("cooldown").IntValue == 0)
 					Character.RemoveToken("cooldown");
 				else
 					return;
@@ -470,9 +470,9 @@ namespace Noxico
 
 		private void NewMove()
 		{
-			var solidity = SolidityCheck.Walker;
+			//var solidity = SolidityCheck.Walker;
 			//if (Character.IsSlime)
-			solidity = SolidityCheck.DryWalker;
+			var solidity = SolidityCheck.DryWalker;
 			if (Character.HasToken("flying"))
 				solidity = SolidityCheck.Flyer;
 
@@ -602,7 +602,7 @@ namespace Noxico
 						if (find.HasToken("equipable") && find.HasToken("weapon"))
 						{
 							var r = find.Path("weapon/range");
-							if (r == null || r.Value == 1)
+							if (r == null || r.IntValue == 1)
 							{
 								try
 								{
@@ -770,9 +770,9 @@ namespace Noxico
 
 		private void ActuallyMove()
 		{
-			var solidity = SolidityCheck.Walker;
+			//var solidity = SolidityCheck.Walker;
 			//if (Character.IsSlime)
-			solidity = SolidityCheck.DryWalker;
+			var solidity = SolidityCheck.DryWalker;
 			if (Character.HasToken("flying"))
 				solidity = SolidityCheck.Flyer;
 
@@ -800,7 +800,7 @@ namespace Noxico
 				if (ally)
 					target = ParentBoard.Entities.OfType<BoardChar>().FirstOrDefault(x => !(x is Player) && x != this && x.Character.HasToken("hostile"));
 
-				if (hostile.Value == 0) //Not actively hunting, but on the lookout.
+				if (hostile.IntValue == 0) //Not actively hunting, but on the lookout.
 				{
 					if (target != null && DistanceFrom(target) <= SightRadius && CanSee(target))
 					{
@@ -813,7 +813,7 @@ namespace Noxico
 							if (Character.HasToken("copier"))
 							{
 								var copier = Character.GetToken("copier");
-								if (copier.Value == 0 && !copier.HasToken("timeout"))
+								if (copier.IntValue == 0 && !copier.HasToken("timeout"))
 								{
 									Character.Copy(target.Character);
 									AdjustView();
@@ -847,7 +847,7 @@ namespace Noxico
 						return;
 					}
 				}
-				else if (hostile.Value == 1)
+				else if (hostile.IntValue == 1)
 				{
 					Hunt();
 					return;
@@ -937,7 +937,7 @@ namespace Noxico
 						if (find.HasToken("equipable") && find.HasToken("weapon"))
 						{
 							var r = find.Path("weapon/range");
-							if (r == null || r.Value == 1)
+							if (r == null || r.IntValue == 1)
 							{
 								try
 								{
@@ -1229,7 +1229,7 @@ namespace Noxico
 				if (targetArmorItem.GetToken("armor").Value > overallArmor)
 					overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
 			}
-			if (overallArmor != 0)
+			if (overallArmor > 0)
 				baseDamage /= overallArmor;
 			//Account for armor materials?
 
@@ -1564,7 +1564,7 @@ namespace Noxico
 						if (targetArmorItem.GetToken("armor").Value > overallArmor)
 							overallArmor = Math.Max(1.5f, targetArmorItem.GetToken("armor").Value);
 					}
-					if (overallArmor != 0)
+					if (overallArmor > 0)
 						damage /= overallArmor;
 
 					NoxicoGame.AddMessage(i18n.Format("x_verbs_y_for_z", "hit", damage).Viewpoint(this.Character, hit.Character), this.GetEffectiveColor());

@@ -385,10 +385,10 @@ namespace Noxico
 				}
 
 				ret.AppendFormat("{0}{1}", new string('\t', tabs), item.Name);
-				if (item.Value != 0 || !item.Text.IsBlank())
+				if (item.IntValue != 0 || !item.Text.IsBlank())
 				{
 					ret.Append(": ");
-					if (item.Value != 0)
+					if (item.IntValue != 0)
 						ret.Append(item.Value);
 					else
 						ret.AppendFormat("\"{0}\"", item.Text.Replace("\"", "&#x22;"));
@@ -564,6 +564,7 @@ namespace Noxico
 		public string Name { get; set; }
 		public float Value { get; set; }
 		public string Text { get; set; }
+		public int IntValue {  get { return (int)Value; } set { Value = (float)value; } }
 
 		public override string ToString()
 		{
@@ -629,10 +630,10 @@ namespace Noxico
 		public void SaveToFile(BinaryWriter stream)
 		{
 			stream.Write(Name.OrEmpty());
-			var isInt = (Value == (int)Value);
+			var isInt = (Math.Abs(Value - IntValue) < float.Epsilon);
 			//Format: child count, reserved, has text, value is integral, has value.
 			var flags = 0;
-			if (Value != 0)
+			if (IntValue != 0)
 				flags |= 1;
 			if (isInt)
 				flags |= 2;
@@ -641,7 +642,7 @@ namespace Noxico
 			flags |= Tokens.Count << 4;
 			//We store this as an encoded value to allow any amount of child tokens.
 			stream.Write7BitEncodedInt(flags);
-			if (Value != 0)
+			if (IntValue != 0)
 			{
 				if (isInt)
 					stream.Write7BitEncodedInt((int)Value);
@@ -754,7 +755,7 @@ namespace Noxico
 		/// <returns>Returns true if the tokens match.</returns>
 		public bool Equals(Token other, bool deep = true)
 		{
-			if (other.Name == this.Name && other.Value == this.Value && other.Text == this.Text)
+			if (other.Name == this.Name && (Math.Abs(other.Value - this.Value) < float.Epsilon) && other.Text == this.Text)
 			{
 				if (deep)
 				{

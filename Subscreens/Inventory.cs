@@ -64,7 +64,7 @@ namespace Noxico
 					sigilView.Text += sigils[index] + "\n";
 				}
 			}
-			sigilView.Text.TrimEnd();
+			sigilView.Text = sigilView.Text.TrimEnd();
 			sigilView.Draw();
 		}
 
