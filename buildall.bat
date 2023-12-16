@@ -1,5 +1,8 @@
 @echo off
+if "%DevEnvDir%" == "" call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\vsdevcmd\ext\vcvars.bat"
+if "%DevEnvDir%" == "" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 if "%DevEnvDir%" == "" call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
+if "%DevEnvDir%" == "" goto novs
 echo -----------
 echo BUILD START
 echo -----------
@@ -28,6 +31,11 @@ rd Noxico /s /q
 cd ..
 pause
 exit /b 0
+:novs
+echo.
+echo *** No VS2019, 2015, or even 2010 found. ***
+echo If you _do_ have it, why not try to build from the IDE?
+echo.
 :nogood
 echo ------------
 echo BUILD FAILED
