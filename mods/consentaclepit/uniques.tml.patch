@@ -16,5 +16,5 @@ add: -
 		role: tentaclepit
 		script: bump
 			<[[
-				SceneSystem.Engage(playerEntity.Character, thisEntity.Character, "(tentaclestart)")
+				SceneSystem.Engage(player.Character, me.Character, "(tentaclestart)")
 			]]>

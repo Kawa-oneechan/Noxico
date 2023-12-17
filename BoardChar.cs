@@ -1423,6 +1423,7 @@ namespace Noxico
 			env.scheduler = this.scheduler;
 			*/
 			env.me = this;
+			env.player = NoxicoGame.Me.Player;
 			env.MessageBox = new Action<string>(x =>
 			{
 				var paused = true;

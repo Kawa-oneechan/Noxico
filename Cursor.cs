@@ -208,11 +208,15 @@ namespace Noxico
 												Point();
 												return;
 											}
+											var spawnId = (string)ActionList.Answer;
+											var isUnique = spawnId.StartsWith('!');
+											if (isUnique)
+												spawnId = spawnId.Substring(1);
 											Character newChar = null;
-											if (ActionList.Answer is string && ((string)ActionList.Answer).StartsWith('!'))
-												newChar = Character.GetUnique(((string)ActionList.Answer).Substring(1));
+											if (isUnique)
+												newChar = Character.GetUnique(spawnId);
 											else
-												newChar = Character.Generate((string)ActionList.Answer, Gender.RollDice);
+												newChar = Character.Generate(spawnId, Gender.RollDice);
 											var newBoardChar = new BoardChar(newChar)
 											{
 												XPosition = this.XPosition,
@@ -220,6 +224,7 @@ namespace Noxico
 												ParentBoard = this.ParentBoard
 											};
 											newBoardChar.AdjustView();
+											newBoardChar.AssignScripts(spawnId);
 											ParentBoard.EntitiesToAdd.Add(newBoardChar);
 											ParentBoard.Redraw();
 											NoxicoGame.Mode = UserMode.Walkabout;
