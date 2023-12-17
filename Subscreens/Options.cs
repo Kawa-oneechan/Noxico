@@ -131,7 +131,13 @@ namespace Noxico
 					NoxicoGame.Me.CurrentBoard.Redraw();
 					NoxicoGame.Me.CurrentBoard.Draw();
 				};
-	
+				var screenDouble = new UIToggle(i18n.GetString("opt_screendouble"))
+				{
+					Checked = IniFile.GetValue("misc", "doublesize", false),
+					Background = Color.Transparent,
+				};
+				screenDouble.MoveBelow(0, 3, screenRowsLabel);
+
 				var miscWindow = new UIWindow(i18n.GetString("opt_misc"))
 				{
 					Width = 50,
@@ -234,6 +240,12 @@ namespace Noxico
 							resetGraphics = true;
 						Program.Rows = i;
 						IniFile.SetValue("misc", "screenrows", i);
+						var d = IniFile.GetValue("misc", "doublesize", false);
+						if (d != screenDouble.Checked)
+						{
+							IniFile.SetValue("misc", "doublesize", screenDouble.Checked);
+							resetGraphics = true;
+						}
 
 						IniFile.SetValue("misc", "imperial", imperial.Checked);
 						IniFile.SetValue("audio", "enabled", enableAudio.Checked);
@@ -303,6 +315,7 @@ namespace Noxico
 				UIManager.Elements.Add(screenCols);
 				UIManager.Elements.Add(screenRowsLabel);
 				UIManager.Elements.Add(screenRows);
+				UIManager.Elements.Add(screenDouble);
 				UIManager.Elements.Add(miscWindow);
 				UIManager.Elements.Add(rememberPause);
 				UIManager.Elements.Add(vistaSaves);

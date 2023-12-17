@@ -131,6 +131,7 @@ Number of known items       {2}
 	opt_font: Font
 	opt_screencols: Screen columns
 	opt_screenrows: Screen rows
+	opt_screendouble: Double size
 	opt_misc: Various
 	opt_skipintro: Skip dream on new game
 	opt_rememberpause: Remember page in pause menu

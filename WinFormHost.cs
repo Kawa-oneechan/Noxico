@@ -445,7 +445,10 @@ namespace Noxico
 
 			fourThirtySeven = IniFile.GetValue("misc", "437", false);
 			youtube = IniFile.GetValue("misc", "youtube", false);
-			ClientSize = new Size(Program.Cols * cellWidth, Program.Rows * cellHeight);
+			var w = Program.Cols * cellWidth;
+			var h = Program.Rows * cellHeight;
+			var d = IniFile.GetValue("misc", "doublesize", false);
+			ClientSize = new Size(w * (d ? 2 : 1), h * (d ? 2 : 1));
 			if (youtube)
 			{
 				//Find nearest YT size
@@ -494,6 +497,8 @@ namespace Noxico
 			var offY = rect.Top;
 			e.Graphics.DrawImage(backBuffer, rect);
 
+			var scale = IniFile.GetValue("misc", "doublesize", false) ? 2 : 1;
+
 			//Moved here from Draw() to prevent mouse droppings. Bonus: this allows a slightly larger cursor.
 			if (Cursor.X != prevCursor.X || Cursor.Y != prevCursor.Y)
 				prevCursor = Cursor;
@@ -506,7 +511,11 @@ namespace Noxico
 					cSize = 1;
 
 				var pen = (uint)Environment.TickCount % 16;
-				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen], offX + (Cursor.X * cellWidth) - 1, offY + (Cursor.Y * cellHeight) - 1, cSize + 1, cellHeight + 1);
+				e.Graphics.DrawRectangle(cursorPens[(int)NoxicoGame.Mode, pen],
+					(offX + (Cursor.X * cellWidth) - 1) * scale,
+					(offY + (Cursor.Y * cellHeight) - 1) * scale,
+					(cSize + 1) * scale,
+					(cellHeight + 1) * scale);
 			}
 		}
 
@@ -879,8 +888,10 @@ namespace Noxico
 
 		private void MainForm_MouseUp(object x, MouseEventArgs y)
 		{
-			var tx = y.X / (cellWidth);
-			var ty = y.Y / (cellHeight);
+			var scale = IniFile.GetValue("misc", "doublesize", false) ? 2 : 1;
+			var tx = y.X / (cellWidth * scale);
+			var ty = y.Y / (cellHeight * scale);
+
 			var ltx = tx - NoxicoGame.CameraX;
 			var lty = ty - NoxicoGame.CameraY;
 			var lptx = tx + NoxicoGame.CameraX;
