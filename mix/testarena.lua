@@ -13,7 +13,9 @@ TestArena = {
 function BuildTestArena(center)
 	print ("lol")
 	center.Clear("Grassland");
-	center.GenerateTown(false, false);
+	-- center.GenerateTown(false, false);
+	-- center.MergeBitmap("thepit.png", "thepit.tml");
+	center.PlaceCharacter(Character.GetUnique("tentaclesan"), 4, 4)
 
 	-- local beastie = Character.Generate("bear", Gender.RollDice);
 	-- local beastebc = center.PlaceCharacter(beastie, 35, 10);

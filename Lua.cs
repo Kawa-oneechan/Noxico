@@ -79,6 +79,7 @@ namespace Noxico
 			env2.RegisterPackage("Realms", typeof(Realms));
 			//env2.RegisterPackage("Stat", typeof(Stat));
 			env2.RegisterPackage("SceneSystem", typeof(SceneSystem));
+			env2.RegisterPackage("SexSystem", typeof(SexManager));
 			env2.RegisterPackage("Tile", typeof(Tile));
 			env2.RegisterPackage("Warp", typeof(Warp));
 			//env2.RegisterPackage("Task", typeof(Task));

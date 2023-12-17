@@ -21,6 +21,7 @@ namespace Noxico
 		/// The chosen action.
 		/// </summary>
 		public static object Answer { get; private set; }
+		public static int AnswerNum { get; private set; }
 
 		/// <summary>
 		/// Displays a list at the given screen location or close to it.
@@ -30,9 +31,9 @@ namespace Noxico
 		/// <param name="y">The vertical coordinate to aim the window at.</param>
 		/// <param name="options">A list of options to display.</param>
 		/// <param name="okay">What to do when an option is chosen.</param>
-		public static void Show(string title, int x, int y, Dictionary<object, string> options, Action okay)
+		public static void Show(string title, int x, int y, Dictionary<object, string> options, Action okay, int defaultOption = 0)
 		{
-			option = 0;
+			option = defaultOption;
 			onChoice = okay;
 			Answer = null;
 			ActionList.options = options;
@@ -65,7 +66,7 @@ namespace Noxico
 
 			UIManager.Initialize();
 			win = new UIWindow(title) { Left = x, Top = y, Width = width, Height = height };
-			lst = new UIList(string.Empty, Enter, options.Values.ToList(), 0) { Left = x + 1, Top = y + 1, Width = width - 2, Height = height - 2, Background = UIColors.WindowBackground };
+			lst = new UIList(string.Empty, Enter, options.Values.ToList(), option) { Left = x + 1, Top = y + 1, Width = width - 2, Height = height - 2, Background = UIColors.WindowBackground };
 			lst.Change += (s, e) =>
 			{
 				option = lst.Index;
@@ -107,6 +108,7 @@ namespace Noxico
 				Enter(null, null);
 
 				ActionList.Answer = option == -1 ? -1 : options.ElementAt(option).Key;
+				ActionList.AnswerNum = option;
 				onChoice(); //Let the caller handle things.
 				NoxicoGame.ClearKeys();
 			}

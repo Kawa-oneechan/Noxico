@@ -481,17 +481,37 @@ namespace Noxico
 			}
 
 			var possibilities = SexManager.GetPossibilities(this, sexPartner);
+
+			var lastChoice = 0;
+			var lastChoiceToken = this.Path("havingsex/lastchoice");
+			if (lastChoiceToken != null)
+			{
+				var values = possibilities.Values.ToArray();
+				for (var i = 0; i < values.Length; i++)
+				{
+					if (values[i] == lastChoiceToken.Text)
+					{
+						lastChoice = i;
+						break;
+					}
+				}
+			}
+
 			if (this.BoardChar is Player)
 			{
 				ActionList.Show(string.Empty, this.BoardChar.XPosition, this.BoardChar.YPosition, possibilities,
 					() =>
 					{
 						var answer = ActionList.Answer as Token;
+						if (lastChoiceToken == null)
+							lastChoiceToken = this.GetToken("havingsex").AddToken("lastchoice");
+						lastChoiceToken.Text = possibilities.ElementAt(ActionList.AnswerNum).Value;
 						var action = (answer == null) ? "wait" : answer.Text;
 						var result = SexManager.GetResult(action, this, sexPartner);
 						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
 						this.BoardChar.Energy -= (int)result.GetToken("time").Value;
-					}
+					},
+					lastChoice
 				);
 			}
 			else

@@ -331,6 +331,7 @@ namespace Noxico
 
 			if (NoxicoGame.IsKeyDown(KeyBinding.Back) || Vista.Triggers == XInputButtons.B)
 			{
+				NoxicoGame.ClearKeys();
 				cancelButton.DoEnter();
 			}
 			else

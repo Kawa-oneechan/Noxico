@@ -134,10 +134,20 @@ namespace Noxico
 			get
 			{
 				if (HasToken("player"))
-					return "\xF4EF" + Name.ToID() + "#" + GetToken("player").Value;
+					return "\xF4EF" + Name.ToID() + "#" + GetToken("player").IntValue;
 				if (string.IsNullOrEmpty(Name.FirstName))
 					return Title.ToID();
 				return Name.ToID();
+			}
+		}
+
+		public string OriginalID
+		{
+			get
+			{
+				if (HasToken("originalID"))
+					return GetToken("originalID").Text;
+				return ID;
 			}
 		}
 
@@ -484,6 +494,8 @@ namespace Noxico
 			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
 			if (planSource == null)
 				throw new FileNotFoundException(string.Format("Could not find a unique bodyplan with id \"{0}\" to generate.", id));
+
+			newChar.AddToken("originalID", id);
 			newChar.AddSet(planSource.Tokens);
 			newChar.AddToken("lootset_id", 0, id);
 			if (newChar.HasToken("_n"))
@@ -575,6 +587,7 @@ namespace Noxico
 			if (planSource == null)
 				throw new ArgumentOutOfRangeException(string.Format("Could not find a bodyplan with id \"{0}\" to generate.", bodyPlan));
 
+			newChar.AddToken("originalID", bodyPlan);
 			newChar.AddSet(planSource.Tokens);
 			newChar.Name = new Name();
 

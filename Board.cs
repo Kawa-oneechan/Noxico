@@ -1608,6 +1608,7 @@ namespace Noxico
 		{
 			var bc = (BoardChar)PlaceEntity(new BoardChar(ch), x, y);
 			bc.AdjustView();
+			bc.AssignScripts(ch.OriginalID);
 			return bc;
 		}
 	}

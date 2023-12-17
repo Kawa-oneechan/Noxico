@@ -336,7 +336,7 @@ group: consentual
 							Message({"[t:Youorname] slip{s} off of [b:yourornames] [?:cock], scraping it against [t:his] [?:clit]."})
 						]]>
 			-- endgroup top vagina bottom penis
-			group: HasPenis(top) and (not top.HasSexFlag('anusbusy')) -- and bottom has an anus but everybody has an anus right?
+			group: HasPenis(top) and (not top.HasSexFlag('anusbusy')) and HasAnus(bottom)
 				choice: start_fucking_ass
 					_n: Fuck [b:his] ass
 					filter: (not top.HasSexFlag("penisbusy")) and (not bottom.HasSexFlag("anusbusy")) and (not top.HasSexFlag("givingvaginal")) and CanReachCrotch(top, 'penis') and CanReachCrotch(bottom, 'anus')
@@ -495,7 +495,7 @@ group: consentual
 						Message({"[t:Youorname] start{s} jerking [b:his] [b:cocktype] [?:cock] off with your tail."})
 					]]>
 			choice: tail_anal
-				filter: top.HasToken('tail') and (not top.HasSexFlag('tailbusy')) and (not bottom.HasSexFlag('anusbusy')) and CanReachCrotch(bottom, 'anus')
+				filter: top.HasToken('tail') and (not top.HasSexFlag('tailbusy')) and (not bottom.HasSexFlag('anusbusy')) and HasAnus(bottom) and CanReachCrotch(bottom, 'anus')
 				_n: Fuck [b:his] ass with your tail
 				effect
 					<[[
@@ -556,7 +556,7 @@ group: (not top.Restraining()) and (not top.Restrained()) -- note: can't do this
 group: (not top.Restrained()) and (not masturbating)
 	choice: pin_down
 		_n: Pin [b:him] down
-		filter: (not top.HasToken("snaketail")) and (not top.Restraining()) and (not bottom.Restrained())
+		filter: (not top.HasToken("snaketail")) and (not top.Restraining()) and (not bottom.Restrained()) and (not top.role == "tentaclepit")
 		effect
 			<[[
 				if bottom.Path("skin/type[=slime]") then
@@ -613,7 +613,7 @@ group: top.Restrained() and (not masturbating)
 
 -- like pinning but does not add Restraining tag to the person doing the tying.
 -- just a temporary sexflag and will not last further than this sex session.
-group: top.HasItem("rope") and (not top.Restrained()) and (not masturbating)
+group: top.HasItem("rope") and (not top.Restrained()) and (not masturbating) and (not top.role == "tentaclepit")
 	choice: tie_up
 		_n: Tie [b:him] up
 		filter: (not top.Restraining()) and (not bottom.Restrained())
@@ -817,7 +817,7 @@ choice: self_baseball_bat
 
 choice: ovi_dildo
 	_n: Lay toy eggs in [his] ass.
-	filter: (not masturbating) and top.HasToken("ovipositor") and (not top.Restrained()) and CanReachCrotch(bottom, 'anus') and top.HasItem("strapon_ovi")
+	filter: (not masturbating) and top.HasToken("ovipositor") and (not top.Restrained()) and HasAnus(bottom) and CanReachCrotch(bottom, 'anus') and top.HasItem("strapon_ovi")
 	effect
 	<[[
 		Message({"[t:Youorname] squirts{s} the toy eggs into [b:yourornames] ass. It's good dirty fun."})

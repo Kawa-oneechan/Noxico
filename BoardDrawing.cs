@@ -319,6 +319,7 @@ namespace Noxico
 							ParentBoard = this
 						};
 						this.Entities.Add(newChar);
+						this.EnsureUniqueEntities();
 						newChar.AssignScripts(unique.Text);
 						newChar.ReassignScripts();
 					}
@@ -511,6 +512,20 @@ namespace Noxico
 					newVendor.GetToken("money").Value = 1000 + (Random.Next(0, 20) * 50);
 					Program.WriteLine("*** {0} of {2} is now a {1} ***", newVendor.Name.ToString(true), vendorType, this.Name);
 					chosenCitizen.RestockVendor();
+				}
+			}
+		}
+
+		public void EnsureUniqueEntities()
+		{
+			foreach (var a in Entities)
+			{
+				foreach (var b in Entities)
+				{
+					if (a == b)
+						continue;
+					if (a.ID == b.ID)
+						b.ID += 'X';
 				}
 			}
 		}

@@ -56,6 +56,9 @@ end
 function HasClit(who)
 	return who.HasToken("vagina") and who.GetToken("vagina").HasToken("clit")
 end
+function HasAnus(who)
+	return who.HasToken("ass")
+end
 
 function CanReachBreasts(who)
 	local undershirt = who.GetEquippedItemBySlot("undershirt")
