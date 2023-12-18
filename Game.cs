@@ -1452,14 +1452,15 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				return;
 			var character = player.Character;
 
-			//TODO: optimize
-			Me.CurrentBoard.Redraw();
+			//Me.CurrentBoard.Redraw();
 			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
 				DrawMessages();
 
 			//TODO: detect if the player if standing in the lower part of the screen and flip it topwise.
 			var statLine = Program.Rows - 1;
 
+			for (var i = 0; i < Program.Cols; i++)
+				Me.CurrentBoard.AddScreenDirty(i, Program.Rows - 1);
 			HostForm.Write(new string(' ', Program.Cols), Color.Silver, Color.Transparent, Program.Rows - 1, 0, true);
 
 			var hpNow = character.Health;
@@ -1497,7 +1498,11 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			var statCol = Program.Cols - statsLength;
 
 			for (var i = statRow; i < statBottom; i++)
+			{
+				for (var j = 0; j < statsLength; j++)
+					Me.CurrentBoard.AddScreenDirty(statCol + j, i);
 				HostForm.Write(statsBack, Color.Silver, Color.Transparent, i, statCol, true);
+			}
 			var statCol1 = statCol + 1;
 			var statCol2 = statCol1 + StatusDisplay.LabelWidth;
 

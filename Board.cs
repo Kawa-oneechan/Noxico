@@ -1031,10 +1031,9 @@ namespace Noxico
 
 			var waterGlyphs = new[] { 0, 0x157, 0x146, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB };
 			var waterColors = new[] { Color.Black, Color.Navy, Color.FromCSS("B22222"), Color.Black, Color.Red, Color.White, Color.Black, Color.Black };
-			while (this.DirtySpots.Count > 0)
+
+			foreach (var l in this.DirtySpots)
 			{
-				var l = this.DirtySpots[0];
-				this.DirtySpots.RemoveAt(0);
 				var localX = l.X - NoxicoGame.CameraX;
 				var localY = l.Y - NoxicoGame.CameraY;
 				if (localX >= Program.Cols || localY >= Program.Rows || localX < 0 || localY < 0)
@@ -1083,6 +1082,17 @@ namespace Noxico
 				entity.Draw();
 			foreach (var entity in this.Entities.OfType<BoardChar>())
 				entity.Draw();
+		}
+
+		public void AddScreenDirty(int x, int y)
+		{
+			int localX = x + NoxicoGame.CameraX;
+			int localY = y + NoxicoGame.CameraY;
+			if (localX < 0 || localX > Width) return;
+			if (localY < 0 || localY > Height) return;
+			var spot = new Point(localX, localY);
+			if (DirtySpots.Contains(spot)) return;
+			DirtySpots.Add(spot);
 		}
 
 		public void UpdateLightmap(Entity source, bool torches)
