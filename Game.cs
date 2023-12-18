@@ -1452,6 +1452,7 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 				return;
 			var character = player.Character;
 
+			//TODO: optimize
 			Me.CurrentBoard.Redraw();
 			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
 				DrawMessages();

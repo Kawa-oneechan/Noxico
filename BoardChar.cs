@@ -1470,6 +1470,8 @@ namespace Noxico
 		{
 			var uniques = Mix.GetTokenTree("uniques.tml", true);
 			var planSource = uniques.FirstOrDefault(t => t.Name == "character" && (t.Text == id));
+			if (planSource == null)
+				return;
 			var scripts = planSource.Tokens.Where(t => t.Name == "script");
 			foreach (var script in scripts)
 			{

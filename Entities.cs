@@ -475,7 +475,7 @@ namespace Noxico
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)));//, drop.ForegroundColor);
 					}
 					NoxicoGame.Sound.PlaySound("set://GetItem");
-					player.ParentBoard.Redraw();
+					//player.ParentBoard.Redraw();
 				}
 			);
 		}

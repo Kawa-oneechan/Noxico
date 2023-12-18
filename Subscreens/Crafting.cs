@@ -233,7 +233,7 @@ namespace Noxico
 					recipeWindow.Height = h + 2;
 					recipeList.Height = h;
 					NoxicoGame.Me.CurrentBoard.Redraw();
-					NoxicoGame.Me.CurrentBoard.Draw();
+					//NoxicoGame.Me.CurrentBoard.Draw();
 					UIManager.Draw();
 				};
 				UIManager.Elements.Add(recipeWindow);
@@ -248,7 +248,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw(true);
+				//NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

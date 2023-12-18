@@ -97,6 +97,7 @@ namespace Noxico
 			if (Subscreens.Redraw)
 			{
 				Subscreens.Redraw = false;
+				NoxicoGame.DrawStatus();
 				UIManager.Draw();
 			}
 
@@ -181,7 +182,7 @@ namespace Noxico
 			{
 				NoxicoGame.Subscreen = Subscreens.PreviousScreen.Pop();
 				host.Noxico.CurrentBoard.Redraw();
-				host.Noxico.CurrentBoard.Draw();
+				//host.Noxico.CurrentBoard.Draw();
 				Subscreens.FirstDraw = true;
 			}
 		}

@@ -87,8 +87,8 @@ namespace Noxico
 			}
 			else
 			{
-				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw();
+				//NoxicoGame.Me.CurrentBoard.Redraw();
+				//NoxicoGame.Me.CurrentBoard.Draw();
 			}
 		}
 

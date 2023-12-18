@@ -56,7 +56,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw(true);
+				//NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

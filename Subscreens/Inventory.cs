@@ -301,7 +301,7 @@ namespace Noxico
 					yourWindow.Height = 2 + height;
 					itemList.Items = itemTexts;
 					NoxicoGame.Me.CurrentBoard.Redraw();
-					NoxicoGame.Me.CurrentBoard.Draw();
+					//NoxicoGame.Me.CurrentBoard.Draw();
 				}
 				itemList.Index = selection;
 
@@ -314,7 +314,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw(true);
+				//NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}

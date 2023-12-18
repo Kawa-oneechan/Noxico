@@ -989,9 +989,30 @@ namespace Noxico
 		{
 			if (Height < Program.Rows || Width < Program.Cols)
 			{
+				/*
 				for (var r = 0; r < Program.Rows; r++)
 					for (var c = 0; c < Program.Cols; c++)
 						NoxicoGame.HostForm.SetCell(r, c, (char)0xB0, Color.DarkGray, Color.Black);
+				*/
+
+				for (var r = 0; r < Program.Rows; r++)
+				{
+					if ((r < -NoxicoGame.CameraY - 1) || (r > -NoxicoGame.CameraY + Height))
+					{
+						for (var c = 0; c < Program.Cols; c++)
+							NoxicoGame.HostForm.SetCell(r, c, (char)0xB0, Color.DarkGray, Color.Black);
+					}
+					else
+					{
+						for (var c = 0; c < Program.Cols; c++)
+						{
+							if (c == -NoxicoGame.CameraX - 1)
+								c = -NoxicoGame.CameraX + Width + 1;
+							NoxicoGame.HostForm.SetCell(r, c, (char)0xB0, Color.DarkGray, Color.Black);
+						}
+					}
+				}
+
 				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX - 1, (char)0xC9, Color.DarkGray, Color.Black);
 				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY - 1, -NoxicoGame.CameraX + Width, (char)0xBB, Color.DarkGray, Color.Black);
 				NoxicoGame.HostForm.SetCell(-NoxicoGame.CameraY + Height, -NoxicoGame.CameraX - 1, (char)0xC8, Color.DarkGray, Color.Black);

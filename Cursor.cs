@@ -226,7 +226,7 @@ namespace Noxico
 											newBoardChar.AdjustView();
 											newBoardChar.AssignScripts(spawnId);
 											ParentBoard.EntitiesToAdd.Add(newBoardChar);
-											ParentBoard.Redraw();
+											//ParentBoard.Redraw();
 											NoxicoGame.Mode = UserMode.Walkabout;
 											Hide();
 											return;
@@ -431,7 +431,7 @@ namespace Noxico
 										player.Energy -= 1000;
 										NoxicoGame.AddMessage(i18n.Format("youpickup_x", item.ToString(token, true)), drop.ForegroundColor);
 										NoxicoGame.Sound.PlaySound("set://GetItem");
-										ParentBoard.Redraw();
+										//ParentBoard.Redraw();
 									}
 									break;
 

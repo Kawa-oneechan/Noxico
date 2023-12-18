@@ -40,7 +40,7 @@ namespace Noxico
 
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw(true);
+				//NoxicoGame.Me.CurrentBoard.Draw(true);
 
 				var items = Enum.GetNames(typeof(KeyBinding));
 				numControls = items.Length;

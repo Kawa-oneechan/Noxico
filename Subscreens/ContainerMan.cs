@@ -360,7 +360,7 @@ namespace Noxico
 								NoxicoGame.ClearKeys();
 								NoxicoGame.Immediate = true;
 								NoxicoGame.Me.CurrentBoard.Redraw();
-								NoxicoGame.Me.CurrentBoard.Draw(true);
+								//NoxicoGame.Me.CurrentBoard.Draw(true);
 								NoxicoGame.Mode = UserMode.Walkabout;
 								Subscreens.FirstDraw = true;
 								SceneSystem.Engage(player.Character, vendorChar, "(criminalscum)");
@@ -383,7 +383,7 @@ namespace Noxico
 				NoxicoGame.ClearKeys();
 				NoxicoGame.Immediate = true;
 				NoxicoGame.Me.CurrentBoard.Redraw();
-				NoxicoGame.Me.CurrentBoard.Draw(true);
+				//NoxicoGame.Me.CurrentBoard.Draw(true);
 				NoxicoGame.Mode = UserMode.Walkabout;
 				Subscreens.FirstDraw = true;
 			}
@@ -455,7 +455,7 @@ namespace Noxico
 			inv.Tokens.Add(token);
 			con.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
-			boardchar.ParentBoard.Draw();
+			//boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("set://GetItem");
 			return null;
@@ -508,7 +508,7 @@ namespace Noxico
 			con.Tokens.Add(token);
 			inv.Tokens.Remove(token);
 			boardchar.ParentBoard.Redraw();
-			boardchar.ParentBoard.Draw();
+			//boardchar.ParentBoard.Draw();
 			boardchar.Character.CheckHasteSlow();
 			NoxicoGame.Sound.PlaySound("set://PutItem");
 			return null;

@@ -599,7 +599,7 @@ namespace Noxico
 						NoxicoGame.Me.Player.Energy -= 1000;
 						NoxicoGame.AddMessage(i18n.Format("youpickup_x", drop.Item.ToString(drop.Token, true)));
 						NoxicoGame.Sound.PlaySound("set://GetItem");
-						ParentBoard.Redraw();
+						//ParentBoard.Redraw();
 						return;
 					}
 				}
