@@ -526,7 +526,7 @@ bodyplan: canine
 		length: roll 1d6+3
 		color: oneof blond, brown, black, red
 		style: oneof straight, wavy, ponytail, braided
-	bestiary: ""
+	bestiary: "Not just man's best friend, but a man onto themself."
 		char: 0x167
 	skin
 		type: fur

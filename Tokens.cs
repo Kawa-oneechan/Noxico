@@ -769,5 +769,66 @@ namespace Noxico
 			}
 			return false;
 		}
+
+#if DEBUG
+		public void CheckSchema(string name, string id)
+		{
+			var schemas = Mix.GetTokenTree("schema.tml", true);
+			var thisSchema = schemas.FirstOrDefault(x => x.Name == name);
+			if (thisSchema == null)
+				return;
+
+			var allowedMissing = new List<string>();
+			if (thisSchema.HasToken("_allowmissing"))
+			{
+				var allowMissing = thisSchema.GetToken("_allowmissing");
+				if (this.HasToken(allowMissing.Text))
+					allowedMissing.AddRange(allowMissing.Tokens.Select(t => t.Name));
+			}
+
+			Action<Token, Token> checkSchemaHelper = null;
+
+			checkSchemaHelper = new Action<Token, Token>((data, schema) =>
+			{
+				if (schema.HasToken("_string") || schema.HasToken("_type") || schema.HasToken("_color"))
+				{
+					if (string.IsNullOrEmpty(data.Text))
+					{
+						if (schema.HasToken("_candefault"))
+							return;
+						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a text value.", name, id, data.Name));
+					}
+				}
+				else if (schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character"))
+				{
+					if (!string.IsNullOrEmpty(data.Text))
+					{
+						if (data.Text.StartsWith("roll "))
+							return;
+						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a number value. String was given: {3}", name, id, data.Name, data.Text));
+					}
+				}
+				if (schema.HasToken("_tokens"))
+				{
+					var tokens = schema.GetToken("_tokens");
+					foreach (var token in tokens.Tokens)
+					{
+						if (token.Name.StartsWith('_'))
+							continue;
+						if (!data.HasToken(token.Name) && (!token.HasToken("_optional") && !allowedMissing.Contains(token.Name)))
+						{
+							throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a {3} child token.", name, id, data.Name, token.Name));
+						}
+						else if (data.HasToken(token.Name))
+						{
+							checkSchemaHelper(data.GetToken(token.Name), token);
+						}
+					}
+				}
+			});
+
+			checkSchemaHelper(this, thisSchema);
+		}
+#endif
 	}
 }

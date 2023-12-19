@@ -319,6 +319,7 @@ namespace Noxico
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;
+				bodyPlan.CheckSchema("bodyplan", id);
 				Toolkit.VerifyBodyplan(bodyPlan, id);
 				if (bodyPlan.HasToken("beast"))
 					continue;
