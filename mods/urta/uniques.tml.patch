@@ -12,6 +12,7 @@ add: -
 			length: 8
 			color: darkgray
 		face: fox
+		teeth: sharp
 		skin
 			type: fur
 			color: gray
@@ -19,25 +20,28 @@ add: -
 		ears: fox
 		legs: fox
 		tail: fox
+		feet: dog
 		waist: 7
 		ass
-			size: 12
+			size: 9
+			looseness: 3
+			wetness: 1
 		hips: 12
 		breasts
 			amount: 2
 			size: 6
 			nipples: 1
-				size: 0.75
+				size: 2
 				color: black
 		vagina
 			wetness: 2
 			looseness: 2
-			clit: 0.5
+			clit: 1
 		penis: horse
 			thickness: 7
 			length: 50
 		balls
 			amount: 2
-			size: 1.4
+			size: 4
 
 -- The "add: -" line makes the patch system add all child tokens to the bottom of the target file so far.

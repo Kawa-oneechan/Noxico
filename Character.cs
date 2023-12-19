@@ -2452,7 +2452,7 @@ Tokens:
 			{
 				"balls", "penis", "breasts", "ass", "hips", "waist", "vagina",
 				"legs", "skin", "ascii", "tallness", "hair", "face", "eyes",
-				"teeth", "tongue", "legs", "quadruped", "monoceros", "horns",
+				"teeth", "tongue", "quadruped", "monoceros", "horns",
 				"tail", "ears", "slimeblob", "snaketail",
 				"hostile", //lol that oughta be fun
 			};

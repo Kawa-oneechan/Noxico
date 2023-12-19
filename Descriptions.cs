@@ -96,7 +96,7 @@ namespace Noxico
 		{
 			if (loosenessToken == null)
 				return null;
-			return GetSizeDescription(forButts ? "ass/size" : "vagina/looseness", loosenessToken.Value);
+			return GetSizeDescription(forButts ? "ass/looseness" : "vagina/looseness", loosenessToken.Value);
 		}
 
 		public static string Wetness(Token wetnessToken)
