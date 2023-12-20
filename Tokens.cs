@@ -785,6 +785,8 @@ namespace Noxico
 				if (this.HasToken(allowMissing.Text))
 					allowedMissing.AddRange(allowMissing.Tokens.Select(t => t.Name));
 			}
+			
+			var unknown = new List<string>();
 
 			Action<Token, Token> checkSchemaHelper = null;
 
@@ -811,8 +813,32 @@ namespace Noxico
 				if (schema.HasToken("_tokens"))
 				{
 					var tokens = schema.GetToken("_tokens");
+					var arbitrary = tokens.HasToken("_arbitary");
 					foreach (var token in tokens.Tokens)
 					{
+						if (token.Name == "_oneof" && !token.HasToken("_optional"))
+						{
+							var options = token.Text.Split(' ');
+							string found = null;
+							foreach (var option in options)
+							{
+								if (data.HasToken(option))
+								{
+									if (found != null)
+										throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, {4} was found first, then {5}.", name, id, data.Name, token.Text, found, option));
+									found = option;
+								}
+							}
+							if (found == null)
+							{
+								if (options.All(x => allowedMissing.Contains(x)))
+									return;
+								throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, none were found.", name, id, data.Name, token.Text));
+							}
+							else
+								return;
+							//TODO: Allow specific options to have their own schemas? Think "legs" having "_type" when "snaketail" doesn't.
+						}
 						if (token.Name.StartsWith('_'))
 							continue;
 						if (!data.HasToken(token.Name) && (!token.HasToken("_optional") && !allowedMissing.Contains(token.Name)))
@@ -824,10 +850,23 @@ namespace Noxico
 							checkSchemaHelper(data.GetToken(token.Name), token);
 						}
 					}
+					if (!arbitrary)
+					{
+						foreach (var token in data.Tokens)
+							if (!tokens.HasToken(token.Name))
+								unknown.Add(data.Name + "/" + token.Name);
+					}
 				}
 			});
 
 			checkSchemaHelper(this, thisSchema);
+
+			if (unknown.Count > 0)
+			{
+				Program.WriteLine("Schema check: {0} {1} has unrecognized tokens:", name, id);
+				foreach (var u in unknown)
+					Program.WriteLine("* {0}", u);
+			}
 		}
 #endif
 	}

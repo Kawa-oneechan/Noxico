@@ -41,10 +41,24 @@ bodyplan
 				char
 					_optional
 					_character
+				small
+					_optional
 		tallness
 			_measure
 		skin
 			_tokens
+				type
+					_type
+				color
+					_color
+				pattern
+					_optional
+					_tokens
+						color
+							_optional
+							_color
+						removeifblank
+							_optional
 		ears
 			_type
 		face
@@ -179,6 +193,8 @@ bodyplan
 									_rating
 				lactation
 					_optional
+		womb
+			_optional
 		tattoos
 			_optional
 			_tokens
