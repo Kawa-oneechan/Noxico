@@ -568,7 +568,7 @@ namespace Noxico
 			NoxicoGame.HostForm.Cursor = new Point(-1, -1);
 			this.ParentBoard.AimCamera();
 			this.ParentBoard.DirtySpots.Add(new Point(XPosition, YPosition));
-			this.ParentBoard.Draw(true);
+			//this.ParentBoard.Draw(true);
 		}
 	}
 }

@@ -699,7 +699,11 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 			var line = 0;
 			var from = Math.Max(0, Messages.Count - max);
 			for (var i = from; i < Messages.Count; i++, line++)
+			{
+				for (var j = 0; j < Messages[i].Text.Length(); j++)
+					Me.CurrentBoard.AddScreenDirty(j, line);
 				HostForm.Write(Messages[i].Text, Messages[i].Color, Color.Transparent, line, 0, true);
+			}
 		}
 
 		public static void ClearMessages()
@@ -1551,10 +1555,18 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 
 
 			if (!LookAt.IsBlank())
+			{
+				for (var i = 0; i < LookAt.Length(); i++)
+					Me.CurrentBoard.AddScreenDirty(i, Messages.Count);
 				HostForm.Write(LookAt, Color.Silver, Color.Transparent, Messages.Count, 0, true);
+			}
 
 			if (!ContextMessage.IsBlank())
+			{
+				for (var i = 0; i < ContextMessage.Length() + 2; i++)
+					Me.CurrentBoard.AddScreenDirty(Program.Cols - i - 1, 0);
 				HostForm.Write(' ' + ContextMessage + ' ', Color.Silver, Color.Transparent, 0, Program.Cols - ContextMessage.Length() - 2, true);
+			}
 		}
 
 		public static void CheckForTutorialStuff()

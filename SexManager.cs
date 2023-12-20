@@ -505,7 +505,8 @@ namespace Noxico
 						var answer = ActionList.Answer as Token;
 						if (lastChoiceToken == null)
 							lastChoiceToken = this.GetToken("havingsex").AddToken("lastchoice");
-						lastChoiceToken.Text = possibilities.ElementAt(ActionList.AnswerNum).Value;
+						if (ActionList.AnswerNum != -1)
+							lastChoiceToken.Text = possibilities.ElementAt(ActionList.AnswerNum).Value;
 						var action = (answer == null) ? "wait" : answer.Text;
 						var result = SexManager.GetResult(action, this, sexPartner);
 						SexManager.Apply(result, this, sexPartner, new Action<string>(x => NoxicoGame.AddMessage(x)));
