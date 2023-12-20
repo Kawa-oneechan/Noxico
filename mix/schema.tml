@@ -222,3 +222,38 @@ bodyplan
 					_string
 				neverprefix
 					_optional
+
+trait
+	_string
+	_tokens
+		display
+			_string
+		stat
+			_optional
+			_string
+			_tokens
+				multiplier
+					_optional
+					_factor
+		skill
+			_optional
+			_string
+			_tokens
+				level
+					_optional
+					_rating
+				_oneof: women_only men_only
+					_optional
+		rating
+			_optional
+			_string
+			_tokens
+				_oneof: value multiplier
+				--	_rating
+				_oneof: women_only men_only
+					_optional
+		token
+			_optional
+			_arbitary
+		description
+			_string

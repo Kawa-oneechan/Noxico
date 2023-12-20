@@ -361,6 +361,10 @@ namespace Noxico
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				KnownItems.Add(InventoryItem.FromToken(item));
 
+			var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
+			foreach (var trait in traitsDoc)
+				trait.CheckSchema("trait", trait.Text);
+
 			/*
 			Program.WriteLine("Randomizing potions and rings...");
 			RollPotions();

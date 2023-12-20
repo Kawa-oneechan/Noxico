@@ -1,43 +1,56 @@
 trait: charismatic
 	display: Charismatic 
 	stat: charisma
-		increase: 15%
+		multiplier: 1.15
 	skill: bartering
 	description: Gives a 15% bonus on Charisma, and a level in bartering.
 trait: cunning_bastard
 	display: Cunning Bastard
 	stat: mind
+		multiplier: 1.20
 	skill: trap_disarming
 	description: Gives a 20% bonus on Mind, and a level in trap disarming.
 trait: fast_food
 	display: Fast Food
 	stat: speed
+		multiplier: 1.20
 	skill: swimming
 	description: Gives a 20% bonus on Speed, and a level in swimming.
 trait: olympian
 	display: Olympian
 	stat: body
+		multiplier: 1.20
 	skill: acrobatics
 	description: Gives a 20% bonus on Body, and a level in acrobatics.
 trait: smooth_operator
 	display: Smooth Operator
 	stat: charisma
-	skill: sweet_talking
+		multiplier: 1.20
+	skill: bartering
 		level: 0.5
+	skill: sweet_talking
+		level: 2
 	skill: kissing
+		level: 2
 	description: Gives a 20% bonus on Charisma, levels in sweet talking and kissing, and half a level in bartering.
 trait: pervert
 	display: Pervert
 	stat: vice
+		multiplier: 1.20
 	stat: excitement
+		multiplier: 1.20
 	skill: sweet_talking
 		level: 0.5
 	skill: blowjobs
+		level: 1
 	skill: penile_masturbation
+		level: 1
 		men_only
 	skill: vaginal_masturbation
+		level: 1
 		women_only
 	skill: anal_play
+		level: 1
 	description: Gives a 20% bonus on Vice and Excitement, levels in blowjobs, masturbation, and anal play, and half a level in sweet talking.
 trait: large
 	display: Large
@@ -51,7 +64,7 @@ trait: large
 		value: 8
 		women_only
 	rating: penis/length
-		value: 110%
+		multiplier: 1.20
 		men_only
 	rating: waist
 		value: 7

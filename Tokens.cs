@@ -801,7 +801,7 @@ namespace Noxico
 						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a text value.", name, id, data.Name));
 					}
 				}
-				else if (schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character"))
+				else if (schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character") || schema.HasToken("_factor"))
 				{
 					if (!string.IsNullOrEmpty(data.Text))
 					{
@@ -816,7 +816,7 @@ namespace Noxico
 					var arbitrary = tokens.HasToken("_arbitary");
 					foreach (var token in tokens.Tokens)
 					{
-						if (token.Name == "_oneof" && !token.HasToken("_optional"))
+						if (token.Name == "_oneof")
 						{
 							var options = token.Text.Split(' ');
 							string found = null;
@@ -829,7 +829,7 @@ namespace Noxico
 									found = option;
 								}
 							}
-							if (found == null)
+							if (found == null && !token.HasToken("_optional"))
 							{
 								if (options.All(x => allowedMissing.Contains(x)))
 									return;
@@ -847,7 +847,8 @@ namespace Noxico
 						}
 						else if (data.HasToken(token.Name))
 						{
-							checkSchemaHelper(data.GetToken(token.Name), token);
+							foreach (var t in data.GetAll(token.Name))
+								checkSchemaHelper(t, token);
 						}
 					}
 					if (!arbitrary)

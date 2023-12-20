@@ -148,9 +148,7 @@
     <Compile Include="UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="WinFormHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="WinFormHost.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IGameHost.cs" />
     <Compile Include="IniFile.cs" />
@@ -214,7 +212,9 @@
     <None Include="mix\crafting.tml" />
     <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
+    <None Include="mix\metadata.tml" />
     <None Include="mix\powers.tml" />
+    <None Include="mix\schema.tml" />
     <None Include="mix\stats.lua" />
     <None Include="mix\testarena.lua" />
     <None Include="mix\tiles.tml" />
