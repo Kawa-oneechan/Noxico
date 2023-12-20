@@ -68,7 +68,11 @@ bodyplan
 			_candefault
 		teeth
 			_type
-		_oneof: legs snaketail slimeblob
+		_oneof
+			legs
+				_type
+			snaketail
+			slimeblob
 		hips
 			_rating
 		waist
@@ -77,10 +81,19 @@ bodyplan
 			_optional
 		hostile
 			_optional
-		_oneof: maleonly femaleonly hermonly neuteronly normalgenders neverneuter llowneuter
+		_oneof
 			_optional
-		_oneof: invisiblegender explicitgender
+			maleonly
+			femaleonly
+			hermonly
+			neuteronly
+			normalgenders
+			neverneuter
+			allowneuter
+		_oneof
 			_optional
+			invisiblegender
+			explicitgender
 		editable
 			_optional
 		femalesmaller
@@ -108,8 +121,14 @@ bodyplan
 			_optional
 			_amount
 			_tokens
-				_oneof: big small
-				_oneof: curled straight
+				_oneof
+					_optional
+					big
+					small
+				_oneof
+					_optional
+					curled
+					straight
 		wings
 			_optional
 			_type
@@ -118,8 +137,10 @@ bodyplan
 					_optional
 		antennae
 			_optional
-		_oneof: quadruped taur
+		_oneof
 			_optional
+			quadruped
+			taur
 		monoceros
 			_optional
 		ass
@@ -232,9 +253,10 @@ trait
 			_optional
 			_string
 			_tokens
-				multiplier
-					_optional
-					_factor
+				_oneof
+					value
+					multiplier
+					increase
 		skill
 			_optional
 			_string
@@ -242,16 +264,22 @@ trait
 				level
 					_optional
 					_rating
-				_oneof: women_only men_only
+				_oneof
 					_optional
+					women_only
+					men_only
 		rating
 			_optional
 			_string
 			_tokens
-				_oneof: value multiplier
-				--	_rating
-				_oneof: women_only men_only
+				_oneof
+					value
+					multiplier
+					increase
+				_oneof
 					_optional
+					women_only
+					men_only
 		token
 			_optional
 			_arbitary

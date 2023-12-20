@@ -319,7 +319,9 @@ namespace Noxico
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;
+#if DEBUG
 				bodyPlan.CheckSchema("bodyplan", id);
+#endif
 				Toolkit.VerifyBodyplan(bodyPlan, id);
 				if (bodyPlan.HasToken("beast"))
 					continue;
@@ -361,9 +363,11 @@ namespace Noxico
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				KnownItems.Add(InventoryItem.FromToken(item));
 
+#if DEBUG
 			var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
 			foreach (var trait in traitsDoc)
 				trait.CheckSchema("trait", trait.Text);
+#endif
 
 			/*
 			Program.WriteLine("Randomizing potions and rings...");
@@ -1273,53 +1277,58 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					switch (bonus.Name)
 					{
 						case "stat":
-							var increase = 20.0f;
-							var percent = true;
-							if (bonus.HasToken("percent"))
 							{
-								increase = bonus.GetToken("percent").Value;
+								var stat = pc.GetToken(bonus.Text);
+								var oldVal = stat.Value;
+								var valueToken = bonus.GetToken("value");
+								var multiplierToken = bonus.GetToken("multiplier");
+								var increaseToken = bonus.GetToken("increase");
+								if (valueToken != null)
+									stat.Value = Math.Max(oldVal, valueToken.Value);
+								else if (multiplierToken != null)
+								{
+									if (stat.IntValue == 0)
+										stat.Value = 1;
+									stat.Value *= multiplierToken.Value;
+								}
+								else if (increaseToken != null)
+									stat.Value += increaseToken.Value;
+								else
+									stat.Value *= 20.0f;
 							}
-							else if (bonus.HasToken("increase"))
-							{
-								increase = bonus.GetToken("increase").Value;
-								percent = false;
-							}
-							var stat = pc.GetToken(bonus.Text);
-							var oldVal = stat.Value;
-							var newVal = oldVal + increase;
-							if (percent)
-								newVal = oldVal + ((increase / 100.0f) * oldVal);
-							stat.Value = newVal;
 							break;
 						case "skill":
-							var skill = bonus.Text.Replace(' ', '_').ToLowerInvariant();
-							var by = bonus.HasToken("level") ? bonus.GetToken("level").Value : 1.0f;
-							var skillToken = pc.Path("skills/" + skill);
-							if (skillToken == null)
-								skillToken = pc.GetToken("skills").AddToken(skill);
-							skillToken.Value += by;
+							{
+								var skill = bonus.Text.Replace(' ', '_').ToLowerInvariant();
+								var by = bonus.HasToken("level") ? bonus.GetToken("level").Value : 1.0f;
+								var skillToken = pc.Path("skills/" + skill);
+								if (skillToken == null)
+									skillToken = pc.GetToken("skills").AddToken(skill);
+								skillToken.Value += by;
+							}
 							break;
 						case "rating":
-							var aspect = pc.Path(bonus.Text);
-							if (aspect == null)
-								continue;
-							var valueToken = bonus.GetToken("value");
-							oldVal = aspect.Value;
-							if (!valueToken.Text.IsBlank())
 							{
-								if (valueToken.Text.EndsWith('%'))
+								var aspect = pc.Path(bonus.Text);
+								if (aspect == null)
+									continue;
+								var oldVal = aspect.Value;
+								var valueToken = bonus.GetToken("value");
+								var multiplierToken = bonus.GetToken("multiplier");
+								var increaseToken = bonus.GetToken("increase");
+								if (valueToken != null)
+									aspect.Value = Math.Max(oldVal, valueToken.Value);
+								else if (multiplierToken != null)
 								{
-									var percentage = int.Parse(valueToken.Text.Remove(valueToken.Text.Length - 1));
-									aspect.Value = (percentage / 100.0f) * oldVal;
+									if (aspect.IntValue == 0)
+										aspect.Value = 1;
+									aspect.Value *= multiplierToken.Value;
 								}
-								else if (valueToken.Text.StartsWith('+'))
-								{
-									increase = int.Parse(valueToken.Text.Substring(1));
-									aspect.Value = oldVal + increase;
-								}
+								else if (increaseToken != null)
+									aspect.Value += increaseToken.Value;
+								else
+									aspect.Value *= 20.0f;
 							}
-							else
-								aspect.Value = Math.Max(oldVal, valueToken.Value);
 							break;
 						case "token":
 							Token token;

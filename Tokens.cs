@@ -818,26 +818,31 @@ namespace Noxico
 					{
 						if (token.Name == "_oneof")
 						{
-							var options = token.Text.Split(' ');
+							var options = token.Tokens;
 							string found = null;
 							foreach (var option in options)
 							{
-								if (data.HasToken(option))
+								if (option.Name.StartsWith('_'))
+									continue;
+								if (data.HasToken(option.Name))
 								{
 									if (found != null)
-										throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, {4} was found first, then {5}.", name, id, data.Name, token.Text, found, option));
-									found = option;
+										throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, {4} was found first, then {5}.", name, id, data.Name, token.Text, found, option.Name));
+									found = option.Name;
 								}
 							}
 							if (found == null && !token.HasToken("_optional"))
 							{
-								if (options.All(x => allowedMissing.Contains(x)))
+								if (options.All(x => !x.Name.StartsWith('_') && allowedMissing.Contains(x.Name)))
 									return;
 								throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, none were found.", name, id, data.Name, token.Text));
 							}
 							else
+							{
+								if (found != null)
+									checkSchemaHelper(data.GetToken(found), token.GetToken(found));
 								return;
-							//TODO: Allow specific options to have their own schemas? Think "legs" having "_type" when "snaketail" doesn't.
+							}
 						}
 						if (token.Name.StartsWith('_'))
 							continue;
