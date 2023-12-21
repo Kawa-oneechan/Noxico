@@ -1,7 +1,6 @@
 bodyplan
 	_string
 	_allowmissing: beast
-		culture
 		namegen
 		tallness
 		ears
@@ -15,6 +14,7 @@ bodyplan
 		waist
 	_tokens
 		culture
+			_optional
 			_string
 		namegen
 			_string
@@ -244,6 +244,10 @@ bodyplan
 				neverprefix
 					_optional
 
+unique: character
+	_copy: bodyplan
+		_remove: _tokens/namegen
+
 trait
 	_string
 	_tokens
@@ -353,6 +357,30 @@ clutter: id
 		blocking
 			_optional
 
+craftrecipe: recipe
+	_tokens
+		consume
+			_string
+			_tokens
+				amount
+					_optional
+					_integer
+				with
+					_optional
+					_string
+		require
+			_optional
+			_string
+			_tokens
+				id
+					_optional
+					_integer
+		produce
+			_string
+		train
+			_optional
+			_string
+
 culture
 	_string
 	_tokens
@@ -438,3 +466,46 @@ namegen
 				copy
 					_optional
 					_string
+
+words
+	_tokens
+		_arbitrary
+
+hyphenation
+	_tokens
+		rule
+			_tokens
+				cutoff
+					_integer
+				pattern
+					_string
+
+tile
+	_integer
+	_tokens
+		id
+			_string
+		description
+			_optional
+			_string
+		fore
+			_optional
+			_color
+		back
+			_color
+		char
+			_character
+		_oneof
+			_optional
+			wall
+			fence
+		ceiling
+			_optional
+		canburn
+			_optional
+		varwall
+			_optional
+		variants
+			_optional
+			_tokens
+				_arbitrary

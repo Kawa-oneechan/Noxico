@@ -783,6 +783,25 @@ namespace Noxico
 			if (this.Name != name)
 				return;
 
+			while (thisSchema.HasToken("_copy"))
+			{
+				var copyFrom = thisSchema.GetToken("_copy");
+				thisSchema.RemoveToken(copyFrom);
+				var otherSchema = schemas.FirstOrDefault(x => x.Name == copyFrom.Text);
+				if (otherSchema == null)
+					break;
+				thisSchema.AddSet(otherSchema.Tokens);
+				foreach (var c in copyFrom.Tokens)
+				{
+					if (c.Name == "_remove")
+					{
+						var t = thisSchema.Path(c.Text);
+						var p = thisSchema.Path(c.Text.Substring(0, c.Text.LastIndexOf('/')));
+						p.RemoveToken(t);
+					}
+				}
+			}
+
 			var allowedMissing = new List<string>();
 			if (thisSchema.HasToken("_allowmissing"))
 			{
@@ -877,7 +896,7 @@ namespace Noxico
 					if (!arbitrary)
 					{
 						foreach (var token in data.Tokens)
-							if (!tokens.HasToken(token.Name))
+							if (!tokens.HasToken(token.Name) && !token.Name.StartsWith('_'))
 								unknown.Add(data.Name + "/" + token.Name);
 					}
 				}

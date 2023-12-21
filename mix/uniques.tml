@@ -95,6 +95,7 @@ character: trs180
 		wetness: 1
 
 character: tiny
+	culture: human
 	terms
 		generic: "human"
 		male: "man"

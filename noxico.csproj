@@ -210,7 +210,6 @@
     </Content>
     <Content Include="notes\Xolroc%27s random ideas.txt" />
     <None Include="mix\crafting.tml" />
-    <None Include="mix\deities.tml" />
     <None Include="mix\items.tml" />
     <None Include="mix\metadata.tml" />
     <None Include="mix\powers.tml" />

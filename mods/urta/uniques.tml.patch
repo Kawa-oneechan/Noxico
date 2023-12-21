@@ -12,6 +12,7 @@ add: -
 			length: 8
 			color: darkgray
 		face: fox
+		tongue: normal
 		teeth: sharp
 		skin
 			type: fur

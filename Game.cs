@@ -315,12 +315,16 @@ namespace Noxico
 			{
 				var tokenFiles = new Dictionary<string, string>()
 				{
-					{ "biomes.tml", "realm" },
 					{ "bodyplans.tml", "bodyplan" },
+					{ "uniques.tml", "unique" },
+					{ "biomes.tml", "realm" },
 					{ "bonustraits.tml",  "trait" },
 					{ "buildings.tml", "buildingset" },
 					{ "clutter.tml", "clutter" },
+					{ "crafting.tml", "craftrecipe" },
 					{ "culture.tml", "culture namegen" },
+					{ "i18n.tml", "words hyphenation" },
+					{ "tiles.tml", "tile" },
 				};
 				foreach (var testEntry in tokenFiles)
 				{

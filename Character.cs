@@ -1593,7 +1593,6 @@ Tokens:
 			dump.WriteLine("<ul>");
 			var victims = 0;
 			var lovers = 0;
-			//var deities = 0;
 			if (GetToken("ships").Tokens.Where(t => !t.HasToken("player")).Count() == 0)
 				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_no_ships"));
 			else
@@ -1609,8 +1608,6 @@ Tokens:
 						victims++;
 					if (person.HasToken("lover"))
 						lovers++;
-					//if (person.HasToken("prayer"))
-					//	deities++;
 				}
 				list.Sort();
 				list.ForEach(x => dump.WriteLine("<li>{0}</li>", x));
@@ -1631,10 +1628,6 @@ Tokens:
 				dump.WriteLine("<li>{0}</li>", i18n.GetString("infodump_one_lover"));
 			if (victims > 0)
 				dump.WriteLine("<li>{0}</li>", i18n.GetString(victims == 1 ? "infodump_rapist" : "infodump_serial_rapist"));
-			//if (deities == 0)
-			//	dump.WriteLine("<li>You were an atheist.</li>");
-			//else
-			//	dump.WriteLine(deities == 1 ? "<li>You were monotheistic.</li>" : "<li>You were a polytheist.</li>");
 			dump.WriteLine("</ul>");
 
 			dump.WriteLine("<h2>{0}</h2>", i18n.GetString("infodump_books"));
