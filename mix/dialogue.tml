@@ -3,8 +3,7 @@ top
 scene: test2
 	name: invite to have sex
 	list: (DEBUG) Set willingness
-	filters
-		debug
+	filter: debug
 	script
 		<[[
 			bottom.AddToken("willing")

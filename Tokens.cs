@@ -872,7 +872,7 @@ namespace Noxico
 							{
 								if (options.All(x => !x.Name.StartsWith('_') && allowedMissing.Contains(x.Name)))
 									return;
-								throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, none were found.", name, id, data.Name, token.Text));
+								throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have only one of {3} child tokens, none were found.", name, id, data.Name, string.Join(" ", options.Select(x => x.Name))));
 							}
 							else
 							{

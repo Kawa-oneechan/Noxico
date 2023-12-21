@@ -312,10 +312,10 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 #if DEBUG
+			Program.WriteLine("Checking data validit...");
 			{
 				var tokenFiles = new Dictionary<string, string>()
 				{
-					{ "items.tml", "item" },
 					{ "bodyplans.tml", "bodyplan" },
 					{ "uniques.tml", "unique" },
 					{ "biomes.tml", "realm" },
@@ -324,7 +324,9 @@ namespace Noxico
 					{ "clutter.tml", "clutter" },
 					{ "crafting.tml", "craftrecipe" },
 					{ "culture.tml", "culture namegen" },
+					{ "dialogue.tml", "dialogue" },
 					{ "i18n.tml", "words hyphenation" },
+					{ "items.tml", "item" },
 					{ "tiles.tml", "tile" },
 				};
 				foreach (var testEntry in tokenFiles)

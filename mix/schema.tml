@@ -322,6 +322,32 @@ item
 		unique
 			_optional
 
+dialogue: scene
+	_string
+	_tokens
+		name
+			_string
+		list
+			_optional
+			_string
+		priority
+			_optional
+		filter
+			_optional
+		script
+			_optional
+			_cdata
+		#a
+			_optional
+			_string
+		action
+			_optional
+			_string
+		random
+			_optional
+			_string
+		end
+			_optional
 
 trait
 	_string

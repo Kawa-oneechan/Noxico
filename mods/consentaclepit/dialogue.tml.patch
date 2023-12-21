@@ -1,8 +1,7 @@
 add: top
 	scene: TentacleStart
 		name: (tentaclestart)
-		filters
-			bottom: text role tentaclepit
+		filter: bottom.HasRole("tentaclepit")
 		- ""Hello, I'm afraid there isn't any dialog for the consentacle pit yet, but sparks has some planned, do come back later!""
 		action: tentacles nothing
 
