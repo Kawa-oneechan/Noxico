@@ -311,6 +311,31 @@ namespace Noxico
 			Program.WriteLine("Seeing a man about some music...");
 			Sound = new SoundSystem();
 
+#if DEBUG
+			{
+				var tokenFiles = new Dictionary<string, string>()
+				{
+					{ "biomes.tml", "realm" },
+					{ "bodyplans.tml", "bodyplan" },
+					{ "bonustraits.tml",  "trait" },
+					{ "buildings.tml", "buildingset" },
+					{ "clutter.tml", "clutter" },
+					{ "culture.tml", "culture namegen" },
+				};
+				foreach (var testEntry in tokenFiles)
+				{
+					var tokensToTest = Mix.GetTokenTree(testEntry.Key);
+					foreach (var entry in tokensToTest)
+					{
+						if (entry.Name.StartsWith('_'))
+							continue;
+						foreach (var subTest in testEntry.Value.Split(' '))
+							entry.CheckSchema(subTest, entry.Text);
+					}
+				}
+			}
+#endif
+
 			Program.WriteLine("Loading bodyplans...");
 			BodyplanHashes = new Dictionary<string, string>();
 			Character.Bodyplans = Mix.GetTokenTree("bodyplans.tml");
@@ -319,9 +344,6 @@ namespace Noxico
 			{
 				var id = bodyPlan.Text;
 				var plan = bodyPlan.Tokens;
-#if DEBUG
-				bodyPlan.CheckSchema("bodyplan", id);
-#endif
 				Toolkit.VerifyBodyplan(bodyPlan, id);
 				if (bodyPlan.HasToken("beast"))
 					continue;
@@ -362,12 +384,6 @@ namespace Noxico
 			KnownItems = new List<InventoryItem>();
 			foreach (var item in items.Where(t => t.Name == "item" && !t.HasToken("disabled")))
 				KnownItems.Add(InventoryItem.FromToken(item));
-
-#if DEBUG
-			var traitsDoc = Mix.GetTokenTree("bonustraits.tml");
-			foreach (var trait in traitsDoc)
-				trait.CheckSchema("trait", trait.Text);
-#endif
 
 			/*
 			Program.WriteLine("Randomizing potions and rings...");

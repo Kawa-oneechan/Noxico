@@ -316,6 +316,9 @@ namegen: default
 		start: Ael, Ash, Barrow, Bel, Black, Clear, Cold, Crystal, Deep, Edge, Falcon, Fair, Fall, Glass, Gold, Ice, Iron, Mill, Moon, Mor, Ray, Red, Rock, Rose, Shadow, Silver, Spell, Spring, Stone, Strong, Summer, Swyn, Wester, Winter
 		end: ash, burn, barrow, bridge, castle, cliff, coast, crest, dale, dell, dor, fall, field, ford, fort, gate, haven, hill, hold, hollow, iron, lake, marsh, mill, mist, mount, moor, pond, shade, shore, summer, town, wick
 		post: Annex, Barrens, Barrow, Corner, Cove, Crossing, Dell, Dales, Estates, Forest, Furnace, Grove, Haven, Heath, Hill, Junction, Landing, Meadow, Park, Plain, Point, Reserve, Retreat, Ridge, Springs, View, Village, Wells, Woods
+	male
+	female
+	-- blank male and female sets for the schema's sake
 	surname
 		patronymic
 			male: son

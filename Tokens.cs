@@ -777,6 +777,11 @@ namespace Noxico
 			var thisSchema = schemas.FirstOrDefault(x => x.Name == name);
 			if (thisSchema == null)
 				return;
+			if (!string.IsNullOrEmpty(thisSchema.Text))
+				name = thisSchema.Text;
+
+			if (this.Name != name)
+				return;
 
 			var allowedMissing = new List<string>();
 			if (thisSchema.HasToken("_allowmissing"))
@@ -801,7 +806,7 @@ namespace Noxico
 						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a text value.", name, id, data.Name));
 					}
 				}
-				else if (schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character") || schema.HasToken("_factor"))
+				else if (schema.HasToken("_integer") || schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character") || schema.HasToken("_factor"))
 				{
 					if (!string.IsNullOrEmpty(data.Text))
 					{
@@ -809,11 +814,24 @@ namespace Noxico
 							return;
 						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a number value. String was given: {3}", name, id, data.Name, data.Text));
 					}
+					else if (schema.HasToken("_integer"))
+					{
+						if (data.IntValue != data.Value)
+						{
+							throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have an integer value. Float was given: {3}", name, id, data.Name, data.Value));
+						}
+					}
+				}
+				if (schema.HasToken("_cdata"))
+				{
+					if (data.Tokens.Count == 1 && data.Tokens[0].Name == "#text")
+						return;
+					throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have CDATA.", name, id, data.Name));
 				}
 				if (schema.HasToken("_tokens"))
 				{
 					var tokens = schema.GetToken("_tokens");
-					var arbitrary = tokens.HasToken("_arbitary");
+					var arbitrary = tokens.HasToken("_arbitrary");
 					foreach (var token in tokens.Tokens)
 					{
 						if (token.Name == "_oneof")

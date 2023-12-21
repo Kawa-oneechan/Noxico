@@ -282,6 +282,159 @@ trait
 					men_only
 		token
 			_optional
-			_arbitary
+			_arbitrary
 		description
 			_string
+
+realm
+	_string
+	_tokens
+		waterlevel
+			_integer
+		watertype
+			_string
+		biome
+			_string
+			_tokens
+				rect
+					_string
+				ground
+					_string
+				encounters
+					_optional
+					_integer
+					_tokens
+						_arbitrary
+				cultures
+					_optional
+					_tokens
+						_arbitrary
+
+buildingset: set
+	_string
+	_tokens
+		template
+			_string
+			_tokens
+				inhabitants
+					_optional
+					_integer
+				flip-h
+					_optional
+				flip-v
+					_optional
+				map
+					_cdata
+				markings
+					_optional
+					_tokens
+						_arbitrary
+					-- undescribable :shrug:
+
+clutter: id
+	_string
+	_tokens
+		role
+			_string
+			_optional
+			-- This is wrong. Wardrobes and chests ought to be identified as such by role, not by name.
+		char
+			_character
+		color
+			_color
+		background
+			_color
+		name
+			_string
+			_optional
+		description
+			_string
+			_optional
+		blocking
+			_optional
+
+culture
+	_string
+	_tokens
+		bodyplans
+			_tokens
+				_arbitrary
+		marriage
+			_optional
+			_factor
+		monogamous
+			_optional
+			_factor
+		mysticism
+			_optional
+			_factor
+		terms
+			_optional
+			_tokens
+				_arbitrary
+		speechfilter
+			_optional
+			_string
+
+namegen
+	_string
+	_tokens
+		sets
+			_tokens
+				_arbitrary
+		male
+			_tokens
+				prohibit
+					_optional
+					_string
+				rule
+					_optional
+					_tokens
+						_arbitrary
+				copy
+					_optional
+					_string
+		female
+			_tokens
+				prohibit
+					_optional
+					_string
+				rule
+					_optional
+					_tokens
+						_arbitrary
+				copy
+					_optional
+					_string
+		surname
+			_tokens
+				prohibit
+					_optional
+					_string
+				rule
+					_optional
+					_tokens
+						_arbitrary
+				copy
+					_optional
+					_string
+				patronymic
+					_optional
+					_tokens
+						male
+							_string
+						female
+							_string
+		town
+			_optional
+			_tokens
+				prohibit
+					_optional
+					_string
+				rule
+					_optional
+					_tokens
+						_arbitrary
+				copy
+					_optional
+					_string
