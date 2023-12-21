@@ -816,7 +816,17 @@ namespace Noxico
 
 			checkSchemaHelper = new Action<Token, Token>((data, schema) =>
 			{
-				if (schema.HasToken("_string") || schema.HasToken("_type") || schema.HasToken("_color"))
+				if (schema.HasToken("_reference"))
+				{
+					var reference = schema.GetToken("_reference");
+					var refSchema = schemas.FirstOrDefault(x => x.Name == reference.Text);
+					if (refSchema == null)
+						throw new Exception(string.Format("Schema check fail for {0} {1}: invalid reference to {2}.", name, id, reference.Text));
+					checkSchemaHelper(data, refSchema);
+					return;
+				}
+
+				if (schema.HasToken("_string") || schema.HasToken("_type") || schema.HasToken("_id") || schema.HasToken("_lua") || schema.HasToken("_color"))
 				{
 					if (string.IsNullOrEmpty(data.Text))
 					{
@@ -825,7 +835,7 @@ namespace Noxico
 						throw new Exception(string.Format("Schema check fail for {0} {1}: {2} should have a text value.", name, id, data.Name));
 					}
 				}
-				else if (schema.HasToken("_integer") || schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character") || schema.HasToken("_factor"))
+				else if (schema.HasToken("_integer") || schema.HasToken("_measure") || schema.HasToken("_rating") || schema.HasToken("_character") || schema.HasToken("_factor") || schema.HasToken("_weight"))
 				{
 					if (!string.IsNullOrEmpty(data.Text))
 					{

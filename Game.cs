@@ -312,7 +312,7 @@ namespace Noxico
 			Sound = new SoundSystem();
 
 #if DEBUG
-			Program.WriteLine("Checking data validit...");
+			Program.WriteLine("Checking data validity...");
 			{
 				var tokenFiles = new Dictionary<string, string>()
 				{
@@ -325,6 +325,7 @@ namespace Noxico
 					{ "crafting.tml", "craftrecipe" },
 					{ "culture.tml", "culture namegen" },
 					{ "dialogue.tml", "dialogue" },
+					{ "sex.tml", "sexchoice sexgroup" },
 					{ "i18n.tml", "words hyphenation" },
 					{ "items.tml", "item" },
 					{ "tiles.tml", "tile" },

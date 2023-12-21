@@ -1,5 +1,5 @@
 bodyplan
-	_string
+	_id
 	_allowmissing: beast
 		namegen
 		tallness
@@ -15,9 +15,9 @@ bodyplan
 	_tokens
 		culture
 			_optional
-			_string
+			_id
 		namegen
-			_string
+			_id
 		terms
 			_tokens
 				generic
@@ -96,6 +96,7 @@ bodyplan
 			explicitgender
 		editable
 			_optional
+			_dict
 		femalesmaller
 			_optional
 		hair
@@ -249,7 +250,7 @@ unique: character
 		_remove: _tokens/namegen
 
 item
-	_string
+	_id
 	_tokens
 		_arbitrary
 		description
@@ -300,7 +301,7 @@ item
 					_string
 				ammo
 					_optional
-					_string
+					_id
 				increase
 					_optional
 					_string
@@ -323,7 +324,7 @@ item
 			_optional
 
 dialogue: scene
-	_string
+	_id
 	_tokens
 		name
 			_string
@@ -334,6 +335,7 @@ dialogue: scene
 			_optional
 		filter
 			_optional
+			_lua
 		script
 			_optional
 			_cdata
@@ -349,8 +351,32 @@ dialogue: scene
 		end
 			_optional
 
+sexchoice: choice
+	_id
+	_tokens
+		filter
+			_optional
+			_lua
+		weight
+			_optional
+			_weight
+		meta
+			_optional
+		effect
+			_cdata
+
+sexgroup: group
+	_id
+	_tokens
+		choice
+			_optional
+			_reference: sexchoice
+		group
+			_optional
+			_reference: sexgroup
+
 trait
-	_string
+	_id
 	_tokens
 		display
 			_string
@@ -392,7 +418,7 @@ trait
 			_string
 
 realm
-	_string
+	_id
 	_tokens
 		waterlevel
 			_integer
@@ -404,7 +430,7 @@ realm
 				rect
 					_string
 				ground
-					_string
+					_id
 				encounters
 					_optional
 					_integer
@@ -416,10 +442,10 @@ realm
 						_arbitrary
 
 buildingset: set
-	_string
+	_id
 	_tokens
 		template
-			_string
+			_id
 			_tokens
 				inhabitants
 					_optional
@@ -437,7 +463,7 @@ buildingset: set
 					-- undescribable :shrug:
 
 clutter: id
-	_string
+	_id
 	_tokens
 		role
 			_string
@@ -461,7 +487,7 @@ clutter: id
 craftrecipe: recipe
 	_tokens
 		consume
-			_string
+			_id
 			_tokens
 				amount
 					_optional
@@ -471,42 +497,42 @@ craftrecipe: recipe
 					_string
 		require
 			_optional
-			_string
+			_id
 			_tokens
 				id
 					_optional
 					_integer
 		produce
-			_string
+			_id
 		train
 			_optional
 			_string
 
 culture
-	_string
+	_id
 	_tokens
 		bodyplans
 			_tokens
 				_arbitrary
 		marriage
 			_optional
-			_factor
+			_weight
 		monogamous
 			_optional
-			_factor
+			_weight
 		mysticism
 			_optional
-			_factor
+			_weight
 		terms
 			_optional
 			_tokens
 				_arbitrary
 		speechfilter
 			_optional
-			_string
+			_file
 
 namegen
-	_string
+	_id
 	_tokens
 		sets
 			_tokens
@@ -585,7 +611,7 @@ tile
 	_integer
 	_tokens
 		id
-			_string
+			_id
 		description
 			_optional
 			_string
