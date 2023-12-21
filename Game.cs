@@ -315,6 +315,7 @@ namespace Noxico
 			{
 				var tokenFiles = new Dictionary<string, string>()
 				{
+					{ "items.tml", "item" },
 					{ "bodyplans.tml", "bodyplan" },
 					{ "uniques.tml", "unique" },
 					{ "biomes.tml", "realm" },

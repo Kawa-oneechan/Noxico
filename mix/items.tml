@@ -302,6 +302,7 @@ item: cheap_pos
 	weapon
 		damage: 100
 		skill: long_sword
+		attacktype: slash
 	statbonus
 		speed: 40
 	description: "Used by the legendary Knight of Time, this was once a perfectly functional ninja sword until the Knight broke it in half while doing battle with his brother."
@@ -563,6 +564,7 @@ item: fireaxe
 	fireproof
 	weapon
 		damage: 50
+		attacktype: slash
 		skill: axe
 	weight: medium
 	description: "An ordinary looking fire-axe."
@@ -577,6 +579,7 @@ item: battleaxe
 	fireproof
 	weapon
 		damage: 70
+		attacktype: slash
 		skill: axe
 	weight: heavy
 	description: "An imposing battle axe. You could take someone's head off with this baby."
@@ -592,6 +595,7 @@ item: shortsword
 	weight: medium
 	weapon
 		damage: 40
+		attacktype: slash
 		skill: short_sword
 	description: "A plain but serviceable short sword."
 	ascii
@@ -606,6 +610,7 @@ item: scimitar
 	weight: medium
 	weapon
 		damage: 50
+		attacktype: slash
 		skill: short_sword
 	identify: weapon_knowledge
 	description: "An exotic looking sword with a curved blade."
@@ -620,6 +625,7 @@ item: broadsword
 	weight: heavy
 	weapon
 		damage: 50
+		attacktype: slash
 		skill: long_sword
 	description: "A large sword with an emphasis on the blade's width."
 	ascii
@@ -633,6 +639,7 @@ item: longsword
 	weight: heavy
 	weapon
 		damage: 60
+		attacktype: slash
 		skill: long_sword
 	description: "A large sword with an emphasis on length."
 	ascii
@@ -649,6 +656,7 @@ item: zweihander
 	weight: heavy
 	weapon
 		damage: 70
+		attacktype: slash
 		skill: huge_sword
 	identify: weapon_knowledge
 	description: "A sword so large you need two hands to wield it."
@@ -664,6 +672,7 @@ item: katana
 	weight: medium
 	weapon
 		damage: 70
+		attacktype: slash
 		skill: long_sword
 	identify: weapon_knowledge
 	description: "The common samurai sword."
@@ -679,6 +688,7 @@ item: tsurugi
 	weight: medium
 	weapon
 		damage: 70
+		attacktype: slash
 		skill: long_sword
 	identify: weapon_knowledge
 	description: "The common samurai sword, but longer."
@@ -690,8 +700,7 @@ item: mace
 	equipable
 		hand
 		twohanded
-	weight: 
-		medium
+	weight: medium
 	weapon
 		damage: 70
 		skill: club
@@ -747,6 +756,7 @@ item: magnum357
 	weapon
 		damage: 40
 		range: 20
+		attacktype: pierce
 		skill: small_firearm
 		ammo: bullet357
 	description: "Heavy ordnance. Fires up to seven shots before a reload is required, but we're abstracting that away."
@@ -776,6 +786,7 @@ item: whip
 	weapon
 		damage: 40
 		skill: whip
+		attacktype: slash
 		increase: pleasure
 	-- Increase token doesn't do shit without some extra code but it can be here anyway.
 	price: 200
@@ -783,7 +794,6 @@ item: whip
 	ascii
 		char: 0x185
 		fore: brown
-	weapon
 	sexy
 
 
@@ -1039,7 +1049,7 @@ item: gem_black_opal
 		fore: black
 	weight: light
 	price: 2500
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_emerald
@@ -1049,7 +1059,7 @@ item: gem_emerald
 		fore: green
 	weight: light
 	price: 2500
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_turquoise
@@ -1060,7 +1070,7 @@ item: gem_turquoise
 		fore: green
 	weight: light
 	price: 2000
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_citrine
@@ -1071,7 +1081,7 @@ item: gem_citrine
 		fore: yellow
 	weight: light
 	price: 1500
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_aquamarine
@@ -1082,7 +1092,7 @@ item: gem_aquamarine
 		fore: green
 	weight: light
 	price: 1500
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_amber
@@ -1093,7 +1103,7 @@ item: gem_amber
 		fore: peru
 	weight: light
 	price: 1000
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_topaz
@@ -1104,7 +1114,7 @@ item: gem_topaz
 		fore: pure
 	weight: light
 	price: 900
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_jet
@@ -1115,7 +1125,7 @@ item: gem_jet
 		fore: black
 	weight: light
 	price: 850
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_opal
@@ -1126,7 +1136,7 @@ item: gem_opal
 		fore: white
 	weight: light
 	price: 800
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_chrysoberyl
@@ -1137,7 +1147,7 @@ item: gem_chrysoberyl
 		fore: yellow
 	weight: light
 	price: 700
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_garnet
@@ -1147,7 +1157,7 @@ item: gem_garnet
 		fore: red
 	weight: light
 	price: 700
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_amethyst
@@ -1157,7 +1167,7 @@ item: gem_amethyst
 		fore: violet
 	weight: light
 	price: 600
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_jasper
@@ -1168,7 +1178,7 @@ item: gem_jasper
 		fore: red
 	weight: light
 	price: 500
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_fluorite
@@ -1179,7 +1189,7 @@ item: gem_fluorite
 		fore: violet
 	weight: light
 	price: 400
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_obsidian
@@ -1190,7 +1200,7 @@ item: gem_obsidian
 		fore: black
 	weight: light
 	price: 200
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_agate
@@ -1201,7 +1211,7 @@ item: gem_agate
 		fore: orange
 	weight: light
 	price: 200
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_jade
@@ -1212,7 +1222,7 @@ item: gem_jade
 		fore: jade
 	weight: light
 	price: 300
-	description: ""
+	description: "TODO"
 	gemstone
 
 item: gem_glass
@@ -1222,7 +1232,7 @@ item: gem_glass
 		char: 0x4
 	weight: light
 	price: 0
-	description: ""
+	description: "TODO"
 	colored
 -- #endregion
 
@@ -1698,7 +1708,7 @@ item: stylish_cloak
 
 item: leather_corset
 	_n: [color ]leather corset
-	description: ""
+	description: "TODO"
 	equipable
 		undershirt
 		reach
@@ -1716,7 +1726,7 @@ item: leather_corset
 
 item: rubber_corset
 	_n: [color ]rubber corset
-	description: ""
+	description: "TODO"
 	equipable
 		undershirt
 		reach
@@ -1734,7 +1744,7 @@ item: rubber_corset
 
 item: leather_bustier
 	_n: [color ]leather bustier
-	description: ""
+	description: "TODO"
 	equipable
 		undershirt
 	weight: medium
@@ -1750,7 +1760,7 @@ item: leather_bustier
 
 item: rubber_bustier
 	_n: [color ]rubber bustier
-	description: ""
+	description: "TODO"
 	equipable
 		undershirt
 	weight: medium
@@ -2010,7 +2020,7 @@ item: eternitybrooch
 	price: 10000
 	ascii
 		char: 0x1a4
-		color: white
+		fore: white
 	description: "An artifact of Eternity, this brooch lets you avoid certain death once every two days."
 -- #endregion
 
@@ -2144,8 +2154,9 @@ item: bfg9000
 		damage: 1000
 		range: 60
 		splash: 4
+		attacktype: crush
 		skill: huge_firearm
-	description: ""
+	description: "TODO"
 	ascii
 		char: 0x183
 		fore: gray

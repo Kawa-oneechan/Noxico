@@ -248,6 +248,81 @@ unique: character
 	_copy: bodyplan
 		_remove: _tokens/namegen
 
+item
+	_string
+	_tokens
+		_arbitrary
+		description
+			_optional
+			-- All items *should* have descriptions but there's too many without for now.
+			_string
+		script
+			_optional
+			_cdata
+		timer
+			_optional
+			_integer
+			_tokens
+				evenunequipped
+					_optional
+		price
+			_optional
+			_integer
+		weight
+			_optional
+			_string
+		ascii
+			_tokens
+				char
+					_character
+				fore
+					_optional
+					_color
+		equipable
+			_optional
+			_tokens
+				_arbitrary
+		statbonus
+			_optional
+			_tokens
+				_arbitrary
+		identify
+			_optional
+			_string
+		weapon
+			_optional
+			_tokens
+				damage
+					_integer
+				skill
+					_string
+				attacktype
+					_string
+				ammo
+					_optional
+					_string
+				increase
+					_optional
+					_string
+				range
+					_optional
+					_measure
+				splash
+					_optional
+					_measure
+		randomized
+			_optional
+			_integer
+		plural
+			_optional
+		fireproof
+			_optional
+		nouse
+			_optional
+		unique
+			_optional
+
+
 trait
 	_string
 	_tokens
