@@ -15,6 +15,8 @@ namespace Noxico
 		private ComboBox combo;
 		private TabControl tabs;
 
+		public TokenCarrier Carrier { get; private set; }
+
 		public Editor()
 		{
 			Text = "Noxico Debug Editor 0.5";
@@ -40,6 +42,7 @@ namespace Noxico
 
 		private void combo_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			Carrier = null;
 			tabs.TabPages.Clear();
 			AddTab(combo.SelectedItem);
 			combo.Select();
@@ -56,6 +59,12 @@ namespace Noxico
 			prop.PropertySort = PropertySort.CategorizedAlphabetical;
 			page.Controls.Add(prop);
 			tabs.TabPages.Add(page);
+
+			if (o is Token)
+				Carrier = (Token)o;
+			else if (o is TokenCarrier)
+				Carrier = (TokenCarrier)o;
+
 			if (o is BoardChar)
 				AddTab(((BoardChar)o).Character);
 			else if (o is Container)
@@ -153,18 +162,42 @@ namespace Noxico
 		public List<Token> Value { get; set; }
 		private TokenCarrier carrier;
 		private TextBox textBox;
+		private ToolStrip toolStrip;
 
 		public TokenEditorForm()
 		{
 			this.Text = "Token editor";
 			this.ClientSize = new Size(512, 512);
 
-			textBox = new TextBox();
-			textBox.Multiline = true;
-			textBox.Dock = DockStyle.Fill;
-			textBox.AcceptsTab = true;
-			textBox.ScrollBars = ScrollBars.Both;
+			textBox = new TextBox()
+			{
+				Multiline = true,
+				Dock = DockStyle.Fill,
+				AcceptsTab = true,
+				ScrollBars = ScrollBars.Both,
+				Font = new Font(FontFamily.GenericMonospace, 10),
+			};
 			Controls.Add(textBox);
+			toolStrip = new ToolStrip()
+			{
+				Dock = DockStyle.Top,
+				RenderMode = ToolStripRenderMode.System,
+			};
+			Controls.Add(toolStrip);
+
+			var checkButton = new ToolStripButton()
+			{
+				Text = "Check"
+			};
+			checkButton.Click += CheckButton_Click;
+			toolStrip.Items.Add(checkButton);
+
+			var revertButton = new ToolStripButton()
+			{
+				Text = "Revert"
+			};
+			revertButton.Click += RevertButton_Click;
+			toolStrip.Items.Add(revertButton);
 
 			Load += new EventHandler(TokenEditorForm_Load);
 			FormClosed += new FormClosedEventHandler(TokenEditorForm_FormClosed);
@@ -181,6 +214,44 @@ namespace Noxico
 		{
 			carrier.Tokenize(textBox.Text);
 			Value = carrier.Tokens;
+		}
+
+		void CheckButton_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var checker = new TokenCarrier();
+				checker.Tokenize(textBox.Text);
+				var newValue = checker.Tokens;
+				
+				foreach (var form in Application.OpenForms)
+				{
+					if (form is Editor)
+					{
+						var carrier = ((Editor)form).Carrier;
+						if (carrier is Character)
+						{
+							var root = new Token("character", "<check>");
+							root.AddSet(checker.Tokens);
+							root.CheckSchema("unique", ((Character)carrier).ID);
+						}
+						break;
+					}
+				}
+				textBox.Text = checker.DumpTokens(newValue, 0);
+				textBox.SelectionStart = textBox.SelectionLength = 0;
+			}
+			catch (Exception x)
+			{
+				System.Windows.Forms.MessageBox.Show(x.Message, this.Text);
+				return;
+			}
+		}
+
+		void RevertButton_Click(object sender, EventArgs e)
+		{
+			textBox.Text = carrier.DumpTokens(Value, 0);
+			textBox.SelectionStart = textBox.SelectionLength = 0;
 		}
 	}
 

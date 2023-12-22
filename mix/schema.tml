@@ -36,6 +36,7 @@ bodyplan
 					_optional
 					_string
 		bestiary
+			_optional
 			_string
 			_tokens
 				char
