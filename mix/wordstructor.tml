@@ -345,6 +345,7 @@ _pussy
 -- #endregion
 
 -- #region Sexual verbs
+-- first/second person FOO, third person FOOS, past FOOD, progressive FOOING
 verb-fuck
 	- fuck
 	- hammer
@@ -352,6 +353,13 @@ verb-fuck
 	- pound
 	- slam
 	- thrust
+verb-fucks
+	- fucks
+	- hammers
+	- plows
+	- pounds
+	- slams
+	- thrusts
 verb-fucked
 	- fucked
 	- hammered
@@ -373,6 +381,13 @@ verb-insert
 	- shove
 	- slide
 	- stuff
+verb-inserts
+	- plunges
+	- probes
+	- rams
+	- shoves
+	- slides
+	- stuffs
 verb-inserted
 	- plunged
 	- probed
@@ -394,6 +409,13 @@ verb-orgasm
 	- finish
 	- orgasm
 	- peak
+verb-orgasms
+	- climaxes
+	- comes
+	- cums
+	- finishes
+	- orgasms
+	- peaks
 verb-orgasmed
 	- came
 	- climaxed
@@ -418,6 +440,17 @@ verb-squirt
 	- spray
 	- spritz
 	- squirt
+verb-squirts
+	- ejects
+	- floods
+	- flows
+	- gushes
+	- pours
+	- spits
+	- splurges
+	- sprays
+	- spritzes
+	- squirts
 verb-squirted
 	- ejected
 	- flooded
@@ -449,6 +482,15 @@ verb-squirtlarge
 	- spray
 	- squirt
 	- surge
+verb-squirtslarge
+	- floods
+	- flows
+	- gushes
+	- pours
+	- spouts
+	- sprays
+	- squirts
+	- surges
 verb-squirtedlarge
 	- flooded
 	- flowed
@@ -482,6 +524,21 @@ verb-dribble
 	- slobber
 	- trickle
 	- weep
+verb-dribbles
+	- drains
+	- dribbles
+	- drips
+	- flows
+	- foams
+	- froths
+	- leaches
+	- leaks
+	- oozes
+	- seeps
+	- slimes
+	- slobbers
+	- trickles
+	- weeps
 verb-dribbled
 	- drained
 	- dribbled
@@ -518,6 +575,12 @@ verb-suck
 	- gobble
 	- lap
 	- suck
+verb-sucks
+	- consumes
+	- devours
+	- gobbles
+	- laps
+	- sucks
 verb-sucked
 	- consumed
 	- devoured
@@ -535,16 +598,25 @@ verb-shake
 	- tremble
 	- quake
 	- quiver
+	- shiver
+verb-shakes
+	- shakes
+	- trembles
+	- quakes
+	- quivers
+	- shivers
 verb-shaked
 	- shook
 	- trembled
 	- quaked
 	- quivered
+	- shivered
 verb-shaking
 	- shaking
 	- trembling
 	- quaking
 	- quivering
+	- shivering
 verb-caress
 	- caress
 	- feel
@@ -557,6 +629,18 @@ verb-caress
 	- tease
 	- tickle
 	- touch
+verb-caresses
+	- caresses
+	- feels
+	- fondles
+	- gropes
+	- pets
+	- rubs
+	- squeezes
+	- strokes
+	- teases
+	- tickles
+	- touches
 verb-caressed
 	- caressed
 	- felt
@@ -587,6 +671,9 @@ verb-caressing
 verb-strike
 	- strike
 	- hit
+verb-strikes
+	- strikes
+	- hits
 verb-struck
 	- struck
 	- hit
@@ -599,43 +686,57 @@ verb-grunt
 	- growl
 	- pant softly
 	- sigh
-verb-grunted
-	- groaned
-	- growled
-	- panted softly
-	- sighed
 verb-grunts
 	- groans
 	- growls
 	- pants softly
 	- sighs
+verb-grunted
+	- groaned
+	- growled
+	- panted softly
+	- sighed
+verb-grunting
+	- groaning
+	- growling
+	- panting softly
+	- sighing
 verb-scream
 	- cry out
 	- scream
-verb-screamed
-	- cried out
-	- screamed
 verb-screams
 	- cries out
 	- screams
+verb-screamed
+	- cried out
+	- screamed
+verb-screaming
+	- crying out
+	- screaming
 verb-whimper
 	- softly whine
 	- whimper
-verb-whimpered
-	- softly whined
-	- whimpered
 verb-whimpers
 	- softly whines
 	- whimpers
+verb-whimpered
+	- softly whined
+	- whimpered
+verb-whimpering
+	- softly whining
+	- whimpering
 verb-murmur
 	- mumble
 	- murmur
-verb-murmured
-	- mumbled
-	- murmured
 verb-murmurs
 	- mumbles
 	- murmurs
+verb-murmured
+	- mumbled
+	- murmured
+verb-murmuring
+	- mumbling
+	- murmuring
 -- #endregion
 
 gesture-t-flirty
