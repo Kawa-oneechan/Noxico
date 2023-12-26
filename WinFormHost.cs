@@ -75,17 +75,17 @@ namespace Noxico
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void WriteLine(string format, params object[] arg)
 		{
-			Console.WriteLine(format, arg);
+			System.Diagnostics.Trace.WriteLine(string.Format(format, arg));
 		}
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void Write(string format, params object[] arg)
 		{
-			Console.Write(format, arg);
+			System.Diagnostics.Trace.Write(string.Format(format, arg));
 		}
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void WriteLine(object value)
 		{
-			Console.WriteLine(value.ToString());
+			System.Diagnostics.Trace.WriteLine(value.ToString());
 		}
 
 		public static bool CanWrite()
