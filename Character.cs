@@ -726,8 +726,8 @@ namespace Noxico
 			var metaTokens = new[] { "playable", "femalesmaller", "costume", "neverneuter", "hermonly", "maleonly", "femaleonly" };
 			foreach (var t in metaTokens)
 				this.RemoveAll(t);
-			if (!this.HasToken("beast"))
-				this.RemoveAll("bestiary");
+			//if (!this.HasToken("beast"))
+			//	this.RemoveAll("bestiary");
 
 			if (this.HasToken("ass"))
 			{
@@ -1465,12 +1465,14 @@ namespace Noxico
 			//Things not listed: horns and wings.
 			if (print == null)
 				print = new Action<string>(x => sb.Append(x.Viewpoint(null)));
-
 			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
-				print(this.GetKnownName(true) + ", " + this.Title + "\n\n");
+				print(this.GetKnownName(true) + ", " + string.Format(", {0} {1}. ", i18n.GetArticle(this.Title), this.Title));
 			else
-				print(this.Title + "\n\n");
+				print(string.Format("{0} {1}. ", i18n.GetArticle(this.Title, true), this.Title));
+			if (HasToken("bestiary"))
+				print(GetToken("bestiary").Text);
+			print("\n\n");
 
 			bool breastsVisible = false, crotchVisible = false;
 			var carried = new List<InventoryItem>();

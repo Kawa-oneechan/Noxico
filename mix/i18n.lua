@@ -68,11 +68,19 @@ local regular = {
 	y = "ies",
 }
 
-function GetArticle(topic)
+function GetArticle(topic, capitalize)
 	if StartsWithVowel(topic) then
-		return "an"
+		if capitalize then
+			return "An"
+		else
+			return "an"
+		end
 	else
-		return "a"
+		if capitalize then
+			return "A"
+		else
+			return "a"
+		end
 	end
 end
 

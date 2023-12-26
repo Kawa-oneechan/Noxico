@@ -185,9 +185,9 @@ namespace Noxico
 			return result.ToString();
 		}
 
-		public static string GetArticle(this string topic)
+		public static string GetArticle(this string topic, bool capitalize = false)
 		{
-			return Lua.Environment.GetArticle(topic);
+			return Lua.Environment.GetArticle(topic, capitalize);
 		}
 
 		/// <summary>Gets the number of effective tiles needed to draw the current String.</summary>
