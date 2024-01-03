@@ -1295,6 +1295,7 @@ namespace Noxico
 
 			if (this.HasToken("tail"))
 			{
+				/*
 				//TODO: work these into Description.
 				var tt = this.GetToken("tail").Text;
 				var tail = tt.IsBlank("genbeast", tt);
@@ -1314,6 +1315,8 @@ namespace Noxico
 				}
 				else
 					hipThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype_" + tail)));
+				*/
+				hipThings.Add(Descriptions.TailType(this.GetToken("tail")) + " tail");
 			}
 
 			//cutie mark crusaders YAY!!!

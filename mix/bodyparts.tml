@@ -597,10 +597,21 @@ tail
 		reptilian
 		dragon-like
 		reptile-like
-		_hash: d
+		_hash: D
 	tentacle
 		tentacle
 		_hash: t
+	cocktacle
+		cock-headed tentacle
+		_hash: t
+	spade
+		spade-tipped
+		demonic
+		_hash: s
+	rabbit
+		bunny poofball
+		puffy
+		_hash: b
 feet
 	horse: hoof
 	cow: hoof

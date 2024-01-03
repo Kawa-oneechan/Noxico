@@ -106,6 +106,7 @@ namespace Noxico
 			return GetSizeDescription("vagina/wetness", wetnessToken.Value);
 		}
 
+		/*
 		public static string Tail(Token tailToken)
 		{
 			if (tailToken == null)
@@ -122,6 +123,7 @@ namespace Noxico
 			else
 				return tailName + " tail";
 		}
+		*/
 
 		#region Random descriptions
 		/// <summary>
