@@ -589,3 +589,86 @@
 2a5		felin digit three
 2a6		felin digit four
 2a7		felin myriad mark
+2a8		felin full stop
+2a9		felin comma
+2aa		felin exclamation mark
+2ab		felin question mark
+2ac		felin catspaw mark
+2ad		felin left quotation mark
+2ae		felin right quotation mark
+
+2c0		charisma legend left half
+2c1		charisma legend right half
+2c2		pleasure legend left half
+2c3		pleasure legend right half
+2c4		mind legend left half
+2c5		mind legend right half
+2c6		vice legend left half
+2c7		vice legend right half
+2c8		excitement legend left half
+2c9		excitement legend right half
+2ca		libido legend left half
+2cb		libido legend right half
+2cc		speed legend left half
+2cd		speed legend right half
+2ce		body legend left half
+2cf		body legend right half
+
+2e0		panel border top left
+2e1		panel border top
+2e2		panel border top right
+2e3		panel border top left and bottom
+2e4		panel border top right and bottom
+
+2e6	2581	lower one eight block
+2e7	2582	lower one quarter block
+2e8	2583	lower three eights block
+2e9	2584	lower half block [XXX]
+2ea	2585	lower five eights block
+2eb	2586	lower three quarters block
+2ec	2587	lower seven eights block
+2ed		upper one eight block
+2ee		upper one quarter block
+2ef		upper three eights block
+2f0		upper half block [XXX]
+2f1		upper five eights block
+2f2		upper three quarters block
+2f3		upper seven eights block
+2f4	258e	left one quarter block
+2f5	258d	left three eights block
+2f6	258b	left five eights block
+2f7	258a	left three quarters block
+2f8		right one quarter block
+2f9		right three eights block
+2fa		right five eights block
+2fb		right three quarters block
+2fc		bottom right diagonal block
+2fd		bottom left diagonal block
+2fe		top right diagonal block
+2ff		top left diagonal block
+
+300		panel border left
+301		panel border top left bottom and right
+302		panel border right
+303		panel border top left and right
+
+304	2572	box drawings light diagonal upper left to lower right
+305	2573	box drawings light diagonal cross
+306		fancy panel border top left
+307		fancy panel border top right
+308		fancy panel border insert top left
+309		fancy panel border insert top right
+30a		panel border right with upwards arrow
+
+320		panel border bottom left
+321		panel border bottom
+322		panel border bottom right
+323		panel border bottom left and right
+
+324		box drawings light diagonal upper right to lower left
+
+326		fancy panel border bottom left
+327		fancy panel border bottom right
+328		fancy panel border insert bottom left
+329		fancy panel border insert bottom right
+32a		panel border right with downwards arrow
