@@ -342,6 +342,12 @@ namespace Noxico
 		{
 			return GetPartDescription("skintohair/" + skinType, new string[] { null });
 		}
+		
+		//TODO
+		public static string Horn(Token hornToken)
+		{
+			return "<TODO>";
+		}
 		#endregion
 
 		#region Upperbody descriptions

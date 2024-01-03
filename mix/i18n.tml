@@ -431,20 +431,9 @@ Would you like an infodump on the way out?
 	x_tongue: {0} tongue
 	single_taur: centaur-like
 	multi_taur: multi-taur ({0} pairs)
--- #region Tail types
-	tailtype_genbeast: beastly
-	tailtype_demon: spaded demon
-	tailtype_bunny: bunny poofball
-	tailtype_tapered_tentacle: tapered tail tentacle
-	tailtype_cocktacle: cock-headed tail tentacle
-	tailtype_tentacle: tail tentacle
-	tailtype_fox: fluffy vulpine
-	tailtype_dog: wagging canine
-	tailtype_cat: feline
-	tailtype_dragon: spined reptilian
-	tailtype_horse: equine
-	tailtyle_webber: spinnerets
--- #endregion
+	x_hips: {0} hips
+	x_waist: {0} waist
+	x_ass: {0} butt
 -- #region Tattoo locations
 	tat_x_on_y: {0} on {1}
 	tatlocation_hip: hip

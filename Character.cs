@@ -1273,6 +1273,7 @@ namespace Noxico
 				hairThings.Add(i18n.GetString("horntype_monoceros"));
 			if (this.HasToken("horns") && this.Path("horns").Value > 0)
 			{
+				/*
 				var count = GetToken("horns").IntValue;
 				Token horns = GetToken("horns");
 				string size = horns.HasToken("big") ? "big" : "small";
@@ -1280,13 +1281,15 @@ namespace Noxico
 				string horntype = "x_horntype_" + size + "_" + style;
 				string pairs = (count == 1) ? "pair" : "pairs"; // there is probably a better way to do this - sparks
 				hairThings.Add(i18n.Format(horntype, count, pairs));
+				*/
+				hipThings.Add(i18n.Format("x_horns", Descriptions.TailType(this.GetToken("horns"))));
 			}
 
 			if (!(HasToken("quadruped") || HasToken("taur")))
 			{
-				hipThings.Add(Descriptions.HipSize(this.GetToken("hips")) + " hips");
-				hipThings.Add(Descriptions.WaistSize(this.GetToken("waist")) + " waist");
-				hipThings.Add(Descriptions.ButtSize(this.GetToken("ass")) + " ass");
+				hipThings.Add(i18n.Format("x_hips", Descriptions.HipSize(this.GetToken("hips"))));
+				hipThings.Add(i18n.Format("x_waist", Descriptions.WaistSize(this.GetToken("waist"))));
+				hipThings.Add(i18n.Format("x_ass", Descriptions.ButtSize(this.GetToken("ass"))));
 			}
 			else
 			{
@@ -1316,7 +1319,7 @@ namespace Noxico
 				else
 					hipThings.Add(i18n.Format("x_tail", i18n.GetString("tailtype_" + tail)));
 				*/
-				hipThings.Add(Descriptions.TailType(this.GetToken("tail")) + " tail");
+				hipThings.Add(i18n.Format("x_tail", Descriptions.TailType(this.GetToken("tail"))));
 			}
 
 			//cutie mark crusaders YAY!!!
