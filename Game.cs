@@ -1485,59 +1485,29 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 		}
 		*/
 
-		public static void DrawStatus()
+		private static void DrawStatusPanel(Character character, int statCol, int statLine)
 		{
-			var player = HostForm.Noxico.Player;
-			if (NoxicoGame.Subscreen == Introduction.CharacterCreator)
-				return;
-			if (player == null || player.Character == null)
-				return;
-			var character = player.Character;
-
-			//Me.CurrentBoard.Redraw();
-			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
-				DrawMessages();
-
-			//TODO: detect if the player if standing in the lower part of the screen and flip it topwise.
-			var statLine = Program.Rows - 1;
-
-			for (var i = 0; i < Program.Cols; i++)
-				Me.CurrentBoard.AddScreenDirty(i, Program.Rows - 1);
-			HostForm.Write(new string(' ', Program.Cols), Color.Silver, Color.Transparent, Program.Rows - 1, 0, true);
-
-			var hpNow = character.Health;
-			var hpMax = character.MaximumHealth;
-			var hpBarLength = (int)Math.Ceiling((Math.Min(hpNow, hpMax) / hpMax) * 18);
-			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), statLine, 0);
-			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), statLine, 0);
-			HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, statLine, 1);
-			HostForm.SetCell(statLine, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
-			if (character.Gender == Gender.Female)
-				HostForm.SetCell(statLine, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent);
-			else if (character.Gender == Gender.Male)
-				HostForm.SetCell(statLine, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent);
-			else
-				HostForm.SetCell(statLine, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent);
-			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, statLine, 23);
-			var mods = "";
-			if (character.HasToken("haste")) mods += i18n.GetString("mod_haste");
-			if (character.HasToken("slow")) mods += i18n.GetString("mod_slow");
-			if (character.HasToken("flying")) mods += i18n.Format("mod_flying", (character.GetToken("flying").Value / 100.0f) * 100.0f);
-			if (character.HasToken("swimming"))
-			{
-				if (character.GetToken("swimming").IntValue == -1)
-					mods += i18n.GetString("mod_swimmingunl");
-				else
-					mods += i18n.Format("mod_swimming", (character.GetToken("swimming").Value / 100.0f) * 100.0f);
-			}
-			HostForm.Write(mods, Color.Silver, Color.Transparent, statLine, Program.Cols - mods.Length);
-
 			var statsLength = ((StatusDisplay.LabelWidth + StatusDisplay.ValueWidth) * StatusDisplay.Columns) + (StatusDisplay.SidePadding * (StatusDisplay.Columns + 1));
 			var statsBack = new string(' ', statsLength);
-			var statTop = statLine - StatusDisplay.Rows; //TODO: + if on top
+			var statTop = statLine;
 			var statBottom = statTop + StatusDisplay.Rows;
 			var statRow = statTop;
-			var statCol = Program.Cols - statsLength;
+
+			//bottom-aligned?
+			if (statLine < 0)
+			{
+				statLine = -statLine;
+				statTop = statLine - StatusDisplay.Rows;
+				statBottom = statTop + StatusDisplay.Rows;
+				statRow = statTop + 1;
+			}
+
+			//right-aligned?
+			if (statCol < 0)
+			{
+				statCol = -statCol;
+				statCol -= statsLength;
+			}
 
 			for (var i = statRow; i < statBottom; i++)
 			{
@@ -1589,7 +1559,63 @@ testBoard.Floodfill(1, 1, nil, ""nether"", true)
 					statCol2 = statCol1 + StatusDisplay.LabelWidth;
 				}
 			}
+		}
 
+		public static void DrawStatus()
+		{
+			var player = HostForm.Noxico.Player;
+			if (NoxicoGame.Subscreen == Introduction.CharacterCreator)
+				return;
+			if (player == null || player.Character == null)
+				return;
+			var character = player.Character;
+
+			//Me.CurrentBoard.Redraw();
+			if (Mode == UserMode.Walkabout || Mode == UserMode.Aiming)
+				DrawMessages();
+
+			//TODO: detect if the player if standing in the lower part of the screen and flip it topwise.
+			var statLine = Program.Rows - 1;
+
+			for (var i = 0; i < Program.Cols; i++)
+				Me.CurrentBoard.AddScreenDirty(i, Program.Rows - 1);
+			HostForm.Write(new string(' ', Program.Cols), Color.Silver, Color.Transparent, Program.Rows - 1, 0, true);
+
+			var hpNow = character.Health;
+			var hpMax = character.MaximumHealth;
+			var hpBarLength = (int)Math.Ceiling((Math.Min(hpNow, hpMax) / hpMax) * 18);
+			HostForm.Write(new string(' ', 18), Color.White, Color.FromArgb(9, 21, 39), statLine, 0);
+			HostForm.Write(new string(' ', hpBarLength), Color.White, Color.FromArgb(30, 54, 90), statLine, 0);
+			HostForm.Write(hpNow + " / " + hpMax, Color.White, Color.Transparent, statLine, 1);
+			HostForm.SetCell(statLine, 19, player.Glyph, player.ForegroundColor, player.BackgroundColor);
+			if (character.Gender == Gender.Female)
+				HostForm.SetCell(statLine, 21, 0x0C, Color.FromArgb(90, 30, 30), Color.Transparent);
+			else if (character.Gender == Gender.Male)
+				HostForm.SetCell(statLine, 21, 0x0B, Color.FromArgb(30, 54, 90), Color.Transparent);
+			else
+				HostForm.SetCell(statLine, 21, 0x15D, Color.FromArgb(84, 30, 90), Color.Transparent);
+			HostForm.Write(character.Name.ToString(false), Color.White, Color.Transparent, statLine, 23);
+			var mods = "";
+			if (character.HasToken("haste")) mods += i18n.GetString("mod_haste");
+			if (character.HasToken("slow")) mods += i18n.GetString("mod_slow");
+			if (character.HasToken("flying")) mods += i18n.Format("mod_flying", (character.GetToken("flying").Value / 100.0f) * 100.0f);
+			if (character.HasToken("swimming"))
+			{
+				if (character.GetToken("swimming").IntValue == -1)
+					mods += i18n.GetString("mod_swimmingunl");
+				else
+					mods += i18n.Format("mod_swimming", (character.GetToken("swimming").Value / 100.0f) * 100.0f);
+			}
+			HostForm.Write(mods, Color.Silver, Color.Transparent, statLine, Program.Cols - mods.Length);
+
+			DrawStatusPanel(character, -Program.Cols, -statLine);
+			if (character.HasToken("havingsex"))
+			{
+				var partnerID = character.GetToken("havingsex").Text;
+				var s = Me.CurrentBoard.Entities.OfType<BoardChar>().FirstOrDefault(b => b.Character.ID == partnerID);
+				if (s != null)
+					DrawStatusPanel(s.Character, 0, -statLine);
+			}
 
 			if (!LookAt.IsBlank())
 			{

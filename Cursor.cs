@@ -99,7 +99,10 @@ namespace Noxico
 					PointingAt = entity;
 					if (entity is BoardChar)
 					{
-						NoxicoGame.LookAt = string.Format("<c{0}>{1}<c> ({2}/{3})", ((BoardChar)entity).Character.Path("skin/color").Text,
+						var color = ((BoardChar)entity).Character.Path("skin/color").Text;
+						if (color.Equals("black", StringComparison.InvariantCultureIgnoreCase))
+							color = "gray";
+						NoxicoGame.LookAt = string.Format("<c{0}>{1}<c> ({2}/{3})", color,
 							((BoardChar)PointingAt).Character.GetKnownName(true, true),
 							((BoardChar)PointingAt).Character.Health, ((BoardChar)PointingAt).Character.MaximumHealth);
 						//return;
