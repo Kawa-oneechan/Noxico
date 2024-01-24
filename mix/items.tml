@@ -2332,3 +2332,29 @@ item: leather_gloves
 
 
 -- #endregion
+
+item: button_pants
+	description: "Big shorts that may have been red but you can't really tell for some reason. There's nothing to hold them up save for two big buttons."
+	equipable
+		pants
+	weight: medium
+	price: 100
+	ascii
+		char: 0x199
+	clothing
+	mickey
+
+item: indistinct_shoes
+	_ia: a pair of
+	description: "Kingdom Hearts-ass bulky shoes with no visible laces or other such detail, except for the soles."
+	plural
+	equipable
+		shoes
+	weight: light
+	price: 30
+	ascii
+		char: 0x1A3
+		fore: black
+	clothing
+	shoes
+	mickey

@@ -148,3 +148,31 @@ character: tiny
 		size: 1000
 	vicebonus: 1000
 	excitementbonus: 1000
+
+character: mickey
+	_n: Steamboat Willie
+	culture: human
+	special
+	terms
+		generic: "mouse"
+	bestiary: "It's him, it's The Mouse."
+		char: 0x167
+	tallness: 61
+	hair
+		length: 0
+		color: black
+	skin
+		type: rubber
+		color: black
+	face: mickey
+	teeth: normal
+	tongue: normal
+	eyes: black
+	ears: mickey
+	tail: mickey
+	legs: mickey
+	waist: 8
+	hips: 6
+	ass
+		size: 6
+		looseness: 0

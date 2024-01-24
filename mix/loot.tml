@@ -308,3 +308,20 @@ lootset
 	filter
 		id: tiny
 	oneofeach
+
+lootset
+	target: npc
+	type: underwear
+	final
+	filter
+		id: mickey
+	oneofeach
+lootset
+	target: npc
+	type: clothing
+	final
+	filter
+		id: mickey
+	oneofeach
+		button_pants
+		indistinct_shoes

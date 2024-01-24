@@ -36,6 +36,9 @@ ears
 		bear-like
 		bearish
 		_hash: b
+	mickey
+		weirdly round
+		_hash: m
 face
 	human
 		human-like
@@ -70,6 +73,9 @@ face
 		dragon-like
 		reptile-like
 		_hash: D
+	mickey
+		mouse-like
+		_hash: m
 hair
 	names
 		afro
@@ -456,6 +462,9 @@ legs
 		ursine
 		bear-like
 		_hash: b
+	mickey
+		rubberhose-like
+		_hash: m
 penis
 	human
 		human
@@ -612,6 +621,9 @@ tail
 		bunny poofball
 		puffy
 		_hash: b
+	mickey
+		oddly thin
+		_hash: m
 feet
 	horse: hoof
 	cow: hoof
