@@ -434,6 +434,9 @@ Would you like an infodump on the way out?
 	x_hips: {0} hips
 	x_waist: {0} waist
 	x_ass: {0} butt
+	x_mouth_none: mouthless jaw
+	x_mouth_pussy: {0} mouth-[?:pussy]
+	x_mouth_pussy_dry: mouth-[?:pussy]
 -- #region Tattoo locations
 	tat_x_on_y: {0} on {1}
 	tatlocation_hip: hip

@@ -1232,11 +1232,32 @@ namespace Noxico
 					headThings.Add(eyes);
 			}
 
-			if (mask != null && mask.CanSeeThrough(this))
+			if (mask == null || mask.CanSeeThrough(this))
 			{
-				var teeth = this.Path("teeth");
-				if (teeth != null && !teeth.Text.IsBlank() && teeth.Text != "normal")
-					headThings.Add(i18n.Format("x_teeth", Descriptions.TeethType(teeth)));
+				var mouth = this.Path("mouth");
+				if (mouth != null)
+				{
+					if (mouth.Text == "pussy")
+					{
+						//Assume mouth-pussy reflects crotch-pussy wetness.
+						//TODO: use mouth/wetness so not having a crotch-pussy still works.
+						var wetness = Descriptions.Wetness(this.Path("vagina/wetness"));
+						if (wetness != null)
+							headThings.Add(i18n.Format("x_mouth_pussy", wetness));
+						else
+							headThings.Add(i18n.Format("x_mouth_pussy_dry")); //temp
+					}
+					else if (mouth.Text == "none")
+						headThings.Add(i18n.Format("x_mouth_none"));
+				}
+
+				//TODO: take away teeth when you get a mouth-pussy?
+				if (mouth != null && mouth.Text != "none")
+				{
+					var teeth = this.Path("teeth");
+					if (teeth != null && !teeth.Text.IsBlank() && teeth.Text != "normal")
+						headThings.Add(i18n.Format("x_teeth", Descriptions.TeethType(teeth)));
+				}
 				var tongue = this.Path("tongue");
 				if (tongue != null && !tongue.Text.IsBlank() && tongue.Text != "normal")
 					headThings.Add(i18n.Format("x_tongue", Descriptions.TongueType(tongue)));
@@ -1473,7 +1494,7 @@ namespace Noxico
 				print = new Action<string>(x => sb.Append(x.Viewpoint(null)));
 			var player = NoxicoGame.Me.Player == null ? null : NoxicoGame.Me.Player.Character;
 			if (pa is Player || (player != null && player.Path("ships/" + ID) != null))
-				print(this.GetKnownName(true) + ", " + string.Format(", {0} {1}. ", i18n.GetArticle(this.Title), this.Title));
+				print(this.GetKnownName(true) + string.Format(", {0} {1}. ", i18n.GetArticle(this.Title), this.Title));
 			else
 				print(string.Format("{0} {1}. ", i18n.GetArticle(this.Title, true), this.Title));
 			if (HasToken("bestiary"))
