@@ -363,47 +363,56 @@ namespace Noxico
 			if (top == null)
 				return message;
 
-			SpeechFilter speechFilter = top.SpeechFilter;
-			if (speechFilter == null)
+			if (impediments == null)
+				impediments = Mix.GetTokenTree("impediments.tml");
+			//Speech filters are in three layers:
+			//1. Physical, caused by body plans
+			//2. Personal
+			//3. Cultural
+			//4. Default (x=>x)
+			var filters = new List<string>();
+			SpeechFilter currentFilter = new SpeechFilter(x => x);
+
+			if (top.Culture.SpeechFilter != null)
+				filters.Add(top.Culture.SpeechFilter);
+			if (top.SpeechFilter != null)
+				filters.Add(top.SpeechFilter);
+
+			foreach (var impediment in impediments)
 			{
-				if (top.Culture.SpeechFilter != null)
-					speechFilter = new SpeechFilter(x =>
-					{
-						Lua.RunFile(top.Culture.SpeechFilter);
-						x = Lua.Environment.SpeechFilter(x);
-						return x;
-					});
-				if (impediments == null)
-					impediments = Mix.GetTokenTree("impediments.tml");
-				foreach (var impediment in impediments)
+				if (!impediment.HasToken("have"))
+					continue;
+				var apply = true;
+				foreach (var filter in impediment.Tokens.Where(t => t.Name == "have"))
 				{
-					var apply = true;
-					foreach (var filter in impediment.Tokens.Where(t => t.Name == "have"))
+					var f = filter.Text.Split('=');
+					var p = top.Path(f[0]);
+					if (p == null)
 					{
-						var f = filter.Text.Split('=');
-						var p = top.Path(f[0]);
-						if (p == null || p.Text != f[1])
-						{
-							apply = false;
-							break;
-						}
-					}
-					if (apply)
-					{
-						var oldFilter = speechFilter;
-						speechFilter = new SpeechFilter(x =>
-						{
-							Lua.RunFile(impediment.GetToken("file").Text);
-							x = Lua.Environment.SpeechFilter(x);
-							return oldFilter(x);
-						});
+						apply = false;
+						break;
 					}
 				}
-				if (speechFilter == null) //Still?
-					speechFilter = new SpeechFilter(x => x); //Then just assign a dummy so we don't do this all over and over again.
-				top.SpeechFilter = speechFilter;
+				if (apply)
+				{
+					filters.Add(impediment.Name);
+					break;
+				}
 			}
-			message = message.SmartQuote(speechFilter);
+
+			foreach (var filter in filters)
+			{
+				var impediment = impediments.First(x => x.Name == filter);
+				var oldFilter = currentFilter;
+				currentFilter = new SpeechFilter(x =>
+				{
+					Lua.RunFile(impediment.GetToken("file").Text);
+					x = Lua.Environment.SpeechFilter(x);
+					return oldFilter(x);
+				});
+			}
+
+			message = message.SmartQuote(currentFilter);
 
 			return message;
 		}

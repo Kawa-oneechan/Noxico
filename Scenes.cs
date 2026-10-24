@@ -123,9 +123,9 @@ namespace Noxico
 				if (part.Name == "$" || part.Name == "#a")
 				{
 					if (part.HasToken("#text"))
-						ret.AppendLine(part.GetToken("#text").Text.SmartQuote());
+						ret.AppendLine(part.GetToken("#text").Text); //.SmartQuote());
 					else
-						ret.AppendLine(part.Text.SmartQuote());
+						ret.AppendLine(part.Text); //.SmartQuote());
 					ret.AppendLine();
 				}
 				else

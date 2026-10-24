@@ -40,7 +40,27 @@ namespace Noxico
 
 		public Name Name { get; set; }
 		public BoardChar BoardChar { get; set; }
-		public SpeechFilter SpeechFilter { get; set; }
+		public string SpeechFilter
+		{
+			get
+			{
+				return (!HasToken("speechfilter")) ?
+					Culture.SpeechFilter :
+					GetToken("speechfilter").Text;
+			}
+			set {
+				if (string.IsNullOrWhiteSpace(value))
+				{
+					if (HasToken("speechfilter"))
+						RemoveToken("speechfilter");
+				}
+				else
+				{
+					if (!HasToken("speechfilter")) AddToken("speechfilter");
+					GetToken("speechfilter").Text = value;
+				}
+			}
+		}
 
 		public Culture Culture
 		{

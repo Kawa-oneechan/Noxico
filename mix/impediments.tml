@@ -1,3 +1,4 @@
+-- bodyplan level
 sssnaketalk
 	have: teeth=fangs
 	have: tongue=long
@@ -6,3 +7,14 @@ sssnaketalk-alt
 	have: teeth=sharp
 	have: tongue=long
 	file: speechfilters\sssnake.lua
+pussymouth
+	have: mouth=pussy
+	file: speechfilters\slurp.lua
+-- personal and cultural level
+-- (they don't have "have")
+elmewfudd
+	file: speechfilters\elmewfudd.lua
+uwufier
+	file: speechfilters\uwufier.lua
+felin
+	file: speechfilters\felin.lua
